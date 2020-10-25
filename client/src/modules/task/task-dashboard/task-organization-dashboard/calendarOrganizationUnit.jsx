@@ -110,6 +110,17 @@ class CalendarOrganizationUnit extends Component {
             if (task.status === stt[i] && task.isArchived === false) return true;
         }
     }
+    convertStatus(status) {
+        const { translate } = this.props;
+
+        switch (status) {
+            case "inprocess": return translate('task.task_management.inprocess');
+            case "wait_for_approval": return translate('task.task_management.wait_for_approval');
+            case "finished": return translate('task.task_management.finished');
+            case "delayed": return translate('task.task_management.delayed');
+            case "canceled": return translate('task.task_management.canceled');
+        }
+    }
 
     // Lấy thời gian các công việc
     getTaskDurations() {
@@ -153,17 +164,25 @@ class CalendarOrganizationUnit extends Component {
                         responsibleEmployeeNames.push(x.name);
                     });
 
-                    title1 = `${tasksByStatus[i - 1].name} - ${tasksByStatus[i - 1].progress} % `;
-                    title2 = tasksByStatus[i - 1].name + " - " + responsibleEmployeeNames.join(" - ") + " - " + tasksByStatus[i - 1].progress + "%";
+                    // title1 = `${tasksByStatus[i - 1].name} - ${tasksByStatus[i - 1].progress} % `;
+                    // title2 = tasksByStatus[i - 1].name + " - " + responsibleEmployeeNames.join(" - ") + " - " + tasksByStatus[i - 1].progress + "%";
                     if (responsibleEmployeeIds.length > 1) {
                         multi = true;
                     }
                     if (multi) {
-                        titleTask = title2;
+                        if (tasksByStatus[i - 1].status !== "inprocess") {
+                            titleTask = `${tasksByStatus[i - 1].name} - ${responsibleEmployeeNames.join(" - ")} - (${this.convertStatus(tasksByStatus[i - 1].status)})`;
+                        }
+                        else titleTask = tasksByStatus[i - 1].name + " - " + responsibleEmployeeNames.join(" - ") + " - " + tasksByStatus[i - 1].progress + "%";;
+
                         groupTask = "multi-responsible-employee"
                     }
                     else {
-                        titleTask = title1;
+                        if (tasksByStatus[i - 1].status !== "inprocess") {
+                            titleTask = `${tasksByStatus[i - 1].name} - (${this.convertStatus(tasksByStatus[i - 1].status)})`;
+                        }
+                        else titleTask = `${tasksByStatus[i - 1].name} - ${tasksByStatus[i - 1].progress} % `;
+
                         groupTask = responsibleEmployeeIds[0];
                     }
 
@@ -193,7 +212,7 @@ class CalendarOrganizationUnit extends Component {
 
                 if (x.length) {
                     for (let i = 0; i < x.length; i++) {
-                        if (tasksByStatus[i]) {
+                        if (tasksByStatus[i] && tasksByStatus[i].status === "inprocess") {
                             let color;
                             currentTime = new Date();
                             startTime = new Date(tasksByStatus[i].startDate);

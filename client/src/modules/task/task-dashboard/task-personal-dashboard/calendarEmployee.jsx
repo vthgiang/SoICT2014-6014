@@ -93,11 +93,20 @@ class CalendarEmployee extends Component {
             if (task.status === stt[i] && task.isArchived === false) return true;
         }
     }
+    convertStatus(status) {
+        const { translate } = this.props;
+        switch (status) {
+            case "inprocess": return translate('task.task_management.inprocess');
+            case "wait_for_approval": return translate('task.task_management.wait_for_approval');
+            case "finished": return translate('task.task_management.finished');
+            case "delayed": return translate('task.task_management.delayed');
+            case "canceled": return translate('task.task_management.canceled');
+        }
+    }
 
     // Lấy thời gian các công việc
     getTaskDurations() {
         const { tasks } = this.props;
-        var taskList, tasksByStatus;
         let taskDurations = [];
 
         if (tasks) {
@@ -174,7 +183,8 @@ class CalendarEmployee extends Component {
 
                     if (tasksByStatus2[i]) {
                         let startTime, endTime, start_time, end_time;
-                        let titleTask = `${tasksByStatus2[i].name} - ${tasksByStatus2[i].progress} % `;
+                        let stt = this.convertStatus(tasksByStatus2[i].status)
+                        let titleTask = tasksByStatus2[i].status === "inprocess" ? `${tasksByStatus2[i].name} - ${tasksByStatus2[i].progress} % ` : `${tasksByStatus2[i].name} (${stt})`;
                         let addDate2;
 
                         if (tasksByStatus2[i].startDate === tasksByStatus2[i].endDate) {
@@ -200,7 +210,7 @@ class CalendarEmployee extends Component {
                             end_time: end_time,
                             itemProps: {
                                 style: {
-                                    color: "rgb(0, 0, 0, 0.8)",
+                                    color: "rgba(0, 0, 0, 0.8)",
                                     borderStyle: "solid",
                                     fontWeight: '600',
                                     fontSize: 14,
@@ -214,7 +224,7 @@ class CalendarEmployee extends Component {
                 let x = document.getElementsByClassName("rct-item");
                 if (x.length) {
                     for (let i = 0; i < x.length; i++) {
-                        if (tasksByStatus2[i]) {
+                        if (tasksByStatus2[i] && tasksByStatus2[i].status === "inprocess") {
                             let color;
                             let currentTime = new Date();
                             let startTime = new Date(tasksByStatus2[i].startDate);
