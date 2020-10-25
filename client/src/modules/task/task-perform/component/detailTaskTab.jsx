@@ -296,9 +296,9 @@ class DetailTaskTab extends Component {
     }
 
     checkEvaluationTaskAction = (task) => {
-        if(task){
-            let {taskActions} = task;
-            if(taskActions) {
+        if (task) {
+            let { taskActions } = task;
+            if (taskActions) {
                 let rated = taskActions.filter(task => task.rating === -1);
                 return {
                     checkEvaluationTaskAction: rated.length !== 0,
@@ -600,7 +600,7 @@ class DetailTaskTab extends Component {
                 }
             })
         }
-        console.log("hoursSpentOfEmployeeInEvaluation", hoursSpentOfEmployeeInEvaluation)
+        // console.log("hoursSpentOfEmployeeInEvaluation", hoursSpentOfEmployeeInEvaluation)
         return (
             <React.Fragment>
                 {(showToolbar) &&
@@ -689,14 +689,14 @@ class DetailTaskTab extends Component {
                                     </div>
                                 }
 
-                                {/* Số hoạt động chưa thực hiện */}         
+                                {/* Số hoạt động chưa thực hiện */}
                                 {
                                     this.getTaskActionsNotPerform(task.taskActions) > 0 &&
                                     <div>
-                                        <strong>{translate('task.task_perform.actions_not_perform')}</strong> 
+                                        <strong>{translate('task.task_perform.actions_not_perform')}</strong>
                                         <span className="text-red">{this.getTaskActionsNotPerform(task.taskActions)}</span>
-                                    </div> 
-                                }                      
+                                    </div>
+                                }
 
                                 {/** Xác nhận công việc */}
                                 {
@@ -774,11 +774,11 @@ class DetailTaskTab extends Component {
                                             return <div key={key}><strong>{info.name}:</strong> {info.value ? this.formatDate(info.value) : translate('task.task_management.detail_not_hasinfo')}</div>
                                         }
                                         return <div key={key}>
-                                            <strong>{info.name}:</strong> 
+                                            <strong>{info.name}:</strong>
                                             {
-                                                info.value ? 
-                                                info.value : Number(info.value) === 0 ? info.value :
-                                                translate('task.task_management.detail_not_hasinfo')}
+                                                info.value ?
+                                                    info.value : Number(info.value) === 0 ? info.value :
+                                                        translate('task.task_management.detail_not_hasinfo')}
                                         </div>
                                     })
                                 }
@@ -927,9 +927,9 @@ class DetailTaskTab extends Component {
                                                                     return <li key={key}>{info.name}: &nbsp;&nbsp; {info.value ? this.formatDate(info.value) : translate('task.task_management.detail_not_eval_on_month')}</li>
                                                                 }
                                                                 return <li key={key}>{info.name}: &nbsp;&nbsp; {
-                                                                    info.value ? 
-                                                                    info.value : Number(info.value) === 0 ? info.value :
-                                                                    translate('task.task_management.detail_not_eval_on_month')}</li>
+                                                                    info.value ?
+                                                                        info.value : Number(info.value) === 0 ? info.value :
+                                                                            translate('task.task_management.detail_not_eval_on_month')}</li>
                                                             })
                                                         }
                                                     </ul>

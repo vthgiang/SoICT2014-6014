@@ -5,7 +5,6 @@ import { taskManagementActions } from '../../task-management/redux/actions';
 
 import { TaskStatusChart } from './taskStatusChart';
 import { DomainOfTaskResultsChart } from './domainOfTaskResultsChart';
-import { TasksSchedule } from './tasksSchedule';
 import { CalendarEmployee } from './calendarEmployee';
 
 import { withTranslate } from 'react-redux-multilingual';
@@ -51,11 +50,11 @@ class TaskDashboard extends Component {
     }
 
     componentDidMount = async () => {
-        await this.props.getResponsibleTaskByUser([], 1, 1000, [],  [], [], null, null, null, null, null, false);
-        await this.props.getAccountableTaskByUser([], 1, 1000, [],  [], [], null, null, null, null, null, false);
-        await this.props.getConsultedTaskByUser([], 1, 1000, [],  [], [], null, null, null, null, null, false);
-        await this.props.getInformedTaskByUser([], 1, 1000, [],  [], [], null, null, null, null, null, false);
-        await this.props.getCreatorTaskByUser([], 1, 1000, [],  [], [], null, null, null, null, null, false);
+        await this.props.getResponsibleTaskByUser([], 1, 1000, [], [], [], null, null, null, null, null, false);
+        await this.props.getAccountableTaskByUser([], 1, 1000, [], [], [], null, null, null, null, null, false);
+        await this.props.getConsultedTaskByUser([], 1, 1000, [], [], [], null, null, null, null, null, false);
+        await this.props.getInformedTaskByUser([], 1, 1000, [], [], [], null, null, null, null, null, false);
+        await this.props.getCreatorTaskByUser([], 1, 1000, [], [], [], null, null, null, null, null, false);
 
         let data = {
             type: "user"
