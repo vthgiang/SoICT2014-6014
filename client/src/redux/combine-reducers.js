@@ -86,8 +86,9 @@ import { example1 } from "../modules/example/example1/redux/reducers";
 //example2
 import { example2 } from "../modules/example/example2/redux/reducers";
 
+// Manufacturing
 import { manufacturingWorks } from "../modules/production/manufacturing/manufacturing-works/redux/reducers";
-
+import { manufacturingMill } from "../modules/production/manufacturing/manufacturing-mill/redux/reducers";
 
 const appReducer = combineReducers({
     socket,
@@ -167,7 +168,7 @@ const appReducer = combineReducers({
 
     // customer management
     crm: combineReducers({
-        customers, groups, status,cares, careTypes
+        customers, groups, status, cares, careTypes
     }),
 
     //order
@@ -185,6 +186,7 @@ const appReducer = combineReducers({
     // production - manufacturing works management
 
     manufacturingWorks,
+    manufacturingMill,
 
     Intl
 

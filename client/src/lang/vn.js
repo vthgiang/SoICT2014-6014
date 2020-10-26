@@ -3742,13 +3742,38 @@ export default {
                 created_at: "Ngày tạo",
                 list_mills: "Danh sách các xưởng",
                 works_edit: "Sửa thông tin nhà máy",
+                works_detail: "Chi tiết thông tin nhà máy",
                 edit_successfully: "Sửa thông tin nhà máy thành công",
-                edit_failure: "Sửa thông tin nhà máy thất bại"
+                edit_failure: "Sửa thông tin nhà máy thất bại",
+                mill_code: "Mã xưởng",
+                mill_name: "Tên xưởng"
             },
             manufacturing_mill: {
                 name: "Tên xưởng",
                 code: "Mã xưởng",
-                search: "Tìm kiếm"
+                search: "Tìm kiếm",
+                index: "STT",
+                worksName: "Nhà máy",
+                description: "Mô tả",
+                status: "Trạng thái",
+                create_mill: "Tạo xưởng",
+                create_manufacturing_mill: "Tạo xưởng sản xuất",
+                create_mill_successfully: "Tạo xưởng sản xuất thành công",
+                create_mill_failed: "Tạo xưởng sản xuất thất bại",
+                works: "Nhà máy",
+                choose_works: "---Chọn nhà máy---",
+                worksValue_error: "Vui lòng chọn nhà máy",
+                delete_mill: "Xóa xưởng sản xuất",
+                1: "Đang hoạt động",
+                0: "Ngừng hoạt động",
+                mill_detail: "Chi tiết xưởng sản xuất",
+                mill_edit: "Sửa thông tin xưởng sản xuất",
+                choose_status: "---Chọn trạng thái---",
+                status_error: "Vui lòng chọn trạng thái xưởng sản xuất",
+                edit_mill_successfully: "Sửa thông tin xưởng thành công",
+                edit_mill_failed: "Sửa thông tin xưởng thất bại",
+                works_name: "Tên nhà máy",
+                created_at: "Ngày tạo"
             }
         }
     }

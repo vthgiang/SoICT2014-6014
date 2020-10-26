@@ -168,7 +168,6 @@ class ManufacturingWorksEditForm extends Component {
                 status: this.state.status,
                 description: this.state.description
             }
-            console.log(data);
             this.props.editManufacturingWorks(this.state.worksId, data);
         }
     }
@@ -199,14 +198,14 @@ class ManufacturingWorksEditForm extends Component {
 
 
     render() {
-        const { translate } = this.props;
+        const { translate, manufacturingWorks } = this.props;
         const { name, nameError, worksManagerValue, worksManagerError, foremanValue, foremanError,
             phoneNumber, phoneNumberError, address, addressError, status, statusError, description, code
         } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-edit-works" isLoading={false}
+                    modalID="modal-edit-works" isLoading={manufacturingWorks.isLoading}
                     formID="form-edit-works"
                     title={translate('manufacturing.manufacturing_works.create_works')}
                     msg_success={translate('manufacturing.manufacturing_works.create_successfully')}
@@ -291,8 +290,8 @@ class ManufacturingWorksEditForm extends Component {
 }
 
 function mapStateToProps(state) {
-    const user = state.user;
-    return { user }
+    const { user, manufacturingWorks } = state;
+    return { user, manufacturingWorks }
 }
 
 const mapDispatchToProps = {
