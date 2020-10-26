@@ -10,12 +10,16 @@ import { DetailsOfOrganizationalUnitKpiForm } from './detailsOfOrganizationalUni
 import { SelectBox, DatePicker, Tree, SlimScroll } from '../../../../common-components';
 
 import { withTranslate } from 'react-redux-multilingual';
+import Swal from 'sweetalert2';
 
+var translate = '';
 class StatisticsOfOrganizationalUnitKpi extends Component {
 
     constructor(props) {
         super(props);
         
+        translate = this.props.translate;
+
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
         this.TREE_INDEX = 0;            // Dùng làm id cho những phàn tử trong tree nếu phần tử đó k có kpi con
         this.today = new Date();
@@ -502,13 +506,22 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
     }
 
     handleSearchData = () => {
-        this.setState(state => {
-            return {
-                ...state,
-                organizationalUnitId: this.INFO_SEARCH.organizationalUnitId,
-                month: this.INFO_SEARCH.month
-            }
-        })
+        if (this.INFO_SEARCH.month === '-') {
+            Swal.fire({
+                title: translate('task.task_management.date_not_empty'),
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
+            })
+        } else {
+            this.setState(state => {
+                return {
+                    ...state,
+                    organizationalUnitId: this.INFO_SEARCH.organizationalUnitId,
+                    month: this.INFO_SEARCH.month
+                }
+            })
+        }
     }
 
     render() {

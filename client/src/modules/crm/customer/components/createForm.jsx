@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, SelectBox, DatePicker } from '../../../../common-components';
+import { DialogModal } from '../../../../common-components';
 import ValidationHelper from '../../../../helpers/validationHelper';
 import { CrmCustomerActions } from '../redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
@@ -19,31 +19,73 @@ class CrmCustomerCreate extends Component {
         }
     }
 
-    shouldComponentUpdate = async (nextProps, nextState) => {
-        const { auth, user } = this.props;
-        const { newCustomer, currentRole } = this.state;
+    static getDerivedStateFromProps(props, state) {
+        const { auth, user } = props;
+        const { newCustomer, currentRole } = state;
 
         if (!newCustomer.owner && auth.user && user.organizationalUnitsOfUser) {
-            let getCurrentUnit = await user.organizationalUnitsOfUser.find(item =>
+            let getCurrentUnit = user.organizationalUnitsOfUser.find(item =>
                 item.deans[0] === currentRole
                 || item.viceDeans[0] === currentRole
                 || item.employees[0] === currentRole);
 
             // Lấy người dùng của đơn vị hiện tại và người dùng của đơn vị con
             if (getCurrentUnit) {
-                this.props.getChildrenOfOrganizationalUnits(getCurrentUnit._id);
+                props.getChildrenOfOrganizationalUnits(getCurrentUnit._id);
             }
 
-            this.setState({
+            return {
+                ...state,
                 newCustomer: {
                     owner: [auth.user._id],
                 },
-            })
-            return false;
+            }
+        } else {
+            return null;
         }
-        return true;
     }
 
+    // async componentDidMount() {
+    //     const { auth, user } = this.props;
+    //     const { newCustomer, currentRole } = this.state;
+
+    //     if (!newCustomer.owner && auth.user && user.organizationalUnitsOfUser) {
+    //         let getCurrentUnit = await user.organizationalUnitsOfUser.find(item =>
+    //             item.deans[0] === currentRole
+    //             || item.viceDeans[0] === currentRole
+    //             || item.employees[0] === currentRole);
+
+    //         // Lấy người dùng của đơn vị hiện tại và người dùng của đơn vị con
+    //         if (getCurrentUnit) {
+    //             this.props.getChildrenOfOrganizationalUnits(getCurrentUnit._id);
+    //         }
+
+    //         this.setState({
+    //             newCustomer: {
+    //                 owner: [auth.user._id],
+    //             },
+    //         })
+    //     }
+    // }
+
+    /**
+     * function setState các giá trị lấy từ component con vào state
+     * @param {*} name 
+     * @param {*} value 
+     */
+    myCallBack = (name, value) => {
+        const { newCustomer } = this.state;
+        this.setState({
+            newCustomer: {
+                ...newCustomer,
+                [name]: value,
+            }
+        })
+    }
+
+    /**
+     * Hàm kiểm tra validate
+     */
     isFormValidated = () => {
         const { code, name, taxNumber } = this.state.newCustomer;
         const { translate } = this.props;
@@ -66,7 +108,7 @@ class CrmCustomerCreate extends Component {
         // Ghi log thay đổi trạng thái
         if (getStatus && getStatus.length > 0) {
             statusHistories.push({
-                oldValue: null,
+                oldValue: getStatus[getStatus.length - 1],
                 newValue: getStatus[getStatus.length - 1],
                 createdAt: getDateTime,
                 createdBy: auth.user._id,
@@ -90,12 +132,11 @@ class CrmCustomerCreate extends Component {
     render() {
         const { translate, crm } = this.props;
         const { newCustomer } = this.state;
-
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-crm-customer-create" isLoading={crm.customers.isLoading}
-                    formID="form-crm-customer-create"
+                    modalID="modal-customer-create" isLoading={crm.customers.isLoading}
+                    formID="modal-customer-create"
                     title={translate("crm.customer.add")}
                     size={75}
                     func={this.save}
@@ -130,18 +171,6 @@ class CrmCustomerCreate extends Component {
                 </DialogModal>
             </React.Fragment>
         );
-    }
-
-
-    myCallBack = (name, value) => {
-        const { newCustomer } = this.state;
-        console.log('name', name, 'value', value)
-        this.setState({
-            newCustomer: {
-                ...newCustomer,
-                [name]: value,
-            }
-        })
     }
 }
 

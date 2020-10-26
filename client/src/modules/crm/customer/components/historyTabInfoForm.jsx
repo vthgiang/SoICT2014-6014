@@ -24,12 +24,12 @@ class HistoryTabInfoForm extends Component {
                                     <div className="timeline-history-item-content">
                                         <time>{formatFunction.formatDateTime(o.createdAt)}</time>
                                         <p style={{ fontSize: '14px' }}>
-                                            {!o.oldValue
+                                            {(o.oldValue._id === o.newValue._id)
                                                 ? `${o.createdBy.name} đã tạo khách hàng với trạng thái là ${o.newValue.name}`
                                                 : `${o.createdBy.name} đã chuyển trạng thái khách hàng từ ${o.oldValue.name} thành ${o.newValue.name}`
                                             }
                                         </p>
-                                        <a href="facebook.com">See detail</a>
+                                        <a href="http://vnima.vnist.vn/">See detail</a>
                                         <span className="circle" />
                                     </div>
                                 </div>
@@ -43,12 +43,4 @@ class HistoryTabInfoForm extends Component {
     }
 }
 
-function mapStateToProps(state) {
-    const { crm } = state;
-    return crm;
-}
-
-const mapDispatchToProps = {
-
-}
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(HistoryTabInfoForm));
+export default connect(null, null)(withTranslate(HistoryTabInfoForm));

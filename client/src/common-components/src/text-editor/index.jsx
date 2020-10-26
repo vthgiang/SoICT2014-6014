@@ -4,22 +4,22 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import parse from 'html-react-parser';
 
 const TextEditor = (props) => {
-    const {edit} = props;
+    const {edit=true, onChange, data} = props;
     
     if(edit)
         return (
             <CKEditor
                 editor={ClassicEditor}
-                onChange={props.onChange}
-                data={props.data}
+                onChange={onChange}
+                data={data}
             />
         );
     else 
         return (
             <React.Fragment>
-                {parse(props.data)}
+                {parse(data)}
             </React.Fragment>
         );
 }
 
-export default TextEditor;
+export {TextEditor};

@@ -8,7 +8,6 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import { DistributionOfEmployee } from './distributionOfEmployee';
 import { DomainOfTaskResultsChart } from '../task-personal-dashboard/domainOfTaskResultsChart';
 import { TaskStatusChart } from '../task-personal-dashboard/taskStatusChart';
-import { TasksSchedule } from '../task-personal-dashboard/tasksSchedule';
 import { CalendarOrganizationUnit } from './calendarOrganizationUnit';
 
 import { withTranslate } from 'react-redux-multilingual';

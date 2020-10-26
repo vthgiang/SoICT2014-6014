@@ -17,7 +17,7 @@ var store = createStore(
     composeEnhancers(
         applyMiddleware(
             thunkMiddleware,
-            // loggerMiddleware
+            loggerMiddleware
         )
     )
 );

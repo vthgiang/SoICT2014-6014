@@ -119,14 +119,13 @@ class CrmGroup extends Component {
         await this.props.getGroups(data);
     }
 
-    setPage = async (pageNumber) => {
+    setPage = (pageNumber) => {
         let { limit } = this.state;
         let page = (pageNumber - 1) * (limit);
 
-        await this.setState({
+        this.setState({
             page: parseInt(page),
-        });
-        this.props.getGroups(this.state);
+        }, () => this.props.getGroups(this.state));
     }
 
     setLimit = (number) => {
@@ -146,12 +145,11 @@ class CrmGroup extends Component {
         }
     }
 
-    handleEditGroup = async (id) => {
-        await this.setState({
+    handleEditGroup = (id) => {
+        this.setState({
             ...this.state,
             groupIdEdit: id,
-        });
-        await window.$('#modal-edit-group').modal('show'); // hiển thị modal edit
+        }, () => window.$('#modal-edit-group').modal('show'));
     }
 }
 

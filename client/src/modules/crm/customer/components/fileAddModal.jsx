@@ -10,9 +10,14 @@ class FileAddModal extends Component {
         this.state = {}
     }
 
+    /**
+     * Hàm xử lý khi tên file đính kèm thay đổi
+     * @param {*} e 
+     */
     handlefileNameChange = (e) => {
         const { value } = e.target;
         const { translate } = this.props;
+
         this.setState({
             name: value,
         })
@@ -21,10 +26,14 @@ class FileAddModal extends Component {
         this.setState({ nameError: message });
     }
 
-
+    /**
+     * Hàm xử lý khi mô tả file đính kèm thay đổi
+     * @param {*} e 
+     */
     handleDescriptionFileChange = (e) => {
         const { value } = e.target;
         const { translate } = this.props;
+
         this.setState({
             description: value,
         })
@@ -34,44 +43,51 @@ class FileAddModal extends Component {
     }
 
 
+    /**
+     * Hàm xử lý khi file đính kèm thay đổi
+     * @param {*} value 
+     */
     handleChangeFile = (value) => {
-        console.log('value', value)
+        const { translate } = this.props;
+
         if (value && value.length > 0) {
             this.setState({
                 fileName: value[0].fileName,
                 urlFile: value[0].urlFile,
                 fileUpload: value[0].fileUpload,
             })
-        } else {
-            this.setState({
-                fileName: "",
-                urlFile: "",
-            })
+
+            let { message } = ValidationHelper.validateEmpty(translate, value[0].fileUpload);
+            this.setState({ fileError: message });
         }
     }
 
-
+    /**
+     * Hàm kiểm tra validate
+     */
     isFormValidated = () => {
-        const { name, description } = this.state;
+        const { name, description, fileUpload } = this.state;
         const { translate } = this.props;
 
         if (!ValidationHelper.validateName(translate, name).status ||
-            !ValidationHelper.validateName(translate, description).status)
+            !ValidationHelper.validateName(translate, description).status ||
+            !ValidationHelper.validateName(translate, fileUpload).status)
             return false;
         return true;
     }
 
 
     save = () => {
+        const { callBackFromParentCreateForm } = this.props;
         if (this.isFormValidated) {
-            this.props.callBackFromParentCreateForm(this.state);
+            callBackFromParentCreateForm(this.state);
         }
     }
 
     render() {
         const { translate } = this.props;
-        //validate
-        const { nameError, descriptionError } = this.state;
+        //message validate
+        const { nameError, descriptionError, fileError } = this.state;
 
         return (
             <React.Fragment>
@@ -99,9 +115,10 @@ class FileAddModal extends Component {
                         </div>
 
                         {/* File đính kèm */}
-                        <div className="form-group">
-                            <label htmlFor="file">{translate('crm.customer.file.url')}</label>
+                        <div className={`form-group ${!fileError ? "" : "has-error"}`}>
+                            <label htmlFor="file">{translate('crm.customer.file.url')}<span className="text-red">*</span></label>
                             <UploadFile onChange={this.handleChangeFile} />
+                            <ErrorLabel content={fileError} />
                         </div>
                     </form>
                 </DialogModal>
@@ -110,12 +127,4 @@ class FileAddModal extends Component {
     }
 }
 
-function mapStateToProps(state) {
-    const { crm, user } = state;
-    return { crm, user };
-}
-
-const mapDispatchToProps = {
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(FileAddModal));
+export default connect(null, null)(withTranslate(FileAddModal));

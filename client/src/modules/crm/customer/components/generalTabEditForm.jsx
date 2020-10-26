@@ -5,25 +5,39 @@ import { SelectBox, DatePicker, ErrorLabel } from '../../../../common-components
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import ValidationHelper from '../../../../helpers/validationHelper';
 
-
 class GeneralTabEditForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-        }
+        this.state = {}
     }
 
     static getDerivedStateFromProps(props, state) {
-        const { status } = props.crm;
-        let listStatus = [...status.list];
+        const { crm, user } = props;
+        let listStatus = [...crm.status.list];
         let { editingCustomer } = props;
-        if (props.customerIdEdit != state.customerIdEdit && editingCustomer && status.list && status.list.length > 0) {
+
+        if (props.customerIdEdit != state.customerIdEdit && editingCustomer && listStatus && listStatus.length > 0 && user.usersOfChildrenOrganizationalUnit) {
             //timeline status
+
             const statusActive = editingCustomer.status.map(o => ({ _id: o._id, name: o.name, active: true }));// mảng gồm các id của trạng thái mà khách hàng có
 
             statusActive.forEach(x => {
                 listStatus = listStatus.filter(y => x._id !== y._id);
             });
+
+            // Lấy thành viên trong đơn vị
+            let unitMembers = [];
+            if (user.usersOfChildrenOrganizationalUnit) {
+                unitMembers = getEmployeeSelectBoxItems(user.usersOfChildrenOrganizationalUnit);
+            }
+
+            // Lấy danh sách nhóm khách hàng
+            let listGroups;
+            if (crm.groups.list && crm.groups.list.length > 0) {
+                listGroups = crm.groups.list.map(x => { return { value: x._id, text: x.name } })
+                listGroups.unshift({ value: '', text: '---Chọn---' });
+            }
+
 
             return {
                 ...state,
@@ -31,12 +45,18 @@ class GeneralTabEditForm extends Component {
                 customerIdEdit: props.customerIdEdit,
                 listStatus: [...statusActive, ...listStatus],
                 ...editingCustomer,
+                unitMembers,
+                listGroups
             }
         } else {
             return null;
         }
     }
 
+    /**
+     * Hàm xử lý khi người sở hữu/quản lý thay đổi
+     * @param {*} value 
+     */
     handleChangeCustomerOwner = (value) => {
         const { callBackFromParentEditForm } = this.props;
 
@@ -46,6 +66,11 @@ class GeneralTabEditForm extends Component {
         callBackFromParentEditForm('owner', value);
     }
 
+
+    /**
+     * Hàm xử lý khi nguồn khách hàng thay đổi
+     * @param {*} e 
+     */
     handleChangeCustomerSource = (e) => {
         const { callBackFromParentEditForm } = this.props;
         const { value } = e.target;
@@ -56,6 +81,11 @@ class GeneralTabEditForm extends Component {
         callBackFromParentEditForm('customerSource', value);
     }
 
+
+    /**
+     * Hàm xử lý khi mã khách hàng thay đổi
+     * @param {*} e 
+     */
     handleChangeCustomerCode = (e) => {
         const { callBackFromParentEditForm } = this.props;
         const { value } = e.target;
@@ -72,6 +102,11 @@ class GeneralTabEditForm extends Component {
         callBackFromParentEditForm('code', value);
     }
 
+
+    /**
+     * Hàm xử lý khi tên khách hàng thay đổi
+     * @param {*} e 
+     */
     handleChangeCustomerName = (e) => {
         const { callBackFromParentEditForm } = this.props;
         const { value } = e.target;
@@ -88,6 +123,10 @@ class GeneralTabEditForm extends Component {
         callBackFromParentEditForm('name', value);
     }
 
+    /**
+     * Hàm xử lý khi loại khách hàng thay đổi
+     * @param {*} value 
+     */
     handleChangeCustomerType = (value) => {
         const { callBackFromParentEditForm } = this.props;
 
@@ -98,6 +137,11 @@ class GeneralTabEditForm extends Component {
         callBackFromParentEditForm('customerType', parseInt(value[0]));
     }
 
+
+    /**
+     * Hàm xử lý khi tên công ty của khách hàng thay đổi
+     * @param {*} e 
+     */
     handleChangeCustomerCompany = (e) => {
         const { callBackFromParentEditForm } = this.props;
         const { value } = e.target;
@@ -108,6 +152,11 @@ class GeneralTabEditForm extends Component {
         callBackFromParentEditForm('company', value);
     }
 
+
+    /**
+     * Hàm xử lý khi người tại diện thay đổi
+     * @param {*} e 
+     */
     handleChangeRepresent = (e) => {
         const { callBackFromParentEditForm } = this.props;
         const { value } = e.target;
@@ -118,6 +167,11 @@ class GeneralTabEditForm extends Component {
         callBackFromParentEditForm('represent', value);
     }
 
+
+    /**
+     * Hàm xử lý khi Ngày thành lập công ty thay đổi
+     * @param {*} value 
+     */
     handleChangeCompanyEstablishmentDate = (value) => {
         const { callBackFromParentEditForm } = this.props;
 
@@ -127,6 +181,11 @@ class GeneralTabEditForm extends Component {
         callBackFromParentEditForm('companyEstablishmentDate', value);
     }
 
+
+    /**
+     * Hàm xử lý khi số điện thoại di động thay đổi
+     * @param {*} e 
+     */
     handleChangeMobilephoneNumber = (e) => {
         const { callBackFromParentEditForm } = this.props;
         const { value } = e.target;
@@ -137,6 +196,10 @@ class GeneralTabEditForm extends Component {
         callBackFromParentEditForm('mobilephoneNumber', parseInt(value));
     }
 
+    /**
+     * Hàm xử lý khi số điện thoại khách hàng bàn thay đổi
+     * @param {*} e 
+     */
     handleChangeTelephoneNumber = (e) => {
         const { callBackFromParentEditForm } = this.props;
         const { value } = e.target;
@@ -147,6 +210,10 @@ class GeneralTabEditForm extends Component {
         callBackFromParentEditForm('telephoneNumber', parseInt(value));
     }
 
+    /**
+     * Hàm xử lý khi địa chỉ email khách hàng thay đổi
+     * @param {*} e 
+     */
     handleChangeCustomerEmail = (e) => {
         const { callBackFromParentEditForm } = this.props;
         const { value } = e.target;
@@ -157,6 +224,11 @@ class GeneralTabEditForm extends Component {
         callBackFromParentEditForm('email', value);
     }
 
+
+    /**
+     * Hàm xử lý khi địa chỉ email phụ khách hàng thay đổi
+     * @param {*} e 
+     */
     handleChangeCustomerEmail2 = (e) => {
         const { callBackFromParentEditForm } = this.props;
         const { value } = e.target;
@@ -167,6 +239,11 @@ class GeneralTabEditForm extends Component {
         callBackFromParentEditForm('email2', value);
     }
 
+
+    /**
+     * Hàm xử lý khi địa chỉ khách hàng thay đổi
+     * @param {*} e 
+     */
     handleChangeCustomerAddress = (e) => {
         const { callBackFromParentEditForm } = this.props;
         const { value } = e.target;
@@ -177,6 +254,11 @@ class GeneralTabEditForm extends Component {
         callBackFromParentEditForm('address', value);
     }
 
+
+    /**
+     * Hàm xử lý khi địa chỉ phụ khách hàng thay đổi
+     * @param {*} e 
+     */
     handleChangeCustomerAddress2 = (e) => {
         const { callBackFromParentEditForm } = this.props;
         const { value } = e.target;
@@ -187,15 +269,24 @@ class GeneralTabEditForm extends Component {
         callBackFromParentEditForm('address2', value);
     }
 
+
+    /**
+     * Hàm xử lý khi giới tính khách hàng thay đổi
+     * @param {*} value 
+     */
     handleChangeCustomerGender = (value) => {
         const { callBackFromParentEditForm } = this.props;
 
         this.setState({
             gender: value[0],
         });
-        callBackFromParentEditForm('gender', value[0]);
+        callBackFromParentEditForm('gender', parseInt(value[0]));
     }
 
+    /**
+     * Hàm xử lý khi ngày sinh nhật khách hàng thay đổi
+     * @param {*} value 
+     */
     handleChangeCustomerBirth = (value) => {
         const { callBackFromParentEditForm } = this.props;
 
@@ -205,6 +296,11 @@ class GeneralTabEditForm extends Component {
         callBackFromParentEditForm('birthDate', value);
     }
 
+
+    /**
+     * Hàm xử lý khi nhóm khách hàng thay đổi
+     * @param {*} value 
+     */
     handleChangeCustomerGroup = (value) => {
         const { callBackFromParentEditForm } = this.props;
 
@@ -214,6 +310,11 @@ class GeneralTabEditForm extends Component {
         callBackFromParentEditForm('group', value[0]);
     }
 
+
+    /**
+     * Hàm xử lý khi trạng thái khách hàng thay đổi
+     * @param {*} index 
+     */
     handleChangeCustomerStatus = (index) => {
         const { callBackFromParentEditForm } = this.props;
         let { listStatus } = this.state;
@@ -234,7 +335,6 @@ class GeneralTabEditForm extends Component {
                 getStatusActive.push(o._id);
             }
         })
-        console.log('getStatusActive', getStatusActive)
 
         this.setState({
             listStatus: listStatus,
@@ -242,15 +342,24 @@ class GeneralTabEditForm extends Component {
         callBackFromParentEditForm('status', getStatusActive);
     }
 
+    /**
+     * Hàm xử lý khi khu vực khách hàng thay đổi
+     * @param {*} value 
+     */
     handleChangeCustomerLocation = (value) => {
         const { callBackFromParentEditForm } = this.props;
 
         this.setState({
-            status: parseInt(value[0]),
+            location: value[0],
         });
         callBackFromParentEditForm('location', parseInt(value[0]));
     }
 
+
+    /**
+     * Hàm xử lý khi mã số thuế khách hàng thay đổi
+     * @param {*} e 
+     */
     handleChangeTaxNumber = (e) => {
         const { callBackFromParentEditForm } = this.props;
         const { value } = e.target;
@@ -267,6 +376,11 @@ class GeneralTabEditForm extends Component {
         callBackFromParentEditForm('taxNumber', value);
     }
 
+
+    /**
+     * Hàm xử lý khi địa chỉ website khách hàng thay đổi
+     * @param {*} e 
+     */
     handleChangeWebsite = (e) => {
         const { callBackFromParentEditForm } = this.props;
         const { value } = e.target;
@@ -277,6 +391,11 @@ class GeneralTabEditForm extends Component {
         callBackFromParentEditForm('website', value);
     }
 
+
+    /**
+     * Hàm xử lý khi địa chỉ ghi chú khách hàng thay đổi
+     * @param {*} e 
+     */
     handleChangeNote = (e) => {
         const { callBackFromParentEditForm } = this.props;
         const { value } = e.target;
@@ -287,6 +406,11 @@ class GeneralTabEditForm extends Component {
         callBackFromParentEditForm('note', value);
     }
 
+
+    /**
+     * Hàm xử lý khi địa chỉ linkedIn khách hàng thay đổi
+     * @param {*} e 
+     */
     handleChangeLinkedIn = (e) => {
         const { callBackFromParentEditForm } = this.props;
         const { value } = e.target;
@@ -298,27 +422,16 @@ class GeneralTabEditForm extends Component {
     }
 
     render() {
-        const { translate, crm, user } = this.props;
+        const { translate } = this.props;
         const { id } = this.props;
 
         const { owner, code, name, customerType, company, represent, group, listStatus, gender, location,
             taxNumber, customerSource, companyEstablishmentDate, birthDate, telephoneNumber, mobilephoneNumber,
-            email, email2, address, address2, website, note, linkedIn } = this.state;
-        const { customerCodeError, customerNameError, customerTaxNumberError } = this.state;//message error
+            email, email2, address, address2, website, note, linkedIn, unitMembers, listGroups } = this.state;
+
+        //message error
+        const { customerCodeError, customerNameError, customerTaxNumberError } = this.state;
         let progressBarWidth;
-
-        // Lấy thành viên trong đơn vị
-        let unitMembers = [];
-        if (user.usersOfChildrenOrganizationalUnit) {
-            unitMembers = getEmployeeSelectBoxItems(user.usersOfChildrenOrganizationalUnit);
-        }
-
-        // Lấy danh sách nhóm khách hàng
-        let listGroups;
-        if (crm.groups.list && crm.groups.list.length > 0) {
-            listGroups = crm.groups.list.map(x => { return { value: x._id, text: x.name } })
-            listGroups.unshift({ value: '', text: '---Chọn---' });
-        }
 
         // Lấy danh sách trạng thái khách hàng
         if (listStatus) {
@@ -326,6 +439,8 @@ class GeneralTabEditForm extends Component {
             const numberOfActiveItems = listStatus.filter(o => o.active).length;
             progressBarWidth = totalItem > 1 && numberOfActiveItems > 0 ? ((numberOfActiveItems - 1) / (totalItem - 1)) * 100 : 0;
         }
+
+        console.log('RENDER LIST GROUPS', listGroups);
 
         return (
             <React.Fragment>
@@ -408,8 +523,9 @@ class GeneralTabEditForm extends Component {
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={[
-                                        { value: 0, text: 'Cá nhân' },
-                                        { value: 1, text: 'Công ty' },
+                                        { value: '', text: '---Chọn---' },
+                                        { value: 1, text: 'Cá nhân' },
+                                        { value: 2, text: 'Công ty' },
                                     ]}
                                     value={customerType ? customerType : ''}
                                     onChange={this.handleChangeCustomerType}
@@ -495,9 +611,9 @@ class GeneralTabEditForm extends Component {
                                     style={{ width: "100%" }}
                                     items={
                                         [
-                                            { value: '', text: 'Chọn' },
-                                            { value: 0, text: 'Nam' },
-                                            { value: 1, text: 'Nữ' },
+                                            { value: '', text: '---Chọn---' },
+                                            { value: 1, text: 'Nam' },
+                                            { value: 2, text: 'Nữ' },
                                         ]
                                     }
                                     value={gender}
@@ -582,9 +698,9 @@ class GeneralTabEditForm extends Component {
                                     items={
                                         [
                                             { value: '', text: '---Chọn---' },
-                                            { value: 0, text: 'Bắc' },
-                                            { value: 1, text: 'Trung ' },
-                                            { value: 2, text: 'Nam ' },
+                                            { value: 1, text: 'Bắc' },
+                                            { value: 2, text: 'Trung ' },
+                                            { value: 3, text: 'Nam ' },
                                         ]
                                     }
                                     value={location}
@@ -627,8 +743,8 @@ class GeneralTabEditForm extends Component {
 }
 
 function mapStateToProps(state) {
-    const { crm, user, auth } = state;
-    return { crm, user, auth };
+    const { crm, user } = state;
+    return { crm, user };
 }
 
 const mapDispatchToProps = {

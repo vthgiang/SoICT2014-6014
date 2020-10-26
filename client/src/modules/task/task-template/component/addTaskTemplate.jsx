@@ -232,7 +232,7 @@ class AddTaskTemplate extends Component {
         let msg = TaskTemplateFormValidator.validateTaskTemplateRead(value);
 
         if (willUpdateState) {
-            let {newTemplate} = this.state;
+            let { newTemplate } = this.state;
             newTemplate.readByEmployees = value;
             newTemplate.errorOnRead = msg;
             this.setState({
@@ -244,7 +244,7 @@ class AddTaskTemplate extends Component {
     }
 
     handleTaskTemplateResponsible = (value) => {
-        let {newTemplate} = this.state;
+        let { newTemplate } = this.state;
         newTemplate.responsibleEmployees = value;
         this.setState({
             newTemplate
@@ -254,7 +254,7 @@ class AddTaskTemplate extends Component {
     }
 
     handleTaskTemplateAccountable = async (value) => {
-        let {newTemplate} = this.state;
+        let { newTemplate } = this.state;
         newTemplate.accountableEmployees = value;
         await this.setState({
             newTemplate
@@ -264,7 +264,7 @@ class AddTaskTemplate extends Component {
     }
 
     handleTaskTemplateConsult = (value) => {
-        let {newTemplate} = this.state;
+        let { newTemplate } = this.state;
         newTemplate.consultedEmployees = value;
         this.setState({
             newTemplate
@@ -273,7 +273,7 @@ class AddTaskTemplate extends Component {
     }
 
     handleTaskTemplateInform = (value) => {
-        let {newTemplate} = this.state;
+        let { newTemplate } = this.state;
         newTemplate.informedEmployees = value;
         this.setState({
             newTemplate
@@ -445,7 +445,7 @@ class AddTaskTemplate extends Component {
 
                         {/**Đơn vị(phòng ban) của Task template*/}
                         <div className={`form-group ${this.state.newTemplate.errorOnUnit === undefined ? "" : "has-error"}`} style={{ marginLeft: 0, marginRight: 0 }}>
-                            <label className="control-label">{translate('task_template.unit')} <span style={{color: "red"}}> <span style={{color: "red"}}>*</span></span></label>
+                            <label className="control-label">{translate('task_template.unit')} <span style={{ color: "red" }}> <span style={{ color: "red" }}>*</span></span></label>
                             {usersInUnitsOfCompany !== undefined && newTemplate.organizationalUnit !== "" &&
                                 <SelectBox
                                     id={`unit-select-box`}
@@ -470,7 +470,7 @@ class AddTaskTemplate extends Component {
                     {!isProcess &&
                         <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
                             <div className={`form-group ${this.state.newTemplate.errorOnRead === undefined ? "" : "has-error"}`} >
-                                <label className="control-label">{translate('task_template.permission_view')} <span style={{color: "red"}}>*</span></label>
+                                <label className="control-label">{translate('task_template.permission_view')} <span style={{ color: "red" }}>*</span></label>
                                 {listRoles &&
                                     <SelectBox
                                         id={`read-select-box`}
@@ -498,7 +498,7 @@ class AddTaskTemplate extends Component {
                     {/**Tên mẫu công việc */}
                     <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
                         <div className={`form-group ${this.state.newTemplate.errorOnName === undefined ? "" : "has-error"}`} >
-                            <label className="control-label">{translate('task_template.name')} <span style={{color: "red"}}>*</span></label>
+                            <label className="control-label">{translate('task_template.name')} <span style={{ color: "red" }}>*</span></label>
                             <input type="Name" className="form-control" placeholder={translate('task_template.name')} value={newTemplate.name} onChange={this.handleTaskTemplateName} />
                             <ErrorLabel content={this.state.newTemplate.errorOnName} />
                         </div>
@@ -561,9 +561,9 @@ class AddTaskTemplate extends Component {
 
                         {showMore &&
                             <div>
-                                {/**Người hỗ trợ mẫu công việc */}
+                                {/**Người tư vấn trong mẫu công việc */}
                                 <div className='form-group' >
-                                    <label className="control-label">{translate('task_template.supporter')}</label>
+                                    <label className="control-label">{translate('task_template.consultant')}</label>
                                     {allUnitsMember &&
                                         <SelectBox
                                             id={isProcess ? `consulted-select-box-${id}` : "consulted-select-box"}
@@ -573,7 +573,7 @@ class AddTaskTemplate extends Component {
                                             value={newTemplate.consultedEmployees}
                                             onChange={this.handleTaskTemplateConsult}
                                             multiple={true}
-                                            options={{ placeholder: `${translate('task_template.supporter')}` }}
+                                            options={{ placeholder: `${translate('task_template.consultant')}` }}
                                         />
                                     }
                                 </div>

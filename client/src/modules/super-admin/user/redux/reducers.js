@@ -81,6 +81,7 @@ export function user(state = initState, action) {
             };
         case UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_REQUEST:
             return {
+                ...state,
                 loading: true,
                 isLoading: true
             };
@@ -95,6 +96,7 @@ export function user(state = initState, action) {
 
         case UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_FAILURE:
             return {
+                ...state,
                 error: action.payload,
                 isLoading: false
             };

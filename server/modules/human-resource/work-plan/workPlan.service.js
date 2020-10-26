@@ -13,9 +13,10 @@ const {
 exports.getAllWorkPlans = async (portal,company) => {
     let data = await WorkPlan(connect(DB_CONNECTION, portal)).findOne({
         company: company
-    }).sort({
-        'workPlans.startDate': 'ASC'
     });
+    if(data&&data.workPlans.length>1){
+        data.workPlans = data.workPlans.sort((a,b)=> {return a.startDate-b.startDate});
+    }
     return {
         maximumNumberOfLeaveDays: data ? data.maximumNumberOfLeaveDays : 0,
         workPlans: data ? data.workPlans : []
@@ -36,9 +37,10 @@ exports.getWorkPlansOfYear = async (portal,company, year) => {
             "$gt": firstDay,
             "$lte": lastDay
         }
-    }).sort({
-        'workPlans.startDate': 'ASC'
     });
+    if(data&&data.workPlans.length>1){
+        data.workPlans = data.workPlans.sort((a,b)=> {return a.startDate-b.startDate});
+    }
     return {
         maximumNumberOfLeaveDays: data ? data.maximumNumberOfLeaveDays : 0,
         workPlans: data ? data.workPlans : []

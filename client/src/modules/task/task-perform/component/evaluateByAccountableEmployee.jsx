@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { getStorage } from '../../../../config';
-import { ErrorLabel, DatePicker, SelectBox } from '../../../../common-components/index';
+import { ErrorLabel, DatePicker, SelectBox, TextEditor } from '../../../../common-components/index';
 import { performTaskAction } from '../redux/actions';
 import { managerKpiActions } from '../../../kpi/employee/management/redux/actions';
 import { TaskInformationForm } from './taskInformationForm';
@@ -10,7 +10,6 @@ import { AutomaticTaskPointCalculator } from './automaticTaskPointCalculator';
 import { ModalShowAutoPointInfo } from './modalShowAutoPointInfo';
 import moment from 'moment';
 import Swal from 'sweetalert2';
-import TextEditor from '../../../../common-components/src/text-editor';
 
 var currentTask;
 
@@ -1224,7 +1223,7 @@ class EvaluateByAccountableEmployee extends Component {
         taskId = performtasks.task?._id;
         evaluation = performtasks.task?.evaluations.find(e => (monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()));
 
-        if(evaluation) return true;
+        if (evaluation) return true;
         return false;
     }
 
@@ -1520,14 +1519,14 @@ class EvaluateByAccountableEmployee extends Component {
                                             <strong>{translate('task.task_management.action_not_rating')}:&nbsp;&nbsp;</strong>
                                             {
                                                 actionsNotRating.length === 0 ? translate('task.task_management.no_action') :
-                                                actionsNotRating.map((item, index) => (
-                                                    <div>
-                                                        <span key={index}>
-                                                            ({index + 1})&nbsp;&nbsp;
-                                                            <TextEditor data={item.description}/>
-                                                        </span>
-                                                    </div>
-                                                ))
+                                                    actionsNotRating.map((item, index) => (
+                                                        <div>
+                                                            <span key={index}>
+                                                                ({index + 1})&nbsp;&nbsp;
+                                                            <TextEditor data={item.description} />
+                                                            </span>
+                                                        </div>
+                                                    ))
                                             }
                                         </div>
                                     </div>
@@ -1597,7 +1596,7 @@ class EvaluateByAccountableEmployee extends Component {
 
                                                 )
                                             }
-                                            { // Chấm điểm phê duyệt cho người hỗ trợ
+                                            { // Chấm điểm phê duyệt cho người tư vấn
                                                 task && task.consultedEmployees.map((item, index) =>
                                                     (task.inactiveEmployees.indexOf(item._id) === -1 &&
                                                         <tr key={index} style={{ verticalAlign: "top" }}>

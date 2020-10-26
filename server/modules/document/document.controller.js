@@ -58,7 +58,6 @@ exports.importDocument = async (req, res) => {
 
         const document = await DocumentServices.importDocument(req.portal, req.body, req.user.company._id);
         await Logger.info(req.user.email, 'IMPORT_DOCUMENT', req.portal);
-        console.log('------------------', document);
         res.status(200).json({
             success: true,
             messages: ['import_document_success'],

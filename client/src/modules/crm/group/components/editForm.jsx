@@ -130,7 +130,7 @@ class EditGroupForm extends Component {
     render() {
         const { translate, crm } = this.props;
         const { groups } = crm;
-        const { editingGroup, groupCodeEditFormError, groupNameEditFormError, groupIdEdit } = this.state;
+        const { editingGroup, groupCodeEditFormError, groupNameEditFormError } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
@@ -148,17 +148,20 @@ class EditGroupForm extends Component {
                             <input type="text" className="form-control" value={editingGroup.code ? editingGroup.code : ''} onChange={this.handleChangeGroupCode} />
                             <ErrorLabel content={groupCodeEditFormError} />
                         </div>
+
                         {/* Tên nhóm khách hàng */}
                         <div className={`form-group ${!groupNameEditFormError ? "" : "has-error"}`}>
                             <label>{translate('crm.group.name')}<span className="attention"> * </span></label>
                             <input type="text" className="form-control" value={editingGroup.name ? editingGroup.name : ''} onChange={this.handleChangeGroupName} />
                             <ErrorLabel content={groupNameEditFormError} />
                         </div>
+
                         {/* Mô tả nhóm khách hàng */}
                         <div className="form-group">
                             <label>{translate('crm.group.description')}</label>
                             <textarea type="text" value={editingGroup.description ? editingGroup.description : ''} className="form-control" onChange={this.handleChangeGroupDescription} />
                         </div>
+
                         {/* Ưu đãi kèm theo nhóm khách hàng */}
                         <div className="form-group">
                             <label>{translate('crm.group.promotion')}</label>

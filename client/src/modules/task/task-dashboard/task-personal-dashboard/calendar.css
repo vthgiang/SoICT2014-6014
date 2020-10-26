@@ -56,7 +56,7 @@
   }
   .rct-items .rct-item {
     background: #ECF0F5 !important;
-    border: #000000 ;
+    /* border: #000000 ; */
   }
   
   #start_date_after, #end_date_before{

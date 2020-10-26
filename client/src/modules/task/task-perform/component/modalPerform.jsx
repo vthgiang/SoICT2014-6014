@@ -12,9 +12,8 @@ class ModalPerform extends Component {
     }
 
     render() {
-        var task;
-        const { tasks } = this.props; 
-        const { units } = this.props; 
+        let task;
+        const { tasks, units } = this.props; 
         
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task;
         
