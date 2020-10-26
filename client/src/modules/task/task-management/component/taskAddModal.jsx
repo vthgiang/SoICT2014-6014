@@ -31,7 +31,7 @@ class TaskAddModal extends Component {
                 informedEmployees: [],
                 creator: getStorage("userId"),
                 organizationalUnit: "",
-                collaboratedWithOrganizationalUnits: "",
+                collaboratedWithOrganizationalUnits: [],
                 taskTemplate: "",
                 parent: "",
             },

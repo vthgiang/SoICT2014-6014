@@ -3,10 +3,7 @@ import { connect } from 'react-redux';
 
 import { taskManagementActions } from '../../task/task-management/redux/actions';
 
-import { TasksSchedule } from '../../task/task-dashboard/task-personal-dashboard/tasksSchedule';
 import { CalendarEmployee } from '../../task/task-dashboard/task-personal-dashboard/calendarEmployee';
-import { TasksIsNotLinked } from '../../task/task-dashboard/task-personal-dashboard/tasksIsNotLinked';
-import { TaskHasActionNotEvaluated } from '../../task/task-dashboard/task-personal-dashboard/taskHasActionNotEvaluated';
 
 import { withTranslate } from 'react-redux-multilingual';
 import { DatePicker } from '../../../common-components';
@@ -262,12 +259,6 @@ class SuperHome extends Component {
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div className="row">
-                    <TasksIsNotLinked />
-
-                    <TaskHasActionNotEvaluated />
                 </div>
             </React.Fragment>
         );

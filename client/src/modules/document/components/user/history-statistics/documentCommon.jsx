@@ -316,6 +316,8 @@ class DocumentCommon extends Component {
         array.unshift({ value: "", text: "Tất cả các loại" });
         return array;
     }
+
+
     render() {
 
         const { translate } = this.props;
@@ -329,7 +331,7 @@ class DocumentCommon extends Component {
         const listDomain = domains.list
         const listCategory = this.convertData(categories.list)
         const listArchive = archives.list;
-
+        console.log('commmmmmmmmmmmmmm', paginate)
         let list = [];
         if (isLoading === false) {
             list = docs.totalDocs;
@@ -462,12 +464,12 @@ class DocumentCommon extends Component {
                                             <td>{doc.versions.length ? this.formatDate(doc.versions[doc.versions.length - 1].expiredDate) : null}</td>
                                             <td>
                                                 <a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}>
-                                                    <u>{translate('document.download')}</u>
+                                                    <u>{doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u>
                                                 </a>
                                             </td>
                                             <td>
                                                 <a href="#" onClick={() => this.requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}>
-                                                    <u>{translate('document.download')}</u>
+                                                    <u>{doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument ? translate('document.download') : ""}</u>
                                                 </a>
                                             </td>
                                             <td style={{ width: '10px' }}>

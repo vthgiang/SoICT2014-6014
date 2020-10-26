@@ -18,6 +18,7 @@ class CreateForm extends Component {
             documentEffectiveDate: "",
             documentExpiredDate: "",
             documentCategory: "",
+            documentVersions: [],
             page: 1,
             limit: 5,
         }
@@ -45,83 +46,60 @@ class CreateForm extends Component {
         this.setState({ documentDescription: value });
     }
 
-    handleVersionName = (e) => {
-        const value = e.target.value.trim();
-        // this.validateVersionName(value, true);
-        this.setState(state => {
-            return {
-                ...state,
-                documentVersionName: value,
-                // errorVersionName: msg,
-            }
-        })
-    }
 
     handleIssuingBody = (e) => {
         const value = e.target.value.trim();
-        // this.validateIssuingBody(value, true);
         this.setState(state => {
             return {
                 ...state,
                 documentIssuingBody: value,
-                //errorIssuingBody: msg,
             }
         })
     }
 
     handleOfficialNumber = (e) => {
         const value = e.target.value.trim();
-        // this.validateOfficialNumber(value, true);
         this.setState(state => {
             return {
                 ...state,
                 documentOfficialNumber: value,
-                // errorOfficialNumber: msg,
             }
         })
     }
 
     handleSigner = (e) => {
         const value = e.target.value.trim();
-        // this.validateSinger(value, true);
         this.setState(state => {
             return {
                 ...state,
                 documentSigner: value,
-                //  errorSigner: msg,
             }
         })
     }
 
     handleIssuingDate = (value) => {
-        // this.validateIssuingDate(value, true);
         this.setState(state => {
             return {
                 ...state,
                 documentIssuingDate: value,
-                //  errorIssuingDate: msg,
             }
         })
     }
 
     handleEffectiveDate = (value) => {
-        // this.validateEffectiveDate(value, true);
         this.setState(state => {
             return {
                 ...state,
                 documentEffectiveDate: value,
-                // errorEffectiveDate: msg,
             }
         })
     }
 
     handleExpiredDate = (value) => {
-        //this.validateExpiredDate(value, true);
         this.setState(state => {
             return {
                 ...state,
                 documentExpiredDate: value,
-                //  errorExpiredDate: msg,
             }
         })
     }
@@ -147,6 +125,10 @@ class CreateForm extends Component {
     handleArchivedRecordPlaceManager = (e) => {
         const { value } = e.target;
         this.setState({ documentArchivedRecordPlaceManager: value });
+    }
+    handleChangeVersionName = (e) => {
+        const { value } = e.target;
+        this.setState({ versionName: value });
     }
 
 
@@ -376,6 +358,10 @@ class CreateForm extends Component {
         return msg === undefined;
     }
 
+    toggleAddVersion = (event) => {
+        event.preventDefault();
+        window.$('#add-document-new-version').modal('show');
+    }
 
     isValidateForm = () => {
         return this.validateName(this.state.documentName, false)
@@ -397,6 +383,7 @@ class CreateForm extends Component {
             documentEffectiveDate,
             documentExpiredDate,
             documentSigner,
+            versionName,
             documentFile,
             documentFileScan,
             documentRelationshipDescription,
@@ -404,6 +391,7 @@ class CreateForm extends Component {
             documentRoles,
             documentArchivedRecordPlaceOrganizationalUnit,
             documentArchivedRecordPlaceManager,
+            documentVersions,
         } = this.state;
         const formData = new FormData();
         formData.append('name', documentName);
@@ -426,8 +414,9 @@ class CreateForm extends Component {
         if (documentSigner) {
             formData.append('signer', documentSigner);
         }
-        if (documentVersionName) {
-            formData.append('versionName', documentVersionName);
+
+        if (versionName) {
+            formData.append('versionName', versionName);
         }
         if (documentIssuingDate) {
             formData.append('issuingDate', moment(documentIssuingDate, "DD-MM-YYYY"));
@@ -438,11 +427,15 @@ class CreateForm extends Component {
         if (documentExpiredDate) {
             formData.append('expiredDate', moment(documentExpiredDate, "DD-MM-YYYY"));
         }
-        if (documentFile) {
-            formData.append('file', documentFile);
+        if (documentFile && documentFile.length) {
+            documentFile.forEach(x => {
+                formData.append('file', x.fileUpload);
+            })
         }
-        if (documentFileScan) {
-            formData.append('fileScan', documentFileScan);
+        if (documentFileScan && documentFileScan.length) {
+            documentFileScan.forEach(x => {
+                formData.append('fileScan', x.fileUpload);
+            })
         }
         if (documentRelationshipDocuments) {
             formData.append('relationshipDescription', documentRelationshipDescription);
@@ -453,8 +446,6 @@ class CreateForm extends Component {
         if (documentRoles) for (let i = 0; i < documentRoles.length; i++) {
             formData.append('roles[]', documentRoles[i]);
         }
-
-        //formData.append('archivedRecordPlaceInfo', documentArchivedRecordPlaceInfo);
         if (documentArchivedRecordPlaceOrganizationalUnit) {
             formData.append('archivedRecordPlaceOrganizationalUnit', documentArchivedRecordPlaceOrganizationalUnit);
         }
@@ -492,11 +483,74 @@ class CreateForm extends Component {
         });
     }
 
+    deleteDocumentVersion = (i) => {
+        let { documentVersions } = this.state;
+
+        console.log('deeeeeeee', documentVersions)
+        documentVersions.splice(i, 1);
+
+        console.log('deeeeeeee', documentVersions)
+        this.setState(state => {
+            return ({
+                ...state,
+                documentVersions: documentVersions,
+
+            })
+        })
+    }
+
+    convertISODate = (dateStr) => {
+        if (dateStr) {
+            if (!dateStr.includes(':')) {
+                let splitter = dateStr.split('-');
+                let isoDate = new Date(splitter[2], splitter[1] - 1, splitter[0])
+                return isoDate;
+            }
+            else
+                return dateStr;
+        }
+        return null;
+    }
+    addVersion = () => {
+        const { versionName, documentIssuingDate, documentEffectiveDate, documentExpiredDate, documentFile, documentFileScan, documentVersions } = this.state;
+        documentVersions.push({
+            versionName: versionName,
+            issuingDate: this.convertISODate(documentIssuingDate),
+            effectiveDate: this.convertISODate(documentEffectiveDate),
+            expiredDate: this.convertISODate(documentExpiredDate),
+            documentFile: documentFile,
+            documentFileScan: documentFileScan,
+        })
+        this.setState(state => {
+            return {
+                ...state,
+                documentVersions: documentVersions
+            }
+        });
+    }
+    formatDate(date, monthYear = false) {
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+            if (monthYear === true) {
+                return [month, year].join('-');
+            } else return [day, month, year].join('-');
+        } else {
+            return date
+        }
+    }
+
     render() {
         const { translate, role, documents, department } = this.props;
         const { list } = documents.administration.domains;
 
-        const { errorName, errorCategory, errorVersionName, documentArchives, documentDomains, listDocumentRelationship } = this.state;
+        const { errorName, errorCategory, errorVersionName, documentArchives, documentDomains, listDocumentRelationship, documentVersions } = this.state;
         const archives = documents.administration.archives.list;
 
         const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
@@ -585,47 +639,95 @@ class CreateForm extends Component {
                                         </div>
                                     </div>
                                     <div className="row">
-                                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                            <div className={`form-group ${!errorVersionName ? "" : "has-error"}`}>
-                                                <label>{translate('document.doc_version.name')}</label>
-                                                <input type="text" className="form-control" onChange={this.handleVersionName} placeholder={translate('document.doc_version.exp_version')} />
-                                                <ErrorLabel content={errorVersionName} />
-                                            </div>
-                                            <div className="form-group">
-                                                <label>{translate('document.upload_file')}</label>
-                                                {/* <UploadFile /> */}
-                                                <UploadFile onChange={this.handleUploadFile} />
-
-                                            </div>
-                                            <div className="form-group">
-                                                <label>{translate('document.upload_file_scan')}</label>
-                                                <UploadFile onChange={this.handleUploadFileScan} />
-
-                                            </div>
-                                            <div className="form-group">
-                                                <label>{translate('document.doc_version.issuing_date')}</label>
-                                                <DatePicker
-                                                    id="create-document-version-issuing-date"
-                                                    value={this.state.documentIssuingDate}
-                                                    onChange={this.handleIssuingDate}
-                                                />
-                                            </div>
-                                            <div className="form-group">
-                                                <label>{translate('document.doc_version.effective_date')}</label>
-                                                <DatePicker
-                                                    id="create-document-version-effective-date"
-                                                    value={this.state.documentEffectiveDate}
-                                                    onChange={this.handleEffectiveDate}
-                                                />
-                                            </div>
-                                            <div className="form-group">
-                                                <label>{translate('document.doc_version.expired_date')}</label>
-                                                <DatePicker
-                                                    id="create-document-version-expired-date"
-                                                    value={this.state.documentExpiredDate}
-                                                    onChange={this.handleExpiredDate}
-                                                />
-                                            </div>
+                                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                            {!documentVersions.length ?
+                                                <ButtonModal modalID="add-document-new-version" button_name={translate('general.add')} title={translate('document.add')} /> : ""}
+                                            <DialogModal
+                                                modalID="add-document-new-version"
+                                                formID="add-document-new-version"
+                                                title={translate('document.add_version')}
+                                                func={() => this.addVersion()}
+                                            //disableSubmit={!this.isValidateFormAddVersion()}
+                                            >
+                                                <React.Fragment>
+                                                    <div className={`form-group `}>
+                                                        <label>{translate('document.doc_version.name')}<span className="text-red">*</span></label>
+                                                        <input type="text" onChange={this.handleChangeVersionName} className="form-control" />
+                                                    </div>
+                                                    <div className="form-group">
+                                                        <label>{translate('document.upload_file')}</label>
+                                                        <UploadFile multiple={true} onChange={this.handleUploadFile} />
+                                                    </div>
+                                                    <div className="form-group">
+                                                        <label>{translate('document.upload_file_scan')}</label>
+                                                        <UploadFile multiple={true} onChange={this.handleUploadFileScan} />
+                                                    </div>
+                                                    <div className="form-group">
+                                                        <label>{translate('document.doc_version.issuing_date')}</label>
+                                                        <DatePicker
+                                                            id={`document-add-version-issuing-date`}
+                                                            onChange={this.handleIssuingDate}
+                                                        />
+                                                    </div>
+                                                    <div className="form-group">
+                                                        <label>{translate('document.doc_version.effective_date')}</label>
+                                                        <DatePicker
+                                                            id={`document-add-version-effective-date`}
+                                                            onChange={this.handleEffectiveDate}
+                                                        />
+                                                    </div>
+                                                    <div className="form-group">
+                                                        <label>{translate('document.doc_version.expired_date')}</label>
+                                                        <DatePicker
+                                                            id={`document-add-version-expired-date`}
+                                                            onChange={this.handleExpiredDate}
+                                                        />
+                                                    </div>
+                                                </React.Fragment>
+                                            </DialogModal>
+                                            <table className="table table-hover table-striped table-bordered" id="table-document-version">
+                                                <thead>
+                                                    <tr>
+                                                        <th>{translate('document.version')}</th>
+                                                        <th>{translate('document.issuing_date')}</th>
+                                                        <th>{translate('document.effective_date')}</th>
+                                                        <th>{translate('document.expired_date')}</th>
+                                                        <th>{translate('document.doc_version.file')}</th>
+                                                        <th>{translate('document.doc_version.scanned_file_of_signed_document')}</th>
+                                                        <th style={{ width: '80px', textAlign: 'center' }}>
+                                                            {translate('general.action')}
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {
+                                                        documentVersions && documentVersions.length > 0 ?
+                                                            documentVersions.map((version, i) => {
+                                                                return <tr key={i}>
+                                                                    <td>{version.versionName}</td>
+                                                                    <td>{this.formatDate(version.issuingDate)}</td>
+                                                                    <td>{this.formatDate(version.effectiveDate)}</td>
+                                                                    <td>{this.formatDate(version.expiredDate)}</td>
+                                                                    <td>
+                                                                        <a href="#" >
+                                                                            <u>{version.documentFile && version.documentFile ? translate('document.download') : ""}</u>
+                                                                        </a>
+                                                                    </td>
+                                                                    <td>
+                                                                        <a href="#" >
+                                                                            <u>{version.documentFileScan && version.documentFileScan.length ? translate('document.download') : ""}</u>
+                                                                        </a>
+                                                                    </td>
+                                                                    <td>
+                                                                        <a className="text-red" title={translate('document.delete')} onClick={() => this.deleteDocumentVersion(i)}>
+                                                                            <i className="material-icons">delete</i>
+                                                                        </a>
+                                                                    </td>
+                                                                </tr>
+                                                            }) : <tr><td colSpan={7}>{translate('document.no_version')}</td></tr>
+                                                    }
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>

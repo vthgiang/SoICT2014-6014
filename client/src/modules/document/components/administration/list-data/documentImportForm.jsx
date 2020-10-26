@@ -30,6 +30,7 @@ class DocumentImportForm extends Component {
     }
 
     handleImportExcel = (value, checkFileImport) => {
+
         let startDate = new Date(1900, 1, 1, 0, 0, 0);
         let date = -2209131850214;
         let values = [];
@@ -52,7 +53,7 @@ class DocumentImportForm extends Component {
                     expiredDate = date + x.expiredDate * 24 * 60 * 60 * 1000;
                 }
 
-                values = [...value, {
+                values = [...values, {
                     "STT": k + 1,
                     "name": x.name,
                     "description": x.description,
@@ -130,22 +131,23 @@ class DocumentImportForm extends Component {
                 }
             }
         }
-        value = values;
+        // value = values;
         if (checkFileImport) {
             let rowError = [];
             for (let i in value) {
                 let x = value[i];
                 let errorAlert = [];
-                if (x.name === null) {
-                    rowError = [...rowError, i + 1];
-                    x = { ...x, error: true };
-                }
-                if (x.name === null) {
-                    errorAlert = [errorAlert, "Tên danh mục không được để trống"];
-                }
+                // if (x.name === null) {
+                //     rowError = [...rowError, i + 1];
+                //     x = { ...x, error: true };
+                // }
+                // if (x.name === null) {
+                //     errorAlert = [errorAlert, "Tên danh mục không được để trống"];
+                // }
                 x = { ...x, errorAlert: errorAlert };
                 value[i] = x;
             }
+
             this.setState({
                 importData: value,
                 importShowData: showValues,

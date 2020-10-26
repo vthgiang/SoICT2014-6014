@@ -84,7 +84,7 @@ exports.getParentOrganizationalUnitKpiSet = async (portal, id) => {
             .populate("organizationalUnit creator")
             .populate({ path: "kpis", populate: { path: 'parent' } });
     }
-    
+
     return kpiunit;
 
 }
@@ -96,7 +96,7 @@ exports.getParentOrganizationalUnitKpiSet = async (portal, id) => {
  * @query {*} endDate
  */
 exports.getAllOrganizationalUnitKpiSetByTime = async (portal, roleId, organizationalUnitId, startDate, endDate) => {
-    
+
     let organizationalUnit, organizationalUnitKpiSets;
     if (!organizationalUnitId) {
         organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal))
@@ -124,7 +124,7 @@ exports.getAllOrganizationalUnitKpiSetByTime = async (portal, roleId, organizati
                 { automaticPoint: 1, employeePoint: 1, approvedPoint: 1, date: 1 }
             )
     }
-    
+
     return organizationalUnitKpiSets;
 }
 
@@ -135,11 +135,11 @@ exports.getAllOrganizationalUnitKpiSetByTime = async (portal, roleId, organizati
  * @query {*} endDate
  */
 exports.getAllOrganizationalUnitKpiSetByTimeOfChildUnit = async (portal, companyId, query) => {
-   
+
     let childOrganizationalUnitKpiSets = [], childrenOrganizationalUnits;
-    
+
     childrenOrganizationalUnits = await overviewService.getAllChildrenOrganizational(portal, companyId, query.roleId);
-   
+
     for (let i = 0; i < childrenOrganizationalUnits.length; i++) {
         childOrganizationalUnitKpiSets.push(await this.getAllOrganizationalUnitKpiSetByTime(portal, null, childrenOrganizationalUnits[i].id, query.startDate, query.endDate));
         childOrganizationalUnitKpiSets[i].unshift({ 'name': childrenOrganizationalUnits[i].name })
@@ -189,7 +189,7 @@ exports.getAllOrganizationalUnitKpiSet = async (portal, data) => {
             organizationalUnit: organizationalUnit._id
         };
     }
-    
+
     if (status !== -1) {
         keySearch = {
             ...keySearch,
@@ -220,7 +220,7 @@ exports.getAllOrganizationalUnitKpiSet = async (portal, data) => {
         .find(keySearch)
         .skip(0).limit(12).populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } });
-    
+
     return kpiunits;
 }
 
@@ -267,7 +267,7 @@ exports.createOrganizationalUnitKpiSet = async (portal, data) => {
     } else {
         nextMonth = (new Number(data.date.slice(3, 7)) + 1) + '-01';
     }
-    
+
     // Tạo thông tin chung cho KPI đơn vị
     let organizationalUnitKpi = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
         .create({
@@ -325,13 +325,13 @@ exports.createOrganizationalUnitKpiSet = async (portal, data) => {
             .findByIdAndUpdate(
                 organizationalUnitKpi, { $push: { kpis: targetA._id } }, { new: true }
             );
-        
+
         let targetC = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal))
             .create({
                 name: "Hỗ trợ thực hiện công việc",
                 parent: null,
                 weight: 5,
-                criteria: "Thực hiện tốt vai trò người hỗ trợ (consulted) trong các công việc",
+                criteria: "Thực hiện tốt vai trò người tư vấn (consulted) trong các công việc",
                 type: 2
             })
         organizationalUnitKpi = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
@@ -365,7 +365,7 @@ exports.createOrganizationalUnitKpi = async (portal, data) => {
         .findByIdAndUpdate(
             data.organizationalUnitKpiSetId, { $push: { kpis: target._id } }, { new: true }
         );
-    
+
     organizationalUnitKpiSet = organizationalUnitKpiSet && await organizationalUnitKpiSet
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } })
@@ -403,12 +403,12 @@ exports.deleteOrganizationalUnitKpi = async (portal, id, organizationalUnitKpiSe
         .findByIdAndDelete(id);
     let organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
         .findByIdAndUpdate(organizationalUnitKpiSetId, { $pull: { kpis: id } }, { new: true });
-   
+
     organizationalUnitKpiSet = organizationalUnitKpiSet && await organizationalUnitKpiSet
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .execPopulate();
-    
+
     return organizationalUnitKpiSet;
 }
 
@@ -420,12 +420,12 @@ exports.deleteOrganizationalUnitKpi = async (portal, id, organizationalUnitKpiSe
 exports.editOrganizationalUnitKpiSetStatus = async (portal, id, query) => {
     let kpiunit = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
         .findByIdAndUpdate(id, { $set: { status: query.status } }, { new: true });
-    
+
     kpiunit = kpiunit && await kpiunit
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .execPopulate();
-    
+
     return kpiunit;
 }
 

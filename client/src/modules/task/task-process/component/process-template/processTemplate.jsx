@@ -325,7 +325,7 @@ class ProcessTemplate extends Component {
                         { key: "priority", value: "Độ ưu tiên" },
                         { key: "responsibleEmployees", value: "Người thực hiện" },
                         { key: "accountableEmployees", value: "Người phê duyệt" },
-                        { key: "consultedEmployees", value: "Người hỗ trợ" },
+                        { key: "consultedEmployees", value: "Người tư vấn" },
                         { key: "informedEmployees", value: "Người quan sát" },
                         { key: "formula", value: "Công thức tính điểm" },
 

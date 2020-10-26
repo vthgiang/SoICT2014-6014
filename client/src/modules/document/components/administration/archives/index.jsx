@@ -143,7 +143,6 @@ class AdministrationDocumentArchives extends Component {
             }
         })
         let unChooseNode = currentArchive ? this.findChildrenNode(list, currentArchive) : [];
-
         return (
             <React.Fragment>
 
