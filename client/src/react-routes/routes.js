@@ -153,7 +153,7 @@ class Routes extends Component {
         return (
             <React.Fragment>
                 <Switch>
-                    <Route exact path="/intro" component={Intro}/>
+                    <Route exact path="/" component={Intro}/>
                     <AuthRoute exact auth={auth} path="/login" component={Login} />
                     <AuthRoute exact auth={auth} path="/reset-password" component={ResetPassword} />
                     <PrivateRoute
@@ -221,12 +221,12 @@ class Routes extends Component {
                         isLoading={auth.isLoading}
                         key={'home'}
                         arrPage={[
-                            { link: '/', name: 'home', icon: 'fa fa-home' }
+                            { link: '/home', name: 'home', icon: 'fa fa-home' }
                         ]}
                         auth={auth}
                         exact={true}
-                        link={'/'}
-                        path={'/'}
+                        link={'/home'}
+                        path={'/home'}
                         pageName={'home'}
                         layout={Layout}
                         component={Home}

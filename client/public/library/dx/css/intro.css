@@ -112,9 +112,13 @@ li.dx-service-item > i {
 }
 
 section#dx-intro {
-    padding-top: 100px;
+    padding-top: 80px;
     background-color: #605CA8;
     color: #fff;
+}
+
+section#dx-service-signup {
+    background-color: #F7FDFD;
 }
 
 section#dx-contact {
@@ -169,12 +173,7 @@ form.dx-contact > button.dx-contact {
     color: #fff;
     font-weight: bolder;
     font-size: 1.6rem;
-
     background-color: #605CA8;
-}
-
-section#dx-location {
-    /* padding: 20px 50px; */
 } 
 
 ul.dx-locations {
@@ -198,13 +197,19 @@ div.dx-card {
     width: 80%;
     margin-left: 10%;
     margin: 18px 0px;
-    border: 0.5px solid #c1c1c1;
     padding: 10px;
     min-height: 330px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
 }
+
+div.dx-card:hover {
+    box-shadow: 0 8px 32px 0 rgba(0,0,0,0.2);
+}   
 
 div.dx-card > .dx-card-header {
     font-weight: bolder;
+
 }
 
 div.dx-card > .dx-card-body > h4 {
@@ -223,10 +228,6 @@ ul.dx-footer.care {
 li.dx-footer.care.item > i {
     color: #605CA8;
     padding-right: 2px;
-}
-
-form.dx-service {
-
 }
 
 form.dx-service > input {
@@ -255,4 +256,16 @@ form.dx-service > button.send {
     font-weight: bolder;
     font-size: 1.6rem;
     background-color: #605CA8;
+}
+
+span.p-center.media > img {
+    width: 32px;
+    padding: 2px;
+    height: auto;
+}
+
+img.service-image {
+    margin-top: 30px;
+    width: 60%;
+    height: auto;
 }
