@@ -867,7 +867,7 @@ export default {
             manage_manufacturing_command: "Quản lý lệnh sản xuất",
             manage_manufacturing_process: "Quản lý tiến độ sản xuất",
             manage_manufacturing_schedule: "Quản lý lịch sản xuất",
-            manage_purchasing_request: "Quản lý phiếu mua NVL",
+            manage_purchasing_request: "Quản lý phiếu đề nghị mua nguyên vật liệu",
             manufacturing_dashboard: "Dashboard Quản lý sản xuất",
             analysis_manufacturing_performance: "Phân tích hiệu suất sản xuất",
             manage_manufacturing_works: "Quản lý nhà máy sản xuất",
@@ -3780,6 +3780,22 @@ export default {
                 edit_mill_failed: "Sửa thông tin xưởng thất bại",
                 works_name: "Tên nhà máy",
                 created_at: "Ngày tạo"
+            },
+            purchasing_request: {
+                code: "Mã phiếu đề nghị",
+                createdAt: "Ngày tạo",
+                planCode: "Mã kế hoạch",
+                receiveTime: "Ngày dự kiến nhận",
+                status: "Trạng thái",
+                creator: "Người tạo",
+                index: "STT",
+                select_all: "Chọn tất cả",
+                1: { content: "Chưa xử lý", color: "orange" },
+                2: { content: "Đã xử lý", color: "green" },
+                3: { content: "Đã hủy", color: "red" },
+                search: "Tìm kiếm",
+                select_status: "Chọn trạng thái"
+
             }
         }
     }
