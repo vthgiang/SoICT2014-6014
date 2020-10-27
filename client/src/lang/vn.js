@@ -3617,7 +3617,38 @@ export default {
 
         //manager order
         manage_order: {
-            quote_add_success: "Báo giá đã được tạo"
+            tax: {
+                index: 'STT',
+                code: 'Mã',
+                name: 'Tên',
+                creator: 'Người tạo',
+                status: 'Trạng thái',
+                tax_code: 'Mã thuế',
+                tax_name: 'Tên thuế',
+                choose_at_least_one_item: 'Phải chọn ít nhất 1 mặt hàng',
+                percent_is_not_null: 'Chiết khấu thuế không được để trống',
+                percent_greater_than_or_equal_zero: 'Chiết khấu thuế phải lớn hơn hoặc bằng 0',
+                add_new_tax: 'Thêm loại thuế',
+                add_successfully: 'Thêm thuế thành công',
+                add_failed: 'Thêm thuế không thành công',
+                description:'Mô tả',
+                goods: 'Các mặt hàng',
+                select_goods: 'Chọn các mặt hàng',
+                tax_percent: 'Chiết khấu (%)',
+                add: 'Thêm mới',
+                reset: 'Xóa trắng',
+                action: 'Hành động',
+                version: 'Phiên bản',
+                effective: 'Đang hiệu lực',
+                expire: 'Hết hiệu lực',
+                tax_detail: 'Chi tiết thuế',
+                selected_all: 'Đã chọn tất cả',
+                view_deatail: 'Xem chi tiết',
+                delete_list_goods: 'Xóa danh sách mặt hàng',
+                delete_good: 'Xóa mặt hàng',
+                detail_goods: 'Chi tiết các mặt hàng',
+                search: 'Tìm kiếm'
+            }
         },
 
         report_manager: {

@@ -50,13 +50,13 @@ class CreateTaxDetail extends Component {
 
     render() {
         let { goods, percent } = this.state;
-        console.log("DÂT STATE", this.state);
+        const { translate } = this.props;
         return (
             <DialogModal
                 modalID={`modal-create-tax-detail-good`}
                 isLoading={false}
                 formID={`form-create-tax-detail-good`}
-                title={"Chi tiết các mặt hàng"}
+                title={translate("manage_order.tax.detail_goods")}
                 size="75"
                 style={{ backgroundColor: "green" }}
                 func={this.submitChange}
@@ -64,7 +64,7 @@ class CreateTaxDetail extends Component {
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 10 }}>
                     <div className="form-group">
                         <label>
-                            Chiết khấu
+                                    {translate("manage_order.tax.tax_percent")}
                             <span className="attention"> * </span>
                         </label>
                         <input type="number" className="form-control" placeholder="Nhập %" value={percent} onChange={this.handlePercentChange} />
@@ -74,10 +74,10 @@ class CreateTaxDetail extends Component {
                     <table id={`order-table-tax-create`} className="table table-bordered">
                         <thead>
                             <tr>
-                                <th title={"STT"}>STT</th>
-                                <th title={"Tên"}>Mã</th>
-                                <th>Tên</th>
-                                <th>Hành động</th>
+                                <th title={"STT"}>{translate("manage_order.tax.index")}</th>
+                                <th title={"Tên"}>{translate("manage_order.tax.code")}</th>
+                                <th>{translate("manage_order.tax.name")}</th>
+                                <th>{translate("manage_order.tax.action")}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -93,7 +93,7 @@ class CreateTaxDetail extends Component {
                                                     onClick={() => this.handleDeleteGoodsTax(item)}
                                                     className="delete red-yellow"
                                                     style={{ width: "5px" }}
-                                                    title="Xóa danh sách mặt hàng"
+                                                    title={translate("manage_order.tax.delete_good")}
                                                 >
                                                     <i className="material-icons">delete</i>
                                                 </a>

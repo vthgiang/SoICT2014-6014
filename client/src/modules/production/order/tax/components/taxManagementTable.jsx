@@ -92,27 +92,27 @@ class TaxManagementTable extends Component {
                     <TaxCreateForm reloadState={() => this.props.getAllTaxs({ limit: this.state.limit, page: this.state.page })} />
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">Mã thuế</label>
+                            <label className="form-control-static">{translate("manage_order.tax.tax_code")} </label>
                             <input type="text" className="form-control" value={code} onChange={this.handleCodeChange} />
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">Tên </label>
+                            <label className="form-control-static">{translate("manage_order.tax.tax_name")} </label>
                             <input type="text" className="form-control" value={name} onChange={this.handleNameChange} />
                         </div>
                         <div className="form-group">
                             <button type="button" className="btn btn-success" title="Lọc" onClick={this.handleSubmitSearch}>
-                                Tìm kiếm
+                                            {translate("manage_order.tax.search")}
                             </button>
                         </div>
                     </div>
                     <table id="tax-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th>STT</th>
-                                <th>Mã</th>
-                                <th>Tên</th>
-                                <th>Người tạo</th>
-                                <th>Trạng thái</th>
+                                <th>{translate("manage_order.tax.index")}</th>
+                                <th>{translate("manage_order.tax.code")}</th>
+                                <th>{translate("manage_order.tax.name")}</th>
+                                <th>{translate("manage_order.tax.creator")}</th>
+                                <th>{translate("manage_order.tax.status")}</th>
                                 <th
                                     style={{
                                         width: "120px",

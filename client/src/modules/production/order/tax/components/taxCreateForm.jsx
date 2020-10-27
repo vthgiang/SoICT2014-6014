@@ -47,6 +47,7 @@ class TaxCreateForm extends Component {
             return { ...state, code: generateCode("TAX_") };
         });
     };
+    
     handleTaxNameChange = (e) => {
         let { value = "" } = e.target;
         this.setState((state) => {
@@ -72,12 +73,6 @@ class TaxCreateForm extends Component {
     };
 
     handlePercentChange = (e) => {
-        // this.state.goodsSelections.percent = e.target.value;
-        // this.setState((state) => {
-        //     return {
-        //         ...state,
-        //     };
-        // });
         let { value } = e.target;
         this.validatePercent(value, true);
     };
@@ -140,7 +135,6 @@ class TaxCreateForm extends Component {
     };
 
     handleDeleteGoodsTaxCollection = (item) => {
-        console.log("ITEM", item);
         let { allGoodsSelections, goodOptionsState } = this.state;
         //Các mặt hàng bị xóa được trả về option, có thể tiếp tục lựa chọn mặt hàng này
         let OptionsOfReOption = item.goods.map((good) => {
@@ -159,8 +153,6 @@ class TaxCreateForm extends Component {
 
         //Thêm lại các phần tử vừa bị xóa vào select option
         goodOptionsState = goodOptionsState.concat(OptionsOfReOption);
-
-        console.log("DELETE ALL OPTION O DAY", goodOptionsState);
 
         //Xóa các phần tử bị xóa
         let collections = allGoodsSelections.filter((collection) => {
@@ -196,7 +188,6 @@ class TaxCreateForm extends Component {
                 return option;
             });
             goodOptionsState = goodOptionsState.concat(OptionsOfReOption);
-            console.log("goodOptionsState O DAY", goodOptionsState);
 
             let collections = allGoodsSelections.map((collection) => {
                 if (collection.key === data.key) {
@@ -255,7 +246,7 @@ class TaxCreateForm extends Component {
         let msg = undefined;
         if (!goods) {
             const { translate } = this.props;
-            msg = "Phải chọn ít nhất 1 mặt hàng";
+            msg = translate("manage_order.tax.choose_at_least_one_item");
         }
 
         if (willUpdateState) {
@@ -297,9 +288,9 @@ class TaxCreateForm extends Component {
         let msg = undefined;
         const { translate } = this.props;
         if (!value) {
-            msg = "Chiết khấu thuế không được để trống";
+            msg = translate("manage_order.tax.percent_is_not_null");
         } else if (value < 0) {
-            msg = "Chiết khấu thuế phải lớn hơn 0";
+            msg = translate("manage_order.tax.percent_greater_than_or_equal_zero");
         }
         if (willUpdateState) {
             this.state.goodsSelections.percent = value;
@@ -380,23 +371,23 @@ class TaxCreateForm extends Component {
         let goodOptions = this.getGoodOptions();
         let disabledSelectGoods = this.checkDisabledSelectGoods();
 
-        console.log("STATE", this.state);
+        const {translate} = this.props;
 
         return (
             <React.Fragment>
                 <ButtonModal
                     onButtonCallBack={this.handleClickCreateCode}
                     modalID={`modal-add-tax`}
-                    button_name={"Thêm loại thuế"}
-                    title={"Thêm loại thuế"}
+                    button_name={translate("manage_order.tax.add_new_tax")}
+                    title={translate("manage_order.tax.add_new_tax")}
                 />
                 <DialogModal
                     modalID={`modal-add-tax`}
                     isLoading={false}
                     formID={`form-add-tax`}
-                    title={"Thêm loại thuế mới"}
-                    msg_success={"Thêm thuế thành công"}
-                    msg_faile={"Thêm thuế không thành công"}
+                    title={translate("manage_order.tax.add_new_tax")}
+                    msg_success={translate("manage_order.tax.add_successfully")}
+                    msg_faile={translate("manage_order.tax.add_failed")}
                     disableSubmit={!this.isFormValidated()}
                     func={this.save}
                     size="50"
@@ -414,7 +405,7 @@ class TaxCreateForm extends Component {
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 10 }}>
                                 <div className="form-group">
                                     <label>
-                                        Mã thuế
+                                    {translate("manage_order.tax.tax_code")}
                                         <span className="attention"> </span>
                                     </label>
                                     <input type="text" className="form-control" value={code} disabled="true" />
@@ -423,7 +414,7 @@ class TaxCreateForm extends Component {
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 10 }}>
                                 <div className={`form-group ${!nameTaxError ? "" : "has-error"}`}>
                                     <label>
-                                        Tên thuế
+                                    {translate("manage_order.tax.tax_name")}
                                         <span className="attention"> * </span>
                                     </label>
                                     <input type="text" className="form-control" value={taxName} onChange={this.handleTaxNameChange} />
@@ -434,7 +425,7 @@ class TaxCreateForm extends Component {
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 10 }}>
                                 <div className="form-group">
                                     <label>
-                                        Mô tả
+                                    {translate("manage_order.tax.description")}
                                         <span className="attention"> </span>
                                     </label>
                                     <textarea type="text" className="form-control" value={description} onChange={this.handleDescriptionChange} />
@@ -444,7 +435,7 @@ class TaxCreateForm extends Component {
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 10 }}>
                                 <div className="form-group">
                                     <label>
-                                        Người tạo
+                                    {translate("manage_order.tax.creator")}
                                         <span className="attention"> </span>
                                     </label>
                                     <input type="text" className="form-control" value={creator.name} disabled="true" />
@@ -453,19 +444,19 @@ class TaxCreateForm extends Component {
 
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 10 }}>
                                 <fieldset className="scheduler-border">
-                                    <legend className="scheduler-border">Các mặt hàng</legend>
+                                    <legend className="scheduler-border">{translate("manage_order.tax.goods")}</legend>
                                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 10 }}>
                                         <div className={`form-group ${!goodsError ? "" : "has-error"}`}>
                                             <label>
-                                                Chọn các mặt hàng
+                                            {translate("manage_order.tax.select_goods")}
                                                 <span className="attention"> * </span>
                                             </label>
                                             <SelectMulti
                                                 id={`select-multi-good-tax`}
                                                 multiple="multiple"
                                                 options={{
-                                                    nonSelectedText: "Chọn các mặt hàng",
-                                                    allSelectedText: "Đã chọn tất cả",
+                                                    nonSelectedText: translate("manage_order.tax.select_goods"),
+                                                    allSelectedText: translate("manage_order.tax.selected_all"),
                                                 }}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
@@ -480,7 +471,7 @@ class TaxCreateForm extends Component {
                                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 10 }}>
                                         <div className={`form-group ${!percentError ? "" : "has-error"}`}>
                                             <label>
-                                                Chiết khấu
+                                            {translate("manage_order.tax.tax_percent")}
                                                 <span className="attention"> * </span>
                                             </label>
                                             <input
@@ -501,20 +492,20 @@ class TaxCreateForm extends Component {
                                                 disabled={!this.isGoodsValidated()}
                                                 onClick={this.handleSubmitGoods}
                                             >
-                                                Thêm mới
+                                                {translate("manage_order.tax.add")}
                                             </button>
                                             <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearGood}>
-                                                Xóa trắng
+                                            {translate("manage_order.tax.reset")}
                                             </button>
                                         </div>
                                     </div>
                                     <table id={`order-table-tax-create`} className="table table-bordered">
                                         <thead>
                                             <tr>
-                                                <th title={"STT"}>STT</th>
-                                                <th title={"Chiết khấu (%)"}>Chiết khấu (%)</th>
-                                                <th>Các mặt hàng</th>
-                                                <th>Hành động</th>
+                                                <th title={"STT"}>{translate("manage_order.tax.index")}</th>
+                                                <th title={"Chiết khấu (%)"}>{translate("manage_order.tax.tax_percent")}</th>
+                                                <th>{translate("manage_order.tax.goods")}</th>
+                                                <th>{translate("manage_order.tax.action")}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -525,14 +516,14 @@ class TaxCreateForm extends Component {
                                                             <td>{index + 1}</td>
                                                             <td>{item.percent}</td>
                                                             <td>
-                                                                <a onClick={() => this.showGoodDetail(item)}>Chi tiết</a>
+                                                                <a onClick={() => this.showGoodDetail(item)}>{translate("manage_order.tax.view_deatail")}</a>
                                                             </td>
                                                             <td style={{ textAlign: "center" }}>
                                                                 <a
                                                                     onClick={() => this.handleDeleteGoodsTaxCollection(item)}
                                                                     className="delete red-yellow"
                                                                     style={{ width: "5px" }}
-                                                                    title="Xóa danh sách mặt hàng"
+                                                                    title={translate("manage_order.tax.delete_list_goods")}
                                                                 >
                                                                     <i className="material-icons">delete</i>
                                                                 </a>

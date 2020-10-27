@@ -23,14 +23,14 @@ class TaxDetailForm extends Component {
             currentTax = this.props.currentTax;
         }
 
-        console.log("Cur", currentTax);
+        const { translate } = this.props;
         return (
             <React.Fragment>
                 <DialogModal
                     modalID="modal-detail-tax"
                     isLoading={false}
                     formID="form-detail-tax"
-                    title={"Chi tiết báo giá"}
+                    title={translate("manage_order.tax.tax_detail")}
                     size="50"
                     hasSaveButton={false}
                     hasNote={false}
@@ -38,40 +38,40 @@ class TaxDetailForm extends Component {
                     <form id={`form-detail-tax`}>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className={`form-group`}>
-                                <strong>Mã thuế :&emsp;</strong>
+                                <strong>{translate("manage_order.tax.tax_code")} :&emsp;</strong>
                                 {currentTax.code}
                             </div>
                             <div className={`form-group`}>
-                                <strong>Tên :&emsp;</strong>
+                                <strong>{translate("manage_order.tax.name")} :&emsp;</strong>
                                 {currentTax.name}
                             </div>
                             <div className={`form-group`}>
-                                <strong>Người tạo :&emsp;</strong>
+                                <strong>{translate("manage_order.tax.creator")} :&emsp;</strong>
                                 {currentTax.creator ? currentTax.creator.name : ""}
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className={`form-group`}>
-                                <strong>Mô tả :&emsp;</strong>
+                                <strong>{translate("manage_order.tax.description")} :&emsp;</strong>
                                 {currentTax.description}
                             </div>
                             <div className={`form-group`}>
-                                <strong>Phiên bản :&emsp;</strong>
+                                <strong>{translate("manage_order.tax.version")} :&emsp;</strong>
                                 {currentTax.version}
                             </div>
                             <div className={`form-group`}>
-                                <strong>Trạng thái :&emsp;</strong>
-                                {currentTax.status ? "Đang hiệu lực" : "Hết hiệu lực"}
+                                <strong>{translate("manage_order.tax.status")} :&emsp;</strong>
+                                {currentTax.status ? translate("manage_order.tax.effective") : translate("manage_order.tax.expire")}
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <table id="tax-table" className="table table-striped table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                        <th>STT</th>
-                                        <th>Mã</th>
-                                        <th>Tên</th>
-                                        <th>Chiếu khấu (%)</th>
+                                        <th>{translate("manage_order.tax.index")}</th>
+                                        <th>{translate("manage_order.tax.code")}</th>
+                                        <th>{translate("manage_order.tax.name")}</th>
+                                        <th>{translate("manage_order.tax.tax_percent")}</th>
                                     </tr>
                                 </thead>
                                 <tbody>

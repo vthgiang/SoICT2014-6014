@@ -3266,7 +3266,38 @@ export default {
 
         // manage order
         manage_order: {
-            quote_add_success: "add successed"
+            tax: {
+                index: 'Index',
+                code: 'Code',
+                name: 'Name',
+                creator: 'Creator',
+                status: 'Status',
+                tax_code: 'Tax code',
+                tax_name: 'Tax name',
+                choose_at_least_one_item: 'Choose at least one item',
+                percent_is_not_null: 'Percent is not null',
+                percent_greater_than_or_equal_zero: 'Percent greater than or equal to zero',
+                add_new_tax: 'Add new tax',
+                add_successfully: 'Add tax successfully',
+                add_failed: 'Add tax failed',
+                description:'Description',
+                goods: 'Goods',
+                select_goods: 'Choose goods',
+                tax_percent: 'Percent',
+                add: 'Add new',
+                reset: 'Reset',
+                action: 'Action',
+                version: 'Version',
+                effective: 'Effective',
+                expire: 'Expire',
+                tax_detail: 'Tax detail',
+                selected_all: 'Sellected All',
+                view_deatail: 'View detail',
+                delete_list_goods: 'Delete list goods',
+                delete_good: 'Delete good',
+                detail_goods: 'Detail goods',
+                search: 'Search'
+            }
         },
 
         report_manager: {
