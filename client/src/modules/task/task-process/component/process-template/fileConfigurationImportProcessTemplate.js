@@ -68,9 +68,9 @@ export const configProcessTemplate = {
         value: "Người phê duyệt"
     },
     consultedEmployees: {
-        columnName: "Người hỗ trợ",
-        description: "Tên tiêu đề ứng với người hỗ trợ",
-        value: "Người hỗ trợ"
+        columnName: "Người tư vấn",
+        description: "Tên tiêu đề ứng với người tư vấn",
+        value: "Người tư vấn"
     },
     informedEmployees: {
         columnName: "Người quan sát",
@@ -98,7 +98,7 @@ export const configProcessTemplate = {
     //     description: "Tên tiêu đề ứng với danh sách công việc trong quy trình",
     //     value: [
     //         "Mã công việc trong quy trình", "Tên mẫu", "Mô tả", "Đơn vị", "Độ ưu tiên",
-    //         "Người thực hiện", "Người phê duyệt", "Người hỗ trợ", "Người quan sát",
+    //         "Người thực hiện", "Người phê duyệt", "Người tư vấn", "Người quan sát",
     //         "Công thức tính điểm", "Danh sách hoạt động", "Danh sách thông tin"
     //     ]
     // }
@@ -147,7 +147,7 @@ export const templateImportProcessTemplate = {
                 { key: "priority", value: "Độ ưu tiên" },
                 { key: "responsibleEmployees", value: "Người thực hiện" },
                 { key: "accountableEmployees", value: "Người phê duyệt" },
-                { key: "consultedEmployees", value: "Người hỗ trợ" },
+                { key: "consultedEmployees", value: "Người tư vấn" },
                 { key: "informedEmployees", value: "Người quan sát" },
                 { key: "formula", value: "Công thức tính điểm" },
 

@@ -125,7 +125,7 @@ exports.increaseNumberView = async (id, viewer, portal) => {
  * Tạo một tài liệu văn bản mới
  */
 exports.createDocument = async (portal, data, company) => {
-    console.log('dataaaaaa', data)
+    //console.log('dataaaaaa', data)
     const newDoc = {
         company,
         name: data.name,
@@ -139,7 +139,7 @@ exports.createDocument = async (portal, data, company) => {
         relationshipDocuments: data.relationshipDocuments,
         versions: [{
             versionName: data.versionName,
-            issuingDate: (data.issuingDate === 'Invalid date') ? "" : data.issuingDate,
+            issuingDate: data.issuingDate,
             effectiveDate: data.effectiveDate,
             expiredDate: data.expiredDate,
             file: data.file,
@@ -147,7 +147,6 @@ exports.createDocument = async (portal, data, company) => {
         }],
         roles: data.roles,
         relationshipDescription: data.relationshipDescription,
-        archivedRecordPlaceInfo: archivedRecordPlaceInfo,
         archivedRecordPlaceOrganizationalUnit: data.archivedRecordPlaceOrganizationalUnit,
     }
 
@@ -167,7 +166,7 @@ exports.createDocument = async (portal, data, company) => {
  */
 exports.editDocument = async (id, data, query = undefined, portal) => {
     // thêm lịch sử chỉnh sửa
-    console.log('dataaa', data);
+    //console.log('dataaa', data);
     let { creator, title, descriptions } = data;
     let createdAt = Date.now();
     let log = {
@@ -396,8 +395,8 @@ exports.importDocument = async (portal, data, company) => {
         }
 
         // find archive
-
-        if (data[i].archives && data[i].archives.length) {
+        console.log('rrrrrrrrr', data[i].archives[0])
+        if (data[i].archives && data[i].archives[0] && data[i].archives.length) {
             let archives = [];
             for (let j in data[i].archives) {
                 let path = data[i].archives[j].split('-').map(x => { return x.trim() }).join(" - ");
@@ -415,10 +414,7 @@ exports.importDocument = async (portal, data, company) => {
             let roles = [];
             for (let j in data[i].roles) {
                 const role = await Role(connect(DB_CONNECTION, portal)).findOne({
-                    $and: [
-                        { company: company },
-                        { name: data[i].roles[j] }
-                    ]
+                    name: data[i].roles[j]
                 });
                 roles.push(role.id);
             }

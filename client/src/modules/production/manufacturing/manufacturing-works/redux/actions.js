@@ -9,7 +9,7 @@ export const worksActions = {
     editManufacturingWorks
 }
 
-function getAllManufacturingWorks(queryData) {
+function getAllManufacturingWorks(queryData = {}) {
     return (dispatch) => {
         dispatch({
             type: worksConstants.GET_ALL_WORKS_REQUEST

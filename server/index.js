@@ -89,6 +89,7 @@ app.use("/crm/status", require("./modules/crm/status/status.route"));
 // production - manufaturing
 app.use("/manufacturing-mill", require("./modules/production/manufacturing/manufacturingMill/manufacturingMill.route"));
 app.use("/manufacturing-works", require("./modules/production/manufacturing/manufacturingWorks/manufacturingWorks.route"));
+app.use("/purchasing-request", require("./modules/production/manufacturing/purchasingRequest/purchasingRequest.route"));
 
 //order
 app.use("/quote", require("./modules/production/order/quote/quote.route"));

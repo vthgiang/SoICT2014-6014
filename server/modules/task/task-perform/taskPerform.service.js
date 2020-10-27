@@ -2379,7 +2379,7 @@ exports.sendEmailForActivateTask = async (portal, task) => {
     var acc = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: accId } });
     userIds.push(...accId);
 
-    var conId = task.consultedEmployees;  // lấy id người hỗ trợ
+    var conId = task.consultedEmployees;  // lấy id người tư vấn
     var con = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: conId } })
     userIds.push(...conId);
 
@@ -2415,7 +2415,7 @@ exports.sendEmailForActivateTask = async (portal, task) => {
             return `<li>${item.name}</li>`
         })}
                     </ul>` +
-        `${con.length > 0 ? `<p>Người hỗ trợ</p> ` +
+        `${con.length > 0 ? `<p>Người tư vấn</p> ` +
             `<ul>${con.map((item) => {
                 return `<li>${item.name}</li>`
             })}
@@ -2481,7 +2481,7 @@ exports.editActivateOfTask = async (portal, taskID, body) => {
         )
 
         let x = await this.sendEmailForActivateTask(portal, followItem);
-        
+
         mailArr.push(x);
     }
 
@@ -2544,7 +2544,7 @@ exports.confirmTask = async (portal, taskId, userId) => {
         { $push: { confirmedByEmployees: userId } }
     )
 
-    let task = await this.getTaskById( portal, taskId, userId);
+    let task = await this.getTaskById(portal, taskId, userId);
     return task;
 }
 
@@ -3144,13 +3144,13 @@ exports.deleteFileChildComment = async (portal, params) => {
 
 exports.getAllPreceedingTasks = async (portal, params) => {
     let task = await Task(connect(DB_CONNECTION, portal)).findOne({ "_id": params.taskId })
-    .populate([
-        {
-            path: "preceedingTasks.task", populate: [
-                { path: "commentsInProcess.creator", select: 'name email avatar' },
-                { path: "commentsInProcess.comments.creator", select: 'name email avatar' },
-            ]
-        },
-    ])
+        .populate([
+            {
+                path: "preceedingTasks.task", populate: [
+                    { path: "commentsInProcess.creator", select: 'name email avatar' },
+                    { path: "commentsInProcess.comments.creator", select: 'name email avatar' },
+                ]
+            },
+        ])
     return task.preceedingTasks
 }

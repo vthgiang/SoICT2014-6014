@@ -2087,7 +2087,7 @@ export default {
             performer: 'Performer',
             approver: 'Approver',
             observer: 'Observer',
-            supporter: 'Supporter',
+            consultant: 'Supporter',
             formula: 'Formula',
             activity_list: 'Activity list',
             information_list: 'Information list',

@@ -22,7 +22,7 @@ const OrganizationalUnitKpiSchema = new Schema({
     // Đánh đấu các mục tiêu mặc định khi thiết lập kpi cá nhân: 
     // 0 là không phải mục tiêu mặc định
     // 1 là mục tiêu mặc đinh cho vai trò A (người phê duyệt)
-    // 2 là mục tiêu mặc định cho vai trò C (Người hỗ trợ)
+    // 2 là mục tiêu mặc định cho vai trò C (Người tư vấn)
     type: {
         type: Number,
         default: 0
@@ -42,7 +42,7 @@ const OrganizationalUnitKpiSchema = new Schema({
 });
 
 module.exports = (db) => {
-    if(!db.models.OrganizationalUnitKpi)
+    if (!db.models.OrganizationalUnitKpi)
         return db.model('OrganizationalUnitKpi', OrganizationalUnitKpiSchema);
     return db.models.OrganizationalUnitKpi;
 }

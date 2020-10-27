@@ -39,39 +39,39 @@ const {
 
 require('dotenv').config();
 
-const months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
-const days = ['10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28'];
-function randomDateOld(){
-    let date = `${Math.floor(Math.random()*40)+1960}-${months[Math.floor(Math.random()*12)]}-${days[Math.floor(Math.random()*19)]}`
+const months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+const days = ['10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28'];
+function randomDateOld() {
+    let date = `${Math.floor(Math.random() * 40) + 1960}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]}`
     return date;
 };
-function randomDateNew(){
-    let date = `${Math.floor(Math.random()*20)+2000}-${months[Math.floor(Math.random()*12)]}-${days[Math.floor(Math.random()*19)]}`
+function randomDateNew() {
+    let date = `${Math.floor(Math.random() * 20) + 2000}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]}`
     return date;
 };
 
 const surnames = ['Trần', 'Nguyễn', 'Vũ', 'Mai', 'Ngô', 'Kim', 'Lê', 'Đỗ', 'Đào', 'Dương', 'Bùi', 'Lưu', 'Hoàng'];
-const middleNamesMale = ['Văn','Thống', 'Viết', 'Tri','Quang','Lương', 'Hoàng'];
-const namesMale =['Nam','Thái','Cường','Thành','An','Anh','Hải','Thuận','Tuấn', 'Thuấn', 'Khẩn','Thảo','Danh'];
-function randomDateNameMale(){
-    let name = `${surnames[Math.floor(Math.random()*13)]} ${middleNamesMale[Math.floor(Math.random()*7)]} ${namesMale[Math.floor(Math.random()*13)]}`;
+const middleNamesMale = ['Văn', 'Thống', 'Viết', 'Tri', 'Quang', 'Lương', 'Hoàng'];
+const namesMale = ['Nam', 'Thái', 'Cường', 'Thành', 'An', 'Anh', 'Hải', 'Thuận', 'Tuấn', 'Thuấn', 'Khẩn', 'Thảo', 'Danh'];
+function randomDateNameMale() {
+    let name = `${surnames[Math.floor(Math.random() * 13)]} ${middleNamesMale[Math.floor(Math.random() * 7)]} ${namesMale[Math.floor(Math.random() * 13)]}`;
     return name
 };
 
-const middleNamesFemale = ['Thị','Thanh', 'Thu', 'Thuỳ'];
-const namesFemale =['Anh','Lan','Cúc','Oanh','Linh','Duyên','Hằng','Thu','Ngân', 'Phương', 'Phượng','Huệ','Mai','Ngọc'];
-function randomDateNameFemale(){
-    let name = `${surnames[Math.floor(Math.random()*13)]} ${middleNamesFemale[Math.floor(Math.random()*4)]} ${namesFemale[Math.floor(Math.random()*14)]}`;
+const middleNamesFemale = ['Thị', 'Thanh', 'Thu', 'Thuỳ'];
+const namesFemale = ['Anh', 'Lan', 'Cúc', 'Oanh', 'Linh', 'Duyên', 'Hằng', 'Thu', 'Ngân', 'Phương', 'Phượng', 'Huệ', 'Mai', 'Ngọc'];
+function randomDateNameFemale() {
+    let name = `${surnames[Math.floor(Math.random() * 13)]} ${middleNamesFemale[Math.floor(Math.random() * 4)]} ${namesFemale[Math.floor(Math.random() * 14)]}`;
     return name
 }
 function removeVietnameseTones(str) {
-    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g,"a"); 
-    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g,"e"); 
-    str = str.replace(/ì|í|ị|ỉ|ĩ/g,"i"); 
-    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g,"o"); 
-    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g,"u"); 
-    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g,"y"); 
-    str = str.replace(/đ/g,"d");
+    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+    str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+    str = str.replace(/đ/g, "d");
     str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A");
     str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E");
     str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I");
@@ -85,11 +85,11 @@ function removeVietnameseTones(str) {
     str = str.replace(/\u02C6|\u0306|\u031B/g, ""); // ˆ ̆ ̛  Â, Ê, Ă, Ơ, Ư
     // Remove extra spaces
     // Bỏ các khoảng trắng liền nhau
-    str = str.replace(/ + /g," ");
+    str = str.replace(/ + /g, " ");
     str = str.trim();
     // Remove punctuations
     // Bỏ dấu câu, kí tự đặc biệt
-    str = str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g," ");
+    str = str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g, " ");
     return str;
 }
 
@@ -111,29 +111,29 @@ const initHumanResourceData = async () => {
             pass: process.env.DB_AUTHENTICATION === "true" ? process.env.DB_PASSWORD : undefined,
         }
     );
-    
+
     const vnistDB = mongoose.createConnection(
         `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/vnist`,
         process.env.DB_AUTHENTICATION === 'true' ?
-        {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true,
-            useFindAndModify: false,
-            user: process.env.DB_USERNAME,
-            pass: process.env.DB_PASSWORD
-        }:{
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true,
-            useFindAndModify: false,
-        }
+            {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+                useCreateIndex: true,
+                useFindAndModify: false,
+                user: process.env.DB_USERNAME,
+                pass: process.env.DB_PASSWORD
+            } : {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+                useCreateIndex: true,
+                useFindAndModify: false,
+            }
     );
 
     if (!systemDB) throw ('DB vnist cannot connect');
     console.log("DB vnist connected");
 
-    if(!vnistDB) throw('DB vnist cannot connect');
+    if (!vnistDB) throw ('DB vnist cannot connect');
     console.log("DB vnist connected");
 
     /**
@@ -167,11 +167,11 @@ const initHumanResourceData = async () => {
         if (!db.models.Course) Course(db);
 
 
-        if(!db.models.EmployeeKpi) EmployeeKpi(db);
-        if(!db.models.EmployeeKpiSet) EmployeeKpiSet(db);
-        if(!db.models.OrganizationalUnitKpi) OrganizationalUnitKpi(db);
-        if(!db.models.OrganizationalUnitKpiSet) OrganizationalUnitKpiSet(db);
-        if(!db.models.Task) Task(db);
+        if (!db.models.EmployeeKpi) EmployeeKpi(db);
+        if (!db.models.EmployeeKpiSet) EmployeeKpiSet(db);
+        if (!db.models.OrganizationalUnitKpi) OrganizationalUnitKpi(db);
+        if (!db.models.OrganizationalUnitKpiSet) OrganizationalUnitKpiSet(db);
+        if (!db.models.Task) Task(db);
 
         console.log("models_list", db.models);
     }
@@ -193,20 +193,20 @@ const initHumanResourceData = async () => {
     const hash = await bcrypt.hashSync('123456', salt);
 
     let usersFake = [];
-    for(let i = 0; i<=200; i++){
-        if(i<=100){
+    for (let i = 0; i <= 200; i++) {
+        if (i <= 100) {
             let name = randomDateNameMale();
-            usersFake = [...usersFake,{
+            usersFake = [...usersFake, {
                 name: name,
-                email: `${removeVietnameseTones(name.replace(/ /g,''))}fake${i+1}.vnist@gmail.com`,
+                email: `${removeVietnameseTones(name.replace(/ /g, ''))}fake${i + 1}.vnist@gmail.com`,
                 password: hash,
                 company: vnist._id
             }]
-        }else{
+        } else {
             let name = randomDateNameFemale();
-            usersFake = [...usersFake,{
+            usersFake = [...usersFake, {
                 name: name,
-                email: `${removeVietnameseTones(name.replace(/ /g,''))}fake${i+1}.vnist@gmail.com`,
+                email: `${removeVietnameseTones(name.replace(/ /g, ''))}fake${i + 1}.vnist@gmail.com`,
                 password: hash,
                 company: vnist._id
             }]
@@ -462,17 +462,17 @@ const initHumanResourceData = async () => {
 
     const nvPhongHCHT = await Role(vnistDB).create({
         parents: [roleEmployee._id],
-        name: "Nhân viên phòng hậu cần - hỗ trợ",
+        name: "Nhân viên phòng hậu cần - tư vấn",
         type: roleChucDanh._id
     });
     const phoPhongHCHT = await Role(vnistDB).create({
         parents: [roleViceDean._id, nvPhongHCHT._id],
-        name: "Phó phòng hậu cần - hỗ trợ",
+        name: "Phó phòng hậu cần - tư vấn",
         type: roleChucDanh._id
     });
     const truongPhongHCHT = await Role(vnistDB).create({
         parents: [roleDean._id, nvPhongHCHT._id, phoPhongHCHT._id],
-        name: "Trưởng phòng hậu cần - hỗ trợ",
+        name: "Trưởng phòng hậu cần - tư vấn",
         type: roleChucDanh._id
     });
 
@@ -532,14 +532,14 @@ const initHumanResourceData = async () => {
      */
     const phongBan = [nvPhongMaketing, nvPhongKS, nvPhongQTNS, nvPhongQTMT, nvPhongQTHCNS, nvPhongHCHT, nvPhongTCKT, nvPhongKTDN, nvPhongKTBH]
     let UserRoleFake = [];
-    for(let i=0; i<=200; i++){
-        let index = Math.floor(Math.random()*9);
+    for (let i = 0; i <= 200; i++) {
+        let index = Math.floor(Math.random() * 9);
         let unit = phongBan[index];
-        UserRoleFake = [...UserRoleFake,{
+        UserRoleFake = [...UserRoleFake, {
             userId: users[i]._id,
             roleId: unit._id
         }];
-        usersFake[i] = {...usersFake[i], organizationalUnit: index}
+        usersFake[i] = { ...usersFake[i], organizationalUnit: index }
 
     }
     await UserRole(vnistDB).insertMany(UserRoleFake);
@@ -606,15 +606,15 @@ const initHumanResourceData = async () => {
             userId: users1[15]._id,
             roleId: truongPhongQTHCNS._id
         },
-        { // Nhân viên phòng hậu cần - hỗ trợ
+        { // Nhân viên phòng hậu cần - tư vấn
             userId: users1[16]._id,
             roleId: nvPhongHCHT._id
         },
-        { // Phó phòng hậu cần - hỗ trợ
+        { // Phó phòng hậu cần - tư vấn
             userId: users1[17]._id,
             roleId: phoPhongHCHT._id
         },
-        { // Trưởng phòng hậu cần - hỗ trợ
+        { // Trưởng phòng hậu cần - tư vấn
             userId: users1[18]._id,
             roleId: truongPhongHCHT._id
         },
@@ -674,8 +674,8 @@ const initHumanResourceData = async () => {
         viceDeans: [phoPhongMaketing._id],
         employees: [nvPhongMaketing._id],
         parent: Directorate._id
-    }, ]);
-    console.log('***',phongMaketing);
+    },]);
+    console.log('***', phongMaketing);
 
     const phongKS = await OrganizationalUnit(vnistDB).insertMany([{
         name: "Phòng kiểm soát nội bộ",
@@ -684,7 +684,7 @@ const initHumanResourceData = async () => {
         viceDeans: [phoPhongKS._id],
         employees: [nvPhongKS._id],
         parent: Directorate._id
-    }, ]);
+    },]);
 
     const phongQTNS = await OrganizationalUnit(vnistDB).insertMany([{
         name: "Phòng quản trị nhân sự",
@@ -693,7 +693,7 @@ const initHumanResourceData = async () => {
         viceDeans: [phoPhongQTNS._id],
         employees: [nvPhongQTNS._id],
         parent: Directorate._id
-    }, ]);
+    },]);
 
     const phongQTMT = await OrganizationalUnit(vnistDB).insertMany([{
         name: "Phòng quản trị mục tiêu",
@@ -702,7 +702,7 @@ const initHumanResourceData = async () => {
         viceDeans: [phoPhongQTMT._id],
         employees: [nvPhongQTMT._id],
         parent: phongQTNS[0]._id
-    }, ]);
+    },]);
 
     const phongQTHCNS = await OrganizationalUnit(vnistDB).insertMany([{
         name: "Phòng hành chính nhân sự",
@@ -711,16 +711,16 @@ const initHumanResourceData = async () => {
         viceDeans: [phoPhongQTHCNS._id],
         employees: [nvPhongQTHCNS._id],
         parent: phongQTNS[0]._id
-    }, ]);
+    },]);
 
     const phongHCHT = await OrganizationalUnit(vnistDB).insertMany([{
-        name: "Phòng hậu cần - hỗ trợ",
-        description: "Phòng hậu cần - hỗ trợ Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+        name: "Phòng hậu cần - tư vấn",
+        description: "Phòng hậu cần - tư vấn Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
         deans: [truongPhongHCHT._id],
         viceDeans: [phoPhongHCHT._id],
         employees: [nvPhongHCHT._id],
         parent: phongQTNS[0]._id
-    }, ]);
+    },]);
 
     const phongTCKT = await OrganizationalUnit(vnistDB).insertMany([{
         name: "Phòng tài chính kế toán",
@@ -729,7 +729,7 @@ const initHumanResourceData = async () => {
         viceDeans: [phoPhongTCKT._id],
         employees: [nvPhongTCKT._id],
         parent: Directorate._id
-    }, ]);
+    },]);
 
     const phongKTDN = await OrganizationalUnit(vnistDB).insertMany([{
         name: "Phòng kế toán doanh nghiệp",
@@ -738,7 +738,7 @@ const initHumanResourceData = async () => {
         viceDeans: [phoPhongKTDN._id],
         employees: [nvPhongKTDN._id],
         parent: phongTCKT[0]._id
-    }, ]);
+    },]);
 
     const phongKTBH = await OrganizationalUnit(vnistDB).insertMany([{
         name: "Phòng kế toán bán hàng",
@@ -747,7 +747,7 @@ const initHumanResourceData = async () => {
         viceDeans: [phoPhongKTBH._id],
         employees: [nvPhongKTBH._id],
         parent: phongTCKT[0]._id
-    }, ]);
+    },]);
 
     console.log("Đã tạo dữ liệu phòng ban: ", Directorate, departments);
 
@@ -758,43 +758,43 @@ const initHumanResourceData = async () => {
     ----------------------------------------------------------------------------------------------- */
     let staffFake = [];
     const professionalSkill = ['intermediate_degree', 'colleges', 'university', 'master_degree', 'phd', 'unavailable'];
-    const foreignLanguage =[600,650,700,750,800,850,900];
-    const maritalStatus=['single', 'married'];
-    usersFake.forEach((x, index)=>{
-        let contractEndDate = new Date(`${index<50?"2020":"2021"}-${months[Math.floor(Math.random()*12)]}-${days[Math.floor(Math.random()*19)]}`);
-        staffFake = [...staffFake,{
+    const foreignLanguage = [600, 650, 700, 750, 800, 850, 900];
+    const maritalStatus = ['single', 'married'];
+    usersFake.forEach((x, index) => {
+        let contractEndDate = new Date(`${index < 50 ? "2020" : "2021"}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]}`);
+        staffFake = [...staffFake, {
             avatar: "/upload/human-resource/avatars/avatar5.png",
             fullName: x.name,
-            employeeNumber: `MS${2020100 +index}`,
-            status: 70<=index&&index<=120?"leave":"active",
+            employeeNumber: `MS${2020100 + index}`,
+            status: 70 <= index && index <= 120 ? "leave" : "active",
             company: vnist._id,
-            employeeTimesheetId: `CC${100 +index}`,
-            gender: index<=100? "male": 'female',
-            startingDate: new Date(`${index<70?"2019":(index>120)?'2020':"2018"}-${months[Math.floor(Math.random()*12)]}-${days[Math.floor(Math.random()*19)]}`),
-            leavingDate: 70<=index && index<=120 ? new Date(`2020-${months[Math.floor(Math.random()*12)]}-${days[Math.floor(Math.random()*19)]}`) : null,
+            employeeTimesheetId: `CC${100 + index}`,
+            gender: index <= 100 ? "male" : 'female',
+            startingDate: new Date(`${index < 70 ? "2019" : (index > 120) ? '2020' : "2018"}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]}`),
+            leavingDate: 70 <= index && index <= 120 ? new Date(`2020-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]}`) : null,
             birthdate: new Date(randomDateOld()),
             birthplace: "Hai Bà Trưng - Hà Nội",
-            identityCardNumber: `${163412570+index}`,
+            identityCardNumber: `${163412570 + index}`,
             identityCardDate: new Date(randomDateNew()),
             identityCardAddress: 'Hà Nội',
             emailInCompany: x.email,
             nationality: "Việt Nam",
-            atmNumber: `${102298666+index}`,
+            atmNumber: `${102298666 + index}`,
             bankName: "ViettinBank",
             bankAddress: "Hai Bà Trưng",
             ethnic: "Kinh",
             religion: "Không",
-            maritalStatus: maritalStatus[Math.floor(Math.random()*6)],
-            phoneNumber: 962586290+index,
-            personalEmail: `${removeVietnameseTones(x.name.replace(/ /g,''))}fake11.vnist@gmail.com`,
+            maritalStatus: maritalStatus[Math.floor(Math.random() * 6)],
+            phoneNumber: 962586290 + index,
+            personalEmail: `${removeVietnameseTones(x.name.replace(/ /g, ''))}fake11.vnist@gmail.com`,
             phoneNumber2: 9625845,
-            personalEmail2: `${removeVietnameseTones(x.name.replace(/ /g,''))}fake12.vnist@gmail.com`,
-            homePhone: 978590338+index,
+            personalEmail2: `${removeVietnameseTones(x.name.replace(/ /g, ''))}fake12.vnist@gmail.com`,
+            homePhone: 978590338 + index,
             emergencyContactPerson: randomDateNameMale(),
             relationWithEmergencyContactPerson: "Em trai",
             emergencyContactPersonPhoneNumber: 962586278 + index,
-            emergencyContactPersonEmail: `${removeVietnameseTones(randomDateNameMale().replace(/ /g,''))}@gmail.com`,
-            emergencyContactPersonHomePhone: 962586789+index,
+            emergencyContactPersonEmail: `${removeVietnameseTones(randomDateNameMale().replace(/ /g, ''))}@gmail.com`,
+            emergencyContactPersonHomePhone: 962586789 + index,
             emergencyContactPersonAddress: "Tạ Quang Bửu - Hai Bà Trưng- Hà Nội",
             permanentResidence: `Số ${index} Tạ Quang Bửu - Hai Bà Trưng- Hà Nội`,
             permanentResidenceCountry: "Việt Nam",
@@ -807,19 +807,19 @@ const initHumanResourceData = async () => {
             temporaryResidenceDistrict: "Hai Bà Trưng",
             temporaryResidenceWard: "Bạch Mai",
             educationalLevel: "12/12",
-            foreignLanguage: `${foreignLanguage[Math.floor(Math.random()*7)]} Toeic`,
-            professionalSkill: professionalSkill[Math.floor(Math.random()*6)],
+            foreignLanguage: `${foreignLanguage[Math.floor(Math.random() * 7)]} Toeic`,
+            professionalSkill: professionalSkill[Math.floor(Math.random() * 6)],
             healthInsuranceNumber: `N1236589${index}`,
-            healthInsuranceStartDate: new Date(`2019-${months[Math.floor(Math.random()*12)]}-${days[Math.floor(Math.random()*19)]}`),
-            healthInsuranceEndDate: new Date(`2020-${months[Math.floor(Math.random()*12)]}-${days[Math.floor(Math.random()*19)]}`),
-            socialInsuranceNumber: `XH${1569874+index}`,
+            healthInsuranceStartDate: new Date(`2019-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]}`),
+            healthInsuranceEndDate: new Date(`2020-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]}`),
+            socialInsuranceNumber: `XH${1569874 + index}`,
             socialInsuranceDetails: [{
                 company: "Vnist",
                 position: "Nhân viên",
                 startDate: new Date("2020-01"),
                 endDate: new Date("2020-05")
             }],
-            taxNumber: `${12315+index}`,
+            taxNumber: `${12315 + index}`,
             taxRepresentative: randomDateNameMale(),
             taxDateOfIssue: new Date("12/08/2019"),
             taxAuthority: "Chi cục thuế Hai Bà Trưng",
@@ -845,11 +845,11 @@ const initHumanResourceData = async () => {
             contractEndDate: contractEndDate,
             contracts: [{
                 name: "Thực tập",
-                contractType: `${index<50?"Phụ thuộc":(index>150?'Hợp đồng ngắn hạn hạn':'Hợp đồng dài hạn')}`,
-                startDate:  new Date(`2019-${months[Math.floor(Math.random()*12)]}-${days[Math.floor(Math.random()*19)]}`),
+                contractType: `${index < 50 ? "Phụ thuộc" : (index > 150 ? 'Hợp đồng ngắn hạn hạn' : 'Hợp đồng dài hạn')}`,
+                startDate: new Date(`2019-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]}`),
                 endDate: contractEndDate,
             }],
-            archivedRecordNumber: `T3 - ${1234690+index}`,
+            archivedRecordNumber: `T3 - ${1234690 + index}`,
             files: [],
         }]
     })
@@ -3038,20 +3038,20 @@ const initHumanResourceData = async () => {
     ----------------------------------------------------------------------------------------------- */
     const units = [phongMaketing, phongKS, phongQTNS, phongQTMT, phongQTHCNS, phongHCHT, phongTCKT, phongKTDN, phongKTBH];
     console.log("Khởi tạo dữ liệu nghỉ phép!");
-    let reason=['Về quê','Đi du lịch','Nghỉ ốm'];
+    let reason = ['Về quê', 'Đi du lịch', 'Nghỉ ốm'];
     let statusAnnualLeave = ['approved', 'waiting_for_approval'];
     let AnnualLeaveFake = [];
-    usersFake.forEach((x,index)=>{
-        let month = months[Math.floor(Math.random()*12)];
+    usersFake.forEach((x, index) => {
+        let month = months[Math.floor(Math.random() * 12)];
         let unit = units[x.organizationalUnit];
-        AnnualLeaveFake=[...AnnualLeaveFake,{
+        AnnualLeaveFake = [...AnnualLeaveFake, {
             company: vnist._id,
             employee: employeesFake[index]._id,
             organizationalUnit: unit[0]._id,
             startDate: `2020-${month}-05`,
             endDate: `2020-${month}-07`,
-            status: statusAnnualLeave[Math.floor(Math.random()*2)],
-            reason: reason[Math.floor(Math.random()*3)],
+            status: statusAnnualLeave[Math.floor(Math.random() * 2)],
+            reason: reason[Math.floor(Math.random() * 3)],
         }]
     });
     await AnnualLeave(vnistDB).insertMany(AnnualLeaveFake)
@@ -3190,268 +3190,268 @@ const initHumanResourceData = async () => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu lương nhân viên!");
-    let SalaryFake=[];
-    usersFake.forEach((x,index)=>{
+    let SalaryFake = [];
+    usersFake.forEach((x, index) => {
         let unit = units[x.organizationalUnit];
-        SalaryFake=[...SalaryFake,{
+        SalaryFake = [...SalaryFake, {
             company: vnist._id,
             employee: employeesFake[index]._id,
-            month: `2020-${months[Math.floor(Math.random()*12)]}`,
+            month: `2020-${months[Math.floor(Math.random() * 12)]}`,
             organizationalUnit: unit[0]._id,
-            mainSalary: (index%19)*10000000+Math.floor(Math.random()*20)*1000000,
+            mainSalary: (index % 19) * 10000000 + Math.floor(Math.random() * 20) * 1000000,
             unit: 'VND',
             bonus: [{
                 nameBonus: "Thưởng dự án",
-                number:  (index%19)*1000000+Math.floor(Math.random()*20)*1000000
+                number: (index % 19) * 1000000 + Math.floor(Math.random() * 20) * 1000000
             }],
         }]
     });
 
     await Salary(vnistDB).insertMany(SalaryFake);
     await Salary(vnistDB).insertMany([{
-            company: vnist._id,
-            employee: employees[1]._id,
-            month: "2019-08",
-            organizationalUnit: Directorate._id,
-            mainSalary: "21000000",
-            unit: 'VND',
-            bonus: [{
-                nameBonus: "Thưởng dự án",
-                number: "1000000"
-            }],
-        }, {
-            company: vnist._id,
-            employee: employees[1]._id,
-            organizationalUnit: Directorate._id,
-            month: "2019-09",
-            mainSalary: "20000000",
-            unit: 'VND',
-            bonus: [{
-                nameBonus: "Thưởng tháng",
-                number: "1000000"
-            }],
-        },
-        {
-            company: vnist._id,
-            employee: employees[1]._id,
-            organizationalUnit: Directorate._id,
-            month: "2019-10",
-            mainSalary: "19000000",
-            unit: 'VND',
-            bonus: [{
-                nameBonus: "Thưởng tháng",
-                number: "1000000"
-            }],
-        },
-        {
-            company: vnist._id,
-            employee: employees[1]._id,
-            organizationalUnit: Directorate._id,
-            month: "2019-11",
-            mainSalary: "17000000",
-            unit: 'VND',
-            bonus: [{
-                nameBonus: "Thưởng tháng",
-                number: "1000000"
-            }],
-        },
-        {
-            company: vnist._id,
-            employee: employees[1]._id,
-            organizationalUnit: Directorate._id,
-            month: "2019-12",
-            mainSalary: "13000000",
-            unit: 'VND',
-            bonus: [{
-                nameBonus: "Thưởng tháng",
-                number: "1000000"
-            }],
-        },
-        {
-            company: vnist._id,
-            employee: employees[1]._id,
-            organizationalUnit: Directorate._id,
-            month: "2020-01",
-            mainSalary: "14000000",
-            unit: 'VND',
-            bonus: [{
-                nameBonus: "Thưởng dự án",
-                number: "1000000"
-            }],
-        },
-        {
-            company: vnist._id,
-            employee: employees[1]._id,
-            organizationalUnit: Directorate._id,
-            month: "2020-02",
-            mainSalary: "14000000",
-            unit: 'VND',
-            bonus: [{
-                nameBonus: "Thưởng tháng",
-                number: "1000000"
-            }],
-        },
-        {
-            company: vnist._id,
-            employee: employees[1]._id,
-            organizationalUnit: Directorate._id,
-            month: "2020-03",
-            mainSalary: "10000000",
-            unit: 'VND',
-            bonus: [{
-                nameBonus: "Thưởng dự án",
-                number: "1000000"
-            }],
-        },
-        {
-            company: vnist._id,
-            employee: employees[1]._id,
-            organizationalUnit: Directorate._id,
-            month: "2020-04",
-            mainSalary: "16000000",
-            unit: 'VND',
-            bonus: [{
-                nameBonus: "Thưởng dự án",
-                number: "1000000"
-            }],
-        },
-        {
-            company: vnist._id,
-            employee: employees[1]._id,
-            organizationalUnit: Directorate._id,
-            month: "2020-05",
-            mainSalary: "18000000",
-            unit: 'VND',
-            bonus: [{
-                nameBonus: "Thưởng tháng",
-                number: "1000000"
-            }],
-        },
-        {
-            company: vnist._id,
-            employee: employees[1]._id,
-            organizationalUnit: Directorate._id,
-            month: "2020-06",
-            mainSalary: "17000000",
-            unit: 'VND',
-            bonus: [{
-                nameBonus: "Thưởng dự án",
-                number: "1000000"
-            }],
-        },
-        {
-            company: vnist._id,
-            employee: employees[1]._id,
-            organizationalUnit: Directorate._id,
-            month: "2020-07",
-            mainSalary: "12000000",
-            unit: 'VND',
-            bonus: [{
-                nameBonus: "Thưởng tháng",
-                number: "1000000"
-            }],
-        },
-        {
-            company: vnist._id,
-            employee: employees[1]._id,
-            organizationalUnit: Directorate._id,
-            month: "2020-08",
-            mainSalary: "11000000",
-            unit: 'VND',
-            bonus: [{
-                nameBonus: "Thưởng tháng",
-                number: "1000000"
-            }],
-        },
-        {
-            company: vnist._id,
-            employee: employees[1]._id,
-            organizationalUnit: Directorate._id,
-            month: "2020-09",
-            mainSalary: "15000000",
-            unit: 'VND',
-            bonus: [{
-                nameBonus: "Thưởng tháng",
-                number: "1000000"
-            }],
-        },
+        company: vnist._id,
+        employee: employees[1]._id,
+        month: "2019-08",
+        organizationalUnit: Directorate._id,
+        mainSalary: "21000000",
+        unit: 'VND',
+        bonus: [{
+            nameBonus: "Thưởng dự án",
+            number: "1000000"
+        }],
+    }, {
+        company: vnist._id,
+        employee: employees[1]._id,
+        organizationalUnit: Directorate._id,
+        month: "2019-09",
+        mainSalary: "20000000",
+        unit: 'VND',
+        bonus: [{
+            nameBonus: "Thưởng tháng",
+            number: "1000000"
+        }],
+    },
+    {
+        company: vnist._id,
+        employee: employees[1]._id,
+        organizationalUnit: Directorate._id,
+        month: "2019-10",
+        mainSalary: "19000000",
+        unit: 'VND',
+        bonus: [{
+            nameBonus: "Thưởng tháng",
+            number: "1000000"
+        }],
+    },
+    {
+        company: vnist._id,
+        employee: employees[1]._id,
+        organizationalUnit: Directorate._id,
+        month: "2019-11",
+        mainSalary: "17000000",
+        unit: 'VND',
+        bonus: [{
+            nameBonus: "Thưởng tháng",
+            number: "1000000"
+        }],
+    },
+    {
+        company: vnist._id,
+        employee: employees[1]._id,
+        organizationalUnit: Directorate._id,
+        month: "2019-12",
+        mainSalary: "13000000",
+        unit: 'VND',
+        bonus: [{
+            nameBonus: "Thưởng tháng",
+            number: "1000000"
+        }],
+    },
+    {
+        company: vnist._id,
+        employee: employees[1]._id,
+        organizationalUnit: Directorate._id,
+        month: "2020-01",
+        mainSalary: "14000000",
+        unit: 'VND',
+        bonus: [{
+            nameBonus: "Thưởng dự án",
+            number: "1000000"
+        }],
+    },
+    {
+        company: vnist._id,
+        employee: employees[1]._id,
+        organizationalUnit: Directorate._id,
+        month: "2020-02",
+        mainSalary: "14000000",
+        unit: 'VND',
+        bonus: [{
+            nameBonus: "Thưởng tháng",
+            number: "1000000"
+        }],
+    },
+    {
+        company: vnist._id,
+        employee: employees[1]._id,
+        organizationalUnit: Directorate._id,
+        month: "2020-03",
+        mainSalary: "10000000",
+        unit: 'VND',
+        bonus: [{
+            nameBonus: "Thưởng dự án",
+            number: "1000000"
+        }],
+    },
+    {
+        company: vnist._id,
+        employee: employees[1]._id,
+        organizationalUnit: Directorate._id,
+        month: "2020-04",
+        mainSalary: "16000000",
+        unit: 'VND',
+        bonus: [{
+            nameBonus: "Thưởng dự án",
+            number: "1000000"
+        }],
+    },
+    {
+        company: vnist._id,
+        employee: employees[1]._id,
+        organizationalUnit: Directorate._id,
+        month: "2020-05",
+        mainSalary: "18000000",
+        unit: 'VND',
+        bonus: [{
+            nameBonus: "Thưởng tháng",
+            number: "1000000"
+        }],
+    },
+    {
+        company: vnist._id,
+        employee: employees[1]._id,
+        organizationalUnit: Directorate._id,
+        month: "2020-06",
+        mainSalary: "17000000",
+        unit: 'VND',
+        bonus: [{
+            nameBonus: "Thưởng dự án",
+            number: "1000000"
+        }],
+    },
+    {
+        company: vnist._id,
+        employee: employees[1]._id,
+        organizationalUnit: Directorate._id,
+        month: "2020-07",
+        mainSalary: "12000000",
+        unit: 'VND',
+        bonus: [{
+            nameBonus: "Thưởng tháng",
+            number: "1000000"
+        }],
+    },
+    {
+        company: vnist._id,
+        employee: employees[1]._id,
+        organizationalUnit: Directorate._id,
+        month: "2020-08",
+        mainSalary: "11000000",
+        unit: 'VND',
+        bonus: [{
+            nameBonus: "Thưởng tháng",
+            number: "1000000"
+        }],
+    },
+    {
+        company: vnist._id,
+        employee: employees[1]._id,
+        organizationalUnit: Directorate._id,
+        month: "2020-09",
+        mainSalary: "15000000",
+        unit: 'VND',
+        bonus: [{
+            nameBonus: "Thưởng tháng",
+            number: "1000000"
+        }],
+    },
 
-        {
-            company: vnist._id,
-            employee: employees[3]._id,
-            organizationalUnit: phongMaketing[0]._id,
-            month: "2020-09",
-            mainSalary: "15000000",
-            unit: 'VND',
-            bonus: [{
-                nameBonus: "Thưởng tháng",
-                number: "1000000"
-            }],
-        },
-        {
-            company: vnist._id,
-            employee: employees[4]._id,
-            organizationalUnit: phongMaketing[0]._id,
-            month: "2020-09",
-            mainSalary: "15000000",
-            unit: 'VND',
-            bonus: [{
-                nameBonus: "Thưởng tháng",
-                number: "1000000"
-            }],
-        },
+    {
+        company: vnist._id,
+        employee: employees[3]._id,
+        organizationalUnit: phongMaketing[0]._id,
+        month: "2020-09",
+        mainSalary: "15000000",
+        unit: 'VND',
+        bonus: [{
+            nameBonus: "Thưởng tháng",
+            number: "1000000"
+        }],
+    },
+    {
+        company: vnist._id,
+        employee: employees[4]._id,
+        organizationalUnit: phongMaketing[0]._id,
+        month: "2020-09",
+        mainSalary: "15000000",
+        unit: 'VND',
+        bonus: [{
+            nameBonus: "Thưởng tháng",
+            number: "1000000"
+        }],
+    },
 
-        {
-            company: vnist._id,
-            employee: employees[5]._id,
-            organizationalUnit: phongMaketing[0]._id,
-            month: "2020-09",
-            mainSalary: "15000000",
-            unit: 'VND',
-            bonus: [{
-                nameBonus: "Thưởng tháng",
-                number: "1000000"
-            }],
-        },
+    {
+        company: vnist._id,
+        employee: employees[5]._id,
+        organizationalUnit: phongMaketing[0]._id,
+        month: "2020-09",
+        mainSalary: "15000000",
+        unit: 'VND',
+        bonus: [{
+            nameBonus: "Thưởng tháng",
+            number: "1000000"
+        }],
+    },
 
-        {
-            company: vnist._id,
-            employee: employees[6]._id,
-            organizationalUnit: phongMaketing[0]._id,
-            month: "2020-09",
-            mainSalary: "18000000",
-            unit: 'VND',
-            bonus: [{
-                nameBonus: "Thưởng tháng",
-                number: "1000000"
-            }],
-        },
+    {
+        company: vnist._id,
+        employee: employees[6]._id,
+        organizationalUnit: phongMaketing[0]._id,
+        month: "2020-09",
+        mainSalary: "18000000",
+        unit: 'VND',
+        bonus: [{
+            nameBonus: "Thưởng tháng",
+            number: "1000000"
+        }],
+    },
 
-        {
-            company: vnist._id,
-            employee: employees[7]._id,
-            organizationalUnit: phongMaketing[0]._id,
-            month: "2020-09",
-            mainSalary: "15000000",
-            unit: 'VND',
-            bonus: [{
-                nameBonus: "Thưởng tháng",
-                number: "1000000"
-            }],
-        },
+    {
+        company: vnist._id,
+        employee: employees[7]._id,
+        organizationalUnit: phongMaketing[0]._id,
+        month: "2020-09",
+        mainSalary: "15000000",
+        unit: 'VND',
+        bonus: [{
+            nameBonus: "Thưởng tháng",
+            number: "1000000"
+        }],
+    },
 
-        {
-            company: vnist._id,
-            employee: employees[8]._id,
-            organizationalUnit: phongMaketing[0]._id,
-            month: "2020-09",
-            mainSalary: "15000000",
-            unit: 'VND',
-            bonus: [{
-                nameBonus: "Thưởng tháng",
-                number: "1000000"
-            }],
-        },
+    {
+        company: vnist._id,
+        employee: employees[8]._id,
+        organizationalUnit: phongMaketing[0]._id,
+        month: "2020-09",
+        mainSalary: "15000000",
+        unit: 'VND',
+        bonus: [{
+            nameBonus: "Thưởng tháng",
+            number: "1000000"
+        }],
+    },
 
 
 
@@ -3465,15 +3465,15 @@ const initHumanResourceData = async () => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu khen thưởng!");
-    let commendationFake=[];
-    usersFake.forEach((x,index)=>{
+    let commendationFake = [];
+    usersFake.forEach((x, index) => {
         let unit = units[x.organizationalUnit];
-        commendationFake=[...commendationFake,{
+        commendationFake = [...commendationFake, {
             company: vnist._id,
             employee: employeesFake[index]._id,
-            decisionNumber: `${12345+index}`,
+            decisionNumber: `${12345 + index}`,
             organizationalUnit: unit[0]._id,
-            startDate: new Date(`${index>100?"2020":"2019"}-${months[Math.floor(Math.random()*12)]}-${days[Math.floor(Math.random()*19)]}`),
+            startDate: new Date(`${index > 100 ? "2020" : "2019"}-${months[Math.floor(Math.random() * 12)]}-${days[Math.floor(Math.random() * 19)]}`),
             type: "Thưởng tiền",
             reason: "Vượt doanh số",
         }]
@@ -3481,59 +3481,59 @@ const initHumanResourceData = async () => {
     await Commendation(vnistDB).insertMany(commendationFake);
 
     await Commendation(vnistDB).insertMany([{
-            company: vnist._id,
-            employee: employees[1]._id,
-            decisionNumber: "123",
-            organizationalUnit: departments._id,
-            startDate: "2020-02-02",
-            type: "Thưởng tiền",
-            reason: "Vượt doanh số",
-        },
-        {
-            company: vnist._id,
-            employee: employees[1]._id,
-            decisionNumber: "1234",
-            organizationalUnit: departments._id,
-            startDate: "2020-02-02",
-            type: "Thưởng tiền",
-            reason: "Vượt doanh số 500 triệu",
-        },
-        {
-            company: vnist._id,
-            employee: employees[3]._id,
-            decisionNumber: "12345",
-            organizationalUnit: phongMaketing[0]._id,
-            startDate: "2020-02-02",
-            type: "Thưởng tiền",
-            reason: "Vượt doanh số 500 triệu",
-        },
-        {
-            company: vnist._id,
-            employee: employees[4]._id,
-            decisionNumber: "12346",
-            organizationalUnit: phongMaketing[0]._id,
-            startDate: "2020-09-02",
-            type: "Thưởng tiền",
-            reason: "Vượt doanh số 500 triệu",
-        },
-        {
-            company: vnist._id,
-            employee: employees[5]._id,
-            decisionNumber: "12347",
-            organizationalUnit: phongMaketing[0]._id,
-            startDate: "2020-09-02",
-            type: "Thưởng tiền",
-            reason: "Vượt doanh số 500 triệu",
-        },
-        {
-            company: vnist._id,
-            employee: employees[6]._id,
-            decisionNumber: "12348",
-            organizationalUnit: phongKS[0]._id,
-            startDate: "2020-09-02",
-            type: "Thưởng tiền",
-            reason: "Vượt doanh số 500 triệu",
-        }
+        company: vnist._id,
+        employee: employees[1]._id,
+        decisionNumber: "123",
+        organizationalUnit: departments._id,
+        startDate: "2020-02-02",
+        type: "Thưởng tiền",
+        reason: "Vượt doanh số",
+    },
+    {
+        company: vnist._id,
+        employee: employees[1]._id,
+        decisionNumber: "1234",
+        organizationalUnit: departments._id,
+        startDate: "2020-02-02",
+        type: "Thưởng tiền",
+        reason: "Vượt doanh số 500 triệu",
+    },
+    {
+        company: vnist._id,
+        employee: employees[3]._id,
+        decisionNumber: "12345",
+        organizationalUnit: phongMaketing[0]._id,
+        startDate: "2020-02-02",
+        type: "Thưởng tiền",
+        reason: "Vượt doanh số 500 triệu",
+    },
+    {
+        company: vnist._id,
+        employee: employees[4]._id,
+        decisionNumber: "12346",
+        organizationalUnit: phongMaketing[0]._id,
+        startDate: "2020-09-02",
+        type: "Thưởng tiền",
+        reason: "Vượt doanh số 500 triệu",
+    },
+    {
+        company: vnist._id,
+        employee: employees[5]._id,
+        decisionNumber: "12347",
+        organizationalUnit: phongMaketing[0]._id,
+        startDate: "2020-09-02",
+        type: "Thưởng tiền",
+        reason: "Vượt doanh số 500 triệu",
+    },
+    {
+        company: vnist._id,
+        employee: employees[6]._id,
+        decisionNumber: "12348",
+        organizationalUnit: phongKS[0]._id,
+        startDate: "2020-09-02",
+        type: "Thưởng tiền",
+        reason: "Vượt doanh số 500 triệu",
+    }
     ])
     console.log(`Xong! Thông tin khen thưởng đã được tạo`);
 
@@ -3543,91 +3543,91 @@ const initHumanResourceData = async () => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu kỷ luật!");
-    let disciplineFake=[];
-    usersFake.forEach((x,index)=>{
+    let disciplineFake = [];
+    usersFake.forEach((x, index) => {
         let unit = units[x.organizationalUnit];
-        let day = days[Math.floor(Math.random()*19)];
-        disciplineFake=[...disciplineFake,{
+        let day = days[Math.floor(Math.random() * 19)];
+        disciplineFake = [...disciplineFake, {
             company: vnist._id,
             employee: employeesFake[index]._id,
-            decisionNumber: `${15645+index}`,
+            decisionNumber: `${15645 + index}`,
             organizationalUnit: unit[0]._id,
-            startDate: new Date(`${index>100?"2020":"2019"}-${months[Math.floor(Math.random()*6)]}-${day}`),
-            endDate: new Date(`${index>100?"2020":"2019"}-${months[Math.floor(Math.random()*6)+6]}-${day}`),
+            startDate: new Date(`${index > 100 ? "2020" : "2019"}-${months[Math.floor(Math.random() * 6)]}-${day}`),
+            endDate: new Date(`${index > 100 ? "2020" : "2019"}-${months[Math.floor(Math.random() * 6) + 6]}-${day}`),
             type: "Phạt tiền",
             reason: "Không làm đủ công",
         }]
     });
     await Discipline(vnistDB).insertMany(disciplineFake);
     await Discipline(vnistDB).insertMany([{
-            company: vnist._id,
-            employee: employees[1]._id,
-            decisionNumber: "1456",
-            organizationalUnit: departments._id,
-            startDate: "2020-09-07",
-            endDate: "2020-09-09",
-            type: "Phạt tiền",
-            reason: "Không làm đủ công",
-        }, {
-            company: vnist._id,
-            employee: employees[1]._id,
-            decisionNumber: "1457",
-            organizationalUnit: departments._id,
-            startDate: "2020-09-07",
-            endDate: "2020-09-09",
-            type: "Phạt tiền",
-            reason: "Không đủ doanh số",
-        },
-        {
-            company: vnist._id,
-            employee: employees[3]._id,
-            decisionNumber: "1458",
-            organizationalUnit: phongMaketing[0]._id,
-            startDate: "2020-08-07",
-            endDate: "2020-08-09",
-            type: "Phạt tiền",
-            reason: "Không đủ doanh số",
-        },
-        {
-            company: vnist._id,
-            employee: employees[3]._id,
-            decisionNumber: "1459",
-            organizationalUnit: phongMaketing[0]._id,
-            startDate: "2020-09-07",
-            endDate: "2020-09-09",
-            type: "Phạt tiền",
-            reason: "Không đủ doanh số",
-        },
-        {
-            company: vnist._id,
-            employee: employees[4]._id,
-            decisionNumber: "1460",
-            organizationalUnit: phongMaketing[0]._id,
-            startDate: "2020-09-07",
-            endDate: "2020-09-09",
-            type: "Phạt tiền",
-            reason: "Không đủ doanh số",
-        },
-        {
-            company: vnist._id,
-            employee: employees[5]._id,
-            decisionNumber: "1461",
-            organizationalUnit: phongMaketing[0]._id,
-            startDate: "2020-09-10",
-            endDate: "2020-10-13",
-            type: "Phạt tiền",
-            reason: "Không đủ doanh số",
-        },
-        {
-            company: vnist._id,
-            employee: employees[6]._id,
-            decisionNumber: "1462",
-            organizationalUnit: phongKS[0]._id,
-            startDate: "2020-09-20",
-            endDate: "2020-09-25",
-            type: "Phạt tiền",
-            reason: "Không đủ doanh số",
-        },
+        company: vnist._id,
+        employee: employees[1]._id,
+        decisionNumber: "1456",
+        organizationalUnit: departments._id,
+        startDate: "2020-09-07",
+        endDate: "2020-09-09",
+        type: "Phạt tiền",
+        reason: "Không làm đủ công",
+    }, {
+        company: vnist._id,
+        employee: employees[1]._id,
+        decisionNumber: "1457",
+        organizationalUnit: departments._id,
+        startDate: "2020-09-07",
+        endDate: "2020-09-09",
+        type: "Phạt tiền",
+        reason: "Không đủ doanh số",
+    },
+    {
+        company: vnist._id,
+        employee: employees[3]._id,
+        decisionNumber: "1458",
+        organizationalUnit: phongMaketing[0]._id,
+        startDate: "2020-08-07",
+        endDate: "2020-08-09",
+        type: "Phạt tiền",
+        reason: "Không đủ doanh số",
+    },
+    {
+        company: vnist._id,
+        employee: employees[3]._id,
+        decisionNumber: "1459",
+        organizationalUnit: phongMaketing[0]._id,
+        startDate: "2020-09-07",
+        endDate: "2020-09-09",
+        type: "Phạt tiền",
+        reason: "Không đủ doanh số",
+    },
+    {
+        company: vnist._id,
+        employee: employees[4]._id,
+        decisionNumber: "1460",
+        organizationalUnit: phongMaketing[0]._id,
+        startDate: "2020-09-07",
+        endDate: "2020-09-09",
+        type: "Phạt tiền",
+        reason: "Không đủ doanh số",
+    },
+    {
+        company: vnist._id,
+        employee: employees[5]._id,
+        decisionNumber: "1461",
+        organizationalUnit: phongMaketing[0]._id,
+        startDate: "2020-09-10",
+        endDate: "2020-10-13",
+        type: "Phạt tiền",
+        reason: "Không đủ doanh số",
+    },
+    {
+        company: vnist._id,
+        employee: employees[6]._id,
+        decisionNumber: "1462",
+        organizationalUnit: phongKS[0]._id,
+        startDate: "2020-09-20",
+        endDate: "2020-09-25",
+        type: "Phạt tiền",
+        reason: "Không đủ doanh số",
+    },
 
 
     ])
@@ -3641,42 +3641,42 @@ const initHumanResourceData = async () => {
     console.log("Khởi tạo dữ liệu chấm công!");
     console.log(`Xong! Thông tin chấm công đã được tạo`);
     let timesheetFake = [];
-    let  timekeepingByShift={
+    let timekeepingByShift = {
         shift1s: [true, false, true, true, false, true, false, true, true, true, true, false, true, true, true, true, false, true, true, true, true, true, false, true, false, true, false, true, false, true, false],
         shift2s: [false, true, true, true, false, true, false, true, false, true, true, true, false, true, false, true, false, true, true, true, true, false, true, true, true, true, true, false, true, false, true],
         shift3s: [true, false, true, false, false, false, false, true, false, true, false, false, true, false, false, false, false, false, true, false, true, false, true, false, false, false, false, false, false, false, true],
     };
 
-    let monthTimesheet = ['01','02','03','04','05','06','07','08','09','10','11'];
-    monthTimesheet.forEach(y=>{
-        usersFake.forEach((x,index)=>{
-            timesheetFake=[...timesheetFake,{
+    let monthTimesheet = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11'];
+    monthTimesheet.forEach(y => {
+        usersFake.forEach((x, index) => {
+            timesheetFake = [...timesheetFake, {
                 company: vnist._id,
                 employee: employeesFake[index]._id,
                 month: `2020-${y}`,
-                timekeepingByShift:{
-                    shift1s: timekeepingByShift[`shift${Math.floor(Math.random()*3)+1}s`],
-                    shift2s: timekeepingByShift[`shift${Math.floor(Math.random()*3)+1}s`],
-                    shift3s: timekeepingByShift[`shift${Math.floor(Math.random()*3)+1}s`],
+                timekeepingByShift: {
+                    shift1s: timekeepingByShift[`shift${Math.floor(Math.random() * 3) + 1}s`],
+                    shift2s: timekeepingByShift[`shift${Math.floor(Math.random() * 3) + 1}s`],
+                    shift3s: timekeepingByShift[`shift${Math.floor(Math.random() * 3) + 1}s`],
                 }
             }];
         });
     })
 
-    usersFake.forEach((x,index)=>{
-        timesheetFake=[...timesheetFake,{
+    usersFake.forEach((x, index) => {
+        timesheetFake = [...timesheetFake, {
             company: vnist._id,
             employee: employeesFake[index]._id,
-            month: `2019-${months[Math.floor(Math.random()*12)]}`,
-            timekeepingByShift:{
-                shift1s: timekeepingByShift[`shift${Math.floor(Math.random()*3)+1}s`],
-                shift2s: timekeepingByShift[`shift${Math.floor(Math.random()*3)+1}s`],
-                shift3s: timekeepingByShift[`shift${Math.floor(Math.random()*3)+1}s`],
+            month: `2019-${months[Math.floor(Math.random() * 12)]}`,
+            timekeepingByShift: {
+                shift1s: timekeepingByShift[`shift${Math.floor(Math.random() * 3) + 1}s`],
+                shift2s: timekeepingByShift[`shift${Math.floor(Math.random() * 3) + 1}s`],
+                shift3s: timekeepingByShift[`shift${Math.floor(Math.random() * 3) + 1}s`],
             }
         }];
     });
 
-    timesheetFake = timesheetFake.map(x=>{
+    timesheetFake = timesheetFake.map(x => {
         let timekeepingByShift = x.timekeepingByShift;
         let shift1s = timekeepingByShift.shift1s.map(x => x ? 4 : 0);
         let shift2s = timekeepingByShift.shift2s.map(x => x ? 4 : 0);
@@ -3694,9 +3694,9 @@ const initHumanResourceData = async () => {
         })
         return {
             ...x,
-            totalHours:totalHours,
-            timekeepingByHours:timekeepingByHours,
-            totalHoursOff:0 - totalOverTimeHours,
+            totalHours: totalHours,
+            timekeepingByHours: timekeepingByHours,
+            totalHoursOff: 0 - totalOverTimeHours,
         }
     });
     await Timesheet(vnistDB).insertMany(timesheetFake);

@@ -162,7 +162,7 @@ const TaskSchema = new Schema({
         ref: 'User',
         required: true
     }],
-    consultedEmployees: [{ //người hỗ trợ
+    consultedEmployees: [{ //người tư vấn
         type: Schema.Types.ObjectId,
         ref: 'User'
     }],
@@ -192,7 +192,7 @@ const TaskSchema = new Schema({
                 type: Schema.Types.ObjectId,
                 ref: 'OrganizationalUnit',
             },
-            role: { // người thực hiện: responsible, người hỗ trợ: consulted, người phê duyệt: accountable
+            role: { // người thực hiện: responsible, người tư vấn: consulted, người phê duyệt: accountable
                 type: String,
                 required: true,
                 enum: ["responsible", "consulted", "accountable"]
@@ -396,7 +396,7 @@ const TaskSchema = new Schema({
                 required: true
             }
         }],
-        evaluations: [{ // Đánh giá actions (Dù là người quản lý, phê duyệt, hỗ trợ, ai cũng có thể đánh giá, nhưng chỉ tính đánh gía của người phê duyệt)
+        evaluations: [{ // Đánh giá actions (Dù là người quản lý, phê duyệt, tư vấn, ai cũng có thể đánh giá, nhưng chỉ tính đánh gía của người phê duyệt)
             creator: {
                 type: Schema.Types.ObjectId,
                 ref: 'User',
@@ -553,7 +553,7 @@ Edit cho Người thực hiện
 Điểm công việc được tính tự động (chưa kết thúc => mặc định là -1)
 Có ba loại điểm: automaticPoint, employeePoint, approvedPoint lần lượt cho các đối tượng như sau:
 Điểm cho người thực hiện: điểm công việc tự động + tự nhận + quản lý chấm. Ở đây sẽ suggest cho quản lý chấm điểm là (điểm công việc tự động + điểm thực hiện tự nhận)/2
-Điểm hỗ trợ: điểm công việc tự động + tự nhận + quản lý chấm. Ở đây sẽ suggest cho quản lý chấm điểm là (điểm công việc tự động + điểm hỗ trợ tự nhận)/2
+Điểm tư vấn: điểm công việc tự động + tự nhận + quản lý chấm. Ở đây sẽ suggest cho quản lý chấm điểm là (điểm công việc tự động + điểm tư vấn tự nhận)/2
 Điểm quản lý: điểm công việc tự động + tự nhận + (điểm công việc + điểm tự nhận)/2. Lưu ý approvedPoint của quản lý là (điểm công việc + điểm quản lý tự nhận)/2
 Điểm quan sát: không có
 Lưu ý: Tất cả các điểm đều được công khai
