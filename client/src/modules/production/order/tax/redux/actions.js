@@ -1,8 +1,8 @@
 import { TaxConstants } from './constants';
 import { TaxServices } from './services';
 
-export const taxActions = {
-    createQuote,
+export const TaxActions = {
+    createNewTax,
     getAllTaxs,
     getTaxById,
     updateTax,
@@ -11,13 +11,13 @@ export const taxActions = {
     getTaxByCode
 }
 
-function createQuote (data) {
+function createNewTax (data) {
     return (dispatch) => {
         dispatch({
             type: TaxConstants.CREATE_TAX_REQUEST
         });
 
-        TaxServices.createQuote(data)
+        TaxServices.createNewTax(data)
         .then((res) => {
             dispatch({
                 type: TaxConstants.CREATE_TAX_SUCCESS,

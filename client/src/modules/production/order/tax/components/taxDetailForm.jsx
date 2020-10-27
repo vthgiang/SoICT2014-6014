@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withTranslate } from "react-redux-multilingual";
 import { connect } from "react-redux";
 import { DialogModal } from "../../../../../common-components";
-import { taxActions } from "../redux/actions";
+import { TaxActions } from "../redux/actions";
 
 class TaxDetailForm extends Component {
     constructor(props) {
@@ -47,9 +47,7 @@ class TaxDetailForm extends Component {
                             </div>
                             <div className={`form-group`}>
                                 <strong>Người tạo :&emsp;</strong>
-                                {currentTax.creator
-                                    ? currentTax.creator.name
-                                    : ""}
+                                {currentTax.creator ? currentTax.creator.name : ""}
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -63,16 +61,11 @@ class TaxDetailForm extends Component {
                             </div>
                             <div className={`form-group`}>
                                 <strong>Trạng thái :&emsp;</strong>
-                                {currentTax.status
-                                    ? "Đang hiệu lực"
-                                    : "Hết hiệu lực"}
+                                {currentTax.status ? "Đang hiệu lực" : "Hết hiệu lực"}
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <table
-                                id="tax-table"
-                                className="table table-striped table-bordered table-hover"
-                            >
+                            <table id="tax-table" className="table table-striped table-bordered table-hover">
                                 <thead>
                                     <tr>
                                         <th>STT</th>
@@ -107,10 +100,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    getTaxById: taxActions.getTaxById,
+    getTaxById: TaxActions.getTaxById,
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(withTranslate(TaxDetailForm));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(TaxDetailForm));
