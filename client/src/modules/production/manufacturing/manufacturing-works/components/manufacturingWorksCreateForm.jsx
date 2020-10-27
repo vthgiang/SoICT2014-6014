@@ -75,10 +75,10 @@ class ManufacturingWorksCreateForm extends Component {
 
     handleForemanChange = (value) => {
         let foremanValue = value[0];
-        this.validateForeMan(foremanValue, true);
+        this.validateForeman(foremanValue, true);
     }
 
-    validateForeMan = (value, willUpdateState = true) => {
+    validateForeman = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
         if (!value) {
@@ -152,7 +152,7 @@ class ManufacturingWorksCreateForm extends Component {
         if (!ValidationHelper.validateName(translate, name, 6, 255).status
             || !ValidationHelper.validateEmpty(translate, address).status
             || !ValidationHelper.validateEmpty(translate, phoneNumber).status
-            || this.validateForeMan(foremanValue, false)
+            || this.validateForeman(foremanValue, false)
             || this.validateWorksManager(worksManagerValue, false)
             || this.validateStatus(status, false)
         ) {
@@ -184,8 +184,9 @@ class ManufacturingWorksCreateForm extends Component {
             code: code
         }));
     }
+
     render() {
-        const { translate } = this.props;
+        const { translate, manufacturingWorks } = this.props;
         const { name, nameError, worksManagerValue, worksManagerError, foremanValue, foremanError,
             phoneNumber, phoneNumberError, address, addressError, status, statusError, description, code
         } = this.state;
@@ -193,7 +194,7 @@ class ManufacturingWorksCreateForm extends Component {
             <React.Fragment>
                 <ButtonModal onButtonCallBack={this.handleClickCreate} modalID="modal-create-works" button_name={translate('manufacturing.manufacturing_works.create_works')} title={translate('manufacturing.manufacturing_works.create_works')} />
                 <DialogModal
-                    modalID="modal-create-works" isLoading={false}
+                    modalID="modal-create-works" isLoading={manufacturingWorks.isLoading}
                     formID="form-create-works"
                     title={translate('manufacturing.manufacturing_works.create_works')}
                     msg_success={translate('manufacturing.manufacturing_works.create_successfully')}
@@ -278,8 +279,8 @@ class ManufacturingWorksCreateForm extends Component {
 }
 
 function mapStateToProps(state) {
-    const user = state.user;
-    return { user }
+    const { user, manufacturingWorks } = state;
+    return { user, manufacturingWorks }
 }
 
 const mapDispatchToProps = {

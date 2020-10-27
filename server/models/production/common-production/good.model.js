@@ -47,9 +47,6 @@ const GoodSchema = new Schema({
 
         description: {
             type: String
-        },
-        index: {
-            type: Number
         }
     }],
 
@@ -62,7 +59,7 @@ const GoodSchema = new Schema({
         type: String
     },
 
-    boms: [{
+    materials: [{
 
         good: {
             type: Schema.Types.ObjectId,
@@ -71,10 +68,6 @@ const GoodSchema = new Schema({
 
         quantity: {
             type: Number
-        },
-
-        description: {
-            type: String
         }
     }],
 
@@ -194,7 +187,7 @@ module.exports = (db) => {
 //     },
 
 //     materials: [{
-        
+
 //         good: {
 //             type: Schema.Types.ObjectId,
 //             replies: this

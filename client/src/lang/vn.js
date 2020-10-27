@@ -867,7 +867,7 @@ export default {
             manage_manufacturing_command: "Quản lý lệnh sản xuất",
             manage_manufacturing_process: "Quản lý tiến độ sản xuất",
             manage_manufacturing_schedule: "Quản lý lịch sản xuất",
-            manage_purchasing_request: "Quản lý phiếu mua NVL",
+            manage_purchasing_request: "Quản lý phiếu đề nghị mua nguyên vật liệu",
             manufacturing_dashboard: "Dashboard Quản lý sản xuất",
             analysis_manufacturing_performance: "Phân tích hiệu suất sản xuất",
             manage_manufacturing_works: "Quản lý nhà máy sản xuất",
@@ -3748,13 +3748,54 @@ export default {
                 created_at: "Ngày tạo",
                 list_mills: "Danh sách các xưởng",
                 works_edit: "Sửa thông tin nhà máy",
+                works_detail: "Chi tiết thông tin nhà máy",
                 edit_successfully: "Sửa thông tin nhà máy thành công",
-                edit_failure: "Sửa thông tin nhà máy thất bại"
+                edit_failure: "Sửa thông tin nhà máy thất bại",
+                mill_code: "Mã xưởng",
+                mill_name: "Tên xưởng"
             },
             manufacturing_mill: {
                 name: "Tên xưởng",
                 code: "Mã xưởng",
-                search: "Tìm kiếm"
+                search: "Tìm kiếm",
+                index: "STT",
+                worksName: "Nhà máy",
+                description: "Mô tả",
+                status: "Trạng thái",
+                create_mill: "Tạo xưởng",
+                create_manufacturing_mill: "Tạo xưởng sản xuất",
+                create_mill_successfully: "Tạo xưởng sản xuất thành công",
+                create_mill_failed: "Tạo xưởng sản xuất thất bại",
+                works: "Nhà máy",
+                choose_works: "---Chọn nhà máy---",
+                worksValue_error: "Vui lòng chọn nhà máy",
+                delete_mill: "Xóa xưởng sản xuất",
+                1: "Đang hoạt động",
+                0: "Ngừng hoạt động",
+                mill_detail: "Chi tiết xưởng sản xuất",
+                mill_edit: "Sửa thông tin xưởng sản xuất",
+                choose_status: "---Chọn trạng thái---",
+                status_error: "Vui lòng chọn trạng thái xưởng sản xuất",
+                edit_mill_successfully: "Sửa thông tin xưởng thành công",
+                edit_mill_failed: "Sửa thông tin xưởng thất bại",
+                works_name: "Tên nhà máy",
+                created_at: "Ngày tạo"
+            },
+            purchasing_request: {
+                code: "Mã phiếu đề nghị",
+                createdAt: "Ngày tạo",
+                planCode: "Mã kế hoạch",
+                receiveTime: "Ngày dự kiến nhận",
+                status: "Trạng thái",
+                creator: "Người tạo",
+                index: "STT",
+                select_all: "Chọn tất cả",
+                1: { content: "Chưa xử lý", color: "orange" },
+                2: { content: "Đã xử lý", color: "green" },
+                3: { content: "Đã hủy", color: "red" },
+                search: "Tìm kiếm",
+                select_status: "Chọn trạng thái"
+
             }
         }
     }

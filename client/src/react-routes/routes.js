@@ -1187,7 +1187,7 @@ class Routes extends Component {
                         layout={Layout}
                         component={InventoryDashBoard}
                     />
-                    
+
                     <PrivateRoute
                         isLoading={false}
                         key={'dashboard-bill'}
@@ -1762,7 +1762,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={false}
+                        isLoading={this.props.manufacturingWorks.isLoading}
                         key={"manage-manufacturing-works"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1782,7 +1782,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={false}
+                        isLoading={this.props.manufacturingMill.isLoading}
                         key={"manage-manufacturing-mill"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
