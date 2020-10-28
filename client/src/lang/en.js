@@ -2430,7 +2430,7 @@ export default {
 
                 unit_evaluate: "Unit receiving work evaluation results",
                 unit_manage_task: "Unit managing task",
-                collaborated_with_organizational_units: "Units that have collaborated",
+                collaborated_with_organizational_units: "Select units that have collaborated",
                 delete_eval: "Delete evaluation",
                 delete_eval_title: 'Are you sure to delete this evaluation?',
 
@@ -2736,8 +2736,8 @@ export default {
                         initialize_kpi_newmonth: 'Initialize KPI new month',
                         request_approval: 'Request for approval',
                         cancel_request_approval: 'Cancel request for approval',
-                        not_initialize_organiztional_unit_kpi: 'Your unit has not initialized kpi on this month yet, please contact the manager of your unit',
-                        not_activate_organiztional_unit_kpi: 'Your unit has not activated kpi on this month yet, please contact the manager of your unit',
+                        not_initialize_organiztional_unit_kpi: 'Your unit has not initialized KPI on this month yet, please contact the manager of your unit',
+                        not_activate_organiztional_unit_kpi: 'Your unit has not activated KPI on this month yet, please contact the manager of your unit',
 
                         // Nhóm dành cho các trạng thái tập KPI
                         kpi_status: {
@@ -2932,10 +2932,10 @@ export default {
                     evaluation_management: 'Evaluation management',
                     not_evaluated_yet: 'Not evaluated yet',
                     view_detail: 'View detail',
-                    clone_to_new_kpi: 'Create new kpi based on kpi in this month',
+                    clone_to_new_kpi: 'Create new KPI based on KPI in this month',
                     index: 'ID',
                     name: 'Name',
-                    target: 'Kpi unit',
+                    target: 'KPI unit',
                     criteria: 'Criteria',
                     weight: 'Weight',
                     result: 'Result',
@@ -3080,8 +3080,8 @@ export default {
                     confirm_approve: 'Are you sure you want to be approved this KPI?',
                     confirm_not_enough_weight: 'The total weight must be 100',
                     confirm_cancel_approve: 'Are you sure you want to cancel this KPI?',
-                    confirm_edit_status_success: 'Edit status kpi successfully',
-                    confirm_edit_status_failure: 'Edit status kpi unsuccessfully',
+                    confirm_edit_status_success: 'Edit status KPI successfully',
+                    confirm_edit_status_failure: 'Edit status KPI unsuccessfully',
 
                     confirm_kpi: 'Are you sure you want to delete this KPI target?',
                     confirm_approving: 'KPI has been activated, you can not delete!',
@@ -3253,8 +3253,8 @@ export default {
                 get_kpiunit_by_role_fail: 'Get KPI unit by role fail',
                 create_kpi_unit_success: 'Create KPI unit successfully',
                 create_kpi_unit_fail: 'Create KPI unit fail',
-                update_evaluate_kpi_unit_success: 'Update kpi unit evaluation successfully',
-                update_evaluate_kpi_unit_fail: 'Update kpi unit evaluation fail',
+                update_evaluate_kpi_unit_success: 'Update KPI unit evaluation successfully',
+                update_evaluate_kpi_unit_fail: 'Update KPI unit evaluation fail',
             }
         },
 
