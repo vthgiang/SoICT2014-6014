@@ -38,7 +38,7 @@ class TaskManagementOfUnit extends Component {
     componentDidMount() {
         this.props.getDepartment();
         this.props.getAllDepartment();
-        this.props.getResponsibleTaskByUser([], "1", "20", this.state.status, [], [], null, null, null, null, null);
+        this.props.getPaginatedTasksByOrganizationalUnit(this.state.roleId, 1, 20, this.state.status, [], [], null, null, null);
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -619,10 +619,7 @@ const actionCreators = {
     getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
     getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
     getPaginatedTasksByOrganizationalUnit: taskManagementActions.getPaginatedTasksByOrganizationalUnit,
-    editArchivedOfTask: performTaskAction.editArchivedOfTask,
     getDepartment: UserActions.getDepartmentOfUser,
-    getSubTask: taskManagementActions.getSubTask,
-    deleteTaskById: taskManagementActions._delete,
     getAllDepartment: DepartmentActions.get,
 };
 const translateTaskManagementOfUnit = connect(mapState, actionCreators)(withTranslate(TaskManagementOfUnit));
