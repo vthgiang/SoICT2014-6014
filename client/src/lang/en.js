@@ -2515,6 +2515,8 @@ export default {
                 evaluate_task_fail: 'Evaluate task fail',
                 edit_hours_spent_in_evaluate_success: 'Calculate hours spent on task success',
                 edit_hours_spent_in_evaluate_fail: 'Calculate hours spent on task fail',
+                edit_employee_collaborated_success: 'Edit employees to join task successfully',
+                edit_employee_collaborated_failure: 'Edit employees to join task unsuccessfully',
 
                 add_new_task: 'Add new task',
                 // add_err: 
