@@ -6,6 +6,7 @@ import { getStorage, setStorage } from '../../../config';
 import { Link } from 'react-router-dom';
 import moment from "moment";
 import store from '../../../redux/store';
+import './intro.css';
 
 const Introduction = (props) => {
     const [user, setUser] = useState({});
