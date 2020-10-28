@@ -136,7 +136,7 @@ function createActionComment(taskId, actionId, newComment) {
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-actions/${actionId}/comments`,
         method: 'POST',
         data: newComment
-    }, false, true, 'task.task_perform');
+    }, true, true, 'task.task_perform');
 }
 
 /**
@@ -149,7 +149,7 @@ function createTaskAction(taskId, newAction) {
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-actions`,
         method: 'POST',
         data: newAction
-    }, false, true, 'task.task_perform');
+    }, true, true, 'task.task_perform');
 }
 
 /**
