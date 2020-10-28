@@ -59,6 +59,107 @@ export default {
             }
         },
 
+        intro: {
+            title: 'Digital workspace solutions for businesses',
+            contents: [
+                'A friendly and convenient digital working environment for all employees',
+                'Support for leadership and management at all levels to monitor and operate work through the dashboard system',
+                'Exactly flexible KPI evaluation',
+                'Convenient and optimal job assignment mechanism helps reduce time, comprehensively digitize business processes of enterprises in a digital work environment',
+                'Save investment costs',
+                'Safe and secure system data    ',
+                '24/7 customer support'
+            ],
+            auth: {
+                sigin: 'Sign in',
+                signout: 'Sign out',
+                start: 'Get started',
+            },
+            service: {
+                title: 'Management solutions in enterprises',
+                content: 'We serve small and midsize companies in all technology-related industries with the high quality services outlined below.',
+                kpi: {
+                    title: 'KPI management',
+                    content: 'Automatic, scientific and transparent',
+                    detail: 'Automatic, scientific and transparent KPI management: The system provides automatic KPI calculation methods, users can customize the KPI calculation formula depending on the field of each department / unit.',
+                },
+                task: {
+                    title: 'Task management',
+                    content: 'The mechanism of job assignment and receipt is convenient, saves time and supports users to focus on their work',
+                    detail: 'Manage non-process work with a convenient job assignment and receipt mechanism, save working time, and support users to focus on their work. Processed work management: Helping users to grasp the current status of jobs, from which the manager has suitable, efficient and timely work organization plans. Mechanism of job assignment and receipt is done easily, saving time. Help users focus more at work.'
+                },
+                document: {
+                    title: 'Document management',
+                    content: 'Support for centralized management of documents, convenient for searching',
+                    detail: 'Document management is the job of storing and classifying internal data of organizations and enterprises in order to serve the business and production. Effective document management will help businesses, organize and organize documents more reasonably, save storage costs and potential time.'
+                },
+                employee: {
+                    title: 'Human resource management',
+                    content: 'Manage information lists of personnel in the business',
+                    detail: 'Human resource management in the enterprise Senior staff can easily track the personnel situation through statistical charts',
+                },
+                asset: {
+                    title: 'Asset management',
+                    content: 'Asset management in the business',
+                    detail: 'Managing property information is easy. Retrieve information quickly. Statistics track in the form of flexible charts, easy to capture information.',
+                },
+            },
+            service_signup: {
+                title: 'Register to use the service',
+                content: [
+                    'Free 15-day trial',
+                    'Maximum 10 users access',
+                    'Experience free features',
+                ],
+                form: {
+                    customer: 'Customer',
+                    email: 'Email',
+                    phone: 'Phone',
+                    type: {
+                        choose: 'Choose service',
+                        standard: 'Standard',
+                        full: 'Full',
+                    },
+                    send: 'Send',
+                },
+            },
+            address: {
+                title: 'Address',
+                content: {
+                    location: 'P901, 8C Ta Quang Buu, Hai Ba Trung, Hanoi.',
+                    phone: '+84 986 986 247',
+                    email: 'office@vnist.vn'
+                },
+            },
+            contact: {
+                title: 'Contact us',
+                company: 'Vietnam Information and Communication Security Technology JSC',
+                form: {
+                    name: 'Customer',
+                    email: 'Email',
+                    content: 'Content',
+                    send: 'Send',
+                },
+            },
+            footer: {
+                about_us: {
+                    title: 'About us',
+                    content: 'DX digital workspace solution of Vietnam Information and Communication Security Technology JSC',
+                },
+                care: {
+                    title: 'Care',
+                    content: {
+                        company: 'Service development company',
+                        research: 'Learn more about',
+                    },
+                },
+                media: {
+                    title: 'Multi media',
+                },
+                copyright: 'Copyright © 2020 VNIST - All rights reserved'
+            },
+        },
+
         auth: {
             validator: {
                 confirm_password_invalid: 'Confirm password invalid! Please input again',

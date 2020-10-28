@@ -15,10 +15,39 @@ header.fixed-top > h3 {
     padding: 10px 20px;
 }
 
+span.dx-language {
+    position: absolute;
+    top: 4px;
+    right: 10px;
+}
+
+span.dx-language > button {
+    color: white;
+    font-size: 2.6rem;
+    font-weight: bolder;
+    background-color: #ffffff00;
+    border: none;
+}
+
+span.dx-language-setting {
+    padding: 4px;
+    position: absolute;
+    top: 50px;
+    right: 8px;
+    background-color: #fff;
+    display: none;
+}
+
+span.dx-language-setting > a > img {
+    width: 30px;
+    margin: 2px 5px;
+    height: auto;
+}
+
 span.dx-auth {
     position: absolute;
     top: 13px;
-    right: 20px;
+    right: 50px;
 }
 
 span.dx-auth > button.signin {
