@@ -1,5 +1,4 @@
 import React, { useState, useEffect, memo } from 'react';
-import { useSelector } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import './hoursSpentOfEmployeeChart.css';
@@ -8,24 +7,13 @@ import 'c3/c3.css';
 import * as d3 from "d3";
 
 function HoursSpentOfEmployeeChart(props) {
-
-    const { refs, data, translate } = props;
-
+    const { data, refs } = props;
+    
     useEffect(() => {
         if (data) {
             pieChart(refs, data);
         }
     })
-    
-    // Get props from redux store
-    const propsFromRedux = useSelector((state) => {
-        return {
-            tasks: state.tasks,
-            documents: state.documents
-        }
-    });
-    const { tasks, documents } = propsFromRedux;
-    
 
     const removePreviousChart = (refs) => {
         const chart = document.getElementById(refs);
@@ -96,9 +84,6 @@ const shouldNotComponentUpdate = (prevProps, nextProps) => {
         return false;
     }
 };
-
-const actions = {
-}
 
 const connectedHoursSpentOfEmployeeChart = withTranslate(memo(HoursSpentOfEmployeeChart, shouldNotComponentUpdate));
 export { connectedHoursSpentOfEmployeeChart as HoursSpentOfEmployeeChart }
