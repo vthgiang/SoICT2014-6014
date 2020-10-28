@@ -1,12 +1,36 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+import { AuthActions } from '../../auth/redux/actions';
+import { getStorage } from '../../../config';
+import { Link } from 'react-router-dom';
 
 const Introduction = (props) => {
+    const [user, setUser] = useState({});
+    useEffect(() => {
+        const user = getStorage('userId');
+        setUser(user);  
+        if(user) {
+            props.refresh();
+            
+            const currentRole = getStorage("currentRole");
+            props.getLinksOfRole(currentRole)
+                .then(res=>{
+                    setUser(props.auth.user._id);
+                });
+       }
+    }, [user]);
+    console.log()
     return (
         <React.Fragment>
-            <header className="fixed-top">
+            <header className="fixed-top p-center-h">
                 <h3>DX Workspace</h3>
                 <span className="dx-auth">
-                    <button className="signin">Đăng nhập</button>
+                    {
+                        user ?
+                        <Link to="/home" className="dx-workspace-button">Bắt đầu</Link> :  
+                        <Link to="/login" className="dx-workspace-button">Đăng nhập</Link>
+                    }
                 </span>
             </header>
             <section id="dx-intro" className="dx-container">
@@ -237,4 +261,16 @@ const Introduction = (props) => {
     );
 }
 
-export default Introduction;
+function mapState(state) {
+    const { auth } = state;
+    return { auth };
+}
+
+const mapDispatchToProps = {
+    refresh: AuthActions.refresh,
+    getLinksOfRole: AuthActions.getLinksOfRole,
+    getComponentsOfUserInLink: AuthActions.getComponentOfUserInLink
+}
+
+const connectedIntroduction = connect(mapState, mapDispatchToProps)(withTranslate(Introduction));
+export { connectedIntroduction as Introduction };

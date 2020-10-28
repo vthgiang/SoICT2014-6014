@@ -17,7 +17,7 @@ header.fixed-top > h3 {
 
 span.dx-auth {
     position: absolute;
-    top: 10px;
+    top: 13px;
     right: 20px;
 }
 
@@ -47,17 +47,16 @@ div.row.dx-footer {
 
 section.dx-container {
     background-color: #fff;
-    padding: 60px 120px;
-    min-height: 200px;
+    padding: 60px 400px;
 }
 
-@media (min-width: 1200px) {
+@media (max-width: 1400px) {
     section.dx-container {
         padding: 60px 120px;
     }    
 }
 
-@media (min-width: 900px) {
+@media (max-width: 900px) {
     section.dx-container {
         padding: 60px 120px;
     }    
@@ -268,4 +267,14 @@ img.service-image {
     margin-top: 30px;
     width: 60%;
     height: auto;
+}
+
+.dx-workspace-button {
+    padding: 8px 12px;
+    border:  none;
+    border-radius: 2px;
+    color: #605CA8;
+    background-color: #fff;
+    font-size: 1.5rem;
+    font-weight: bolder;
 }
