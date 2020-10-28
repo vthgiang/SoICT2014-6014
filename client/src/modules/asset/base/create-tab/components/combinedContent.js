@@ -10,6 +10,7 @@ export * from './assetCreateValidator';
 
 export * from './usageLogAddModal';
 export * from './usageLogEditModal';
+export * from './usageLogDetailModal';
 
 export * from './maintainanceLogAddModal';
 export * from './maintainanceLogEditModal';

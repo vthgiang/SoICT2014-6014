@@ -34,7 +34,7 @@ export function manufacturingWorks(state = initState, action) {
         case worksConstants.UPDATE_WORKS_FAILURE:
             return {
                 ...state,
-                isLoading: false
+                isLoading: true
             }
         case worksConstants.GET_ALL_WORKS_FAILURE:
         case worksConstants.CREATE_WORKS_FAILURE:

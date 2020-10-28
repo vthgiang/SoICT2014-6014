@@ -2,8 +2,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 
-import { taskManagementActions } from '../../task-management/redux/actions'
-
 import { ModalDetailTask } from '../task-personal-dashboard/modalDetailTask'
 
 import Timeline, { TodayMarker } from "react-calendar-timeline"
@@ -50,24 +48,6 @@ class CalendarOrganizationUnit extends Component {
         };
     }
 
-    // static getDerivedStateFromProps = (nextProps, prevState) => {
-
-    //     if (nextProps.tasks) {
-    //         return {
-    //             ...prevState,
-    //             tasks: nextProps.tasks
-    //         }
-    //     } else {
-    //         return null
-    //     }
-    // }
-    // shouldComponentUpdate = async (props, state) => {
-    //     if (props.tasks) {
-    //         return true
-    //     }
-    //     else return false
-    // }
-
     handleSelectStatus = async (taskStatus) => {
         if (taskStatus.length === 0) {
             taskStatus = ["inprocess"];
@@ -77,21 +57,26 @@ class CalendarOrganizationUnit extends Component {
     }
 
     handleSearchData = async () => {
-        const { tasks } = this.props;
+        // const { tasks } = this.props;
+        let r = document.getElementsByClassName("task-progress");
         let status = this.SEARCH_INFO.taskStatus;
 
-        if (tasks) {
-            let taskList, tasksByStatus;
-
-            // Đếm số công việc đơn vị
-            taskList = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
-            tasksByStatus = taskList && taskList.filter(task => this.filterByStatus(task));
-
-            if (tasksByStatus) {
-                await this.countTasks(tasksByStatus);
-            }
-
+        for (let i = 0; i < r.length; i++) {
+            r[i] && r[i].remove()
         }
+
+        // if (tasks) {
+        //     let taskList, tasksByStatus;
+
+        //     // Đếm số công việc đơn vị
+        //     taskList = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
+        //     tasksByStatus = taskList && taskList.filter(task => this.filterByStatus(task));
+
+        //     if (tasksByStatus) {
+        //         await this.countTasks(tasksByStatus);
+        //     }
+
+        // }
         await this.setState(state => {
             return {
                 ...state,
@@ -129,7 +114,6 @@ class CalendarOrganizationUnit extends Component {
         let taskDurations = [];
 
         if (tasks) {
-            // Phân chia công việc vào nhóm theo người thực hiện
             taskList = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
             tasksByStatus = taskList && taskList.filter(task => this.filterByStatus(task));
 
@@ -145,7 +129,6 @@ class CalendarOrganizationUnit extends Component {
 
                     currentTime = new Date();
 
-                    // Xu ly neu ngay bat dau bang ngay ket thuc
                     if (tasksByStatus[i - 1].startDate === tasksByStatus[i - 1].endDate) {
                         addDate = Date.parse(tasksByStatus[i - 1].endDate) + 86400000;
                     }
@@ -164,8 +147,6 @@ class CalendarOrganizationUnit extends Component {
                         responsibleEmployeeNames.push(x.name);
                     });
 
-                    // title1 = `${tasksByStatus[i - 1].name} - ${tasksByStatus[i - 1].progress} % `;
-                    // title2 = tasksByStatus[i - 1].name + " - " + responsibleEmployeeNames.join(" - ") + " - " + tasksByStatus[i - 1].progress + "%";
                     if (responsibleEmployeeIds.length > 1) {
                         multi = true;
                     }
@@ -208,10 +189,18 @@ class CalendarOrganizationUnit extends Component {
                     })
                 }
 
-                let x = document.getElementsByClassName("rct-item");
+                let x2 = document.getElementsByClassName("rct-items");
+                let listNodes = x2[0] && x2[0].childNodes;
 
-                if (x.length) {
-                    for (let i = 0; i < x.length; i++) {
+                if (listNodes && listNodes.length) {
+                    for (let i = 0; i < listNodes.length; i++) {
+
+                        listNodes[i].classList.add("rct-item")
+
+                        if (tasksByStatus[i] && tasksByStatus[i].status !== "inprocess") {
+                            listNodes[i].setAttribute("class", "task-background");
+                        }
+
                         if (tasksByStatus[i] && tasksByStatus[i].status === "inprocess") {
                             let color;
                             currentTime = new Date();
@@ -232,7 +221,7 @@ class CalendarOrganizationUnit extends Component {
                                     color = "#F0D83A"; // delay
                                 }
                             }
-                            this.displayTaskProgress(tasksByStatus[i].progress, x[i], color);
+                            this.displayTaskProgress(tasksByStatus[i].progress, listNodes[i], color);
                         }
                     }
                 }
@@ -251,7 +240,6 @@ class CalendarOrganizationUnit extends Component {
 
         if (tasks) {
 
-            // Phân nhóm công việc theo người thực hiện
             taskList1 = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
             tasksByStatus1 = taskList1 && taskList1.filter(task => this.filterByStatus(task));
             if (tasksByStatus1) {
@@ -320,9 +308,10 @@ class CalendarOrganizationUnit extends Component {
             d.style.backgroundColor = color;
 
             child = x.childElementCount;
-            if (child === 1) {
-                await x.appendChild(d);
-            }
+            let ch = x.childNodes;
+
+            if (ch[3]) ch[3].remove();
+            x.appendChild(d);
         }
     }
 
@@ -432,13 +421,10 @@ class CalendarOrganizationUnit extends Component {
 
         if (tasks) {
             let taskList, tasksByStatus;
-            // Đếm số công việc đơn vị
             taskList = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
             tasksByStatus = taskList && taskList.filter(task => this.filterByStatus(task));
-
-            if (tasksByStatus) {
-                data = this.countTasks(tasksByStatus);
-            }
+            let inprocessTasks = tasksByStatus && tasksByStatus.filter(x => x.status === "inprocess")
+            data = this.countTasks(inprocessTasks);
 
         }
 

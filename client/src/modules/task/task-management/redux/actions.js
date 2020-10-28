@@ -9,6 +9,7 @@ export const taskManagementActions = {
     getInformedTaskByUser,
     getCreatorTaskByUser,
     getPaginateTasksByUser,
+    getPaginatedTasksByOrganizationalUnit,
 
     addTask,
     editTask,
@@ -293,6 +294,45 @@ function getPaginateTasksByUser(unit, number, perPage, status, priority, special
             .catch(error => {
                 dispatch({
                     type: taskManagementConstants.GET_PAGINATE_TASK_BYUSER_FAILURE,
+                    error
+                })
+            })
+    }
+}
+
+/**
+ * Tìm kiếm công việc đơn vị theo 1 roleId
+ * @param {*} roleId 
+ * @param {*} number 
+ * @param {*} perPage 
+ * @param {*} status 
+ * @param {*} priority 
+ * @param {*} special 
+ * @param {*} name 
+ * @param {*} startDate 
+ * @param {*} endDate 
+ * @param {*} startDateAfter 
+ * @param {*} endDateBefore 
+ * @param {*} aPeriodOfTime 
+ * @param {*} calledId 
+ */
+function getPaginatedTasksByOrganizationalUnit(roleId, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime = false, calledId = null) {
+    return dispatch => {
+        dispatch({
+            type: taskManagementConstants.GET_PAGINATE_TASK_BY_ORGANIZATIONALUNIT_REQUEST, 
+            calledId: calledId,
+        });
+
+        taskManagementService.getPaginatedTasksByOrganizationalUnit(roleId, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime)
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.GET_PAGINATE_TASK_BY_ORGANIZATIONALUNIT_SUCCESS,
+                    payload: res.data.content,
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: taskManagementConstants.GET_PAGINATE_TASK_BY_ORGANIZATIONALUNIT_FAILURE,
                     error
                 })
             })

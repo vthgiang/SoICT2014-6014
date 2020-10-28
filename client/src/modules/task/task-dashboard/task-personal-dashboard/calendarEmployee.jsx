@@ -34,7 +34,7 @@ class CalendarEmployee extends Component {
             delay: 0,
             intime: 0,
             overDue: 0,
-            count: 0
+            count: 0,
         }
 
         this.state = {
@@ -57,22 +57,22 @@ class CalendarEmployee extends Component {
     }
 
     handleSearchData = async () => {
-        const { tasks } = this.props;
-        this.INFO_CALENDAR.count++;
+        let r = document.getElementsByClassName("task-progress");
         let status = this.SEARCH_INFO.taskStatus;
 
-        if (tasks) {
-            let taskList, tasksByStatus;
-
-            // Đếm số công việc cá nhân
-            let res = tasks.responsibleTasks && tasks.responsibleTasks;
-            let acc = tasks.accountableTasks && tasks.accountableTasks;
-            let con = tasks.consultedTasks && tasks.consultedTasks;
-            let inf = tasks.informedTasks && tasks.informedTasks;
-            let fourTasks = res.concat(acc, con, inf).filter(task => this.filterByStatus(task));
-
-            await this.countTasks(fourTasks);
+        for (let i = 0; i < r.length; i++) {
+            r[i] && r[i].remove()
         }
+
+        // if (tasks) {
+        //     let res = tasks.responsibleTasks && tasks.responsibleTasks;
+        //     let acc = tasks.accountableTasks && tasks.accountableTasks;
+        //     let con = tasks.consultedTasks && tasks.consultedTasks;
+        //     let inf = tasks.informedTasks && tasks.informedTasks;
+        //     let fourTasks = res.concat(acc, con, inf).filter(task => this.filterByStatus(task));
+        //     let inprocessTasks = fourTasks && fourTasks.filter(x => x.status === "inprocess")
+        //     await this.countTasks(inprocessTasks);
+        // }
 
         await this.setState(state => {
             return {
@@ -81,8 +81,8 @@ class CalendarEmployee extends Component {
             }
         })
 
-        await this.getTaskDurations();
-        await this.getTaskGroups();
+        // await this.getTaskDurations();
+        // await this.getTaskGroups();
     }
 
     // Lọc công việc theo trạng thái
@@ -93,8 +93,10 @@ class CalendarEmployee extends Component {
             if (task.status === stt[i] && task.isArchived === false) return true;
         }
     }
+
     convertStatus(status) {
         const { translate } = this.props;
+
         switch (status) {
             case "inprocess": return translate('task.task_management.inprocess');
             case "wait_for_approval": return translate('task.task_management.wait_for_approval');
@@ -110,9 +112,6 @@ class CalendarEmployee extends Component {
         let taskDurations = [];
 
         if (tasks) {
-
-
-            // Chia nhóm công việc theo vai trò trong công việc
             let res, acc, con, inf;
             let tasksByStatus2 = [];
 
@@ -186,7 +185,7 @@ class CalendarEmployee extends Component {
                         let stt = this.convertStatus(tasksByStatus2[i].status)
                         let titleTask = tasksByStatus2[i].status === "inprocess" ? `${tasksByStatus2[i].name} - ${tasksByStatus2[i].progress} % ` : `${tasksByStatus2[i].name} (${stt})`;
                         let addDate2;
-
+                        let fontColor = (tasksByStatus2[i] && tasksByStatus2[i].status === "inprocess") ? "rgba(0, 0, 0, 0.8)" : "#555"
                         if (tasksByStatus2[i].startDate === tasksByStatus2[i].endDate) {
                             addDate2 = Date.parse(tasksByStatus2[i].endDate) + 86400000;
                         }
@@ -210,7 +209,7 @@ class CalendarEmployee extends Component {
                             end_time: end_time,
                             itemProps: {
                                 style: {
-                                    color: "rgba(0, 0, 0, 0.8)",
+                                    color: fontColor,
                                     borderStyle: "solid",
                                     fontWeight: '600',
                                     fontSize: 14,
@@ -221,9 +220,19 @@ class CalendarEmployee extends Component {
                         })
                     }
                 }
-                let x = document.getElementsByClassName("rct-item");
-                if (x.length) {
-                    for (let i = 0; i < x.length; i++) {
+
+                let x2 = document.getElementsByClassName("rct-items");
+                let listNodes = x2[0] && x2[0].childNodes;
+
+                if (listNodes && listNodes.length) {
+                    for (let i = 0; i < listNodes.length; i++) {
+
+                        listNodes[i].classList.add("rct-item")
+
+                        if (tasksByStatus2[i] && tasksByStatus2[i].status !== "inprocess") {
+                            listNodes[i].setAttribute("class", "task-background");
+                        }
+
                         if (tasksByStatus2[i] && tasksByStatus2[i].status === "inprocess") {
                             let color;
                             let currentTime = new Date();
@@ -244,7 +253,8 @@ class CalendarEmployee extends Component {
                                     color = "#F0D83A"; // delay
                                 }
                             }
-                            this.displayTaskProgress(tasksByStatus2[i].progress, x[i], color);
+
+                            this.displayTaskProgress(tasksByStatus2[i].progress, listNodes[i], color);
                         }
                     }
                 }
@@ -254,16 +264,11 @@ class CalendarEmployee extends Component {
     }
 
     // Nhóm công việc theo người thực hiện
-
     getTaskGroups() {
         const { tasks, translate } = this.props;
-        var taskList1, tasksByStatus1;
-        let groupName = [], distinctGroupName = [], id = [], distinctId = [];
-        let multiResponsibleEmployee = false;
+        let distinctGroupName = [];
 
         if (tasks) {
-
-            //Phân nhóm công việc theo vai trò trong công việc
             let res, acc, con, inf;
 
             if (tasks) {
@@ -307,19 +312,16 @@ class CalendarEmployee extends Component {
             d.style.backgroundColor = color;
 
             child = x.childElementCount;
-            if (child === 1) {
-                x.appendChild(d);
-            }
-            // else {
-            //     await x.appendChild(d);
-            // }
+            let ch = x.childNodes;
+
+            if (ch[3]) ch[3].remove();
+            x.appendChild(d);
         }
     }
 
     handleItemClick = async (itemId) => {
-        console.log('itemid', itemId);
         let { tasks } = this.props;
-        var taskList, tasksByStatus;
+        var tasksByStatus;
 
         if (tasks) {
 
@@ -367,7 +369,6 @@ class CalendarEmployee extends Component {
 
         // let id = tasksByStatus[itemId - this.INFO_CALENDAR.count]._id;
         let id = tasksByStatus[itemId]._id;
-        console.log('id', id);
         await this.setState(state => {
             return {
                 ...state,
@@ -445,6 +446,7 @@ class CalendarEmployee extends Component {
     }
 
     render() {
+
         const { tasks, translate } = this.props;
         const { defaultTimeStart, defaultTimeEnd, taskStatus } = this.state;
 
@@ -453,7 +455,6 @@ class CalendarEmployee extends Component {
         let data;
         let rctHeadText = translate('task.task_management.role');
         let rctHead = document.getElementsByClassName("rct-header-root");
-
         if (rctHead[0]) {
             let first = rctHead[0].children;
             if (first[0]) {
@@ -463,7 +464,6 @@ class CalendarEmployee extends Component {
         }
 
         if (tasks) {
-            let taskList, tasksByStatus;
 
             // Đếm số công việc cá nhân
             let res = tasks.responsibleTasks && tasks.responsibleTasks;
@@ -471,8 +471,8 @@ class CalendarEmployee extends Component {
             let con = tasks.consultedTasks && tasks.consultedTasks;
             let inf = tasks.informedTasks && tasks.informedTasks;
             let fourTasks = res && acc && con && inf && res.concat(acc, con, inf).filter(task => this.filterByStatus(task));
-
-            data = this.countTasks(fourTasks);
+            let inprocessTasks = fourTasks && fourTasks.filter(x => x.status === "inprocess")
+            data = this.countTasks(inprocessTasks);
         }
 
         return (

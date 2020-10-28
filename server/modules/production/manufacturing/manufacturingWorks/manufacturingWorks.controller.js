@@ -31,10 +31,9 @@ exports.getAllManufacturingWorks = async (req, res) => {
         let allManufacturingWorks = await ManufacturingWorksService.getAllManufacturingWorks(query, req.portal);
 
         await Log.info(req.user.email, "GET_ALL_MANUFACTURING_WORKS", req.portal);
-
         res.status(200).json({
             success: true,
-            messages: ["get_all__successfully"],
+            messages: ["get_all_successfully"],
             content: allManufacturingWorks
         });
     } catch (error) {
@@ -42,7 +41,7 @@ exports.getAllManufacturingWorks = async (req, res) => {
 
         res.status(400).json({
             success: false,
-            messages: ["get_all__failed"],
+            messages: ["get_all_failed"],
             content: error.message
         });
     }

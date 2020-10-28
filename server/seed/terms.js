@@ -150,7 +150,7 @@ const getComponentsInLink = (link) => {
 }
 
 const LINKS = [{
-    url: '/',
+    url: '/home',
     description: `Trang chủ công ty`,
     category: LINK_CATEGORY.COMMON.name,
     roles: [
@@ -160,7 +160,7 @@ const LINKS = [{
         ROOT_ROLES.VICE_DEAN.name,
         ROOT_ROLES.EMPLOYEE.name
     ],
-    components: getComponentsInLink('/')
+    components: getComponentsInLink('/home')
 },
 {
     url: '/notifications',

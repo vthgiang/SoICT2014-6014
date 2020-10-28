@@ -80,12 +80,24 @@ exports.createCustomer = async (req, res) => {
  */
 exports.editCustomer = async (req, res) => {
     try {
-        let avatar;
-        if(req.file){
-            let path = `${req.file.destination}/${req.file.filename}`;
+        let avatar, fileAttachment;
+        //upload avatar cho form xem chi tiết
+        if (req.files && req.files.avatar) {
+            let path = `${req.files.avatar[0].destination}/${req.files.avatar[0].filename}`;
             avatar = path.substr(1, path.length)
         }
-        const customerUpdate = await CustomerService.editCustomer(req.portal, req.user.company._id, req.params.id, req.body, req.user._id, avatar);
+
+        //upload file đính kèm cho form edit
+        if(req.files && req.files.fileAttachment){
+            fileAttachment = req.files.fileAttachment ? req.files.fileAttachment : undefined;
+        }
+
+        let fileInfomation = {
+            avatar,
+            fileAttachment,
+        }
+
+        const customerUpdate = await CustomerService.editCustomer(req.portal, req.user.company._id, req.params.id, req.body, req.user._id, fileInfomation);
         await Logger.info(req.user.email, ' edit_customer_success ', req.portal);
         res.status(200).json({
             success: true,

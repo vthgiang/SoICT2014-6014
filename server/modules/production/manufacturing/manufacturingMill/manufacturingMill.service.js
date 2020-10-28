@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 
 const {
-    ManufacturingMill
+    ManufacturingMill,
+    ManufacturingWorks
 } = require(`${SERVER_MODELS_DIR}`);
 
 const {
@@ -15,10 +16,28 @@ exports.createManufacturingMill = async (data, portal) => {
         name: data.name,
         manufacturingWorks: data.manufacturingWorks,
         description: data.description,
-        teamLeader: data.teamLeader,
-        workSchedules: data.workSchedules
+        workSchedules: data.workSchedules,
+        status: data.status
     });
-    let manufacturingMill = await ManufacturingMill(connect(DB_CONNECTION, portal)).findById({ _id: newManufacturingMill._id });
+    if (data.manufacturingWorks) {
+        let manufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal))
+            .findById({ _id: data.manufacturingWorks });
+        manufacturingWorks.manufacturingMills.push(newManufacturingMill._id);
+        await manufacturingWorks.save();
+    }
+    let manufacturingMill = await ManufacturingMill(connect(DB_CONNECTION, portal))
+        .findById({ _id: newManufacturingMill._id })
+        .populate({
+            path: "manufacturingWorks",
+            populate: [{
+                path: "foreman",
+                select: "name"
+            }, {
+                path: "worksManager",
+                select: "name"
+            }],
+            select: "name"
+        });
     return { manufacturingMill }
 }
 
@@ -66,9 +85,68 @@ exports.getAllManufacturingMills = async (query, portal) => {
             });
         return { manufacturingMills }
     }
-
-
 }
+exports.getManufacturingMillById = async (id, portal) => {
+    let manufacturingMill = await ManufacturingMill(connect(DB_CONNECTION, portal))
+        .findById({ _id: id })
+        .populate({
+            path: "manufacturingWorks",
+            populate: [{
+                path: "foreman",
+                select: "name"
+            }, {
+                path: "worksManager",
+                select: "name"
+            }],
+            select: "name"
+        });
+    if (!manufacturingMill) {
+        throw Error("Manufacturing Mill is not existing");
+    }
+
+    return { manufacturingMill }
+}
+
+exports.editManufacturingMill = async (id, data, portal) => {
+    let oldManufacturingMill = await ManufacturingMill(connect(DB_CONNECTION, portal))
+        .findById({ _id: id });
+    if (!oldManufacturingMill) {
+        throw Error("ManufacturingMill is not existing");
+    }
+
+    oldManufacturingMill.name = data.name ? data.name : oldManufacturingMill.name;
+    oldManufacturingMill.manufacturingWorks = data.manufacturingWorks ? data.manufacturingWorks : oldManufacturingMill.manufacturingWorks
+    oldManufacturingMill.description = data.description ? data.description : oldManufacturingMill.description;
+    oldManufacturingMill.status = data.status ? data.status : oldManufacturingMill.status
+
+    await oldManufacturingMill.save();
+
+    let manufacturingMill = await ManufacturingMill(connect(DB_CONNECTION, portal))
+        .findById({ _id: id })
+        .populate({
+            path: "manufacturingWorks",
+            populate: [{
+                path: "worksManager",
+                select: "name"
+            }, {
+                path: "foreman",
+                select: "name"
+            }],
+            select: "name"
+        });
+    return { manufacturingMill }
+}
+
+exports.deleteManufacturingMill = async (id, portal) => {
+    let manufacturingMill = await ManufacturingMill(connect(DB_CONNECTION, portal))
+        .findByIdAndDelete(id);
+    if (!manufacturingMill) {
+        throw Error("ManufacturingMill is not existing");
+    }
+
+    return { manufacturingMill }
+}
+
 
 exports.createWorkSchedule = async (id, data, portal) => {
     const year = data.year;
@@ -104,65 +182,6 @@ exports.createWorkSchedule = async (id, data, portal) => {
     return { manufacturingMill };
 }
 
-exports.getManufacturingMillById = async (id, portal) => {
-    let manufacturingMill = await ManufacturingMill(connect(DB_CONNECTION, portal))
-        .findById({ _id: id })
-        .populate({
-            path: "manufacturingWorks",
-            populate: [{
-                path: "foreman",
-                select: "name"
-            }, {
-                path: "worksManager",
-                select: "name"
-            }],
-            select: "name"
-        });
-    if (!manufacturingMill) {
-        throw Error("Manufacturing Mill is not existing");
-    }
-
-    return { manufacturingMill }
-}
-
-exports.editManufacturingMill = async (id, data, portal) => {
-    let oldManufacturingMill = await ManufacturingMill(connect(DB_CONNECTION, portal))
-        .findById({ _id: id });
-    if (!oldManufacturingMill) {
-        throw Error("ManufacturingMill is not existing");
-    }
-
-    oldManufacturingMill.name = data.name ? data.name : oldManufacturingMill.name;
-    oldManufacturingMill.manufacturingWorks = data.manufacturingWorks ? data.manufacturingWorks : oldManufacturingMill.manufacturingWorks
-    oldManufacturingMill.description = data.description ? data.description : oldManufacturingMill.description;
-
-    await oldManufacturingMill.save();
-
-    let manufacturingMill = await ManufacturingMill(connect(DB_CONNECTION, portal))
-        .findById({ _id: id })
-        .populate({
-            path: "manufacturingWorks",
-            populate: [{
-                path: "worksManager",
-                select: "name"
-            }, {
-                path: "foreman",
-                select: "name"
-            }],
-            select: "name"
-        });
-    return { manufacturingMill }
-}
-
-exports.deleteManufacturingMill = async (id, portal) => {
-    let manufacturingMill = await ManufacturingMill(connect(DB_CONNECTION, portal))
-        .findByIdAndDelete(id);
-    if (!manufacturingMill) {
-        throw Error("ManufacturingMill is not existing");
-    }
-
-    return { manufacturingMill }
-}
 
 exports.addCommandToSchedule = async (id, data, portal) => {
     let startDateString = data.startDate;

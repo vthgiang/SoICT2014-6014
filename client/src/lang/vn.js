@@ -59,6 +59,107 @@ export default {
             }
         },
 
+        intro: {
+            title: 'Giải pháp không gian làm việc số cho doanh nghiệp',
+            contents: [
+                'Môi trường làm việc số thân thiện và thuận tiện cho mọi nhân viên',
+                'Hỗ trợ lãnh đạo, quản lý các cấp theo dõi điều hành công việc thông qua hệ thống dashboard',
+                'Đánh giá KPI linh hoạt chính xác',
+                'Cơ chế giao việc thuận tiện, tối ưu giúp giảm bớt thời gian, số hóa toàn diện các quy trình nghiệp vụ của doanh nghiệp trên môi trường làm việc số',
+                'Tiết kiệm chi phí đầu tư',
+                'Dữ liệu hệ thống an toàn và bảo mật',
+                'Hỗ trợ khách hàng 24/7'
+                ],
+                auth: {
+                    sigin: 'Đăng nhập',
+                    signout: 'Đăng xuất',
+                    start: 'Bắt đầu',
+                },
+            service: {
+                title: 'Các giải pháp về quản lý trong doanh nghiệp',
+                content: 'Chúng tôi phục vụ các công ty vừa và nhỏ trong tất cả các ngành liên quan đến công nghệ với các dịch vụ chất lượng cao được trình bày dưới đây',
+                kpi: {
+                    title: 'Quản lý KPI',
+                    content: 'Tự động, khoa học và minh bạch',
+                    detail: 'Quản lý KPI tự động, khoa học, minh bạch: Hệ thống cung cấp các cách tính KPI tự động, người dùng có thể tự customize công thức tính KPI tùy thuộc vào lĩnh vực của từng bộ phận/đơn vị.',
+                },
+                task: {
+                    title: 'Quản lý công việc',
+                    content: 'Cơ chế giao việc và nhận việc tiện lợi, tiết kiệm thời gian, hỗ trợ người dùng tập trung vào công việc',
+                    detail: 'Quản lý công việc không theo quy trình với cơ chế giao việc và nhận việc tiện lợi, tiết kiệm thời gian làm việc, hỗ trợ người dùng tập trung vào công việc. Quản lý công việc theo quy trình: Hỗ trợ người dùng nắm bắt được hiện trạng các công việc, từ đó người quản lý có những phương án tổ chức công việc phù hợp, hiệu quả, đúng lúc. Cơ chế giao việc và nhận việc được thực hiện dễ dàng, tiết kiệm thời gian. Giúp người dùng tập trung hơn trong công việc.'
+                },
+                document: {
+                    title: 'Quản lý tài liệu',
+                    content: 'Hỗ trợ quản lý tập trung tài liệu, thuận tiện cho việc tra cứu',
+                    detail: 'Quản lý tài liệu là công việc lưu trữ, phân loại dữ liệu nội bộ của tổ chức, doanh nghiệp, nhằm phục vụ cho việc kinh doanh, sản xuất. Quản lý tài liệu hiệu quả sẽ giúp doanh nghiệp, tổ chức sắp xếp, tổ chức tài liệu hợp lý hơn, tiết kiệm chi phí bảo quản và thời gian tiềm kiếm.'
+                },
+                employee: {
+                    title: 'Quản lý nhân sự',
+                    content: 'Quản lý danh sách thông tin về nhân sự trong doanh nghiệp',
+                    detail: 'Quản lý thông tin nhân sự trong doanh nghiệp Các cán bộ cấp cao có thể dễ dàng theo dõi tình hình nhân sự qua các biểu đồ thống kê',
+                },
+                asset: {
+                    title: 'Quản lý tài sản',
+                    content: 'Quản lý tài sản trong doanh nghiệp',
+                    detail: 'Quản lý thông tin tài sản dễ dàng. Truy suất thông tin nhanh chóng. Thống kê theo dõi dưới dạng các biểu đồ linh hoạt, dễ dàng nắm bắt thông tin.',
+                },
+            },
+            service_signup: {
+                title: 'Đăng ký sử dụng dịch vụ',
+                content: [
+                    'Miễn phí dùng thử 15 ngày',
+                    'Tối đa truy cập 10 user',
+                    'Trải nghiệm các tính năng miễn phí',
+                ],
+                form: {
+                    customer: 'Khách hàng',
+                    email: 'Email',
+                    phone: 'Số điện thoại',
+                    type: {
+                        choose: 'Lựa chọn gói dịch vụ',
+                        standard: 'Tiêu chuẩn',
+                        full: 'Full chức năng',
+                    },
+                    send: 'Gửi đăng ký',
+                },
+            },
+            address: {
+                title: 'Địa chỉ công ty',
+                content: {
+                    location: 'P901, 8C Tạ Quang Bửu, Hai Bà Trưng, Hà Nội.',
+                    phone: '+84 986 986 247',
+                    email: 'office@vnist.vn'
+                },
+            },
+            contact: {
+                title: 'Liên hệ với chúng tôi',
+                company: 'CÔNG TY CỔ PHẦN CÔNG NGHỆ AN TOÀN THÔNG TIN VÀ TRUYỀN THÔNG VIỆT NAM',
+                form: {
+                    name: 'Tên khách hàng',
+                    emai: 'Địa chỉ email',
+                    content: 'Nội dung trao đổi',
+                    send: 'Gửi',
+                },
+            },
+            footer: {
+                about_us: {
+                    title: 'Về chúng tôi',
+                    content: 'Giải pháp không gian làm việc số DX của công ty cổ phần an toàn thông tin VNIST',
+                },
+                care: {
+                    title: 'Quan tâm',
+                    content: {
+                        company: 'Công ty phát triển dịch vụ',
+                        research: 'Tìm hiểu thêm về',
+                    },
+                },
+                media: {
+                    title: 'Đa phương tiện',
+                },
+                copyright: 'Bản quyền © 2020 VNIST - All rights reserved'
+            },
+        },
+
         auth: {
             validator: {
                 confirm_password_invalid: 'Mật khẩu không trùng khớp. Vui lòng kiểm tra lại',
@@ -559,6 +660,16 @@ export default {
                 by_customer: 'Theo khách hàng',
                 payment: 'Hình thức thanh toán',
                 creator: 'Người tạo',
+
+                purchaseHistories: {
+                    all: 'Tất cả',
+                    waitingForApproval: 'Chờ phê duyệt',
+                    approved: 'Đã phê duyệt',
+                    waitingForTheGoods: 'Chờ lấy hàng',
+                    delivering: 'Đang giao',
+                    finished: 'Đã hoàn thành',
+                    cancelled: 'Đã hủy bỏ',
+                },
 
                 info: 'Thông tin chung',
                 contact: 'Thông tin liên hệ',
@@ -2494,6 +2605,8 @@ export default {
                 evaluate_task_fail: 'Đánh giá công việc thất bại',
                 edit_hours_spent_in_evaluate_success: 'Tính thời gian trong lần đánh giá thành công',
                 edit_hours_spent_in_evaluate_fail: 'Tính thời gian trong lần đánh giá thất bại',
+                edit_employee_collaborated_success: 'Chỉnh sửa nhân viên tham gia công việc thành công',
+                edit_employee_collaborated_failure: 'Chỉnh sửa nhân viên tham gia công việc thất bại',
 
                 add_new_task: 'Thêm công việc mới',
                 // add_err: 
@@ -2511,7 +2624,8 @@ export default {
 
                 unit_evaluate: "Đơn vị tiếp nhận kết quả đánh giá công việc",
                 unit_manage_task: "Đơn vị quản lý công việc",
-                collaborated_with_organizational_units: "Đơn vị phối hợp thực hiện công việc",
+                collaborated_with_organizational_units: "Chọn đơn vị phối hợp thực hiện công việc",
+                task_empty_employee: "Đơn vị bạn chưa có người tham gia",
                 delete_eval: "Xóa đánh giá tháng này",
                 delete_eval_title: 'Bạn có chắc chắn muốn xóa đánh giá này?',
                 delete_evaluation_success: "Xóa đánh giá thành công",
@@ -2687,7 +2801,7 @@ export default {
                 log_edit_name: 'Tên công việc mới',
                 log_edit_description: 'MÔ tả công việc mới',
                 log_edit_kpi: 'Chỉnh sửa liên kết kpi',
-                log_edit_kpi_new: 'Liên kết kpi mới',
+                log_edit_kpi_new: 'Liên kết KPI mới',
                 log_edit_eval_info: 'Chỉnh sửa thông tin đánh giá công việc',
                 log_edit_progress: 'Mức độ hoàn thành công việc mới',
 
@@ -2999,7 +3113,7 @@ export default {
                     option: 'Tùy chọn',
                     analyze: 'Phân tích',
                     statistics_chart_title: 'Thống kê kết quả KPI của nhân viên',
-                    result_kpi_titile: 'Kết quả Kpi tất cả nhân viên',
+                    result_kpi_titile: 'Kết quả KPI tất cả nhân viên',
                     auto_eva: 'Hệ thống đánh giá',
                     employee_eva: 'Cá nhân tự đánh giá',
                     approver_eva: 'Người phê duyệt đánh giá',
@@ -3028,7 +3142,7 @@ export default {
                     not_evaluated_yet: 'Chưa đánh giá',
                     target: 'mục tiêu',
                     view_detail: "Xem chi tiết",
-                    clone_to_new_kpi: 'Tạo kpi tháng mới từ kpi tháng này',
+                    clone_to_new_kpi: 'Tạo KPI tháng mới từ KPI tháng này',
                     name: 'Tên',
                     target: 'Mục tiêu đơn vị',
                     criteria: 'Tiêu chí đánh giá',
@@ -3171,8 +3285,8 @@ export default {
                     confirm_approve: 'Bạn chắc chắn muốn kích hoạt KPI này?',
                     confirm_not_enough_weight: 'Tổng trọng số phải bằng 100',
                     confirm_cancel_approve: 'Bạn chắc chắn muốn hủy kích hoạt KPI này?',
-                    confirm_edit_status_success: 'Chỉnh sửa trạng thái Kpi thành công',
-                    confirm_edit_status_failure: 'Chỉnh sửa trạng thái Kpi không thành công',
+                    confirm_edit_status_success: 'Chỉnh sửa trạng thái KPI thành công',
+                    confirm_edit_status_failure: 'Chỉnh sửa trạng thái KPI không thành công',
 
                     confirm_kpi: 'Bạn chắc chắn muốn xóa mục tiêu KPI này?',
                     confirm_approving: 'KPI đã kích hoạt, bạn không thể xóa!',
@@ -3750,13 +3864,38 @@ export default {
                 created_at: "Ngày tạo",
                 list_mills: "Danh sách các xưởng",
                 works_edit: "Sửa thông tin nhà máy",
+                works_detail: "Chi tiết thông tin nhà máy",
                 edit_successfully: "Sửa thông tin nhà máy thành công",
-                edit_failure: "Sửa thông tin nhà máy thất bại"
+                edit_failure: "Sửa thông tin nhà máy thất bại",
+                mill_code: "Mã xưởng",
+                mill_name: "Tên xưởng"
             },
             manufacturing_mill: {
                 name: "Tên xưởng",
                 code: "Mã xưởng",
-                search: "Tìm kiếm"
+                search: "Tìm kiếm",
+                index: "STT",
+                worksName: "Nhà máy",
+                description: "Mô tả",
+                status: "Trạng thái",
+                create_mill: "Tạo xưởng",
+                create_manufacturing_mill: "Tạo xưởng sản xuất",
+                create_mill_successfully: "Tạo xưởng sản xuất thành công",
+                create_mill_failed: "Tạo xưởng sản xuất thất bại",
+                works: "Nhà máy",
+                choose_works: "---Chọn nhà máy---",
+                worksValue_error: "Vui lòng chọn nhà máy",
+                delete_mill: "Xóa xưởng sản xuất",
+                1: "Đang hoạt động",
+                0: "Ngừng hoạt động",
+                mill_detail: "Chi tiết xưởng sản xuất",
+                mill_edit: "Sửa thông tin xưởng sản xuất",
+                choose_status: "---Chọn trạng thái---",
+                status_error: "Vui lòng chọn trạng thái xưởng sản xuất",
+                edit_mill_successfully: "Sửa thông tin xưởng thành công",
+                edit_mill_failed: "Sửa thông tin xưởng thất bại",
+                works_name: "Tên nhà máy",
+                created_at: "Ngày tạo"
             }
         }
     }
