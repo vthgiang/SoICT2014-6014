@@ -1,7 +1,7 @@
 import { sendRequest } from '../../../../../helpers/requestHelper';
 
 export const TaxServices = {
-    createQuote,
+    createNewTax,
     getAllTaxs,
     getTaxById,
     updateTax,
@@ -10,12 +10,12 @@ export const TaxServices = {
     getTaxByCode
 }
 
-function createQuote(data) {
+function createNewTax(data) {
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/tax`,
         method: 'POST',
         data
-    }, false, true, 'manage_order.tax');
+    }, true, true, 'manage_order.tax');
 }
 
 function getAllTaxs(queryData){

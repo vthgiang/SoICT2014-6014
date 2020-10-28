@@ -1,12 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { taxActions } from "../redux/actions";
-import {
-    PaginateBar,
-    DataTableSetting,
-    SelectBox,
-} from "../../../../../common-components";
+import { TaxActions } from "../redux/actions";
+import { PaginateBar, DataTableSetting, SelectBox } from "../../../../../common-components";
 import TaxCreateForm from "./taxCreateForm";
 import TaxDetailForm from "./taxDetailForm";
 import TaxEditForm from "./taxEditForm";
@@ -93,50 +89,30 @@ class TaxManagementTable extends Component {
                 {<TaxDetailForm taxId={this.state.taxId} />}
                 {this.state.currentRow && <TaxEditForm />}
                 <div className="box-body qlcv">
-                    <TaxCreateForm />
+                    <TaxCreateForm reloadState={() => this.props.getAllTaxs({ limit: this.state.limit, page: this.state.page })} />
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">
-                                Mã thuế
-                            </label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                value={code}
-                                onChange={this.handleCodeChange}
-                            />
+                            <label className="form-control-static">{translate("manage_order.tax.tax_code")} </label>
+                            <input type="text" className="form-control" value={code} onChange={this.handleCodeChange} />
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">Tên </label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                value={name}
-                                onChange={this.handleNameChange}
-                            />
+                            <label className="form-control-static">{translate("manage_order.tax.tax_name")} </label>
+                            <input type="text" className="form-control" value={name} onChange={this.handleNameChange} />
                         </div>
                         <div className="form-group">
-                            <button
-                                type="button"
-                                className="btn btn-success"
-                                title="Lọc"
-                                onClick={this.handleSubmitSearch}
-                            >
-                                Tìm kiếm
+                            <button type="button" className="btn btn-success" title="Lọc" onClick={this.handleSubmitSearch}>
+                                            {translate("manage_order.tax.search")}
                             </button>
                         </div>
                     </div>
-                    <table
-                        id="tax-table"
-                        className="table table-striped table-bordered table-hover"
-                    >
+                    <table id="tax-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th>STT</th>
-                                <th>Mã</th>
-                                <th>Tên</th>
-                                <th>Người tạo</th>
-                                <th>Trạng thái</th>
+                                <th>{translate("manage_order.tax.index")}</th>
+                                <th>{translate("manage_order.tax.code")}</th>
+                                <th>{translate("manage_order.tax.name")}</th>
+                                <th>{translate("manage_order.tax.creator")}</th>
+                                <th>{translate("manage_order.tax.status")}</th>
                                 <th
                                     style={{
                                         width: "120px",
@@ -145,14 +121,8 @@ class TaxManagementTable extends Component {
                                 >
                                     {translate("table.action")}
                                     <DataTableSetting
-                                        tableId="manufacturing-works-table"
-                                        columnArr={[
-                                            "STT",
-                                            "Mã",
-                                            "Tên",
-                                            "Người tạo",
-                                            "Trạng thái",
-                                        ]}
+                                        tableId="tax-table"
+                                        columnArr={["STT", "Mã", "Tên", "Người tạo", "Trạng thái"]}
                                         limit={this.state.limit}
                                         hideColumnOption={true}
                                         setLimit={this.setLimit}
@@ -171,44 +141,28 @@ class TaxManagementTable extends Component {
                                         <td>{tax.creator.name}</td>
                                         <td>
                                             <center>
-                                                <i
-                                                    className={
-                                                        tax.status
-                                                            ? "fa  fa-check text-success"
-                                                            : "fa fa-close text-danger"
-                                                    }
-                                                ></i>
+                                                <i className={tax.status ? "fa  fa-check text-success" : "fa fa-close text-danger"}></i>
                                             </center>
                                         </td>
                                         <td style={{ textAlign: "center" }}>
                                             <a
                                                 style={{ width: "5px" }}
-                                                title={translate(
-                                                    "manufacturing.manufacturing_works.works_detail"
-                                                )}
+                                                title={translate("manufacturing.manufacturing_works.works_detail")}
                                                 onClick={() => {
-                                                    this.handleShowDetailTax(
-                                                        tax._id
-                                                    );
+                                                    this.handleShowDetailTax(tax._id);
                                                 }}
                                             >
-                                                <i className="material-icons">
-                                                    view_list
-                                                </i>
+                                                <i className="material-icons">view_list</i>
                                             </a>
                                             <a
                                                 className="edit text-yellow"
                                                 style={{ width: "5px" }}
-                                                title={translate(
-                                                    "manufacturing.manufacturing_works.works_edit"
-                                                )}
+                                                title={translate("manufacturing.manufacturing_works.works_edit")}
                                                 onClick={() => {
                                                     this.handleEditTax(tax);
                                                 }}
                                             >
-                                                <i className="material-icons">
-                                                    edit
-                                                </i>
+                                                <i className="material-icons">edit</i>
                                             </a>
                                         </td>
                                     </tr>
@@ -216,22 +170,13 @@ class TaxManagementTable extends Component {
                         </tbody>
                     </table>
                     {taxs.isLoading ? (
-                        <div className="table-info-panel">
-                            {translate("confirm.loading")}
-                        </div>
+                        <div className="table-info-panel">{translate("confirm.loading")}</div>
                     ) : (
-                        (typeof listTaxs === "undefined" ||
-                            listTaxs.length === 0) && (
-                            <div className="table-info-panel">
-                                {translate("confirm.no_data")}
-                            </div>
+                        (typeof listTaxs === "undefined" || listTaxs.length === 0) && (
+                            <div className="table-info-panel">{translate("confirm.no_data")}</div>
                         )
                     )}
-                    <PaginateBar
-                        pageTotal={totalPages ? totalPages : 0}
-                        currentPage={page}
-                        func={this.setPage}
-                    />
+                    <PaginateBar pageTotal={totalPages ? totalPages : 0} currentPage={page} func={this.setPage} />
                 </div>
             </React.Fragment>
         );
@@ -244,10 +189,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    getAllTaxs: taxActions.getAllTaxs,
+    getAllTaxs: TaxActions.getAllTaxs,
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(withTranslate(TaxManagementTable));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(TaxManagementTable));

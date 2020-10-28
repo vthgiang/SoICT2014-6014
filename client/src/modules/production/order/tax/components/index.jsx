@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import TaxManagementTable from "./taxManagementTable";
 
 class Tax extends Component {
     constructor(props) {
@@ -8,7 +9,9 @@ class Tax extends Component {
     render() {
         return (
             <div className="box" style={{ minHeight: "450px" }}>
-                <div className="box-body">Tax</div>
+                <div className="box-body">
+                    <TaxManagementTable />
+                </div>
             </div>
         );
     }
