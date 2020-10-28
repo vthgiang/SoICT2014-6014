@@ -721,10 +721,11 @@ editTaskByResponsibleEmployees = async (req, res) => {
         var tasks = task.tasks;
         var data = { "organizationalUnits": tasks.organizationalUnit, "title": "Cập nhật thông tin công việc", "level": "general", "content": `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc <strong>${tasks.name}</strong> với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}" target="_blank">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`, "sender": user.name, "users": tasks.accountableEmployees };
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data,);
+        
         // sendEmail(task.email, "Cập nhật thông tin công việc", '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}" target="_blank">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`);
         let title = "Cập nhật thông tin công việc: " + task.tasks.name;
-        console.log(title);
         sendEmail(task.email, title, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người thực hiện <a href="${process.env.WEBSITE}/task?taskId=${req.params.id}">${process.env.WEBSITE}/task?taskId=${req.params.id}</a></p>`);
+        
         await Logger.info(req.user.email, ` edit task  `, req.portal);
         res.status(200).json({
             success: true,
@@ -772,18 +773,31 @@ editTaskByAccountableEmployees = async (req, res) => {
 /** Chỉnh sửa đơn vị phối hợp */
 editEmployeeCollaboratedWithOrganizationalUnits = async (req, res) => {
     try {
-        let task = await PerformTaskService.editEmployeeCollaboratedWithOrganizationalUnits(req.portal, req.params.taskId, req.body);
+        let data = await PerformTaskService.editEmployeeCollaboratedWithOrganizationalUnits(req.portal, req.params.taskId, req.body);
+        
+        let notification = {
+            organizationalUnits: data.task && data.task.organizationalUnit._id,
+            title: "Phân công công việc",
+            level: "general",
+            content: data.html,
+            sender: data.task && data.task.organizationalUnit.name,
+            users: data.newEmployees
+        };
+        await NotificationServices.createNotification(req.portal, data.task.organizationalUnit.company, notification);
+        data.email && data.email.length !== 0
+            && await sendEmail(data.email, "Phân công công việc", '', data.html);
+        
         await Logger.info(req.user.email, ` edit collaborate with organizational unit `, req.portal);
         res.status(200).json({
             success: true,
-            messages: ['edit_collaborate_with_organizational_unit_success'],
-            content: task
+            messages: ['edit_employee_collaborated_success'],
+            content: data.task
         })
     } catch (error) {
         await Logger.error(req.user.email, ` edit collaborate with organizational unit `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['edit_collaborate_with_organizational_unit_failure'],
+            messages: ['edit_employee_collaborated_failure'],
             content: error
         });
     }

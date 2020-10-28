@@ -2595,6 +2595,8 @@ export default {
                 evaluate_task_fail: 'Đánh giá công việc thất bại',
                 edit_hours_spent_in_evaluate_success: 'Tính thời gian trong lần đánh giá thành công',
                 edit_hours_spent_in_evaluate_fail: 'Tính thời gian trong lần đánh giá thất bại',
+                edit_employee_collaborated_success: 'Chỉnh sửa nhân viên tham gia công việc thành công',
+                edit_employee_collaborated_failure: 'Chỉnh sửa nhân viên tham gia công việc thất bại',
 
                 add_new_task: 'Thêm công việc mới',
                 // add_err: 
