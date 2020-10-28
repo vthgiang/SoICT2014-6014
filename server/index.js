@@ -27,6 +27,9 @@ router.use("/employee", require("./modules/human-resource/profile/profile.route"
 router.use("/salary", require("./modules/human-resource/salary/salary.route"));
 router.use("/timesheet", require("./modules/human-resource/timesheets/timesheets.route"));
 
+router.use("/majors", require("./modules/human-resource/major/major.route"));
+// router.use("/career-positions", require("./modules/human-resource/career-position/careerPosition.route"));
+
 router.use("/kpi/employee/creation", require("./modules/kpi/employee/creation/creation.route"));
 router.use("/kpi/employee/dashboard", require("./modules/kpi/employee/dashboard/dashboard.route"));
 router.use("/kpi/employee/management", require("./modules/kpi/employee/management/management.route"));

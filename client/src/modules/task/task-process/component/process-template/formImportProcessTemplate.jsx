@@ -30,13 +30,16 @@ class FormImportProcessTemplate extends Component {
         })
     }
 
+    handleDataSend = () => {
+
+    }
+
     handleImportExcel = (value, checkFileImport) => {
         let values = [];
         let valueShow = [];
         let k = -1;
         for (let i = 0; i < value.length; i++) {
             let x = value[i];
-            console.log('0000000000000000000', x.taskName);
             k = k + 1;
             values = [...values, {
                 // "STT": x.processName ? k + 1 : '',
@@ -83,32 +86,7 @@ class FormImportProcessTemplate extends Component {
                 "taskInformations": [x.taskInformations],
             }];
         }
-        for (let i = 0; i < values.length; i++) {
-            let taskActions = [[], [], []], taskInformations = [[], [], [], []];
-            for (let j = 0; j < values[i].taskActions.length; j++) {
-                let k = values[i].taskActions[j][0];
-                taskActions[0] = [...taskActions[0], k];
-                k = values[i].taskActions[j][1];
-                taskActions[1] = [...taskActions[1], k];
-                k = values[i].taskActions[j][2]
-                taskActions[2] = [...taskActions[2], k];
-            }
-            values[i].taskActions = taskActions;
-            for (let j = 0; j < values[i].taskInformations.length; j++) {
-                let k;
-                k = values[i].taskInformations[j][0];
-                taskInformations[0] = [...taskInformations[0], k];
-                k = values[i].taskInformations[j][1]
-                taskInformations[1] = [...taskInformations[1], k];
-                k = values[i].taskInformations[j][2]
-                taskInformations[2] = [...taskInformations[2], k];
-                k = values[i].taskInformations[j][3]
-                taskInformations[3] = [...taskInformations[3], k];
-            }
-            values[i].taskInformations = taskInformations;
-        }
-        value = values;
-        console.log('quang deptrai \n\n\n\n', value, values);
+        console.log('quangdz \n\n\n\n', value, values);
 
         // Xử lý dữ liệu gửi lên server
         let processData = [];
@@ -126,8 +104,8 @@ class FormImportProcessTemplate extends Component {
 
                 itemProcess.processName = e.processName;
                 itemProcess.processDescription = e.processDescription;
-                itemProcess.manager = e.manager.split(',');
-                itemProcess.viewer = e.viewer.split(',');
+                itemProcess.manager = e.manager.split(",");
+                itemProcess.viewer = e.viewer.split(",");
                 itemProcess.xmlDiagram = e.xmlDiagram;
 
                 // phần tử lưu trữ dữ liệu task hiện tại
@@ -240,7 +218,7 @@ class FormImportProcessTemplate extends Component {
         let { importShowData, importData, processData } = this.state;
         console.log(importShowData, importData);
         console.log("processData", processData);
-        // this.props.importTaskTemplate(importShowData);
+        this.props.importProcessTemplate(processData);
     }
 
     requestDownloadFile = (e, path, fileName) => {
@@ -416,7 +394,7 @@ class FormImportProcessTemplate extends Component {
         const { translate } = this.props;
         let { limit, page, importData, importShowData, rowError, configData, checkFileImport } = this.state;
         let templateImportProcessTemplate2 = this.convertDataExport(templateImportProcessTemplate);
-        console.log('-----------------', templateImportProcessTemplate2, templateImportProcessTemplate);
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -473,7 +451,7 @@ function mapState(state) {
     return { taskProcess };
 };
 const actionCreators = {
-    importTaskTemplate: TaskProcessActions.importTaskTemplate,
+    importProcessTemplate: TaskProcessActions.importProcessTemplate,
     downloadFile: AuthActions.downloadFile,
 };
 const importFileExcel = connect(mapState, actionCreators)(withTranslate(FormImportProcessTemplate));

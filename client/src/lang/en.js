@@ -2786,6 +2786,8 @@ export default {
                 update_task_process_fail: 'Update task process fail',
                 edit_info_process_success: 'Edit process infomation successfully',
                 edit_info_process_fail: 'Edit process infomation fail',
+                import_process_success: "Import process template successfully",
+                import_process_fail: "Import process template fail",
 
                 error: {
                     empty_name: "Process name should not be empty",

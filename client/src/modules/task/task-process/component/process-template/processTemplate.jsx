@@ -483,7 +483,7 @@ class ProcessTemplate extends Component {
                                     return <tr key={key} >
                                         <td>{item.processName}</td>
                                         <td>{item.processDescription}</td>
-                                        <td>{item.tasks.length}</td>
+                                        <td>{item.tasks?.length}</td>
                                         <td>{(item.manager && item.manager.length !== 0) && item.manager.map(x => x.name).join(', ')}</td>
                                         <td>{item.creator?.name}</td>
                                         <td>

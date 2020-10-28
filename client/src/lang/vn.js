@@ -2890,6 +2890,8 @@ export default {
                 update_task_process_fail: 'Cập nhật quy trình công việc thất bại',
                 edit_info_process_success: 'Chỉnh sửa thông tin quy trình công việc thành công',
                 edit_info_process_fail: 'Chỉnh sửa thông tin quy trình công việc thất bại',
+                import_process_success: "Thêm mẫu quy trình từ file excel thành công",
+                import_process_fail: "Thêm mẫu quy trình từ file excel thất bại",
 
                 error: {
                     empty_name: "Tên quy trình không được bỏ trống",
