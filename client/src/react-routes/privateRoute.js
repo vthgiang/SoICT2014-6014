@@ -24,7 +24,7 @@ export const PrivateRoute = ({ auth, isLoading, arrPage, pageName, link, compone
                 return <Layout></Layout>
             
             if(link !== '/' && checkURL(link, auth.links) !== true){
-                return <Redirect to='/'/>
+                return <Redirect to='/home'/>
             } 
             return <Layout arrPage={ arrPage } pageName={ pageName } isLoading={ isLoading }><Component {...props}/></Layout>
         }else{
