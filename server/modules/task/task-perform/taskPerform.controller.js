@@ -104,7 +104,6 @@ exports.stopTimesheetLog = async (req, res) => {
             content: timer
         })
     } catch (error) {
-        console.log(error);
         await Logger.error(req.user.email, ` stop timer `, req.portal)
         res.status(400).json({
             success: false,
@@ -687,6 +686,9 @@ exports.editTask = async (req, res) => {
     }
     else if (req.query.type === 'confirm_task') {
         confirmTask(req, res);
+    } 
+    else if (req.query.type === 'edit_employee_collaborated_with_unit') {
+        editEmployeeCollaboratedWithOrganizationalUnits(req, res);
     }
 }
 
@@ -767,6 +769,26 @@ editTaskByAccountableEmployees = async (req, res) => {
     }
 }
 
+/** Chỉnh sửa đơn vị phối hợp */
+editEmployeeCollaboratedWithOrganizationalUnits = async (req, res) => {
+    try {
+        let task = await PerformTaskService.editEmployeeCollaboratedWithOrganizationalUnits(req.portal, req.params.taskId, req.body);
+        await Logger.info(req.user.email, ` edit collaborate with organizational unit `, req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['edit_collaborate_with_organizational_unit_success'],
+            content: task
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` edit collaborate with organizational unit `, req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['edit_collaborate_with_organizational_unit_failure'],
+            content: error
+        });
+    }
+}
+
 /** Chỉnh sửa taskInformation của task */
 exports.editTaskInformation = async (req, res) => {
     try {
@@ -787,6 +809,7 @@ exports.editTaskInformation = async (req, res) => {
         });
     }
 }
+
 
 /**
  * evaluate task by consulted employee
@@ -867,7 +890,6 @@ editHoursSpentInEvaluate = async (req, res) => {
             content: task
         })
     } catch (error) {
-        console.log(error);
         await Logger.error(req.user.email, ` edit task `, req.portal);
         res.status(400).json({
             success: false,

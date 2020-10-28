@@ -15,10 +15,39 @@ header.fixed-top > h3 {
     padding: 10px 20px;
 }
 
+span.dx-language {
+    position: absolute;
+    top: 4px;
+    right: 10px;
+}
+
+span.dx-language > button {
+    color: white;
+    font-size: 2.6rem;
+    font-weight: bolder;
+    background-color: #ffffff00;
+    border: none;
+}
+
+span.dx-language-setting {
+    padding: 4px;
+    position: absolute;
+    top: 50px;
+    right: 8px;
+    background-color: #fff;
+    display: none;
+}
+
+span.dx-language-setting > a > img {
+    width: 30px;
+    margin: 2px 5px;
+    height: auto;
+}
+
 span.dx-auth {
     position: absolute;
     top: 13px;
-    right: 20px;
+    right: 50px;
 }
 
 span.dx-auth > button.signin {
@@ -116,6 +145,24 @@ section#dx-intro {
     color: #fff;
 }
 
+section#dx-service {
+    background-color: #F7FDFD;
+}
+
+section#dx-service > h3 {
+    color: #605CA8;
+    font-weight: 600;
+    font-size: 3.5rem;
+}
+
+section#dx-service > p {
+    width: 80%;
+    padding-left: 10%;
+    margin-bottom: 40px;
+    text-align: center;
+    font-size: 2rem;
+}
+
 section#dx-service-signup {
     background-color: #F7FDFD;
 }
@@ -198,6 +245,12 @@ div.dx-card {
     margin: 18px 0px;
     padding: 10px;
     min-height: 330px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+}
+
+img.dx-card {
+    padding: 10px;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
     transition: 0.3s;
 }

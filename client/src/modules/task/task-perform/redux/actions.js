@@ -56,6 +56,7 @@ export const performTaskAction = {
     editInformationTask,
     getTaskById,
     confirmTask,
+    editEmployeeCollaboratedWithOrganizationalUnits,
 
     createComment,
     editComment,
@@ -732,6 +733,26 @@ function confirmTask(taskId) {
             .catch(error => {
                 dispatch({
                     type: performTaskConstants.CONFIRM_TASK_FAILURE,
+                    payload: error
+                });
+            });
+    }
+}
+
+function editEmployeeCollaboratedWithOrganizationalUnits(taskId, employeeCollaboratedWithUnit) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.EDIT_EMPLOYEE_COLLABORATED_WITH_ORGANIZATIONAL_UNIT_REQUEST });
+
+        performTaskService.editEmployeeCollaboratedWithOrganizationalUnits(taskId, employeeCollaboratedWithUnit)
+            .then(res => {
+                dispatch({
+                    type: performTaskConstants.EDIT_EMPLOYEE_COLLABORATED_WITH_ORGANIZATIONAL_UNIT_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({
+                    type: performTaskConstants.EDIT_EMPLOYEE_COLLABORATED_WITH_ORGANIZATIONAL_UNIT_FAILURE,
                     payload: error
                 });
             });

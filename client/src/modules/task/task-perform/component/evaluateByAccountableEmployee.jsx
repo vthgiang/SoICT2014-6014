@@ -1523,7 +1523,7 @@ class EvaluateByAccountableEmployee extends Component {
                                                         <div>
                                                             <span key={index}>
                                                                 ({index + 1})&nbsp;&nbsp;
-                                                            <TextEditor data={item.description} />
+                                                            <TextEditor data={item.description} edit={false}/>
                                                             </span>
                                                         </div>
                                                     ))
