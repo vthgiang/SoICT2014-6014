@@ -9,6 +9,8 @@ import { formatFunction } from '../../common/index';
 import { getStorage } from '../../../../config';
 
 import GeneralTabEditForm from './generalTabEditForm';
+import FileTabEditForm from './fileTabEditForm';
+import { convertJsonObjectToFormData } from '../../../../helpers/jsonObjectToFormDataObjectConverter';
 import './customer.css';
 
 class CrmCustomerEdit extends Component {
@@ -30,7 +32,6 @@ class CrmCustomerEdit extends Component {
             props.getCustomer(props.customerIdEdit); //Gọi service lấy thông tin customer theo id
 
             if (user.organizationalUnitsOfUser) {
-                console.log('user', user);
                 let getCurrentUnit = user.organizationalUnitsOfUser.find(item =>
                     item.deans[0] === currentRole
                     || item.viceDeans[0] === currentRole
@@ -88,6 +89,7 @@ class CrmCustomerEdit extends Component {
                         newValue: o.newValue,
                         createdBy: o.createdBy,
                     })) : [],
+                files: customer.files,
             }
 
             this.setState({
@@ -138,6 +140,7 @@ class CrmCustomerEdit extends Component {
 
     save = () => {
         let { editingCustomer, customerIdEdit } = this.state;
+        let formData;
         const { auth } = this.props;
         // lấy danh sách trạng thái khách hàng sau khi edit
         const getStatus = editingCustomer.status;
@@ -147,6 +150,7 @@ class CrmCustomerEdit extends Component {
 
         const getDateTime = new Date();
 
+        // Lưu lại lịch sủ thay đổi trạng thái
         if (getStatus && getStatus.length > 0 && statusHistories && statusHistories.length > 0) {
             statusHistories = [
                 ...statusHistories,
@@ -160,15 +164,22 @@ class CrmCustomerEdit extends Component {
         }
         editingCustomer = { ...editingCustomer, statusHistories }
 
+        formData = convertJsonObjectToFormData(editingCustomer);
+        if (editingCustomer.files) {
+            editingCustomer.files.forEach(o => {
+                formData.append('fileAttachment', o.fileUpload)
+            })
+        }
+
         if (this.isFormValidated) {
-            this.props.editCustomer(customerIdEdit, editingCustomer);
+            this.props.editCustomer(customerIdEdit, formData);
         }
     }
 
     render() {
         const { translate, crm } = this.props;
         const { editingCustomer, customerIdEdit, dataStatus } = this.state;
-
+        console.log('edit', editingCustomer)
         return (
             <React.Fragment>
                 <DialogModal
@@ -183,7 +194,7 @@ class CrmCustomerEdit extends Component {
                     <div className="nav-tabs-custom">
                         <ul className="nav nav-tabs">
                             <li className="active"><a href="#customer-general-edit-form" data-toggle="tab" >Thông tin chung</a></li>
-                            <li><a href="#Customer-fileAttachment" data-toggle="tab">Tài liệu liên quan</a></li>
+                            <li><a href="#customer-fileAttachment" data-toggle="tab">Tài liệu liên quan</a></li>
                         </ul>
                         <div className="tab-content">
                             {/* Tab thông tin chung */}
@@ -198,9 +209,15 @@ class CrmCustomerEdit extends Component {
                             }
 
                             {/* Tab file liên quan đến khách hàng */}
-                            <div id="Customer-fileAttachment" className="tab-pane">
-
-                            </div>
+                            {
+                                editingCustomer && dataStatus === 3 &&
+                                <FileTabEditForm
+                                    id={`customer-fileAttachment`}
+                                    files={editingCustomer.files}
+                                    customerIdEdit={customerIdEdit}
+                                    callBackFromParentEditForm={this.myCallBack}
+                                />
+                            }
                         </div>
                     </div>
                 </DialogModal>

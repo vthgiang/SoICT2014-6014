@@ -1,14 +1,27 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import FileAddModal from './fileAddModal';
-import FileEditModal from './fileEditModal';
 
-class FileTabCreateForm extends Component {
+import FileAddModal from './fileAddModal'
+import FileEditModal from './fileEditModal'
+
+class FileTabEditForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            listFiles: [],
+        this.state = {}
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        const { id, files, customerIdEdit } = props;
+        if (customerIdEdit !== state.customerIdEdit) {
+            return {
+                ...state,
+                customerIdEdit,
+                id,
+                files,
+            }
+        } else {
+            return null;
         }
     }
 
@@ -17,11 +30,11 @@ class FileTabCreateForm extends Component {
      * @param {*} value 
      */
     handleAddFile = (value) => {
-        let { listFiles } = this.state;
-        const { callBackFromParentCreateForm } = this.props;
+        let { files } = this.state;
+        const { callBackFromParentEditForm } = this.props;
 
-        listFiles = [
-            ...listFiles,
+        files = [
+            ...files,
             {
                 name: value.name,
                 description: value.description,
@@ -30,28 +43,11 @@ class FileTabCreateForm extends Component {
                 fileUpload: value.fileUpload,
             }
         ]
+
         this.setState({
-            listFiles,
-        }, () => callBackFromParentCreateForm('files', listFiles));
+            files,
+        }, () => callBackFromParentEditForm('files', files));
     }
-
-    /**
-     * Hàm xóa file đã chọn
-     * @param {*} index 
-     */
-    handleDelete = (index) => {
-        let { listFiles } = this.state;
-        const { callBackFromParentCreateForm } = this.props;
-        // let fileItem = document.querySelector(`.item-${index}`);
-        // fileItem.remove();
-        listFiles.splice(index, 1);
-        this.setState({
-            listFiles,
-        })
-
-        callBackFromParentCreateForm('files', listFiles);
-    }
-
 
     /**
      * Hàm xử lý khi click vào nút edit
@@ -71,35 +67,29 @@ class FileTabCreateForm extends Component {
      * @param {*} value 
      */
     handleEditChange = (value) => {
-        const { callBackFromParentCreateForm } = this.props;
-        let { listFiles } = this.state;
+        const { callBackFromParentEditForm } = this.props;
+        let { files } = this.state;
 
-        listFiles[value._id - 1] = value;
+        files[value._id - 1] = value;
         this.setState({
-            listFiles,
-        }, () => callBackFromParentCreateForm('files', listFiles))
+            files,
+        }, () => callBackFromParentEditForm('files', files))
     }
 
     render() {
         const { translate } = this.props;
-        const { id } = this.props;
-        const { listFiles, itemEdit, data } = this.state;
-
+        const { id, files, data, itemEdit } = this.state;
         return (
             <React.Fragment>
                 <div id={id} className="tab-pane">
                     <div className="row">
                         <div className="col-md-12">
                             <h4 className="row col-md-6 col-xs-8">{translate('crm.customer.list_attachments')}:</h4>
-                            <FileAddModal
-                                handleAddFileAttachment={this.handleAddFile}
-
-                            />
+                            <FileAddModal handleAddFileAttachment={this.handleAddFile} />
                             {itemEdit &&
                                 <FileEditModal
                                     _id={itemEdit}
                                     data={data}
-                                    callBackFromParentCreateForm={this.handleAddFile}
                                     handleEditChange={this.handleEditChange}
                                 />
                             }
@@ -115,7 +105,7 @@ class FileTabCreateForm extends Component {
                                 </thead>
                                 <tbody>
                                     {
-                                        listFiles && listFiles.length > 0 ? listFiles.map((o, index) => (
+                                        files && files.length > 0 ? files.map((o, index) => (
                                             <tr className={`item-${index}`} key={index}>
                                                 <td>{o.name}</td>
                                                 <td>{o.description}</td>
@@ -129,7 +119,7 @@ class FileTabCreateForm extends Component {
                                     }
                                 </tbody>
                             </table>
-                            {listFiles && listFiles.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
+                            {files && files.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
                         </div>
                     </div>
                 </div>
@@ -138,4 +128,4 @@ class FileTabCreateForm extends Component {
     }
 }
 
-export default connect(null, null)(withTranslate(FileTabCreateForm));
+export default connect(null, null)(withTranslate(FileTabEditForm));

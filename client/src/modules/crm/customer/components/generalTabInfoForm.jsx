@@ -87,7 +87,7 @@ class GeneralTabInfoForm extends Component {
         }
 
         return (
-            <div className="tab-pane active" id={id}>
+            <div id={id} className="tab-pane active" >
                 <div className="description-box" style={{ lineHeight: 1.5 }}>
                     <h4 >Thông tin chính</h4>
                     <div className="row"  >

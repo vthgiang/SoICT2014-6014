@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { PaginateBar, SelectMulti, DataTableSetting, ConfirmNotification } from '../../../../common-components';
-import CreateCareForm from './createForm';
+import { ConfirmNotification, PaginateBar, SelectMulti } from '../../../../common-components';
+import { formatFunction } from '../../common/index';
 import { CrmCustomerActions } from '../../customer/redux/actions';
 import { CrmCareActions } from '../redux/action';
-import InfoCareForm from './infoForm';
+import CreateCareForm from './createForm';
 import EditCareForm from './editForm';
-import { formatFunction } from '../../common/index';
+import InfoCareForm from './infoForm';
 
 class CrmCare extends Component {
     constructor(props) {

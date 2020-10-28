@@ -461,7 +461,7 @@ class GeneralTabCreateForm extends Component {
                         <div className="col-md-12">
                             <label>{translate('crm.customer.status')}<span className="text-red">*</span></label>
                             <div className="timeline">
-                                <div className="timeline-progress" style={{ width: `${progressBarWidth}%` }}></div>
+                                <div className="timeline-crm-progress" style={{ width: `${progressBarWidth}%` }}></div>
                                 <div className="timeline-items">
                                     {
                                         listStatus && listStatus.length > 0 &&

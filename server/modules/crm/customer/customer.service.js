@@ -111,8 +111,8 @@ exports.getCustomerById = async (portal, companyId, id) => {
  * @param {*} data 
  * @param {*} userId 
  */
-exports.editCustomer = async (portal, companyId, id, data, userId,avatar) => {
-    let { companyEstablishmentDate, birthDate,group} = data;
+exports.editCustomer = async (portal, companyId, id, data, userId,fileInfo) => {
+    let { companyEstablishmentDate, birthDate, group, files} = data;
 
     //format birthDate
     if (birthDate) {
@@ -137,8 +137,28 @@ exports.editCustomer = async (portal, companyId, id, data, userId,avatar) => {
         data = { ...data, group: null };
     }
 
-    if (avatar) {
-        data = {...data, avatar: avatar}
+    // Cập nhật avatar cho khách hàng
+    if (fileInfo.avatar) {
+        data = {...data, avatar: fileInfo.avatar}
+    }
+
+    // Thêm file đính kèm với khách hàng nếu có
+    if (files && files.length > 0 && fileInfo.fileAttachment && fileInfo.fileAttachment.length > 0) {
+        let result = [];
+        files.forEach(x => {
+            fileInfo.fileAttachment.forEach(y => {
+                if (x.fileName === y.originalname) {
+                    result.push({
+                    creator: userId,
+                    name: x.name,
+                    description: x.description,
+                    fileName: x.fileName,
+                    url: this.getUrl(y.destination, y.filename),
+                 })
+                }
+            })
+        })
+        data = { ...data, files: result };
     }
 
     await Customer(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {

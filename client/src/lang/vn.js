@@ -560,6 +560,16 @@ export default {
                 payment: 'Hình thức thanh toán',
                 creator: 'Người tạo',
 
+                purchaseHistories: {
+                    all: 'Tất cả',
+                    waitingForApproval: 'Chờ phê duyệt',
+                    approved: 'Đã phê duyệt',
+                    waitingForTheGoods: 'Chờ lấy hàng',
+                    delivering: 'Đang giao',
+                    finished: 'Đã hoàn thành',
+                    cancelled: 'Đã hủy bỏ',
+                },
+
                 info: 'Thông tin chung',
                 contact: 'Thông tin liên hệ',
                 advance: 'Thông tin khác',
@@ -867,7 +877,7 @@ export default {
             manage_manufacturing_command: "Quản lý lệnh sản xuất",
             manage_manufacturing_process: "Quản lý tiến độ sản xuất",
             manage_manufacturing_schedule: "Quản lý lịch sản xuất",
-            manage_purchasing_request: "Quản lý phiếu đề nghị mua nguyên vật liệu",
+            manage_purchasing_request: "Quản lý phiếu mua NVL",
             manufacturing_dashboard: "Dashboard Quản lý sản xuất",
             analysis_manufacturing_performance: "Phân tích hiệu suất sản xuất",
             manage_manufacturing_works: "Quản lý nhà máy sản xuất",
@@ -3617,38 +3627,7 @@ export default {
 
         //manager order
         manage_order: {
-            tax: {
-                index: 'STT',
-                code: 'Mã',
-                name: 'Tên',
-                creator: 'Người tạo',
-                status: 'Trạng thái',
-                tax_code: 'Mã thuế',
-                tax_name: 'Tên thuế',
-                choose_at_least_one_item: 'Phải chọn ít nhất 1 mặt hàng',
-                percent_is_not_null: 'Chiết khấu thuế không được để trống',
-                percent_greater_than_or_equal_zero: 'Chiết khấu thuế phải lớn hơn hoặc bằng 0',
-                add_new_tax: 'Thêm loại thuế',
-                add_successfully: 'Thêm thuế thành công',
-                add_failed: 'Thêm thuế không thành công',
-                description:'Mô tả',
-                goods: 'Các mặt hàng',
-                select_goods: 'Chọn các mặt hàng',
-                tax_percent: 'Chiết khấu (%)',
-                add: 'Thêm mới',
-                reset: 'Xóa trắng',
-                action: 'Hành động',
-                version: 'Phiên bản',
-                effective: 'Đang hiệu lực',
-                expire: 'Hết hiệu lực',
-                tax_detail: 'Chi tiết thuế',
-                selected_all: 'Đã chọn tất cả',
-                view_deatail: 'Xem chi tiết',
-                delete_list_goods: 'Xóa danh sách mặt hàng',
-                delete_good: 'Xóa mặt hàng',
-                detail_goods: 'Chi tiết các mặt hàng',
-                search: 'Tìm kiếm'
-            }
+            quote_add_success: "Báo giá đã được tạo"
         },
 
         report_manager: {
@@ -3811,22 +3790,6 @@ export default {
                 edit_mill_failed: "Sửa thông tin xưởng thất bại",
                 works_name: "Tên nhà máy",
                 created_at: "Ngày tạo"
-            },
-            purchasing_request: {
-                code: "Mã phiếu đề nghị",
-                createdAt: "Ngày tạo",
-                planCode: "Mã kế hoạch",
-                receiveTime: "Ngày dự kiến nhận",
-                status: "Trạng thái",
-                creator: "Người tạo",
-                index: "STT",
-                select_all: "Chọn tất cả",
-                1: { content: "Chưa xử lý", color: "orange" },
-                2: { content: "Đã xử lý", color: "green" },
-                3: { content: "Đã hủy", color: "red" },
-                search: "Tìm kiếm",
-                select_status: "Chọn trạng thái"
-
             }
         }
     }
