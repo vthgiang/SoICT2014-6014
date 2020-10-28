@@ -43,9 +43,9 @@ export const configTaskTempalte = {
         value: "Người phê duyệt"
     },
     consultedEmployees: {
-        columnName: "Người hỗ trợ",
-        description: "Tên tiêu đề ứng với người hỗ trợ",
-        value: "Người hỗ trợ"
+        columnName: "Người tư vấn",
+        description: "Tên tiêu đề ứng với người tư vấn",
+        value: "Người tư vấn"
     },
     informedEmployees: {
         columnName: "Người quan sát",
@@ -99,7 +99,7 @@ export const templateImportTaskTemplate = {
                 { key: "readByEmployees", value: "Người được xem" },
                 { key: "responsibleEmployees", value: "Người thực hiện" },
                 { key: "accountableEmployees", value: "Người phê duyệt" },
-                { key: "consultedEmployees", value: "Người hỗ trợ" },
+                { key: "consultedEmployees", value: "Người tư vấn" },
                 { key: "informedEmployees", value: "Người quan sát" },
                 { key: "formula", value: "Công thức tính điểm" },
                 { key: "actionName", value: "Tên hoạt động" },
@@ -125,11 +125,11 @@ export const templateImportTaskTemplate = {
                     formula: 80,
                     taskActions: [
                         {
-                            name:"Xây dựng định mức kỹ thuật",
+                            name: "Xây dựng định mức kỹ thuật",
                             description: "Phòng R&D xây dựng kế hoạch và thực hiện nghiên cứu sản phẩm, xây dựng Định mức kỹ thuật",
                             mandatory: "true",
                         }, {
-                            name:"Khảo sát nguyên liệu",
+                            name: "Khảo sát nguyên liệu",
                             description: "Phòng Kế hoạch kho GSP khảo sát nguyên liệu, tài liệu nguyên liệu (CA)",
                             mandatory: "true",
                         }, {
@@ -160,9 +160,9 @@ export const templateImportTaskTemplate = {
                             description: "Số lượng nguyên liệu dùng để khảo sát",
                             type: "Number",
                             filledByAccountableEmployeesOnly: "true",
-                        }, 
+                        },
                     ],
-                    
+
                 },
             ]
         }]

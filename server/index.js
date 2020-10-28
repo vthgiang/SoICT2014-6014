@@ -69,10 +69,11 @@ router.use("/use-request", require("./modules/asset/use-request/use-request.rout
 router.use("/taskreports", require("./modules/report/task-report/taskReport.route"));
 
 // warehouse
-router.use("/stocks", require('./modules/warehouse/stock/stock.route'));
-router.use("/categories", require("./modules/warehouse/category/category.route"));
-router.use("/goods", require("./modules/warehouse/good/good.route"));
-router.use("/bin-locations", require("./modules/warehouse/bin-location/binLocation.route"));
+router.use("/stocks", require('./modules/production/warehouse/stock/stock.route'));
+router.use("/categories", require("./modules/production/common-production/category/category.route"));
+router.use("/goods", require("./modules/production/common-production/good/good.route"));
+router.use("/bin-locations", require("./modules/production/warehouse/bin-location/binLocation.route"));
+router.use("/lot", require("./modules/production/warehouse/inventory/inventory.route"));
 
 router.use("/examples", require("./modules/example/example.route"));
 router.use("/documents", require("./modules/document/document.route"));
@@ -88,6 +89,7 @@ app.use("/crm/status", require("./modules/crm/status/status.route"));
 // production - manufaturing
 app.use("/manufacturing-mill", require("./modules/production/manufacturing/manufacturingMill/manufacturingMill.route"));
 app.use("/manufacturing-works", require("./modules/production/manufacturing/manufacturingWorks/manufacturingWorks.route"));
+app.use("/purchasing-request", require("./modules/production/manufacturing/purchasingRequest/purchasingRequest.route"));
 
 //order
 app.use("/quote", require("./modules/production/order/quote/quote.route"));

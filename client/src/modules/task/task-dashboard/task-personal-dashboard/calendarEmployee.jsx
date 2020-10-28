@@ -34,7 +34,7 @@ class CalendarEmployee extends Component {
             delay: 0,
             intime: 0,
             overDue: 0,
-            count: 0
+            count: 0,
         }
 
         this.state = {
@@ -57,22 +57,22 @@ class CalendarEmployee extends Component {
     }
 
     handleSearchData = async () => {
-        const { tasks } = this.props;
-        this.INFO_CALENDAR.count++;
+        let r = document.getElementsByClassName("task-progress");
         let status = this.SEARCH_INFO.taskStatus;
 
-        if (tasks) {
-            let taskList, tasksByStatus;
-
-            // Đếm số công việc cá nhân
-            let res = tasks.responsibleTasks && tasks.responsibleTasks;
-            let acc = tasks.accountableTasks && tasks.accountableTasks;
-            let con = tasks.consultedTasks && tasks.consultedTasks;
-            let inf = tasks.informedTasks && tasks.informedTasks;
-            let fourTasks = res.concat(acc, con, inf).filter(task => this.filterByStatus(task));
-
-            await this.countTasks(fourTasks);
+        for (let i = 0; i < r.length; i++) {
+            r[i] && r[i].remove()
         }
+
+        // if (tasks) {
+        //     let res = tasks.responsibleTasks && tasks.responsibleTasks;
+        //     let acc = tasks.accountableTasks && tasks.accountableTasks;
+        //     let con = tasks.consultedTasks && tasks.consultedTasks;
+        //     let inf = tasks.informedTasks && tasks.informedTasks;
+        //     let fourTasks = res.concat(acc, con, inf).filter(task => this.filterByStatus(task));
+        //     let inprocessTasks = fourTasks && fourTasks.filter(x => x.status === "inprocess")
+        //     await this.countTasks(inprocessTasks);
+        // }
 
         await this.setState(state => {
             return {
@@ -81,8 +81,8 @@ class CalendarEmployee extends Component {
             }
         })
 
-        await this.getTaskDurations();
-        await this.getTaskGroups();
+        // await this.getTaskDurations();
+        // await this.getTaskGroups();
     }
 
     // Lọc công việc theo trạng thái
@@ -94,16 +94,24 @@ class CalendarEmployee extends Component {
         }
     }
 
+    convertStatus(status) {
+        const { translate } = this.props;
+
+        switch (status) {
+            case "inprocess": return translate('task.task_management.inprocess');
+            case "wait_for_approval": return translate('task.task_management.wait_for_approval');
+            case "finished": return translate('task.task_management.finished');
+            case "delayed": return translate('task.task_management.delayed');
+            case "canceled": return translate('task.task_management.canceled');
+        }
+    }
+
     // Lấy thời gian các công việc
     getTaskDurations() {
         const { tasks } = this.props;
-        var taskList, tasksByStatus;
         let taskDurations = [];
 
         if (tasks) {
-
-
-            // Chia nhóm công việc theo vai trò trong công việc
             let res, acc, con, inf;
             let tasksByStatus2 = [];
 
@@ -116,6 +124,7 @@ class CalendarEmployee extends Component {
                 for (let i = 0; i < res.length; i++) {
                     tasksByStatus2.push({
                         id: res[i]._id,
+                        status: res[i].status,
                         gr: 'responsible-tasks',
                         name: res[i].name,
                         startDate: res[i].startDate,
@@ -129,6 +138,7 @@ class CalendarEmployee extends Component {
                 for (let i = 0; i < acc.length; i++) {
                     tasksByStatus2.push({
                         id: acc[i]._id,
+                        status: acc[i].status,
                         gr: 'accountable-tasks',
                         name: acc[i].name,
                         startDate: acc[i].startDate,
@@ -142,6 +152,7 @@ class CalendarEmployee extends Component {
                 for (let i = 0; i < con.length; i++) {
                     tasksByStatus2.push({
                         id: con[i]._id,
+                        status: con[i].status,
                         gr: 'consulted-tasks',
                         name: con[i].name,
                         startDate: con[i].startDate,
@@ -155,6 +166,7 @@ class CalendarEmployee extends Component {
                 for (let i = 0; i < inf.length; i++) {
                     tasksByStatus2.push({
                         id: inf[i]._id,
+                        status: inf[i].status,
                         gr: 'informed-tasks',
                         name: inf[i].name,
                         startDate: inf[i].startDate,
@@ -170,9 +182,10 @@ class CalendarEmployee extends Component {
 
                     if (tasksByStatus2[i]) {
                         let startTime, endTime, start_time, end_time;
-                        let titleTask = `${tasksByStatus2[i].name} - ${tasksByStatus2[i].progress} % `;
+                        let stt = this.convertStatus(tasksByStatus2[i].status)
+                        let titleTask = tasksByStatus2[i].status === "inprocess" ? `${tasksByStatus2[i].name} - ${tasksByStatus2[i].progress} % ` : `${tasksByStatus2[i].name} (${stt})`;
                         let addDate2;
-
+                        let fontColor = (tasksByStatus2[i] && tasksByStatus2[i].status === "inprocess") ? "rgba(0, 0, 0, 0.8)" : "#555"
                         if (tasksByStatus2[i].startDate === tasksByStatus2[i].endDate) {
                             addDate2 = Date.parse(tasksByStatus2[i].endDate) + 86400000;
                         }
@@ -187,7 +200,8 @@ class CalendarEmployee extends Component {
                         end_time = moment(endTime);
 
                         taskDurations.push({
-                            id: i + this.INFO_CALENDAR.count,
+                            // id: i + this.INFO_CALENDAR.count,
+                            id: i,
                             group: tasksByStatus2[i].gr,
                             title: titleTask,
                             canMove: false,
@@ -195,7 +209,7 @@ class CalendarEmployee extends Component {
                             end_time: end_time,
                             itemProps: {
                                 style: {
-                                    color: "rgb(0, 0, 0, 0.8)",
+                                    color: fontColor,
                                     borderStyle: "solid",
                                     fontWeight: '600',
                                     fontSize: 14,
@@ -206,10 +220,20 @@ class CalendarEmployee extends Component {
                         })
                     }
                 }
-                let x = document.getElementsByClassName("rct-item");
-                if (x.length) {
-                    for (let i = 0; i < x.length; i++) {
-                        if (tasksByStatus2[i]) {
+
+                let x2 = document.getElementsByClassName("rct-items");
+                let listNodes = x2[0] && x2[0].childNodes;
+
+                if (listNodes && listNodes.length) {
+                    for (let i = 0; i < listNodes.length; i++) {
+
+                        listNodes[i].classList.add("rct-item")
+
+                        if (tasksByStatus2[i] && tasksByStatus2[i].status !== "inprocess") {
+                            listNodes[i].setAttribute("class", "task-background");
+                        }
+
+                        if (tasksByStatus2[i] && tasksByStatus2[i].status === "inprocess") {
                             let color;
                             let currentTime = new Date();
                             let startTime = new Date(tasksByStatus2[i].startDate);
@@ -222,14 +246,15 @@ class CalendarEmployee extends Component {
                                 let workingDayMin = (endTime - startTime) * tasksByStatus2[i].progress / 100;
                                 let dayFromStartDate = currentTime - startTime;
                                 let timeOver = workingDayMin - dayFromStartDate;
-                                if (timeOver >= 0) {
+                                if (tasksByStatus2[i].status === 'finished' || timeOver >= 0) {
                                     color = "#00A65A"; // In time or on time
                                 }
                                 else {
                                     color = "#F0D83A"; // delay
                                 }
                             }
-                            this.displayTaskProgress(tasksByStatus2[i].progress, x[i], color);
+
+                            this.displayTaskProgress(tasksByStatus2[i].progress, listNodes[i], color);
                         }
                     }
                 }
@@ -239,16 +264,11 @@ class CalendarEmployee extends Component {
     }
 
     // Nhóm công việc theo người thực hiện
-
     getTaskGroups() {
         const { tasks, translate } = this.props;
-        var taskList1, tasksByStatus1;
-        let groupName = [], distinctGroupName = [], id = [], distinctId = [];
-        let multiResponsibleEmployee = false;
+        let distinctGroupName = [];
 
         if (tasks) {
-
-            //Phân nhóm công việc theo vai trò trong công việc
             let res, acc, con, inf;
 
             if (tasks) {
@@ -290,21 +310,18 @@ class CalendarEmployee extends Component {
             d.setAttribute("class", "task-progress");
             d.style.width = progress > 5 ? `${progress}%` : `5px`;
             d.style.backgroundColor = color;
-            console.log('xxxxxxx', x, d);
 
             child = x.childElementCount;
-            if (child === 1) {
-                x.appendChild(d);
-            }
-            // else {
-            //     await x.appendChild(d);
-            // }
+            let ch = x.childNodes;
+
+            if (ch[3]) ch[3].remove();
+            x.appendChild(d);
         }
     }
 
     handleItemClick = async (itemId) => {
         let { tasks } = this.props;
-        var taskList, tasksByStatus;
+        var tasksByStatus;
 
         if (tasks) {
 
@@ -350,14 +367,15 @@ class CalendarEmployee extends Component {
             tasksByStatus = tasksByStatus2;
         }
 
-        let id = tasksByStatus[itemId - this.INFO_CALENDAR.count]._id;
-
+        // let id = tasksByStatus[itemId - this.INFO_CALENDAR.count]._id;
+        let id = tasksByStatus[itemId]._id;
         await this.setState(state => {
             return {
                 ...state,
                 taskId: id
             }
         })
+
         await this.props.getTaskById(id);
         window.$(`#modal-detail-task-Employee`).modal('show')
     }
@@ -409,7 +427,7 @@ class CalendarEmployee extends Component {
                 workingDayMin = (endTime - startTime) * taskList[i].progress / 100; // Số ngày làm việc tối thiểu để đúng hạn
                 let dayFromStartDate = currentTime - startTime;
                 let timeOver = workingDayMin - dayFromStartDate;
-                if (timeOver >= 0) {
+                if (taskList[i].status === 'finished' || timeOver >= 0) {
                     intime++;
                 }
                 else {
@@ -428,6 +446,7 @@ class CalendarEmployee extends Component {
     }
 
     render() {
+
         const { tasks, translate } = this.props;
         const { defaultTimeStart, defaultTimeEnd, taskStatus } = this.state;
 
@@ -436,7 +455,6 @@ class CalendarEmployee extends Component {
         let data;
         let rctHeadText = translate('task.task_management.role');
         let rctHead = document.getElementsByClassName("rct-header-root");
-
         if (rctHead[0]) {
             let first = rctHead[0].children;
             if (first[0]) {
@@ -446,7 +464,6 @@ class CalendarEmployee extends Component {
         }
 
         if (tasks) {
-            let taskList, tasksByStatus;
 
             // Đếm số công việc cá nhân
             let res = tasks.responsibleTasks && tasks.responsibleTasks;
@@ -454,8 +471,8 @@ class CalendarEmployee extends Component {
             let con = tasks.consultedTasks && tasks.consultedTasks;
             let inf = tasks.informedTasks && tasks.informedTasks;
             let fourTasks = res && acc && con && inf && res.concat(acc, con, inf).filter(task => this.filterByStatus(task));
-
-            data = this.countTasks(fourTasks);
+            let inprocessTasks = fourTasks && fourTasks.filter(x => x.status === "inprocess")
+            data = this.countTasks(inprocessTasks);
         }
 
         return (
@@ -490,7 +507,7 @@ class CalendarEmployee extends Component {
                         groups={this.getTaskGroups()}
                         items={this.getTaskDurations()}
                         itemsSorted
-                        itemTouchSendsClick={true}
+                        itemTouchSendsClick={false}
                         stackItems
                         sidebarWidth={150}
                         itemHeightRatio={0.8}

@@ -332,6 +332,55 @@ class UserDocumentsData extends Component {
             }
         })
     }
+    setPage = async (page) => {
+        this.setState({ page });
+        let path = this.state.archive ? this.findPath(this.state.archive) : "";
+        const data = {
+            limit: this.state.limit,
+            page: page,
+            name: this.state.name,
+            category: this.state.category ? this.state.category[0] : "",
+            domains: this.state.domain ? this.state.domain : "",
+            archives: path && path.length ? path[0] : "",
+        };
+        await this.props.getAllDocuments(getStorage('currentRole'), data);
+    }
+
+    setLimit = (number) => {
+        if (this.state.limit !== number) {
+            this.setState({ limit: number });
+            const data = { limit: number, page: this.state.page };
+            this.props.getAllDocuments(getStorage('currentRole'), data);
+        }
+    }
+
+    setOption = (title, option) => {
+        this.setState({
+            [title]: option
+        });
+    }
+    findPath = (select) => {
+        const archives = this.props.documents.administration.archives.list;
+        let paths = select.map(s => {
+            let archive = archives.filter(arch => arch._id === s);
+            return archive[0] ? archive[0].path : "";
+        })
+        return paths;
+
+    }
+
+    searchWithOption = async () => {
+        let path = this.state.archive ? this.findPath(this.state.archive) : "";
+        const data = {
+            limit: this.state.limit,
+            page: 1,
+            name: this.state.name,
+            category: this.state.category ? this.state.category[0] : "",
+            domains: this.state.domain ? this.state.domain : "",
+            archives: path && path.length ? path : "",
+        };
+        await this.props.getAllDocuments(getStorage('currentRole'), data);
+    }
 
     render() {
         const { translate } = this.props;
@@ -514,55 +563,7 @@ class UserDocumentsData extends Component {
         );
     }
 
-    setPage = async (page) => {
-        this.setState({ page });
-        let path = this.state.archive ? this.findPath(this.state.archive) : "";
-        const data = {
-            limit: this.state.limit,
-            page: page,
-            name: this.state.name,
-            category: this.state.category ? this.state.category[0] : "",
-            domains: this.state.domain ? this.state.domain : "",
-            archives: path && path.length ? path[0] : "",
-        };
-        await this.props.getAllDocuments(getStorage('currentRole'), data);
-    }
-
-    setLimit = (number) => {
-        if (this.state.limit !== number) {
-            this.setState({ limit: number });
-            const data = { limit: number, page: this.state.page };
-            this.props.getAllDocuments(getStorage('currentRole'), data);
-        }
-    }
-
-    setOption = (title, option) => {
-        this.setState({
-            [title]: option
-        });
-    }
-    findPath = (select) => {
-        const archives = this.props.documents.administration.archives.list;
-        let paths = select.map(s => {
-            let archive = archives.filter(arch => arch._id === s);
-            return archive[0] ? archive[0].path : "";
-        })
-        return paths;
-
-    }
-
-    searchWithOption = async () => {
-        let path = this.state.archive ? this.findPath(this.state.archive) : "";
-        const data = {
-            limit: this.state.limit,
-            page: 1,
-            name: this.state.name,
-            category: this.state.category ? this.state.category[0] : "",
-            domains: this.state.domain ? this.state.domain : "",
-            archives: path && path.length ? path : "",
-        };
-        await this.props.getAllDocuments(getStorage('currentRole'), data);
-    }
+    
 }
 
 const mapStateToProps = state => state;

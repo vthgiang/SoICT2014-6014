@@ -63,16 +63,16 @@ class TaskTemplate extends Component {
             <div className="box">
                 <div className="box-body qlcv" id="table-task-template">
                     {
-                        currentViewRow && 
-                        <ModalViewTaskTemplate 
-                            taskTemplateId={currentViewRow} 
+                        currentViewRow &&
+                        <ModalViewTaskTemplate
+                            taskTemplateId={currentViewRow}
                         />
                     }
                     {
-                        currentEditRow && 
-                        <ModalEditTaskTemplate 
-                            taskTemplate={currentEditRow} 
-                            taskTemplateId={currentEditRowId} 
+                        currentEditRow &&
+                        <ModalEditTaskTemplate
+                            taskTemplate={currentEditRow}
+                            taskTemplateId={currentEditRowId}
                         />
                     }
 
@@ -98,7 +98,7 @@ class TaskTemplate extends Component {
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('task_template.name')}</label>
-                            <input className="form-control" type="text" placeholder={translate('task_template.search_by_name')}　onChange={this.handleChangeTaskTemplateName}/>
+                            <input className="form-control" type="text" placeholder={translate('task_template.search_by_name')} onChange={this.handleChangeTaskTemplateName} />
                         </div>
                     </div>
 
@@ -182,7 +182,7 @@ class TaskTemplate extends Component {
     }
 
     handleChangeTaskTemplateName = (e) => {
-        let {value} = e.target;
+        let { value } = e.target;
         this.setState({
             name: value
         });
@@ -190,7 +190,7 @@ class TaskTemplate extends Component {
 
     /**Cập nhật số dòng trên một trang hiển thị */
     setLimit = (limit) => {
-        let {perPage, unit, name} = this.state;
+        let { perPage, unit, name } = this.state;
         if (limit !== perPage) {
             this.setState({
                 perPage: limit,
@@ -223,7 +223,7 @@ class TaskTemplate extends Component {
     handleGetDataPagination = async (number) => {
         let { currentPage, perPage, name } = this.state;
         let units = window.$("#multiSelectUnit").val();
-        if (currentPage !== number){
+        if (currentPage !== number) {
             this.setState({
                 currentPage: number
             });
@@ -235,7 +235,7 @@ class TaskTemplate extends Component {
     handleUpdateData = () => {
         let { perPage, name } = this.state;
         let units = window.$("#multiSelectUnit").val();
-        this.setState({ 
+        this.setState({
             currentPage: 1
         });
         this.props.getTaskTemplateByUser(1, perPage, units, name);
@@ -294,9 +294,9 @@ class TaskTemplate extends Component {
 
     /**Hiển thị số thứ tự của trang đang xem ở paginate bar */
     setPage = async (number) => {
-        let {currentPage, perPage, name} = this.state;
+        let { currentPage, perPage, name } = this.state;
         let units = window.$("#multiSelectUnit").val();
-        if (currentPage !== number){
+        if (currentPage !== number) {
             this.setState({
                 currentPage: number
             });
@@ -315,9 +315,9 @@ class TaskTemplate extends Component {
     /**Mở modal chỉnh sửa 1 mẫu công việc */
     handleEdit = async (taskTemplate) => {
         await this.setState({
-                currentEditRow: taskTemplate,
-                currentEditRowId: taskTemplate._id,
-            });
+            currentEditRow: taskTemplate,
+            currentEditRowId: taskTemplate._id,
+        });
         window.$('#modal-edit-task-template').modal('show');
     }
 
@@ -340,9 +340,9 @@ class TaskTemplate extends Component {
             for (let k = 0; k < data.length; k++) {
                 let x = data[k];
                 let length = 0;
-                let actionName = [], actionDescription = [], mandatory = [] ;
-                if (x.taskActions ) {
-                    if (x.taskActions.length > length){
+                let actionName = [], actionDescription = [], mandatory = [];
+                if (x.taskActions) {
+                    if (x.taskActions.length > length) {
                         length = x.taskActions.length;
                     }
                     for (let i = 0; i < x.taskActions.length; i++) {
@@ -360,7 +360,7 @@ class TaskTemplate extends Component {
                     if (x.taskInformations.length > length) {
                         length = x.taskInformations.length;
                     }
-                    for (let i = 0; i < x.taskInformations.length; i++){
+                    for (let i = 0; i < x.taskInformations.length; i++) {
                         infomationName[i] = x.taskInformations[i].name;
                         infomationDescription[i] = x.taskInformations[i].description;
                         type[i] = x.taskInformations[i].type;
@@ -372,7 +372,7 @@ class TaskTemplate extends Component {
                     numberOfUse = x.numberOfUse;
                 }
                 let readByEmployees = [], responsibleEmployees = [], accountableEmployees = [], consultedEmployees = [], informedEmployees = [];
-                
+
                 if (x.readByEmployees && x.readByEmployees[0]) {
                     readByEmployees = x.readByEmployees.map(item => item.name);
                     if (length < readByEmployees.length) {
@@ -391,7 +391,8 @@ class TaskTemplate extends Component {
                 if (x.informedEmployees && x.informedEmployees[0]) {
                     informedEmployees = x.informedEmployees.map(item => item.name);
                 }
-                let out = { STT: k + 1,
+                let out = {
+                    STT: k + 1,
                     name: x.name,
                     description: x.description,
                     numberOfUse: numberOfUse,
@@ -409,10 +410,11 @@ class TaskTemplate extends Component {
                     infomationName: infomationName[0],
                     infomationDescription: infomationDescription[0],
                     type: type[0],
-                    filledByAccountableEmployeesOnly: filledByAccountableEmployeesOnly[0] }
+                    filledByAccountableEmployeesOnly: filledByAccountableEmployeesOnly[0]
+                }
                 datas = [...datas, out];
                 if (length > 1) {
-                    for ( let i = 1; i < length; i++){
+                    for (let i = 1; i < length; i++) {
                         out = {
                             STT: "",
                             name: "",
@@ -439,7 +441,7 @@ class TaskTemplate extends Component {
                 }
             }
         }
-        
+
         let exportData = {
             fileName: "Bảng thống kê mẫu công việc",
             dataSheets: [
@@ -471,7 +473,7 @@ class TaskTemplate extends Component {
                                 { key: "priority", value: "Độ ưu tiên" },
                                 { key: "responsibleEmployees", value: "Người thực hiện" },
                                 { key: "accountableEmployees", value: "Người phê duyệt" },
-                                { key: "consultedEmployees", value: "Người hỗ trợ" },
+                                { key: "consultedEmployees", value: "Người tư vấn" },
                                 { key: "informedEmployees", value: "Người quan sát" },
                                 { key: "formula", value: "Công thức tính điểm" },
                                 { key: "actionName", value: "Tên hoạt động" },

@@ -132,7 +132,7 @@ function getAccountableTaskByUser(unit, number, perPage, status, priority, speci
 
 
 /**
- * lấy công việc theo người hỗ trợ
+ * lấy công việc theo người tư vấn
  * @param {*} unit đơn vị
  * @param {*} number số trang hiện tại
  * @param {*} perPage số bản ghi trên 1 trang

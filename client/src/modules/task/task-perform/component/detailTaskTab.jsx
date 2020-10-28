@@ -15,7 +15,6 @@ import { SelectFollowingTaskModal } from './selectFollowingTaskModal';
 import { HoursSpentOfEmployeeChart } from './hourSpentNewVersion';
 
 import { withTranslate } from 'react-redux-multilingual';
-import './detailTaskTab.css';
 import Swal from 'sweetalert2';
 
 class DetailTaskTab extends Component {
@@ -296,9 +295,9 @@ class DetailTaskTab extends Component {
     }
 
     checkEvaluationTaskAction = (task) => {
-        if(task){
-            let {taskActions} = task;
-            if(taskActions) {
+        if (task) {
+            let { taskActions } = task;
+            if (taskActions) {
                 let rated = taskActions.filter(task => task.rating === -1);
                 return {
                     checkEvaluationTaskAction: rated.length !== 0,
@@ -600,7 +599,7 @@ class DetailTaskTab extends Component {
                 }
             })
         }
-        console.log("hoursSpentOfEmployeeInEvaluation", hoursSpentOfEmployeeInEvaluation)
+        // console.log("hoursSpentOfEmployeeInEvaluation", hoursSpentOfEmployeeInEvaluation)
         return (
             <React.Fragment>
                 {(showToolbar) &&
@@ -676,7 +675,7 @@ class DetailTaskTab extends Component {
                         {/** Nhắc nhở */}
                         {
                             task && warning &&
-                            <div className="description-box alert">
+                            <div className="description-box warning">
                                 <h4>{translate('task.task_management.warning')}</h4>
 
                                 {/* Kích hoạt công việc phía sau trong quy trình */}
@@ -689,14 +688,14 @@ class DetailTaskTab extends Component {
                                     </div>
                                 }
 
-                                {/* Số hoạt động chưa thực hiện */}         
+                                {/* Số hoạt động chưa thực hiện */}
                                 {
                                     this.getTaskActionsNotPerform(task.taskActions) > 0 &&
                                     <div>
-                                        <strong>{translate('task.task_perform.actions_not_perform')}</strong> 
+                                        <strong>{translate('task.task_perform.actions_not_perform')}</strong>
                                         <span className="text-red">{this.getTaskActionsNotPerform(task.taskActions)}</span>
-                                    </div> 
-                                }                      
+                                    </div>
+                                }
 
                                 {/** Xác nhận công việc */}
                                 {
@@ -774,11 +773,11 @@ class DetailTaskTab extends Component {
                                             return <div key={key}><strong>{info.name}:</strong> {info.value ? this.formatDate(info.value) : translate('task.task_management.detail_not_hasinfo')}</div>
                                         }
                                         return <div key={key}>
-                                            <strong>{info.name}:</strong> 
+                                            <strong>{info.name}:</strong>
                                             {
-                                                info.value ? 
-                                                info.value : Number(info.value) === 0 ? info.value :
-                                                translate('task.task_management.detail_not_hasinfo')}
+                                                info.value ?
+                                                    info.value : Number(info.value) === 0 ? info.value :
+                                                        translate('task.task_management.detail_not_hasinfo')}
                                         </div>
                                     })
                                 }
@@ -837,7 +836,7 @@ class DetailTaskTab extends Component {
                                     {
                                         (task && task.consultedEmployees && task.consultedEmployees.length !== 0) &&
                                         <React-Fragment>
-                                            {/* Người hỗ trợ */}
+                                            {/* Người tư vấn */}
                                             <strong>{translate('task.task_management.consulted')}:</strong>
                                             <span>
                                                 {
@@ -927,9 +926,9 @@ class DetailTaskTab extends Component {
                                                                     return <li key={key}>{info.name}: &nbsp;&nbsp; {info.value ? this.formatDate(info.value) : translate('task.task_management.detail_not_eval_on_month')}</li>
                                                                 }
                                                                 return <li key={key}>{info.name}: &nbsp;&nbsp; {
-                                                                    info.value ? 
-                                                                    info.value : Number(info.value) === 0 ? info.value :
-                                                                    translate('task.task_management.detail_not_eval_on_month')}</li>
+                                                                    info.value ?
+                                                                        info.value : Number(info.value) === 0 ? info.value :
+                                                                            translate('task.task_management.detail_not_eval_on_month')}</li>
                                                             })
                                                         }
                                                     </ul>

@@ -253,6 +253,7 @@ class ModalEditTaskProcess extends Component {
         modeling.updateProperties(element1, {
             shapeName: value,
         });
+        this.forceUpdate(); // render lại component
     }
 
     // Cập nhật người thực hiện công việc trong quy trình

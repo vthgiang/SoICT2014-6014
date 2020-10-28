@@ -34,47 +34,43 @@ class ManageLinkSystem extends Component {
         });
     }
 
-    searchWithOption = async () => {
-        const data = {
+    searchWithOption = () => {
+        this.props.getAllSystemLinks({
             limit: this.state.limit,
             page: 1,
             key: this.state.option,
             value: this.state.value
-        };
-        await this.props.getAllSystemLinks(data);
+        });
     }
 
     setPage = (page) => {
-        this.setState({ page });
-        const data = {
-            limit: this.state.limit,
-            page: page,
-            key: this.state.option,
-            value: this.state.value
-        };
-        this.props.getAllSystemLinks(data);
+        this.setState({ page }, () => {
+            this.props.getAllSystemLinks({
+                limit: this.state.limit,
+                page: page,
+                key: this.state.option,
+                value: this.state.value
+            });
+        });
     }
 
     setLimit = (number) => {
-        this.setState({ limit: number });
-        const data = { 
-            limit: number, 
-            page: this.state.page,
-            key: this.state.option,
-            value: this.state.value
-        };
-        this.props.getAllSystemLinks(data);
+        this.setState({ limit: number }, () => {
+            this.props.getAllSystemLinks({ 
+                limit: number, 
+                page: this.state.page,
+                key: this.state.option,
+                value: this.state.value
+            });
+        });
+
     }
 
     // Cac ham xu ly du lieu voi modal
-    handleEdit = async (link) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                currentRow: link
-            }
+    handleEdit = (link) => {
+        this.setState({ currentRow: link }, () => {
+            window.$('#modal-edit-link-default').modal('show');
         });
-        window.$('#modal-edit-link-default').modal('show');
     }
 
     render() { 

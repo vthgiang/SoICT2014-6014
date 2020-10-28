@@ -18,37 +18,33 @@ class CreateLinkForm extends Component {
 
     handleUrl = (e) => {
         let {value} = e.target;
-        this.setState({ linkUrl: value });
-
         let {translate} = this.props;
         let {message} = SystemLinkValidator.validateUrl(translate, value);
-        this.setState({ linkUrlError: message})
+        this.setState({ 
+            linkUrl: value,
+            linkUrlError: message
+        });
     }
 
     handleDescription = (e) => {
         let {value} = e.target;
-        this.setState({ linkDescription: value });
-
         let {translate} = this.props;
         let {message} = SystemLinkValidator.validateDescription(translate, value);
-        this.setState({ linkDescriptionError: message})
+        this.setState({ 
+            linkDescription: value,
+            linkDescriptionError: message
+        });
     }
 
     handleCategory = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                linkCategory: value[0]
-            }
-        })
+        this.setState({
+            linkCategory: value[0]
+        });
     }
 
     handleRoles = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                linkRoles: value
-            }
+        this.setState({
+            linkRoles: value
         })
     }
 

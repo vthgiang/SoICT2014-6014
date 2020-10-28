@@ -6,7 +6,7 @@ const {
     EmployeeKpi,
     EmployeeKpiSet,
     OrganizationalUnitKpi,
-    OrganizationalUnitKpiSet, 
+    OrganizationalUnitKpiSet,
     User,
     OrganizationalUnit,
     Task
@@ -14,48 +14,48 @@ const {
 
 require('dotenv').config();
 
-const initSampleCompanyDB = async() => {
+const initSampleCompanyDB = async () => {
     console.log("Init sample company database, ...");
 
     /**
      * 1. Tạo kết nối đến csdl của hệ thống và công ty VNIST
      */
-    
+
     const vnistDB = mongoose.createConnection(
         `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/vnist`,
         process.env.DB_AUTHENTICATION === 'true' ?
-        {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true,
-            useFindAndModify: false,
-            user: process.env.DB_USERNAME,
-            pass: process.env.DB_PASSWORD
-        }:{
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true,
-            useFindAndModify: false,
-        }
+            {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+                useCreateIndex: true,
+                useFindAndModify: false,
+                user: process.env.DB_USERNAME,
+                pass: process.env.DB_PASSWORD
+            } : {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+                useCreateIndex: true,
+                useFindAndModify: false,
+            }
     );
-    if(!vnistDB) throw('DB vnist cannot connect');
+    if (!vnistDB) throw ('DB vnist cannot connect');
     console.log("DB vnist connected");
-    
+
     /**
      * 1.1 Khởi tạo model cho db
      */
     const initModels = (db) => {
         console.log("models", db.models);
-        if(!db.models.EmployeeKpi) EmployeeKpi(db);
-        if(!db.models.EmployeeKpiSet) EmployeeKpiSet(db);
-        if(!db.models.OrganizationalUnitKpi) OrganizationalUnitKpi(db);
-        if(!db.models.OrganizationalUnitKpiSet) OrganizationalUnitKpiSet(db);
-        if(!db.models.User) User(db);
-        if(!db.models.OrganizationalUnit) OrganizationalUnit(db);
-        if(!db.models.Task) Task(db);
+        if (!db.models.EmployeeKpi) EmployeeKpi(db);
+        if (!db.models.EmployeeKpiSet) EmployeeKpiSet(db);
+        if (!db.models.OrganizationalUnitKpi) OrganizationalUnitKpi(db);
+        if (!db.models.OrganizationalUnitKpiSet) OrganizationalUnitKpiSet(db);
+        if (!db.models.User) User(db);
+        if (!db.models.OrganizationalUnit) OrganizationalUnit(db);
+        if (!db.models.Task) Task(db);
         console.log("models_list", db.models);
     }
-    
+
     initModels(vnistDB);
 
     console.log("Tạo dữ liệu cho ban giám đốc");
@@ -89,7 +89,7 @@ const initSampleCompanyDB = async() => {
     ----------------------------------------------------------------------------------------------- */
 
     console.log("Khởi tạo Organizational Unit Kpi Set");
-    
+
     var organizationalUnitKpiSet = await OrganizationalUnitKpiSet(vnistDB).insertMany([
         {
             organizationalUnit: organizationalUnit_1,
@@ -135,10 +135,10 @@ const initSampleCompanyDB = async() => {
             employeePoint: 90,
             approvedPoint: 83
         }, {
-            name: "Hỗ trợ thực hiện công việc",
+            name: "Tư vấn thực hiện công việc",
             parent: null,
             weight: 5,
-            criteria: "Hỗ trợ thực hiện công việc",
+            criteria: "Tư vấn thực hiện công việc",
             type: 2,
             automaticPoint: 89,
             employeePoint: 90,
@@ -175,10 +175,10 @@ const initSampleCompanyDB = async() => {
             employeePoint: 90,
             approvedPoint: 81
         }, {
-            name: "Hỗ trợ thực hiện công việc",
+            name: "Tư vấn thực hiện công việc",
             parent: null,
             weight: 5,
-            criteria: "Hỗ trợ thực hiện công việc",
+            criteria: "Tư vấn thực hiện công việc",
             type: 2,
             automaticPoint: 93,
             employeePoint: 93,
@@ -203,21 +203,21 @@ const initSampleCompanyDB = async() => {
             approvedPoint: 75
         }
     ]);
-    
+
 
     /**
      * Gắn các KPI vào tập KPI của đơn vị
      */
-    for(let i = 0; i < 2; i++){
+    for (let i = 0; i < 2; i++) {
         organizationalUnitKpiSet[i] = await OrganizationalUnitKpiSet(vnistDB).findByIdAndUpdate(
-            organizationalUnitKpiSet[i], { $push: { kpis: organizationalUnitKpiArray_1[i].map(x => {return x._id}) } }, { new: true }
+            organizationalUnitKpiSet[i], { $push: { kpis: organizationalUnitKpiArray_1[i].map(x => { return x._id }) } }, { new: true }
         );
     }
-    
+
 
     console.log("Khởi tạo Employee Kpi Set");
 
-    
+
     var employeeKpiSet_1 = await EmployeeKpiSet(vnistDB).insertMany([
         {
             organizationalUnit: organizationalUnit_1,
@@ -239,7 +239,7 @@ const initSampleCompanyDB = async() => {
             employeePoint: 95,
             approvedPoint: 87,
             status: 2,
-        }, 
+        },
     ]);
 
     var employeeKpiSet_2 = await EmployeeKpiSet(vnistDB).insertMany([
@@ -263,7 +263,7 @@ const initSampleCompanyDB = async() => {
             employeePoint: 92,
             approvedPoint: 77,
             status: 2,
-        }, 
+        },
     ]);
 
     var employeeKpiSet_3 = await EmployeeKpiSet(vnistDB).insertMany([
@@ -287,10 +287,10 @@ const initSampleCompanyDB = async() => {
             employeePoint: 75,
             approvedPoint: 77,
             status: 2,
-        }, 
+        },
     ]);
 
-    
+
     console.log("Khởi tạo Employee Kpi");
 
     var employee_1KpiArray = []; // employee_1KpiArray[i] là mảng các kpi
@@ -307,10 +307,10 @@ const initSampleCompanyDB = async() => {
             employeePoint: 90,
             approvedPoint: 83
         }, {
-            name: "Hỗ trợ thực hiện công việc",
+            name: "Tư vấn thực hiện công việc",
             parent: organizationalUnitKpiArray_1[0][1]._id,
             weight: 5,
-            criteria: "Hỗ trợ thực hiện công việc",
+            criteria: "Tư vấn thực hiện công việc",
             status: 2,
             type: 2,
             automaticPoint: 92,
@@ -336,7 +336,7 @@ const initSampleCompanyDB = async() => {
             automaticPoint: 90,
             employeePoint: 90,
             approvedPoint: 80
-        }, 
+        },
     ]);
 
     employee_1KpiArray[1] = await EmployeeKpi(vnistDB).insertMany([
@@ -351,10 +351,10 @@ const initSampleCompanyDB = async() => {
             employeePoint: 90,
             approvedPoint: 78
         }, {
-            name: "Hỗ trợ thực hiện công việc",
+            name: "Tư vấn thực hiện công việc",
             parent: organizationalUnitKpiArray_1[1][1]._id,
             weight: 5,
-            criteria: "Hỗ trợ thực hiện công việc",
+            criteria: "Tư vấn thực hiện công việc",
             status: 1,
             type: 2,
             automaticPoint: 93,
@@ -380,9 +380,9 @@ const initSampleCompanyDB = async() => {
             automaticPoint: 95,
             employeePoint: 95,
             approvedPoint: 95
-        }, 
+        },
     ]);
-    
+
     var employee_2KpiArray = []; // employee_2KpiArray[i] là mảng các kpi
 
     employee_2KpiArray[0] = await EmployeeKpi(vnistDB).insertMany([
@@ -397,10 +397,10 @@ const initSampleCompanyDB = async() => {
             employeePoint: 90,
             approvedPoint: 83
         }, {
-            name: "Hỗ trợ thực hiện công việc",
+            name: "Tư vấn thực hiện công việc",
             parent: organizationalUnitKpiArray_1[0][1]._id,
             weight: 5,
-            criteria: "Hỗ trợ thực hiện công việc",
+            criteria: "Tư vấn thực hiện công việc",
             status: 2,
             type: 2,
             automaticPoint: 96,
@@ -426,7 +426,7 @@ const initSampleCompanyDB = async() => {
             automaticPoint: 95,
             employeePoint: 90,
             approvedPoint: 80
-        }, 
+        },
     ]);
 
     employee_2KpiArray[1] = await EmployeeKpi(vnistDB).insertMany([
@@ -441,10 +441,10 @@ const initSampleCompanyDB = async() => {
             employeePoint: 90,
             approvedPoint: 83
         }, {
-            name: "Hỗ trợ thực hiện công việc",
+            name: "Tư vấn thực hiện công việc",
             parent: organizationalUnitKpiArray_1[1][1]._id,
             weight: 5,
-            criteria: "Hỗ trợ thực hiện công việc",
+            criteria: "Tư vấn thực hiện công việc",
             status: 1,
             type: 2,
             automaticPoint: 93,
@@ -470,7 +470,7 @@ const initSampleCompanyDB = async() => {
             automaticPoint: 90,
             employeePoint: 90,
             approvedPoint: 80
-        }, 
+        },
     ]);
 
     var employee_3KpiArray = [];
@@ -487,10 +487,10 @@ const initSampleCompanyDB = async() => {
             employeePoint: 90,
             approvedPoint: 83
         }, {
-            name: "Hỗ trợ thực hiện công việc",
+            name: "Tư vấn thực hiện công việc",
             parent: organizationalUnitKpiArray_1[0][1]._id,
             weight: 5,
-            criteria: "Hỗ trợ thực hiện công việc",
+            criteria: "Tư vấn thực hiện công việc",
             status: 1,
             type: 2,
             automaticPoint: 93,
@@ -516,7 +516,7 @@ const initSampleCompanyDB = async() => {
             automaticPoint: 90,
             employeePoint: 90,
             approvedPoint: 80
-        }, 
+        },
     ]);
 
     employee_3KpiArray[1] = await EmployeeKpi(vnistDB).insertMany([
@@ -531,10 +531,10 @@ const initSampleCompanyDB = async() => {
             employeePoint: 90,
             approvedPoint: 83
         }, {
-            name: "Hỗ trợ thực hiện công việc",
+            name: "Tư vấn thực hiện công việc",
             parent: organizationalUnitKpiArray_1[1][1]._id,
             weight: 5,
-            criteria: "Hỗ trợ thực hiện công việc",
+            criteria: "Tư vấn thực hiện công việc",
             status: 1,
             type: 2,
             automaticPoint: 93,
@@ -560,26 +560,26 @@ const initSampleCompanyDB = async() => {
             automaticPoint: 90,
             employeePoint: 90,
             approvedPoint: 80
-        }, 
+        },
     ]);
 
     /**
      * Gắn các KPI vào tập KPI cá nhân
      */
-    for(let i = 0; i < 2; i++){
+    for (let i = 0; i < 2; i++) {
         // Gắn các kpi vào tập kpi của Vũ Thị Cúc
         employeeKpiSet_1[i] = await EmployeeKpiSet(vnistDB).findByIdAndUpdate(
-            employeeKpiSet_1[i], { $push: { kpis: employee_1KpiArray[i].map(x => {return x._id}) } }, { new: true }
+            employeeKpiSet_1[i], { $push: { kpis: employee_1KpiArray[i].map(x => { return x._id }) } }, { new: true }
         );
 
         // Gắn các kpi vào tập kpi của Nguyễn Văn Danh
         employeeKpiSet_2[i] = await EmployeeKpiSet(vnistDB).findByIdAndUpdate(
-            employeeKpiSet_2[i], { $push: { kpis: employee_2KpiArray[i].map(x => {return x._id}) } }, { new: true }
+            employeeKpiSet_2[i], { $push: { kpis: employee_2KpiArray[i].map(x => { return x._id }) } }, { new: true }
         );
 
         // Gắn các kpi vào tập kpi của Phạm Đình Phúc
         employeeKpiSet_3[i] = await EmployeeKpiSet(vnistDB).findByIdAndUpdate(
-            employeeKpiSet_3[i], { $push: { kpis: employee_3KpiArray[i].map(x => {return x._id}) } }, { new: true }
+            employeeKpiSet_3[i], { $push: { kpis: employee_3KpiArray[i].map(x => { return x._id }) } }, { new: true }
         );
         console.log(employeeKpiSet_3)
     }
@@ -611,7 +611,7 @@ const initSampleCompanyDB = async() => {
             inactiveEmployees: [],
             responsibleEmployees: [employee_1], // Người thực hiện
             accountableEmployees: [employee_2], // Người phê duyệt
-            consultedEmployees: [employee_2], // Người hỗ trợ
+            consultedEmployees: [employee_2], // Người tư vấn
             informedEmployees: [viceDean], // Người quan sát
             confirmedByEmployees: [employee_1].concat([employee_2]).concat([employee_2]).includes(dean) ? dean : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
@@ -654,7 +654,7 @@ const initSampleCompanyDB = async() => {
                 taskInformations: [] // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
             }],
             progress: 90,
-        }, 
+        },
 
         {
             organizationalUnit: organizationalUnit_1,
@@ -672,7 +672,7 @@ const initSampleCompanyDB = async() => {
             inactiveEmployees: [],
             responsibleEmployees: [employee_1], // Người thực hiện
             accountableEmployees: [employee_2], // Người phê duyệt
-            consultedEmployees: [employee_2], // Người hỗ trợ
+            consultedEmployees: [employee_2], // Người tư vấn
             informedEmployees: [viceDean], // Người quan sát
             confirmedByEmployees: [employee_1].concat([employee_2]).concat([employee_2]).includes(dean) ? dean : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
@@ -713,7 +713,7 @@ const initSampleCompanyDB = async() => {
                 taskInformations: [] // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
             }],
             progress: 100,
-        }, 
+        },
 
         {
             organizationalUnit: organizationalUnit_1,
@@ -731,7 +731,7 @@ const initSampleCompanyDB = async() => {
             inactiveEmployees: [],
             responsibleEmployees: [employee_1], // Người thực hiện
             accountableEmployees: [employee_2], // Người phê duyệt
-            consultedEmployees: [employee_2], // Người hỗ trợ
+            consultedEmployees: [employee_2], // Người tư vấn
             informedEmployees: [dean], // Người quan sát
             confirmedByEmployees: [employee_1].concat([employee_2]).concat([employee_2]).includes(dean) ? dean : [],
             evaluations: [
@@ -811,7 +811,7 @@ const initSampleCompanyDB = async() => {
                 }
             ],
             progress: 40,
-        }, 
+        },
 
         // Tháng hiện tại
         {
@@ -830,7 +830,7 @@ const initSampleCompanyDB = async() => {
             inactiveEmployees: [],
             responsibleEmployees: [employee_1], // Người thực hiện
             accountableEmployees: [employee_2], // Người phê duyệt
-            consultedEmployees: [employee_2], // Người hỗ trợ
+            consultedEmployees: [employee_2], // Người tư vấn
             informedEmployees: [viceDean], // Người quan sát
             confirmedByEmployees: [employee_1].concat([employee_2]).concat([employee_2]).includes(dean) ? dean : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
@@ -871,7 +871,7 @@ const initSampleCompanyDB = async() => {
                 taskInformations: [] // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
             }],
             progress: 80,
-        }, 
+        },
 
         {
             organizationalUnit: organizationalUnit_1,
@@ -889,7 +889,7 @@ const initSampleCompanyDB = async() => {
             inactiveEmployees: [],
             responsibleEmployees: [employee_1], // Người thực hiện
             accountableEmployees: [employee_2], // Người phê duyệt
-            consultedEmployees: [employee_2], // Người hỗ trợ
+            consultedEmployees: [employee_2], // Người tư vấn
             informedEmployees: [dean], // Người quan sát
             confirmedByEmployees: [employee_1].concat([employee_2]).concat([employee_2]).includes(dean) ? dean : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
@@ -934,7 +934,7 @@ const initSampleCompanyDB = async() => {
 
 
     ]);
-    
+
     // Tạo công việc tương ứng với kpi của employee_2
     var task_employee_2 = await Task(vnistDB).insertMany([
         // Tháng trước
@@ -954,7 +954,7 @@ const initSampleCompanyDB = async() => {
             inactiveEmployees: [],
             responsibleEmployees: [employee_2], // Người thực hiện
             accountableEmployees: [employee_1], // Người phê duyệt
-            consultedEmployees: [employee_1], // Người hỗ trợ
+            consultedEmployees: [employee_1], // Người tư vấn
             informedEmployees: [dean], // Người quan sát
             confirmedByEmployees: [employee_2].concat([employee_1]).concat([employee_1]).includes(dean) ? dean : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
@@ -995,7 +995,7 @@ const initSampleCompanyDB = async() => {
                 taskInformations: [] // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
             }],
             progress: 75,
-        }, 
+        },
 
         {
             organizationalUnit: organizationalUnit_1,
@@ -1013,7 +1013,7 @@ const initSampleCompanyDB = async() => {
             inactiveEmployees: [],
             responsibleEmployees: [employee_2], // Người thực hiện
             accountableEmployees: [employee_1], // Người phê duyệt
-            consultedEmployees: [employee_1], // Người hỗ trợ
+            consultedEmployees: [employee_1], // Người tư vấn
             informedEmployees: [viceDean], // Người quan sát
             confirmedByEmployees: [employee_2].concat([employee_1]).concat([employee_1]).includes(dean) ? dean : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
@@ -1054,7 +1054,7 @@ const initSampleCompanyDB = async() => {
                 taskInformations: [] // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
             }],
             progress: 50,
-        }, 
+        },
 
         {
             organizationalUnit: organizationalUnit_1,
@@ -1072,7 +1072,7 @@ const initSampleCompanyDB = async() => {
             inactiveEmployees: [],
             responsibleEmployees: [employee_2], // Người thực hiện
             accountableEmployees: [employee_1], // Người phê duyệt
-            consultedEmployees: [employee_1], // Người hỗ trợ
+            consultedEmployees: [employee_1], // Người tư vấn
             informedEmployees: [dean], // Người quan sát
             confirmedByEmployees: [employee_2].concat([employee_1]).concat([employee_1]).includes(dean) ? dean : [],
             evaluations: [
@@ -1152,7 +1152,7 @@ const initSampleCompanyDB = async() => {
                 }
             ],
             progress: 85,
-        }, 
+        },
 
         // Tháng hiện tại
         {
@@ -1171,7 +1171,7 @@ const initSampleCompanyDB = async() => {
             inactiveEmployees: [],
             responsibleEmployees: [employee_2], // Người thực hiện
             accountableEmployees: [employee_1], // Người phê duyệt
-            consultedEmployees: [employee_1], // Người hỗ trợ
+            consultedEmployees: [employee_1], // Người tư vấn
             informedEmployees: [viceDean], // Người quan sát
             confirmedByEmployees: [employee_2].concat([employee_1]).concat([employee_1]).includes(dean) ? dean : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
@@ -1212,7 +1212,7 @@ const initSampleCompanyDB = async() => {
                 taskInformations: [] // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
             }],
             progress: 60,
-        }, 
+        },
 
         {
             organizationalUnit: organizationalUnit_1,
@@ -1230,7 +1230,7 @@ const initSampleCompanyDB = async() => {
             inactiveEmployees: [],
             responsibleEmployees: [employee_2], // Người thực hiện
             accountableEmployees: [employee_1], // Người phê duyệt
-            consultedEmployees: [employee_1], // Người hỗ trợ
+            consultedEmployees: [employee_1], // Người tư vấn
             informedEmployees: [dean], // Người quan sát
             confirmedByEmployees: [employee_2].concat([employee_1]).concat([employee_1]).includes(dean) ? dean : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
@@ -1308,7 +1308,7 @@ const initSampleCompanyDB = async() => {
      */
 
     console.log("Khởi tạo Organizational Unit Kpi Set");
-    
+
     organizationalUnitKpiSet = await OrganizationalUnitKpiSet(vnistDB).insertMany([
         {
             organizationalUnit: organizationalUnit_2,
@@ -1354,10 +1354,10 @@ const initSampleCompanyDB = async() => {
             employeePoint: 73,
             approvedPoint: 45
         }, {
-            name: "Hỗ trợ thực hiện công việc",
+            name: "Tư vấn thực hiện công việc",
             parent: organizationalUnitKpiArray_1[0][1],
             weight: 5,
-            criteria: "Hỗ trợ thực hiện công việc",
+            criteria: "Tư vấn thực hiện công việc",
             type: 2,
             automaticPoint: 81,
             employeePoint: 56,
@@ -1394,10 +1394,10 @@ const initSampleCompanyDB = async() => {
             employeePoint: 80,
             approvedPoint: 47
         }, {
-            name: "Hỗ trợ thực hiện công việc",
+            name: "Tư vấn thực hiện công việc",
             parent: organizationalUnitKpiArray_1[1][1],
             weight: 5,
-            criteria: "Hỗ trợ thực hiện công việc",
+            criteria: "Tư vấn thực hiện công việc",
             type: 2,
             automaticPoint: 73,
             employeePoint: 64,
@@ -1422,17 +1422,17 @@ const initSampleCompanyDB = async() => {
             approvedPoint: 60
         }
     ]);
-    
+
 
     /**
      * Gắn các KPI vào tập KPI của đơn vị
      */
-    for(let i = 0; i < 2; i++){
+    for (let i = 0; i < 2; i++) {
         organizationalUnitKpiSet[i] = await OrganizationalUnitKpiSet(vnistDB).findByIdAndUpdate(
-            organizationalUnitKpiSet[i], { $push: { kpis: organizationalUnitKpiArray_2[i].map(x => {return x._id}) } }, { new: true }
+            organizationalUnitKpiSet[i], { $push: { kpis: organizationalUnitKpiArray_2[i].map(x => { return x._id }) } }, { new: true }
         );
     }
-    
+
 
     console.log("Khởi tạo Employee Kpi Set");
 
@@ -1457,10 +1457,10 @@ const initSampleCompanyDB = async() => {
             employeePoint: 77,
             approvedPoint: 62,
             status: 2,
-        }, 
+        },
     ]);
 
-    
+
     console.log("Khởi tạo Employee Kpi");
 
     var employeeKpiArray = []; // employee_1KpiArray[i] là mảng các kpi
@@ -1477,10 +1477,10 @@ const initSampleCompanyDB = async() => {
             employeePoint: 73,
             approvedPoint: 45
         }, {
-            name: "Hỗ trợ thực hiện công việc",
+            name: "Tư vấn thực hiện công việc",
             parent: organizationalUnitKpiArray_2[0][1]._id,
             weight: 5,
-            criteria: "Hỗ trợ thực hiện công việc",
+            criteria: "Tư vấn thực hiện công việc",
             status: 2,
             type: 2,
             automaticPoint: 81,
@@ -1506,7 +1506,7 @@ const initSampleCompanyDB = async() => {
             automaticPoint: 100,
             employeePoint: 90,
             approvedPoint: 70
-        }, 
+        },
     ]);
 
     employeeKpiArray[1] = await EmployeeKpi(vnistDB).insertMany([
@@ -1521,10 +1521,10 @@ const initSampleCompanyDB = async() => {
             employeePoint: 80,
             approvedPoint: 47
         }, {
-            name: "Hỗ trợ thực hiện công việc",
+            name: "Tư vấn thực hiện công việc",
             parent: organizationalUnitKpiArray_2[1][1]._id,
             weight: 5,
-            criteria: "Hỗ trợ thực hiện công việc",
+            criteria: "Tư vấn thực hiện công việc",
             status: 1,
             type: 2,
             automaticPoint: 73,
@@ -1550,17 +1550,17 @@ const initSampleCompanyDB = async() => {
             automaticPoint: 90,
             employeePoint: 80,
             approvedPoint: 60
-        }, 
+        },
     ]);
-    
+
 
     /**
      * Gắn các KPI vào tập KPI cá nhân
      */
-    for(let i = 0; i < 2; i++){
+    for (let i = 0; i < 2; i++) {
         // Gắn các kpi vào tập kpi của Phạm Đình Phúc
         employeeKpiSet[i] = await EmployeeKpiSet(vnistDB).findByIdAndUpdate(
-            employeeKpiSet[i], { $push: { kpis: employeeKpiArray[i].map(x => {return x._id}) } }, { new: true }
+            employeeKpiSet[i], { $push: { kpis: employeeKpiArray[i].map(x => { return x._id }) } }, { new: true }
         );
 
     }
@@ -1592,7 +1592,7 @@ const initSampleCompanyDB = async() => {
             inactiveEmployees: [],
             responsibleEmployees: [employee], // Người thực hiện
             accountableEmployees: [employee], // Người phê duyệt
-            consultedEmployees: [employee], // Người hỗ trợ
+            consultedEmployees: [employee], // Người tư vấn
             informedEmployees: [viceDean], // Người quan sát
             confirmedByEmployees: [employee].concat([employee]).concat([employee]).includes(dean) ? dean : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
@@ -1633,7 +1633,7 @@ const initSampleCompanyDB = async() => {
                 taskInformations: [] // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
             }],
             progress: 75,
-        }, 
+        },
 
         {
             organizationalUnit: organizationalUnit_2,
@@ -1651,7 +1651,7 @@ const initSampleCompanyDB = async() => {
             inactiveEmployees: [],
             responsibleEmployees: [employee], // Người thực hiện
             accountableEmployees: [employee], // Người phê duyệt
-            consultedEmployees: [employee], // Người hỗ trợ
+            consultedEmployees: [employee], // Người tư vấn
             informedEmployees: [viceDean], // Người quan sát
             confirmedByEmployees: [employee].concat([employee]).concat([employee]).includes(dean) ? dean : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
@@ -1692,7 +1692,7 @@ const initSampleCompanyDB = async() => {
                 taskInformations: [] // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
             }],
             progress: 50,
-        }, 
+        },
         {
             organizationalUnit: organizationalUnit_2,
             creator: dean,
@@ -1709,7 +1709,7 @@ const initSampleCompanyDB = async() => {
             inactiveEmployees: [],
             responsibleEmployees: [employee], // Người thực hiện
             accountableEmployees: [employee], // Người phê duyệt
-            consultedEmployees: [employee], // Người hỗ trợ
+            consultedEmployees: [employee], // Người tư vấn
             informedEmployees: [dean], // Người quan sát
             confirmedByEmployees: [employee].concat([employee]).concat([employee]).includes(dean) ? dean : [],
             evaluations: [
@@ -1790,7 +1790,7 @@ const initSampleCompanyDB = async() => {
 
             ],
             progress: 80,
-        }, 
+        },
 
         // Tháng hiện tại
         {
@@ -1809,7 +1809,7 @@ const initSampleCompanyDB = async() => {
             inactiveEmployees: [],
             responsibleEmployees: [employee], // Người thực hiện
             accountableEmployees: [employee], // Người phê duyệt
-            consultedEmployees: [employee], // Người hỗ trợ
+            consultedEmployees: [employee], // Người tư vấn
             informedEmployees: [viceDean], // Người quan sát
             confirmedByEmployees: [employee].concat([employee]).concat([employee]).includes(dean) ? dean : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
@@ -1850,7 +1850,7 @@ const initSampleCompanyDB = async() => {
                 taskInformations: [] // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
             }],
             progress: 60,
-        }, 
+        },
 
         {
             organizationalUnit: organizationalUnit_2,
@@ -1868,7 +1868,7 @@ const initSampleCompanyDB = async() => {
             inactiveEmployees: [],
             responsibleEmployees: [employee], // Người thực hiện
             accountableEmployees: [employee], // Người phê duyệt
-            consultedEmployees: [employee], // Người hỗ trợ
+            consultedEmployees: [employee], // Người tư vấn
             informedEmployees: [dean], // Người quan sát
             confirmedByEmployees: [employee].concat([employee]).concat([employee]).includes(dean) ? dean : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
@@ -1919,7 +1919,7 @@ const initSampleCompanyDB = async() => {
     console.log("End init sample company database!");
 }
 
-initSampleCompanyDB().catch(err=>{
+initSampleCompanyDB().catch(err => {
     console.log(err);
     process.exit(0);
 })

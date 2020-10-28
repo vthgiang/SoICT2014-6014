@@ -697,6 +697,7 @@ export default {
             detail_employee: 'Personal Information',
             update_employee: 'Update Personal Information',
             dashboard_employee: 'DashBoard Manage Staffs ',
+            dashboard_personal: 'DashBoard personal',
             employee_capacity:'Employee capacity',
             discipline: 'Manage Commendation And Discipline',
             annual_leave: 'Manage Annual Leave',
@@ -728,6 +729,7 @@ export default {
             tasks: 'Task management',
             task: "Detailed Task",
             task_management: 'Task list',
+            task_management_of_unit: 'Unit task list',
             task_management_dashboard: 'Task dashboard',
             task_organization_management_dashboard: 'Unit task dashboard',
             task_management_process: "Process list",
@@ -2085,7 +2087,7 @@ export default {
             performer: 'Performer',
             approver: 'Approver',
             observer: 'Observer',
-            supporter: 'Supporter',
+            consultant: 'Supporter',
             formula: 'Formula',
             activity_list: 'Activity list',
             information_list: 'Information list',
@@ -2424,9 +2426,11 @@ export default {
                 add_err_empty_accountable: 'Accountable should not be empty',
                 add_err_special_character: 'This field should not be have special character',
                 add_err_end_date: 'End date should be after start date',
+                date_not_empty: 'Month should not be empty',
 
                 unit_evaluate: "Unit receiving work evaluation results",
                 unit_manage_task: "Unit managing task",
+                collaborated_with_organizational_units: "Units that have collaborated",
                 delete_eval: "Delete evaluation",
                 delete_eval_title: 'Are you sure to delete this evaluation?',
 
@@ -3262,7 +3266,38 @@ export default {
 
         // manage order
         manage_order: {
-            quote_add_success: "add successed"
+            tax: {
+                index: 'Index',
+                code: 'Code',
+                name: 'Name',
+                creator: 'Creator',
+                status: 'Status',
+                tax_code: 'Tax code',
+                tax_name: 'Tax name',
+                choose_at_least_one_item: 'Choose at least one item',
+                percent_is_not_null: 'Percent is not null',
+                percent_greater_than_or_equal_zero: 'Percent greater than or equal to zero',
+                add_new_tax: 'Add new tax',
+                add_successfully: 'Add tax successfully',
+                add_failed: 'Add tax failed',
+                description:'Description',
+                goods: 'Goods',
+                select_goods: 'Choose goods',
+                tax_percent: 'Percent',
+                add: 'Add new',
+                reset: 'Reset',
+                action: 'Action',
+                version: 'Version',
+                effective: 'Effective',
+                expire: 'Expire',
+                tax_detail: 'Tax detail',
+                selected_all: 'Sellected All',
+                view_deatail: 'View detail',
+                delete_list_goods: 'Delete list goods',
+                delete_good: 'Delete good',
+                detail_goods: 'Detail goods',
+                search: 'Search'
+            }
         },
 
         report_manager: {

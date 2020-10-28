@@ -495,6 +495,8 @@ exports.data = [
     { path: '/goods/:id', method: 'DELETE', roles: ['Super Admin', 'Admin'] },
     { path: '/goods/by-category/:id', method: 'GET', roles: ['Super Admin', 'Admin'] },
 
+    { path: '/lot', method: 'GET', roles: ['Super Admin', 'Admin']},
+
     //order
     { path: "/orders", method: "GET", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },
     { path: "/orders", method: "POST", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },

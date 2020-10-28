@@ -13,19 +13,39 @@ class GeneralTabCreateForm extends Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        const { status } = props.crm;
-        if (props.id != state.id && status.list && status.list.length > 0) {
+        const { crm, user } = props;
+        if (props.id != state.id && crm.status.list && crm.status.list.length > 0 && user.usersOfChildrenOrganizationalUnit) {
+
+            // Lấy danh sách người trong phòng ban hiện tại và con
+            let unitMembers;
+            if (user.usersOfChildrenOrganizationalUnit) {
+                unitMembers = getEmployeeSelectBoxItems(user.usersOfChildrenOrganizationalUnit);
+            }
+
+            // Lấy danh sách nhóm khách hàng
+            let listGroups;
+            if (crm.groups.list && crm.groups.list.length > 0) {
+                listGroups = crm.groups.list.map(o => ({ value: o._id, text: o.name }))
+                listGroups.unshift({ value: '', text: '---Chọn---' });
+            }
+
             return {
                 ...state,
                 id: props.id,
                 owner: props.newCustomer.owner,
-                listStatus: status.list.map(o => ({ _id: o._id, name: o.name, active: o.active }))
+                unitMembers,
+                listGroups,
+                listStatus: crm.status.list.map(o => ({ _id: o._id, name: o.name, active: o.active }))
             }
         } else {
             return null;
         }
     }
 
+    /**
+     * Hàm xử lý khi người sở hữu/quản lý thay đổi
+     * @param {*} value giá trị mới
+     */
     handleChangeCustomerOwner = (value) => {
         const { callBackFromParentCreateForm } = this.props;
 
@@ -35,7 +55,10 @@ class GeneralTabCreateForm extends Component {
         callBackFromParentCreateForm('owner', value); // Truyền giá trị về form cha
     }
 
-
+    /**
+     * Hàm xử lý khi nguồn khách hàng thay đổi
+     * @param {*} e 
+     */
     handleChangeCustomerSource = (e) => {
         const { callBackFromParentCreateForm } = this.props;
         const { value } = e.target;
@@ -47,6 +70,10 @@ class GeneralTabCreateForm extends Component {
     }
 
 
+    /**
+     * Hàm xử lý khi mã khách hàng thay đổi
+     * @param {*} e 
+     */
     handleChangeCustomerCode = (e) => {
         const { callBackFromParentCreateForm } = this.props;
         const { value } = e.target;
@@ -64,6 +91,10 @@ class GeneralTabCreateForm extends Component {
     }
 
 
+    /**
+     * Hàm xử lý khi tên khách hàng thay đổi
+     * @param {*} e 
+     */
     handleChangeCustomerName = (e) => {
         const { callBackFromParentCreateForm } = this.props;
         const { value } = e.target;
@@ -81,6 +112,10 @@ class GeneralTabCreateForm extends Component {
     }
 
 
+    /**
+     * Hàm xử lý khi loại khách hàng thay đổi
+     * @param {*} value 
+     */
     handleChangeCustomerType = (value) => {
         const { callBackFromParentCreateForm } = this.props;
         this.setState({
@@ -91,6 +126,10 @@ class GeneralTabCreateForm extends Component {
     }
 
 
+    /**
+     * Hàm xử lý khi tên công ty của khách hàng thay đổi
+     * @param {*} e 
+     */
     handleChangeCompanyName = (e) => {
         const { callBackFromParentCreateForm } = this.props;
         const { value } = e.target;
@@ -102,6 +141,10 @@ class GeneralTabCreateForm extends Component {
     }
 
 
+    /**
+     * Hàm xử lý khi người tại diện thay đổi
+     * @param {*} e 
+     */
     handleChangeRepresent = (e) => {
         const { callBackFromParentCreateForm } = this.props;
         const { value } = e.target;
@@ -113,6 +156,10 @@ class GeneralTabCreateForm extends Component {
     }
 
 
+    /**
+     * Hàm xử lý khi Ngày thành lập công ty thay đổi
+     * @param {*} value 
+     */
     handleChangeCompanyEstablishmentDate = (value) => {
         const { callBackFromParentCreateForm } = this.props;
 
@@ -123,6 +170,10 @@ class GeneralTabCreateForm extends Component {
     }
 
 
+    /**
+     * Hàm xử lý khi số điện thoại di động thay đổi
+     * @param {*} e 
+     */
     handleChangeMobilephoneNumber = (e) => {
         const { callBackFromParentCreateForm } = this.props;
         const { value } = e.target;
@@ -134,6 +185,10 @@ class GeneralTabCreateForm extends Component {
     }
 
 
+    /**
+     * Hàm xử lý khi số điện thoại khách hàng bàn thay đổi
+     * @param {*} e 
+     */
     handleChangeTelephoneNumber = (e) => {
         const { callBackFromParentCreateForm } = this.props;
         const { value } = e.target;
@@ -145,6 +200,10 @@ class GeneralTabCreateForm extends Component {
     }
 
 
+    /**
+     * Hàm xử lý khi địa chỉ email khách hàng thay đổi
+     * @param {*} e 
+     */
     handleChangeCustomerEmail = (e) => {
         const { callBackFromParentCreateForm } = this.props;
         const { value } = e.target;
@@ -156,6 +215,10 @@ class GeneralTabCreateForm extends Component {
     }
 
 
+    /**
+     * Hàm xử lý khi địa chỉ email phụ khách hàng thay đổi
+     * @param {*} e 
+     */
     handleChangeCustomerEmail2 = (e) => {
         const { callBackFromParentCreateForm } = this.props;
         const { value } = e.target;
@@ -167,6 +230,10 @@ class GeneralTabCreateForm extends Component {
     }
 
 
+    /**
+     * Hàm xử lý khi địa chỉ khách hàng thay đổi
+     * @param {*} e 
+     */
     handleChangeCustomerAddress = (e) => {
         const { callBackFromParentCreateForm } = this.props;
         const { value } = e.target;
@@ -178,6 +245,10 @@ class GeneralTabCreateForm extends Component {
     }
 
 
+    /**
+     * Hàm xử lý khi địa chỉ phụ khách hàng thay đổi
+     * @param {*} e 
+     */
     handleChangeCustomerAddress2 = (e) => {
         const { callBackFromParentCreateForm } = this.props;
         const { value } = e.target;
@@ -189,16 +260,24 @@ class GeneralTabCreateForm extends Component {
     }
 
 
+    /**
+     * Hàm xử lý khi giới tính khách hàng thay đổi
+     * @param {*} value 
+     */
     handleChangeCustomerGender = (value) => {
         const { callBackFromParentCreateForm } = this.props;
 
         this.setState({
             gender: value[0],
         })
-        callBackFromParentCreateForm('gender', value[0])
+        callBackFromParentCreateForm('gender', parseInt(value[0]))
     }
 
 
+    /**
+     * Hàm xử lý khi ngày sinh nhật khách hàng thay đổi
+     * @param {*} value 
+     */
     handleChangeCustomerBirth = (value) => {
         const { callBackFromParentCreateForm } = this.props;
 
@@ -209,6 +288,10 @@ class GeneralTabCreateForm extends Component {
     }
 
 
+    /**
+     * Hàm xử lý khi nhóm khách hàng thay đổi
+     * @param {*} value 
+     */
     handleChangeCustomerGroup = (value) => {
         const { callBackFromParentCreateForm } = this.props;
         this.setState({
@@ -218,6 +301,10 @@ class GeneralTabCreateForm extends Component {
     }
 
 
+    /**
+     * Hàm xử lý khi trạng thái khách hàng thay đổi
+     * @param {*} index 
+     */
     handleChangeCustomerStatus = (index) => {
         const { listStatus } = this.state;
         const { callBackFromParentCreateForm } = this.props;
@@ -242,11 +329,14 @@ class GeneralTabCreateForm extends Component {
         this.setState({
             listStatus: listStatus,
         })
-
         callBackFromParentCreateForm('status', getStatusActive)
     }
 
 
+    /**
+     * Hàm xử lý khi khu vực khách hàng thay đổi
+     * @param {*} value 
+     */
     handleChangeCustomerLocation = (value) => {
         const { callBackFromParentCreateForm } = this.props;
 
@@ -257,6 +347,10 @@ class GeneralTabCreateForm extends Component {
     }
 
 
+    /**
+     * Hàm xử lý khi mã số thuế khách hàng thay đổi
+     * @param {*} e 
+     */
     handleChangeTaxNumber = (e) => {
         const { callBackFromParentCreateForm } = this.props;
         const { value } = e.target;
@@ -274,6 +368,10 @@ class GeneralTabCreateForm extends Component {
     }
 
 
+    /**
+     * Hàm xử lý khi địa chỉ website khách hàng thay đổi
+     * @param {*} e 
+     */
     handleChangeCustomerWebsite = (e) => {
         const { callBackFromParentCreateForm } = this.props;
         const { value } = e.target;
@@ -285,6 +383,10 @@ class GeneralTabCreateForm extends Component {
     }
 
 
+    /**
+     * Hàm xử lý khi địa chỉ ghi chú khách hàng thay đổi
+     * @param {*} e
+     */
     handleChangeCustomerNote = (e) => {
         const { callBackFromParentCreateForm } = this.props;
         const { value } = e.target;
@@ -295,7 +397,10 @@ class GeneralTabCreateForm extends Component {
         callBackFromParentCreateForm('note', value)
     }
 
-
+    /**
+     * Hàm xử lý khi địa chỉ linkedIn khách hàng thay đổi
+     * @param {*} e
+     */
     handleChangeCustomerLinkedIn = (e) => {
         const { callBackFromParentCreateForm } = this.props;
         const { value } = e.target;
@@ -307,8 +412,8 @@ class GeneralTabCreateForm extends Component {
     }
 
     render() {
-        const { translate, crm, user } = this.props; // state redux
-        const { id } = this.props; // Lấy giá trị từ props cha
+        const { translate } = this.props; // state redux
+        const { id } = this.props; // Lấy giá trị từ component cha
 
         const {
             listStatus,
@@ -333,23 +438,12 @@ class GeneralTabCreateForm extends Component {
             taxNumber,
             website,
             linkedIn,
+            unitMembers,
+            listGroups,
         } = this.state;
 
         const { customerNameError, customerCodeError, customerTaxNumberError, } = this.state;
         let progressBarWidth;
-
-        // Lấy danh sách người trong phòng ban hiện tại và con
-        let unitMembers;
-        if (user.usersOfChildrenOrganizationalUnit) {
-            unitMembers = getEmployeeSelectBoxItems(user.usersOfChildrenOrganizationalUnit);
-        }
-
-        // Lấy danh sách nhóm khách hàng
-        let listGroups;
-        if (crm.groups.list && crm.groups.list.length > 0) {
-            listGroups = crm.groups.list.map(o => ({ value: o._id, text: o.name }))
-            listGroups.unshift({ value: '', text: '---Chọn---' });
-        }
 
         // setting timeline customer status
         if (listStatus) {
@@ -443,8 +537,8 @@ class GeneralTabCreateForm extends Component {
                                     style={{ width: "100%" }}
                                     items={[
                                         { value: '', text: '---Chọn---' },
-                                        { value: 0, text: 'Cá nhân' },
-                                        { value: 1, text: 'Công ty' },
+                                        { value: 1, text: 'Cá nhân' },
+                                        { value: 2, text: 'Công ty' },
                                     ]}
                                     value={customerType ? customerType : ''}
                                     onChange={this.handleChangeCustomerType}
@@ -529,8 +623,8 @@ class GeneralTabCreateForm extends Component {
                                     items={
                                         [
                                             { value: '', text: '---Chọn---' },
-                                            { value: 'male', text: 'Nam' },
-                                            { value: 'female', text: 'Nữ' },
+                                            { value: 1, text: 'Nam' },
+                                            { value: 2, text: 'Nữ' },
                                         ]
                                     }
                                     value={gender ? gender : ''}
@@ -553,6 +647,7 @@ class GeneralTabCreateForm extends Component {
                             </div>
                         </div>
                     </div>
+
                     <div className="row">
                         {/* Ngày thành lập công ty */}
                         <div className="col-md-6">
@@ -607,9 +702,9 @@ class GeneralTabCreateForm extends Component {
                                     items={
                                         [
                                             { value: '', text: 'Chọn' },
-                                            { value: 0, text: 'Bắc' },
-                                            { value: 1, text: 'Trung ' },
-                                            { value: 2, text: 'Nam ' },
+                                            { value: 1, text: 'Bắc' },
+                                            { value: 2, text: 'Trung ' },
+                                            { value: 3, text: 'Nam ' },
                                         ]
                                     }
                                     value={location ? location : ''}
@@ -657,10 +752,7 @@ function mapStateToProps(state) {
     return { crm, user };
 }
 
-const mapDispatchToProps = {
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(GeneralTabCreateForm));
+export default connect(mapStateToProps, null)(withTranslate(GeneralTabCreateForm));
 
 // {/* Địa chỉ email phu*/ }
 // <div className="col-md-6">

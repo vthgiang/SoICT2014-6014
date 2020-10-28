@@ -9,7 +9,7 @@ exports.createManufacturingMill = async (req, res) => {
 
         res.status(201).json({
             success: true,
-            messages: ["create_manufacturing_mill_successfully"],
+            messages: ["create_mill_successfully"],
             content: newManufacturingMill
         });
     } catch (error) {
@@ -17,9 +17,100 @@ exports.createManufacturingMill = async (req, res) => {
 
         res.status(400).json({
             success: false,
-            messages: ["create_manufacturing_mill_failed"],
+            messages: ["create__mill_failed"],
             content: error.message
         })
+    }
+}
+
+exports.getAllManufacturingMills = async (req, res) => {
+    try {
+        let query = req.query;
+        let manufacturingMills = await ManufacturingMillService.getAllManufacturingMills(query, req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["get_mills_successfully"],
+            content: manufacturingMills
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, "GET_ALL_MANUFACTURING_MUILLS", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["get_mills_failed"]
+        })
+
+    }
+}
+
+exports.getManufacturingMillById = async (req, res) => {
+    try {
+        let id = req.params.id;
+        let manufacturingMill = await ManufacturingMillService.getManufacturingMillById(id, req.portal);
+
+        await Logger.info(req.user.email, "GET_MANUFACTURING_MILL_BY_ID", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["get_mill_successfully"],
+            content: manufacturingMill
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, "GET_MANUFACTURING_MILL_BY_ID", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["get_mill_failed"],
+            content: error.message
+        })
+    }
+}
+
+exports.editManufacturingMill = async (req, res) => {
+    try {
+        let id = req.params.id;
+        let data = req.body;
+        let manufacturingMill = await ManufacturingMillService.editManufacturingMill(id, data, req.portal);
+
+        await Logger.info(req.user.email, "EDIT_MANUFACTURING_MILL", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["edit_mill_successfully"],
+            content: manufacturingMill
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, "EDIT_MANUFACTURING_MILL", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["edit_mill_failed"],
+            content: error.message
+        })
+    }
+}
+
+exports.deleteManufacturingMill = async (req, res) => {
+    try {
+        let id = req.params.id;
+        let manufacturingMill = await ManufacturingMillService.deleteManufacturingMill(id, req.portal);
+
+        await Logger.error(req.user.email, "DELETE_MANUFACTURING_MILL", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["delete_mill_succesfully"],
+            content: manufacturingMill
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, "DELETE_MANUFACTURING_MILL", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["delete_mill_failed"],
+            content: error.message
+        });
     }
 }
 
@@ -75,3 +166,4 @@ exports.addCommandToSchedule = async (req, res) => {
         })
     }
 }
+

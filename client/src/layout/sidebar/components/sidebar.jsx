@@ -84,6 +84,15 @@ class SideBar extends Component {
                                 }}
                             />
 
+                            {/* Bảng tin nhân viên */}
+                            <Item
+                                item={{
+                                    name: "menu.dashboard_personal",
+                                    path: "/hr-dashboard-personal",
+                                    icon: "fa fa-newspaper-o",
+                                }}
+                            />
+
                             {/* Tài khoản cá nhân */}
                             <GroupItem
                                 groupItem={{
@@ -582,6 +591,12 @@ class SideBar extends Component {
                                                 "menu.task_management_dashboard",
                                             icon: "fa fa-circle-o",
                                             path: "/task-management-dashboard",
+                                        },
+                                        {
+                                            name:
+                                                'menu.task_management_of_unit',
+                                            icon: 'fa fa-circle-o',
+                                            path: '/task-management-unit'
                                         },
                                         {
                                             name: "menu.task_management",

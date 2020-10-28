@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import { withTranslate } from 'react-redux-multilingual';
 import { DetailTaskTab } from './detailTaskTab';
 import { ActionTab } from './actionTab';
+
 import { taskManagementActions } from "../../task-management/redux/actions";
 import { UserActions } from "../../../super-admin/user/redux/actions";
+import { performTaskAction } from '../redux/actions';
 
 import qs from 'qs';
-import { performTaskAction } from '../redux/actions';
 
 class TaskComponent extends Component {
     constructor(props) {

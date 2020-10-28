@@ -60,10 +60,11 @@ import { mintainanceManager } from "../modules/asset/admin/maintainance/redux/re
 import { reports } from "../modules/report/task-report/redux/reducers";
 
 //warehouse
-import { stocks } from "../modules/warehouse/stock-management/redux/reducers";
-import { categories } from "../modules/warehouse/category-management/redux/reducers";
-import { goods } from "../modules/warehouse/good-management/redux/reducers";
-import { binLocations } from "../modules/warehouse/bin-location-management/redux/reducers";
+import { stocks } from "../modules/production/warehouse/stock-management/redux/reducers";
+import { categories } from "../modules/production/common-production/category-management/redux/reducers";
+import { goods } from "../modules/production/common-production/good-management/redux/reducers";
+import { binLocations } from "../modules/production/warehouse/bin-location-management/redux/reducers";
+import { lots } from "../modules/production/warehouse/inventory-management/redux/reducers";
 
 //crm
 import { customers } from "../modules/crm/customer/redux/reducers";
@@ -73,7 +74,7 @@ import { cares } from "../modules/crm/care/redux/reducers";
 import { careTypes } from "../modules/crm/careType/redux/reducers";
 
 //order
-
+import { taxs } from "../modules/production/order/tax/redux/reducers";
 import { quotes } from '../modules/production/order/quote/redux/reducers';
 
 //plan
@@ -86,8 +87,10 @@ import { example1 } from "../modules/example/example1/redux/reducers";
 //example2
 import { example2 } from "../modules/example/example2/redux/reducers";
 
+// Manufacturing
 import { manufacturingWorks } from "../modules/production/manufacturing/manufacturing-works/redux/reducers";
-
+import { manufacturingMill } from "../modules/production/manufacturing/manufacturing-mill/redux/reducers";
+import { purchasingRequest } from "../modules/production/manufacturing/purchasing-request/redux/reducers";
 
 const appReducer = combineReducers({
     socket,
@@ -164,13 +167,15 @@ const appReducer = combineReducers({
     categories,
     goods,
     binLocations,
+    lots,
 
     // customer management
     crm: combineReducers({
-        customers, groups, status,cares, careTypes
+        customers, groups, status, cares, careTypes
     }),
 
     //order
+    taxs,
     quotes,
     //plane
     plan,
@@ -184,6 +189,8 @@ const appReducer = combineReducers({
     // production - manufacturing works management
 
     manufacturingWorks,
+    manufacturingMill,
+    purchasingRequest,
 
     Intl
 
