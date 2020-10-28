@@ -78,6 +78,7 @@ const Introduction = (props) => {
             
             <section id="dx-service" className="dx-container">
                 <h3 className="text-center">Các giải pháp về quản lý trong doanh nghiệp</h3>
+                <p>Chúng tôi phục vụ các công ty vừa và nhỏ trong tất cả các ngành liên quan đến công nghệ với các dịch vụ chất lượng cao được trình bày dưới đây</p>
                 <div className="row p-center">
                     <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                         <div className="dx-card">
@@ -138,6 +139,77 @@ const Introduction = (props) => {
                 
             </section>
 
+            <section className="dx-container">
+                
+                <div className="row p-center-h">
+                    <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                        <h2 className="dx-sologan text-center">Quản lý công việc</h2>
+                        <p>Quản lý công việc không theo quy trình với cơ chế giao việc và nhận việc tiện lợi, tiết kiệm thời gian làm việc, hỗ trợ người dùng tập trung vào công việc. Quản lý công việc theo quy trình: Hỗ trợ người dùng nắm bắt được hiện trạng các công việc, từ đó người quản lý có những phương án tổ chức công việc phù hợp, hiệu quả, đúng lúc. Cơ chế giao việc và nhận việc được thực hiện dễ dàng, tiết kiệm thời gian. Giúp người dùng tập trung hơn trong công việc.</p>
+                    </div>
+                    <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                        <img className="dx-intro-image dx-card" src='/library/dx/images/mtask.png'/>
+                    </div>
+                </div>
+                
+            </section>
+
+            <section className="dx-container">
+                
+                <div className="row p-center-h">
+                    <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                        <img className="dx-intro-image dx-card" src='/library/dx/images/mkpi.png'/>
+                    </div>
+                    <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                        <h2 className="dx-sologan text-center">Quản lý KPI</h2>
+                        <p>Quản lý KPI tự động, khoa học, minh bạch: Hệ thống cung cấp các cách tính KPI tự động, người dùng có thể tự customize công thức tính KPI tùy thuộc vào lĩnh vực của từng bộ phận/đơn vị.</p>
+                    </div>
+                </div>
+                
+            </section>
+
+            <section className="dx-container">
+                
+                <div className="row p-center-h">
+                    <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                        <h2 className="dx-sologan text-center">Quản lý tài liệu</h2>
+                        <p>Quản lý tài liệu là công việc lưu trữ, phân loại dữ liệu nội bộ của tổ chức, doanh nghiệp, nhằm phục vụ cho việc kinh doanh, sản xuất. Quản lý tài liệu hiệu quả sẽ giúp doanh nghiệp, tổ chức sắp xếp, tổ chức tài liệu hợp lý hơn, tiết kiệm chi phí bảo quản và thời gian tiềm kiếm.</p>
+                    </div>
+                    <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                        <img className="dx-intro-image dx-card" src='/library/dx/images/mdocument.png'/>
+                    </div>
+                </div>
+                
+            </section>
+
+            <section className="dx-container">
+                
+                <div className="row p-center-h">
+                    <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                        <img className="dx-intro-image dx-card" src='/library/dx/images/memployee.png'/>
+                    </div>
+                    <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                        <h2 className="dx-sologan text-center">Quản lý nhân sự</h2>
+                        <p>Quản lý thông tin nhân sự trong doanh nghiệp
+Các cán bộ cấp cao có thể dễ dàng theo dõi tình hình nhân sự qua các biểu đồ thống kê</p>
+                    </div>
+                </div>
+                
+            </section>
+
+            <section className="dx-container">
+                
+                <div className="row p-center-h">
+                    <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                        <h2 className="dx-sologan text-center">Quản lý tài sản</h2>
+                        <p>Quản lý thông tin tài sản dễ dàng. Truy suất thông tin nhanh chóng. Thống kê theo dõi dưới dạng các biểu đồ linh hoạt, dễ dàng nắm bắt thông tin.</p>
+                    </div>
+                    <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                        <img className="dx-intro-image dx-card" src='/library/dx/images/masset.png'/>
+                    </div>
+                </div>
+                
+            </section>
+
             <section id="dx-service-signup" className="dx-container">
                 
                 <div className="row p-center-h">
@@ -180,11 +252,11 @@ const Introduction = (props) => {
 
             <section id="dx-location" className="dx-container">
                 
-                <div className="row p-center-h">
-                    <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                        <img className="dx-intro-image" src='/library/dx/images/location.png'/>
+                <div className="row p-center">
+                    <div className="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                        <div dangerouslySetInnerHTML={{ __html: '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.649329143436!2d105.8440409142974!3d21.006689393908722!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ac760a8b09cf%3A0xd78e46d7bbefe566!2zTmfDtSAzMCBU4bqhIFF1YW5nIELhu611LCBCw6FjaCBLaG9hLCBIYWkgQsOgIFRyxrBuZywgSMOgIE7hu5lpLCBWaeG7h3QgTmFt!5e0!3m2!1svi!2s!4v1603851884788!5m2!1svi!2s" width="100%" height="400" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>' }}></div>
                     </div>
-                    <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                    <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                         <h3 className="text-center">Địa chỉ công ty</h3>
                         <ul className="dx-locations">
                             <li className="dx-location-item">

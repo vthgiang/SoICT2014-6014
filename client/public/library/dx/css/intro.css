@@ -116,6 +116,24 @@ section#dx-intro {
     color: #fff;
 }
 
+section#dx-service {
+    background-color: #F7FDFD;
+}
+
+section#dx-service > h3 {
+    color: #605CA8;
+    font-weight: 600;
+    font-size: 3.5rem;
+}
+
+section#dx-service > p {
+    width: 80%;
+    padding-left: 10%;
+    margin-bottom: 40px;
+    text-align: center;
+    font-size: 2rem;
+}
+
 section#dx-service-signup {
     background-color: #F7FDFD;
 }
@@ -198,6 +216,12 @@ div.dx-card {
     margin: 18px 0px;
     padding: 10px;
     min-height: 330px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+}
+
+img.dx-card {
+    padding: 10px;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
     transition: 0.3s;
 }
