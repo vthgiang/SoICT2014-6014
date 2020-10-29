@@ -52,23 +52,23 @@ exports.getBinLocations = async (query, portal) => {
 }
 
 exports.getChildBinLocations = async (query, portal) => {
-    let { page, limit, stock } = query;
+    let { page, limit, stock, good } = query;
     const arr = [];
     if(!page && !limit) {
         if(stock){
-            return await BinLocation(connect(DB_CONNECTION, portal)).find({ child: arr, stock})
+            return await BinLocation(connect(DB_CONNECTION, portal)).find({ child: arr, stock, good })
             .populate([
                 { path: 'enableGoods.good', select: 'id name type baseUnit'}
             ]);
         } else {
-            return await BinLocation(connect(DB_CONNECTION, portal)).find({ child: arr})
+            return await BinLocation(connect(DB_CONNECTION, portal)).find({ child: arr, good })
             .populate([
                 { path: 'enableGoods.good', select: 'id name type baseUnit'}
             ]);
         }
     } else {
         if(stock) {
-            let option = { child: [], stock};
+            let option = { child: [], stock, good };
 
             if(query.path) {
                 option.path = new RegExp(query.path, "i")
@@ -88,7 +88,7 @@ exports.getChildBinLocations = async (query, portal) => {
                 })
         }
         else {
-            let option = { child: []};
+            let option = { child: [], good };
 
             if(query.stock) {
                 option.stock = query.stock

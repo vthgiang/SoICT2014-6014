@@ -3606,6 +3606,10 @@ export default {
                 status: 'Trạng thái',
                 note: 'Ghi chú',
                 bill: 'Mã phiếu',
+                archive: 'Nơi lưu trữ',
+                bin_location: 'Khu vực đang lưu trữ',
+                choose_bin: 'Chọn nơi lưu trữ',
+                choose_stock: 'Chọn kho đang chứa'
             }
         },
 
