@@ -44,6 +44,7 @@ exports.createDocument = async (req, res) => {
             content: document
         });
     } catch (error) {
+        console.log(error)
         await Logger.error(req.user.email, 'create_document', req.portal);
         res.status(400).json({
             success: false,
@@ -64,7 +65,7 @@ exports.importDocument = async (req, res) => {
             content: document
         });
     } catch (error) {
-        
+
         await Logger.error(req.user.email, 'import_document', req.portal);
         res.status(400).json({
             success: false,
@@ -73,6 +74,7 @@ exports.importDocument = async (req, res) => {
         });
     }
 };
+
 exports.increaseNumberView = async (req, res) => {
     try {
         const doc = await DocumentServices.increaseNumberView(req.params.id, req.user._id, req.portal);
@@ -152,7 +154,7 @@ exports.addDocumentLog = async (req, res) => {
         await Logger.info(req.user.email, 'add_document_logs', req.portal);
         res.status(200).json({
             success: true,
-            messages: ['add_document_logss_success'],
+            messages: ['add_document_logs_success'],
             content: documentLog
         })
     } catch (error) {
@@ -191,14 +193,14 @@ exports.downloadDocumentFile = async (req, res) => {
     try {
         const file = await DocumentServices.downloadDocumentFile({ id: req.params.id, numberVersion: req.query.numberVersion, downloaderId: req.user._id }, req.portal);
         
-        await Logger.info(req.user.email, 'DOWNLOAD_DOCUMENT_FILE', req.portal);
+        await Logger.info(req.user.email, 'download_document_file', req.portal);
         if (file.path) {
             res.download(file.path, file.name);
         }
 
     } catch (error) {
         
-        await Logger.error(req.user.email, 'DOWNLOAD_DOCUMENT_FILE', req.portal);
+        await Logger.error(req.user.email, 'download_document_file', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['download_document_file_faile'],
@@ -211,13 +213,13 @@ exports.downloadDocumentFileScan = async (req, res) => {
     try {
         const file = await DocumentServices.downloadDocumentFileScan({ id: req.params.id, numberVersion: req.query.numberVersion, downloaderId: req.user._id }, req.portal);
         
-        await Logger.info(req.user.email, 'DOWNLOAD_DOCUMENT_FILE_SCAN', req.portal);
+        await Logger.info(req.user.email, 'download_document_file_scan', req.portal);
         if (file.path) {
             res.download(file.path, file.name);
         }
     } catch (error) {
 
-        await Logger.error(req.user.email, 'DOWNLOAD_DOCUMENT_FILE_SCAN', req.portal);
+        await Logger.error(req.user.email, 'download_document_file_scan', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['download_document_file_scan_faile'],
@@ -233,7 +235,7 @@ exports.getDocumentCategories = async (req, res) => {
     try {
         const categories = await DocumentServices.getDocumentCategories(req.portal, req.query, req.user.company._id);
 
-        await Logger.info(req.user.email, 'GET_DOCUMENT_CATEGORIES', req.portal);
+        await Logger.info(req.user.email, 'get_document_categories', req.portal);
         res.status(200).json({
             success: true,
             messages: ['get_document_categories_success'],
@@ -241,7 +243,7 @@ exports.getDocumentCategories = async (req, res) => {
         });
     } catch (error) {
 
-        await Logger.error(req.user.email, 'GET_DOCUMENT_CATEGORIES', req.portal);
+        await Logger.error(req.user.email, 'get_document_categories', req.portal);
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_document_categories_faile'],
@@ -596,17 +598,17 @@ exports.deleteManyDocumentArchive = async (req, res) => {
     try {
         const archive = await DocumentServices.deleteManyDocumentArchive(req.body.array, req.portal, req.user.company._id);
 
-        await Logger.info(req.user.email, 'delete_many_document_archive', req.portal);
+        await Logger.info(req.user.email, 'delete_document_archive', req.portal);
         res.status(200).json({
             success: true,
-            message: ['delete_many_document_archive_success'],
+            message: ['delete_document_archive_success'],
             content: archive,
         })
     } catch (error) {
-        await Logger.error(req.user.email, 'delete_many_document_archive', req.portal);
+        await Logger.error(req.user.email, 'delete_document_archive', req.portal);
         res.status(400).json({
             success: false,
-            message: Array.isArray(error) ? error : ['delete_many_document_archive_faile'],
+            message: Array.isArray(error) ? error : ['delete_document_archive_faile'],
             content: error,
         })
     }
