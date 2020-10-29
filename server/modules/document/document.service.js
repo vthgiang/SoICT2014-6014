@@ -458,6 +458,9 @@ exports.getDocumentCategories = async (portal, query, company) => {
 }
 
 exports.createDocumentCategory = async (portal, data, company) => {
+    const existed = await DocumentCategory(connect(DB_CONNECTION, portal)).findOne({name: data.name});
+    if(existed) throw ['category_name_exist'];
+
     return await DocumentCategory(connect(DB_CONNECTION, portal)).create({
         company,
         name: data.name,
@@ -528,6 +531,8 @@ exports.getDocumentDomains = async (portal, company) => {
 }
 
 exports.createDocumentDomain = async (portal, data, company) => {
+    const existed = await DocumentDomain(connect(DB_CONNECTION, portal)).findOne({name: data.name});
+    if(existed) throw ['domain_name_exist'];
     let query = {
         company,
         name: data.name,
