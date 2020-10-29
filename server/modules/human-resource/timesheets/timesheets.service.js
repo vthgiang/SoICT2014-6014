@@ -132,6 +132,7 @@ exports.getTimesheetsByEmployeeIdOrEmailInCompanyAndTime = async (portal, employ
         let arr = arrMonth.map(x => new Date(x));
 
         let employee;
+        console.log(employeeId);
         if(ObjectId.isValid(employeeId)){
             employee = await Employee(connect(DB_CONNECTION, portal)).findOne({_id: employeeId},{_id: 1});
         }else{
