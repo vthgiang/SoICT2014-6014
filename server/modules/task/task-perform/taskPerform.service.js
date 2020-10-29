@@ -458,7 +458,8 @@ exports.createTaskAction = async (portal, params, body, files) => {
     let actionInformation = {
         creator: body.creator,
         description: body.description,
-        files: files
+        files: files,
+        sort: body.index
     }
     let taskAction1 = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(params.taskId,
         {

@@ -383,6 +383,10 @@ const TaskSchema = new Schema({
             type: Date,
             default: Date.now
         },
+        sort: {
+            type: Number,
+            required: true
+        },
         rating: { // -1: chưa đánh giá, 0-10: tùy mức độ tốt
             type: Number,
             default: -1

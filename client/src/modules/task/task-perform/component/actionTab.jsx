@@ -20,6 +20,7 @@ import { ViewProcess } from '../../task-process/component/task-process-managemen
 import { IncomingDataTab } from './incomingDataTab';
 import { OutgoingDataTab } from './outgoingDataTab';
 import parse from 'html-react-parser';
+import { performtasks } from '../redux/reducers';
 
 class ActionTab extends Component {
     constructor(props) {
@@ -28,12 +29,14 @@ class ActionTab extends Component {
         let lang = getStorage("lang")
         moment.locale(lang)
         this.state = {
+            taskActions: [],
             currentUser: idUser,
             selected: "taskAction",
             comment: false,
             action: false,
             editComment: "",
             valueRating: 2.5,
+            showSort: false,
             files: [],
             hover: {},
             taskFiles: {
@@ -122,10 +125,19 @@ class ActionTab extends Component {
         this.contentCommentOfTaskComment = [];
         this.newContentCommentOfTaskComment = [];
         this.descriptionFile = []
-
     }
     componentDidMount = () => {
         this.props.getAllPreceedingTasks(this.props.id)
+    }
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.performtasks.task) {
+            return {
+                ...prevState,
+                taskActions: [...nextProps.performtasks.task.taskActions],
+            }
+        } else {
+            return null;
+        }
     }
     shouldComponentUpdate = (nextProps, nextState) => {
         if (nextProps.id !== this.state.id) {
@@ -269,11 +281,12 @@ class ActionTab extends Component {
     }
 
     //Thêm mới hoạt động
-    submitAction = async (taskId) => {
+    submitAction = async (taskId, index) => {
         let { newAction } = this.state;
         const data = new FormData();
         data.append("creator", newAction.creator);
         data.append("description", newAction.description);
+        data.append("index", index)
         newAction.files && newAction.files.forEach(x => {
             data.append("files", x);
         })
@@ -749,7 +762,6 @@ class ActionTab extends Component {
                 }
             }
         });
-        // window.$(`#modal-confirm-deletefile`).modal('show');
     }
     save = (taskId) => {
         let { deleteFile } = this.state
@@ -765,10 +777,10 @@ class ActionTab extends Component {
             this.props.deleteFileTask(deleteFile.fileId, deleteFile.actionId, taskId)
         }
     }
-    pressEnter = (event, taskId) => {
+    pressEnter = (event, taskId, index) => {
         let code = event.keyCode || event.which;
         if (code === 13 && !event.shiftKey) {
-            this.submitAction(taskId)
+            this.submitAction(taskId, index)
         }
         if (code == 13 && !event.shiftKey) {
             event.preventDefault();
@@ -795,19 +807,44 @@ class ActionTab extends Component {
             return false;
         }
     }
+    showSort = async () => {
+        let {taskActions} = this.state
+        if (this.state.showSort) {
+            this.setState({ showSort: false, backupActions: taskActions });
+        } else {
+            this.setState({ showSort: true, backupActions: taskActions },() => console.log(this.state.backupActions));
+        }
 
-
+    }
+    sort = (index,type) => {
+        let { taskActions } = this.state
+        let item = taskActions[index];
+        taskActions.splice(index, 1);
+        taskActions.splice(type === "up" ? index - 1 : index +1, 0, item);
+        this.setState(state => {
+            return {
+                ...state,
+                taskActions: taskActions
+            }
+        });
+    }
+    cancelSort = () => {
+        let  {backupActions} = this.state
+        console.log(backupActions)
+        this.setState({ taskActions: backupActions, showSort: false });
+    }
     setSrc = (src) => {
         this.setState({ src: src });
     }
     render() {
-        let task, informations, statusTask, documents, actionComments, taskActions, taskComments, logTimer, logs;
+        let task, informations, statusTask, documents, actionComments, taskComments, logTimer, logs;
+        // let taskActions
         const { tasks, performtasks, user, auth, translate, role } = this.props;
         const subtasks = tasks.subtasks;
         const {
-            showEvaluations, selected, comment, editComment, showChildComment, editAction, action,
+            showEvaluations, selected, comment, editComment, showChildComment, editAction, action, taskActions,
             editTaskComment, showEditTaskFile,
-            editCommentOfTaskComment, valueRating, currentUser, hover, fileTaskEdited,
+            editCommentOfTaskComment, valueRating, currentUser, hover, fileTaskEdited, showSort,
             showFile, deleteFile, taskFiles, newActionEdited, newCommentOfActionEdited, newAction,
             newCommentOfAction, newTaskCommentEdited, newCommentOfTaskComment, newTaskComment, newCommentOfTaskCommentEdited
         } = this.state;
@@ -816,7 +853,7 @@ class ActionTab extends Component {
         if (typeof performtasks.task !== 'undefined' && performtasks.task !== null) {
             task = performtasks.task;
             taskComments = task.taskComments;
-            taskActions = task.taskActions;
+            // taskActions = task.taskActions
             documents = task.documents
         }
         if (performtasks.logtimer) {
@@ -850,9 +887,10 @@ class ActionTab extends Component {
                     </ul>
                     <div className="tab-content">
                         <div className={selected === "taskAction" ? "active tab-pane" : "tab-pane"} id="taskAction">
+                            <a style={{ cursor: "pointer" }} onClick={this.showSort}><i className="fa fa-sort"></i>Sắp xếp hoạt động</a>
                             {typeof taskActions !== 'undefined' && taskActions.length !== 0 ?
                                 // Hiển thị hoạt động của công việc
-                                taskActions.map(item => {
+                                taskActions.map((item, index) => {
                                     return (
                                         <div key={item._id}>
                                             {item.creator ?
@@ -875,18 +913,27 @@ class ActionTab extends Component {
                                                         }
                                                         {(role === 'responsible' && item.creator) &&
                                                             <div className="btn-group pull-right">
-                                                                <span data-toggle="dropdown">
-                                                                    <i className="fa fa-ellipsis-h"></i>
-                                                                </span>
-                                                                <ul className="dropdown-menu">
-                                                                    <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditAction(item._id)} >{translate("task.task_perform.edit_action")}</a></li>
-                                                                    <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteTaskAction(item._id, task._id)} >{translate("task.task_perform.delete_action")}</a></li>
-                                                                </ul>
+                                                                {showSort === true ?
+                                                                    <div className="sort-action">
+                                                                        {index !== 0 && <a style={{ marginTop: index === taskActions.length - 1 ? "10px" : "0px" }} onClick={() => this.sort(index,"up")}><i className="fa fa-caret-up fa-2x"></i> </a>}
+                                                                        {index !== taskActions.length - 1 && <a style={{ marginTop: index === 0 ? "13px" : "-10px" }} onClick={() => this.sort(index,"down")}><i className="fa fa-caret-down fa-2x"></i> </a>}
+                                                                    </div>
+                                                                    :
+                                                                    <React.Fragment>
+                                                                        <span data-toggle="dropdown">
+                                                                            <i className="fa fa-ellipsis-h"></i>
+                                                                        </span>
+                                                                        <ul className="dropdown-menu">
+                                                                            <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditAction(item._id)} >{translate("task.task_perform.edit_action")}</a></li>
+                                                                            <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteTaskAction(item._id, task._id)} >{translate("task.task_perform.delete_action")}</a></li>
+                                                                        </ul>
+                                                                    </React.Fragment>
+                                                                }
                                                             </div>}
                                                     </div>
 
                                                     {/* Các file đính kèm */}
-                                                    <ul className="list-inline tool-level1">
+                                                    {!showSort && <ul className="list-inline tool-level1">
                                                         <li><span className="text-sm">{<DateTimeConverter dateTime={item.createdAt} />}</span></li>
                                                         <li>{item.mandatory && !item.creator && <b className="text-sm">{translate("task.task_perform.mandatory_action")}</b>}</li>
                                                         {((item.creator === undefined || item.creator === null) && role === "responsible") &&
@@ -929,7 +976,7 @@ class ActionTab extends Component {
                                                                 <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> {translate("task.task_perform.comment")} ({item.comments.length}) &nbsp;</a></li>
                                                             </React.Fragment>
                                                         }
-                                                    </ul>
+                                                    </ul>}
                                                     <div className="tool-level1" style={{ paddingLeft: 5 }}>
                                                         {/* Các kết quả đánh giá của action */}
                                                         {showEvaluations.some(obj => obj === item._id) &&
@@ -1158,26 +1205,35 @@ class ActionTab extends Component {
                                 }) : null
                             }
                             {/* Thêm hoạt động cho công việc*/}
-                            {role === "responsible" && task &&
+                            {showSort ?
+                                <div className="pull-right" style={{ marginRight: "10px" }}>
+                                    <a className="link-black text-sm" style={{ cursor: "pointer", marginRight: "5px" }}>Lưu</a>
+                                    <a className="link-black text-sm" style={{ cursor: "pointer" }} onClick={() => this.cancelSort()}>Hủy</a>
+                                </div>
+                                :
                                 <React.Fragment>
-                                    <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
-                                    <ContentMaker
-                                        inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
-                                        onFilesChange={this.onActionFilesChange}
-                                        onFilesError={this.onFilesError}
-                                        files={newAction.files}
-                                        text={newAction.description}
-                                        placeholder={translate("task.task_perform.enter_action")}
-                                        submitButtonText={translate("task.task_perform.create_action")}
-                                        onTextChange={(e) => {
-                                            let value = e.target.value;
-                                            this.setState(state => {
-                                                return { ...state, newAction: { ...state.newAction, description: value } }
-                                            })
-                                        }}
-                                        onSubmit={(e) => { this.submitAction(task._id) }}
-                                    />
-                                </React.Fragment>}
+                                    {role === "responsible" && task &&
+                                        <React.Fragment>
+                                            <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
+                                            <ContentMaker
+                                                inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
+                                                onFilesChange={this.onActionFilesChange}
+                                                onFilesError={this.onFilesError}
+                                                files={newAction.files}
+                                                text={newAction.description}
+                                                placeholder={translate("task.task_perform.enter_action")}
+                                                submitButtonText={translate("task.task_perform.create_action")}
+                                                onTextChange={(e) => {
+                                                    let value = e.target.value;
+                                                    this.setState(state => {
+                                                        return { ...state, newAction: { ...state.newAction, description: value } }
+                                                    })
+                                                }}
+                                                onSubmit={(e) => { this.submitAction(task._id, taskActions.length) }}
+                                            />
+                                        </React.Fragment>}
+                                </React.Fragment>
+                            }
                         </div>
                         {/* Chuyển qua tab trao đổi */}
                         <div className={selected === "taskComment" ? "active tab-pane" : "tab-pane"} id="taskComment">
