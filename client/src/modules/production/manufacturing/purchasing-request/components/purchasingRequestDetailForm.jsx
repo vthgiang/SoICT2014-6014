@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 import { DialogModal } from '../../../../../common-components';
 import sampleData from '../../sampleData';
-
-
-
-class PurchasingRequestDetailInfo extends Component {
+class PurchasingRequestDetailForm extends Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -127,4 +124,4 @@ class PurchasingRequestDetailInfo extends Component {
     }
 }
 
-export default PurchasingRequestDetailInfo;
+export default PurchasingRequestDetailForm;
