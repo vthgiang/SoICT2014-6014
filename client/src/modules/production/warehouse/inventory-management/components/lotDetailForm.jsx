@@ -12,29 +12,23 @@ class LotDetailForm extends Component {
         }
     }
 
-    // static getDerivedStateFromProps(nextProps, prevState){
-    //     if(nextProps.stockId !== prevState.stockId || nextProps.code !== prevState.code || nextProps.name !== prevState.name ||
-    //         nextProps.status !== prevState.status || nextProps.address !== prevState.address || nextProps.goods !== prevState.goods ||
-    //         nextProps.managementLocation !== prevState.managementLocation || nextProps.manageDepartment !== prevState.manageDepartment || nextProps.description !== prevState.description){
-    //         return {
-    //             ...prevState,
-    //             stockId: nextProps.stockId,
-    //             code: nextProps.code,
-    //             name: nextProps.name,
-    //             status: nextProps.status,
-    //             address: nextProps.address,
-    //             goods: nextProps.goodsManagement,
-    //             managementLocation: nextProps.managementLocation,
-    //             manageDepartment: nextProps.manageDepartment,
-    //             description: nextProps.description,
-    //         }
-    //     }
-    //     else {
-    //         return null;
-    //     }
-    // }
+    formatDate(date) {
+        let d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [day, month, year].join('-');
+    }
+
     render() {
-        const { translate } = this.props;
+        const { translate, lots } = this.props;
+        const { lotDetail } = lots;
         return (
             <React.Fragment>
                 <DialogModal
@@ -48,15 +42,17 @@ class LotDetailForm extends Component {
                     hasNote={false}
                 >
                     <form id={`form-detail-lot`} >
-                        <div className="row">
+                        {
+                            lotDetail ?
+                            <div className="row">
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.inventory_management.lot_code')}:&emsp;</strong>
-                                    L0012
+                                    {lotDetail.name}
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.inventory_management.unit')}:&emsp;</strong>
-                                    thùng
+                                    {lotDetail.good.baseUnit}
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.inventory_management.stock')}:&emsp;</strong>
@@ -70,25 +66,25 @@ class LotDetailForm extends Component {
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.inventory_management.original_quantity')}:&emsp;</strong>
-                                    100
+                                    {lotDetail.originalQuantity} {lotDetail.good.baseUnit}
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.inventory_management.quantity')}:&emsp;</strong>
-                                    50
+                                    {lotDetail.quantity} {lotDetail.good.baseUnit}
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.inventory_management.date')}:&emsp;</strong>
-                                    20-10-2020
+                                    { this.formatDate(lotDetail.expirationDate)}
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.inventory_management.bin')}:&emsp;</strong>
-                                    B1-T1-101(30), B1-T1-102(20)
+                                    {lotDetail.stocks.map((x, index) => <p key={index}><b>Kho: {x.stock.name} có: </b>{x.binLocations.map(item => item.binLocation.path + "(" + item.quantity + "), " )}</p>)}
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.inventory_management.description')}:&emsp;</strong>
-                                    Sản phẩm dùng cho abc
+                                    {lotDetail.description}
                                 </div>
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manage_warehouse.inventory_management.history')}</legend>
@@ -101,33 +97,35 @@ class LotDetailForm extends Component {
                                                 <th title={translate('manage_warehouse.inventory_management.date_month')}>{translate('manage_warehouse.inventory_management.date_month')}</th>
                                                 <th title={translate('manage_warehouse.inventory_management.status')}>{translate('manage_warehouse.inventory_management.status')}</th>
                                                 <th title={translate('manage_warehouse.inventory_management.number')}>{translate('manage_warehouse.inventory_management.number')}</th>
-                                                <th title={translate('manage_warehouse.inventory_management.quantity')}>{translate('manage_warehouse.inventory_management.quantity')}</th>
+                                                {/* <th title={translate('manage_warehouse.inventory_management.quantity')}>{translate('manage_warehouse.inventory_management.quantity')}</th> */}
                                                 <th title={translate('manage_warehouse.inventory_management.stock')}>{translate('manage_warehouse.inventory_management.stock')}</th>
-                                                <th title={translate('manage_warehouse.inventory_management.bin')}>{translate('manage_warehouse.inventory_management.bin')}</th>
+                                                {/* <th style={{width: "16%"}} title={translate('manage_warehouse.inventory_management.bin')}>{translate('manage_warehouse.inventory_management.bin')}</th> */}
                                                 <th title={translate('manage_warehouse.inventory_management.partner')}>{translate('manage_warehouse.inventory_management.partner')}</th>
                                                 <th title={translate('manage_warehouse.inventory_management.note')}>{translate('manage_warehouse.inventory_management.note')}</th>
                                             </tr>
                                         </thead>
                                         <tbody id={`good-edit-manage-by-archive`}>
-                                                    <tr>
-                                                        <td>1</td>
-                                                        <td><a href="#">BR001</a></td>
-                                                        <td>5-10-2020 7:30</td>
-                                                        <td>Nhập thành phẩm</td>
-                                                        <td>200</td>
-                                                        <td>200</td>
-                                                        <td>Tạ Quang Bửu</td>
-                                                        <td><p>B1-T1-101(100)</p><p>B1-T1-102(100)</p></td>
-                                                        <td>Xưởng sx A</td>
-                                                        <td>Nhập sản phẩm vào kho</td>
+                                            {(typeof lotDetail.lotLogs === 'undefined' || lotDetail.lotLogs.length === 0) ? <tr><td colSpan={3}><center>{translate('task_template.no_data')}</center></td></tr> :
+                                                lotDetail.lotLogs.map((x, index) =>
+                                                <tr key={index}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{x.bill ? x.bill : ""}</td>
+                                                        <td>{this.formatDate(x.createdAt)}</td>
+                                                        <td>{x.type}</td>
+                                                        <td>{x.quantity}</td>
+                                                        <td>{x.stock ? x.stock.name : ""}</td>
+                                                        {/* <td>{x.binLocations ? x.binLocations.map((item, index) => <p key={index}>{item.binLocation.path} ({item.quantity})</p>) : ""}</td> */}
+                                                        <td></td>
+                                                        <td>{x.description}</td>
                                                     </tr>
-                                                    <tr>
+                                                )
+                                            }
+                                                    {/* <tr>
                                                         <td>2</td>
                                                         <td><a href="#">BI002</a></td>
                                                         <td>5-10-2020 7:30</td>
                                                         <td>Xuất thành phẩm</td>
                                                         <td>60</td>
-                                                        <td>140</td>
                                                         <td>Tạ Quang Bửu</td>
                                                         <td><p>B1-T1-101(60)</p></td>
                                                         <td>Công ty TNHH ABC</td>
@@ -139,7 +137,6 @@ class LotDetailForm extends Component {
                                                         <td>5-10-2020 7:30</td>
                                                         <td>Luân chuyển đi</td>
                                                         <td>60</td>
-                                                        <td>80</td>
                                                         <td>Tạ Quang Bửu</td>
                                                         <td><p>B1-T1-101(60)</p><p>B1-T1-102(20)</p></td>
                                                         <td>Kho Trần Đại Nghĩa</td>
@@ -151,17 +148,17 @@ class LotDetailForm extends Component {
                                                         <td>5-10-2020 7:30</td>
                                                         <td>Tiêu hủy</td>
                                                         <td>30</td>
-                                                        <td>50</td>
                                                         <td>Tạ Quang Bửu</td>
                                                         <td><p>B1-T1-102(30)</p></td>
                                                         <td></td>
                                                         <td>Bị hỏng do bảo quản</td>
-                                                    </tr>
+                                                    </tr> */}
                                         </tbody>
                                     </table>
                                 </fieldset>
                             </div>
-                        </div>
+                        </div> : []
+                        }
                     </form>
                 </DialogModal>
             </React.Fragment>
@@ -169,4 +166,6 @@ class LotDetailForm extends Component {
     }
 }
 
-export default connect(null, null)(withTranslate(LotDetailForm));
+const mapStateToProps = state => state;
+
+export default connect(mapStateToProps, null)(withTranslate(LotDetailForm));

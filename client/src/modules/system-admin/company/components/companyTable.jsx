@@ -131,7 +131,7 @@ class CompanyTable extends Component {
                         companyLog={currentRow.log}
                         companyDescription={ currentRow.description }
                         companyLinks={currentRow.links}
-                        companyEmail={currentRow.superAdmin !== undefined ? currentRow.superAdmin.email : 'Chưa xác định'}
+                        companyEmail={currentRow.superAdmin ? currentRow.superAdmin.email : 'Chưa xác định'}
                         companyActive={currentRow.active}
                     />
                 }
@@ -144,7 +144,7 @@ class CompanyTable extends Component {
                         companyLog={currentRow.log}
                         companyDescription={ currentRow.description }
                         companyLinks={currentRow.links}
-                        companyEmail={currentRow.superAdmin !== undefined ? currentRow.superAdmin.email : 'Chưa xác định'}
+                        companyEmail={currentRow.superAdmin ? currentRow.superAdmin.email : 'Chưa xác định'}
                         companyActive={currentRow.active}
                     />
                 }

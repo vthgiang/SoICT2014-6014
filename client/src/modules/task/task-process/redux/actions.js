@@ -11,6 +11,7 @@ export const TaskProcessActions = {
     updateDiagram,
 
     editProcessInfo,
+    importProcessTemplate,
 
     createComment,
     editComment,
@@ -82,6 +83,21 @@ function createXmlDiagram(data) {
             .then(
                 res => dispatch({ type: TaskProcessConstants.CREATE_XML_DIAGRAM_SUCCESS, payload: res.data }),
                 error => dispatch({ type: TaskProcessConstants.CREATE_XML_DIAGRAM_FAIL })
+            );
+    };
+}
+
+/**
+ * import mẫu quy trình
+ * @param {*} data dữ liệu quy trình
+ */
+function importProcessTemplate(data) {
+    return dispatch => {
+        dispatch({ type: TaskProcessConstants.IMPORT_PROCESS_TEMPLATE_REQUEST });
+        TaskProcessService.importProcessTemplate(data)
+            .then(
+                res => dispatch({ type: TaskProcessConstants.IMPORT_PROCESS_TEMPLATE_SUCCESS, payload: res.data }),
+                error => dispatch({ type: TaskProcessConstants.IMPORT_PROCESS_TEMPLATE_FAIL })
             );
     };
 }

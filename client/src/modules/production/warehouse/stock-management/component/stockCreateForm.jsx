@@ -213,7 +213,6 @@ class StockCreateForm extends Component {
     handleMaxQuantityChange = (e) => {
         let value = e.target.value;
         this.state.good.maxQuantity = value;
-        console.log(value);
         this.setState(state => {
             return {
                 ...state
@@ -240,8 +239,8 @@ class StockCreateForm extends Component {
         this.validateGood(good, true);
     }
 
-    validateGood = (value, willUpdateState = true) => {
-        const dataGood = this.getAllGoods();
+    validateGood = async (value, willUpdateState = true) => {
+        const dataGood = await this.getAllGoods();
         
         let msg = undefined;
         const { translate } = this.props;
@@ -250,8 +249,8 @@ class StockCreateForm extends Component {
             msg = translate('manage_warehouse.category_management.validate_name');
         }
         if (willUpdateState) {
-        let goodName = dataGood.find(x=>x.value === value);
-            good.good = {_id:value,name:goodName.text};
+        let goodName = dataGood.find(x => x.value === value);
+            good.good = { _id:value, name:goodName.text };
             this.setState(state => {
                 return {
                     ...state,
@@ -337,7 +336,8 @@ class StockCreateForm extends Component {
         })
     }
 
-    handleClearGood = async () => {
+    handleClearGood = (e) => {
+        e.preventDefault();
         this.setState(state => {
             return {
                 ...state,
@@ -441,10 +441,10 @@ class StockCreateForm extends Component {
                                     <div className={`form-group ${!errorOnGood ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.good_management.good')}</label>
                                         <SelectBox
-                                            id={`select-good-by-stock`}
+                                            id={`select-good-by-stock-create`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            value={good.good}
+                                            value={good.good ? good.good._id : { value: '', text: translate('manage_warehouse.good_management.choose_category') }}
                                             items={listGoods}
                                             onChange={this.handleGoodChange}
                                             multiple={false}

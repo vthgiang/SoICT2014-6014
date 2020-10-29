@@ -100,7 +100,7 @@ class Table extends Component {
                         categoryDescription = { currentRow.description }
                     />
                 }
-                {<ExportExcel id="export-document-category" exportData={exportData} style={{ marginRight: 5, marginTop: 2 }} />}
+                <ExportExcel id="export-document-category" exportData={exportData} style={{ marginRight: 5 }} buttonName={translate('document.export')}/>
                 <SearchBar 
                     columns={[
                         { title: translate('document.administration.categories.name'), value: 'name' },

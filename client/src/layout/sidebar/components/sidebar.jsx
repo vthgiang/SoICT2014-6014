@@ -79,7 +79,7 @@ class SideBar extends Component {
                             <Item
                                 item={{
                                     name: "menu.home",
-                                    path: "/",
+                                    path: "/home",
                                     icon: "fa fa-home",
                                 }}
                             />

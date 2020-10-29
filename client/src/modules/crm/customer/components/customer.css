@@ -19,8 +19,8 @@
     border-radius: 2px;
 }
 
-.timeline-progress {
-  width: 33%;
+.timeline-crm-progress {
+  width: 0%;
   height: 100%;
   background-color: #008d4c;
   transition:all ease 0.9s;
@@ -107,15 +107,15 @@
   cursor: pointer;
 }
 
-/* Style timeline history tab infoForm */
-.timeline-container {
+/* Style timeline histories tab infoForm */
+.histories-timeline-container {
     display: flex;
     flex-direction: column;
     position: relative;
     margin: 40px 0;
 }
 
-.timeline-container::after {
+.histories-timeline-container::after {
     background-color: #008d4c;
     content: '';
     position: absolute;
@@ -124,7 +124,7 @@
     height: 100%;
 }
 
-.timeline-history-item {
+.histories-timeline-item {
     display: flex;
     justify-content: flex-end;
     padding-right: 30px;
@@ -133,14 +133,14 @@
     width: 50%;
 }
 
-.timeline-history-item:nth-child(odd) {
+.histories-timeline-item:nth-child(odd) {
     align-self: flex-end;
     justify-content: flex-start;
     padding-left: 30px;
     padding-right: 0;
 }
 
-.timeline-history-item-content{
+.histories-timeline-item__content{
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
     border-radius: 5px;
     background-color: #fff;
@@ -154,7 +154,7 @@
     text-align: left;
 }
 
-.timeline-history-item-content::after {
+.histories-timeline-item__content::after {
     content: ' ';
     background-color: #fff;
     box-shadow: 1px -1px 1px rgba(0, 0, 0, 0.2);
@@ -166,41 +166,41 @@
     height: 15px;
 }
 
-.timeline-history-item:nth-child(odd) .timeline-history-item-content {
+.histories-timeline-item:nth-child(odd) .histories-timeline-item__content {
     text-align: left;
     align-items: flex-start;
 }
 
-.timeline-history-item:nth-child(odd) .timeline-history-item-content::after {
+.histories-timeline-item:nth-child(odd) .histories-timeline-item__content::after {
     right: auto;
     left: -7.5px;
     box-shadow: -1px 1px 1px rgba(0, 0, 0, 0.2);
 }
 
-.timeline-history-item-content time {
+.histories-timeline-item__content time {
     color: #e07e7e;
     font-size: 12px;
     font-weight: bold;
 }
 
-.timeline-history-item-content p {
+.histories-timeline-item__content p {
     font-size: 16px;
     line-height: 24px;
     margin: 10px 0;
     max-width: 300px;
 }
 
-.timeline-history-item-content a {
+.histories-timeline-item__content a {
     font-size: 14px;
     color: #777;
 }
 
-.timeline-history-item-content a::after {
+.histories-timeline-item__content a::after {
     content: ' ►';
     font-size: 12px;
 }
 
-.timeline-history-item-content .circle {
+.histories-timeline-item__content .circle {
     background-color: #fff;
     border: 3px solid #008d4c;
     border-radius: 50%;
@@ -212,39 +212,62 @@
     z-index: 100;
 }
 
-.timeline-history-item:nth-child(odd) .timeline-history-item-content .circle {
+.histories-timeline-item:nth-child(odd) .histories-timeline-item__content .circle {
     right: auto;
     left: -40px;
 }
 
 @media only screen and (max-width: 1023px) {
-    .timeline-history-item-content {
+    .histories-timeline-item__content {
         max-width: 100%;
     }
 }
 
 @media only screen and (max-width: 767px) {
-    .timeline-history-item-content,
-    .timeline-history-item:nth-child(odd) .timeline-history-item-content {
+    .histories-timeline-item__content,
+    .histories-timeline-item:nth-child(odd) .histories-timeline-item__content {
         padding: 15px 10px;
         text-align: center;
         align-items: center;
     }
 
-    .timeline-history-item-content .tag {
+    .histories-timeline-item__content .tag {
         width: calc(100% - 10px);
         text-align: center;
     }
 
-    .timeline-history-item-content time {
+    .histories-timeline-item__content time {
         margin-top: 20px;
     }
 
-    .timeline-history-item-content a {
+    .histories-timeline-item__content a {
         text-decoration: underline;
     }
 
-    .timeline-history-item-content a::after {
+    .histories-timeline-item__content a::after {
         display: none;
     }
+}
+
+/* css border tabs purchaseHistoriesInfoform */
+
+.purchaseHistories .nav-tabs-custom > .nav-tabs > li {
+  border: 1px solid transparent !important;
+}
+
+.purchaseHistories .nav-tabs-custom > .nav-tabs > li.active > a {
+  color: #444;
+  border-top-color: #f4f4f4;
+}
+
+.purchaseHistories .nav-tabs-custom > .nav-tabs > li > a{
+  color: #8e8e8e;
+}
+.purchaseHistories .nav-tabs-custom{
+  box-shadow: none;
+  margin-bottom: 0px;
+}
+
+.codeOrder{
+  color: #82a3e4;
 }

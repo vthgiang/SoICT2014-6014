@@ -4,7 +4,8 @@ import { managerServices } from "./services";
 export const managerActions = {
     getAllKPIUnit,
     getChildTargetOfCurrentTarget,
-    copyKPIUnit
+    copyKPIUnit,
+    calculateKPIUnit,
 }
 
 // lấy tất cả các KPI của đơn vị
@@ -66,4 +67,24 @@ function copyKPIUnit(kpiId, data) {
                 })
             })
     }
+}
+
+function calculateKPIUnit(idKpiUnitSet, date, idKpiUnit) {
+    return dispatch => {
+        dispatch({ type: managerConstants.CALCULATE_KPIUNIT_REQUEST })
+        managerServices.calculateKPIUnit(idKpiUnitSet, date, idKpiUnit)
+            .then(res => {
+                dispatch({
+                    type: managerConstants.CALCULATE_KPIUNIT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: managerConstants.CALCULATE_KPIUNIT_FAILURE,
+                    payload: error
+                })
+            })
+
+    };
 }

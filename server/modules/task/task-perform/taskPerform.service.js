@@ -3,7 +3,7 @@ const fs = require('fs');
 const moment = require("moment");
 const nodemailer = require("nodemailer");
 
-const { Task, User } = require(`${SERVER_MODELS_DIR}`);
+const { Task, User, UserRole, Role } = require(`${SERVER_MODELS_DIR}`);
 
 const OrganizationalUnitService = require(`${SERVER_MODULES_DIR}/super-admin/organizational-unit/organizationalUnit.service`);
 
@@ -112,20 +112,20 @@ exports.getTaskById = async (portal, id, userId) => {
         flag = 1;
     }
 
-    if (!flag) {// Trưởng đơn vị được phép xem thông tin công việc
+    if (!flag) {// Trưởng đơn vị quản lý công việc và trưởng đơn vị phối hợp được phép xem thông tin công việc
 
         // Tìm danh sách các role mà user kế thừa phân quyền
-        let role = await UserRole.find({ userId: userId });
+        let role = await UserRole(connect(DB_CONNECTION, portal)).find({ userId: userId });
         let listRole = role.map(item => item.roleId);
 
         let company = [];
 
         // Tìm ra các đơn vị có role là dean
         for (let i in listRole) {
-            let roles = await Role.findById(listRole[i]);
+            let roles = await Role(connect(DB_CONNECTION, portal)).findById(listRole[i]);
             company[i] = roles.company;
         }
-
+        
         // Tìm cây đơn vị mà đơn vị gốc có userId có role deans
         let tree = [];
         let k = 0;
@@ -154,6 +154,13 @@ exports.getTaskById = async (portal, id, userId) => {
                 }
             }
         }
+
+        // Kiểm tra có là trưởng đơn vị phối hơp 
+        if (tree && tree.length !== 0) {
+            if (tree[0] && task.collaboratedWithOrganizationalUnits.includes(tree[0].id)) {
+                flag = 1;
+            }
+        }
     }
 
     if (flag === 0) {
@@ -163,7 +170,6 @@ exports.getTaskById = async (portal, id, userId) => {
     }
     task.evaluations.reverse();
     return task;
-
 }
 
 /**
@@ -913,7 +919,6 @@ exports.addTaskLog = async (portal, params, body) => {
         title: title,
         description: description,
     }
-    console.log('loggg', log)
     let task = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
         params.taskId, { $push: { logs: log } }, { new: true }
     ).populate("logs.creator");
@@ -1336,6 +1341,149 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
 
     return { newTask: newTask, email: email, user: user, tasks: tasks };
 
+}
+
+/** Chỉnh sửa nhân viên tham gia công việc mà đơn vị được phối hợp */
+exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId, data) => {
+    let task, responsibleEmployees, consultedEmployees, newEmployees = [];
+    task = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
+
+    // Lấy nhân viên mới để gửi mail
+    if (data.responsibleEmployees && data.responsibleEmployees.length !== 0) {
+        data.responsibleEmployees.map(item => {
+            if (!task.responsibleEmployees.includes(item)) {
+                newEmployees.push(item);
+            }
+        })
+    }
+    if (data.consultedEmployees && data.consultedEmployees.length !== 0) {
+        data.consultedEmployees.map(item => {
+            if (!task.consultedEmployees.includes(item)) {
+                newEmployees.push(item);
+            }
+        })
+    }
+    newEmployees = Array.from(new Set(newEmployees));
+
+    // Xóa người thực hiện cũ của đơn vị hiện tại 
+    if (data.oldResponsibleEmployees && data.oldResponsibleEmployees.length !== 0 && task.responsibleEmployees) {
+        for (let i = task.responsibleEmployees.length - 1; i >= 0; i--) {
+            if (data.oldResponsibleEmployees.includes(task.responsibleEmployees[i].toString())) {
+                task.responsibleEmployees.splice(i, 1);
+            }
+        }
+    }
+    // Xóa người hỗ trợ của đơn vị hiện tại
+    if (data.oldConsultedEmployees && data.oldConsultedEmployees.length !== 0 && task.consultedEmployees) {
+        for (let i = task.consultedEmployees.length - 1; i >= 0; i--) {
+            if (data.oldConsultedEmployees.includes(task.consultedEmployees[i].toString())) {
+                task.consultedEmployees.splice(i, 1);
+            }
+        }
+    }
+
+    // Thêm mới người thực hiẹn và người hỗ trợ
+    responsibleEmployees = task.responsibleEmployees.concat(data.responsibleEmployees);
+    consultedEmployees = task.consultedEmployees.concat(data.consultedEmployees);
+    
+    task = await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
+        { "_id": taskId },
+        {
+            $set: {
+                responsibleEmployees: responsibleEmployees,
+                consultedEmployees: consultedEmployees
+            }
+        },
+        { $new: true }
+    );
+
+    let newTask = await Task(connect(DB_CONNECTION, portal)).findById(taskId).populate([
+        { path: "parent", select: "name" },
+        { path: "taskTemplate", select: "formula" },
+        { path: "organizationalUnit" },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", select: "name email _id active" },
+        { path: "evaluations.results.employee", select: "name email _id active" },
+        { path: "evaluations.results.organizationalUnit", select: "name _id" },
+        { path: "evaluations.results.kpis" },
+        { path: "taskActions.creator", select: 'name email avatar' },
+        { path: "taskActions.comments.creator", select: 'name email avatar' },
+        { path: "commentsInProcess.creator", select: 'name email avatar' },
+        { path: "commentsInProcess.comments.creator", select: 'name email avatar' },
+        { path: "taskActions.evaluations.creator", select: 'name email avatar ' },
+        { path: "taskComments.creator", select: 'name email avatar' },
+        { path: "taskComments.comments.creator", select: 'name email avatar' },
+        { path: "documents.creator", select: 'name email avatar' },
+        { path: "followingTasks.task" },
+        {
+            path: "preceedingTasks.task", populate: [
+                { path: "commentsInProcess.creator", select: 'name email avatar' },
+                { path: "commentsInProcess.comments.creator", select: 'name email avatar' },
+            ]
+        },
+        { path: "hoursSpentOnTask.contributions.employee", select: 'name' },
+        {
+            path: "process", populate: {
+                path: "tasks", populate: [
+                    { path: "parent", select: "name" },
+                    { path: "taskTemplate", select: "formula" },
+                    { path: "organizationalUnit" },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", select: "name email _id active" },
+                    { path: "evaluations.results.employee", select: "name email _id active" },
+                    { path: "evaluations.results.organizationalUnit", select: "name _id" },
+                    { path: "evaluations.results.kpis" },
+                    { path: "taskActions.creator", select: 'name email avatar' },
+                    { path: "taskActions.comments.creator", select: 'name email avatar' },
+                    { path: "taskActions.evaluations.creator", select: 'name email avatar ' },
+                    { path: "taskComments.creator", select: 'name email avatar' },
+                    { path: "taskComments.comments.creator", select: 'name email avatar' },
+                    { path: "documents.creator", select: 'name email avatar' },
+                    { path: "process" },
+                    { path: "commentsInProcess.creator", select: 'name email avatar' },
+                    { path: "commentsInProcess.comments.creator", select: 'name email avatar' },
+                ]
+            }
+        },
+    ]);
+    newTask.evaluations.reverse();
+
+    let html, email;
+    html = `<p>Bạn được phân công công việc: <a href="${process.env.WEBSITE}/task?taskId=${newTask._id}" target="_blank"><strong>${newTask.name}</strong></a></p> ` +
+        `<h3>Nội dung công việc</h3>` +
+        // `<p>Tên công việc : <strong>${task.name}</strong></p>` +
+        `<p>Mô tả : ${newTask.description}</p>` +
+        `<p>Người thực hiện</p> ` +
+        `<ul>${newTask.responsibleEmployees.map((item) => {
+            return `<li>${item.name} - ${item.email}</li>`
+        })}
+                    </ul>`+
+        `<p>Người phê duyệt</p> ` +
+        `<ul>${newTask.accountableEmployees.map((item) => {
+            return `<li>${item.name} - ${item.email}</li>`
+        })}
+                    </ul>` +
+        `${newTask.consultedEmployees.length > 0 ? `<p>Người tư vấn</p> ` +
+            `<ul>${newTask.consultedEmployees.map((item) => {
+                return `<li>${item.name} - ${item.email}</li>`
+            })}
+                    </ul>` : ""}` +
+        `${newTask.informedEmployees.length > 0 ? `<p>Người quan sát</p> ` +
+            `<ul>${newTask.informedEmployees.map((item) => {
+                return `<li>${item.name} - ${item.email}</li>`
+            })}
+                    </ul>` : ""}`
+        ;
+    
+    newEmployees = await User(connect(DB_CONNECTION, portal)).find({
+        _id: { $in: newEmployees }
+    })    
+    email = newEmployees.map(item => item.email);
+
+    return {
+        task: newTask,
+        html: html,
+        email: email,
+        newEmployees: newEmployees.map(item => item._id)
+    }
 }
 
 /**
@@ -2442,10 +2590,7 @@ exports.editActivateOfTask = async (portal, taskID, body) => {
 
     // Cập nhật trạng thái hoạt động của các task sau
     for (let i = 0; i < body.listSelected.length; i++) {
-        console.log('body', body.listSelected[i]);
-
         let listTask = await Task(connect(DB_CONNECTION, portal)).find({ "followingTasks.task": body.listSelected[i] });
-        // console.log('list', listTask, listTask.length);
 
         for (let x in listTask) {
             await Task(connect(DB_CONNECTION, portal)).update(
@@ -2603,7 +2748,6 @@ exports.deleteFileTask = async (portal, params) => {
         { $replaceRoot: { newRoot: "$files" } },
         { $match: { _id: mongoose.Types.ObjectId(params.fileId) } }
     ])
-    console.log(file)
     fs.unlinkSync(file[0].url)
 
     let task = await Task(connect(DB_CONNECTION, portal)).update(

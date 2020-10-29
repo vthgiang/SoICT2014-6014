@@ -235,3 +235,27 @@ exports.editProcessInfo = async (req, res) => {
 	// 	});
 	// }
 }
+
+/**
+ * impoort file excel mẫu quy trình
+ * @param {*} req 
+ * @param {*} res 
+ */
+exports.importProcessTemplate = async (req, res) => {
+	// try {
+		let result = await TaskProcessService.importProcessTemplate(req.portal, req.body.data, req.body.idUser);
+		await Logger.info(req.user.email, `import process`, req.portal);
+		res.status(200).json({
+			success: true,
+			messages: ['import_process_success'],
+			content: result,
+		});
+	// } catch (error) {
+	// 	await Logger.error(req.user.email, `import process`, req.portal);
+	// 	res.status(400).json({
+	// 		success: false,
+	// 		messages: ['import_process_fail'],
+	// 		content: error,
+	// 	});
+	// }
+}
