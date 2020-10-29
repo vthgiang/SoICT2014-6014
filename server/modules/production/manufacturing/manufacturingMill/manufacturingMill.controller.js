@@ -9,7 +9,7 @@ exports.createManufacturingMill = async (req, res) => {
 
         res.status(201).json({
             success: true,
-            messages: ["create_manufacturing_mill_successfully"],
+            messages: ["create_mill_successfully"],
             content: newManufacturingMill
         });
     } catch (error) {
@@ -17,7 +17,7 @@ exports.createManufacturingMill = async (req, res) => {
 
         res.status(400).json({
             success: false,
-            messages: ["create_manufacturing_mill_failed"],
+            messages: ["create__mill_failed"],
             content: error.message
         })
     }

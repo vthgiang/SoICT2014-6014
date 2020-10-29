@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { ButtonModal, DialogModal, SelectBox, DatePicker, ConfirmNotification } from '../../../../common-components';
+import { ButtonModal, DatePicker, DialogModal, SelectBox, TextEditor } from '../../../../common-components';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { CrmCareTypeActions } from '../../careType/redux/action';
 import { CrmCareActions } from '../redux/action';
 
-import CKEditor from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 class CreateCareForm extends Component {
     constructor(props) {
@@ -107,7 +105,7 @@ class CreateCareForm extends Component {
         this.setState({
             newCare: {
                 ...newCare,
-                status: parseInt(value[0]),
+                status: value[0],
             }
         })
     }
@@ -245,10 +243,9 @@ class CreateCareForm extends Component {
                         {/* Mô tả công việc chăm sóc */}
                         <div className="form-group">
                             <label>{translate('crm.care.description')}</label>
-                            <CKEditor
-                                editor={ClassicEditor}
+                            <TextEditor
                                 onChange={this.handleChangeDescription}
-                                data={newCare.description}
+                                data={newCare.description ? newCare.description : ""}
                             />
                         </div>
 

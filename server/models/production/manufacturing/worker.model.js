@@ -3,9 +3,13 @@ const Schema = mongoose.Schema;
 
 // Bảng công nhân nhà máy
 const workerSchema = new Schema({
+    employeeId: { // nhân viên
+        type: Schema.Types.ObjectId,
+        ref: "Employee"
+    },
     manufacturingWorks: { // Công nhân thuộc nhà máy nào
         type: Schema.Types.ObjectId,
-        ref: 'ManufacturingWorks'
+        ref: "ManufacturingWorks"
     },
     workSchedules: [{ // Lịch sản xuất của công nhân
         year: Number, // Năm

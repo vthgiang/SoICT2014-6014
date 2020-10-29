@@ -43,7 +43,7 @@ exports.authFunc = (checkPage = true) => {
             req.portal = !req.user.company ? process.env.DB_NAME : req.user.company.shortName;
             initModels(connect(DB_CONNECTION, req.portal), Models);
 
-            if (process.env.DEVELOPMENT !== 'true') {
+            if (req.header('current-page') !== '/') {
 
                 const fingerprint = req.header('fingerprint'); //chữ ký của trình duyệt người dùng - fingerprint
                 const currentRole = req.header('current-role');

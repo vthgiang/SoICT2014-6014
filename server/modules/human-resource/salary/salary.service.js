@@ -94,10 +94,12 @@ exports.getAllSalaryByMonthAndOrganizationalUnits = async (portal, organizationa
         };
     }
 
-    return await Salary(connect(DB_CONNECTION, portal)).find(keySearch).populate({
+    let salaris =  await Salary(connect(DB_CONNECTION, portal)).find(keySearch).populate({
         path: 'employee',
-        select: 'emailInCompany fullName employeeNumber'
-    })
+        select: 'avatar emailInCompany fullName employeeNumber'
+    });
+
+    return salaris;
 }
 
 

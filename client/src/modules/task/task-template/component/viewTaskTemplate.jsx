@@ -165,7 +165,7 @@ class ViewTaskTemplate extends Component {
                                 {/**Người quan sát mẫu công việc */}
                                 {taskTemplate?.informedEmployees && taskTemplate?.informedEmployees.length > 0 &&
                                     <React.Fragment>
-                                        <div><strong>{translate('task_template.supporter')}</strong></div>
+                                        <div><strong>{translate('task_template.consultant')}</strong></div>
                                         <div>
                                             <ul>
                                                 {taskTemplate?.informedEmployees.map((item, index) => {

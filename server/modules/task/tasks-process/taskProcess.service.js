@@ -1,4 +1,4 @@
-const { TaskProcess, ProcessTemplate, Privilege, Role, Task, UserRole } = require(`${SERVER_MODELS_DIR}`);
+const { TaskProcess, ProcessTemplate, Privilege, Role, Task, UserRole, User, OrganizationalUnit } = require(`${SERVER_MODELS_DIR}`);
 
 const TaskService = require(`${SERVER_MODULES_DIR}/task/task-management/task.service`);
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
@@ -602,4 +602,164 @@ exports.editProcessInfo = async (portal, params, body) => {
             { path: 'processTemplate', select: 'processName' },
         ]);
     return newProcess
+}
+
+/**
+ * import file excel mẫu quy trình
+ * @param {String} portal tên công ty
+ * @param {Object} data dữ liệu import
+ * @param {String} idUser id của người import
+ */
+exports.importProcessTemplate = async (portal, data, idUser) => {
+    let results = [];
+
+    for (let i in data) {
+
+        // xử lý dữ liệu người quản lý
+        let listManager = [];
+        for (let x in data[i].manager) {
+            let managerItem = await Role(connect(DB_CONNECTION, portal)).findOne({ name: data[i].manager[x] });
+            if (managerItem) {
+                listManager = [...listManager, managerItem._id];
+            }
+        }
+        data[i].manager = listManager;
+
+        // xử lý dữ liệu người được xem
+        let listViewer = [];
+        for (let x in data[i].viewer) {
+            let viewerItem = await Role(connect(DB_CONNECTION, portal)).findOne({ name: data[i].viewer[x] });
+            if (viewerItem) {
+                listViewer = [...listViewer, viewerItem._id];
+            }
+        }
+        data[i].viewer = listViewer;
+        data[i]["creator"] = idUser;
+
+        // xử lý dữ liệu công việc
+        for (let k in data[i].tasks) {
+            data[i].tasks[k]["creator"] = idUser;
+            // chuyen dia chi email sang id
+            for (let j = 0; j < data[i].tasks[k].accountableEmployees.length; j++) {
+                let accountableEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ name: data[i].tasks[k].accountableEmployees[j] });
+                if (accountableEmployees) {
+                    data[i].tasks[k].accountableEmployees[j] = accountableEmployees._id;
+                } else {
+                    accountableEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].tasks[k].accountableEmployees[j] });
+                    if (accountableEmployees) {
+                        data[i].tasks[k].accountableEmployees[j] = accountableEmployees._id;
+                    } else {
+                        data[i].tasks[k].accountableEmployees[j] = null;
+                    }
+
+                }
+            };
+            for (let j = 0; j < data[i].tasks[k].consultedEmployees.length; j++) {
+                let consultedEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ name: data[i].tasks[k].consultedEmployees[j] });
+                if (consultedEmployees) {
+                    data[i].tasks[k].consultedEmployees[j] = consultedEmployees._id;
+                } else {
+                    consultedEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].tasks[k].consultedEmployees[j] });
+                    if (consultedEmployees) {
+                        data[i].tasks[k].consultedEmployees[j] = consultedEmployees._id;
+                    } else {
+                        data[i].tasks[k].consultedEmployees[j] = null;
+                    }
+
+                }
+            };
+            for (let j = 0; j < data[i].tasks[k].informedEmployees.length; j++) {
+                let informedEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ name: data[i].tasks[k].informedEmployees[j] });
+                if (informedEmployees) {
+                    data[i].tasks[k].informedEmployees[j] = informedEmployees._id;
+                } else {
+                    informedEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].tasks[k].informedEmployees[j] });
+                    if (informedEmployees) {
+                        data[i].tasks[k].informedEmployees[j] = informedEmployees._id;
+                    } else {
+                        data[i].tasks[k].informedEmployees[j] = null;
+                    }
+
+                }
+            };
+            for (let j = 0; j < data[i].tasks[k].responsibleEmployees.length; j++) {
+                let responsibleEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ name: data[i].tasks[k].responsibleEmployees[j] });
+                if (responsibleEmployees) {
+                    data[i].tasks[k].responsibleEmployees[j] = responsibleEmployees._id;
+                } else {
+                    responsibleEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].tasks[k].responsibleEmployees[j] });
+                    if (responsibleEmployees) {
+                        data[i].tasks[k].responsibleEmployees[j] = responsibleEmployees._id;
+                    } else {
+                        data[i].tasks[k].responsibleEmployees[j] = null;
+                    }
+                }
+            };
+
+            // xu ly thong tin filledByAccountableEmployeesOnly 
+            for (let j = 0; j < data[i].tasks[k].taskInformations.length; j++) {
+                if (data[i].tasks[k].taskInformations[j][0][0]) {
+                    let elm = {};
+                    // format thong tin "chi qua ly duoc dien"
+                    elm["filledByAccountableEmployeesOnly"] = String(data[i].tasks[k].taskInformations[j][0][3]);
+                    // formart thong tin kieu du lieu
+                    elm["type"] = data[i].tasks[k].taskInformations[j][0][2].toLowerCase();
+                    elm["name"] = data[i].tasks[k].taskInformations[j][0][0];
+                    elm["description"] = data[i].tasks[k].taskInformations[j][0][1];
+                    elm["extra"] = "";
+
+                    data[i].tasks[k].taskInformations[j] = elm;
+                } else {
+                    if (!data[i].tasks[k].taskInformations[j][0][0]) {
+                        data[i].tasks[k].taskInformations = [];
+                        break;
+                    }
+                    data[i].tasks[k].taskInformations.splice(j, 1);
+                    j--;
+                }
+            }
+
+            for (let j = 0; j < data[i].tasks[k].taskActions.length; j++) {
+                if (data[i].tasks[k].taskActions[j][0][0]) {
+                    let elm = {};
+                    if (data[i].tasks[k].taskActions[j][0][2] === "Bắt buộc" || data[i].tasks[k].taskActions[j][0][2] === "true") {
+                        elm["mandatory"] = true;
+                    } else {
+                        elm["mandatory"] = false;
+                    }
+                    elm["name"] = data[i].tasks[k].taskActions[j][0][0];
+                    elm["description"] = data[i].tasks[k].taskActions[j][0][1];
+
+                    data[i].tasks[k].taskActions[j] = elm;
+                } else {
+                    if (!data[i].tasks[k].taskActions[j][0][0]) {
+                        data[i].tasks[k].taskActions = [];
+                        break;
+                    }
+                    data[i].tasks[k].taskActions.splice(j, 1);
+                    j--;
+                }
+            }
+
+            // xử lý đơn vị công việc
+            let unit = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({ name: data[i].tasks[k].organizationalUnit });
+            data[i].tasks[k].organizationalUnit = String(unit._id);
+        }
+
+
+        // gán cho biến tên là body để tái sử dụng hàm createXmlDiagram
+        let body = {};
+        body.xmlDiagram = data[i].xmlDiagram;
+        body.processName = data[i].processName;
+        body.processDescription = data[i].processDescription
+        body.manager = data[i].manager;
+        body.viewer = data[i].viewer;
+        body.info = data[i].tasks;
+        body.creator = data[i].creator;
+
+        // thêm mới process
+        let processItem = await this.createXmlDiagram(portal, body);
+        results = [...results, processItem];
+    }
+    return results;
 }

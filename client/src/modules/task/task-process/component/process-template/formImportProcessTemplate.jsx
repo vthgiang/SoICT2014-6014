@@ -16,6 +16,7 @@ class FormImportProcessTemplate extends Component {
             rowError: [],
             importData: [],
             importShowData: [],
+            processData: [],
             limit: 100,
             page: 0
         };
@@ -29,148 +30,147 @@ class FormImportProcessTemplate extends Component {
         })
     }
 
+    handleDataSend = () => {
+
+    }
+
     handleImportExcel = (value, checkFileImport) => {
-        console.log('value\n\n', value);
-        // checkFileImport = true
         let values = [];
         let valueShow = [];
         let k = -1;
         for (let i = 0; i < value.length; i++) {
             let x = value[i];
-            if (x.name) {
-                k = k + 1;
-                values = [...values, {
-                    "STT": k + 1,
-                    "processName": x.processName,
-                    "processDescription": x.processDescription,
-                    "manager": x.manager,
-                    "viewer": x.viewer,
-                    "xmlDiagram": x.xmlDiagram,
+            k = k + 1;
+            values = [...values, {
+                // "STT": x.processName ? k + 1 : '',
+                "processName": x.processName ? x.processName : "",
+                "processDescription": x.processDescription ? x.processDescription : '',
+                "manager": x.manager ? x.manager : '',
+                "viewer": x.viewer ? x.viewer : '',
+                "xmlDiagram": x.xmlDiagram ? x.xmlDiagram : '',
 
-                    "taskName": x.taskName,
-                    "taskDescription": x.taskDescription,
-                    "code": x.code,
-                    "responsibleEmployees": x.responsibleEmployees,
-                    "accountableEmployees": x.accountableEmployees,
-                    "consultedEmployees": x.consultedEmployees,
-                    "informedEmployees": x.informedEmployees,
-                    "organizationalUnits": x.organizationalUnit,
-                    "priority": x.priority,
-                    "formula": x.formula,
+                "taskName": x.taskName ? x.taskName : '',
+                "taskDescription": x.taskDescription ? x.taskDescription : '',
+                "code": x.code ? x.code : '',
+                "responsibleEmployees": x.responsibleEmployees ? x.responsibleEmployees : '',
+                "accountableEmployees": x.accountableEmployees ? x.accountableEmployees : '',
+                "consultedEmployees": x.consultedEmployees ? x.consultedEmployees : '',
+                "informedEmployees": x.informedEmployees ? x.informedEmployees : '',
+                "organizationalUnit": x.organizationalUnit ? x.organizationalUnit : '',
+                "priority": x.priority ? x.priority : '',
+                "formula": x.formula ? x.formula : '',
 
-                    "taskActions": [x.taskActions],
-                    "taskInformations": [x.taskInformations],
+                "taskActions": [x.taskActions],
+                "taskInformations": [x.taskInformations],
+            }];
+            valueShow = [...valueShow, {
+                // "STT":  x.processName ? k + 1 : '',
+                "processName": x.processName ? x.processName : "",
+                "processDescription": x.processDescription ? x.processDescription : '',
+                "manager": x.manager ? x.manager : '',
+                "viewer": x.viewer ? x.viewer : '',
+                "xmlDiagram": x.xmlDiagram ? x.xmlDiagram : '',
 
-                    // "actionName": [x.actionName],
-                    // "actionDescription": [x.actionDescription],
-                    // "mandatory": [x.mandatory],
+                "taskName": x.taskName ? x.taskName : '',
+                "taskDescription": x.taskDescription ? x.taskDescription : '',
+                "code": x.code ? x.code : '',
+                "responsibleEmployees": x.responsibleEmployees ? x.responsibleEmployees : '',
+                "accountableEmployees": x.accountableEmployees ? x.accountableEmployees : '',
+                "consultedEmployees": x.consultedEmployees ? x.consultedEmployees : '',
+                "informedEmployees": x.informedEmployees ? x.informedEmployees : '',
+                "organizationalUnit": x.organizationalUnit ? x.organizationalUnit : '',
+                "priority": x.priority ? x.priority : '',
+                "formula": x.formula ? x.formula : '',
 
-                    // "infomationName": [x.infomationName],
-                    // "infomationDescription": [x.infomationDescription],
-                    // "type": [x.type],
-                    // "filledByAccountableEmployeesOnly": [x.filledByAccountableEmployeesOnly]
-                }];
-                valueShow = [...valueShow, {
-                    "processName": x.processName,
-                    "processDescription": x.processDescription,
-                    "manager": x.manager,
-                    "viewer": x.viewer,
-                    "xmlDiagram": x.xmlDiagram,
-
-                    "taskName": x.taskName,
-                    "taskDescription": x.taskDescription,
-                    "code": x.code,
-                    "responsibleEmployees": [x.responsibleEmployees],
-                    "accountableEmployees": [x.accountableEmployees],
-                    "consultedEmployees": [x.consultedEmployees],
-                    "informedEmployees": [x.informedEmployees],
-                    "organizationalUnits": x.organizationalUnit,
-                    "priority": x.priority,
-                    "formula": x.formula,
-
-                    "taskActions": [x.taskActions],
-                    "taskInformations": [x.taskInformations],
-                }];
-            } else {
-                if (k >= 0) {
-                    let out = {
-                        "STT": "",
-                        "processName": "",
-                        "processDescription": "",
-                        "manager": "",
-                        "viewer": "",
-                        "xmlDiagram": "",
-
-                        "taskName": "",
-                        "taskDescription": "",
-                        "code": "",
-                        "responsibleEmployees": "",
-                        "accountableEmployees": "",
-                        "consultedEmployees": "",
-                        "informedEmployees": "",
-                        "organizationalUnits": "",
-                        "priority": "",
-                        "formula": "",
-
-                        "taskActions": "",
-                        "taskInformations": "",
-                    }
-
-                    if (x.taskActions) {
-                        valueShow[k].taskActions = [...valueShow[k].taskActions, x.taskActions];
-                        out.taskActions = [x.taskActions];
-                    }
-                    if (x.taskInformations) {
-                        valueShow[k].taskInformations = [...valueShow[k].taskInformations, x.taskInformations];
-                        out.taskInformations = [x.taskInformations];
-                    }
-                    if (x.responsibleEmployees) {
-                        out.responsibleEmployees = x.responsibleEmployees;
-                        valueShow[k].responsibleEmployees = [...valueShow[k].responsibleEmployees, x.responsibleEmployees];
-                    }
-                    if (x.accountableEmployees) {
-                        out.accountableEmployees = x.accountableEmployees;
-                        valueShow[k].accountableEmployees = [...valueShow[k].accountableEmployees, x.accountableEmployees];
-                    }
-                    if (x.consultedEmployees) {
-                        out.consultedEmployees = x.consultedEmployees;
-                        valueShow[k].consultedEmployees = [...valueShow[k].consultedEmployees, x.consultedEmployees];
-                    }
-                    if (x.informedEmployees) {
-                        out.informedEmployees = x.informedEmployees;
-                        valueShow[k].informedEmployees = [...valueShow[k].informedEmployees, x.informedEmployees];
-                    }
-                    values = [...values, out];
-                }
-            }
+                "taskActions": [x.taskActions],
+                "taskInformations": [x.taskInformations],
+            }];
         }
+        console.log('quangdz \n\n\n\n', value, values);
 
+        // Xử lý dữ liệu gửi lên server
+        let processData = [];
+        let itemProcess = {};
+        let taskList = [];
+        let prevRow = {};
         for (let i = 0; i < values.length; i++) {
-            let taskActions = [[], [], []], taskInformations = [[], [], [], []];
-            for (let j = 0; j < values[i].taskActions.length; j++) {
-                let k = values[i].taskActions[j][0];
-                taskActions[0] = [...taskActions[0], k];
-                k = values[i].taskActions[j][1];
-                taskActions[1] = [...taskActions[1], k];
-                k = values[i].taskActions[j][2]
-                taskActions[2] = [...taskActions[2], k];
+
+            let e = values[i];
+            if (e.processName !== "") {
+
+                // reset giá trị của itemProcess, taskList
+                itemProcess = {};
+                taskList = []
+
+                itemProcess.processName = e.processName;
+                itemProcess.processDescription = e.processDescription;
+                itemProcess.manager = e.manager.split(",");
+                itemProcess.viewer = e.viewer.split(",");
+                itemProcess.xmlDiagram = e.xmlDiagram;
+
+                // phần tử lưu trữ dữ liệu task hiện tại
+                let elm = {};
+
+                elm.name = e.taskName;
+                elm.description = e.taskDescription;
+                elm.code = e.code;
+                elm.organizationalUnit = e.organizationalUnit;
+                elm.priority = e.priority;
+                elm.formula = e.formula;
+
+                elm.responsibleEmployees = (e.responsibleEmployees !== "") ? e.responsibleEmployees.split(',') : [];
+                elm.accountableEmployees = (e.accountableEmployees !== "") ? e.accountableEmployees.split(',') : [];
+                elm.consultedEmployees = (e.consultedEmployees !== "") ? e.consultedEmployees.split(',') : [];
+                elm.informedEmployees = (e.informedEmployees !== "") ? e.informedEmployees.split(',') : [];
+
+                elm.taskActions = [e.taskActions];
+                elm.taskInformations = [e.taskInformations];
+
+                // gán gia trị của task khởi tạo để dùng cho việc check các dòng dữ liệu sau dòng này
+                prevRow = elm
+
+            } else {
+                let elm = {};
+                if (e.taskName !== "") {
+
+                    elm.name = e.taskName;
+                    elm.description = e.taskDescription;
+                    elm.code = e.code;
+                    elm.organizationalUnit = e.organizationalUnit;
+                    elm.priority = e.priority;
+                    elm.formula = e.formula;
+
+                    elm.responsibleEmployees = (e.responsibleEmployees !== "") ? e.responsibleEmployees.split(',') : [];
+                    elm.accountableEmployees = (e.accountableEmployees !== "") ? e.accountableEmployees.split(',') : [];
+                    elm.consultedEmployees = (e.consultedEmployees !== "") ? e.consultedEmployees.split(',') : [];
+                    elm.informedEmployees = (e.informedEmployees !== "") ? e.informedEmployees.split(',') : [];
+
+                    elm.taskActions = [e.taskActions];
+                    elm.taskInformations = [e.taskInformations];
+
+                    // gán gia trị của task khởi tạo để dùng cho việc check các dòng dữ liệu sau dòng này
+                    prevRow = elm;
+                }
+                else {
+                    prevRow.taskActions.push(e.taskActions);
+                    prevRow.taskInformations.push(e.taskInformations);
+                }
+
             }
-            values[i].taskActions = taskActions;
-            for (let j = 0; j < values[i].taskInformations.length; j++) {
-                let k;
-                k = values[i].taskInformations[j][0];
-                taskInformations[0] = [...taskInformations[0], k];
-                k = values[i].taskInformations[j][1]
-                taskInformations[1] = [...taskInformations[1], k];
-                k = values[i].taskInformations[j][2]
-                taskInformations[2] = [...taskInformations[2], k];
-                k = values[i].taskInformations[j][3]
-                taskInformations[3] = [...taskInformations[3], k];
+
+            // cập nhật taskList và itemProcess
+            if (i === values.length - 1 || values[i + 1]?.taskName !== "") {
+                taskList.push(prevRow);
+                itemProcess.tasks = taskList;
             }
-            values[i].taskInformations = taskInformations;
+
+            // cập nhật giá trị của mảng ProcessData
+            if (i === values.length - 1 || values[i + 1]?.processName !== "") {
+                processData.push(itemProcess);
+            }
         }
-        value = values;
-console.log('quang deptrai \n\n\n\n', value, values);
+
+        // kiểm tra validate
         if (checkFileImport) {
             let rowError = [];
             for (let i = 0; i < value.length; i++) {
@@ -189,8 +189,11 @@ console.log('quang deptrai \n\n\n\n', value, values);
                 if (x.manager === null) {
                     errorAlert = [...errorAlert, 'Tên mô tả mẫu công việc không được để trống'];
                 }
-                // if (x.formula === null) {
-                //     errorAlert = [...errorAlert, 'Tên công thức tính điểm không được để trống'];
+                // if (x.organizationalUnit === null) {
+                //     errorAlert = [...errorAlert, 'Đơn vị công việc không được để trống'];
+                // }
+                // if (x.taskName === null) {
+                //     errorAlert = [...errorAlert, 'Tên công việc không được để trống'];
                 // }
                 x = { ...x, errorAlert: errorAlert };
                 value[i] = x;
@@ -200,6 +203,7 @@ console.log('quang deptrai \n\n\n\n', value, values);
             this.setState({
                 importData: value,
                 importShowData: valueShow,
+                processData: processData,
                 rowError: rowError,
                 checkFileImport: checkFileImport,
             })
@@ -211,9 +215,10 @@ console.log('quang deptrai \n\n\n\n', value, values);
     }
 
     save = () => {
-        let { importShowData } = this.state;
-        console.log(importShowData);
-        this.props.importTaskTemplate(importShowData);
+        let { importShowData, importData, processData } = this.state;
+        console.log(importShowData, importData);
+        console.log("processData", processData);
+        this.props.importProcessTemplate(processData);
     }
 
     requestDownloadFile = (e, path, fileName) => {
@@ -387,10 +392,9 @@ console.log('quang deptrai \n\n\n\n', value, values);
 
     render() {
         const { translate } = this.props;
-        let { limit, page, importData, rowError, configData, checkFileImport } = this.state;
+        let { limit, page, importData, importShowData, rowError, configData, checkFileImport } = this.state;
         let templateImportProcessTemplate2 = this.convertDataExport(templateImportProcessTemplate);
-        console.log('-----------------', templateImportProcessTemplate2, templateImportProcessTemplate);
-        console.log('--------------checkFileImport---', checkFileImport, importData);
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -447,7 +451,7 @@ function mapState(state) {
     return { taskProcess };
 };
 const actionCreators = {
-    importTaskTemplate: TaskProcessActions.importTaskTemplate,
+    importProcessTemplate: TaskProcessActions.importProcessTemplate,
     downloadFile: AuthActions.downloadFile,
 };
 const importFileExcel = connect(mapState, actionCreators)(withTranslate(FormImportProcessTemplate));

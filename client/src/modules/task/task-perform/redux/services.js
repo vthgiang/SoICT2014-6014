@@ -52,6 +52,7 @@ export const performTaskService = {
     editInformationTask,
     getById,
     confirmTask,
+    editEmployeeCollaboratedWithOrganizationalUnits,
 
     //Comment in process
     createComment,
@@ -136,7 +137,7 @@ function createActionComment(taskId, actionId, newComment) {
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-actions/${actionId}/comments`,
         method: 'POST',
         data: newComment
-    }, false, true, 'task.task_perform');
+    }, true, true, 'task.task_perform');
 }
 
 /**
@@ -149,7 +150,7 @@ function createTaskAction(taskId, newAction) {
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-actions`,
         method: 'POST',
         data: newAction
-    }, false, true, 'task.task_perform');
+    }, true, true, 'task.task_perform');
 }
 
 /**
@@ -223,6 +224,15 @@ function confirmTask(taskId) {
     }, true, true, 'task.task_management');
 }
 
+/** Chỉnh sửa đơn vị phối hợp */
+function editEmployeeCollaboratedWithOrganizationalUnits(taskId, employeeCollaboratedWithUnit) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}`,
+        method: 'POST',
+        params: { type: 'edit_employee_collaborated_with_unit' },
+        data: employeeCollaboratedWithUnit
+    }, true, true, 'task.task_management');
+}
 /**
  * Tạo bình luận công việc
  * @param {*} taskId id của task cần tạo

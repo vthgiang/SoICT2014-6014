@@ -59,6 +59,107 @@ export default {
             }
         },
 
+        intro: {
+            title: 'Digital workspace solutions for businesses',
+            contents: [
+                'A friendly and convenient digital working environment for all employees',
+                'Support for leadership and management at all levels to monitor and operate work through the dashboard system',
+                'Exactly flexible KPI evaluation',
+                'Convenient and optimal job assignment mechanism helps reduce time, comprehensively digitize business processes of enterprises in a digital work environment',
+                'Save investment costs',
+                'Safe and secure system data    ',
+                '24/7 customer support'
+            ],
+            auth: {
+                signin: 'Sign in',
+                signout: 'Sign out',
+                start: 'Get started',
+            },
+            service: {
+                title: 'Management solutions in enterprises',
+                content: 'We serve small and midsize companies in all technology-related industries with the high quality services outlined below.',
+                kpi: {
+                    title: 'KPI management',
+                    content: 'Automatic, scientific and transparent',
+                    detail: 'Automatic, scientific and transparent KPI management: The system provides automatic KPI calculation methods, users can customize the KPI calculation formula depending on the field of each department / unit.',
+                },
+                task: {
+                    title: 'Task management',
+                    content: 'The mechanism of job assignment and receipt is convenient, saves time and supports users to focus on their work',
+                    detail: 'Manage non-process work with a convenient job assignment and receipt mechanism, save working time, and support users to focus on their work. Processed work management: Helping users to grasp the current status of jobs, from which the manager has suitable, efficient and timely work organization plans. Mechanism of job assignment and receipt is done easily, saving time. Help users focus more at work.'
+                },
+                document: {
+                    title: 'Document management',
+                    content: 'Support for centralized management of documents, convenient for searching',
+                    detail: 'Document management is the job of storing and classifying internal data of organizations and enterprises in order to serve the business and production. Effective document management will help businesses, organize and organize documents more reasonably, save storage costs and potential time.'
+                },
+                employee: {
+                    title: 'Human resource management',
+                    content: 'Manage information lists of personnel in the business',
+                    detail: 'Human resource management in the enterprise Senior staff can easily track the personnel situation through statistical charts',
+                },
+                asset: {
+                    title: 'Asset management',
+                    content: 'Asset management in the business',
+                    detail: 'Managing property information is easy. Retrieve information quickly. Statistics track in the form of flexible charts, easy to capture information.',
+                },
+            },
+            service_signup: {
+                title: 'Register to use the service',
+                content: [
+                    'Free 15-day trial',
+                    'Maximum 10 users access',
+                    'Experience free features',
+                ],
+                form: {
+                    customer: 'Customer',
+                    email: 'Email',
+                    phone: 'Phone',
+                    type: {
+                        choose: 'Choose service',
+                        standard: 'Standard',
+                        full: 'Full',
+                    },
+                    send: 'Send',
+                },
+            },
+            address: {
+                title: 'Address',
+                content: {
+                    location: 'P901, 8C Ta Quang Buu, Hai Ba Trung, Hanoi.',
+                    phone: '+84 986 986 247',
+                    email: 'office@vnist.vn'
+                },
+            },
+            contact: {
+                title: 'Contact us',
+                company: 'Vietnam Information and Communication Security Technology JSC',
+                form: {
+                    name: 'Customer',
+                    email: 'Email',
+                    content: 'Content',
+                    send: 'Send',
+                },
+            },
+            footer: {
+                about_us: {
+                    title: 'About us',
+                    content: 'DX digital workspace solution of Vietnam Information and Communication Security Technology JSC',
+                },
+                care: {
+                    title: 'Care',
+                    content: {
+                        company: 'Service development company',
+                        research: 'Learn more about',
+                    },
+                },
+                media: {
+                    title: 'Multi media',
+                },
+                copyright: 'Copyright © 2020 VNIST - All rights reserved'
+            },
+        },
+
         auth: {
             validator: {
                 confirm_password_invalid: 'Confirm password invalid! Please input again',
@@ -697,6 +798,7 @@ export default {
             detail_employee: 'Personal Information',
             update_employee: 'Update Personal Information',
             dashboard_employee: 'DashBoard Manage Staffs ',
+            dashboard_personal: 'DashBoard personal',
             employee_capacity:'Employee capacity',
             discipline: 'Manage Commendation And Discipline',
             annual_leave: 'Manage Annual Leave',
@@ -728,6 +830,7 @@ export default {
             tasks: 'Task management',
             task: "Detailed Task",
             task_management: 'Task list',
+            task_management_of_unit: 'Unit task list',
             task_management_dashboard: 'Task dashboard',
             task_organization_management_dashboard: 'Unit task dashboard',
             task_management_process: "Process list",
@@ -2085,7 +2188,7 @@ export default {
             performer: 'Performer',
             approver: 'Approver',
             observer: 'Observer',
-            supporter: 'Supporter',
+            consultant: 'Supporter',
             formula: 'Formula',
             activity_list: 'Activity list',
             information_list: 'Information list',
@@ -2412,6 +2515,8 @@ export default {
                 evaluate_task_fail: 'Evaluate task fail',
                 edit_hours_spent_in_evaluate_success: 'Calculate hours spent on task success',
                 edit_hours_spent_in_evaluate_fail: 'Calculate hours spent on task fail',
+                edit_employee_collaborated_success: 'Edit employees to join task successfully',
+                edit_employee_collaborated_failure: 'Edit employees to join task unsuccessfully',
 
                 add_new_task: 'Add new task',
                 // add_err: 
@@ -2424,9 +2529,12 @@ export default {
                 add_err_empty_accountable: 'Accountable should not be empty',
                 add_err_special_character: 'This field should not be have special character',
                 add_err_end_date: 'End date should be after start date',
+                date_not_empty: 'Month should not be empty',
 
                 unit_evaluate: "Unit receiving work evaluation results",
                 unit_manage_task: "Unit managing task",
+                collaborated_with_organizational_units: "Select units that have collaborated",
+                task_empty_employee: "Your organization unit has no participants",
                 delete_eval: "Delete evaluation",
                 delete_eval_title: 'Are you sure to delete this evaluation?',
 
@@ -2678,6 +2786,8 @@ export default {
                 update_task_process_fail: 'Update task process fail',
                 edit_info_process_success: 'Edit process infomation successfully',
                 edit_info_process_fail: 'Edit process infomation fail',
+                import_process_success: "Import process template successfully",
+                import_process_fail: "Import process template fail",
 
                 error: {
                     empty_name: "Process name should not be empty",
@@ -2732,8 +2842,8 @@ export default {
                         initialize_kpi_newmonth: 'Initialize KPI new month',
                         request_approval: 'Request for approval',
                         cancel_request_approval: 'Cancel request for approval',
-                        not_initialize_organiztional_unit_kpi: 'Your unit has not initialized kpi on this month yet, please contact the manager of your unit',
-                        not_activate_organiztional_unit_kpi: 'Your unit has not activated kpi on this month yet, please contact the manager of your unit',
+                        not_initialize_organiztional_unit_kpi: 'Your unit has not initialized KPI on this month yet, please contact the manager of your unit',
+                        not_activate_organiztional_unit_kpi: 'Your unit has not activated KPI on this month yet, please contact the manager of your unit',
 
                         // Nhóm dành cho các trạng thái tập KPI
                         kpi_status: {
@@ -2928,10 +3038,10 @@ export default {
                     evaluation_management: 'Evaluation management',
                     not_evaluated_yet: 'Not evaluated yet',
                     view_detail: 'View detail',
-                    clone_to_new_kpi: 'Create new kpi based on kpi in this month',
+                    clone_to_new_kpi: 'Create new KPI based on KPI in this month',
                     index: 'ID',
                     name: 'Name',
-                    target: 'Kpi unit',
+                    target: 'KPI unit',
                     criteria: 'Criteria',
                     weight: 'Weight',
                     result: 'Result',
@@ -3076,8 +3186,8 @@ export default {
                     confirm_approve: 'Are you sure you want to be approved this KPI?',
                     confirm_not_enough_weight: 'The total weight must be 100',
                     confirm_cancel_approve: 'Are you sure you want to cancel this KPI?',
-                    confirm_edit_status_success: 'Edit status kpi successfully',
-                    confirm_edit_status_failure: 'Edit status kpi unsuccessfully',
+                    confirm_edit_status_success: 'Edit status KPI successfully',
+                    confirm_edit_status_failure: 'Edit status KPI unsuccessfully',
 
                     confirm_kpi: 'Are you sure you want to delete this KPI target?',
                     confirm_approving: 'KPI has been activated, you can not delete!',
@@ -3249,8 +3359,8 @@ export default {
                 get_kpiunit_by_role_fail: 'Get KPI unit by role fail',
                 create_kpi_unit_success: 'Create KPI unit successfully',
                 create_kpi_unit_fail: 'Create KPI unit fail',
-                update_evaluate_kpi_unit_success: 'Update kpi unit evaluation successfully',
-                update_evaluate_kpi_unit_fail: 'Update kpi unit evaluation fail',
+                update_evaluate_kpi_unit_success: 'Update KPI unit evaluation successfully',
+                update_evaluate_kpi_unit_fail: 'Update KPI unit evaluation fail',
             }
         },
 
@@ -3262,7 +3372,38 @@ export default {
 
         // manage order
         manage_order: {
-            quote_add_success: "add successed"
+            tax: {
+                index: 'Index',
+                code: 'Code',
+                name: 'Name',
+                creator: 'Creator',
+                status: 'Status',
+                tax_code: 'Tax code',
+                tax_name: 'Tax name',
+                choose_at_least_one_item: 'Choose at least one item',
+                percent_is_not_null: 'Percent is not null',
+                percent_greater_than_or_equal_zero: 'Percent greater than or equal to zero',
+                add_new_tax: 'Add new tax',
+                add_successfully: 'Add tax successfully',
+                add_failed: 'Add tax failed',
+                description:'Description',
+                goods: 'Goods',
+                select_goods: 'Choose goods',
+                tax_percent: 'Percent',
+                add: 'Add new',
+                reset: 'Reset',
+                action: 'Action',
+                version: 'Version',
+                effective: 'Effective',
+                expire: 'Expire',
+                tax_detail: 'Tax detail',
+                selected_all: 'Sellected All',
+                view_deatail: 'View detail',
+                delete_list_goods: 'Delete list goods',
+                delete_good: 'Delete good',
+                detail_goods: 'Detail goods',
+                search: 'Search'
+            }
         },
 
         report_manager: {

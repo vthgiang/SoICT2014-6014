@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { PaginateBar, SelectMulti, DataTableSetting, ConfirmNotification } from '../../../../common-components';
-import CreateCareForm from './createForm';
+import { ConfirmNotification, PaginateBar, SelectMulti } from '../../../../common-components';
+import { formatFunction } from '../../common/index';
 import { CrmCustomerActions } from '../../customer/redux/actions';
 import { CrmCareActions } from '../redux/action';
-import InfoCareForm from './infoForm';
+import CreateCareForm from './createForm';
 import EditCareForm from './editForm';
-import { formatFunction } from '../../common/index';
+import InfoCareForm from './infoForm';
 
 class CrmCare extends Component {
     constructor(props) {
@@ -26,29 +26,47 @@ class CrmCare extends Component {
         if (input === 3) return 'Đã hoàn thành';
     }
 
-    handleInfo = async (id) => {
-        await this.setState({
+    handleInfo = (id) => {
+        this.setState({
             careInfoId: id,
-        })
-        window.$('#modal-crm-care-info').modal('show');
+        }, () => window.$('#modal-crm-care-info').modal('show'))
     }
 
-    handleEdit = async (id) => {
-        await this.setState({
+    handleEdit = (id) => {
+        this.setState({
             careEditId: id,
-        })
-        window.$('#modal-crm-care-edit').modal('show');
+        }, () => window.$('#modal-crm-care-edit').modal('show'))
+    }
+
+    deleteCare = (id) => {
+        if (id) {
+            this.props.deleteCare(id);
+        }
+    }
+
+    setPage = (pageNumber) => {
+        const { limit } = this.state;
+        const page = (pageNumber - 1) * (limit);
+
+        this.setState({
+            page: parseInt(page),
+        }, () => this.props.getCares(this.state));
     }
 
     componentDidMount() {
-        this.props.getCareTypes();
+        this.props.getCares(this.state);
         this.props.getCustomers();
     }
 
     render() {
         const { crm, translate } = this.props;
         const { cares } = crm;
-        const { careInfoId, careEditId } = this.state;
+        const { careInfoId, careEditId, limit, page } = this.state;
+
+        let pageTotal = (cares.totalDocs % limit === 0) ?
+            parseInt(cares.totalDocs / limit) :
+            parseInt((cares.totalDocs / limit) + 1);
+        const cr_page = parseInt((page / limit) + 1);
 
         return (
             <div className="box">
@@ -155,7 +173,7 @@ class CrmCare extends Component {
                                                 content="<h3>Xóa thông tin khách hàng</h3>"
                                                 name="delete"
                                                 className="text-red"
-                                                func={() => this.props.deleteCustomer()}
+                                                func={() => this.props.deleteCare(o._id)}
                                             />
                                         </td>
                                     </tr>
@@ -164,6 +182,16 @@ class CrmCare extends Component {
 
                         </tbody>
                     </table>
+                    {
+                        cares && cares.isLoading ?
+                            <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                            cares.list && cares.list.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+
+                    }
+                    {/* Phan trang */}
+                    {
+                        <PaginateBar pageTotal={pageTotal} currentPage={cr_page} func={this.setPage} />
+                    }
                 </div>
             </div>
         );
@@ -177,7 +205,8 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    getCareTypes: CrmCareActions.getCares,
+    getCares: CrmCareActions.getCares,
+    deleteCare: CrmCareActions.deleteCare,
     getCustomers: CrmCustomerActions.getCustomers,
 }
 

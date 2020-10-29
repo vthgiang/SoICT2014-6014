@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { formatFunction } from '../../common/index';
 
-class HistoryTabInfoForm extends Component {
+class HistoryOfStateTransitionsTabInfoForm extends Component {
     constructor(props) {
         super(props);
 
@@ -17,11 +17,11 @@ class HistoryTabInfoForm extends Component {
             <div className="tab-pane" id={id}>
                 <div className="description-box" >
                     <h4>Lịch sử thay đổi trạng thái khách hàng</h4>
-                    <div className="timeline-container" style={{ marginTop: '15px' }}>
+                    <div className="histories-timeline-container" style={{ marginTop: '15px' }}>
                         {
                             statusHistories && statusHistories.length > 0 ? statusHistories.map((o, index) => (
-                                <div key={index} className="timeline-history-item">
-                                    <div className="timeline-history-item-content">
+                                <div key={index} className="histories-timeline-item">
+                                    <div className="histories-timeline-item__content">
                                         <time>{formatFunction.formatDateTime(o.createdAt)}</time>
                                         <p style={{ fontSize: '14px' }}>
                                             {(o.oldValue._id === o.newValue._id)
@@ -43,4 +43,4 @@ class HistoryTabInfoForm extends Component {
     }
 }
 
-export default connect(null, null)(withTranslate(HistoryTabInfoForm));
+export default connect(null, null)(withTranslate(HistoryOfStateTransitionsTabInfoForm));

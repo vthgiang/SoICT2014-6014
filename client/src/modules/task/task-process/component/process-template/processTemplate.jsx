@@ -173,22 +173,22 @@ class ProcessTemplate extends Component {
                 let responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees;
 
                 if (Array.isArray(x.responsibleEmployees)) {
-                    responsibleEmployees = x.responsibleEmployees.map(x => x?.name).join(', ');
+                    responsibleEmployees = x.responsibleEmployees.map(x => x?.email).join(', ');
                 } else {
                     responsibleEmployees = x.responsibleEmployees.name;
                 }
                 if (Array.isArray(x.accountableEmployees)) {
-                    accountableEmployees = x.accountableEmployees.map(x => x?.name).join(', ');
+                    accountableEmployees = x.accountableEmployees.map(x => x?.email).join(', ');
                 } else {
                     accountableEmployees = x.accountableEmployees.name;
                 }
                 if (Array.isArray(x.consultedEmployees)) {
-                    consultedEmployees = x.consultedEmployees.map(x => x?.name).join(', ');
+                    consultedEmployees = x.consultedEmployees.map(x => x?.email).join(', ');
                 } else {
                     consultedEmployees = x.consultedEmployees.name;
                 }
                 if (Array.isArray(x.informedEmployees)) {
-                    informedEmployees = x.informedEmployees.map(x => x?.name).join(', ');
+                    informedEmployees = x.informedEmployees.map(x => x?.email).join(', ');
                 } else {
                     informedEmployees = x.informedEmployees.name;
                 }
@@ -312,10 +312,10 @@ class ProcessTemplate extends Component {
                     }],
                     columns: [
                         { key: "STT", value: "STT" },
-                        { key: "processName", value: "Tên mẫu" },
-                        { key: "processDescription", value: "Mô tả" },
-                        { key: "manager", value: "Người quản lý" },
-                        { key: "viewer", value: "Người quan sát" },
+                        { key: "processName", value: "Tên mẫu quy trình" },
+                        { key: "processDescription", value: "Mô tả mẫu quy trình" },
+                        { key: "manager", value: "Người quản lý quy trình" },
+                        { key: "viewer", value: "Người được xem quy trình" },
                         { key: "xmlDiagram", value: "Biểu đồ quy trình" },
 
                         { key: "taskName", value: "Tên công việc" },
@@ -325,7 +325,7 @@ class ProcessTemplate extends Component {
                         { key: "priority", value: "Độ ưu tiên" },
                         { key: "responsibleEmployees", value: "Người thực hiện" },
                         { key: "accountableEmployees", value: "Người phê duyệt" },
-                        { key: "consultedEmployees", value: "Người hỗ trợ" },
+                        { key: "consultedEmployees", value: "Người tư vấn" },
                         { key: "informedEmployees", value: "Người quan sát" },
                         { key: "formula", value: "Công thức tính điểm" },
 
@@ -483,7 +483,7 @@ class ProcessTemplate extends Component {
                                     return <tr key={key} >
                                         <td>{item.processName}</td>
                                         <td>{item.processDescription}</td>
-                                        <td>{item.tasks.length}</td>
+                                        <td>{item.tasks?.length}</td>
                                         <td>{(item.manager && item.manager.length !== 0) && item.manager.map(x => x.name).join(', ')}</td>
                                         <td>{item.creator?.name}</td>
                                         <td>

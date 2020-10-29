@@ -150,7 +150,7 @@ const getComponentsInLink = (link) => {
 }
 
 const LINKS = [{
-    url: '/',
+    url: '/home',
     description: `Trang chủ công ty`,
     category: LINK_CATEGORY.COMMON.name,
     roles: [
@@ -160,7 +160,7 @@ const LINKS = [{
         ROOT_ROLES.VICE_DEAN.name,
         ROOT_ROLES.EMPLOYEE.name
     ],
-    components: getComponentsInLink('/')
+    components: getComponentsInLink('/home')
 },
 {
     url: '/notifications',
@@ -349,6 +349,17 @@ const LINKS = [{
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/hr-annual-leave-personal')
+},
+{
+    url: '/hr-dashboard-personal',
+    description: 'Bảng tin cá nhân',
+    category: LINK_CATEGORY.COMMON.name,
+    roles: [
+        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/hr-dashboard-personal')
 },
 {
     url: '/hr-manage-leave-application',
@@ -562,6 +573,15 @@ const LINKS = [{
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/task-management')
+},
+{
+    url: '/task-management-unit',
+    description: 'Xem danh sách công việc đơn vị',
+    category: LINK_CATEGORY.TASK.name,
+    roles: [
+        ROOT_ROLES.DEAN.name
+    ],
+    components: getComponentsInLink('/task-management-unit')
 },
 {
     url: '/task-process-management',

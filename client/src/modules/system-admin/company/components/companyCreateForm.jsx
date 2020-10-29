@@ -36,12 +36,12 @@ class CompanyCreateForm extends Component {
         }
     }
 
-    checkAll = async (e) => {
+    checkAll = (e) => {
         const {checked} = e.target;
         const { systemLinks } = this.props;
 
         if (checked) {
-            await this.setState({
+            this.setState({
                 linkDefaultArr: systemLinks.list.map(link => link._id)
             })
         } else { 
@@ -75,7 +75,7 @@ class CompanyCreateForm extends Component {
      * Hàm xử lý khi chọn theo danh mục
      */
     handleCategoryCheckbox = async (e, link) => {
-        const { value, checked } = e.target;
+        const { checked } = e.target;
         const { systemLinks } = this.props;
 
         if (checked) {
@@ -108,8 +108,6 @@ class CompanyCreateForm extends Component {
     }
 
     save = () => {
-        console.log(this.state.linkDefaultArr);
-        
         const company = {
             name: this.state.companyName, 
             shortName: this.state.companyShortName, 
@@ -123,38 +121,42 @@ class CompanyCreateForm extends Component {
 
     handleChangeName = (e) => {
         let {value} = e.target;
-        this.setState({ companyName: value });
-
         let {translate} = this.props;
         let {message} = ValidationHelper.validateName(translate, value, 4, 255);
-        this.setState({ nameError: message})
+        this.setState({ 
+            companyName: value,
+            nameError: message
+        });
     }
 
     handleChangeShortName = (e) => {
         let {value} = e.target;
-        this.setState({ companyShortName: value });
-
         let {translate} = this.props;
         let {message} = ValidationHelper.validateName(translate, value, 4, 255);
-        this.setState({ shortNameError: message})
+        this.setState({ 
+            companyShortName: value,
+            shortNameError: message
+        });
     }
 
     handleChangeDescription = (e) => {
         let {value} = e.target;
-        this.setState({ companyDescription: value });
-
         let {translate} = this.props;
         let {message} = ValidationHelper.validateDescription(translate, value);
-        this.setState({ descriptionError: message})
+        this.setState({ 
+            companyDescription: value,
+            descriptionError: message
+        });
     }
 
     handleChangeEmail = (e) => {
         let {value} = e.target;
-        this.setState({ companyEmail: value });
-
         let {translate} = this.props;
         let {message} = ValidationHelper.validateEmail(translate, value);
-        this.setState({ emailError: message })
+        this.setState({ 
+            companyEmail: value,
+            emailError: message 
+        });
     }
 
     isFormValidated = () => {

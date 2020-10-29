@@ -4,7 +4,9 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ApiImage, SelectBox, ErrorLabel, DateTimeConverter } from '../../../../common-components';
 import { CrmCustomerActions } from '../redux/actions';
 import GeneralTabInfoForm from './generalTabInfoForm';
-import HistoryTabInfoForm from './historyTabInfoForm';
+import HistoryOfStateTransitionsTabInfoForm from './historyOfStateTransitionsTabInfoForm';
+import FileTabInfoForm from './fileTabInfoForm';
+import PurchaseHistoriesInfoForm from './purchaseHistoriesInfoForm';
 import './customer.css'
 
 class CrmCustomerInformation extends Component {
@@ -88,7 +90,6 @@ class CrmCustomerInformation extends Component {
     render() {
         const { translate, crm } = this.props;
         const { customerInfomation, dataStatus, customerId } = this.state;
-
         return (
             <React.Fragment>
                 <DialogModal
@@ -158,18 +159,19 @@ class CrmCustomerInformation extends Component {
                             <div className="col-xs-12 col-sm-8 col-md-9 col-lg-9">
                                 <div className="nav-tabs-custom">
                                     <ul className="nav nav-tabs">
-                                        <li className="active"><a href="#generalInfo" data-toggle="tab">Thông tin chi tiết</a></li>
-                                        <li ><a href="#customer-info-history" data-toggle="tab">Lịch sử mua hàng</a></li>
+                                        <li className="active"><a href={`#generalInfo-${customerId}`} data-toggle="tab">Thông tin chi tiết</a></li>
+                                        <li ><a href={`#purchaseHistories-${customerId}`} data-toggle="tab">Lịch sử mua hàng</a></li>
                                         <li><a href="#sale" data-toggle="tab">Công nợ</a></li>
                                         <li><a href="#note" data-toggle="tab">Ghi chú</a></li>
-                                        <li><a href="#history" data-toggle="tab">Lịch sử thay đổi</a></li>
+                                        <li><a href={`#fileAttachment-${customerId}`} data-toggle="tab">File đính kèm</a></li>
+                                        <li><a href={`#historyOfStateTransitions-${customerId}`} data-toggle="tab">Lịch sử thay đổi trạng thái</a></li>
                                     </ul>
                                     <div className="tab-content">
                                         {/* Tab thông tin chi tiết */}
                                         {
                                             customerInfomation && dataStatus === 3 &&
                                             <GeneralTabInfoForm
-                                                id={"generalInfo"}
+                                                id={`generalInfo-${customerId}`}
                                                 customerInfomation={customerInfomation}
                                                 customerId={customerId}
                                             />
@@ -177,14 +179,9 @@ class CrmCustomerInformation extends Component {
 
 
                                         {/* Tab lịch sử mua hàng */}
-                                        <div className="tab-pane" id="customer-info-history">
-                                            <p data-toggle="collapse" data-target="#showinfo1" aria-expanded="false" ><i
-                                                id="js--title1" className="fas fa-angle-up mr-2"></i> Thông tin hệ điều hành</p>
-
-                                            <div className="collapse" data-toggle="collapse " id="showinfo1">
-                                                <p>mih tran</p>
-                                            </div>
-                                        </div>
+                                        <PurchaseHistoriesInfoForm
+                                            id={`purchaseHistories-${customerId}`}
+                                        />
 
                                         <div className="tab-pane" id="sale">
                                             Công nợ
@@ -199,25 +196,29 @@ class CrmCustomerInformation extends Component {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {/* {
-                                                        liabilities.map(lia=>
-                                                        <tr>
-                                                            <td>{lia.code}</td>
-                                                            <td>{lia.creator.name}</td>
-                                                            <td>abc</td>
-                                                            <td>{lia.total}</td>
-                                                        </tr> )
-                                                    } */}
+
                                                 </tbody>
                                             </table>
                                         </div>
+
                                         <div className="tab-pane" id="note">
                                             Ghi chú
                                         </div>
+
+                                        {/* Tab file đính kèm của khách hàng */}
                                         {
                                             customerInfomation && dataStatus === 3 &&
-                                            <HistoryTabInfoForm
-                                                id={'history'}
+                                            <FileTabInfoForm
+                                                id={`fileAttachment-${customerId}`}
+                                                files={customerInfomation.files}
+                                                customerId={customerId}
+                                            />
+                                        }
+
+                                        {
+                                            customerInfomation && dataStatus === 3 &&
+                                            <HistoryOfStateTransitionsTabInfoForm
+                                                id={`historyOfStateTransitions-${customerId}`}
                                                 customerInfomation={customerInfomation}
                                             />
                                         }

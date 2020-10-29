@@ -39,7 +39,7 @@ class CompanyTable extends Component {
         });
     }
 
-    searchWithOption = async () => {
+    searchWithOption = () => {
         const data = {
             limit: this.state.limit,
             page: 1,
@@ -47,31 +47,33 @@ class CompanyTable extends Component {
             value: this.state.value
         };
 
-        await this.props.getAllCompanies(data);
+        this.props.getAllCompanies(data);
     }
 
     setPage = (page) => {
-        this.setState({ page });
-        const data = {
-            limit: this.state.limit,
-            page: page,
-            key: this.state.option,
-            value: this.state.value
-        };
-
-        this.props.getAllCompanies(data);
+        this.setState({ page }, () => {
+            const data = {
+                limit: this.state.limit,
+                page: page,
+                key: this.state.option,
+                value: this.state.value
+            };
+    
+            this.props.getAllCompanies(data);
+        });
     }
 
     setLimit = (number) => {
-        this.setState({ limit: number });
-        const data = { 
-            limit: number, 
-            page: this.state.page,
-            key: this.state.option,
-            value: this.state.value
-        };
-
-        this.props.getAllCompanies(data);
+        this.setState({ limit: number }, () => {
+            const data = { 
+                limit: number, 
+                page: this.state.page,
+                key: this.state.option,
+                value: this.state.value
+            };
+    
+            this.props.getAllCompanies(data);
+        });
     }
 
     toggle = (id, data, title, name, btnNo, btnYes, value) => {
@@ -98,27 +100,19 @@ class CompanyTable extends Component {
     }
 
     handleEdit = async (company) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                currentRow: company
-            }
+        this.setState({ currentRow: company }, () => {
+            window.$('#modal-edit-company').modal('show');
         });
-        await window.$('#modal-edit-company').modal('show');
     }
 
     handleService = async (company) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                currentRow: company
-            }
+        this.setState({currentRow: company}, () => {
+            window.$('#modal-edit-services-company').modal('show');
+            this.props.getCompanyLinks({company: company._id, portal: company.shortName});
+            this.props.getCompanyLinks({company: company._id, portal: company.shortName, page: 1, limit: 5 });
+            this.props.getCompanyComponents({company: company._id, portal: company.shortName});
+            this.props.getCompanyComponents({company: company._id, portal: company.shortName, page: 1, limit: 5 });
         });
-        await window.$('#modal-edit-services-company').modal('show');
-        await this.props.getCompanyLinks({company: company._id, portal: company.shortName});
-        await this.props.getCompanyLinks({company: company._id, portal: company.shortName, page: 1, limit: 5 });
-        await this.props.getCompanyComponents({company: company._id, portal: company.shortName});
-        await this.props.getCompanyComponents({company: company._id, portal: company.shortName, page: 1, limit: 5 });
     }
 
     render() { 
@@ -137,7 +131,7 @@ class CompanyTable extends Component {
                         companyLog={currentRow.log}
                         companyDescription={ currentRow.description }
                         companyLinks={currentRow.links}
-                        companyEmail={currentRow.superAdmin !== undefined ? currentRow.superAdmin.email : 'Chưa xác định'}
+                        companyEmail={currentRow.superAdmin ? currentRow.superAdmin.email : 'Chưa xác định'}
                         companyActive={currentRow.active}
                     />
                 }
@@ -150,7 +144,7 @@ class CompanyTable extends Component {
                         companyLog={currentRow.log}
                         companyDescription={ currentRow.description }
                         companyLinks={currentRow.links}
-                        companyEmail={currentRow.superAdmin !== undefined ? currentRow.superAdmin.email : 'Chưa xác định'}
+                        companyEmail={currentRow.superAdmin ? currentRow.superAdmin.email : 'Chưa xác định'}
                         companyActive={currentRow.active}
                     />
                 }

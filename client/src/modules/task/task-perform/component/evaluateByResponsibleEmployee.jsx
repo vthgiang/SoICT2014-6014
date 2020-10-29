@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { ErrorLabel, DatePicker, SelectBox } from '../../../../common-components/index';
+import { ErrorLabel, DatePicker, SelectBox, TextEditor } from '../../../../common-components/index';
 import { performTaskAction } from '../redux/actions';
 import { managerKpiActions } from '../../../kpi/employee/management/redux/actions';
 import { TaskInformationForm } from './taskInformationForm';
@@ -9,7 +9,6 @@ import { AutomaticTaskPointCalculator } from './automaticTaskPointCalculator';
 import { ModalShowAutoPointInfo } from './modalShowAutoPointInfo';
 import { getStorage } from '../../../../config';
 import moment from 'moment'
-import TextEditor from '../../../../common-components/src/text-editor';
 
 var currentTask;
 // var indexReRender = 0;
@@ -1064,7 +1063,7 @@ class EvaluateByResponsibleEmployee extends Component {
                                                 <div>
                                                     <span key={index}>
                                                         ({index + 1})&nbsp;&nbsp;
-                                                        <TextEditor data={item.description}/>
+                                                        <TextEditor data={item.description} edit={false}/>
                                                     </span>
                                                 </div>
                                             ))

@@ -2,54 +2,50 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { Dialog, ErrorLabel, TreeSelect } from '../../../../../common-components';
+import { ErrorLabel, TreeSelect } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
+import ValidationHelper from '../../../../../helpers/validationHelper';
 
 class EditForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-
-        }
+        this.state = {}
     }
 
-    handleValidateName = (e) => {
-        const value = e.target.value;
-        this.validateName(value, true);
+    handleName = (e) => {
+        const {value} = e.target;
+        const {translate} = this.props;
+        const {message} = ValidationHelper.validateName(translate, value, 1, 255);
+        this.setState({
+            name: value,
+            nameError: message
+        });
     }
 
     handleDescription = (e) => {
-        const value = e.target.value;
+        const {value} = e.target;
+        const {translate} = this.props;
+        const {message} = ValidationHelper.validateDescription(translate, value);
         this.setState({
-            archiveDescription: value
-        })
+            description: value,
+            descriptionError: message
+        });
     }
+
     handleParent = (value) => {
         this.setState({ archiveParent: value[0] });
     };
 
-    validateName = async (value, willUpdateState) => {
-        let msg = undefined;
-        const { translate } = this.props;
-        if (!value) {
-            msg = translate('document.no_blank_name');
-        }
-        if (willUpdateState) {
-            await this.setState(state => {
-                return {
-                    ...state,
-                    archiveName: value,
-                    errorName: msg
-                }
-            })
-        }
-
-        return msg === undefined;
-    }
-
     isValidateForm = () => {
-        return this.validateName(this.state.archiveName, false);
+        let {name, description} = this.state;
+        let {translate} = this.props;
+        if(
+            !ValidationHelper.validateName(translate, name, 1, 255).status || 
+            !ValidationHelper.validateDescription(translate, description).status
+        ) return false;
+        return true;
     }
+
     findNode = (element, id) => {
         if (element.id === id) {
             return element
@@ -74,11 +70,12 @@ class EditForm extends Component {
             let children = list.filter(child => child.parent === tmp._id);
             queue_children = queue_children.concat(children);
         }
-        return array
+        return array;
     }
+
     save = () => {
         const { documents } = this.props;
-        const { archiveId, archiveName, archiveDescription, archiveParent } = this.state;
+        const { archiveId, name, description, archiveParent } = this.state;
         const { list } = documents.administration.archives;
 
         let node = "";
@@ -91,8 +88,8 @@ class EditForm extends Component {
         }
 
         this.props.editDocumentArchive(archiveId, {
-            name: archiveName,
-            description: archiveDescription,
+            name,
+            description,
             parent: archiveParent,
             array: array,
         });
@@ -103,11 +100,12 @@ class EditForm extends Component {
             return {
                 ...prevState,
                 archiveId: nextProps.archiveId,
-                archiveName: nextProps.archiveName,
-                archiveDescription: nextProps.archiveDescription,
+                name: nextProps.archiveName,
+                description: nextProps.archiveDescription,
                 archiveParent: nextProps.archiveParent,
-                archivePath: nextProps.archivePath,
-                errorName: undefined,
+                path: nextProps.archivePath,
+                nameError: undefined,
+                descriptionError: undefined
             }
         } else {
             return null;
@@ -115,22 +113,22 @@ class EditForm extends Component {
     }
 
     render() {
-        const { translate, documents } = this.props;
+        const { translate, documents, unChooseNode } = this.props;
         const { list } = documents.administration.archives;
-        const { archiveName, archiveDescription, archiveParent, archivePath, errorName } = this.state;
-        const { unChooseNode } = this.props;
+        const { name, description, archiveParent, path, nameError, descriptionError } = this.state;
         let listArchive = [];
         for (let i in list) {
             if (!unChooseNode.includes(list[i].id)) {
                 listArchive.push(list[i]);
             }
         }
+        const disabled = !this.isValidateForm();
         return (
             <div id="edit-document-archive">
-                <div className={`form-group ${errorName === undefined ? "" : "has-error"}`}>
+                <div className={`form-group ${nameError === undefined ? "" : "has-error"}`}>
                     <label>{translate('document.administration.archives.name')}<span className="text-red">*</span></label>
-                    <input type="text" className="form-control" onChange={this.handleValidateName} value={archiveName} />
-                    <ErrorLabel content={errorName} />
+                    <input type="text" className="form-control" onChange={this.handleName} value={name} />
+                    <ErrorLabel content={nameError} />
                 </div>
                 <div className="form-group">
                     <label>{translate('document.administration.archives.parent')}</label>
@@ -138,14 +136,15 @@ class EditForm extends Component {
                 </div>
                 <div className="form-group">
                     <strong>{translate('document.administration.archives.path_detail')}&emsp; </strong>
-                    {archivePath}
+                    {path}
                 </div>
-                <div className="form-group">
+                <div className={`form-group ${descriptionError === undefined ? "" : "has-error"}`}>
                     <label>{translate('document.administration.domains.description')}</label>
-                    <textarea style={{ minHeight: '120px' }} type="text" className="form-control" onChange={this.handleDescription} value={archiveDescription} />
+                    <textarea style={{ minHeight: '120px' }} type="text" className="form-control" onChange={this.handleDescription} value={description} />
+                    <ErrorLabel content={descriptionError} />
                 </div>
                 <div className="form-group">
-                    <button className="btn btn-success pull-right" style={{ marginLeft: '5px' }} onClick={this.save}>{translate('form.save')}</button>
+                    <button className="btn btn-success pull-right" style={{ marginLeft: '5px' }} disabled={disabled} onClick={this.save}>{translate('form.save')}</button>
                     <button className="btn btn-danger" onClick={() => {
                         window.$(`#edit-document-archive`).slideUp()
                     }}>{translate('form.close')}</button>

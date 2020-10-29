@@ -11,7 +11,7 @@ import { NotFound } from '../modules/not-found/components';
 
 import Login from '../modules/auth/components/login';
 import ResetPassword from '../modules/auth/components/resetPassword';
-
+import {Introduction} from '../modules/intro/components';
 import ManageDocument from '../modules/document/components/administration';
 import Document from '../modules/document/components/user';
 
@@ -47,6 +47,7 @@ import TimesheetsManager from '../modules/human-resource/timesheets/components';
 import { AnnualLeave } from '../modules/human-resource/annual-leave/components/combinedContent';
 import { ManageLeaveApplication } from '../modules/human-resource/annual-leave/components/combinedContent';
 import { EmployeeCapacity } from '../modules/human-resource/employee-capacity/components';
+import { DashboardPersonal } from '../modules/dashboard-personal/components';
 
 import { ListEducation } from '../modules/training/education-program/components/educationProgramList';
 import { TrainingPlan } from '../modules/training/course/components/course';
@@ -67,6 +68,7 @@ import { EmployeeKpiEvaluationDashboard } from "../modules/kpi/evaluation/dashbo
 
 
 import { TaskManagement } from "../modules/task/task-management/component/taskManagement";
+import { TaskManagementOfUnit } from "../modules/task/task-management/component/taskManagementOfUnit";
 import { TaskComponent } from '../modules/task/task-perform/component/taskComponent';
 import { TaskDashboard } from "../modules/task/task-dashboard/task-personal-dashboard/taskDashboard";
 import { TaskTemplate } from '../modules/task/task-template/component/taskTemplate';
@@ -81,6 +83,7 @@ import ManagerRecommendProcure from "../modules/asset/admin/purchase-request/com
 import ManagerRecommendDistribute from "../modules/asset/admin/use-request/components";
 import ManagerAssetType from "../modules/asset/admin/asset-type/components";
 import MaintainanceManager from "../modules/asset/admin/maintainance/components";
+
 // import UsageManager from "../modules/asset/admin/usage/components";
 import IncidentManager from "../modules/asset/admin/incident/components";
 import ManagerDepreciation from "../modules/asset/admin/depreciation/components";
@@ -150,6 +153,7 @@ class Routes extends Component {
         return (
             <React.Fragment>
                 <Switch>
+                    <Route exact path="/" component={Introduction}/>
                     <AuthRoute exact auth={auth} path="/login" component={Login} />
                     <AuthRoute exact auth={auth} path="/reset-password" component={ResetPassword} />
                     <PrivateRoute
@@ -217,12 +221,12 @@ class Routes extends Component {
                         isLoading={auth.isLoading}
                         key={'home'}
                         arrPage={[
-                            { link: '/', name: 'home', icon: 'fa fa-home' }
+                            { link: '/home', name: 'home', icon: 'fa fa-home' }
                         ]}
                         auth={auth}
                         exact={true}
-                        link={'/'}
-                        path={'/'}
+                        link={'/home'}
+                        path={'/home'}
                         pageName={'home'}
                         layout={Layout}
                         component={Home}
@@ -380,6 +384,21 @@ class Routes extends Component {
                     />
                     <PrivateRoute
                         isLoading={this.props.annualLeave.isLoading}
+                        key={'dashboard_personal'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/hr-dashboard-personal', name: 'dashboard_personal', icon: 'fa fa-newspaper-o' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/hr-dashboard-personal'}
+                        path={'/hr-dashboard-personal'}
+                        pageName={'dashboard_personal'}
+                        layout={Layout}
+                        component={DashboardPersonal}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.annualLeave.isLoading}
                         key={'leave_application'}
                         arrPage={[
                             { link: '/', name: 'home', icon: 'fa fa-home' },
@@ -496,7 +515,7 @@ class Routes extends Component {
                         exact={true}
                         link={'/hr-employee-capacity'}
                         path={'/hr-employee-capacity'}
-                        pageName={'dashboard_employee'}
+                        pageName={'employee_capacity'}
                         layout={Layout}
                         component={EmployeeCapacity}
                     />
@@ -834,6 +853,22 @@ class Routes extends Component {
                         layout={Layout}
                         component={TaskManagement}
                     />
+                    {/* Quản lý công việc đơn vị */}
+                    <PrivateRoute
+                        isLoading={this.props.tasks.isLoading}
+                        key={'task-management-unit'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/task-management-unit', name: 'task_management_of_unit', icon: '' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/task-management-unit'}
+                        path={'/task-management-unit'}
+                        pageName={'task_management_of_unit'}
+                        layout={Layout}
+                        component={TaskManagementOfUnit}
+                    />
                     <PrivateRoute // Trang chi tiết công việc (không có trên menu)
                         isLoading={this.props.tasks.isLoading}
                         key={'task'}
@@ -1152,7 +1187,7 @@ class Routes extends Component {
                         layout={Layout}
                         component={InventoryDashBoard}
                     />
-                    
+
                     <PrivateRoute
                         isLoading={false}
                         key={'dashboard-bill'}
@@ -1727,7 +1762,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={false}
+                        isLoading={this.props.manufacturingWorks.isLoading}
                         key={"manage-manufacturing-works"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1747,7 +1782,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={false}
+                        isLoading={this.props.manufacturingMill.isLoading}
                         key={"manage-manufacturing-mill"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },

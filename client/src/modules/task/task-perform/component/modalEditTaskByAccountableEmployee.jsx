@@ -846,7 +846,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                     let a = usercompanys.filter(item => item._id === element);
                     consultedEmployeesArr.push(a[0].name)
                 }
-                description = description === '' ? description + 'Những người hỗ trợ công việc mới: ' + JSON.stringify(consultedEmployeesArr) : description + '. ' + 'Những người hỗ trợ công việc mới: ' + JSON.stringify(consultedEmployeesArr);
+                description = description === '' ? description + 'Những người tư vấn công việc mới: ' + JSON.stringify(consultedEmployeesArr) : description + '. ' + 'Những người tư vấn công việc mới: ' + JSON.stringify(consultedEmployeesArr);
             }
 
             if (JSON.stringify(informedEmployees) !== JSON.stringify(currentTask.informedEmployees.map(employee => { return employee._id }))) {
@@ -1175,7 +1175,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                     }
                                 </div>
 
-                                {/*Người hỗ trợ*/}
+                                {/*Người tư vấn */}
                                 <div className="form-group">
                                     <label>{translate('task.task_management.consulted')}</label>
                                     {usercompanys &&
