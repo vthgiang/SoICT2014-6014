@@ -506,9 +506,14 @@ export default {
             amount: 'Số lượng',
             name: 'Tên tài liệu',
             description: 'Mô tả',
+            
             category: "Loại tài liệu",
-            domain: 'Danh mục',
+            domain: 'Lĩnh vực',
+            data: 'Danh sách tài liệu',
+            statistics_report: 'Thống kê báo cáo',
+            history_report: 'Lịch sử thống kê',
             archive: 'Lưu trữ',
+
             roles: 'Những vị trí có quyền xem mẫu này',
             issuing_date: 'Ngày ban hành',
             effective_date: 'Ngày áp dụng',
@@ -518,6 +523,8 @@ export default {
             downloader: "Người tải",
             downloads: 'Số lần download',
             add: 'Thêm tài liệu',
+            export: 'Xuất báo cáo',
+            import: 'Nhập từ file',
             edit: 'Sửa tài liệu',
             watch: 'Xem tài liệu',
             delete: 'Xóa tài liệu',
@@ -534,7 +541,7 @@ export default {
             relationship_role_store: "Liên kết, phân quyền và lưu trữ",
             statistical_document: "Thống kê các loại tài liệu",
             statistical_view_down: "Thống kê số lượng xem và download các loại tài liệu",
-            statistical_document_by_domain: "Thống kê số lượng tài liệu theo danh mục",
+            statistical_document_by_domain: "Thống kê số lượng tài liệu theo lĩnh vực",
             statistical_document_by_archive: "Thống kê số lượng tài liệu theo vị trí lưu trữ",
             doc_version: {
                 title: 'Phiên bản',
@@ -579,12 +586,6 @@ export default {
                 user_manage: 'Người quản lý',
                 select_user: 'Chọn người quản lý',
             },
-
-            category: 'Loại tài liệu',
-            domain: 'Danh mục',
-            data: 'Danh sách tài liệu',
-            statistics_report: 'Thống kê báo cáo',
-            history_report: 'Lịch sử thống kê',
 
             administration: {
                 categories: {

@@ -141,18 +141,17 @@ class AdministrationDocumentDomains extends Component {
             <React.Fragment>
                 <div className="form-inline">
                     <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
-                        <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('document.administration.domains.add')}
-                            disabled={domainParent.length > 1 ? true : false}>{translate('general.add')}</button>
+                        <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('document.administration.domains.add')}>{translate('general.add')}</button>
                         <ul className="dropdown-menu pull-right">
                             <li><a href="#form-create-document-domain" title="ImportForm" onClick={(event) => { this.handleAddDomain(event) }}>{translate('task_template.add')}</a></li>
-                            <li><a href="#modal_import_file-domain" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>ImportFile</a></li>
+                            <li><a href="#modal_import_file-domain" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>{translate('document.import')}</a></li>
                         </ul>
                     </div>
                 </div>
                 {
                     deleteNode.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteDomains}>{translate('general.delete')}</button>
                 }
-                {<ExportExcel id="export-document-domain" exportData={exportData} style={{ marginRight: 5, marginTop: 2 }} />}
+                <ExportExcel id="export-document-domain" exportData={exportData} style={{ marginRight: 5 }} buttonName={translate('document.export')} />
                 <CreateForm/>
                 <DomainImportForm />
                 <div className="row">

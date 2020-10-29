@@ -506,8 +506,14 @@ export default {
             amount: 'Amount',
             name: 'Document name',
             description: 'Description',
+
             category: 'Category',
             domain: 'Domain',
+            data: 'Document list data',
+            statistics_report: 'Statistics report',
+            history_report: 'History report',
+            archive: 'Archive',
+
             roles: 'Roles has privilege to see',
             issuing_date: 'Issuing date',
             effective_date: 'Effective date',
@@ -517,6 +523,8 @@ export default {
             downloader: "Downloader",
             downloads: 'Downloads',
             add: 'Add document',
+            export: 'Export data',
+            import: 'Import from file',
             edit: 'Edit document',
             view: 'View document',
             time: "Time",
@@ -578,12 +586,6 @@ export default {
                 user_manage: 'User management',
                 select_user: 'Select user',
             },
-
-            category: 'Document category',
-            domain: 'Document domain',
-            data: 'Document list data',
-            statistics_report: 'Statistics report',
-            history_report: 'History report',
 
             administration: {
                 categories: {

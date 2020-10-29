@@ -113,6 +113,7 @@ class AdministrationStatisticsReport extends Component {
         });
         return data;
     }
+    
     barChart = () => {
         const { translate } = this.props;
         this.removePreviousBarChart();
@@ -145,6 +146,7 @@ class AdministrationStatisticsReport extends Component {
 
         })
     }
+
     removePreviousPieChart() {
         const chart = this.refs.piechart;
         if (chart) {
@@ -162,6 +164,7 @@ class AdministrationStatisticsReport extends Component {
             }
         }
     }
+
     removePreviousDomainChart() {
         const chart = this.refs.a;
         if (chart) {
@@ -170,6 +173,7 @@ class AdministrationStatisticsReport extends Component {
             }
         }
     }
+
     removePreviousArchiveChart() {
         const chart = this.refs.archives;
         if (chart) {
@@ -178,6 +182,7 @@ class AdministrationStatisticsReport extends Component {
             }
         }
     }
+
     convertDataToExportData = (data, data2) => {
         let dataCategory = [];
         let dataDownload = [];
@@ -250,6 +255,7 @@ class AdministrationStatisticsReport extends Component {
         }
         return exportData;
     }
+
     onChanged = async (e, data) => {
         await this.setState({
             currentDomain: data.node,
@@ -257,6 +263,7 @@ class AdministrationStatisticsReport extends Component {
         })
         window.$(`#list-document`).slideDown();
     }
+
     checkIn = (array, element) => {
         for (let i = 0; i < array.length; i++) {
             if (array[i].id === element.id)
@@ -276,6 +283,7 @@ class AdministrationStatisticsReport extends Component {
         }
         return newArray;
     }
+
     /**
      * Hàm thực hiện đếm số document trong danh mục và trả về mảng domain có chứa list các document đó
      * @param {*} domains : mảng danh mục
@@ -309,6 +317,7 @@ class AdministrationStatisticsReport extends Component {
         }
 
     }
+
     /**
      * Hàm thực hiện đếm số document trong mục lưu trữ và trả về mảng archive có chứa list các document đó
      * @param {*} archives : mảng lưu trữ
@@ -340,6 +349,7 @@ class AdministrationStatisticsReport extends Component {
 
         }
     }
+
     barChartDocumentInDomain = () => {
         this.removePreviousDomainChart();
         let dataChart = this.setDataDomainBarchart();
@@ -402,6 +412,7 @@ class AdministrationStatisticsReport extends Component {
             }
         });
     }
+
     barChartDocumentInArchive = () => {
         this.removePreviousArchiveChart();
         let dataChart = this.setDataArchiveBarchart();
@@ -463,6 +474,7 @@ class AdministrationStatisticsReport extends Component {
             }
         });
     }
+
     setDataDomainBarchart = () => {
         const domains = this.props.documents.administration.domains.list;
         const docs = this.props.documents.administration.data.list;
@@ -495,6 +507,7 @@ class AdministrationStatisticsReport extends Component {
         }
         return data;
     }
+
     setDataArchiveBarchart = () => {
         const archives = this.props.documents.administration.archives.list;
         const docs = this.props.documents.administration.data.list;
@@ -527,6 +540,7 @@ class AdministrationStatisticsReport extends Component {
 
         return data;
     }
+
     render() {
         const { documents, translate } = this.props;
         const categoryList = documents.administration.categories.list;
@@ -563,7 +577,7 @@ class AdministrationStatisticsReport extends Component {
         let exportData = this.convertDataToExportData(dataExport, data2);
 
         return <React.Fragment>
-            {<ExportExcel id="export-document-archive" exportData={exportData} style={{ marginRight: 5, marginTop: 2 }} />}
+            <ExportExcel id="export-document-archive" exportData={exportData} style={{ marginRight: 5 }} buttonName={translate('document.export')} />
             <div className="row">
                 <div className="col-xs-12" >
                     <div className="box box-solid">

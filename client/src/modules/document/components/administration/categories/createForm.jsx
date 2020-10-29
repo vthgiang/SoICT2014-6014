@@ -109,11 +109,11 @@ class CreateForm extends Component {
                 <CategoryImportForm />
                 <div className="form-inline">
                     <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
-                        <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_user.add_title')}
+                        <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('document.add')}
                         >{translate('general.add')}</button>
                         <ul className="dropdown-menu pull-right">
-                            <li><a href="#modal-create-document-type" title="ImportForm" onClick={(event) => { this.handleAddCategory(event) }}>{translate('task_template.add')}</a></li>
-                            <li><a href="#modal_import_file_category" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>ImportFile</a></li>
+                            <li><a href="#modal-create-document-type" title="ImportForm" onClick={(event) => { this.handleAddCategory(event) }}>{translate('document.add')}</a></li>
+                            <li><a href="#modal_import_file_category" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>{translate('document.import')}</a></li>
                         </ul>
                     </div>
                 </div>
