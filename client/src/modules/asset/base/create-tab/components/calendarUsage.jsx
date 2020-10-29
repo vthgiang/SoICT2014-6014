@@ -3,9 +3,10 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { RecommendDistributeActions } from '../../../user/use-request/redux/actions';
 import { UseRequestActions } from '../../../admin/use-request/redux/actions'
-import { UsageLogAddModal } from './combinedContent';
+import { UsageLogAddModal, UsageLogDetailModal } from './combinedContent';
 import { Scheduler, formatDate } from '../../../../../common-components';
 import { UseRequestCreateForm } from './../../../user/use-request/components/UseRequestCreateForm';
+import { UseRequestDetailForm } from './../../../user/use-request/components/UseRequestDetailForm';
 import './calendarUsage.css';
 
 
@@ -19,7 +20,7 @@ class CalendarUsage extends Component {
       currentEvents: [],
       nowDate: new Date(),
       data: [],
-      dataStatus: 1 
+      dataStatus: 1
     }
   }
 
@@ -79,17 +80,17 @@ class CalendarUsage extends Component {
         createUsage: false
       })
       let calendarApi = this.state.currentRow.view.calendar;
-      if( newUsage.usedByUser && newUsage.usedByOrganizationalUnit ){
+      if (newUsage.usedByUser && newUsage.usedByOrganizationalUnit) {
         let usedByUser = userlist.filter(item => item._id === newUsage.usedByUser).pop() ? userlist.filter(item => item._id === newUsage.usedByUser).pop().name : "Chưa có đối tượng sử dụng"
-        let usedByOrganizationalUnit =  departmentlist.filter(item => item._id === newUsage.usedByOrganizationalUnit).pop() ? departmentlist.filter(item => item._id === newUsage.usedByOrganizationalUnit).pop().name : "Chưa có đối tượng sử dụng" 
-        title = usedByUser + ', '+ usedByOrganizationalUnit
-      } else if(newUsage.usedByUser && !newUsage.usedByOrganizationalUnit ){
+        let usedByOrganizationalUnit = departmentlist.filter(item => item._id === newUsage.usedByOrganizationalUnit).pop() ? departmentlist.filter(item => item._id === newUsage.usedByOrganizationalUnit).pop().name : "Chưa có đối tượng sử dụng"
+        title = usedByUser + ', ' + usedByOrganizationalUnit
+      } else if (newUsage.usedByUser && !newUsage.usedByOrganizationalUnit) {
         title = userlist.filter(item => item._id === newUsage.usedByUser).pop() ? userlist.filter(item => item._id === newUsage.usedByUser).pop().name : "Chưa có đối tượng sử dụng"
-      } else if(!newUsage.usedByUser && newUsage.usedByOrganizationalUnit){
-        title = departmentlist.filter(item => item._id === newUsage.usedByOrganizationalUnit).pop() ? departmentlist.filter(item => item._id === newUsage.usedByOrganizationalUnit).pop().name : "Chưa có đối tượng sử dụng" 
+      } else if (!newUsage.usedByUser && newUsage.usedByOrganizationalUnit) {
+        title = departmentlist.filter(item => item._id === newUsage.usedByOrganizationalUnit).pop() ? departmentlist.filter(item => item._id === newUsage.usedByOrganizationalUnit).pop().name : "Chưa có đối tượng sử dụng"
       }
 
-      calendarApi.unselect() 
+      calendarApi.unselect()
       calendarApi.addEvent({
         id: newUsage._id,
         title: title,
@@ -122,7 +123,6 @@ class CalendarUsage extends Component {
   }
 
   handleDateSelect = async (selectInfo) => {
-    console.log("HDòng 125")
     // Reset lại dữ liệu của currentRow
     await this.setState(state => {
       return {
@@ -165,11 +165,10 @@ class CalendarUsage extends Component {
   }
 
   handleEventClick = async (clickInfo) => {
-    console.log("Dòng 168")
-    console.log("Dòng 169", this.state.currentEvent)
     await this.setState({
       clickInfo: clickInfo
     })
+
   }
 
   handleClick = () => {
@@ -182,6 +181,9 @@ class CalendarUsage extends Component {
     if (this.state.currentEvent == 'disapproved') {
       this.handleDisapproved(this.state.clickInfo);
     }
+    if (this.state.currentEvent == 'displayInfor') {
+      this.handleDisplayInfor(this.state.clickInfo)
+    }
   }
 
 
@@ -191,6 +193,88 @@ class CalendarUsage extends Component {
     })
   }
 
+  handleDisplayInfor = async (clickInfo) => {
+    if (clickInfo.event.backgroundColor == "#337ab7") {
+      let id = clickInfo.event.id;
+      var { usageLogs } = this.state;
+      let usageLog = usageLogs.filter(item => item._id == id)
+      let minutesStart, minutesStop, startTime, stopTime;
+      if (clickInfo.event.start.getMinutes() == 0) {
+        minutesStart = "00"
+      } else {
+        minutesStart = clickInfo.event.start.getMinutes();
+      }
+      startTime = [clickInfo.event.start.getHours(), minutesStart].join(':');
+
+      if (clickInfo.event.end.getMinutes() == 0) {
+        minutesStop = "00"
+      } else {
+        minutesStop = clickInfo.event.start.getMinutes();
+      }
+      stopTime = [clickInfo.event.end.getHours(), minutesStop].join(':');
+      if (usageLog.length !== 0) {
+        await this.setState(state => {
+          return {
+            ...state,
+            usageLogDetailInfor: {
+              ...clickInfo,
+              displayId: id,
+              usedByUser: usageLog[0].usedByUser,
+              usedByOrganizationalUnit: usageLog[0].usedByOrganizationalUnit,
+              startDate: usageLog[0].startDate,
+              startTime: startTime,
+              endDate: usageLog[0].endDate,
+              stopTime: stopTime,
+              description: usageLog[0].description,
+            }
+          }
+        });
+      }
+
+
+      window.$(`#modal-display-usage-detail-infor-${id}`).modal('show');
+    } else {
+      let id = clickInfo.event.id;
+      var { recommendDistribute } = this.props;
+      let data = recommendDistribute.listRecommendDistributesByAsset.filter(item => item._id == id)
+      let minutesStart, minutesStop, startTime, stopTime;
+      if (clickInfo.event.start.getMinutes() == 0) {
+        minutesStart = "00"
+      } else {
+        minutesStart = clickInfo.event.start.getMinutes();
+      }
+      startTime = [clickInfo.event.start.getHours(), minutesStart].join(':');
+
+      if (clickInfo.event.end.getMinutes() == 0) {
+        minutesStop = "00"
+      } else {
+        minutesStop = clickInfo.event.start.getMinutes();
+      }
+      stopTime = [clickInfo.event.end.getHours(), minutesStop].join(':');
+      await this.setState(state => {
+        return {
+          ...state,
+          recommendDistributeDetail: {
+            ...clickInfo,
+            displayId: id,
+            recommendNumber: data[0].recommendNumber,
+            dateCreate: data[0].dateCreate,
+            proponent: data[0].proponent,
+            reqContent: data[0].reqContent,
+            asset: data[0].asset,
+            dateStartUse: data[0].dateStartUse,
+            dateEndUse: data[0].dateEndUse,
+            approver: data[0].approver,
+            status: data[0].status,
+            startTime: startTime,
+            stopTime: stopTime,
+            note: data[0].note,
+          }
+        }
+      });
+      window.$(`#modal-recommenddistribute-detail-${id}`).modal('show');
+    }
+  }
 
   handleDeleteEvent = async (clickInfo) => {
     let count, data;
@@ -257,7 +341,7 @@ class CalendarUsage extends Component {
 
     let calendarApi = currentRowAdd.view.calendar;
     if (data) {
-      calendarApi.unselect() 
+      calendarApi.unselect()
       calendarApi.addEvent({
         id: this.props.recommendDistribute.listRecommendDistributes,
         title: userlist.filter(item => item._id === data.proponent).pop() ? userlist.filter(item => item._id === data.proponent).pop().name : "Chưa có đối tượng sử dụng",
@@ -362,39 +446,56 @@ class CalendarUsage extends Component {
   renderEventContent = (eventInfo) => {
     return (
       <>
-        { (eventInfo.event.borderColor != "#337ab7" && this.props.managedBy == this.state.userId) &&
-          <div>
-            <a className="edit" title="Approve" style={{ color: "whitesmoke", cursor: "pointer" }} data-toggle="tooltip" onClick={async () => {
+        <div className="form-inline">
+          <div className="form-group">
+
+            <a className="edit" title="Information" style={{ color: "whitesmoke", cursor: "pointer" }} data-toggle="tooltip" onClick={async () => {
               await this.setState({
-                currentEvent: 'approve',
+                currentEvent: 'displayInfor',
               }, () => {
                 return this.handleEventClick
               })
 
-            }}><i className="material-icons" id="approve-event">check_circle_outline</i></a>
-            <a className="edit" title="Disapproved" style={{ color: "whitesmoke", cursor: "pointer" }} data-toggle="tooltip" onClick={async () => {
-              await this.setState({
-                currentEvent: 'disapproved',
-              }, () => {
-                return this.handleEventClick
-              })
-
-            }}><i className="material-icons" id="approve-event">block</i></a>
+            }}><i className="material-icons" id="display-event">view_list</i></a>
           </div>
 
-        }
-        {eventInfo.event.borderColor == "#337ab7" &&
-          <div>
-            <a className="delete" title="Delete" style={{}} data-toggle="tooltip" onClick={async () => {
-              await this.setState({
-                currentEvent: 'delete',
-              }, () => {
-                return this.handleEventClick
-              })
+          {(eventInfo.event.borderColor != "#337ab7" && this.props.managedBy == this.state.userId) &&
+            <div className="form-group">
+              <a className="edit" title="Approve" style={{ color: "whitesmoke", cursor: "pointer" }} data-toggle="tooltip" onClick={async () => {
+                await this.setState({
+                  currentEvent: 'approve',
+                }, () => {
+                  return this.handleEventClick
+                })
 
-            }}><i className="material-icons" id="delete-event"></i></a>
-          </div>
-        }
+              }}><i className="material-icons" id="approve-event">check_circle_outline</i></a>
+              <a className="edit" title="Disapproved" style={{ color: "whitesmoke", cursor: "pointer" }} data-toggle="tooltip" onClick={async () => {
+                await this.setState({
+                  currentEvent: 'disapproved',
+                }, () => {
+                  return this.handleEventClick
+                })
+
+              }}><i className="material-icons" id="disapprove-event">block</i></a>
+            </div>
+
+          }
+          {eventInfo.event.borderColor == "#337ab7" &&
+            <div className="form-group">
+              <a className="delete" title="Delete" style={{}} data-toggle="tooltip" onClick={async () => {
+                await this.setState({
+                  currentEvent: 'delete',
+                }, () => {
+                  return this.handleEventClick
+                })
+
+              }}><i className="material-icons" id="delete-event"></i></a>
+            </div>
+
+          }
+
+
+        </div>
         <br />
         <i>{eventInfo.event.title}</i><br />
         <b>{eventInfo.timeText}</b><br />
@@ -421,14 +522,14 @@ class CalendarUsage extends Component {
         let check = data.filter(item => item.id == nextProps.usageLogs[i]._id)
         if (!check.length) {
           let title;
-          if( nextProps.usageLogs[i].usedByUser && nextProps.usageLogs[i].usedByOrganizationalUnit ){
+          if (nextProps.usageLogs[i].usedByUser && nextProps.usageLogs[i].usedByOrganizationalUnit) {
             let usedByUser = userlist.filter(item => item._id === nextProps.usageLogs[i].usedByUser).pop() ? userlist.filter(item => item._id === nextProps.usageLogs[i].usedByUser).pop().name : "Chưa có đối tượng sử dụng"
-            let usedByOrganizationalUnit =  departmentlist.filter(item => item._id === nextProps.usageLogs[i].usedByOrganizationalUnit).pop() ? departmentlist.filter(item => item._id === nextProps.usageLogs[i].usedByOrganizationalUnit).pop().name : "Chưa có đối tượng sử dụng" 
-            title = usedByUser + ', '+ usedByOrganizationalUnit
-          } else if(nextProps.usageLogs[i].usedByUser && !nextProps.usageLogs[i].usedByOrganizationalUnit ){
+            let usedByOrganizationalUnit = departmentlist.filter(item => item._id === nextProps.usageLogs[i].usedByOrganizationalUnit).pop() ? departmentlist.filter(item => item._id === nextProps.usageLogs[i].usedByOrganizationalUnit).pop().name : "Chưa có đối tượng sử dụng"
+            title = usedByUser + ', ' + usedByOrganizationalUnit
+          } else if (nextProps.usageLogs[i].usedByUser && !nextProps.usageLogs[i].usedByOrganizationalUnit) {
             title = userlist.filter(item => item._id === nextProps.usageLogs[i].usedByUser).pop() ? userlist.filter(item => item._id === nextProps.usageLogs[i].usedByUser).pop().name : "Chưa có đối tượng sử dụng"
-          } else if(!nextProps.usageLogs[i].usedByUser && nextProps.usageLogs[i].usedByOrganizationalUnit){
-            title = departmentlist.filter(item => item._id === nextProps.usageLogs[i].usedByOrganizationalUnit).pop() ? departmentlist.filter(item => item._id === nextProps.usageLogs[i].usedByOrganizationalUnit).pop().name : "Chưa có đối tượng sử dụng" 
+          } else if (!nextProps.usageLogs[i].usedByUser && nextProps.usageLogs[i].usedByOrganizationalUnit) {
+            title = departmentlist.filter(item => item._id === nextProps.usageLogs[i].usedByOrganizationalUnit).pop() ? departmentlist.filter(item => item._id === nextProps.usageLogs[i].usedByOrganizationalUnit).pop().name : "Chưa có đối tượng sử dụng"
           }
 
           usageLogs.push({
@@ -455,8 +556,8 @@ class CalendarUsage extends Component {
   }
 
   render() {
-    const {  assetId } = this.props;
-    var { currentRow, typeRegisterForUse, usageLogs, currentRowAdd } = this.state;
+    const { assetId } = this.props;
+    var { currentRow, typeRegisterForUse, usageLogs, currentRowAdd, usageLogDetailInfor, recommendDistributeDetail } = this.state;
 
     return (
       <div className='demo-app'>
@@ -515,6 +616,39 @@ class CalendarUsage extends Component {
             startTime={currentRowAdd.startTime}
             stopTime={currentRowAdd.stopTime}
             handleChange={this.handleCreateUseRequest}
+          />
+        }
+
+        {
+          usageLogDetailInfor &&
+          <UsageLogDetailModal
+            id={usageLogDetailInfor.displayId}
+            usedByUser={usageLogDetailInfor.usedByUser}
+            usedByOrganizationalUnit={usageLogDetailInfor.usedByOrganizationalUnit}
+            startDate={usageLogDetailInfor.startDate}
+            startTime={usageLogDetailInfor.startTime}
+            endDate={usageLogDetailInfor.endDate}
+            stopTime={usageLogDetailInfor.stopTime}
+            description={usageLogDetailInfor.description}
+          />
+        }
+        {
+          recommendDistributeDetail &&
+          <UseRequestDetailForm
+            _id={recommendDistributeDetail.displayId}
+            id={recommendDistributeDetail.displayId}
+            recommendNumber={recommendDistributeDetail.recommendNumber}
+            dateCreate={recommendDistributeDetail.dateCreate}
+            proponent={recommendDistributeDetail.proponent}
+            reqContent={recommendDistributeDetail.reqContent}
+            asset={recommendDistributeDetail.asset}
+            dateStartUse={recommendDistributeDetail.dateEndUse}
+            dateEndUse={recommendDistributeDetail.dateEndUse}
+            approver={recommendDistributeDetail.approver}
+            status={recommendDistributeDetail.status}
+            startTime={recommendDistributeDetail.startTime}
+            stopTime={recommendDistributeDetail.stopTime}
+            note={recommendDistributeDetail.note}
           />
         }
       </div>

@@ -19,6 +19,7 @@ export const taskManagementService = {
     getTaskEvaluations,
     getTaskInOrganizationUnitByMonth,
     getPaginateTasksByUser,
+    getPaginatedTasksByOrganizationalUnit
 };
 
 /**
@@ -132,7 +133,7 @@ function getAccountableTaskByUser(unit, number, perPage, status, priority, speci
 
 
 /**
- * lấy công việc theo người hỗ trợ
+ * lấy công việc theo người tư vấn
  * @param {*} unit đơn vị
  * @param {*} number số trang hiện tại
  * @param {*} perPage số bản ghi trên 1 trang
@@ -280,6 +281,44 @@ function getPaginateTasksByUser(unit, number, perPage, status, priority, special
         }
     }, false, true, 'task.task_management');
 }
+
+/**
+ * Tìm kiếm công việc đơn vị theo 1 roleId
+ * @param {*} roleId 
+ * @param {*} number 
+ * @param {*} perPage 
+ * @param {*} status 
+ * @param {*} priority 
+ * @param {*} special 
+ * @param {*} name 
+ * @param {*} startDate 
+ * @param {*} endDate 
+ * @param {*} startDateAfter 
+ * @param {*} endDateBefore 
+ * @param {*} aPeriodOfTime 
+ */
+function getPaginatedTasksByOrganizationalUnit(roleId, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/task/tasks`,
+        method: 'GET',
+        params: {
+            type: 'paginated_task_by_unit',
+            roleId: roleId,
+            number: number,
+            perPage: perPage,
+            status: status,
+            priority: priority,
+            special: special,
+            name: name,
+            startDate: startDate,
+            endDate: endDate,
+            startDateAfter: startDateAfter,
+            endDateBefore: endDateBefore,
+            aPeriodOfTime: aPeriodOfTime
+        }
+    }, false, true, 'task.task_management');
+}
+
 
 /**
  * thêm công việc mới

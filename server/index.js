@@ -27,6 +27,9 @@ router.use("/employee", require("./modules/human-resource/profile/profile.route"
 router.use("/salary", require("./modules/human-resource/salary/salary.route"));
 router.use("/timesheet", require("./modules/human-resource/timesheets/timesheets.route"));
 
+// router.use("/majors", require("./modules/human-resource/major/major.route"));
+// router.use("/career-positions", require("./modules/human-resource/career-position/careerPosition.route"));
+
 router.use("/kpi/employee/creation", require("./modules/kpi/employee/creation/creation.route"));
 router.use("/kpi/employee/dashboard", require("./modules/kpi/employee/dashboard/dashboard.route"));
 router.use("/kpi/employee/management", require("./modules/kpi/employee/management/management.route"));
@@ -89,6 +92,7 @@ app.use("/crm/status", require("./modules/crm/status/status.route"));
 // production - manufaturing
 app.use("/manufacturing-mill", require("./modules/production/manufacturing/manufacturingMill/manufacturingMill.route"));
 app.use("/manufacturing-works", require("./modules/production/manufacturing/manufacturingWorks/manufacturingWorks.route"));
+app.use("/purchasing-request", require("./modules/production/manufacturing/purchasingRequest/purchasingRequest.route"));
 
 //order
 app.use("/quote", require("./modules/production/order/quote/quote.route"));

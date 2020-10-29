@@ -7,13 +7,13 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 
 import { ModalEditTaskByResponsibleEmployee } from './modalEditTaskByResponsibleEmployee';
 import { ModalEditTaskByAccountableEmployee } from './modalEditTaskByAccountableEmployee';
+import { HoursSpentOfEmployeeChart } from './hourSpentNewVersion';
+
+import { SelectBox } from '../../../../common-components/index';
 
 import { EvaluationModal } from './evaluationModal';
 import { getStorage } from '../../../../config';
 import { SelectFollowingTaskModal } from './selectFollowingTaskModal';
-
-import { HoursSpentOfEmployeeChart } from './hourSpentNewVersion';
-
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 
@@ -39,7 +39,10 @@ class DetailTaskTab extends Component {
             INFORMED: { name: translate('task.task_management.informed'), value: "informed" },
         };
 
+        this.EMPLOYEE_SELECT_BOX = [];
+
         this.state = {
+            roleId: getStorage("currentRole"),
             collapseInfo: false,
             openTimeCounnt: false,
             startTimer: false,
@@ -50,9 +53,17 @@ class DetailTaskTab extends Component {
 
             currentMonth: currentYear + '-' + (currentMonth + 1),
             nextMonth: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2)),
-            dueForEvaluationOfTask: currentYear + '-' + (currentMonth + 1) + '-' + 7
+            dueForEvaluationOfTask: currentYear + '-' + (currentMonth + 1) + '-' + 7,
+
+            employeeCollaboratedWithUnit: {
+                responsibleEmployees: undefined,
+                consultedEmployees: undefined
+            },
+
+            editCollaboratedTask: false
         }
 
+        this.props.getAllUserInAllUnitsOfCompany();
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
@@ -64,6 +75,7 @@ class DetailTaskTab extends Component {
                     ...state,
                     id: nextProps.id,
                     dataStatus: this.DATA_STATUS.QUERYING,
+                    editCollaboratedTask: false
                 }
             });
 
@@ -71,13 +83,14 @@ class DetailTaskTab extends Component {
         }
 
         if (this.state.dataStatus === this.DATA_STATUS.QUERYING) {
+            if (!nextProps.user.usersInUnitsOfCompany) return false;
             if (!nextProps.tasks.task) {
                 return false;
             } else { // Dữ liệu đã về
                 let task = nextProps.task;
 
                 this.props.getChildrenOfOrganizationalUnits(task.organizationalUnit._id);
-
+                
                 let roles = [];
                 if (task) {
                     let userId = getStorage("userId");
@@ -114,12 +127,44 @@ class DetailTaskTab extends Component {
                     }
                 }
 
+                // Xử lý nhân viên tham gia công việc phối hợp đơn vị
+                let responsibleEmployees = [], consultedEmployees = [];
+                this.EMPLOYEE_SELECT_BOX = this.checkRoleAndSetSelectBoxOfUserSameDepartment();
+                
+                if (this.EMPLOYEE_SELECT_BOX && this.EMPLOYEE_SELECT_BOX.length !== 0) {
+                    if (task) {
+                        if (task.responsibleEmployees && task.responsibleEmployees.length !== 0) {
+                            task.responsibleEmployees.filter(item => {
+                                let temp = this.EMPLOYEE_SELECT_BOX.filter(employee => employee.value === item._id);
+                                if (temp && temp.length !== 0) return true;
+                            }).map(item => {
+                                if (item) {
+                                    responsibleEmployees.push(item._id);
+                                }
+                            })
+                            task.consultedEmployees.filter(item => {
+                                let temp = this.EMPLOYEE_SELECT_BOX.filter(employee => employee.value === item._id);
+                                if (temp && temp.length !== 0) return true;
+                            }).map(item => {
+                                if (item) {
+                                    consultedEmployees.push(item._id);
+                                }
+                            })
+                        }
+                    }
+                }
                 this.setState(state => {
                     return {
                         ...state,
                         dataStatus: this.DATA_STATUS.FINISHED,
                         roles: roles,
                         currentRole: roles.length > 0 ? roles[0].value : null,
+                        employeeCollaboratedWithUnit: {
+                            oldResponsibleEmployees: responsibleEmployees,
+                            oldConsultedEmployees: consultedEmployees,
+                            responsibleEmployees: responsibleEmployees,
+                            consultedEmployees: consultedEmployees
+                        }
                     }
                 })
                 return false;
@@ -425,12 +470,13 @@ class DetailTaskTab extends Component {
         }
     }
 
-    calculateHoursSpentOnTask = async (taskId, timesheetLogs, evaluateId, startDate, endDate) => {
-        let results = [];
-
+    calculateHoursSpentOnTask = async (taskId, timesheetLogs, evaluate, startDate, endDate) => {
+        let results = evaluate && evaluate.results;
+        results.map(item => {
+            item.hoursSpent = 0;
+        })
         for (let i in timesheetLogs) {
             let log = timesheetLogs[i];
-
             let startedAt = new Date(log.startedAt);
             let stoppedAt = new Date(log.stoppedAt);
 
@@ -440,11 +486,13 @@ class DetailTaskTab extends Component {
                 let newResults = [];
 
                 newResults = results.map(item => {
-                    if (creator === item.employee) {
+                    if (item.employee && creator === item.employee._id) {
+                        
                         check = false;
                         return {
-                            employee: creator,
-                            hoursSpent: item.hoursSpent + duration,
+                            ...item,
+                            employee: item.employee._id,
+                            hoursSpent: duration + item.hoursSpent,
                         }
                     } else {
                         return item;
@@ -465,8 +513,13 @@ class DetailTaskTab extends Component {
         }
 
         let data = {
-            evaluateId: evaluateId,
-            timesheetLogs: results,
+            evaluateId: evaluate._id,
+            timesheetLogs: results.map(item => { 
+                return {
+                    employee: item.employee && item.employee,
+                    hoursSpent: item.hoursSpent
+                }
+            }),
         }
 
         await this.props.editHoursSpentInEvaluate(data, taskId);
@@ -487,11 +540,130 @@ class DetailTaskTab extends Component {
     getTaskActionsNotPerform = (taskActions) => {
         return taskActions.filter(action => !action.creator).length;
     }
+    /** Chọn người thực hiện cho công việc phối hợp với đơn vị khác */
+    handleChangeResponsibleCollaboratedTask = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                employeeCollaboratedWithUnit: {
+                    ...state.employeeCollaboratedWithUnit,
+                    responsibleEmployees: value
+                }
+            }
+        })
+    }
+
+    /** Chọn người hỗ trợ cho công việc phối hợp với đơn vị khác */
+    handleChangeConsultedCollaboratedTask = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                employeeCollaboratedWithUnit: {
+                    ...state.employeeCollaboratedWithUnit,
+                    consultedEmployees: value
+                }
+            }
+        })
+    }
+
+    /** Lưu thay đổi nhân viên tham gia công việc phối hợp với đơn vị khác */
+    saveCollaboratedTask = (taskId) => {
+        const { employeeCollaboratedWithUnit } = this.state;
+        this.props.editEmployeeCollaboratedWithOrganizationalUnits(taskId, employeeCollaboratedWithUnit);
+        
+        this.setState(state => {
+            return {
+                ...state,
+                editCollaboratedTask: false,
+                employeeCollaboratedWithUnit: {
+                    ...state.employeeCollaboratedWithUnit,
+                    oldResponsibleEmployees: employeeCollaboratedWithUnit.responsibleEmployees,
+                    oldConsultedEmployees: employeeCollaboratedWithUnit.consultedEmployees
+                }
+            }
+        })
+    }
+
+    /** 
+     * Kiểm tra role hiện tại có phải trưởng đơn vị ko
+     * Nếu có, tạo SelectBox tất cả nhân viên của đơn vị 
+     * Ngược lại, trả về mảng rỗng
+    */
+    checkRoleAndSetSelectBoxOfUserSameDepartment = () => {
+        const { user } = this.props;
+        const { roleId } = this.state;
+        let usersInUnitsOfCompany, checkRole = false, currentUnit, employeeSelectBox = [];
+
+        if (user) {
+            usersInUnitsOfCompany = user.usersInUnitsOfCompany;
+        }
+
+        if (usersInUnitsOfCompany && usersInUnitsOfCompany.length !== 0) {
+            currentUnit = usersInUnitsOfCompany.filter(item => {
+                if (item.deans) {
+                    let deans = Object.keys(item.deans);
+                    if (deans.length !== 0 && deans.includes(roleId)) {
+                        checkRole = true;
+                        return true;
+                    }
+                }
+                if (item.viceDeans) {
+                    let viceDeans = Object.keys(item.viceDeans);
+                    if (viceDeans.length !== 0 && viceDeans.includes(roleId)) {
+                        return true;
+                    }
+                }
+                if (item.employees) {
+                    let employees = Object.keys(item.employees);
+                    if (employees.length !== 0 && employees.includes(roleId)) {
+                        return true;
+                    }
+                }
+                return false;
+            })
+        }
+
+        if (checkRole && currentUnit && currentUnit[0]) {
+            if (currentUnit[0].deans) {
+                let deans = Object.values(currentUnit[0].deans);
+                if (deans && deans.length !== 0) {
+                    deans.map(dean => {
+                        dean.members && dean.members.length !== 0 && dean.members.map(item => {
+                            item && employeeSelectBox.push({ text: item.name, value: item.id });
+                        })
+                    })
+                }
+            }
+            if (currentUnit[0].viceDeans) {
+                let viceDeans = Object.values(currentUnit[0].viceDeans);
+                if (viceDeans && viceDeans.length !== 0) {
+                    viceDeans.map(viceDean => {
+                        viceDean.members && viceDean.members.length !== 0 && viceDean.members.map(item => {
+                            item && employeeSelectBox.push({ text: item.name, value: item.id });
+                        })
+                    })
+                }
+            }
+            if (currentUnit[0].deans) {
+                let employees = Object.values(currentUnit[0].employees);
+                if (employees && employees.length !== 0) {
+                    employees.map(employee => {
+                        employee.members && employee.members.length !== 0 && employee.members.map(item => {
+                            item && employeeSelectBox.push({ text: item.name, value: item.id });
+                        })
+                    })
+                }
+            }
+        }
+
+        // employeeSelectBox rỗng = role hiện tại không phải trưởng đơn vị
+        return employeeSelectBox;
+    }
 
     render() {
-        const { tasks, performtasks, translate } = this.props;
-        const { currentUser, roles, currentRole, collapseInfo, showEdit, showEndTask, showEvaluate } = this.state
+        const { tasks, performtasks, user, translate } = this.props;
         const { showToolbar, id, isProcess } = this.props; // props form parent component ( task, id, showToolbar, onChangeTaskRole() )
+        const { currentUser, roles, currentRole, collapseInfo, showEdit, showEndTask, showEvaluate, employeeCollaboratedWithUnit, editCollaboratedTask, roleId } = this.state
 
         let task;
         let codeInProcess, typeOfTask, statusTask, checkInactive = true, evaluations, evalList = [];
@@ -499,6 +671,8 @@ class DetailTaskTab extends Component {
         let warning = false, checkConfirmTask, checkEvaluationTaskAction, checkEvaluationTaskAndKpiLink, checkDeadlineForEvaluation;
         // Các biến dùng cho biểu đồ đóng góp thời gian
         let hoursSpentOfEmployeeInTask, hoursSpentOfEmployeeInEvaluation = {};
+        // Các biến check trưởng đơn vị phối hợp
+        let organizationalUnitsOfUser, checkDeanOfUnitThatHasCollaborated = false, unitOfCurrentRole;
 
         if (isProcess) {
             task = this.props.task
@@ -517,7 +691,7 @@ class DetailTaskTab extends Component {
 
         // kiểm tra công việc chỉ có người thực hiện
         let checkHasAccountable = true;
-        if (task && task.accountableEmployees.length === 0) {
+        if (task && task.accountableEmployees && task.accountableEmployees.length === 0) {
             checkHasAccountable = false;
         }
 
@@ -525,7 +699,7 @@ class DetailTaskTab extends Component {
             statusTask = task.status;
         }
         if (task) {
-            checkInactive = task.inactiveEmployees.indexOf(currentUser) === -1
+            checkInactive = task.inactiveEmployees && task.inactiveEmployees.indexOf(currentUser) === -1
         }; // return true if user is active user
         if (task && task.evaluations && task.evaluations.length !== 0) {
             evaluations = task.evaluations; //.reverse()
@@ -586,11 +760,11 @@ class DetailTaskTab extends Component {
                     item.results.map(result => {
                         if (result.employee) {
                             if (!hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name]) {
-                                if (result.contribution) {
-                                    hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] = Number.parseFloat(result.contribution / (1000 * 60 * 60)).toFixed(2);
+                                if (result.hoursSpent) {
+                                    hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] = Number.parseFloat(result.hoursSpent / (1000 * 60 * 60)).toFixed(2);
                                 }
                             } else {
-                                hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] = hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] + result.contribution ? Number.parseFloat(result.contribution / (1000 * 60 * 60)).toFixed(2) : 0;
+                                hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] = hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] + result.hoursSpent ? Number.parseFloat(result.hoursSpent / (1000 * 60 * 60)).toFixed(2) : 0;
                             }
                         }
                     })
@@ -599,7 +773,29 @@ class DetailTaskTab extends Component {
                 }
             })
         }
-        console.log("hoursSpentOfEmployeeInEvaluation", hoursSpentOfEmployeeInEvaluation)
+
+        // Check kiểm tra trưởng đơn vị phối hợp
+        if (user) {
+            organizationalUnitsOfUser = user.organizationalUnitsOfUser;
+        }
+        if (organizationalUnitsOfUser && organizationalUnitsOfUser.length !== 0) {
+            unitOfCurrentRole = organizationalUnitsOfUser.filter(unit => {
+                if (task && task.collaboratedWithOrganizationalUnits && task.collaboratedWithOrganizationalUnits.includes(unit._id)) {
+                    return true;
+                }
+                return false;
+            })
+        }
+        if (unitOfCurrentRole && unitOfCurrentRole.length !== 0) {
+            unitOfCurrentRole.map(item => {
+                if (item.deans && item.deans.length !== 0) {
+                    item.deans.map(dean => {
+                        if (dean === roleId) checkDeanOfUnitThatHasCollaborated = true;
+                    })
+                }
+            })
+        }
+
         return (
             <React.Fragment>
                 {(showToolbar) &&
@@ -755,6 +951,86 @@ class DetailTaskTab extends Component {
                             </div>
                         }
 
+                        {/* Phân công công việc cho nhân viên */}
+                        {task && checkDeanOfUnitThatHasCollaborated && this.EMPLOYEE_SELECT_BOX && this.EMPLOYEE_SELECT_BOX.length !== 0
+                            && <div className="description-box">
+                                <h4>Vai trò của nhân viên thuộc đơn vị bạn
+                                    {editCollaboratedTask
+                                        ? <a className="pull-right" style={{ cursor: "pointer", fontWeight: "400", fontSize: "14px" }} onClick={() => this.saveCollaboratedTask(task._id)} title="Lưu">Lưu</a>
+                                        : <a className="pull-right" style={{ cursor: "pointer", fontWeight: "400", fontSize: "14px" }} onClick={() => this.setState(state => { return { ...state, editCollaboratedTask: true } })} title="Chỉnh sửa">Chỉnh sửa</a>
+                                    }
+                                </h4>
+                                
+                                {editCollaboratedTask
+                                    ? <React-Fragment>
+                                        <div className="form-group">
+                                            <label>{translate('task.task_management.responsible')}</label>
+                                            <SelectBox
+                                                id="multiSelectResponsibleEmployee"
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                items={this.EMPLOYEE_SELECT_BOX}
+                                                onChange={this.handleChangeResponsibleCollaboratedTask}
+                                                value={employeeCollaboratedWithUnit && employeeCollaboratedWithUnit.responsibleEmployees}
+                                                multiple={true}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label>{translate('task.task_management.consulted')}</label>
+                                            <SelectBox
+                                                id="multiSelectConsultedEmployee"
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                items={this.EMPLOYEE_SELECT_BOX}
+                                                onChange={this.handleChangeConsultedCollaboratedTask}
+                                                value={employeeCollaboratedWithUnit && employeeCollaboratedWithUnit.consultedEmployees}
+                                                multiple={true}
+                                            />
+                                        </div>
+                                    </React-Fragment>
+                                    : <div>
+                                        {/* Người thực hiện */}
+                                        <strong>{translate('task.task_management.responsible')}:</strong>
+                                        {
+                                            (employeeCollaboratedWithUnit && employeeCollaboratedWithUnit.responsibleEmployees && employeeCollaboratedWithUnit.responsibleEmployees.length !== 0) 
+                                            ? <span>
+                                                {
+                                                    employeeCollaboratedWithUnit.responsibleEmployees.map((item, index) => {
+                                                        let seperator = index !== 0 ? ", " : "";
+                                                        if (task.inactiveEmployees.indexOf(item) !== -1) { // tìm thấy item._id
+                                                            return <span key={index}><strike>{seperator}{this.EMPLOYEE_SELECT_BOX.filter(box => box.value == item)[0].text}</strike></span>
+                                                        } else {
+                                                            return <span key={index}>{seperator}{this.EMPLOYEE_SELECT_BOX.filter(box => box.value == item)[0].text}</span>
+                                                        }
+                                                    })
+                                                }
+                                            </span>
+                                            : <span>{translate('task.task_management.task_empty_employee')}</span>
+                                        }
+                                        <br/>
+                                        {/* Người hỗ trợ */}
+                                        <strong>{translate('task.task_management.consulted')}:</strong>
+                                        {
+                                            (employeeCollaboratedWithUnit && employeeCollaboratedWithUnit.consultedEmployees && employeeCollaboratedWithUnit.consultedEmployees.length !== 0) 
+                                            ? <span>
+                                                {
+                                                    employeeCollaboratedWithUnit.consultedEmployees.map((item, index) => {
+                                                        let seperator = index !== 0 ? ", " : "";
+                                                        if (task.inactiveEmployees.indexOf(item) !== -1) { // tìm thấy item._id
+                                                            return <span key={index}><strike>{seperator}{this.EMPLOYEE_SELECT_BOX.filter(box => box.value == item)[0].text}</strike></span>
+                                                        } else {
+                                                            return <span key={index}>{seperator}{this.EMPLOYEE_SELECT_BOX.filter(box => box.value == item)[0].text}</span>
+                                                        }
+                                                    })
+                                                }
+                                            </span>
+                                            : <span>{translate('task.task_management.task_empty_employee')}</span>
+                                        }
+                                    </div>
+                                }
+                            </div>    
+                        }
+
                         {/* Các trường thông tin cơ bản */}
                         {task &&
                             <div className="description-box">
@@ -835,7 +1111,7 @@ class DetailTaskTab extends Component {
 
                                     {
                                         (task && task.consultedEmployees && task.consultedEmployees.length !== 0) &&
-                                        <React-Fragment>
+                                        <div>
                                             {/* Người hỗ trợ */}
                                             <strong>{translate('task.task_management.consulted')}:</strong>
                                             <span>
@@ -852,11 +1128,11 @@ class DetailTaskTab extends Component {
                                                 }
                                             </span>
                                             <br />
-                                        </React-Fragment>
+                                        </div>
                                     }
                                     {
                                         (task && task.informedEmployees && task.informedEmployees.length !== 0) &&
-                                        <React-Fragment>
+                                        <div>
                                             {/* Người quan sát */}
                                             <strong>{translate('task.task_management.informed')}:</strong>
                                             <span>
@@ -873,7 +1149,7 @@ class DetailTaskTab extends Component {
                                                 }
                                             </span>
                                             <br />
-                                        </React-Fragment>
+                                        </div>
                                     }
 
 
@@ -905,11 +1181,11 @@ class DetailTaskTab extends Component {
                                                         <ul>
                                                             {(eva.results.length !== 0) ?
                                                                 eva.results.map((res, index) => {
-                                                                    if (task.inactiveEmployees.indexOf(res.employee._id) !== -1) {
+                                                                    if (res.employee && task.inactiveEmployees.indexOf(res.employee._id) !== -1) {
                                                                         return <li key={index}><strike>{res.employee.name}</strike>: &nbsp;&nbsp; {(res.automaticPoint !== null && res.automaticPoint !== undefined) ? res.automaticPoint : translate('task.task_management.detail_not_auto')} - {res.employeePoint ? res.employeePoint : translate('task.task_management.detail_not_emp')} - {res.approvedPoint ? res.approvedPoint : translate('task.task_management.detail_not_acc')}</li>
                                                                     }
                                                                     else {
-                                                                        return <li key={index}>{res.employee.name}: &nbsp;&nbsp; {(res.automaticPoint !== null && res.automaticPoint !== undefined) ? res.automaticPoint : translate('task.task_management.detail_not_auto')} - {res.employeePoint ? res.employeePoint : translate('task.task_management.detail_not_emp')} - {res.approvedPoint ? res.approvedPoint : translate('task.task_management.detail_not_acc')}</li>
+                                                                        return <li key={index}>{res.employee && res.employee.name}: &nbsp;&nbsp; {(res.automaticPoint !== null && res.automaticPoint !== undefined) ? res.automaticPoint : translate('task.task_management.detail_not_auto')} - {res.employeePoint ? res.employeePoint : translate('task.task_management.detail_not_emp')} - {res.approvedPoint ? res.approvedPoint : translate('task.task_management.detail_not_acc')}</li>
                                                                     }
                                                                 }) : <li>{translate('task.task_management.detail_not_eval')}</li>
                                                             }
@@ -940,7 +1216,7 @@ class DetailTaskTab extends Component {
                                                         eva.results.map((item, key) => {
                                                             return (
                                                                 <div key={key}>
-                                                                    <strong>KPI {item.employee.name}:</strong>
+                                                                    <strong>KPI {item.employee && item.employee.name}:</strong>
                                                                     {(item.kpis.length !== 0) ?
                                                                         <ul>
                                                                             {
@@ -959,7 +1235,7 @@ class DetailTaskTab extends Component {
 
                                                 {/* Thời gian bấm giờ */}
                                                 <strong>Thời gian đóng góp:</strong>
-                                                {showToolbar && <a style={{ cursor: "pointer" }} onClick={() => this.calculateHoursSpentOnTask(task._id, task.timesheetLogs, eva._id, eva.prevDate, eva.date)} title="Cập nhật thời gian bấm giờ">Nhấn chuột để cập nhật dữ liệu <i className="fa fa-fw fa-clock-o"></i></a>}
+                                                {showToolbar && <a style={{ cursor: "pointer" }} onClick={() => this.calculateHoursSpentOnTask(task._id, task.timesheetLogs, eva, eva.prevDate, eva.date)} title="Cập nhật thời gian bấm giờ">Nhấn chuột để cập nhật dữ liệu <i className="fa fa-fw fa-clock-o"></i></a>}
                                                 {
                                                     eva.results.length !== 0 && hoursSpentOfEmployeeInEvaluation[eva.date] && JSON.stringify(hoursSpentOfEmployeeInEvaluation[eva.date]) !== '{}'
                                                     &&
@@ -1066,7 +1342,9 @@ const actionGetState = { //dispatchActionToProps
     getTaskLog: performTaskAction.getTaskLog,
     editStatusTask: performTaskAction.editStatusOfTask,
     editHoursSpentInEvaluate: performTaskAction.editHoursSpentInEvaluate,
-    confirmTask: performTaskAction.confirmTask
+    confirmTask: performTaskAction.confirmTask,
+    editEmployeeCollaboratedWithOrganizationalUnits: performTaskAction.editEmployeeCollaboratedWithOrganizationalUnits,
+    getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany
 }
 
 const detailTask = connect(mapStateToProps, actionGetState)(withTranslate(DetailTaskTab));

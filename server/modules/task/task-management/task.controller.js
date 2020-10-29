@@ -59,7 +59,7 @@ getAllTasks = async (req, res) => {
     else {
         try {
             var task = await TaskManagementService.getAllTasks(req.portal);
-            
+
             await Logger.info(req.user.email, 'get_all_tasks', req.portal);
             res.status(200).json({
                 success: true,
@@ -207,7 +207,7 @@ getPaginatedTasksThatUserHasAccountableRole = async (req, res) => {
 }
 
 /**
- * Lấy công việc theo vai trò người hỗ trợ
+ * Lấy công việc theo vai trò người tư vấn
  */
 getPaginatedTasksThatUserHasConsultedRole = async (req, res) => {
     try {
@@ -434,29 +434,29 @@ exports.createTask = async (req, res) => {
         var tasks = await TaskManagementService.createTask(req.portal, req.body);
         var task = tasks.task;
         var user = tasks.user.filter(user => user !== req.user._id); //lọc thông tin người tạo ra khỏi danh sách sẽ gửi thông báo
-        
+
         // Gửi mail cho nhân viện tham gia công việc
         var email = tasks.email;
         var html = tasks.html;
-        var data = { 
-            organizationalUnits: task.organizationalUnit._id, 
+        var data = {
+            organizationalUnits: task.organizationalUnit._id,
             title: "Tạo mới công việc",
             level: "general",
             content: html,
             sender: task.organizationalUnit.name,
-            users: user 
+            users: user
         };
 
         // Gửi mail cho trưởng đơn vị phối hợp thực hiện công việc
         let collaboratedEmail = tasks.collaboratedEmail;
         let collaboratedHtml = tasks.collaboratedHtml;
-        let collaboratedData = { 
-            organizationalUnits: task.organizationalUnit._id, 
+        let collaboratedData = {
+            organizationalUnits: task.organizationalUnit._id,
             title: "Tạo mới công việc được phối hợp với đơn vị bạn",
             level: "general",
             content: collaboratedHtml,
             sender: task.organizationalUnit.name,
-            users: tasks.deansOfOrganizationalUnitThatHasCollaborated 
+            users: tasks.deansOfOrganizationalUnitThatHasCollaborated
         };
 
         await NotificationServices.createNotification(req.portal, task.organizationalUnit.company, data);

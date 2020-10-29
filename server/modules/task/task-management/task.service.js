@@ -567,7 +567,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
 }
 
 /**
- * Lấy công việc hỗ trợ theo id người dùng
+ * Lấy công việc tư vấn theo id người dùng
  */
 exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
     var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime } = task;
@@ -992,13 +992,12 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
 /**
  * Lấy công việc quan sát theo id người dùng
  */
-exports.getPaginatedTasksByUser = async (portal, task, type="paginated_task_by_user") => {
+exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by_user") => {
     var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime } = task;
 
     var tasks;
     var perPage = Number(perPage);
     var page = Number(number);
-
     var keySearch;
     if (type === "paginated_task_by_user") {
         keySearch = {
@@ -1011,7 +1010,7 @@ exports.getPaginatedTasksByUser = async (portal, task, type="paginated_task_by_u
             ],
             isArchived: false
         };
-    } 
+    }
     else if (type === "paginated_task_by_unit") {
         keySearch = {
             isArchived: false
@@ -1163,7 +1162,7 @@ exports.getPaginatedTasksByUser = async (portal, task, type="paginated_task_by_u
 }
 
 /** Tìm kiếm đơn vị theo 1 roleId */
-exports.getPaginatedTasksByOrganizationalUnit = async (portal, task, type) => { 
+exports.getPaginatedTasksByOrganizationalUnit = async (portal, task, type) => {
     let organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({
         $or: [
             { 'deans': task.roleId },
@@ -1186,7 +1185,7 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (portal, task) => {
     var keySearch = {};
 
     if (organizationalUnitId) {
-    // if (organizationalUnitId !== '[]') {
+        // if (organizationalUnitId !== '[]') {
         keySearch = {
             ...keySearch,
             organizationalUnit: {
@@ -1256,7 +1255,7 @@ exports.sendEmailForCreateTask = async (portal, task) => {
     var acc = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: accId } });
     userIds.push(...accId);
 
-    var conId = task.consultedEmployees;  // lấy id người hỗ trợ
+    var conId = task.consultedEmployees;  // lấy id người tư vấn
     var con = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: conId } })
     userIds.push(...conId);
 
@@ -1277,7 +1276,7 @@ exports.sendEmailForCreateTask = async (portal, task) => {
     for (let i = 0; i < task.collaboratedWithOrganizationalUnits.length; i++) {
         let unit = await OrganizationalUnit(connect(DB_CONNECTION, portal))
             .findById(task.collaboratedWithOrganizationalUnits[i])
-        
+
         unit && unit.deans.map(item => {
             deansOfOrganizationalUnitThatHasCollaboratedId.push(item);
         })
@@ -1310,7 +1309,7 @@ exports.sendEmailForCreateTask = async (portal, task) => {
             return `<li>${item.name} - ${item.email}</li>`
         })}
                     </ul>` +
-        `${con.length > 0 ? `<p>Người hỗ trợ</p> ` +
+        `${con.length > 0 ? `<p>Người tư vấn</p> ` +
             `<ul>${con.map((item) => {
                 return `<li>${item.name} - ${item.email}</li>`
             })}
@@ -1322,8 +1321,8 @@ exports.sendEmailForCreateTask = async (portal, task) => {
                     </ul>` : ""}`
         ;
     var html = `<p>Bạn có công việc mới: ` + body;
-    collaboratedHtml = `<p>Đơn vị bạn được phối hợp thực hiện công việc mới: ` + body; 
-    
+    collaboratedHtml = `<p>Đơn vị bạn được phối hợp thực hiện công việc mới: ` + body;
+
     return {
         task: task,
         user: userIds, email: email, html: html,
@@ -1676,25 +1675,25 @@ exports.sendEmailCheckTaskLastMonth = async () => {
 
         for (let j in userId) {
             let flag = false;
-            let tasks = { 
-                data: "user", 
-                userId: userId[j] 
+            let tasks = {
+                data: "user",
+                userId: userId[j]
             };
             let tasksByUser = await this.getTasksByUser(portal, tasks); // laay ra tat ca cong viec cua nguoi dung
-            tasks = { 
-                organizationalUnit: [], 
-                number: 1, 
-                perPage: 1000, 
-                status: [], 
-                priority: [], 
-                special: [], 
-                name: null, 
-                startDate: null, 
-                endDate: null, 
-                startDateAfter: null, 
-                endDateBefore: null, 
-                aPeriodOfTime: false, 
-                user: userId[j] 
+            tasks = {
+                organizationalUnit: [],
+                number: 1,
+                perPage: 1000,
+                status: [],
+                priority: [],
+                special: [],
+                name: null,
+                startDate: null,
+                endDate: null,
+                startDateAfter: null,
+                endDateBefore: null,
+                aPeriodOfTime: false,
+                user: userId[j]
             }
 
             informedTasks = await this.getPaginatedTasksThatUserHasInformedRole(portal, tasks);
@@ -1757,7 +1756,6 @@ exports.sendEmailCheckTaskLastMonth = async () => {
                                 if (currentEvaluate[i].results.length !== 0) {
                                     for (let j in currentEvaluate[i].results) {
                                         let res = currentEvaluate[i].results[j];
-                                        console.log(typeof res.employee);
                                         if (res.employee === userId[j]) {
                                             add = false;
                                             if (res.kpis.length === 0) {

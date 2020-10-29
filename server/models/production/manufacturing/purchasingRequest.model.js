@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const mongoosePaginate = require('mongoose-paginate-v2')
+
 
 // Bảng phiếu đề nghị mua nguyên vật liệu
 const PurchasingRequestSchema = new Schema({
@@ -9,10 +11,8 @@ const PurchasingRequestSchema = new Schema({
     },
     creator: { // Người tạo
         type: Schema.Types.ObjectId,
+        ref: "User",
         required: true
-    },
-    purpose: { // Mục đích tạo
-        type: String
     },
     materials: [{ // Danh sách nguyên vật liệu
         good: { // Nguyên vật liệu
@@ -26,13 +26,12 @@ const PurchasingRequestSchema = new Schema({
     intendReceiveTime: { // Thời gian dự kiến nhận
         type: Date
     },
-    manufacturingPlan: {// Kế hoạch sản xuất
-        type: Schema.Types.ObjectId,
-        ref: "ManufacturingPlan"
+    planCode: {// Kế hoạch sản xuất
+        type: String
     },
-    status: { // Trạng thái phiếu đề nghị mua nguyên vật liệu: 0. Chưa được duyệt xong || 1. Đã được duyệt xong
+    status: { // Trạng thái phiếu đề nghị mua nguyên vật liệu: 1. Chưa xử lý || 2. Đã xử lý || 3. Đã hủy
         type: Number,
-        default: 0
+        default: 1
     },
     description: { // Mô tả phiếu đề nghị mua nguyên vật liệu
         type: String
@@ -41,6 +40,8 @@ const PurchasingRequestSchema = new Schema({
     // Thời gian tạo, sửa phiếu đề nghị mua nguyên vật liệu
     timestamps: true
 });
+
+PurchasingRequestSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
     if (!db.models.PurchasingRequest)

@@ -562,14 +562,14 @@ class CreateForm extends Component {
 
                 <div className="form-inline">
                     <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
-                        <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_user.add_title')}
+                        <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('document.add')}
                         >{translate('general.add')}</button>
                         <ul className="dropdown-menu pull-right">
                             <li>
-                                <a href="#modal-create-document" title="ImportForm" onClick={(event) => { this.handleAddDocument(event) }}>{translate('task_template.add')}</a>
+                                <a href="#modal-create-document" title="ImportForm" onClick={(event) => { this.handleAddDocument(event) }}>{translate('document.add')}</a>
                             </li>
                             <li>
-                                <a href="#modal_import_file_document" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>ImportFile</a>
+                                <a href="#modal_import_file_document" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>{translate('document.import')}</a>
                             </li>
                         </ul>
                     </div>

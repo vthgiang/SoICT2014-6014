@@ -46,7 +46,7 @@ export function goods(state = initState, action) {
         case GoodConstants.DELETE_GOOD_REQUEST:
             return {
                 ...state,
-                isLoading: false
+                isLoading: true
             };
         
         case GoodConstants.GET_GOOD_BY_TYPE_FAILURE:
@@ -78,6 +78,7 @@ export function goods(state = initState, action) {
             };
 
         case GoodConstants.GET_GOOD_BY_TYPE_SUCCESS:
+            console.log("GOOD", action.payload);
             return {
                 ...state,
                 listGoods: action.payload,

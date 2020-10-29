@@ -1,4 +1,4 @@
-const { DocumentCategory, DocumentDomain, DocumentArchive, Role, User, UserRole, OrganizationalUnit, Document } = require(`${SERVER_MODELS_DIR}`);
+const { DocumentCategory, DocumentDomain, DocumentArchive, Role, UserRole, OrganizationalUnit, Document } = require(`${SERVER_MODELS_DIR}`);
 const arrayToTree = require('array-to-tree');
 const fs = require('fs');
 const ObjectId = require('mongoose').Types.ObjectId;
@@ -125,7 +125,6 @@ exports.increaseNumberView = async (id, viewer, portal) => {
  * Tạo một tài liệu văn bản mới
  */
 exports.createDocument = async (portal, data, company) => {
-    //console.log('dataaaaaa', data)
     const newDoc = {
         company,
         name: data.name,
@@ -165,8 +164,6 @@ exports.createDocument = async (portal, data, company) => {
  * Chỉnh sửa thông tin tài liệu văn bản
  */
 exports.editDocument = async (id, data, query = undefined, portal) => {
-    // thêm lịch sử chỉnh sửa
-    //console.log('dataaa', data);
     let { creator, title, descriptions } = data;
     let createdAt = Date.now();
     let log = {
@@ -479,13 +476,11 @@ exports.editDocumentCategory = async (id, data, portal) => {
 }
 
 exports.deleteDocumentCategory = async (id, portal) => {
-
-    const category = await DocumentCategory(connect(DB_CONNECTION, portal)).findOne({ _id: id });
     const docs = await Document(connect(DB_CONNECTION, portal)).find({ category: id });
     if (docs.length > 0) throw ['category_used_to_document', 'cannot_delete_category'];
     await DocumentCategory(connect(DB_CONNECTION, portal)).deleteOne({ _id: id });
-    
-    return category;
+
+    return id;
 }
 
 /**

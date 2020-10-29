@@ -1,5 +1,6 @@
 const {
-    ManufacturingWorks
+    ManufacturingWorks,
+    ManufacturingMill
 } = require(`${SERVER_MODELS_DIR}`);
 
 const {
@@ -58,9 +59,12 @@ exports.getAllManufacturingWorks = async (query, portal) => {
     if (query.name) {
         option.name = new RegExp(query.name, "i")
     }
+    if (query.status) {
+        option.status = query.status
+    }
 
     if (!page || !limit) {
-        let allManufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal))
+        let docs = await ManufacturingWorks(connect(DB_CONNECTION, portal))
             .find(option)
             .populate([{
                 path: "worksManager", select: "name"
@@ -69,6 +73,8 @@ exports.getAllManufacturingWorks = async (query, portal) => {
             }, {
                 path: "manufacturingMills", select: "code name teamLeader description"
             }]);
+        let allManufacturingWorks = {};
+        allManufacturingWorks.docs = docs;
         return { allManufacturingWorks }
     } else {
         let allManufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal))
@@ -130,6 +136,24 @@ exports.editManufacturingWorks = async (id, data, portal) => {
     oldManufacturingWorks.status = data.status ? data.status : oldManufacturingWorks.status
 
     await oldManufacturingWorks.save();
+
+    if (data.status == 0 && oldManufacturingWorks.manufacturingMills.length != 0) {
+        oldManufacturingWorks.manufacturingMills.forEach(async millId => {
+            let mill = await ManufacturingMill(connect(DB_CONNECTION, portal)).findById({ _id: millId });
+            if (mill) {
+                mill.status = 0;
+                await mill.save();
+            }
+        });
+        // for (let i = 0; i < oldManufacturingWorks.manufacturingMills.length; i++) {
+        //     let mill = await ManufacturingMill(connect(DB_CONNECTION, portal)).findById({ _id: oldManufacturingWorks.manufacturingMills[i] });
+        //     if (mill) {
+        //         mill.status = 0;
+        //         await mill.save();
+        //     }
+
+        // }
+    }
 
     let manufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal))
         .findById({ _id: oldManufacturingWorks.id })

@@ -59,6 +59,107 @@ export default {
             }
         },
 
+        intro: {
+            title: 'Giải pháp không gian làm việc số cho doanh nghiệp',
+            contents: [
+                'Môi trường làm việc số thân thiện và thuận tiện cho mọi nhân viên',
+                'Hỗ trợ lãnh đạo, quản lý các cấp theo dõi điều hành công việc thông qua hệ thống dashboard',
+                'Đánh giá KPI linh hoạt chính xác',
+                'Cơ chế giao việc thuận tiện, tối ưu giúp giảm bớt thời gian, số hóa toàn diện các quy trình nghiệp vụ của doanh nghiệp trên môi trường làm việc số',
+                'Tiết kiệm chi phí đầu tư',
+                'Dữ liệu hệ thống an toàn và bảo mật',
+                'Hỗ trợ khách hàng 24/7'
+            ],
+            auth: {
+                signin: 'Đăng nhập',
+                signout: 'Đăng xuất',
+                start: 'Bắt đầu',
+            },
+            service: {
+                title: 'Các giải pháp về quản lý trong doanh nghiệp',
+                content: 'Chúng tôi phục vụ các công ty vừa và nhỏ trong tất cả các ngành liên quan đến công nghệ với các dịch vụ chất lượng cao được trình bày dưới đây',
+                kpi: {
+                    title: 'Quản lý KPI',
+                    content: 'Tự động, khoa học và minh bạch',
+                    detail: 'Quản lý KPI tự động, khoa học, minh bạch: Hệ thống cung cấp các cách tính KPI tự động, người dùng có thể tự customize công thức tính KPI tùy thuộc vào lĩnh vực của từng bộ phận/đơn vị.',
+                },
+                task: {
+                    title: 'Quản lý công việc',
+                    content: 'Cơ chế giao việc và nhận việc tiện lợi, tiết kiệm thời gian, hỗ trợ người dùng tập trung vào công việc',
+                    detail: 'Quản lý công việc không theo quy trình với cơ chế giao việc và nhận việc tiện lợi, tiết kiệm thời gian làm việc, hỗ trợ người dùng tập trung vào công việc. Quản lý công việc theo quy trình: Hỗ trợ người dùng nắm bắt được hiện trạng các công việc, từ đó người quản lý có những phương án tổ chức công việc phù hợp, hiệu quả, đúng lúc. Cơ chế giao việc và nhận việc được thực hiện dễ dàng, tiết kiệm thời gian. Giúp người dùng tập trung hơn trong công việc.'
+                },
+                document: {
+                    title: 'Quản lý tài liệu',
+                    content: 'Hỗ trợ quản lý tập trung tài liệu, thuận tiện cho việc tra cứu',
+                    detail: 'Quản lý tài liệu là công việc lưu trữ, phân loại dữ liệu nội bộ của tổ chức, doanh nghiệp, nhằm phục vụ cho việc kinh doanh, sản xuất. Quản lý tài liệu hiệu quả sẽ giúp doanh nghiệp, tổ chức sắp xếp, tổ chức tài liệu hợp lý hơn, tiết kiệm chi phí bảo quản và thời gian tiềm kiếm.'
+                },
+                employee: {
+                    title: 'Quản lý nhân sự',
+                    content: 'Quản lý danh sách thông tin về nhân sự trong doanh nghiệp',
+                    detail: 'Quản lý thông tin nhân sự trong doanh nghiệp Các cán bộ cấp cao có thể dễ dàng theo dõi tình hình nhân sự qua các biểu đồ thống kê',
+                },
+                asset: {
+                    title: 'Quản lý tài sản',
+                    content: 'Quản lý tài sản trong doanh nghiệp',
+                    detail: 'Quản lý thông tin tài sản dễ dàng. Truy suất thông tin nhanh chóng. Thống kê theo dõi dưới dạng các biểu đồ linh hoạt, dễ dàng nắm bắt thông tin.',
+                },
+            },
+            service_signup: {
+                title: 'Đăng ký sử dụng dịch vụ',
+                content: [
+                    'Miễn phí dùng thử 15 ngày',
+                    'Tối đa truy cập 10 user',
+                    'Trải nghiệm các tính năng miễn phí',
+                ],
+                form: {
+                    customer: 'Khách hàng',
+                    email: 'Email',
+                    phone: 'Số điện thoại',
+                    type: {
+                        choose: 'Lựa chọn gói dịch vụ',
+                        standard: 'Tiêu chuẩn',
+                        full: 'Full chức năng',
+                    },
+                    send: 'Gửi đăng ký',
+                },
+            },
+            address: {
+                title: 'Địa chỉ công ty',
+                content: {
+                    location: 'P901, 8C Tạ Quang Bửu, Hai Bà Trưng, Hà Nội.',
+                    phone: '+84 986 986 247',
+                    email: 'office@vnist.vn'
+                },
+            },
+            contact: {
+                title: 'Liên hệ với chúng tôi',
+                company: 'CÔNG TY CỔ PHẦN CÔNG NGHỆ AN TOÀN THÔNG TIN VÀ TRUYỀN THÔNG VIỆT NAM',
+                form: {
+                    name: 'Tên khách hàng',
+                    emai: 'Địa chỉ email',
+                    content: 'Nội dung trao đổi',
+                    send: 'Gửi',
+                },
+            },
+            footer: {
+                about_us: {
+                    title: 'Về chúng tôi',
+                    content: 'Giải pháp không gian làm việc số DX của công ty cổ phần an toàn thông tin VNIST',
+                },
+                care: {
+                    title: 'Quan tâm',
+                    content: {
+                        company: 'Công ty phát triển dịch vụ',
+                        research: 'Tìm hiểu thêm về',
+                    },
+                },
+                media: {
+                    title: 'Đa phương tiện',
+                },
+                copyright: 'Bản quyền © 2020 VNIST - All rights reserved'
+            },
+        },
+
         auth: {
             validator: {
                 confirm_password_invalid: 'Mật khẩu không trùng khớp. Vui lòng kiểm tra lại',
@@ -405,9 +506,15 @@ export default {
             amount: 'Số lượng',
             name: 'Tên tài liệu',
             description: 'Mô tả',
+            category_example: 'VD: Văn bản, Hồ sơ, Biên bản,....',
+            
             category: "Loại tài liệu",
-            domain: 'Danh mục',
+            domain: 'Lĩnh vực',
+            data: 'Danh sách tài liệu',
+            statistics_report: 'Thống kê báo cáo',
+            history_report: 'Lịch sử thống kê',
             archive: 'Lưu trữ',
+
             roles: 'Những vị trí có quyền xem mẫu này',
             issuing_date: 'Ngày ban hành',
             effective_date: 'Ngày áp dụng',
@@ -416,10 +523,12 @@ export default {
             viewer: 'Người xem',
             downloader: "Người tải",
             downloads: 'Số lần download',
-            add: 'Thêm tài liệu',
-            edit: 'Sửa tài liệu',
-            watch: 'Xem tài liệu',
-            delete: 'Xóa tài liệu',
+            add: 'Thêm mới',
+            export: 'Xuất báo cáo',
+            import: 'Nhập từ file',
+            edit: 'Chỉnh sửa',
+            watch: 'Xem chi tiết',
+            delete: 'Xóa',
             time: "Thời gian",
             add_version: 'Thêm phiên bản mới',
             upload_file: 'File tài liệu',
@@ -433,7 +542,7 @@ export default {
             relationship_role_store: "Liên kết, phân quyền và lưu trữ",
             statistical_document: "Thống kê các loại tài liệu",
             statistical_view_down: "Thống kê số lượng xem và download các loại tài liệu",
-            statistical_document_by_domain: "Thống kê số lượng tài liệu theo danh mục",
+            statistical_document_by_domain: "Thống kê số lượng tài liệu theo lĩnh vực",
             statistical_document_by_archive: "Thống kê số lượng tài liệu theo vị trí lưu trữ",
             doc_version: {
                 title: 'Phiên bản',
@@ -479,12 +588,6 @@ export default {
                 select_user: 'Chọn người quản lý',
             },
 
-            category: 'Loại tài liệu',
-            domain: 'Danh mục',
-            data: 'Danh sách tài liệu',
-            statistics_report: 'Thống kê báo cáo',
-            history_report: 'Lịch sử thống kê',
-
             administration: {
                 categories: {
                     add: 'Thêm loại tài liệu',
@@ -523,6 +626,66 @@ export default {
             user: {
 
             },
+
+            //Thông điệp trả về từ server
+            get_documents_success: 'Lấy danh sách tài liệu thành công',
+            get_documents_faile: 'Lấy danh sách tài liệu thất bại',
+            create_document_success: 'Thêm mới tài liệu thành công',
+            create_document_faile: 'Thêm mới tài liệu thất bại',
+            import_document_success: 'Nhập dữ liệu tài liệu từ file thành công',
+            import_document_faile: 'Nhập dữ liệu tài liệu từ file thất bại',
+            show_document_success: 'Lấy dữ liệu tài liệu thành công',
+            show_document_faile: 'Lấy dữ liệu tài liệu thất bại',
+            edit_document_success: 'Cập nhật dữ liệu tài liệu thành công',
+            edit_document_faile: 'Cập nhật dữ liệu tài liệu thất bại',
+            add_document_logs_success: 'Thêm lịch sử chỉnh sửa tài liệu thành công',
+            add_document_logs_faile: 'Thêm lịch sử chỉnh sửa tài liệu thất bại',
+            delete_document_success: 'Xóa tài liệu thành công',
+            delete_document_faile: 'Xóa tài liệu thất bại',
+            download_document_file_faile: 'Lấy dữ liệu file tài liệu thất bại',
+            download_document_file_scan_faile: 'Lấy dữ liệu file scan tài liệu thất bại',
+            get_document_categories_success: 'Lấy danh sách loại tài liệu thành công',
+            get_document_categories_faile: 'Lấy danh sách loại tài liệu thất bại',
+            create_document_category_success: 'Thêm mới loại tài liệu thành công',
+            create_document_category_faile: 'Thêm mới loại tài liệu thất bại',
+            edit_document_category_success: 'Cập nhật thông tin loại tài liệu thành công',
+            edit_document_category_faile: 'Cập nhật thông tin loại tài liệu thất bại',
+            delete_document_category_success: 'Xóa loại tài liệu thành công',
+            delete_document_category_faile: 'Xóa loại tài liệu thất bại',
+            import_document_category_success: 'Tải dữ liệu từ file thành công',
+            import_document_category_faile: 'Tải dữ liệu từ file thất bại',
+            get_document_domains_success: 'Lấy danh sách lĩnh vực tài liệu thành công',
+            get_document_domains_faile: 'Lấy danh sách lĩnh vực tài liệu thất bại',
+            create_document_domain_success: 'Thêm mới lĩnh vực tài liệu thành công',
+            create_document_domain_faile: 'Thêm mới lĩnh vực tài liệu thất bại',
+            edit_document_domain_success: 'Cập nhật lĩnh vực tài liệu thành công',
+            edit_document_domain_faile: 'Cập nhật lĩnh vực tài liệu thất bại',
+            delete_document_domain_success: 'Xóa lĩnh vực tài liệu thành công',
+            delete_document_domain_faile: 'Xóa lĩnh vực tài liệu thất bại',
+            import_document_domain_success: 'Nhập dữ liệu lĩnh vực tài liệu từ file thành công',
+            import_document_domain_faile: 'Nhập dữ liệu lĩnh vực tài liệu từ file thất bại',
+            get_document_that_role_can_view_success: 'Lấy danh sách tài liệu vai trò có quyền xem thành công',
+            get_document_that_role_can_view_faile: 'Lấy danh sách tài liệu vai trò có quyền xem thất bại',
+            get_document_user_statistical_success: 'Lấy thống kê dữ liệu tài liệu thành công',
+            get_document_user_statistical_faile: 'Lấy thống kê dữ liệu tài liệu thất bại',
+            get_document_archives_success: 'Lấy danh sách thông tin lưu trữ tài liệu thành công',
+            get_document_archives_faile: 'Lấy danh sách thông tin lưu trữ tài liệu thất bại',
+            create_document_archive_success: 'Tạo mới thông tin lưu trữ tài liệu thành công',
+            create_document_archive_faile: 'Tạo mới thông tin lưu trữ tài liệu thất bại',
+            edit_document_archive_success: 'Cập nhật thông tin lưu trữ tài liệu thành công',
+            edit_document_archive_faile: 'Cập nhật thông tin lưu trữ tài liệu thất bại',
+            delete_document_archive_success: 'Xóa thông tin lưu trữ tài liệu thành công',
+            delete_document_archive_faile: 'Xóa thông tin lưu trữ tài liệu thất bại',
+            import_document_archive_success: 'Nhập dữ liệu thông tin lưu trữ từ file thành công',
+            import_document_archive_faile: 'Nhập dữ liệu thông tin lưu trữ từ file thất bại',
+            cannot_download_doc_file: 'Không thể tải file tài liệu',
+            version_not_found: 'Không tìm thấy thông tin về phiên bản của tài liệu',
+            cannot_download_doc_file_scan: 'Không thể tải file scan tài liệu',
+            version_scan_not_found: 'Không tìm thấy thông tin về phiên bản scan tài liệu',
+            category_used_to_document: 'Thông tin về loại tài liệu đang được sử dụng',
+            cannot_delete_category: 'Không thể xóa loại tài liệu',
+            document_domain_not_found: 'Không tìm thấy dữ liệu về lĩnh vực tài liệu',
+            document_archive_not_found: 'Không tìm thấy dữ liệu về thông tin lưu trữ tài liệu',
         },
 
         crm: {
@@ -559,6 +722,16 @@ export default {
                 by_customer: 'Theo khách hàng',
                 payment: 'Hình thức thanh toán',
                 creator: 'Người tạo',
+
+                purchaseHistories: {
+                    all: 'Tất cả',
+                    waitingForApproval: 'Chờ phê duyệt',
+                    approved: 'Đã phê duyệt',
+                    waitingForTheGoods: 'Chờ lấy hàng',
+                    delivering: 'Đang giao',
+                    finished: 'Đã hoàn thành',
+                    cancelled: 'Đã hủy bỏ',
+                },
 
                 info: 'Thông tin chung',
                 contact: 'Thông tin liên hệ',
@@ -761,8 +934,8 @@ export default {
             detail_employee: 'Thông tin cá nhân',
             update_employee: 'Cập nhật thông tin cá nhân',
             dashboard_employee: 'Bảng tin quản lý nhân sự',
-            dashboard_personal:'Bảng tin cá nhân',
-            employee_capacity:'Năng lực nhân viên',
+            dashboard_personal: 'Bảng tin cá nhân',
+            employee_capacity: 'Năng lực nhân viên',
             discipline: 'Quản lý khen thưởng - kỷ luật',
             annual_leave: 'Quản lý nghỉ phép',
             salary_employee: 'Quản lý lương nhân viên',
@@ -2169,7 +2342,7 @@ export default {
             performer: 'Người thực hiện',
             approver: 'Người phê duyệt',
             observer: 'Người quan sát',
-            supporter: 'Người hỗ trợ',
+            consultant: 'Người tư vấn',
             formula: 'Công thức tính điểm',
             activity_list: 'Danh sách hoạt động',
             information_list: 'Danh sách thông tin',
@@ -2221,7 +2394,7 @@ export default {
                 get_subtask_success: 'Lấy công việc con thành công',
                 get_task_of_informed_employee_success: 'Lấy công việc theo vai trò người quan sát thành công',
                 get_task_of_creator_success: 'Lấy công việc theo vai trò người tạo thành công',
-                get_task_of_consulted_employee_success: 'Lấy công việc theo vai trò người hỗ trợ thành công',
+                get_task_of_consulted_employee_success: 'Lấy công việc theo vai trò người tư vấn thành công',
                 get_task_of_accountable_employee_success: 'Lấy công việc theo vai trò người phê duyệt thành công',
                 get_task_of_responsible_employee_success: 'Lấy công việc theo vai trò người thực hiện',
                 get_tasks_by_role_success: 'Lấy công việc tảo bởi người dùng thành công',
@@ -2236,7 +2409,7 @@ export default {
                 get_subtask_fail: 'Lấy công việc con thất bại',
                 get_task_of_informed_employee_fail: 'Lấy công việc theo vai trò người quan sát thất bại',
                 get_task_of_creator_fail: 'Lấy công việc theo vai trò người tạo thất bại',
-                get_task_of_consulted_employee_fail: 'Lấy công việc theo vai trò người hỗ trợ thất bại',
+                get_task_of_consulted_employee_fail: 'Lấy công việc theo vai trò người tư vấn thất bại',
                 get_task_of_accountable_employee_fail: 'Lấy công việc theo vai trò người phê duyệt thất bại',
                 get_task_of_responsible_employee_fail: 'Lấy công việc theo vai trò người thực hiện thất bại',
                 get_tasks_by_role_fail: 'Lấy công việc tạo bởi người ',
@@ -2251,7 +2424,7 @@ export default {
 
                 responsible: 'Người thực hiện',
                 accountable: 'Người phê duyệt',
-                consulted: 'Người hỗ trợ',
+                consulted: 'Người tư vấn',
                 creator: 'Người thiết lập',
                 informed: 'Người quan sát',
                 all_role: 'Tất cả vai trò',
@@ -2392,10 +2565,10 @@ export default {
                 detail_acc_edit: 'Chỉnh sửa công việc với vai trò người phê duyệt',
                 detail_resp_eval: 'Đánh giá công việc với vai trò người thực hiện',
                 detail_acc_eval: 'Đánh giá công việc với vai trò người phê duyệt',
-                detail_cons_eval: 'Đánh giá công việc với vai trò người hỗ trợ',
+                detail_cons_eval: 'Đánh giá công việc với vai trò người tư vấn',
                 detail_resp_stop: 'Kết thúc công việc với vai trò người thực hiện',
                 detail_acc_stop: 'Kết thúc công việc với vai trò người phê duyệt',
-                detail_cons_stop: 'Kết thúc công việc với vai trò người hỗ trợ',
+                detail_cons_stop: 'Kết thúc công việc với vai trò người tư vấn',
                 detail_task_permission: 'Công việc không tồn tại hoặc bạn không có quyền truy cập',
 
                 evaluate_date: 'Ngày đánh giá',
@@ -2430,7 +2603,7 @@ export default {
                 add_raci: 'Phân định trách nhiệm',
                 add_resp: 'Chọn người thực hiện',
                 add_acc: 'Chọn người phê duyệt',
-                add_cons: 'Chọn người hỗ trợ',
+                add_cons: 'Chọn người tư vấn',
                 add_inform: 'Chọn người quan sát',
 
                 calc_form: 'Thông tin công thức tính điểm tự động',
@@ -2476,7 +2649,7 @@ export default {
                 dashboard_created: 'Đã tạo',
                 dashboard_need_perform: 'Cần thực hiện',
                 dashboard_need_approve: 'Cần phê duyệt',
-                dashboard_need_consult: 'Cần hỗ trợ',
+                dashboard_need_consult: 'Cần tư vấn',
                 dashboard_area_result: 'Miền kết quả công việc',
                 dashboard_overdue: 'Công việc quá hạn',
                 dashboard_about_to_overdue: 'Công việc sắp hết hạn',
@@ -2494,6 +2667,8 @@ export default {
                 evaluate_task_fail: 'Đánh giá công việc thất bại',
                 edit_hours_spent_in_evaluate_success: 'Tính thời gian trong lần đánh giá thành công',
                 edit_hours_spent_in_evaluate_fail: 'Tính thời gian trong lần đánh giá thất bại',
+                edit_employee_collaborated_success: 'Chỉnh sửa nhân viên tham gia công việc thành công',
+                edit_employee_collaborated_failure: 'Chỉnh sửa nhân viên tham gia công việc thất bại',
 
                 add_new_task: 'Thêm công việc mới',
                 // add_err: 
@@ -2508,10 +2683,11 @@ export default {
                 add_err_special_character: 'Tên không được chứa kí tự đặc biệt',
                 add_err_end_date: 'Ngày kết thúc phải sau ngày bắt đầu',
                 date_not_empty: 'Tháng tìm kiếm không được bỏ trống',
-                
+
                 unit_evaluate: "Đơn vị tiếp nhận kết quả đánh giá công việc",
                 unit_manage_task: "Đơn vị quản lý công việc",
                 collaborated_with_organizational_units: "Đơn vị phối hợp thực hiện công việc",
+                task_empty_employee: "Đơn vị bạn chưa có người tham gia",
                 delete_eval: "Xóa đánh giá tháng này",
                 delete_eval_title: 'Bạn có chắc chắn muốn xóa đánh giá này?',
                 delete_evaluation_success: "Xóa đánh giá thành công",
@@ -2676,7 +2852,7 @@ export default {
                 err_date_required: 'Ngày phải có giá trị',
                 err_nan: 'Giá trị phải là số',
                 err_has_accountable: 'Phải có ít nhất một người phê duyệt',
-                err_has_consulted: 'Phải có ít nhất một người hỗ trợ',
+                err_has_consulted: 'Phải có ít nhất một người tư vấn',
                 err_has_responsible: 'Phải có ít nhất một người thực hiện',
 
                 // swal
@@ -2687,7 +2863,7 @@ export default {
                 log_edit_name: 'Tên công việc mới',
                 log_edit_description: 'MÔ tả công việc mới',
                 log_edit_kpi: 'Chỉnh sửa liên kết kpi',
-                log_edit_kpi_new: 'Liên kết kpi mới',
+                log_edit_kpi_new: 'Liên kết KPI mới',
                 log_edit_eval_info: 'Chỉnh sửa thông tin đánh giá công việc',
                 log_edit_progress: 'Mức độ hoàn thành công việc mới',
 
@@ -2705,7 +2881,7 @@ export default {
                     approved_point: 'Điểm quản lí đánh giá',
 
                     responsible: 'Vai trò người thực hiện',
-                    consulted: 'Vai trò người hỗ trợ',
+                    consulted: 'Vai trò người tư vấn',
                     accountable: 'Vai trò người phê duyệt',
 
                     err_range: 'Giá trị không được vượt quá khoảng 0-100',
@@ -2776,6 +2952,8 @@ export default {
                 update_task_process_fail: 'Cập nhật quy trình công việc thất bại',
                 edit_info_process_success: 'Chỉnh sửa thông tin quy trình công việc thành công',
                 edit_info_process_fail: 'Chỉnh sửa thông tin quy trình công việc thất bại',
+                import_process_success: "Thêm mẫu quy trình từ file excel thành công",
+                import_process_fail: "Thêm mẫu quy trình từ file excel thất bại",
 
                 error: {
                     empty_name: "Tên quy trình không được bỏ trống",
@@ -2997,7 +3175,7 @@ export default {
                     option: 'Tùy chọn',
                     analyze: 'Phân tích',
                     statistics_chart_title: 'Thống kê kết quả KPI của nhân viên',
-                    result_kpi_titile: 'Kết quả Kpi tất cả nhân viên',
+                    result_kpi_titile: 'Kết quả KPI tất cả nhân viên',
                     auto_eva: 'Hệ thống đánh giá',
                     employee_eva: 'Cá nhân tự đánh giá',
                     approver_eva: 'Người phê duyệt đánh giá',
@@ -3026,7 +3204,7 @@ export default {
                     not_evaluated_yet: 'Chưa đánh giá',
                     target: 'mục tiêu',
                     view_detail: "Xem chi tiết",
-                    clone_to_new_kpi: 'Tạo kpi tháng mới từ kpi tháng này',
+                    clone_to_new_kpi: 'Tạo KPI tháng mới từ KPI tháng này',
                     name: 'Tên',
                     target: 'Mục tiêu đơn vị',
                     criteria: 'Tiêu chí đánh giá',
@@ -3169,8 +3347,8 @@ export default {
                     confirm_approve: 'Bạn chắc chắn muốn kích hoạt KPI này?',
                     confirm_not_enough_weight: 'Tổng trọng số phải bằng 100',
                     confirm_cancel_approve: 'Bạn chắc chắn muốn hủy kích hoạt KPI này?',
-                    confirm_edit_status_success: 'Chỉnh sửa trạng thái Kpi thành công',
-                    confirm_edit_status_failure: 'Chỉnh sửa trạng thái Kpi không thành công',
+                    confirm_edit_status_success: 'Chỉnh sửa trạng thái KPI thành công',
+                    confirm_edit_status_failure: 'Chỉnh sửa trạng thái KPI không thành công',
 
                     confirm_kpi: 'Bạn chắc chắn muốn xóa mục tiêu KPI này?',
                     confirm_approving: 'KPI đã kích hoạt, bạn không thể xóa!',
@@ -3611,13 +3789,48 @@ export default {
                 status: 'Trạng thái',
                 note: 'Ghi chú',
                 bill: 'Mã phiếu',
+                archive: 'Nơi lưu trữ',
+                bin_location: 'Khu vực đang lưu trữ',
+                choose_bin: 'Chọn nơi lưu trữ',
+                choose_stock: 'Chọn kho đang chứa'
             }
         },
 
 
         //manager order
         manage_order: {
-            quote_add_success: "Báo giá đã được tạo"
+            tax: {
+                index: 'STT',
+                code: 'Mã',
+                name: 'Tên',
+                creator: 'Người tạo',
+                status: 'Trạng thái',
+                tax_code: 'Mã thuế',
+                tax_name: 'Tên thuế',
+                choose_at_least_one_item: 'Phải chọn ít nhất 1 mặt hàng',
+                percent_is_not_null: 'Chiết khấu thuế không được để trống',
+                percent_greater_than_or_equal_zero: 'Chiết khấu thuế phải lớn hơn hoặc bằng 0',
+                add_new_tax: 'Thêm loại thuế',
+                add_successfully: 'Thêm thuế thành công',
+                add_failed: 'Thêm thuế không thành công',
+                description: 'Mô tả',
+                goods: 'Các mặt hàng',
+                select_goods: 'Chọn các mặt hàng',
+                tax_percent: 'Chiết khấu (%)',
+                add: 'Thêm mới',
+                reset: 'Xóa trắng',
+                action: 'Hành động',
+                version: 'Phiên bản',
+                effective: 'Đang hiệu lực',
+                expire: 'Hết hiệu lực',
+                tax_detail: 'Chi tiết thuế',
+                selected_all: 'Đã chọn tất cả',
+                view_deatail: 'Xem chi tiết',
+                delete_list_goods: 'Xóa danh sách mặt hàng',
+                delete_good: 'Xóa mặt hàng',
+                detail_goods: 'Chi tiết các mặt hàng',
+                search: 'Tìm kiếm'
+            }
         },
 
         report_manager: {
@@ -3748,13 +3961,76 @@ export default {
                 created_at: "Ngày tạo",
                 list_mills: "Danh sách các xưởng",
                 works_edit: "Sửa thông tin nhà máy",
+                works_detail: "Chi tiết thông tin nhà máy",
                 edit_successfully: "Sửa thông tin nhà máy thành công",
-                edit_failure: "Sửa thông tin nhà máy thất bại"
+                edit_failure: "Sửa thông tin nhà máy thất bại",
+                mill_code: "Mã xưởng",
+                mill_name: "Tên xưởng"
             },
             manufacturing_mill: {
                 name: "Tên xưởng",
                 code: "Mã xưởng",
-                search: "Tìm kiếm"
+                search: "Tìm kiếm",
+                index: "STT",
+                worksName: "Nhà máy",
+                description: "Mô tả",
+                status: "Trạng thái",
+                create_mill: "Tạo xưởng",
+                create_manufacturing_mill: "Tạo xưởng sản xuất",
+                create_mill_successfully: "Tạo xưởng sản xuất thành công",
+                create_mill_failed: "Tạo xưởng sản xuất thất bại",
+                works: "Nhà máy",
+                choose_works: "---Chọn nhà máy---",
+                worksValue_error: "Vui lòng chọn nhà máy",
+                delete_mill: "Xóa xưởng sản xuất",
+                1: "Đang hoạt động",
+                0: "Ngừng hoạt động",
+                mill_detail: "Chi tiết xưởng sản xuất",
+                mill_edit: "Sửa thông tin xưởng sản xuất",
+                choose_status: "---Chọn trạng thái---",
+                status_error: "Vui lòng chọn trạng thái xưởng sản xuất",
+                edit_mill_successfully: "Sửa thông tin xưởng thành công",
+                edit_mill_failed: "Sửa thông tin xưởng thất bại",
+                works_name: "Tên nhà máy",
+                created_at: "Ngày tạo"
+            },
+            purchasing_request: {
+                code: "Mã phiếu đề nghị",
+                createdAt: "Ngày tạo",
+                planCode: "Mã kế hoạch",
+                receiveTime: "Ngày dự kiến nhận",
+                status: "Trạng thái",
+                creator: "Người tạo",
+                index: "STT",
+                select_all: "Chọn tất cả",
+                1: { content: "Chưa xử lý", color: "orange" },
+                2: { content: "Đã xử lý", color: "green" },
+                3: { content: "Đã hủy", color: "red" },
+                search: "Tìm kiếm",
+                select_status: "Chọn trạng thái",
+                add_purchasing_request_button: "Thêm phiếu",
+                add_purchasing_request: "Thêm phiếu đề nghị mua nguyên vật liệu",
+                create_successfully: "Thêm phiếu đề nghị thành công",
+                create_failed: "Thêm phiếu đề nghị thất bại",
+                description: "Mô tả",
+                good_code: "Mã mặt hàng",
+                good_name: "Tên mặt hàng",
+                good_base_unit: "Đơn vị tính",
+                quantity: "Số lượng",
+                delete_good: "Xóa",
+                material_info: "Thông tin nguyên vật liệu",
+                choose_material: "---Chọn nguyên vật liệu---",
+                material_code: "Mã nguyên vật liệu",
+                error_good: "Vui lòng chọn nguyên vật liệu",
+                error_description: "Mô tả không được để trống",
+                error_quantity: "Vui lòng nhập số lượng",
+                cancel_editing_good: "Hủy chỉnh sửa",
+                save_good: "Lưu",
+                add_good: "Thêm",
+                delete_good: "Xóa trắng",
+                error_quantity_lt_1: "Số lượng không thể âm hoặc bằng 0",
+                purchasing_request_detail: "Chi tiết phiếu đề nghị"
+
             }
         }
     }

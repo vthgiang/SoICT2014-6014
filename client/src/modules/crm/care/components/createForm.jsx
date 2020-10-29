@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { ButtonModal, DialogModal, SelectBox, DatePicker, TextEditor } from '../../../../common-components';
+import { ButtonModal, DatePicker, DialogModal, SelectBox, TextEditor } from '../../../../common-components';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { CrmCareTypeActions } from '../../careType/redux/action';
 import { CrmCareActions } from '../redux/action';
 
-import CKEditor from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 class CreateCareForm extends Component {
     constructor(props) {
@@ -247,7 +245,7 @@ class CreateCareForm extends Component {
                             <label>{translate('crm.care.description')}</label>
                             <TextEditor
                                 onChange={this.handleChangeDescription}
-                                data={newCare.description ? newCare.description : "fsdjfl;sdkfl;sdkl;sdfkl;d"}
+                                data={newCare.description ? newCare.description : ""}
                             />
                         </div>
 

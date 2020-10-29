@@ -24,7 +24,6 @@ class ManufacturingWorksDetailForm extends Component {
         if (manufacturingWorks.currentWorks) {
             currentWorks = manufacturingWorks.currentWorks;
         }
-        console.log(currentWorks)
         return (
             <React.Fragment>
                 <DialogModal
@@ -61,7 +60,7 @@ class ManufacturingWorksDetailForm extends Component {
                                         ?
                                         <span style={{ color: "green" }}>{translate('manufacturing.manufacturing_works.1')}</span>
                                         :
-                                        <span style={{ color: "ornage" }}>{translate('manufacturing.manufacturing_works.0')}</span>
+                                        <span style={{ color: "orange" }}>{translate('manufacturing.manufacturing_works.0')}</span>
                                 }
                             </div>
                         </div>
@@ -89,11 +88,10 @@ class ManufacturingWorksDetailForm extends Component {
                                 <table className="table table-bordered">
                                     <thead>
                                         <tr>
-                                            <th>STT</th>
-                                            <th>Mã xưởng</th>
-                                            <th>Tên xưởng</th>
-                                            {/* <th>Tổ trưởng</th> */}
-                                            <th>Mô tả</th>
+                                            <th>{translate('manufacturing.manufacturing_works.index')}</th>
+                                            <th>{translate('manufacturing.manufacturing_works.mill_code')}</th>
+                                            <th>{translate('manufacturing.manufacturing_works.mill_name')}</th>
+                                            <th>{translate('manufacturing.manufacturing_works.description')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>

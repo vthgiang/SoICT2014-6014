@@ -14,7 +14,7 @@ export const TaskProcessService = {
     updateDiagram,
 
     editProcessInfo,
-
+    importProcessTemplate,
 };
 
 
@@ -73,6 +73,22 @@ function createXmlDiagram(data) {
         url: `${process.env.REACT_APP_SERVER}/process/diagrams`,
         method: 'POST',
         data: data
+    }, true, true, 'task.task_process');
+}
+
+/**
+ * import mẫu quy trình
+ * @param {Object} data dữ liệu mẫu QT đọc từ file excel
+ */
+function importProcessTemplate(data) {
+    let idUser = getStorage("userId");
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/process/diagrams/import`,
+        method: 'POST',
+        data: {
+            data,
+            idUser,
+        }
     }, true, true, 'task.task_process');
 }
 

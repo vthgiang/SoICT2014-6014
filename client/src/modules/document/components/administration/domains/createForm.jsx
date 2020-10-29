@@ -24,11 +24,8 @@ class CreateForm extends Component {
 
     handleDescription = (e) => {
         const value = e.target.value;
-        const { translate } = this.props;
-        const { message } = ValidationHelper.validateDescription(translate, value);
         this.setState({
-            description: value,
-            descriptionError: message
+            description: value
         });
     }
 
@@ -38,11 +35,10 @@ class CreateForm extends Component {
 
 
     isValidateForm = () => {
-        const { name, description } = this.state;
-        const { translate } = this.props;
-        if (
-            !ValidationHelper.validateName(translate, name) ||
-            !ValidationHelper.validateDescription(translate, description)
+        const {name, description} = this.state;
+        const {translate} = this.props;
+        if(
+            !ValidationHelper.validateName(translate, name)
         ) return false;
         return true;
     }
@@ -59,8 +55,7 @@ class CreateForm extends Component {
     render() {
         const { translate, documents } = this.props;
         const { list } = documents.administration.domains;
-        const { descriptionError, nameError, domainParent } = this.state;
-
+        const { nameError, domainParent } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
@@ -80,10 +75,9 @@ class CreateForm extends Component {
                             <label>{translate('document.administration.domains.parent')}</label>
                             <TreeSelect data={list} value={domainParent} handleChange={this.handleParent} mode="radioSelect" />
                         </div>
-                        <div className={`form-group ${!descriptionError ? "" : "has-error"}`}>
+                        <div className="form-group">
                             <label>{translate('document.administration.domains.description')}</label>
                             <textarea style={{ minHeight: '100px' }} type="text" className="form-control" onChange={this.handleDescription} />
-                            <ErrorLabel content={descriptionError} />
                         </div>
                     </form>
                 </DialogModal>

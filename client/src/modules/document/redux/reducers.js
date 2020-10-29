@@ -492,9 +492,9 @@ export function documents(state = initState, action) {
             };
 
         case DocumentConstants.DELETE_DOCUMENT_CATEGORY_SUCCESS:
-            index = findIndex(state.administration.categories.list, action.payload._id);
+            index = findIndex(state.administration.categories.list, action.payload);
             if (index !== -1) state.administration.categories.list.splice(index, 1);
-            indexPaginate = findIndex(state.administration.categories.paginate, action.payload._id);
+            indexPaginate = findIndex(state.administration.categories.paginate, action.payload);
             if (indexPaginate !== -1) state.administration.categories.paginate.splice(indexPaginate, 1);
             return {
                 ...state,

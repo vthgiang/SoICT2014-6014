@@ -42,7 +42,7 @@ export function stocks(state = initState, action){
         case StockConstants.DELETE_STOCK_REQUEST:
             return {
                 ...state,
-                isLoading: false
+                isLoading: true
             };
 
         case StockConstants.GET_STOCK_SUCCESS:
@@ -102,7 +102,6 @@ export function stocks(state = initState, action){
         case StockConstants.DELETE_STOCK_SUCCESS:
             index = findIndex(state.listStocks, action.payload);
             indexPaginate = findIndex(state.listPaginate, action.payload);
-            console.log(index, "tttt", indexPaginate);
 
             if(index !== -1){
                 state.listStocks.splice(index, 1);
