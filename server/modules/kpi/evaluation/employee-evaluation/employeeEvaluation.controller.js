@@ -9,8 +9,8 @@ exports.getEmployeeKPISets = async (req, res) => {
     if (req.query.userId && req.query.date) {
         getKpisByMonth(req, res);
     }
-    else if(req.query.listkpis){
-        getTasksByListKpiSet(req,res)
+    else if (req.query.listkpis) {
+        getTasksByListKpiSet(req, res)
     }
     else {
         try {
@@ -189,19 +189,19 @@ getTasksByListKpiSet = async (req, res) => {
  */
 
 exports.setTaskImportanceLevel = async (req, res) => {
-    //try {
-    const kpimembers = await KPIMemberService.setTaskImportanceLevel(req.portal, req.params.id, req.query.kpiType, req.body);
-    await Logger.info(req.user.email, `Set task importance level`, req.portal);
-    res.status(200).json({
-        success: true,
-        messages: ['set_task_importance_level_success'],
-        content: kpimembers
-    });
-    // } catch (error) {
-    //     await Logger.info(req.user.email, `Set point for kpi`, req.portal);
-    //     res.status(400).json({
-    //         messages: ['set_task_importance_level_fail'],
-    //         message: error
-    //     });
-    // }
+    try {
+        const kpimembers = await KPIMemberService.setTaskImportanceLevel(req.portal, req.params.id, req.query.kpiType, req.body);
+        await Logger.info(req.user.email, `Set task importance level`, req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['set_task_importance_level_success'],
+            content: kpimembers
+        });
+    } catch (error) {
+        await Logger.info(req.user.email, `Set point for kpi`, req.portal);
+        res.status(400).json({
+            messages: ['set_task_importance_level_fail'],
+            message: error
+        });
+    }
 }

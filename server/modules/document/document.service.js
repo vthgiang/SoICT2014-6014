@@ -479,11 +479,12 @@ exports.editDocumentCategory = async (id, data, portal) => {
 }
 
 exports.deleteDocumentCategory = async (id, portal) => {
-    const category = await DocumentCategory(connect(DB_CONNECTION, portal)).findById(id);
-    const docs = await Document.find({ category: id });
+
+    const category = await DocumentCategory(connect(DB_CONNECTION, portal)).findOne({ _id: id });
+    const docs = await Document(connect(DB_CONNECTION, portal)).find({ category: id });
     if (docs.length > 0) throw ['category_used_to_document', 'cannot_delete_category'];
     await DocumentCategory(connect(DB_CONNECTION, portal)).deleteOne({ _id: id });
-
+    
     return category;
 }
 
@@ -788,8 +789,8 @@ exports.createDocumentArchive = async (portal, data, company) => {
         query.parent = data.parent;
     }
     query.path = await findPath(data, portal);
-    const check = await DocumentArchive(connect(DB_CONNECTION, portal)).findOne({name: data.name});
-    if(check) throw ['name_exist'];
+    const check = await DocumentArchive(connect(DB_CONNECTION, portal)).findOne({ name: data.name });
+    if (check) throw ['name_exist'];
     await DocumentArchive(connect(DB_CONNECTION, portal)).create(query);
     return await this.getDocumentArchives(portal, company);
 }
@@ -829,7 +830,7 @@ exports.editDocumentArchive = async (id, data, portal, company) => {
 /**
  * Lấy đường dẫn chi tiết đến lưu trữ hiện tại
  */
-findPath = async(data, portal) =>  {
+findPath = async (data, portal) => {
     let path = "";
     let arrayParent = [];
     arrayParent.push(data.name);
@@ -851,7 +852,7 @@ findPath = async(data, portal) =>  {
 /**
  * Xóa một node
  */
-deleteNode = async(id, portal) => {
+deleteNode = async (id, portal) => {
     const archive = await DocumentArchive(connect(DB_CONNECTION, portal)).findById(id);
     if (!archive) throw ['document_archive_not_found'];
     let parent = archive.parent;

@@ -11,12 +11,12 @@ class CreateForm extends Component {
         this.state = {
             archiveParent: ''
         }
-    } 
+    }
 
     handleName = (e) => {
-        const {value} = e.target;
-        const {translate} = this.props;
-        const {message} = ValidationHelper.validateName(translate, value, 1, 255);
+        const { value } = e.target;
+        const { translate } = this.props;
+        const { message } = ValidationHelper.validateName(translate, value, 1, 255);
         this.setState({
             name: value,
             nameError: message
@@ -24,9 +24,9 @@ class CreateForm extends Component {
     }
 
     handleDescription = (e) => {
-        const {value} = e.target;
-        const {translate} = this.props;
-        const {message} = ValidationHelper.validateDescription(translate, value);
+        const { value } = e.target;
+        const { translate } = this.props;
+        const { message } = ValidationHelper.validateDescription(translate, value);
         this.setState({
             description: value,
             descriptionError: message
@@ -38,11 +38,10 @@ class CreateForm extends Component {
     };
 
     isValidateForm = () => {
-        let {name, description} = this.state;
-        let {translate} = this.props;
-        if(
-            !ValidationHelper.validateName(translate, name, 1, 255).status || 
-            !ValidationHelper.validateDescription(translate, description).status
+        let { name } = this.state;
+        let { translate } = this.props;
+        if (
+            !ValidationHelper.validateName(translate, name, 1, 255).status
         ) return false;
         return true;
     }

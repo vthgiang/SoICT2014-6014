@@ -14,8 +14,8 @@ class CreateForm extends Component {
 
     handleName = (e) => {
         const value = e.target.value;
-        const {translate} = this.props;
-        const {message} = ValidationHelper.validateName(translate, value)
+        const { translate } = this.props;
+        const { message } = ValidationHelper.validateName(translate, value)
         this.setState({
             name: value,
             nameError: message
@@ -24,8 +24,8 @@ class CreateForm extends Component {
 
     handleDescription = (e) => {
         const value = e.target.value;
-        const {translate} = this.props;
-        const {message} = ValidationHelper.validateDescription(translate, value);
+        const { translate } = this.props;
+        const { message } = ValidationHelper.validateDescription(translate, value);
         this.setState({
             description: value,
             descriptionError: message
@@ -38,9 +38,9 @@ class CreateForm extends Component {
 
 
     isValidateForm = () => {
-        const {name, description} = this.state;
-        const {translate} = this.props;
-        if(
+        const { name, description } = this.state;
+        const { translate } = this.props;
+        if (
             !ValidationHelper.validateName(translate, name) ||
             !ValidationHelper.validateDescription(translate, description)
         ) return false;
@@ -60,6 +60,7 @@ class CreateForm extends Component {
         const { translate, documents } = this.props;
         const { list } = documents.administration.domains;
         const { descriptionError, nameError, domainParent } = this.state;
+
         return (
             <React.Fragment>
                 <DialogModal

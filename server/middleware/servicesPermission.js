@@ -267,6 +267,7 @@ exports.data = [
     { path: '/kpi/organizational-unit/creation/organizational-unit-kpis', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/kpi/organizational-unit/creation/organizational-unit-kpis/:id', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/kpi/organizational-unit/management/organizational-unit-kpi-sets/:id/copy', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/kpi/organizational-unit/management/organizational-unit-kpi-sets/calculate', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/kpi/organizational-unit/dashboard/organizational-units/get-children-of-organizational-unit-as-tree', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
 
     { path: '/kpi/employee/creation/employee-kpi-sets', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
@@ -468,7 +469,7 @@ exports.data = [
     { path: 'stocks', method: 'POST', roles: ['Super Admin', 'Admin'] },
     { path: 'stocks/:id', method: 'PATCH', roles: ['Super Admin', 'Admin'] },
     { path: 'stocks/:id', method: 'DELETE', roles: ['Super Admin', 'Admin'] },
-    
+
     { path: 'bin-locations', method: 'GET', roles: ['Super Admin', 'Admin'] },
     { path: 'bin-locations/get-child', method: 'GET', roles: ['Super Admin', 'Admin'] },
     { path: 'bin-locations/get-detail/:id', method: 'GET', roles: ['Super Admin', 'Admin'] },
@@ -495,7 +496,7 @@ exports.data = [
     { path: '/goods/:id', method: 'DELETE', roles: ['Super Admin', 'Admin'] },
     { path: '/goods/by-category/:id', method: 'GET', roles: ['Super Admin', 'Admin'] },
 
-    { path: '/lot', method: 'GET', roles: ['Super Admin', 'Admin']},
+    { path: '/lot', method: 'GET', roles: ['Super Admin', 'Admin'] },
 
     //order
     { path: "/orders", method: "GET", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },
@@ -529,7 +530,7 @@ exports.data = [
     { path: '/crm/cares/:id', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/crm/cares/:id', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/crm/cares/:id', method: 'DELETE', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    
+
     { path: '/crm/careTypes', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/crm/careTypes', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/crm/careTypes/:id', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },

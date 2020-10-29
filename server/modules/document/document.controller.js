@@ -285,7 +285,7 @@ exports.editDocumentCategory = async (req, res) => {
 
 exports.deleteDocumentCategory = async (req, res) => {
     try {
-        const doc = await DocumentServices.deleteDocumentCategory(req.params.id);
+        const doc = await DocumentServices.deleteDocumentCategory(req.params.id, req.portal);
 
         await Logger.info(req.user.email, 'DELETE_DOCUMENT_CATEGORY', req.portal);
         res.status(200).json({
