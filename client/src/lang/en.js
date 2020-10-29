@@ -2535,7 +2535,7 @@ export default {
 
                 unit_evaluate: "Unit receiving work evaluation results",
                 unit_manage_task: "Unit managing task",
-                collaborated_with_organizational_units: "Select units that have collaborated",
+                collaborated_with_organizational_units: "Units that have collaborated",
                 task_empty_employee: "Your organization unit has no participants",
                 delete_eval: "Delete evaluation",
                 delete_eval_title: 'Are you sure to delete this evaluation?',

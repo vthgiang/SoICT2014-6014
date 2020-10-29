@@ -2686,7 +2686,7 @@ export default {
 
                 unit_evaluate: "Đơn vị tiếp nhận kết quả đánh giá công việc",
                 unit_manage_task: "Đơn vị quản lý công việc",
-                collaborated_with_organizational_units: "Chọn đơn vị phối hợp thực hiện công việc",
+                collaborated_with_organizational_units: "Đơn vị phối hợp thực hiện công việc",
                 task_empty_employee: "Đơn vị bạn chưa có người tham gia",
                 delete_eval: "Xóa đánh giá tháng này",
                 delete_eval_title: 'Bạn có chắc chắn muốn xóa đánh giá này?',
