@@ -161,6 +161,7 @@ class TaskAddModal extends Component {
         if (value) {
             this.props.getAllUserOfDepartment(value);
             this.props.getChildrenOfOrganizationalUnits(value);
+            this.props.getTaskTemplateByUser(1, 10000, [value], ""); //pageNumber, noResultsPerPage, arrayUnit, name=""
             this.setState(state => {
                 return {
                     ...state,
@@ -362,6 +363,7 @@ class TaskAddModal extends Component {
 
             if (defaultUnit) {
                 this.props.getChildrenOfOrganizationalUnits(defaultUnit._id);
+                this.props.getTaskTemplateByUser(1, 10000, [defaultUnit._id], ""); //pageNumber, noResultsPerPage, arrayUnit, name=""
             }
 
             this.setState(state => { // Khởi tạo giá trị cho organizationalUnit của newTask
@@ -419,9 +421,10 @@ class TaskAddModal extends Component {
         }
 
         if (tasktemplates.items && newTask.organizationalUnit) {
-            listTaskTemplate = tasktemplates.items.filter(function (taskTemplate) {
-                return taskTemplate.organizationalUnit._id === newTask.organizationalUnit;
-            });
+            // listTaskTemplate = tasktemplates.items.filter(function (taskTemplate) {
+            //     return taskTemplate.organizationalUnit._id === newTask.organizationalUnit;
+            // });
+            listTaskTemplate = tasktemplates.items
         }
         if (user.organizationalUnitsOfUser) {
             units = user.organizationalUnitsOfUser;
