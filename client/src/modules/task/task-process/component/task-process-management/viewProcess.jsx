@@ -131,6 +131,7 @@ class ViewProcess extends Component {
                         infoTask[i].responsibleEmployees.forEach(x => {
                            responsible.push(x.name)
                         })
+                        console.log(responsible)
                         infoTask[i].accountableEmployees.forEach(x => {
                             accountable.push(x.name)
                          })
@@ -138,8 +139,8 @@ class ViewProcess extends Component {
                         element1 && modeling.updateProperties(element1, {
                             progress: infoTask[i].progress,
                             shapeName: infoTask[i].name,
-                            // responsibleName: responsible,
-                            // accountableName: accountable
+                            responsibleName: responsible,
+                            accountableName: accountable
                         });
                         if (infoTask[i].status === "finished") {
                             element1 && modeling.setColor(element1, {

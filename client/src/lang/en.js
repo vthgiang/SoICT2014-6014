@@ -685,6 +685,9 @@ export default {
             cannot_delete_category: 'Cannot delete this category',
             document_domain_not_found: 'Domain not found',
             document_archive_not_found: 'Archive not found',
+            domain_name_exist: 'Domain name exist',
+            category_name_exist: 'Category name exist',
+            name_exist: 'Name exist',
         },
 
         crm: {

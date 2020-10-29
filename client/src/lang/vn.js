@@ -686,6 +686,9 @@ export default {
             cannot_delete_category: 'Không thể xóa loại tài liệu',
             document_domain_not_found: 'Không tìm thấy dữ liệu về lĩnh vực tài liệu',
             document_archive_not_found: 'Không tìm thấy dữ liệu về thông tin lưu trữ tài liệu',
+            domain_name_exist: 'Tên lĩnh vực đã được sử dụng',
+            category_name_exist: 'Tên loại đã được sử dụng',
+            name_exist: 'Tên đã được sử dụng',
         },
 
         crm: {

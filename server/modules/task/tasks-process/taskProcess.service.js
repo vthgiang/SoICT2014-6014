@@ -710,15 +710,16 @@ exports.importProcessTemplate = async (portal, data, idUser) => {
 
                     data[i].tasks[k].taskInformations[j] = elm;
                 } else {
-                    if (!data[i].tasks[k].taskInformations[j][0][0]) {
-                        data[i].tasks[k].taskInformations = [];
-                        break;
-                    }
+                    // if (!data[i].tasks[k].taskInformations[j][0][0]) {
+                    //     data[i].tasks[k].taskInformations = [];
+                    //     break;
+                    // }
                     data[i].tasks[k].taskInformations.splice(j, 1);
                     j--;
                 }
             }
 
+            console.log('data[i].tasks[k].taskActions', data[i].tasks[k].taskActions);
             for (let j = 0; j < data[i].tasks[k].taskActions.length; j++) {
                 if (data[i].tasks[k].taskActions[j][0][0]) {
                     let elm = {};
@@ -732,10 +733,10 @@ exports.importProcessTemplate = async (portal, data, idUser) => {
 
                     data[i].tasks[k].taskActions[j] = elm;
                 } else {
-                    if (!data[i].tasks[k].taskActions[j][0][0]) {
-                        data[i].tasks[k].taskActions = [];
-                        break;
-                    }
+                    // if (!data[i].tasks[k].taskActions[j][0][0]) {
+                    //     data[i].tasks[k].taskActions = [];
+                    //     break;
+                    // }
                     data[i].tasks[k].taskActions.splice(j, 1);
                     j--;
                 }
