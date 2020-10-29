@@ -53,7 +53,7 @@ function getBinLocations(data) {
 }
 
 function getChildBinLocations (data){
-    if(data !== undefined) {
+    if(data.limit !== undefined && data.page !== undefined) {
         return dispatch => {
             dispatch({
                 type: BinLocationConstants.GET_PAGINATE_REQUEST
@@ -78,7 +78,7 @@ function getChildBinLocations (data){
             dispatch({
                 type: BinLocationConstants.GET_BIN_LOCATION_CHILD_REQUEST
             })
-            BinLocationServices.getChildBinLocations()
+            BinLocationServices.getChildBinLocations(data)
             .then(res => {
                 dispatch({
                     type: BinLocationConstants.GET_BIN_LOCATION_CHILD_SUCCESS,

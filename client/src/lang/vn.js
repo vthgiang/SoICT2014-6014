@@ -69,12 +69,12 @@ export default {
                 'Tiết kiệm chi phí đầu tư',
                 'Dữ liệu hệ thống an toàn và bảo mật',
                 'Hỗ trợ khách hàng 24/7'
-                ],
-                auth: {
-                    signin: 'Đăng nhập',
-                    signout: 'Đăng xuất',
-                    start: 'Bắt đầu',
-                },
+            ],
+            auth: {
+                signin: 'Đăng nhập',
+                signout: 'Đăng xuất',
+                start: 'Bắt đầu',
+            },
             service: {
                 title: 'Các giải pháp về quản lý trong doanh nghiệp',
                 content: 'Chúng tôi phục vụ các công ty vừa và nhỏ trong tất cả các ngành liên quan đến công nghệ với các dịch vụ chất lượng cao được trình bày dưới đây',
@@ -3728,13 +3728,48 @@ export default {
                 status: 'Trạng thái',
                 note: 'Ghi chú',
                 bill: 'Mã phiếu',
+                archive: 'Nơi lưu trữ',
+                bin_location: 'Khu vực đang lưu trữ',
+                choose_bin: 'Chọn nơi lưu trữ',
+                choose_stock: 'Chọn kho đang chứa'
             }
         },
 
 
         //manager order
         manage_order: {
-            quote_add_success: "Báo giá đã được tạo"
+            tax: {
+                index: 'STT',
+                code: 'Mã',
+                name: 'Tên',
+                creator: 'Người tạo',
+                status: 'Trạng thái',
+                tax_code: 'Mã thuế',
+                tax_name: 'Tên thuế',
+                choose_at_least_one_item: 'Phải chọn ít nhất 1 mặt hàng',
+                percent_is_not_null: 'Chiết khấu thuế không được để trống',
+                percent_greater_than_or_equal_zero: 'Chiết khấu thuế phải lớn hơn hoặc bằng 0',
+                add_new_tax: 'Thêm loại thuế',
+                add_successfully: 'Thêm thuế thành công',
+                add_failed: 'Thêm thuế không thành công',
+                description: 'Mô tả',
+                goods: 'Các mặt hàng',
+                select_goods: 'Chọn các mặt hàng',
+                tax_percent: 'Chiết khấu (%)',
+                add: 'Thêm mới',
+                reset: 'Xóa trắng',
+                action: 'Hành động',
+                version: 'Phiên bản',
+                effective: 'Đang hiệu lực',
+                expire: 'Hết hiệu lực',
+                tax_detail: 'Chi tiết thuế',
+                selected_all: 'Đã chọn tất cả',
+                view_deatail: 'Xem chi tiết',
+                delete_list_goods: 'Xóa danh sách mặt hàng',
+                delete_good: 'Xóa mặt hàng',
+                detail_goods: 'Chi tiết các mặt hàng',
+                search: 'Tìm kiếm'
+            }
         },
 
         report_manager: {
@@ -3897,6 +3932,44 @@ export default {
                 edit_mill_failed: "Sửa thông tin xưởng thất bại",
                 works_name: "Tên nhà máy",
                 created_at: "Ngày tạo"
+            },
+            purchasing_request: {
+                code: "Mã phiếu đề nghị",
+                createdAt: "Ngày tạo",
+                planCode: "Mã kế hoạch",
+                receiveTime: "Ngày dự kiến nhận",
+                status: "Trạng thái",
+                creator: "Người tạo",
+                index: "STT",
+                select_all: "Chọn tất cả",
+                1: { content: "Chưa xử lý", color: "orange" },
+                2: { content: "Đã xử lý", color: "green" },
+                3: { content: "Đã hủy", color: "red" },
+                search: "Tìm kiếm",
+                select_status: "Chọn trạng thái",
+                add_purchasing_request_button: "Thêm phiếu",
+                add_purchasing_request: "Thêm phiếu đề nghị mua nguyên vật liệu",
+                create_successfully: "Thêm phiếu đề nghị thành công",
+                create_failed: "Thêm phiếu đề nghị thất bại",
+                description: "Mô tả",
+                good_code: "Mã mặt hàng",
+                good_name: "Tên mặt hàng",
+                good_base_unit: "Đơn vị tính",
+                quantity: "Số lượng",
+                delete_good: "Xóa",
+                material_info: "Thông tin nguyên vật liệu",
+                choose_material: "---Chọn nguyên vật liệu---",
+                material_code: "Mã nguyên vật liệu",
+                error_good: "Vui lòng chọn nguyên vật liệu",
+                error_description: "Mô tả không được để trống",
+                error_quantity: "Vui lòng nhập số lượng",
+                cancel_editing_good: "Hủy chỉnh sửa",
+                save_good: "Lưu",
+                add_good: "Thêm",
+                delete_good: "Xóa trắng",
+                error_quantity_lt_1: "Số lượng không thể âm hoặc bằng 0",
+                purchasing_request_detail: "Chi tiết phiếu đề nghị"
+
             }
         }
     }
