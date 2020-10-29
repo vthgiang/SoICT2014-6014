@@ -71,7 +71,7 @@ export default {
                 'Hỗ trợ khách hàng 24/7'
                 ],
                 auth: {
-                    sigin: 'Đăng nhập',
+                    signin: 'Đăng nhập',
                     signout: 'Đăng xuất',
                     start: 'Bắt đầu',
                 },

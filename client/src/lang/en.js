@@ -71,7 +71,7 @@ export default {
                 '24/7 customer support'
             ],
             auth: {
-                sigin: 'Sign in',
+                signin: 'Sign in',
                 signout: 'Sign out',
                 start: 'Get started',
             },
