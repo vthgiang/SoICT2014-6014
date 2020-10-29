@@ -20,6 +20,28 @@ export function taskProcess(state = {}, action) {
                 error: action.error,
                 isLoading: false
             };
+        case TaskProcessConstants.IMPORT_PROCESS_TEMPLATE_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            };
+        case TaskProcessConstants.IMPORT_PROCESS_TEMPLATE_SUCCESS:
+            for(let i in action.payload.content){
+                let item = action.payload.content[i];
+                state.xmlDiagram.push(item);
+            }
+            return {
+                ...state,
+                // xmlDiagram: [
+                //     ...state.xmlDiagram,
+                //     action.payload.content
+                // ],
+            };
+        case TaskProcessConstants.IMPORT_PROCESS_TEMPLATE_FAIL:
+            return {
+                error: action.error,
+                isLoading: false
+            };
         case TaskProcessConstants.GET_ALL_XML_DIAGRAM_REQUEST:
             return {
                 ...state,

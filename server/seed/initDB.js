@@ -94,7 +94,7 @@ const initDB = async() => {
 	 */
 	const links = await Link(systemDB).insertMany([
         {
-            url: '/',
+            url: '/home',
             description: 'Trang chủ hệ thống quản lý doanh nghiệp',
             deleteSoft: false
         },

@@ -489,7 +489,7 @@ class BinEditForm extends Component {
                         <div className={`form-group`}>
                             <label className="control-label">{translate('manage_warehouse.bin_location_management.contained')}</label>
                             <div>
-                                <input type="number" className="form-control" value={good.contained} placeholder={translate('manage_warehouse.good_management.contained')} onChange={this.handleContainedChange} />
+                                <input type="number" className="form-control" value={good.contained} disabled placeholder={translate('manage_warehouse.good_management.contained')} onChange={this.handleContainedChange} />
                             </div>
                         </div>
                         <div className={`form-group ${!errorCapacity ? "" : "has-error"}`}>

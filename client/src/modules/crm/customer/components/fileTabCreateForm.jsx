@@ -91,8 +91,10 @@ class FileTabCreateForm extends Component {
                     <div className="row">
                         <div className="col-md-12">
                             <h4 className="row col-md-6 col-xs-8">{translate('crm.customer.list_attachments')}:</h4>
-                            <FileAddModal callBackFromParentCreateForm={this.handleAddFile} />
-                            <button onClick={() => {this.forceUpdate()}}>Force Update</button>
+                            <FileAddModal
+                                handleAddFileAttachment={this.handleAddFile}
+
+                            />
                             {itemEdit &&
                                 <FileEditModal
                                     _id={itemEdit}

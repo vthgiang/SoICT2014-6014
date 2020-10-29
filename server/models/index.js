@@ -17,6 +17,9 @@ module.exports = {
     Salary: require('./human-resource/salary.model'),
     Timesheet: require('./human-resource/timesheet.model'),
 
+    // Major: require('./human-resource/major.model'),
+    // CareerPosition: require('./human-resource/careerPosition.model'),
+
     EmployeeKpi: require('./kpi/employeeKpi.model'),
     EmployeeKpiSet: require('./kpi/employeeKpiSet.model'),
     OrganizationalUnitKpi: require('./kpi/organizationalUnitKpi.model'),

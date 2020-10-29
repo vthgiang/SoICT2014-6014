@@ -176,7 +176,7 @@ class BinManagementTable extends Component {
                 {
                     deleteNode.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteBins}>{translate('general.delete')}</button>
                 }
-                <BinCreateForm binParentCreate={binParent[0]} binStock={stock} />
+                <BinCreateForm />
                 <div className="row"
                 >
                     <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">

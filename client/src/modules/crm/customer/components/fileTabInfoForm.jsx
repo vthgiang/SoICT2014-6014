@@ -31,7 +31,7 @@ class FileTabInfoForm extends Component {
                                             <tr className={`item-${index}`} key={index}>
                                                 <td>{o.name}</td>
                                                 <td>{o.description}</td>
-                                                <td>{o.fileName}</td>
+                                                <td><a href={`${o.url}`} target="_blank">{o.fileName}</a></td>
                                             </tr>
                                         )) : null
                                     }

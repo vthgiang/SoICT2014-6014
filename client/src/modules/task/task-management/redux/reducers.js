@@ -187,6 +187,25 @@ export function tasks(state = {}, action) {
                 error: action.error,
                 isLoading: false
             };
+        case taskManagementConstants.GET_PAGINATE_TASK_BY_ORGANIZATIONALUNIT_REQUEST:
+            return {
+                ...state,
+                tasks: null,
+                pages: null,
+                isLoading: true
+            }
+        case taskManagementConstants.GET_PAGINATE_TASK_BY_ORGANIZATIONALUNIT_SUCCESS:
+            return {
+                ...state,
+                tasks: action.payload.tasks,
+                pages: action.payload.totalPage,
+                isLoading: false
+            };
+        case taskManagementConstants.GET_PAGINATE_TASK_BY_ORGANIZATIONALUNIT_FAILURE:
+            return {
+                error: action.error,
+                isLoading: false
+            };
         case taskManagementConstants.ADDNEW_TASK_REQUEST:
             return {
                 ...state,

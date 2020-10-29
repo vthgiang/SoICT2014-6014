@@ -27,7 +27,7 @@ class Header extends Component {
             <React.Fragment>
                 <header className="main-header">
                     <Link to='/' className="logo">
-                        <span className="logo-mini"><b className="text-white">DX</b></span>
+                        <span className="logo-mini"><img src='/logo-white.png'/></span>
                         <span className="logo-lg"><b className="text-white">DX Workspace</b></span>
                     </Link>
                     <nav className="navbar navbar-static-top">

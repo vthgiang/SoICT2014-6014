@@ -998,7 +998,6 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
     var tasks;
     var perPage = Number(perPage);
     var page = Number(number);
-
     var keySearch;
     if (type === "paginated_task_by_user") {
         keySearch = {
@@ -1757,7 +1756,6 @@ exports.sendEmailCheckTaskLastMonth = async () => {
                                 if (currentEvaluate[i].results.length !== 0) {
                                     for (let j in currentEvaluate[i].results) {
                                         let res = currentEvaluate[i].results[j];
-                                        console.log(typeof res.employee);
                                         if (res.employee === userId[j]) {
                                             add = false;
                                             if (res.kpis.length === 0) {
