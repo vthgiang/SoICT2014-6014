@@ -392,7 +392,6 @@ exports.importDocument = async (portal, data, company) => {
         }
 
         // find archive
-        console.log('rrrrrrrrr', data[i].archives[0])
         if (data[i].archives && data[i].archives[0] && data[i].archives.length) {
             let archives = [];
             for (let j in data[i].archives) {
@@ -407,13 +406,14 @@ exports.importDocument = async (portal, data, company) => {
 
         // file role
 
-        if (data[i].roles && data[i].roles.length) {
+        if (data[i].roles && data[i].roles.length && data[i].roles[0]) {
             let roles = [];
             for (let j in data[i].roles) {
                 const role = await Role(connect(DB_CONNECTION, portal)).findOne({
                     name: data[i].roles[j]
                 });
-                roles.push(role.id);
+                console.log('rrrrrrrr', role, data[i].roles)
+                roles.push(role._id);
             }
             document.roles = roles;
         }
@@ -458,6 +458,9 @@ exports.getDocumentCategories = async (portal, query, company) => {
 }
 
 exports.createDocumentCategory = async (portal, data, company) => {
+    const existed = await DocumentCategory(connect(DB_CONNECTION, portal)).findOne({name: data.name});
+    if(existed) throw ['category_name_exist'];
+
     return await DocumentCategory(connect(DB_CONNECTION, portal)).create({
         company,
         name: data.name,
@@ -528,6 +531,8 @@ exports.getDocumentDomains = async (portal, company) => {
 }
 
 exports.createDocumentDomain = async (portal, data, company) => {
+    const existed = await DocumentDomain(connect(DB_CONNECTION, portal)).findOne({name: data.name});
+    if(existed) throw ['domain_name_exist'];
     let query = {
         company,
         name: data.name,
