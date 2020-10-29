@@ -125,7 +125,6 @@ exports.increaseNumberView = async (id, viewer, portal) => {
  * Tạo một tài liệu văn bản mới
  */
 exports.createDocument = async (portal, data, company) => {
-    //console.log('dataaaaaa', data)
     const newDoc = {
         company,
         name: data.name,
@@ -165,8 +164,6 @@ exports.createDocument = async (portal, data, company) => {
  * Chỉnh sửa thông tin tài liệu văn bản
  */
 exports.editDocument = async (id, data, query = undefined, portal) => {
-    // thêm lịch sử chỉnh sửa
-    //console.log('dataaa', data);
     let { creator, title, descriptions } = data;
     let createdAt = Date.now();
     let log = {

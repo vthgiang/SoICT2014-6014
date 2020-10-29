@@ -1,21 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../../common-components';
+import { DialogModal, ErrorLabel } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
 import { CategoryImportForm } from './categoryImportForm';
+import ValidationHelper from '../../../../../helpers/validationHelper';
 
 class CreateForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            value: ['0-0-0'],
-            documentTypeName: '',
-            documentTypeDescription: '',
-
-            errorName: undefined,
-            errorDescription: undefined,
-        }
+        this.state = {}
     }
 
     handleSelect = (value) => {
@@ -25,85 +19,49 @@ class CreateForm extends Component {
 
     handleName = (e) => {
         const value = e.target.value;
+        const {translate} = this.props;
+        const {message} = ValidationHelper.validateName(translate, value, 1, 255);
         this.setState({
-            documentTypeName: value
+            name: value,
+            nameError: message
         })
     }
 
     handleDescription = (e) => {
         const value = e.target.value;
         this.setState({
-            documentTypeDescription: value
+            description: value
         })
     }
 
-    validateTypeName = (value, willUpdateState) => {
-        let msg = undefined;
-        const { translate } = this.props;
-        if (value === "") {
-            msg = translate('document.no_blank_name');
-        }
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    documentTypeName: value,
-                    errorName: msg
-                }
-            })
-        }
-        return msg === undefined;
-    }
-
-    handleValidateTypeName = e => {
-        let value = e.target.value.trim();
-        this.validateTypeName(value, true);
-    }
-    validateTypeDescription = (value, willUpdateState) => {
-        const { translate } = this.props;
-        let msg = undefined;
-        if (value === "") {
-            msg = translate('document.no_blank_description');
-        }
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    documentTypeDescription: value,
-                    errorDescription: msg
-                }
-            })
-        }
-        return msg === undefined;
-    }
-
-    handleValidateTypeDescription = e => {
-        let value = e.target.value.trim();
-        this.validateTypeDescription(value, true);
-    }
     isFormValidated = () => {
-        let cons = this.validateTypeName(this.state.documentTypeName, false)
-            && this.validateTypeDescription(this.state.documentTypeDescription, false);
-
-        return cons;
+        const {name} = this.state;
+        const {translate} = this.props;
+        if(!ValidationHelper.validateName(translate, name, 1, 255).status) return false;
+        return true;
     }
+    
     handleAddCategory = () => {
         window.$('#modal-create-document-type').modal('show');
     }
+
     handImportFile = () => {
         window.$('#modal-import-file-category').modal('show');
     }
+
     save = () => {
-        const { documentTypeName, documentTypeDescription } = this.state;
-        this.props.createDocumentCategory({
-            name: documentTypeName,
-            description: documentTypeDescription
-        });
+        if(this.isFormValidated()){
+            const { name, description } = this.state;
+            this.props.createDocumentCategory({
+                name,
+                description
+            });
+        }
     }
 
     render() {
         const { translate } = this.props;
-        const { errorName, errorDescription } = this.state;
+        const { nameError } = this.state;
         return (
             <React.Fragment>
                 <CategoryImportForm />
@@ -126,16 +84,15 @@ class CreateForm extends Component {
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form id="form-create-document-type">
-                        <div className={`form-group ${errorName === undefined ? "" : "has-error"}`}>
+                        <div className={`form-group ${nameError === undefined ? "" : "has-error"}`}>
                             <label>{translate('document.administration.categories.name')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control"
-                                onChange={this.handleValidateTypeName} placeholder="VD: Văn bản, Hồ sơ, Biên bản,...." />
-                            <ErrorLabel content={errorName} />
+                                onChange={this.handleName} placeholder={translate('document.category_example')}/>
+                            <ErrorLabel content={nameError} />
                         </div>
-                        <div className={`form-group ${errorDescription === undefined ? "" : "has-error"}`}>
-                            <label>{translate('document.administration.categories.description')}<span className="text-red">*</span></label>
-                            <textarea type="text" className="form-control" onChange={this.handleValidateTypeDescription} />
-                            <ErrorLabel content={errorDescription} />
+                        <div className="form-group">
+                            <label>{translate('document.administration.categories.description')}</label>
+                            <textarea type="text" className="form-control" onChange={this.handleDescription} />
                         </div>
                     </form>
                 </DialogModal>
