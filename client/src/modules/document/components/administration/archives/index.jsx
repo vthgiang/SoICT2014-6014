@@ -24,7 +24,6 @@ class AdministrationDocumentArchives extends Component {
     onChanged = async (e, data) => {
         await this.setState({
             currentArchive: data.node,
-
         })
         window.$(`#edit-document-archive`).slideDown();
     }
@@ -125,10 +124,10 @@ class AdministrationDocumentArchives extends Component {
     }
 
     render() {
-        const { archiveParent, deleteNode, currentArchive } = this.state;
+        const { archiveParent, currentArchive } = this.state;
         const { translate } = this.props;
         const { documents } = this.props;
-        const { list, tree } = this.props.documents.administration.archives;
+        const { list } = this.props.documents.administration.archives;
         let dataExport = [];
         if (documents.isLoading === false) {
             dataExport = list;
@@ -148,11 +147,10 @@ class AdministrationDocumentArchives extends Component {
 
                 <div className="form-inline">
                     <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
-                        <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('document.administration.domains.add')}
-                            disabled={archiveParent.length > 1 ? true : false}>{translate('general.add')}</button>
+                        <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('document.administration.domains.add')}>{translate('general.add')}</button>
                         <ul className="dropdown-menu pull-right">
-                            <li><a href="#modal-create-document-archive" title="Add archive" onClick={(event) => { this.handleAddArchive(event) }}>{translate('task_template.add')}</a></li>
-                            <li><a href="#modal_import_file_archive" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>ImportFile</a></li>
+                            <li><a href="#modal-create-document-archive" title="Add archive" onClick={(event) => { this.handleAddArchive(event) }}>{translate('document.add')}</a></li>
+                            <li><a href="#modal_import_file_archive" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>{translate('document.import')}</a></li>
                         </ul>
                     </div>
                 </div>
@@ -160,7 +158,7 @@ class AdministrationDocumentArchives extends Component {
                 {
                     archiveParent.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteArchive}>{translate('general.delete')}</button>
                 }
-                {<ExportExcel id="export-document-archive" exportData={exportData} style={{ marginRight: 5, marginTop: 2 }} />}
+                <ExportExcel id="export-document-archive" exportData={exportData} style={{ marginRight: 5 }} buttonName={translate('document.export')}/>
                 <CreateForm/>
                 <ArchiveImportForm />
                 <div className="row"

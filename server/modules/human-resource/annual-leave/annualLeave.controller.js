@@ -57,13 +57,13 @@ exports.createAnnualLeave = async (req, res) => {
             let employee = await EmployeeService.getEmployeeInforByEmailInCompany(req.portal, req.user.email, req.user.company._id);
 
             let html = `
-                <h3><strong>Thông báo từ hệ thống VNIMA.</strong></h3>
+                <h3><strong>Thông báo từ hệ thống ${process.env.WEB_NAME}.</strong></h3>
                 <p>Nhân viên ${employee.fullName} - ${employee.employeeNumber} xin nghỉ phép từ ngày ${req.body.startDate} đến ngày ${req.body.endDate}.<p>
                 <p>Lý do: ${req.body.reason}<p>
                 <p>Để phê duyệt đơn xin nghỉ. Hãy click vào đây <a target="_blank" href="http://${process.env.WEBSITE}/hr-manage-leave-application">Phê duyệt</a><p>
                 <br/>
                 <br/>
-                <h3><strong>Notification from system VNIMA.</strong></h3>
+                <h3><strong>Notification from system ${process.env.WEB_NAME}.</strong></h3>
                 <p>Staff ${employee.fullName} - ${employee.employeeNumber} apply for leave from ${req.body.startDate} to ${req.body.endDate}.<p>
                 <p>Reason: ${req.body.reason}<p>
                 <p>To approve leave application. Please click here <a target="_blank" href="http://${process.env.WEBSITE}/hr-manage-leave-application">Approved</a><p>
@@ -230,13 +230,13 @@ exports.updateAnnualLeave = async (req, res) => {
         } else {
             if (req.body.approvedApplication) {
                 let html = `
-                    <h3><strong>Thông báo từ hệ thống VNIMA.</strong></h3>
+                    <h3><strong>Thông báo từ hệ thống ${process.env.WEB_NAME}.</strong></h3>
                     <p>Đơn xin nghỉ phép của bạn từ ngày ${req.body.startDate} đến ngày ${req.body.endDate}.<p>
                     <p>Trạng thái: ${req.body.status==='pass' ? 'Đã được chấp nhận' : 'Không được chấp nhận'}<p>
                     <p>Người phê duyệt: ${req.user.name} (${req.user.email})</>
                     <br/>
                     <br/>
-                    <h3><strong>Notification from system VNIMA.</strong></h3>
+                    <h3><strong>Notification from system ${process.env.WEB_NAME}.</strong></h3>
                     <p>Your application for leave from ${req.body.startDate} to ${req.body.endDate}.<p>
                     <p>Trạng thái: ${req.body.status==='pass' ? 'Accepted' : 'Not accepted'}<p>
                     <p>Approver:  ${req.user.name} (${req.user.email})</>

@@ -6,7 +6,9 @@ import './treeTable.css';
 class TreeTable extends Component {
     constructor(props) {
         super(props);
+        this.state = {}
     }
+
 
     componentDidUpdate() {
         if (this.props.data !== null && this.props.behaviour === "show-children") {
@@ -23,7 +25,7 @@ class TreeTable extends Component {
      * @showChildren = false : Ẩn nút con
      */
     addScriptTreeTable = (showChildren = true) => {
-        const { tableId = 'tree-table' } = this.props;
+        const { tableId } = this.props;
         window.$(function () {
             let
                 $table = window.$(`#${tableId}`),
@@ -212,11 +214,11 @@ class TreeTable extends Component {
                     <i className="material-icons"></i>
                 </a>
             case "viewLot":
-                return <a href="#abc" onClick={() => this.props.funcViewLot(id)} data-toggle="modal" title={titleAction.view}>
+                return <a href="#abc" onClick={() => this.props.funcViewLot(id)} data-toggle="modal" title={titleAction.viewLot}>
                     <i className="material-icons">view_list</i>
                 </a>
             case "viewGood":
-                return <a href="#abc" onClick={() => this.props.funcViewGood(id)} data-toggle="modal" title={titleAction.view}>
+                return <a href="#abc" onClick={() => this.props.funcViewGood(id)} data-toggle="modal" title={titleAction.viewGood}>
                     <i className="material-icons">view_list</i>
                 </a>
             default:
@@ -225,8 +227,7 @@ class TreeTable extends Component {
     }
 
     render() {
-        const { translate, column, data, actions = true, tableId = 'tree-table' } = this.props;
-
+        const { translate, column, data, actions = true, tableId } = this.props;
         return (
             <table id={tableId} className="table table-striped table-hover table-bordered">
                 <thead>
@@ -300,7 +301,7 @@ class TreeTable extends Component {
                         <tr><td colSpan={ column.length + 1 }><center>{translate('task_template.no_data')}</center></td></tr>
                     }
                 </tbody>
-            </table >
+            </table>
         );
     }
 }

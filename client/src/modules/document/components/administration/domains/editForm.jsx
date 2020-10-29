@@ -23,11 +23,8 @@ class EditForm extends Component {
 
     handleDescription = (e) => {
         const value = e.target.value;
-        const {translate} = this.props;
-        const {message} = ValidationHelper.validateDescription(translate, value);
         this.setState({
-            description: value,
-            descriptionError: message
+            description: value
         });
     }
 
@@ -40,8 +37,7 @@ class EditForm extends Component {
         const {name, description} = this.state;
         const {translate} = this.props;
         if(
-            !ValidationHelper.validateName(translate, name).status ||
-            !ValidationHelper.validateDescription(translate, description).status
+            !ValidationHelper.validateName(translate, name).status
         ) return false;
         return true;
     }
@@ -76,7 +72,7 @@ class EditForm extends Component {
         const { translate, documents } = this.props;
         const { list } = documents.administration.domains;
         const { unChooseNode } = this.props;
-        const { name, description, domainParent, nameError, descriptionError} = this.state;
+        const { name, description, domainParent, nameError } = this.state;
         let listDomain = [];
         for (let i in list) {
             if (!unChooseNode.includes(list[i].id)) {
@@ -96,10 +92,9 @@ class EditForm extends Component {
                     <label>{translate('document.administration.domains.parent')}</label>
                     <TreeSelect data={listDomain} value={[domainParent]} handleChange={this.handleParent} mode="radioSelect" />
                 </div>
-                <div className={`form-group ${descriptionError === undefined ? "" : "has-error"}`}>
+                <div className="form-group">
                     <label>{translate('document.administration.domains.description')}</label>
                     <textarea style={{ minHeight: '120px' }} type="text" className="form-control" onChange={this.handleDescription} value={description} />
-                    <ErrorLabel content={descriptionError} />
                 </div>
                 <div className="form-group">
                     <button className="btn btn-success pull-right" style={{ marginLeft: '5px' }} disabled={disabled} onClick={this.save}>{translate('form.save')}</button>

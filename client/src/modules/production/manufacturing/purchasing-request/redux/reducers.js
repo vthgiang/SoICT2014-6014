@@ -17,11 +17,13 @@ const initialState = {
 export const purchasingRequest = (state = initialState, action) => {
     switch (action.type) {
         case purchasingRequestConstants.GET_ALL_PURCHASING_REQUEST_REQUEST:
+        case purchasingRequestConstants.CREATE_PURCHASING_REQUEST_REQUEST:
             return {
                 ...state,
                 isLoading: true
             }
         case purchasingRequestConstants.GET_ALL_PURCHASING_REQUEST_FAILURE:
+        case purchasingRequestConstants.CREATE_PURCHASING_REQUEST_FAILURE:
             return {
                 ...state,
                 isLoading: false,
@@ -42,6 +44,12 @@ export const purchasingRequest = (state = initialState, action) => {
                 prevPage: action.payload.purchasingRequests.prevPage,
                 nextPage: action.payload.purchasingRequests.nextPage
 
+            }
+        case purchasingRequestConstants.CREATE_PURCHASING_REQUEST_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                listPurchasingRequests: [...state.listPurchasingRequests, action.payload.purchasingRequest]
             }
         default:
             return state

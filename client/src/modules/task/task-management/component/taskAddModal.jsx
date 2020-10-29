@@ -10,7 +10,7 @@ import { managerKpiActions } from '../../../kpi/employee/management/redux/action
 import { taskTemplateActions } from '../../../task/task-template/redux/actions';
 import { taskManagementActions } from '../redux/actions';
 
-import { DialogModal, DatePicker, SelectBox, ErrorLabel, SelectMulti } from '../../../../common-components';
+import { DialogModal, DatePicker, SelectBox, ErrorLabel } from '../../../../common-components';
 import { TaskFormValidator } from './taskFormValidator';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 
@@ -499,13 +499,17 @@ class TaskAddModal extends Component {
                             {listDepartment && 
                                 <div className="form-group">
                                     <label>{translate('task.task_management.collaborated_with_organizational_units')}</label>
-                                    <SelectMulti
+                                    <SelectBox
                                         id="multiSelectUnitThatHaveCollaborated"
-                                        items={listDepartment.map(x => {
+                                        lassName="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={listDepartment.filter(item => newTask && item._id !== newTask.organizationalUnit).map(x => {
                                             return { text: x.name, value: x._id }
                                         })}
+                                        options={{ placeholder: translate('kpi.evaluation.dashboard.select_units') }}
                                         onChange={this.handleChangeCollaboratedWithOrganizationalUnits}
                                         value={collaboratedWithOrganizationalUnits}
+                                        multiple={true}
                                     />
                                 </div>
                             }
