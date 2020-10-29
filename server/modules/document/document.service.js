@@ -1,4 +1,4 @@
-const { DocumentCategory, DocumentDomain, DocumentArchive, Role, User, UserRole, OrganizationalUnit, Document } = require(`${SERVER_MODELS_DIR}`);
+const { DocumentCategory, DocumentDomain, DocumentArchive, Role, UserRole, OrganizationalUnit, Document } = require(`${SERVER_MODELS_DIR}`);
 const arrayToTree = require('array-to-tree');
 const fs = require('fs');
 const ObjectId = require('mongoose').Types.ObjectId;
@@ -479,12 +479,11 @@ exports.editDocumentCategory = async (id, data, portal) => {
 }
 
 exports.deleteDocumentCategory = async (id, portal) => {
-    const category = await DocumentCategory(connect(DB_CONNECTION, portal)).findById(id);
-    const docs = await Document.find({ category: id });
+    const docs = await Document(connect(DB_CONNECTION, portal)).find({ category: id });
     if (docs.length > 0) throw ['category_used_to_document', 'cannot_delete_category'];
     await DocumentCategory(connect(DB_CONNECTION, portal)).deleteOne({ _id: id });
 
-    return category;
+    return id;
 }
 
 /**
