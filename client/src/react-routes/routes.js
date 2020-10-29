@@ -153,7 +153,7 @@ class Routes extends Component {
         return (
             <React.Fragment>
                 <Switch>
-                    <Route exact path="/" component={Introduction}/>
+                    <AuthRoute exact auth={auth} path="/" component={Introduction}/>
                     <AuthRoute exact auth={auth} path="/login" component={Login} />
                     <AuthRoute exact auth={auth} path="/reset-password" component={ResetPassword} />
                     <PrivateRoute
