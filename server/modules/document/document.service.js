@@ -392,7 +392,6 @@ exports.importDocument = async (portal, data, company) => {
         }
 
         // find archive
-        console.log('rrrrrrrrr', data[i].archives[0])
         if (data[i].archives && data[i].archives[0] && data[i].archives.length) {
             let archives = [];
             for (let j in data[i].archives) {
@@ -407,13 +406,14 @@ exports.importDocument = async (portal, data, company) => {
 
         // file role
 
-        if (data[i].roles && data[i].roles.length) {
+        if (data[i].roles && data[i].roles.length && data[i].roles[0]) {
             let roles = [];
             for (let j in data[i].roles) {
                 const role = await Role(connect(DB_CONNECTION, portal)).findOne({
                     name: data[i].roles[j]
                 });
-                roles.push(role.id);
+                console.log('rrrrrrrr', role, data[i].roles)
+                roles.push(role._id);
             }
             document.roles = roles;
         }
@@ -789,8 +789,8 @@ exports.createDocumentArchive = async (portal, data, company) => {
         query.parent = data.parent;
     }
     query.path = await findPath(data, portal);
-    const check = await DocumentArchive(connect(DB_CONNECTION, portal)).findOne({name: data.name});
-    if(check) throw ['name_exist'];
+    const check = await DocumentArchive(connect(DB_CONNECTION, portal)).findOne({ name: data.name });
+    if (check) throw ['name_exist'];
     await DocumentArchive(connect(DB_CONNECTION, portal)).create(query);
     return await this.getDocumentArchives(portal, company);
 }
@@ -830,7 +830,7 @@ exports.editDocumentArchive = async (id, data, portal, company) => {
 /**
  * Lấy đường dẫn chi tiết đến lưu trữ hiện tại
  */
-findPath = async(data, portal) =>  {
+findPath = async (data, portal) => {
     let path = "";
     let arrayParent = [];
     arrayParent.push(data.name);
@@ -852,7 +852,7 @@ findPath = async(data, portal) =>  {
 /**
  * Xóa một node
  */
-deleteNode = async(id, portal) => {
+deleteNode = async (id, portal) => {
     const archive = await DocumentArchive(connect(DB_CONNECTION, portal)).findById(id);
     if (!archive) throw ['document_archive_not_found'];
     let parent = archive.parent;

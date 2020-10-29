@@ -3,6 +3,7 @@ export const managerServices = {
     getAllKPIUnit,
     getChildTargetOfCurrentTarget,
     copyKPIUnit,
+    calculateKPIUnit,
 }
 
 // Lấy tất cả KPI đơn vị
@@ -41,6 +42,18 @@ function copyKPIUnit(kpiId, data) {
             idunit: data.idunit,
             datenew: data.datenew,
             creator: data.creator,
+        }
+    }, true, true, 'kpi.organizational_unit');
+}
+
+function calculateKPIUnit(idKpiUnitSet, date, idKpiUnit) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/management/organizational-unit-kpi-sets/calculate`,
+        method: 'POST',
+        data: {
+            idKpiUnitSet: idKpiUnitSet,
+            date: date,
+            idKpiUnit: idKpiUnit,
         }
     }, true, true, 'kpi.organizational_unit');
 }

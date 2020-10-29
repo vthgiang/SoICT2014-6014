@@ -170,30 +170,30 @@ class KPIUnitManager extends Component {
     }
 
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
-    convertDataToExportData = (data,unitName) => {
-        let fileName = "Bảng quản lý KPI đơn vị "+ (unitName?unitName:"");
-        if (data) {           
+    convertDataToExportData = (data, unitName) => {
+        let fileName = "Bảng quản lý KPI đơn vị " + (unitName ? unitName : "");
+        if (data) {
             data = data.map((x, index) => {
-               
-                let fullName =x.creator.name;
-                let email= x.creator.email;
-                let automaticPoint = (x.automaticPoint === null)?"Chưa đánh giá":parseInt(x.automaticPoint);
-                let employeePoint = (x.employeePoint === null)?"Chưa đánh giá":parseInt(x.employeePoint);
-                let approverPoint =(x.approvedPoint===null)?"Chưa đánh giá":parseInt(x.approvedPoint);
-                let date = new Date(x.date);                    
+
+                let fullName = x.creator.name;
+                let email = x.creator.email;
+                let automaticPoint = (x.automaticPoint === null) ? "Chưa đánh giá" : parseInt(x.automaticPoint);
+                let employeePoint = (x.employeePoint === null) ? "Chưa đánh giá" : parseInt(x.employeePoint);
+                let approverPoint = (x.approvedPoint === null) ? "Chưa đánh giá" : parseInt(x.approvedPoint);
+                let date = new Date(x.date);
                 let status = this.checkStatusKPI(x.status);
-                let numberTarget =parseInt(x.kpis.length);               
+                let numberTarget = parseInt(x.kpis.length);
 
                 return {
                     STT: index + 1,
-                    fullName: fullName, 
-                    email:email,                  
+                    fullName: fullName,
+                    email: email,
                     automaticPoint: automaticPoint,
                     status: status,
                     employeePoint: employeePoint,
                     approverPoint: approverPoint,
                     time: date,
-                    numberTarget:numberTarget                   
+                    numberTarget: numberTarget
                 };
             })
         }
@@ -203,7 +203,7 @@ class KPIUnitManager extends Component {
             dataSheets: [
                 {
                     sheetName: "sheet1",
-                    sheetTitle : fileName,
+                    sheetTitle: fileName,
                     tables: [
                         {
                             columns: [
@@ -211,8 +211,8 @@ class KPIUnitManager extends Component {
                                 { key: "fullName", value: "Người tạo" },
                                 { key: "email", value: "Email người tạo" },
                                 { key: "time", value: "Thời gian" },
-                                { key: "status", value: "Trạng thái" },                                
-                                { key: "numberTarget", value: "Số lượng mục tiêu" },                                
+                                { key: "status", value: "Trạng thái" },
+                                { key: "numberTarget", value: "Số lượng mục tiêu" },
                                 { key: "automaticPoint", value: "Điểm KPI tự động" },
                                 { key: "employeePoint", value: "Điểm KPI tự đánh giá" },
                                 { key: "approverPoint", value: "Điểm KPI được phê duyệt" }
@@ -223,8 +223,8 @@ class KPIUnitManager extends Component {
                 },
             ]
         }
-        return exportData;        
-       
+        return exportData;
+
     }
 
     render() {
@@ -248,12 +248,14 @@ class KPIUnitManager extends Component {
         if (managerKpiUnit) {
             listkpi = managerKpiUnit.kpis;
             if (listkpi && listkpi.length !== 0) {
+                console.log('aaaaaaaaaaaa', managerKpiUnit)
                 kpiApproved = listkpi.filter(item => item.status === 2);
                 currentKPI = listkpi.filter(item => item.status !== 2);
                 datachat1 = kpiApproved.map(item => {
                     return { label: this.formatDate(item.date), y: item.result }
                 }).reverse();
                 targetA = kpiApproved.map(item => {
+
                     return { label: this.formatDate(item.date), y: item.kpis[0].result }
                 }).reverse();
                 targetC = kpiApproved.map(item => {
@@ -264,14 +266,14 @@ class KPIUnitManager extends Component {
                 }).reverse();
                 misspoint = kpiApproved.map(item => {
                     return { label: this.formatDate(item.date), y: (100 - item.result) }
-                }).reverse();                
+                }).reverse();
             };
         }
 
-        if(userdepartments && listkpi){
-            exportData =this.convertDataToExportData(listkpi,userdepartments.department);
+        if (userdepartments && listkpi) {
+            exportData = this.convertDataToExportData(listkpi, userdepartments.department);
         }
-
+        console.log('eeeeeeeeeeee', managerKpiUnit)
         return (
             <React.Fragment>
                 <div className="box">
@@ -303,9 +305,9 @@ class KPIUnitManager extends Component {
                                     />
                                     <ErrorLabel content={errorOnDate} />
                                 </div>
-                                
-                                {exportData&&<ExportExcel id="export-unit-kpi-management-overview" exportData={exportData} style={{ marginRight: 15, marginTop:5 }} />}
-                                
+
+                                {exportData && <ExportExcel id="export-unit-kpi-management-overview" exportData={exportData} style={{ marginRight: 15, marginTop: 5 }} />}
+
                             </div>
 
                             <div className="form-inline">
@@ -360,7 +362,7 @@ class KPIUnitManager extends Component {
                                                     <td>{item.employeePoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.employeePoint}</td>
                                                     <td>{item.approvedPoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.approvedPoint}</td>
                                                     <td>
-                                                        <a  href={`#dataResultTask`}
+                                                        <a href={`#dataResultTask`}
                                                             data-toggle="modal"
                                                             data-backdrop="static"
                                                             data-keyboard="false"
@@ -387,7 +389,7 @@ class KPIUnitManager extends Component {
                                             </tr>
                                     }
                                 </tbody>
-                            </table></div>  
+                            </table></div>
                         : organizationalUnitsOfUserLoading
                         && <div className="box-body">
                             <h4>Bạn chưa có đơn vị</h4>

@@ -11,12 +11,12 @@ class CreateForm extends Component {
         this.state = {
             archiveParent: ''
         }
-    } 
+    }
 
     handleName = (e) => {
-        const {value} = e.target;
-        const {translate} = this.props;
-        const {message} = ValidationHelper.validateName(translate, value, 1, 255);
+        const { value } = e.target;
+        const { translate } = this.props;
+        const { message } = ValidationHelper.validateName(translate, value, 1, 255);
         this.setState({
             name: value,
             nameError: message

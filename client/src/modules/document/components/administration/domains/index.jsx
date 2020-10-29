@@ -136,7 +136,6 @@ class AdministrationDocumentDomains extends Component {
         }
         let exportData = this.convertDataToExportData(dataExport);
         let unChooseNode = currentDomain ? this.findChildrenNode(list, currentDomain) : [];
-       
         return (
             <React.Fragment>
                 <div className="form-inline">

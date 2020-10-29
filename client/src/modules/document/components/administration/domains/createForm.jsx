@@ -14,8 +14,8 @@ class CreateForm extends Component {
 
     handleName = (e) => {
         const value = e.target.value;
-        const {translate} = this.props;
-        const {message} = ValidationHelper.validateName(translate, value)
+        const { translate } = this.props;
+        const { message } = ValidationHelper.validateName(translate, value)
         this.setState({
             name: value,
             nameError: message

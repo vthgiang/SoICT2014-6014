@@ -18,7 +18,7 @@ exports.getEmployeeKPISets = async (portal, data) => {
                 { 'employees': data.roleId }
             ]
         });
-    
+
     let keySearch;
     let employeeKpiSets;
     let startdate = null;
@@ -41,7 +41,7 @@ exports.getEmployeeKPISets = async (portal, data) => {
             }
         }
     }
-    
+
     if (user[0] != '0') {
         keySearch = {
             ...keySearch,
@@ -90,7 +90,7 @@ exports.getEmployeeKPISets = async (portal, data) => {
             { path: 'comments.creator', select: 'name email avatar ' },
             { path: 'comments.comments.creator', select: 'name email avatar' }
         ]);
-    
+
     return employeeKpiSets;
 }
 
@@ -167,7 +167,7 @@ exports.editStatusKpi = async (portal, data, query) => {
     })
     employee_kpi_set = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .findByIdAndUpdate(employee_kpi_set._id, { $set: { status: checkFullApprove } }, { new: true })
-        
+
     employee_kpi_set = employee_kpi_set && await employee_kpi_set
         .populate("organizationalUnit creator approver")
         .populate({ path: "kpis", populate: { path: 'parent' } })
@@ -210,7 +210,7 @@ exports.getKpisByKpiSetId = async (portal, id) => {
             { path: 'comments.creator', select: 'name email avatar ' },
             { path: 'comments.comments.creator', select: 'name email avatar' }
         ])
-    
+
     return employee_kpi_set;
 }
 
@@ -297,19 +297,22 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
     let employeePointSet = 0;
     let approvedPointSet = 0;
     let kpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal)).findOne({ kpis: result._id });
-
     for (let i = 0; i < kpiSet.kpis.length; i++) {
         let kpi = await EmployeeKpi(connect(DB_CONNECTION, portal)).findById(kpiSet.kpis[i]);
         if (kpi.automaticPoint !== 0 && kpi.automaticPoint !== null) {
+
             let weight = kpi.weight / 100;
-            autoPointSet = kpi.automaticPoint * weight;
-            employeePointSet = kpi.employeePoint * weight;
-            approvedPointSet = kpi.approvedPoint * weight;
+            autoPointSet += kpi.automaticPoint * weight;
+            employeePointSet += kpi.employeePoint * weight;
+            approvedPointSet += kpi.approvedPoint * weight;
+            console.log('hihihiii', kpi.automaticPoint, kpi.employeePoint, kpi.approvedPoint, weight);
         } else {
             autoPointSet = -1;
         }
     };
+    console.log('hahahaaa', autoPointSet, employeePointSet, approvedPointSet);
     if (autoPointSet !== -1) {
+
         let updateKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
             .findByIdAndUpdate(kpiSet._id,
                 {
@@ -321,7 +324,9 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
                 },
                 { new: true }
             );
+
     }
+
 
     return { task, result };
 
@@ -368,39 +373,35 @@ async function updateTaskImportanceLevel(portal, taskId, employeeId, point, date
     return setPoint;
 }
 
-exports.getTasksByListKpis = async (portal, data) =>
-{
-    let listkpis =[],infosearch=[];
-    for(let i=0;i<data.length;i++){
-        
+exports.getTasksByListKpis = async (portal, data) => {
+    let listkpis = [], infosearch = [];
+    for (let i = 0; i < data.length; i++) {
+
         let employee_kpi_set = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
             .findById(data[i])
             .populate("creator")
-            .populate({ path: "kpis"})
+            .populate({ path: "kpis" })
         listkpis.push(employee_kpi_set);
     }
-    
-    for(let i =0;i< listkpis.length;i++)
-    {
+
+    for (let i = 0; i < listkpis.length; i++) {
         infosearch.push([]);
         let kpis = listkpis[i].kpis;
-        for(let j =0;j< kpis.length;j++){
-            infosearch[infosearch.length-1].push({ id:kpis[j]._id, employeeId: listkpis[i].creator._id, date: listkpis[i].date, kpiType:kpis[j].type })
+        for (let j = 0; j < kpis.length; j++) {
+            infosearch[infosearch.length - 1].push({ id: kpis[j]._id, employeeId: listkpis[i].creator._id, date: listkpis[i].date, kpiType: kpis[j].type })
         }
     }
 
-    let listTask = [],tasks;
-    for(let i =0;i< infosearch.length;i++)
-    {
+    let listTask = [], tasks;
+    for (let i = 0; i < infosearch.length; i++) {
         listTask.push([]);
-        for(let j =0;j< infosearch[i].length;j++)
-        {
-            listTask[listTask.length-1].push([]);
+        for (let j = 0; j < infosearch[i].length; j++) {
+            listTask[listTask.length - 1].push([]);
             tasks = await getResultTaskByMonth(portal, infosearch[i][j]);
-            let lastIndex =listTask[listTask.length-1].length-1;
-            listTask[listTask.length-1][lastIndex]=tasks;
+            let lastIndex = listTask[listTask.length - 1].length - 1;
+            listTask[listTask.length - 1][lastIndex] = tasks;
         }
-        
+
     }
     return listTask;
 }
