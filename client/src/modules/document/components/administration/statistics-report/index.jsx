@@ -66,7 +66,8 @@ class AdministrationStatisticsReport extends Component {
                 docs
             ]
         });
-        return data;
+        let res = data.filter(d => d[1] > 0 || d[2] > 0)
+        return res;
     }
 
     pieChart = () => {
@@ -111,16 +112,19 @@ class AdministrationStatisticsReport extends Component {
                 totalDownload
             ]
         });
-        return data;
+        let res = data.filter(d => d[1] > 0 || d[2] > 0)
+        return res;
     }
-    
+
     barChart = () => {
         const { translate } = this.props;
         this.removePreviousBarChart();
         let dataChart = this.getDataViewDownloadBarChart();
         let x = [translate('document.views'), translate('document.downloads')];
+        console.log('aaaaaaaaaaaaa', dataChart, dataChart.length)
         this.chart = c3.generate({
             bindto: this.refs.barchart,
+
 
             // Căn lề biểu đồ
             padding: {
@@ -139,9 +143,9 @@ class AdministrationStatisticsReport extends Component {
                 },
                 //  rotated: true
             },
-            data: {                                 // Dữ liệu biểu đồ
+            data: {
                 columns: dataChart,
-                type: 'bar',
+                type: 'bar'
             },
 
         })
