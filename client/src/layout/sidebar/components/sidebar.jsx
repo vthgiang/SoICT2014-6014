@@ -88,7 +88,15 @@ class SideBar extends Component {
                             <Item
                                 item={{
                                     name: "menu.dashboard_personal",
-                                    path: "/hr-dashboard-personal",
+                                    path: "/dashboard-personal",
+                                    icon: "fa fa-newspaper-o",
+                                }}
+                            />
+                            {/* Bảng tin đơn vị */}
+                            <Item
+                                item={{
+                                    name: "menu.dashboard_unit",
+                                    path: "/dashboard-unit",
                                     icon: "fa fa-newspaper-o",
                                 }}
                             />
