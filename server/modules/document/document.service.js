@@ -392,7 +392,6 @@ exports.importDocument = async (portal, data, company) => {
         }
 
         // find archive
-        console.log('rrrrrrrrr', data[i].archives[0])
         if (data[i].archives && data[i].archives[0] && data[i].archives.length) {
             let archives = [];
             for (let j in data[i].archives) {
@@ -407,13 +406,14 @@ exports.importDocument = async (portal, data, company) => {
 
         // file role
 
-        if (data[i].roles && data[i].roles.length) {
+        if (data[i].roles && data[i].roles.length && data[i].roles[0]) {
             let roles = [];
             for (let j in data[i].roles) {
                 const role = await Role(connect(DB_CONNECTION, portal)).findOne({
                     name: data[i].roles[j]
                 });
-                roles.push(role.id);
+                console.log('rrrrrrrr', role, data[i].roles)
+                roles.push(role._id);
             }
             document.roles = roles;
         }
