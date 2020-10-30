@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { GoodActions } from '../redux/actions';
 import { CategoryActions } from '../../category-management/redux/actions';
-import { DataTableSetting, DeleteNotification, PaginateBar, SelectMulti } from '../../../../../common-components';
+import { DataTableSetting, DeleteNotification, PaginateBar, TreeSelect } from '../../../../../common-components';
 import GoodCreateForm from './goodCreateFrom';
 import GoodEditForm from './goodEditForm';
 import GoodDetailForm from './goodDetailForm';
@@ -21,15 +21,26 @@ class GoodManagement extends Component {
             category: '',
             value: '',
             type: 'product',
+            oldType: 'product'
         }
     }
 
     componentDidMount(){
-        let { page, limit, type, autoType } = this.state;
+        let { page, limit, type } = this.state;
         this.props.getGoodsByType();
         this.props.getGoodsByType({ page, limit, type });
-        this.props.getCategoriesByType({ type });
+        this.props.getCategoryToTree();
     }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if(prevState.oldType !== prevState.type) {
+            nextProps.getGoodsByType({ page: prevState.page, limit: prevState.limit, type: prevState.type });
+            return { 
+                oldType: prevState.type,
+            }
+        }
+        return null;
+    };
     
     setPage = (page) => {
         this.setState({ page });
@@ -72,7 +83,7 @@ class GoodManagement extends Component {
         window.$('#modal-edit-goods').modal('show');
     }
 
-    handleProduct = async () => {
+    handleProduct = () => {
         let type = 'product'
         let page = 1;
         this.setState({
@@ -80,12 +91,9 @@ class GoodManagement extends Component {
             type: type,
             category: ''
         })
-        const { limit } = this.state;
-        await this.props.getGoodsByType({ page, limit, type });
-        await this.props.getCategoriesByType({ type });
     }
 
-    handleMaterial = async () => {
+    handleMaterial = () => {
         let type = 'material';
         let page = 1;
         this.setState({
@@ -93,12 +101,9 @@ class GoodManagement extends Component {
             type: type,
             category: ''
         })
-        const { limit } = this.state;
-        await this.props.getGoodsByType({ page, limit, type });
-        await this.props.getCategoriesByType({ type });
     }
 
-    handleEquipment = async () => {
+    handleEquipment = () => {
         let type = 'equipment'
         let page = 1;
         this.setState({
@@ -106,12 +111,9 @@ class GoodManagement extends Component {
             type: type,
             category: ''
         })
-        const { limit } = this.state;
-        await this.props.getGoodsByType({ page, limit, type });
-        await this.props.getCategoriesByType({ type });
     }
 
-    handleAsset = async () => {
+    handleAsset = () => {
         let type = 'asset';
         let page = 1;
         this.setState({
@@ -119,24 +121,6 @@ class GoodManagement extends Component {
             type: type,
             category: ''
         })
-        const { limit } = this.state;
-        await this.props.getGoodsByType({ page, limit, type });
-        await this.props.getCategoriesByType({ type });
-    }
-
-    getCategoriesByType = () => {
-        let { categories } = this.props;
-        let listCategoriesByType = categories.listCategoriesByType;
-        let categoryArr = [];
-
-        listCategoriesByType.map(item => {
-            categoryArr.push({
-                value: item._id,
-                text: item.name
-            })
-        })
-
-        return categoryArr;
     }
 
     handleCodeChange = async (e) => {
@@ -159,12 +143,14 @@ class GoodManagement extends Component {
         })
     }
 
-    handleCategoryChange = async (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                category: value
-            }
+    handleCategoryChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        }
+
+        this.setState({
+            ...this.state,
+            category: value
         })
     }
 
@@ -202,13 +188,31 @@ class GoodManagement extends Component {
         window.$('#modal-detail-good').modal('show');
     }
 
+    getAllCategory = () => {
+        let { categories } = this.props;
+        let categoryArr = [];
+        if(categories.categoryToTree.list.length > 0) {
+            categories.categoryToTree.list.map(item => {
+                categoryArr.push({
+                    _id: item._id,
+                    id: item._id,
+                    state: { "open": true },
+                    name: item.name,
+                    parent: item.parent ? item.parent.toString(): null
+                })
+            })
+        }
+        return categoryArr;
+    }
+
     render() {
 
         const { goods, categories, translate } = this.props;
-        const { listCategoriesByType } = categories;
-        const { type } = this.state;
+        const { categoryToTree } = categories;
+        const { type, category } = this.state;
         const { listPaginate, totalPages, page } = goods;
-        const dataSelectBox = this.getCategoriesByType();
+        const dataCategory = this.getAllCategory();
+        let categorySearch = category ? category : [];
 
         return (
             <div className="nav-tabs-custom">
@@ -262,14 +266,11 @@ class GoodManagement extends Component {
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('manage_warehouse.good_management.category')}</label>
-                            <SelectMulti
-                                id={`select-multi-${type}`}
-                                multiple="multiple"
-                                options={{ nonSelectedText: translate('manage_warehouse.good_management.choose_type'), allSelectedText: translate('manage_warehouse.good_management.all_type') }}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={dataSelectBox}
-                                onChange={this.handleCategoryChange}
+                            <TreeSelect
+                                data={dataCategory}
+                                value={categorySearch}
+                                handleChange={this.handleCategoryChange}
+                                mode="hierarchical"
                             />
                         </div>
                         <div className="form-group">
@@ -318,7 +319,7 @@ class GoodManagement extends Component {
                                             <td>{index + 1}</td>
                                             <td>{x.code}</td>
                                             <td>{x.name}</td>
-                                            <td>{x.category && listCategoriesByType.length && listCategoriesByType.filter(item => item._id === x.category).pop() ? listCategoriesByType.filter(item => item._id === x.category).pop().name : ""}</td>
+                                            <td>{x.category && categoryToTree.list.length && categoryToTree.list.filter(item => item._id === x.category).pop() ? categoryToTree.list.filter(item => item._id === x.category).pop().name : ""}</td>
                                             <td>{x.baseUnit}</td>
                                             { type === 'product' ? 
                                             <td>{x.materials.map((y, i) => <p key={i}>{y.good.name},</p>)}</td>:
@@ -361,7 +362,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     getGoodsByType: GoodActions.getGoodsByType,
-    getCategoriesByType: CategoryActions.getCategoriesByType,
+    getCategoryToTree: CategoryActions.getCategoryToTree,
     deleteGood: GoodActions.deleteGood,
     getGoodDetail: GoodActions.getGoodDetail
 }

@@ -13,7 +13,7 @@ export const GoodActions = {
 }
 
 function getGoodsByType(data = undefined){
-    if(data !== undefined) {
+    if(data !== undefined && data.limit !== undefined && data.page !== undefined) {
         return dispatch => {
             dispatch({
                 type: GoodConstants.PAGINATE_GOOD_BY_TYPE_REQUEST
@@ -37,7 +37,7 @@ function getGoodsByType(data = undefined){
         dispatch({
             type: GoodConstants.GET_GOOD_BY_TYPE_REQUEST
         })
-        GoodServices.getGoodsByType()
+        GoodServices.getGoodsByType(data)
         .then(res => {
             dispatch({
                 type: GoodConstants.GET_GOOD_BY_TYPE_SUCCESS,

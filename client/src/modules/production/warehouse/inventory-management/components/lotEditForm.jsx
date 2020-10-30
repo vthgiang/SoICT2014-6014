@@ -103,19 +103,19 @@ class LotEditForm extends Component {
         }
         
         if(total > quantity){
-            msg = ` Số lượng đã vượt quá số lượng tồn kho (${quantity}) `;
+            msg = ` ${translate('manage_warehouse.category_management.validate_name')} (${quantity}) `;
         }
         
         if(!value) {
-            msg = translate('manage_warehouse.category_management.validate_name');
+            msg = translate('manage_warehouse.inventory_management.validate_number');
         }
 
         if(value > binLocation.binLocation.capacity) {
-            msg = ` Số lượng đã vượt quá định mức nơi lưu trữ (${binLocation.binLocation.capacity}) `;
+            msg = ` ${translate('manage_warehouse.category_management.number_over_norm')} (${binLocation.binLocation.capacity}) `;
         }
         if(binLocation.binLocation.contained !== null) {
             if(Number(value) > (Number(binLocation.binLocation.capacity) -Number(binLocation.binLocation.contained))) {
-                msg =  ` Nơi lưu trữ chỉ còn chứa được ${(Number(binLocation.binLocation.capacity) -Number(binLocation.binLocation.contained))} `
+                msg =  ` ${translate('manage_warehouse.category_management.bin_contained')} ${(Number(binLocation.binLocation.capacity) -Number(binLocation.binLocation.contained))} `
             }
         }
 
@@ -358,9 +358,9 @@ class LotEditForm extends Component {
                 <DialogModal
                     modalID={`modal-edit-lot`} isLoading={binLocations.isLoading}
                     formID={`form-edit-lot`}
-                    title={translate('manage_warehouse.stock_management.add_title')}
-                    msg_success={translate('manage_warehouse.stock_management.add_success')}
-                    msg_faile={translate('manage_warehouse.stock_management.add_faile')}
+                    title={translate('manage_warehouse.inventory_management.edit_title')}
+                    msg_success={translate('manage_warehouse.inventory_management.edit_success')}
+                    msg_faile={translate('manage_warehouse.inventory_management.edit_faile')}
                     disableSubmit={!this.isFormValidated()}
                     func={this.save}
                     size={75}
