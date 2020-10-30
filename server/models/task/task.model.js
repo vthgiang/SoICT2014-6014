@@ -385,8 +385,7 @@ const TaskSchema = new Schema({
             default: Date.now
         },
         sort: {
-            type: Number,
-            required: true
+            type: Number
         },
         rating: { // -1: chưa đánh giá, 0-10: tùy mức độ tốt
             type: Number,
@@ -397,8 +396,7 @@ const TaskSchema = new Schema({
                 type: String,
             },
             url: {
-                type: String,
-                required: true
+                type: String
             }
         }],
         evaluations: [{ // Đánh giá actions (Dù là người quản lý, phê duyệt, tư vấn, ai cũng có thể đánh giá, nhưng chỉ tính đánh gía của người phê duyệt)
