@@ -64,25 +64,13 @@ class CalendarEmployee extends Component {
             r[i] && r[i].remove()
         }
 
-        // if (tasks) {
-        //     let res = tasks.responsibleTasks && tasks.responsibleTasks;
-        //     let acc = tasks.accountableTasks && tasks.accountableTasks;
-        //     let con = tasks.consultedTasks && tasks.consultedTasks;
-        //     let inf = tasks.informedTasks && tasks.informedTasks;
-        //     let fourTasks = res.concat(acc, con, inf).filter(task => this.filterByStatus(task));
-        //     let inprocessTasks = fourTasks && fourTasks.filter(x => x.status === "inprocess")
-        //     await this.countTasks(inprocessTasks);
-        // }
-
         await this.setState(state => {
             return {
                 ...state,
                 taskStatus: status
             }
         })
-
-        // await this.getTaskDurations();
-        // await this.getTaskGroups();
+        this.forceUpdate();
     }
 
     // Lọc công việc theo trạng thái

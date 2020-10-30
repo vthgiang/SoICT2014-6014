@@ -45,6 +45,7 @@ class ValueBarChart extends Component {
 
             }
         }
+        countAssetValue.unshift('count')
         let data = {
             count: countAssetValue,
             type: typeName,

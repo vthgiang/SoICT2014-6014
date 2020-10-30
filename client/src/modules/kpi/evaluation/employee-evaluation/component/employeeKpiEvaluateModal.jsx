@@ -294,7 +294,9 @@ class EmployeeKpiEvaluateModal extends Component {
                 </div>
                 <div className="col-xs-12 col-sm-8 qlcv">
                     <div className="form-inline pull-right">
-                        <button className="btn btn-success" onClick={() => this.handleSetPointKPI()}>{translate('kpi.evaluation.employee_evaluation.calc_kpi_point')}</button>
+                        <button className="btn btn-success" onClick={() => this.handleSetPointKPI()}>
+                            {translate('kpi.evaluation.employee_evaluation.calc_kpi_point')}
+                        </button>
                         {exportData && <ExportExcel id="export-employee-kpi-evaluate-detail-kpi" exportData={exportData} style={{ marginTop: 5 }} />}
                     </div>
                     {list && list.map(item => {
@@ -366,7 +368,7 @@ class EmployeeKpiEvaluateModal extends Component {
                                                     <td>
                                                         {points && tasks &&
                                                             <React.Fragment>
-                                                            {console.log("task", itemTask)}
+                                                                {console.log("task", itemTask)}
                                                                 <input type="range"
                                                                     min='0'
                                                                     max='10'
