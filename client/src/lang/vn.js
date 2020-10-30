@@ -507,7 +507,7 @@ export default {
             name: 'Tên tài liệu',
             description: 'Mô tả',
             category_example: 'VD: Văn bản, Hồ sơ, Biên bản,....',
-            
+
             category: "Loại tài liệu",
             domain: 'Lĩnh vực',
             data: 'Danh sách tài liệu',
@@ -522,7 +522,7 @@ export default {
             views: 'Số lần xem',
             viewer: 'Người xem',
             downloader: "Người tải",
-            downloads: 'Số lần download',
+            downloads: 'Số lần tải xuống',
             add: 'Thêm mới',
             export: 'Xuất báo cáo',
             import: 'Nhập từ file',

@@ -108,7 +108,7 @@ class BarChartDomain extends Component {
 
             }
         }
-        countDomain.unshift('count');
+        countDomain.unshift(' ');
         let data = {
             count: countDomain,
             type: typeName,

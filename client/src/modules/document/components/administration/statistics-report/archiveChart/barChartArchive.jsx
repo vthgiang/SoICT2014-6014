@@ -109,7 +109,7 @@ class BarChartArchive extends Component {
 
             }
         }
-        countArchive.unshift('count');
+        countArchive.unshift(' ');
         let data = {
             count: countArchive,
             type: typeName,
