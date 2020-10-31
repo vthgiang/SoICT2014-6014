@@ -255,9 +255,9 @@ exports.createAsset = async (portal, company, data, fileInfo) => {
 
     data.startDepreciation = new Date(data.startDepreciation);
 
-    data.disposalDate = new Date(data.disposalDate);
+    data.disposalDate = data.disposalDate ? new Date(data.disposalDate) : "";
 
-    usageLogs = usageLogs.map(item => {
+    usageLogs = usageLogs && usageLogs.map(item => {
         return {
             ...item,
             startDate: new Date(item.startDate),
@@ -265,14 +265,14 @@ exports.createAsset = async (portal, company, data, fileInfo) => {
         }
     })
 
-    incidentLogs = incidentLogs.map(item => {
+    incidentLogs = incidentLogs && incidentLogs.map(item => {
         return {
             ...item,
             dateOfIncident: new Date(item.dateOfIncident)
         }
     })
 
-    maintainanceLogs = maintainanceLogs.map(item => {
+    maintainanceLogs = maintainanceLogs && maintainanceLogs.map(item => {
         return {
             ...item,
             createDate: new Date(item.createDate),
