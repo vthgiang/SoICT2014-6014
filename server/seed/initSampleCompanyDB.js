@@ -3409,26 +3409,31 @@ const initSampleCompanyDB = async () => {
     // ****************** Tạo mẫu dữ liệu trạng thái khách hàng********************
     console.log("Tạo mẫu dữ liệu trạng thái khách hàng");
     const customerStatusData = [{
+        creator:  [users[5]._id],
         code: "ST001",
         name: "Tiềm năng",
         description: "Khách hàng mới toanh",
         active: false,
     }, {
+        creator:  [users[5]._id],
         code: "ST002",
         name: "Quan tâm sản phẩm",
         description: "Khách hàng hứng thú với sản phẩm của công ty",
         active: false,
     }, {
+        creator:  [users[5]._id],
         code: "ST003",
         name: "Đã báo giá",
         description: "Khách hàng đã được báo giá",
         active: false,
-    },{
+    }, {
+        creator:  [users[5]._id],
         code: "ST005",
         name: "Đã kí hợp đồng",
         description: "Khách hàng đã kỹ hợp đồng với công ty",
         active: false,
-    },{
+    }, {
+        creator:  [users[5]._id],
         code: "ST004",
         name: "Đã mua sản phẩm",
         description: "Khách hàng đã mua sản phẩm",

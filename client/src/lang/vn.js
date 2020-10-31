@@ -641,6 +641,7 @@ export default {
                 status: 'Trạng thái khách hàng',
                 address: 'Địa chỉ',
                 address2: 'Địa chỉ 2',
+                represent:'Người đại diện',
                 email: 'Email',
                 secondaryEmail: 'Email phụ',
                 location: 'Khu vực',
@@ -719,6 +720,13 @@ export default {
                 info: 'Xem công việc chăm sóc khách hàng',
                 edit: 'Chỉnh sửa công việc chăm sóc khách hàng',
 
+            },
+            status: {
+                add: 'Thêm mới trạng thái',
+                edit: 'Chỉnh sửa trạng thái',
+                delete: 'Xóa trạng thái',
+                name: 'Tên trạng thái khách hàng',
+                description: 'Mô tả trạng thái',
             },
             statistic: {
 
@@ -853,6 +861,7 @@ export default {
                 care: 'Chăm sóc khách hàng',
                 group: 'Nhóm khách hàng',
                 statistic: 'Thống kê',
+                generalConfiguration: 'Cấu hình chung'
             },
 
             task_template: 'Mẫu Công Việc',

@@ -778,6 +778,7 @@ export default {
                 care: 'Cares',
                 group: 'Groups',
                 statistic: 'Statistics',
+                generalConfiguration:'generalConfiguration'
             },
 
             task_template: 'Task Template',
