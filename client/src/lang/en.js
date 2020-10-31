@@ -1831,7 +1831,7 @@ export default {
                 // Kết quả đào tạo
                 result: {
                     pass: 'Pass',
-                    falied: 'Failed',
+                    failed: 'Failed',
                 },
 
                 // Nhóm action

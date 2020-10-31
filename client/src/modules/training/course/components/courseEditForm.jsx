@@ -517,7 +517,7 @@ class CourseEditForm extends Component {
                                                     <div className="radio-inline">
                                                         <input type="radio" name={`result${x._id}`} value="failed" checked={x.result === "failed"}
                                                             onChange={() => this.handleResultChange(x._id, x.result)} />
-                                                        <label>{translate('training.course.result.falied')}</label>
+                                                        <label>{translate('training.course.result.failed')}</label>
                                                     </div>
                                                 </div>
                                             </td>
