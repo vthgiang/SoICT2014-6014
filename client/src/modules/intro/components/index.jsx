@@ -56,7 +56,7 @@ const Introduction = (props) => {
                     {
                         user ?
                             <Link to="/home" className="dx-workspace-button">{translate('intro.auth.start')}</Link> :
-                            <Link to="/login" className="dx-workspace-button">{translate('intro.auth.singin')}</Link>
+                            <Link to="/login" className="dx-workspace-button">{translate('intro.auth.signin')}</Link>
                     }
                 </span>
             </header>

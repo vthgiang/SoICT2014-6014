@@ -3193,6 +3193,7 @@ const initSampleCompanyDB = async () => {
         {
             name: "LOT001",
             good: listProduct[0]._id,
+            type: "product",
             stocks: [
                 {
                     stock: listStock[0]._id,
@@ -3225,13 +3226,15 @@ const initSampleCompanyDB = async () => {
             ],
             originalQuantity: 300,
             quantity: 300,
-            expirationDate: "12-12-2021",
+            expirationDate: new Date("12-12-2021"),
             description: "Lô hàng tự tạo",
             lotLogs: [
                 {
-                    quantity: 300,
+                    quantity: 200,
                     description: "Nhập hàng lần đầu",
                     type: "Nhập kho thành phẩm",
+                    createdAt: new Date("05-06-2020"),
+                    stock: listStock[1]._id,
                     binLocations: [
                         {
                             binLocation: listBinLocationChilds[0]._id,
@@ -3241,6 +3244,15 @@ const initSampleCompanyDB = async () => {
                             binLocation: listBinLocationChilds[1]._id,
                             quantity: 120
                         },
+                    ]
+                },
+                {
+                    quantity: 100,
+                    description: "Nhập hàng lần hai",
+                    type: "Nhập kho thành phẩm",
+                    createdAt: new Date("05-10-2020"),
+                    stock: listStock[0]._id,
+                    binLocations: [
                         {
                             binLocation: listBinLocationChilds[3]._id,
                             quantity: 40
@@ -3256,6 +3268,7 @@ const initSampleCompanyDB = async () => {
         {
             name: "LOT002",
             good: listProduct[1]._id,
+            type: "product",
             stocks: [
                 {
                     stock: listStock[0]._id,
@@ -3288,22 +3301,16 @@ const initSampleCompanyDB = async () => {
             ],
             originalQuantity: 450,
             quantity: 450,
-            expirationDate: "02-06-2021",
+            expirationDate: new Date("02-06-2021"),
             description: "Lô hàng nhập từ xưởng sản xuất",
             lotLogs: [
                 {
-                    quantity: 450,
+                    quantity: 200,
                     description: "Nhập hàng",
                     type: "Nhập kho thành phẩm",
+                    createdAt: new Date("11-12-2019"),
+                    stock: listStock[0]._id,
                     binLocations: [
-                        {
-                            binLocation: listBinLocationChilds[2]._id,
-                            quantity: 100
-                        },
-                        {
-                            binLocation: listBinLocationChilds[1]._id,
-                            quantity: 150
-                        },
                         {
                             binLocation: listBinLocationChilds[3]._id,
                             quantity: 99
@@ -3313,12 +3320,30 @@ const initSampleCompanyDB = async () => {
                             quantity: 101
                         }
                     ]
+                },
+                {
+                    quantity: 250,
+                    description: "Nhập hàng",
+                    type: "Nhập kho thành phẩm",
+                    createdAt: new Date("07-10-2020"),
+                    stock: listStock[1]._id,
+                    binLocations: [
+                        {
+                            binLocation: listBinLocationChilds[2]._id,
+                            quantity: 100
+                        },
+                        {
+                            binLocation: listBinLocationChilds[1]._id,
+                            quantity: 150
+                        },
+                    ]
                 }
             ]
         },
         {
             name: "LOT003",
             good: listProduct[0]._id,
+            type: "product",
             stocks: [
                 {
                     stock: listStock[0]._id,
@@ -3351,13 +3376,240 @@ const initSampleCompanyDB = async () => {
             ],
             originalQuantity: 320,
             quantity: 320,
-            expirationDate: "12-12-2021",
+            expirationDate: new Date("12-11-2021"),
             description: "Lô hàng tự tạo",
             lotLogs: [
                 {
-                    quantity: 320,
+                    quantity: 200,
                     description: "Nhập hàng lần đầu",
                     type: "Nhập kho thành phẩm",
+                    createdAt: new Date("09-11-2020"),
+                    stock: listStock[1]._id,
+                    binLocations: [
+                        {
+                            binLocation: listBinLocationChilds[0]._id,
+                            quantity: 80
+                        },
+                        {
+                            binLocation: listBinLocationChilds[1]._id,
+                            quantity: 120
+                        }
+                    ]
+                },
+                {
+                    quantity: 120,
+                    description: "Nhập hàng lần đầu",
+                    type: "Nhập kho thành phẩm",
+                    createdAt: new Date("05-06-2020"),
+                    stock: listStock[0]._id,
+                    binLocations: [
+                        {
+                            binLocation: listBinLocationChilds[3]._id,
+                            quantity: 100
+                        },
+                        {
+                            binLocation: listBinLocationChilds[4]._id,
+                            quantity: 20
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            name: "LOT004",
+            good: listGood[0]._id,
+            type: "material",
+            stocks: [
+                {
+                    stock: listStock[0]._id,
+                    quantity: 100,
+                    binLocations: [
+                        {
+                            binLocation: listBinLocationChilds[3]._id,
+                            quantity: 40
+                        },
+                        {
+                            binLocation: listBinLocationChilds[4]._id,
+                            quantity: 60
+                        }
+                    ]
+                },
+                {
+                    stock: listStock[1]._id,
+                    quantity: 200,
+                    binLocations: [
+                        {
+                            binLocation: listBinLocationChilds[0]._id,
+                            quantity: 80
+                        },
+                        {
+                            binLocation: listBinLocationChilds[1]._id,
+                            quantity: 120
+                        }
+                    ]
+                }
+            ],
+            originalQuantity: 300,
+            quantity: 300,
+            expirationDate: new Date("12-12-2021"),
+            description: "Lô hàng tự tạo",
+            lotLogs: [
+                {
+                    quantity: 100,
+                    description: "Nhập hàng lần đầu",
+                    type: "Nhập kho thành phẩm",
+                    createdAt: new Date("07-09-2020"),
+                    stock: listStock[0]._id,
+                    binLocations: [
+                        {
+                            binLocation: listBinLocationChilds[3]._id,
+                            quantity: 40
+                        },
+                        {
+                            binLocation: listBinLocationChilds[4]._id,
+                            quantity: 60
+                        }
+                    ]
+                },
+                {
+                    quantity: 200,
+                    description: "Nhập hàng lần đầu",
+                    type: "Nhập kho thành phẩm",
+                    createdAt: new Date("08-10-2020"),
+                    stock: listStock[1]._id,
+                    binLocations: [
+                        {
+                            binLocation: listBinLocationChilds[0]._id,
+                            quantity: 80
+                        },
+                        {
+                            binLocation: listBinLocationChilds[1]._id,
+                            quantity: 120
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            name: "LOT005",
+            good: listGood[0]._id,
+            type: "material",
+            stocks: [
+                {
+                    stock: listStock[0]._id,
+                    quantity: 100,
+                    binLocations: [
+                        {
+                            binLocation: listBinLocationChilds[3]._id,
+                            quantity: 40
+                        },
+                        {
+                            binLocation: listBinLocationChilds[4]._id,
+                            quantity: 60
+                        }
+                    ]
+                },
+                {
+                    stock: listStock[1]._id,
+                    quantity: 200,
+                    binLocations: [
+                        {
+                            binLocation: listBinLocationChilds[0]._id,
+                            quantity: 80
+                        },
+                        {
+                            binLocation: listBinLocationChilds[1]._id,
+                            quantity: 120
+                        }
+                    ]
+                }
+            ],
+            originalQuantity: 300,
+            quantity: 300,
+            expirationDate: new Date("12-10-2021"),
+            description: "Lô hàng tự tạo",
+            lotLogs: [
+                {
+                    quantity: 100,
+                    description: "Nhập hàng lần đầu",
+                    type: "Nhập kho thành phẩm",
+                    createdAt: new Date("08-10-2020"),
+                    stock: listStock[0]._id,
+                    binLocations: [
+                        {
+                            binLocation: listBinLocationChilds[3]._id,
+                            quantity: 40
+                        },
+                        {
+                            binLocation: listBinLocationChilds[4]._id,
+                            quantity: 60
+                        }
+                    ]
+                },
+                {
+                    quantity: 200,
+                    description: "Nhập hàng lần đầu",
+                    type: "Nhập kho thành phẩm",
+                    createdAt: new Date("09-10-2020"),
+                    stock: listStock[1]._id,
+                    binLocations: [
+                        {
+                            binLocation: listBinLocationChilds[0]._id,
+                            quantity: 80
+                        },
+                        {
+                            binLocation: listBinLocationChilds[1]._id,
+                            quantity: 120
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            name: "LOT006",
+            good: listGood[0]._id,
+            type: "material",
+            stocks: [
+                {
+                    stock: listStock[0]._id,
+                    quantity: 100,
+                    binLocations: [
+                        {
+                            binLocation: listBinLocationChilds[3]._id,
+                            quantity: 40
+                        },
+                        {
+                            binLocation: listBinLocationChilds[4]._id,
+                            quantity: 60
+                        }
+                    ]
+                },
+                {
+                    stock: listStock[1]._id,
+                    quantity: 200,
+                    binLocations: [
+                        {
+                            binLocation: listBinLocationChilds[0]._id,
+                            quantity: 80
+                        },
+                        {
+                            binLocation: listBinLocationChilds[1]._id,
+                            quantity: 120
+                        }
+                    ]
+                }
+            ],
+            originalQuantity: 300,
+            quantity: 300,
+            expirationDate: new Date("12-12-2021"),
+            description: "Lô hàng tự tạo",
+            lotLogs: [
+                {
+                    quantity: 200,
+                    description: "Nhập hàng lần đầu",
+                    type: "Nhập kho thành phẩm",
+                    createdAt: new Date("10-10-2020"),
+                    stock: listStock[1]._id,
                     binLocations: [
                         {
                             binLocation: listBinLocationChilds[0]._id,
@@ -3367,13 +3619,22 @@ const initSampleCompanyDB = async () => {
                             binLocation: listBinLocationChilds[1]._id,
                             quantity: 120
                         },
+                    ]
+                },
+                {
+                    quantity: 100,
+                    description: "Nhập hàng lần đầu",
+                    type: "Nhập kho thành phẩm",
+                    createdAt: new Date("11-10-2020"),
+                    stock: listStock[0]._id,
+                    binLocations: [
                         {
                             binLocation: listBinLocationChilds[3]._id,
-                            quantity: 100
+                            quantity: 40
                         },
                         {
                             binLocation: listBinLocationChilds[4]._id,
-                            quantity: 20
+                            quantity: 60
                         }
                     ]
                 }

@@ -18,7 +18,6 @@ class AmountBarChart extends Component {
     // Thiết lập dữ liệu biểu đồ
     setDataBarChart = () => {
         const { listAssets, assetType, setAmountOfAsset } = this.props;
-
         let typeName = [], shortName = [], countAssetType = [], idAssetType = [];
         for (let i in assetType) {
             countAssetType[i] = 0;
@@ -41,6 +40,8 @@ class AmountBarChart extends Component {
             }
         }
 
+        countAssetType.unshift("count");
+
         let data = {
             count: countAssetType,
             type: typeName,
@@ -56,9 +57,9 @@ class AmountBarChart extends Component {
     // Khởi tạo BarChart bằng C3
     barChart = () => {
         let { translate } = this.props;
-        let dataPieChart = this.setDataBarChart();
-        let count = dataPieChart.count;
-        let heightCalc = dataPieChart.type.length * 24.8;
+        let dataBarChart = this.setDataBarChart();
+        let count = dataBarChart.count;
+        let heightCalc = dataBarChart.type.length * 24.8;
         let height = heightCalc < 320 ? 320 : heightCalc;
         let chart = c3.generate({
             bindto: this.refs.amountBarChart,
@@ -76,7 +77,7 @@ class AmountBarChart extends Component {
             axis: {
                 x: {
                     type: 'category',
-                    categories: dataPieChart.shortName,
+                    categories: dataBarChart.shortName,
                     tick: {
                         multiline: false
                     }
@@ -104,7 +105,7 @@ class AmountBarChart extends Component {
 
             tooltip: {
                 format: {
-                    title: function (index) { return dataPieChart.type[index] },
+                    title: function (index) { return dataBarChart.type[index] },
 
                 }
             }

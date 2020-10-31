@@ -14,6 +14,11 @@ const LotSchema = new Schema ({
         ref: 'Good'
     },
 
+    type: {
+        type: String,
+        enum: ["product", "material", "equipment", "asset"],
+    },
+
     stocks: [{
         stock: {
             type: Schema.Types.ObjectId,
@@ -73,9 +78,14 @@ const LotSchema = new Schema ({
             type: String
         },
 
-        timestamp: {
+        createdAt: {
             type: Date,
             default: Date.now
+        },
+
+        stock: {
+            type: Schema.Types.ObjectId,
+            ref: 'Stock',
         },
 
         binLocations: [{

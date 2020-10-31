@@ -452,11 +452,15 @@ class EditForm extends Component {
         }
         if (documentFile) {
             descriptions += "Thêm file tài liệu. "
-            formData.append('file', documentFile);
+            documentFile.forEach(x => {
+                formData.append('file', x.fileUpload);
+            })
         }
         if (documentFileScan) {
             descriptions += "Thêm file scan tài liệu";
-            formData.append('fileScan', documentFileScan);
+            documentFileScan.forEach(x => {
+                formData.append('fileScan', x.fileUpload);
+            })
         }
 
         formData.append('title', title);

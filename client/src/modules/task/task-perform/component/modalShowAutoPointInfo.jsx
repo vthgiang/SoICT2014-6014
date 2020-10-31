@@ -57,6 +57,9 @@ class ModalShowAutoPointInfo extends Component {
 
         let actionRating = actions.map(action => action.rating);
 
+        let numberOfPassedAction = actions.filter(act => act.rating >= 5).length;
+        let numberOfFailedAction = actions.filter(act => act.rating < 5).length;
+
         // Tổng số hoạt động
         let a = actionRating.length;
 
@@ -79,6 +82,8 @@ class ModalShowAutoPointInfo extends Component {
             formula = formula.replace(/totalDay/g, `(${totalDay})`);
             formula = formula.replace(/dayUsed/g, `(${dayUsed})`);
             formula = formula.replace(/averageActionRating/g, `(${averageActionRating})`);
+            formula = formula.replace(/numberOfFailedAction/g, `(${numberOfFailedAction})`);
+            formula = formula.replace(/numberOfPassedAction/g, `(${numberOfPassedAction})`);
             formula = formula.replace(/progress/g, `(${progressTask})`);
             
 
@@ -93,6 +98,8 @@ class ModalShowAutoPointInfo extends Component {
             formula = formula.replace(/totalDay/g, `(${totalDay})`);
             formula = formula.replace(/dayUsed/g, `(${dayUsed})`);
             formula = formula.replace(/averageActionRating/g, `(${averageActionRating})`);
+            formula = formula.replace(/numberOfFailedAction/g, `(${numberOfFailedAction})`);
+            formula = formula.replace(/numberOfPassedAction/g, `(${numberOfPassedAction})`);
             formula = formula.replace(/progress/g, `(${progressTask})`);
 
             // thay mã code bằng giá trị(chỉ dùng cho kiểu số)

@@ -36,7 +36,7 @@ exports.getStock = async (req, res) => {
         await Logger.error(req.user.email, 'GET_STOCK', req.portal);
         res.status(400).json({
             success: false,
-            messages:['get_stock_failed'],
+            messages: ['get_stock_failed'],
             content: error
         })
     }
@@ -49,7 +49,7 @@ exports.createStock = async (req, res) => {
         await Logger.info(req.user.email, 'CREATE_STOCK', req.portal);
         res.status(200).json({
             success: true,
-            messages: ['create_stock_success'],
+            messages: ['add_success'],
             content: stock
         })
     }
@@ -57,7 +57,7 @@ exports.createStock = async (req, res) => {
         await Logger.error(req.user.email, 'CREATE_STOCK', req.portal);
         res.status(400).json({
             success: false,
-            messages: ['create_stock_failed'],
+            messages: ['add_faile'],
             content: error
         })
     }
@@ -70,7 +70,7 @@ exports.editStock = async (req, res) => {
         await Logger.info(req.user.email, 'EDIT_STOCK', req.portal);
         res.status(200).json({
             success: true,
-            messages: ['edit_stock_success'],
+            messages: ['edit_success'],
             content: stock
         })
     } 
@@ -78,7 +78,7 @@ exports.editStock = async (req, res) => {
         await Logger.error(req.user.email, 'EDIT_STOCK', req.portal);
         res.status(400).json({
             success: false,
-            messages: ['edit_stock_failed'],
+            messages: ['edit_faile'],
             content: error
         })
     }
@@ -91,7 +91,7 @@ exports.deleteStock = async (req, res) => {
         await Logger.info(req.user.email, 'DELETE_STOCK', req.portal);
         res.status(200).json({
             success: true,
-            messages: ['delete_stock_success'],
+            messages: ['delete_success'],
             content: stock
         })
     }
@@ -99,7 +99,7 @@ exports.deleteStock = async (req, res) => {
         await Logger.error(req.user.email, 'DELETE_STOCK', req.portal);
         res.status(400).json({
             success: false,
-            messages: ['delete_stock_failed'],
+            messages: ['delete_faile'],
             content: error
         })
     }

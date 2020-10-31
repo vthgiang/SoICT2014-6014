@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from '../../../../../common-components';
 import { StockActions } from '../redux/actions';
 import { translate } from 'react-redux-multilingual/lib/utils';
+import { generateCode } from '../../../../../helpers/generateCode';
 
 class StockCreateForm extends Component {
     constructor(props) {
@@ -14,7 +15,7 @@ class StockCreateForm extends Component {
             minQuantity: ''
         }
         this.state = {
-            code: '',
+            code: generateCode("ST"),
             name: '',
             status: '1',
             address: '',
@@ -26,29 +27,6 @@ class StockCreateForm extends Component {
             editInfo: false
             
         }
-    }
-
-    handleCodeChange = (e) => {
-        let value = e.target.value;
-        this.validateCode(value, true);
-    }
-
-    validateCode = (value, willUpdateState = true) => {
-        let msg = undefined;
-        const { translate } = this.props;
-        if(!value) {
-            msg = translate('manage_warehouse.category_management.validate_code');
-        }
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnCode: msg,
-                    code: value
-                }
-            });
-        }
-        return msg === undefined;
     }
 
     handleNameChange = (e) => {
@@ -173,7 +151,6 @@ class StockCreateForm extends Component {
     isFormValidated = () => {
         let result =
             this.validateName(this.state.name, false) &&
-            this.validateCode(this.state.code, false) &&
             this.validateAddress(this.state.address, false) &&
             this.validateDepartment(this.state.manageDepartment, false) &&
             this.validateManagementLocation(this.state.managementLocation, false)
@@ -213,7 +190,6 @@ class StockCreateForm extends Component {
     handleMaxQuantityChange = (e) => {
         let value = e.target.value;
         this.state.good.maxQuantity = value;
-        console.log(value);
         this.setState(state => {
             return {
                 ...state
@@ -223,7 +199,7 @@ class StockCreateForm extends Component {
 
     getAllGoods = () => {
         let { translate } = this.props;
-        let goodArr = [{ value: '', text: translate('manage_warehouse.good_management.choose_category') }];
+        let goodArr = [{ value: '', text: translate('manage_warehouse.stock_management.choose_good') }];
 
         this.props.goods.listALLGoods.map(item => {
             goodArr.push({
@@ -240,18 +216,18 @@ class StockCreateForm extends Component {
         this.validateGood(good, true);
     }
 
-    validateGood = (value, willUpdateState = true) => {
-        const dataGood = this.getAllGoods();
+    validateGood = async (value, willUpdateState = true) => {
+        const dataGood = await this.getAllGoods();
         
         let msg = undefined;
         const { translate } = this.props;
         let { good } = this.state;
         if(!value){
-            msg = translate('manage_warehouse.category_management.validate_name');
+            msg = translate('manage_warehouse.stock_management.validate_good');
         }
         if (willUpdateState) {
-        let goodName = dataGood.find(x=>x.value === value);
-            good.good = {_id:value,name:goodName.text};
+        let goodName = dataGood.find(x => x.value === value);
+            good.good = { _id:value, name: goodName.text };
             this.setState(state => {
                 return {
                     ...state,
@@ -337,7 +313,8 @@ class StockCreateForm extends Component {
         })
     }
 
-    handleClearGood = async () => {
+    handleClearGood = (e) => {
+        e.preventDefault();
         this.setState(state => {
             return {
                 ...state,
@@ -346,16 +323,23 @@ class StockCreateForm extends Component {
         })
     }
 
+    handleClickCreate = () => {
+        const value = generateCode("ST");
+        this.setState({
+            code: value
+        });
+    }
+
     render() {
         const { translate, stocks, role } = this.props;
-        const { errorOnName, errorOnCode, errorOnAddress, errorOnDepartment, errorOnManagementLocation, errorOnGood, errorOnMinQuantity, errorOnMaxQuantity, code, name, 
+        const { errorOnName, errorOnAddress, errorOnDepartment, errorOnManagementLocation, errorOnGood, errorOnMinQuantity, errorOnMaxQuantity, code, name, 
                 managementLocation, status, address, description, manageDepartment, goods, good } = this.state;
         const departmentManagement = this.getAllDepartment();
         const listGoods = this.getAllGoods();
 
         return (
             <React.Fragment>
-                <ButtonModal modalID={`modal-create-stock`} button_name={translate('manage_warehouse.stock_management.add')} title={translate('manage_warehouse.stock_management.add_title')} />
+                <ButtonModal onButtonCallBack={this.handleClickCreate} modalID={`modal-create-stock`} button_name={translate('manage_warehouse.stock_management.add')} title={translate('manage_warehouse.stock_management.add_title')} />
                 <DialogModal
                     modalID={`modal-create-stock`} isLoading={stocks.isLoading}
                     formID={`form-create-stock`}
@@ -369,10 +353,9 @@ class StockCreateForm extends Component {
                     <form id={`form-create-stock`} >
                         <div className="row">
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                <div className={`form-group ${!errorOnCode ? "" : "has-error"}`}>
+                                <div className={`form-group`}>
                                     <label>{translate('manage_warehouse.stock_management.code')}<span className="attention"> * </span></label>
-                                    <input type="text" className="form-control" value={code} onChange={this.handleCodeChange}/>
-                                    <ErrorLabel content = { errorOnCode }/>
+                                    <input type="text" className="form-control" value={code} disabled/>
                                 </div>
                                 <div className={`form-group ${!errorOnAddress ? "" : "has-error"}`}>
                                     <label>{translate('manage_warehouse.stock_management.address')}<span className="attention"> * </span></label>
@@ -441,10 +424,10 @@ class StockCreateForm extends Component {
                                     <div className={`form-group ${!errorOnGood ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.good_management.good')}</label>
                                         <SelectBox
-                                            id={`select-good-by-stock`}
+                                            id={`select-good-by-stock-create`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            value={good.good}
+                                            value={good.good ? good.good._id : { value: '', text: translate('manage_warehouse.stock_management.choose_good') }}
                                             items={listGoods}
                                             onChange={this.handleGoodChange}
                                             multiple={false}
@@ -455,14 +438,14 @@ class StockCreateForm extends Component {
                                     <div className={`form-group ${!errorOnMinQuantity ? "" : "has-error"}`}>
                                         <label className="control-label">{translate('manage_warehouse.stock_management.min_quantity')}</label>
                                         <div>
-                                            <input type="number" className="form-control" placeholder={translate('manage_warehouse.good_management.min_quantity')} value={good.minQuantity} onChange={this.handleMinQuantityChange} />
+                                            <input type="number" className="form-control" placeholder={translate('manage_warehouse.stock_management.min_quantity')} value={good.minQuantity} onChange={this.handleMinQuantityChange} />
                                         </div>
                                         <ErrorLabel content = { errorOnMinQuantity } />
                                     </div>
                                     <div className={`form-group ${!errorOnMaxQuantity ? "" : "has-error"}`}>
                                         <label className="control-label">{translate('manage_warehouse.stock_management.max_quantity')}</label>
                                         <div>
-                                            <input type="number" className="form-control" placeholder={translate('manage_warehouse.good_management.max_quantity')} value={good.maxQuantity} onChange={this.handleMaxQuantityChange} />
+                                            <input type="number" className="form-control" placeholder={translate('manage_warehouse.stock_management.max_quantity')} value={good.maxQuantity} onChange={this.handleMaxQuantityChange} />
                                         </div>
                                         <ErrorLabel content = { errorOnMaxQuantity } />
                                     </div>

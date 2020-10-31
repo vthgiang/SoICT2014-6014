@@ -6,11 +6,14 @@ const Logger = require(`${SERVER_LOGS_DIR}`);
 
 /** Lấy tập KPI cá hiện hiện tại */
 exports.getEmployeeKpiSet = async (req, res) => {
+    console.log('hhhhhhhhhhhh', req.query)
     if (req.query.userId && req.query.startDate && req.query.endDate) {
         this.getAllEmployeeKpiSetByMonth(req, res);
     }
     else if (req.query.unitKpiSetByMonth) {
-        KPIPersonalController.getAllEmployeeKpiSetInOrganizationalUnit(req, res);
+        KPIPersonalController.getAllEmployeeKpiSetI
+
+        nOrganizationalUnit(req, res);
     }
     else if (req.query.unitKpiSetByEmployeeKpiSetDate) {
         KPIPersonalController.getAllKPIEmployeeSetsInOrganizationByMonth(req, res);
@@ -109,7 +112,7 @@ exports.createEmployeeKpiSet = async (req, res) => {
 exports.createEmployeeKpi = async (req, res) => {
     try {
         let employeeKpi = await EmployeeKpiSetService.createEmployeeKpi(req.portal, req.body);
-        
+
         await Logger.info(req.user.email, ` create employee kpi `, req.portal)
         res.status(200).json({
             success: true,
@@ -254,20 +257,20 @@ exports.createComment = async (req, res) => {
  */
 exports.createChildComment = async (req, res) => {
     // try {
-        var files = [];
-        if (req.files !== undefined) {
-            req.files.forEach((elem, index) => {
-                var path = elem.destination + '/' + elem.filename;
-                files.push({ name: elem.originalname, url: path })
-            })
-        }
-        var comments = await EmployeeKpiSetService.createChildComment(req.portal, req.params, req.body, files);
-        await Logger.info(req.user.email, ` create comment `, req.portal)
-        res.status(200).json({
-            success: true,
-            messages: ['create_child_comment_success'],
-            content: comments
+    var files = [];
+    if (req.files !== undefined) {
+        req.files.forEach((elem, index) => {
+            var path = elem.destination + '/' + elem.filename;
+            files.push({ name: elem.originalname, url: path })
         })
+    }
+    var comments = await EmployeeKpiSetService.createChildComment(req.portal, req.params, req.body, files);
+    await Logger.info(req.user.email, ` create comment `, req.portal)
+    res.status(200).json({
+        success: true,
+        messages: ['create_child_comment_success'],
+        content: comments
+    })
     // } catch (error) {
     //     await Logger.error(req.user.email, ` create child comment kpi `, req.portal)
     //     res.status(400).json({

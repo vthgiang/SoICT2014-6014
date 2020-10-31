@@ -13,6 +13,7 @@ var findIndex = (array, id) => {
 const initState = {
     isLoading: false,
     listGoods: [],
+    goodDetail: '',
     listALLGoods: [],
     listGoodsByType: [],
     listGoodsByCategory: [],
@@ -46,7 +47,7 @@ export function goods(state = initState, action) {
         case GoodConstants.DELETE_GOOD_REQUEST:
             return {
                 ...state,
-                isLoading: false
+                isLoading: true
             };
         
         case GoodConstants.GET_GOOD_BY_TYPE_FAILURE:
@@ -123,6 +124,12 @@ export function goods(state = initState, action) {
             };
 
         case GoodConstants.GET_GOOD_DETAIL_SUCCESS:
+            return {
+                ...state,
+                goodDetail: action.payload,
+                isLoading: false
+            }
+
         case GoodConstants.UPDATE_GOOD_SUCCESS:
             index = findIndex(state.listGoods, action.payload._id);
             indexPaginate = findIndex(state.listPaginate, action.payload._id);
