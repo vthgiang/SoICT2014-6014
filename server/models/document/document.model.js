@@ -30,7 +30,8 @@ const DocumentSchema = new Schema({
         type: String
     },
     officialNumber: { // Số hiệu. VD: 920/QD-NHNN
-        type: String
+        type: String,
+        required: true
     },
     views: [{
         viewer: {

@@ -688,6 +688,7 @@ export default {
             domain_name_exist: 'Domain name exist',
             category_name_exist: 'Category name exist',
             name_exist: 'Name exist',
+            document_exist: 'Official number exist'
         },
 
         crm: {
@@ -864,7 +865,7 @@ export default {
             update_employee: 'Update Personal Information',
             dashboard_employee: 'DashBoard Manage Staffs ',
             dashboard_personal: 'DashBoard personal',
-            employee_capacity:'Employee capacity',
+            employee_capacity: 'Employee capacity',
             discipline: 'Manage Commendation And Discipline',
             annual_leave: 'Manage Annual Leave',
             salary_employee: 'Manage Salary',
@@ -3451,7 +3452,7 @@ export default {
                 add_new_tax: 'Add new tax',
                 add_successfully: 'Add tax successfully',
                 add_failed: 'Add tax failed',
-                description:'Description',
+                description: 'Description',
                 goods: 'Goods',
                 select_goods: 'Choose goods',
                 tax_percent: 'Percent',
