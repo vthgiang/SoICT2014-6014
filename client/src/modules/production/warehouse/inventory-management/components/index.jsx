@@ -9,9 +9,7 @@ import { LotActions } from '../redux/actions';
 import { StockActions } from '../../stock-management/redux/actions';
 import { GoodActions } from '../../../common-production/good-management/redux/actions';
 
-import { TreeTable } from './treeTable';
-
-import { LazyLoadComponent, forceCheckOrVisible, SelectMulti, DataTableSetting, DeleteNotification, DatePicker, PaginateBar } from '../../../../../common-components/index';
+import { SelectMulti, DataTableSetting, SelectBox, DatePicker, PaginateBar } from '../../../../../common-components/index';
 
 class InventoryManagement extends Component {
 
@@ -28,15 +26,19 @@ class InventoryManagement extends Component {
     }
 
     componentDidMount(){
-        const { page, limit, oldType } = this.state;
+        const { page, limit, type } = this.state;
         this.props.getAllStocks();
-        this.props.getAllLots();
-        this.props.getGoodsByType({ page, limit, type: oldType });
+        this.props.getAllLots({ type });
+        this.props.getAllLots({ page, limit, type });
+        this.props.getAllGoodsByType({ type });
     };
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if(prevState.oldType !== prevState.type) {
             nextProps.getGoodsByType({ page: prevState.page, limit: prevState.limit, type: prevState.type });
+            nextProps.getAllLots({ type: prevState.type });
+            nextProps.getAllLots({ page: prevState.page, limit: prevState.limit, type: prevState.type });
+            nextProps.getAllGoodsByType({ type: prevState.type });
             return { 
                 oldType: prevState.type,
             }
@@ -44,61 +46,54 @@ class InventoryManagement extends Component {
         return null;
     };
 
-    // shouldComponentUpdate(nextProps, nextPage){
-    //     if(this.state.dataStatus == 1 && !nextProps.goods.isLoading && !nextProps.lots.isLoading){
-    //         this.setState(state => {
-    //             return {
-    //                 ...state,
-    //                 dataStatus: 2,
-    //                 type: nextPage.type
-    //             }
-    //         });
-    //         return true;
-    //     };
-    //     return false;
-    // }
-
-    handleProduct = async () => {
+    handleProduct = () => {
         let type = 'product';
         let page = 1;
-        await this.setState({
+        this.setState({
             type: type,
             page: page,
-            dataStatus: 0
+            good: ''
         })
     }
 
-    handleMaterial = async () => {
+    handleMaterial = () => {
         let type = 'material';
         let page = 1;
-        await this.setState({
+        this.setState({
             type: type,
             page: page,
-            dataStatus: 0
+            good: ''
         })
     }
 
-    handleEquipment = async () => {
+    handleEquipment = () => {
         let type = 'equipment';
         let page = 1;
-        await this.setState({
+        this.setState({
             type: type,
             page: page,
-            dataStatus: 0
+            good: ''
         })
     }
 
-    handleAsset = async () => {
+    handleAsset = () => {
         let type = 'asset';
         let page = 1;
-        await this.setState({
+        this.setState({
             type: type,
             page: page,
-            dataStatus: 0
+            good: ''
         })
     }
 
-    handleShowDetailInfo = (id) => {
+    handleShowDetailInfo = async (id) => {
+        await this.props.getGoodDetail(id);
+        await this.setState(state => {
+            return {
+                ...state,
+                lotId: id
+            }
+        })
         
         window.$('#modal-detail-inventory').modal('show');
     }
@@ -113,7 +108,7 @@ class InventoryManagement extends Component {
         window.$('#modal-detail-lot').modal('show');
     }
 
-    handleEditLot = async (id) => {
+    handleEdit = async (id) => {
         const lot = await this.props.getDetailLot(id);
         this.setState(state => {
             return {
@@ -125,18 +120,24 @@ class InventoryManagement extends Component {
         window.$('#modal-edit-lot').modal('show');
     }
 
-    formatDate(date) {
-        let d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
+    formatDate(date, monthYear = false) {
+        if (date) {
+            let d = new Date(date),
+                day = '' + d.getDate(),
+                month = '' + (d.getMonth() + 1),
+                year = d.getFullYear();
 
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
 
-        return [day, month, year].join('-');
+            if (monthYear === true) {
+                return [month, year].join('-');
+            } else return [day, month, year].join('-');
+        } else {
+            return date
+        }
     }
 
     setLimit = (number) => {
@@ -146,7 +147,7 @@ class InventoryManagement extends Component {
             page: this.state.page,
             type: this.state.type
         };
-        this.props.getGoodsByType(data);
+        this.props.getAllLots(data);
     }
 
     setPage = (page) => {
@@ -156,10 +157,10 @@ class InventoryManagement extends Component {
             page: page,
             type: this.state.type
         };
-        this.props.getGoodsByType(data);
+        this.props.getAllLots(data);
     }
 
-    handleStockChange = async (value) => {
+    handleStockChange = (value) => {
         this.setState(state => {
             return {
                 ...state,
@@ -168,17 +169,30 @@ class InventoryManagement extends Component {
         })
     }
 
-    handleCodeChange = (e) => {
-        let value = e.target.value;
+    handleGoodChange = (value) => {
         this.setState(state => {
             return {
                 ...state,
-                code: value
+                good: value[0]
             }
         })
     }
 
-    handleNameChange = (e) => {
+    handleExpirationDateChange = (value) => {
+        if (value) {
+            let partMonth = value.split('-');
+            value = [partMonth[1], partMonth[0]].join('-');
+        }
+
+        this.setState(state => {
+            return {
+                ...state,
+                expirationDate: value
+            }
+        })
+    }
+
+    handleLotChange = (e) => {
         let value = e.target.value;
         this.setState(state => {
             return {
@@ -190,67 +204,56 @@ class InventoryManagement extends Component {
 
     handleSubmitSearch = async () => {
         let data = {
+            type: this.state.type,
             page: this.state.page,
             limit: this.state.limit,
-            code: this.state.code,
             name: this.state.name,
+            good: this.state.good,
+            expirationDate: this.state.expirationDate,
+            stock: this.state.stock,
         }
 
-        this.props.getGoodsByType(data);
+        await this.props.getAllLots(data);
+
+        await this.setState(state => {
+            return {
+                ...state
+            }
+        })
+    }
+
+    getAllGoodsByType = () => {
+        let { translate, goods } = this.props;
+        let goodArr = [{ value: '', text: translate('manage_warehouse.inventory_management.choose_good') }];
+
+        goods.listGoodsByType.map(item => {
+            goodArr.push({
+                value: item._id,
+                text: item.name,
+                baseUnit: item.baseUnit
+            })
+        })
+
+        return goodArr;
     }
 
     render() {
 
         const { translate, lots, goods, stocks } = this.props;
-        const { type, lotId } = this.state;
-        const { totalPages, page } = goods;
+        const { type, lotId, good, expirationDate } = this.state;
+        const { listGoodsByType } = goods;
+        const { listPaginate, listLots, totalPages, page } = lots;
+        const totalGoodsByType = listGoodsByType ? listGoodsByType.length : 0;
+        const totalLot = listLots ? listLots.length : 0;
+        const dataGoodsByType = this.getAllGoodsByType();
 
-        let listLots = [];
-        let dataGoods = goods.listPaginate ? goods.listPaginate.map((node, index) => {
-            const goodId = node._id;
-            let lotOfGood = [];
-            lotOfGood = lots.listLots ? lots.listLots.filter(x => x.good ? x.good._id === goodId : x ) : [];
-            listLots = listLots.concat(lotOfGood);
-            let quantityTotal = lotOfGood ? lotOfGood.reduce(function (accumulator, currentValue){
-                return accumulator + currentValue.quantity;
-            }, 0) : 0;
-            return {
-                ...node,
-                index: index + 1,
-                name: node.name,
-                baseUnit: node.baseUnit,
-                quantity: quantityTotal,
-                lot: "",
-                expirationDate: "",
-                parent: null,
-                action: ["viewGood"]
-            }
-        }) : [];
+        let lotOfGood = listLots ? listLots.filter(x => x.good ? x.good._id === good : x ) : [];
+        let quantityTotal = lotOfGood ? lotOfGood.reduce(function (accumulator, currentValue){
+            return accumulator + currentValue.quantity;
+        }, 0) : 0;
 
-        let dataLots = listLots.length ? listLots.map(node => {
-            return {
-                ...node,
-                name: node.good ? node.good.name : "",
-                baseUnit: node.good ? node.good.baseUnit : "",
-                quantity: node.quantity,
-                lot: node.name,
-                expirationDate: this.formatDate(node.expirationDate),
-                parent: node.good ? node.good._id : null,
-                action: ["viewLot", "edit"]
-            }
-        }) : [];
+        let goodName = dataGoodsByType.find(x => x.value === good);
 
-        
-        const dataTree = dataGoods.concat(dataLots);
-
-        let column = [
-            { name: translate('manage_warehouse.inventory_management.index'), key: "index" },
-            { name: translate('manage_warehouse.inventory_management.name'), key: "name" },
-            { name: translate('manage_warehouse.inventory_management.unit'), key: "baseUnit" },
-            { name: translate('manage_warehouse.inventory_management.quantity'), key: "quantity" },
-            { name: translate('manage_warehouse.inventory_management.lot'), key: "lot" },
-            { name: translate('manage_warehouse.inventory_management.date'), key: "expirationDate" }
-        ];
         return (
             <div className="nav-tabs-custom">
                 <ul className="nav nav-tabs">
@@ -267,7 +270,7 @@ class InventoryManagement extends Component {
                             <SelectMulti
                                 id={`select-multi-stock`}
                                 multiple="multiple"
-                                options={{ nonSelectedText: "Tổng các kho", allSelectedText: "Tổng các kho" }}
+                                options={{ nonSelectedText: translate('manage_warehouse.inventory_management.total_stock'), allSelectedText: translate('manage_warehouse.inventory_management.total_stock') }}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={stocks.listStocks.map((x, index) => { return { value: x._id, text: x.name }})}
@@ -275,29 +278,61 @@ class InventoryManagement extends Component {
                             />
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">{translate('asset.general_information.purchase_date')}</label>
-                            <DatePicker
-                                id="purchase-month"
-                                dateFormat="month-year"
-                                value=""
-                                onChange={this.handlePurchaseMonthChange}
+                            <label>{translate(`manage_warehouse.inventory_management.${type}`)}</label>
+                            <SelectBox
+                                id={`select-good-inventory`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={good}
+                                items={dataGoodsByType}
+                                onChange={this.handleGoodChange}    
+                                multiple={false}
                             />
                         </div>
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">{translate('manage_warehouse.inventory_management.good_code')}</label>
-                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder={translate('manage_warehouse.inventory_management.good_code')} autoComplete="off" />
+                            <label className="form-control-static">{translate('manage_warehouse.inventory_management.lot')}</label>
+                            <input type="text" className="form-control" name="code" onChange={this.handleLotChange} placeholder={translate('manage_warehouse.inventory_management.good_code')} autoComplete="off" />
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">{translate('manage_warehouse.inventory_management.name')}</label>
-                            <input type="text" className="form-control" name="name" onChange={this.handleNameChange} placeholder={translate('manage_warehouse.inventory_management.name')} autoComplete="off" />
+                            <label className="form-control-static">{translate('manage_warehouse.inventory_management.date')}</label>
+                            <DatePicker
+                                id="purchase-month"
+                                dateFormat="month-year"
+                                value={expirationDate}
+                                onChange={this.handleExpirationDateChange}
+                            />
                         </div>
                         <div className="form-group">
                             <button type="button" className="btn btn-success" title={translate('manage_warehouse.inventory_management.search')} onClick={this.handleSubmitSearch}>{translate('manage_warehouse.inventory_management.search')}</button>
                         </div>
                     </div>
-                    <InventoryDetailForm />
+                    <div className="box-body">
+                        <ul className="todo-list">
+                            <li>
+                                <span className="text"><a href='/good-management'>Tổng số {translate(`manage_warehouse.inventory_management.${type}`)} trong kho</a></span>
+                                <span className="label label-info" style={{fontSize: '11px'}}>{totalGoodsByType} {translate(`manage_warehouse.inventory_management.${type}`)}</span>
+                            </li>
+                            <li>
+                                <span className="text"><a href="#">Tổng số lô hàng của {translate(`manage_warehouse.inventory_management.${type}`)}</a></span>
+                                <span className="label label-warning" style={{fontSize: '11px'}}>{totalLot} {translate('manage_warehouse.inventory_management.lots')}</span>
+                            </li>
+                            {
+                                good ?
+                                <li>
+                                    <span className="text"><a href="#" onClick={() => this.handleShowDetailInfo(goodName.value)}>Số lượng tồn kho của {goodName.text}</a></span>
+                                    <span className="label label-success" style={{fontSize: '11px'}}>{quantityTotal} {goodName.baseUnit}</span>
+                                </li> : []
+                            }
+                        </ul>
+                    </div>
+                    {
+                        lotId &&
+                        <InventoryDetailForm
+                            id={lotId}
+                        />
+                    }
                     <LotDetailForm />
 
                     { 
@@ -307,42 +342,57 @@ class InventoryManagement extends Component {
                             lot={lots.lotDetail}
                         />
                     }
-                    <DataTableSetting
-                        tableId={`tree-table-${type}`}
-                        tableContainerId={`tree-table-container-${type}`}
-                        tableWidth="1300px"
-                        columnArr={[
-                            translate('manage_warehouse.inventory_management.index'),
-                            translate('manage_warehouse.inventory_management.name'),
-                            translate('manage_warehouse.inventory_management.unit'),
-                            translate('manage_warehouse.inventory_management.quantity'),
-                            translate('manage_warehouse.inventory_management.lot'),
-                            translate('manage_warehouse.inventory_management.date'),
-                        ]}
-                        limit={this.state.limit}
-                        setLimit={this.setLimit}
-                        hideColumnOption={true}
-                    />
-
-                    <div id={`tree-table-container-${type}`}>
-                        <TreeTable
-                            tableId={`tree-table-${type}`}
-                            behaviour="show-children"
-                            column={column}
-                            data={dataTree}
-                            titleAction={{
-                                edit: translate('task.task_management.action_edit'),
-                                viewLot: translate('task.task_management.action_edit'),
-                                viewGood: translate('task.task_management.action_edit'),
-                            }}
-                            funcEdit={this.handleEditLot}
-                            funcViewLot={this.handleShowDetailLot}
-                            funcViewGood={this.handleShowDetailInfo}
-                        />
-
-                    </div>
-
-                    <PaginateBar pageTotal = {totalPages} currentPage = {page} func = {this.setPage} />
+                        <table id="inventory-table" className="table table-striped table-bordered table-hover" style={{marginTop: '15px'}}>
+                            <thead>
+                                <tr>
+                                    <th style={{ width: "5%" }}>{translate('manage_warehouse.inventory_management.index')}</th>
+                                    <th>{translate('manage_warehouse.inventory_management.name')}</th>
+                                    <th>{translate('manage_warehouse.inventory_management.unit')}</th>
+                                    <th>{translate('manage_warehouse.inventory_management.quantity')}</th>
+                                    <th>{translate('manage_warehouse.inventory_management.lot')}</th>
+                                    <th>{translate('manage_warehouse.inventory_management.date')}</th>
+                                    <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
+                                    <DataTableSetting
+                                            tableId="stock-table"
+                                            columnArr={[
+                                                translate('manage_warehouse.inventory_management.index'),
+                                                translate('manage_warehouse.inventory_management.name'),
+                                                translate('manage_warehouse.inventory_management.unit'),
+                                                translate('manage_warehouse.inventory_management.quantity'),
+                                                translate('manage_warehouse.inventory_management.lot'),
+                                                translate('manage_warehouse.inventory_management.date')
+                                            ]}
+                                            limit={this.state.limit}
+                                            setLimit={this.setLimit}
+                                            hideColumnOption={true}
+                                        />
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                { (typeof listPaginate !== undefined && listPaginate.length !== 0) &&
+                                    listPaginate.map((x, index) => (
+                                        <tr key={index}>
+                                            <td>{index + 1}</td>
+                                            <td>{x.good.name}</td>
+                                            <td>{x.good.baseUnit}</td>
+                                            <td>{x.quantity}</td>
+                                            <td>{x.name}</td>
+                                            <td>{this.formatDate(x.expirationDate)}</td>
+                                            <td style={{textAlign: 'center'}}>
+                                                <a className="text-green" onClick={() => this.handleShowDetailLot(x._id)}><i className="material-icons">visibility</i></a>
+                                                <a onClick={() => this.handleEdit(x._id)} href={`#${x._id}`} className="text-yellow" ><i className="material-icons">edit</i></a>
+                                            </td>
+                                        </tr>
+                                    ))
+                                }
+                            </tbody>
+                        </table>
+                        {lots.isLoading ?
+                            <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                            (typeof listPaginate === 'undefined' || listPaginate.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        }
+                        <PaginateBar pageTotal = {totalPages} currentPage = {page} func = {this.setPage} />
                     </div>
                 </div>
             </div>
@@ -358,7 +408,8 @@ const mapDispatchToProps = {
     getGoodsByType: GoodActions.getGoodsByType,
     getGoodDetail: GoodActions.getGoodDetail,
     getAllStocks: StockActions.getAllStocks,
-    getDetailLot: LotActions.getDetailLot
+    getDetailLot: LotActions.getDetailLot,
+    getAllGoodsByType: GoodActions.getAllGoodsByType
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(InventoryManagement));

@@ -262,7 +262,6 @@ exports.updateAnnualLeave = async (req, res) => {
                     sender: req.user.name,
                 }
                 await NotificationServices.createNotification(req.portal, req.user.company._id, notification, undefined);
-                console.log("sdawdad");
             };
 
 

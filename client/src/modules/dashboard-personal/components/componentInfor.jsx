@@ -200,7 +200,7 @@ class ComponentInfor extends Component {
                             <div className="form-group">
                                 <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.organizational_unit')}</label>
                                 <SelectBox
-                                    id={`organizationalUnitSelectBoxInOrganizationalUnitKpiDashboard`}
+                                    id={`organizationalUnitSelectBox`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={organizationalUnitsOfUser.map(item => { return { value: item._id, text: item.name } })}
@@ -216,7 +216,7 @@ class ComponentInfor extends Component {
                                     dateFormat="month-year"
                                     value={month}
                                     onChange={this.handleSelectMonth}
-                                    disabled={false}
+                                    deleteValue={false}
                                 />
                             </div>
 

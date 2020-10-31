@@ -4,6 +4,7 @@ export function dashboardEvaluationEmployeeKpiSet(state = {}, action) {
   switch (action.type) {
     case  dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_BY_ROLE_REQUEST:
       return {
+        ...state,
         loading: true,
         isLoading: true
       };
@@ -18,12 +19,14 @@ export function dashboardEvaluationEmployeeKpiSet(state = {}, action) {
 
     case dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_BY_ROLE_FAILURE:
       return { 
+        ...state,
         error: action.payload,
         isLoading: false
       };
       
     case  dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_BY_ID_REQUEST:
       return {
+        ...state,
         loading: true,
         isLoading: true
       };
@@ -38,6 +41,7 @@ export function dashboardEvaluationEmployeeKpiSet(state = {}, action) {
 
     case dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_BY_ID_FAILURE:
       return { 
+        ...state,
         error: action.payload,
         isLoading: false
       };

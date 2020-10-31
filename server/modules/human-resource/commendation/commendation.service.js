@@ -169,9 +169,6 @@ exports.searchCommendations = async (portal, params, company) => {
  * @company : Id công ty người thêm
  */
 exports.createCommendation = async (portal, data, company) => {
-    console.log(data);
-
-
     let isCommendation = await Commendation(connect(DB_CONNECTION, portal)).findOne({
         employee: data.employee,
         company: company,

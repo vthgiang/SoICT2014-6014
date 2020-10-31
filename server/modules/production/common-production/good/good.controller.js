@@ -65,7 +65,7 @@ exports.createGoodByType = async (req, res) => {
         await Logger.info(req.user.email, 'CREATE_GOOD', req.portal);
         res.status(200).json({
             success: true,
-            messages: ['create_good_success'],
+            messages: ['add_success'],
             content: good
         })
     }
@@ -73,7 +73,7 @@ exports.createGoodByType = async (req, res) => {
         await Logger.error(req.user.email, 'CREATE_GOOD', req.portal);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['create_good_failed'],
+            messages: Array.isArray(error) ? error : ['add_faile'],
             content: error
         })
     }
@@ -85,7 +85,7 @@ exports.editGood = async (req, res) => {
         await Logger.info(req.user.email, 'EDIT_GOOD', req.portal);
         res.status(200).json({
             success: true,
-            messages: ['edit_good_success'],
+            messages: ['edit_success'],
             content: good
         })
     }
@@ -93,7 +93,7 @@ exports.editGood = async (req, res) => {
         await Logger.error(req.user.email, 'EDIT_GOOD', req.portal);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['edit_good_failed'],
+            messages: Array.isArray(error) ? error : ['edit_faile'],
             content: error
         })
     }
@@ -106,7 +106,7 @@ exports.deleteGood = async (req, res) => {
         await Logger.info(req.user.email, 'DELETE_GOOD', req.portal);
         res.status(200).json({
             success: true,
-            messages: ['delete_good_success'],
+            messages: ['delete_success'],
             content: good
         })
     }
@@ -114,7 +114,7 @@ exports.deleteGood = async (req, res) => {
         await Logger.error(req.user.email, 'DELETE_GOOD', req.portal);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['delete_good_failed'],
+            messages: Array.isArray(error) ? error : ['delete_faile'],
             content: error
         })
     }

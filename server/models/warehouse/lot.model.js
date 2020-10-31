@@ -14,6 +14,11 @@ const LotSchema = new Schema ({
         ref: 'Good'
     },
 
+    type: {
+        type: String,
+        enum: ["product", "material", "equipment", "asset"],
+    },
+
     stocks: [{
         stock: {
             type: Schema.Types.ObjectId,
