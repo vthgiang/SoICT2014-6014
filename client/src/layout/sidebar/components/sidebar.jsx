@@ -88,7 +88,15 @@ class SideBar extends Component {
                             <Item
                                 item={{
                                     name: "menu.dashboard_personal",
-                                    path: "/hr-dashboard-personal",
+                                    path: "/dashboard-personal",
+                                    icon: "fa fa-newspaper-o",
+                                }}
+                            />
+                            {/* Bảng tin đơn vị */}
+                            <Item
+                                item={{
+                                    name: "menu.dashboard_unit",
+                                    path: "/dashboard-unit",
                                     icon: "fa fa-newspaper-o",
                                 }}
                             />
@@ -307,6 +315,11 @@ class SideBar extends Component {
                                             name: "menu.crm_list.statistic",
                                             icon: "fa fa-circle-o",
                                             path: "/crm/statistic",
+                                        },
+                                        {
+                                            name: "menu.crm_list.generalConfiguration",
+                                            icon: "fa fa-gear",
+                                            path: "/crm/generalConfiguration",
                                         },
                                     ],
                                 }}

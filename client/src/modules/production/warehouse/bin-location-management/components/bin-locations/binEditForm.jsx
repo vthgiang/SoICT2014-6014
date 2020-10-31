@@ -122,7 +122,7 @@ class BinEditForm extends Component {
         const { translate } = this.props;
         
         if(!value) {
-            msg = translate('manage_warehouse.category_management.validate_name');
+            msg = translate('manage_warehouse.bin_location_management.validate_capacity');
         }
 
         if(willUpdateState){
@@ -219,29 +219,6 @@ class BinEditForm extends Component {
                 binEnableGoods: newEnableGoods
             }
         })
-    }
-
-    handleCodeChange = (e) => {
-        let value = e.target.value;
-        this.validateCode(value, true);
-    }
-
-    validateCode = (value, willUpdateState = true) => {
-        let msg = undefined;
-        const { translate } = this.props;
-        if(!value) {
-            msg = translate('manage_warehouse.category_management.validate_code');
-        }
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorCode: msg,
-                    binCode: value
-                }
-            });
-        }
-        return msg === undefined;
     }
 
     handleStatusChange = (value) => {
@@ -387,8 +364,8 @@ class BinEditForm extends Component {
 
     render() {
         const { translate, user, binLocations } = this.props;
-        const { binCode, binName, binStatus, binUnit, binUsers, binPath, binContained, binParent, binCapacity, 
-            binDescription, binDepartment, binEnableGoods, errorCode, errorName, errorCapacity, errorGood, good, binStock } = this.state;
+        const { binCode, binName, binStatus, binUnit, binUsers, binParent, binCapacity, 
+            binDescription, binDepartment, binEnableGoods, errorName, errorCapacity, errorGood, good, binStock } = this.state;
         const { list } = binLocations.binLocationByStock;
         const dataDepartment = this.getAllDepartment();
         const dataGoods = this.getAllGoods();
@@ -398,10 +375,9 @@ class BinEditForm extends Component {
             <div id="edit-bin-location">
             <div className="scroll-row">
                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                    <div className={`form-group ${!errorCode ? "" : "has-error"}`}>
+                    <div className={`form-group`}>
                         <label>{translate('manage_warehouse.bin_location_management.code')}<span className="attention"> * </span></label>
-                        <input type="text" className="form-control" value={binCode} onChange={this.handleCodeChange}/>
-                        <ErrorLabel content = { errorCode }/>
+                        <input type="text" className="form-control" value={binCode} disabled onChange={this.handleCodeChange}/>
                     </div>
                     <div className={`form-group`}>
                         <label>{translate('manage_warehouse.bin_location_management.status')}<span className="attention"> * </span></label>

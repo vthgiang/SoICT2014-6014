@@ -1232,7 +1232,6 @@ exports.createNotificationForEmployeesHaveBrithdayCurrent = async (portal) => {
         notifications = notifications.concat(notificationsArr)
     }
     let result = await Notification(connect(DB_CONNECTION, portal)).insertMany(notifications);
-    console.log(result);
 }
 
 /**

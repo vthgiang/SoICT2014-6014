@@ -688,6 +688,7 @@ export default {
             domain_name_exist: 'Domain name exist',
             category_name_exist: 'Category name exist',
             name_exist: 'Name exist',
+            document_exist: 'Official number exist'
         },
 
         crm: {
@@ -843,6 +844,7 @@ export default {
                 care: 'Cares',
                 group: 'Groups',
                 statistic: 'Statistics',
+                generalConfiguration:'generalConfiguration'
             },
 
             task_template: 'Task Template',
@@ -864,6 +866,7 @@ export default {
             update_employee: 'Update Personal Information',
             dashboard_employee: 'DashBoard Manage Staffs ',
             dashboard_personal: 'DashBoard personal',
+            dashboard_unit: 'DashBoard unit',
             employee_capacity:'Employee capacity',
             discipline: 'Manage Commendation And Discipline',
             annual_leave: 'Manage Annual Leave',
@@ -1122,9 +1125,11 @@ export default {
             add_success: 'Add new success',
             all_unit: 'Select all unit',
             non_unit: 'Select unit',
+            unit_selected: 'unit selected',
             non_staff: 'Select staff',
             all_position: 'Select all position',
             non_position: 'Select position',
+            position_selected: 'position selected',
             all_status: 'Select all status',
             non_status: 'Select status',
             not_unit: 'Not selected unit',
@@ -3451,7 +3456,7 @@ export default {
                 add_new_tax: 'Add new tax',
                 add_successfully: 'Add tax successfully',
                 add_failed: 'Add tax failed',
-                description:'Description',
+                description: 'Description',
                 goods: 'Goods',
                 select_goods: 'Choose goods',
                 tax_percent: 'Percent',

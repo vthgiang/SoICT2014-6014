@@ -3193,6 +3193,7 @@ const initSampleCompanyDB = async () => {
         {
             name: "LOT001",
             good: listProduct[0]._id,
+            type: "product",
             stocks: [
                 {
                     stock: listStock[0]._id,
@@ -3225,14 +3226,14 @@ const initSampleCompanyDB = async () => {
             ],
             originalQuantity: 300,
             quantity: 300,
-            expirationDate: "12-12-2021",
+            expirationDate: new Date("12-12-2021"),
             description: "Lô hàng tự tạo",
             lotLogs: [
                 {
                     quantity: 200,
                     description: "Nhập hàng lần đầu",
                     type: "Nhập kho thành phẩm",
-                    createdAt: "05-10-2020",
+                    createdAt: new Date("05-06-2020"),
                     stock: listStock[1]._id,
                     binLocations: [
                         {
@@ -3249,7 +3250,7 @@ const initSampleCompanyDB = async () => {
                     quantity: 100,
                     description: "Nhập hàng lần hai",
                     type: "Nhập kho thành phẩm",
-                    createdAt: "06-10-2020",
+                    createdAt: new Date("05-10-2020"),
                     stock: listStock[0]._id,
                     binLocations: [
                         {
@@ -3267,6 +3268,7 @@ const initSampleCompanyDB = async () => {
         {
             name: "LOT002",
             good: listProduct[1]._id,
+            type: "product",
             stocks: [
                 {
                     stock: listStock[0]._id,
@@ -3299,14 +3301,14 @@ const initSampleCompanyDB = async () => {
             ],
             originalQuantity: 450,
             quantity: 450,
-            expirationDate: "02-06-2021",
+            expirationDate: new Date("02-06-2021"),
             description: "Lô hàng nhập từ xưởng sản xuất",
             lotLogs: [
                 {
                     quantity: 200,
                     description: "Nhập hàng",
                     type: "Nhập kho thành phẩm",
-                    createdAt: "06-10-2020",
+                    createdAt: new Date("11-12-2019"),
                     stock: listStock[0]._id,
                     binLocations: [
                         {
@@ -3323,7 +3325,7 @@ const initSampleCompanyDB = async () => {
                     quantity: 250,
                     description: "Nhập hàng",
                     type: "Nhập kho thành phẩm",
-                    createdAt: "07-10-2020",
+                    createdAt: new Date("07-10-2020"),
                     stock: listStock[1]._id,
                     binLocations: [
                         {
@@ -3341,6 +3343,7 @@ const initSampleCompanyDB = async () => {
         {
             name: "LOT003",
             good: listProduct[0]._id,
+            type: "product",
             stocks: [
                 {
                     stock: listStock[0]._id,
@@ -3373,14 +3376,14 @@ const initSampleCompanyDB = async () => {
             ],
             originalQuantity: 320,
             quantity: 320,
-            expirationDate: "12-12-2021",
+            expirationDate: new Date("12-11-2021"),
             description: "Lô hàng tự tạo",
             lotLogs: [
                 {
                     quantity: 200,
                     description: "Nhập hàng lần đầu",
                     type: "Nhập kho thành phẩm",
-                    createdAt: "07-10-2020",
+                    createdAt: new Date("09-11-2020"),
                     stock: listStock[1]._id,
                     binLocations: [
                         {
@@ -3397,7 +3400,7 @@ const initSampleCompanyDB = async () => {
                     quantity: 120,
                     description: "Nhập hàng lần đầu",
                     type: "Nhập kho thành phẩm",
-                    createdAt: "07-10-2020",
+                    createdAt: new Date("05-06-2020"),
                     stock: listStock[0]._id,
                     binLocations: [
                         {
@@ -3415,6 +3418,7 @@ const initSampleCompanyDB = async () => {
         {
             name: "LOT004",
             good: listGood[0]._id,
+            type: "material",
             stocks: [
                 {
                     stock: listStock[0]._id,
@@ -3447,14 +3451,14 @@ const initSampleCompanyDB = async () => {
             ],
             originalQuantity: 300,
             quantity: 300,
-            expirationDate: "12-12-2021",
+            expirationDate: new Date("12-12-2021"),
             description: "Lô hàng tự tạo",
             lotLogs: [
                 {
                     quantity: 100,
                     description: "Nhập hàng lần đầu",
                     type: "Nhập kho thành phẩm",
-                    createdAt: "08-10-2020",
+                    createdAt: new Date("07-09-2020"),
                     stock: listStock[0]._id,
                     binLocations: [
                         {
@@ -3471,7 +3475,7 @@ const initSampleCompanyDB = async () => {
                     quantity: 200,
                     description: "Nhập hàng lần đầu",
                     type: "Nhập kho thành phẩm",
-                    createdAt: "08-10-2020",
+                    createdAt: new Date("08-10-2020"),
                     stock: listStock[1]._id,
                     binLocations: [
                         {
@@ -3489,6 +3493,7 @@ const initSampleCompanyDB = async () => {
         {
             name: "LOT005",
             good: listGood[0]._id,
+            type: "material",
             stocks: [
                 {
                     stock: listStock[0]._id,
@@ -3521,14 +3526,14 @@ const initSampleCompanyDB = async () => {
             ],
             originalQuantity: 300,
             quantity: 300,
-            expirationDate: "12-12-2021",
+            expirationDate: new Date("12-10-2021"),
             description: "Lô hàng tự tạo",
             lotLogs: [
                 {
                     quantity: 100,
                     description: "Nhập hàng lần đầu",
                     type: "Nhập kho thành phẩm",
-                    createdAt: "09-10-2020",
+                    createdAt: new Date("08-10-2020"),
                     stock: listStock[0]._id,
                     binLocations: [
                         {
@@ -3545,7 +3550,7 @@ const initSampleCompanyDB = async () => {
                     quantity: 200,
                     description: "Nhập hàng lần đầu",
                     type: "Nhập kho thành phẩm",
-                    createdAt: "09-10-2020",
+                    createdAt: new Date("09-10-2020"),
                     stock: listStock[1]._id,
                     binLocations: [
                         {
@@ -3563,6 +3568,7 @@ const initSampleCompanyDB = async () => {
         {
             name: "LOT006",
             good: listGood[0]._id,
+            type: "material",
             stocks: [
                 {
                     stock: listStock[0]._id,
@@ -3595,14 +3601,14 @@ const initSampleCompanyDB = async () => {
             ],
             originalQuantity: 300,
             quantity: 300,
-            expirationDate: "12-12-2021",
+            expirationDate: new Date("12-12-2021"),
             description: "Lô hàng tự tạo",
             lotLogs: [
                 {
                     quantity: 200,
                     description: "Nhập hàng lần đầu",
                     type: "Nhập kho thành phẩm",
-                    createdAt: "10-10-2020",
+                    createdAt: new Date("10-10-2020"),
                     stock: listStock[1]._id,
                     binLocations: [
                         {
@@ -3619,7 +3625,7 @@ const initSampleCompanyDB = async () => {
                     quantity: 100,
                     description: "Nhập hàng lần đầu",
                     type: "Nhập kho thành phẩm",
-                    createdAt: "10-10-2020",
+                    createdAt: new Date("11-10-2020"),
                     stock: listStock[0]._id,
                     binLocations: [
                         {
@@ -3664,26 +3670,31 @@ const initSampleCompanyDB = async () => {
     // ****************** Tạo mẫu dữ liệu trạng thái khách hàng********************
     console.log("Tạo mẫu dữ liệu trạng thái khách hàng");
     const customerStatusData = [{
+        creator:  [users[5]._id],
         code: "ST001",
         name: "Tiềm năng",
         description: "Khách hàng mới toanh",
         active: false,
     }, {
+        creator:  [users[5]._id],
         code: "ST002",
         name: "Quan tâm sản phẩm",
         description: "Khách hàng hứng thú với sản phẩm của công ty",
         active: false,
     }, {
+        creator:  [users[5]._id],
         code: "ST003",
         name: "Đã báo giá",
         description: "Khách hàng đã được báo giá",
         active: false,
-    },{
+    }, {
+        creator:  [users[5]._id],
         code: "ST005",
         name: "Đã kí hợp đồng",
         description: "Khách hàng đã kỹ hợp đồng với công ty",
         active: false,
-    },{
+    }, {
+        creator:  [users[5]._id],
         code: "ST004",
         name: "Đã mua sản phẩm",
         description: "Khách hàng đã mua sản phẩm",

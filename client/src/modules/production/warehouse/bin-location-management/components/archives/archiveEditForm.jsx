@@ -54,7 +54,7 @@ class ArchiveEditForm extends Component {
 
     getAllGoods = () => {
         let { translate, goods } = this.props;
-        let goodArr = [{ value: '', text: translate('manage_warehouse.good_management.choose_category') }];
+        let goodArr = [{ value: '', text: translate('manage_warehouse.bin_location_management.choose_good') }];
 
         goods.listALLGoods.map(item => {
             goodArr.push({
@@ -78,7 +78,7 @@ class ArchiveEditForm extends Component {
         const { translate } = this.props;
         let { good } = this.state;
         if(!value){
-            msg = translate('manage_warehouse.category_management.validate_name');
+            msg = translate('manage_warehouse.bin_location_management.validate_good');
         }
         if (willUpdateState) {
         let goodName = dataGood.find(x=>x.value === value);
@@ -114,7 +114,7 @@ class ArchiveEditForm extends Component {
         const { translate } = this.props;
         
         if(!value) {
-            msg = translate('manage_warehouse.category_management.validate_name');
+            msg = translate('manage_warehouse.bin_location_management.validate_capacity');
         }
 
         if(willUpdateState){
@@ -260,9 +260,9 @@ class ArchiveEditForm extends Component {
                 <DialogModal
                     modalID={`modal-edit-archive-stock`} isLoading={binLocations.isLoading}
                     formID={`form-edit-archive-stock`}
-                    title={translate('manage_warehouse.stock_management.add_title')}
-                    msg_success={translate('manage_warehouse.stock_management.add_success')}
-                    msg_faile={translate('manage_warehouse.stock_management.add_faile')}
+                    title={translate('manage_warehouse.bin_location_management.edit_title')}
+                    msg_success={translate('manage_warehouse.bin_location_management.edit_success')}
+                    msg_faile={translate('manage_warehouse.bin_location_management.edit_faile')}
                     func={this.save}
                     size={75}
                 >
@@ -304,7 +304,7 @@ class ArchiveEditForm extends Component {
                                         id={`select-good-by-bin-edit`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        value={good.good._id ? good.good._id : { value: '', text: translate('manage_warehouse.good_management.choose_category') }}
+                                        value={good.good._id ? good.good._id : { value: '', text: translate('manage_warehouse.bin_location_management.choose_good') }}
                                         items={dataGoods}
                                         onChange={this.handleGoodChange}
                                         multiple={false}
