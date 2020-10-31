@@ -14,28 +14,22 @@ class TabHumanResource extends Component {
         this.state = {}
     };
     render() {
-        const { organizationalUnits, actionSearch, monthShow } = this.props;
+        const { organizationalUnits, actionSearch, monthShow, childOrganizationalUnit } = this.props;
+
         return (
             <div className="row qlcv">
                 <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <LazyLoadComponent>
-                        <AgePyramidChart organizationalUnits={organizationalUnits} actionSearch={actionSearch} />
-                    </LazyLoadComponent>
+                    <AgePyramidChart organizationalUnits={organizationalUnits} actionSearch={actionSearch} />
                     <div className='row'>
-                        <LazyLoadComponent>
-                            <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                                <HumanResourceChartBySalary organizationalUnits={organizationalUnits} monthShow={monthShow} handleMonthChange={this.handleMonthChange} />
-                            </div>
-                        </LazyLoadComponent>
-                        <LazyLoadComponent>
-                            <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                                <QualificationChart organizationalUnits={organizationalUnits} actionSearch={actionSearch} />
-                            </div>
-                        </LazyLoadComponent>
+                        <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <HumanResourceChartBySalary organizationalUnits={organizationalUnits} monthShow={monthShow} handleMonthChange={this.handleMonthChange} />
+                        </div>
+                        <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <QualificationChart organizationalUnits={organizationalUnits} actionSearch={actionSearch} />
+                        </div>
+
                     </div>
-                    <LazyLoadComponent>
-                        <HumanResourceIncreaseAndDecreaseChart nameData1='Tuyển mới' nameData2='Nghỉ làm' nameData3='Tổng nhân sự' nameChart={'Tình hình tăng giảm nhân sự'} />
-                    </LazyLoadComponent>
+                    <HumanResourceIncreaseAndDecreaseChart childOrganizationalUnit={childOrganizationalUnit} nameData1='Tuyển mới' nameData2='Nghỉ làm' nameData3='Tổng nhân sự' nameChart={'Tình hình tăng giảm nhân sự'} />
                 </div>
             </div>
         );
