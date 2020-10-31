@@ -707,6 +707,7 @@ export default {
                 status: 'Trạng thái khách hàng',
                 address: 'Địa chỉ',
                 address2: 'Địa chỉ 2',
+                represent:'Người đại diện',
                 email: 'Email',
                 secondaryEmail: 'Email phụ',
                 location: 'Khu vực',
@@ -785,6 +786,13 @@ export default {
                 info: 'Xem công việc chăm sóc khách hàng',
                 edit: 'Chỉnh sửa công việc chăm sóc khách hàng',
 
+            },
+            status: {
+                add: 'Thêm mới trạng thái',
+                edit: 'Chỉnh sửa trạng thái',
+                delete: 'Xóa trạng thái',
+                name: 'Tên trạng thái khách hàng',
+                description: 'Mô tả trạng thái',
             },
             statistic: {
 
@@ -919,6 +927,7 @@ export default {
                 care: 'Chăm sóc khách hàng',
                 group: 'Nhóm khách hàng',
                 statistic: 'Thống kê',
+                generalConfiguration: 'Cấu hình chung'
             },
 
             task_template: 'Mẫu Công Việc',
@@ -939,6 +948,7 @@ export default {
             update_employee: 'Cập nhật thông tin cá nhân',
             dashboard_employee: 'Bảng tin quản lý nhân sự',
             dashboard_personal: 'Bảng tin cá nhân',
+            dashboard_unit: 'Bảng tin đơn vị',
             employee_capacity: 'Năng lực nhân viên',
             discipline: 'Quản lý khen thưởng - kỷ luật',
             annual_leave: 'Quản lý nghỉ phép',
@@ -1208,9 +1218,11 @@ export default {
             staff_name: 'Họ và tên',
             all_unit: 'Chọn tất cả các đơn vị',
             non_unit: 'Chọn đơn vị',
+            unit_selected:'đơn vị được chọn',
             non_staff: 'Chọn nhân viên',
             all_position: 'Chọn tất cả các chức vụ',
             non_position: 'Chọn chức vụ',
+            position_selected:'chức vụ được chọn',
             all_status: 'Chọn tất cả các trạng thái',
             non_status: 'Chọn trạng thái',
             not_unit: 'Chưa chọn đơn vị',
