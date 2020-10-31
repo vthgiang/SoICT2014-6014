@@ -1891,7 +1891,7 @@ export default {
                 month: 'tháng',
                 year: 'năm',
                 staff: 'nhân viên',
-                attend: 'Tham gia',
+                attend: 'tham gia',
 
                 no_course_type: 'Chọn loại đào tạo',
                 all_course_type: 'Chọn tất cả loại đào tạo',
@@ -1927,7 +1927,7 @@ export default {
                 // Kết quả đào tạo
                 result: {
                     pass: 'Đạt',
-                    falied: 'Không đạt',
+                    failed: 'Không đạt',
                 },
 
                 // Nhóm action
