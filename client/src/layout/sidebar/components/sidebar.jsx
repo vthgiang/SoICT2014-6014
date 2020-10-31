@@ -316,6 +316,11 @@ class SideBar extends Component {
                                             icon: "fa fa-circle-o",
                                             path: "/crm/statistic",
                                         },
+                                        {
+                                            name: "menu.crm_list.generalConfiguration",
+                                            icon: "fa fa-gear",
+                                            path: "/crm/generalConfiguration",
+                                        },
                                     ],
                                 }}
                             />

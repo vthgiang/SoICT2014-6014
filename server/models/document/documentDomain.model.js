@@ -3,17 +3,16 @@ const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
 const DocumentDomainSchema = new Schema({
-    company: { //thuộc công ty nào
-        type: Schema.Types.ObjectId,
-        ref: 'companies',
-        required: true
-    },
     name: { //tên 
         type: String,
         required: true
     },
     description: {
         type: String
+    },
+    company: { //thuộc công ty nào
+        type: Schema.Types.ObjectId,
+        ref: 'Company'
     },
     documents: [{ //chứa những document nào
         type: Schema.Types.ObjectId,

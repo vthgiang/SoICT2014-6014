@@ -112,7 +112,8 @@ import InventoryManagement from '../modules/production/warehouse/inventory-manag
 import CrmDashBoard from '../modules/crm/dashboard/components';
 import CrmCustomer from '../modules/crm/customer/components';
 import CrmGroup from '../modules/crm/group/components';
-import CrmCare from '../modules/crm/care/components'
+import CrmCare from '../modules/crm/care/components';
+import GeneralConfiguration from '../modules/crm/generalConfiguration/components';
 
 //orders
 import PurchaseOrder from '../modules/production/order/purchase-order/components';
@@ -154,7 +155,7 @@ class Routes extends Component {
         return (
             <React.Fragment>
                 <Switch>
-                    <Route exact path="/" component={Introduction}/>
+                    <AuthRoute exact auth={auth} path="/" component={Introduction}/>
                     <AuthRoute exact auth={auth} path="/login" component={Login} />
                     <AuthRoute exact auth={auth} path="/reset-password" component={ResetPassword} />
                     <PrivateRoute
@@ -1388,6 +1389,21 @@ class Routes extends Component {
                         pageName={'crm_list.care'}
                         layout={Layout}
                         component={CrmCare}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={'generalConfiguration'}
+                        arrPage={[
+                            { link: '/crm/generalConfiguration', name: 'crm_list.generalConfiguration', icon: 'fa fa-gear' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/crm/generalConfiguration'}
+                        path={'/crm/generalConfiguration'}
+                        pageName={'crm_list.generalConfiguration'}
+                        layout={Layout}
+                        component={GeneralConfiguration}
                     />
 
                     {/* Orders Management */}

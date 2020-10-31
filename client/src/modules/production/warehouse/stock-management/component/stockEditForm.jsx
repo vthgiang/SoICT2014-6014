@@ -58,29 +58,6 @@ class StockEditForm extends Component {
         }
     }
 
-    handleCodeChange = (e) => {
-        let value = e.target.value;
-        this.validateCode(value, true);
-    }
-
-    validateCode = (value, willUpdateState = true) => {
-        let msg = undefined;
-        const { translate } = this.props;
-        if(!value) {
-            msg = translate('manage_warehouse.category_management.validate_code');
-        }
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnCode: msg,
-                    code: value
-                }
-            });
-        }
-        return msg === undefined;
-    }
-
     handleNameChange = (e) => {
         let value = e.target.value;
         this.validateName(value, true);
@@ -113,7 +90,7 @@ class StockEditForm extends Component {
         let msg = undefined;
         const { translate } = this.props;
         if(!value){
-            msg = translate('manage_warehouse.category_management.validate_name');
+            msg = translate('manage_warehouse.stock_management.validate_address');
         }
         if (willUpdateState) {
             this.setState(state => {
@@ -136,7 +113,7 @@ class StockEditForm extends Component {
         let msg = undefined;
         const { translate } = this.props;
         if(!value){
-            msg = translate('manage_warehouse.category_management.validate_name');
+            msg = translate('manage_warehouse.stock_management.validate_department');
         }
         if (willUpdateState) {
             this.setState(state => {
@@ -158,7 +135,7 @@ class StockEditForm extends Component {
         let msg = undefined;
         const { translate } = this.props;
         if(!value){
-            msg = translate('manage_warehouse.category_management.validate_name');
+            msg = translate('manage_warehouse.stock_management.validate_management');
         }
         if (willUpdateState) {
             this.setState(state => {
@@ -203,7 +180,6 @@ class StockEditForm extends Component {
     isFormValidated = () => {
         let result =
             this.validateName(this.state.name, false) &&
-            this.validateCode(this.state.code, false) &&
             this.validateAddress(this.state.address, false) &&
             this.validateDepartment(this.state.manageDepartment, false) &&
             this.validateManagementLocation(this.state.managementLocation, false)
@@ -253,7 +229,7 @@ class StockEditForm extends Component {
 
     getAllGoods = () => {
         let { translate } = this.props;
-        let goodArr = [{ value: '', text: translate('manage_warehouse.good_management.choose_category') }];
+        let goodArr = [{ value: '', text: translate('manage_warehouse.stock_management.choose_good') }];
 
         this.props.goods.listALLGoods.map(item => {
             goodArr.push({
@@ -277,7 +253,7 @@ class StockEditForm extends Component {
         const { translate } = this.props;
         let { good } = this.state;
         if(!value){
-            msg = translate('manage_warehouse.category_management.validate_name');
+            msg = translate('manage_warehouse.stock_management.validate_good');
         }
         if (willUpdateState) {
         let goodName = dataGood.find(x=>x.value === value);
@@ -377,7 +353,7 @@ class StockEditForm extends Component {
 
     render() {
         const { translate, stocks, role } = this.props;
-        const { errorOnName, errorOnCode, errorOnAddress, errorOnDepartment, errorOnManagementLocation, 
+        const { errorOnName, errorOnAddress, errorOnDepartment, errorOnManagementLocation, 
                 errorOnGood, errorOnMinQuantity, errorOnMaxQuantity, code, name, managementLocation, status, address, description, manageDepartment, goods, good } = this.state;
         const departmentManagement = this.getAllDepartment();
         const listGoods = this.getAllGoods();
@@ -386,9 +362,9 @@ class StockEditForm extends Component {
                 <DialogModal
                     modalID={`modal-edit-stock`} isLoading={stocks.isLoading}
                     formID={`form-edit-stock`}
-                    title={translate('manage_warehouse.stock_management.add_title')}
-                    msg_success={translate('manage_warehouse.stock_management.add_success')}
-                    msg_faile={translate('manage_warehouse.stock_management.add_faile')}
+                    title={translate('manage_warehouse.stock_management.edit')}
+                    msg_success={translate('manage_warehouse.stock_management.edit_success')}
+                    msg_faile={translate('manage_warehouse.stock_management.edit_faile')}
                     disableSubmit={!this.isFormValidated()}
                     func={this.save}
                     size={75}
@@ -396,10 +372,9 @@ class StockEditForm extends Component {
                     <form id={`form-edit-stock`} >
                         <div className="row">
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                <div className={`form-group ${!errorOnCode ? "" : "has-error"}`}>
+                                <div className={`form-group`}>
                                     <label>{translate('manage_warehouse.stock_management.code')}<span className="attention"> * </span></label>
-                                    <input type="text" className="form-control" value={code} onChange={this.handleCodeChange}/>
-                                    <ErrorLabel content = { errorOnCode }/>
+                                    <input type="text" className="form-control" value={code} disabled/>
                                 </div>
                                 <div className={`form-group ${!errorOnAddress ? "" : "has-error"}`}>
                                     <label>{translate('manage_warehouse.stock_management.address')}<span className="attention"> * </span></label>
@@ -471,7 +446,7 @@ class StockEditForm extends Component {
                                             id={`select-edit-good-by-stock`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            value={good.good._id ? good.good._id : { value: '', text: translate('manage_warehouse.good_management.choose_category') }}
+                                            value={good.good._id ? good.good._id : { value: '', text: translate('manage_warehouse.stock_management.choose_good') }}
                                             items={listGoods}
                                             onChange={this.handleGoodChange}
                                             multiple={false}
@@ -482,14 +457,14 @@ class StockEditForm extends Component {
                                     <div className={`form-group ${!errorOnMinQuantity ? "" : "has-error"}`}>
                                         <label className="control-label">{translate('manage_warehouse.stock_management.min_quantity')}</label>
                                         <div>
-                                            <input type="number" className="form-control" placeholder={translate('manage_warehouse.good_management.min_quantity')} value={good.minQuantity} onChange={this.handleMinQuantityChange} />
+                                            <input type="number" className="form-control" placeholder={translate('manage_warehouse.stock_management.min_quantity')} value={good.minQuantity} onChange={this.handleMinQuantityChange} />
                                         </div>
                                         <ErrorLabel content = { errorOnMinQuantity } />
                                     </div>
                                     <div className={`form-group ${!errorOnMaxQuantity ? "" : "has-error"}`}>
                                         <label className="control-label">{translate('manage_warehouse.stock_management.max_quantity')}</label>
                                         <div>
-                                            <input type="number" className="form-control" placeholder={translate('manage_warehouse.good_management.max_quantity')} value={good.maxQuantity} onChange={this.handleMaxQuantityChange} />
+                                            <input type="number" className="form-control" placeholder={translate('manage_warehouse.stock_management.max_quantity')} value={good.maxQuantity} onChange={this.handleMaxQuantityChange} />
                                         </div>
                                         <ErrorLabel content = { errorOnMaxQuantity } />
                                     </div>

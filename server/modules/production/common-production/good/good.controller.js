@@ -10,7 +10,7 @@ exports.getGoodsByType = async (req, res) => {
             messages: ['get_good_success'],
             content: goodsByType
         });
-    }catch(error) {
+    } catch (error) {
         await Logger.error(req.user.email, 'GET_GOODS_BY_TYPE_FAILED', req.portal);
         res.status(400).json({
             success: false,
@@ -22,14 +22,14 @@ exports.getGoodsByType = async (req, res) => {
 
 exports.getAllGoodsByType = async (req, res) => {
     try {
-        const goodsByType = await GoodService.getAllGoodsByType(req.user.company._id, req.query, req.portal);
+        const goodsByType = await GoodService.getAllGoodsByType(req.query, req.portal);
         await Logger.info(req.user.email, 'GET_GOOS_BY_TYPE_SUCCESS', req.portal);
         res.status(200).json({
             success: true,
             messages: ['get_good_success'],
             content: goodsByType
         });
-    }catch(error) {
+    } catch (error) {
         await Logger.error(req.user.email, 'GET_GOODS_BY_TYPE_FAILED', req.portal);
         res.status(400).json({
             success: false,
@@ -48,7 +48,7 @@ exports.getAllGoodsByCategory = async (req, res) => {
             messages: ['get_good_success'],
             content: goodsByCategory
         });
-    }catch(error) {
+    } catch (error) {
         await Logger.error(req.user.email, 'GET_GOODS_BY_TYPE_FAILED', req.portal);
         res.status(400).json({
             success: false,
@@ -65,15 +65,15 @@ exports.createGoodByType = async (req, res) => {
         await Logger.info(req.user.email, 'CREATE_GOOD', req.portal);
         res.status(200).json({
             success: true,
-            messages: ['create_good_success'],
+            messages: ['add_success'],
             content: good
         })
     }
-    catch(error){
+    catch (error) {
         await Logger.error(req.user.email, 'CREATE_GOOD', req.portal);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['create_good_failed'],
+            messages: Array.isArray(error) ? error : ['add_faile'],
             content: error
         })
     }
@@ -85,15 +85,15 @@ exports.editGood = async (req, res) => {
         await Logger.info(req.user.email, 'EDIT_GOOD', req.portal);
         res.status(200).json({
             success: true,
-            messages: ['edit_good_success'],
+            messages: ['edit_success'],
             content: good
         })
     }
-    catch(error){
+    catch (error) {
         await Logger.error(req.user.email, 'EDIT_GOOD', req.portal);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['edit_good_failed'],
+            messages: Array.isArray(error) ? error : ['edit_faile'],
             content: error
         })
     }
@@ -106,15 +106,15 @@ exports.deleteGood = async (req, res) => {
         await Logger.info(req.user.email, 'DELETE_GOOD', req.portal);
         res.status(200).json({
             success: true,
-            messages: ['delete_good_success'],
+            messages: ['delete_success'],
             content: good
         })
     }
-    catch(error){
+    catch (error) {
         await Logger.error(req.user.email, 'DELETE_GOOD', req.portal);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['delete_good_failed'],
+            messages: Array.isArray(error) ? error : ['delete_faile'],
             content: error
         })
     }
@@ -131,7 +131,7 @@ exports.getGoodDetail = async (req, res) => {
             content: good
         })
     }
-    catch(error){
+    catch (error) {
         await Logger.error(req.user.email, 'GET_GOOD_DETAIL', req.portal);
         res.status(400).json({
             success: false,
@@ -152,7 +152,7 @@ exports.getAllGoods = async (req, res) => {
             content: good
         })
     }
-    catch(error){
+    catch (error) {
         await Logger.error(req.user.email, 'GET_ALL_GOOD', req.portal);
         res.status(400).json({
             success: false,

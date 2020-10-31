@@ -510,7 +510,7 @@ class Table extends Component {
                     />
                 }
 
-                {<ExportExcel id="export-document" exportData={exportData} style={{ marginRight: 5, marginTop: 2 }} />}
+                <ExportExcel id="export-document" exportData={exportData} style={{ marginRight: 5 }} buttonName={translate('document.export')}/>
                 <div className="form-inline">
                     <div className="form-group">
                         <label>{translate('document.category')}</label>

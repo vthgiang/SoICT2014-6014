@@ -18,8 +18,6 @@ class BinCreateForm extends Component {
             binDepartment: '',
             binStatus: '1',
             binUsers: [],
-            // binParentCreate: this.props.binParentCreate,
-            // binStock: this.props.binStock,
             binParentCreate: '',
             binStock: '',
             binEnableGoods: [],
@@ -27,21 +25,6 @@ class BinCreateForm extends Component {
             editInfo: false
         }
     }
-
-    // static getDerivedStateFromProps(nextProps, prevState) {
-    //     if ((nextProps.binParentCreate !== prevState.binParentCreate && nextProps.binParentCreate && nextProps.binParentCreate.length) ||
-    //         (nextProps.binStock !== prevState.binStock && nextProps.binStock && nextProps.binStock.length)) {
-
-    //         return {
-    //             ...prevState,
-    //             binParentCreate: nextProps.binParentCreate,
-    //             binStock: nextProps.binStock
-    //         }
-    //     } 
-    //     else {
-    //         return null;
-    //     }
-    // }
 
     getAllDepartment = () => {
         let { translate, department } = this.props;
@@ -59,7 +42,7 @@ class BinCreateForm extends Component {
 
     getAllGoods = () => {
         let { translate, goods } = this.props;
-        let goodArr = [{ value: '', text: translate('manage_warehouse.good_management.choose_category') }];
+        let goodArr = [{ value: '', text: translate('manage_warehouse.bin_location_management.choose_good') }];
 
         goods.listALLGoods.map(item => {
             goodArr.push({
@@ -73,14 +56,16 @@ class BinCreateForm extends Component {
 
     getAllStocks = () => {
         let { translate, stocks } = this.props;
-        let stockArr = [{ value: '', text: translate('manage_warehouse.good_management.choose_category') }];
+        let stockArr = [{ value: '', text: translate('manage_warehouse.bin_location_management.choose_stock') }];
 
-        stocks.listStocks.map(item => {
-            stockArr.push({
-                value: item._id,
-                text: item.name
+        if(stocks.listStocks.length){
+            stocks.listStocks.map(item => {
+                stockArr.push({
+                    value: item._id,
+                    text: item.name
+                })
             })
-        })
+        }
 
         return stockArr;
     }
@@ -97,7 +82,7 @@ class BinCreateForm extends Component {
         const { translate } = this.props;
         let { good } = this.state;
         if(!value){
-            msg = translate('manage_warehouse.category_management.validate_name');
+            msg = translate('manage_warehouse.bin_location_management.validate_good');
         }
         if (willUpdateState) {
         let goodName = dataGood.find(x=>x.value === value);
@@ -133,7 +118,7 @@ class BinCreateForm extends Component {
         const { translate } = this.props;
         
         if(!value) {
-            msg = translate('manage_warehouse.category_management.validate_name');
+            msg = translate('manage_warehouse.bin_location_management.validate_capacity');
         }
 
         if(willUpdateState){
@@ -166,7 +151,8 @@ class BinCreateForm extends Component {
         })
     }
 
-    handleClearGood = () => {
+    handleClearGood = (e) => {
+        e.preventDefault()
         this.setState(state => {
             return {
                 ...state,
@@ -273,7 +259,7 @@ class BinCreateForm extends Component {
         let msg = undefined;
         const { translate } = this.props;
         if(!department) {
-            msg = translate('manage_warehouse.category_management.validate_name');
+            msg = translate('manage_warehouse.bin_location_management.validate_department');
         }
         if (willUpdateState) {
             this.setState(state => {
@@ -299,18 +285,18 @@ class BinCreateForm extends Component {
 
     handleStockChange = (value) => {
         let stock = value[0];
-        this.props.getBinLocations({ stock });
         this.validateStock(stock, true)
     }
 
-    validateStock = (stock, willUpdateState = true) => {
+    validateStock = async (stock, willUpdateState = true) => {
+        
         let msg = undefined;
         const { translate } = this.props;
         if(!stock) {
-            msg = translate('manage_warehouse.category_management.validate_name');
+            msg = translate('manage_warehouse.bin_location_management.validate_stock');
         }
         if (willUpdateState) {
-            this.setState(state => {
+            await this.setState(state => {
                 return {
                     ...state,
                     errorStock: msg,
@@ -318,6 +304,7 @@ class BinCreateForm extends Component {
                 }
             });
         }
+        await this.props.getBinLocations({ stock });
         return msg === undefined;
     }
 
@@ -356,7 +343,6 @@ class BinCreateForm extends Component {
 
     handleCapacityTotalChange = (e) => {
         let value = e.target.value;
-        console.log(value);
         this.setState(state => {
             return {
                 ...state,
@@ -397,7 +383,6 @@ class BinCreateForm extends Component {
         let result =
             this.validateCode(this.state.binCode, false) &&
             this.validateName(this.state.binName, false) &&
-            this.validateStock(this.state.binStock, false) &&
             this.validateDepartment(this.state.binDepartment, false);
         
         return result;
@@ -427,8 +412,7 @@ class BinCreateForm extends Component {
     render() {
         const { translate, binLocations, user, stocks } = this.props;
         const { list } = binLocations.binLocationByStock;
-        const { listStocks } = stocks;
-        const { check, binParentCreate, binStock, binContained, binStatus, binUsers, binDepartment, good, binEnableGoods, errorCapacity, errorCode, errorName, errorGood, errorStock, errorDepartment} = this.state;
+        const { binParentCreate, binStock, binContained, binStatus, binUsers, binDepartment, good, binEnableGoods, errorCapacity, errorCode, errorName, errorGood, errorStock, errorDepartment} = this.state;
         const dataDepartment = this.getAllDepartment();
         const dataGoods = this.getAllGoods();
         const dataStocks = this.getAllStocks();
@@ -439,9 +423,9 @@ class BinCreateForm extends Component {
                 <DialogModal
                     modalID={`modal-create-bin-location`}
                     formID={`form-create-bin-location`}
-                    title={translate('manage_warehouse.stock_management.add_title')}
-                    msg_success={translate('manage_warehouse.stock_management.add_success')}
-                    msg_faile={translate('manage_warehouse.stock_management.add_faile')}
+                    title={translate('manage_warehouse.bin_location_management.add_title')}
+                    msg_success={translate('manage_warehouse.bin_location_management.add_success')}
+                    msg_faile={translate('manage_warehouse.bin_location_management.add_faile')}
                     size={75}
                     disableSubmit={!this.isValidated()}
                     func={this.save}
@@ -459,7 +443,7 @@ class BinCreateForm extends Component {
                                     id={`select-stock-bin-location-create`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
-                                    value={binStock}
+                                    value={binStock ? binStock : { value: '', text: translate('manage_warehouse.good_management.choose_category') }}
                                     items={dataStocks}
                                     onChange={this.handleStockChange}    
                                     multiple={false}
@@ -547,7 +531,7 @@ class BinCreateForm extends Component {
                                         id={`select-good-by-bin-create`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        value={good.good._id}
+                                        value={good.good ? good.good._id : { value: '', text: translate('manage_warehouse.bin_location_management.choose_good') }}
                                         items={dataGoods}
                                         onChange={this.handleGoodChange}
                                         multiple={false}
@@ -557,7 +541,7 @@ class BinCreateForm extends Component {
                                 <div className={`form-group`}>
                                     <label className="control-label">{translate('manage_warehouse.bin_location_management.contained')}</label>
                                     <div>
-                                        <input type="number" className="form-control" value={good.contained} placeholder={translate('manage_warehouse.good_management.contained')} onChange={this.handleContainedChange} />
+                                        <input type="number" className="form-control" value={good.contained} placeholder={translate('manage_warehouse.good_management.contained')} disabled onChange={this.handleContainedChange} />
                                     </div>
                                 </div>
                                 <div className={`form-group ${!errorCapacity ? "" : "has-error"}`}>

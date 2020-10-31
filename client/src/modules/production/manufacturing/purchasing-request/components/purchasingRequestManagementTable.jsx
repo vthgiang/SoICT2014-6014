@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { formatDate } from '../../../../../helpers/formatDate';
-import { DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti } from "../../../../../common-components";
+import { DataTableSetting, DatePicker, PaginateBar, SelectMulti } from "../../../../../common-components";
 import PurchasingRequestDetailForm from './purchasingRequestDetailForm';
 import PurchasingRequestCreateForm from './purchasingRequestCreateForm';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { purchasingRequestActions } from '../redux/actions';
+import { GoodActions } from '../../../common-production/good-management/redux/actions';
 class PurchasingRequestManagementTable extends Component {
     constructor(props) {
         super(props);
@@ -22,7 +23,8 @@ class PurchasingRequestManagementTable extends Component {
 
     componentDidMount() {
         const { limit, page } = this.state;
-        this.props.getAllPurchasingRequests({ limit, page })
+        this.props.getAllPurchasingRequests({ limit, page });
+        this.props.getAllGoodsByType({ type: "material" })
     }
 
     setLimit = async (limit) => {
@@ -41,7 +43,8 @@ class PurchasingRequestManagementTable extends Component {
             page: page
         });
         let limit = this.state.limit;
-        this.props.getAllPurchasingRequests({ page, limit })
+        this.props.getAllPurchasingRequests({ page, limit });
+
     }
 
     handleCodeChange = (e) => {
@@ -97,6 +100,16 @@ class PurchasingRequestManagementTable extends Component {
         this.props.getAllPurchasingRequests(data);
     }
 
+    handleShowDetailPurchasingRequest = async (id) => {
+        console.log("ahaha")
+        await this.setState((state) => ({
+            ...state,
+            purchasingRequestId: id
+        }));
+
+        window.$('#modal-detail-info-purchasing-request').modal('show');
+    }
+
     render() {
         const { translate, purchasingRequest } = this.props;
         let listPurchasingRequests = [];
@@ -107,6 +120,9 @@ class PurchasingRequestManagementTable extends Component {
         const { code, createdAt, planCode, receiveTime } = this.state;
         return (
             <React.Fragment>
+                {
+                    <PurchasingRequestDetailForm purchasingRequestId={this.state.purchasingRequestId} />
+                }
                 <div className="box-body qlcv">
                     <PurchasingRequestCreateForm />
                     <div className="form-inline">
@@ -204,7 +220,7 @@ class PurchasingRequestManagementTable extends Component {
                                         <td>{formatDate(purchasingRequest.intendReceiveTime)}</td>
                                         <td style={{ color: translate(`manufacturing.purchasing_request.${purchasingRequest.status}.color`) }}>{translate(`manufacturing.purchasing_request.${purchasingRequest.status}.content`)}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a className="edit text-green" style={{ width: '5px' }} title="Xem chi tiết phiếu đề nghị" onClick={() => this.handleShowDetailInfo(purchasingRequest._id)}><i className="material-icons">visibility</i></a>
+                                            <a style={{ width: '5px' }} title={translate('manufacturing.purchasing_request.purchasing_request_detail')} onClick={() => { this.handleShowDetailPurchasingRequest(purchasingRequest._id) }}><i className="material-icons">view_list</i></a>
                                             <a className="edit text-yellow" style={{ width: '5px' }} title="Sửa phiếu đề nghị"><i className="material-icons">edit</i></a>
                                         </td>
                                     </tr>
@@ -229,7 +245,8 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    getAllPurchasingRequests: purchasingRequestActions.getAllPurchasingRequests
+    getAllPurchasingRequests: purchasingRequestActions.getAllPurchasingRequests,
+    getAllGoodsByType: GoodActions.getAllGoodsByType
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(PurchasingRequestManagementTable));

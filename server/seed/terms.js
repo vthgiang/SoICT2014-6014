@@ -1088,6 +1088,19 @@ const LINKS = [{
     components: getComponentsInLink('/crm/care')
 },
 {
+    url: '/crm/generalConfiguration',
+    description: `Cấu hình chung`,
+    category: LINK_CATEGORY.CRM.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/crm/generalConfiguration')
+},
+{
     url: "/manage-plans",
     description: "Quản lý đơn hàng",
     category: LINK_CATEGORY.PLAN.name,

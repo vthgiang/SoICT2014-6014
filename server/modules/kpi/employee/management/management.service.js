@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Models = require(`${SERVER_MODELS_DIR}`);
-const { EmployeeKpiSet, EmployeeKpi, OrganizationalUnit, OrganizationalUnitKpiSet, OrganizationalUnitKpi,  } = Models;
+const { EmployeeKpiSet, EmployeeKpi, OrganizationalUnit, OrganizationalUnitKpiSet, OrganizationalUnitKpi, } = Models;
 const OrganizationalUnitService = require(`${SERVER_MODULES_DIR}/super-admin/organizational-unit/organizationalUnit.service`);
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
@@ -99,7 +99,7 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (portal, roleId, organizat
     } else {
         organizationalUnit = { '_id': new mongoose.Types.ObjectId(organizationalUnitId) }
     }
-    
+
     if (organizationalUnit) {
         employeeKpis = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
             .aggregate([
@@ -108,8 +108,8 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (portal, roleId, organizat
                     {
                         $expr: {
                             $eq: [organizationalUnit, mongoose.Types.ObjectId(organizationalUnit._id)],
-                            $eq: [{ $month: '$date' }, currentMonth ],
-                            $eq: [{ $year: '$date' }, currentYear ]
+                            $eq: [{ $month: '$date' }, currentMonth],
+                            $eq: [{ $year: '$date' }, currentYear]
                         }
                     }
                 },
@@ -146,7 +146,7 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (portal, roleId, organizat
                         'employeeKpis.parentWeight': "$organizationalUnitKpis.weight"
                     }
                 },
-                
+
                 // Tìm các parentNameOfUnitKpi từ bảng organizationalunitkpis
                 {
                     $lookup: {
@@ -282,7 +282,7 @@ exports.getAllEmployeeKpiSetInOrganizationalUnit = async (portal, query) => {
                 { $project: { 'automaticPoint': 1, 'employeePoint': 1, 'approvedPoint': 1 } }
             ]);
     }
-    
+
     return employeeKpiSets;
 }
 
@@ -290,7 +290,7 @@ exports.getAllEmployeeKpiSetInOrganizationalUnit = async (portal, query) => {
  * Lấy tất cả các đơn vị con của 1 đơn vị xếp vào 1 mảng 
  */
 exports.getAllChildrenOrganizational = async (portal, companyId, roleId, organizationalUnitId) => {  // portal, companyId, roleId, organizationalUnitId //
-    
+
     let arrayTreeOranizationalUnit = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(portal, companyId, roleId, organizationalUnitId); // portal, companyId, roleId, organizationalUnitId
     let childrenOrganizationalUnits, temporaryChild, deg = 0;
 
@@ -346,7 +346,7 @@ exports.getAllEmployeeKpiInChildrenOrganizationalUnit = async (portal, companyId
             employeeKpisInChildrenOrganizationalUnit[i].unshift({ 'name': childrenOrganizationalUnits[i].name, 'deg': childrenOrganizationalUnits[i].deg })
         }
     }
-    
+
     return employeeKpisInChildrenOrganizationalUnit;
 }
 

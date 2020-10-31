@@ -43,23 +43,46 @@ export default class CustomRenderer extends BaseRenderer {
 
     drawShape(parentNode, element) {
         const shape = this.bpmnRenderer.drawShape(parentNode, element);
-        let responsible = element.businessObject.$attrs.responsibleName ? element.businessObject.$attrs.responsibleName.split(",") : ""
+        let responsible = element.businessObject.$attrs.responsibleName ? element.businessObject.$attrs.responsibleName : ""
         let responsibleName = ""
         let i
-        for (i = 0; i < responsible.length; i++) {
-            if (i !== responsible.length - 1) {
-                responsibleName = responsibleName + responsible[i] + ", "
-            } else {
-                responsibleName = responsibleName + responsible[i]
+        if(Array.isArray(responsible)) {
+            for (i = 0; i < responsible.length; i++) {
+                if (i !== responsible.length - 1) {
+                    responsibleName = responsibleName + responsible[i] + ", "
+                } else {
+                    responsibleName = responsibleName + responsible[i]
+                }
+            }
+        } else {
+            let responsible1 = responsible.split(",")
+            for (i = 0; i < responsible1.length; i++) {
+                if (i !== responsible1.length - 1) {
+                    responsibleName = responsibleName + responsible1[i] + ", "
+                } else {
+                    responsibleName = responsibleName + responsible1[i]
+                }
             }
         }
-        let accountable = element.businessObject.$attrs.accountableName ? element.businessObject.$attrs.accountableName.split(",") : ""
+        
+        let accountable = element.businessObject.$attrs.accountableName ? element.businessObject.$attrs.accountableName : ""
         let accountableName = ""
-        for (i = 0; i < accountable.length; i++) {
-            if (i !== accountable.length - 1) {
-                accountableName = accountableName + accountable[i] + ", "
-            } else {
-                accountableName = accountableName + accountable[i]
+        if(Array.isArray(accountable)) {
+            for (i = 0; i < accountable.length; i++) {
+                if (i !== accountable.length - 1) {
+                    accountableName = accountableName + accountable[i] + ", "
+                } else {
+                    accountableName = accountableName + accountable[i]
+                }
+            }
+        } else {
+            let accountable1 = accountable.split(",")
+            for (i = 0; i < accountable1.length; i++) {
+                if (i !== accountable1.length - 1) {
+                    accountableName = accountableName + accountable1[i] + ", "
+                } else {
+                    accountableName = accountableName + accountable1[i]
+                }
             }
         }
         if (element.type == 'bpmn:Task') {

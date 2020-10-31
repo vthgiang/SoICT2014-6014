@@ -159,7 +159,7 @@ class GeneralTabInfoForm extends Component {
                         <div className="col-md-6">
                             <div className="form-horizontal">
                                 <div className="form-group">
-                                    <strong className="col-sm-4">Người đại diện</strong>
+                                    <strong className="col-sm-4">{translate('crm.customer.represent')}</strong>
                                     <div className="col-sm-8">
                                         <span>{customerInfomation.represent ? customerInfomation.represent : ''}</span>
                                     </div>

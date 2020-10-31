@@ -115,7 +115,7 @@ exports.forgetPassword = async (portal, email) => {
     var mainOptions = {
         from: 'vnist.qlcv@gmail.com',
         to: email,
-        subject: 'VNIMA : Thay đổi mật khẩu - Change password',
+        subject: `${process.env.WEB_NAME} : Thay đổi mật khẩu - Change password`,
         html: `
         <div style="
             background-color:azure;
