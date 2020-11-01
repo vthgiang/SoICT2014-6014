@@ -398,7 +398,7 @@ const initSampleCompanyDB = async () => {
     }, {
         userId: users[8]._id,
         roleId: nvPhongHC._id
-    },{
+    }, {
         userId: users[9]._id,
         roleId: nvPhongHC._id
     }]);
@@ -967,7 +967,7 @@ const initSampleCompanyDB = async () => {
         applyForPositions: [
             nvPhongHC._id
         ],
-        
+
         name: "An toan lao dong",
         programId: "M123",
     }, {
@@ -1309,6 +1309,7 @@ const initSampleCompanyDB = async () => {
             roleAdmin._id,
             roleDean._id,
         ],
+        officialNumber: "VN001",
     }, {
         company: vnist._id,
         name: 'Điều lệ công ty',
@@ -1324,7 +1325,8 @@ const initSampleCompanyDB = async () => {
         roles: [
             roleAdmin._id,
             roleDean._id,
-        ]
+        ],
+        officialNumber: "VN002",
     }, {
         company: vnist._id,
         name: 'Giấy chứng nhận đăng ký chất lượng sản phẩm',
@@ -1340,7 +1342,8 @@ const initSampleCompanyDB = async () => {
         roles: [
             roleAdmin._id,
             roleDean._id,
-        ]
+        ],
+        officialNumber: "VN003",
     }, {
         company: vnist._id,
         name: 'Giấy chứng nhận đăng ký chất lượng hàng nhập',
@@ -1352,7 +1355,8 @@ const initSampleCompanyDB = async () => {
             issuingDate: "2020-08-16",
             effectiveDate: "2020-08-16",
             expiredDate: "2020-08-16",
-        }]
+        }],
+        officialNumber: "VN004",
     }, {
         company: vnist._id,
         name: 'Kết quả khảo sát định kỳ',
@@ -1364,7 +1368,8 @@ const initSampleCompanyDB = async () => {
             issuingDate: "2020-08-16",
             effectiveDate: "2020-08-16",
             expiredDate: "2020-08-16",
-        }]
+        }],
+        officialNumber: "VN005",
     }, {
         company: vnist._id,
         name: 'Giấy chứng nhận đăng ký chất lượng thực phẩm',
@@ -1376,7 +1381,8 @@ const initSampleCompanyDB = async () => {
             issuingDate: "2020-08-16",
             effectiveDate: "2020-08-16",
             expiredDate: "2020-08-16",
-        }]
+        }],
+        officialNumber: "VN006",
     },])
 
     /*---------------------------------------------------------------------------------------------
@@ -3151,7 +3157,7 @@ const initSampleCompanyDB = async () => {
         ]
     },
     ])
-    
+
     console.log("Cập nhật nút con của thông tin lưu trữ kho");
     var listBin = await BinLocation(vnistDB).update({
         _id: listBinLocations[0]._id,
@@ -3165,7 +3171,7 @@ const initSampleCompanyDB = async () => {
         unit: "mét khối",
         capacity: "",
         contained: "",
-        child: [ listBinLocationChilds[0]._id, listBinLocationChilds[1]._id, listBinLocationChilds[2]._id ],
+        child: [listBinLocationChilds[0]._id, listBinLocationChilds[1]._id, listBinLocationChilds[2]._id],
         enableGoods: [
             {
                 good: listGood[0]._id,
@@ -3670,31 +3676,31 @@ const initSampleCompanyDB = async () => {
     // ****************** Tạo mẫu dữ liệu trạng thái khách hàng********************
     console.log("Tạo mẫu dữ liệu trạng thái khách hàng");
     const customerStatusData = [{
-        creator:  [users[5]._id],
+        creator: [users[5]._id],
         code: "ST001",
         name: "Tiềm năng",
         description: "Khách hàng mới toanh",
         active: false,
     }, {
-        creator:  [users[5]._id],
+        creator: [users[5]._id],
         code: "ST002",
         name: "Quan tâm sản phẩm",
         description: "Khách hàng hứng thú với sản phẩm của công ty",
         active: false,
     }, {
-        creator:  [users[5]._id],
+        creator: [users[5]._id],
         code: "ST003",
         name: "Đã báo giá",
         description: "Khách hàng đã được báo giá",
         active: false,
     }, {
-        creator:  [users[5]._id],
+        creator: [users[5]._id],
         code: "ST005",
         name: "Đã kí hợp đồng",
         description: "Khách hàng đã kỹ hợp đồng với công ty",
         active: false,
     }, {
-        creator:  [users[5]._id],
+        creator: [users[5]._id],
         code: "ST004",
         name: "Đã mua sản phẩm",
         description: "Khách hàng đã mua sản phẩm",
@@ -3703,7 +3709,7 @@ const initSampleCompanyDB = async () => {
     const status = await Status(vnistDB).insertMany(customerStatusData);
     console.log("Xong! Đã tạo mẫu dữ liệu trạng thái khách hàng")
 
-     // ****************** Tạo mẫu dữ liệu hình thức chăm sóc khách hàng********************
+    // ****************** Tạo mẫu dữ liệu hình thức chăm sóc khách hàng********************
     console.log("Tạo mẫu dữ liệu hình thức chăm sóc khách hàng");
     const customerCareType = [{
         name: "Gọi điện tư vấn",
@@ -3715,7 +3721,7 @@ const initSampleCompanyDB = async () => {
         name: "Gặp mặt trực tiếp",
         description: "Hẹn gặp khách hàng trực tiếp",
     }];
-    
+
     await CareType(vnistDB).insertMany(customerCareType);
     console.log("Xong! Đã tạo mẫu dữ liệu hình thức chăm sóc khách hàng")
 
@@ -3734,7 +3740,7 @@ const initSampleCompanyDB = async () => {
             customerSource: 'Facebook.com',
             companyEstablishmentDate: new Date("2009-09-15"),
             birthDate: new Date('1998-09-03'),
-            telephoneNumber: parseInt('02465756834'), 
+            telephoneNumber: parseInt('02465756834'),
             mobilephoneNumber: parseInt('0385025851'),
             email: 'nhinl.vnist@gmail.com',
             address: 'Ngọc mỹ, Quốc Oai, Hà Nội',
@@ -3781,7 +3787,7 @@ const initSampleCompanyDB = async () => {
             customerSource: 'Youtube, facebook',
             companyEstablishmentDate: new Date("2014-09-15"),
             birthDate: null,
-            telephoneNumber: parseInt('024657589843'), 
+            telephoneNumber: parseInt('024657589843'),
             mobilephoneNumber: parseInt('0345915454'),
             email: 'TuanTA.viavet@gmail.com',
             address: 'Thường tín, Hà Nội',
