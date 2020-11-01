@@ -1295,12 +1295,12 @@ const initSampleCompanyDB = async () => {
 
     const documents = await Document(vnistDB).insertMany([{
         company: vnist._id,
-        name: 'Đi chơi',
+        name: 'Quy định du lịch nghỉ mát công ty',
         category: categories[0],
         domains: [domanins2[1]],
         archives: [archives4[0]],
         versions: [{
-            versionName: "Đi chơi",
+            versionName: "Quy định du lịch nghỉ mát công ty V1.0",
             issuingDate: "2020-08-16",
             effectiveDate: "2020-08-16",
             expiredDate: "2020-08-16",
@@ -1317,7 +1317,7 @@ const initSampleCompanyDB = async () => {
         domains: [domanins2[0]],
         archives: [archives3[3]],
         versions: [{
-            versionName: 'Điều lệ công ty',
+            versionName: 'Điều lệ công ty v1.0',
             issuingDate: "2020-08-16",
             effectiveDate: "2020-08-16",
             expiredDate: "2020-08-16",
@@ -1334,7 +1334,7 @@ const initSampleCompanyDB = async () => {
         domains: [domanins2[4]],
         archives: [archives3[3]],
         versions: [{
-            versionName: 'Giấy chứng nhận đăng ký chất lượng sản phẩm',
+            versionName: 'Giấy chứng nhận đăng ký chất lượng sản phẩm v1.0',
             issuingDate: "2020-08-16",
             effectiveDate: "2020-08-16",
             expiredDate: "2020-08-16",
@@ -1364,7 +1364,7 @@ const initSampleCompanyDB = async () => {
         domains: [domanins2[1]],
         archives: [archives4[0]],
         versions: [{
-            versionName: 'Kết quả khảo sát định kỳ',
+            versionName: 'Kết quả khảo sát định kỳ v1.0',
             issuingDate: "2020-08-16",
             effectiveDate: "2020-08-16",
             expiredDate: "2020-08-16",
@@ -1377,7 +1377,7 @@ const initSampleCompanyDB = async () => {
         domains: [domanins2[4]],
         archives: [archives3[3]],
         versions: [{
-            versionName: 'Giấy chứng nhận đăng ký chất lượng thực phẩm',
+            versionName: 'Giấy chứng nhận đăng ký chất lượng thực phẩm v1.0',
             issuingDate: "2020-08-16",
             effectiveDate: "2020-08-16",
             expiredDate: "2020-08-16",
