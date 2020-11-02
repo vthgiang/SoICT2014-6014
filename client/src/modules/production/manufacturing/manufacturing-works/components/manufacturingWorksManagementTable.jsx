@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { worksActions } from '../redux/actions';
-import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../../common-components";
+import { DataTableSetting, PaginateBar } from "../../../../../common-components";
 import ManufacturingWorksCreateForm from './manufacturingWorksCreateForm';
 import ManufacturingWorksDetailForm from './manufacturingWorksDetailForm';
-import { UserActions } from '../../../../super-admin/user/redux/actions';
+import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import ManufacturingWorksEditForm from './manufacturingWorksEditForm';
 class ManufacturingWorksManagementTable extends Component {
     constructor(props) {
@@ -21,7 +21,7 @@ class ManufacturingWorksManagementTable extends Component {
     componentDidMount = () => {
         const { page, limit } = this.state;
         this.props.getAllManufacturingWorks({ page, limit });
-        this.props.getAllUserOfCompany();
+        this.props.getAllDepartments();
     }
 
     setPage = async (page) => {
@@ -111,13 +111,12 @@ class ManufacturingWorksManagementTable extends Component {
                         worksId={this.state.currentRow._id}
                         code={this.state.currentRow.code}
                         name={this.state.currentRow.name}
-                        worksManagerValue={this.state.currentRow.worksManager._id}
-                        foremanValue={this.state.currentRow.foreman._id}
                         phoneNumber={this.state.currentRow.phoneNumber}
                         address={this.state.currentRow.address}
                         status={this.state.currentRow.status}
                         description={this.state.currentRow.description}
-
+                        organizationalUnit={this.state.currentRow.organizationalUnit}
+                        organizationalUnitValue={this.state.currentRow.organizationalUnit._id}
                     />
                 }
                 <div className="box-body qlcv">
@@ -125,13 +124,13 @@ class ManufacturingWorksManagementTable extends Component {
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('manufacturing.manufacturing_works.code')}</label>
-                            <input type="text" className="form-control" name="code" onChange={this.handleChangeWorksName} placeholder="NMSX201015153823" autoComplete="off" />
+                            <input type="text" className="form-control" name="code" onChange={this.handleChangeWorksCode} placeholder="NMSX201015153823" autoComplete="off" />
                         </div>
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('manufacturing.manufacturing_works.name')}</label>
-                            <input type="text" className="form-control" name="name" onChange={this.handleChangeWorksCode} placeholder="Nhà máy sản xuất thuốc Việt Anh I" autoComplete="off" />
+                            <input type="text" className="form-control" name="name" onChange={this.handleChangeWorksName} placeholder="Nhà máy sản xuất thuốc Việt Anh I" autoComplete="off" />
                         </div>
                         <div className="form-group">
                             <button type="button" className="btn btn-success" title={translate('manufacturing.manufacturing_works.search')} onClick={this.handleSubmitSearch}>{translate('manufacturing.manufacturing_works.search')}</button>
@@ -143,9 +142,6 @@ class ManufacturingWorksManagementTable extends Component {
                                 <th>{translate('manufacturing.manufacturing_works.index')}</th>
                                 <th>{translate('manufacturing.manufacturing_works.code')}</th>
                                 <th>{translate('manufacturing.manufacturing_works.name')}</th>
-                                <th>{translate('manufacturing.manufacturing_works.worksManager')}</th>
-                                <th>{translate('manufacturing.manufacturing_works.foreman')}</th>
-                                {/* <th>{translate('manufacturing.manufacturing_works.mills')}</th> */}
                                 <th>{translate('manufacturing.manufacturing_works.phone')}</th>
                                 <th>{translate('manufacturing.manufacturing_works.address')}</th>
                                 <th>{translate('manufacturing.manufacturing_works.description')}</th>
@@ -157,9 +153,6 @@ class ManufacturingWorksManagementTable extends Component {
                                             translate('manufacturing.manufacturing_works.index'),
                                             translate('manufacturing.manufacturing_works.code'),
                                             translate('manufacturing.manufacturing_works.name'),
-                                            translate('manufacturing.manufacturing_works.worksManager'),
-                                            translate('manufacturing.manufacturing_works.foreman'),
-                                            translate('manufacturing.manufacturing_works.mills'),
                                             translate('manufacturing.manufacturing_works.phone'),
                                             translate('manufacturing.manufacturing_works.address'),
                                             translate('manufacturing.manufacturing_works.description'),
@@ -179,13 +172,6 @@ class ManufacturingWorksManagementTable extends Component {
                                         <td>{index + 1}</td>
                                         <td>{works.code}</td>
                                         <td>{works.name}</td>
-                                        <td>{works.worksManager.name}</td>
-                                        <td>{works.foreman.name}</td>
-                                        {/* <td>{works.manufacturingMills.length > 0 && works.manufacturingMills.map((mill, index) => {
-                                            if (works.manufacturingMills.length !== index + 1)
-                                                return `${index + 1}. ${mill.name}\n`
-                                            return `${index + 1}. ${mill.name}`
-                                        })}</td> */}
                                         <td>{works.phoneNumber}</td>
                                         <td>{works.address}</td>
                                         <td>{works.description}</td>
@@ -199,14 +185,6 @@ class ManufacturingWorksManagementTable extends Component {
                                         <td style={{ textAlign: "center" }}>
                                             <a style={{ width: '5px' }} title={translate('manufacturing.manufacturing_works.works_detail')} onClick={() => { this.handleShowDetailWorks(works) }}><i className="material-icons">view_list</i></a>
                                             <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manufacturing.manufacturing_works.works_edit')} onClick={() => { this.handleEditWorks(works) }}><i className="material-icons">edit</i></a>
-                                            {/* <DeleteNotification
-                                                content="Xóa nhà máy"
-                                                data={{
-                                                    id: works._id,
-                                                    info: works.code + " - " + works.name
-                                                }}
-                                                func={this.props.deleteWorks}
-                                            /> */}
                                         </td>
                                     </tr>
                                 ))
@@ -232,7 +210,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     getAllManufacturingWorks: worksActions.getAllManufacturingWorks,
-    getAllUserOfCompany: UserActions.getAllUserOfCompany,
+    getAllDepartments: DepartmentActions.get,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManufacturingWorksManagementTable));

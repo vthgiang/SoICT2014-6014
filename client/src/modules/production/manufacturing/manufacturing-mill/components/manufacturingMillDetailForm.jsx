@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
-import { DialogModal } from '../../../../../common-components';
+import { DialogModal, formatDate } from '../../../../../common-components';
 import { millActions, worksActions } from '../redux/actions';
 
 class ManufacturingMillDetailForm extends Component {
@@ -52,7 +52,7 @@ class ManufacturingMillDetailForm extends Component {
                             </div>
                             <div className={`form-group`}>
                                 <strong>{translate('manufacturing.manufacturing_mill.created_at')}:&emsp;</strong>
-                                {currentMill.createdAt}
+                                {formatDate(currentMill.createdAt)}
                             </div>
                             <div className={`form-group`}>
                                 <strong>{translate('manufacturing.manufacturing_mill.description')}:&emsp;</strong>

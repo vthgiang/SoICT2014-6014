@@ -4005,7 +4005,11 @@ export default {
                 edit_successfully: "Sửa thông tin nhà máy thành công",
                 edit_failure: "Sửa thông tin nhà máy thất bại",
                 mill_code: "Mã xưởng",
-                mill_name: "Tên xưởng"
+                mill_name: "Tên xưởng",
+                organizational_unit: "Đơn vị liên kết",
+                choose_organizational_unit: "---Chọn đơn vị---",
+                error_organizational_unit: "Vui lòng chọn đơn vị liên kết",
+                list_roles: "Chức vụ trưởng đơn vị"
             },
             manufacturing_mill: {
                 name: "Tên xưởng",
@@ -4032,7 +4036,8 @@ export default {
                 edit_mill_successfully: "Sửa thông tin xưởng thành công",
                 edit_mill_failed: "Sửa thông tin xưởng thất bại",
                 works_name: "Tên nhà máy",
-                created_at: "Ngày tạo"
+                created_at: "Ngày tạo",
+                teamLeader: "Đội trưởng"
             },
             purchasing_request: {
                 code: "Mã phiếu đề nghị",

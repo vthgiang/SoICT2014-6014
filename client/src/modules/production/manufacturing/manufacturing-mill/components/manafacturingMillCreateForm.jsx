@@ -5,6 +5,7 @@ import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { ButtonModal, DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
 import { generateCode } from '../../../../../helpers/generateCode';
 import ValidationHelper from '../../../../../helpers/validationHelper';
+import { worksActions } from '../../manufacturing-works/redux/actions';
 import { millActions } from '../redux/actions';
 
 class ManufacturingMillCreateForm extends Component {
@@ -15,7 +16,8 @@ class ManufacturingMillCreateForm extends Component {
             name: '',
             worksValue: '',
             description: '',
-            status: ''
+            status: '',
+            teamLeaderValue: ''
         }
     }
 
@@ -25,6 +27,10 @@ class ManufacturingMillCreateForm extends Component {
             ...state,
             code: code
         }));
+    }
+
+    getListUsers = async () => {
+
     }
 
     getListWorks = () => {
@@ -48,8 +54,10 @@ class ManufacturingMillCreateForm extends Component {
 
     }
 
-    handleManufacturingWorksChange = (value) => {
+    handleManufacturingWorksChange = async (value) => {
         const worksValue = value[0];
+        console.log(worksValue);
+        await this.props.getDetailManufacturingWorks(worksValue);
         this.validateManufacturingWorks(worksValue, true);
     }
 
@@ -138,8 +146,10 @@ class ManufacturingMillCreateForm extends Component {
 
 
     render() {
+        const { manufacturingWorks } = this.props;
+        console.log(manufacturingWorks.detailWorks)
         const { translate, manufacturingMill } = this.props;
-        const { code, name, nameError, worksValue, worksValueError, description, status, statusError } = this.state;
+        const { code, name, nameError, worksValue, worksValueError, description, status, statusError, teamLeaderValue, teamLeaderValueError } = this.state;
         return (
             <React.Fragment>
                 <ButtonModal onButtonCallBack={this.handleClickCreate} modalID="modal-create-mill" button_name={translate('manufacturing.manufacturing_mill.create_mill')} title={translate('manufacturing.manufacturing_mill.create_mill')} />
@@ -177,6 +187,22 @@ class ManufacturingMillCreateForm extends Component {
                             />
                             <ErrorLabel content={worksValueError} />
                         </div>
+                        {
+                            this.state.worksValue !== "" &&
+                            <div className={`form-group ${!teamLeaderValueError ? "" : "has-error"}`}>
+                                <label>{translate('manufacturing.manufacturing_mill.teamLeader')}<span className="text-red">*</span></label>
+                                <SelectBox
+                                    id={`select-teamLeader`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={teamLeaderValue}
+                                    items={this.getListWorks()}
+                                    onChange={this.handleManufacturingWorksChange}
+                                    multiple={false}
+                                />
+                                <ErrorLabel content={teamLeaderValueError} />
+                            </div>
+                        }
                         <div className={`form-group ${!statusError ? "" : "has-error"}`}>
                             <label>{translate('manufacturing.manufacturing_mill.status')}<span className="text-red">*</span></label>
                             <SelectBox
@@ -196,7 +222,7 @@ class ManufacturingMillCreateForm extends Component {
                         </div>
                         <div className="form-group">
                             <label>{translate('manufacturing.manufacturing_mill.description')}</label>
-                            <input type="text" className="form-control" value={description} onChange={this.handleDescriptionChange}></input>
+                            <textarea type="text" className="form-control" value={description} onChange={this.handleDescriptionChange}></textarea>
                         </div>
                     </form>
                 </DialogModal>
@@ -211,7 +237,8 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    createManufacturingMill: millActions.createManufacturingMill
+    createManufacturingMill: millActions.createManufacturingMill,
+    getDetailManufacturingWorks: worksActions.getDetailManufacturingWorks
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManufacturingMillCreateForm));

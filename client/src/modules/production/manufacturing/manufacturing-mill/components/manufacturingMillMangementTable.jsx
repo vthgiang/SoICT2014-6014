@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../../common-components";
+import { DataTableSetting, PaginateBar } from "../../../../../common-components";
 import { connect } from 'react-redux';
 import { millActions } from '../redux/actions';
 import ManufacturingMillCreateForm from './manafacturingMillCreateForm';
@@ -137,6 +137,7 @@ class ManufacturingMillMangementTable extends Component {
                                 <th>{translate('manufacturing.manufacturing_mill.index')}</th>
                                 <th>{translate('manufacturing.manufacturing_mill.code')}</th>
                                 <th>{translate('manufacturing.manufacturing_mill.name')}</th>
+                                <th>{translate('manufacturing.manufacturing_mill.teamLeader')}</th>
                                 <th>{translate('manufacturing.manufacturing_mill.worksName')}</th>
                                 <th>{translate('manufacturing.manufacturing_mill.description')}</th>
                                 <th>{translate('manufacturing.manufacturing_mill.status')}</th>
@@ -147,6 +148,7 @@ class ManufacturingMillMangementTable extends Component {
                                             translate('manufacturing.manufacturing_mill.index'),
                                             translate('manufacturing.manufacturing_mill.code'),
                                             translate('manufacturing.manufacturing_mill.name'),
+                                            translate('manufacturing.manufacturing_mill.teamLeader'),
                                             translate('manufacturing.manufacturing_mill.worksName'),
                                             translate('manufacturing.manufacturing_mill.description'),
                                             translate('manufacturing.manufacturing_mill.status'),
@@ -165,6 +167,7 @@ class ManufacturingMillMangementTable extends Component {
                                         <td>{index + 1}</td>
                                         <td>{mill.code}</td>
                                         <td>{mill.name}</td>
+                                        <td>{mill.teamLeader.name}</td>
                                         <td>{mill.manufacturingWorks.name}</td>
                                         <td>{mill.description}</td>
                                         {
@@ -178,14 +181,6 @@ class ManufacturingMillMangementTable extends Component {
                                         <td style={{ textAlign: "center" }}>
                                             <a style={{ width: '5px' }} title={translate('manufacturing.manufacturing_mill.mill_detail')} onClick={() => { this.handleShowDetailMill(mill) }}><i className="material-icons">view_list</i></a>
                                             <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manufacturing.manufacturing_mill.mill_edit')} onClick={() => { this.handleEditMill(mill) }}><i className="material-icons">edit</i></a>
-                                            {/* <DeleteNotification
-                                                content={translate('manufacturing.manufacturing_mill.delete_mill')}
-                                                data={{
-                                                    id: mill._id,
-                                                    info: mill.code + " - " + mill.name
-                                                }}
-                                                func={this.props.handleDeleteManufacturingMill}
-                                            /> */}
                                         </td>
                                     </tr>
                                 ))
