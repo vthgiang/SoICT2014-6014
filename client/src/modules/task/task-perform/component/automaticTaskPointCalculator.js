@@ -46,9 +46,17 @@ function calcAutoPoint(data) {
 
     let actionRating = actions.map(action => action.rating);
 
+    let numberOfPassedAction = actions.filter(act => act.rating >= 5).length;
+    let numberOfFailedAction = actions.filter(act => act.rating < 5).length;
+
+
     // Tổng số hoạt động
     let a = 0;
     a = actionRating.length;
+
+    // tiên tửu - thần cồn - ma men :))
+    let pen = 0;
+    pen = !a ? 10 : (numberOfFailedAction / (numberOfFailedAction + numberOfPassedAction) * 0.5);
 
     // Tổng số điểm của các hoạt động
     let reduceAction = actionRating.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
@@ -71,6 +79,8 @@ function calcAutoPoint(data) {
             formula = formula.replace(/totalDay/g, `(${totalDay})`);
             formula = formula.replace(/dayUsed/g, `(${dayUsed})`);
             formula = formula.replace(/averageActionRating/g, `(${averageActionRating})`);
+            formula = formula.replace(/numberOfFailedAction/g, `(${numberOfFailedAction})`);
+            formula = formula.replace(/numberOfPassedAction/g, `(${numberOfPassedAction})`);
             formula = formula.replace(/progress/g, `(${progressTask})`);
 
             // thay mã code bằng giá trị(chỉ dùng cho kiểu số)
@@ -103,6 +113,8 @@ function calcAutoPoint(data) {
             formula = formula.replace(/totalDay/g, `(${totalDay})`);
             formula = formula.replace(/dayUsed/g, `(${dayUsed})`);
             formula = formula.replace(/averageActionRating/g, `(${averageActionRating})`);
+            formula = formula.replace(/numberOfFailedAction/g, `(${numberOfFailedAction})`);
+            formula = formula.replace(/numberOfPassedAction/g, `(${numberOfPassedAction})`);
             formula = formula.replace(/progress/g, `(${progressTask})`);
         }
         else {
@@ -115,6 +127,8 @@ function calcAutoPoint(data) {
             formula = formula.replace(/totalDay/g, `(${totalDay})`);
             formula = formula.replace(/dayUsed/g, `(${dayUsed})`);
             formula = formula.replace(/averageActionRating/g, `(${averageActionRating})`);
+            formula = formula.replace(/numberOfFailedAction/g, `(${numberOfFailedAction})`);
+            formula = formula.replace(/numberOfPassedAction/g, `(${numberOfPassedAction})`);
             formula = formula.replace(/progress/g, `(${progressTask})`);
 
             // thay mã code bằng giá trị(chỉ dùng cho kiểu số)

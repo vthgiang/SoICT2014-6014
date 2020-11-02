@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
-import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from '../../../../../common-components';
+import { DialogModal, TreeSelect, ErrorLabel, ButtonModal } from '../../../../../common-components';
 import { GoodActions } from '../redux/actions';
 import { CategoryActions } from '../../category-management/redux/actions';
 import UnitCreateFrom from './unitCreateFrom';
@@ -136,18 +136,20 @@ class GoodCreateForm extends Component {
         return msg === undefined;
     }
 
-    getCategoriesByType = () => {
-        let { categories, translate } = this.props;
-        let listCategoriesByType = categories.listCategoriesByType;
-        let categoryArr = [{ value: '', text: translate('manage_warehouse.good_management.choose_category') }];
-
-        listCategoriesByType.map(item => {
-            categoryArr.push({
-                value: item._id,
-                text: item.name
+    getAllCategory = () => {
+        let { categories } = this.props;
+        let categoryArr = [];
+        if(categories.categoryToTree.list.length > 0) {
+            categories.categoryToTree.list.map(item => {
+                categoryArr.push({
+                    _id: item._id,
+                    id: item._id,
+                    state: { "open": true },
+                    name: item.name,
+                    parent: item.parent ? item.parent.toString(): null
+                })
             })
-        })
-
+        }
         return categoryArr;
     }
 
@@ -201,7 +203,7 @@ class GoodCreateForm extends Component {
         let listMaterial = [];
         const { translate, goods, categories, type } = this.props;
         const { errorOnName, errorOnCode, errorOnBaseUnit, errorOnCategory, code, name, category, units, baseUnit, description, materials } = this.state;
-        const dataSelectBox = this.getCategoriesByType();
+        const dataSelectBox = this.getAllCategory();
 
         if(units) listUnit = units;
         if(materials) listMaterial = materials;
@@ -247,14 +249,11 @@ class GoodCreateForm extends Component {
                                 </div>
                                 <div className={`form-group ${!errorOnCategory ? "" : "has-error"}`}>
                                     <label>{translate('manage_warehouse.good_management.category')}</label>
-                                    <SelectBox
-                                        id={`select-good-by-${type}`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
+                                    <TreeSelect
+                                        data={dataSelectBox}
                                         value={category}
-                                        items={dataSelectBox}
-                                        onChange={this.handleCategoryChange}    
-                                        multiple={false}
+                                        handleChange={this.handleCategoryChange}
+                                        mode="hierarchical"
                                     />
                                     <ErrorLabel content = { errorOnCategory } />
                                 </div>

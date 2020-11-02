@@ -49,13 +49,8 @@ class EditForm extends Component {
         })
     }
     handleOfficialNumber = (e) => {
-        const value = e.target.value;
-        this.setState(state => {
-            return {
-                ...state,
-                documentOfficialNumber: value,
-            }
-        })
+        const value = e.target.value.trim();
+        this.validateOfficialNumber(value, true);
     }
 
     handleSigner = (e) => {
@@ -238,11 +233,31 @@ class EditForm extends Component {
         }
         return msg === undefined;
     }
+    validateOfficialNumber = (value, willUpdateState) => {
+        let msg = undefined;
+        const { translate } = this.props;
+        if (!value) {
+            msg = translate('document.doc_version.no_blank_official_number');
+        }
+
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    documentOfficialNumber: value,
+                    errorOfficialNumber: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
 
 
     isValidateForm = () => {
         return this.validateName(this.state.documentName, false)
             && this.validateCategory(this.state.documentCategory, false)
+            && this.validateOfficialNumber(this.state.documentOfficialNumber, false)
+
     }
     isValidateFormAddVersion = () => {
         return this.validateVersionName(this.state.documentVersionName, false);
@@ -309,7 +324,7 @@ class EditForm extends Component {
                 title = (title + " Chỉnh sửa thông tin văn bản");
             }
 
-            description += "Danh mục mới: ";
+            description += "Lĩnh vực  mới: ";
             let newDomain = [];
             for (let i = 0; i < documentDomains.length; i++) {
                 formData.append('domains[]', documentDomains[i]);
@@ -452,11 +467,15 @@ class EditForm extends Component {
         }
         if (documentFile) {
             descriptions += "Thêm file tài liệu. "
-            formData.append('file', documentFile);
+            documentFile.forEach(x => {
+                formData.append('file', x.fileUpload);
+            })
         }
         if (documentFileScan) {
             descriptions += "Thêm file scan tài liệu";
-            formData.append('fileScan', documentFileScan);
+            documentFileScan.forEach(x => {
+                formData.append('fileScan', x.fileUpload);
+            })
         }
 
         formData.append('title', title);
@@ -587,7 +606,7 @@ class EditForm extends Component {
             documentIssuingBody, documentOfficialNumber, documentSigner, documentVersions,
             documentRelationshipDescription, relatedDocuments,
             documentRoles, documentArchives,
-            documentArchivedRecordPlaceOrganizationalUnit, currentVersion,
+            documentArchivedRecordPlaceOrganizationalUnit, currentVersion, errorOfficialNumber
         } = this.state;
         const { errorName } = this.state;
         const { translate, role, documents, department, documentRelationshipDocuments } = this.props;
@@ -647,16 +666,17 @@ class EditForm extends Component {
                                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                             <div className={`form-group ${!errorName ? "" : "has-error"}`}>
                                                 <label>{translate('document.name')}<span className="text-red">*</span></label>
-                                                <input type="text" className="form-control" value={documentName} onChange={this.handleName} />
+                                                <input type="text" className="form-control" onChange={this.handleName} value={documentName} />
                                                 <ErrorLabel content={errorName} />
+                                            </div>
+                                            <div className={`form-group ${!errorOfficialNumber ? "" : "has-error"}`}>
+                                                <label>{translate('document.doc_version.official_number')}<span className="text-red">*</span></label>
+                                                <input type="text" className="form-control" onChange={this.handleOfficialNumber} value={documentOfficialNumber} />
+                                                <ErrorLabel content={errorOfficialNumber} />
                                             </div>
                                             <div className="form-group">
                                                 <label>{translate('document.doc_version.issuing_body')}</label>
                                                 <input type="text" className="form-control" onChange={this.handleIssuingBody} value={documentIssuingBody} />
-                                            </div>
-                                            <div className="form-group">
-                                                <label>{translate('document.doc_version.official_number')}</label>
-                                                <input type="text" className="form-control" onChange={this.handleOfficialNumber} value={documentOfficialNumber} />
                                             </div>
                                             <div className="form-group">
                                                 <label>{translate('document.doc_version.signer')}</label>

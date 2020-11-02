@@ -71,7 +71,7 @@ exports.createBinLocation = async (req, res) => {
         await Logger.info(req.user.email, 'CREATE_BIN_LOCATION_SUCCESS', req.portal);
         res.status(200).json({
             success: true,
-            messages: ['create_bin_location_success'],
+            messages: ['add_success'],
             content: binLocation
         });
     }
@@ -79,7 +79,7 @@ exports.createBinLocation = async (req, res) => {
         await Logger.error(req.user.email, 'CREATE_BIN_LOCATION_FAILED', req.portal);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['create_bin_location_failed'],
+            messages: Array.isArray(error) ? error : ['add_faile'],
             content: error
         });
     }
@@ -92,7 +92,7 @@ exports.editBinLocation = async (req, res) => {
         await Logger.info(req.user.email, 'EDIT_BIN_LOCATION_SUCCESS', req.portal);
         res.status(200).json({
             success: true,
-            messages: ['edit_bin_location_success'],
+            messages: ['edit_success'],
             content: binLocation
         });
     }
@@ -100,7 +100,7 @@ exports.editBinLocation = async (req, res) => {
         await Logger.error(req.user.email, 'EDIT_BIN_LOCATION_FAILED', req.portal);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['edit_bin_location_failed'],
+            messages: Array.isArray(error) ? error : ['edit_faile'],
             content: error
         });
     }
@@ -113,7 +113,7 @@ exports.deleteBinLocation = async (req, res) => {
         await Logger.info(req.user.email, 'DELETE_BIN_LOCATION_SUCCESS', req.portal);
         res.status(200).json({
             success: true,
-            messages: ['delete_bin_location_success'],
+            messages: ['delete_success'],
             content: binLocation
         });
     }
@@ -121,7 +121,7 @@ exports.deleteBinLocation = async (req, res) => {
         await Logger.error(req.user.email, 'DELETE_BIN_LOCATION_FAILED', req.portal);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['delete_bin_location_failed'],
+            messages: Array.isArray(error) ? error : ['delete_faile'],
             content: error
         });
     }
@@ -134,7 +134,7 @@ exports.deleteManyBinLocations = async (req, res) => {
         await Logger.info(req.user.email, 'DELETE_BIN_LOCATION_SUCCESS', req.portal);
         res.status(200).json({
             success: true,
-            messages: ['delete_bin_location_success'],
+            messages: ['delete_success'],
             content: binLocations
         });
     }
@@ -142,7 +142,7 @@ exports.deleteManyBinLocations = async (req, res) => {
         await Logger.error(req.user.email, 'DELETE_BIN_LOCATION_FAILED', req.portal);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['delete_bin_location_failed'],
+            messages: Array.isArray(error) ? error : ['delete_faile'],
             content: error
         });
     }

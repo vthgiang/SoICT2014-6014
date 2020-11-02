@@ -198,7 +198,7 @@ const initHumanResourceData = async () => {
             let name = randomDateNameMale();
             usersFake = [...usersFake, {
                 name: name,
-                email: `${removeVietnameseTones(name.replace(/ /g, ''))}fake${i + 1}.vnist@gmail.com`,
+                email: `${removeVietnameseTones(name.toLowerCase().replace(/ /g, ''))}fake${i + 1}.vnist@gmail.com`,
                 password: hash,
                 company: vnist._id
             }]
@@ -206,7 +206,7 @@ const initHumanResourceData = async () => {
             let name = randomDateNameFemale();
             usersFake = [...usersFake, {
                 name: name,
-                email: `${removeVietnameseTones(name.replace(/ /g, ''))}fake${i + 1}.vnist@gmail.com`,
+                email: `${removeVietnameseTones(name.toLowerCase().replace(/ /g, ''))}fake${i + 1}.vnist@gmail.com`,
                 password: hash,
                 company: vnist._id
             }]
@@ -777,7 +777,7 @@ const initHumanResourceData = async () => {
             identityCardNumber: `${163412570 + index}`,
             identityCardDate: new Date(randomDateNew()),
             identityCardAddress: 'Hà Nội',
-            emailInCompany: x.email,
+            emailInCompany: x.email.toLowerCase(),
             nationality: "Việt Nam",
             atmNumber: `${102298666 + index}`,
             bankName: "ViettinBank",
@@ -786,9 +786,9 @@ const initHumanResourceData = async () => {
             religion: "Không",
             maritalStatus: maritalStatus[Math.floor(Math.random() * 6)],
             phoneNumber: 962586290 + index,
-            personalEmail: `${removeVietnameseTones(x.name.replace(/ /g, ''))}fake11.vnist@gmail.com`,
+            personalEmail: `${removeVietnameseTones(x.name.toLowerCase().replace(/ /g, ''))}fake11.vnist@gmail.com`,
             phoneNumber2: 9625845,
-            personalEmail2: `${removeVietnameseTones(x.name.replace(/ /g, ''))}fake12.vnist@gmail.com`,
+            personalEmail2: `${removeVietnameseTones(x.name.toLowerCase().replace(/ /g, ''))}fake12.vnist@gmail.com`,
             homePhone: 978590338 + index,
             emergencyContactPerson: randomDateNameMale(),
             relationWithEmergencyContactPerson: "Em trai",

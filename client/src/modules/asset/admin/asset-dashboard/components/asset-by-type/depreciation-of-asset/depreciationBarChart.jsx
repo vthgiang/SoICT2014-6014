@@ -106,7 +106,7 @@ class DepreciationBarChart extends Component {
                 typeName.push(assetType[i].typeName);
             }
         }
-
+        countDepreciation.unshift('count')
         let data = {
             count: countDepreciation,
             type: typeName,

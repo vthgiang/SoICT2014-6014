@@ -170,7 +170,7 @@ class EducationProgramEditForm extends Component {
                             <label>{translate('training.education_program.table.apply_for_organizational_units')}<span className="text-red">*</span></label>
                             <SelectMulti id={`edit-multiSelectUnit${_id}`} multiple="multiple" display='inline-block'
                                 value={organizationalUnit} disabled={Number(totalList) > 0 ? true : false}
-                                options={{ nonSelectedText: translate('human_resource.non_unit'), allSelectedText: translate('human_resource.all_unit') }}
+                                options={{ nonSelectedText: translate('human_resource.non_unit'), nSelectedText: translate('human_resource.unit_selected'), allSelectedText: translate('human_resource.all_unit') }}
                                 items={department.list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
                             <ErrorLabel content={errorOnOrganizationalUnit} />
@@ -180,7 +180,7 @@ class EducationProgramEditForm extends Component {
                             <label>{translate('training.education_program.table.apply_for_positions')}<span className="text-red">*</span></label>
                             <SelectMulti id={`edit-multiSelectPosition${_id}`} multiple="multiple" display='inline-block'
                                 value={position} disabled={Number(totalList) > 0 ? true : false}
-                                options={{ nonSelectedText: translate('human_resource.non_position'), allSelectedText: translate('human_resource.all_position') }}
+                                options={{ nonSelectedText: translate('human_resource.non_position'), nSelectedText: translate('human_resource.position_selected'), allSelectedText: translate('human_resource.all_position') }}
                                 items={listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
                             </SelectMulti>
                             <ErrorLabel content={errorOnPosition} />

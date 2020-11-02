@@ -8,6 +8,26 @@ export const LotActions = {
 }
 
 function getAllLots(data){
+    if(data !== undefined && data.limit !== undefined && data.page !== undefined) {
+        return dispatch => {
+            dispatch({
+                type: LotConstants.GET_LOT_PAGINATE_REQUEST
+            })
+            LotServices.getAllLots(data)
+            .then(res => {
+                dispatch({
+                    type: LotConstants.GET_LOT_PAGINATE_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: LotConstants.GET_LOT_PAGINATE_FAILURE,
+                    error: error
+                })
+            })
+        }
+    }
     return dispatch => {
         dispatch({
             type: LotConstants.GET_LOT_REQUEST

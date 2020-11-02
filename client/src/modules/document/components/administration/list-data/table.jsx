@@ -362,7 +362,7 @@ class Table extends Component {
                                 { key: "signer", value: "Người ký" },
                                 { key: "relationshipDescription", value: "Mô tả liên kết" },
                                 { key: "organizationUnitManager", value: "Cơ quan quản lí" },
-                                { key: "domains", value: "Danh mục" },
+                                { key: "domains", value: "Lĩnh vực" },
                                 { key: "archives", value: "Địa chỉ lưu trữ" },
                                 { key: "roles", value: "Các chức danh được xem" },
                                 { key: "versionName", value: "Tên phiên bản" },
@@ -510,7 +510,7 @@ class Table extends Component {
                     />
                 }
 
-                {<ExportExcel id="export-document" exportData={exportData} style={{ marginRight: 5, marginTop: 2 }} />}
+                <ExportExcel id="export-document" exportData={exportData} style={{ marginRight: 5 }} buttonName={translate('document.export')} />
                 <div className="form-inline">
                     <div className="form-group">
                         <label>{translate('document.category')}</label>

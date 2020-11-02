@@ -90,7 +90,7 @@ class DetailTaskTab extends Component {
                 let task = nextProps.task;
 
                 this.props.getChildrenOfOrganizationalUnits(task.organizationalUnit._id);
-                
+
                 let roles = [];
                 if (task) {
                     let userId = getStorage("userId");
@@ -130,7 +130,7 @@ class DetailTaskTab extends Component {
                 // Xử lý nhân viên tham gia công việc phối hợp đơn vị
                 let responsibleEmployees = [], consultedEmployees = [];
                 this.EMPLOYEE_SELECT_BOX = this.checkRoleAndSetSelectBoxOfUserSameDepartment();
-                
+
                 if (this.EMPLOYEE_SELECT_BOX && this.EMPLOYEE_SELECT_BOX.length !== 0) {
                     if (task) {
                         if (task.responsibleEmployees && task.responsibleEmployees.length !== 0) {
@@ -487,7 +487,7 @@ class DetailTaskTab extends Component {
 
                 newResults = results.map(item => {
                     if (item.employee && creator === item.employee._id) {
-                        
+
                         check = false;
                         return {
                             ...item,
@@ -514,7 +514,7 @@ class DetailTaskTab extends Component {
 
         let data = {
             evaluateId: evaluate._id,
-            timesheetLogs: results.map(item => { 
+            timesheetLogs: results.map(item => {
                 return {
                     employee: item.employee && item.employee,
                     hoursSpent: item.hoursSpent
@@ -570,7 +570,7 @@ class DetailTaskTab extends Component {
     saveCollaboratedTask = (taskId) => {
         const { employeeCollaboratedWithUnit } = this.state;
         this.props.editEmployeeCollaboratedWithOrganizationalUnits(taskId, employeeCollaboratedWithUnit);
-        
+
         this.setState(state => {
             return {
                 ...state,
@@ -954,15 +954,10 @@ class DetailTaskTab extends Component {
                         {/* Phân công công việc cho nhân viên */}
                         {task && checkDeanOfUnitThatHasCollaborated && this.EMPLOYEE_SELECT_BOX && this.EMPLOYEE_SELECT_BOX.length !== 0
                             && <div className="description-box">
-                                <h4>Vai trò của nhân viên thuộc đơn vị bạn
-                                    {editCollaboratedTask
-                                        ? <a className="pull-right" style={{ cursor: "pointer", fontWeight: "400", fontSize: "14px" }} onClick={() => this.saveCollaboratedTask(task._id)} title="Lưu">Lưu</a>
-                                        : <a className="pull-right" style={{ cursor: "pointer", fontWeight: "400", fontSize: "14px" }} onClick={() => this.setState(state => { return { ...state, editCollaboratedTask: true } })} title="Chỉnh sửa">Chỉnh sửa</a>
-                                    }
-                                </h4>
-                                
+                                <h4>Phân công nhân viên đơn vị tham gia phối hợp</h4>
+
                                 {editCollaboratedTask
-                                    ? <React-Fragment>
+                                    ? <div className="no-line-height">
                                         <div className="form-group">
                                             <label>{translate('task.task_management.responsible')}</label>
                                             <SelectBox
@@ -987,48 +982,63 @@ class DetailTaskTab extends Component {
                                                 multiple={true}
                                             />
                                         </div>
-                                    </React-Fragment>
+                                    </div>
                                     : <div>
                                         {/* Người thực hiện */}
                                         <strong>{translate('task.task_management.responsible')}:</strong>
                                         {
-                                            (employeeCollaboratedWithUnit && employeeCollaboratedWithUnit.responsibleEmployees && employeeCollaboratedWithUnit.responsibleEmployees.length !== 0) 
-                                            ? <span>
-                                                {
-                                                    employeeCollaboratedWithUnit.responsibleEmployees.map((item, index) => {
-                                                        let seperator = index !== 0 ? ", " : "";
-                                                        if (task.inactiveEmployees.indexOf(item) !== -1) { // tìm thấy item._id
-                                                            return <span key={index}><strike>{seperator}{this.EMPLOYEE_SELECT_BOX.filter(box => box.value == item)[0].text}</strike></span>
-                                                        } else {
-                                                            return <span key={index}>{seperator}{this.EMPLOYEE_SELECT_BOX.filter(box => box.value == item)[0].text}</span>
-                                                        }
-                                                    })
-                                                }
-                                            </span>
-                                            : <span>{translate('task.task_management.task_empty_employee')}</span>
+                                            (employeeCollaboratedWithUnit && employeeCollaboratedWithUnit.responsibleEmployees && employeeCollaboratedWithUnit.responsibleEmployees.length !== 0)
+                                                ? <span>
+                                                    {
+                                                        employeeCollaboratedWithUnit.responsibleEmployees.map((item, index) => {
+                                                            let seperator = index !== 0 ? ", " : "";
+                                                            if (task.inactiveEmployees.indexOf(item) !== -1) { // tìm thấy item._id
+                                                                return <span key={index}><strike>{seperator}{this.EMPLOYEE_SELECT_BOX.filter(box => box.value == item)[0].text}</strike></span>
+                                                            } else {
+                                                                return <span key={index}>{seperator}{this.EMPLOYEE_SELECT_BOX.filter(box => box.value == item)[0].text}</span>
+                                                            }
+                                                        })
+                                                    }
+                                                </span>
+                                                : <span>{translate('task.task_management.task_empty_employee')}</span>
                                         }
-                                        <br/>
+                                        <br />
                                         {/* Người hỗ trợ */}
                                         <strong>{translate('task.task_management.consulted')}:</strong>
                                         {
-                                            (employeeCollaboratedWithUnit && employeeCollaboratedWithUnit.consultedEmployees && employeeCollaboratedWithUnit.consultedEmployees.length !== 0) 
-                                            ? <span>
-                                                {
-                                                    employeeCollaboratedWithUnit.consultedEmployees.map((item, index) => {
-                                                        let seperator = index !== 0 ? ", " : "";
-                                                        if (task.inactiveEmployees.indexOf(item) !== -1) { // tìm thấy item._id
-                                                            return <span key={index}><strike>{seperator}{this.EMPLOYEE_SELECT_BOX.filter(box => box.value == item)[0].text}</strike></span>
-                                                        } else {
-                                                            return <span key={index}>{seperator}{this.EMPLOYEE_SELECT_BOX.filter(box => box.value == item)[0].text}</span>
-                                                        }
-                                                    })
-                                                }
-                                            </span>
-                                            : <span>{translate('task.task_management.task_empty_employee')}</span>
+                                            (employeeCollaboratedWithUnit && employeeCollaboratedWithUnit.consultedEmployees && employeeCollaboratedWithUnit.consultedEmployees.length !== 0)
+                                                ? <span>
+                                                    {
+                                                        employeeCollaboratedWithUnit.consultedEmployees.map((item, index) => {
+                                                            let seperator = index !== 0 ? ", " : "";
+                                                            if (task.inactiveEmployees.indexOf(item) !== -1) { // tìm thấy item._id
+                                                                return <span key={index}><strike>{seperator}{this.EMPLOYEE_SELECT_BOX.filter(box => box.value == item)[0].text}</strike></span>
+                                                            } else {
+                                                                return <span key={index}>{seperator}{this.EMPLOYEE_SELECT_BOX.filter(box => box.value == item)[0].text}</span>
+                                                            }
+                                                        })
+                                                    }
+                                                </span>
+                                                : <span>{translate('task.task_management.task_empty_employee')}</span>
                                         }
                                     </div>
                                 }
-                            </div>    
+
+                                {editCollaboratedTask
+                                    ? <div class="row">
+                                        <div className="col-xs-6">
+                                            <button type="button" className={`btn btn-danger btn-block`} onClick={() => { this.setState({ editCollaboratedTask: false }) }}>Hủy</button>
+                                        </div>
+                                        <div className="col-xs-6">
+                                            <button type="button" className={`btn btn-success btn-block`} onClick={() => this.saveCollaboratedTask(task._id)}>Lưu</button>
+                                        </div>
+
+                                    </div>
+                                    : <div style={{ marginTop: 7 }}>
+                                        <button className={`btn btn-block btn-default`} onClick={() => this.setState(state => { return { ...state, editCollaboratedTask: true } })} title="Chỉnh sửa">Chỉnh sửa</button>
+                                    </div>
+                                }
+                            </div>
                         }
 
                         {/* Các trường thông tin cơ bản */}

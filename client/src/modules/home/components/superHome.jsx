@@ -14,17 +14,23 @@ class SuperHome extends Component {
     constructor(props) {
         super(props);
 
-        let currentDate = new Date();
-        let currentYear = currentDate.getFullYear();
-        let currentMonth = currentDate.getMonth();
-
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
+        let d = new Date(),
+            month = '' + (d.getMonth() + 2),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+        if (month.length < 2)
+            month = '0' + month;
+
+        if (day.length < 2)
+            day = '0' + day;
 
         this.INFO_SEARCH = {
-            startMonth: currentYear + '-' + 1,
-            endMonth: currentYear + '-' + (currentMonth + 2),
-            startMonthTitle: '01' + '-' + currentYear,
-            endMonthTitle: (currentMonth + 1) > 9 ? (currentMonth + 1) + '-' + currentYear : '0' + (currentMonth + 1) + '-' + currentYear
+            startMonth: [year, month - 3].join('-'),
+            endMonth: [year, month].join('-'),
+
+            startMonthTitle: `0${month - 4}-${year}`,
+            endMonthTitle: [month - 1, year].join('-')
         }
 
         this.state = {
@@ -146,9 +152,9 @@ class SuperHome extends Component {
             month = '0' + month;
         if (day.length < 2)
             day = '0' + day;
-
         let defaultEndMonth = [month, year].join('-');
-        let defaultStartMonth = ['01', year].join('-');
+        let defaultStartMonth = '0' + (month - 3) + '-' + year;
+
         let { startMonthTitle, endMonthTitle } = this.INFO_SEARCH;
 
         return (

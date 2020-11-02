@@ -2,91 +2,47 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ErrorLabel } from '../../../../../common-components';
+import ValidationHelper from '../../../../../helpers/validationHelper';
 import { DocumentActions } from '../../../redux/actions';
 
 class EditForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            categoryName: '',
-            categoryDescription: '',
-            errorName: '',
-            errorDescription: '',
-        }
+        this.state = {}
     }
 
     handleName = (e) => {
         const value = e.target.value;
+        const {translate} = this.props;
+        const {message} = ValidationHelper.validateName(translate, value, 1, 255);
         this.setState({
-            categoryName: value
+            name: value,
+            nameError: message
         })
     }
 
     handleDescription = (e) => {
         const value = e.target.value;
         this.setState({
-            categoryDescription: value
+            description: value
         })
     }
 
-    validateName = (value, willUpdateState)=>{
-        let msg = undefined;
-        const {translate} = this.props;
-        if(!value){
-            msg = translate('document.no_blank_name');
-        }
-        if(willUpdateState){
-            this.setState(state=>{
-                return{
-                    ...state,
-                    categoryName: value,
-                    errorName: msg,
-                }
-            })
-        }
-        return msg === undefined;
-    }
-
-    handleValidateName = (e)=>{
-        const value = e.target.value.trim();
-        this.validateName(value, true);
-    }
-
-    validateDescription = (value, willUpdateState)=>{
-        let msg = undefined;
-        const {translate} = this.props;
-        if(value === ''){
-            msg = translate('document.no_blank_description');
-        }
-        if(willUpdateState){
-            this.setState(state=>{
-                return{
-                    ...state,
-                    categoryDescription: value,
-                    errorDescription: msg,
-                }
-            })
-        }
-        return msg === undefined;
-    }
-    handleValidateDescription = (e)=>{
-        const value = e.target.value.trim();
-        this.validateDescription(value, true);
-    }
     isValidateForm = ()=>{
-        return this.validateDescription(this.state.categoryDescription, false) 
-            && this.validateName(this.state.categoryName, false);
+        const {translate} = this.props;
+        const {name} = this.state;
+        if(!ValidationHelper.validateName(translate, name, 1, 255).status) return false;
+        return true;
     }
+
     static getDerivedStateFromProps(nextProps, prevState){
         if (nextProps.categoryId !== prevState.categoryId) {
             return {
                 ...prevState,
                 categoryId: nextProps.categoryId,
-                categoryName: nextProps.categoryName,
-                categoryDescription: nextProps.categoryDescription,
-
-                errorName: undefined,
-                errorDescription: undefined,
+                name: nextProps.categoryName,
+                description: nextProps.categoryDescription,
+                nameError: undefined
             } 
         } else {
             return null
@@ -94,16 +50,18 @@ class EditForm extends Component {
     }
 
     save = () => {
-        const { categoryId, categoryName, categoryDescription } = this.state;
-        this.props.editDocumentCategory(categoryId, {
-            name: categoryName,
-            description: categoryDescription
-        });
+        if(this.isValidateForm()) {
+            const { categoryId, name, description } = this.state;
+            this.props.editDocumentCategory(categoryId, {
+                name,
+                description
+            });
+        }
     }
 
     render() {
         const { translate }=this.props;
-        const { categoryName, categoryDescription, errorName, errorDescription } = this.state;
+        const { name, description, nameError } = this.state;
     
         return ( 
             <DialogModal
@@ -114,15 +72,14 @@ class EditForm extends Component {
                 func={this.save}
             >
                 <form id="form-edit-document-category">
-                    <div className={`form-group ${errorName === undefined ? "" : "has-error"}`}>
+                    <div className={`form-group ${nameError === undefined ? "" : "has-error"}`}>
                         <label>{ translate('document.administration.categories.name') }<span className="text-red">*</span></label>
-                        <input type="text" className="form-control" onChange={this.handleValidateName} value={categoryName}/>
-                        <ErrorLabel content = {errorName}/>
+                        <input type="text" className="form-control" onChange={this.handleName} value={name}/>
+                        <ErrorLabel content = {nameError}/>
                     </div>
-                    <div className={`form-group ${errorDescription === undefined ? "" : "has-error"}`}>
+                    <div className="form-group">
                         <label>{ translate('document.administration.categories.description') }<span className="text-red">*</span></label>
-                        <textarea type="text" className="form-control" onChange={this.handleValidateDescription} value={categoryDescription}/>
-                        <ErrorLabel content = {errorDescription} />
+                        <textarea type="text" className="form-control" onChange={this.handleDescription} value={description}/>
                     </div>
                 </form>
             </DialogModal>
