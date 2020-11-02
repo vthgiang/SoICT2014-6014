@@ -238,6 +238,7 @@ class TimesheetsManagement extends Component {
      */
     convertDataToExportData = (data, timekeepingType) => {
         const { translate } = this.props;
+        const { month } = this.state;
         let dataExport = [], styleColumn, space = [];
         if (timekeepingType === 'shift') {
             space = [{ key: "space", value: "", width: '10' }];
@@ -346,7 +347,7 @@ class TimesheetsManagement extends Component {
             dataSheets: [
                 {
                     sheetName: "Sheet1",
-                    sheetTitle: translate('human_resource.timesheets.file_name_export'),
+                    sheetTitle: `${translate('human_resource.timesheets.file_name_export')} ${translate('human_resource.month').toLowerCase()} ${month}`,
                     sheetTitleWidth: 35,
                     tables: [
                         {

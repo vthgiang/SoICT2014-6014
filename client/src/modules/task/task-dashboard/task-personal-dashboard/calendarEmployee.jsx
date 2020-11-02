@@ -64,25 +64,13 @@ class CalendarEmployee extends Component {
             r[i] && r[i].remove()
         }
 
-        // if (tasks) {
-        //     let res = tasks.responsibleTasks && tasks.responsibleTasks;
-        //     let acc = tasks.accountableTasks && tasks.accountableTasks;
-        //     let con = tasks.consultedTasks && tasks.consultedTasks;
-        //     let inf = tasks.informedTasks && tasks.informedTasks;
-        //     let fourTasks = res.concat(acc, con, inf).filter(task => this.filterByStatus(task));
-        //     let inprocessTasks = fourTasks && fourTasks.filter(x => x.status === "inprocess")
-        //     await this.countTasks(inprocessTasks);
-        // }
-
         await this.setState(state => {
             return {
                 ...state,
                 taskStatus: status
             }
         })
-
-        // await this.getTaskDurations();
-        // await this.getTaskGroups();
+        this.forceUpdate();
     }
 
     // Lọc công việc theo trạng thái
@@ -200,8 +188,7 @@ class CalendarEmployee extends Component {
                         end_time = moment(endTime);
 
                         taskDurations.push({
-                            // id: i + this.INFO_CALENDAR.count,
-                            id: i,
+                            id: parseInt(i + 1),
                             group: tasksByStatus2[i].gr,
                             title: titleTask,
                             canMove: false,
@@ -367,8 +354,7 @@ class CalendarEmployee extends Component {
             tasksByStatus = tasksByStatus2;
         }
 
-        // let id = tasksByStatus[itemId - this.INFO_CALENDAR.count]._id;
-        let id = tasksByStatus[itemId]._id;
+        let id = tasksByStatus[itemId - 1]._id;
         await this.setState(state => {
             return {
                 ...state,

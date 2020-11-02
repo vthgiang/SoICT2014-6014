@@ -7,10 +7,6 @@ const workerSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Employee"
     },
-    manufacturingWorks: { // Công nhân thuộc nhà máy nào
-        type: Schema.Types.ObjectId,
-        ref: "ManufacturingWorks"
-    },
     workSchedules: [{ // Lịch sản xuất của công nhân
         year: Number, // Năm
         numberOfTurn: [{ // Mảng số ca [3, 3, 3, 3, ...]
@@ -28,6 +24,6 @@ const workerSchema = new Schema({
 
 module.exports = (db) => {
     if (!db.models.Worker)
-        return db.model("Worker", workerSchema);
+        return db.model("WorkerSchedule", workerSchema);
     return db.models.Worker;
 }

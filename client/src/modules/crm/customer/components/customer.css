@@ -271,3 +271,30 @@
 .codeOrder{
   color: #82a3e4;
 }
+
+/* style page cau hinh chung */
+.generalConfiguration .nav-tabs-custom{
+  display: flex;
+}
+
+.nav-tabs-left{
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+}
+
+.tab-content-right{
+  flex: 1;
+}
+
+.generalConfiguration .nav-tabs-custom .nav-tabs-left > li{
+  border-left: 3px solid transparent;
+  margin-bottom: 5px;
+}
+
+.generalConfiguration .nav-tabs-custom .nav-tabs-left > li.active{
+  border-left-color: #3c8dbc
+}
+.generalConfiguration .nav-tabs-custom .nav-tabs-left > li > a{
+  color: #444;
+}

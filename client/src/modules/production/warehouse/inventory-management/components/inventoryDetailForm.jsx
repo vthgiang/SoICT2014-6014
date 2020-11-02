@@ -12,29 +12,14 @@ class InventoryDetailForm extends Component {
         }
     }
 
-    // static getDerivedStateFromProps(nextProps, prevState){
-    //     if(nextProps.stockId !== prevState.stockId || nextProps.code !== prevState.code || nextProps.name !== prevState.name ||
-    //         nextProps.status !== prevState.status || nextProps.address !== prevState.address || nextProps.goods !== prevState.goods ||
-    //         nextProps.managementLocation !== prevState.managementLocation || nextProps.manageDepartment !== prevState.manageDepartment || nextProps.description !== prevState.description){
-    //         return {
-    //             ...prevState,
-    //             stockId: nextProps.stockId,
-    //             code: nextProps.code,
-    //             name: nextProps.name,
-    //             status: nextProps.status,
-    //             address: nextProps.address,
-    //             goods: nextProps.goodsManagement,
-    //             managementLocation: nextProps.managementLocation,
-    //             manageDepartment: nextProps.manageDepartment,
-    //             description: nextProps.description,
-    //         }
-    //     }
-    //     else {
-    //         return null;
-    //     }
-    // }
     render() {
-        const { translate } = this.props;
+        const { translate, goods, lots, id } = this.props;
+        const { goodDetail } = goods;
+        const { listLots } = lots;
+        let lotOfGood = listLots ? listLots.filter(x => x.good ? x.good._id === id : x ) : [];
+        let quantityTotal = lotOfGood ? lotOfGood.reduce(function (accumulator, currentValue){
+            return accumulator + currentValue.quantity;
+        }, 0) : 0;
         return (
             <React.Fragment>
                 <DialogModal
@@ -52,27 +37,27 @@ class InventoryDetailForm extends Component {
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.inventory_management.good_code')}:&emsp;</strong>
-                                    SP001
+                                    {goodDetail.code}
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.inventory_management.unit')}:&emsp;</strong>
-                                    thùng
+                                    {goodDetail.baseUnit}
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.inventory_management.name')}:&emsp;</strong>
-                                    ĐƯỜNG ACESULFAME K
+                                    {goodDetail.name}
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.inventory_management.quantity')}:&emsp;</strong>
-                                    50
+                                    {quantityTotal} {goodDetail.baseUnit}
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.inventory_management.description')}:&emsp;</strong>
-                                    Sản phẩm dùng cho abc
+                                    {goodDetail.description}
                                 </div>
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manage_warehouse.inventory_management.history')}</legend>
@@ -141,4 +126,6 @@ class InventoryDetailForm extends Component {
     }
 }
 
-export default connect(null, null)(withTranslate(InventoryDetailForm));
+const mapStateToProps = state => state;
+
+export default connect(mapStateToProps, null)(withTranslate(InventoryDetailForm));

@@ -13,7 +13,15 @@ exports.getOrganizationalUnits = async (portal, id) => {
     return await OrganizationalUnit(connect(DB_CONNECTION, portal))
         .find() // { company: id }
         .populate([
-            { path: 'deans' },
+            {
+                path: 'deans',
+                populate: [{
+                    path: "users",
+                    populate: [{
+                        path: "userId"
+                    }]
+                }]
+            },
             { path: 'viceDeans' },
             { path: 'employees' }
         ]);
@@ -31,7 +39,7 @@ exports.getOrganizationalUnit = async (portal, id) => {
  * Lấy thông tin các đơn vị của công ty theo dạng CÂY 
  * @id id công ty
  */
-exports.getOrganizationalUnitsAsTree = async (portal, id=undefined) => {
+exports.getOrganizationalUnitsAsTree = async (portal, id = undefined) => {
     const data = await OrganizationalUnit(connect(DB_CONNECTION, portal))
         .find() // { company: id }
         .populate([
@@ -134,7 +142,7 @@ exports.getChildrenOfOrganizationalUnitsAsTree = async (portal, id, role, organi
  * 2. userId - id của người dùng
  * 3. roleId - xác định vai trò truy cập hiện tại của người dùng trên website (vd: đang truy cập với quyền là Nhân viên phòng hành chính,...)
  */
-exports.getOrganizationalUnitByUserRole = async (portal,  roleId) => {
+exports.getOrganizationalUnitByUserRole = async (portal, roleId) => {
     const department = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({
         $or: [
             { 'deans': roleId },
@@ -457,7 +465,7 @@ exports.importOrganizationalUnits = async (portal, data) => {
     for (let i = 0; i < data.length; i++) {
         if (data[i].parent) {
             let parent = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({ name: data[i].parent });
-            if(parent) {
+            if (parent) {
                 data[i].parent = parent._id
             }
         } else {

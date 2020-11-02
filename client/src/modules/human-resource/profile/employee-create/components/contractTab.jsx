@@ -410,7 +410,7 @@ class ContractTab extends Component {
                                                     <td>{this.formatDate(courseInfo.startDate)}</td>
                                                     <td>{this.formatDate(courseInfo.endDate)}</td>
                                                     <td>{courseInfo.coursePlace}</td>
-                                                    <td>{x.result}</td>
+                                                    <td>{translate(`training.course.result.${x.result}`)}</td>
                                                     <td >
                                                         <a onClick={() => this.handleCourseEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title='Chỉnh sửa thông tin khoá đào tạo' ><i className="material-icons">edit</i></a>
                                                         <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.deleteCourse(index)}><i className="material-icons"></i></a>

@@ -77,7 +77,6 @@ export function assetsManager(state = initState, action) {
 
 
         case AssetConstants.ADDASSET_SUCCESS:
-            console.log('action.payload', action.payload);
             return {
                 ...state,
                 listAssets: [...state.listAssets, ...action.payload.assets],
@@ -87,7 +86,7 @@ export function assetsManager(state = initState, action) {
         case AssetConstants.UPDATE_INFOR_ASSET_SUCCESS:
             return {
                 ...state,
-                listAssets: state.listAssets.map(x => x.assets._id === action.payload.assets._id ? action.payload : x),
+                listAssets: state.listAssets.map(x => x._id === action.payload.assets[0]._id ? action.payload : x),
                 isLoading: false
             };
 

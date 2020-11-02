@@ -23,9 +23,9 @@ export const configDocument = {
         value: "Tên đường dẫn vị trí lưu",
     },
     domains: {
-        columnName: "Tên danh mục",
+        columnName: "Tên lĩnh vực",
         description: "Tên tiêu đề ứng với tên tài liệu",
-        value: "Tên danh mục",
+        value: "Tên lĩnh vực",
     },
     issuingBody: {
         columnName: "Cơ quan ban hành",
@@ -100,7 +100,7 @@ export const exportDocument = {
                 { key: "name", value: "Tên tài liệu" },
                 { key: "description", value: "Mô tả tài liệu" },
                 { key: "archives", value: "Tên đường dẫn vị trí lưu" },
-                { key: "domains", value: "Tên danh mục" },
+                { key: "domains", value: "Tên lĩnh vực" },
                 { key: "issuingBody", value: "Cơ quan ban hành" },
                 { key: "signer", value: "Người kí" },
                 { key: "versionName", value: "Tên phiên bản" },
@@ -118,12 +118,12 @@ export const exportDocument = {
             ],
             data: [
                 {
-                    name: "Hello",
-                    description: "xin chào",
+                    name: "Kết quả khảo sát hàng tháng",
+                    description: "Kết quả khảo sát hàng tháng năm 2020",
                     archives: ["Văn phòng B2 - Phòng 301 - Tủ A"],
                     domains: ["Quy chế quản lý nội bộ công ty"],
                     issuingBody: "Bam giám đốc",
-                    signer: "Mr.Happy",
+                    signer: "Nguyễn Văn An",
                     versionName: "vs 2",
                     officialNumber: "OI4",
                     issuingDate: "3/4/2020",
@@ -131,7 +131,7 @@ export const exportDocument = {
                     expiredDate: "4/5/2020",
                     category: "Văn bản",
                     relationshipDescription: "",
-                    documentRelationshipList: ["Đi chơi"],
+                    documentRelationshipList: ["Kết quả khảo sát định kỳ"],
                     roles: ["Admin", "Dean"],
                     organizationUnitManagement: "Ban giám đốc",
 

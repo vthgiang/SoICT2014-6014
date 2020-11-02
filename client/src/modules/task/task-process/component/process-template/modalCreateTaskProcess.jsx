@@ -242,6 +242,7 @@ class ModalCreateTaskProcess extends Component {
 				responsible.push(x.name)
 			}
 		})
+		console.log(responsible)
 		modeling.updateProperties(element1, {
 			responsibleName: responsible
 		});
@@ -255,7 +256,7 @@ class ModalCreateTaskProcess extends Component {
 		let { user } = this.props
 		let accountableName
 		let accountable = []
-
+		console.log(accountable)
 		user.usercompanys.forEach(x => {
 			if (value.some(y => y === x._id)) {
 				accountable.push(x.name)

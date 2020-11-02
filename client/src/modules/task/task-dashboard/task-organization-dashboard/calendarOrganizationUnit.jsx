@@ -57,7 +57,6 @@ class CalendarOrganizationUnit extends Component {
     }
 
     handleSearchData = async () => {
-        // const { tasks } = this.props;
         let r = document.getElementsByClassName("task-progress");
         let status = this.SEARCH_INFO.taskStatus;
 
@@ -65,26 +64,13 @@ class CalendarOrganizationUnit extends Component {
             r[i] && r[i].remove()
         }
 
-        // if (tasks) {
-        //     let taskList, tasksByStatus;
-
-        //     // Đếm số công việc đơn vị
-        //     taskList = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
-        //     tasksByStatus = taskList && taskList.filter(task => this.filterByStatus(task));
-
-        //     if (tasksByStatus) {
-        //         await this.countTasks(tasksByStatus);
-        //     }
-
-        // }
         await this.setState(state => {
             return {
                 ...state,
                 taskStatus: status
             }
         })
-        // await this.getTaskDurations();
-        // await this.getTaskGroups();
+        this.forceUpdate();
     }
 
     // Lọc công việc theo trạng thái

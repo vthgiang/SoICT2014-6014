@@ -507,7 +507,7 @@ export default {
             name: 'Tên tài liệu',
             description: 'Mô tả',
             category_example: 'VD: Văn bản, Hồ sơ, Biên bản,....',
-            
+
             category: "Loại tài liệu",
             domain: 'Lĩnh vực',
             data: 'Danh sách tài liệu',
@@ -522,7 +522,7 @@ export default {
             views: 'Số lần xem',
             viewer: 'Người xem',
             downloader: "Người tải",
-            downloads: 'Số lần download',
+            downloads: 'Số lần tải xuống',
             add: 'Thêm mới',
             export: 'Xuất báo cáo',
             import: 'Nhập từ file',
@@ -686,6 +686,10 @@ export default {
             cannot_delete_category: 'Không thể xóa loại tài liệu',
             document_domain_not_found: 'Không tìm thấy dữ liệu về lĩnh vực tài liệu',
             document_archive_not_found: 'Không tìm thấy dữ liệu về thông tin lưu trữ tài liệu',
+            domain_name_exist: 'Tên lĩnh vực đã được sử dụng',
+            category_name_exist: 'Tên loại đã được sử dụng',
+            name_exist: 'Tên đã được sử dụng',
+            document_exist: 'Tài liệu đã sử dựng'
         },
 
         crm: {
@@ -703,6 +707,7 @@ export default {
                 status: 'Trạng thái khách hàng',
                 address: 'Địa chỉ',
                 address2: 'Địa chỉ 2',
+                represent: 'Người đại diện',
                 email: 'Email',
                 secondaryEmail: 'Email phụ',
                 location: 'Khu vực',
@@ -781,6 +786,13 @@ export default {
                 info: 'Xem công việc chăm sóc khách hàng',
                 edit: 'Chỉnh sửa công việc chăm sóc khách hàng',
 
+            },
+            status: {
+                add: 'Thêm mới trạng thái',
+                edit: 'Chỉnh sửa trạng thái',
+                delete: 'Xóa trạng thái',
+                name: 'Tên trạng thái khách hàng',
+                description: 'Mô tả trạng thái',
             },
             statistic: {
 
@@ -915,6 +927,7 @@ export default {
                 care: 'Chăm sóc khách hàng',
                 group: 'Nhóm khách hàng',
                 statistic: 'Thống kê',
+                generalConfiguration: 'Cấu hình chung'
             },
 
             task_template: 'Mẫu Công Việc',
@@ -935,6 +948,7 @@ export default {
             update_employee: 'Cập nhật thông tin cá nhân',
             dashboard_employee: 'Bảng tin quản lý nhân sự',
             dashboard_personal: 'Bảng tin cá nhân',
+            dashboard_unit: 'Bảng tin đơn vị',
             employee_capacity: 'Năng lực nhân viên',
             discipline: 'Quản lý khen thưởng - kỷ luật',
             annual_leave: 'Quản lý nghỉ phép',
@@ -1043,7 +1057,7 @@ export default {
             manage_manufacturing_command: "Quản lý lệnh sản xuất",
             manage_manufacturing_process: "Quản lý tiến độ sản xuất",
             manage_manufacturing_schedule: "Quản lý lịch sản xuất",
-            manage_purchasing_request: "Quản lý phiếu mua NVL",
+            manage_purchasing_request: "Quản lý phiếu đề nghị mua nguyên vật liệu",
             manufacturing_dashboard: "Dashboard Quản lý sản xuất",
             analysis_manufacturing_performance: "Phân tích hiệu suất sản xuất",
             manage_manufacturing_works: "Quản lý nhà máy sản xuất",
@@ -1207,9 +1221,11 @@ export default {
             staff_name: 'Họ và tên',
             all_unit: 'Chọn tất cả các đơn vị',
             non_unit: 'Chọn đơn vị',
+            unit_selected: 'đơn vị được chọn',
             non_staff: 'Chọn nhân viên',
             all_position: 'Chọn tất cả các chức vụ',
             non_position: 'Chọn chức vụ',
+            position_selected: 'chức vụ được chọn',
             all_status: 'Chọn tất cả các trạng thái',
             non_status: 'Chọn trạng thái',
             not_unit: 'Chưa chọn đơn vị',
@@ -1879,7 +1895,7 @@ export default {
                 month: 'tháng',
                 year: 'năm',
                 staff: 'nhân viên',
-                attend: 'Tham gia',
+                attend: 'tham gia',
 
                 no_course_type: 'Chọn loại đào tạo',
                 all_course_type: 'Chọn tất cả loại đào tạo',
@@ -1915,7 +1931,7 @@ export default {
                 // Kết quả đào tạo
                 result: {
                     pass: 'Đạt',
-                    falied: 'Không đạt',
+                    failed: 'Không đạt',
                 },
 
                 // Nhóm action
@@ -2649,10 +2665,10 @@ export default {
                 auto_point_field: 'Điểm công việc tự động trong đánh giá này',
                 get_outside_info: 'Nhập tự động từ thông tin công việc hiện tại',
 
-                dashboard_created: 'Đã tạo',
-                dashboard_need_perform: 'Cần thực hiện',
-                dashboard_need_approve: 'Cần phê duyệt',
-                dashboard_need_consult: 'Cần tư vấn',
+                dashboard_created: 'Số CV bạn đã tạo',
+                dashboard_need_perform: 'Số CV bạn thực hiện',
+                dashboard_need_approve: 'Số CV bạn phê duyệt',
+                dashboard_need_consult: 'Số CV bạn tư vấn',
                 dashboard_area_result: 'Miền kết quả công việc',
                 dashboard_overdue: 'Công việc quá hạn',
                 dashboard_about_to_overdue: 'Công việc sắp hết hạn',
@@ -3578,19 +3594,19 @@ export default {
                 asset: 'Tài sản',
                 index: 'STT',
                 add: 'Thêm mới',
-                add_title: 'Thêm danh mục mới',
-                info: 'Thông tin về danh mục hàng hóa',
-                edit: 'Chỉnh sửa thông tin danh mục',
-                delete: 'Xóa danh mục',
-                add_success: 'Thêm mới danh mục thành công',
-                delete_success: 'Xóa danh mục thành công',
-                delete_faile: 'Xóa danh mục thất bại',
-                add_faile: 'Thêm mới danh mục thất bại',
+                add_title: 'Thêm hàng hóa mới',
+                info: 'Thông tin về hàng hóa',
+                edit: 'Chỉnh sửa thông tin hàng hóa',
+                delete: 'Xóa hàng hóa',
+                add_success: 'Thêm mới hàng hóa thành công',
+                delete_success: 'Xóa hàng hóa thành công',
+                delete_faile: 'Xóa hàng hóa thất bại',
+                add_faile: 'Thêm mới hàng hóa thất bại',
                 edit_success: 'Chỉnh sửa thành công',
                 edit_faile: 'Chỉnh sửa thất bại',
-                name: 'Tên danh mục',
-                code: 'Mã danh mục',
-                type: 'Kiểu danh mục',
+                name: 'Tên hàng hóa',
+                code: 'Mã hàng hóa',
+                type: 'Kiểu hàng hóa',
                 good: 'Hàng hóa',
                 address: 'Địa chỉ',
                 description: 'Mô tả',
@@ -3601,10 +3617,10 @@ export default {
                 equipment: 'Công cụ dụng cụ',
                 asset: 'Tài sản',
                 search: 'Tìm kiếm',
-                validate_code: 'Mã danh mục không được để trống',
-                validate_name: 'Tên danh mục không được để trống',
+                validate_code: 'Mã hàng hóa không được để trống',
+                validate_name: 'Tên hàng hóa không được để trống',
                 validate_type: 'Bạn cần chọn kiểu danh mục',
-                delete_info: 'Bạn có muốn xóa danh mục',
+                delete_info: 'Bạn có muốn xóa hàng hóa',
                 category: 'Danh mục',
                 unit: 'Đơn vị tính',
                 baseUnit: 'Đơn vị tính cơ bản',
@@ -3618,11 +3634,11 @@ export default {
             stock_management: {
                 1: 'Sẵn sàng sử dụng',
                 2: 'Đang sử dụng',
-                3: 'Đang sử chữa',
+                3: 'Đang sửa chữa',
                 4: 'Không sử dụng',
                 index: 'STT',
                 add: 'Thêm mới',
-                add_title: 'Thêm danh mục mới',
+                add_title: 'Thêm kho mới',
                 info: 'Thông tin về kho',
                 edit: 'Chỉnh sửa thông tin kho',
                 delete: 'Xóa kho',
@@ -3650,7 +3666,13 @@ export default {
                 validate_status: 'Bạn cần chọn kiểu kho',
                 delete_info: 'Bạn có muốn xóa kho',
                 max_quantity: 'Định mức tối đa',
-                min_quantity: 'Định mức tối thiểu'
+                min_quantity: 'Định mức tối thiểu',
+                choose_good: 'Chọn hàng hóa',
+                validate_good: 'Hàng hóa không được để trống',
+                detail_stock: 'Xem chi tiết kho',
+                validate_address: 'Địa chỉ không được bỏ trống',
+                validate_department: 'Phòng ban không được để trống',
+                validate_management: 'Các vị trí quản lý không được để trống'
 
             },
             bin_location_management: {
@@ -3682,14 +3704,14 @@ export default {
                 },
                 index: 'STT',
                 add: 'Thêm mới',
-                add_title: 'Thêm danh mục mới',
-                info: 'Thông tin về kho',
-                edit: 'Chỉnh sửa thông tin kho',
+                add_title: 'Thêm khu vực lưu trữ mới',
+                info: 'Thông tin về khu vực lưu trữ',
+                edit: 'Chỉnh sửa thông tin lưu trữ',
                 delete: 'Xóa kho',
-                add_success: 'Thêm mới kho thành công',
-                delete_success: 'Xóa kho thành công',
-                delete_faile: 'Xóa kho thất bại',
-                add_faile: 'Thêm mới kho thất bại',
+                add_success: 'Thêm mới khu vực lưu trữ thành công',
+                delete_success: 'Xóa khu vực lưu trữ thành công',
+                delete_faile: 'Xóa khu vực lưu trữ thất bại',
+                add_faile: 'Thêm mới khu vực lưu trữ thất bại',
                 edit_success: 'Chỉnh sửa thành công',
                 edit_faile: 'Chỉnh sửa thất bại',
                 name: 'Tên khu vực lưu trữ',
@@ -3718,6 +3740,13 @@ export default {
                 max_quantity: 'Định mức tối đa',
                 min_quantity: 'Định mức tối thiểu',
                 stock: 'Kho',
+                validate_capacity: 'Sức chứa không được bỏ trống',
+                validate_good: 'Hàng hóa không được bỏ trống',
+                validate_department: 'Đơn vị quản lý không được bỏ trống',
+                validate_stock: 'Kho không được để trống',
+                choose_stock: 'Chọn kho',
+                choose_good: 'Chọn hàng hóa',
+                detail_title: 'Chi tiết khu vực lưu trữ'
             },
             bill_management: {
                 stock_book: 'Sổ kho',
@@ -3771,6 +3800,7 @@ export default {
                 unit: 'Đơn vị tính',
                 quantity: 'Số lượng tồn kho',
                 lot: 'Số lô',
+                lots: 'Lô hàng',
                 date: 'Hạn sử dụng',
                 search: 'Tìm kiếm',
                 good_code: 'Mã hàng hóa',
@@ -3795,7 +3825,17 @@ export default {
                 archive: 'Nơi lưu trữ',
                 bin_location: 'Khu vực đang lưu trữ',
                 choose_bin: 'Chọn nơi lưu trữ',
-                choose_stock: 'Chọn kho đang chứa'
+                choose_stock: 'Chọn kho đang chứa',
+                choose_good: 'Chọn hàng hóa',
+                total_stock: 'Tổng các kho',
+                number_over: 'Số lượng đã vượt quá số lượng tồn kho',
+                validate_number: 'Số lượng không được để trống',
+                number_over_norm: 'Số lượng đã vượt quá định mức nơi lưu trữ',
+                bin_contained: 'Nơi lưu trữ chỉ còn chứa được',
+                edit_title: 'Chỉnh sửa lô hàng',
+                edit_success: 'Chỉnh sửa lô hàng thành công',
+                edit_faile: 'Chỉnh sửa lô hàng thất bại',
+                get_lot_failed: 'Lấy lô hàng thất bại'
             }
         },
 
@@ -3968,7 +4008,11 @@ export default {
                 edit_successfully: "Sửa thông tin nhà máy thành công",
                 edit_failure: "Sửa thông tin nhà máy thất bại",
                 mill_code: "Mã xưởng",
-                mill_name: "Tên xưởng"
+                mill_name: "Tên xưởng",
+                organizational_unit: "Đơn vị liên kết",
+                choose_organizational_unit: "---Chọn đơn vị---",
+                error_organizational_unit: "Vui lòng chọn đơn vị liên kết",
+                list_roles: "Chức vụ trưởng đơn vị"
             },
             manufacturing_mill: {
                 name: "Tên xưởng",
@@ -3995,7 +4039,8 @@ export default {
                 edit_mill_successfully: "Sửa thông tin xưởng thành công",
                 edit_mill_failed: "Sửa thông tin xưởng thất bại",
                 works_name: "Tên nhà máy",
-                created_at: "Ngày tạo"
+                created_at: "Ngày tạo",
+                teamLeader: "Đội trưởng"
             },
             purchasing_request: {
                 code: "Mã phiếu đề nghị",
@@ -4031,8 +4076,12 @@ export default {
                 save_good: "Lưu",
                 add_good: "Thêm",
                 delete_good: "Xóa trắng",
-                error_quantity_lt_1: "Số lượng không thể âm hoặc bằng 0",
-                purchasing_request_detail: "Chi tiết phiếu đề nghị"
+                error_quantity_input: "Số lượng không hợp lệ",
+                purchasing_request_detail: "Chi tiết phiếu đề nghị",
+                material_detail: "Chi tiết nguyên vật liệu",
+                purchasing_request_edit: "Sửa phiếu đề nghị",
+                edit_successfully: "Sửa phiếu dề nghị thành công",
+                edit_failed: "Sửa phiếu đề nghị thất bại"
 
             }
         }

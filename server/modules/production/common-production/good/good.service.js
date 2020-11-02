@@ -41,8 +41,6 @@ exports.getGoodsByType = async (company, query, portal) => {
 
 exports.getAllGoodsByType = async (query, portal) => {
     let { type } = query;
-    console.log(type);
-    console.log("xx");
     return await Good(connect(DB_CONNECTION, portal))
         .find({ type })
         .populate([

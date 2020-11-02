@@ -67,7 +67,10 @@ const ManufacturingPlanSchema = new Schema({
         createdAt: { // Thời gian sửa
             type: Date
         }
-    }]
+    }],
+    manufacturingWorks: {
+
+    }
 }, {
     timestamps: true
 });

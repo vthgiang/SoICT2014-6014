@@ -60,7 +60,7 @@ class PurchasingRequestCreateForm extends Component {
             value = ""
         }
         this.setState({
-            intendReceiveTime: value
+            intendReceiveTime: formatToTimeZoneDate(value)
         })
     }
 
@@ -136,7 +136,7 @@ class PurchasingRequestCreateForm extends Component {
             msg = translate('manufacturing.purchasing_request.error_quantity')
         }
         if (value < 1) {
-            msg = translate('manufacturing.purchasing_request.error_quantity_lt_1')
+            msg = translate('manufacturing.purchasing_request.error_quantity_input')
         }
         if (willUpdateState) {
             let { good } = this.state;
@@ -280,10 +280,9 @@ class PurchasingRequestCreateForm extends Component {
                     quantity: good.quantity
                 }
             })
-            let intendReceiveTime = formatToTimeZoneDate(this.state.intendReceiveTime)
             const data = {
                 code: this.state.code,
-                intendReceiveTime: intendReceiveTime,
+                intendReceiveTime: this.state.intendReceiveTime,
                 description: this.state.description,
                 materials: materials
             }
