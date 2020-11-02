@@ -7,51 +7,7 @@ const {
 } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 
-exports.createNewDiscount = async (data, portal) => {
-    let newData = {
-        code: data.code,
-        name: data.name,
-        description: data.description ? data.description : "",
-        effectiveDate: data.effectiveDate,
-        expirationDate: data.expirationDate,
-        type: data.type,
-        creator: data.creator,
-        discountVariances: {
-            money: data.discountVariances.money ? data.discountVariances.money : undefined,
-            percent: data.discountVariances.percent ? data.discountVariances.percent : undefined,
-            coin: data.discountVariances.coin ? data.discountVariances.coin : undefined,
-            delivery: data.discountVariances.delivery ? data.discountVariances.delivery : undefined,
-            maxMoney: data.discountVariances.maxMoney ? data.discountVariances.maxMoney : undefined,
-            goodQuantity: data.discountVariances.goodQuantity ? data.discountVariances.goodQuantity :undefined,
-            numberOfDelaydDays: data.discountVariances.numberOfDelaydDays ? data.discountVariances.numberOfDelaydDays : undefined
-        },
-        discounts: data.discounts ? data.discounts.map((item) =>{
-            return{
-                money: item.money,
-                percent: item.percent,
-                coin: item.coin,
-                delivery: item.delivery,
-                maxMoney: item.maxMoney,
-                minium: item.minium,
-                maximum: item.maximum,
-                customerType: item.customerType,
-                gooosBonus: item.gooosBonus.map((good) => {
-                    return {
-                        good: good.good,
-                        quantity: good.quantity
-                    }
-                }),
-                goods: item.goods.map((good) => {
-                    return {
-                        good: good.good,
-                        expirationDate: good.expirationDate
-                    }
-                }),
-            }
-        }) : undefined,
-        version: 1,//default create = version 1
-        status: true, // default create status = true
-    };
+exports.createNewDiscount = async (userId, data, portal) => {
 
 
     let newDiscount = await Discount(connect(DB_CONNECTION, portal)).create({
@@ -61,38 +17,30 @@ exports.createNewDiscount = async (data, portal) => {
         effectiveDate: data.effectiveDate,
         expirationDate: data.expirationDate,
         type: data.type,
-        creator: data.creator,
-        discountVariances: {
-            money: data.discountVariances.money ? data.discountVariances.money : undefined,
-            percent: data.discountVariances.percent ? data.discountVariances.percent : undefined,
-            coin: data.discountVariances.coin ? data.discountVariances.coin : undefined,
-            delivery: data.discountVariances.delivery ? data.discountVariances.delivery : undefined,
-            maxMoney: data.discountVariances.maxMoney ? data.discountVariances.maxMoney : undefined,
-            goodQuantity: data.discountVariances.goodQuantity ? data.discountVariances.goodQuantity :undefined,
-            numberOfDelaydDays: data.discountVariances.numberOfDelaydDays ? data.discountVariances.numberOfDelaydDays : undefined
-        },
+        creator: userId,
+        formality: data.formality,
         discounts: data.discounts ? data.discounts.map((item) =>{
             return{
-                money: item.money,
-                percent: item.percent,
-                coin: item.coin,
-                delivery: item.delivery,
-                maxMoney: item.maxMoney,
-                minium: item.minium,
-                maximum: item.maximum,
+                discountedCash: item.discountedCash,
+                discountedPercentage: item.discountedPercentage,
+                loyaltyCoin: item.loyaltyCoin,
+                maximumFreeShippingCost: item.maximumFreeShippingCost,
+                maximumDiscountedCash: item.maximumDiscountedCash,
+                minimumThresholdToBeApplied: item.minimumThresholdToBeApplied,
+                maximumThresholdToBeApplied: item.maximumThresholdToBeApplied,
                 customerType: item.customerType,
-                gooosBonus: item.gooosBonus.map((good) => {
+                bonusGoods: item.bonusGoods ? item.bonusGoods.map((good) => {
                     return {
                         good: good.good,
-                        quantity: good.quantity
+                        quantityOfBonusGood: good.quantityOfBonusGood
                     }
-                }),
-                goods: item.goods.map((good) => {
+                }) :  undefined,
+                discountOnGoods: item.discountOnGoods ? item.discountOnGoods.map((good) => {
                     return {
                         good: good.good,
-                        expirationDate: good.expirationDate
+                        expirationDate: good.expirationDate ? good.expirationDate : undefined
                     }
-                }),
+                }) : undefined,
             }
         }) : undefined,
         version: 1,//default create = version 1
@@ -103,8 +51,54 @@ exports.createNewDiscount = async (data, portal) => {
     .findById({ _id: newDiscount._id })
     .populate([{
         path: 'creator', select: 'name'
+    }, {
+        path: 'bonusGoods.good', select: 'name code'
+    }, {
+        path: 'discountOnGoods.good', select: 'name code'
     }])
     return { discount };
+}
+
+exports.getAllDiscounts = async ( query, portal) => {
+    let { page, limit } = query;
+    let option = {};
+    if (query.code) {
+        option.code = new RegExp(query.code, "i")
+    }
+    if(query.name) {
+        option.name = new RegExp(query.name, "i")
+    }
+
+    //Chỉ lấy những tax đang có hiệu lực
+    option.status = true;
+
+    if (!page || !limit) {
+        let allDiscounts = await Discount(connect(DB_CONNECTION, portal))
+            .find(option)
+            .populate([{
+                path: 'creator', select: 'name'
+            }, {
+                path: 'bonusGoods.good', select: 'name code'
+            }, {
+                path: 'discountOnGoods.good', select: 'name code'
+            }])
+            return { allDiscounts }
+    } else {
+        let allDiscounts = await Discount(connect(DB_CONNECTION, portal))
+            .paginate(option, {
+                page, 
+                limit,
+                populate: [{
+                    path: 'creator', select: 'name'
+                }, {
+                    path: 'bonusGoods.good', select: 'name code'
+                }, {
+                    path: 'discountOnGoods.good', select: 'name code'
+                }]
+            })
+        
+        return { allDiscounts }
+    }
 }
 
 

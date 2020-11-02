@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { TaxActions } from "../redux/actions";
-import { PaginateBar, DataTableSetting, SelectBox } from "../../../../../common-components";
+import { PaginateBar, DataTableSetting, SelectBox, DeleteNotification, ConfirmNotification } from "../../../../../common-components";
 import TaxCreateForm from "./taxCreateForm";
 import TaxDetailForm from "./taxDetailForm";
 import TaxEditForm from "./taxEditForm";
@@ -55,6 +55,16 @@ class TaxManagementTable extends Component {
         window.$("#modal-detail-tax").modal("show");
     };
 
+    handleEditTax = async (tax) => {
+        await this.setState((state) => {
+            return {
+                ...state,
+                currentRow: tax,
+            };
+        });
+        window.$("#modal-edit-tax").modal("show");
+    };
+
     handleCodeChange = (e) => {
         this.setState({
             code: e.target.value,
@@ -78,16 +88,25 @@ class TaxManagementTable extends Component {
         this.props.getAllTaxs(data);
     };
 
+    disableTax = (id) => {
+        this.props.disableTax(id);
+        this.props.getAllTaxs({ limit: this.state.limit, page: this.state.page });
+    };
+
     render() {
         const { translate } = this.props;
         const { taxs } = this.props;
         const { totalPages, page, listTaxs } = taxs;
         const { code, name } = this.state;
-        console.log("STATE", this.state);
         return (
             <React.Fragment>
                 {<TaxDetailForm taxId={this.state.taxId} />}
-                {this.state.currentRow && <TaxEditForm />}
+                {this.state.currentRow && (
+                    <TaxEditForm
+                        taxEdit={this.state.currentRow}
+                        reloadState={() => this.props.getAllTaxs({ limit: this.state.limit, page: this.state.page })}
+                    />
+                )}
                 <div className="box-body qlcv">
                     <TaxCreateForm reloadState={() => this.props.getAllTaxs({ limit: this.state.limit, page: this.state.page })} />
                     <div className="form-inline">
@@ -100,8 +119,13 @@ class TaxManagementTable extends Component {
                             <input type="text" className="form-control" value={name} onChange={this.handleNameChange} />
                         </div>
                         <div className="form-group">
-                            <button type="button" className="btn btn-success" title="Lọc" onClick={this.handleSubmitSearch}>
-                                            {translate("manage_order.tax.search")}
+                            <button
+                                type="button"
+                                className="btn btn-success"
+                                title={translate("manage_order.tax.search")}
+                                onClick={this.handleSubmitSearch}
+                            >
+                                {translate("manage_order.tax.search")}
                             </button>
                         </div>
                     </div>
@@ -122,7 +146,13 @@ class TaxManagementTable extends Component {
                                     {translate("table.action")}
                                     <DataTableSetting
                                         tableId="tax-table"
-                                        columnArr={["STT", "Mã", "Tên", "Người tạo", "Trạng thái"]}
+                                        columnArr={[
+                                            translate("manage_order.tax.index"),
+                                            translate("manage_order.tax.code"),
+                                            translate("manage_order.tax.name"),
+                                            translate("manage_order.tax.creator"),
+                                            translate("manage_order.tax.status"),
+                                        ]}
                                         limit={this.state.limit}
                                         hideColumnOption={true}
                                         setLimit={this.setLimit}
@@ -147,7 +177,7 @@ class TaxManagementTable extends Component {
                                         <td style={{ textAlign: "center" }}>
                                             <a
                                                 style={{ width: "5px" }}
-                                                title={translate("manufacturing.manufacturing_works.works_detail")}
+                                                title={"Xem chi tiết thuế"}
                                                 onClick={() => {
                                                     this.handleShowDetailTax(tax._id);
                                                 }}
@@ -157,13 +187,23 @@ class TaxManagementTable extends Component {
                                             <a
                                                 className="edit text-yellow"
                                                 style={{ width: "5px" }}
-                                                title={translate("manufacturing.manufacturing_works.works_edit")}
+                                                title={"Sửa thông tin thuế"}
                                                 onClick={() => {
                                                     this.handleEditTax(tax);
                                                 }}
                                             >
                                                 <i className="material-icons">edit</i>
                                             </a>
+                                            <ConfirmNotification
+                                                icon="disabled_by_default"
+                                                title={"Vô hiệu hóa thuế"}
+                                                content={`<h4>${"Vô hiệu hóa thuế " + tax.name}</h4>
+                                                            <br/> <h5>Điều này đồng nghĩa với việc không thể sử dụng loại thuế này về sau</h5>
+                                                            <h5>Tuy nhiên, đừng lo lắng vì dữ liệu liên quan về loại thuế này trước đó sẽ không bị ảnh hưởng</h5?`}
+                                                name="disabled_by_default"
+                                                className="text-red"
+                                                func={() => this.disableTax(tax._id)}
+                                            />
                                         </td>
                                     </tr>
                                 ))}
@@ -190,6 +230,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     getAllTaxs: TaxActions.getAllTaxs,
+    disableTax: TaxActions.disableTax,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(TaxManagementTable));

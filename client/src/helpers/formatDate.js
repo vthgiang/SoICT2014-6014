@@ -1,19 +1,21 @@
 export const formatDate = (date) => {
     let d = new Date(date);
-    console.log(date);
     const day = d.getUTCDate();
     const month = d.getMonth() + 1;
     const year = d.getFullYear();
 
-    //
-    const dateFormat = day + '/' + month + '/' + year;
-    return dateFormat; 
+    if (month.length < 2)
+        month = '0' + month;
+    
+    if (day.length < 2)
+        day = '0' + day;
+    
+    return [day, month, year].join('-'); 
 }
 
 export const formatFullDate = (date) => {
     let d = new Date(date);
-    console.log(date);
-    const hour = date.getHours();
+    const hour = date.getHours() + 7;
     const minute= date.getMinutes();
     const second = date.getSeconds();
 
@@ -21,7 +23,22 @@ export const formatFullDate = (date) => {
     const month = d.getMonth() + 1;
     const year = d.getFullYear();
 
-    //ss:mm:hh dd/mm/yyyy
-    const dateFormat = second + ':' + minute + ':' + hour + ' ' + day + '/' + month + '/' + year;
+    if (month.length < 2)
+        month = '0' + month;
+    
+    if (day.length < 2)
+        day = '0' + day;
+    
+    if (hour.length < 2)
+    hour = '0' + hour;
+
+    if (minute.length < 2)
+    minute = '0' + minute;
+
+    if (second.length < 2)
+    second = '0' + second;
+
+    //hh:mm:ss dd/mm/yyyy
+    const dateFormat = hour + ':' + minute + ':' + second + ' ' + day + '/' + month + '/' + year;
     return dateFormat; 
 }

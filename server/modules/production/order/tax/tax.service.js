@@ -8,13 +8,13 @@ const {
 
 
 
-exports.createNewTax = async (data, portal) => {
+exports.createNewTax = async (userId, data, portal) => {
     // console.log("data:", data);
     let newTax = await Tax(connect(DB_CONNECTION, portal)).create({
         code: data.code,
         name: data.name,
         description: data.description ? data.description : "",
-        creator: data.creator,
+        creator: userId,
         goods: data.goods.map((item) => {
             return {
                 good: item.good,
@@ -29,18 +29,21 @@ exports.createNewTax = async (data, portal) => {
 }
 
 //Tạo ra 1 version (document) khác có code như cũ
-exports.editTaxByCode = async (id, data, portal) => {
+exports.editTaxByCode = async (userId, id, data, portal) => {
+    console.log("data", data, id);
     let oldTax = await Tax (connect(DB_CONNECTION, portal)).findById(id);
     if (!oldTax) {
         throw Error("Tax is not existing")
     }
+
+    console.log("OLD TAX", oldTax);
     
     //Tạo ra 1 phiên bản tax mới có code giống phiên bản cũ
     let newVersionTax = await Tax(connect(DB_CONNECTION, portal)).create({
         code: oldTax.code,
         name: data.name,
         description: data.description,
-        creator: data.creator,
+        creator: userId,
         goods: data.goods.map((item) => {
             return {
                 good: item.good,
@@ -84,7 +87,7 @@ exports.getAllTaxs = async (query, portal) => {
         }])
         return { allTaxs }
     } else {
-        let allTaxs = await Tax(connect(DB_CONNECTION, portal)) .paginate(option, {
+        let allTaxs = await Tax(connect(DB_CONNECTION, portal)).paginate(option, {
             page,
             limit,
             populate: [{
