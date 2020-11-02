@@ -3815,19 +3815,13 @@ const initSampleCompanyDB = async () => {
         description: "Khách hàng đã được báo giá",
         active: false,
     }, {
-<<<<<<< HEAD
-=======
         creator: [users[5]._id],
->>>>>>> 6bb2b6b18179448057f55af6a0bb013415848d8b
         code: "ST005",
         name: "Đã kí hợp đồng",
         description: "Khách hàng đã kỹ hợp đồng với công ty",
         active: false,
     }, {
-<<<<<<< HEAD
-=======
         creator: [users[5]._id],
->>>>>>> 6bb2b6b18179448057f55af6a0bb013415848d8b
         code: "ST004",
         name: "Đã mua sản phẩm",
         description: "Khách hàng đã mua sản phẩm",
