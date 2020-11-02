@@ -82,10 +82,10 @@ class ManufacturingMillMangementTable extends Component {
         window.$('#modal-edit-mill').modal('show');
     }
 
-    handleShowDetailMill = async (id) => {
+    handleShowDetailMill = async (mill) => {
         await this.setState((state) => ({
             ...state,
-            millId: id
+            millDetail: mill
         }));
         window.$('#modal-detail-info-mill').modal('show');
     }
@@ -101,7 +101,7 @@ class ManufacturingMillMangementTable extends Component {
         return (
             <React.Fragment>
                 {
-                    <ManufacturingMillDetailForm millId={this.state.millId} />
+                    <ManufacturingMillDetailForm millDetail={this.state.millDetail} />
                 }
                 {
                     this.state.currentRow &&
@@ -176,7 +176,7 @@ class ManufacturingMillMangementTable extends Component {
 
                                         }
                                         <td style={{ textAlign: "center" }}>
-                                            <a style={{ width: '5px' }} title={translate('manufacturing.manufacturing_mill.mill_detail')} onClick={() => { this.handleShowDetailMill(mill._id) }}><i className="material-icons">view_list</i></a>
+                                            <a style={{ width: '5px' }} title={translate('manufacturing.manufacturing_mill.mill_detail')} onClick={() => { this.handleShowDetailMill(mill) }}><i className="material-icons">view_list</i></a>
                                             <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manufacturing.manufacturing_mill.mill_edit')} onClick={() => { this.handleEditMill(mill) }}><i className="material-icons">edit</i></a>
                                             {/* <DeleteNotification
                                                 content={translate('manufacturing.manufacturing_mill.delete_mill')}

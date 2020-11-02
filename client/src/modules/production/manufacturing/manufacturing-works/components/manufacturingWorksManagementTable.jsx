@@ -73,11 +73,11 @@ class ManufacturingWorksManagementTable extends Component {
         this.props.getAllManufacturingWorks(data);
     }
 
-    handleShowDetailWorks = async (id) => {
+    handleShowDetailWorks = async (works) => {
         await this.setState((state) => {
             return {
                 ...state,
-                worksId: id
+                worksDetail: works
             }
         })
         window.$('#modal-detail-info-works').modal('show');
@@ -104,7 +104,7 @@ class ManufacturingWorksManagementTable extends Component {
         return (
             <React.Fragment>
                 {
-                    <ManufacturingWorksDetailForm worksId={this.state.worksId} />
+                    <ManufacturingWorksDetailForm worksDetail={this.state.worksDetail} />
                 }
                 {  this.state.currentRow &&
                     <ManufacturingWorksEditForm
@@ -197,7 +197,7 @@ class ManufacturingWorksManagementTable extends Component {
                                                 <td style={{ color: "orange" }}>{translate('manufacturing.manufacturing_works.0')}</td>
                                         }
                                         <td style={{ textAlign: "center" }}>
-                                            <a style={{ width: '5px' }} title={translate('manufacturing.manufacturing_works.works_detail')} onClick={() => { this.handleShowDetailWorks(works._id) }}><i className="material-icons">view_list</i></a>
+                                            <a style={{ width: '5px' }} title={translate('manufacturing.manufacturing_works.works_detail')} onClick={() => { this.handleShowDetailWorks(works) }}><i className="material-icons">view_list</i></a>
                                             <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manufacturing.manufacturing_works.works_edit')} onClick={() => { this.handleEditWorks(works) }}><i className="material-icons">edit</i></a>
                                             {/* <DeleteNotification
                                                 content="Xóa nhà máy"

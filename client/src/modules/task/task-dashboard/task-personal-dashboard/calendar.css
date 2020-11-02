@@ -60,6 +60,7 @@
   }
   .task-background {
     background: #CCC !important;
+    border: none !important;
     /* background: red !important; */
   }
   

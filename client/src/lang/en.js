@@ -844,7 +844,7 @@ export default {
                 care: 'Cares',
                 group: 'Groups',
                 statistic: 'Statistics',
-                generalConfiguration:'generalConfiguration'
+                generalConfiguration: 'generalConfiguration'
             },
 
             task_template: 'Task Template',
@@ -867,7 +867,7 @@ export default {
             dashboard_employee: 'DashBoard Manage Staffs ',
             dashboard_personal: 'DashBoard personal',
             dashboard_unit: 'DashBoard unit',
-            employee_capacity:'Employee capacity',
+            employee_capacity: 'Employee capacity',
             discipline: 'Manage Commendation And Discipline',
             annual_leave: 'Manage Annual Leave',
             salary_employee: 'Manage Salary',
@@ -2564,10 +2564,10 @@ export default {
                 auto_point_field: 'Automatic point of task in this month',
                 get_outside_info: 'Auto fill evaluation infomation from task infomation',
 
-                dashboard_created: 'Created',
-                dashboard_need_perform: 'Need to perform',
-                dashboard_need_approve: 'Need to approve',
-                dashboard_need_consult: 'Need to consult',
+                dashboard_created: 'Number of tasks you created',
+                dashboard_need_perform: 'Number of tasks you perform',
+                dashboard_need_approve: 'Number of tasks you approve',
+                dashboard_need_consult: 'Number of tasks you consult',
                 dashboard_area_result: 'Result area dashboard',
                 dashboard_overdue: 'Overdue task',
                 dashboard_about_to_overdue: 'Task is about to overdue',
