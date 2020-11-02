@@ -34,7 +34,11 @@ const ManufacturingMillSchema = new Schema({
             ref: "ManufacturingCommand",
             default: null
         }]
-    }]
+    }],
+    organizationalUnit: {// Xưởng thuộc cơ cấu tổ chức nào
+        type: Schema.Types.ObjectId,
+        ref: "OrganizationalUnit"
+    },
 }, {
     timestamps: true
 });

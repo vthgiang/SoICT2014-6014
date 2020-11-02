@@ -11,7 +11,7 @@ import { NotFound } from '../modules/not-found/components';
 
 import Login from '../modules/auth/components/login';
 import ResetPassword from '../modules/auth/components/resetPassword';
-import {Introduction} from '../modules/intro/components';
+import { Introduction } from '../modules/intro/components';
 import ManageDocument from '../modules/document/components/administration';
 import Document from '../modules/document/components/user';
 
@@ -153,7 +153,7 @@ class Routes extends Component {
         return (
             <React.Fragment>
                 <Switch>
-                    <Route exact path="/" component={Introduction}/>
+                    <Route exact path="/" component={Introduction} />
                     <AuthRoute exact auth={auth} path="/login" component={Login} />
                     <AuthRoute exact auth={auth} path="/reset-password" component={ResetPassword} />
                     <PrivateRoute
@@ -1702,7 +1702,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={false}
+                        isLoading={this.props.purchasingRequest.isLoading}
                         key={"manage-purchasing-request"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },

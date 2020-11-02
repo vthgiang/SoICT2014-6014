@@ -16,6 +16,7 @@ const ManufacturingWorksSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User"
     },
+
     foreman: { // Quản đốc nhà máy
         type: Schema.Types.ObjectId,
         ref: "User"
@@ -36,7 +37,12 @@ const ManufacturingWorksSchema = new Schema({
     },
     description: { // Mô tả nhà máy
         type: String
-    }
+    },
+
+    organizationalUnit: {// Nhà máy thuộc cơ cấu tổ chức nào
+        type: Schema.Types.ObjectId,
+        ref: "OrganizationalUnit"
+    },
 
 }, {
     timestamps: true

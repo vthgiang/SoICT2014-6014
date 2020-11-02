@@ -978,7 +978,7 @@ export default {
             manage_manufacturing_command: "Quản lý lệnh sản xuất",
             manage_manufacturing_process: "Quản lý tiến độ sản xuất",
             manage_manufacturing_schedule: "Quản lý lịch sản xuất",
-            manage_purchasing_request: "Quản lý phiếu mua NVL",
+            manage_purchasing_request: "Quản lý phiếu đề nghị mua nguyên vật liệu",
             manufacturing_dashboard: "Dashboard Quản lý sản xuất",
             analysis_manufacturing_performance: "Phân tích hiệu suất sản xuất",
             manage_manufacturing_works: "Quản lý nhà máy sản xuất",
@@ -3966,8 +3966,12 @@ export default {
                 save_good: "Lưu",
                 add_good: "Thêm",
                 delete_good: "Xóa trắng",
-                error_quantity_lt_1: "Số lượng không thể âm hoặc bằng 0",
-                purchasing_request_detail: "Chi tiết phiếu đề nghị"
+                error_quantity_input: "Số lượng không hợp lệ",
+                purchasing_request_detail: "Chi tiết phiếu đề nghị",
+                material_detail: "Chi tiết nguyên vật liệu",
+                purchasing_request_edit: "Sửa phiếu đề nghị",
+                edit_successfully: "Sửa phiếu dề nghị thành công",
+                edit_failed: "Sửa phiếu đề nghị thất bại"
 
             }
         }
