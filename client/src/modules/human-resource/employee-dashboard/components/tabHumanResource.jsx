@@ -19,13 +19,13 @@ class TabHumanResource extends Component {
         return (
             <div className="row qlcv">
                 <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <AgePyramidChart organizationalUnits={organizationalUnits} actionSearch={actionSearch} />
+                    <AgePyramidChart organizationalUnits={organizationalUnits} />
                     <div className='row'>
                         <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <HumanResourceChartBySalary organizationalUnits={organizationalUnits} monthShow={monthShow} handleMonthChange={this.handleMonthChange} />
                         </div>
                         <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                            <QualificationChart organizationalUnits={organizationalUnits} actionSearch={actionSearch} />
+                            <QualificationChart organizationalUnits={organizationalUnits} />
                         </div>
 
                     </div>
