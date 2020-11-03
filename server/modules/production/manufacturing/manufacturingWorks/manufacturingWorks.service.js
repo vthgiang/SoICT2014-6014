@@ -12,23 +12,33 @@ exports.createManufacturingWorks = async (data, portal) => {
     let newManfacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).create({
         code: data.code,
         name: data.name,
-        worksManager: data.worksManager,
-        foreman: data.foreman,
         phoneNumber: data.phoneNumber,
         address: data.address,
         status: data.status,
         manufacturingMills: data.manufacturingMills,
-        description: data.description
+        description: data.description,
+        organizationalUnit: data.organizationalUnit
     });
 
     let manufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal))
         .findById({ _id: newManfacturingWorks._id })
         .populate([{
-            path: "worksManager", select: "name"
-        }, {
-            path: "foreman", select: "name"
-        }, {
             path: "manufacturingMills", select: "code name teamLeader description"
+        }, {
+            path: "organizationalUnit",
+            populate: [
+                {
+                    path: 'deans',
+                    populate: [{
+                        path: "users",
+                        populate: [{
+                            path: "userId"
+                        }]
+                    }]
+                },
+                { path: 'viceDeans' },
+                { path: 'employees' }
+            ]
         }]);
 
     return { manufacturingWorks }
@@ -67,11 +77,22 @@ exports.getAllManufacturingWorks = async (query, portal) => {
         let docs = await ManufacturingWorks(connect(DB_CONNECTION, portal))
             .find(option)
             .populate([{
-                path: "worksManager", select: "name"
+                path: "manufacturingMills", select: "code name teamLeader description",
             }, {
-                path: "foreman", select: "name"
-            }, {
-                path: "manufacturingMills", select: "code name teamLeader description"
+                path: "organizationalUnit",
+                populate: [
+                    {
+                        path: 'deans',
+                        populate: [{
+                            path: "users",
+                            populate: [{
+                                path: "userId"
+                            }]
+                        }]
+                    },
+                    { path: 'viceDeans' },
+                    { path: 'employees' }
+                ]
             }]);
         let allManufacturingWorks = {};
         allManufacturingWorks.docs = docs;
@@ -82,11 +103,20 @@ exports.getAllManufacturingWorks = async (query, portal) => {
                 page,
                 limit,
                 populate: [{
-                    path: "worksManager", select: "name"
+                    path: "manufacturingMills", select: 'code name description'
                 }, {
-                    path: "foreman", select: "name"
-                }, {
-                    path: "manufacturingMills", select: 'code name '
+                    path: "organizationalUnit",
+                    populate: [{
+                        path: 'deans',
+                        populate: [{
+                            path: "users",
+                            populate: [{
+                                path: "userId"
+                            }]
+                        }]
+                    },
+                    { path: 'viceDeans' },
+                    { path: 'employees' }]
                 }]
             })
         return { allManufacturingWorks }
@@ -98,11 +128,20 @@ exports.getManufacturingWorksById = async (id, portal) => {
     let manufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal))
         .findById(id)
         .populate([{
-            path: "worksManager", select: "name"
-        }, {
-            path: "foreman", select: "name"
-        }, {
             path: "manufacturingMills", select: "code name description"
+        }, {
+            path: "organizationalUnit",
+            populate: [{
+                path: 'deans',
+                populate: [{
+                    path: "users",
+                    populate: [{
+                        path: "userId"
+                    }]
+                }]
+            },
+            { path: 'viceDeans' },
+            { path: 'employees' }]
         }]);
     if (!manufacturingWorks) {
         throw Error("ManufacturingWorks is not existing")
@@ -128,8 +167,7 @@ exports.editManufacturingWorks = async (id, data, portal) => {
 
     oldManufacturingWorks.code = data.code ? data.code : oldManufacturingWorks.code;
     oldManufacturingWorks.name = data.name ? data.name : oldManufacturingWorks.name;
-    oldManufacturingWorks.worksManager = data.worksManager ? data.worksManager : oldManufacturingWorks.worksManager;
-    oldManufacturingWorks.foreman = data.foreman ? data.foreman : oldManufacturingWorks.foreman;
+    oldManufacturingWorks.organizationalUnit = data.organizationalUnit ? data.organizationalUnit : oldManufacturingWorks.organizationalUnit;
     oldManufacturingWorks.phoneNumber = data.phoneNumber ? data.phoneNumber : oldManufacturingWorks.phoneNumber;
     oldManufacturingWorks.address = data.address ? data.address : oldManufacturingWorks.address;
     oldManufacturingWorks.description = data.description ? data.description : oldManufacturingWorks.description;
@@ -158,11 +196,20 @@ exports.editManufacturingWorks = async (id, data, portal) => {
     let manufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal))
         .findById({ _id: oldManufacturingWorks.id })
         .populate([{
-            path: "worksManager", select: "name"
+            path: "organizationalUnit",
+            populate: [{
+                path: 'deans',
+                populate: [{
+                    path: "users",
+                    populate: [{
+                        path: "userId"
+                    }]
+                }]
+            },
+            { path: 'viceDeans' },
+            { path: 'employees' }]
         }, {
-            path: "foreman", select: "name"
-        }, {
-            path: "manufacturingMills", select: "code name"
+            path: "manufacturingMills", select: "code teamLeader name"
         }]);
 
     return { manufacturingWorks }

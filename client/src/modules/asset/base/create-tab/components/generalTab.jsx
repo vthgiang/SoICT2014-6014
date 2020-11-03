@@ -17,6 +17,7 @@ class GeneralTab extends Component {
         this.state = {
             detailInfo: [],
             isObj: true,
+            defaultAvatar: "./upload/asset/pictures/picture5.png"
             // status: "ready_to_use",
             // typeRegisterForUse: "Được phép đăng ký sử dụng",
         };
@@ -527,7 +528,7 @@ class GeneralTab extends Component {
         const { id } = this.props;
         const { translate, user, assetType, assetsManager, role, department } = this.props;
         const {
-            img, code, assetName, assetTypes, group, serial, purchaseDate, warrantyExpirationDate, managedBy, isObj,
+            img, defaultAvatar, code, assetName, assetTypes, group, serial, purchaseDate, warrantyExpirationDate, managedBy, isObj,
             assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location, description, status, typeRegisterForUse, detailInfo,
             errorOnCode, errorOnAssetName, errorOnSerial, errorOnAssetType, errorOnLocation, errorOnPurchaseDate,
             errorOnWarrantyExpirationDate, errorOnManagedBy, errorOnNameField, errorOnValue, usageLogs, readByRoles, errorOnNameFieldPosition, errorOnValuePosition
@@ -536,7 +537,6 @@ class GeneralTab extends Component {
         var userlist = user.list, departmentlist = department.list;
         let startDate = status == "in_use" && usageLogs && usageLogs.length ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : '';
         let endDate = status == "in_use" && usageLogs && usageLogs.length ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : '';
-        var assettypelist = assetType.listAssetTypes;
         let typeInTreeSelect = [];
 
         if (assetTypes) {
@@ -556,17 +556,13 @@ class GeneralTab extends Component {
             }
         })
         let typeArr = this.getAssetTypes();
-
         return (
             <div id={id} className="tab-pane active">
                 <div className="row">
                     {/* Ảnh tài sản */}
                     <div className="col-md-4" style={{ textAlign: 'center', paddingLeft: '0px' }}>
                         <div>
-                            {/* <a href={img} target="_blank">
-                                <img className="attachment-img avarta" src={img} alt="Attachment" />
-                            </a> */}
-                            {img && <ApiImage className="attachment-img avarta" id={`avater-imform-${id}`} src={img} />}
+                            {<ApiImage className="attachment-img avarta" id={`avater-imform-${id}`} src={img ? img : defaultAvatar} />}
                         </div>
                         <div className="upload btn btn-default ">
                             {translate('manage_asset.upload')}

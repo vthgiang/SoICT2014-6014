@@ -31,7 +31,7 @@ exports.authFunc = (checkPage = true) => {
              * Giải mã token gửi lên để check dữ liệu trong token
              */
             let verified;
-            try { verified = await jwt.verify(token, process.env.TOKEN_SECRET); } 
+            try { verified = await jwt.verify(token, process.env.TOKEN_SECRET); }
             catch (error) { throw ['access_denied']; }
 
             req.user = verified;
@@ -154,17 +154,17 @@ exports.uploadFile = (arrData, type) => {
     ];
     var name, arrFile;
     // Tạo folder chứa file khi chưa có folder
-    const checkExistUploads = async(portal) => {
-        if(portal !== undefined)
+    const checkExistUploads = async (portal) => {
+        if (portal !== undefined)
             return await arrData.forEach(x => {
-                if(staticPath.indexOf(x.path) !== -1){
+                if (staticPath.indexOf(x.path) !== -1) {
                     let dir2 = `./upload/${x.path}/${portal}`;
                     if (!fs.existsSync(dir2)) {
                         fs.mkdirSync(dir2, {
                             recursive: true
                         });
-                        fs.appendFile(dir2+'/README.txt', '', err => { 
-                            if(err) throw err;
+                        fs.appendFile(dir2 + '/README.txt', '', err => {
+                            if (err) throw err;
                         });
                     }
                 }
@@ -174,8 +174,8 @@ exports.uploadFile = (arrData, type) => {
                         fs.mkdirSync(dir, {
                             recursive: true
                         });
-                        fs.appendFile(dir+'/README.txt', '', err => { 
-                            if(err) throw err;
+                        fs.appendFile(dir + '/README.txt', '', err => {
+                            if (err) throw err;
                         });
                     }
                 }

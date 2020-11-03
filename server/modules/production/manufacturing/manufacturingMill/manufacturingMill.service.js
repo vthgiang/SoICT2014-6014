@@ -17,6 +17,7 @@ exports.createManufacturingMill = async (data, portal) => {
         manufacturingWorks: data.manufacturingWorks,
         description: data.description,
         workSchedules: data.workSchedules,
+        teamLeader: data.teamLeader,
         status: data.status
     });
     if (data.manufacturingWorks) {
@@ -27,17 +28,12 @@ exports.createManufacturingMill = async (data, portal) => {
     }
     let manufacturingMill = await ManufacturingMill(connect(DB_CONNECTION, portal))
         .findById({ _id: newManufacturingMill._id })
-        .populate({
+        .populate([{
             path: "manufacturingWorks",
-            populate: [{
-                path: "foreman",
-                select: "name"
-            }, {
-                path: "worksManager",
-                select: "name"
-            }],
             select: "name"
-        });
+        }, {
+            path: "teamLeader"
+        }]);
     return { manufacturingMill }
 }
 
@@ -54,34 +50,24 @@ exports.getAllManufacturingMills = async (query, portal) => {
     if (!page || !limit) {
         let manufacturingMills = await ManufacturingMill(connect(DB_CONNECTION, portal))
             .find({})
-            .populate({
+            .populate([{
                 path: "manufacturingWorks",
-                populate: [{
-                    path: "foreman",
-                    select: "name"
-                }, {
-                    path: "worksManager",
-                    select: "name"
-                }],
                 select: "name"
-            });
+            }, {
+                path: "teamLeader"
+            }]);
         return { manufacturingMills }
     } else {
         let manufacturingMills = await ManufacturingMill(connect(DB_CONNECTION, portal))
             .paginate(option, {
                 limit: limit,
                 page: page,
-                populate: {
+                populate: [{
                     path: "manufacturingWorks",
-                    populate: [{
-                        path: "foreman",
-                        select: "name"
-                    }, {
-                        path: "worksManager",
-                        select: "name"
-                    }],
                     select: "name"
-                }
+                }, {
+                    path: "teamLeader"
+                }]
             });
         return { manufacturingMills }
     }
@@ -91,14 +77,9 @@ exports.getManufacturingMillById = async (id, portal) => {
         .findById({ _id: id })
         .populate({
             path: "manufacturingWorks",
-            populate: [{
-                path: "foreman",
-                select: "name"
-            }, {
-                path: "worksManager",
-                select: "name"
-            }],
             select: "name"
+        }, {
+            path: "teamLeader"
         });
     if (!manufacturingMill) {
         throw Error("Manufacturing Mill is not existing");
@@ -125,14 +106,9 @@ exports.editManufacturingMill = async (id, data, portal) => {
         .findById({ _id: id })
         .populate({
             path: "manufacturingWorks",
-            populate: [{
-                path: "worksManager",
-                select: "name"
-            }, {
-                path: "foreman",
-                select: "name"
-            }],
             select: "name"
+        }, {
+            path: "teamLeader"
         });
     return { manufacturingMill }
 }

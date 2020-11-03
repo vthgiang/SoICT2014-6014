@@ -134,7 +134,7 @@ exports.createSalary = async (portal, data, company) => {
 
         // Lấy thông tin bảng lương vừa tạo
         return await Salary(connect(DB_CONNECTION, portal)).findOne({
-            _id: createSalary(connect(DB_CONNECTION, portal))._id
+            _id: createSalary._id
         }).populate([{
             path: 'employee',
             select: 'emailInCompany fullName employeeNumber birthdate gender status'

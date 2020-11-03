@@ -84,9 +84,9 @@
 }
 
 /* css avatar customer */
-.image-wrapper:hover {
+/* .image-wrapper:hover {
     cursor: pointer;
-}
+} */
 .customer-avatar {
     vertical-align: middle;
     width: 10em;
@@ -99,9 +99,9 @@
 .showMoreInfo {
     color: #e07e7e;
 }
-.showMoreInfo:hover {
+/* .showMoreInfo:hover {
     cursor: pointer;
-}
+} */
 
 /* Style timeline history tab infoForm */
 .timeline-container {

@@ -12,8 +12,7 @@ class ManufacturingWorksCreateForm extends Component {
         this.state = {
             code: generateCode("NMSX"),
             name: "",
-            worksManagerValue: "",
-            foremanValue: "",
+            organizationalUnitValue: "",
             phoneNumber: "",
             address: "",
             status: "",
@@ -31,67 +30,62 @@ class ManufacturingWorksCreateForm extends Component {
         this.setState({ nameError: message })
     }
 
-    getListUsersArr = (role) => {
-        const { translate, user } = this.props;
-        const { usercompanys } = user;
-        let listUsersArr = role === "worksManager"
-            ?
-            [{ value: "", text: translate('manufacturing.manufacturing_works.choose_worksManager') }]
-            :
-            [{ value: "", text: translate('manufacturing.manufacturing_works.choose_foreman') }]
-        if (usercompanys) {
-            usercompanys.map((item) => {
-                listUsersArr.push({
-                    value: item._id,
-                    text: item.name
-                });
-            });
-        }
-        return listUsersArr
-    }
+    getListDepartmentArr = () => {
+        const { translate, department, manufacturingWorks } = this.props;
+        const { list } = department;
+        const { listWorks } = manufacturingWorks;
+        let listDepartmentArr = [{
+            value: "", text: translate('manufacturing.manufacturing_works.choose_organizational_unit')
+        }];
 
-    handleWorksManagerChange = (value) => {
-        let worksManagerValue = value[0];
-        this.validateWorksManager(worksManagerValue, true);
-    }
-
-    validateWorksManager = (value, willUpdateState = true) => {
-        let msg = undefined;
-        const { translate } = this.props;
-        if (!value) {
-            msg = translate("manufacturing.manufacturing_works.worksManager_error");
-        }
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    worksManagerError: msg,
-                    worksManagerValue: value,
+        loop:
+        for (let i = 0; i < list.length; i++) {
+            for (let j = 0; j < listWorks.length; j++) {
+                if (listWorks[j].organizationalUnit._id === list[i]._id) {
+                    continue loop;
                 }
+            }
+            listDepartmentArr.push({
+                value: list[i]._id,
+                text: list[i].name
             });
         }
-        return msg;
+
+        return listDepartmentArr;
     }
 
-    handleForemanChange = (value) => {
-        let foremanValue = value[0];
-        this.validateForeman(foremanValue, true);
+    handleOrganizationalUnitValueChange = (value) => {
+        let organizationalUnitValue = value[0];
+        this.validateOrganizationalUnitValue(organizationalUnitValue, true);
     }
 
-    validateForeman = (value, willUpdateState = true) => {
+    validateOrganizationalUnitValue = (value, willUpdateState = true) => {
         let msg = undefined;
-        const { translate } = this.props;
-        if (!value) {
-            msg = translate("manufacturing.manufacturing_works.foreman_error");
+        const { translate, department } = this.props;
+        if (value === "") {
+            msg = translate('manufacturing.manufacturing_works.error_organizational_unit')
         }
+
         if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    foremanValue: value,
-                    foremanError: msg
+            const { list } = department;
+            let currentDepartment;
+            const listDepartment = list.filter(x => x._id === value);
+            if (listDepartment.length > 0) {
+                currentDepartment = listDepartment[0];
+            } else {
+                currentDepartment = {
+                    name: "",
+                    description: ""
                 }
-            });
+            }
+            this.setState((state) => ({
+                ...state,
+                organizationalUnitError: msg,
+                organizationalUnitValue: value,
+                currentDepartment: currentDepartment,
+                name: currentDepartment.name,
+                description: currentDepartment.description
+            }));
         }
         return msg;
     }
@@ -147,13 +141,12 @@ class ManufacturingWorksCreateForm extends Component {
     }
 
     isFormValidated = () => {
-        const { name, worksManagerValue, foremanValue, status, address, phoneNumber } = this.state;
+        const { name, organizationalUnitValue, status, address, phoneNumber } = this.state;
         let { translate } = this.props;
         if (!ValidationHelper.validateName(translate, name, 6, 255).status
             || !ValidationHelper.validateEmpty(translate, address).status
             || !ValidationHelper.validateEmpty(translate, phoneNumber).status
-            || this.validateForeman(foremanValue, false)
-            || this.validateWorksManager(worksManagerValue, false)
+            || this.validateOrganizationalUnitValue(organizationalUnitValue, false)
             || this.validateStatus(status, false)
         ) {
             return false;
@@ -166,8 +159,7 @@ class ManufacturingWorksCreateForm extends Component {
             const data = {
                 code: this.state.code,
                 name: this.state.name,
-                worksManager: this.state.worksManagerValue,
-                foreman: this.state.foremanValue,
+                organizationalUnit: this.state.organizationalUnitValue,
                 address: this.state.address,
                 phoneNumber: this.state.phoneNumber,
                 status: this.state.status,
@@ -187,8 +179,7 @@ class ManufacturingWorksCreateForm extends Component {
 
     render() {
         const { translate, manufacturingWorks } = this.props;
-        const { name, nameError, worksManagerValue, worksManagerError, foremanValue, foremanError,
-            phoneNumber, phoneNumberError, address, addressError, status, statusError, description, code
+        const { name, nameError, phoneNumber, phoneNumberError, address, addressError, status, statusError, description, code, organizationalUnitError, organizationalUnitValue, currentDepartment
         } = this.state;
         return (
             <React.Fragment>
@@ -209,37 +200,47 @@ class ManufacturingWorksCreateForm extends Component {
                             <label>{translate('manufacturing.manufacturing_works.code')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" value={code} disabled={true}></input>
                         </div>
+                        <div className={`form-group ${!organizationalUnitError ? "" : "has-error"}`}>
+                            <label>{translate('manufacturing.manufacturing_works.organizational_unit')}<span className="text-red">*</span></label>
+                            <SelectBox
+                                id={`select-organizational-unit-create`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={organizationalUnitValue}
+                                items={this.getListDepartmentArr()}
+                                onChange={this.handleOrganizationalUnitValueChange}
+                                multiple={false}
+                            />
+                            <ErrorLabel content={organizationalUnitError} />
+                        </div>
                         <div className={`form-group ${!nameError ? "" : "has-error"}`}>
                             <label>{translate('manufacturing.manufacturing_works.name')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" value={name} onChange={this.handleChangeWorksName}></input>
                             <ErrorLabel content={nameError} />
                         </div>
-                        <div className={`form-group ${!worksManagerError ? "" : "has-error"}`}>
-                            <label>{translate('manufacturing.manufacturing_works.worksManager')}<span className="text-red">*</span></label>
-                            <SelectBox
-                                id={`select-worksManage`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                value={worksManagerValue}
-                                items={this.getListUsersArr("worksManager")}
-                                onChange={this.handleWorksManagerChange}
-                                multiple={false}
-                            />
-                            <ErrorLabel content={worksManagerError} />
-                        </div>
-                        <div className={`form-group ${!foremanError ? "" : "has-error"}`}>
-                            <label>{translate('manufacturing.manufacturing_works.foreman')}<span className="text-red">*</span></label>
-                            <SelectBox
-                                id={`select-foreman`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                value={foremanValue}
-                                items={this.getListUsersArr()}
-                                onChange={this.handleForemanChange}
-                                multiple={false}
-                            />
-                            <ErrorLabel content={foremanError} />
-                        </div>
+                        {
+                            currentDepartment && currentDepartment.deans &&
+                            <fieldset className="scheduler-border">
+                                <legend className="scheduler-border">{translate('manufacturing.manufacturing_works.list_roles')}</legend>
+                                {
+                                    currentDepartment.deans.map((role, index) => {
+                                        return (
+                                            <div className={`form-group`} key={index}>
+                                                <strong>{role.name}: &emsp;</strong>
+                                                {
+                                                    role.users.map((user, index) => {
+                                                        if (index === role.users.length - 1) {
+                                                            return user.userId.name
+                                                        }
+                                                        return user.userId.name + ", "
+                                                    })
+                                                }
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </fieldset>
+                        }
                         <div className={`form-group ${!phoneNumberError ? "" : "has-error"}`}>
                             <label>{translate('manufacturing.manufacturing_works.phone')}<span className="text-red">*</span></label>
                             <input type="text" value={phoneNumber} className="form-control" onChange={this.handlePhoneNumberChange}></input>
@@ -269,7 +270,7 @@ class ManufacturingWorksCreateForm extends Component {
                         </div>
                         <div className="form-group">
                             <label>{translate('manufacturing.manufacturing_works.description')}</label>
-                            <input type="text" value={description} onChange={this.handleDescriptionChange} className="form-control"></input>
+                            <textarea type="text" value={description} onChange={this.handleDescriptionChange} className="form-control"></textarea>
                         </div>
                     </form>
                 </DialogModal>
@@ -279,8 +280,8 @@ class ManufacturingWorksCreateForm extends Component {
 }
 
 function mapStateToProps(state) {
-    const { user, manufacturingWorks } = state;
-    return { user, manufacturingWorks }
+    const { manufacturingWorks, department } = state;
+    return { manufacturingWorks, department }
 }
 
 const mapDispatchToProps = {

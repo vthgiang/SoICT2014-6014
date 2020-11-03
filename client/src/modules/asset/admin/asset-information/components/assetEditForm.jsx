@@ -16,7 +16,9 @@ class AssetEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            employeeId: this.props.employeeId ? this.props.employeeId : ''
+            employeeId: this.props.employeeId ? this.props.employeeId : '',
+            img: './upload/human-resource/avatars/avatar5.png',
+            avatar: "",
         };
     }
 
@@ -254,10 +256,10 @@ class AssetEditForm extends Component {
     }
 
     save = async () => {
-        let { maintainanceLogs, usageLogs, incidentLogs, files, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, employeeId } = this.state;
+        let { img, maintainanceLogs, usageLogs, incidentLogs, files, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, employeeId } = this.state;
 
         await this.setState({
-            img: "",
+            img: img,
             createMaintainanceLogs: maintainanceLogs.filter(x => !x._id),
             createUsageLogs: usageLogs.filter(x => !x._id),
             createIncidentLogs: incidentLogs.filter(x => !x._id),
@@ -323,8 +325,7 @@ class AssetEditForm extends Component {
             return {
                 ...prevState,
                 _id: nextProps._id,
-                img: process.env.REACT_APP_SERVER + nextProps.avatar,
-                avatar: "",
+                img: nextProps.img,
                 avatar: nextProps.avatar,
                 code: nextProps.code,
                 assetName: nextProps.assetName,

@@ -5,5 +5,7 @@ const { auth } = require(`${SERVER_MIDDLEWARE_DIR}`);
 
 router.post('/', auth, PurchasingRequestController.createPurchasingRequest);
 router.get('/', auth, PurchasingRequestController.getAllPurchasingRequest);
+router.get('/:id', auth, PurchasingRequestController.getPurchasingRequestById);
+router.patch('/:id', auth, PurchasingRequestController.editPurchasingRequest);
 
 module.exports = router;
