@@ -732,7 +732,7 @@ export default {
                 organization: 'Tổ chức',
                 northern: 'Miền Bắc',
                 central: 'Miền Trung',
-                southern: 'Miền Nam' ,
+                southern: 'Miền Nam',
 
                 purchaseHistories: {
                     all: 'Tất cả',
@@ -3634,7 +3634,12 @@ export default {
                 unit_name: 'Tên',
                 conversion_rate: 'Giá trị chuyển đổi',
                 quantity: 'Số lượng',
-                choose_category: 'Chọn danh mục'
+                choose_category: 'Chọn danh mục',
+                choose_base_unit: 'Vui lòng chọn đơn vị để tạo quy tắc đóng gói',
+                packing_rule: 'Quy tắc đóng gói',
+                non_choose_base_unit: 'Không chọn',
+                choose_base_unit_all: 'Chọn tất cả',
+                error_packing_rule: 'Đơn vị được chọn không thể tạo thành quy tắc đóng gói. Vui lòng chọn lại!'
             },
 
             stock_management: {

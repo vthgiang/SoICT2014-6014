@@ -57,6 +57,7 @@ exports.getAllGoodsByCategory = async (company, categoryId, portal) => {
 }
 
 exports.createGoodByType = async (company, data, portal) => {
+    console.log(data);
     let good = await Good(connect(DB_CONNECTION, portal)).create({
         company: company,
         category: data.category,
@@ -64,6 +65,7 @@ exports.createGoodByType = async (company, data, portal) => {
         name: data.name,
         type: data.type,
         baseUnit: data.baseUnit,
+        packingRule: data.packingRule,
         units: data.units.map(item => {
             return {
                 name: item.name,
