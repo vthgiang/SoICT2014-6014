@@ -11,7 +11,7 @@ import { NotFound } from '../modules/not-found/components';
 
 import Login from '../modules/auth/components/login';
 import ResetPassword from '../modules/auth/components/resetPassword';
-import {Introduction} from '../modules/intro/components';
+import { Introduction } from '../modules/intro/components';
 import ManageDocument from '../modules/document/components/administration';
 import Document from '../modules/document/components/user';
 
@@ -52,6 +52,10 @@ import { DashboardUnit } from '../modules/dashboard-unit/components';
 
 import { ListEducation } from '../modules/training/education-program/components/educationProgramList';
 import { TrainingPlan } from '../modules/training/course/components/course';
+
+import { SearchEmployeeForPackage } from '../modules/human-resource/profile/employee-management/components/searchEmployeeForPackage';
+import CareerPosition from '../modules/human-resource/career-position/component';
+import Major from '../modules/human-resource/major/component';
 
 import { OrganizationalUnitKpiCreate } from "../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreate";
 import { OrganizationalUnitKpiDashboard } from "../modules/kpi/organizational-unit/dashboard/component/organizationalUnitKpiDashboard";
@@ -155,7 +159,7 @@ class Routes extends Component {
         return (
             <React.Fragment>
                 <Switch>
-                    <AuthRoute exact auth={auth} path="/" component={Introduction}/>
+                    <AuthRoute exact auth={auth} path="/" component={Introduction} />
                     <AuthRoute exact auth={auth} path="/login" component={Login} />
                     <AuthRoute exact auth={auth} path="/reset-password" component={ResetPassword} />
                     <PrivateRoute
@@ -655,6 +659,56 @@ class Routes extends Component {
                         pageName={'training_plan'}
                         layout={Layout}
                         component={TrainingPlan}
+                    />
+
+                    {/* Nhân sự gói thầu */}
+                    <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={'list_search_for_package'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/hr-search-for-package', name: 'list_search_for_package', icon: 'fa fa-list-alt' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/hr-search-for-package'}
+                        path={'/hr-search-for-package'}
+                        pageName={'list_search_for_package'}
+                        layout={Layout}
+                        component={SearchEmployeeForPackage}
+                    />
+
+                    {/* Nhân sự gói thầu */}
+                    <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={'list_major'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/hr-list-major', name: 'list_major', icon: 'fa fa-list-alt' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/hr-list-major'}
+                        path={'/hr-list-major'}
+                        pageName={'list_major'}
+                        layout={Layout}
+                        component={Major}
+                    />
+
+                    <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={'list_career_position'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/hr-list-career-position', name: 'list_career_position', icon: 'fa fa-list-alt' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/hr-list-career-position'}
+                        path={'/hr-list-career-position'}
+                        pageName={'list_career_position'}
+                        layout={Layout}
+                        component={CareerPosition}
                     />
 
                     {/* kpi - routes */}
@@ -1734,7 +1788,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={false}
+                        isLoading={this.props.purchasingRequest.isLoading}
                         key={"manage-purchasing-request"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },

@@ -4,7 +4,6 @@ const Log = require(`${SERVER_LOGS_DIR}`);
 exports.createManufacturingWorks = async (req, res) => {
     try {
         let data = req.body;
-        console.log(data);
         let manufacturingWorks = await ManufacturingWorksService.createManufacturingWorks(data, req.portal);
 
         await Log.info(req.user.email, "CREATED_NEW_MANUFACTURING_WORKS", req.portal);

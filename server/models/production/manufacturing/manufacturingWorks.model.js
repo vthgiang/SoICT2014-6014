@@ -12,14 +12,6 @@ const ManufacturingWorksSchema = new Schema({
         type: String,
         required: true
     },
-    worksManager: { // Giám đốc nhà máy
-        type: Schema.Types.ObjectId,
-        ref: "User"
-    },
-    foreman: { // Quản đốc nhà máy
-        type: Schema.Types.ObjectId,
-        ref: "User"
-    },
     manufacturingMills: [{ // Các xưởng của nhà máy
         type: Schema.Types.ObjectId,
         ref: "ManufacturingMill"
@@ -36,7 +28,12 @@ const ManufacturingWorksSchema = new Schema({
     },
     description: { // Mô tả nhà máy
         type: String
-    }
+    },
+
+    organizationalUnit: {// Nhà máy thuộc cơ cấu tổ chức nào
+        type: Schema.Types.ObjectId,
+        ref: "OrganizationalUnit"
+    },
 
 }, {
     timestamps: true

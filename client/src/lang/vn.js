@@ -707,7 +707,7 @@ export default {
                 status: 'Trạng thái khách hàng',
                 address: 'Địa chỉ',
                 address2: 'Địa chỉ 2',
-                represent:'Người đại diện',
+                represent: 'Người đại diện',
                 email: 'Email',
                 secondaryEmail: 'Email phụ',
                 location: 'Khu vực',
@@ -956,6 +956,9 @@ export default {
             time_keeping: 'Chấm công nhân viên',
             list_education: 'Chương trình đào tạo bắt buộc',
             training_plan: 'Quản lý khoá đào tạo',
+            list_major: 'Danh sách chuyên ngành',
+            list_career_position: 'Danh sách vị trí công việc',
+            list_search_for_package: 'Tìm kiếm nhân sự gói thầu',
 
             manage_warehouse: 'Quản lý kho',
             dashboard_bill: 'Bảng tin quản lý các phiếu',
@@ -1054,7 +1057,7 @@ export default {
             manage_manufacturing_command: "Quản lý lệnh sản xuất",
             manage_manufacturing_process: "Quản lý tiến độ sản xuất",
             manage_manufacturing_schedule: "Quản lý lịch sản xuất",
-            manage_purchasing_request: "Quản lý phiếu mua NVL",
+            manage_purchasing_request: "Quản lý phiếu đề nghị mua nguyên vật liệu",
             manufacturing_dashboard: "Dashboard Quản lý sản xuất",
             analysis_manufacturing_performance: "Phân tích hiệu suất sản xuất",
             manage_manufacturing_works: "Quản lý nhà máy sản xuất",
@@ -1218,11 +1221,11 @@ export default {
             staff_name: 'Họ và tên',
             all_unit: 'Chọn tất cả các đơn vị',
             non_unit: 'Chọn đơn vị',
-            unit_selected:'đơn vị được chọn',
+            unit_selected: 'đơn vị được chọn',
             non_staff: 'Chọn nhân viên',
             all_position: 'Chọn tất cả các chức vụ',
             non_position: 'Chọn chức vụ',
-            position_selected:'chức vụ được chọn',
+            position_selected: 'chức vụ được chọn',
             all_status: 'Chọn tất cả các trạng thái',
             non_status: 'Chọn trạng thái',
             not_unit: 'Chưa chọn đơn vị',
@@ -2662,10 +2665,10 @@ export default {
                 auto_point_field: 'Điểm công việc tự động trong đánh giá này',
                 get_outside_info: 'Nhập tự động từ thông tin công việc hiện tại',
 
-                dashboard_created: 'Đã tạo',
-                dashboard_need_perform: 'Cần thực hiện',
-                dashboard_need_approve: 'Cần phê duyệt',
-                dashboard_need_consult: 'Cần tư vấn',
+                dashboard_created: 'Số CV bạn đã tạo',
+                dashboard_need_perform: 'Số CV bạn thực hiện',
+                dashboard_need_approve: 'Số CV bạn phê duyệt',
+                dashboard_need_consult: 'Số CV bạn tư vấn',
                 dashboard_area_result: 'Miền kết quả công việc',
                 dashboard_overdue: 'Công việc quá hạn',
                 dashboard_about_to_overdue: 'Công việc sắp hết hạn',
@@ -4005,7 +4008,11 @@ export default {
                 edit_successfully: "Sửa thông tin nhà máy thành công",
                 edit_failure: "Sửa thông tin nhà máy thất bại",
                 mill_code: "Mã xưởng",
-                mill_name: "Tên xưởng"
+                mill_name: "Tên xưởng",
+                organizational_unit: "Đơn vị liên kết",
+                choose_organizational_unit: "---Chọn đơn vị---",
+                error_organizational_unit: "Vui lòng chọn đơn vị liên kết",
+                list_roles: "Chức vụ trưởng đơn vị"
             },
             manufacturing_mill: {
                 name: "Tên xưởng",
@@ -4032,7 +4039,8 @@ export default {
                 edit_mill_successfully: "Sửa thông tin xưởng thành công",
                 edit_mill_failed: "Sửa thông tin xưởng thất bại",
                 works_name: "Tên nhà máy",
-                created_at: "Ngày tạo"
+                created_at: "Ngày tạo",
+                teamLeader: "Đội trưởng"
             },
             purchasing_request: {
                 code: "Mã phiếu đề nghị",
@@ -4068,8 +4076,12 @@ export default {
                 save_good: "Lưu",
                 add_good: "Thêm",
                 delete_good: "Xóa trắng",
-                error_quantity_lt_1: "Số lượng không thể âm hoặc bằng 0",
-                purchasing_request_detail: "Chi tiết phiếu đề nghị"
+                error_quantity_input: "Số lượng không hợp lệ",
+                purchasing_request_detail: "Chi tiết phiếu đề nghị",
+                material_detail: "Chi tiết nguyên vật liệu",
+                purchasing_request_edit: "Sửa phiếu đề nghị",
+                edit_successfully: "Sửa phiếu dề nghị thành công",
+                edit_failed: "Sửa phiếu đề nghị thất bại"
 
             }
         }
