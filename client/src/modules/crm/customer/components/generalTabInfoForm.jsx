@@ -35,38 +35,6 @@ class GeneralTabInfoForm extends Component {
     }
 
     /**
-     * Hàm format giới tính
-     * @param {*} gender 
-     */
-    formatGender(gender) {
-        const { translate } = this.props;
-        gender = parseInt(gender);
-        if (gender === 1)
-            return translate('crm.customer.male');
-        if (gender === 2)
-            return translate('crm.customer.female');
-    }
-
-    formatCustomerType(type) {
-        type = parseInt(type);
-        if (type === 1)
-            return 'Cá nhân';
-        if (type === 2)
-            return 'Công ty';
-    }
-
-
-    formatLocation(type) {
-        type = parseInt(type);
-        if (type === 1)
-            return 'Miền bắc';
-        if (type === 2)
-            return 'Miền Trung';
-        if (type === 3)
-            return 'Miền Nam';
-    }
-
-    /**
      * Hàm xử lý khi click nút see more
      */
     handleShowMore = () => {
@@ -123,7 +91,7 @@ class GeneralTabInfoForm extends Component {
                                 <div className="form-group">
                                     <strong className="col-sm-4">{translate('crm.customer.customerType')}</strong>
                                     <div className="col-sm-8">
-                                        <span>{customerInfomation.customerType ? this.formatCustomerType(customerInfomation.customerType) : ''}</span>
+                                        <span>{customerInfomation.customerType ? formatFunction.formatCustomerType(customerInfomation.customerType, translate) : ''}</span>
                                     </div>
                                 </div>
                             </div>
@@ -175,7 +143,7 @@ class GeneralTabInfoForm extends Component {
                                 <div className="form-group">
                                     <strong className="col-sm-4">{translate('crm.customer.gender')}</strong>
                                     <div className="col-sm-8">
-                                        <span>{customerInfomation.gender ? this.formatGender(customerInfomation.gender) : ''}</span>
+                                        <span>{customerInfomation.gender ? formatFunction.formatCustomerGender(customerInfomation.gender, translate) : ''}</span>
                                     </div>
                                 </div>
                             </div>
@@ -254,7 +222,7 @@ class GeneralTabInfoForm extends Component {
                                     <div className="form-group">
                                         <strong className="col-sm-4">{translate('crm.customer.location')}</strong>
                                         <div className="col-sm-8">
-                                            <span>{customerInfomation.website ? this.formatLocation(customerInfomation.location) : ''}</span>
+                                            <span>{customerInfomation.website ? formatFunction.formatCustomerLocation(customerInfomation.location, translate) : ''}</span>
                                         </div>
                                     </div>
                                 </div>

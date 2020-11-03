@@ -599,15 +599,15 @@ export default {
                     not_select: 'Chưa thuộc loại tài liệu',
                 },
                 domains: {
-                    add: 'Thêm danh mục tài liệu',
-                    edit: 'Sửa thông tin danh mục tài liệu',
-                    delete: 'Xóa các danh mục đã chọn',
+                    add: 'Thêm lĩnh vực tài liệu',
+                    edit: 'Sửa thông tin lĩnh vực tài liệu',
+                    delete: 'Xóa các lĩnh vực đã chọn',
                     name: 'Tên',
                     description: 'Mô tả',
-                    parent: 'Danh mục cha',
-                    select_parent: 'Chọn danh mục cha',
-                    select: 'Chọn danh mục',
-                    not_select: 'Không thuộc về danh mục nào',
+                    parent: 'Lĩnh vực cha',
+                    select_parent: 'Chọn lĩnh vực cha',
+                    select: 'Chọn lĩnh vực',
+                    not_select: 'Không thuộc về lĩnh vực nào',
                 },
                 archives: {
                     add: 'Thêm vị trí lưu trữ tài liệu',
@@ -696,7 +696,7 @@ export default {
             customer: {
                 owner: 'Người quản lý',
                 source: 'Nguồn khách hàng',
-                company: 'Tên công ty',
+                company: 'Công ty',
                 companyEstablishmentDate: 'Ngày thành lập công ty',
                 name: 'Tên khách hàng',
                 code: 'Mã khách hàng',
@@ -727,6 +727,12 @@ export default {
                 by_customer: 'Theo khách hàng',
                 payment: 'Hình thức thanh toán',
                 creator: 'Người tạo',
+
+                personal: 'Cá nhân',
+                organization: 'Tổ chức',
+                northern: 'Miền Bắc',
+                central: 'Miền Trung',
+                southern: 'Miền Nam' ,
 
                 purchaseHistories: {
                     all: 'Tất cả',
@@ -956,6 +962,9 @@ export default {
             time_keeping: 'Chấm công nhân viên',
             list_education: 'Chương trình đào tạo bắt buộc',
             training_plan: 'Quản lý khoá đào tạo',
+            list_major: 'Danh sách chuyên ngành',
+            list_career_position: 'Danh sách vị trí công việc',
+            list_search_for_package: 'Tìm kiếm nhân sự gói thầu',
 
             manage_warehouse: 'Quản lý kho',
             dashboard_bill: 'Bảng tin quản lý các phiếu',

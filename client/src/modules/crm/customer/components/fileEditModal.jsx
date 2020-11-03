@@ -66,21 +66,17 @@ class FileEditModal extends Component {
      * @param {*} value 
      */
     handleChangeFile = (value) => {
-        // const { translate } = this.props;
         if (value && value.length > 0) {
             this.setState({
                 fileName: value[0].fileName,
                 urlFile: value[0].urlFile,
                 fileUpload: value[0].fileUpload,
             })
-
-            // let { message } = ValidationHelper.validateEmpty(translate, value[0].fileUpload);
-            // this.setState({ fileError: message });
         }
     }
 
     isFormValidated = () => {
-        const { name, description, fileUpload } = this.state;
+        const { name, description } = this.state;
         const { translate } = this.props;
         if (!ValidationHelper.validateName(translate, name).status ||
             !ValidationHelper.validateName(translate, description).status
@@ -98,7 +94,7 @@ class FileEditModal extends Component {
 
     render() {
         const { translate } = this.props;
-        const { nameError, descriptionError, fileError, name, description, files } = this.state;
+        const { nameError, descriptionError, name, description, files } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
