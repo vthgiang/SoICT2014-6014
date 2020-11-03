@@ -695,7 +695,7 @@ export default {
             customer: {
                 owner: 'Người quản lý',
                 source: 'Nguồn khách hàng',
-                company: 'Tên công ty',
+                company: 'Công ty',
                 companyEstablishmentDate: 'Ngày thành lập công ty',
                 name: 'Tên khách hàng',
                 code: 'Mã khách hàng',
@@ -726,6 +726,12 @@ export default {
                 by_customer: 'Theo khách hàng',
                 payment: 'Hình thức thanh toán',
                 creator: 'Người tạo',
+
+                personal: 'Cá nhân',
+                organization: 'Tổ chức',
+                northern: 'Miền Bắc',
+                central: 'Miền Trung',
+                southern: 'Miền Nam' ,
 
                 purchaseHistories: {
                     all: 'Tất cả',
