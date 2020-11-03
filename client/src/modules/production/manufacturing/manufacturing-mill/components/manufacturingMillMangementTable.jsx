@@ -74,10 +74,30 @@ class ManufacturingMillMangementTable extends Component {
         this.props.getAllManufacturingMills(data);
     }
 
+    // Tìm trong trong listWorks object có _id = _id truyền vào 
+    findIndex = (array, value) => {
+        let result = -1;
+        array.map((item, index) => {
+            if (item._id === value) {
+                result = index
+            }
+        })
+        return result;
+    }
+
     handleEditMill = async (mill) => {
+        const { manufacturingWorks } = this.props;
+        const { listWorks } = manufacturingWorks;
+        let result = this.findIndex(listWorks, mill.manufacturingWorks._id);
+        let currentOrganizationalUnit;
+        if (result != -1) {
+            currentOrganizationalUnit = listWorks[result].organizationalUnit._id;
+        }
+
         await this.setState((state) => ({
             ...state,
-            currentRow: mill
+            currentRow: mill,
+            currentOrganizationalUnit: currentOrganizationalUnit
         }));
         window.$('#modal-edit-mill').modal('show');
     }
@@ -112,6 +132,8 @@ class ManufacturingMillMangementTable extends Component {
                         worksValue={this.state.currentRow.manufacturingWorks._id}
                         description={this.state.currentRow.description}
                         status={this.state.currentRow.status}
+                        teamLeaderValue={this.state.currentRow.teamLeader._id}
+                        currentOrganizationalUnit={this.state.currentOrganizationalUnit}
                     />
                 }
                 <div className="box-body qlcv">
@@ -137,7 +159,7 @@ class ManufacturingMillMangementTable extends Component {
                                 <th>{translate('manufacturing.manufacturing_mill.index')}</th>
                                 <th>{translate('manufacturing.manufacturing_mill.code')}</th>
                                 <th>{translate('manufacturing.manufacturing_mill.name')}</th>
-                                <th>{translate('manufacturing.manufacturing_mill.teamLeader')}</th>
+                                <th>{translate('manufacturing.manufacturing_mill.team_leader')}</th>
                                 <th>{translate('manufacturing.manufacturing_mill.worksName')}</th>
                                 <th>{translate('manufacturing.manufacturing_mill.description')}</th>
                                 <th>{translate('manufacturing.manufacturing_mill.status')}</th>
@@ -148,7 +170,7 @@ class ManufacturingMillMangementTable extends Component {
                                             translate('manufacturing.manufacturing_mill.index'),
                                             translate('manufacturing.manufacturing_mill.code'),
                                             translate('manufacturing.manufacturing_mill.name'),
-                                            translate('manufacturing.manufacturing_mill.teamLeader'),
+                                            translate('manufacturing.manufacturing_mill.team_leader'),
                                             translate('manufacturing.manufacturing_mill.worksName'),
                                             translate('manufacturing.manufacturing_mill.description'),
                                             translate('manufacturing.manufacturing_mill.status'),
@@ -199,8 +221,8 @@ class ManufacturingMillMangementTable extends Component {
 }
 
 function mapStateToProps(state) {
-    const manufacturingMill = state.manufacturingMill
-    return { manufacturingMill }
+    const { manufacturingMill, manufacturingWorks } = state
+    return { manufacturingMill, manufacturingWorks }
 }
 
 const mapDispatchToProps = {

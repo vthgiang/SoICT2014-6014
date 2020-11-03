@@ -75,12 +75,12 @@ exports.getAllManufacturingMills = async (query, portal) => {
 exports.getManufacturingMillById = async (id, portal) => {
     let manufacturingMill = await ManufacturingMill(connect(DB_CONNECTION, portal))
         .findById({ _id: id })
-        .populate({
+        .populate([{
             path: "manufacturingWorks",
             select: "name"
         }, {
             path: "teamLeader"
-        });
+        }]);
     if (!manufacturingMill) {
         throw Error("Manufacturing Mill is not existing");
     }
@@ -98,18 +98,19 @@ exports.editManufacturingMill = async (id, data, portal) => {
     oldManufacturingMill.name = data.name ? data.name : oldManufacturingMill.name;
     oldManufacturingMill.manufacturingWorks = data.manufacturingWorks ? data.manufacturingWorks : oldManufacturingMill.manufacturingWorks
     oldManufacturingMill.description = data.description ? data.description : oldManufacturingMill.description;
-    oldManufacturingMill.status = data.status ? data.status : oldManufacturingMill.status
+    oldManufacturingMill.status = data.status ? data.status : oldManufacturingMill.status;
+    oldManufacturingMill.teamLeader = data.teamLeader ? data.teamLeader : oldManufacturingMill.teamLeader;
 
     await oldManufacturingMill.save();
 
     let manufacturingMill = await ManufacturingMill(connect(DB_CONNECTION, portal))
         .findById({ _id: id })
-        .populate({
+        .populate([{
             path: "manufacturingWorks",
             select: "name"
         }, {
             path: "teamLeader"
-        });
+        }]);
     return { manufacturingMill }
 }
 

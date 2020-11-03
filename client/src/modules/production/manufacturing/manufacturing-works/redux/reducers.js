@@ -21,8 +21,7 @@ const initState = {
     hasPrevPage: false,
     hasNextPage: false,
     prevPage: 0,
-    nextPage: 0,
-    detailWorks: {}
+    nextPage: 0
 }
 
 export function manufacturingWorks(state = initState, action) {
