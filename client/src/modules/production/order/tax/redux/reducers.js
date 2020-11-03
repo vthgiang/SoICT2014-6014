@@ -38,7 +38,7 @@ export function taxs(state = initState, action) {
             case TaxConstants.GET_TAX_BY_CODE_REQUEST:
                 return {
                     ...state,
-                    isLoading: false
+                    isLoading: true
                 }
             case TaxConstants.GET_ALL_TAXS_FAILURE:
                 case TaxConstants.CREATE_TAX_FAILURE:
@@ -52,7 +52,8 @@ export function taxs(state = initState, action) {
                     isLoading: false,
                     error: action.error
                 }
-            case TaxConstants.GET_ALL_TAXS_SUCCESS:
+        case TaxConstants.GET_ALL_TAXS_SUCCESS:
+            console.log("PAYLOAD", action.payload.allTaxs);
                 return {
                     ...state,
                     isLoading: false,
@@ -68,7 +69,6 @@ export function taxs(state = initState, action) {
                     nextPage: action.payload.allTaxs.nextPage
                 }
             case TaxConstants.CREATE_TAX_SUCCESS:
-                console.log("PAYLOAD: ", action.payload.tax);
                 return {
                     ...state,
                     listTaxs: [

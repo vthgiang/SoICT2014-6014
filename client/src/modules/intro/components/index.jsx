@@ -44,7 +44,7 @@ const Introduction = (props) => {
     return (
         <React.Fragment>
             <header className="fixed-top p-center-h">
-                <h3>DX Workspace</h3>
+                <h3>DX workplace</h3>
                 <span id="dx-language-setting" className="dx-language-setting p-center-h">
                     <a style={{ cursor: "pointer" }} onClick={_setEng}><img src='/library/dx/images/eng.png' className="img-circle" /></a>
                     <a style={{ cursor: "pointer" }} onClick={_setVie}><img src='/library/dx/images/vietnam.png' className="img-circle" /></a>

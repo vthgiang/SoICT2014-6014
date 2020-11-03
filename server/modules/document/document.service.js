@@ -125,7 +125,6 @@ exports.increaseNumberView = async (id, viewer, portal) => {
  * Tạo một tài liệu văn bản mới
  */
 exports.createDocument = async (portal, data, company) => {
-    console.log('aaa', data);
     const existed = await Document(connect(DB_CONNECTION, portal)).findOne({ officialNumber: data.officialNumber });
     if (existed) throw ['document_exist'];
     const newDoc = {
@@ -810,7 +809,7 @@ exports.deleteDocumentArchive = async (portal, id) => {
 
 exports.deleteManyDocumentArchive = async (array, portal, company) => {
     for (let i = 0; i < array.length; i++) {
-        deleteNode(array[i]);
+        deleteNode(array[i], portal);
     }
 
     return await this.getDocumentArchives(portal, company);
