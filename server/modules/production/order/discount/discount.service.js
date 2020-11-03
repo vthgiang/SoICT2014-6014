@@ -32,13 +32,16 @@ exports.createNewDiscount = async (userId, data, portal) => {
                 bonusGoods: item.bonusGoods ? item.bonusGoods.map((good) => {
                     return {
                         good: good.good,
-                        quantityOfBonusGood: good.quantityOfBonusGood
+                        quantityOfBonusGood: good.quantityOfBonusGood,
+                        expirationDateOfGoodBonus: good.expirationDateOfGoodBonus ? good.expirationDateOfGoodBonus : undefined,
+                        baseUnit: good.baseUnit ? good.baseUnit : undefined
                     }
                 }) :  undefined,
                 discountOnGoods: item.discountOnGoods ? item.discountOnGoods.map((good) => {
                     return {
                         good: good.good,
-                        expirationDate: good.expirationDate ? good.expirationDate : undefined
+                        expirationDate: good.expirationDate ? good.expirationDate : undefined,
+                        discountedPrice: good.discountedPrice ? good.discountedPrice : undefined
                     }
                 }) : undefined,
             }

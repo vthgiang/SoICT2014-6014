@@ -1,5 +1,3 @@
-const { time } = require("cron");
-
 const {
     PurchasingRequest
 } = require(`${SERVER_MODELS_DIR}`);
@@ -99,9 +97,55 @@ exports.getAllPurchasingRequest = async (query, portal) => {
             });
         return { purchasingRequests }
     }
+}
+
+exports.getPurchasingRequestById = async (id, portal) => {
+    let purchasingRequest = await PurchasingRequest(connect(DB_CONNECTION, portal))
+        .findById({ _id: id })
+        .populate([{
+            path: "creator", select: "name"
+        }, {
+            path: "materials.good", select: "_id code name baseUnit"
+        }]);
+    if (!purchasingRequest) {
+        throw Error("purchasingRequest is not existing");
+    }
+
+    return { purchasingRequest }
+
+}
+
+exports.editPurchasingRequest = async (id, data, portal) => {
+    console.log(data);
+    let oldPurchasingRequest = await PurchasingRequest(connect(DB_CONNECTION, portal))
+        .findById({ _id: id });
+    if (!oldPurchasingRequest) {
+        throw Error("purchasingRequest is not existing");
+    }
+
+    oldPurchasingRequest.code = data.code ? data.code : oldPurchasingRequest.code;
+    oldPurchasingRequest.creator = data.creator ? data.creator : oldPurchasingRequest.creator;
+    oldPurchasingRequest.intendReceiveTime = data.intendReceiveTime ? data.intendReceiveTime : oldPurchasingRequest.intendReceiveTime;
+    oldPurchasingRequest.description = data.description ? data.description : oldPurchasingRequest.description;
+    oldPurchasingRequest.status = data.status ? data.status : oldPurchasingRequest.status;
+    oldPurchasingRequest.materials = data.materials ? data.materials.map((material) => {
+        return {
+            good: material.good,
+            quantity: material.quantity
+        }
+    }) : oldPurchasingRequest.materials;
 
 
 
 
+    await oldPurchasingRequest.save();
+    let purchasingRequest = await PurchasingRequest(connect(DB_CONNECTION, portal))
+        .findById({ _id: oldPurchasingRequest._id })
+        .populate([{
+            path: "creator", select: "name"
+        }, {
+            path: "materials.good", select: "_id code name baseUnit"
+        }]);
 
+    return { purchasingRequest }
 }

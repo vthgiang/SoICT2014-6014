@@ -59,12 +59,7 @@ class CreateForm extends Component {
 
     handleOfficialNumber = (e) => {
         const value = e.target.value.trim();
-        this.setState(state => {
-            return {
-                ...state,
-                documentOfficialNumber: value,
-            }
-        })
+        this.validateOfficialNumber(value, true);
     }
 
     handleSigner = (e) => {
@@ -235,15 +230,12 @@ class CreateForm extends Component {
         return msg === undefined;
     }
     validateOfficialNumber = (value, willUpdateState) => {
-        const regex = /\d/g
         let msg = undefined;
         const { translate } = this.props;
         if (!value) {
             msg = translate('document.doc_version.no_blank_official_number');
         }
-        else if (!regex.test(value)) {
-            msg = translate('document.doc_version.error_office_number');
-        }
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -255,108 +247,9 @@ class CreateForm extends Component {
         }
         return msg === undefined;
     }
-    validateIssuingDate = (value, willUpdateState) => {
-        let msg = undefined;
-        const { translate } = this.props;
-        if (!value) {
-            msg = translate('document.doc_version.no_blank_issuingdate');
-        }
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    documentIssuingDate: value,
-                    errorIssuingDate: msg,
-                }
-            })
-        }
-        return msg === undefined;
-    }
-    validateEffectiveDate = (value, willUpdateState) => {
-        let msg = undefined;
-        const { translate } = this.props;
-        if (!value) {
-            msg = translate('document.doc_version.no_blank_effectivedate');
-        }
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    documentEffectiveDate: value,
-                    errorEffectiveDate: msg,
-                }
-            })
-        }
-        return msg === undefined;
-    }
-    validateExpiredDate = (value, willUpdateState) => {
-        let msg = undefined;
-        const { translate } = this.props;
-        if (!value) {
-            msg = translate('document.doc_version.no_blank_expired_date');
-        }
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    documentExpiredDate: value,
-                    errorExpiredDate: msg,
-                }
-            })
-        }
-        return msg === undefined;
-    }
-    validateSinger = (value, willUpdateState) => {
-        let msg = undefined;
-        const { translate } = this.props;
-        if (!value) {
-            msg = translate('document.doc_version.no_blank_signer');
-        }
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    documentSigner: value,
-                    errorSigner: msg,
-                }
-            })
-        }
-        return msg === undefined;
-    }
-    validateDocumentFile = (value, willUpdateState) => {
-        let msg = undefined;
-        const { translate } = this.props;
-        if (!value) {
-            msg = translate('document.doc_version.no_blank_file');
-        }
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    documentFile: value,
-                    errorDocumentFile: msg,
-                }
-            })
-        }
-        return msg === undefined;
-    }
-    validateDocumentFileScan = (value, willUpdateState) => {
-        let msg = undefined;
-        const { translate } = this.props;
-        if (!value.name) {
-            msg = translate('document.doc_version.no_blank_file_scan');
-        }
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    documentFileScan: value,
-                    errorDocumentFileScan: msg,
-                }
-            })
-        }
-        return msg === undefined;
-    }
+
+
+
 
     toggleAddVersion = (event) => {
         event.preventDefault();
@@ -365,7 +258,8 @@ class CreateForm extends Component {
 
     isValidateForm = () => {
         return this.validateName(this.state.documentName, false)
-            && this.validateCategory(this.state.documentCategory, false);
+            && this.validateCategory(this.state.documentCategory, false)
+            && this.validateOfficialNumber(this.state.documentOfficialNumber, false);
     }
 
 
@@ -550,7 +444,7 @@ class CreateForm extends Component {
         const { translate, role, documents, department } = this.props;
         const { list } = documents.administration.domains;
 
-        const { errorName, errorCategory, errorVersionName, documentArchives, documentDomains, listDocumentRelationship, documentVersions } = this.state;
+        const { errorName, errorCategory, errorVersionName, errorOfficialNumber, documentArchives, documentDomains, listDocumentRelationship, documentVersions } = this.state;
         const archives = documents.administration.archives.list;
 
         const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
@@ -562,14 +456,14 @@ class CreateForm extends Component {
 
                 <div className="form-inline">
                     <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
-                        <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_user.add_title')}
+                        <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('document.add')}
                         >{translate('general.add')}</button>
                         <ul className="dropdown-menu pull-right">
                             <li>
-                                <a href="#modal-create-document" title="ImportForm" onClick={(event) => { this.handleAddDocument(event) }}>{translate('task_template.add')}</a>
+                                <a href="#modal-create-document" title="ImportForm" onClick={(event) => { this.handleAddDocument(event) }}>{translate('document.add')}</a>
                             </li>
                             <li>
-                                <a href="#modal_import_file_document" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>ImportFile</a>
+                                <a href="#modal_import_file_document" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>{translate('document.import')}</a>
                             </li>
                         </ul>
                     </div>
@@ -598,16 +492,16 @@ class CreateForm extends Component {
                                                 <input type="text" className="form-control" onChange={this.handleName} />
                                                 <ErrorLabel content={errorName} />
                                             </div>
+                                            <div className={`form-group ${!errorOfficialNumber ? "" : "has-error"}`}>
+                                                <label>{translate('document.doc_version.official_number')}<span className="text-red">*</span></label>
+                                                <input type="text" className="form-control" onChange={this.handleOfficialNumber} placeholder={translate('document.doc_version.exp_official_number')} />
+                                                <ErrorLabel content={errorOfficialNumber} />
+                                            </div>
                                             <div className="form-group">
                                                 <label>{translate('document.doc_version.issuing_body')}</label>
                                                 <input type="text" className="form-control" onChange={this.handleIssuingBody} placeholder={translate('document.doc_version.exp_issuing_body')} />
-
                                             </div>
-                                            <div className="form-group">
-                                                <label>{translate('document.doc_version.official_number')}</label>
-                                                <input type="text" className="form-control" onChange={this.handleOfficialNumber} placeholder={translate('document.doc_version.exp_official_number')} />
 
-                                            </div>
                                             <div className="form-group">
                                                 <label>{translate('document.doc_version.signer')}</label>
                                                 <input type="text" className="form-control" onChange={this.handleSigner} placeholder={translate('document.doc_version.exp_signer')} />

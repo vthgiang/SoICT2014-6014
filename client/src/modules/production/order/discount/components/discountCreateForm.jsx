@@ -7,6 +7,9 @@ import { GoodActions } from "../../../common-production/good-management/redux/ac
 import { DiscountActions } from "../redux/actions";
 import { DialogModal, DatePicker, ButtonModal, ErrorLabel, SelectBox } from "../../../../../common-components";
 import ValidationHelper from "../../../../../helpers/validationHelper";
+import CreateBonusGoods from "./createBonusGoods";
+import CreateDiscountOnGoods from "./createDiscountOnGoods";
+import { preventDefault } from "@fullcalendar/react";
 
 class DiscountCreateForm extends Component {
     constructor(props) {
@@ -15,17 +18,44 @@ class DiscountCreateForm extends Component {
             name: "",
             code: "",
             description: "",
-            discountType: 0,
+            discountType: -1,
+            formality: -1,
             customerType: 0,
-            formality: 0,
             effectiveDate: "",
             expirationDate: "",
+            goods: [],
+            selectAll: true,
         };
     }
 
-    componentWillMount() {
-        this.props.getAllGoodsByType({ type: "product" });
-    }
+    getAllGoods = () => {
+        const { translate, goods } = this.props;
+        const { selectAll } = this.state;
+        let listGoods = [
+            selectAll
+                ? {
+                      value: "all",
+                      text: "CHỌN TẤT CẢ",
+                  }
+                : {
+                      value: "unselected",
+                      text: "BỎ CHỌN TẤT CẢ",
+                  },
+        ];
+
+        const { listGoodsByType } = goods;
+
+        if (listGoodsByType) {
+            listGoodsByType.map((item) => {
+                listGoods.push({
+                    value: item._id,
+                    text: item.code + "-" + item.name,
+                });
+            });
+        }
+
+        return listGoods;
+    };
 
     handleClickCreateCode = () => {
         this.setState((state) => {
@@ -57,11 +87,49 @@ class DiscountCreateForm extends Component {
         });
     };
 
-    handleChangeDiscountType = (value) => {
+    handleChangeDiscountType = async (value) => {
         if (!value) {
             value = null;
         }
-        this.setState({ discountType: parseInt(value[0]) });
+        // await this.setState({ discountType: value[0] });
+        await this.setState((state) => {
+            return {
+                ...state,
+                discountType: value[0],
+                goods: [],
+                selectAll: true,
+                discountOnGoods: undefined,
+                bonusGoods: undefined,
+                minimumThresholdToBeApplied: null,
+                maximumThresholdToBeApplied: null,
+                maximumFreeShippingCost: undefined,
+                maximumDiscountedCash: undefined,
+                discountedCash: undefined,
+            };
+        });
+    };
+
+    handleChangeDiscountFormality = async (value) => {
+        if (!value) {
+            value = null;
+        }
+        console.log(value);
+        // await this.setState({ formality: value[0] });
+        await this.setState((state) => {
+            return {
+                ...state,
+                formality: value[0],
+                goods: [],
+                selectAll: true,
+                discountOnGoods: undefined,
+                bonusGoods: undefined,
+                minimumThresholdToBeApplied: null,
+                maximumThresholdToBeApplied: null,
+                maximumFreeShippingCost: undefined,
+                maximumDiscountedCash: undefined,
+                discountedCash: undefined,
+            };
+        });
     };
 
     handleChangeEffectiveDate = (value) => {
@@ -87,20 +155,95 @@ class DiscountCreateForm extends Component {
     };
 
     handleAddBonusGood = () => {
+        window.$("#modal-create-discount-bonus-goods").modal("show");
+    };
+
+    handleAddDiscountOnGoods = () => {
+        window.$("#modal-create-discount-on-goods").modal("show");
+    };
+
+    handleSubmitBonusGoods = (dataSubmit) => {
+        this.setState({
+            bonusGoods: dataSubmit,
+        });
+    };
+
+    handleSubmitDiscountOnGoods = (dataSubmit) => {
+        this.setState({
+            discountOnGoods: dataSubmit,
+        });
+    };
+    handleGoodChange = async (goods) => {
+        if (goods.length === 0) {
+            goods = null;
+        }
+        let checkSelectedAll = [];
+        if (goods) {
+            checkSelectedAll = await goods.filter((item) => {
+                return item === "all" || item === "unselected";
+            });
+        }
+
+        if (checkSelectedAll.length && checkSelectedAll[0] === "all" && goods) {
+            goods = await this.getAllGoods().map((item) => {
+                return item.value;
+            });
+
+            goods.splice(0, 1); //lấy phần tử all ra khỏi mảng
+        } else if (checkSelectedAll.length && checkSelectedAll[0] === "unselected" && goods) {
+            goods = [];
+        }
+
+        if (goods && goods.length === this.getAllGoods().length - 1) {
+            //Tất cả các mặt hàng đã được chọn
+            this.setState({
+                selectAll: false,
+            });
+        } else if (!this.state.selectAll) {
+            this.setState({
+                selectAll: true,
+            });
+        }
+
+        await this.setState((state) => {
+            return {
+                ...state,
+                goods: goods,
+            };
+        });
+        this.validateGoods(goods, true);
+    };
+
+    validateGoods = (goods, willUpdateState = true) => {
+        let msg = undefined;
+        if (goods === null) {
+            const { translate } = this.props;
+            msg = "Mặt hàng không được để trống";
+        }
+
         this.setState((state) => {
             return {
                 ...state,
-                bonusGoods: [
-                    ...state.bonusGoods,
-                    {
-                        good: "",
-                        quantityOfBonusGood: "",
-                        quantity: 0,
-                        baseUnit: "",
-                    },
-                ],
+                goodError: msg,
             };
         });
+        return msg;
+    };
+
+    getFormalitySelectItem = () => {
+        let items = [
+            { value: -1, text: "---Chọn hình thức giảm giá---" },
+            { value: 0, text: "Giảm giá tiền" },
+            { value: 1, text: "Giảm giá theo %" },
+            { value: 2, text: "Tặng xu" },
+            { value: 3, text: "Miễn phí vận chuyển" },
+            { value: 4, text: "Tặng sản phẩm kèm theo" },
+            { value: 5, text: "Xả hàng tồn kho" },
+        ];
+        // if (this.state.discountType === 1) {
+        //     items.push({ value: 5, text: "Xả hàng tồn kho" });
+        // }
+        return items;
     };
 
     render() {
@@ -125,6 +268,7 @@ class DiscountCreateForm extends Component {
             maximumDiscountedCash,
             bonusGoods,
             discountOnGoods,
+            goods,
         } = this.state;
         console.log("STATE", this.state);
         return (
@@ -148,6 +292,8 @@ class DiscountCreateForm extends Component {
                     size="75"
                     style={{ backgroundColor: "green" }}
                 >
+                    <CreateBonusGoods handleSubmitBonusGoods={(data) => this.handleSubmitBonusGoods(data)} />
+                    <CreateDiscountOnGoods handleSubmitDiscountOnGoods={(data) => this.handleSubmitDiscountOnGoods(data)} />
                     <form id={`form-create-discount`}>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className="form-group">
@@ -175,6 +321,7 @@ class DiscountCreateForm extends Component {
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={[
+                                        { value: -1, text: "---Chọn loại giảm giá---" },
                                         { value: 0, text: "Giảm giá trên toàn đơn hàng" },
                                         { value: 1, text: "Giảm giá từng mặt hàng" },
                                     ]}
@@ -193,13 +340,7 @@ class DiscountCreateForm extends Component {
                                     id={`select-create-discount-formality`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
-                                    items={[
-                                        { value: 0, text: "Giảm giá tiền" },
-                                        { value: 1, text: "Giảm giá theo %" },
-                                        { value: 2, text: "Tặng xu" },
-                                        { value: 3, text: "Miễn phí vận chuyển" },
-                                        { value: 4, text: "Tặng sản phẩm kèm theo" },
-                                    ]}
+                                    items={this.getFormalitySelectItem()}
                                     onChange={this.handleChangeDiscountFormality}
                                     multiple={false}
                                     value={formality}
@@ -231,215 +372,227 @@ class DiscountCreateForm extends Component {
                                     {"Mô tả"}
                                     <span className="attention"> </span>
                                 </label>
-                                <textarea type="text" rows={4} className="form-control" value={description} onChange={this.handleDescriptionChange} />
+                                <textarea
+                                    type="text"
+                                    rows={4.5}
+                                    className="form-control"
+                                    value={description}
+                                    onChange={this.handleDescriptionChange}
+                                />
                             </div>
                         </div>
-                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">{"Chi tiết giảm giá"}</legend>
-                                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                    <div className={`form-group`}>
-                                        <label>
-                                            {"Khách hàng được áp dụng"}
-                                            <span className="attention"> * </span>
-                                        </label>
-                                        <SelectBox
-                                            id={`select-create-discount-customer-type`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={[
-                                                { value: 0, text: "Khách thường" },
-                                                { value: 1, text: "Khách VIP" },
-                                                { value: 2, text: "Tất cả" },
-                                            ]}
-                                            onChange={this.handleChangeCustomerType}
-                                            multiple={false}
-                                            value={customerType}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                    <div className="form-group">
-                                        <label>
-                                            {discountType === 0 ? "Đơn hàng có giá trị từ:" : "Số lượng hàng từ: "}
-                                            <span className="attention"> </span>
-                                        </label>
-                                        <input
-                                            type="number"
-                                            className="form-control"
-                                            value={minimumThresholdToBeApplied}
-                                            placeholder={discountType === 0 ? "vnđ" : "đơn vị"}
-                                            onChange={this.handleMaximumThresholdToBeAppliedChange}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                    <div className="form-group">
-                                        <label>
-                                            {discountType === 0 ? "Đến: " : "Đến: "}
-                                            <span className="attention"> </span>
-                                        </label>
-                                        <input
-                                            type="number"
-                                            className="form-control"
-                                            value={maximumThresholdToBeApplied}
-                                            onChange={this.handleMaximumThresholdToBeAppliedChange}
-                                            placeholder={discountType === 0 ? "vnđ" : "đơn vị"}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                    <div className="form-group">
-                                        <label>
-                                            {"Phần trăm giảm giá"}
-                                            <span className="attention"> </span>
-                                        </label>
-                                        <input type="number" className="form-control" value={discountedPercentage} />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                    <div className="form-group">
-                                        <label>
-                                            {"Số tiền giảm giá tối đa"}
-                                            <span className="attention"> </span>
-                                        </label>
-                                        <input type="number" className="form-control" value={maximumDiscountedCash} />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                    <div className="form-group">
-                                        <label>
-                                            {"Sản phẩm được tặng kèm"}
-                                            <span className="attention"> </span>
-                                        </label>
-                                        <SelectBox
-                                            id={`select-create-discount-bonus-goods`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={[
-                                                { value: 0, text: "Khách thường" },
-                                                { value: 1, text: "Khách VIP" },
-                                                { value: 2, text: "Tất cả" },
-                                            ]}
-                                            onChange={this.handleChangeCustomerType}
-                                            multiple={false}
-                                            value={bonusGoods}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                    <div className="form-group">
-                                        <label>
-                                            {"Số lượng"}
-                                            <span className="attention"> </span>
-                                        </label>
-                                        <input type="number" className="form-control" value={maximumDiscountedCash} />
-                                    </div>
-                                </div>
-                                <div className="form-group">
-                                    <label>
-                                        Thông tin mặt hàng:
-                                        <a style={{ cursor: "pointer" }} title="Thêm thông tin mặt hàng">
-                                            <i
-                                                className="fa fa-plus-square"
-                                                style={{ color: "#00a65a", marginLeft: 5 }}
-                                                onClick={this.handleAddBonusGood}
-                                            />
-                                        </a>
-                                    </label>
-                                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        {discountType >= 0 && formality >= 0 ? (
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <fieldset className="scheduler-border">
+                                    <legend className="scheduler-border">{"Chi tiết giảm giá"}</legend>
+                                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                                         <div className={`form-group`}>
-                                            {/* Bảng thông tin chi tiết */}
-                                            <table className="table">
-                                                <thead>
-                                                    <tr>
-                                                        <th>STT</th>
-                                                        <th>Mặt hàng</th>
-                                                        <th>Hạn sử dụng</th>
-                                                        <th>Đơn vị tính</th>
-                                                        <th>Số lượng</th>
-                                                        <th>Hành động</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {!bonusGoods || bonusGoods.length === 0 ? (
-                                                        <tr>
-                                                            <td colSpan={5}>
-                                                                <center>Chưa có dữ liệu</center>
-                                                            </td>
-                                                        </tr>
-                                                    ) : (
-                                                        bonusGoods.map((good, index) => {
-                                                            return (
-                                                                <tr key={index}>
-                                                                    {/* Tên trường dữ liệu */}
-                                                                    <td>{index + 1}</td>
-                                                                    <td>
-                                                                        <SelectBox
-                                                                            id={`select-discount-bonus-good`}
-                                                                            className="form-control select2"
-                                                                            style={{ width: "100%" }}
-                                                                            value={bonusGoods}
-                                                                            items={[
-                                                                                { value: "1", text: "penicillin" },
-                                                                                { value: "2", text: "Bộ khô" },
-                                                                                { value: "3", text: "Nước cất" },
-                                                                                { value: "4", text: "Vỏ cây" },
-                                                                            ]}
-                                                                            onChange={this.handleBonusGoodsChange}
-                                                                            multiple={false}
-                                                                        />
-                                                                    </td>
-                                                                    <td>
-                                                                        <input
-                                                                            className="form-control"
-                                                                            type="text"
-                                                                            value={good.name}
-                                                                            name="nameField"
-                                                                            style={{ width: "100%" }}
-                                                                        />
-                                                                    </td>
-                                                                    <td>
-                                                                        <input
-                                                                            className="form-control"
-                                                                            type="text"
-                                                                            value={good.baseUnit}
-                                                                            name="nameField"
-                                                                            style={{ width: "100%" }}
-                                                                        />
-                                                                    </td>
-                                                                    <td>
-                                                                        <input
-                                                                            className="form-control"
-                                                                            type="text"
-                                                                            value={good.quantity}
-                                                                            name="nameField"
-                                                                            style={{ width: "100%" }}
-                                                                        />
-                                                                    </td>
-
-                                                                    {/* Hành động */}
-                                                                    <td style={{ textAlign: "center" }}>
-                                                                        <a
-                                                                            className="delete"
-                                                                            title="Delete"
-                                                                            data-toggle="tooltip"
-                                                                            onClick={() => this.handleDeleteGood(good)}
-                                                                        >
-                                                                            <i className="material-icons"></i>
-                                                                        </a>
-                                                                    </td>
-                                                                </tr>
-                                                            );
-                                                        })
-                                                    )}
-                                                </tbody>
-                                            </table>
+                                            <label>
+                                                {"Khách hàng được áp dụng"}
+                                                <span className="attention"> * </span>
+                                            </label>
+                                            <SelectBox
+                                                id={`select-create-discount-customer-type`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                items={[
+                                                    { value: 0, text: "Khách thường" },
+                                                    { value: 1, text: "Khách VIP" },
+                                                    { value: 2, text: "Tất cả" },
+                                                ]}
+                                                onChange={this.handleChangeCustomerType}
+                                                multiple={false}
+                                                value={customerType}
+                                            />
                                         </div>
                                     </div>
-                                </div>
-                            </fieldset>
-                        </div>
+                                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                        <div className="form-group">
+                                            <label>
+                                                {discountType === 0 ? "Đơn hàng có giá trị từ:" : "Số lượng hàng từ: "}
+                                                <span className="attention"> </span>
+                                            </label>
+                                            <input
+                                                type="number"
+                                                className="form-control"
+                                                value={minimumThresholdToBeApplied}
+                                                placeholder={discountType === 0 ? "vnđ" : "đơn vị"}
+                                                onChange={this.handleMaximumThresholdToBeAppliedChange}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                        <div className="form-group">
+                                            <label>
+                                                {discountType === 0 ? "Đến: " : "Đến: "}
+                                                <span className="attention"> </span>
+                                            </label>
+                                            <input
+                                                type="number"
+                                                className="form-control"
+                                                value={maximumThresholdToBeApplied}
+                                                onChange={this.handleMaximumThresholdToBeAppliedChange}
+                                                placeholder={discountType === 0 ? "vnđ" : "đơn vị"}
+                                            />
+                                        </div>
+                                    </div>
+                                    {formality == 0 ? (
+                                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                            <div className="form-group">
+                                                <label>
+                                                    {"Giảm giá tiền mặt"}
+                                                    <span className="attention">*</span>
+                                                </label>
+                                                <input type="number" className="form-control" value={discountedCash} />
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        ""
+                                    )}
+                                    {formality == 1 ? (
+                                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                            <div className="form-group">
+                                                <label>
+                                                    {"Phần trăm giảm giá"}
+                                                    <span className="attention">*</span>
+                                                </label>
+                                                <input type="number" className="form-control" value={discountedPercentage} />
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        ""
+                                    )}
+                                    {formality == 1 ? (
+                                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                            <div className="form-group">
+                                                <label>
+                                                    {"Tiền giảm giá tối đa"}
+                                                    <span className="attention"> </span>
+                                                </label>
+                                                <input type="number" className="form-control" value={maximumDiscountedCash} placeholder="vd: 50000" />
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        ""
+                                    )}
+                                    {formality == 2 ? (
+                                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                            <div className="form-group">
+                                                <label>
+                                                    {"Tặng xu"}
+                                                    <span className="attention"></span>
+                                                </label>
+                                                <input type="number" className="form-control" value={loyaltyCoin} placeholder="vd: 10000" />
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        ""
+                                    )}
+                                    {formality == 3 ? (
+                                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                            <div className="form-group">
+                                                <label>
+                                                    {"Miễn phí vận chuyển tối đa"}
+                                                    <span className="attention"> </span>
+                                                </label>
+                                                <input
+                                                    type="number"
+                                                    className="form-control"
+                                                    value={maximumFreeShippingCost}
+                                                    placeholder="vd: 50000"
+                                                />
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        ""
+                                    )}
+                                    {discountType == 1 && formality == 5 ? (
+                                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                            <div className="form-group">
+                                                <label>
+                                                    Các mặt hàng được áp dụng:
+                                                    <a style={{ cursor: "pointer" }} title="Thêm các mặt hàng áp dụng">
+                                                        <i
+                                                            className="fa fa-plus-square"
+                                                            style={{ color: "#00a65a", marginLeft: 5 }}
+                                                            onClick={this.handleAddDiscountOnGoods}
+                                                        />
+                                                    </a>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        ""
+                                    )}
+                                    {discountType == 1 && formality != 5 ? (
+                                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                            <div className={`form-group`}>
+                                                <label className="control-label">
+                                                    Các mặt hàng được áp dụng: <span className="attention"> * </span>
+                                                </label>
+                                                <SelectBox
+                                                    id={`select-discount-on-goods2`}
+                                                    className="form-control select2"
+                                                    style={{ width: "100%" }}
+                                                    value={goods}
+                                                    items={this.getAllGoods()}
+                                                    onChange={this.handleGoodChange}
+                                                    multiple={true}
+                                                />
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        ""
+                                    )}
+                                    {formality == 4 ? (
+                                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                            <div className="form-group">
+                                                <label>
+                                                    Sản phẩm tặng kèm:
+                                                    <a style={{ cursor: "pointer" }} title="Thêm các sản phẩm tặng kèm">
+                                                        <i
+                                                            className="fa fa-plus-square"
+                                                            style={{ color: "#00a65a", marginLeft: 5 }}
+                                                            onClick={this.handleAddBonusGood}
+                                                        />
+                                                    </a>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        ""
+                                    )}
+                                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <div className={"pull-right"} style={{ padding: 10 }}>
+                                            <button
+                                                className="btn btn-success"
+                                                style={{ marginLeft: "10px" }}
+                                                // disabled={!this.isGoodsValidated()}
+                                                // onClick={this.handleSubmitGoods}
+                                            >
+                                                Thêm
+                                            </button>
+                                            <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClear}>
+                                                Xóa trắng
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <table id={`order-table-tax-create`} className="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>STT</th>
+                                                <th>Loại khách hàng</th>
+                                                <th>Giá trị tối thiểu</th>
+                                                <th>Giá trị tối đa</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </fieldset>
+                            </div>
+                        ) : (
+                            ""
+                        )}
                     </form>
                 </DialogModal>
             </React.Fragment>

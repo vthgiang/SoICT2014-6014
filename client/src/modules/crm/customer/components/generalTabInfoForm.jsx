@@ -87,7 +87,7 @@ class GeneralTabInfoForm extends Component {
         }
 
         return (
-            <div className="tab-pane active" id={id}>
+            <div id={id} className="tab-pane active" >
                 <div className="description-box" style={{ lineHeight: 1.5 }}>
                     <h4 >Thông tin chính</h4>
                     <div className="row"  >
@@ -159,7 +159,7 @@ class GeneralTabInfoForm extends Component {
                         <div className="col-md-6">
                             <div className="form-horizontal">
                                 <div className="form-group">
-                                    <strong className="col-sm-4">Người đại diện</strong>
+                                    <strong className="col-sm-4">{translate('crm.customer.represent')}</strong>
                                     <div className="col-sm-8">
                                         <span>{customerInfomation.represent ? customerInfomation.represent : ''}</span>
                                     </div>

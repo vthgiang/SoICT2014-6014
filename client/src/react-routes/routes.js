@@ -11,7 +11,7 @@ import { NotFound } from '../modules/not-found/components';
 
 import Login from '../modules/auth/components/login';
 import ResetPassword from '../modules/auth/components/resetPassword';
-import {Introduction} from '../modules/intro/components';
+import { Introduction } from '../modules/intro/components';
 import ManageDocument from '../modules/document/components/administration';
 import Document from '../modules/document/components/user';
 
@@ -48,6 +48,7 @@ import { AnnualLeave } from '../modules/human-resource/annual-leave/components/c
 import { ManageLeaveApplication } from '../modules/human-resource/annual-leave/components/combinedContent';
 import { EmployeeCapacity } from '../modules/human-resource/employee-capacity/components';
 import { DashboardPersonal } from '../modules/dashboard-personal/components';
+import { DashboardUnit } from '../modules/dashboard-unit/components';
 
 import { ListEducation } from '../modules/training/education-program/components/educationProgramList';
 import { TrainingPlan } from '../modules/training/course/components/course';
@@ -111,7 +112,8 @@ import InventoryManagement from '../modules/production/warehouse/inventory-manag
 import CrmDashBoard from '../modules/crm/dashboard/components';
 import CrmCustomer from '../modules/crm/customer/components';
 import CrmGroup from '../modules/crm/group/components';
-import CrmCare from '../modules/crm/care/components'
+import CrmCare from '../modules/crm/care/components';
+import GeneralConfiguration from '../modules/crm/generalConfiguration/components';
 
 //orders
 import PurchaseOrder from '../modules/production/order/purchase-order/components';
@@ -153,7 +155,7 @@ class Routes extends Component {
         return (
             <React.Fragment>
                 <Switch>
-                    <Route exact path="/" component={Introduction}/>
+                    <AuthRoute exact auth={auth} path="/" component={Introduction} />
                     <AuthRoute exact auth={auth} path="/login" component={Login} />
                     <AuthRoute exact auth={auth} path="/reset-password" component={ResetPassword} />
                     <PrivateRoute
@@ -387,15 +389,30 @@ class Routes extends Component {
                         key={'dashboard_personal'}
                         arrPage={[
                             { link: '/', name: 'home', icon: 'fa fa-home' },
-                            { link: '/hr-dashboard-personal', name: 'dashboard_personal', icon: 'fa fa-newspaper-o' }
+                            { link: '/dashboard-personal', name: 'dashboard_personal', icon: 'fa fa-newspaper-o' }
                         ]}
                         auth={auth}
                         exact={true}
-                        link={'/hr-dashboard-personal'}
-                        path={'/hr-dashboard-personal'}
+                        link={'/dashboard-personal'}
+                        path={'/dashboard-personal'}
                         pageName={'dashboard_personal'}
                         layout={Layout}
                         component={DashboardPersonal}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.annualLeave.isLoading}
+                        key={'dashboard_unit'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/dashboard-unit', name: 'dashboard_unit', icon: 'fa fa-newspaper-o' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/dashboard-unit'}
+                        path={'/dashboard-unit'}
+                        pageName={'dashboard_unit'}
+                        layout={Layout}
+                        component={DashboardUnit}
                     />
                     <PrivateRoute
                         isLoading={this.props.annualLeave.isLoading}
@@ -1374,6 +1391,21 @@ class Routes extends Component {
                         component={CrmCare}
                     />
 
+                    <PrivateRoute
+                        isLoading={false}
+                        key={'generalConfiguration'}
+                        arrPage={[
+                            { link: '/crm/generalConfiguration', name: 'crm_list.generalConfiguration', icon: 'fa fa-gear' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/crm/generalConfiguration'}
+                        path={'/crm/generalConfiguration'}
+                        pageName={'crm_list.generalConfiguration'}
+                        layout={Layout}
+                        component={GeneralConfiguration}
+                    />
+
                     {/* Orders Management */}
 
                     <PrivateRoute
@@ -1702,7 +1734,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={false}
+                        isLoading={this.props.purchasingRequest.isLoading}
                         key={"manage-purchasing-request"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },

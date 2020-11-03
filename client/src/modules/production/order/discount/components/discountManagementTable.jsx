@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { DiscountActions } from "../redux/actions";
+import { GoodActions } from "../../../common-production/good-management/redux/actions";
 import DiscountCreateForm from "./discountCreateForm";
 import { PaginateBar, DataTableSetting, SelectBox, DeleteNotification, ConfirmNotification } from "../../../../../common-components";
 
@@ -17,6 +18,7 @@ class DiscountManagementTable extends Component {
     componentDidMount() {
         const { page, limit } = this.state;
         this.props.getAllDiscounts({ page, limit });
+        this.props.getAllGoodsByType({ type: "product" });
     }
 
     setPage = async (page) => {
@@ -27,7 +29,7 @@ class DiscountManagementTable extends Component {
             limit: this.state.limit,
             page: page,
         };
-        this.props.getAllTaxs(data);
+        this.props.getAllDiscounts(data);
     };
 
     setLimit = async (limit) => {
@@ -38,7 +40,7 @@ class DiscountManagementTable extends Component {
             limit: limit,
             page: this.state.page,
         };
-        this.props.getAllTaxs(data);
+        this.props.getAllDiscounts(data);
     };
 
     render() {
@@ -160,6 +162,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     getAllDiscounts: DiscountActions.getAllDiscounts,
+    getAllGoodsByType: GoodActions.getAllGoodsByType,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(DiscountManagementTable));

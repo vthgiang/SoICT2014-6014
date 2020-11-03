@@ -20,7 +20,9 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
             startDateShow: startDate,
             endDate: this.formatDate(Date.now(), true),
             endDateShow: this.formatDate(Date.now(), true),
-            organizationalUnitsSearch: []
+            organizationalUnitsSearch: [],
+            organizationalUnits: [this.props.childOrganizationalUnit[0].id],
+            organizationalUnitsSearch: [this.props.childOrganizationalUnit[0].id],
         }
     }
 
@@ -245,7 +247,9 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
     render() {
         const { department, employeesManager, translate } = this.props;
 
-        const { lineChart, nameChart, nameData1, nameData2, nameData3, startDate, endDate, startDateShow, endDateShow, organizationalUnitsSearch } = this.state;
+        const { lineChart, nameChart, nameData1, nameData2, nameData3, startDate, endDate, startDateShow, endDateShow, organizationalUnits, organizationalUnitsSearch } = this.state;
+
+        const { childOrganizationalUnit } = this.props;
 
         let organizationalUnitsName = [];
         if (organizationalUnitsSearch) {
@@ -289,9 +293,11 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
                             <div className="form-group" >
                                 <label className="form-control-static" > {translate('kpi.evaluation.dashboard.organizational_unit')} </label>
                                 <SelectMulti id="multiSelectUnits-towBarChart"
-                                    items={department.list.map((p, i) => { return { value: p._id, text: p.name } })}
+                                    items={childOrganizationalUnit.map((p, i) => { return { value: p.id, text: p.name } })}
                                     options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
-                                    onChange={this.handleSelectOrganizationalUnit} >
+                                    onChange={this.handleSelectOrganizationalUnit}
+                                    value={organizationalUnits}
+                                >
                                 </SelectMulti>
                             </div>
                             <div className="form-group" >

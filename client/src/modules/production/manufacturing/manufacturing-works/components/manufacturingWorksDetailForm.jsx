@@ -11,8 +11,8 @@ class ManufacturingWorksDetailForm extends Component {
     }
 
     shouldComponentUpdate(nextProps) {
-        if (nextProps.worksId !== this.props.worksId) {
-            this.props.getDetailManufacturingWorks(nextProps.worksId);
+        if (nextProps.worksDetail !== this.props.worksDetail) {
+            this.props.getDetailManufacturingWorks(nextProps.worksDetail._id);
             return false;
         }
         return true;

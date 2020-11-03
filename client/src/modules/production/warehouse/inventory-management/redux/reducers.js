@@ -13,6 +13,7 @@ var findIndex = (array, id) => {
 const initState = {
     isLoading: false,
     listLots: [],
+    lotDetail: "",
     listPaginate: [],
     totalDocs: 0,
     limit: 0,
@@ -33,10 +34,12 @@ export function lots(state = initState, action){
     switch(action.type){
 
         case LotConstants.GET_LOT_REQUEST:
-        case LotConstants.GET_PAGINATE_LOT_REQUEST:
+        case LotConstants.GET_LOT_PAGINATE_REQUEST:
+        case LotConstants.GET_LOT_DETAIL_REQUEST:
+        case LotConstants.EDIT_LOT_REQUEST:
             return {
                 ...state,
-                isLoading: false
+                isLoading: true
             }
 
         case LotConstants.GET_LOT_SUCCESS:
@@ -46,15 +49,50 @@ export function lots(state = initState, action){
                 isLoading: false
             }
 
-        case LotConstants.GET_PAGINATE_LOT_SUCCESS:
+        case LotConstants.GET_LOT_PAGINATE_SUCCESS:
             return {
                 ...state,
-                listPaginate: action.payload,
+                listPaginate: action.payload.docs,
+                totalDocs: action.payload.totalDocs,
+                limit: action.payload.limit,
+                totalPages: action.payload.totalPages,
+                page: action.payload.page,
+                pagingCounter: action.payload.pagingCounter,
+                hasPrevPage: action.payload.hasPrevPage,
+                hasNextPage: action.payload.hasNextPage,
+                prevPage: action.payload.prevPage,
+                nextPage: action.payload.nextPage,
+                isLoading: false
+            }
+
+        case LotConstants.GET_LOT_DETAIL_SUCCESS:
+            return {
+                ...state,
+                lotDetail: action.payload,
                 isLoading: false
             }
         
+        case LotConstants.EDIT_LOT_SUCCESS:
+            index = findIndex(state.listLots, action.payload._id);
+            indexPaginate = findIndex(state.listPaginate, action.payload._id)
+
+            if(index !== -1){
+                state.listLots[index] = action.payload
+            }
+
+            if(indexPaginate !== -1) {
+                state.listPaginate[indexPaginate] = action.payload
+            }
+
+            return {
+                ...state,
+                isLoading: false
+            }
+
         case LotConstants.GET_LOT_FAILURE:
-        case LotConstants.GET_PAGINATE_LOT_FAILURE:
+        case LotConstants.GET_LOT_PAGINATE_FAILURE:
+        case LotConstants.GET_LOT_DETAIL_FAILURE:
+        case LotConstants.GET_LOT_DETAIL_FAILURE:
             return {
                 ...state,
                 isLoading: false

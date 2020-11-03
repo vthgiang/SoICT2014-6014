@@ -251,7 +251,18 @@ class DomainOfTaskResultsChart extends Component {
             listTask = this.props.TaskOrganizationUnitDashboard ? listTask.tasks : listTask; // neu la listTask cua organizationUnit
             listTask.map(task => {
                 task.evaluations.filter(evaluation => {
-                    if (new Date(evaluation.date) < new Date(nextMonth) && new Date(evaluation.date) >= new Date(currentMonth)) {
+                    let date = new Date(nextMonth)
+                    let month = date.getMonth() + 1
+                    let day;
+                    if(month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12 ){
+                        day = 31;
+                    } else if(month == 2){
+                        day = 28;
+                    } else {
+                        day = 30;
+                    }
+                    let dateNextMonth = date.getFullYear() + '-' + month + '-' + day; 
+                    if (new Date(evaluation.date) < new Date(dateNextMonth) && new Date(evaluation.date) >= new Date(currentMonth)) {
                         return 1;
                     }
 
@@ -297,8 +308,7 @@ class DomainOfTaskResultsChart extends Component {
 
         let month = ['x'], maxResults = [translate('task.task_management.dashboard_max')], minResults = [translate('task.task_management.dashboard_min')];
         let monthIndex = startMonth;
-
-        while (new Date(monthIndex) < new Date(endMonth)) {
+        while (new Date(monthIndex) <= new Date(endMonth)) {
             let data, nextMonthIndex;
 
             if (new Number(monthIndex.slice(5, 7)) < 9) {
@@ -310,6 +320,7 @@ class DomainOfTaskResultsChart extends Component {
             }
 
             data = this.filterTasksByMonth(monthIndex, nextMonthIndex);
+            
             if (data.max) {
                 month.push(data.month);
                 maxResults.push(data.max);
@@ -318,7 +329,6 @@ class DomainOfTaskResultsChart extends Component {
 
             monthIndex = nextMonthIndex;
         }
-
         return [
             month,
             maxResults,

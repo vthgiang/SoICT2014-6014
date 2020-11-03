@@ -333,3 +333,9 @@ to {transform:scale(1)}
 .comment-process {
     line-height: normal !important;
 }
+
+.sort-action {
+    display: flex;
+    flex-direction: column;
+    margin-top: -15px;
+}

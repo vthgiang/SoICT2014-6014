@@ -52,6 +52,7 @@ export const performTaskService = {
     editInformationTask,
     getById,
     confirmTask,
+    editEmployeeCollaboratedWithOrganizationalUnits,
 
     //Comment in process
     createComment,
@@ -223,6 +224,15 @@ function confirmTask(taskId) {
     }, true, true, 'task.task_management');
 }
 
+/** Chỉnh sửa đơn vị phối hợp */
+function editEmployeeCollaboratedWithOrganizationalUnits(taskId, employeeCollaboratedWithUnit) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}`,
+        method: 'POST',
+        params: { type: 'edit_employee_collaborated_with_unit' },
+        data: employeeCollaboratedWithUnit
+    }, true, true, 'task.task_management');
+}
 /**
  * Tạo bình luận công việc
  * @param {*} taskId id của task cần tạo

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Models = require(`${SERVER_MODELS_DIR}`);
 const fs = require('fs');
 const { EmployeeKpi, EmployeeKpiSet, OrganizationalUnit, OrganizationalUnitKpiSet, User, taskCommentModel } = Models;
-const { connect } =  require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 // File này làm nhiệm vụ thao tác với cơ sở dữ liệu của module quản lý kpi cá nhân
 
@@ -57,7 +57,6 @@ exports.getEmployeeKpiSet = async (portal, id, role, month) => {
 
 /* Lấy tất cả các tập KPI của 1 nhân viên theo thời gian cho trước */
 exports.getAllEmployeeKpiSetByMonth = async (portal, organizationalUnitIds, userId, startDate, endDate) => {
-    
     let employeeKpiSetByMonth = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .find(
             {
@@ -179,12 +178,12 @@ exports.createEmployeeKpiSet = async (portal, data) => {
         employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
             .findByIdAndUpdate(
                 employeeKpiSet, { kpis: defaultEmployeeKpi }, { new: true }
-        )
+            )
         employeeKpiSet = employeeKpiSet && await employeeKpiSet
             .populate("organizationalUnit creator approver")
             .populate({ path: "kpis", populate: { path: 'parent' } })
             .execPopulate();
-        
+
         return employeeKpiSet;
     } else {
         return null;
@@ -230,7 +229,7 @@ exports.deleteEmployeeKpi = async (portal, id, employeeKpiSetId) => {
         .populate("organizationalUnit creator approver")
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .execPopulate();
-    
+
     return employeeKpiSet;
 }
 
@@ -571,7 +570,7 @@ exports.deleteFileChildComment = async (portal, params) => {
             { $replaceRoot: { newRoot: "$files" } },
             { $match: { "_id": mongoose.Types.ObjectId(params.fileId) } }
         ]);
-    
+
     fs.unlinkSync(file[0].url);
 
     let action = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
@@ -587,6 +586,6 @@ exports.deleteFileChildComment = async (portal, params) => {
             { path: "comments.creator", select: 'name email avatar' },
             { path: "comments.comments.creator", select: 'name email avatar' },
         ]);
-    
+
     return task.comments;
 }

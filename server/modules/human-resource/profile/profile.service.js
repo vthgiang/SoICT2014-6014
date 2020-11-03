@@ -1188,7 +1188,7 @@ exports.createNotificationForEmployeesHaveBrithdayCurrent = async (portal) => {
             title: "Thông báo sinh nhật",
             level: "info",
             content: "Chúc bạn có một ngày sinh nhật vui vẻ",
-            sender: "VNIMA",
+            sender: process.env.WEB_NAME,
             user: user._id,
             manualNotification: undefined
         }
@@ -1224,7 +1224,7 @@ exports.createNotificationForEmployeesHaveBrithdayCurrent = async (portal) => {
                 title: "Thông báo sinh nhật",
                 level: "info",
                 content: `Hôm nay là sinh nhật của ${users[n].name}. Hãy gửi những lời chúc đến ${users[n].name}`,
-                sender: "VNIMA",
+                sender: process.env.WEB_NAME,
                 user: x,
                 manualNotification: undefined
             }
@@ -1232,7 +1232,6 @@ exports.createNotificationForEmployeesHaveBrithdayCurrent = async (portal) => {
         notifications = notifications.concat(notificationsArr)
     }
     let result = await Notification(connect(DB_CONNECTION, portal)).insertMany(notifications);
-    console.log(result);
 }
 
 /**
@@ -1305,7 +1304,7 @@ exports.createNotificationEndOfContract = async (portal) => {
                 content: `Hợp đồng lao động của bạn sẽ hết hiệu lực sau ${arrayTime[n]} ngày.` +
                     `${employees[index].endDateCommitmentTime? " Tuy nhiên bạn phải làm thêm đến ngày "+
                         this.formatDate(employees[index].endDateCommitmentTime, false) + " do bạn tham gia các khoá học có thời gian cam kết làm việc sau khi học xong khoá đào tạo.": ""}`,
-                sender: "VNIMA",
+                sender: process.env.WEB_NAME,
                 user: user._id,
                 manualNotification: undefined
             }

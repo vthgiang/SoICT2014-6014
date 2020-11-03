@@ -32,8 +32,8 @@ const DiscountSchema = new Schema({
     },
     formality: {// Hình thức giảm giá
         type: String,
-        enum: [0, 1, 2, 3, 4, 5], //0. discountedCash, 1. discountedPercentage, 2. loyaltyCoin,
-        // 3. maximumFreeShippingCost, 4. bonusGoods
+        enum: [0, 1, 2, 3, 4, 5], //0. discounted cash, 1. discounted percentage, 2. loyalty coin,
+        // 3. maximum free shipping cost, 4. bonus goods, 5. clear inventory
         required: true
     },
     discounts: [{
@@ -66,6 +66,12 @@ const DiscountSchema = new Schema({
             good: {
                 type: Schema.Types.ObjectId,
                 ref: 'Good'
+            },
+            expirationDateOfGoodBonus: {
+                type: Date
+            },
+            baseUnit: {
+                type: String
             },
             quantityOfBonusGood: {
                 type: Number

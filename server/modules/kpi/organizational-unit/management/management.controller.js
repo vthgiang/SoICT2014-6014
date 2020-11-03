@@ -25,3 +25,22 @@ exports.copyKPI = async (req, res) => {
         })
     }
 }
+
+exports.calculateKpiUnit = async (req, res) => {
+    try {
+        let kpiUnit = await managerService.calculateKpiUnit(req.portal, req.body);
+        Logger.info(req.user.email, ' calculate kpi unit ', req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['calculate_kpi_unit_success'],
+            content: kpiUnit
+        });
+    } catch (error) {
+        Logger.error(req.user.email, ' calculate kpi unit ', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['calculate_kpi_unit_fail'],
+            content: error
+        })
+    }
+}

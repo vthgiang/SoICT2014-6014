@@ -26,13 +26,8 @@ class HumanResourceChartBySalary extends Component {
      */
     renderChart = (data) => {
         data.data1.shift();
-        let fakeData1 = data.data1.map((x, index) => {
-            if (index % 2 === 0) {
-                return x * 2
-            } else return x / 2
-        });
 
-        // this.removePreviousChart();
+        this.removePreviousChart();
         let chart = c3.generate({
             bindto: this.refs.rotateChart,
             data: {
@@ -56,15 +51,9 @@ class HumanResourceChartBySalary extends Component {
 
         setTimeout(function () {
             chart.load({
-                columns: [[data.nameData, ...fakeData1]],
-            });
-        }, 100);
-
-        setTimeout(function () {
-            chart.load({
                 columns: [[data.nameData, ...data.data1]],
             });
-        }, 300);
+        }, 100);
     };
 
     /**
@@ -150,6 +139,41 @@ class HumanResourceChartBySalary extends Component {
         }
     }
 
+    static isEqual = (items1, items2) => {
+        if (!items1 || !items2) {
+            return false;
+        }
+        if (items1.length !== items2.length) {
+            return false;
+        }
+        for (let i = 0; i < items1.length; ++i) {
+            if (items1[i]._id !== items2[i]._id) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.organizationalUnits !== prevState.organizationalUnits || nextProps.monthShow !== prevState.monthShow ||
+            !HumanResourceChartBySalary.isEqual(nextProps.salary.listSalaryByMonthAndOrganizationalUnits, prevState.listSalaryByMonthAndOrganizationalUnits)) {
+            return {
+                monthShow: nextProps.monthShow,
+                organizationalUnits: nextProps.organizationalUnits,
+                listSalaryByMonthAndOrganizationalUnits: nextProps.salary.listSalaryByMonthAndOrganizationalUnits
+            }
+        }
+        return null;
+    };
+
+    shouldComponentUpdate(nextProps, nextState) {
+        if (nextProps.organizationalUnits !== this.state.organizationalUnits || nextProps.monthShow !== this.state.monthShow ||
+            !HumanResourceChartBySalary.isEqual(nextProps.salary.listSalaryByMonthAndOrganizationalUnits, this.state.listSalaryByMonthAndOrganizationalUnits)) {
+            return true;
+        };
+        return false;
+    }
+
     render() {
         const { translate, salary, department } = this.props;
 
@@ -191,6 +215,7 @@ class HumanResourceChartBySalary extends Component {
         });
 
         this.renderChart(this.convertData(result));
+        console.log('dagdjaw');
 
         return (
             <React.Fragment>

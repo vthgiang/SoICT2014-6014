@@ -42,7 +42,7 @@ class StockDetailForm extends Component {
                 <DialogModal
                     modalID={`modal-detail-stock`} isLoading={stocks.isLoading}
                     formID={`form-detail-stock`}
-                    title={translate('manage_warehouse.stock_management.add_title')}
+                    title={translate('manage_warehouse.stock_management.detail_stock')}
                     msg_success={translate('manage_warehouse.stock_management.add_success')}
                     msg_faile={translate('manage_warehouse.stock_management.add_faile')}
                     size={75}

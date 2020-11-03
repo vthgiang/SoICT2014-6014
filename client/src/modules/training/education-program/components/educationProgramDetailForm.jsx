@@ -189,7 +189,7 @@ class EducationProgramDetailForm extends Component {
                             </thead>
                             <tbody>
                                 {
-                                    listCourses.length !== 0 && listCourses &&
+                                    listCourses && listCourses.length !== 0 &&
                                     listCourses.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.courseId}</td>

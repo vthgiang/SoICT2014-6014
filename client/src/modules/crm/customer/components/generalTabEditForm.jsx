@@ -440,7 +440,6 @@ class GeneralTabEditForm extends Component {
             progressBarWidth = totalItem > 1 && numberOfActiveItems > 0 ? ((numberOfActiveItems - 1) / (totalItem - 1)) * 100 : 0;
         }
 
-        console.log('RENDER LIST GROUPS', listGroups);
 
         return (
             <React.Fragment>
@@ -450,7 +449,7 @@ class GeneralTabEditForm extends Component {
                         <div className="col-md-12">
                             <label>{translate('crm.customer.status')}<span className="text-red">*</span></label>
                             <div className="timeline">
-                                <div className="timeline-progress" style={{ width: `${progressBarWidth}%` }}></div>
+                                <div className="timeline-crm-progress" style={{ width: `${progressBarWidth}%` }}></div>
                                 <div className="timeline-items">
                                     {
                                         listStatus && listStatus.length > 0 &&

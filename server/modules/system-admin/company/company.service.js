@@ -215,7 +215,7 @@ exports.createCompanySuperAdminAccount = async (companyShortName, userEmail, com
         <body>
             <div class="wrapper">
                 <div class="title">
-                    <h1>VNIMA</h1>
+                    <h1>${process.env.WEB_NAME}</h1>
                 </div>
                 <div class="form">
                     <p><b>Thông tin tài khoản đăng nhập của bạn: </b></p>

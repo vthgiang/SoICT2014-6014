@@ -68,7 +68,6 @@ class FileAddModal extends Component {
     isFormValidated = () => {
         const { name, description, fileUpload } = this.state;
         const { translate } = this.props;
-
         if (!ValidationHelper.validateName(translate, name).status ||
             !ValidationHelper.validateName(translate, description).status ||
             !ValidationHelper.validateName(translate, fileUpload).status)
@@ -78,9 +77,9 @@ class FileAddModal extends Component {
 
 
     save = () => {
-        const { callBackFromParentCreateForm } = this.props;
+        const { handleAddFileAttachment } = this.props;
         if (this.isFormValidated) {
-            callBackFromParentCreateForm(this.state);
+            handleAddFileAttachment(this.state);
         }
     }
 

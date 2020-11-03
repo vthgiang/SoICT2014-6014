@@ -257,7 +257,6 @@ exports.createEmployee = async (req, res) => {
                 } else {
                     let data = await EmployeeService.createEmployee(req.portal, req.body, req.user.company._id, fileInfor);
                     let checkUser = await UserService.checkUserExited(req.portal, req.body.emailInCompany);
-                    console.log(checkUser);
                     if (checkUser === false) {
                         let userInfo = {
                             email: req.body.emailInCompany,
@@ -571,7 +570,6 @@ exports.createNotificationForEmployeesHaveBrithdayCurrent = async () => {
         limit: undefined
     });
     companys = companys.map(x => x.shortName);
-    console.log(companys);
     for (let n in companys) {
         await EmployeeService.createNotificationForEmployeesHaveBrithdayCurrent(companys[n]);
     }

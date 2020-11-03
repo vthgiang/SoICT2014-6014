@@ -11,8 +11,8 @@ class ManufacturingMillDetailForm extends Component {
     }
 
     shouldComponentUpdate(nextProps) {
-        if (nextProps.millId !== this.props.millId) {
-            this.props.getDetailManufacturingMill(nextProps.millId);
+        if (nextProps.millDetail !== this.props.millDetail) {
+            this.props.getDetailManufacturingMill(nextProps.millDetail._id);
             return false;
         }
         return true;
