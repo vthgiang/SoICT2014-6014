@@ -10,6 +10,7 @@ import CreateForm from './createForm';
 import InfoForm from './infoForm';
 import EditForm from './editForm';
 import CrmCustomerImportFile from './importFileForm';
+import { formatFunction } from '../../common/index';
 
 class CrmCustomer extends Component {
     constructor(props) {
@@ -120,20 +121,20 @@ class CrmCustomer extends Component {
                 owner: o.owner && o.owner.length > 0 ? o.owner.map(ow => ow.name).join(', ') : "Deleted",
                 status: o.status && o.status.length > 0 ? o.status[o.status.length - 1].name : "Deleted",
                 customerSource: o.customerSource ? o.customerSource : 'Deleted',
-                customerType: o.customerType ? o.customerType : 'Deleted',
+                customerType: o.customerType ? formatFunction.formatCustomerType(o.customerType, translate) : 'Deleted',
                 group: o.group ? o.group.name : "Deleted",
                 represent: o.represent ? o.represent : 'Deleted',
                 mobilephoneNumber: o.mobilephoneNumber ? o.mobilephoneNumber : 'Deleted',
                 email: o.email ? o.email : 'Deleted',
                 email2: o.email2 ? o.email2 : 'Deleted',
                 address: o.address ? o.address : 'Deleted',
-                gender: o.gender ? o.gender : 'Deleted',
+                gender: o.gender ? formatFunction.formatCustomerGender(o.gender, translate) : 'Deleted',
                 birthDate: o.birthDate ? new Date(o.birthDate) : 'Deleted',
                 companyEstablishmentDate: o.companyEstablishmentDate ? new Date(o.companyEstablishmentDate) : 'Deleted',
                 taxNumber: o.taxNumber ? o.taxNumber : 'Deleted',
                 address2: o.address2 ? o.address2 : 'Deleted',
                 telephoneNumber: o.telephoneNumber ? o.telephoneNumber : 'Deleted',
-                location: o.location ? o.location : 'Deleted',
+                location: o.location ? formatFunction.formatCustomerLocation(o.location, translate) : 'Deleted',
                 website: o.website ? o.website : 'Deleted',
                 linkedIn: o.linkedIn ? o.linkedIn : 'Deleted',
             }))

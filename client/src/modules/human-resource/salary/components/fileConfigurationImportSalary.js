@@ -58,16 +58,6 @@ function templateImport(translate) {
                         width: 7
                     },
                     {
-                        key: "month",
-                        value: translate('human_resource.month'),
-                        width: 10
-                    },
-                    {
-                        key: "year",
-                        value: translate('human_resource.work_plan.year'),
-                        width: 10
-                    },
-                    {
                         key: "employeeNumber",
                         value: translate('human_resource.staff_number')
                     },
@@ -75,23 +65,6 @@ function templateImport(translate) {
                         key: "fullName",
                         value: translate('human_resource.staff_name'),
                         width: 20
-                    },
-                    {
-                        key: "organizationalUnit",
-                        value: translate('human_resource.unit'),
-                        width: 25
-                    },
-                    {
-                        key: "gender",
-                        value: translate('human_resource.profile.gender')
-                    },
-                    {
-                        key: "birthdate",
-                        value: translate('human_resource.profile.date_birth')
-                    },
-                    {
-                        key: "status",
-                        value: translate('human_resource.profile.status_work')
                     },
                     {
                         key: "mainSalary",
@@ -105,23 +78,13 @@ function templateImport(translate) {
                         key: 'bonus1',
                         value: 'Thưởng đầu hộp ViaVet'
                     },
-                    {
-                        key: "total",
-                        value: translate('human_resource.salary.table.total_salary'),
-                    },
                 ],
                 data: [{
                     STT: 1,
                     employeeNumber: 'MS1256398',
                     fullName: "Nguyễn Văn A",
                     mainSalary: 15000000,
-                    birthdate: new Date("1995-12-10"),
-                    status: translate('human_resource.profile.active'),
-                    gender: translate('human_resource.profile.male'),
-                    organizationalUnit: 'Ban giám đốc',
-                    total: 30000000,
                     month: 5,
-                    year: 2020,
                     bonus0: 10000000,
                     bonus1: 5000000
                 }, {
@@ -129,13 +92,7 @@ function templateImport(translate) {
                     employeeNumber: 'MS1256596',
                     fullName: "Nguyễn Thị C",
                     mainSalary: 15000000,
-                    birthdate: new Date("1989-5-25"),
-                    status: translate('human_resource.profile.active'),
-                    gender: translate('human_resource.profile.male'),
-                    organizationalUnit: 'Phòng kinh doanh',
-                    total: 30000000,
                     month: 5,
-                    year: 2020,
                     bonus0: 10000000,
                     bonus1: 5000000
                 }]

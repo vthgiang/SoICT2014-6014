@@ -599,15 +599,15 @@ export default {
                     not_select: 'Chưa thuộc loại tài liệu',
                 },
                 domains: {
-                    add: 'Thêm danh mục tài liệu',
-                    edit: 'Sửa thông tin danh mục tài liệu',
-                    delete: 'Xóa các danh mục đã chọn',
+                    add: 'Thêm lĩnh vực tài liệu',
+                    edit: 'Sửa thông tin lĩnh vực tài liệu',
+                    delete: 'Xóa các lĩnh vực đã chọn',
                     name: 'Tên',
                     description: 'Mô tả',
-                    parent: 'Danh mục cha',
-                    select_parent: 'Chọn danh mục cha',
-                    select: 'Chọn danh mục',
-                    not_select: 'Không thuộc về danh mục nào',
+                    parent: 'Lĩnh vực cha',
+                    select_parent: 'Chọn lĩnh vực cha',
+                    select: 'Chọn lĩnh vực',
+                    not_select: 'Không thuộc về lĩnh vực nào',
                 },
                 archives: {
                     add: 'Thêm vị trí lưu trữ tài liệu',
@@ -696,7 +696,7 @@ export default {
             customer: {
                 owner: 'Người quản lý',
                 source: 'Nguồn khách hàng',
-                company: 'Tên công ty',
+                company: 'Công ty',
                 companyEstablishmentDate: 'Ngày thành lập công ty',
                 name: 'Tên khách hàng',
                 code: 'Mã khách hàng',
@@ -727,6 +727,12 @@ export default {
                 by_customer: 'Theo khách hàng',
                 payment: 'Hình thức thanh toán',
                 creator: 'Người tạo',
+
+                personal: 'Cá nhân',
+                organization: 'Tổ chức',
+                northern: 'Miền Bắc',
+                central: 'Miền Trung',
+                southern: 'Miền Nam' ,
 
                 purchaseHistories: {
                     all: 'Tất cả',
@@ -956,6 +962,9 @@ export default {
             time_keeping: 'Chấm công nhân viên',
             list_education: 'Chương trình đào tạo bắt buộc',
             training_plan: 'Quản lý khoá đào tạo',
+            list_major: 'Danh sách chuyên ngành',
+            list_career_position: 'Danh sách vị trí công việc',
+            list_search_for_package: 'Tìm kiếm nhân sự gói thầu',
 
             manage_warehouse: 'Quản lý kho',
             dashboard_bill: 'Bảng tin quản lý các phiếu',
@@ -4005,7 +4014,11 @@ export default {
                 edit_successfully: "Sửa thông tin nhà máy thành công",
                 edit_failure: "Sửa thông tin nhà máy thất bại",
                 mill_code: "Mã xưởng",
-                mill_name: "Tên xưởng"
+                mill_name: "Tên xưởng",
+                organizational_unit: "Đơn vị liên kết",
+                choose_organizational_unit: "---Chọn đơn vị---",
+                error_organizational_unit: "Vui lòng chọn đơn vị liên kết",
+                list_roles: "Chức vụ trưởng đơn vị"
             },
             manufacturing_mill: {
                 name: "Tên xưởng",
@@ -4032,7 +4045,10 @@ export default {
                 edit_mill_successfully: "Sửa thông tin xưởng thành công",
                 edit_mill_failed: "Sửa thông tin xưởng thất bại",
                 works_name: "Tên nhà máy",
-                created_at: "Ngày tạo"
+                created_at: "Ngày tạo",
+                team_leader: "Đội trưởng",
+                choose_team_leader: "---Chọn đội trưởng---",
+                team_leader_error: "Vui lòng chọn đội trưởng"
             },
             purchasing_request: {
                 code: "Mã phiếu đề nghị",

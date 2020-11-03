@@ -1295,7 +1295,7 @@ exports.sendEmailForCreateTask = async (portal, task) => {
     collaboratedEmail = deansOfOrganizationalUnitThatHasCollaborated.map(item => item.userId && item.userId.email) // Lấy email trưởng đơn vị phối hợp 
     email.push("trinhhong102@gmail.com");
 
-    var body = `<a href="${process.env.WEBSITE}/task?taskId=${task._id}" target="_blank"><strong>${task.name}</strong></a></p> ` +
+    var body = `<a href="${process.env.WEBSITE}/task?taskId=${task._id}" target="_blank" title="${process.env.WEBSITE}/task?taskId=${task._id}"><strong>${task.name}</strong></a></p> ` +
         `<h3>Nội dung công việc</h3>` +
         // `<p>Tên công việc : <strong>${task.name}</strong></p>` +
         `<p>Mô tả : ${task.description}</p>` +

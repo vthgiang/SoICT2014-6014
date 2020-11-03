@@ -28,7 +28,7 @@ class Header extends Component {
                 <header className="main-header">
                     <Link to='/' className="logo">
                         <span className="logo-mini"><img src='/logo-white.png'/></span>
-                        <span className="logo-lg"><b className="text-white">DX Workspace</b></span>
+                        <span className="logo-lg"><b className="text-white">DX workplace</b></span>
                     </Link>
                     <nav className="navbar navbar-static-top">
                         <a className="sidebar-toggle" data-toggle="push-menu" data-expand-on-hover={true} role="button">
