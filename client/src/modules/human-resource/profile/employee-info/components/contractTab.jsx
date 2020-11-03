@@ -153,7 +153,7 @@ class ContractTab extends Component {
                                                     <td>{this.formatDate(courseInfo.startDate)}</td>
                                                     <td>{this.formatDate(courseInfo.endDate)}</td>
                                                     <td>{courseInfo.coursePlace}</td>
-                                                    <td>{x.result}</td>
+                                                    <td>{translate(`training.course.result.${x.result}`)}</td>
                                                 </tr>
                                             )
                                         } else {

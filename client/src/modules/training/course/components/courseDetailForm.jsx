@@ -49,12 +49,13 @@ class CourseDetailForm extends Component {
             endDate, cost, lecturer, employeeCommitmentTime, educationProgram } = this.state;
 
         let formater = new Intl.NumberFormat();
-        let faliedNumber = 0, passNumber = 0, total = 0;
+        let failedNumber = 0, passNumber = 0, total = 0;
 
         if (listEmployees && listEmployees.length !== 0) {
+            total = listEmployees.length;
             listEmployees.forEach(x => {
                 if (x.result === "failed") {
-                    faliedNumber += 1;
+                    failedNumber += 1;
                 } else {
                     passNumber += 1;
                 }
@@ -93,7 +94,7 @@ class CourseDetailForm extends Component {
                         <div className="form-group">
                             <span>{total} {translate('training.course.staff')} {translate('training.course.attend')}</span>
                             <span className="text-success" style={{ fontWeight: "bold" }}>&nbsp;- {passNumber}  {translate('training.course.result.pass')}&nbsp;</span>
-                            <span className="text-danger" style={{ fontWeight: "bold" }}>&nbsp;- {faliedNumber} {translate('training.course.result.falied')}&nbsp;</span>
+                            <span className="text-danger" style={{ fontWeight: "bold" }}>&nbsp;- {failedNumber} {translate('training.course.result.failed')}&nbsp;</span>
                         </div>
                         <div className="form-group">
                             <label className="pull-left">{translate('training.course.employee_attend')}:</label>
@@ -113,7 +114,7 @@ class CourseDetailForm extends Component {
                                         <tr key={index}>
                                             <td>{x.employee.employeeNumber}</td>
                                             <td>{x.employee.fullName}</td>
-                                            <td>{x.result}</td>
+                                            <td>{translate(`training.course.result.${x.result}`)}</td>
                                         </tr>
                                     ))
                                 }

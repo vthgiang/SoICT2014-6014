@@ -688,6 +688,7 @@ export default {
             domain_name_exist: 'Domain name exist',
             category_name_exist: 'Category name exist',
             name_exist: 'Name exist',
+            document_exist: 'Official number exist'
         },
 
         crm: {
@@ -843,7 +844,7 @@ export default {
                 care: 'Cares',
                 group: 'Groups',
                 statistic: 'Statistics',
-                generalConfiguration:'generalConfiguration'
+                generalConfiguration: 'generalConfiguration'
             },
 
             task_template: 'Task Template',
@@ -866,13 +867,16 @@ export default {
             dashboard_employee: 'DashBoard Manage Staffs ',
             dashboard_personal: 'DashBoard personal',
             dashboard_unit: 'DashBoard unit',
-            employee_capacity:'Employee capacity',
+            employee_capacity: 'Employee capacity',
             discipline: 'Manage Commendation And Discipline',
             annual_leave: 'Manage Annual Leave',
             salary_employee: 'Manage Salary',
             time_keeping: 'Attendance Staff',
             list_education: 'Training Programs',
             training_plan: 'Manage Training Courses',
+            list_major: 'Manage majors',
+            list_career_position: 'Manage career position',
+            list_search_for_package: 'Search employee for package',
 
             manage_warehouse: 'Manage warehouses',
             dashboard_material: "Dashboad manage materials",
@@ -1830,7 +1834,7 @@ export default {
                 // Kết quả đào tạo
                 result: {
                     pass: 'Pass',
-                    falied: 'Failed',
+                    failed: 'Failed',
                 },
 
                 // Nhóm action
@@ -2563,10 +2567,10 @@ export default {
                 auto_point_field: 'Automatic point of task in this month',
                 get_outside_info: 'Auto fill evaluation infomation from task infomation',
 
-                dashboard_created: 'Created',
-                dashboard_need_perform: 'Need to perform',
-                dashboard_need_approve: 'Need to approve',
-                dashboard_need_consult: 'Need to consult',
+                dashboard_created: 'Number of tasks you created',
+                dashboard_need_perform: 'Number of tasks you perform',
+                dashboard_need_approve: 'Number of tasks you approve',
+                dashboard_need_consult: 'Number of tasks you consult',
                 dashboard_area_result: 'Result area dashboard',
                 dashboard_overdue: 'Overdue task',
                 dashboard_about_to_overdue: 'Task is about to overdue',
@@ -3455,7 +3459,7 @@ export default {
                 add_new_tax: 'Add new tax',
                 add_successfully: 'Add tax successfully',
                 add_failed: 'Add tax failed',
-                description:'Description',
+                description: 'Description',
                 goods: 'Goods',
                 select_goods: 'Choose goods',
                 tax_percent: 'Percent',

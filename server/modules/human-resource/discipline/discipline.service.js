@@ -194,7 +194,7 @@ exports.createDiscipline = async (portal, data, company) => {
 
         // Lấy thông tin kỷ luật vừa tạo
         return await Discipline(connect(DB_CONNECTION, portal)).findOne({
-            _id: createDiscipline(connect(DB_CONNECTION, portal))._id
+            _id: createDiscipline._id
         }).populate([{
             path: 'employee',
             select: 'emailInCompany fullName employeeNumber'

@@ -512,7 +512,7 @@ exports.getDocumentsUserStatistical = async (req, res) => {
  * Kho lưu trữ vật lí
  */
 
-exports.getDocumnetArchive = async (req, res) => {
+exports.getDocumentArchives = async (req, res) => {
     try {
         const archive = await DocumentServices.getDocumentArchives(req.portal, req.user.company._id);
 

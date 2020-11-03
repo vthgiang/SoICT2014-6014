@@ -262,7 +262,7 @@ class AssetManagement extends Component {
                 // let handoverFromDate = x.handoverFromDate ? this.formatDate(x.handoverFromDate) : '';
                 // let handoverToDate = x.handoverToDate ? this.formatDate(x.handoverToDate) : '';
                 let status = x.status;
-                length = x.detailInfo.length;
+                length = x.detailInfo && x.detailInfo.length;
                 let info = (length) ? (x.detailInfo.map((item, index) => {
                     return {
                         infoName: item.nameField,

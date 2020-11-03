@@ -357,6 +357,46 @@ const initSampleCompanyDB = async () => {
         name: "Trưởng phòng kinh doanh",
         type: roleChucDanh._id
     });
+
+    // Khỏi tạo role cho khối sản xuất
+
+    const nvNhaMayThuocBot = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: "Nhân viên nhà máy thuốc bột",
+        type: roleChucDanh._id
+    })
+
+    const quanDocNhaMayThuocBot = await Role(vnistDB).create({
+        parents: [roleDean._id, nvNhaMayThuocBot._id],
+        name: "Quản đốc nhà máy thuốc bột",
+        type: roleChucDanh._id
+    })
+
+    const nvNhaMayThuocNuoc = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: "Nhân viên nhà máy thuốc nước",
+        type: roleChucDanh._id
+    })
+
+    const quanDocNhaMayThuocNuoc = await Role(vnistDB).create({
+        parents: [roleDean._id, nvNhaMayThuocNuoc._id],
+        name: "Quản đốc nhà máy thuốc nước",
+        type: roleChucDanh._id
+    })
+
+    const nvNhaMayTPCN = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: "Nhân viên nhà máy thực phẩm chức năng",
+        type: roleChucDanh._id
+    })
+
+    const quanDocNhaMayTPCN = await Role(vnistDB).create({
+        parents: [roleDean._id, nvNhaMayTPCN._id],
+        name: "Quản đốc nhà máy thực phẩm chức năng",
+        type: roleChucDanh._id
+    })
+
+
     console.log("Dữ liệu các phân quyền cho công ty VNIST");
 
 
@@ -398,10 +438,65 @@ const initSampleCompanyDB = async () => {
     }, {
         userId: users[8]._id,
         roleId: nvPhongHC._id
-    },{
+    }, {
         userId: users[9]._id,
         roleId: nvPhongHC._id
-    }]);
+    },
+    // Gán quyền cho khối sản xuất
+
+    { // Quản đốc nhà máy thuốc bột
+        userId: users[11]._id,
+        roleId: quanDocNhaMayThuocBot._id
+    },
+    { // Quản đốc nhà máy thuốc nước
+        userId: users[12]._id,
+        roleId: quanDocNhaMayThuocNuoc._id
+    },
+    { // Quản đốc nhà máy thực phẩm chức năng
+        userId: users[13]._id,
+        roleId: quanDocNhaMayTPCN._id
+    },
+
+    { // Nhân viên nhà máy thuôc bột
+        userId: users[14]._id,
+        roleId: nvNhaMayThuocBot._id
+    },
+    {
+        userId: users[15]._id,
+        roleId: nvNhaMayThuocBot._id
+    },
+    {
+        userId: users[16]._id,
+        roleId: nvNhaMayThuocBot._id
+    },
+
+    { // Nhân viên nhà máy thuôc nước
+        userId: users[5]._id,
+        roleId: nvNhaMayThuocNuoc._id
+    },
+    {
+        userId: users[6]._id,
+        roleId: nvNhaMayThuocNuoc._id
+    },
+    {
+        userId: users[7]._id,
+        roleId: nvNhaMayThuocNuoc._id
+    },
+
+    {
+        userId: users[8]._id,
+        roleId: nvNhaMayTPCN._id
+    },
+    {
+        userId: users[9]._id,
+        roleId: nvNhaMayTPCN._id
+    },
+    {
+        userId: users[10]._id,
+        roleId: nvNhaMayTPCN._id
+    }
+
+    ]);
 
     /**
      * 7. Tạo dữ liệu các phòng ban cho công ty VNIST
@@ -422,7 +517,33 @@ const initSampleCompanyDB = async () => {
         employees: [nvPhongHC._id],
         parent: Directorate._id
     },]);
-    console.log("Đã tạo dữ liệu phòng ban: ", Directorate, departments);
+
+    // Khỏi tạo cơ cấu tổ chức cho khối sản xuất
+    const nhamaythuocbot = await OrganizationalUnit(vnistDB).insertMany([{
+        name: "Nhà máy sản xuất thuốc bột",
+        description: "Nhà máy sản xuất thuốc bột của Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+        deans: [quanDocNhaMayThuocBot._id],
+        viceDeans: [],
+        employees: [nvNhaMayThuocBot._id],
+        parent: Directorate._id
+    },]);
+    const nhamaythuocnuoc = await OrganizationalUnit(vnistDB).insertMany([{
+        name: "Nhà máy sản xuất thuốc nước",
+        description: "Nhà máy sản xuất thuốc nước của Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+        deans: [quanDocNhaMayThuocNuoc._id],
+        viceDeans: [],
+        employees: [nvNhaMayThuocNuoc._id],
+        parent: Directorate._id
+    },]);
+    const nhamaythucphamchucnang = await OrganizationalUnit(vnistDB).insertMany([{
+        name: "Nhà máy sản xuất thực phẩm chức năng",
+        description: "Nhà máy sản xuất thực phẩm chức năng của Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+        deans: [quanDocNhaMayTPCN._id],
+        viceDeans: [],
+        employees: [nvNhaMayTPCN._id],
+        parent: Directorate._id
+    },]);
+    console.log("Đã tạo dữ liệu phòng ban: ", Directorate, departments, nhamaythuocbot, nhamaythuocnuoc, nhamaythucphamchucnang);
 
     /**
      * 8. Tạo link cho các trang web của công ty VNIST
@@ -967,7 +1088,7 @@ const initSampleCompanyDB = async () => {
         applyForPositions: [
             nvPhongHC._id
         ],
-        
+
         name: "An toan lao dong",
         programId: "M123",
     }, {
@@ -1295,12 +1416,12 @@ const initSampleCompanyDB = async () => {
 
     const documents = await Document(vnistDB).insertMany([{
         company: vnist._id,
-        name: 'Đi chơi',
+        name: 'Quy định du lịch nghỉ mát công ty',
         category: categories[0],
         domains: [domanins2[1]],
         archives: [archives4[0]],
         versions: [{
-            versionName: "Đi chơi",
+            versionName: "Quy định du lịch nghỉ mát công ty V1.0",
             issuingDate: "2020-08-16",
             effectiveDate: "2020-08-16",
             expiredDate: "2020-08-16",
@@ -1309,6 +1430,7 @@ const initSampleCompanyDB = async () => {
             roleAdmin._id,
             roleDean._id,
         ],
+        officialNumber: "VN001",
     }, {
         company: vnist._id,
         name: 'Điều lệ công ty',
@@ -1316,7 +1438,7 @@ const initSampleCompanyDB = async () => {
         domains: [domanins2[0]],
         archives: [archives3[3]],
         versions: [{
-            versionName: 'Điều lệ công ty',
+            versionName: 'Điều lệ công ty v1.0',
             issuingDate: "2020-08-16",
             effectiveDate: "2020-08-16",
             expiredDate: "2020-08-16",
@@ -1324,7 +1446,8 @@ const initSampleCompanyDB = async () => {
         roles: [
             roleAdmin._id,
             roleDean._id,
-        ]
+        ],
+        officialNumber: "VN002",
     }, {
         company: vnist._id,
         name: 'Giấy chứng nhận đăng ký chất lượng sản phẩm',
@@ -1332,7 +1455,7 @@ const initSampleCompanyDB = async () => {
         domains: [domanins2[4]],
         archives: [archives3[3]],
         versions: [{
-            versionName: 'Giấy chứng nhận đăng ký chất lượng sản phẩm',
+            versionName: 'Giấy chứng nhận đăng ký chất lượng sản phẩm v1.0',
             issuingDate: "2020-08-16",
             effectiveDate: "2020-08-16",
             expiredDate: "2020-08-16",
@@ -1340,7 +1463,8 @@ const initSampleCompanyDB = async () => {
         roles: [
             roleAdmin._id,
             roleDean._id,
-        ]
+        ],
+        officialNumber: "VN003",
     }, {
         company: vnist._id,
         name: 'Giấy chứng nhận đăng ký chất lượng hàng nhập',
@@ -1352,7 +1476,8 @@ const initSampleCompanyDB = async () => {
             issuingDate: "2020-08-16",
             effectiveDate: "2020-08-16",
             expiredDate: "2020-08-16",
-        }]
+        }],
+        officialNumber: "VN004",
     }, {
         company: vnist._id,
         name: 'Kết quả khảo sát định kỳ',
@@ -1360,11 +1485,12 @@ const initSampleCompanyDB = async () => {
         domains: [domanins2[1]],
         archives: [archives4[0]],
         versions: [{
-            versionName: 'Kết quả khảo sát định kỳ',
+            versionName: 'Kết quả khảo sát định kỳ v1.0',
             issuingDate: "2020-08-16",
             effectiveDate: "2020-08-16",
             expiredDate: "2020-08-16",
-        }]
+        }],
+        officialNumber: "VN005",
     }, {
         company: vnist._id,
         name: 'Giấy chứng nhận đăng ký chất lượng thực phẩm',
@@ -1372,11 +1498,12 @@ const initSampleCompanyDB = async () => {
         domains: [domanins2[4]],
         archives: [archives3[3]],
         versions: [{
-            versionName: 'Giấy chứng nhận đăng ký chất lượng thực phẩm',
+            versionName: 'Giấy chứng nhận đăng ký chất lượng thực phẩm v1.0',
             issuingDate: "2020-08-16",
             effectiveDate: "2020-08-16",
             expiredDate: "2020-08-16",
-        }]
+        }],
+        officialNumber: "VN006",
     },])
 
     /*---------------------------------------------------------------------------------------------
@@ -3151,7 +3278,7 @@ const initSampleCompanyDB = async () => {
         ]
     },
     ])
-    
+
     console.log("Cập nhật nút con của thông tin lưu trữ kho");
     var listBin = await BinLocation(vnistDB).update({
         _id: listBinLocations[0]._id,
@@ -3165,7 +3292,7 @@ const initSampleCompanyDB = async () => {
         unit: "mét khối",
         capacity: "",
         contained: "",
-        child: [ listBinLocationChilds[0]._id, listBinLocationChilds[1]._id, listBinLocationChilds[2]._id ],
+        child: [listBinLocationChilds[0]._id, listBinLocationChilds[1]._id, listBinLocationChilds[2]._id],
         enableGoods: [
             {
                 good: listGood[0]._id,
@@ -3670,31 +3797,31 @@ const initSampleCompanyDB = async () => {
     // ****************** Tạo mẫu dữ liệu trạng thái khách hàng********************
     console.log("Tạo mẫu dữ liệu trạng thái khách hàng");
     const customerStatusData = [{
-        creator:  [users[5]._id],
+        creator: [users[5]._id],
         code: "ST001",
         name: "Tiềm năng",
         description: "Khách hàng mới toanh",
         active: false,
     }, {
-        creator:  [users[5]._id],
+        creator: [users[5]._id],
         code: "ST002",
         name: "Quan tâm sản phẩm",
         description: "Khách hàng hứng thú với sản phẩm của công ty",
         active: false,
     }, {
-        creator:  [users[5]._id],
+        creator: [users[5]._id],
         code: "ST003",
         name: "Đã báo giá",
         description: "Khách hàng đã được báo giá",
         active: false,
     }, {
-        creator:  [users[5]._id],
+        creator: [users[5]._id],
         code: "ST005",
         name: "Đã kí hợp đồng",
         description: "Khách hàng đã kỹ hợp đồng với công ty",
         active: false,
     }, {
-        creator:  [users[5]._id],
+        creator: [users[5]._id],
         code: "ST004",
         name: "Đã mua sản phẩm",
         description: "Khách hàng đã mua sản phẩm",
@@ -3703,7 +3830,7 @@ const initSampleCompanyDB = async () => {
     const status = await Status(vnistDB).insertMany(customerStatusData);
     console.log("Xong! Đã tạo mẫu dữ liệu trạng thái khách hàng")
 
-     // ****************** Tạo mẫu dữ liệu hình thức chăm sóc khách hàng********************
+    // ****************** Tạo mẫu dữ liệu hình thức chăm sóc khách hàng********************
     console.log("Tạo mẫu dữ liệu hình thức chăm sóc khách hàng");
     const customerCareType = [{
         name: "Gọi điện tư vấn",
@@ -3715,7 +3842,7 @@ const initSampleCompanyDB = async () => {
         name: "Gặp mặt trực tiếp",
         description: "Hẹn gặp khách hàng trực tiếp",
     }];
-    
+
     await CareType(vnistDB).insertMany(customerCareType);
     console.log("Xong! Đã tạo mẫu dữ liệu hình thức chăm sóc khách hàng")
 
@@ -3734,7 +3861,7 @@ const initSampleCompanyDB = async () => {
             customerSource: 'Facebook.com',
             companyEstablishmentDate: new Date("2009-09-15"),
             birthDate: new Date('1998-09-03'),
-            telephoneNumber: parseInt('02465756834'), 
+            telephoneNumber: parseInt('02465756834'),
             mobilephoneNumber: parseInt('0385025851'),
             email: 'nhinl.vnist@gmail.com',
             address: 'Ngọc mỹ, Quốc Oai, Hà Nội',
@@ -3781,7 +3908,7 @@ const initSampleCompanyDB = async () => {
             customerSource: 'Youtube, facebook',
             companyEstablishmentDate: new Date("2014-09-15"),
             birthDate: null,
-            telephoneNumber: parseInt('024657589843'), 
+            telephoneNumber: parseInt('024657589843'),
             mobilephoneNumber: parseInt('0345915454'),
             email: 'TuanTA.viavet@gmail.com',
             address: 'Thường tín, Hà Nội',
