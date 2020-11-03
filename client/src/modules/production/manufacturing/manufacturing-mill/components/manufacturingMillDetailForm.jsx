@@ -24,7 +24,6 @@ class ManufacturingMillDetailForm extends Component {
         if (manufacturingMill.currentMill) {
             currentMill = manufacturingMill.currentMill;
         }
-        console.log(currentMill);
         return (
             <React.Fragment>
                 <DialogModal
@@ -45,6 +44,10 @@ class ManufacturingMillDetailForm extends Component {
                             <div className={`form-group`}>
                                 <strong>{translate('manufacturing.manufacturing_mill.name')}:&emsp;</strong>
                                 {currentMill.name}
+                            </div>
+                            <div className={`form-group`}>
+                                <strong>{translate('manufacturing.manufacturing_mill.team_leader')}:&emsp;</strong>
+                                {currentMill.teamLeader && currentMill.teamLeader.name}
                             </div>
                             <div className={`form-group`}>
                                 <strong>{translate('manufacturing.manufacturing_mill.works_name')}:&emsp;</strong>

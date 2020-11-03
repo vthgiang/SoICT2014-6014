@@ -4046,7 +4046,9 @@ export default {
                 edit_mill_failed: "Sửa thông tin xưởng thất bại",
                 works_name: "Tên nhà máy",
                 created_at: "Ngày tạo",
-                teamLeader: "Đội trưởng"
+                team_leader: "Đội trưởng",
+                choose_team_leader: "---Chọn đội trưởng---",
+                team_leader_error: "Vui lòng chọn đội trưởng"
             },
             purchasing_request: {
                 code: "Mã phiếu đề nghị",
