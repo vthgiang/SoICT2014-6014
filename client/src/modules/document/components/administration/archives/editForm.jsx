@@ -13,9 +13,9 @@ class EditForm extends Component {
     }
 
     handleName = (e) => {
-        const {value} = e.target;
-        const {translate} = this.props;
-        const {message} = ValidationHelper.validateName(translate, value, 1, 255);
+        const { value } = e.target;
+        const { translate } = this.props;
+        const { message } = ValidationHelper.validateName(translate, value, 1, 255);
         this.setState({
             name: value,
             nameError: message
@@ -23,7 +23,7 @@ class EditForm extends Component {
     }
 
     handleDescription = (e) => {
-        const {value} = e.target;
+        const { value } = e.target;
         this.setState({
             description: value
         });
@@ -34,9 +34,9 @@ class EditForm extends Component {
     };
 
     isValidateForm = () => {
-        let {name, description} = this.state;
-        let {translate} = this.props;
-        if(
+        let { name, description } = this.state;
+        let { translate } = this.props;
+        if (
             !ValidationHelper.validateName(translate, name, 1, 255).status
         ) return false;
         return true;
