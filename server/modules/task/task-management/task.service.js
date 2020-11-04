@@ -353,8 +353,8 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
             keySearch = {
                 ...keySearch,
                 startDate: {
-                    $gt: start,
-                    $lte: end
+                    $gte: start,
+                    $lt: end
                 }
             }
         }
@@ -366,8 +366,8 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
             keySearch = {
                 ...keySearch,
                 endDate: {
-                    $gt: start,
-                    $lte: end
+                    $gte: start,
+                    $lt: end
                 }
             }
         }
@@ -506,8 +506,8 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
             keySearch = {
                 ...keySearch,
                 startDate: {
-                    $gt: start,
-                    $lte: end
+                    $gte: start,
+                    $lt: end
                 }
             }
         }
@@ -520,8 +520,8 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
             keySearch = {
                 ...keySearch,
                 endDate: {
-                    $gt: start,
-                    $lte: end
+                    $gte: start,
+                    $lt: end
                 }
             }
         }
@@ -656,8 +656,8 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
             keySearch = {
                 ...keySearch,
                 startDate: {
-                    $gt: start,
-                    $lte: end
+                    $gte: start,
+                    $lt: end
                 }
             }
         }
@@ -670,8 +670,8 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
             keySearch = {
                 ...keySearch,
                 endDate: {
-                    $gt: start,
-                    $lte: end
+                    $gte: start,
+                    $lt: end
                 }
             }
         }
@@ -806,8 +806,8 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
             keySearch = {
                 ...keySearch,
                 startDate: {
-                    $gt: start,
-                    $lte: end
+                    $gte: start,
+                    $lt: end
                 }
             }
         }
@@ -820,8 +820,8 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
             keySearch = {
                 ...keySearch,
                 endDate: {
-                    $gt: start,
-                    $lte: end
+                    $gte: start,
+                    $lt: end
                 }
             }
         }
@@ -928,8 +928,8 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
             keySearch = {
                 ...keySearch,
                 startDate: {
-                    $gt: start,
-                    $lte: end
+                    $gte: start,
+                    $lt: end
                 }
             }
         }
@@ -942,8 +942,8 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
             keySearch = {
                 ...keySearch,
                 endDate: {
-                    $gt: start,
-                    $lte: end
+                    $gte: start,
+                    $lt: end
                 }
             }
         }
@@ -1100,8 +1100,8 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
             keySearch = {
                 ...keySearch,
                 startDate: {
-                    $gt: start,
-                    $lte: end
+                    $gte: start,
+                    $lt: end
                 }
             }
         }
@@ -1114,8 +1114,8 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
             keySearch = {
                 ...keySearch,
                 endDate: {
-                    $gt: start,
-                    $lte: end
+                    $gte: start,
+                    $lt: end
                 }
             }
         }

@@ -2636,6 +2636,8 @@ export default {
                 calc_overdue_date: 'Thời gian quá hạn',
                 calc_day_used: 'Thời gian làm việc tính đến ngày đánh giá',
                 calc_average_action_rating: 'Trung bình cộng điểm đánh giá hoạt động',
+                calc_failed_action_rating: 'Số hoạt động không đạt (rating < 5)',
+                calc_passed_action_rating: 'Số công việc đạt (rating >= 5)',
                 calc_progress: 'Tiến độ công việc',
                 calc_new_formula: 'Công thức hiện tại',
                 calc_total_day: 'Thời gian từ ngày bắt đầu đến ngày kết thúc công việc',

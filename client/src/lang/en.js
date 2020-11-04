@@ -2532,6 +2532,8 @@ export default {
                 calc_overdue_date: 'Overdue date of task',
                 calc_day_used: 'Time from start date to today',
                 calc_average_action_rating: 'Average action of task rating',
+                calc_failed_action_rating: 'Number of failed action',
+                calc_passed_action_rating: 'Number of passed action',
                 calc_progress: 'Progress of task',
                 calc_new_formula: 'Current formula',
                 calc_total_day: 'Time from start date to end date',
