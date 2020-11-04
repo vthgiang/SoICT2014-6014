@@ -958,6 +958,7 @@ export default {
             manage_examples: "CRUD example",
             manage_examples_1: "CRUD by model 1",
             manage_examples_2: "CRUD by model 2",
+            manage_examples_hooks_1: "CRUD Hooks by model 1",
 
             // Quản lý sản xuất
             manage_manufacturing: "Quản lý sản xuất",
@@ -2607,6 +2608,7 @@ export default {
                 unit_evaluate: "Unit receiving work evaluation results",
                 unit_manage_task: "Unit managing task",
                 collaborated_with_organizational_units: "Units that have collaborated",
+                not_collaborated_with_organizational_units: "No units that have collaborated",
                 task_empty_employee: "Your organization unit has no participants",
                 delete_eval: "Delete evaluation",
                 delete_eval_title: 'Are you sure to delete this evaluation?',
