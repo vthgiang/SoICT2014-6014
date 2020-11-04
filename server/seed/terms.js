@@ -1172,6 +1172,19 @@ const LINKS = [{
     components: getComponentsInLink('/manage-examples-2'),
 },
 {
+    url: "/manage-examples-hooks-1",
+    description: "Quản lý Ví dụ Hooks 1",
+    category: LINK_CATEGORY.EXAMPLE.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/manage-examples-hooks-1'),
+},
+{
     url: "/manage-manufacturing-plan",
     description: "Quản lý kế hoạch sản xuất",
     category: LINK_CATEGORY.MANUFACTURING.name,

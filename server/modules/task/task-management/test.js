@@ -1,11 +1,15 @@
 let splitter = "31-10-2020".split("-");
+let splitter2 = "01-11-2020".split("-");
 
 let dateOfEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-let dateOfPrevEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+let dateOfPrevEval = new Date(splitter2[2], splitter2[1] - 1, splitter2[0]);
 
-let month = dateOfPrevEval.getMonth()
+let month2 = dateOfPrevEval.getDate();
+let month = dateOfEval.getDate();
 
-console.log('month', dateOfPrevEval, month);
+console.log('month2-1', month2, month);
+
+console.log('month',splitter[1] === "10", typeof( splitter[2] ), dateOfPrevEval, month);
 
 let newMonth = dateOfPrevEval.getMonth() - 1;
 console.log('new month', newMonth);

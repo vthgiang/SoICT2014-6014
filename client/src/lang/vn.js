@@ -1056,6 +1056,7 @@ export default {
             manage_examples: "Ví dụ CRUD",
             manage_examples_1: "CRUD theo mô hình số 1",
             manage_examples_2: "CRUD theo mô hình số 2",
+            manage_examples_hooks_1: "CRUD Hooks theo mô hình 1",
 
             // Quản lý sản xuất
             manage_manufacturing: "Quản lý sản xuất",
@@ -2636,6 +2637,8 @@ export default {
                 calc_overdue_date: 'Thời gian quá hạn',
                 calc_day_used: 'Thời gian làm việc tính đến ngày đánh giá',
                 calc_average_action_rating: 'Trung bình cộng điểm đánh giá hoạt động',
+                calc_failed_action_rating: 'Số hoạt động không đạt (rating < 5)',
+                calc_passed_action_rating: 'Số công việc đạt (rating >= 5)',
                 calc_progress: 'Tiến độ công việc',
                 calc_new_formula: 'Công thức hiện tại',
                 calc_total_day: 'Thời gian từ ngày bắt đầu đến ngày kết thúc công việc',
@@ -2712,6 +2715,7 @@ export default {
                 unit_evaluate: "Đơn vị tiếp nhận kết quả đánh giá công việc",
                 unit_manage_task: "Đơn vị quản lý công việc",
                 collaborated_with_organizational_units: "Đơn vị phối hợp thực hiện công việc",
+                not_collaborated_with_organizational_units: "Không có đơn vị phối hợp",
                 task_empty_employee: "Đơn vị bạn chưa có người tham gia",
                 delete_eval: "Xóa đánh giá tháng này",
                 delete_eval_title: 'Bạn có chắc chắn muốn xóa đánh giá này?',
