@@ -9,14 +9,14 @@ class GoodDetailForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            
+
         }
     }
 
-    static getDerivedStateFromProps(nextProps, prevState){
-        if(nextProps.goodId !== prevState.goodId || nextProps.baseUnit !== prevState.baseUnit || nextProps.units !== prevState.units || 
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.goodId !== prevState.goodId || nextProps.baseUnit !== prevState.baseUnit || nextProps.units !== prevState.units ||
             nextProps.materials !== prevState.materials || nextProps.code !== prevState.code || nextProps.name !== prevState.name ||
-            nextProps.category !== prevState.category || nextProps.description !== prevState.description){
+            nextProps.category !== prevState.category || nextProps.description !== prevState.description) {
             return {
                 ...prevState,
                 goodId: nextProps.goodId,
@@ -38,13 +38,7 @@ class GoodDetailForm extends Component {
 
         const { translate, goods, type, categories } = this.props;
         const { goodId, code, name, category, units, materials, baseUnit, description } = this.state;
-        let size;
-        if(type === 'product'){
-            size = '75';
-        } else {
-            size = 50;
-        }
-        
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -53,7 +47,7 @@ class GoodDetailForm extends Component {
                     title={translate('manage_warehouse.good_management.add_title')}
                     msg_success={translate('manage_warehouse.good_management.add_success')}
                     msg_faile={translate('manage_warehouse.good_management.add_faile')}
-                    size={size}
+                    size={50}
                     hasSaveButton={false}
                     hasNote={false}
                 >
@@ -68,32 +62,6 @@ class GoodDetailForm extends Component {
                                     <strong>{translate('manage_warehouse.good_management.baseUnit')}:&emsp;</strong>
                                     {baseUnit}
                                 </div>
-                                {type === 'product' ?
-                                <fieldset className="scheduler-border">
-                                    <legend className="scheduler-border">{translate('manage_warehouse.good_management.unit')}</legend>
-                                    <table className="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th title={translate('manage_warehouse.good_management.name')}>{translate('manage_warehouse.good_management.name')}</th>
-                                                <th title={translate('manage_warehouse.good_management.conversion_rate')}>{translate('manage_warehouse.good_management.conversion_rate')}</th>
-                                                <th title={translate('manage_warehouse.good_management.description')}>{translate('manage_warehouse.good_management.description')}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id={`unit-create-good`}>
-                                            {
-                                                (typeof units === 'undefined' || units.length === 0) ? <tr><td colSpan={3}><center>{translate('task_template.no_data')}</center></td></tr> :
-                                                    units.map((item, index) =>
-                                                    <tr key={index}>
-                                                        <td>{item.name}</td>
-                                                        <td>{item.conversionRate}</td>
-                                                        <td>{item.description}</td>
-                                                    </tr>
-                                                )
-                                            }
-                                        </tbody>
-                                    </table>
-                                </fieldset>
-                                : []}
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className="form-group">
@@ -104,37 +72,12 @@ class GoodDetailForm extends Component {
                                     <strong>{translate('manage_warehouse.good_management.category')}:&emsp;</strong>
                                     {category && categories.listCategoriesByType.length && categories.listCategoriesByType.filter(item => item._id === category).pop() ? categories.listCategoriesByType.filter(item => item._id === category).pop().name : "aaa"}
                                 </div>
-                                {type === 'product' ? 
-                                <fieldset className="scheduler-border">
-                                    <legend className="scheduler-border">{translate('manage_warehouse.good_management.materials')}</legend>
-                                    <table className="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th title={translate('manage_warehouse.good_management.material')}>{translate('manage_warehouse.good_management.material')}</th>
-                                                <th title={translate('manage_warehouse.good_management.quantity')}>{translate('manage_warehouse.good_management.quantity')}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id={`material-create-${type}`}>
-                                            {
-                                                (typeof materials === 'undefined' || materials.length === 0) ? <tr><td colSpan={3}><center>{translate('task_template.no_data')}</center></td></tr> :
-                                                materials.map((x, index) =>
-                                                    <tr key={index}>
-                                                        <td>{x.good.name}</td>
-                                                        <td>{x.quantity}</td>
-                                                    </tr>
-                                                )
-                                            }
-                                        </tbody>
-                                    </table>
-                                </fieldset>
-                                : []}
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.good_management.description')}:&emsp;</strong>
                                     {description}
                                 </div>
-                                {type !== 'product' ?
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manage_warehouse.good_management.unit')}</legend>
                                     <table className="table table-bordered">
@@ -149,17 +92,40 @@ class GoodDetailForm extends Component {
                                             {
                                                 (typeof units === 'undefined' || units.length === 0) ? <tr><td colSpan={3}><center>{translate('task_template.no_data')}</center></td></tr> :
                                                     units.map((item, index) =>
-                                                    <tr key={index}>
-                                                        <td>{item.name}</td>
-                                                        <td>{item.conversionRate}</td>
-                                                        <td>{item.description}</td>
-                                                    </tr>
-                                                )
+                                                        <tr key={index}>
+                                                            <td>{item.name}</td>
+                                                            <td>{item.conversionRate}</td>
+                                                            <td>{item.description}</td>
+                                                        </tr>
+                                                    )
                                             }
                                         </tbody>
                                     </table>
                                 </fieldset>
-                                : []}
+                                {type === 'product' ?
+                                    <fieldset className="scheduler-border">
+                                        <legend className="scheduler-border">{translate('manage_warehouse.good_management.materials')}</legend>
+                                        <table className="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th title={translate('manage_warehouse.good_management.material')}>{translate('manage_warehouse.good_management.material')}</th>
+                                                    <th title={translate('manage_warehouse.good_management.quantity')}>{translate('manage_warehouse.good_management.quantity')}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id={`material-create-${type}`}>
+                                                {
+                                                    (typeof materials === 'undefined' || materials.length === 0) ? <tr><td colSpan={3}><center>{translate('task_template.no_data')}</center></td></tr> :
+                                                        materials.map((x, index) =>
+                                                            <tr key={index}>
+                                                                <td>{x.good.name}</td>
+                                                                <td>{x.quantity}</td>
+                                                            </tr>
+                                                        )
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </fieldset>
+                                    : ""}
                             </div>
                         </div>
                     </form>

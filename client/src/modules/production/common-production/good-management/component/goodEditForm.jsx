@@ -4,20 +4,18 @@ import { connect } from 'react-redux';
 import { DialogModal, ErrorLabel, TreeSelect } from '../../../../../common-components';
 import { GoodActions } from '../redux/actions';
 import { CategoryActions } from '../../category-management/redux/actions';
-import UnitCreateFrom from './unitCreateFrom';
+import UnitCreateFrom from './unitCreateForm';
 import ComponentCreateForm from './componentCreateForm';
-import { translate } from 'react-redux-multilingual/lib/utils';
-
 class GoodEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            
+
         }
     }
 
-    static getDerivedStateFromProps(nextProps, prevState){
-        if(nextProps.goodId !== prevState.goodId){
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.goodId !== prevState.goodId) {
             return {
                 ...prevState,
                 goodId: nextProps.goodId,
@@ -29,9 +27,9 @@ class GoodEditForm extends Component {
                 code: nextProps.code,
                 name: nextProps.name,
                 category: nextProps.category,
-                errorOnName: undefined, 
-                errorOnCode: undefined, 
-                errorOnBaseUnit: undefined, 
+                errorOnName: undefined,
+                errorOnCode: undefined,
+                errorOnBaseUnit: undefined,
                 errorOnCategory: undefined,
 
             }
@@ -48,7 +46,7 @@ class GoodEditForm extends Component {
     validateCode = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate, type } = this.props;
-        if(!value) {
+        if (!value) {
             msg = translate('manage_warehouse.category_management.validate_code');
         }
         if (willUpdateState) {
@@ -68,11 +66,11 @@ class GoodEditForm extends Component {
         let value = e.target.value;
         this.validateName(value, true);
     }
-    
+
     validateName = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
-        if(!value){
+        if (!value) {
             msg = translate('manage_warehouse.category_management.validate_name');
         }
         if (willUpdateState) {
@@ -91,11 +89,11 @@ class GoodEditForm extends Component {
         let value = e.target.value;
         this.validateBaseUnit(value, true);
     }
-    
+
     validateBaseUnit = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
-        if(!value){
+        if (!value) {
             msg = translate('manage_warehouse.category_management.validate_name');
         }
         if (willUpdateState) {
@@ -118,7 +116,7 @@ class GoodEditForm extends Component {
     validateCategory = (category, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
-        if(!category){
+        if (!category) {
             msg = translate('manage_warehouse.category_management.validate_name');
         }
         if (willUpdateState) {
@@ -136,14 +134,14 @@ class GoodEditForm extends Component {
     getAllCategory = () => {
         let { categories } = this.props;
         let categoryArr = [];
-        if(categories.categoryToTree.list.length > 0) {
+        if (categories.categoryToTree.list.length > 0) {
             categories.categoryToTree.list.map(item => {
                 categoryArr.push({
                     _id: item._id,
                     id: item._id,
                     state: { "open": true },
                     name: item.name,
-                    parent: item.parent ? item.parent.toString(): null
+                    parent: item.parent ? item.parent.toString() : null
                 })
             })
         }
@@ -178,12 +176,32 @@ class GoodEditForm extends Component {
         })
     }
 
+    validateComponentCreateForm = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                isValidatedComponentCreatedForm: value
+            }
+        })
+    }
+
+    validateUnitCreateForm = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                isValidatedUnitCreateForm: value
+            }
+        })
+    }
+
     isFormValidated = () => {
         let result =
             this.validateName(this.state.name, false) &&
             this.validateCode(this.state.code, false) &&
             this.validateBaseUnit(this.state.baseUnit, false) &&
-            this.validateCategory(this.state.category, false)
+            this.validateCategory(this.state.category, false) &&
+            this.state.isValidatedComponentCreatedForm &&
+            this.state.isValidatedUnitCreateForm;
         return result;
     }
 
@@ -199,18 +217,12 @@ class GoodEditForm extends Component {
         let listUnit = [];
         let listMaterial = [];
         const { translate, goods, categories, type } = this.props;
-        const { errorOnName, errorOnCode, errorOnBaseUnit, errorOnCategory,goodId, code, name, category, units, materials, baseUnit, description } = this.state;
+        const { errorOnName, errorOnCode, errorOnBaseUnit, errorOnCategory, goodId, code, name, category, units, materials, baseUnit, description } = this.state;
         const dataSelectBox = this.getAllCategory();
 
-        if(units) listUnit = units;
-        if(materials) listMaterial = materials;
-        let size;
-        if(type === 'product'){
-            size = '75';
-        } else {
-            size = 50;
-        }
-        
+        if (units) listUnit = units;
+        if (materials) listMaterial = materials;
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -221,28 +233,28 @@ class GoodEditForm extends Component {
                     msg_faile={translate('manage_warehouse.good_management.add_faile')}
                     disableSubmit={!this.isFormValidated()}
                     func={this.save}
-                    size={size}
+                    size={50}
                 >
                     <form id={`form-edit-good`} >
                         <div className="row">
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group ${!errorOnCode ? "" : "has-error"}`}>
                                     <label>{translate('manage_warehouse.good_management.code')}<span className="attention"> * </span></label>
-                                    <input type="text" className="form-control" value={code} onChange={this.handleCodeChange}/>
-                                    <ErrorLabel content = { errorOnCode }/>
+                                    <input type="text" className="form-control" value={code} onChange={this.handleCodeChange} />
+                                    <ErrorLabel content={errorOnCode} />
                                 </div>
                                 <div className={`form-group ${!errorOnBaseUnit ? "" : "has-error"}`}>
                                     <label>{translate('manage_warehouse.good_management.baseUnit')}<span className="attention"> * </span></label>
                                     <input type="text" className="form-control" value={baseUnit} onChange={this.handleBaseUnitChange} />
-                                    <ErrorLabel content = { errorOnBaseUnit } />
+                                    <ErrorLabel content={errorOnBaseUnit} />
                                 </div>
-                                {type === 'product' ? <UnitCreateFrom id={goodId} initialData={listUnit} onDataChange={this.handleListUnitChange} />: []}
+
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group ${!errorOnName ? "" : "has-error"}`}>
                                     <label>{translate('manage_warehouse.good_management.name')}<span className="attention"> * </span></label>
                                     <input type="text" className="form-control" value={name} onChange={this.handleNameChange} />
-                                    <ErrorLabel content = { errorOnName } />
+                                    <ErrorLabel content={errorOnName} />
                                 </div>
                                 <div className={`form-group ${!errorOnCategory ? "" : "has-error"}`}>
                                     <label>{translate('manage_warehouse.good_management.category')}</label>
@@ -252,16 +264,16 @@ class GoodEditForm extends Component {
                                         handleChange={this.handleCategoryChange}
                                         mode="hierarchical"
                                     />
-                                    <ErrorLabel content = { errorOnCategory } />
+                                    <ErrorLabel content={errorOnCategory} />
                                 </div>
-                                {type === 'product' ? <ComponentCreateForm id={goodId} initialData={listMaterial} onDataChange={this.handleListMaterialChange} />: []}
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <div className="form-group">
                                     <label>{translate('manage_warehouse.good_management.description')}</label>
                                     <textarea type="text" className="form-control" value={description} onChange={this.handleDescriptionChange} />
                                 </div>
-                                {type !== 'product' ? <UnitCreateFrom id={goodId} initialData={listUnit} onDataChange={this.handleListUnitChange} />: []}
+                                <UnitCreateFrom id={goodId} initialData={listUnit} onValidate={this.validateUnitCreateForm} onDataChange={this.handleListUnitChange} />
+                                {type === 'product' ? <ComponentCreateForm id={goodId} onValidate={this.validateComponentCreateForm} initialData={listMaterial} onDataChange={this.handleListMaterialChange} /> : ""}
                             </div>
                         </div>
                     </form>

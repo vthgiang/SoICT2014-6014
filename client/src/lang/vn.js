@@ -732,7 +732,7 @@ export default {
                 organization: 'Tổ chức',
                 northern: 'Miền Bắc',
                 central: 'Miền Trung',
-                southern: 'Miền Nam' ,
+                southern: 'Miền Nam',
 
                 purchaseHistories: {
                     all: 'Tất cả',
@@ -1056,6 +1056,7 @@ export default {
             manage_examples: "Ví dụ CRUD",
             manage_examples_1: "CRUD theo mô hình số 1",
             manage_examples_2: "CRUD theo mô hình số 2",
+            manage_examples_hooks_1: "CRUD Hooks theo mô hình 1",
 
             // Quản lý sản xuất
             manage_manufacturing: "Quản lý sản xuất",
@@ -2714,6 +2715,7 @@ export default {
                 unit_evaluate: "Đơn vị tiếp nhận kết quả đánh giá công việc",
                 unit_manage_task: "Đơn vị quản lý công việc",
                 collaborated_with_organizational_units: "Đơn vị phối hợp thực hiện công việc",
+                not_collaborated_with_organizational_units: "Không có đơn vị phối hợp",
                 task_empty_employee: "Đơn vị bạn chưa có người tham gia",
                 delete_eval: "Xóa đánh giá tháng này",
                 delete_eval_title: 'Bạn có chắc chắn muốn xóa đánh giá này?',
@@ -3636,7 +3638,12 @@ export default {
                 unit_name: 'Tên',
                 conversion_rate: 'Giá trị chuyển đổi',
                 quantity: 'Số lượng',
-                choose_category: 'Chọn danh mục'
+                choose_category: 'Chọn danh mục',
+                choose_base_unit: 'Vui lòng chọn đơn vị để tạo quy tắc đóng gói',
+                packing_rule: 'Quy tắc đóng gói',
+                non_choose_base_unit: 'Không chọn',
+                choose_base_unit_all: 'Chọn tất cả',
+                error_packing_rule: 'Đơn vị được chọn không thể tạo thành quy tắc đóng gói. Vui lòng chọn lại!'
             },
 
             stock_management: {

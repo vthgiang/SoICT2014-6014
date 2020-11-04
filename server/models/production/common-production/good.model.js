@@ -76,7 +76,7 @@ const GoodSchema = new Schema({
         ref: 'User'
     },
 
-    packagingRule: {
+    packingRule: {
         type: String
     },
 
