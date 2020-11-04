@@ -3630,7 +3630,7 @@ export default {
                 category: 'Danh mục',
                 unit: 'Đơn vị tính',
                 baseUnit: 'Đơn vị tính cơ bản',
-                materials: 'Hoạt chất chính',
+                materials: 'Thành phần chính',
                 unit_name: 'Tên',
                 conversion_rate: 'Giá trị chuyển đổi',
                 quantity: 'Số lượng',
@@ -3639,7 +3639,17 @@ export default {
                 packing_rule: 'Quy tắc đóng gói',
                 non_choose_base_unit: 'Không chọn',
                 choose_base_unit_all: 'Chọn tất cả',
-                error_packing_rule: 'Đơn vị được chọn không thể tạo thành quy tắc đóng gói. Vui lòng chọn lại!'
+                error_packing_rule: 'Đơn vị được chọn không thể tạo thành quy tắc đóng gói. Vui lòng chọn lại!',
+                info_mill: 'Thông tin về xưởng sản xuất',
+                productivity: 'Đơn vị sản phẩm / ca',
+                person_number: 'Số lượng người / ca',
+                mill: 'Xưởng',
+                choose_mill: 'Chọn xưởng sản xuất',
+                error_choose_mill: 'Vui lòng chọn xưởng sản xuất',
+                error_productivity: 'Giá trị nhập vào phải > 0',
+                error_person_number: 'Giá trị nhập vào phải > 0',
+                mill_code: 'Mã xưởng',
+                mill_name: 'Tên xưởng'
             },
 
             stock_management: {

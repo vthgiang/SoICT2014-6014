@@ -28,6 +28,8 @@ class GoodDetailForm extends Component {
                 code: nextProps.code,
                 name: nextProps.name,
                 category: nextProps.category,
+                packingRule: nextProps.packingRule,
+                manufacturingMills: nextProps.manufacturingMills
             }
         } else {
             return null;
@@ -37,7 +39,7 @@ class GoodDetailForm extends Component {
     render() {
 
         const { translate, goods, type, categories } = this.props;
-        const { goodId, code, name, category, units, materials, baseUnit, description } = this.state;
+        const { goodId, code, name, category, units, materials, baseUnit, description, packingRule, manufacturingMills } = this.state;
 
         return (
             <React.Fragment>
@@ -62,6 +64,10 @@ class GoodDetailForm extends Component {
                                     <strong>{translate('manage_warehouse.good_management.baseUnit')}:&emsp;</strong>
                                     {baseUnit}
                                 </div>
+                                <div className="form-group">
+                                    <strong>{translate('manage_warehouse.good_management.packing_rule')}:&emsp;</strong>
+                                    {packingRule}
+                                </div>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className="form-group">
@@ -72,12 +78,12 @@ class GoodDetailForm extends Component {
                                     <strong>{translate('manage_warehouse.good_management.category')}:&emsp;</strong>
                                     {category && categories.listCategoriesByType.length && categories.listCategoriesByType.filter(item => item._id === category).pop() ? categories.listCategoriesByType.filter(item => item._id === category).pop().name : "aaa"}
                                 </div>
-                            </div>
-                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.good_management.description')}:&emsp;</strong>
                                     {description}
                                 </div>
+                            </div>
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manage_warehouse.good_management.unit')}</legend>
                                     <table className="table table-bordered">
@@ -103,28 +109,59 @@ class GoodDetailForm extends Component {
                                     </table>
                                 </fieldset>
                                 {type === 'product' ?
-                                    <fieldset className="scheduler-border">
-                                        <legend className="scheduler-border">{translate('manage_warehouse.good_management.materials')}</legend>
-                                        <table className="table table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th title={translate('manage_warehouse.good_management.material')}>{translate('manage_warehouse.good_management.material')}</th>
-                                                    <th title={translate('manage_warehouse.good_management.quantity')}>{translate('manage_warehouse.good_management.quantity')}</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id={`material-create-${type}`}>
-                                                {
-                                                    (typeof materials === 'undefined' || materials.length === 0) ? <tr><td colSpan={3}><center>{translate('task_template.no_data')}</center></td></tr> :
-                                                        materials.map((x, index) =>
-                                                            <tr key={index}>
-                                                                <td>{x.good.name}</td>
-                                                                <td>{x.quantity}</td>
-                                                            </tr>
-                                                        )
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </fieldset>
+                                    <React.Fragment>
+                                        <fieldset className="scheduler-border">
+                                            <legend className="scheduler-border">{translate('manage_warehouse.good_management.materials')}</legend>
+                                            <table className="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th title={translate('manage_warehouse.good_management.material')}>{translate('manage_warehouse.good_management.material')}</th>
+                                                        <th title={translate('manage_warehouse.good_management.quantity')}>{translate('manage_warehouse.good_management.quantity')}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id={`material-create-${type}`}>
+                                                    {
+                                                        (typeof materials === 'undefined' || materials.length === 0) ? <tr><td colSpan={3}><center>{translate('task_template.no_data')}</center></td></tr> :
+                                                            materials.map((x, index) =>
+                                                                <tr key={index}>
+                                                                    <td>{x.good.name}</td>
+                                                                    <td>{x.quantity}</td>
+                                                                </tr>
+                                                            )
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </fieldset>
+                                        <fieldset className="scheduler-border">
+                                            <legend className="scheduler-border">{translate('manage_warehouse.good_management.info_mill')}</legend>
+                                            <table className="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>{translate('manage_warehouse.good_management.index')}</th>
+                                                        <th>{translate('manage_warehouse.good_management.mill_code')}</th>
+                                                        <th>{translate('manage_warehouse.good_management.mill_name')}</th>
+                                                        <th>{translate('manage_warehouse.good_management.productivity')}</th>
+                                                        <th>{translate('manage_warehouse.good_management.person_number')}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id={`manufacturingMill-detail-1`}>
+                                                    {
+                                                        (typeof manufacturingMills === 'undefined' || manufacturingMills.length === 0) ? <tr><td colSpan={5}><center>{translate('task_template.no_data')}</center></td></tr> :
+                                                            manufacturingMills.map((x, index) =>
+                                                                <tr key={index}>
+                                                                    <td>{index + 1}</td>
+                                                                    <td>{x.manufacturingMill.code}</td>
+                                                                    <td>{x.manufacturingMill.name}</td>
+                                                                    <td>{x.productivity}</td>
+                                                                    <td>{x.personNumber}</td>
+                                                                </tr>
+                                                            )
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </fieldset>
+                                    </React.Fragment>
+
                                     : ""}
                             </div>
                         </div>
