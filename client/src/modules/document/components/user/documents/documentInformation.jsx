@@ -21,6 +21,23 @@ class DocumentInformation extends Component {
     handleUploadFileScan = (e) => {
         this.setState({ documentFileScan: e.target.files[0] });
     }
+    formatDate(date, monthYear = false) {
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+            if (monthYear === true) {
+                return [month, year].join('-');
+            } else return [day, month, year].join('-');
+        } else {
+            return date
+        }
+    }
 
 
 
@@ -185,9 +202,9 @@ class DocumentInformation extends Component {
                                                             documentVersions.map((version, i) => {
                                                                 return <tr key={i}>
                                                                     <td>{version.versionName}</td>
-                                                                    <td><DateTimeConverter dateTime={version.issuingDate} type="DD-MM-YYYY" /></td>
-                                                                    <td><DateTimeConverter dateTime={version.effectiveDate} type="DD-MM-YYYY" /></td>
-                                                                    <td><DateTimeConverter dateTime={version.expiredDate} type="DD-MM-YYYY" /></td>
+                                                                    <td>{version.issuingDate ? this.formatDate(version.issuingDate) : null}</td>
+                                                                    <td>{version.effectiveDate ? this.formatDate(version.effectiveDate) : null}</td>
+                                                                    <td>{version.expiredDate ? this.formatDate(version.expiredDate) : null}</td>
                                                                     <td><a href="#" onClick={() => this.requestDownloadDocumentFile(documentId, documentName, i)}><u>{version.file ? translate('document.download') : ""}</u></a></td>
                                                                     <td><a href="#" onClick={() => this.requestDownloadDocumentFileScan(documentId, "SCAN_" + documentName, i)}><u>{version.scannedFileOfSignedDocument ? translate('document.download') : ""}</u></a></td>
 

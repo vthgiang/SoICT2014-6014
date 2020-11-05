@@ -257,11 +257,9 @@ class CreateForm extends Component {
         window.$('#sub-modal-add-document-new-version').modal('show');
     }
     toggleEditVersion = async (data, index) => {
-        console.log('aaaaaaaaaaaaaaa', index)
         await this.setState({
             currentVersion: { ...data, index: index }
         });
-        console.log('currentv', this.state.currentVersion)
         window.$('#modal-edit-document-version-form').modal('show');
     }
 
@@ -296,8 +294,8 @@ class CreateForm extends Component {
             documentArchivedRecordPlaceOrganizationalUnit,
             documentArchivedRecordPlaceManager,
             documentVersions,
+
         } = this.state;
-        console.log('documentFileeee', documentFile)
         const formData = new FormData();
         formData.append('name', documentName);
         formData.append('category', documentCategory);
@@ -341,14 +339,25 @@ class CreateForm extends Component {
             })
         }
         if (documentFile && documentFileScan.length) {
+
             documentFile.forEach(x => {
                 formData.append("file", x.fileUpload);
+                if (x.fileUpload) {
+                    formData.append('numberFile', 1)
+                } else {
+                    formData.append('numberFile', 0)
+                }
             })
 
         }
         if (documentFileScan && documentFileScan.length) {
             documentFileScan.forEach(x => {
                 formData.append("fileScan", x.fileUpload);
+                if (x.fileUpload) {
+                    formData.append('numberFileScan', 1)
+                } else {
+                    formData.append('numberFileScan', 0)
+                }
             })
         }
         if (documentRelationshipDocuments) {
@@ -399,7 +408,8 @@ class CreateForm extends Component {
     }
 
     deleteDocumentVersion = (i) => {
-        let { documentVersions, documentFile, documentFileScan, versionName, documentIssuingDate, documentEffectiveDate, documentExpiredDate } = this.state;
+        let { documentVersions, documentFile, documentFileScan, versionName, documentIssuingDate,
+            documentEffectiveDate, documentExpiredDate, } = this.state;
         documentVersions.splice(i, 1);
         documentFile.splice(i, 1);
         documentFileScan.splice(i, 1);
@@ -407,7 +417,6 @@ class CreateForm extends Component {
         documentIssuingDate.splice(i, 1);
         documentEffectiveDate.splice(i, 1);
         documentExpiredDate.splice(i, 1);
-
 
         this.setState(state => {
             return ({
@@ -419,6 +428,7 @@ class CreateForm extends Component {
                 documentIssuingDate: documentIssuingDate,
                 documentEffectiveDate: documentEffectiveDate,
                 documentExpiredDate: documentExpiredDate,
+
             })
         })
     }
@@ -439,7 +449,8 @@ class CreateForm extends Component {
     }
     addVersion = async (data) => {
         let { documentVersions, documentFile, documentFileScan, versionName, documentIssuingDate,
-            documentEffectiveDate, documentExpiredDate } = this.state;
+            documentEffectiveDate, documentExpiredDate, } = this.state;
+        let numberFile, numberFileScan;
         const file = {
             file: data.file,
             urlFile: data.urlFile,
@@ -450,18 +461,17 @@ class CreateForm extends Component {
             urlFile: data.urlFileScan,
             fileUpload: data.fileScanUpload,
         }
+
         documentVersions.push({
             versionName: data.versionName,
             issuingDate: this.convertISODate(data.documentIssuingDate),
             effectiveDate: this.convertISODate(data.documentEffectiveDate),
             expiredDate: this.convertISODate(data.documentExpiredDate),
-            documentFile: [...documentFile, {
-                ...file
-            }],
-            documentFileScan: [...documentFileScan, {
-                ...fileScan
-            }],
+            documentFile: [file],
+            documentFileScan: [fileScan],
+
         })
+
         this.setState(state => {
             return {
                 ...state,
@@ -476,11 +486,14 @@ class CreateForm extends Component {
                     ...fileScan
                 }],
 
+
             }
         });
     }
     editVersion = async (data) => {
-        console.log('ddddaaaaaaaaa', data.issuingDate, this.convertISODate(data.issuingDate));
+        let { documentVersions, documentFile, documentFileScan, versionName, documentIssuingDate,
+            documentEffectiveDate, documentExpiredDate, } = this.state;
+        let numberFile, numberFileScan;
         const file = {
             file: data.file,
             urlFile: data.urlFile,
@@ -491,6 +504,7 @@ class CreateForm extends Component {
             urlFile: data.urlFileScan,
             fileUpload: data.fileScanUpload,
         }
+
         const version = {
             versionName: data.versionName,
             issuingDate: this.convertISODate(data.issuingDate),
@@ -499,8 +513,7 @@ class CreateForm extends Component {
             documentFile: [file],
             documentFileScan: [fileScan],
         }
-        console.log('doucmentVersion', version);
-        let { documentVersions, documentFile, documentFileScan, versionName, documentIssuingDate, documentEffectiveDate, documentExpiredDate } = this.state;
+
         documentVersions[data.index] = version;
         documentFile[data.index] = file;
         documentFileScan[data.index] = fileScan;
@@ -508,6 +521,7 @@ class CreateForm extends Component {
         documentIssuingDate[data.index] = this.convertISODate(data.issuingDate);
         documentEffectiveDate[data.index] = this.convertISODate(data.effectiveDate);
         documentExpiredDate[data.index] = this.convertISODate(data.expiredDate);
+
 
         this.setState(state => {
             return {
@@ -519,6 +533,7 @@ class CreateForm extends Component {
                 documentIssuingDate: documentIssuingDate,
                 documentEffectiveDate: documentEffectiveDate,
                 documentExpiredDate: documentExpiredDate,
+
             }
         })
 
@@ -553,7 +568,6 @@ class CreateForm extends Component {
         const documentRoles = role.list.map(role => { return { value: role._id, text: role.name } });
         const relationshipDocs = documents.administration.relationshipDocs.paginate.map(doc => { return { value: doc._id, text: doc.name } });
         let path = documentArchives ? this.findPath(archives, documentArchives) : "";
-        console.log('eeeeeeeeeeee', documentVersions);
         return (
             <React.Fragment>
 
