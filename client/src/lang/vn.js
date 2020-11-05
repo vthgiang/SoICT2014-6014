@@ -2499,6 +2499,8 @@ export default {
                 special: 'Đặc tính',
                 select_all_special: 'Chọn tất cả các đặc tính',
                 select_special: 'Chọn đặc tính',
+                select_all_role: 'Chọn tất cả các vai trò',
+                select_role: 'Chọn vai trò',
                 stored: 'Lưu trong kho',
                 current_month: 'Tháng hiện tại',
 
