@@ -6,17 +6,20 @@ import moment from 'moment';
 import { DialogModal, ButtonModal, SelectBox, DatePicker, TreeSelect, ErrorLabel, UploadFile } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
 import { DocumentImportForm } from './documentImportForm';
+import { AddVersion } from './addVerson';
+import EditVersionForm from './editVersionForm'
 
 class CreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
             documentName: "",
-            documentFile: "",
-            documentFileScan: "",
-            documentIssuingDate: "",
-            documentEffectiveDate: "",
-            documentExpiredDate: "",
+            documentFile: [],
+            documentFileScan: [],
+            documentIssuingDate: [],
+            documentEffectiveDate: [],
+            documentExpiredDate: [],
+            versionName: [],
             documentCategory: "",
             documentVersions: [],
             page: 1,
@@ -148,7 +151,7 @@ class CreateForm extends Component {
             return {
                 fileName: x.fileName,
                 url: x.urlFile,
-                fileUpload: x.fileUpload
+                fileScanUpload: x.fileUpload
             }
         })
         this.setState(state => {
@@ -158,6 +161,7 @@ class CreateForm extends Component {
             }
         });
     }
+
     validateName = (value, willUpdateState) => {
         let msg = undefined;
         const { translate } = this.props;
@@ -248,13 +252,19 @@ class CreateForm extends Component {
         return msg === undefined;
     }
 
-
-
-
     toggleAddVersion = (event) => {
         event.preventDefault();
-        window.$('#add-document-new-version').modal('show');
+        window.$('#sub-modal-add-document-new-version').modal('show');
     }
+    toggleEditVersion = async (data, index) => {
+        console.log('aaaaaaaaaaaaaaa', index)
+        await this.setState({
+            currentVersion: { ...data, index: index }
+        });
+        console.log('currentv', this.state.currentVersion)
+        window.$('#modal-edit-document-version-form').modal('show');
+    }
+
 
     isValidateForm = () => {
         return this.validateName(this.state.documentName, false)
@@ -287,6 +297,7 @@ class CreateForm extends Component {
             documentArchivedRecordPlaceManager,
             documentVersions,
         } = this.state;
+        console.log('documentFileeee', documentFile)
         const formData = new FormData();
         formData.append('name', documentName);
         formData.append('category', documentCategory);
@@ -309,26 +320,35 @@ class CreateForm extends Component {
             formData.append('signer', documentSigner);
         }
 
-        if (versionName) {
-            formData.append('versionName', versionName);
+        if (versionName && versionName.length) {
+            versionName.forEach(x => {
+                formData.append("versionName", x);
+            })
         }
         if (documentIssuingDate) {
-            formData.append('issuingDate', moment(documentIssuingDate, "DD-MM-YYYY"));
+            documentIssuingDate.forEach(x => {
+                formData.append('issuingDate', moment(x, "DD-MM-YYYY"));
+            })
         }
         if (documentEffectiveDate) {
-            formData.append('effectiveDate', moment(documentEffectiveDate, "DD-MM-YYYY"));
+            documentEffectiveDate.forEach(x => {
+                formData.append('effectiveDate', moment(x, "DD-MM-YYYY"));
+            })
         }
         if (documentExpiredDate) {
-            formData.append('expiredDate', moment(documentExpiredDate, "DD-MM-YYYY"));
-        }
-        if (documentFile && documentFile.length) {
-            documentFile.forEach(x => {
-                formData.append('file', x.fileUpload);
+            documentExpiredDate.forEach(x => {
+                formData.append('expiredDate', moment(x, "DD-MM-YYYY"));
             })
+        }
+        if (documentFile && documentFileScan.length) {
+            documentFile.forEach(x => {
+                formData.append("file", x.fileUpload);
+            })
+
         }
         if (documentFileScan && documentFileScan.length) {
             documentFileScan.forEach(x => {
-                formData.append('fileScan', x.fileUpload);
+                formData.append("fileScan", x.fileUpload);
             })
         }
         if (documentRelationshipDocuments) {
@@ -350,6 +370,7 @@ class CreateForm extends Component {
 
         this.props.createDocument(formData);
     }
+
     findPath = (archives, select) => {
         let paths = select.map(s => {
             let archive = archives.filter(arch => arch._id === s);
@@ -378,49 +399,129 @@ class CreateForm extends Component {
     }
 
     deleteDocumentVersion = (i) => {
-        let { documentVersions } = this.state;
-
-        console.log('deeeeeeee', documentVersions)
+        let { documentVersions, documentFile, documentFileScan, versionName, documentIssuingDate, documentEffectiveDate, documentExpiredDate } = this.state;
         documentVersions.splice(i, 1);
+        documentFile.splice(i, 1);
+        documentFileScan.splice(i, 1);
+        versionName.splice(i, 1);
+        documentIssuingDate.splice(i, 1);
+        documentEffectiveDate.splice(i, 1);
+        documentExpiredDate.splice(i, 1);
 
-        console.log('deeeeeeee', documentVersions)
+
         this.setState(state => {
             return ({
                 ...state,
                 documentVersions: documentVersions,
-
+                documentFile: documentFile,
+                documentFileScan: documentFileScan,
+                versionName: versionName,
+                documentIssuingDate: documentIssuingDate,
+                documentEffectiveDate: documentEffectiveDate,
+                documentExpiredDate: documentExpiredDate,
             })
         })
     }
 
     convertISODate = (dateStr) => {
         if (dateStr) {
-            if (!dateStr.includes(':')) {
+            if (dateStr instanceof Date) {
+                return dateStr;
+            }
+            else if (dateStr.includes('-')) {
                 let splitter = dateStr.split('-');
                 let isoDate = new Date(splitter[2], splitter[1] - 1, splitter[0])
                 return isoDate;
             }
-            else
-                return dateStr;
+
         }
         return null;
     }
-    addVersion = () => {
-        const { versionName, documentIssuingDate, documentEffectiveDate, documentExpiredDate, documentFile, documentFileScan, documentVersions } = this.state;
+    addVersion = async (data) => {
+        let { documentVersions, documentFile, documentFileScan, versionName, documentIssuingDate,
+            documentEffectiveDate, documentExpiredDate } = this.state;
+        const file = {
+            file: data.file,
+            urlFile: data.urlFile,
+            fileUpload: data.fileUpload
+        }
+        const fileScan = {
+            file: data.fileScan,
+            urlFile: data.urlFileScan,
+            fileUpload: data.fileScanUpload,
+        }
         documentVersions.push({
-            versionName: versionName,
-            issuingDate: this.convertISODate(documentIssuingDate),
-            effectiveDate: this.convertISODate(documentEffectiveDate),
-            expiredDate: this.convertISODate(documentExpiredDate),
-            documentFile: documentFile,
-            documentFileScan: documentFileScan,
+            versionName: data.versionName,
+            issuingDate: this.convertISODate(data.documentIssuingDate),
+            effectiveDate: this.convertISODate(data.documentEffectiveDate),
+            expiredDate: this.convertISODate(data.documentExpiredDate),
+            documentFile: [...documentFile, {
+                ...file
+            }],
+            documentFileScan: [...documentFileScan, {
+                ...fileScan
+            }],
         })
         this.setState(state => {
             return {
                 ...state,
-                documentVersions: documentVersions
+                versionName: [...versionName, data.versionName],
+                documentIssuingDate: [...documentIssuingDate, this.convertISODate(data.documentIssuingDate)],
+                documentEffectiveDate: [...documentEffectiveDate, this.convertISODate(data.documentEffectiveDate)],
+                documentExpiredDate: [...documentExpiredDate, this.convertISODate(documentExpiredDate)],
+                documentFile: [...documentFile, {
+                    ...file
+                }],
+                documentFileScan: [...documentFileScan, {
+                    ...fileScan
+                }],
+
             }
         });
+    }
+    editVersion = async (data) => {
+        console.log('ddddaaaaaaaaa', data.issuingDate, this.convertISODate(data.issuingDate));
+        const file = {
+            file: data.file,
+            urlFile: data.urlFile,
+            fileUpload: data.fileUpload
+        }
+        const fileScan = {
+            file: data.fileScan,
+            urlFile: data.urlFileScan,
+            fileUpload: data.fileScanUpload,
+        }
+        const version = {
+            versionName: data.versionName,
+            issuingDate: this.convertISODate(data.issuingDate),
+            effectiveDate: this.convertISODate(data.effectiveDate),
+            expiredDate: this.convertISODate(data.expiredDate),
+            documentFile: [file],
+            documentFileScan: [fileScan],
+        }
+        console.log('doucmentVersion', version);
+        let { documentVersions, documentFile, documentFileScan, versionName, documentIssuingDate, documentEffectiveDate, documentExpiredDate } = this.state;
+        documentVersions[data.index] = version;
+        documentFile[data.index] = file;
+        documentFileScan[data.index] = fileScan;
+        versionName[data.index] = data.versionName;
+        documentIssuingDate[data.index] = this.convertISODate(data.issuingDate);
+        documentEffectiveDate[data.index] = this.convertISODate(data.effectiveDate);
+        documentExpiredDate[data.index] = this.convertISODate(data.expiredDate);
+
+        this.setState(state => {
+            return {
+                ...state,
+                documentVersions: documentVersions,
+                documentFile: documentFile,
+                documentFileScan: documentFileScan,
+                versionName: versionName,
+                documentIssuingDate: documentIssuingDate,
+                documentEffectiveDate: documentEffectiveDate,
+                documentExpiredDate: documentExpiredDate,
+            }
+        })
+
     }
     formatDate(date, monthYear = false) {
         if (date) {
@@ -444,13 +545,15 @@ class CreateForm extends Component {
         const { translate, role, documents, department } = this.props;
         const { list } = documents.administration.domains;
 
-        const { errorName, errorCategory, errorVersionName, errorOfficialNumber, documentArchives, documentDomains, listDocumentRelationship, documentVersions } = this.state;
+        const { errorName, errorCategory, errorVersionName, errorOfficialNumber,
+            documentArchives, documentDomains, listDocumentRelationship, documentVersions, currentVersion } = this.state;
         const archives = documents.administration.archives.list;
 
         const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
         const documentRoles = role.list.map(role => { return { value: role._id, text: role.name } });
         const relationshipDocs = documents.administration.relationshipDocs.paginate.map(doc => { return { value: doc._id, text: doc.name } });
         let path = documentArchives ? this.findPath(archives, documentArchives) : "";
+        console.log('eeeeeeeeeeee', documentVersions);
         return (
             <React.Fragment>
 
@@ -460,7 +563,7 @@ class CreateForm extends Component {
                         >{translate('general.add')}</button>
                         <ul className="dropdown-menu pull-right">
                             <li>
-                                <a href="#modal-create-document" title="ImportForm" onClick={(event) => { this.handleAddDocument(event) }}>{translate('document.add')}</a>
+                                <a href="#modal-create-document" title="Create" onClick={(event) => { this.handleAddDocument(event) }}>{translate('document.add')}</a>
                             </li>
                             <li>
                                 <a href="#modal_import_file_document" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>{translate('document.import')}</a>
@@ -469,6 +572,7 @@ class CreateForm extends Component {
                     </div>
                 </div>
                 <DocumentImportForm />
+
                 <DialogModal
                     modalID="modal-create-document"
                     formID="form-create-document"
@@ -534,51 +638,8 @@ class CreateForm extends Component {
                                     </div>
                                     <div className="row">
                                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                            {!documentVersions.length ?
-                                                <ButtonModal modalID="add-document-new-version" button_name={translate('general.add')} title={translate('document.add')} /> : ""}
-                                            <DialogModal
-                                                modalID="add-document-new-version"
-                                                formID="add-document-new-version"
-                                                title={translate('document.add_version')}
-                                                func={() => this.addVersion()}
-                                            //disableSubmit={!this.isValidateFormAddVersion()}
-                                            >
-                                                <React.Fragment>
-                                                    <div className={`form-group `}>
-                                                        <label>{translate('document.doc_version.name')}<span className="text-red">*</span></label>
-                                                        <input type="text" onChange={this.handleChangeVersionName} className="form-control" />
-                                                    </div>
-                                                    <div className="form-group">
-                                                        <label>{translate('document.upload_file')}</label>
-                                                        <UploadFile multiple={true} onChange={this.handleUploadFile} />
-                                                    </div>
-                                                    <div className="form-group">
-                                                        <label>{translate('document.upload_file_scan')}</label>
-                                                        <UploadFile multiple={true} onChange={this.handleUploadFileScan} />
-                                                    </div>
-                                                    <div className="form-group">
-                                                        <label>{translate('document.doc_version.issuing_date')}</label>
-                                                        <DatePicker
-                                                            id={`document-add-version-issuing-date`}
-                                                            onChange={this.handleIssuingDate}
-                                                        />
-                                                    </div>
-                                                    <div className="form-group">
-                                                        <label>{translate('document.doc_version.effective_date')}</label>
-                                                        <DatePicker
-                                                            id={`document-add-version-effective-date`}
-                                                            onChange={this.handleEffectiveDate}
-                                                        />
-                                                    </div>
-                                                    <div className="form-group">
-                                                        <label>{translate('document.doc_version.expired_date')}</label>
-                                                        <DatePicker
-                                                            id={`document-add-version-expired-date`}
-                                                            onChange={this.handleExpiredDate}
-                                                        />
-                                                    </div>
-                                                </React.Fragment>
-                                            </DialogModal>
+                                            <button style={{ marginTop: 2, marginBottom: 10, marginRight: 15 }} type="submit" className="btn btn-primary pull-right" onClick={this.toggleAddVersion} title={translate('document.add')}>{translate('document.add')}</button>
+                                            <AddVersion handleChange={this.addVersion} />
                                             <table className="table table-hover table-striped table-bordered" id="table-document-version">
                                                 <thead>
                                                     <tr>
@@ -604,15 +665,18 @@ class CreateForm extends Component {
                                                                     <td>{this.formatDate(version.expiredDate)}</td>
                                                                     <td>
                                                                         <a href="#" >
-                                                                            <u>{version.documentFile && version.documentFile ? translate('document.download') : ""}</u>
+                                                                            <u>{version.documentFile && version.documentFile.length && version.documentFile[0].file ? translate('document.download') : ""}</u>
                                                                         </a>
                                                                     </td>
                                                                     <td>
                                                                         <a href="#" >
-                                                                            <u>{version.documentFileScan && version.documentFileScan.length ? translate('document.download') : ""}</u>
+                                                                            <u>{version.documentFileScan && version.documentFileScan.length && version.documentFileScan[0].file ? translate('document.download') : ""}</u>
                                                                         </a>
                                                                     </td>
                                                                     <td>
+                                                                        <a className="text-yellow" title={translate('document.edit')} onClick={() => this.toggleEditVersion(version, i)}>
+                                                                            <i className="material-icons">edit</i>
+                                                                        </a>
                                                                         <a className="text-red" title={translate('document.delete')} onClick={() => this.deleteDocumentVersion(i)}>
                                                                             <i className="material-icons">delete</i>
                                                                         </a>
@@ -683,6 +747,20 @@ class CreateForm extends Component {
                             </div>
                         </div>
                     </form>
+                    {
+                        currentVersion &&
+                        <EditVersionForm
+                            index={currentVersion.index}
+                            versionName={currentVersion.versionName}
+                            issuingDate={currentVersion.issuingDate ? currentVersion.issuingDate : ""}
+                            effectiveDate={currentVersion.effectiveDate ? currentVersion.effectiveDate : ""}
+                            expiredDate={currentVersion.expiredDate ? currentVersion.expiredDate : ""}
+                            documentFile={currentVersion.documentFile ? currentVersion.documentFile : ""}
+                            documentFileScan={currentVersion.documentFileScan ? currentVersion.documentFileScan : ""}
+
+                            handleChange={this.editVersion}
+                        />
+                    }
                 </DialogModal>
             </React.Fragment>
         );
