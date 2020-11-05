@@ -65,6 +65,7 @@ import { categories } from "../modules/production/common-production/category-man
 import { goods } from "../modules/production/common-production/good-management/redux/reducers";
 import { binLocations } from "../modules/production/warehouse/bin-location-management/redux/reducers";
 import { lots } from "../modules/production/warehouse/inventory-management/redux/reducers";
+import { bills } from "../modules/production/warehouse/bill-management/redux/reducers";
 
 //crm
 import { customers } from "../modules/crm/customer/redux/reducers";
@@ -168,6 +169,7 @@ const appReducer = combineReducers({
     goods,
     binLocations,
     lots,
+    bills,
 
     // customer management
     crm: combineReducers({

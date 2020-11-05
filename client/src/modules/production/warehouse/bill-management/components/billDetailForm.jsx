@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
-import { DialogModal, SelectBox, Errorstrong, ButtonModal } from '../../../../../../common-components';
+import { DialogModal, SelectBox, Errorstrong, ButtonModal } from '../../../../../common-components';
 import { translate } from 'react-redux-multilingual/lib/utils';
 
-class BookDetailForm extends Component {
+class BillDetailForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -35,15 +35,11 @@ class BookDetailForm extends Component {
     render() {
         const { translate, bills } = this.props;
         const { billDetail } = bills;
-        let listGoods = [];
-        if(billDetail && billDetail.goodReceipts && billDetail.goodReceipts.length > 0) {
-            
-        }
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID={`modal-detail-book`}
-                    formID={`form-detail-book`}
+                    modalID={`modal-detail-bill`}
+                    formID={`form-detail-bill`}
                     title={translate('manage_warehouse.bill_management.bill_detail')}
                     msg_success={translate('manage_warehouse.bin_location_management.add_success')}
                     msg_faile={translate('manage_warehouse.bin_location_management.add_faile')}
@@ -51,7 +47,7 @@ class BookDetailForm extends Component {
                     hasSaveButton={false}
                     hasNote={false}
                 >
-                    <form id={`form-detail-book`} >
+                    <form id={`form-detail-bill`} >
                         <div className="row">
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className="form-group">
@@ -171,4 +167,4 @@ class BookDetailForm extends Component {
 
 const mapStateToProps = state => state;
 
-export default connect(mapStateToProps, null)(withTranslate(BookDetailForm));
+export default connect(mapStateToProps, null)(withTranslate(BillDetailForm));
