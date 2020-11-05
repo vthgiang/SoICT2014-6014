@@ -8,7 +8,8 @@ exports.getGoodsByType = async (company, query, portal) => {
         return await Good(connect(DB_CONNECTION, portal))
             .find({ company, type })
             .populate([
-                { path: 'materials.good', select: 'id name' }
+                { path: 'materials.good', select: 'id name' },
+                { path: 'manufacturingMills.manufacturingMill' }
             ])
     } else {
         let option = {
@@ -33,7 +34,8 @@ exports.getGoodsByType = async (company, query, portal) => {
                 page,
                 limit,
                 populate: [
-                    { path: 'materials.good', select: 'id name' }
+                    { path: 'materials.good', select: 'id name' },
+                    { path: 'manufacturingMills.manufacturingMill' }
                 ]
             })
     }
@@ -44,7 +46,8 @@ exports.getAllGoodsByType = async (query, portal) => {
     return await Good(connect(DB_CONNECTION, portal))
         .find({ type })
         .populate([
-            { path: 'materials.good', select: 'id code name baseUnit' }
+            { path: 'materials.good', select: 'id code name baseUnit' },
+            { path: 'manufacturingMills.manufacturingMill' }
         ])
 }
 
@@ -57,7 +60,6 @@ exports.getAllGoodsByCategory = async (company, categoryId, portal) => {
 }
 
 exports.createGoodByType = async (company, data, portal) => {
-    console.log(data);
     let good = await Good(connect(DB_CONNECTION, portal)).create({
         company: company,
         category: data.category,
@@ -79,6 +81,13 @@ exports.createGoodByType = async (company, data, portal) => {
                 quantity: item.quantity
             }
         }),
+        manufacturingMills: data.manufacturingMills.map(item => {
+            return {
+                manufacturingMill: item.manufacturingMill,
+                productivity: item.productivity,
+                personNumber: item.personNumber
+            }
+        }),
         description: data.description,
         quantity: data.quantity ? data.quantity : 0
     });
@@ -86,7 +95,8 @@ exports.createGoodByType = async (company, data, portal) => {
     return await Good(connect(DB_CONNECTION, portal))
         .findById(good._id)
         .populate([
-            { path: 'materials.good', select: 'id name' }
+            { path: 'materials.good', select: 'id name' },
+            { path: 'manufacturingMills.manufacturingMill' }
         ])
 }
 
@@ -105,6 +115,14 @@ exports.editGood = async (id, data, portal) => {
         good.name = data.name,
         good.type = data.type,
         good.baseUnit = data.baseUnit,
+        good.packingRule = data.packingRule,
+        good.manufacturingMills = data.manufacturingMills.map(item => {
+            return {
+                manufacturingMill: item.manufacturingMill,
+                productivity: item.productivity,
+                personNumber: item.personNumber
+            }
+        }),
         good.units = data.units.map(item => {
             return {
                 name: item.name,
@@ -125,7 +143,8 @@ exports.editGood = async (id, data, portal) => {
     return await Good(connect(DB_CONNECTION, portal))
         .findById(id)
         .populate([
-            { path: 'materials.good', select: 'id name' }
+            { path: 'materials.good', select: 'id name' },
+            { path: 'manufacturingMills.manufacturingMill' }
         ])
 
 }

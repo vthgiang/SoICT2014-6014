@@ -7,6 +7,7 @@ import LotEditForm from './lotEditForm';
 
 import { LotActions } from '../redux/actions';
 import { StockActions } from '../../stock-management/redux/actions';
+import { BillActions } from '../../bill-management/redux/actions';
 import { GoodActions } from '../../../common-production/good-management/redux/actions';
 
 import { SelectMulti, DataTableSetting, SelectBox, DatePicker, PaginateBar } from '../../../../../common-components/index';
@@ -87,11 +88,13 @@ class InventoryManagement extends Component {
     }
 
     handleShowDetailInfo = async (id) => {
+        const page = 1, limit = 5;
         await this.props.getGoodDetail(id);
+        await this.props.getBillByGood({ good: id, page, limit });
         await this.setState(state => {
             return {
                 ...state,
-                lotId: id
+                lotDetailId: id
             }
         })
         
@@ -141,7 +144,7 @@ class InventoryManagement extends Component {
     }
 
     setLimit = (number) => {
-        this.setState({ limit: number, dataStatus: 0 });
+        this.setState({ limit: number });
         const data = {
             limit: number,
             page: this.state.page,
@@ -151,7 +154,7 @@ class InventoryManagement extends Component {
     }
 
     setPage = (page) => {
-        this.setState({ page, dataStatus: 0 });
+        this.setState({ page });
         const data = {
             limit: this.state.limit,
             page: page,
@@ -240,7 +243,7 @@ class InventoryManagement extends Component {
     render() {
 
         const { translate, lots, goods, stocks } = this.props;
-        const { type, lotId, good, expirationDate } = this.state;
+        const { type, lotId, lotDetailId, good, expirationDate } = this.state;
         const { listGoodsByType } = goods;
         const { listPaginate, listLots, totalPages, page } = lots;
         const totalGoodsByType = listGoodsByType ? listGoodsByType.length : 0;
@@ -328,9 +331,9 @@ class InventoryManagement extends Component {
                         </ul>
                     </div>
                     {
-                        lotId &&
+                        lotDetailId &&
                         <InventoryDetailForm
-                            id={lotId}
+                            id={lotDetailId}
                         />
                     }
                     <LotDetailForm />
@@ -409,7 +412,8 @@ const mapDispatchToProps = {
     getGoodDetail: GoodActions.getGoodDetail,
     getAllStocks: StockActions.getAllStocks,
     getDetailLot: LotActions.getDetailLot,
-    getAllGoodsByType: GoodActions.getAllGoodsByType
+    getAllGoodsByType: GoodActions.getAllGoodsByType,
+    getBillByGood: BillActions.getBillByGood
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(InventoryManagement));

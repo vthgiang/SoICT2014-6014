@@ -151,7 +151,7 @@ class AdministrationDocumentDomains extends Component {
                     deleteNode.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteDomains}>{translate('general.delete')}</button>
                 }
                 <ExportExcel id="export-document-domain" exportData={exportData} style={{ marginRight: 5 }} buttonName={translate('document.export')} />
-                <CreateForm/>
+                <CreateForm />
                 <DomainImportForm />
                 <div className="row">
                     <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">

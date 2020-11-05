@@ -41,7 +41,7 @@ class ResultsOfEmployeeKpiChart extends Component {
     }
 
     componentDidMount = () => {
-        this.props.getAllEmployeeKpiSetByMonth(this.state.userId, this.state.startMonth, this.state.endMonth);
+        this.props.getAllEmployeeKpiSetByMonth(undefined, this.state.userId, this.state.startMonth, this.state.endMonth);
 
         this.setState(state => {
             return {
@@ -54,7 +54,7 @@ class ResultsOfEmployeeKpiChart extends Component {
     shouldComponentUpdate = async (nextProps, nextState) => {
         if(nextState.startMonth !== this.state.startMonth || nextState.endMonth !== this.state.endMonth) {
             // Cầ đặt await, và phải đặt trước setState để kịp thiết lập createEmployeeKpiSet.employeeKpiSetByMonth là null khi gọi service
-            await this.props.getAllEmployeeKpiSetByMonth(this.state.userId, nextState.startMonth, nextState.endMonth);
+            await this.props.getAllEmployeeKpiSetByMonth(undefined, this.state.userId, nextState.startMonth, nextState.endMonth);
        
             this.setState(state => {
                 return {

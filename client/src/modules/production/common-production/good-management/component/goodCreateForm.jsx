@@ -6,6 +6,8 @@ import { GoodActions } from '../redux/actions';
 import { CategoryActions } from '../../category-management/redux/actions';
 import UnitCreateForm from './unitCreateForm';
 import ComponentCreateForm from './componentCreateForm';
+import InfoMillCreateForm from './infoMillCreateForm';
+import { generateCode } from '../../../../../helpers/generateCode';
 
 class GoodCreateForm extends Component {
     constructor(props) {
@@ -181,22 +183,16 @@ class GoodCreateForm extends Component {
         })
     }
 
-    validateComponentCreateForm = (value) => {
+    handleListMillsChange = (data) => {
         this.setState(state => {
             return {
                 ...state,
-                isValidatedComponentCreatedForm: value
+                manufacturingMills: data
             }
-        })
+        });
+        console.log(this.state.manufacturingMills);
     }
-    validateUnitCreateForm = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                isValidatedUnitCreateForm: value
-            }
-        })
-    }
+
 
     isFormValidated = () => {
         let result =
@@ -204,8 +200,8 @@ class GoodCreateForm extends Component {
             this.validateCode(this.state.code, false) &&
             this.validateBaseUnit(this.state.baseUnit, false) &&
             this.validateCategory(this.state.category, false) &&
-            this.state.isValidatedComponentCreatedForm &&
-            this.state.isValidatedUnitCreateForm;
+            this.state.materials.length > 0 &&
+            this.state.packingRule;
         return result;
     }
 
@@ -216,7 +212,13 @@ class GoodCreateForm extends Component {
         }
     }
 
-
+    handleClickCreate = () => {
+        let code = generateCode('HH');
+        this.setState((state) => ({
+            ...state,
+            code: code
+        }))
+    }
     render() {
 
         let listUnit = [];
@@ -229,7 +231,7 @@ class GoodCreateForm extends Component {
         if (materials) listMaterial = materials;
         return (
             <React.Fragment>
-                <ButtonModal modalID={`modal-create-${type}`} button_name={translate('manage_warehouse.good_management.add')} title={translate('manage_warehouse.good_management.add_title')} />
+                <ButtonModal onButtonCallBack={this.handleClickCreate} modalID={`modal-create-${type}`} button_name={translate('manage_warehouse.good_management.add')} title={translate('manage_warehouse.good_management.add_title')} />
                 <DialogModal
                     modalID={`modal-create-${type}`} isLoading={goods.isLoading}
                     formID={`form-create-${type}`}
@@ -245,7 +247,7 @@ class GoodCreateForm extends Component {
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group ${!errorOnCode ? "" : "has-error"}`}>
                                     <label>{translate('manage_warehouse.good_management.code')}<span className="attention"> * </span></label>
-                                    <input type="text" className="form-control" value={code} onChange={this.handleCodeChange} />
+                                    <input type="text" className="form-control" disabled={true} value={code} onChange={this.handleCodeChange} />
                                     <ErrorLabel content={errorOnCode} />
                                 </div>
                                 <div className={`form-group ${!errorOnBaseUnit ? "" : "has-error"}`}>
@@ -278,8 +280,15 @@ class GoodCreateForm extends Component {
                                     <label>{translate('manage_warehouse.good_management.description')}</label>
                                     <textarea type="text" className="form-control" value={description} onChange={this.handleDescriptionChange} />
                                 </div>
-                                <UnitCreateForm baseUnit={baseUnit} onValidate={this.validateUnitCreateForm} initialData={listUnit} onDataChange={this.handleListUnitChange} />
-                                {type === 'product' ? <ComponentCreateForm onValidate={this.validateComponentCreateForm} initialData={listMaterial} onDataChange={this.handleListMaterialChange} /> : ""}
+                                <UnitCreateForm baseUnit={baseUnit} initialData={listUnit} onDataChange={this.handleListUnitChange} />
+                                {
+                                    type === 'product'
+                                        ?
+                                        <React.Fragment>
+                                            <ComponentCreateForm initialData={listMaterial} onDataChange={this.handleListMaterialChange} />
+                                            <InfoMillCreateForm onDataChange={this.handleListMillsChange} />
+                                        </React.Fragment>
+                                        : ""}
                             </div>
                         </div>
                     </form>

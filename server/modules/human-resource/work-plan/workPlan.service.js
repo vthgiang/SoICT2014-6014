@@ -10,11 +10,11 @@ const {
  * Lấy danh sách lịch làm việc
  * @company : Id công ty
  */
-exports.getAllWorkPlans = async (portal,company) => {
+exports.getAllWorkPlans = async (portal, company) => {
     let data = await WorkPlan(connect(DB_CONNECTION, portal)).findOne({
         company: company
     });
-    if(data&&data.workPlans.length>1){
+    if(data && data.workPlans.length > 1){
         data.workPlans = data.workPlans.sort((a,b)=> {return a.startDate-b.startDate});
     }
     return {
@@ -28,9 +28,10 @@ exports.getAllWorkPlans = async (portal,company) => {
  * @param {*} year : Năm
  * @param {*} company : Id công ty
  */
-exports.getWorkPlansOfYear = async (portal,company, year) => {
+exports.getWorkPlansOfYear = async (portal, company, year) => {
     let firstDay = new Date(year, 0, 1);
     let lastDay = new Date(Number(year) + 1, 0, 1);
+    let workPlans = await WorkPlan(connect(DB_CONNECTION, portal)).findOne({company: company});
     let data = await WorkPlan(connect(DB_CONNECTION, portal)).findOne({
         company: company,
         'workPlans.startDate': {
@@ -38,11 +39,11 @@ exports.getWorkPlansOfYear = async (portal,company, year) => {
             "$lte": lastDay
         }
     });
-    if(data&&data.workPlans.length>1){
+    if(data && data.workPlans.length>1){
         data.workPlans = data.workPlans.sort((a,b)=> {return a.startDate-b.startDate});
     }
     return {
-        maximumNumberOfLeaveDays: data ? data.maximumNumberOfLeaveDays : 0,
+        maximumNumberOfLeaveDays: workPlans ? workPlans.maximumNumberOfLeaveDays : 0,
         workPlans: data ? data.workPlans : []
     };
 }

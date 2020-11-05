@@ -81,7 +81,10 @@ const GoodSchema = new Schema({
     },
 
     manufacturingMills: [{
-        manufacturingMill: Schema.Types.ObjectId,
+        manufacturingMill: {
+            type: Schema.Types.ObjectId,
+            ref: 'ManufacturingMill'
+        },
         productivity: Number,
         personNumber: Number
     }],

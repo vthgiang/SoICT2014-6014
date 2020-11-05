@@ -185,6 +185,8 @@ class GoodManagement extends Component {
                 currentRow: good
             }
         })
+
+        console.log(this.state.currentRow);
         window.$('#modal-detail-good').modal('show');
     }
 
@@ -234,8 +236,11 @@ class GoodManagement extends Component {
                             category={this.state.currentRow.category}
                             baseUnit={this.state.currentRow.baseUnit}
                             units={this.state.currentRow.units}
+                            packingRule={this.state.currentRow.packingRule}
                             materials={this.state.currentRow.materials}
                             description={this.state.currentRow.description}
+                            manufacturingMills={this.state.currentRow.manufacturingMills}
+
                         />
                     }
 
@@ -251,6 +256,8 @@ class GoodManagement extends Component {
                             units={this.state.currentRow.units}
                             materials={this.state.currentRow.materials}
                             description={this.state.currentRow.description}
+                            packingRule={this.state.currentRow.packingRule}
+                            manufacturingMills={this.state.currentRow.manufacturingMills}
                         />
                     }
                     <div className="form-inline">
