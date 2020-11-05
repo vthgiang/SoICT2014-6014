@@ -828,7 +828,7 @@ exports.deleteDocumentArchive = async (portal, id) => {
 
 exports.deleteManyDocumentArchive = async (array, portal, company) => {
     for (let i = 0; i < array.length; i++) {
-        deleteNode(array[i]);
+        deleteNode(array[i], portal);
     }
 
     return await this.getDocumentArchives(portal, company);

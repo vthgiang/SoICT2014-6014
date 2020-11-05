@@ -696,7 +696,7 @@ export default {
             customer: {
                 owner: 'Người quản lý',
                 source: 'Nguồn khách hàng',
-                company: 'Tên công ty',
+                company: 'Công ty',
                 companyEstablishmentDate: 'Ngày thành lập công ty',
                 name: 'Tên khách hàng',
                 code: 'Mã khách hàng',
@@ -727,6 +727,12 @@ export default {
                 by_customer: 'Theo khách hàng',
                 payment: 'Hình thức thanh toán',
                 creator: 'Người tạo',
+
+                personal: 'Cá nhân',
+                organization: 'Tổ chức',
+                northern: 'Miền Bắc',
+                central: 'Miền Trung',
+                southern: 'Miền Nam',
 
                 purchaseHistories: {
                     all: 'Tất cả',
@@ -1050,6 +1056,7 @@ export default {
             manage_examples: "Ví dụ CRUD",
             manage_examples_1: "CRUD theo mô hình số 1",
             manage_examples_2: "CRUD theo mô hình số 2",
+            manage_examples_hooks_1: "CRUD Hooks theo mô hình 1",
 
             // Quản lý sản xuất
             manage_manufacturing: "Quản lý sản xuất",
@@ -2630,6 +2637,8 @@ export default {
                 calc_overdue_date: 'Thời gian quá hạn',
                 calc_day_used: 'Thời gian làm việc tính đến ngày đánh giá',
                 calc_average_action_rating: 'Trung bình cộng điểm đánh giá hoạt động',
+                calc_failed_action_rating: 'Số hoạt động không đạt (rating < 5)',
+                calc_passed_action_rating: 'Số công việc đạt (rating >= 5)',
                 calc_progress: 'Tiến độ công việc',
                 calc_new_formula: 'Công thức hiện tại',
                 calc_total_day: 'Thời gian từ ngày bắt đầu đến ngày kết thúc công việc',
@@ -2706,6 +2715,7 @@ export default {
                 unit_evaluate: "Đơn vị tiếp nhận kết quả đánh giá công việc",
                 unit_manage_task: "Đơn vị quản lý công việc",
                 collaborated_with_organizational_units: "Đơn vị phối hợp thực hiện công việc",
+                not_collaborated_with_organizational_units: "Không có đơn vị phối hợp",
                 task_empty_employee: "Đơn vị bạn chưa có người tham gia",
                 delete_eval: "Xóa đánh giá tháng này",
                 delete_eval_title: 'Bạn có chắc chắn muốn xóa đánh giá này?',
@@ -3624,11 +3634,26 @@ export default {
                 category: 'Danh mục',
                 unit: 'Đơn vị tính',
                 baseUnit: 'Đơn vị tính cơ bản',
-                materials: 'Hoạt chất chính',
+                materials: 'Thành phần chính',
                 unit_name: 'Tên',
                 conversion_rate: 'Giá trị chuyển đổi',
                 quantity: 'Số lượng',
-                choose_category: 'Chọn danh mục'
+                choose_category: 'Chọn danh mục',
+                choose_base_unit: 'Vui lòng chọn đơn vị để tạo quy tắc đóng gói',
+                packing_rule: 'Quy tắc đóng gói',
+                non_choose_base_unit: 'Không chọn',
+                choose_base_unit_all: 'Chọn tất cả',
+                error_packing_rule: 'Đơn vị được chọn không thể tạo thành quy tắc đóng gói. Vui lòng chọn lại!',
+                info_mill: 'Thông tin về xưởng sản xuất',
+                productivity: 'Đơn vị sản phẩm / ca',
+                person_number: 'Số lượng người / ca',
+                mill: 'Xưởng',
+                choose_mill: 'Chọn xưởng sản xuất',
+                error_choose_mill: 'Vui lòng chọn xưởng sản xuất',
+                error_productivity: 'Giá trị nhập vào phải > 0',
+                error_person_number: 'Giá trị nhập vào phải > 0',
+                mill_code: 'Mã xưởng',
+                mill_name: 'Tên xưởng'
             },
 
             stock_management: {
@@ -3688,11 +3713,11 @@ export default {
                 },
                 2: {
                     status: 'Đang sử dụng',
-                    color: 'red'
+                    color: 'blue'
                 },
                 3: {
                     status: 'Đang sửa chữa',
-                    color: 'blue'
+                    color: 'violet'
                 },
                 4: {
                     status: 'Không sử dụng',
@@ -3749,6 +3774,32 @@ export default {
                 detail_title: 'Chi tiết khu vực lưu trữ'
             },
             bill_management: {
+                1: {
+                    status: "Chờ phê duyệt",
+                    color: "green"
+                },
+                2: {
+                    status: 'Đã hoàn thành',
+                    color: 'blue'
+                },
+                3: {
+                    status: 'Chờ kiểm tra',
+                    color: 'violet'
+                },
+                4: {
+                    status: 'Đã hủy',
+                    color: 'red'
+                },
+                billType: {
+                    1: "Nhập nguyên vật liệu",
+                    2: "Nhập thành phẩm",
+                    3: "Xuất nguyên vật liệu",
+                    4: "Xuất thành phẩm",
+                    5: "Kiểm kê định kỳ",
+                    6: "Kiểm kê thường xuyên",
+                    7: "Trả hàng",
+                    8: "Luân chuyển"
+                },
                 stock_book: 'Sổ kho',
                 good_receipt: 'Nhập kho',
                 good_issue: 'Xuất kho',
@@ -3787,7 +3838,8 @@ export default {
                 lot: 'Lô hàng',
                 difference: 'Chênh lệch',
                 receiver: 'Người nhận hàng',
-                choose_good: 'Chọn hàng hóa'
+                choose_good: 'Chọn hàng hóa',
+                add_title: 'Thêm phiếu mới'
             },
             inventory_management: {
                 product: 'Sản phẩm',
@@ -3823,9 +3875,9 @@ export default {
                 note: 'Ghi chú',
                 bill: 'Mã phiếu',
                 archive: 'Nơi lưu trữ',
-                bin_location: 'Khu vực đang lưu trữ',
+                bin_location: 'Khu vực lưu trữ',
                 choose_bin: 'Chọn nơi lưu trữ',
-                choose_stock: 'Chọn kho đang chứa',
+                choose_stock: 'Chọn kho chứa',
                 choose_good: 'Chọn hàng hóa',
                 total_stock: 'Tổng các kho',
                 number_over: 'Số lượng đã vượt quá số lượng tồn kho',
@@ -4040,7 +4092,9 @@ export default {
                 edit_mill_failed: "Sửa thông tin xưởng thất bại",
                 works_name: "Tên nhà máy",
                 created_at: "Ngày tạo",
-                teamLeader: "Đội trưởng"
+                team_leader: "Đội trưởng",
+                choose_team_leader: "---Chọn đội trưởng---",
+                team_leader_error: "Vui lòng chọn đội trưởng"
             },
             purchasing_request: {
                 code: "Mã phiếu đề nghị",

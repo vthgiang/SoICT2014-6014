@@ -19,6 +19,8 @@ module.exports = async (server) => {
         socket.on('disconnect', function () {
             CONNECTED_CLIENTS = CONNECTED_CLIENTS.filter(client => client.socketId !== socket.id);
         });
+
+        console.log("User connected: ", CONNECTED_CLIENTS);
     });
 
     global.SERVER_DIR = __dirname;

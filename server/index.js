@@ -5,6 +5,9 @@ const cookieParser = require("cookie-parser");
 const app = express();
 const server = require('http').createServer(app);
 
+const swaggerUi = require('swagger-ui-express');
+const openApiDocumentation = require('./api-docs/swagger.json');
+
 require("dotenv").config();
 require('./connectDatabase');
 require('./global')(server);
@@ -17,6 +20,9 @@ app.use("/upload/avatars", express.static("upload/avatars"));
 
 const router = express.Router();
 
+// Api-docs
+router.use("/api-docs", swaggerUi.serve, swaggerUi.setup(openApiDocumentation))
+
 router.use('/auth', require('./modules/auth/auth.route'));
 
 router.use("/annualLeave", require("./modules/human-resource/annual-leave/annualLeave.route"));
@@ -27,8 +33,8 @@ router.use("/employee", require("./modules/human-resource/profile/profile.route"
 router.use("/salary", require("./modules/human-resource/salary/salary.route"));
 router.use("/timesheet", require("./modules/human-resource/timesheets/timesheets.route"));
 
-router.use("/majors", require("./modules/human-resource/major/major.route"));
-router.use("/career-positions", require("./modules/human-resource/career-position/careerPosition.route"));
+// router.use("/majors", require("./modules/human-resource/major/major.route"));
+// router.use("/career-positions", require("./modules/human-resource/career-position/careerPosition.route"));
 
 router.use("/kpi/employee/creation", require("./modules/kpi/employee/creation/creation.route"));
 router.use("/kpi/employee/dashboard", require("./modules/kpi/employee/dashboard/dashboard.route"));
@@ -77,6 +83,7 @@ router.use("/categories", require("./modules/production/common-production/catego
 router.use("/goods", require("./modules/production/common-production/good/good.route"));
 router.use("/bin-locations", require("./modules/production/warehouse/bin-location/binLocation.route"));
 router.use("/lot", require("./modules/production/warehouse/inventory/inventory.route"));
+router.use("/bills", require("./modules/production/warehouse/bill/bill.route"));
 
 router.use("/examples", require("./modules/example/example.route"));
 router.use("/documents", require("./modules/document/document.route"));
@@ -87,7 +94,6 @@ app.use("/crm/cares", require("./modules/crm/care/care.route"));
 app.use("/crm/careTypes", require("./modules/crm/careType/careType.route"));
 app.use("/crm/groups", require("./modules/crm/group/group.route"));
 app.use("/crm/status", require("./modules/crm/status/status.route"));
-
 
 // production - manufaturing
 app.use("/manufacturing-mill", require("./modules/production/manufacturing/manufacturingMill/manufacturingMill.route"));

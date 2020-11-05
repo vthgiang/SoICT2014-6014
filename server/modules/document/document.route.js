@@ -44,7 +44,7 @@ router.delete("/documents/:id", auth, DocumentController.deleteDocument);
 router.post("/documents/import-file", auth, DocumentController.importDocument);
 
 // Thư mục lưu trữ
-router.get('/document-archives', auth, DocumentController.getDocumnetArchive);
+router.get('/document-archives', auth, DocumentController.getDocumentArchives);
 router.post('/document-archives', auth, DocumentController.createDocumentArchive);
 router.post('/document-archives/delete-many', auth, DocumentController.deleteManyDocumentArchive);
 router.patch('/document-archives/:id', auth, DocumentController.editDocumentArchive);

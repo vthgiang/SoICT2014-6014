@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { connect  } from 'react-redux';
 
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { DialogModal, ErrorLabel } from '../../../../common-components';
@@ -8,17 +8,6 @@ import ValidationHelper from '../../../../helpers/validationHelper';
 import { exampleActions } from '../redux/actions';
 
 function ExampleEditForm(props) {
-    // dispatch dùng để call API
-    const dispatch = useDispatch();
-
-    // Get prop from redux
-    props = useSelector((state) => {
-        return {
-            ...props,
-            example: state.example1
-        }
-    });
-
     // Khởi tạo state
     const [state, setState] = useState({
         exampleID: undefined,
@@ -26,6 +15,9 @@ function ExampleEditForm(props) {
         description: "",
         exampleNameError: undefined
     })
+
+    const { translate, example } = props;
+    const { exampleName, description, exampleNameError, exampleID } = state;
 
     // setState từ props mới
     if (props.exampleID !== exampleID) {
@@ -37,9 +29,6 @@ function ExampleEditForm(props) {
             exampleNameError: undefined
         })
     }
-
-    const { translate, example } = props;
-    const { exampleName, description, exampleNameError, exampleID } = state;
         
     const isFormValidated = () => {
         if (!ValidationHelper.validateName(translate, exampleName, 6, 255).status) {
@@ -50,8 +39,7 @@ function ExampleEditForm(props) {
 
     const save = () => {
         if (isFormValidated) {
-            const { exampleID, exampleName, description } = this.state;
-            dispatch(actions.editExample(exampleID, { exampleName, description }));
+            props.editExample(exampleID, { exampleName, description });
         }
     }
 
@@ -59,7 +47,8 @@ function ExampleEditForm(props) {
         const { value } = e.target;
         let { message } = ValidationHelper.validateName(translate, value, 6, 255);
 
-        this.setState({
+        setState({
+            ...state,
             exampleName: value,
             exampleNameError: message
         });
@@ -73,15 +62,13 @@ function ExampleEditForm(props) {
         })
     }
 
-    
-
     return (
         <React.Fragment>
             <DialogModal
                 modalID={`modal-edit-example`} isLoading={example.isLoading}
                 formID={`form-edit-example`}
                 title={translate('manage_example.edit_title')}
-                disableSubmit={!this.isFormValidated()}
+                disableSubmit={!isFormValidated}
                 func={save}
                 size={50}
                 maxWidth={500}
@@ -102,8 +89,13 @@ function ExampleEditForm(props) {
     );
 }
 
+function mapState(state) {
+    const example = state.example1;
+    return { example }
+}
 const actions = {
     editExample: exampleActions.editExample
 }
 
-export default (withTranslate(ExampleEditForm));
+const connectedExampleEditForm = connect(mapState, actions)(withTranslate(ExampleEditForm));
+export { connectedExampleEditForm as ExampleEditForm };

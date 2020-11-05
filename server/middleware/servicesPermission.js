@@ -511,6 +511,10 @@ exports.data = [
     { path: '/lot/get-detail/:id', method: 'GET', roles: ['Super Admin', 'Admin']},
     { path: '/lot/:id', method: 'PATCH', roles: ['Super Admin', 'Admin']},
 
+    { path: '/bills', method: 'GET', roles: ['Super Admin', 'Admin']},
+    { path: '/bills/get-bill-by-good', method: 'GET', roles: ['Super Admin', 'Admin']},
+    { path: '/bills/get-detail-bill/:id', method: 'GET', roles: ['Super Admin', 'Admin']},
+
     //order
     { path: "/orders", method: "GET", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },
     { path: "/orders", method: "POST", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },

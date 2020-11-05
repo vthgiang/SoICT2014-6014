@@ -11,7 +11,7 @@ class BookManagement extends Component {
     
     render() {
         return (
-            <div>
+            <div id="bill-stock-book">
                 <BookManagementTable />
             </div>
         );

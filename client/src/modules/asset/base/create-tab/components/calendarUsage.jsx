@@ -372,7 +372,7 @@ class CalendarUsage extends Component {
           asset: dataRecommendDistribute[0].asset._id,
           dateStartUse: dataRecommendDistribute[0].dateStartUse,
           dateEndUse: dataRecommendDistribute[0].dateEndUse,
-          approver: dataRecommendDistribute[0].approver, // Người phê duyệt
+          approver: this.state.userId, // Đổi/thiết lập người phê duyệt
           note: dataRecommendDistribute[0].note,
           status: "approved",
         })
@@ -425,7 +425,7 @@ class CalendarUsage extends Component {
           asset: dataRecommendDistribute[0].asset._id,
           dateStartUse: dataRecommendDistribute[0].dateStartUse,
           dateEndUse: dataRecommendDistribute[0].dateEndUse,
-          approver: dataRecommendDistribute[0].approver, // Người phê duyệt
+          approver: this.state.userId, // Đổi/thiết lập người phê duyệt
           note: dataRecommendDistribute[0].note,
           status: "disapproved",
         })
