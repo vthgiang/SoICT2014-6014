@@ -25,6 +25,9 @@ import { annualLeave } from '../modules/human-resource/annual-leave/redux/reduce
 import { workPlan } from '../modules/human-resource/work-plan/redux/reducers';
 import { timesheets } from '../modules/human-resource/timesheets/redux/reducers';
 
+import { career } from '../modules/human-resource/career-position/redux/reducers';
+import { major } from '../modules/human-resource/major/redux/reducers';
+
 import { notifications } from '../modules/notification/redux/reducers';
 import { documents } from '../modules/document/redux/reducers';
 
@@ -77,6 +80,7 @@ import { careTypes } from "../modules/crm/careType/redux/reducers";
 //order
 import { taxs } from "../modules/production/order/tax/redux/reducers";
 import { quotes } from '../modules/production/order/quote/redux/reducers';
+import { discounts } from "../modules/production/order/discount/redux/reducers";
 
 //plan
 import { plan } from "../modules/plan/redux/reducers";
@@ -124,6 +128,10 @@ const appReducer = combineReducers({
     annualLeave,
     workPlan,
     timesheets,
+
+    // gói thầu
+    career,
+    major,
 
     // hr-tranning
     education,
@@ -179,6 +187,8 @@ const appReducer = combineReducers({
     //order
     taxs,
     quotes,
+    discounts,
+
     //plane
     plan,
 

@@ -87,6 +87,7 @@ exports.createCommendation = async (req, res) => {
             });
         } else {
             let createCommendation = await CommendationService.createCommendation(req.portal,req.body, req.user.company._id);
+            console.log(createCommendation);
             // Kiểm tra trùng lặp
             if (createCommendation === "have_exist") {
                 await Log.error(req.user.email, 'CREATE_COMMENDATIONS', req.portal);

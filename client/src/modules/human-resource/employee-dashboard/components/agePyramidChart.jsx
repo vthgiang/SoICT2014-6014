@@ -56,8 +56,6 @@ class AgePyramidChart extends Component {
         let maxData1 = this.findMaxOfArray(data.data1), maxData2 = this.findMaxOfArray(data.data2);
         let qty_max = maxData1 >= maxData2 ? maxData1 : maxData2;
         data.data1.shift(); data.data2.shift();
-        let bigData1 = data.data1.map(x => x / 1.5);
-        let bigData2 = data.data2.map(x => x / 2);
 
         this.removePreviousChart();
         let chart = c3.generate({
@@ -103,14 +101,9 @@ class AgePyramidChart extends Component {
 
         setTimeout(function () {
             chart.load({
-                columns: [[data.nameData1, ...bigData1], [data.nameData2, ...bigData2]],
-            });
-        }, 100);
-        setTimeout(function () {
-            chart.load({
                 columns: [[data.nameData1, ...data.data1], [data.nameData2, ...data.data2]],
             });
-        }, 300);
+        }, 100);
     }
 
     static isEqual = (items1, items2) => {
@@ -139,13 +132,14 @@ class AgePyramidChart extends Component {
             }
         }
         return null;
-    }
+    };
+
     shouldComponentUpdate(nextProps, nextState) {
         if (nextProps.organizationalUnits !== this.state.organizationalUnits || nextProps.actionSearch !== this.state.actionSearch || !AgePyramidChart.isEqual(nextProps.employeesManager.listAllEmployees, this.state.listAllEmployees) ||
             !AgePyramidChart.isEqual(nextProps.employeesManager.listEmployeesOfOrganizationalUnits, this.state.listEmployeesOfOrganizationalUnits)) {
             return true;
         };
-        return true;
+        return false;
     }
 
     render() {
@@ -191,6 +185,7 @@ class AgePyramidChart extends Component {
             data2: data2AgePyramid,
         }
         this.renderChart(data);
+        console.log("1222")
 
         return (
             <React.Fragment>

@@ -105,7 +105,7 @@ function disableTax (id) {
             type: TaxConstants.DISABLE_TAX_REQUEST
         })
 
-        TaxServices.updateTax(id)
+        TaxServices.disableTax(id)
         .then((res) => {
             dispatch({
                 type: TaxConstants.DISABLE_TAX_SUCCESS,

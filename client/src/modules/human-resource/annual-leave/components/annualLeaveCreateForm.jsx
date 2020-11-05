@@ -17,7 +17,7 @@ class AnnualLeaveCreateForm extends Component {
             employee: "",
             startDate: this.formatDate(Date.now()),
             endDate: this.formatDate(Date.now()),
-            status: "pass",
+            status: "approved",
             reason: "",
         };
     }

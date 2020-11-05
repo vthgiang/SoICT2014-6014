@@ -688,6 +688,7 @@ export default {
             domain_name_exist: 'Domain name exist',
             category_name_exist: 'Category name exist',
             name_exist: 'Name exist',
+            document_exist: 'Official number exist'
         },
 
         crm: {
@@ -843,6 +844,7 @@ export default {
                 care: 'Cares',
                 group: 'Groups',
                 statistic: 'Statistics',
+                generalConfiguration: 'generalConfiguration'
             },
 
             task_template: 'Task Template',
@@ -864,13 +866,17 @@ export default {
             update_employee: 'Update Personal Information',
             dashboard_employee: 'DashBoard Manage Staffs ',
             dashboard_personal: 'DashBoard personal',
-            employee_capacity:'Employee capacity',
+            dashboard_unit: 'DashBoard unit',
+            employee_capacity: 'Employee capacity',
             discipline: 'Manage Commendation And Discipline',
             annual_leave: 'Manage Annual Leave',
             salary_employee: 'Manage Salary',
             time_keeping: 'Attendance Staff',
             list_education: 'Training Programs',
             training_plan: 'Manage Training Courses',
+            list_major: 'Manage majors',
+            list_career_position: 'Manage career position',
+            list_search_for_package: 'Search employee for package',
 
             manage_warehouse: 'Manage warehouses',
             dashboard_material: "Dashboad manage materials",
@@ -952,6 +958,7 @@ export default {
             manage_examples: "CRUD example",
             manage_examples_1: "CRUD by model 1",
             manage_examples_2: "CRUD by model 2",
+            manage_examples_hooks_1: "CRUD Hooks by model 1",
 
             // Quản lý sản xuất
             manage_manufacturing: "Quản lý sản xuất",
@@ -1122,9 +1129,11 @@ export default {
             add_success: 'Add new success',
             all_unit: 'Select all unit',
             non_unit: 'Select unit',
+            unit_selected: 'unit selected',
             non_staff: 'Select staff',
             all_position: 'Select all position',
             non_position: 'Select position',
+            position_selected: 'position selected',
             all_status: 'Select all status',
             non_status: 'Select status',
             not_unit: 'Not selected unit',
@@ -1826,7 +1835,7 @@ export default {
                 // Kết quả đào tạo
                 result: {
                     pass: 'Pass',
-                    falied: 'Failed',
+                    failed: 'Failed',
                 },
 
                 // Nhóm action
@@ -2524,6 +2533,8 @@ export default {
                 calc_overdue_date: 'Overdue date of task',
                 calc_day_used: 'Time from start date to today',
                 calc_average_action_rating: 'Average action of task rating',
+                calc_failed_action_rating: 'Number of failed action',
+                calc_passed_action_rating: 'Number of passed action',
                 calc_progress: 'Progress of task',
                 calc_new_formula: 'Current formula',
                 calc_total_day: 'Time from start date to end date',
@@ -2559,10 +2570,10 @@ export default {
                 auto_point_field: 'Automatic point of task in this month',
                 get_outside_info: 'Auto fill evaluation infomation from task infomation',
 
-                dashboard_created: 'Created',
-                dashboard_need_perform: 'Need to perform',
-                dashboard_need_approve: 'Need to approve',
-                dashboard_need_consult: 'Need to consult',
+                dashboard_created: 'Number of tasks you created',
+                dashboard_need_perform: 'Number of tasks you perform',
+                dashboard_need_approve: 'Number of tasks you approve',
+                dashboard_need_consult: 'Number of tasks you consult',
                 dashboard_area_result: 'Result area dashboard',
                 dashboard_overdue: 'Overdue task',
                 dashboard_about_to_overdue: 'Task is about to overdue',
@@ -2599,6 +2610,7 @@ export default {
                 unit_evaluate: "Unit receiving work evaluation results",
                 unit_manage_task: "Unit managing task",
                 collaborated_with_organizational_units: "Units that have collaborated",
+                not_collaborated_with_organizational_units: "No units that have collaborated",
                 task_empty_employee: "Your organization unit has no participants",
                 delete_eval: "Delete evaluation",
                 delete_eval_title: 'Are you sure to delete this evaluation?',
@@ -3451,7 +3463,7 @@ export default {
                 add_new_tax: 'Add new tax',
                 add_successfully: 'Add tax successfully',
                 add_failed: 'Add tax failed',
-                description:'Description',
+                description: 'Description',
                 goods: 'Goods',
                 select_goods: 'Choose goods',
                 tax_percent: 'Percent',

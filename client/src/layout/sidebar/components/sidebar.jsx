@@ -88,7 +88,15 @@ class SideBar extends Component {
                             <Item
                                 item={{
                                     name: "menu.dashboard_personal",
-                                    path: "/hr-dashboard-personal",
+                                    path: "/dashboard-personal",
+                                    icon: "fa fa-newspaper-o",
+                                }}
+                            />
+                            {/* Bảng tin đơn vị */}
+                            <Item
+                                item={{
+                                    name: "menu.dashboard_unit",
+                                    path: "/dashboard-unit",
                                     icon: "fa fa-newspaper-o",
                                 }}
                             />
@@ -308,6 +316,11 @@ class SideBar extends Component {
                                             icon: "fa fa-circle-o",
                                             path: "/crm/statistic",
                                         },
+                                        {
+                                            name: "menu.crm_list.generalConfiguration",
+                                            icon: "fa fa-gear",
+                                            path: "/crm/generalConfiguration",
+                                        },
                                     ],
                                 }}
                             />
@@ -424,6 +437,10 @@ class SideBar extends Component {
                                     { name: 'menu.discipline', icon: 'fa fa-balance-scale', path: '/hr-discipline' },
                                     { name: 'menu.annual_leave', icon: 'fa fa-calendar-times-o', path: '/hr-annual-leave' },
                                     { name: 'menu.manage_work_plan', icon: 'fa fa-calendar', path: '/hr-manage-work-plan' },
+                                    // nhân sự gói thầu
+                                    { name: 'menu.list_search_for_package', icon: 'fa fa-calendar', path: '/hr-search-for-package' },
+                                    { name: 'menu.list_major', icon: 'fa fa-calendar', path: '/hr-list-major' },
+                                    { name: 'menu.list_career_position', icon: 'fa fa-calendar', path: '/hr-list-career-position' },
                                 ]
                             }} />
 
@@ -652,6 +669,11 @@ class SideBar extends Component {
                                             icon: "fa fa-adjust",
                                             path: "/manage-examples-2",
                                         },
+                                        {
+                                            name: "menu.manage_examples_hooks_1",
+                                            icon: "fa fa-circle",
+                                            path: "/manage-examples-hooks-1",
+                                        }
                                     ],
                                 }}
                             />

@@ -125,6 +125,8 @@ exports.increaseNumberView = async (id, viewer, portal) => {
  * Tạo một tài liệu văn bản mới
  */
 exports.createDocument = async (portal, data, company) => {
+    const existed = await Document(connect(DB_CONNECTION, portal)).findOne({ officialNumber: data.officialNumber });
+    if (existed) throw ['document_exist'];
     const newDoc = {
         company,
         name: data.name,
@@ -164,6 +166,10 @@ exports.createDocument = async (portal, data, company) => {
  * Chỉnh sửa thông tin tài liệu văn bản
  */
 exports.editDocument = async (id, data, query = undefined, portal) => {
+    if (data.officialNumber) {
+        const existed = await Document(connect(DB_CONNECTION, portal)).findOne({ officialNumber: data.officialNumber });
+        if (existed) throw ['document_exist'];
+    }
     let { creator, title, descriptions } = data;
     let createdAt = Date.now();
     let log = {
@@ -458,8 +464,8 @@ exports.getDocumentCategories = async (portal, query, company) => {
 }
 
 exports.createDocumentCategory = async (portal, data, company) => {
-    const existed = await DocumentCategory(connect(DB_CONNECTION, portal)).findOne({name: data.name});
-    if(existed) throw ['category_name_exist'];
+    const existed = await DocumentCategory(connect(DB_CONNECTION, portal)).findOne({ name: data.name });
+    if (existed) throw ['category_name_exist'];
 
     return await DocumentCategory(connect(DB_CONNECTION, portal)).create({
         company,
@@ -531,8 +537,8 @@ exports.getDocumentDomains = async (portal, company) => {
 }
 
 exports.createDocumentDomain = async (portal, data, company) => {
-    const existed = await DocumentDomain(connect(DB_CONNECTION, portal)).findOne({name: data.name});
-    if(existed) throw ['domain_name_exist'];
+    const existed = await DocumentDomain(connect(DB_CONNECTION, portal)).findOne({ name: data.name });
+    if (existed) throw ['domain_name_exist'];
     let query = {
         company,
         name: data.name,
@@ -803,7 +809,7 @@ exports.deleteDocumentArchive = async (portal, id) => {
 
 exports.deleteManyDocumentArchive = async (array, portal, company) => {
     for (let i = 0; i < array.length; i++) {
-        deleteNode(array[i]);
+        deleteNode(array[i], portal);
     }
 
     return await this.getDocumentArchives(portal, company);

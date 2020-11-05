@@ -76,12 +76,15 @@ const GoodSchema = new Schema({
         ref: 'User'
     },
 
-    packagingRule: {
+    packingRule: {
         type: String
     },
 
     manufacturingMills: [{
-        manufacturingMill: ObjectId,
+        manufacturingMill: {
+            type: Schema.Types.ObjectId,
+            ref: 'ManufacturingMill'
+        },
         productivity: Number,
         personNumber: Number
     }],

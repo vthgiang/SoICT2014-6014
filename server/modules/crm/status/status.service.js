@@ -8,7 +8,8 @@ exports.getStatus = async (portal, companyId, query) => {
 
     const listStatusTotal = await Status(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
 
-    const listStatus = await Status(connect(DB_CONNECTION, portal)).find(keySearch)
+    const listStatus = await Status(connect(DB_CONNECTION, portal)).find(keySearch) .populate({path: 'creator',select: '_id name'})
+
     // .skip(parseInt(page)).limit(parseInt(limit));
     return { listStatusTotal, listStatus };
 }

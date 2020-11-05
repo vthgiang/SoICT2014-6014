@@ -351,7 +351,7 @@ const LINKS = [{
     components: getComponentsInLink('/hr-annual-leave-personal')
 },
 {
-    url: '/hr-dashboard-personal',
+    url: '/dashboard-personal',
     description: 'Bảng tin cá nhân',
     category: LINK_CATEGORY.COMMON.name,
     roles: [
@@ -359,7 +359,16 @@ const LINKS = [{
         ROOT_ROLES.VICE_DEAN.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
-    components: getComponentsInLink('/hr-dashboard-personal')
+    components: getComponentsInLink('/dashboard-personal')
+},
+{
+    url: '/dashboard-unit',
+    description: 'Bảng tin đơn vị',
+    category: LINK_CATEGORY.COMMON.name,
+    roles: [
+        ROOT_ROLES.DEAN.name,
+    ],
+    components: getComponentsInLink('/dashboard-unit')
 },
 {
     url: '/hr-manage-leave-application',
@@ -455,6 +464,38 @@ const LINKS = [{
         ROOT_ROLES.ADMIN.name,
     ],
     components: getComponentsInLink('/hr-list-education')
+},
+
+
+// phần link phục vụ cho nhân sự gói thầu
+{
+    url: '/hr-list-major',
+    description: 'Danh sách chuyên ngành tương đương',
+    category: LINK_CATEGORY.HUMAN_RESOURCE.name,
+    roles: [
+        ROOT_ROLES.ADMIN.name,
+    ],
+    components: getComponentsInLink('/hr-list-major')
+},
+
+{
+    url: '/hr-list-career-position',
+    description: 'Danh sách vị trí công việc tương đương',
+    category: LINK_CATEGORY.HUMAN_RESOURCE.name,
+    roles: [
+        ROOT_ROLES.ADMIN.name,
+    ],
+    components: getComponentsInLink('/hr-list-career-position')
+},
+
+{
+    url: '/hr-search-for-package',
+    description: 'Tìm kiếm nhân sự gói thầu',
+    category: LINK_CATEGORY.HUMAN_RESOURCE.name,
+    roles: [
+        ROOT_ROLES.ADMIN.name,
+    ],
+    components: getComponentsInLink('/hr-search-for-package')
 },
 
 
@@ -1079,6 +1120,19 @@ const LINKS = [{
     components: getComponentsInLink('/crm/care')
 },
 {
+    url: '/crm/generalConfiguration',
+    description: `Cấu hình chung`,
+    category: LINK_CATEGORY.CRM.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/crm/generalConfiguration')
+},
+{
     url: "/manage-plans",
     description: "Quản lý đơn hàng",
     category: LINK_CATEGORY.PLAN.name,
@@ -1116,6 +1170,19 @@ const LINKS = [{
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/manage-examples-2'),
+},
+{
+    url: "/manage-examples-hooks-1",
+    description: "Quản lý Ví dụ Hooks 1",
+    category: LINK_CATEGORY.EXAMPLE.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/manage-examples-hooks-1'),
 },
 {
     url: "/manage-manufacturing-plan",

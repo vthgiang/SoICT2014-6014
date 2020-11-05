@@ -27,9 +27,15 @@ function calcAutoPoint(data) {
     let startDate = new Date(task.startDate);
     let endDate = new Date(task.endDate);
 
-    let totalDay = endDate.getTime() - startDate.getTime();
-    let dayUsed = evaluationsDate.getTime() - startDate.getTime();
+    let totalDay = endDate.getTime() - startDate.getTime() + 86400000;
+    let dayUsed = evaluationsDate.getTime() - startDate.getTime() + 86400000;
     let overdueDate = (dayUsed - totalDay > 0) ? dayUsed - totalDay : 0;
+
+
+    // chuyển về đơn vị ngày
+    totalDay = totalDay / 86400000;
+    dayUsed = dayUsed / 86400000;
+    overdueDate = overdueDate / 86400000;
 
     if (dayUsed <= 0) dayUsed = 0.5;
 
@@ -56,7 +62,7 @@ function calcAutoPoint(data) {
 
     // tiên tửu - thần cồn - ma men :))
     let pen = 0;
-    pen = !a ? 10 : (numberOfFailedAction / (numberOfFailedAction + numberOfPassedAction) * 0.5);
+    pen = !a ? 0 : (numberOfFailedAction / (numberOfFailedAction + numberOfPassedAction));
 
     // Tổng số điểm của các hoạt động
     let reduceAction = actionRating.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
@@ -119,7 +125,7 @@ function calcAutoPoint(data) {
         }
         else {
             formula = task.formula
-            
+
             let taskInformations = info;
 
             // thay các biến bằng giá trị

@@ -169,9 +169,6 @@ exports.searchCommendations = async (portal, params, company) => {
  * @company : Id công ty người thêm
  */
 exports.createCommendation = async (portal, data, company) => {
-    console.log(data);
-
-
     let isCommendation = await Commendation(connect(DB_CONNECTION, portal)).findOne({
         employee: data.employee,
         company: company,
@@ -196,7 +193,7 @@ exports.createCommendation = async (portal, data, company) => {
 
         // Lấy thông tin khen thưởng vừa tạo
         return await Commendation(connect(DB_CONNECTION, portal)).findOne({
-            _id: createCommendation(connect(DB_CONNECTION, portal))._id
+            _id: createCommendation._id
         }).populate([{
             path: 'employee',
             select: 'emailInCompany fullName employeeNumber'

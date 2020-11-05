@@ -4,7 +4,7 @@ import { withTranslate } from "react-redux-multilingual";
 import { generateCode } from "../../../../../helpers/generateCode";
 import { GoodActions } from "../../../common-production/good-management/redux/actions";
 import { TaxActions } from "../redux/actions";
-import { DialogModal, SelectMulti, ButtonModal, DataTableSetting, ErrorLabel } from "../../../../../common-components";
+import { DialogModal, SelectMulti, ButtonModal, ErrorLabel, SelectBox } from "../../../../../common-components";
 import ValidationHelper from "../../../../../helpers/validationHelper";
 import CreateTaxDetail from "./createTaxDetail";
 
@@ -23,12 +23,10 @@ class TaxCreateForm extends Component {
                 name: "",
                 id: "",
             },
-            goodsSelections: Object.assign({}, this.EMPTY_GOOD),
-            allGoodsSelections: [],
+            goodsSelected: Object.assign({}, this.EMPTY_GOOD),
+            allGoodsSelected: [],
             type: "product",
             goodOptionsState: [],
-            limit: 5,
-            page: 1,
         };
     }
 
@@ -47,7 +45,7 @@ class TaxCreateForm extends Component {
             return { ...state, code: generateCode("TAX_") };
         });
     };
-    
+
     handleTaxNameChange = (e) => {
         let { value = "" } = e.target;
         this.setState((state) => {
@@ -87,10 +85,10 @@ class TaxCreateForm extends Component {
     handleSubmitGoods = (e) => {
         e.preventDefault();
 
-        let { goodsSelections, allGoodsSelections, goodOptionsState } = this.state;
+        let { goodsSelected, allGoodsSelected, goodOptionsState } = this.state;
 
         //Nếu chưa có goodOptionsState thì thêm vào
-        if (!goodOptionsState.length && !allGoodsSelections.length) {
+        if (!goodOptionsState.length && !allGoodsSelected.length) {
             goodOptionsState = this.props.goods.listGoodsByType.map((item) => {
                 return {
                     value: item._id,
@@ -103,7 +101,7 @@ class TaxCreateForm extends Component {
         //Lọc bỏ những option đã được chọn
         let mapOption = goodOptionsState.filter((good) => {
             let check = false;
-            goodsSelections.goods.forEach((e) => {
+            goodsSelected.goods.forEach((e) => {
                 if (e === good.value) {
                     check = true;
                 }
@@ -113,13 +111,13 @@ class TaxCreateForm extends Component {
             }
         });
 
-        goodsSelections.key = goodsSelections.goods[0]; //Thêm key để có thể xóa
-        allGoodsSelections.push(goodsSelections);
+        goodsSelected.key = goodsSelected.goods[0]; //Thêm key để có thể xóa
+        allGoodsSelected.push(goodsSelected);
 
         this.setState({
             ...this.state,
-            allGoodsSelections,
-            goodsSelections: Object.assign({}, this.EMPTY_GOOD),
+            allGoodsSelected,
+            goodsSelected: Object.assign({}, this.EMPTY_GOOD),
             goodOptionsState: mapOption,
         });
     };
@@ -128,14 +126,14 @@ class TaxCreateForm extends Component {
         e.preventDefault();
         this.setState((state) => {
             return {
-                ...this.state,
-                goodsSelections: Object.assign({}, this.EMPTY_GOOD),
+                ...state,
+                goodsSelected: Object.assign({}, this.EMPTY_GOOD),
             };
         });
     };
 
     handleDeleteGoodsTaxCollection = (item) => {
-        let { allGoodsSelections, goodOptionsState } = this.state;
+        let { allGoodsSelected, goodOptionsState } = this.state;
         //Các mặt hàng bị xóa được trả về option, có thể tiếp tục lựa chọn mặt hàng này
         let OptionsOfReOption = item.goods.map((good) => {
             let option = {};
@@ -155,21 +153,21 @@ class TaxCreateForm extends Component {
         goodOptionsState = goodOptionsState.concat(OptionsOfReOption);
 
         //Xóa các phần tử bị xóa
-        let collections = allGoodsSelections.filter((collection) => {
+        let collections = allGoodsSelected.filter((collection) => {
             return collection.key !== item.key;
         });
 
         this.setState((state) => {
             return {
                 ...state,
-                allGoodsSelections: collections,
+                allGoodsSelected: collections,
                 goodOptionsState,
             };
         });
     };
 
     handleSubmitGoodChange = (data) => {
-        let { allGoodsSelections, goodOptionsState } = this.state;
+        let { allGoodsSelected, goodOptionsState } = this.state;
         if (data.goods.length === 0) {
             this.handleDeleteGoodsTaxCollection({ key: data.key, goods: data.goodsDeleted, percent: data.percent }); // Xóa luôn collection
         } else {
@@ -189,7 +187,7 @@ class TaxCreateForm extends Component {
             });
             goodOptionsState = goodOptionsState.concat(OptionsOfReOption);
 
-            let collections = allGoodsSelections.map((collection) => {
+            let collections = allGoodsSelected.map((collection) => {
                 if (collection.key === data.key) {
                     return {
                         key: collection.key,
@@ -202,7 +200,7 @@ class TaxCreateForm extends Component {
             this.setState((state) => {
                 return {
                     ...state,
-                    allGoodsSelections: collections,
+                    allGoodsSelected: collections,
                     goodOptionsState,
                 };
             });
@@ -210,10 +208,10 @@ class TaxCreateForm extends Component {
     };
 
     getGoodOptions = () => {
-        let { allGoodsSelections, goodOptionsState } = this.state;
+        let { allGoodsSelected, goodOptionsState } = this.state;
 
         let goodOptions =
-            goodOptionsState.length || allGoodsSelections.length
+            goodOptionsState.length || allGoodsSelected.length
                 ? goodOptionsState
                 : this.props.goods.listGoodsByType.map((item) => {
                       return {
@@ -232,13 +230,15 @@ class TaxCreateForm extends Component {
             }
         });
 
+        console.log("Goo", goodOptions);
+
         return goodOptions;
     };
 
     checkDisabledSelectGoods = () => {
-        let { allGoodsSelections, goodOptionsState } = this.state;
+        let { allGoodsSelected, goodOptionsState } = this.state;
 
-        let disabledSelectGoods = !goodOptionsState.length && allGoodsSelections.length ? true : false;
+        let disabledSelectGoods = !goodOptionsState.length && allGoodsSelected.length ? true : false;
         return disabledSelectGoods;
     };
 
@@ -250,7 +250,7 @@ class TaxCreateForm extends Component {
         }
 
         if (willUpdateState) {
-            this.state.goodsSelections.goods = goods;
+            this.state.goodsSelected.goods = goods;
             this.setState((state) => {
                 return {
                     ...state,
@@ -262,23 +262,19 @@ class TaxCreateForm extends Component {
     };
 
     isGoodsValidated = () => {
-        const { percent, goods } = this.state.goodsSelections;
+        const { percent, goods } = this.state.goodsSelected;
         let { translate } = this.props;
-        if (!ValidationHelper.validateEmpty(translate, percent).status || this.validateGoods(goods, false)) {
+        if (!ValidationHelper.validateEmpty(translate, percent).status || this.validateGoods(goods, false) || this.validatePercent(percent, false)) {
             return false;
         }
         return true;
     };
 
     isFormValidated = () => {
-        const { taxName, allGoodsSelections, goodsSelections } = this.state;
+        const { taxName, allGoodsSelected, percent } = this.state;
         let { translate } = this.props;
-
-        if (
-            !ValidationHelper.validateEmpty(translate, taxName).status ||
-            this.validateGoods(allGoodsSelections, false) ||
-            this.validatePercent(goodsSelections, false)
-        ) {
+        console.log("ALL GOOD", allGoodsSelected);
+        if (!ValidationHelper.validateEmpty(translate, taxName).status || this.validateGoods(allGoodsSelected, false)) {
             return false;
         }
         return true;
@@ -293,7 +289,7 @@ class TaxCreateForm extends Component {
             msg = translate("manage_order.tax.percent_greater_than_or_equal_zero");
         }
         if (willUpdateState) {
-            this.state.goodsSelections.percent = value;
+            this.state.goodsSelected.percent = value;
             this.setState((state) => {
                 return {
                     ...state,
@@ -336,9 +332,9 @@ class TaxCreateForm extends Component {
 
     save = async () => {
         if (this.isFormValidated()) {
-            let { allGoodsSelections } = this.state;
+            let { allGoodsSelected } = this.state;
             let dataGoods = [];
-            allGoodsSelections.forEach((e) => {
+            allGoodsSelected.forEach((e) => {
                 e.goods.forEach((good) => {
                     dataGoods.push({ good: good, percent: parseInt(e.percent) });
                 });
@@ -352,26 +348,33 @@ class TaxCreateForm extends Component {
             };
             await this.props.createNewTax(data);
             await this.props.reloadState();
+            this.setState((state) => {
+                return {
+                    ...state,
+                    taxName: "",
+                    code: "",
+                    description: "",
+                    creator: {
+                        name: "",
+                        id: "",
+                    },
+                    goodsSelected: Object.assign({}, this.EMPTY_GOOD),
+                    allGoodsSelected: [],
+                    type: "product",
+                    goodOptionsState: [],
+                };
+            });
         }
     };
     render() {
-        let {
-            taxName,
-            code,
-            description,
-            creator,
-            goodsSelections,
-            allGoodsSelections,
-            currentRow,
-            nameTaxError,
-            percentError,
-            goodsError,
-        } = this.state;
+        let { taxName, code, description, creator, goodsSelected, allGoodsSelected, currentRow, nameTaxError, percentError, goodsError } = this.state;
 
         let goodOptions = this.getGoodOptions();
         let disabledSelectGoods = this.checkDisabledSelectGoods();
 
-        const {translate} = this.props;
+        const { translate } = this.props;
+
+        console.log("CREATE STATE", this.state);
 
         return (
             <React.Fragment>
@@ -401,141 +404,131 @@ class TaxCreateForm extends Component {
                     )}
 
                     <form id={`form-add-tax`}>
-                        <div className="row row-equal-height" style={{ marginTop: -25 }}>
-                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 10 }}>
-                                <div className="form-group">
-                                    <label>
-                                    {translate("manage_order.tax.tax_code")}
-                                        <span className="attention"> </span>
-                                    </label>
-                                    <input type="text" className="form-control" value={code} disabled="true" />
-                                </div>
-                            </div>
-                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 10 }}>
-                                <div className={`form-group ${!nameTaxError ? "" : "has-error"}`}>
-                                    <label>
-                                    {translate("manage_order.tax.tax_name")}
-                                        <span className="attention"> * </span>
-                                    </label>
-                                    <input type="text" className="form-control" value={taxName} onChange={this.handleTaxNameChange} />
-                                    <ErrorLabel content={nameTaxError} />
-                                </div>
-                            </div>
-
-                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 10 }}>
-                                <div className="form-group">
-                                    <label>
-                                    {translate("manage_order.tax.description")}
-                                        <span className="attention"> </span>
-                                    </label>
-                                    <textarea type="text" className="form-control" value={description} onChange={this.handleDescriptionChange} />
-                                </div>
-                            </div>
-
-                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 10 }}>
-                                <div className="form-group">
-                                    <label>
-                                    {translate("manage_order.tax.creator")}
-                                        <span className="attention"> </span>
-                                    </label>
-                                    <input type="text" className="form-control" value={creator.name} disabled="true" />
-                                </div>
-                            </div>
-
-                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 10 }}>
-                                <fieldset className="scheduler-border">
-                                    <legend className="scheduler-border">{translate("manage_order.tax.goods")}</legend>
-                                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 10 }}>
-                                        <div className={`form-group ${!goodsError ? "" : "has-error"}`}>
-                                            <label>
-                                            {translate("manage_order.tax.select_goods")}
-                                                <span className="attention"> * </span>
-                                            </label>
-                                            <SelectMulti
-                                                id={`select-multi-good-tax`}
-                                                multiple="multiple"
-                                                options={{
-                                                    nonSelectedText: translate("manage_order.tax.select_goods"),
-                                                    allSelectedText: translate("manage_order.tax.selected_all"),
-                                                }}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                items={goodOptions}
-                                                value={goodsSelections.goods}
-                                                onChange={this.handleGoodsChange}
-                                                disabled={disabledSelectGoods}
-                                            />
-                                            <ErrorLabel content={goodsError} />
-                                        </div>
-                                    </div>
-                                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 10 }}>
-                                        <div className={`form-group ${!percentError ? "" : "has-error"}`}>
-                                            <label>
-                                            {translate("manage_order.tax.tax_percent")}
-                                                <span className="attention"> * </span>
-                                            </label>
-                                            <input
-                                                type="number"
-                                                className="form-control"
-                                                placeholder="Nhập %"
-                                                value={goodsSelections.percent}
-                                                onChange={this.handlePercentChange}
-                                            />
-                                            <ErrorLabel content={percentError} />
-                                        </div>
-                                    </div>
-                                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <div className={"pull-right"} style={{ padding: 10 }}>
-                                            <button
-                                                className="btn btn-success"
-                                                style={{ marginLeft: "10px" }}
-                                                disabled={!this.isGoodsValidated()}
-                                                onClick={this.handleSubmitGoods}
-                                            >
-                                                {translate("manage_order.tax.add")}
-                                            </button>
-                                            <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearGood}>
-                                            {translate("manage_order.tax.reset")}
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <table id={`order-table-tax-create`} className="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th title={"STT"}>{translate("manage_order.tax.index")}</th>
-                                                <th title={"Chiết khấu (%)"}>{translate("manage_order.tax.tax_percent")}</th>
-                                                <th>{translate("manage_order.tax.goods")}</th>
-                                                <th>{translate("manage_order.tax.action")}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {allGoodsSelections &&
-                                                allGoodsSelections.map((item, index) => {
-                                                    return (
-                                                        <tr key={index}>
-                                                            <td>{index + 1}</td>
-                                                            <td>{item.percent}</td>
-                                                            <td>
-                                                                <a onClick={() => this.showGoodDetail(item)}>{translate("manage_order.tax.view_deatail")}</a>
-                                                            </td>
-                                                            <td style={{ textAlign: "center" }}>
-                                                                <a
-                                                                    onClick={() => this.handleDeleteGoodsTaxCollection(item)}
-                                                                    className="delete red-yellow"
-                                                                    style={{ width: "5px" }}
-                                                                    title={translate("manage_order.tax.delete_list_goods")}
-                                                                >
-                                                                    <i className="material-icons">delete</i>
-                                                                </a>
-                                                            </td>
-                                                        </tr>
-                                                    );
-                                                })}
-                                        </tbody>
-                                    </table>
-                                </fieldset>
-                            </div>
+                        <div className="form-group">
+                            <label>
+                                {translate("manage_order.tax.tax_code")}
+                                <span className="attention"> </span>
+                            </label>
+                            <input type="text" className="form-control" value={code} disabled="true" />
                         </div>
+                        <div className={`form-group ${!nameTaxError ? "" : "has-error"}`}>
+                            <label>
+                                {translate("manage_order.tax.tax_name")}
+                                <span className="attention"> * </span>
+                            </label>
+                            <input type="text" className="form-control" value={taxName} onChange={this.handleTaxNameChange} />
+                            <ErrorLabel content={nameTaxError} />
+                        </div>
+                        <div className="form-group">
+                            <label>
+                                {translate("manage_order.tax.description")}
+                                <span className="attention"> </span>
+                            </label>
+                            <textarea type="text" className="form-control" value={description} onChange={this.handleDescriptionChange} />
+                        </div>
+
+                        <div className="form-group">
+                            <label>
+                                {translate("manage_order.tax.creator")}
+                                <span className="attention"> </span>
+                            </label>
+                            <input type="text" className="form-control" value={creator.name} disabled="true" />
+                        </div>
+
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">{translate("manage_order.tax.goods")}</legend>
+                            <div className={`form-group ${!goodsError ? "" : "has-error"}`}>
+                                <label>
+                                    {translate("manage_order.tax.select_goods")}
+                                    <span className="attention"> * </span>
+                                </label>
+                                {/* <SelectMulti
+                                    id={`select-multi-good-tax`}
+                                    multiple="multiple"
+                                    options={{
+                                        nonSelectedText: translate("manage_order.tax.select_goods"),
+                                        allSelectedText: translate("manage_order.tax.selected_all"),
+                                    }}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={goodOptions}
+                                    value={goodsSelected.goods}
+                                    onChange={this.handleGoodsChange}
+                                    disabled={disabledSelectGoods}
+                                /> */}
+                                <SelectBox
+                                    id={`select-multi-good-tax`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={goodOptions}
+                                    onChange={this.handleGoodsChange}
+                                    multiple={true}
+                                    value={goodsSelected.goods}
+                                />
+                                <ErrorLabel content={goodsError} />
+                            </div>
+                            <div className={`form-group ${!percentError ? "" : "has-error"}`}>
+                                <label>
+                                    {translate("manage_order.tax.tax_percent")}
+                                    <span className="attention"> * </span>
+                                </label>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    placeholder="Nhập %"
+                                    value={goodsSelected.percent}
+                                    onChange={this.handlePercentChange}
+                                />
+                                <ErrorLabel content={percentError} />
+                            </div>
+                            <div className={"pull-right"} style={{ padding: 10 }}>
+                                <button
+                                    className="btn btn-success"
+                                    style={{ marginLeft: "10px" }}
+                                    disabled={!this.isGoodsValidated()}
+                                    onClick={this.handleSubmitGoods}
+                                >
+                                    {translate("manage_order.tax.add")}
+                                </button>
+                                <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearGood}>
+                                    {translate("manage_order.tax.reset")}
+                                </button>
+                            </div>
+                            <table id={`order-table-tax-create`} className="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th title={translate("manage_order.tax.index")}>{translate("manage_order.tax.index")}</th>
+                                        <th title={translate("manage_order.tax.tax_percent")}>{translate("manage_order.tax.tax_percent")}</th>
+                                        <th title={translate("manage_order.tax.goods")}>{translate("manage_order.tax.goods")}</th>
+                                        <th title={translate("manage_order.tax.action")}>{translate("manage_order.tax.action")}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {allGoodsSelected &&
+                                        allGoodsSelected.map((item, index) => {
+                                            return (
+                                                <tr key={index}>
+                                                    <td>{index + 1}</td>
+                                                    <td>{item.percent}</td>
+                                                    <td>
+                                                        <a onClick={() => this.showGoodDetail(item)}>{translate("manage_order.tax.view_deatail")}</a>
+                                                    </td>
+                                                    <td style={{ textAlign: "center" }}>
+                                                        <a
+                                                            onClick={() => this.handleDeleteGoodsTaxCollection(item)}
+                                                            className="delete text-red"
+                                                            style={{ width: "5px" }}
+                                                            title={translate("manage_order.tax.delete_list_goods")}
+                                                        >
+                                                            <i className="material-icons">delete</i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                </tbody>
+                            </table>
+                        </fieldset>
                     </form>
                 </DialogModal>
             </React.Fragment>

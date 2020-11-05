@@ -5,11 +5,12 @@ import { CrmCustomerActions } from '../redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { CrmGroupActions } from '../../group/redux/actions';
 import { CrmStatusActions } from '../../status/redux/actions';
-import { DataTableSetting, PaginateBar, ConfirmNotification, SelectMulti } from '../../../../common-components';
+import { DataTableSetting, PaginateBar, ConfirmNotification, SelectMulti, ExportExcel } from '../../../../common-components';
 import CreateForm from './createForm';
 import InfoForm from './infoForm';
 import EditForm from './editForm';
 import CrmCustomerImportFile from './importFileForm';
+import { formatFunction } from '../../common/index';
 
 class CrmCustomer extends Component {
     constructor(props) {
@@ -109,6 +110,79 @@ class CrmCustomer extends Component {
         }
     }
 
+    convertDataToExportData = (data) => {
+        const { translate } = this.props;
+        if (data) {
+            console.log('data', data);
+            data = data.map((o, index) => ({
+                STT: index + 1,
+                code: o.code,
+                name: o.name,
+                owner: o.owner && o.owner.length > 0 ? o.owner.map(ow => ow.name).join(', ') : "Deleted",
+                status: o.status && o.status.length > 0 ? o.status[o.status.length - 1].name : "Deleted",
+                customerSource: o.customerSource ? o.customerSource : 'Deleted',
+                customerType: o.customerType ? formatFunction.formatCustomerType(o.customerType, translate) : 'Deleted',
+                group: o.group ? o.group.name : "Deleted",
+                represent: o.represent ? o.represent : 'Deleted',
+                mobilephoneNumber: o.mobilephoneNumber ? o.mobilephoneNumber : 'Deleted',
+                email: o.email ? o.email : 'Deleted',
+                email2: o.email2 ? o.email2 : 'Deleted',
+                address: o.address ? o.address : 'Deleted',
+                gender: o.gender ? formatFunction.formatCustomerGender(o.gender, translate) : 'Deleted',
+                birthDate: o.birthDate ? new Date(o.birthDate) : 'Deleted',
+                companyEstablishmentDate: o.companyEstablishmentDate ? new Date(o.companyEstablishmentDate) : 'Deleted',
+                taxNumber: o.taxNumber ? o.taxNumber : 'Deleted',
+                address2: o.address2 ? o.address2 : 'Deleted',
+                telephoneNumber: o.telephoneNumber ? o.telephoneNumber : 'Deleted',
+                location: o.location ? formatFunction.formatCustomerLocation(o.location, translate) : 'Deleted',
+                website: o.website ? o.website : 'Deleted',
+                linkedIn: o.linkedIn ? o.linkedIn : 'Deleted',
+            }))
+        }
+
+        let exportData = {
+            fileName: 'Thông tin khách hàng',
+            dataSheets: [
+                {
+                    sheetName: 'sheet1',
+                    sheetTitle: 'Thông tin khách hàng',
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: 'STT', width: 7 },
+                                { key: "code", value: translate('crm.customer.code') },
+                                { key: "name", value: translate('crm.customer.name'), width: 20 },
+                                { key: "owner", value: translate('crm.customer.owner'), width: 25 },
+                                { key: "status", value: translate('crm.customer.status') },
+                                { key: "customerSource", value: translate('crm.customer.source') },
+                                { key: "customerType", value: translate('crm.customer.customerType') },
+                                { key: "group", value: translate('crm.customer.group'), width: 25 },
+                                { key: "represent", value: translate('crm.customer.represent'), width: 25 },
+                                { key: "mobilephoneNumber", value: translate('crm.customer.mobilephoneNumber'), width: 25 },
+                                { key: "email", value: translate('crm.customer.email'), width: 25 },
+                                { key: "email2", value: translate('crm.customer.secondaryEmail'), width: 25 },
+                                { key: "address", value: translate('crm.customer.address'), width: 25 },
+                                { key: "gender", value: translate('crm.customer.gender'), width: 25 },
+                                { key: "birthDate", value: translate('crm.customer.birth'), width: 25 },
+                                { key: "companyEstablishmentDate", value: translate('crm.customer.companyEstablishmentDate'), width: 25 },
+                                { key: "taxNumber", value: translate('crm.customer.taxNumber'), width: 25 },
+                                { key: "address2", value: translate('crm.customer.address2'), width: 25 },
+                                { key: "telephoneNumber", value: translate('crm.customer.telephoneNumber'), width: 25 },
+                                { key: "location", value: translate('crm.customer.location'), width: 25 },
+                                { key: "website", value: translate('crm.customer.website'), width: 25 },
+                                { key: "linkedIn", value: translate('crm.customer.linkedIn'), width: 25 },
+                            ],
+                            data: data,
+                        }
+                    ]
+                }
+            ]
+        }
+        return exportData;
+    }
+
+
+
     render() {
         const { translate, crm, user } = this.props;
         const { customers } = crm;
@@ -137,11 +211,21 @@ class CrmCustomer extends Component {
             listStatus = crm.status.list.map(o => ({ value: o._id, text: o.name }))
         }
 
+        let exportData = [];
+        if (customers && customers.list && customers.list.length > 0) {
+            exportData = this.convertDataToExportData(customers.list);
+        }
+
         return (
             <div className="box">
                 <div className="box-body qlcv">
+
                     {/* Nút thêm khách hàng */}
                     <div className="form-inline">
+                        {/* export excel danh sách khách hàng */}
+                        <ExportExcel id="export-customer" buttonName={translate('human_resource.name_button_export')} exportData={exportData} style={{ marginTop: 0 }} />
+
+                        {/* Button dropdown thêm mới khách hàng */}
                         <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
                             <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={'Thêm khách hàng'} >Thêm khách hàng</button>
                             <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>

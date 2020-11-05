@@ -17,8 +17,8 @@ module.exports = {
     Salary: require('./human-resource/salary.model'),
     Timesheet: require('./human-resource/timesheet.model'),
 
-    // Major: require('./human-resource/major.model'),
-    // CareerPosition: require('./human-resource/careerPosition.model'),
+    Major: require('./human-resource/major.model'),
+    CareerPosition: require('./human-resource/careerPosition.model'),
 
     EmployeeKpi: require('./kpi/employeeKpi.model'),
     EmployeeKpiSet: require('./kpi/employeeKpiSet.model'),
@@ -65,14 +65,14 @@ module.exports = {
     TaskReport: require('./report/taskReport.model'),
 
     //warehouse
-    Stock: require('./warehouse/stock.model'),
-    BinLocation: require('./warehouse/binLocation.model'),
-    Proposal: require('./warehouse/proposal.model'),
-    Partner: require('./warehouse/partner.model'),
-    Good: require('./warehouse/good.model'),
-    Lot: require('./warehouse/lot.model'),
-    Category: require('./warehouse/category.model'),
-    Bill: require('./warehouse/bill.model'),
+    Stock: require('./production/warehouse/stock.model'),
+    BinLocation: require('./production/warehouse/binLocation.model'),
+    Proposal: require('./production/warehouse/proposal.model'),
+    Partner: require('./production/warehouse/partner.model'),
+    Good: require('./production/common-production/good.model'),
+    Lot: require('./production/warehouse/lot.model'),
+    Category: require('./production/common-production/category.model'),
+    Bill: require('./production/warehouse/bill.model'),
 
     // Customer Management
     Customer: require('./crm/customer.model'),
