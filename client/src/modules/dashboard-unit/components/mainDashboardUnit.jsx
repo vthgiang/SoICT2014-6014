@@ -292,7 +292,7 @@ class MainDashboardUnit extends Component {
 
                             {/* Tab lương thưởng*/}
                             <div className="tab-pane" id="salary">
-                                <TabSalary organizationalUnits={organizationalUnits} monthShow={monthShow} />
+                                <TabSalary childOrganizationalUnit={childOrganizationalUnit} organizationalUnits={organizationalUnits} monthShow={monthShow} />
                             </div>
 
                             {/* Tab thống kê tổng hợp*/}

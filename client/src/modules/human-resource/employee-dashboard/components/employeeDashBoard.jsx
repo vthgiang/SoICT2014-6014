@@ -21,7 +21,7 @@ class DashBoardEmployees extends Component {
             month: this.formatDate(Date.now(), true),
             monthShow: this.formatDate(Date.now(), true),
             organizationalUnits: null,
-            arrayUnitShow: undefined,
+            arrayUnitShow: null,
         }
     };
 
@@ -107,7 +107,7 @@ class DashBoardEmployees extends Component {
         });
 
         if (arrayUnitShow && arrayUnitShow.length === childOrganizationalUnit.length) {
-            arrayUnitShow = undefined;
+            arrayUnitShow = null;
         };
 
         this.props.getAllEmployeeOfUnitByIds(arrayUnitShow && arrayUnitShow.length !== 0 ? arrayUnitShow : childOrganizationalUnit.map(x => x.id));
@@ -247,7 +247,7 @@ class DashBoardEmployees extends Component {
 
                             {/* Tab lương thưởng*/}
                             <div className="tab-pane" id="salary">
-                                <TabSalary organizationalUnits={organizationalUnits} monthShow={monthShow} />
+                                <TabSalary childOrganizationalUnit={childOrganizationalUnit} organizationalUnits={organizationalUnits} monthShow={monthShow} />
                             </div>
 
                             {/* Tab thống kê tổng hợp*/}

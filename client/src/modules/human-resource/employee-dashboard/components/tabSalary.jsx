@@ -28,7 +28,7 @@ class TabSalary extends Component {
     }
 
     render() {
-        const { organizationalUnits, monthShow } = this.props;
+        const { organizationalUnits, monthShow, childOrganizationalUnit } = this.props;
         console.log("render");
         return (
             <React.Fragment>
@@ -36,7 +36,7 @@ class TabSalary extends Component {
                 <SalaryOfOrganizationalUnitsChart organizationalUnits={organizationalUnits} monthShow={monthShow} />
 
                 {/* Top 5 lương thưởng cao nhất */}
-                <HighestSalaryChart organizationalUnits={organizationalUnits} monthShow={monthShow} />
+                <HighestSalaryChart childOrganizationalUnit={childOrganizationalUnit} organizationalUnits={organizationalUnits} monthShow={monthShow} />
             </React.Fragment>
         );
     }
