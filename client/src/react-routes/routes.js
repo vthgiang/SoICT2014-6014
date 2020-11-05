@@ -136,7 +136,8 @@ import PlanManagement from "../modules/plan/components";
 
 // Example
 import ExampleManagement1 from "../modules/example/example1/components";
-import ExampleManagement2 from "../modules/example/example2/components";
+
+import ExampleManagement2 from "../modules/example/example2/components-hooks";
 import ExampleManagementHooks1 from "../modules/example/example1/components-hooks";
 // Manufacturing Managements
 

@@ -168,6 +168,7 @@ class TaskAddModal extends Component {
                     newTask: { // update lại unit, và reset các selection phía sau
                         ...this.state.newTask,
                         organizationalUnit: value,
+                        collaboratedWithOrganizationalUnits: [],
                         responsibleEmployees: [],
                         accountableEmployees: [],
                         errorOnName: undefined,

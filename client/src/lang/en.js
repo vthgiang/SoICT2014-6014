@@ -2394,6 +2394,8 @@ export default {
                 special: 'Special',
                 select_all_special: 'Selected all',
                 select_special: 'Select special',
+                select_all_role: 'Selected all',
+                select_role: 'Select role',
                 stored: 'Stored',
                 current_month: 'Current month',
 

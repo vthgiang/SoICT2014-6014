@@ -14,7 +14,7 @@ class TabHumanResource extends Component {
         this.state = {}
     };
     render() {
-        const { organizationalUnits, monthShow, childOrganizationalUnit } = this.props;
+        const { organizationalUnits, monthShow, childOrganizationalUnit, defaultUnit } = this.props;
 
         return (
             <div className="row qlcv">
@@ -29,7 +29,7 @@ class TabHumanResource extends Component {
                         </div>
 
                     </div>
-                    <HumanResourceIncreaseAndDecreaseChart childOrganizationalUnit={childOrganizationalUnit} nameData1='Tuyển mới' nameData2='Nghỉ làm' nameData3='Tổng nhân sự' nameChart={'Tình hình tăng giảm nhân sự'} />
+                    <HumanResourceIncreaseAndDecreaseChart childOrganizationalUnit={childOrganizationalUnit} defaultUnit={defaultUnit} nameData1='Tuyển mới' nameData2='Nghỉ làm' nameData3='Tổng nhân sự' nameChart={'Tình hình tăng giảm nhân sự'} />
                 </div>
             </div>
         );

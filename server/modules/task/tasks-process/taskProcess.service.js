@@ -74,7 +74,7 @@ exports.getAllXmlDiagram = async (portal, query) => {
     await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: 'creator', select: 'name' });
     await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: 'manager', select: 'name' });
     await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: 'viewer', select: 'name' });
-    await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: "tasks.organizationalUnit" });
+    await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: "tasks.organizationalUnit tasks.collaboratedWithOrganizationalUnits" });
     await ProcessTemplate(connect(DB_CONNECTION, portal)).populate(taskProcesses, { path: "tasks.responsibleEmployees tasks.accountableEmployees tasks.consultedEmployees tasks.informedEmployees tasks.confirmedByEmployees tasks.creator", select: "name email _id" });
 
     let totalCount = 0;
@@ -186,7 +186,7 @@ exports.createXmlDiagram = async (portal, body) => {
         { path: 'creator', select: 'name email' },
         { path: 'manager', select: 'name email' },
         { path: 'viewer', select: 'name email' },
-        { path: "tasks.organizationalUnit", },
+        { path: "tasks.organizationalUnit tasks.collaboratedWithOrganizationalUnits", },
         { path: "tasks.responsibleEmployees tasks.accountableEmployees tasks.consultedEmployees tasks.informedEmployees tasks.confirmedByEmployees tasks.creator", select: "name email _id" },
     ]);
     return data;
@@ -349,6 +349,7 @@ exports.createTaskByProcess = async (portal, processId, body) => {
             codeInProcess: data[i].code,
             numberOfDaysTaken: data[i].numberOfDaysTaken,
             organizationalUnit: data[i].organizationalUnit,
+            collaboratedWithOrganizationalUnits: data[i].collaboratedWithOrganizationalUnits,
             // creator: data[i].creator, //id của người tạo
             creator: body.creator, //id của người tạo
             name: data[i].name,
@@ -430,6 +431,8 @@ exports.createTaskByProcess = async (portal, processId, body) => {
         { path: 'creator', select: 'name' },
         { path: 'viewer', select: 'name' },
         { path: 'manager', select: 'name' },
+        { path: "tasks.organizationalUnit tasks.collaboratedWithOrganizationalUnits", },
+        { path: "tasks.responsibleEmployees tasks.accountableEmployees tasks.consultedEmployees tasks.informedEmployees tasks.confirmedByEmployees tasks.creator", select: "name email _id" },
     ]);;
 
     return { process: myProcess, mailInfo: mailInfoArr }
@@ -462,6 +465,7 @@ exports.getAllTaskProcess = async (portal, query) => {
                     { path: "parent", select: "name" },
                     { path: "taskTemplate", select: "formula" },
                     { path: "organizationalUnit", },
+                    { path: "collaboratedWithOrganizationalUnits", },
                     { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", select: "name email _id" },
                     { path: "evaluations.results.employee", select: "name email _id" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },
@@ -519,7 +523,7 @@ exports.updateDiagram = async (portal, params, body) => {
                 path: 'tasks', populate: [
                     { path: "parent", select: "name" },
                     { path: "taskTemplate", select: "formula" },
-                    { path: "organizationalUnit", },
+                    { path: "organizationalUnit collaboratedWithOrganizationalUnits", },
                     { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", select: "name email _id" },
                     { path: "evaluations.results.employee", select: "name email _id" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },
@@ -585,7 +589,7 @@ exports.editProcessInfo = async (portal, params, body) => {
                 path: 'tasks', populate: [
                     { path: "parent", select: "name" },
                     { path: "taskTemplate", select: "formula" },
-                    { path: "organizationalUnit", },
+                    { path: "organizationalUnit collaboratedWithOrganizationalUnits", },
                     { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", select: "name email _id" },
                     { path: "evaluations.results.employee", select: "name email _id" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },

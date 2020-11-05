@@ -125,7 +125,7 @@ exports.getTaskById = async (portal, id, userId) => {
             let roles = await Role(connect(DB_CONNECTION, portal)).findById(listRole[i]);
             company[i] = roles.company;
         }
-        
+
         // Tìm cây đơn vị mà đơn vị gốc có userId có role deans
         let tree = [];
         let k = 0;
@@ -465,28 +465,32 @@ exports.createTaskAction = async (portal, params, body, files) => {
         creator: body.creator,
         description: body.description,
         files: files,
-        sort: body.index
+        order: body.index
     }
     let taskAction1 = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(params.taskId,
         {
             $push:
             {
-                taskActions: actionInformation
+                taskActions: {
+                    $each: [actionInformation],
+                    $sort: { order: 1 }
+                }
             }
         },
         { new: true }
     ).populate([{ path: "taskActions.creator", select: 'name email avatar' },])
 
-    let task = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: params.taskId }).populate([
-        { path: "taskActions.creator", select: 'name email avatar' },
-        { path: "taskActions.comments.creator", select: 'name email avatar' },
-        { path: "taskActions.evaluations.creator", select: 'name email avatar ' }])
+    let task = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: params.taskId })
+        .populate([
+            { path: "taskActions.creator", select: 'name email avatar' },
+            { path: "taskActions.comments.creator", select: 'name email avatar' },
+            { path: "taskActions.evaluations.creator", select: 'name email avatar ' }])
+        
 
     let user = await User(connect(DB_CONNECTION, portal)).findOne({ _id: body.creator });
     let tasks = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: params.taskId });
     let userEmail = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: tasks.accountableEmployees } });
     let email = userEmail.map(item => item.email);
-
     return { taskActions: task.taskActions, tasks: tasks, user: user, email: email };
 }
 /**
@@ -548,11 +552,12 @@ exports.deleteTaskAction = async (portal, params) => {
     for (i = 0; i < files.length; i++) {
         fs.unlinkSync(files[i].url)
     }
-    let task = await Task(connect(DB_CONNECTION, portal)).findOne({ "_id": params.taskId }).populate([
-        { path: "taskActions.creator", select: 'name email avatar' },
-        { path: "taskActions.comments.creator", select: 'name email avatar' },
-        { path: "taskActions.evaluations.creator", select: 'name email avatar' }])
-
+    let task = await Task(connect(DB_CONNECTION, portal)).findOne({ "_id": params.taskId })
+        .populate([
+            { path: "taskActions.creator", select: 'name email avatar' },
+            { path: "taskActions.comments.creator", select: 'name email avatar' },
+            { path: "taskActions.evaluations.creator", select: 'name email avatar' }])
+        
     return task.taskActions;
 }
 
@@ -1385,7 +1390,7 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
     // Thêm mới người thực hiẹn và người hỗ trợ
     responsibleEmployees = task.responsibleEmployees.concat(data.responsibleEmployees);
     consultedEmployees = task.consultedEmployees.concat(data.consultedEmployees);
-    
+
     task = await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
         { "_id": taskId },
         {
@@ -1472,10 +1477,10 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
             })}
                     </ul>` : ""}`
         ;
-    
+
     newEmployees = await User(connect(DB_CONNECTION, portal)).find({
         _id: { $in: newEmployees }
-    })    
+    })
     email = newEmployees.map(item => item.email);
 
     return {
@@ -3286,7 +3291,11 @@ exports.deleteFileChildComment = async (portal, params) => {
     ]);
     return task;
 }
-
+/**
+ * Lấy tất cả preceeding tasks
+ * @param {*} portal 
+ * @param {*} params 
+ */
 exports.getAllPreceedingTasks = async (portal, params) => {
     let task = await Task(connect(DB_CONNECTION, portal)).findOne({ "_id": params.taskId })
         .populate([
@@ -3298,4 +3307,47 @@ exports.getAllPreceedingTasks = async (portal, params) => {
             },
         ])
     return task.preceedingTasks
+}
+
+/**
+ * Sắp xếp hoạt động
+ * @param {*} portal 
+ * @param {*} body 
+ */
+exports.sortActions = async (portal, params, body) => {
+    let arrayActions = body
+    let taskId = params.taskId
+    let i
+    for (i = 0; i < arrayActions.length; i++) {
+        await Task(connect(DB_CONNECTION, portal)).updateOne(
+            { "_id": taskId, "taskActions._id": arrayActions[i].id },
+            {
+                $set:
+                {
+                    "taskActions.$.order": arrayActions[i].order
+                }
+            }
+        )
+    }
+
+    await Task(connect(DB_CONNECTION, portal)).update(
+        { "_id": taskId },
+        {
+            $push: {
+                taskActions:
+                {
+                    $each: [],
+                    $sort: { order: 1 }
+                }
+            }
+        }
+    )
+
+    let task = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: params.taskId })
+        .populate([
+            { path: "taskActions.creator", select: 'name email avatar' },
+            { path: "taskActions.comments.creator", select: 'name email avatar' },
+            { path: "taskActions.evaluations.creator", select: 'name email avatar ' }
+        ])
+    return task.taskActions
 }
