@@ -125,7 +125,6 @@ exports.increaseNumberView = async (id, viewer, portal) => {
  * Tạo một tài liệu văn bản mới
  */
 exports.createDocument = async (portal, data, company) => {
-    console.log('aaa', data);
     const existed = await Document(connect(DB_CONNECTION, portal)).findOne({ officialNumber: data.officialNumber });
     if (existed) throw ['document_exist'];
     const newDoc = {

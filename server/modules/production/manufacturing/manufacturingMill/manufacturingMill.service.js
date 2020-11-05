@@ -48,7 +48,7 @@ exports.getAllManufacturingMills = async (query, portal) => {
     }
 
     if (!page || !limit) {
-        let manufacturingMills = await ManufacturingMill(connect(DB_CONNECTION, portal))
+        let docs = await ManufacturingMill(connect(DB_CONNECTION, portal))
             .find({})
             .populate([{
                 path: "manufacturingWorks",
@@ -56,6 +56,8 @@ exports.getAllManufacturingMills = async (query, portal) => {
             }, {
                 path: "teamLeader"
             }]);
+        let manufacturingMills = {};
+        manufacturingMills.docs = docs;
         return { manufacturingMills }
     } else {
         let manufacturingMills = await ManufacturingMill(connect(DB_CONNECTION, portal))

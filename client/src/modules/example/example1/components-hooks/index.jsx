@@ -2,7 +2,7 @@ import React from 'react';
 
 import { withTranslate } from "react-redux-multilingual";
 
-import ExampleManagementTable from './exampleManagementTable';
+import { ExampleManagementTable } from './exampleManagementTable';
 
 function ExampleManagement() {
     return (
