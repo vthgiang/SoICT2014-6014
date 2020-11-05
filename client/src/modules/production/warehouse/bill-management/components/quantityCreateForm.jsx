@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
-import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from '../../../../../../common-components';
+import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from '../../../../../common-components';
 
 class QuantityCreateForm extends Component {
     constructor(props) {

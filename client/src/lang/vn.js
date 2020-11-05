@@ -3713,11 +3713,11 @@ export default {
                 },
                 2: {
                     status: 'Đang sử dụng',
-                    color: 'red'
+                    color: 'blue'
                 },
                 3: {
                     status: 'Đang sửa chữa',
-                    color: 'blue'
+                    color: 'violet'
                 },
                 4: {
                     status: 'Không sử dụng',
@@ -3774,6 +3774,32 @@ export default {
                 detail_title: 'Chi tiết khu vực lưu trữ'
             },
             bill_management: {
+                1: {
+                    status: "Chờ phê duyệt",
+                    color: "green"
+                },
+                2: {
+                    status: 'Đã hoàn thành',
+                    color: 'blue'
+                },
+                3: {
+                    status: 'Chờ kiểm tra',
+                    color: 'violet'
+                },
+                4: {
+                    status: 'Đã hủy',
+                    color: 'red'
+                },
+                billType: {
+                    1: "Nhập nguyên vật liệu",
+                    2: "Nhập thành phẩm",
+                    3: "Xuất nguyên vật liệu",
+                    4: "Xuất thành phẩm",
+                    5: "Kiểm kê định kỳ",
+                    6: "Kiểm kê thường xuyên",
+                    7: "Trả hàng",
+                    8: "Luân chuyển"
+                },
                 stock_book: 'Sổ kho',
                 good_receipt: 'Nhập kho',
                 good_issue: 'Xuất kho',
@@ -3812,7 +3838,8 @@ export default {
                 lot: 'Lô hàng',
                 difference: 'Chênh lệch',
                 receiver: 'Người nhận hàng',
-                choose_good: 'Chọn hàng hóa'
+                choose_good: 'Chọn hàng hóa',
+                add_title: 'Thêm phiếu mới'
             },
             inventory_management: {
                 product: 'Sản phẩm',
@@ -3848,9 +3875,9 @@ export default {
                 note: 'Ghi chú',
                 bill: 'Mã phiếu',
                 archive: 'Nơi lưu trữ',
-                bin_location: 'Khu vực đang lưu trữ',
+                bin_location: 'Khu vực lưu trữ',
                 choose_bin: 'Chọn nơi lưu trữ',
-                choose_stock: 'Chọn kho đang chứa',
+                choose_stock: 'Chọn kho chứa',
                 choose_good: 'Chọn hàng hóa',
                 total_stock: 'Tổng các kho',
                 number_over: 'Số lượng đã vượt quá số lượng tồn kho',
