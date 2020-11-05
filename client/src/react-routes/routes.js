@@ -11,7 +11,7 @@ import { NotFound } from '../modules/not-found/components';
 
 import Login from '../modules/auth/components/login';
 import ResetPassword from '../modules/auth/components/resetPassword';
-import {Introduction} from '../modules/intro/components';
+import { Introduction } from '../modules/intro/components';
 import ManageDocument from '../modules/document/components/administration';
 import Document from '../modules/document/components/user';
 
@@ -132,7 +132,7 @@ import PlanManagement from "../modules/plan/components";
 
 // Example
 import ExampleManagement1 from "../modules/example/example1/components";
-import ExampleManagement2 from "../modules/example/example2/components";
+import ExampleManagement2 from "../modules/example/example2/components-hooks";
 
 // Manufacturing Managements
 
@@ -155,7 +155,7 @@ class Routes extends Component {
         return (
             <React.Fragment>
                 <Switch>
-                    <AuthRoute exact auth={auth} path="/" component={Introduction}/>
+                    <AuthRoute exact auth={auth} path="/" component={Introduction} />
                     <AuthRoute exact auth={auth} path="/login" component={Login} />
                     <AuthRoute exact auth={auth} path="/reset-password" component={ResetPassword} />
                     <PrivateRoute
