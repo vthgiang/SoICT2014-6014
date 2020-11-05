@@ -98,9 +98,12 @@ class DashBoardEmployees extends Component {
                     <div className="tab-content ">
                         {/* Tab Nhân sự */}
                         <div className="tab-pane active" id="human-resource">
-                            <LazyLoadComponent>
-                                <TabHumanResource organizationalUnits={organizationalUnits} monthShow={month} actionSearch={actionSearch} />
-                            </LazyLoadComponent>
+                            {department.list && department.list.length !== 0 &&
+                                <LazyLoadComponent>
+
+                                    <TabHumanResource organizationalUnits={organizationalUnits} childOrganizationalUnit={department.list} monthShow={month} actionSearch={actionSearch} />
+                                </LazyLoadComponent>
+                            }
                         </div>
 
                         {/* Tab nghỉ phép */}

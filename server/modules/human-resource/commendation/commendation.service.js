@@ -71,7 +71,7 @@ exports.getTotalCommendation = async (portal, company, organizationalUnits, mont
             }
         }
     }
-    let totalList = await Commendation(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    let totalList = await Commendation(connect(DB_CONNECTION, portal)).find(keySearch).populate({path:'employee', select:'fullName employeeNumber'});
     return {
         totalList,
         totalListOfYear

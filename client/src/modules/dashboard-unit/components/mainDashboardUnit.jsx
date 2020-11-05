@@ -38,7 +38,6 @@ class MainDashboardUnit extends Component {
         this.props.getAllEmployeeOfUnitByIds(organizationalUnits);
         this.props.getTaskInOrganizationUnitByMonth(organizationalUnits, newMonth, newMonth);
 
-        // this.props.searchAnnualLeaves({ organizationalUnits: organizationalUnits, month: newMonth });
         /* Lấy dánh sách khen thưởng, kỷ luật */
         this.props.getListPraise({ organizationalUnits: organizationalUnits, month: newMonth });
         this.props.getListDiscipline({ organizationalUnits: organizationalUnits, month: newMonth });
@@ -224,7 +223,6 @@ class MainDashboardUnit extends Component {
                                     <span className="info-box-number">
                                         {listAllEmployees.length}
                                     </span>
-                                    <a style={{ cursor: 'pointer' }} >Xem chi tiết <i className="fa fa-arrow-circle-right"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -237,7 +235,6 @@ class MainDashboardUnit extends Component {
                                     <span className="info-box-number">
                                         {totalTask}
                                     </span>
-                                    <a style={{ cursor: 'pointer' }} >Xem chi tiết <i className="fa fa-arrow-circle-right"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -248,9 +245,8 @@ class MainDashboardUnit extends Component {
                                 <div className="info-box-content">
                                     <span className="info-box-text">Số khen thưởng</span>
                                     <span className="info-box-number">
-                                        {discipline.totalListCommendation}
+                                        {discipline.totalListCommendation ? discipline.totalListCommendation.length : 0}
                                     </span>
-                                    <a style={{ cursor: 'pointer' }} >Xem chi tiết <i className="fa fa-arrow-circle-right"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -260,9 +256,8 @@ class MainDashboardUnit extends Component {
                                 <div className="info-box-content">
                                     <span className="info-box-text">Số kỷ luật</span>
                                     <span className="info-box-number">
-                                        {discipline.totalListDiscipline}
+                                        {discipline.totalListDiscipline ? discipline.totalListDiscipline.length : 0}
                                     </span>
-                                    <a style={{ cursor: 'pointer' }} >Xem chi tiết <i className="fa fa-arrow-circle-right"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -300,7 +295,7 @@ class MainDashboardUnit extends Component {
 
                             {/* Tab thống kê tổng hợp*/}
                             <div className="tab-pane" id="integrated-statistics">
-                                <TabIntegratedStatistics month={monthShow} employeeTasks={employeeTasks} listEmployee={listEmployee} />
+                                <TabIntegratedStatistics listAllEmployees={listAllEmployees} month={monthShow} employeeTasks={employeeTasks} listEmployee={listEmployee} />
                             </div>
                         </div>
                     </div>
@@ -317,7 +312,7 @@ function mapState(state) {
 
 const actionCreators = {
     getAllEmployee: EmployeeManagerActions.getAllEmployee,
-    searchAnnualLeaves: AnnualLeaveActions.searchAnnualLeaves,
+    // searchAnnualLeaves: AnnualLeaveActions.searchAnnualLeaves,
     getListPraise: DisciplineActions.getListPraise,
     getListDiscipline: DisciplineActions.getListDiscipline,
     searchSalary: SalaryActions.searchSalary,

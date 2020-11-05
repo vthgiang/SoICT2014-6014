@@ -14,7 +14,7 @@ class TabHumanResource extends Component {
         this.state = {}
     };
     render() {
-        const { organizationalUnits, actionSearch, monthShow, childOrganizationalUnit } = this.props;
+        const { organizationalUnits, monthShow, childOrganizationalUnit } = this.props;
 
         return (
             <div className="row qlcv">

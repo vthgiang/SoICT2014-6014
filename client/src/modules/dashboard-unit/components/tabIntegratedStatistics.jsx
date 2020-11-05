@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { ViewAllTasks, ViewAllOverTime } from '../../dashboard-personal/components/combinedContent';
+import { ViewAllTasks, ViewAllOverTime, } from '../../dashboard-personal/components/combinedContent';
+import { ViewAllEmployee, ViewAllCommendation, ViewAllDiscipline } from './combinedContent';
 
 class TabIntegratedStatistics extends Component {
     constructor(props) {
@@ -13,6 +14,21 @@ class TabIntegratedStatistics extends Component {
     /** Function xem tất cả bảng tổng hợp công việc*/
     viewAllTasks = () => {
         window.$('#modal-view-all-task').modal('show');
+    }
+
+    /** Function xem tất cả bảng tổng hợp nhân viên*/
+    viewAllEmployee = () => {
+        window.$('#modal-view-all-employee').modal('show');
+    }
+
+    /** Function xem tất cả bảng tổng hợp khen thưởng*/
+    viewAllCommendation = () => {
+        window.$('#modal-view-all-commendation').modal('show');
+    }
+
+    /** Function xem tất cả bảng tổng hợp kỷ luật*/
+    viewAllDiscipline = () => {
+        window.$('#modal-view-all-discipline').modal('show');
     }
 
     /** Function xem tất cả tình hình tăng ca */
@@ -32,9 +48,9 @@ class TabIntegratedStatistics extends Component {
     }
 
     render() {
-        const { translate, timesheets } = this.props;
+        const { translate, timesheets, discipline } = this.props;
 
-        const { month, employeeTasks, listEmployee } = this.props;
+        const { month, employeeTasks, listEmployee, listAllEmployees } = this.props;
 
         const { viewOverTime, viewHoursOff } = this.state;
 
@@ -65,110 +81,240 @@ class TabIntegratedStatistics extends Component {
         };
 
         return (
-            <div className="row qlcv">
-                <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    {/* Tổng hợp công việc */}
-                    <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                        <div className="box box-solid">
-                            <div className="box-header with-border">
-                                <h3 className="box-title">Tổng hợp công việc {month}</h3>
-                            </div>
-                            <div className="box-body">
-                                <table className="table table-striped table-bordered table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>STT</th>
-                                            <th>Họ và tên</th>
-                                            <th>Số công việc</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {employeeTasks.length !== 0 &&
-                                            employeeTasks.map((x, index) => index < 5 ? (
-                                                <tr key={index}>
-                                                    <td>{index + 1}</td>
-                                                    <td>{x.name}</td>
-                                                    <td>{x.totalTask}</td>
-                                                </tr>
-                                            ) : null)
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div className="box-footer text-center">
-                                <a style={{ cursor: 'pointer' }} onClick={this.viewAllTasks} className="uppercase">Xem tất cả</a>
+            <div className="qlcv">
+                <div className='row'>
+                    <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        {/* Tổng hợp số nhân viên*/}
+                        <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <div className="box box-solid">
+                                <div className="box-header with-border">
+                                    <h3 className="box-title">Tổng hợp nhân viên</h3>
+                                </div>
+                                <div className="box-body">
+                                    <table className="table table-striped table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>STT</th>
+                                                <th>Họ và tên</th>
+                                                <th>Giới tính</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {listAllEmployees.length !== 0 &&
+                                                listAllEmployees.map((x, index) => index < 5 ? (
+                                                    <tr key={index}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{x.fullName}</td>
+                                                        <td>{translate(`human_resource.profile.${x.gender}`)}</td>
+                                                    </tr>
+                                                ) : null)
+                                            }
+                                        </tbody>
+                                    </table>
+                                    {
+                                        (!listAllEmployees || listAllEmployees.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                    }
+                                </div>
+                                <div className="box-footer text-center">
+                                    <a style={{ cursor: 'pointer' }} onClick={this.viewAllEmployee} className="uppercase">Xem tất cả</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    {/* Tổng hợp tình hình nghỉ phép */}
-                    <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                        <div className="box box-solid">
-                            <div className="box-header with-border">
-                                <h3 className="box-title">Tổng hợp tình hình nghỉ phép {month}</h3>
-                            </div>
-                            <div className="box-body">
-                                <table className="table table-striped table-bordered table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>STT</th>
-                                            <th>Họ và tên</th>
-                                            <th>Số công việc</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {employeeHoursOff.length !== 0 &&
-                                            employeeHoursOff.map((x, index) => index < 5 ? (
-                                                <tr key={index}>
-                                                    <td>{index + 1}</td>
-                                                    <td>{x.name}</td>
-                                                    <td>{x.totalHours}</td>
-                                                </tr>
-                                            ) : null)
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div className="box-footer text-center">
-                                <a style={{ cursor: 'pointer' }} onClick={this.viewAllHoursOff} className="uppercase">Xem tất cả</a>
+                        {/* Tổng hợp công việc */}
+                        <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <div className="box box-solid">
+                                <div className="box-header with-border">
+                                    <h3 className="box-title">Tổng hợp công việc {month}</h3>
+                                </div>
+                                <div className="box-body">
+                                    <table className="table table-striped table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>STT</th>
+                                                <th>Họ và tên</th>
+                                                <th>Số công việc</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {employeeTasks.length !== 0 &&
+                                                employeeTasks.map((x, index) => index < 5 ? (
+                                                    <tr key={index}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{x.name}</td>
+                                                        <td>{x.totalTask}</td>
+                                                    </tr>
+                                                ) : null)
+                                            }
+                                        </tbody>
+                                    </table>
+                                    {
+                                        (!employeeTasks || employeeTasks.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                    }
+                                </div>
+                                <div className="box-footer text-center">
+                                    <a style={{ cursor: 'pointer' }} onClick={this.viewAllTasks} className="uppercase">Xem tất cả</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    {/* Tổng hợp tình hình tăng ca */}
-                    <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                        <div className="box box-solid">
-                            <div className="box-header with-border">
-                                <h3 className="box-title">Tổng hợp tình hình tăng ca {month}</h3>
+                </div>
+                <div className='row'>
+                    <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        {/* Tổng hợp khen thưởng */}
+                        <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <div className="box box-solid">
+                                <div className="box-header with-border">
+                                    <h3 className="box-title">Tổng hợp khen thưởng {month}</h3>
+                                </div>
+                                <div className="box-body">
+                                    <table className="table table-striped table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>STT</th>
+                                                <th>Họ và tên</th>
+                                                <th>Lý do khen thưởng </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {discipline.totalListCommendation.length !== 0 &&
+                                                discipline.totalListCommendation.map((x, index) => index < 5 ? (
+                                                    <tr key={index}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{x.employee.fullName}</td>
+                                                        <td>{x.reason}</td>
+                                                    </tr>
+                                                ) : null)
+                                            }
+                                        </tbody>
+                                    </table>
+                                    {
+                                        (!discipline.totalListCommendation || discipline.totalListCommendation.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                    }
+                                </div>
+                                <div className="box-footer text-center">
+                                    <a style={{ cursor: 'pointer' }} onClick={this.viewAllCommendation} className="uppercase">Xem tất cả</a>
+                                </div>
                             </div>
-                            <div className="box-body">
-                                <table className="table table-striped table-bordered table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>STT</th>
-                                            <th>Họ và tên</th>
-                                            <th>Số công việc</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {employeeOvertime.length !== 0 &&
-                                            employeeOvertime.map((x, index) => index < 5 ? (
-                                                <tr key={index}>
-                                                    <td>{index + 1}</td>
-                                                    <td>{x.name}</td>
-                                                    <td>{x.totalHours}</td>
-                                                </tr>
-                                            ) : null)
-                                        }
-                                    </tbody>
-                                </table>
+                        </div>
+                        {/* Tổng hợp kỷ luật */}
+                        <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <div className="box box-solid">
+                                <div className="box-header with-border">
+                                    <h3 className="box-title">Tổng hợp kỷ luật {month}</h3>
+                                </div>
+                                <div className="box-body">
+                                    <table className="table table-striped table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>STT</th>
+                                                <th>Họ và tên</th>
+                                                <th>Lý do kỷ luật</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {discipline.totalListDiscipline.length !== 0 &&
+                                                discipline.totalListDiscipline.map((x, index) => index < 5 ? (
+                                                    <tr key={index}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{x.employee.fullName}</td>
+                                                        <td>{x.reason}</td>
+                                                    </tr>
+                                                ) : null)
+                                            }
+                                        </tbody>
+                                    </table>
+                                    {
+                                        (!discipline.totalListDiscipline || discipline.totalListDiscipline.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                    }
+                                </div>
+                                <div className="box-footer text-center">
+                                    <a style={{ cursor: 'pointer' }} onClick={this.viewAllDiscipline} className="uppercase">Xem tất cả</a>
+                                </div>
                             </div>
-                            <div className="box-footer text-center">
-                                <a style={{ cursor: 'pointer' }} onClick={this.viewAllOverTime} className="uppercase">Xem tất cả</a>
+                        </div>
+                    </div>
+                </div>
+                <div className='row'>
+                    <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        {/* Tổng hợp tình hình nghỉ phép */}
+                        <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <div className="box box-solid">
+                                <div className="box-header with-border">
+                                    <h3 className="box-title">Tổng hợp tình hình nghỉ phép {month}</h3>
+                                </div>
+                                <div className="box-body">
+                                    <table className="table table-striped table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>STT</th>
+                                                <th>Họ và tên</th>
+                                                <th>Tổng số giờ</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {employeeHoursOff.length !== 0 &&
+                                                employeeHoursOff.map((x, index) => index < 5 ? (
+                                                    <tr key={index}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{x.name}</td>
+                                                        <td>{x.totalHours}</td>
+                                                    </tr>
+                                                ) : null)
+                                            }
+                                        </tbody>
+                                    </table>
+                                    {
+                                        (!employeeHoursOff || employeeHoursOff.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                    }
+                                </div>
+                                <div className="box-footer text-center">
+                                    <a style={{ cursor: 'pointer' }} onClick={this.viewAllHoursOff} className="uppercase">Xem tất cả</a>
+                                </div>
+                            </div>
+                        </div>
+                        {/* Tổng hợp tình hình tăng ca */}
+                        <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <div className="box box-solid">
+                                <div className="box-header with-border">
+                                    <h3 className="box-title">Tổng hợp tình hình tăng ca {month}</h3>
+                                </div>
+                                <div className="box-body">
+                                    <table className="table table-striped table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>STT</th>
+                                                <th>Họ và tên</th>
+                                                <th>Tổng số giờ</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {employeeOvertime.length !== 0 &&
+                                                employeeOvertime.map((x, index) => index < 5 ? (
+                                                    <tr key={index}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{x.name}</td>
+                                                        <td>{x.totalHours}</td>
+                                                    </tr>
+                                                ) : null)
+                                            }
+                                        </tbody>
+                                    </table>
+                                    {
+                                        (!employeeOvertime || employeeOvertime.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                    }
+                                </div>
+                                <div className="box-footer text-center">
+                                    <a style={{ cursor: 'pointer' }} onClick={this.viewAllOverTime} className="uppercase">Xem tất cả</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <ViewAllTasks employeeTasks={employeeTasks} title={`Tổng hợp công việc ${month}`} />
+                <ViewAllEmployee dataEmployee={listAllEmployees} title={`Tổng hợp nhân viên`} />
+                <ViewAllCommendation dataCommendation={discipline.totalListCommendation} title={`Tổng hợp khen thưởng ${month}`} />
+                <ViewAllDiscipline dataDiscipline={discipline.totalListDiscipline} title={`Tổng hợp kỷ luật ${month}`} />
                 {
                     viewOverTime &&
                     <ViewAllOverTime dataView={employeeOvertime} title={`Tổng hợp tình hình tăng ca ${month}`} id={viewOverTime} />
@@ -177,14 +323,14 @@ class TabIntegratedStatistics extends Component {
                     viewHoursOff &&
                     <ViewAllOverTime dataView={employeeHoursOff} title={`Tổng hợp tình hình nghỉ phép ${month}`} id={viewHoursOff} />
                 }
-            </div>
+            </div >
         );
     }
 }
 
 function mapState(state) {
-    const { timesheets } = state;
-    return { timesheets };
+    const { timesheets, discipline } = state;
+    return { timesheets, discipline };
 }
 
 const tabIntegratedStatistics = connect(mapState, null)(withTranslate(TabIntegratedStatistics));

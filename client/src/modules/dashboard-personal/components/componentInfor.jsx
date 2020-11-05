@@ -5,8 +5,10 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DatePicker, SelectBox, ApiImage } from '../../../common-components';
 
 import { ViewAllTasks, ViewAllOverTime, ViewAllSalary, TrendWorkChart, ViewBirthdayList } from './combinedContent';
+import { ViewAllEmployee, ViewAllCommendation, ViewAllDiscipline } from '../../dashboard-unit/components/combinedContent';
 
 import { SalaryActions } from '../../human-resource/salary/redux/actions';
+import { DisciplineActions } from '../../human-resource/commendation-discipline/redux/actions';
 import { AnnualLeaveActions } from '../../human-resource/annual-leave/redux/actions';
 import { WorkPlanActions } from '../../human-resource/work-plan/redux/actions';
 import { TimesheetsActions } from '../../human-resource/timesheets/redux/actions';
@@ -55,6 +57,10 @@ class ComponentInfor extends Component {
         let monthNew = [partMonth[1], partMonth[0]].join('-');
         this.props.searchSalary({ callApiDashboard: true, organizationalUnits: organizationalUnits, month: monthNew });
 
+        /* Lấy dánh sách khen thưởng, kỷ luật */
+        this.props.getListPraise({ organizationalUnits: organizationalUnits, month: monthNew });
+        this.props.getListDiscipline({ organizationalUnits: organizationalUnits, month: monthNew });
+
         /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
         this.props.getAllEmployeeOfUnitByIds(organizationalUnits);
         this.props.getTaskInOrganizationUnitByMonth(organizationalUnits, monthNew, monthNew);
@@ -100,6 +106,10 @@ class ComponentInfor extends Component {
         let monthNew = [partMonth[1], partMonth[0]].join('-');
         this.props.searchSalary({ callApiDashboard: true, organizationalUnits: organizationalUnits, month: monthNew });
 
+        /* Lấy dánh sách khen thưởng, kỷ luật */
+        this.props.getListPraise({ organizationalUnits: organizationalUnits, month: monthNew });
+        this.props.getListDiscipline({ organizationalUnits: organizationalUnits, month: monthNew });
+
         /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
         this.props.getAllEmployeeOfUnitByIds(organizationalUnits);
         this.props.getTaskInOrganizationUnitByMonth(organizationalUnits, monthNew, monthNew);
@@ -121,6 +131,16 @@ class ComponentInfor extends Component {
     /** Function xem tất cả bảng tổng hợp công việc*/
     viewAllTasks = () => {
         window.$('#modal-view-all-task').modal('show');
+    }
+
+    /** Function xem tất cả bảng tổng hợp khen thưởng*/
+    viewAllCommendation = () => {
+        window.$('#modal-view-all-commendation').modal('show');
+    }
+
+    /** Function xem tất cả bảng tổng hợp kỷ luật*/
+    viewAllDiscipline = () => {
+        window.$('#modal-view-all-discipline').modal('show');
     }
 
     /** Function xem tất cả tình hình tăng ca */
@@ -150,7 +170,7 @@ class ComponentInfor extends Component {
     }
 
     render() {
-        const { department, translate, salary, timesheets, tasks, user, workPlan, annualLeave, employeesManager, createEmployeeKpiSet } = this.props;
+        const { discipline, translate, salary, timesheets, tasks, user, workPlan, annualLeave, employeesManager, createEmployeeKpiSet } = this.props;
 
         const { month, organizationalUnits, viewOverTime, viewHoursOff } = this.state;
 
@@ -285,6 +305,7 @@ class ComponentInfor extends Component {
                             <button type="button" className="btn btn-success" onClick={this.handleUpdateData}>{translate('kpi.evaluation.dashboard.analyze')}</button>
                         </div>
                         <div className="row">
+
                             {/* Nhắc việc */}
                             <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                 <div className="box box-solid">
@@ -380,7 +401,83 @@ class ComponentInfor extends Component {
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div className='row'>
+                            {/* Tổng hợp khen thưởng */}
+                            <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                <div className="box box-solid">
+                                    <div className="box-header with-border">
+                                        <h3 className="box-title">Tổng hợp khen thưởng {month}</h3>
+                                    </div>
+                                    <div className="box-body">
+                                        <table className="table table-striped table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>STT</th>
+                                                    <th>Họ và tên</th>
+                                                    <th>Lý do khen thưởng </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {discipline.totalListCommendation.length !== 0 &&
+                                                    discipline.totalListCommendation.map((x, index) => index < 5 ? (
+                                                        <tr key={index}>
+                                                            <td>{index + 1}</td>
+                                                            <td>{x.employee.fullName}</td>
+                                                            <td>{x.reason}</td>
+                                                        </tr>
+                                                    ) : null)
+                                                }
+                                            </tbody>
+                                        </table>
+                                        {
+                                            (!discipline.totalListCommendation || discipline.totalListCommendation.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                        }
+                                    </div>
+                                    <div className="box-footer text-center">
+                                        <a style={{ cursor: 'pointer' }} onClick={this.viewAllCommendation} className="uppercase">Xem tất cả</a>
+                                    </div>
+                                </div>
+                            </div>
+                            {/* Tổng hợp kỷ luật */}
+                            <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                <div className="box box-solid">
+                                    <div className="box-header with-border">
+                                        <h3 className="box-title">Tổng hợp kỷ luật {month}</h3>
+                                    </div>
+                                    <div className="box-body">
+                                        <table className="table table-striped table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>STT</th>
+                                                    <th>Họ và tên</th>
+                                                    <th>Lý do kỷ luật</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {discipline.totalListDiscipline.length !== 0 &&
+                                                    discipline.totalListDiscipline.map((x, index) => index < 5 ? (
+                                                        <tr key={index}>
+                                                            <td>{index + 1}</td>
+                                                            <td>{x.employee.fullName}</td>
+                                                            <td>{x.reason}</td>
+                                                        </tr>
+                                                    ) : null)
+                                                }
+                                            </tbody>
+                                        </table>
+                                        {
+                                            (!discipline.totalListDiscipline || discipline.totalListDiscipline.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                        }
+                                    </div>
+                                    <div className="box-footer text-center">
+                                        <a style={{ cursor: 'pointer' }} onClick={this.viewAllDiscipline} className="uppercase">Xem tất cả</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
+                        <div className="row">
                             {/* Top lương thưởng của đơn vị*/}
                             <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                 <div className="box box-solid">
@@ -488,6 +585,8 @@ class ComponentInfor extends Component {
                 }
 
                 <ViewAllTasks employeeTasks={employeeTasks} title={`Tổng hợp công việc ${month}`} showCheck={true} />
+                <ViewAllCommendation dataCommendation={discipline.totalListCommendation} title={`Tổng hợp khen thưởng ${month}`} />
+                <ViewAllDiscipline dataDiscipline={discipline.totalListDiscipline} title={`Tổng hợp kỷ luật ${month}`} />
                 {
                     viewOverTime &&
                     <ViewAllOverTime dataView={employeeOvertime} title={`Tổng hợp tình hình tăng ca ${month}`} id={viewOverTime} showCheck={true} />
@@ -506,8 +605,8 @@ class ComponentInfor extends Component {
     }
 };
 function mapState(state) {
-    const { department, salary, timesheets, tasks, user, workPlan, annualLeave, employeesManager, createEmployeeKpiSet } = state;
-    return { department, salary, timesheets, tasks, user, workPlan, annualLeave, employeesManager, createEmployeeKpiSet };
+    const { salary, timesheets, tasks, user, workPlan, annualLeave, employeesManager, createEmployeeKpiSet, discipline } = state;
+    return { salary, timesheets, tasks, user, workPlan, annualLeave, employeesManager, createEmployeeKpiSet, discipline };
 }
 
 const actionCreators = {
@@ -518,7 +617,10 @@ const actionCreators = {
     getListWorkPlan: WorkPlanActions.getListWorkPlan,
     getNumberAnnaulLeave: AnnualLeaveActions.searchAnnualLeaves,
     getAllEmployee: EmployeeManagerActions.getAllEmployee,
-    getAllEmployeeKpiSetByMonth: createKpiSetActions.getAllEmployeeKpiSetByMonth
+    getAllEmployeeKpiSetByMonth: createKpiSetActions.getAllEmployeeKpiSetByMonth,
+
+    getListPraise: DisciplineActions.getListPraise,
+    getListDiscipline: DisciplineActions.getListDiscipline,
 };
 
 const componentInfor = connect(mapState, actionCreators)(withTranslate(ComponentInfor));
