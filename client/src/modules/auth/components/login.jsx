@@ -44,7 +44,7 @@ class Login extends Component {
             <div className="hold-transition login-page" style={{ minHeight: '100vh' }}>
                 <div className="login-box" style={{ marginTop: 0, marginBottom: 0, paddingTop: '7vh' }}>
                     <div className="login-logo">
-                        <a href="/" style={{textShadow: '0 0 20px #FFFFFF, 0 0 20px #FFFFFF', fontSize: '48px'}}><b className="text-purple">DX Workspace</b></a>
+                        <a href="/" style={{textShadow: '0 0 20px #FFFFFF, 0 0 20px #FFFFFF', fontSize: '48px'}}><b className="text-purple">DX workplace</b></a>
                     </div>
                     {
                         auth.error &&
