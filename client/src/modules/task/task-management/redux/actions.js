@@ -9,6 +9,7 @@ export const taskManagementActions = {
     getInformedTaskByUser,
     getCreatorTaskByUser,
     getPaginateTasksByUser,
+    getPaginateTasks,
     getPaginatedTasksByOrganizationalUnit,
 
     addTask,
@@ -294,6 +295,42 @@ function getPaginateTasksByUser(unit, number, perPage, status, priority, special
             .catch(error => {
                 dispatch({
                     type: taskManagementConstants.GET_PAGINATE_TASK_BYUSER_FAILURE,
+                    error
+                })
+            })
+    }
+}
+
+/**
+ * lấy công việc
+ * @param {*} unit đơn vị
+ * @param {*} role vai trò
+ * @param {*} number số trang hiện tại
+ * @param {*} perPage số bản ghi trên 1 trang
+ * @param {*} status trạng thái
+ * @param {*} priority độ ưu tiên
+ * @param {*} special lưu kho???
+ * @param {*} name tên công việc
+ * @param {*} startDate ngày bắt đầu
+ * @param {*} endDate kết thúc công việc
+ */
+
+function getPaginateTasks(role, unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime = false) {
+    return dispatch => {
+        dispatch({
+            type: taskManagementConstants.GET_PAGINATE_TASK_REQUEST, 
+        });
+
+        taskManagementService.getPaginateTasks(role, unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime)
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.GET_PAGINATE_TASK_SUCCESS,
+                    payload: res.data.content,
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: taskManagementConstants.GET_PAGINATE_TASK_FAILURE,
                     error
                 })
             })
