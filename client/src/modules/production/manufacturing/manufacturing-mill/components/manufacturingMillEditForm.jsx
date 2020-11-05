@@ -5,6 +5,7 @@ import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { ButtonModal, DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
 import { generateCode } from '../../../../../helpers/generateCode';
 import ValidationHelper from '../../../../../helpers/validationHelper';
+import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { millActions } from '../redux/actions';
 
 class ManufacturingEditForm extends Component {
@@ -22,6 +23,33 @@ class ManufacturingEditForm extends Component {
         }));
     }
 
+    getListUsers = () => {
+        const { translate, user } = this.props;
+        let listUsersArray = [{
+            value: "",
+            text: translate('manufacturing.manufacturing_mill.choose_team_leader')
+        }];
+
+        let { userdepartments } = user;
+        if (userdepartments) {
+            userdepartments = userdepartments[0];
+            if (userdepartments.employees && Object.keys(userdepartments.employees).length > 0) { // Nếu nhà máy có nhân viên
+                let members = userdepartments.employees[Object.keys(userdepartments.employees)[0]].members;
+                if (members.length) {
+                    members.map((member) => {
+                        listUsersArray.push({
+                            value: member._id,
+                            text: member.name
+                        });
+                    });
+                }
+
+            }
+        }
+
+        return listUsersArray;
+    }
+
     getListWorks = () => {
         const { translate, manufacturingWorks } = this.props;
         let listWorksArray = [{
@@ -35,7 +63,8 @@ class ManufacturingEditForm extends Component {
             listWorks.map((item) => {
                 listWorksArray.push({
                     value: item._id,
-                    text: item.name
+                    text: item.name,
+                    organizationalUnit: item.organizationalUnit._id
                 });
             });
         }
@@ -58,7 +87,31 @@ class ManufacturingEditForm extends Component {
             this.setState((state) => ({
                 ...state,
                 worksValue: value,
-                worksValueError: msg
+                worksValueError: msg,
+                teamLeaderValue: ""
+            }));
+        }
+
+        return msg;
+    }
+
+    handleTeamLeaderValueChange = (value) => {
+        console.log(value[0]);
+        const teamLeaderValue = value[0];
+        this.validateTeamLeader(teamLeaderValue, true);
+    }
+
+    validateTeamLeader(value, willUpdateState = true) {
+        let msg = undefined;
+        const { translate } = this.props;
+        if (value === "") {
+            msg = translate('manufacturing.manufacturing_mill.team_leader_error');
+        }
+        if (willUpdateState) {
+            this.setState((state) => ({
+                ...state,
+                teamLeaderValue: value,
+                teamLeaderValueError: msg
             }));
         }
 
@@ -106,10 +159,11 @@ class ManufacturingEditForm extends Component {
     }
 
     isFormValidated = () => {
-        const { name, worksValue, status } = this.state;
+        const { name, worksValue, status, teamLeaderValue } = this.state;
         const { translate } = this.props;
         if (this.validateManufacturingWorks(worksValue, false)
             || this.validateStatus(status, false)
+            || this.validateTeamLeader(teamLeaderValue, false)
             || !ValidationHelper.validateName(translate, name, 6, 255).status
         ) {
             return false
@@ -124,23 +178,27 @@ class ManufacturingEditForm extends Component {
                 name: this.state.name,
                 manufacturingWorks: this.state.worksValue,
                 description: this.state.description,
-                status: this.state.status
+                status: this.state.status,
+                teamLeader: this.state.teamLeaderValue
             }
             this.props.editManufacturingMill(this.state.millId, data);
         }
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.millId !== prevState.millId) {
+    static getDerivedStateFromProps(props, state) {
+        if (props.millId !== state.millId) {
+            props.getAllUserOfDepartment(props.currentOrganizationalUnit);
             return {
-                ...prevState,
-                millId: nextProps.millId,
-                code: nextProps.code,
-                name: nextProps.name,
-                worksValue: nextProps.worksValue,
-                status: String(nextProps.status),
-                description: nextProps.description,
+                ...state,
+                millId: props.millId,
+                code: props.code,
+                name: props.name,
+                worksValue: props.worksValue,
+                teamLeaderValue: props.teamLeaderValue,
+                status: String(props.status),
+                description: props.description,
                 nameError: undefined,
+                teamLeaderValueError: undefined,
                 worksValueError: undefined,
                 statusError: undefined,
             }
@@ -148,11 +206,40 @@ class ManufacturingEditForm extends Component {
         return null;
     }
 
+    // Tìm trong trong listWorksArray object có value = value truyền vào
+    findIndex = (array, value) => {
+        let result = -1;
+        array.map((item, index) => {
+            if (item.value === value) {
+                result = index
+            }
+        })
+        return result;
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        if (nextProps.worksValue === this.props.worksValue && nextState.worksValue !== "" && this.state.worksValue !== nextState.worksValue) {
+            let listWorks = this.getListWorks();
+            let result = this.findIndex(listWorks, nextState.worksValue);
+            if (result !== -1) {
+                this.props.getAllUserOfDepartment(listWorks[result].organizationalUnit);
+            }
+
+            return false;
+        }
+        return true;
+    }
+
 
 
     render() {
+        const { user } = this.props;
+        console.log(user.userdepartments);
+
         const { translate, manufacturingMill } = this.props;
-        const { code, name, nameError, worksValue, worksValueError, description, status, statusError } = this.state;
+        const { code, name, nameError, worksValue, worksValueError, description, status, statusError, teamLeaderValue, teamLeaderValueError } = this.state;
+
+        console.log(teamLeaderValue)
         return (
             <React.Fragment>
                 <DialogModal
@@ -189,6 +276,22 @@ class ManufacturingEditForm extends Component {
                             />
                             <ErrorLabel content={worksValueError} />
                         </div>
+                        {
+                            this.state.worksValue !== "" &&
+                            <div className={`form-group ${!teamLeaderValueError ? "" : "has-error"}`}>
+                                <label>{translate('manufacturing.manufacturing_mill.team_leader')}<span className="text-red">*</span></label>
+                                <SelectBox
+                                    id={`select-teamLeader-edit`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={teamLeaderValue}
+                                    items={this.getListUsers()}
+                                    onChange={this.handleTeamLeaderValueChange}
+                                    multiple={false}
+                                />
+                                <ErrorLabel content={teamLeaderValueError} />
+                            </div>
+                        }
                         <div className={`form-group ${!statusError ? "" : "has-error"}`}>
                             <label>{translate('manufacturing.manufacturing_mill.status')}<span className="text-red">*</span></label>
                             <SelectBox
@@ -218,13 +321,14 @@ class ManufacturingEditForm extends Component {
 }
 
 function mapStateToProps(state) {
-    const { manufacturingWorks, manufacturingMill } = state;
-    return { manufacturingWorks, manufacturingMill }
+    const { manufacturingWorks, manufacturingMill, user } = state;
+    return { manufacturingWorks, manufacturingMill, user }
 }
 
 const mapDispatchToProps = {
     createManufacturingMill: millActions.createManufacturingMill,
-    editManufacturingMill: millActions.editManufacturingMill
+    editManufacturingMill: millActions.editManufacturingMill,
+    getAllUserOfDepartment: UserActions.getAllUserOfDepartment
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManufacturingEditForm));

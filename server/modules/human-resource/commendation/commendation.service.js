@@ -71,7 +71,7 @@ exports.getTotalCommendation = async (portal, company, organizationalUnits, mont
             }
         }
     }
-    let totalList = await Commendation(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    let totalList = await Commendation(connect(DB_CONNECTION, portal)).find(keySearch).populate({path:'employee', select:'fullName employeeNumber'});
     return {
         totalList,
         totalListOfYear
@@ -193,7 +193,7 @@ exports.createCommendation = async (portal, data, company) => {
 
         // Lấy thông tin khen thưởng vừa tạo
         return await Commendation(connect(DB_CONNECTION, portal)).findOne({
-            _id: createCommendation(connect(DB_CONNECTION, portal))._id
+            _id: createCommendation._id
         }).populate([{
             path: 'employee',
             select: 'emailInCompany fullName employeeNumber'

@@ -25,6 +25,9 @@ import { annualLeave } from '../modules/human-resource/annual-leave/redux/reduce
 import { workPlan } from '../modules/human-resource/work-plan/redux/reducers';
 import { timesheets } from '../modules/human-resource/timesheets/redux/reducers';
 
+import { career } from '../modules/human-resource/career-position/redux/reducers';
+import { major } from '../modules/human-resource/major/redux/reducers';
+
 import { notifications } from '../modules/notification/redux/reducers';
 import { documents } from '../modules/document/redux/reducers';
 
@@ -65,6 +68,7 @@ import { categories } from "../modules/production/common-production/category-man
 import { goods } from "../modules/production/common-production/good-management/redux/reducers";
 import { binLocations } from "../modules/production/warehouse/bin-location-management/redux/reducers";
 import { lots } from "../modules/production/warehouse/inventory-management/redux/reducers";
+import { bills } from "../modules/production/warehouse/bill-management/redux/reducers";
 
 //crm
 import { customers } from "../modules/crm/customer/redux/reducers";
@@ -76,6 +80,7 @@ import { careTypes } from "../modules/crm/careType/redux/reducers";
 //order
 import { taxs } from "../modules/production/order/tax/redux/reducers";
 import { quotes } from '../modules/production/order/quote/redux/reducers';
+import { discounts } from "../modules/production/order/discount/redux/reducers";
 
 //plan
 import { plan } from "../modules/plan/redux/reducers";
@@ -124,6 +129,10 @@ const appReducer = combineReducers({
     workPlan,
     timesheets,
 
+    // gói thầu
+    career,
+    major,
+
     // hr-tranning
     education,
     course,
@@ -168,6 +177,7 @@ const appReducer = combineReducers({
     goods,
     binLocations,
     lots,
+    bills,
 
     // customer management
     crm: combineReducers({
@@ -177,6 +187,8 @@ const appReducer = combineReducers({
     //order
     taxs,
     quotes,
+    discounts,
+
     //plane
     plan,
 

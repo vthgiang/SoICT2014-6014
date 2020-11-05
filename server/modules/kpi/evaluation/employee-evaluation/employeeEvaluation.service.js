@@ -305,7 +305,6 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
             autoPointSet += kpi.automaticPoint * weight;
             employeePointSet += kpi.employeePoint * weight;
             approvedPointSet += kpi.approvedPoint * weight;
-            console.log('hihihiii', kpi.automaticPoint, kpi.employeePoint, kpi.approvedPoint, weight);
         } else {
             autoPointSet = -1;
         }

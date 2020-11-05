@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { formatDate } from '../../../../../helpers/formatDate';
 import { DataTableSetting, DatePicker, PaginateBar, SelectMulti } from "../../../../../common-components";
 import PurchasingRequestDetailForm from './purchasingRequestDetailForm';
+import PurchasingRequestEditForm from './purchasingRequestEditForm';
 import PurchasingRequestCreateForm from './purchasingRequestCreateForm';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { purchasingRequestActions } from '../redux/actions';
@@ -100,17 +101,36 @@ class PurchasingRequestManagementTable extends Component {
         this.props.getAllPurchasingRequests(data);
     }
 
-    handleShowDetailPurchasingRequest = async (id) => {
-        console.log("ahaha")
+    handleShowDetailPurchasingRequest = async (purchasingRequest) => {
         await this.setState((state) => ({
             ...state,
-            purchasingRequestId: id
+            purchasingRequestDetail: purchasingRequest
         }));
 
         window.$('#modal-detail-info-purchasing-request').modal('show');
     }
 
+    handleEditPurchasingRequest = async (purchasingRequest) => {
+        let listGoods = [];
+        listGoods = purchasingRequest.materials.map((material) => {
+            return {
+                goodId: material.good._id,
+                goodObject: material.good,
+                quantity: material.quantity
+            }
+        });
+
+        await this.setState((state) => ({
+            ...state,
+            currentRow: purchasingRequest,
+            listGoods: listGoods,
+        }));
+        console.log(this.state.listGoods);
+        window.$('#modal-edit-purchasing-request').modal('show');
+    }
+
     render() {
+
         const { translate, purchasingRequest } = this.props;
         let listPurchasingRequests = [];
         if (purchasingRequest.listPurchasingRequests) {
@@ -121,7 +141,17 @@ class PurchasingRequestManagementTable extends Component {
         return (
             <React.Fragment>
                 {
-                    <PurchasingRequestDetailForm purchasingRequestId={this.state.purchasingRequestId} />
+                    <PurchasingRequestDetailForm purchasingRequestDetail={this.state.purchasingRequestDetail} />
+                }
+                {
+                    this.state.currentRow && this.state.listGoods &&
+                    <PurchasingRequestEditForm
+                        purchasingRequestId={this.state.currentRow._id}
+                        code={this.state.currentRow.code}
+                        intendReceiveTime={this.state.currentRow.intendReceiveTime}
+                        description={this.state.currentRow.description}
+                        listGoods={this.state.listGoods}
+                    />
                 }
                 <div className="box-body qlcv">
                     <PurchasingRequestCreateForm />
@@ -220,8 +250,8 @@ class PurchasingRequestManagementTable extends Component {
                                         <td>{formatDate(purchasingRequest.intendReceiveTime)}</td>
                                         <td style={{ color: translate(`manufacturing.purchasing_request.${purchasingRequest.status}.color`) }}>{translate(`manufacturing.purchasing_request.${purchasingRequest.status}.content`)}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a style={{ width: '5px' }} title={translate('manufacturing.purchasing_request.purchasing_request_detail')} onClick={() => { this.handleShowDetailPurchasingRequest(purchasingRequest._id) }}><i className="material-icons">view_list</i></a>
-                                            <a className="edit text-yellow" style={{ width: '5px' }} title="Sửa phiếu đề nghị"><i className="material-icons">edit</i></a>
+                                            <a style={{ width: '5px' }} title={translate('manufacturing.purchasing_request.purchasing_request_detail')} onClick={() => { this.handleShowDetailPurchasingRequest(purchasingRequest) }}><i className="material-icons">view_list</i></a>
+                                            <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manufacturing.purchasing_request.purchasing_request_edit')} onClick={() => this.handleEditPurchasingRequest(purchasingRequest)}><i className="material-icons">edit</i></a>
                                         </td>
                                     </tr>
                                 ))

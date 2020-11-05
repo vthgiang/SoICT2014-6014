@@ -264,6 +264,175 @@ exports.getTasksCreatedByUser = async (portal, id) => {
 }
 
 /**
+ * Lấy công việc theo người dùng ,...$_id
+ * @task dữ liệu trong params
+ */
+exports.getPaginatedTasks = async (portal, task) => {
+    var { perPage, number, role, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime } = task;
+
+    var taskList;
+    var perPage = Number(perPage);
+    var page = Number(number);
+
+    let roleArr = [];
+    console.log('role', role);
+    if (role) {
+        for (let i in role) {
+            if (role[i] === "responsible") roleArr.push({ responsibleEmployees: { $in: [user] } });
+            if (role[i] === "accountable") roleArr.push({ accountableEmployees: { $in: [user] } });
+            if (role[i] === "consulted") roleArr.push({ consultedEmployees: { $in: [user] } });
+            if (role[i] === "informed") roleArr.push({ informedEmployees: { $in: [user] } });
+            if (role[i] === "creator") roleArr.push({ creator: { $in: [user] } });
+        }
+    } else {
+        roleArr = [
+            { responsibleEmployees: { $in: [user] } },
+            { accountableEmployees: { $in: [user] } },
+        ];
+    }
+
+
+    var keySearch = {
+        $or: roleArr,
+        isArchived: false
+    };
+
+
+    if (organizationalUnit) {
+        keySearch = {
+            ...keySearch,
+            organizationalUnit: {
+                $in: organizationalUnit,
+            }
+        };
+    }
+
+    if (status) {
+        keySearch = {
+            ...keySearch,
+            status: {
+                $in: status,
+            }
+        };
+    }
+
+    if (priority) {
+        keySearch = {
+            ...keySearch,
+            priority: {
+                $in: priority,
+            }
+        };
+    }
+
+    if (special) {
+        for (var i = 0; i < special.length; i++) {
+            if (special[i] === "Lưu trong kho") {
+                keySearch = {
+                    ...keySearch,
+                    isArchived: true
+                };
+            }
+            else {
+                keySearch = {
+                    ...keySearch,
+                    endDate: { $gte: new Date() }
+                };
+            }
+        }
+    }
+
+    if (name) {
+        keySearch = {
+            ...keySearch,
+            name: {
+                $regex: name,
+                $options: "i"
+            }
+        }
+    };
+
+    if (JSON.parse(aPeriodOfTime)) {
+        keySearch = {
+            ...keySearch,
+            $or: [
+                { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
+            ]
+        }
+    } else {
+        if (startDate) {
+            let startTime = startDate.split("-");
+            let start = new Date(startTime[1], startTime[0] - 1, 1);
+            let end = new Date(startTime[1], startTime[0], 1);
+
+            keySearch = {
+                ...keySearch,
+                startDate: {
+                    $gte: start,
+                    $lt: end
+                }
+            }
+        }
+        if (endDate) {
+            let endTime = endDate.split("-");
+            let start = new Date(endTime[1], endTime[0] - 1, 1);
+            let end = new Date(endTime[1], endTime[0], 1);
+
+            keySearch = {
+                ...keySearch,
+                endDate: {
+                    $gte: start,
+                    $lt: end
+                }
+            }
+        }
+    }
+
+    if (startDateAfter) {
+        let startTimeAfter = startDateAfter.split("-");
+        let start;
+
+
+        if (startTimeAfter[0] > 12) start = new Date(startTimeAfter[0], startTimeAfter[1] - 1, 1);
+        else start = new Date(startTimeAfter[1], startTimeAfter[0] - 1, 1);
+
+        keySearch = {
+            ...keySearch,
+            endDate: {
+                $gte: start
+            }
+        }
+    }
+
+    if (endDateBefore) {
+        let endTimeBefore = endDateBefore.split("-");
+        let end;
+        if (endTimeBefore[0] > 12) end = new Date(endTimeBefore[0], endTimeBefore[1], 1);
+        else end = new Date(endTimeBefore[1], endTimeBefore[0], 1);
+
+        keySearch = {
+            ...keySearch,
+            startDate: {
+                $lt: end
+            }
+        }
+    }
+
+    taskList = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'asc' })
+        .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent responsibleEmployees" });
+
+    var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    var totalPages = Math.ceil(totalCount / perPage);
+
+    return {
+        "tasks": taskList,
+        "totalPage": totalPages
+    };
+}
+
+/**
  * Lấy công việc thực hiện chính theo id người dùng
  * @task dữ liệu trong params
  */
@@ -353,8 +522,8 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
             keySearch = {
                 ...keySearch,
                 startDate: {
-                    $gt: start,
-                    $lte: end
+                    $gte: start,
+                    $lt: end
                 }
             }
         }
@@ -366,8 +535,8 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
             keySearch = {
                 ...keySearch,
                 endDate: {
-                    $gt: start,
-                    $lte: end
+                    $gte: start,
+                    $lt: end
                 }
             }
         }
@@ -506,8 +675,8 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
             keySearch = {
                 ...keySearch,
                 startDate: {
-                    $gt: start,
-                    $lte: end
+                    $gte: start,
+                    $lt: end
                 }
             }
         }
@@ -520,8 +689,8 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
             keySearch = {
                 ...keySearch,
                 endDate: {
-                    $gt: start,
-                    $lte: end
+                    $gte: start,
+                    $lt: end
                 }
             }
         }
@@ -656,8 +825,8 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
             keySearch = {
                 ...keySearch,
                 startDate: {
-                    $gt: start,
-                    $lte: end
+                    $gte: start,
+                    $lt: end
                 }
             }
         }
@@ -670,8 +839,8 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
             keySearch = {
                 ...keySearch,
                 endDate: {
-                    $gt: start,
-                    $lte: end
+                    $gte: start,
+                    $lt: end
                 }
             }
         }
@@ -806,8 +975,8 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
             keySearch = {
                 ...keySearch,
                 startDate: {
-                    $gt: start,
-                    $lte: end
+                    $gte: start,
+                    $lt: end
                 }
             }
         }
@@ -820,8 +989,8 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
             keySearch = {
                 ...keySearch,
                 endDate: {
-                    $gt: start,
-                    $lte: end
+                    $gte: start,
+                    $lt: end
                 }
             }
         }
@@ -928,8 +1097,8 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
             keySearch = {
                 ...keySearch,
                 startDate: {
-                    $gt: start,
-                    $lte: end
+                    $gte: start,
+                    $lt: end
                 }
             }
         }
@@ -942,8 +1111,8 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
             keySearch = {
                 ...keySearch,
                 endDate: {
-                    $gt: start,
-                    $lte: end
+                    $gte: start,
+                    $lt: end
                 }
             }
         }
@@ -1100,8 +1269,8 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
             keySearch = {
                 ...keySearch,
                 startDate: {
-                    $gt: start,
-                    $lte: end
+                    $gte: start,
+                    $lt: end
                 }
             }
         }
@@ -1114,8 +1283,8 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
             keySearch = {
                 ...keySearch,
                 endDate: {
-                    $gt: start,
-                    $lte: end
+                    $gte: start,
+                    $lt: end
                 }
             }
         }
@@ -1295,7 +1464,7 @@ exports.sendEmailForCreateTask = async (portal, task) => {
     collaboratedEmail = deansOfOrganizationalUnitThatHasCollaborated.map(item => item.userId && item.userId.email) // Lấy email trưởng đơn vị phối hợp 
     email.push("trinhhong102@gmail.com");
 
-    var body = `<a href="${process.env.WEBSITE}/task?taskId=${task._id}" target="_blank"><strong>${task.name}</strong></a></p> ` +
+    var body = `<a href="${process.env.WEBSITE}/task?taskId=${task._id}" target="_blank" title="${process.env.WEBSITE}/task?taskId=${task._id}"><strong>${task.name}</strong></a></p> ` +
         `<h3>Nội dung công việc</h3>` +
         // `<p>Tên công việc : <strong>${task.name}</strong></p>` +
         `<p>Mô tả : ${task.description}</p>` +

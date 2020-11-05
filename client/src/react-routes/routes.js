@@ -53,6 +53,10 @@ import { DashboardUnit } from '../modules/dashboard-unit/components';
 import { ListEducation } from '../modules/training/education-program/components/educationProgramList';
 import { TrainingPlan } from '../modules/training/course/components/course';
 
+import { SearchEmployeeForPackage } from '../modules/human-resource/profile/employee-management/components/searchEmployeeForPackage';
+import CareerPosition from '../modules/human-resource/career-position/component';
+import Major from '../modules/human-resource/major/component';
+
 import { OrganizationalUnitKpiCreate } from "../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreate";
 import { OrganizationalUnitKpiDashboard } from "../modules/kpi/organizational-unit/dashboard/component/organizationalUnitKpiDashboard";
 import { KPIUnitManager } from "../modules/kpi/organizational-unit/management/component/organizationalUnitKpiOverview";
@@ -132,8 +136,9 @@ import PlanManagement from "../modules/plan/components";
 
 // Example
 import ExampleManagement1 from "../modules/example/example1/components";
-import ExampleManagement2 from "../modules/example/example2/components-hooks";
 
+import ExampleManagement2 from "../modules/example/example2/components-hooks";
+import ExampleManagementHooks1 from "../modules/example/example1/components-hooks";
 // Manufacturing Managements
 
 import ManufacturingPlan from "../modules/production/manufacturing/manufacturing-plan/components";
@@ -655,6 +660,56 @@ class Routes extends Component {
                         pageName={'training_plan'}
                         layout={Layout}
                         component={TrainingPlan}
+                    />
+
+                    {/* Nhân sự gói thầu */}
+                    <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={'list_search_for_package'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/hr-search-for-package', name: 'list_search_for_package', icon: 'fa fa-list-alt' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/hr-search-for-package'}
+                        path={'/hr-search-for-package'}
+                        pageName={'list_search_for_package'}
+                        layout={Layout}
+                        component={SearchEmployeeForPackage}
+                    />
+
+                    {/* Nhân sự gói thầu */}
+                    <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={'list_major'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/hr-list-major', name: 'list_major', icon: 'fa fa-list-alt' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/hr-list-major'}
+                        path={'/hr-list-major'}
+                        pageName={'list_major'}
+                        layout={Layout}
+                        component={Major}
+                    />
+
+                    <PrivateRoute
+                        isLoading={this.props.course.isLoading}
+                        key={'list_career_position'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/hr-list-career-position', name: 'list_career_position', icon: 'fa fa-list-alt' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/hr-list-career-position'}
+                        path={'/hr-list-career-position'}
+                        pageName={'list_career_position'}
+                        layout={Layout}
+                        component={CareerPosition}
                     />
 
                     {/* kpi - routes */}
@@ -1651,6 +1706,27 @@ class Routes extends Component {
                         component={ExampleManagement2}
                     />
 
+                    {/* Example Management Hooks*/}
+                    <PrivateRoute
+                        isLoading={this.props.example1.isLoading}
+                        key={"manage-examples-1"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-examples-hooks-1",
+                                name: "manage_examples_hooks_1",
+                                icon: "fa fa-circle",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-examples-hooks-1"}
+                        path={"/manage-examples-hooks-1"}
+                        pageName={"manage_examples_hooks_1"}
+                        layout={Layout}
+                        component={ExampleManagementHooks1}
+                    />
+
                     {/* Manufacturing-management */}
 
                     <PrivateRoute
@@ -1734,7 +1810,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={false}
+                        isLoading={this.props.purchasingRequest.isLoading}
                         key={"manage-purchasing-request"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },

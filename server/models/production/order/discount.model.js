@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const DiscountSchema = new Schema({
     code: {
@@ -10,184 +11,86 @@ const DiscountSchema = new Schema({
         type: String,
         required: true
     },
+    description: {
+        type: String
+    },
     effectiveDate: {
         type: Date
     },
     expirationDate: {
         type: Date
     },
-    type: {//
+    type: {//0. giảm giá toàn đơn hàng, 1. giảm giá từng sản phẩm
         type: Number,
-        enum: [ 1, 2, 3, 4, 5, 6 ],
+        enum: [ 0, 1 ],
         required: true
     },
-    discountVariances: {
-        money: {
-            type: Number,
-        },
-        percent: {
-            type: Number
-        },
-        coin: {
-            type: Number
-        },
-        delivery: {
-            type: Number
-        },
-        maxMoney: {
-            type: Number
-        },
-        numberOfDelaydDays: {
-            type: Number
-        }
+    creator: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     },
-    discountHoliday: {
-        money: {
-            type: Number
-        },
-        percent: {
-            type: Number
-        },
-        coin: {
-            type: Number
-        },
-        delivery: {
-            type: Number
-        },
-        maxMoney: {
-            type: Number
-        }
+    formality: {// Hình thức giảm giá
+        type: String,
+        enum: [0, 1, 2, 3, 4, 5], //0. discounted cash, 1. discounted percentage, 2. loyalty coin,
+        // 3. maximum free shipping cost, 4. bonus goods, 5. clear inventory
+        required: true
     },
-    inventorys: [{
-        money: {
+    discounts: [{
+        discountedCash: {
             type: Number
         },
-        percent: {
+        discountedPercentage: {
             type: Number
         },
-        coin: {
+        loyaltyCoin: {
             type: Number
         },
-        delivery: {
+        maximumFreeShippingCost: {
             type: Number
         },
-        maxMoney: {
+        maximumDiscountedCash: {
             type: Number
         },
-        good: {
-            type: Schema.Types.ObjectId,
-            ref: 'Good'
-        },
-        expirationDate: Date
-    }],
-    orderValues: [{
-        money: {
+        minimumThresholdToBeApplied: {
             type: Number
         },
-        percent: {
+        maximumThresholdToBeApplied: {
             type: Number
         },
-        coin: {
-            type: Number
-        },
-        delivery: {
-            type: Number
-        },
-        maxMoney: {
-            type: Number
-        },
-        minium: {
+        customerType: { //0. Khách thường, 1. Khách VIP, 2. Cả 2
             type: Number,
-            required: true
+            enum: [ 0, 1, 2]
         },
-        maximum: {
-            type: Number
-        },
-        bonus: [{
-            quantity: {
-                type: Number,
-                required: true
-            },
-            goods: [{
+        bonusGoods: [{
+            good: {
                 type: Schema.Types.ObjectId,
-                ref: 'Good',
-                required: true
-            }]
-        }]
-    }],
-    goodQuantitys: [{
-        money: {
-            type: Number
-        },
-        percent: {
-            type: Number
-        },
-        coin: {
-            type: Number
-        },
-        delivery: {
-            type: Number
-        },
-        maxMoney: {
-            type: Number
-        },
-        minium: {
-            type: Number,
-            required: true
-        },
-        maximum:{
-            type: Number
-        }
-    }],
-    customerDiscounts: [{
-        money: {
-            type: Number
-        },
-        percent: {
-            type: Number
-        },
-        coin: {
-            type: Number
-        },
-        delivery: {
-            type: Number
-        },
-        maxMoney: {
-            type: Number
-        },
-        type: { //1. Khách thường, 2. Khách VIP
-            type: Number,
-            enum: [ 1, 2 ],
-            required: true
-        }
-    }],
-    bonus: [{
-        good: {
-            type: Schema.Types.ObjectId,
-            ref:'Good',
-            required: true
-        },
-        bonusLevel: [{
-            minium: {
-                type: Number,
-                required: true
+                ref: 'Good'
             },
-            maximum: {
+            expirationDateOfGoodBonus: {
+                type: Date
+            },
+            baseUnit: {
+                type: String
+            },
+            quantityOfBonusGood: {
                 type: Number
+            }
+        }],
+        discountOnGoods: [{
+            good: {
+                type: Schema.Types.ObjectId,
+                ref: 'Good'
             },
-            bonus: [{
-                quantity: {
-                    type:  Number,
-                    required: true
-                },
-                goods: {
-                    type: Schema.Types.ObjectId,
-                    ref: 'Good',
-                    required: true
-                }
-            }]
+            expirationDate: {
+                type: Date
+            }
         }]
     }],
+    status: {
+        type: String,
+        required: true
+    },
     version: {
         type: Number,
         required: true
@@ -196,8 +99,10 @@ const DiscountSchema = new Schema({
     timestamps: true,
 })
 
+DiscountSchema.plugin(mongoosePaginate);
+
 module.exports = (db) => {
-    if (db.models.Discount)
+    if (!db.models.Discount)
         return db.model('Discount', DiscountSchema)
     return db.models.Discount
 }

@@ -65,6 +65,7 @@ export const performTaskService = {
     deleteFileChildComment,
 
     getAllPreceedingTasks,
+    sortActions,
 };
 
 /**
@@ -681,11 +682,24 @@ function deleteFileChildComment(fileId, childCommentId, commentId, taskId) {
         method: 'PATCH',
     }, false, true)
 }
-
+/**
+ * Lấy tất cả preceeding task
+ * @param {*} taskId 
+ */
 function getAllPreceedingTasks(taskId) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/performtask/process/tasks/${taskId}`,
         method: 'GET',
         params: { preceedingTasks: true }
+    }, false, false)
+}
+/**
+ * Sắp xếp actions
+ */
+function sortActions(taskId, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/sort`,
+        method: 'POST',
+        data: data,
     }, false, false)
 }

@@ -168,6 +168,7 @@ class TaskAddModal extends Component {
                     newTask: { // update lại unit, và reset các selection phía sau
                         ...this.state.newTask,
                         organizationalUnit: value,
+                        collaboratedWithOrganizationalUnits: [],
                         responsibleEmployees: [],
                         accountableEmployees: [],
                         errorOnName: undefined,
@@ -339,6 +340,7 @@ class TaskAddModal extends Component {
 
         if (nextProps.parentTask !== this.props.parentTask) { // Khi đổi nhấn add new task sang nhấn add subtask hoặc ngược lại
             this.setState(state => {
+                
                 return {
                     ...state,
                     newTask: {
@@ -347,6 +349,7 @@ class TaskAddModal extends Component {
                     }
                 };
             });
+            console.log('ddddd', newTask.parent);
             return false;
         }
 
@@ -377,33 +380,6 @@ class TaskAddModal extends Component {
             });
             return false; // Sẽ cập nhật lại state nên không cần render
         }
-
-        // if (newTask.organizationalUnit === "" && user.organizationalUnitsOfUser) {
-        //     // Tìm unit mà currentRole của user đang thuộc về
-
-        //     let defaultUnit = user.organizationalUnitsOfUser.find(item =>
-        //         item.dean === this.state.currentRole
-        //         || item.viceDean === this.state.currentRole
-        //         || item.employee === this.state.currentRole);
-        //     if (!defaultUnit && user.organizationalUnitsOfUser.length > 0) { // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
-        //         defaultUnit = user.organizationalUnitsOfUser[0]
-        //     }
-
-        //     if (defaultUnit) {
-        //         this.props.getChildrenOfOrganizationalUnits(defaultUnit._id);
-        //     }
-
-        //     this.setState(state => { // Khởi tạo giá trị cho organizationalUnit của newTask
-        //         return {
-        //             ...state,
-        //             newTask: {
-        //                 ...this.state.newTask,
-        //                 organizationalUnit: defaultUnit && defaultUnit._id,
-        //             }
-        //         };
-        //     });
-        //     return false; // Sẽ cập nhật lại state nên không cần render
-        // }
 
         return true;
     }
@@ -448,12 +424,17 @@ class TaskAddModal extends Component {
 
         let listParentTask = [{ value: "", text: `--${translate('task.task_management.add_parent_task')}--` }];
 
+        if(this.props.parentTask && this.props.parentTask !== "" && this.props.currentTasks) {
+            let taskItem = this.props.currentTasks.find(e => e._id === this.props.parentTask );
+            listParentTask.push({value: taskItem._id, text: taskItem.name })
+        } 
+
         if (tasks.listSearchTasks) {
             let arr = tasks.listSearchTasks.map(x => { return { value: x._id, text: x.name } });
             listParentTask = [...listParentTask, ...arr];
         }
 
-        // console.log('abccccc', listTaskTemplate);
+        console.log('abccccc', this.props, newTask.parent);
 
         return (
             <React.Fragment>

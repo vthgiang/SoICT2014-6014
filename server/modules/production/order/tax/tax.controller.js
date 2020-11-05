@@ -4,13 +4,13 @@ const Log = require(`${SERVER_LOGS_DIR}`);
 exports.createNewTax = async (req, res) => {
     try {
         let data = req.body;
-        let Tax = await TaxService.createNewTax(data, req.portal)
+        let Tax = await TaxService.createNewTax(req.user._id, data, req.portal)
 
         await Log.info(req.user.email, "CREATED_NEW_TAX", req.portal);
 
         res.status(201).json({
             success: true,
-            messages: ["create_successfully"],
+            messages: ["add_successfully"],
             content: Tax
         });
     }  catch (error) {
@@ -18,7 +18,7 @@ exports.createNewTax = async (req, res) => {
 
         res.status(400).json({
             success: false,
-            messages: ["create_failed"],
+            messages: ["add_failed"],
             content: error.message
         });
     }
@@ -28,7 +28,7 @@ exports.editTaxByCode = async (req, res) => {
     try {
         let id = req.params.id;
         data = req.body;
-        let Tax = await TaxService.editTaxByCode(id, data, req.portal);
+        let Tax = await TaxService.editTaxByCode(req.user._id, id, data, req.portal);
 
         await Log.info(req.user.email, "EDIT_TAX", req.portal);
         res.status(200).json({
@@ -94,12 +94,12 @@ exports.getTaxById = async ( req, res ) => {
 exports.disableTaxById = async ( req, res ) => {
     try {
         let id = req.params.id;
-        let Tax = await TaxService.disableTaxById( id, req.portal)
+        let Tax = await TaxService.disableTaxById(id, req.portal)
         
         await Log.info(req.user.email, "DISABLE_TAX_BY_ID", req.portal);
         res.status(200).json({
             success: true,
-            messages: ["get_successfully"],
+            messages: ["disable_successfully"],
             content: Tax
         });
     } catch (error) {
@@ -107,7 +107,7 @@ exports.disableTaxById = async ( req, res ) => {
 
         res.status(400).json({
             success: false,
-            messages: ["get_failed"],
+            messages: ["disable_failed"],
             content: error.message
         });
     }

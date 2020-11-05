@@ -125,7 +125,6 @@ class AgePyramidChart extends Component {
         if (nextProps.organizationalUnits !== prevState.organizationalUnits || !AgePyramidChart.isEqual(nextProps.employeesManager.listAllEmployees, prevState.listAllEmployees) ||
             !AgePyramidChart.isEqual(nextProps.employeesManager.listEmployeesOfOrganizationalUnits, prevState.listEmployeesOfOrganizationalUnits)) {
             return {
-                actionSearch: nextProps.actionSearch,
                 organizationalUnits: nextProps.organizationalUnits,
                 listAllEmployees: nextProps.employeesManager.listAllEmployees,
                 listEmployeesOfOrganizationalUnits: nextProps.employeesManager.listEmployeesOfOrganizationalUnits
@@ -135,7 +134,7 @@ class AgePyramidChart extends Component {
     };
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.organizationalUnits !== this.state.organizationalUnits || nextProps.actionSearch !== this.state.actionSearch || !AgePyramidChart.isEqual(nextProps.employeesManager.listAllEmployees, this.state.listAllEmployees) ||
+        if (nextProps.organizationalUnits !== this.state.organizationalUnits || !AgePyramidChart.isEqual(nextProps.employeesManager.listAllEmployees, this.state.listAllEmployees) ||
             !AgePyramidChart.isEqual(nextProps.employeesManager.listEmployeesOfOrganizationalUnits, this.state.listEmployeesOfOrganizationalUnits)) {
             return true;
         };
@@ -152,7 +151,7 @@ class AgePyramidChart extends Component {
             organizationalUnitsName = organizationalUnitsName.map(x => x.name);
         }
 
-        let listAllEmployees = (!organizationalUnits || organizationalUnits.length === department.list.length) ?
+        let listAllEmployees = (!organizationalUnits || organizationalUnits.length === 0 || organizationalUnits.length === department.list.length) ?
             employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
         let maleEmployees = listAllEmployees.filter(x => x.gender === 'male');
         let femaleEmployees = listAllEmployees.filter(x => x.gender === 'female');
@@ -185,7 +184,6 @@ class AgePyramidChart extends Component {
             data2: data2AgePyramid,
         }
         this.renderChart(data);
-        console.log("1222")
 
         return (
             <React.Fragment>

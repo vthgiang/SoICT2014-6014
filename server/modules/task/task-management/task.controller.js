@@ -32,6 +32,9 @@ exports.getTasks = async (req, res) => {
     else if (req.query.type === "all_role") {
         getPaginatedTasksByUser(req, res);
     }
+    else if (req.query.type === "choose_multi_role") {
+        getPaginatedTasks(req, res);
+    }
     else if (req.query.type === "paginated_task_by_unit") {
         getPaginatedTasksByOrganizationalUnit(req, res);
     }
@@ -317,7 +320,7 @@ getPaginatedTasksThatUserHasInformedRole = async (req, res) => {
 }
 
 /**
- * Lấy công việc theo vai trò người quan sát
+ * Lấy công việc chọn theo user
  */
 getPaginatedTasksByUser = async (req, res) => {
     try {
@@ -347,6 +350,43 @@ getPaginatedTasksByUser = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['get_task_of_user_fail'],
+            content: error
+        })
+    }
+}
+
+/**
+ * Lấy công việc chọn nhiều role
+ */
+getPaginatedTasks = async (req, res) => {
+    try {
+        var task = {
+            perPage: req.query.perPage,
+            number: req.query.number,
+            user: req.query.user,
+            role: req.query.role,
+            organizationalUnit: req.query.unit,
+            status: req.query.status,
+            priority: req.query.priority,
+            special: req.query.special,
+            name: req.query.name,
+            startDate: req.query.startDate,
+            endDate: req.query.endDate,
+            aPeriodOfTime: req.query.aPeriodOfTime
+        };
+
+        var tasks = await TaskManagementService.getPaginatedTasks(req.portal, task);
+        await Logger.info(req.user.email, ` get task informed by user `, req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['get_task_success'],
+            content: tasks
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` get task informed by user  `, req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['get_task_fail'],
             content: error
         })
     }

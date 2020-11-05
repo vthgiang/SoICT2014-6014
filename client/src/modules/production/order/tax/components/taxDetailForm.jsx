@@ -64,28 +64,32 @@ class TaxDetailForm extends Component {
                                 {currentTax.status ? translate("manage_order.tax.effective") : translate("manage_order.tax.expire")}
                             </div>
                         </div>
+
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <table id="tax-table" className="table table-striped table-bordered table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>{translate("manage_order.tax.index")}</th>
-                                        <th>{translate("manage_order.tax.code")}</th>
-                                        <th>{translate("manage_order.tax.name")}</th>
-                                        <th>{translate("manage_order.tax.tax_percent")}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {currentTax.goods &&
-                                        currentTax.goods.map((good, index) => (
-                                            <tr>
-                                                <td>{index + 1}</td>
-                                                <td>{good.good.code}</td>
-                                                <td>{good.good.name}</td>
-                                                <td>{good.percent}</td>
-                                            </tr>
-                                        ))}
-                                </tbody>
-                            </table>
+                            <fieldset className="scheduler-border">
+                                <legend className="scheduler-border">Chi tiết các mặt hàng</legend>
+                                <table id="tax-table" className="table table-striped table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>{translate("manage_order.tax.index")}</th>
+                                            <th>{translate("manage_order.tax.code")}</th>
+                                            <th>{translate("manage_order.tax.name")}</th>
+                                            <th>{translate("manage_order.tax.tax_percent")}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {currentTax.goods &&
+                                            currentTax.goods.map((good, index) => (
+                                                <tr>
+                                                    <td>{index + 1}</td>
+                                                    <td>{good.good.code}</td>
+                                                    <td>{good.good.name}</td>
+                                                    <td>{good.percent}</td>
+                                                </tr>
+                                            ))}
+                                    </tbody>
+                                </table>
+                            </fieldset>
                         </div>
                     </form>
                 </DialogModal>

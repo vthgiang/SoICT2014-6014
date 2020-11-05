@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DatePicker, TimePicker ,DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
+import { DatePicker, TimePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
 
 import { UseRequestFromValidator } from './UseRequestFromValidator';
 
@@ -20,7 +20,7 @@ class UseRequestCreateForm extends Component {
             reqContent: "",
             dateStartUse: this.props.startDate ? this.formatDate(this.props.startDate) : this.formatDate(Date.now()),
             dateEndUse: this.props.endDate ? this.formatDate(this.props.endDate) : this.formatDate(Date.now()),
-            startTime : null,
+            startTime: null,
             stopTime: null,
             status: "waiting_for_approval",
             asset: "",
@@ -65,7 +65,11 @@ class UseRequestCreateForm extends Component {
     }
 
     validateExitsRecommendNumber = (value) => {
-        return this.props.recommendDistribute.listRecommendDistributes.some(item => item.recommendNumber === value);
+        if (value) { // Chỉ validate nếu value có giá trị
+            return this.props.recommendDistribute.listRecommendDistributes.some(item => item.recommendNumber === value);
+        } else {
+            return false;
+        }
     }
 
     // Bắt sự kiện thay đổi "Ngày lập"
@@ -202,7 +206,7 @@ class UseRequestCreateForm extends Component {
         let dataToSubmit = { ...this.state, proponent: this.props.auth.user._id }
         if (this.isFormValidated() && this.validateExitsRecommendNumber(this.state.recommendNumber) === false) {
             await this.props.createRecommendDistribute(dataToSubmit);
-            if(this.props._id == `calendar-${this.props.asset}`){
+            if (this.props._id == `calendar-${this.props.asset}`) {
                 await this.props.handleChange(dataToSubmit)
             }
         }
@@ -232,7 +236,7 @@ class UseRequestCreateForm extends Component {
         // 
         var assetlist = assetsManager.listAssets;
         var userlist = user.list;
-        console.log("This.props", `modal-create-recommenddistribute-${_id}` , this.props)
+        console.log("This.props", `modal-create-recommenddistribute-${_id}`, this.props)
         return (
             <React.Fragment>
                 <DialogModal
@@ -325,11 +329,11 @@ class UseRequestCreateForm extends Component {
                                         value={dateStartUse}
                                         onChange={this.handleDateStartUseChange}
                                     />
-                                    { this.props.typeRegisterForUse == 2 &&
-                                    <TimePicker
-                                        id={`time-picker-start`}
-                                        onChange={this.handleStartTimeChange}
-                                        value = {startTime}
+                                    {this.props.typeRegisterForUse == 2 &&
+                                        <TimePicker
+                                            id={`time-picker-start`}
+                                            onChange={this.handleStartTimeChange}
+                                            value={startTime}
                                         // getDefaultValue = {this.getDefaultStartValue}
                                         />
                                     }
@@ -344,15 +348,15 @@ class UseRequestCreateForm extends Component {
                                         value={dateEndUse}
                                         onChange={this.handleDateEndUseChange}
                                     />
-                                    { this.props.typeRegisterForUse == 2 &&
+                                    {this.props.typeRegisterForUse == 2 &&
                                         <TimePicker
-                                        id={`time-picker-end`}
-                                        onChange={this.handleStopTimeChange}
-                                        value = {stopTime}
+                                            id={`time-picker-end`}
+                                            onChange={this.handleStopTimeChange}
+                                            value={stopTime}
                                         // getDefaultValue = {this.getDefaultEndValue}
                                         />
                                     }
-                                    
+
                                     <ErrorLabel content={errorOnDateEndUse} />
                                 </div>
 

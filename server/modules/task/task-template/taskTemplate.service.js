@@ -10,7 +10,8 @@ exports.getAllTaskTemplates = async (portal, query) => {
         // LẤY DANH SÁCH TẤT CẢ CÁC MẪU CÔNG VIỆC CÓ TRONG HỆ THỐNG CỦA CÔNG TY
         let docs = await TaskTemplate(connect(DB_CONNECTION, portal)).find().populate([
             { path: 'creator' },
-            { path: 'organizationalUnit' }
+            { path: 'organizationalUnit' },
+            { path: 'collaboratedWithOrganizationalUnits' }
         ]);
         return {
             docs: docs
@@ -61,7 +62,8 @@ exports.getAllTaskTemplates = async (portal, query) => {
                 limit: noResultsPerPage,
                 populate: [
                     { path: 'creator' },
-                    { path: 'organizationalUnit' }
+                    { path: 'organizationalUnit' },
+                    { path: 'collaboratedWithOrganizationalUnits' }
                 ]
             });
     } else {
@@ -79,7 +81,7 @@ exports.getTaskTemplate = async (portal, id) => {
     return await TaskTemplate(connect(DB_CONNECTION, portal))
         .findById(id)
         .populate([
-            { path: "organizationalUnit", select: "name deans" },
+            { path: "organizationalUnit collaboratedWithOrganizationalUnits", select: "name deans" },
             { path: "readByEmployees", select: "name" },
             { path: "creator responsibleEmployees accountableEmployees consultedEmployees informedEmployees", select: "name email" }]);
 }
@@ -113,6 +115,7 @@ exports.createTaskTemplate = async (portal, body) => {
     //Tạo dữ liệu mẫu công việc
     var tasktemplate = await TaskTemplate(connect(DB_CONNECTION, portal)).create({
         organizationalUnit: body.organizationalUnit,
+        collaboratedWithOrganizationalUnits: body.collaboratedWithOrganizationalUnits,
         name: body.name,
         creator: body.creator, //id của người tạo
         readByEmployees: readByEmployee, //role của người có quyền xem
@@ -183,7 +186,7 @@ exports.createTaskTemplate = async (portal, body) => {
             action: readByEmployee //quyền READ
         });
     }
-    tasktemplate = await tasktemplate.populate("organizationalUnit creator").execPopulate();
+    tasktemplate = await tasktemplate.populate("organizationalUnit creator collaboratedWithOrganizationalUnits").execPopulate();
     return tasktemplate;
 }
 
@@ -235,7 +238,7 @@ exports.editTaskTemplate = async (portal, data, id) => {
         },
         { new: true },
     ).populate([
-        { path: "organizationalUnit", select: "name deans" },
+        { path: "organizationalUnit collaboratedWithOrganizationalUnits", select: "name deans" },
         { path: "readByEmployees", select: "name" },
         { path: "creator responsibleEmployees accountableEmployees consultedEmployees informedEmployees", select: "name email" }]);
 
