@@ -8,8 +8,7 @@ const AssetUseRequestSchema = new Schema({
         ref: 'companies'
     },
     recommendNumber: { //mã phiếu
-        type: String,
-        required: true
+        type: String
     },
     dateCreate: { //ngày lập
         type: String,
