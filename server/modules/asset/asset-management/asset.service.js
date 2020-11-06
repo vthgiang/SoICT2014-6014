@@ -243,7 +243,6 @@ exports.mergeUrlFileToObject = (arrayFile, arrayObject) => {
  * @fileInfo : Thông tin file đính kèm
  */
 exports.createAsset = async (portal, company, data, fileInfo) => {
-
     let avatar = fileInfo && fileInfo.avatar === "" ? data.avatar : fileInfo.avatar,
         file = fileInfo && fileInfo.file;
     let { maintainanceLogs, usageLogs, incidentLogs, locationLogs, files } = data;
@@ -259,7 +258,9 @@ exports.createAsset = async (portal, company, data, fileInfo) => {
 
     usageLogs = usageLogs && usageLogs.map(item => {
         return {
-            ...item,
+            usedByUser: item.assignedToUser ? item.assignedToUser : null,
+            usedByOrganizationalUnit:  item.assignedToOrganizationalUnit ? item.assignedToOrganizationalUnit : null,
+            description: item.description,
             startDate: new Date(item.startDate),
             endDate: new Date(item.endDate)
         }
@@ -280,7 +281,6 @@ exports.createAsset = async (portal, company, data, fileInfo) => {
             endDate: new Date(item.endDate)
         }
     })
-
     let createAsset = await Asset(connect(DB_CONNECTION, portal)).create({
         company: company,
         avatar: avatar,

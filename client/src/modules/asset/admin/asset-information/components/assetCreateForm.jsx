@@ -61,7 +61,7 @@ class AssetCreateForm extends Component {
         if (month.length < 2) {
             month = '0' + month;
         }
-            
+
         if (day.length < 2) {
             day = '0' + day;
         }
@@ -113,6 +113,13 @@ class AssetCreateForm extends Component {
         })
     }
 
+    handleRecallAsset = (data) => {
+        this.setState({
+            assignedToUser: data.assignedToUser,
+            assignedToOrganizationalUnit: data.assignedToOrganizationalUnit,
+            status: data.status
+        })
+    }
     // Function thêm, chỉnh sửa thông tin sự cố thiết bị
     handleChangeIncidentLog = (data, addData) => {
         this.setState({
@@ -167,7 +174,7 @@ class AssetCreateForm extends Component {
             this.validatorInput(asset.usefulLife) &&
             this.validatorInput(asset.startDepreciation) &&
             this.validatorInput(asset.depreciationType);
-        
+
         return result;
     }
 
@@ -184,7 +191,7 @@ class AssetCreateForm extends Component {
                 files
             }
         })
-        
+
         let formData = convertJsonObjectToFormData(this.state.asset);
         files.forEach(x => {
             formData.append("file", x.fileUpload);
@@ -236,7 +243,7 @@ class AssetCreateForm extends Component {
                                 asset={asset}
                                 handleChange={this.handleChange}
                             />
-                            
+
                             {/* Thông tin bảo trì */}
                             <MaintainanceLogTab
                                 id="maintainance"
@@ -253,8 +260,9 @@ class AssetCreateForm extends Component {
                                 handleAddUsage={this.handleChangeUsageLog}
                                 handleEditUsage={this.handleChangeUsageLog}
                                 handleDeleteUsage={this.handleChangeUsageLog}
+                                handleRecallAsset={this.handleRecallAsset}
                             />
-                            
+
                             {/* Thông tin sự cố */}
                             <IncidentLogTab
                                 id="incident"
