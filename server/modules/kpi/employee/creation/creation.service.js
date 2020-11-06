@@ -57,13 +57,36 @@ exports.getEmployeeKpiSet = async (portal, id, role, month) => {
 
 /* Lấy tất cả các tập KPI của 1 nhân viên theo thời gian cho trước */
 exports.getAllEmployeeKpiSetByMonth = async (portal, organizationalUnitIds, userId, startDate, endDate) => {
+    let year, month;
+    if (endDate) {
+        year = endDate.slice(0, 4);
+        month = endDate.slice(5, 7);
+    }
+    if ((new Number(month)) == 12) {
+        month = '1';
+        year = (new Number(year)) + 1;
+    } else {
+        month = (new Number(month)) + 1;
+    }
+    if (month < 10) {
+        endDate = year + '-0' + month;
+    } else {
+        endDate = year + '-' + month;
+    }
+
+    let keySearch = {
+        creator: new mongoose.Types.ObjectId(userId),
+        date: { $gte: new Date(startDate), $lt: new Date(endDate) }
+    }
+    if (organizationalUnitIds) {
+        keySearch = {
+            ...keySearch,
+            organizationalUnit: { $in: [...organizationalUnitIds] }
+        }
+    } 
+
     let employeeKpiSetByMonth = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
-        .find(
-            {
-                organizationalUnit: { $in: [...organizationalUnitIds] },
-                creator: new mongoose.Types.ObjectId(userId),
-                date: { $gt: new Date(startDate), $lte: new Date(endDate) }
-            })
+        .find(keySearch)
         .populate({ path: "organizationalUnit", select: "name" })
         .select({ 'automaticPoint': 1, 'employeePoint': 1, 'approvedPoint': 1, 'date': 1 })
 

@@ -179,8 +179,6 @@ class EditVersion extends Component {
         formData.append('creator', getStorage("userId"))
         formData.append('descriptions', descriptions);
         this.props.editDocument(documentId, formData, 'EDIT_VERSION');
-        console.log('eeeeeeeeee', this.convertISODate(issuingDate));
-        console.log('aaaaaaaaaaaaaa', this.convertISODate(effectiveDate));
         this.props.updateDocumentVersions({
             _id: versionId,
             versionName: versionName,

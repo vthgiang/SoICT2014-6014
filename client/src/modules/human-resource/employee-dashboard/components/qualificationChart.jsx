@@ -67,7 +67,6 @@ class QualificationChart extends Component {
         if (nextProps.organizationalUnits !== prevState.organizationalUnits || !QualificationChart.isEqual(nextProps.employeesManager.listAllEmployees, prevState.listAllEmployees) ||
             !QualificationChart.isEqual(nextProps.employeesManager.listEmployeesOfOrganizationalUnits, prevState.listEmployeesOfOrganizationalUnits)) {
             return {
-                actionSearch: nextProps.actionSearch,
                 organizationalUnits: nextProps.organizationalUnits,
                 listAllEmployees: nextProps.employeesManager.listAllEmployees,
                 listEmployeesOfOrganizationalUnits: nextProps.employeesManager.listEmployeesOfOrganizationalUnits
@@ -76,7 +75,7 @@ class QualificationChart extends Component {
         return null;
     }
     shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.organizationalUnits !== this.state.organizationalUnits || nextProps.actionSearch !== this.state.actionSearch ||
+        if (nextProps.organizationalUnits !== this.state.organizationalUnits ||
             !QualificationChart.isEqual(nextProps.employeesManager.listAllEmployees, this.state.listAllEmployees) ||
             !QualificationChart.isEqual(nextProps.employeesManager.listEmployeesOfOrganizationalUnits, this.state.listEmployeesOfOrganizationalUnits)) {
             return true;

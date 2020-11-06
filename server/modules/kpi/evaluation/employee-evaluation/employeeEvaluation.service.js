@@ -300,17 +300,15 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
     for (let i = 0; i < kpiSet.kpis.length; i++) {
         let kpi = await EmployeeKpi(connect(DB_CONNECTION, portal)).findById(kpiSet.kpis[i]);
         if (kpi.automaticPoint !== 0 && kpi.automaticPoint !== null) {
-
             let weight = kpi.weight / 100;
             autoPointSet += kpi.automaticPoint * weight;
             employeePointSet += kpi.employeePoint * weight;
             approvedPointSet += kpi.approvedPoint * weight;
-            console.log('hihihiii', kpi.automaticPoint, kpi.employeePoint, kpi.approvedPoint, weight);
         } else {
             autoPointSet = -1;
         }
     };
-    console.log('hahahaaa', autoPointSet, employeePointSet, approvedPointSet);
+    
     if (autoPointSet !== -1) {
 
         let updateKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))

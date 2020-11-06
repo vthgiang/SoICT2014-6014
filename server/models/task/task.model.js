@@ -96,8 +96,14 @@ const TaskSchema = new Schema({
         required: true
     },
     collaboratedWithOrganizationalUnits: [{
-        type: Schema.Types.ObjectId,
-        ref: 'OrganizationalUnit',
+        organizationalUnit: {
+            type: Schema.Types.ObjectId,
+            ref: 'OrganizationalUnit'
+        },
+        isAssigned: {
+            type: Boolean,
+            default: false
+        }
     }],
     creator: {
         type: Schema.Types.ObjectId,
@@ -384,7 +390,7 @@ const TaskSchema = new Schema({
             type: Date,
             default: Date.now
         },
-        sort: {
+        order: {
             type: Number
         },
         rating: { // -1: chưa đánh giá, 0-10: tùy mức độ tốt

@@ -4,14 +4,14 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 
 const BillSchema = new Schema ({
 
-    company: {
-        type: Schema.Types.ObjectId,
-        ref: 'Company'
-    },
-
     fromStock: {
         type: Schema.Types.ObjectId,
         ref: 'Stock'
+    },
+
+    group: {
+        type: String,
+        enum: ["1", "2", "3", "4", "5"]
     },
 
     toStock: {
@@ -24,10 +24,25 @@ const BillSchema = new Schema ({
         required: true
     },
 
+    type: { //1: Nhập nguyên vật liệu, 2: Nhập thành phẩm, 3:Xuất sản phẩm, 4: Xuất nguyên vật liệu, 5: Kiểm kê định kỳ, 6: Kiểm kê thường xuyên, 7: Trả hàng
+        type: String,
+        enum: ["1", "2", "3", "4", "5", "6", "7"]
+    },
+
+    status: { //1: Chờ phê duyệt, 2:Đã hủy, 3: Đã hoàn thành, 4: chờ kiểm tra
+        type: String,
+        enum: ["1", "2", "3", "4"]
+    },
+
     users: [{
         type: Schema.Types.ObjectId,
         ref: 'User'
     }],
+
+    creator: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
 
     partner: {
         type: Schema.Types.ObjectId,
@@ -55,18 +70,24 @@ const BillSchema = new Schema ({
             ref: 'Good'
         },
 
-        lot: {
-            type: Schema.Types.ObjectId,
-            ref: 'Lot'
-        },
-
-        type: {
-            type: String,
-            enum: [""]
-        },
-
         quantity: {
             type: Number
+        },
+
+        lots: [{
+
+            lot: {
+                type: Schema.Types.ObjectId,
+                ref: 'Lot'
+            },
+
+            quantity: {
+                type: Number
+            }
+        }],
+
+        description: {
+            type: String
         }
     }],
 
@@ -77,51 +98,63 @@ const BillSchema = new Schema ({
             ref: 'Good'
         },
 
-        lot: {
-            type: Schema.Types.ObjectId,
-            ref: 'Lot'
-        },
-
-        type: {
-            type: String,
-            enum: [""]
-        },
-
         quantity: {
             type: Number
+        },
+
+        lots: [{
+
+            lot: {
+                type: Schema.Types.ObjectId,
+                ref: 'Lot'
+            },
+
+            quantity: {
+                type: Number
+            }
+        }],
+
+        description: {
+            type: String
         }
     }],
 
     goodReturns: [{
-
-        good: {
-            type: Schema.Types.ObjectId,
-            ref: 'Good'
-        },
-
-        lot: {
-            type: Schema.Types.ObjectId,
-            ref: 'Lot'
-        },
-
-        type: {
-            type: String,
-            enum: [""]
-        },
 
         bill: {
             type: Schema.Types.ObjectId,
             replies: this
         },
 
-        returnQuantity: {
-            type: Number
+        good: {
+            type: Schema.Types.ObjectId,
+            ref: 'Good'
         },
 
-        note: {
-            type: String,
-            enum: [""]
+        returnQuantity: {
+            type: String
+        },
+
+        lots: [{
+
+            lot: {
+                type: Schema.Types.ObjectId,
+                ref: 'Lot'
+            },
+
+            quantity: {
+                type: Number
+            },
+
+            note: {
+                type: String
+            }
+        }],
+
+        description: {
+            type: String
         }
+
     }],
 
     stockTakes: [{
@@ -131,26 +164,31 @@ const BillSchema = new Schema ({
             ref: 'Good'
         },
 
-        lot: {
-            type: Schema.Types.ObjectId,
-            ref: 'Lot'
-        },
-
-        type: {
-            type: String,
-            enum: [""]
-        },
-
-        realQuantity: {
+        quantity: {
             type: Number
         },
 
-        damagedQuantity: {
-            type: Number,
-            default: 0
-        },
+        lots: [{
 
-        note: {
+            lot: {
+                type: Schema.Types.ObjectId,
+                ref: 'Lot'
+            },
+
+            realQuantity: {
+                type: Number
+            },
+
+            damagedQuantity: {
+                type: Number
+            },
+
+            note: {
+                type: Number
+            }
+        }],
+
+        description: {
             type: String
         }
     }]

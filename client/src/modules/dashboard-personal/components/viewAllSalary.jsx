@@ -10,8 +10,9 @@ class ViewAllSalary extends Component {
     };
 
     render() {
-        const { dataSalary, title } = this.props;
+        const { dataSalary, title, viewTotalSalary = false, } = this.props;
 
+        let formater = new Intl.NumberFormat();
         return (
             <React.Fragment>
                 <DialogModal
@@ -28,6 +29,7 @@ class ViewAllSalary extends Component {
                                     <th>STT</th>
                                     <th>Mã nhân viên</th>
                                     <th>Họ và tên</th>
+                                    {viewTotalSalary && <th>Tổng lương</th>}
                                 </tr>
                             </thead>
                             <tbody>
@@ -38,6 +40,7 @@ class ViewAllSalary extends Component {
                                             <td>{index + 1}</td>
                                             <td>{x.employee.employeeNumber}</td>
                                             <td>{x.employee.fullName}</td>
+                                            { viewTotalSalary && <td>{formater.format(x.total)} {x.unit}</td>}
                                         </tr>
                                     ))
                                 }

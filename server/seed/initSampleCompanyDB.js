@@ -2975,7 +2975,7 @@ const initSampleCompanyDB = async () => {
     console.log("Khởi tạo dữ liệu thông tin kho");
     var listStock = await Stock(vnistDB).insertMany([{
         company: vnist._id,
-        name: "D5",
+        name: "Trần Đại Nghĩa",
         code: "ST001",
         address: 'Trần Đại Nghĩa - Hai Bà Trưng - Hà Nội',
         description: "D5",
@@ -3000,7 +3000,7 @@ const initSampleCompanyDB = async () => {
     },
     {
         company: vnist._id,
-        name: "B1",
+        name: "Tạ Quang Bửu",
         code: "ST002",
         address: 'Tạ Quang Bửu - Hai Bà Trưng - Hà Nội',
         description: "B1",
@@ -3769,6 +3769,92 @@ const initSampleCompanyDB = async () => {
         },
     ])
     console.log("Tạo xong mẫu dữ liệu lô hàng");
+
+    //*********************Tạo mẫu dữ liệu các loại phiếu nhập, xuất ****** */
+    console.log("Tạo dữ liệu mẫu các loại phiếu");
+    var listBill = await Bill(vnistDB).insertMany([
+        {
+            code: "BI001",
+            type: "1",
+            group: "1",
+            fromStock: listStock[0]._id,
+            users: [],
+            creator: users[7]._id,
+            partner: null,
+            status: "3",
+            timestamp: "02-06-2020",
+            description: "Nhập kho thành phẩm",
+            goodReceipts: [
+                {
+                    good: listProduct[0]._id,
+                    quantity: 200,
+                    lots: [
+                        {
+                            lot: listLot[0]._id,
+                            quantity: 80
+                        },
+                        {
+                            lot: listLot[2]._id,
+                            quantity: 120
+                        }
+                    ],
+                    description: "Nhập hàng"
+                },
+                {
+                    good: listProduct[1]._id,
+                    quantity: 250,
+                    lots: [
+                        {
+                            lot: listLot[1]._id,
+                            quantity: 250
+                        }
+                    ],
+                    description: "Nhập thành phẩm"
+                }
+            ]
+        },
+        {
+            code: "BI002",
+            type: "3",
+            group: "2",
+            fromStock: listStock[0]._id,
+            users: [],
+            creator: users[7]._id,
+            partner: null,
+            status: "2",
+            timestamp: "10-20-2020",
+            description: "Xuất kho thành phẩm",
+            goodIssues: [
+                {
+                    good: listProduct[0]._id,
+                    quantity: 200,
+                    lots: [
+                        {
+                            lot: listLot[0]._id,
+                            quantity: 80
+                        },
+                        {
+                            lot: listLot[2]._id,
+                            quantity: 120
+                        }
+                    ],
+                    description: "Xuất hàng"
+                },
+                {
+                    good: listProduct[1]._id,
+                    quantity: 250,
+                    lots: [
+                        {
+                            lot: listLot[1]._id,
+                            quantity: 250
+                        }
+                    ],
+                    description: "Xuất thành phẩm"
+                }
+            ]
+        },
+    ])
+    console.log("Tạo xong dữ liệu mẫu các loại phiếu");
 
 
     // ****************** Tạo mẫu dữ liệu khách hàng********************

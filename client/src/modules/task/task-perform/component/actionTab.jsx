@@ -5,7 +5,6 @@ import Swal from 'sweetalert2'
 import Rating from 'react-rating';
 import moment from 'moment';
 import 'moment/locale/vi';
-import Files from 'react-files';
 import './actionTab.css';
 
 import { ContentMaker, DateTimeConverter, ApiImage } from '../../../../common-components';
@@ -20,8 +19,6 @@ import { ViewProcess } from '../../task-process/component/task-process-managemen
 import { IncomingDataTab } from './incomingDataTab';
 import { OutgoingDataTab } from './outgoingDataTab';
 import parse from 'html-react-parser';
-import { performtasks } from '../redux/reducers';
-
 class ActionTab extends Component {
     constructor(props) {
         let idUser = getStorage("userId");
@@ -130,10 +127,11 @@ class ActionTab extends Component {
         this.props.getAllPreceedingTasks(this.props.id)
     }
     static getDerivedStateFromProps(nextProps, prevState) {
+        let state = {}
         if (nextProps.performtasks.task) {
+            state = Object.assign(prevState, { taskActions: nextProps.performtasks.task.taskActions })
             return {
-                ...prevState,
-                taskActions: [...nextProps.performtasks.task.taskActions],
+                state
             }
         } else {
             return null;
@@ -365,7 +363,6 @@ class ActionTab extends Component {
         data.append("description", taskFiles.description)
         data.append("creator", creator);
         if (taskFiles.files.length > 0) {
-            console.log(taskFiles.files)
             this.props.uploadFile(taskId, data);
         }
         // Reset state cho việc thêm mới bình luận
@@ -808,19 +805,20 @@ class ActionTab extends Component {
         }
     }
     showSort = async () => {
-        let {taskActions} = this.state
-        if (this.state.showSort) {
-            this.setState({ showSort: false, backupActions: taskActions });
+        let { taskActions,showSort } = this.state
+        if (showSort) {
+            this.setState({ showSort: false });
         } else {
-            this.setState({ showSort: true, backupActions: taskActions },() => console.log(this.state.backupActions));
+            this.setState({ showSort: true });
         }
 
     }
-    sort = (index,type) => {
+    sort = (index, type) => {
+        let a = []
         let { taskActions } = this.state
         let item = taskActions[index];
         taskActions.splice(index, 1);
-        taskActions.splice(type === "up" ? index - 1 : index +1, 0, item);
+        taskActions.splice(type === "up" ? index - 1 : index + 1, 0, item);
         this.setState(state => {
             return {
                 ...state,
@@ -829,16 +827,27 @@ class ActionTab extends Component {
         });
     }
     cancelSort = () => {
-        let  {backupActions} = this.state
-        console.log(backupActions)
-        this.setState({ taskActions: backupActions, showSort: false });
+        let { taskActions } = this.state
+        taskActions.sort(function (a, b) {
+            return a.sort - b.sort;
+        });
+        this.setState({ taskActions: taskActions, showSort: false });
+    }
+    saveSort = async (taskId) => {
+        let { taskActions } = this.state
+        let i
+        let arrayActions = []
+        for( i = 0; i < taskActions.length; i ++) {
+            arrayActions.push({id: taskActions[i]._id, order: i})
+        }
+        this.props.sortActions(taskId,arrayActions)
+        this.setState({showSort: false});
     }
     setSrc = (src) => {
         this.setState({ src: src });
     }
     render() {
         let task, informations, statusTask, documents, actionComments, taskComments, logTimer, logs;
-        // let taskActions
         const { tasks, performtasks, user, auth, translate, role } = this.props;
         const subtasks = tasks.subtasks;
         const {
@@ -853,7 +862,6 @@ class ActionTab extends Component {
         if (typeof performtasks.task !== 'undefined' && performtasks.task !== null) {
             task = performtasks.task;
             taskComments = task.taskComments;
-            // taskActions = task.taskActions
             documents = task.documents
         }
         if (performtasks.logtimer) {
@@ -887,10 +895,9 @@ class ActionTab extends Component {
                     </ul>
                     <div className="tab-content">
                         <div className={selected === "taskAction" ? "active tab-pane" : "tab-pane"} id="taskAction">
-                            <a style={{ cursor: "pointer" }} onClick={this.showSort}><i className="fa fa-sort"></i>Sắp xếp hoạt động</a>
                             {typeof taskActions !== 'undefined' && taskActions.length !== 0 ?
                                 // Hiển thị hoạt động của công việc
-                                taskActions.map((item, index) => {
+                                (taskActions).map((item, index) => {
                                     return (
                                         <div key={item._id}>
                                             {item.creator ?
@@ -915,8 +922,8 @@ class ActionTab extends Component {
                                                             <div className="btn-group pull-right">
                                                                 {showSort === true ?
                                                                     <div className="sort-action">
-                                                                        {index !== 0 && <a style={{ marginTop: index === taskActions.length - 1 ? "10px" : "0px" }} onClick={() => this.sort(index,"up")}><i className="fa fa-caret-up fa-2x"></i> </a>}
-                                                                        {index !== taskActions.length - 1 && <a style={{ marginTop: index === 0 ? "13px" : "-10px" }} onClick={() => this.sort(index,"down")}><i className="fa fa-caret-down fa-2x"></i> </a>}
+                                                                        {index !== 0 && <a style={{ marginTop: index === taskActions.length - 1 ? "10px" : "0px" }} onClick={() => this.sort(index, "up")}><i className="fa fa-caret-up fa-2x"></i> </a>}
+                                                                        {index !== taskActions.length - 1 && <a style={{ marginTop: index === 0 ? "13px" : "-10px" }} onClick={() => this.sort(index, "down")}><i className="fa fa-caret-down fa-2x"></i> </a>}
                                                                     </div>
                                                                     :
                                                                     <React.Fragment>
@@ -1207,7 +1214,7 @@ class ActionTab extends Component {
                             {/* Thêm hoạt động cho công việc*/}
                             {showSort ?
                                 <div className="pull-right" style={{ marginRight: "10px" }}>
-                                    <a className="link-black text-sm" style={{ cursor: "pointer", marginRight: "5px" }}>Lưu</a>
+                                    <a className="link-black text-sm" style={{ cursor: "pointer", marginRight: "5px" }} onClick={() => this.saveSort(task._id)}>Lưu</a>
                                     <a className="link-black text-sm" style={{ cursor: "pointer" }} onClick={() => this.cancelSort()}>Hủy</a>
                                 </div>
                                 :
@@ -1232,6 +1239,7 @@ class ActionTab extends Component {
                                                 onSubmit={(e) => { this.submitAction(task._id, taskActions.length) }}
                                             />
                                         </React.Fragment>}
+                                    {(role === "responsible" || role === "accountable") && taskActions.length > 1 && <a style={{ cursor: "pointer" }} onClick={this.showSort}><i className="fa fa-sort"></i>Sắp xếp hoạt động</a>}
                                 </React.Fragment>
                             }
                         </div>
@@ -1717,7 +1725,8 @@ const actionCreators = {
     deleteFileTask: performTaskAction.deleteFileTask,
     deleteDocument: performTaskAction.deleteDocument,
     editDocument: performTaskAction.editDocument,
-    getAllPreceedingTasks: performTaskAction.getAllPreceedingTasks
+    getAllPreceedingTasks: performTaskAction.getAllPreceedingTasks,
+    sortActions: performTaskAction.sortActions
 };
 
 const actionTab = connect(mapState, actionCreators)(withTranslate(ActionTab));

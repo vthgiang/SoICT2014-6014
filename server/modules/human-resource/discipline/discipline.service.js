@@ -70,7 +70,7 @@ exports.getTotalDiscipline = async (portal, company, organizationalUnits, month)
         }
     }
 
-    let totalList = await Discipline(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    let totalList = await Discipline(connect(DB_CONNECTION, portal)).find(keySearch).populate({path:'employee', select:'fullName employeeNumber'});
     return {
         totalList,
         totalListOfYear

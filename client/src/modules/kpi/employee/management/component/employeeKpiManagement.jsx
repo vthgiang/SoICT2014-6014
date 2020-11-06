@@ -143,27 +143,28 @@ class KPIPersonalManager extends Component {
         })
         
         const { infosearch } = this.state;
-            var startDate;
-            var startdate=null;
-            var endDate;
-            var enddate=null;
+        
+        var startDate;
+        var startdate=null;
+        var endDate;
+        var enddate=null;
 
-            if(infosearch.startDate !== null) {startDate = infosearch.startDate.split("-");
-            startdate = new Date(startDate[1], startDate[0], 0);}
-            if (infosearch.endDate !== null){endDate= infosearch.endDate.split("-");
-            enddate = new Date(endDate[1], endDate[0], 28);}
+        if(infosearch.startDate !== null) {startDate = infosearch.startDate.split("-");
+        startdate = new Date(startDate[1], startDate[0], 0);}
+        if (infosearch.endDate !== null){endDate= infosearch.endDate.split("-");
+        enddate = new Date(endDate[1], endDate[0], 28);}
 
-            if (startdate && enddate && Date.parse(startdate) > Date.parse(enddate)) {
-                Swal.fire({
-                    title: translate('kpi.evaluation.employee_evaluation.wrong_time')+"!",
-                    type: 'warning',
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: translate('general.accept')
-                })
-            } 
-            else {
-                this.props.getEmployeeKPISets(infosearch);
-            }
+        if (startdate && enddate && Date.parse(startdate) > Date.parse(enddate)) {
+            Swal.fire({
+                title: translate('kpi.evaluation.employee_evaluation.wrong_time')+"!",
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: translate('general.accept')
+            })
+        } 
+        else {
+            this.props.getEmployeeKPISets(infosearch);
+        }
     }
 
     /**Mở modal xem chi tiết 1 mẫu công việc */
