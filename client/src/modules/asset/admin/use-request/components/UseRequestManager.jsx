@@ -332,9 +332,9 @@ class UseRequestManager extends Component {
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('page.all_status') }}
                                 onChange={this.handleStatusChange}
                                 items={[
-                                    { value: "Đã phê duyệt", text: translate('asset.usage.approved') },
-                                    { value: "Chờ phê duyệt", text: translate('asset.usage.waiting_approval') },
-                                    { value: "Không phê duyệt", text: translate('asset.usage.not_approved') }
+                                    { value: "approved", text: translate('asset.usage.approved') },
+                                    { value: "waiting_approval", text: translate('asset.usage.waiting_approval') },
+                                    { value: "not_approved", text: translate('asset.usage.not_approved') }
                                 ]}
                             >
                             </SelectMulti>

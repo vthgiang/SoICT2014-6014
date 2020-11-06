@@ -20,7 +20,6 @@ class AssetDetailForm extends Component {
                 ...prevState,
                 _id: nextProps._id,
                 img: process.env.REACT_APP_SERVER + nextProps.avatar,
-                avatar: "",
                 avatar: nextProps.avatar,
                 code: nextProps.code,
                 assetName: nextProps.assetName,

@@ -8,7 +8,9 @@ import { ApiImage } from '../../../../../common-components';
 class GeneralTab extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            defaultAvatar: "./upload/asset/pictures/picture5.png"
+        };
     }
     componentDidMount() {
         this.props.getAssetTypes();
@@ -110,7 +112,7 @@ class GeneralTab extends Component {
         let assetbuildinglist = assetbuilding && assetbuilding.list;
 
         const {
-            img, avatar, code, assetName, serial, assetTypes, group, purchaseDate, warrantyExpirationDate,
+            img, avatar, defaultAvatar, code, assetName, serial, assetTypes, group, purchaseDate, warrantyExpirationDate,
             managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location,
             description, status, typeRegisterForUse, detailInfo, usageLogs
         } = this.state;
@@ -124,7 +126,7 @@ class GeneralTab extends Component {
                                 {/* <a href={process.env.REACT_APP_SERVER + avatar} target="_blank">
                                     <img className="attachment-img avarta" src={process.env.REACT_APP_SERVER + avatar} alt="Attachment" />
                                 </a> */}
-                                {avatar && <ApiImage className="attachment-img avarta" id={`avater-imform-${id}`} src={`.${avatar}`} />}
+                                {avatar && <ApiImage className="attachment-img avarta" id={`avater-imform-${id}`} src={avatar ? avatar : defaultAvatar} />}
 
                             </div>
                         </div>

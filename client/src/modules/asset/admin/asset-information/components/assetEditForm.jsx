@@ -18,7 +18,7 @@ class AssetEditForm extends Component {
         this.state = {
             employeeId: this.props.employeeId ? this.props.employeeId : '',
             img: './upload/human-resource/avatars/avatar5.png',
-            avatar: "",
+            avatar: "./upload/asset/pictures/picture5.png",
         };
     }
 
