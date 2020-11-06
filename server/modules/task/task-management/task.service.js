@@ -1162,7 +1162,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
  * Lấy công việc quan sát theo id người dùng
  */
 exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by_user") => {
-    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime } = task;
+    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime, isAssigned } = task;
 
     var tasks;
     var perPage = Number(perPage);
@@ -1192,7 +1192,7 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
                 ...keySearch,
                 $or: [
                     { organizationalUnit: { $in: [organizationalUnit] } },
-                    { collaboratedWithOrganizationalUnits: { $in: [organizationalUnit] } },
+                    { "collaboratedWithOrganizationalUnits.organizationalUnit": { $in: [organizationalUnit] } },
                 ],
             };
         } else {
@@ -1202,6 +1202,18 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
                     $in: organizationalUnit,
                 }
             };
+        }
+    }
+
+    if (isAssigned && JSON.parse(isAssigned) !== -1) {
+        keySearch = {
+            ...keySearch,
+            collaboratedWithOrganizationalUnits: {
+                $elemMatch: {
+                    "organizationalUnit": organizationalUnit,
+                    "isAssigned": JSON.parse(isAssigned) 
+                }
+            }
         }
     }
 
@@ -1250,8 +1262,7 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
         }
     };
 
-    if (JSON.parse(aPeriodOfTime)) {
-
+    if (aPeriodOfTime && JSON.parse(aPeriodOfTime)) {
         keySearch = {
             ...keySearch,
             $or: [
@@ -1318,6 +1329,7 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
             }
         }
     }
+
     tasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'asc' })
         .skip(perPage * (page - 1)).limit(perPage)
         .populate({ path: "organizationalUnit creator parent" });
@@ -1443,8 +1455,8 @@ exports.sendEmailForCreateTask = async (portal, task) => {
 
     // Lấy id trưởng phòng các đơn vị phối hợp
     for (let i = 0; i < task.collaboratedWithOrganizationalUnits.length; i++) {
-        let unit = await OrganizationalUnit(connect(DB_CONNECTION, portal))
-            .findById(task.collaboratedWithOrganizationalUnits[i])
+        let unit = task.collaboratedWithOrganizationalUnits[i] && await OrganizationalUnit(connect(DB_CONNECTION, portal))
+            .findById(task.collaboratedWithOrganizationalUnits[i].organizationalUnit)
 
         unit && unit.deans.map(item => {
             deansOfOrganizationalUnitThatHasCollaboratedId.push(item);

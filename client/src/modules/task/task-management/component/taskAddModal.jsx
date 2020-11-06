@@ -187,7 +187,7 @@ class TaskAddModal extends Component {
                 ...state,
                 newTask: { // update lại name,description và reset các selection phía sau
                     ...this.state.newTask,
-                    collaboratedWithOrganizationalUnits: value
+                    collaboratedWithOrganizationalUnits: value.map(item => { return { "organizationalUnit": item } })
                 }
             };
         });
