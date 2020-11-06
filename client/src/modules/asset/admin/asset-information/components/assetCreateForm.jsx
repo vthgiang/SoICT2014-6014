@@ -113,6 +113,13 @@ class AssetCreateForm extends Component {
         })
     }
 
+    handleRecallAsset = (data) => {
+        this.setState({
+            assignedToUser: data.assignedToUser,
+            assignedToOrganizationalUnit: data.assignedToOrganizationalUnit,
+            status: data.status
+        })
+    }
     // Function thêm, chỉnh sửa thông tin sự cố thiết bị
     handleChangeIncidentLog = (data, addData) => {
         this.setState({
@@ -254,6 +261,7 @@ class AssetCreateForm extends Component {
                                 handleAddUsage={this.handleChangeUsageLog}
                                 handleEditUsage={this.handleChangeUsageLog}
                                 handleDeleteUsage={this.handleChangeUsageLog}
+                                handleRecallAsset={this.handleRecallAsset}
                             />
 
                             {/* Thông tin sự cố */}
