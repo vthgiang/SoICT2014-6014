@@ -9,7 +9,7 @@ exports.getAllTaskTemplates = async (portal, query) => {
     if (query.pageNumber === '1' && query.noResultsPerPage === '0') {
         // LẤY DANH SÁCH TẤT CẢ CÁC MẪU CÔNG VIỆC CÓ TRONG HỆ THỐNG CỦA CÔNG TY
         let docs = await TaskTemplate(connect(DB_CONNECTION, portal)).find().populate([
-            { path: 'creator' },
+            { path: "creator readByEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees", select: "name email"},
             { path: 'organizationalUnit' },
             { path: 'collaboratedWithOrganizationalUnits' }
         ]);
@@ -61,7 +61,7 @@ exports.getAllTaskTemplates = async (portal, query) => {
                 page: pageNumber,
                 limit: noResultsPerPage,
                 populate: [
-                    { path: 'creator' },
+                    { path: "creator readByEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees", select: "name email" },
                     { path: 'organizationalUnit' },
                     { path: 'collaboratedWithOrganizationalUnits' }
                 ]

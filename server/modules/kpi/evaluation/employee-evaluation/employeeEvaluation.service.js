@@ -25,6 +25,24 @@ exports.getEmployeeKPISets = async (portal, data) => {
     let enddate = null;
     let status = null;
     let user = data.user ? data.user : [0];
+    let year, month;
+
+    // config endDate để truy vấn (ví dụ endDate=2020-10 ---> 2020-11)
+    if (data.endDate) {
+        year = data.endDate.slice(0, 4);
+        month = data.endDate.slice(5, 7);
+    }
+    if ((new Number(month)) == 12) {
+        month = '1';
+        year = (new Number(year)) + 1;
+    } else {
+        month = (new Number(month)) + 1;
+    }
+    if (month < 10) {
+        data.endDate = year + '-0' + month;
+    } else {
+        data.endDate = year + '-' + month;
+    }
 
     if (data.startDate) {
         startdate = new Date(data.startDate);
@@ -58,6 +76,7 @@ exports.getEmployeeKPISets = async (portal, data) => {
             }
         }
     }
+    
     if (startdate !== null && enddate !== null) {
         keySearch = {
             ...keySearch,

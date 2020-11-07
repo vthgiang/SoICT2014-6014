@@ -49,16 +49,27 @@ class AssetImportForm extends Component {
             importUsageInformationData
         } = this.state;
 
-        let asset = {
-            ...importGeneralInformationData[0],
-            ...importDepreciationInformationData[0],
-            ...importDisposalInformationData[0],
-            maintainanceLogs: importMaintainanceInformationData,
-            usageLogs: importUsageInformationData,
-            incidentLogs: importIncidentInformationData,
+        let assets = [];
+        if (importGeneralInformationData && importGeneralInformationData.length !== 0) {
+            importGeneralInformationData.map((asset) => {
+                let importDisposalTemporary = importDisposalInformationData.filter(item => item.code === asset.code);
+                let importDepreciationTemporary = importDepreciationInformationData.filter(item => item.code === asset.code);
+                assets.push({
+                    ...asset,
+                    ...importDepreciationTemporary[0],
+                    ...importDisposalTemporary[0],
+                    maintainanceLogs: importMaintainanceInformationData.filter(item => item.code === asset.code),
+                    usageLogs: importUsageInformationData.filter(item => item.code === asset.code),
+                    incidentLogs: importIncidentInformationData.filter(item => item.code === asset.code),
+                })
+            })
         }
-
-        this.props.addNewAsset(asset)
+        
+        if (assets && assets.length !== 0) {
+            assets.map(item => {
+                this.props.addNewAsset(item)
+            })
+        }
     }
 
     isFormValidated = () => {
@@ -246,6 +257,7 @@ class AssetImportForm extends Component {
                 let dataTemporary = data[index];
 
                 let out = {
+                    code: dataTemporary.code,
                     cost: Number(dataTemporary.cost),
                     residualValue: Number(dataTemporary.residualValue),
                     usefulLife: Number(dataTemporary.usefulLife),
@@ -270,6 +282,7 @@ class AssetImportForm extends Component {
                 let dataTemporary = data[index];
 
                 let out = {
+                    code: dataTemporary.code,
                     usedByUser: userList && userList[0] ? userList[0] : "",
                     usedByOrganizationalUnit: departmentList && departmentList[0] ? departmentList[0] : "",
                     startDate: dataTemporary.startDate,
@@ -294,6 +307,7 @@ class AssetImportForm extends Component {
                 let dataTemporary = data[index];
 
                 let out = {
+                    code: dataTemporary.code,
                     incidentCode: dataTemporary.incidentCode,
                     type: incidentType[0],
                     reportedBy: userList && userList[0] ? userList[0] : "",
@@ -319,6 +333,7 @@ class AssetImportForm extends Component {
                 let dataTemporary = data[index];
 
                 let out = {
+                    code: dataTemporary.code,
                     maintainanceCode: dataTemporary.maintainanceCode,
                     createDate: dataTemporary.createDate,
                     type: maintainanceType[0],
@@ -346,6 +361,7 @@ class AssetImportForm extends Component {
                 let dataTemporary = data[index];
 
                 let out = {
+                    code: dataTemporary.code,
                     disposalDate: dataTemporary.disposalDate,
                     disposalType: disposalType[0],
                     disposalCost: Number(dataTemporary.disposalCost),
