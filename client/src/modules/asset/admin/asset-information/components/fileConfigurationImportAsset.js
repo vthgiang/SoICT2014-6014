@@ -80,6 +80,11 @@ export const configurationUsageInformationOfAssetTemplate = {
         description: "Số dòng tiêu đề của bảng",
         value: 1
     },
+    code: {
+        columnName: "Mã tài sản",
+        description: "Tên tiêu đề ứng với mã tài sản",
+        value: "Mã tài sản"
+    },
     usedByUser: {
         columnName: "Người sử dụng",
         description: "Tên tiêu đề ứng với người sử dụng",
@@ -116,6 +121,11 @@ export const configurationIncidentInformationOfAssetTemplate = {
     rowHeader: {
         description: "Số dòng tiêu đề của bảng",
         value: 1
+    },
+    code: {
+        columnName: "Mã tài sản",
+        description: "Tên tiêu đề ứng với mã tài sản",
+        value: "Mã tài sản"
     },
     incidentCode: {
         columnName: "Mã sự cố",
@@ -158,6 +168,11 @@ export const configurationMaintainanceInformationOfAssetTemplate = {
     rowHeader: {
         description: "Số dòng tiêu đề của bảng",
         value: 1
+    },
+    code: {
+        columnName: "Mã tài sản",
+        description: "Tên tiêu đề ứng với mã tài sản",
+        value: "Mã tài sản"
     },
     maintainanceCode: {
         columnName: "Mã phiếu",
@@ -211,6 +226,11 @@ export const configurationDepreciationInformationOfAssetTemplate = {
         description: "Số dòng tiêu đề của bảng",
         value: 1
     },
+    code: {
+        columnName: "Mã tài sản",
+        description: "Tên tiêu đề ứng với mã tài sản",
+        value: "Mã tài sản"
+    },
     cost: {
         columnName: "Nguyên giá (VNĐ)",
         description: "Tên tiêu đề ứng với nguyên giá",
@@ -247,6 +267,11 @@ export const configurationDisposalInformationOfAssetTemplate = {
     rowHeader: {
         description: "Số dòng tiêu đề của bảng",
         value: 1
+    },
+    code: {
+        columnName: "Mã tài sản",
+        description: "Tên tiêu đề ứng với mã tài sản",
+        value: "Mã tài sản"
     },
     disposalDate: {
         columnName: "Thời gian thanh lý",
@@ -302,6 +327,14 @@ const importGeneralInformationOfAssetTemplate = {
                 purchaseDate: "2020-09-01",
                 warrantyExpirationDate: "2021-09-01",
                 description: "Bàn gỗ xoan"
+            },
+            {
+                code: "BN",
+                assetName: "Bàn nhôm",
+                serial: "BG1235",
+                purchaseDate: "2020-09-01",
+                warrantyExpirationDate: "2021-09-01",
+                description: "Kim loại"
             }
         ]
     }]
@@ -315,6 +348,7 @@ const importDepreciationInformationOfAssetTemplate = {
     tables: [{
         rowHeader: 1,
         columns: [
+            { key: "code", value: "Mã tài sản" },
             { key: "cost", value: "Nguyên giá (VNĐ)" },
             { key: "residualValue", value: "Giá trị thu hồi ước tính (VNĐ)" },
             { key: "usefulLife", value: "Thời gian sử dụng (Tháng)" },
@@ -323,6 +357,14 @@ const importDepreciationInformationOfAssetTemplate = {
         ],
         data: [
             {
+                code: "BG",
+                cost: "2000000",
+                residualValue: "1600000",
+                usefulLife: "12",
+                startDepreciation: "2020-03-20",
+            },
+            {
+                code: "BN",
                 cost: "2000000",
                 residualValue: "1600000",
                 usefulLife: "12",
@@ -340,6 +382,7 @@ const importUsageInformationOfAssetTemplate = {
     tables: [{
         rowHeader: 1,
         columns: [
+            { key: "code", value: "Mã tài sản" },
             { key: "usedByUser", value: "Người sử dụng" },
             { key: "usedByOrganizationalUnit", value: "Đơn vị sử dụng" },
             { key: "startDate", value: "Ngày bắt đầu sử dụng" },
@@ -348,11 +391,19 @@ const importUsageInformationOfAssetTemplate = {
         ],
         data: [
             {
+                code: "BG",
                 startDate: "2020-03-20",
                 endDate: "2020-09-20",
                 description: "Cho phép sử dụng"
             },
             {
+                code: "BG",
+                startDate: "2020-03-20",
+                endDate: "2020-09-20",
+                description: "Cho phép sử dụng"
+            },
+            {
+                code: "BN",
                 startDate: "2020-03-20",
                 endDate: "2020-09-20",
                 description: "Cho phép sử dụng"
@@ -369,6 +420,7 @@ const importIncidentInformationOfAssetTemplate = {
     tables: [{
         rowHeader: 1,
         columns: [
+            { key: "code", value: "Mã tài sản" },
             { key: "incidentCode", value: "Mã sự cố" },
             { key: "type", value: "Loại sự cố" },
             { key: "reportedBy", value: "Người báo cáo" },
@@ -378,6 +430,13 @@ const importIncidentInformationOfAssetTemplate = {
         ],
         data: [
             {
+                code: "BG",
+                incidentCode: "IS_20",
+                dateOfIncident: "2020-03-20",
+                description: "Sự cố do ăn mòn"
+            },
+            {
+                code: "BN",
                 incidentCode: "IS_20",
                 dateOfIncident: "2020-03-20",
                 description: "Sự cố do ăn mòn"
@@ -394,6 +453,7 @@ const importMaintainanceInformationOfAssetTemplate = {
     tables: [{
         rowHeader: 1,
         columns: [
+            { key: "code", value: "Mã tài sản" },
             { key: "maintainanceCode", value: "Mã phiếu" },
             { key: "createDate", value: "Ngày lập" },
             { key: "type", value: "Phân loại" },
@@ -405,6 +465,16 @@ const importMaintainanceInformationOfAssetTemplate = {
         ],
         data: [
             {
+                code: "BG",
+                maintainanceCode: "IS_20",
+                createDate: "2020-03-20",
+                description: "Bảo trì do ăn mòn",
+                startDate: "2020-04-20",
+                endDate: "2020-05-20",
+                expense: "2000000"
+            },
+            {
+                code: "BN",
                 maintainanceCode: "IS_20",
                 createDate: "2020-03-20",
                 description: "Bảo trì do ăn mòn",
@@ -424,6 +494,7 @@ const importDisposalInformationOfAssetTemplate = {
     tables: [{
         rowHeader: 1,
         columns: [
+            { key: "code", value: "Mã tài sản" },
             { key: "disposalDate", value: "Thời gian thanh lý" },
             { key: "disposalType", value: "Hình thức thanh lý" },
             { key: "disposalCost", value: "Giá trị thanh lý (VNĐ)" },
@@ -431,6 +502,13 @@ const importDisposalInformationOfAssetTemplate = {
         ],
         data: [
             {
+                code: "BG",
+                disposalDate: "2020-05-20",
+                disposalCost: "2000000",
+                disposalDesc: "Thanh lý do ăn mòn"
+            },
+            {
+                code: "BN",
                 disposalDate: "2020-05-20",
                 disposalCost: "2000000",
                 disposalDesc: "Thanh lý do ăn mòn"
