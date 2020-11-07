@@ -112,7 +112,7 @@ class ResultsOfEmployeeKpiChart extends Component {
         let startMonth = new Date(this.INFO_SEARCH.startMonth);
         let endMonth = new Date(this.INFO_SEARCH.endMonth);
 
-        if (startMonth.getTime() >= endMonth.getTime()) {
+        if (startMonth && endMonth && startMonth.getTime() > endMonth.getTime()) {
             Swal.fire({
                 title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
                 type: 'warning',
