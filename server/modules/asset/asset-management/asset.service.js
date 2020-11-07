@@ -259,7 +259,7 @@ exports.createAsset = async (portal, company, data, fileInfo) => {
     usageLogs = usageLogs && usageLogs.map(item => {
         return {
             usedByUser: item.assignedToUser ? item.assignedToUser : null,
-            usedByOrganizationalUnit:  item.assignedToOrganizationalUnit ? item.assignedToOrganizationalUnit : null,
+            usedByOrganizationalUnit: item.assignedToOrganizationalUnit ? item.assignedToOrganizationalUnit : null,
             description: item.description,
             startDate: new Date(item.startDate),
             endDate: new Date(item.endDate)
@@ -296,18 +296,18 @@ exports.createAsset = async (portal, company, data, fileInfo) => {
         assignedToUser: data.assignedToUser ? data.assignedToUser : null,
         assignedToOrganizationalUnit: data.assignedToOrganizationalUnit ? data.assignedToOrganizationalUnit : null,
 
-        location: data.location,
+        location: data.location ? data.location : null,
         status: data.status,
         typeRegisterForUse: data.typeRegisterForUse,
         description: data.description,
         detailInfo: data.detailInfo,
 
         // Khấu hao
-        cost: data.cost,
-        usefulLife: data.usefulLife,
+        cost: data.cost ? data.cost : 0,
+        usefulLife: data.usefulLife ? data.usefulLife : 0,
         residualValue: data.residualValue,
         startDepreciation: data.startDepreciation,
-        depreciationType: data.depreciationType,
+        depreciationType: data.depreciationType ? data.depreciationType : 'none',
 
         // Sửa chữa - bảo trì
         maintainanceLogs: maintainanceLogs,
@@ -403,27 +403,28 @@ exports.updateAssetInformation = async (portal, company, id, data, fileInfo) => 
     oldAsset.assignedToUser = data.assignedToUser !== '' ? data.assignedToUser : null;
     oldAsset.assignedToOrganizationalUnit = data.assignedToOrganizationalUnit !== '' ? data.assignedToOrganizationalUnit : null;
     oldAsset.readByRoles = data.readByRoles
-    oldAsset.location = data.location;
+    oldAsset.location = data.location ? data.location : null;
     oldAsset.status = data.status;
     oldAsset.typeRegisterForUse = data.typeRegisterForUse;
     oldAsset.description = data.description;
     oldAsset.detailInfo = data.detailInfo;
     // Khấu hao
-    oldAsset.cost = data.cost;
-    oldAsset.usefulLife = data.usefulLife;
+    oldAsset.cost = data.cost ? data.cost : 0;
+    oldAsset.usefulLife = data.usefulLife ? data.usefulLife : 0;
     oldAsset.residualValue = data.residualValue;
     oldAsset.startDepreciation = data.startDepreciation;
-    oldAsset.depreciationType = data.depreciationType;
-    oldAsset.estimatedTotalProduction = data.estimatedTotalProduction;
-    oldAsset.unitsProducedDuringTheYears = data.unitsProducedDuringTheYears && data.unitsProducedDuringTheYears.map((x) => {
-        let time = x.month.split("-");
-        let date = new Date(time[1], time[0], 0)
+    oldAsset.depreciationType = data.depreciationType ? data.depreciationType : 'none';
+    // oldAsset.estimatedTotalProduction = data.estimatedTotalProduction;
+    //     oldAsset.unitsProducedDuringTheYears = data.unitsProducedDuringTheYears && data.unitsProducedDuringTheYears.map((x) => {
+    //     let time = x.month.split("-");
+    //     let date = new Date(time[1], time[0], 0)
 
-        return ({
-            month: date,
-            unitsProducedDuringTheYear: x.unitsProducedDuringTheYear
-        })
-    });
+    //     return ({
+    //         month: date,
+    //         unitsProducedDuringTheYear: x.unitsProducedDuringTheYear
+    //     })
+    // });
+
     // Thanh lý
     oldAsset.disposalDate = data.disposalDate;
     oldAsset.disposalType = data.disposalType;

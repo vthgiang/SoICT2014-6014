@@ -250,25 +250,36 @@ class MaintainanceManagement extends Component {
     }
 
     convertMaintainStatus = (status) => {
-        if (status == 1) {
-            return 'Chưa thực hiện';
-        } else if (status == 2) {
-            return 'Đang thực hiện'
-        } else if (status == 3) {
-            return 'Đã thực hiện'
-        } else {
-            return 'Status is deleted'
+        const { translate } = this.props;
+
+        if (status === "1") {
+            return translate('asset.asset_info.unfulfilled');
+        }
+        else if (status === "2") {
+            return translate('asset.asset_info.processing')
+        }
+        else if (status === "3") {
+            return translate('asset.asset_info.made')
+        }
+        else {
+            return 'Deleted'
         }
     }
+
     convertMaintainType = (type) => {
-        if (type == 1) {
-            return 'Sửa chữa';
-        } else if (type == 2) {
-            return 'Thay thế'
-        } else if (type == 3) {
-            return 'Nâng cấp'
-        } else {
-            return 'Type is deleted'
+        const { translate } = this.props;
+
+        if (type == "1") {
+            return translate('asset.asset_info.repair')
+        }
+        else if (type == "2") {
+            return translate('asset.asset_info.replace')
+        }
+        else if (type == "3") {
+            return translate('asset.asset_info.upgrade')
+        }
+        else {
+            return 'Deleted'
         }
     }
 
