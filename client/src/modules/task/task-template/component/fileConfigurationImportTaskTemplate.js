@@ -22,6 +22,11 @@ export const configTaskTempalte = {
         description: "Tên tiêu đề ứng với đơn vị",
         value: "Đơn vị"
     },
+    collaboratedWithOrganizationalUnits: {
+        columnName: "Đơn vị phối hợp thực hiện công việc",
+        description: "Tên tiêu đề ứng với đơn vị phối hợp thực hiện công việc",
+        value: "Đơn vị phối hợp thực hiện công việc"
+    },
     readByEmployees: {
         columnName: "Người được xem",
         description: "Tên tiêu đề ứng với người được xem",
@@ -116,6 +121,7 @@ export const templateImportTaskTemplate = {
                     name: "Triển khai sản phẩm mới",
                     description: "Triển khai sản phẩm mới",
                     organizationalUnit: "Phòng kinh doanh",
+                    collaboratedWithOrganizationalUnits: "Ban giám đốc",
                     readByEmployees: ["Trưởng phòng kinh doanh", "Nhân viên phòng kinh doanh"],
                     priority: 1,
                     responsibleEmployees: ["pdp.vnist@gmail.com"],

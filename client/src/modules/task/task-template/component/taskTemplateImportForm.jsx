@@ -42,6 +42,7 @@ class TaskTemplateImportForm extends Component {
                     "name": x.name,
                     "description": x.description,
                     "organizationalUnit": x.organizationalUnit,
+                    "collaboratedWithOrganizationalUnits": x.collaboratedWithOrganizationalUnits,
                     "readByEmployees": x.readByEmployees,
                     "priority": x.priority,
                     "responsibleEmployees": x.responsibleEmployees,
@@ -56,6 +57,7 @@ class TaskTemplateImportForm extends Component {
                     "name": x.name,
                     "description": x.description,
                     "organizationalUnit": x.organizationalUnit,
+                    "collaboratedWithOrganizationalUnits": [x.collaboratedWithOrganizationalUnits],
                     "readByEmployees": [x.readByEmployees],
                     "priority": x.priority,
                     "responsibleEmployees": [x.responsibleEmployees],
@@ -73,6 +75,7 @@ class TaskTemplateImportForm extends Component {
                         "name": "",
                         "description": "",
                         "organizationalUnit": "",
+                        "collaboratedWithOrganizationalUnits": "",
                         "readByEmployees": "",
                         "priority": "",
                         "responsibleEmployees": "",
@@ -95,6 +98,10 @@ class TaskTemplateImportForm extends Component {
                     if (x.readByEmployees) {
                         out.readByEmployees = x.readByEmployees;
                         valueShow[k].readByEmployees = [...valueShow[k].readByEmployees, x.readByEmployees];
+                    }
+                    if (x.collaboratedWithOrganizationalUnits){
+                        out.collaboratedWithOrganizationalUnits = x.collaboratedWithOrganizationalUnits;
+                        valueShow[k].collaboratedWithOrganizationalUnits = [...valueShow[k].collaboratedWithOrganizationalUnits, x.collaboratedWithOrganizationalUnits];
                     }
                     if (x.responsibleEmployees) {
                         out.responsibleEmployees = x.responsibleEmployees;
