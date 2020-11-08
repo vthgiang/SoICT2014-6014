@@ -100,6 +100,7 @@ export const templateImportTaskTemplate = {
                 { key: "name", value: "Tên mẫu" },
                 { key: "description", value: "Mô tả" },
                 { key: "organizationalUnits", value: "Đơn vị" },
+                { key: "collaboratedWithOrganizationalUnits", value: "Đơn vị phối hợp thực hiện công việc" },
                 { key: "priority", value: "Độ ưu tiên" },
                 { key: "readByEmployees", value: "Người được xem" },
                 { key: "responsibleEmployees", value: "Người thực hiện" },
