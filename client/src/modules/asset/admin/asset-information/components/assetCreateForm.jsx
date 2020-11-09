@@ -203,7 +203,6 @@ class AssetCreateForm extends Component {
     render() {
         const { translate, assetsManager } = this.props;
         const { img, asset, maintainanceLogs, usageLogs, incidentLogs, files } = this.state;
-
         return (
             <React.Fragment>
                 {/* <ButtonModal modalID="modal-add-asset" button_name={translate('menu.add_asset')} title={translate('menu.add_asset')} /> */}
@@ -257,6 +256,8 @@ class AssetCreateForm extends Component {
                             <UsageLogTab
                                 id="usage"
                                 usageLogs={usageLogs}
+                                typeRegisterForUse={asset.typeRegisterForUse}
+                                managedBy={asset.managedBy}
                                 handleAddUsage={this.handleChangeUsageLog}
                                 handleEditUsage={this.handleChangeUsageLog}
                                 handleDeleteUsage={this.handleChangeUsageLog}
