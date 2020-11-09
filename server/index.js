@@ -98,7 +98,7 @@ app.use("/crm/status", require("./modules/crm/status/status.route"));
 app.use("/manufacturing-mill", require("./modules/production/manufacturing/manufacturingMill/manufacturingMill.route"));
 app.use("/manufacturing-works", require("./modules/production/manufacturing/manufacturingWorks/manufacturingWorks.route"));
 app.use("/purchasing-request", require("./modules/production/manufacturing/purchasingRequest/purchasingRequest.route"));
-
+app.use("/work-schedule", require('./modules/production/manufacturing/workSchedule/workSchedule.route'));
 //order
 app.use("/quote", require("./modules/production/order/quote/quote.route"));
 app.use("/coin-rule", require("./modules/production/order/coin-rule/coinRule.route"));

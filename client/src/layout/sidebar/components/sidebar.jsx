@@ -705,12 +705,11 @@ class SideBar extends Component {
                                         },
                                         {
                                             name:
-                                                "menu.manage_manufacturing_process",
-                                            icon: "fa fa-line-chart",
+                                                "menu.manage_work_schedule",
+                                            icon: "fa fa-calendar",
                                             path:
-                                                "/manage-manufacturing-process",
+                                                "/manage-work-schedule",
                                         },
-                                        // { name: 'menu.manage_manufacturing_schedule', icon: 'fa fa-calendar', path: '/manage-manufacturing-schedule' },
                                         {
                                             name:
                                                 "menu.manage_purchasing_request",

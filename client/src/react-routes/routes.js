@@ -144,8 +144,7 @@ import ManufacturingPlan from "../modules/production/manufacturing/manufacturing
 import ManufacturingCommand from "../modules/production/manufacturing/manufacturing-command/components";
 import ManufacturingMill from "../modules/production/manufacturing/manufacturing-mill/components";
 import ManufacturingPerformance from "../modules/production/manufacturing/manufacturing-performance/components";
-import ManufacturingProcess from "../modules/production/manufacturing/manufacturing-process/components";
-import ManufacturingSchedule from "../modules/production/manufacturing/manufacturing-schedule/components";
+import WorkSchedule from "../modules/production/manufacturing/work-schedule/components";
 import ManufacturingWorks from "../modules/production/manufacturing/manufacturing-works/components";
 import PurchasingRequest from "../modules/production/manufacturing/purchasing-request/components";
 import ManufacturingDashboard from "../modules/production/manufacturing/manufacturing-dashboard/components";
@@ -1767,45 +1766,24 @@ class Routes extends Component {
                         layout={Layout}
                         component={ManufacturingCommand}
                     />
-
                     <PrivateRoute
-                        isLoading={false}
-                        key={"manage-manufacturing-process"}
+                        isLoading={this.props.workSchedule.isLoading}
+                        key={"manage-work-schedule"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
                             {
-                                link: "/manage-manufacturing-process",
-                                name: "manage_manufacturing_process",
-                                icon: "fa fa-line-chart",
-                            },
-                        ]}
-                        auth={auth}
-                        exact={true}
-                        link={"/manage-manufacturing-process"}
-                        path={"/manage-manufacturing-process"}
-                        pageName={"manage_manufacturing_process"}
-                        layout={Layout}
-                        component={ManufacturingProcess}
-                    />
-
-                    <PrivateRoute
-                        isLoading={false}
-                        key={"manage-manufacturing-schedule"}
-                        arrPage={[
-                            { link: "/", name: "home", icon: "fa fa-home" },
-                            {
-                                link: "/manage-manufacturing-schedule",
-                                name: "manage_manufacturing_schedule",
+                                link: "/manage-work-schedule",
+                                name: "manage_work_schedule",
                                 icon: "fa fa-calendar",
                             },
                         ]}
                         auth={auth}
                         exact={true}
-                        link={"/manage-manufacturing-schedule"}
-                        path={"/manage-manufacturing-schedule"}
-                        pageName={"manage_manufacturing_schedule"}
+                        link={"/manage-work-schedule"}
+                        path={"/manage-work-schedule"}
+                        pageName={"manage_work_schedule"}
                         layout={Layout}
-                        component={ManufacturingSchedule}
+                        component={WorkSchedule}
                     />
 
                     <PrivateRoute

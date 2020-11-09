@@ -1062,8 +1062,7 @@ export default {
             manage_manufacturing: "Quản lý sản xuất",
             manage_manufacturing_plan: "Quản lý kế hoạch sản xuất",
             manage_manufacturing_command: "Quản lý lệnh sản xuất",
-            manage_manufacturing_process: "Quản lý tiến độ sản xuất",
-            manage_manufacturing_schedule: "Quản lý lịch sản xuất",
+            manage_work_schedule: "Quản lý lịch sản xuất",
             manage_purchasing_request: "Quản lý phiếu đề nghị mua nguyên vật liệu",
             manufacturing_dashboard: "Dashboard Quản lý sản xuất",
             analysis_manufacturing_performance: "Phân tích hiệu suất sản xuất",
@@ -4109,6 +4108,42 @@ export default {
                 purchasing_request_edit: "Sửa phiếu đề nghị",
                 edit_successfully: "Sửa phiếu dề nghị thành công",
                 edit_failed: "Sửa phiếu đề nghị thất bại"
+
+            },
+            work_schedule: {
+                //general             
+                time: "Thời gian",
+                search: "Tìm kiếm",
+                work_turns: "Ca làm việc",
+                edit_work_schedule: "Sửa lịch sản xuất",
+                delete_work_schedule: "Xóa lịch sản xuất",
+                month: "Tháng",
+                turn_1: "Ca 1",
+                turn_2: "Ca 2",
+                turn_3: "Ca 3",
+                turn_4: "Ca 4",
+                turn_5: "Ca 5",
+                add_work_schedule_button: "Tạo lịch",
+                add_work_schedule: "Tạo lịch làm việc",
+                number_turns: "Số ca / ngày",
+                create_successfully: "Tạo lịch làm việc thành công",
+                create_failed: "Tạo lịch làm việc thất bại",
+                is_existing: "Lịch đã tồn tại",
+                //mill
+                choose_all_mill: "Tất cả các xưởng",
+                manufacturing_mill_schedule_list: "Lịch sản xuất của xưởng",
+                mill_name: "Tên xưởng",
+                mill_code: "Mã xưởng",
+                add_work_schedule_mill: "Tạo lịch làm việc cho xưởng sản xuất",
+                manufacturingMill: "Xưởng sản xuất",
+                //employee
+                worker_schedule_list: "Lịch sản xuất của công nhân",
+                employee_number: "Mã nhân viên",
+                employee_name: "Tên nhân viên",
+                works: "Nhà máy sản xuất",
+                all_works: "Tất cả"
+
+
 
             }
         }

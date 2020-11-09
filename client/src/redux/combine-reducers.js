@@ -95,6 +95,7 @@ import { example2 } from "../modules/example/example2/redux/reducers";
 import { manufacturingWorks } from "../modules/production/manufacturing/manufacturing-works/redux/reducers";
 import { manufacturingMill } from "../modules/production/manufacturing/manufacturing-mill/redux/reducers";
 import { purchasingRequest } from "../modules/production/manufacturing/purchasing-request/redux/reducers";
+import { workSchedule } from "../modules/production/manufacturing/work-schedule/redux/reducers";
 
 const appReducer = combineReducers({
     socket,
@@ -201,6 +202,8 @@ const appReducer = combineReducers({
     manufacturingWorks,
     manufacturingMill,
     purchasingRequest,
+    workSchedule,
+
 
     Intl
 
