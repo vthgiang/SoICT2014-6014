@@ -428,7 +428,7 @@ class SideBar extends Component {
                                 icon: 'fa fa-address-book',
                                 list: [
                                     { name: 'menu.dashboard_employee', icon: 'fa fa-dashboard', path: '/hr-dashboard-employee' },
-                                    { name: 'menu.employee_capacity', icon: 'fa fa-dashboard', path: '/hr-employee-capacity' },
+                                    // { name: 'menu.employee_capacity', icon: 'fa fa-dashboard', path: '/hr-employee-capacity' },
                                     { name: 'menu.manage_unit', icon: 'fa fa-sitemap', path: '/hr-manage-department' },
                                     { name: 'menu.add_employee', icon: 'fa fa-user-plus', path: '/hr-add-employee' },
                                     { name: 'menu.list_employee', icon: 'fa fa-address-card', path: '/hr-list-employee' },
@@ -669,6 +669,11 @@ class SideBar extends Component {
                                             icon: "fa fa-adjust",
                                             path: "/manage-examples-2",
                                         },
+                                        {
+                                            name: "menu.manage_examples_hooks_1",
+                                            icon: "fa fa-circle",
+                                            path: "/manage-examples-hooks-1",
+                                        }
                                     ],
                                 }}
                             />
@@ -700,12 +705,11 @@ class SideBar extends Component {
                                         },
                                         {
                                             name:
-                                                "menu.manage_manufacturing_process",
-                                            icon: "fa fa-line-chart",
+                                                "menu.manage_work_schedule",
+                                            icon: "fa fa-calendar",
                                             path:
-                                                "/manage-manufacturing-process",
+                                                "/manage-work-schedule",
                                         },
-                                        // { name: 'menu.manage_manufacturing_schedule', icon: 'fa fa-calendar', path: '/manage-manufacturing-schedule' },
                                         {
                                             name:
                                                 "menu.manage_purchasing_request",

@@ -113,30 +113,29 @@ class CrmCustomer extends Component {
     convertDataToExportData = (data) => {
         const { translate } = this.props;
         if (data) {
-            console.log('data', data);
             data = data.map((o, index) => ({
                 STT: index + 1,
                 code: o.code,
                 name: o.name,
-                owner: o.owner && o.owner.length > 0 ? o.owner.map(ow => ow.name).join(', ') : "Deleted",
-                status: o.status && o.status.length > 0 ? o.status[o.status.length - 1].name : "Deleted",
-                customerSource: o.customerSource ? o.customerSource : 'Deleted',
-                customerType: o.customerType ? formatFunction.formatCustomerType(o.customerType, translate) : 'Deleted',
-                group: o.group ? o.group.name : "Deleted",
-                represent: o.represent ? o.represent : 'Deleted',
-                mobilephoneNumber: o.mobilephoneNumber ? o.mobilephoneNumber : 'Deleted',
-                email: o.email ? o.email : 'Deleted',
-                email2: o.email2 ? o.email2 : 'Deleted',
-                address: o.address ? o.address : 'Deleted',
-                gender: o.gender ? formatFunction.formatCustomerGender(o.gender, translate) : 'Deleted',
-                birthDate: o.birthDate ? new Date(o.birthDate) : 'Deleted',
-                companyEstablishmentDate: o.companyEstablishmentDate ? new Date(o.companyEstablishmentDate) : 'Deleted',
-                taxNumber: o.taxNumber ? o.taxNumber : 'Deleted',
-                address2: o.address2 ? o.address2 : 'Deleted',
-                telephoneNumber: o.telephoneNumber ? o.telephoneNumber : 'Deleted',
-                location: o.location ? formatFunction.formatCustomerLocation(o.location, translate) : 'Deleted',
-                website: o.website ? o.website : 'Deleted',
-                linkedIn: o.linkedIn ? o.linkedIn : 'Deleted',
+                owner: o.owner && o.owner.length > 0 ? o.owner.map(ow => ow.email).join(', ') : "",
+                status: o.status && o.status.length > 0 ? o.status[o.status.length - 1].name : "",
+                customerSource: o.customerSource ? o.customerSource : '',
+                customerType: o.customerType ? formatFunction.formatCustomerType(o.customerType, translate) : '',
+                group: o.group ? o.group.name : "",
+                represent: o.represent ? o.represent : '',
+                mobilephoneNumber: o.mobilephoneNumber ? o.mobilephoneNumber : '',
+                email: o.email ? o.email : '',
+                email2: o.email2 ? o.email2 : '',
+                address: o.address ? o.address : '',
+                gender: o.gender ? formatFunction.formatCustomerGender(o.gender, translate) : '',
+                birthDate: o.birthDate ? new Date(o.birthDate) : '',
+                companyEstablishmentDate: o.companyEstablishmentDate ? new Date(o.companyEstablishmentDate) : '',
+                taxNumber: o.taxNumber ? o.taxNumber : '',
+                address2: o.address2 ? o.address2 : '',
+                telephoneNumber: o.telephoneNumber ? o.telephoneNumber : '',
+                location: o.location ? formatFunction.formatCustomerLocation(o.location, translate) : '',
+                website: o.website ? o.website : '',
+                linkedIn: o.linkedIn ? o.linkedIn : '',
             }))
         }
 
@@ -238,7 +237,7 @@ class CrmCustomer extends Component {
                     </div>
 
                     {/* form import khách hàng */}
-                    {importCustomer && <CrmCustomerImportFile />}
+                    {importCustomer && <CrmCustomerImportFile listStatus={listStatus} listGroups={listGroups} />}
 
                     {/* form thêm mới khách hàng bằng tay */}
                     {createCustomer && <CreateForm />}

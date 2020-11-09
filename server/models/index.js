@@ -112,4 +112,5 @@ module.exports = {
     ManufacturingPlan: require('./production/manufacturing/manufacturingPlan.model'),
     ManufacturingCommand: require('./production/manufacturing/manufacturingCommand.model'),
     PurchasingRequest: require('./production/manufacturing/purchasingRequest.model'),
+    WorkSchedule: require('./production/manufacturing/workSchedule.model'),
 }

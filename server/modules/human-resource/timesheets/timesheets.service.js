@@ -132,27 +132,34 @@ exports.getTimesheetsByEmployeeIdOrEmailInCompanyAndTime = async (portal, employ
         let arr = arrMonth.map(x => new Date(x));
 
         let employee;
-        if(ObjectId.isValid(employeeId)){
-            employee = await Employee(connect(DB_CONNECTION, portal)).findOne({_id: employeeId},{_id: 1});
-        }else{
+        if (ObjectId.isValid(employeeId)) {
+            employee = await Employee(connect(DB_CONNECTION, portal)).findOne({_id: employeeId}, {_id: 1});
+        } else {
             employee = await Employee(connect(DB_CONNECTION, portal)).findOne({emailInCompany: employeeId }, {_id: 1});
-        }
+        };
+        console.log(employee);
 
-        let listTimesheetsByEmployeeIdAndTime = await Timesheet(connect(DB_CONNECTION, portal)).find({
-            employee: employee._id,
-            month: {
-                $in: arr
+        if (employee) {
+            let listTimesheetsByEmployeeIdAndTime = await Timesheet(connect(DB_CONNECTION, portal)).find({
+                employee: employee._id,
+                month: {
+                    $in: arr
+                }
+            }, {
+                totalHoursOff: 1,
+                totalHours:1,
+                month: 1
+            });
+            return {
+                listTimesheetsByEmployeeIdAndTime,
+                arrMonth
             }
-        }, {
-            totalHoursOff: 1,
-            totalHours:1,
-            month: 1
-        });
-        return {
-            listTimesheetsByEmployeeIdAndTime,
-            arrMonth
+        } else {
+            return {
+                arrMonth: [],
+                listTimesheetsByEmployeeIdAndTime: [],
+            }
         }
-
     }
 }
 

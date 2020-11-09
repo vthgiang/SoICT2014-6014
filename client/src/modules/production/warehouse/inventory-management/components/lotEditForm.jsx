@@ -87,7 +87,7 @@ class LotEditForm extends Component {
         let binArr = [];
         let totalQuantity = 0;
 
-        if(binLocations.length){
+        if(binLocations && binLocations.length){
             binArr = binLocations.filter(x => x.binLocation._id !== binLocation.binLocation._id);
         }
 
@@ -103,7 +103,7 @@ class LotEditForm extends Component {
         }
         
         if(total > quantity){
-            msg = ` ${translate('manage_warehouse.category_management.validate_name')} (${quantity}) `;
+            msg = ` ${translate('manage_warehouse.inventory_management.validate_total')} (${quantity}) `;
         }
         
         if(!value) {
@@ -111,11 +111,11 @@ class LotEditForm extends Component {
         }
 
         if(value > binLocation.binLocation.capacity) {
-            msg = ` ${translate('manage_warehouse.category_management.number_over_norm')} (${binLocation.binLocation.capacity}) `;
+            msg = ` ${translate('manage_warehouse.inventory_management.number_over_norm')} (${binLocation.binLocation.capacity}) `;
         }
         if(binLocation.binLocation.contained !== null) {
             if(Number(value) > (Number(binLocation.binLocation.capacity) -Number(binLocation.binLocation.contained))) {
-                msg =  ` ${translate('manage_warehouse.category_management.bin_contained')} ${(Number(binLocation.binLocation.capacity) -Number(binLocation.binLocation.contained))} `
+                msg =  ` ${translate('manage_warehouse.inventory_management.bin_contained')} ${(Number(binLocation.binLocation.capacity) -Number(binLocation.binLocation.contained))} `
             }
         }
 
@@ -158,7 +158,9 @@ class LotEditForm extends Component {
         this.setState(state => {
             return {
                 ...state,
-                binLocation: Object.assign({}, this.EMPTY_BIN)
+                binLocation: Object.assign({}, this.EMPTY_BIN),
+                errorQuantity: undefined,
+                errorBin: undefined
             }
         })
     }
@@ -203,7 +205,9 @@ class LotEditForm extends Component {
             return {
                 ...state,
                 editInfo: false,
-                binLocation: Object.assign({}, this.EMPTY_BIN)
+                binLocation: Object.assign({}, this.EMPTY_BIN),
+                errorQuantity: undefined,
+                errorBin: undefined
             }
         })
     }
@@ -326,7 +330,7 @@ class LotEditForm extends Component {
     isFormValidated = () => {
         const { quantity } = this.state;
         let number = 0;
-        if(this.state.binLocations.length > 0) {
+        if(this.state.binLocations && this.state.binLocations.length > 0) {
             for (let i = 0; i < this.state.binLocations.length; i++) {
                 number += Number(this.state.binLocations[i].quantity);
             }
@@ -340,12 +344,12 @@ class LotEditForm extends Component {
     }
 
     render() {
-        const { translate, binLocations } = this.props;
+        const { translate, binLocations, lots } = this.props;
         const { stock, quantity, errorBin, binLocation, errorQuantity } = this.state;
         const dataStocks = this.getAllStocks();
         const dataBins = this.getAllBins();
         let number = 0;
-        if(this.state.binLocations.length > 0) {
+        if(this.state.binLocations && this.state.binLocations.length > 0) {
             for (let i = 0; i < this.state.binLocations.length; i++) {
                 number += Number(this.state.binLocations[i].quantity);
             }
@@ -367,6 +371,20 @@ class LotEditForm extends Component {
                 >
                     <form id={`form-edit-lot`} >
                         <div className="row">
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <strong>Những kho đang chứa lô hàng {lots.lotDetail.name }</strong>
+                                <div className="box-body">
+                                    {
+                                        lots.lotDetail.stocks !== undefined && lots.lotDetail.stocks.length > 0 ? lots.lotDetail.stocks.map((x, index) => 
+                                        <ul className="todo-list" key={index}>
+                                            <li>
+                                                <span className="text"><a href='/stock-management'>Kho {x.stock.name}</a></span>
+                                                <span className="label label-info" style={{fontSize: '11px'}}>{x.quantity} {lots.lotDetail.good.baseUnit}</span>
+                                            </li>
+                                        </ul>) : []
+                                    }
+                                </div>
+                            </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
                                     <label>{translate('manage_warehouse.inventory_management.stock')}<span className="attention"> * </span></label>

@@ -24,7 +24,8 @@ export function salary(state = initState, action) {
             return {
                 ...state,
                 isLoading: true,
-                listSalaryByMonthAndOrganizationalUnits:[]
+                listSalaryByMonthAndOrganizationalUnits:[],
+                listSalaryByMonth : [],
             };
         case SalaryConstants.GET_SALARY_SUCCESS:
             if (action.callApiDashboard) {

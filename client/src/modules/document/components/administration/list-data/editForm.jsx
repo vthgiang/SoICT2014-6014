@@ -716,10 +716,10 @@ class EditForm extends Component {
                                     </div>
                                     <div className="row">
                                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                            <ButtonModal modalID="sub-modal-add-document-new-version" button_name={translate('general.add')} title={translate('document.add')} />
+                                            <ButtonModal modalID="add-document-new-version" button_name={translate('general.add')} title={translate('document.add')} />
                                             <DialogModal
-                                                modalID="sub-modal-add-document-new-version"
-                                                formID="sub-form-add-document-new-version"
+                                                modalID="add-document-new-version"
+                                                formID="add-document-new-version"
                                                 title={translate('document.add_version')}
                                                 func={() => this.addNewVersion(documentId)}
                                                 disableSubmit={!this.isValidateFormAddVersion()}

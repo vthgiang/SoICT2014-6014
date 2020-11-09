@@ -98,26 +98,31 @@ exports.authFunc = (checkPage = true) => {
 
                 //const url = req.headers.referer.substr(req.headers.origin.length, req.headers.referer.length - req.headers.origin.length);
                 const url = req.header('current-page');
-                const link = role.name !== 'System Admin' ?
-                    await Link(connect(DB_CONNECTION, req.portal)).findOne({
-                        url,
-                        deleteSoft: false
-                    }) :
-                    await Link(connect(DB_CONNECTION, req.portal)).findOne({
-                        url
-                    });
-                if (link === null) throw ['url_invalid'];
+                const device = req.header('device');
+                console.log("DEVICE: ", device);
 
-                if (checkPage) {
-                    const roleArr = [role._id].concat(role.parents);
-                    const privilege = await Privilege(connect(DB_CONNECTION, req.portal)).findOne({
-                        resourceId: link._id,
-                        resourceType: 'Link',
-                        roleId: {
-                            $in: roleArr
-                        }
-                    });
-                    if (privilege === null) throw ('page_access_denied');
+                if(!device){
+                    const link = role.name !== 'System Admin' ?
+                        await Link(connect(DB_CONNECTION, req.portal)).findOne({
+                            url,
+                            deleteSoft: false
+                        }) :
+                        await Link(connect(DB_CONNECTION, req.portal)).findOne({
+                            url
+                        });
+                    if (link === null) throw ['url_invalid'];
+
+                    if (checkPage) {
+                        const roleArr = [role._id].concat(role.parents);
+                        const privilege = await Privilege(connect(DB_CONNECTION, req.portal)).findOne({
+                            resourceId: link._id,
+                            resourceType: 'Link',
+                            roleId: {
+                                $in: roleArr
+                            }
+                        });
+                        if (privilege === null) throw ('page_access_denied');
+                    }
                 }
 
                 /**

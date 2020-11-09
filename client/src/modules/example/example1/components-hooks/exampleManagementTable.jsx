@@ -1,25 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { connect } from "react-redux";
 
 import { withTranslate } from "react-redux-multilingual";
 import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../common-components";
 
-import ExampleCreateForm from "./exampleCreateForm";
-import ExampleEditForm from "./exampleEditForm";
+import { ExampleCreateForm } from "./exampleCreateForm";
+import { ExampleEditForm } from "./exampleEditForm";
 
 import { exampleActions } from "../redux/actions";
 
 function ExampleManagementTable(props) {
-    // dispatch dùng để call API
-    const dispatch = useDispatch();
-
-    // Get prop from redux
-    props = useSelector((state) => {
-        return {
-            ...props,
-            example: state.example1
-        }
-    });
 
     // Khởi tạo state
     const [state, setState] = useState({
@@ -34,7 +24,7 @@ function ExampleManagementTable(props) {
     const { exampleName, page, limit, currentRow } = state;
 
     useEffect(() => {
-        dispatch(actions.getExamples({ exampleName, page, limit }));
+        props.getExamples({ exampleName, page, limit });
     }, [])
 
     const handleChangeExampleName = (e) => {
@@ -45,51 +35,61 @@ function ExampleManagementTable(props) {
         });
     }
 
-    const handleSubmitSearch = async () => {
-        await setState({
+    const handleSubmitSearch = () => {
+        setState({
             ...state,
             page: 0
         });
-        dispatch(actions.getExamples(state));
+        props.getExamples({
+            ...state,
+            page: 0
+        });
     }
 
-    const setPage = async (pageNumber) => {
+    const setPage = (pageNumber) => {
         let currentPage = pageNumber - 1;
-        await setState({
+        setState({
             ...state,
             page: parseInt(currentPage)
         });
 
-        dispatch(actions.getExamples(state));
+        props.getExamples({
+            ...state,
+            page: parseInt(currentPage)
+        });
     }
 
-    const setLimit = async (number) => {
-        await setState({
+    const setLimit = (number) => {
+        setState({
             ...state,
-            limit: parseInt(number)
+            limit: parseInt(number),
+            page: 0
         });
-        dispatch(actions.getExamples(state));
+        props.getExamples({
+            ...state,
+            limit: parseInt(number),
+            page: 0
+        });
     }
 
     const handleDelete = (id) => {
-        dispatch(actions.deleteExample(id));
+        props.deleteExample(id);
     }
 
-    const handleEdit = async (example) => {
-        await setState({
+    const handleEdit = (example) => {
+        setState({
             ...state,
             currentRow: example
         });
         window.$('#modal-edit-example').modal('show');
     }
 
-    
     let lists = [];
-    if (example.isLoading === false) {
+    if (example) {
         lists = example.lists
     }
 
-    const totalPage = Math.ceil(example.totalList / limit);
+    const totalPage = example && Math.ceil(example.totalList / limit);
 
     return (
         <React.Fragment>
@@ -106,10 +106,10 @@ function ExampleManagementTable(props) {
                 <div className="form-inline">
                     <div className="form-group">
                         <label className="form-control-static">{translate('manage_example.exampleName')}</label>
-                        <input type="text" className="form-control" name="exampleName" onChange={handleChangeExampleName()} placeholder={translate('manage_example.exampleName')} autoComplete="off" />
+                        <input type="text" className="form-control" name="exampleName" onChange={handleChangeExampleName} placeholder={translate('manage_example.exampleName')} autoComplete="off" />
                     </div>
                     <div className="form-group">
-                        <button type="button" className="btn btn-success" title={translate('manage_example.search')} onClick={handleSubmitSearch()}>{translate('manage_example.search')}</button>
+                        <button type="button" className="btn btn-success" title={translate('manage_example.search')} onClick={() => handleSubmitSearch()}>{translate('manage_example.search')}</button>
                     </div>
                 </div>
                 <table id="example-table" className="table table-striped table-bordered table-hover">
@@ -128,7 +128,7 @@ function ExampleManagementTable(props) {
                                     ]}
                                     limit={limit}
                                     hideColumnOption={true}
-                                    setLimit={setLimit()}
+                                    setLimit={setLimit}
                                 />
                             </th>
                         </tr>
@@ -148,7 +148,7 @@ function ExampleManagementTable(props) {
                                                 id: example._id,
                                                 info: example.exampleName
                                             }}
-                                            func={handleDelete(id)}
+                                            func={handleDelete}
                                         />
                                     </td>
                                 </tr>
@@ -156,19 +156,24 @@ function ExampleManagementTable(props) {
                         }
                     </tbody>
                 </table>
-                {example.isLoading ?
+                {example && example.isLoading ?
                     <div className="table-info-panel">{translate('confirm.loading')}</div> :
                     (typeof lists === 'undefined' || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                 }
-                <PaginateBar pageTotal={totalPage ? totalPage : 0} currentPage={page + 1} func={setPage()} />
+                <PaginateBar pageTotal={totalPage ? totalPage : 0} currentPage={page + 1} func={setPage} />
             </div>
         </React.Fragment>
     )
 }
 
+function mapState(state) {
+    const example = state.example1;
+    return { example }
+}
 const actions = {
     getExamples: exampleActions.getExamples,
     deleteExample: exampleActions.deleteExample
 }
 
-export default (withTranslate(ExampleManagementTable));
+const connectedExampleManagementTable = connect(mapState, actions)(withTranslate(ExampleManagementTable));
+export { connectedExampleManagementTable as ExampleManagementTable };

@@ -67,6 +67,8 @@ export const performTaskAction = {
     deleteFileComment,
     deleteFileChildComment,
     getAllPreceedingTasks,
+
+    sortActions,
 };
 
 
@@ -1080,4 +1082,20 @@ function getAllPreceedingTasks(taskId) {
                 })
             })
     }
+}
+
+function sortActions(taskId, data) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.SORT_ACTIONS_REQUEST});
+        performTaskService.sortActions(taskId, data)
+            .then(res => {
+                dispatch({
+                    type: performTaskConstants.SORT_ACTIONS_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: performTaskConstants.SORT_ACTIONS_FAILURE, error });
+            });
+    };
 }

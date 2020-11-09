@@ -16,6 +16,7 @@ class ModalAddTaskTemplate extends Component {
         this.state = {
             newTemplate: {
                 organizationalUnit: '',
+                collaboratedWithOrganizationalUnits: [],
                 name: '',
                 readByEmployees: [],
                 responsibleEmployees: [],

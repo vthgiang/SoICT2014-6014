@@ -60,6 +60,7 @@ class KPIPersonalManager extends Component {
 
         return [month, year].join('-');
     }
+    
     formatDate(date) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -100,7 +101,7 @@ class KPIPersonalManager extends Component {
         this.setState(state => {
                 return {
                     ...state,
-                    startDate: value,
+                    startDate: value.slice(3,7) + '-' + value.slice(0,2)
                 }
             });
         
@@ -110,7 +111,7 @@ class KPIPersonalManager extends Component {
         this.setState(state => {
                 return {
                     ...state,
-                    endDate: value,
+                    endDate: value.slice(3,7) + '-' + value.slice(0,2)
                 }
             });   
         }
@@ -126,44 +127,35 @@ class KPIPersonalManager extends Component {
 
     /**Gửi req seach data */
     handleSearchData = async () => {
-        if(this.state.startDate === "") this.state.startDate = null;
-        if(this.state.endDate === "") this.state.endDate = null;
-        if(this.state.status === -1) this.state.status =null;
+        const { status, startDate, endDate } = this.state;
         await this.setState(state => {
             return {
                 ...state,
                 infosearch: {
                     ...state.infosearch,
-                    status: this.state.status,
-                    startDate: this.state.startDate,
-                    endDate: this.state.endDate
+                    status: status !== -1 ? status : null,
+                    startDate: startDate !== "" ? startDate : null,
+                    endDate: endDate !== "" ? endDate : null
                 },
-                employeeKpiSet: {_id: null},
+                employeeKpiSet: { _id: null },
             }
         })
         
         const { infosearch } = this.state;
-            var startDate;
-            var startdate=null;
-            var endDate;
-            var enddate=null;
+        let startdate = new Date(infosearch.startDate);
+        let enddate = new Date(infosearch.endDate);
 
-            if(infosearch.startDate !== null) {startDate = infosearch.startDate.split("-");
-            startdate = new Date(startDate[1], startDate[0], 0);}
-            if (infosearch.endDate !== null){endDate= infosearch.endDate.split("-");
-            enddate = new Date(endDate[1], endDate[0], 28);}
-
-            if (startdate && enddate && Date.parse(startdate) > Date.parse(enddate)) {
-                Swal.fire({
-                    title: translate('kpi.evaluation.employee_evaluation.wrong_time')+"!",
-                    type: 'warning',
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: translate('general.accept')
-                })
-            } 
-            else {
-                this.props.getEmployeeKPISets(infosearch);
-            }
+        if (startdate && enddate && startdate.getTime() > enddate.getTime()) {
+            Swal.fire({
+                title: translate('kpi.evaluation.employee_evaluation.wrong_time')+"!",
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: translate('general.accept')
+            })
+        } 
+        else {
+            this.props.getEmployeeKPISets(infosearch);
+        }
     }
 
     /**Mở modal xem chi tiết 1 mẫu công việc */

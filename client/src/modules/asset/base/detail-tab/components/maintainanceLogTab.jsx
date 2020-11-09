@@ -46,11 +46,11 @@ class MaintainanceLogTab extends Component {
         const { translate } = this.props;
 
         switch (type) {
-            case 1:
+            case "1":
                 return translate('asset.asset_info.repair');
-            case 2:
+            case "2":
                 return translate('asset.asset_info.replace');
-            case 3:
+            case "3":
                 return translate('asset.asset_info.upgrade');
             default:
                 return 'Deleted';
@@ -61,11 +61,11 @@ class MaintainanceLogTab extends Component {
         const { translate } = this.props;
 
         switch (status) {
-            case 1:
+            case "1":
                 return translate('asset.asset_info.unfulfilled');
-            case 2:
+            case "2":
                 return translate('asset.asset_info.processing');
-            case 3:
+            case "3":
                 return translate('asset.asset_info.made');
             default:
                 return 'Deleted';

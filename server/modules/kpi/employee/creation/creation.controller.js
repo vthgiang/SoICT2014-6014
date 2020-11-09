@@ -6,14 +6,11 @@ const Logger = require(`${SERVER_LOGS_DIR}`);
 
 /** Lấy tập KPI cá hiện hiện tại */
 exports.getEmployeeKpiSet = async (req, res) => {
-    console.log('hhhhhhhhhhhh', req.query)
     if (req.query.userId && req.query.startDate && req.query.endDate) {
         this.getAllEmployeeKpiSetByMonth(req, res);
     }
     else if (req.query.unitKpiSetByMonth) {
-        KPIPersonalController.getAllEmployeeKpiSetI
-
-        nOrganizationalUnit(req, res);
+        KPIPersonalController.getAllEmployeeKpiSetInOrganizationalUnit(req, res);
     }
     else if (req.query.unitKpiSetByEmployeeKpiSetDate) {
         KPIPersonalController.getAllKPIEmployeeSetsInOrganizationByMonth(req, res);

@@ -249,7 +249,6 @@ class StockCreateForm extends Component {
         e.preventDefault();
         await this.setState(state => {
             let goods = [ ...(this.state.goods), state.good];
-            console.log(goods);
             return {
                 ...state,
                 goods: goods,

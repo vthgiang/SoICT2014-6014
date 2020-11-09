@@ -15,13 +15,13 @@ class MaintainanceCreateForm extends Component {
         this.state = {
             maintainanceCode: "",
             createDate: this.formatDate(Date.now()),
-            type: "Sửa chữa",
+            type: "1",
             asset: "",
             description: "",
             startDate: this.formatDate(Date.now()),
             endDate: this.formatDate(Date.now()),
             expense: "",
-            status: "Đang thực hiện",
+            status: "2",
         };
     }
 
@@ -35,7 +35,7 @@ class MaintainanceCreateForm extends Component {
         if (month.length < 2) {
             month = '0' + month;
         }
-            
+
         if (day.length < 2) {
             day = '0' + day;
         }
@@ -177,8 +177,8 @@ class MaintainanceCreateForm extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result =  this.validateCreateDate(this.state.createDate, false) 
-        
+        let result = this.validateCreateDate(this.state.createDate, false)
+
         return result;
     }
 
@@ -266,9 +266,9 @@ class MaintainanceCreateForm extends Component {
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.type')}</label>
                                     <select className="form-control" value={type} name="type" onChange={this.handleTypeChange}>
-                                        <option value="Sửa chữa">{translate('asset.asset_info.repair')}</option>
-                                        <option value="Thay thế">{translate('asset.asset_info.replace')}</option>
-                                        <option value="Nâng cấp">{translate('asset.asset_info.upgrade')}</option>
+                                        <option value="1">{translate('asset.asset_info.repair')}</option>
+                                        <option value="2">{translate('asset.asset_info.replace')}</option>
+                                        <option value="3">{translate('asset.asset_info.upgrade')}</option>
                                     </select>
                                 </div>
 
@@ -331,9 +331,9 @@ class MaintainanceCreateForm extends Component {
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.status')}</label>
                                     <select className="form-control" value={status} name="status" onChange={this.handleStatusChange}>
-                                        <option value="Đã thực hiện">{translate('asset.asset_info.made')}</option>
-                                        <option value="Đang thực hiện">{translate('asset.asset_info.processing')}</option>
-                                        <option value="Chưa thực hiện">{translate('asset.asset_info.unfulfilled')}</option>
+                                        <option value="1">{translate('asset.asset_info.unfulfilled')}</option>
+                                        <option value="2">{translate('asset.asset_info.processing')}</option>
+                                        <option value="3">{translate('asset.asset_info.made')}</option>
                                     </select>
                                 </div>
                             </div>

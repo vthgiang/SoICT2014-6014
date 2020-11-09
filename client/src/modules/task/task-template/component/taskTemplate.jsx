@@ -371,12 +371,18 @@ class TaskTemplate extends Component {
                 if (x.numberOfUse !== 0) {
                     numberOfUse = x.numberOfUse;
                 }
-                let readByEmployees = [], responsibleEmployees = [], accountableEmployees = [], consultedEmployees = [], informedEmployees = [];
+                let collaboratedWithOrganizationalUnits = [], readByEmployees = [], responsibleEmployees = [], accountableEmployees = [], consultedEmployees = [], informedEmployees = [];
 
                 if (x.readByEmployees && x.readByEmployees[0]) {
                     readByEmployees = x.readByEmployees.map(item => item.name);
                     if (length < readByEmployees.length) {
                         length = readByEmployees.length
+                    }
+                }
+                if (x.collaboratedWithOrganizationalUnits && x.collaboratedWithOrganizationalUnits[0]) {
+                    collaboratedWithOrganizationalUnits = x.collaboratedWithOrganizationalUnits.map(item => item.name);
+                    if (length < collaboratedWithOrganizationalUnits.length) {
+                        length = collaboratedWithOrganizationalUnits.length
                     }
                 }
                 if (x.responsibleEmployees && x.responsibleEmployees[0]) {
@@ -402,6 +408,7 @@ class TaskTemplate extends Component {
                     consultedEmployees: consultedEmployees.join(', '),
                     informedEmployees: informedEmployees.join(', '),
                     organizationalUnits: x.organizationalUnit.name,
+                    collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits[0],
                     priority: x.priority,
                     formula: x.formula,
                     actionName: actionName[0],
@@ -426,6 +433,7 @@ class TaskTemplate extends Component {
                             consultedEmployees: "",
                             informedEmployees: "",
                             organizationalUnits: "",
+                            collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits[i],
                             priority: "",
                             formula: "",
                             actionName: actionName[i],
@@ -467,6 +475,7 @@ class TaskTemplate extends Component {
                                 { key: "name", value: "Tên mẫu" },
                                 { key: "description", value: "Mô tả" },
                                 { key: "organizationalUnits", value: "Đơn vị" },
+                                { key: "collaboratedWithOrganizationalUnits", value: "Đơn vị phối hợp thực hiện công việc"},
                                 { key: "numberOfUse", value: "Số lần sử dụng" },
                                 // { key: "creator", value: "Người tạo mẫu" },
                                 { key: "readByEmployees", value: "Người được xem" },

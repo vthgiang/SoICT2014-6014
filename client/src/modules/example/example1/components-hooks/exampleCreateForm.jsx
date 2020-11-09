@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { connect  } from 'react-redux';
 
 import { ButtonModal, DialogModal, ErrorLabel } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
@@ -8,16 +8,6 @@ import ValidationHelper from '../../../../helpers/validationHelper';
 import { exampleActions } from '../redux/actions';
 
 function ExampleCreateForm(props) {
-    // dispatch dùng để call API
-    const dispatch = useDispatch();
-
-    // Get prop from redux
-    props = useSelector((state) => {
-        return {
-            ...props,
-            example: state.example1
-        }
-    });
 
     // Khởi tạo state
     const [state, setState] = useState({
@@ -39,7 +29,7 @@ function ExampleCreateForm(props) {
 
     const save = () => {
         if (isFormValidated()) {
-            dispatch(actions.createExample({ exampleName, description }));
+            props.createExample({ exampleName, description });
         }
     }
 
@@ -48,6 +38,7 @@ function ExampleCreateForm(props) {
         let { message } = ValidationHelper.validateName(translate, value, 6, 255);
 
         setState({
+            ...state,
             exampleName: value,
             exampleNameError: message
         })
@@ -92,7 +83,13 @@ function ExampleCreateForm(props) {
     );
 }
 
+function mapState(state) {
+    const example = state.example1;
+    return { example }
+}
 const actions = {
     createExample: exampleActions.createExample
 }
-export default (withTranslate(ExampleCreateForm)); 
+
+const connectedExampleCreateForm = connect(mapState, actions)(withTranslate(ExampleCreateForm));
+export { connectedExampleCreateForm as ExampleCreateForm };

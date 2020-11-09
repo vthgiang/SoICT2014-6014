@@ -68,6 +68,7 @@ import { categories } from "../modules/production/common-production/category-man
 import { goods } from "../modules/production/common-production/good-management/redux/reducers";
 import { binLocations } from "../modules/production/warehouse/bin-location-management/redux/reducers";
 import { lots } from "../modules/production/warehouse/inventory-management/redux/reducers";
+import { bills } from "../modules/production/warehouse/bill-management/redux/reducers";
 
 //crm
 import { customers } from "../modules/crm/customer/redux/reducers";
@@ -96,6 +97,7 @@ import { example2 } from "../modules/example/example2/redux/reducers";
 import { manufacturingWorks } from "../modules/production/manufacturing/manufacturing-works/redux/reducers";
 import { manufacturingMill } from "../modules/production/manufacturing/manufacturing-mill/redux/reducers";
 import { purchasingRequest } from "../modules/production/manufacturing/purchasing-request/redux/reducers";
+import { workSchedule } from "../modules/production/manufacturing/work-schedule/redux/reducers";
 
 const appReducer = combineReducers({
     socket,
@@ -177,6 +179,7 @@ const appReducer = combineReducers({
     goods,
     binLocations,
     lots,
+    bills,
 
     // customer management
     crm: combineReducers({
@@ -203,6 +206,8 @@ const appReducer = combineReducers({
     manufacturingWorks,
     manufacturingMill,
     purchasingRequest,
+    workSchedule,
+
 
     Intl
 

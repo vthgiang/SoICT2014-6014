@@ -1,30 +1,154 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { ErrorLabel, SelectMulti } from '../../../../../common-components';
 
-import {ErrorLabel} from '../../../../../common-components';
-
-class UnitCreateForm extends Component{
-    constructor(props){
+class UnitCreateForm extends Component {
+    constructor(props) {
         super(props);
         this.EMPTY_UNIT = {
             name: '',
             conversionRate: '',
             description: ''
         };
-       
-        this.state={
+
+        this.state = {
             unit: Object.assign({}, this.EMPTY_UNIT),
             listUnit: this.props.initialData,
-            editInfo: false
+            editInfo: false,
+            listUnitSelected: []
         }
     }
 
-    static getDerivedStateFromProps(nextProps, prevState){
-        if(nextProps.id !== prevState.id){
+    getListUnitArray = () => {
+        let listUnitArray = [];
+        if (this.state.baseUnit !== "") {
+            listUnitArray.push({
+                value: this.state.baseUnit,
+                text: this.state.baseUnit,
+                conversionRate: 1
+            })
+        }
+
+        if (this.props.initialData.length) {
+            this.props.initialData.map((unit, index) => {
+                listUnitArray.push({
+                    value: index,
+                    text: unit.name,
+                    conversionRate: parseFloat(unit.conversionRate),
+                });
+            });
+
+        }
+        return listUnitArray;
+    }
+
+    handleSelectMultiBaseUnit = (value) => {
+        if (value.length == 0) {
+            value = null;
+        }
+        this.validateMultiBaseUnit(value, true)
+    }
+
+    validateMultiBaseUnit = (value, willUpdateState) => {
+        console.log(value);
+        let msg = undefined;
+
+        const { translate } = this.props;
+        if (!value) {
+            msg = translate('manage_warehouse.good_management.choose_base_unit')
+        }
+        if (willUpdateState) {
+            let packingRule = "";
+            if (value) {
+                packingRule = this.convertToPackingRule(value);
+            }
+            if (packingRule !== "") {
+                this.setState(state => ({
+                    ...state,
+                    packingRule: packingRule,
+                    listUnitSelected: value,
+                    errorOnBaseUnit: msg
+                }));
+            } else {
+                this.setState(state => ({
+                    ...state,
+                    listUnitSelected: value,
+                    packingRule: packingRule,
+                    errorOnBaseUnit: value ? translate("manage_warehouse.good_management.error_packing_rule") : msg
+                }))
+            }
+
+            this.props.onDataChange(this.state.listUnit, this.state.packingRule);
+
+        }
+
+        return msg
+    }
+
+    // Hàm sắp xếp subListUnitArray theo thứ tự conversion rate tăng dần
+    sortListUnitArray = (array) => {
+        for (let i = 0; i < array.length; i++) {
+            for (let j = i + 1; j < array.length; j++) {
+                if (array[i].conversionRate > array[j].conversionRate) {
+                    let tmp = array[i];
+                    array[i] = array[j];
+                    array[j] = tmp
+                }
+            }
+        }
+        return array;
+    }
+
+    // Hàm này validate xem list unit có hợp lệ để tạo thành một packingRule hay không
+    // Input là 1 array chứa các phần tử có conversion rate tăng dần
+    validateListUnitArray = (array) => {
+        for (let i = 0; i < array.length - 1; i++) {
+            let rate = array[i + 1].conversionRate / array[i].conversionRate;
+            if (!Number.isInteger(rate)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    convertToPackingRule = (value) => {
+        let packingRule = '';
+        let listUnitArray = this.getListUnitArray();
+        let subListUnitArray = [];
+        for (let i = 0; i < listUnitArray.length; i++) {
+            for (let j = 0; j < value.length; j++) {
+                if (listUnitArray[i].value == value[j]) {
+                    subListUnitArray.push(listUnitArray[i]);
+                    break;
+                }
+            }
+        }
+        let sortListUnitArray = this.sortListUnitArray(subListUnitArray);
+        let resultValidate = this.validateListUnitArray(sortListUnitArray);
+        // Nếu chuỗi tạo thành được 1 packingRule
+        if (resultValidate) {
+            let maxIndexOfArray = sortListUnitArray.length - 1;
+            packingRule += sortListUnitArray[maxIndexOfArray].text;
+            if (maxIndexOfArray > 0) {
+                for (let i = maxIndexOfArray - 1; i >= 0; i--) {
+                    packingRule += " x " + (sortListUnitArray[i + 1].conversionRate / sortListUnitArray[i].conversionRate) + sortListUnitArray[i].text
+                }
+
+            }
+        }
+        return packingRule;
+    }
+
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.id !== prevState.id || nextProps.baseUnit !== prevState.baseUnit) {
             return {
                 ...prevState,
+                baseUnit: nextProps.baseUnit,
                 id: nextProps.id,
+                packingRule: nextProps.packingRule,
                 listUnit: nextProps.initialData
             }
         }
@@ -37,11 +161,11 @@ class UnitCreateForm extends Component{
         let value = e.target.value;
         this.validateUnitName(value, true);
     }
-    
+
     validateUnitName = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
-        if(!value){
+        if (!value) {
             msg = translate('manage_warehouse.category_management.validate_name');
         }
         if (willUpdateState) {
@@ -60,11 +184,11 @@ class UnitCreateForm extends Component{
         let value = e.target.value;
         this.validateConversionRate(value, true);
     }
-    
+
     validateConversionRate = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
-        if(!value){
+        if (!value) {
             msg = translate('manage_warehouse.category_management.validate_name');
         }
         if (willUpdateState) {
@@ -91,22 +215,22 @@ class UnitCreateForm extends Component{
 
     isUnitsValidated = () => {
         let result =
-        this.validateUnitName(this.state.unit.name, false) &&
-        this.validateConversionRate(this.state.unit.conversionRate, false)
+            this.validateUnitName(this.state.unit.name, false) &&
+            this.validateConversionRate(this.state.unit.conversionRate, false)
         return result
     }
 
     handleAddUnit = async (e) => {
         e.preventDefault();
         await this.setState(state => {
-            const listUnit = [ ...(this.state.listUnit), state.unit];
+            const listUnit = [...(this.state.listUnit), state.unit];
             return {
                 ...state,
                 listUnit: listUnit,
                 unit: Object.assign({}, this.EMPTY_UNIT),
             }
         })
-        this.props.onDataChange(this.state.listUnit);
+        this.props.onDataChange(this.state.listUnit, this.state.packingRule);
     }
 
     handleEditUnit = async (unit, index) => {
@@ -137,7 +261,7 @@ class UnitCreateForm extends Component{
                 unit: Object.assign({}, this.EMPTY_UNIT),
             }
         })
-        this.props.onDataChange(this.state.listUnit);
+        this.props.onDataChange(this.state.listUnit, this.state.packingRule);
     }
 
     handleCancelEditUnit = async (e) => {
@@ -164,7 +288,7 @@ class UnitCreateForm extends Component{
     handleDeleteUnit = async (index) => {
         const { listUnit } = this.state;
         let newListUnit;
-        if(listUnit){
+        if (listUnit) {
             newListUnit = listUnit.filter((item, x) => index !== x);
         }
         await this.setState(state => {
@@ -174,24 +298,23 @@ class UnitCreateForm extends Component{
             }
         })
 
-        this.props.onDataChange(this.state.listUnit);
+        this.props.onDataChange(this.state.listUnit, this.state.packingRule);
     }
 
-    render(){
+    render() {
         const { translate, id } = this.props;
-        let { listUnit, unit, errorOnUnitName, errorOnConversionRate, description, conversionRate } =this.state;
-
-        return(
+        let { listUnit, unit, errorOnUnitName, errorOnConversionRate, description, conversionRate, errorOnBaseUnit, listUnitSelected, packingRule } = this.state;
+        return (
 
             <fieldset className="scheduler-border">
                 <legend className="scheduler-border">{translate('manage_warehouse.good_management.unit')}</legend>
-                
+
                 <div className={`form-group ${!errorOnUnitName ? "" : "has-error"}`}>
                     <label className="control-label">{translate('manage_warehouse.good_management.unit_name')}</label>
                     <div>
                         <input type="text" className="form-control" placeholder={translate('manage_warehouse.good_management.unit_name')} value={unit.name} onChange={this.handleUnitNameChange} />
                     </div>
-                    <ErrorLabel content = { errorOnUnitName } />
+                    <ErrorLabel content={errorOnUnitName} />
                 </div>
 
                 <div className={`form-group ${!errorOnConversionRate ? "" : "has-error"}`}>
@@ -199,7 +322,7 @@ class UnitCreateForm extends Component{
                     <div>
                         <input type="number" className="form-control" placeholder={translate('manage_warehouse.good_management.conversion_rate')} value={unit.conversionRate} onChange={this.handleConversionRateChange} />
                     </div>
-                    <ErrorLabel content = { errorOnConversionRate } />
+                    <ErrorLabel content={errorOnConversionRate} />
                 </div>
 
                 <div className="form-group">
@@ -209,12 +332,12 @@ class UnitCreateForm extends Component{
                     </div>
                 </div>
 
-                <div className="pull-right" style={{marginBottom: "10px"}}>
+                <div className="pull-right" style={{ marginBottom: "10px" }}>
                     {this.state.editInfo ?
                         <React.Fragment>
                             <button className="btn btn-success" onClick={this.handleCancelEditUnit} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
                             <button className="btn btn-success" disabled={!this.isUnitsValidated()} onClick={this.handleSaveEditUnit} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
-                        </React.Fragment>:
+                        </React.Fragment> :
                         <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isUnitsValidated()} onClick={this.handleAddUnit}>{translate('task_template.add')}</button>
                     }
                     <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearUnit}>{translate('task_template.delete')}</button>
@@ -233,20 +356,42 @@ class UnitCreateForm extends Component{
                         {
                             (typeof listUnit === 'undefined' || listUnit.length === 0) ? <tr><td colSpan={4}><center>{translate('task_template.no_data')}</center></td></tr> :
                                 listUnit.map((item, index) =>
-                                <tr key={index}>
-                                    <td>{item.name}</td>
-                                    <td>{item.conversionRate}</td>
-                                    <td>{item.description}</td>
-                                    <td>
-                                        <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => this.handleEditUnit(item, index)}><i className="material-icons"></i></a>
-                                        <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => this.handleDeleteUnit(index)}><i className="material-icons"></i></a>
-                                    </td>
-                                </tr>
-                            )
+                                    <tr key={index}>
+                                        <td>{item.name}</td>
+                                        <td>{item.conversionRate}</td>
+                                        <td>{item.description}</td>
+                                        <td>
+                                            <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => this.handleEditUnit(item, index)}><i className="material-icons"></i></a>
+                                            <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => this.handleDeleteUnit(index)}><i className="material-icons"></i></a>
+                                        </td>
+                                    </tr>
+                                )
                         }
                     </tbody>
                 </table>
-            </fieldset>
+                <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                    <div className={`form-group ${!errorOnBaseUnit ? "" : "has-error"}`}>
+                        <label style={{ width: 'auto' }}>{translate('manage_warehouse.good_management.packing_rule')} <span className="attention"> * </span></label>
+                        <SelectMulti
+                            id={`multi-select-base-unit-${id}`}
+                            items={this.getListUnitArray()}
+                            options={{ nonSelectedText: translate('manage_warehouse.good_management.non_choose_base_unit'), allSelectedText: translate('manage_warehouse.good_management.choose_base_unit_all') }}
+                            onChange={this.handleSelectMultiBaseUnit}
+                        >
+                        </SelectMulti>
+
+                    </div>
+                </div>
+                <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                    <div className={`form-group ${!errorOnBaseUnit ? "" : "has-error"}`}>
+                        <ErrorLabel content={errorOnBaseUnit} />
+                        {
+                            packingRule || !errorOnBaseUnit && listUnitSelected.length > 0 && packingRule
+                        }
+                    </div>
+                </div>
+
+            </fieldset >
         )
     }
 }

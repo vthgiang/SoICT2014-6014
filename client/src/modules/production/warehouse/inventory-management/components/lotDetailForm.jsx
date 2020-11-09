@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
-import { DialogModal, SelectBox, Errorstrong, ButtonModal } from '../../../../../common-components';
+import { DialogModal } from '../../../../../common-components';
 import { translate } from 'react-redux-multilingual/lib/utils';
+
+import { BillActions } from '../../bill-management/redux/actions';
+import BillDetailForm from '../../bill-management/components/billDetailForm';
 
 class LotDetailForm extends Component {
     constructor(props) {
@@ -24,6 +27,12 @@ class LotDetailForm extends Component {
             day = '0' + day;
 
         return [day, month, year].join('-');
+    }
+
+    handleShowDetailInfo = async (id) => {
+        console.log(id);
+        await this.props.getDetailBill(id);
+        window.$('#modal-detail-bill').modal('show');
     }
 
     render() {
@@ -76,16 +85,17 @@ class LotDetailForm extends Component {
                                     <strong>{translate('manage_warehouse.inventory_management.date')}:&emsp;</strong>
                                     { this.formatDate(lotDetail.expirationDate)}
                                 </div>
-                                <div className="form-group">
-                                    <strong>{translate('manage_warehouse.inventory_management.bin')}:&emsp;</strong>
-                                    {lotDetail.stocks.map((x, index) => <p key={index}><b>Kho: {x.stock.name} có: </b>{x.binLocations.map(item => item.binLocation.path + "(" + item.quantity + "), " )}</p>)}
-                                </div>
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.inventory_management.description')}:&emsp;</strong>
                                     {lotDetail.description}
                                 </div>
+                                <fieldset className="scheduler-border">
+                                    <legend className="scheduler-border">{translate('manage_warehouse.inventory_management.bin')}</legend>
+                                    {lotDetail.stocks.map((x, index) => <p key={index}><b>Kho {x.stock.name}: </b>{x.binLocations.map(item => item.binLocation.path + "(" + item.quantity + "), " )}</p>)}
+                                </fieldset>
+                                <BillDetailForm />
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manage_warehouse.inventory_management.history')}</legend>
 
@@ -109,7 +119,7 @@ class LotDetailForm extends Component {
                                                 lotDetail.lotLogs.map((x, index) =>
                                                 <tr key={index}>
                                                         <td>{index + 1}</td>
-                                                        <td>{x.bill ? x.bill : ""}</td>
+                                                        {x.bill ? <td><a href="#" onClick={() => this.handleShowDetailInfo(x.bill._id)}>{x.bill.code}</a></td> : <td></td>}
                                                         <td>{this.formatDate(x.createdAt)}</td>
                                                         <td>{x.type}</td>
                                                         <td>{x.quantity}</td>
@@ -120,39 +130,6 @@ class LotDetailForm extends Component {
                                                     </tr>
                                                 )
                                             }
-                                                    {/* <tr>
-                                                        <td>2</td>
-                                                        <td><a href="#">BI002</a></td>
-                                                        <td>5-10-2020 7:30</td>
-                                                        <td>Xuất thành phẩm</td>
-                                                        <td>60</td>
-                                                        <td>Tạ Quang Bửu</td>
-                                                        <td><p>B1-T1-101(60)</p></td>
-                                                        <td>Công ty TNHH ABC</td>
-                                                        <td>Xuất bán sản phẩm</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>3</td>
-                                                        <td><a href="#">SR001</a></td>
-                                                        <td>5-10-2020 7:30</td>
-                                                        <td>Luân chuyển đi</td>
-                                                        <td>60</td>
-                                                        <td>Tạ Quang Bửu</td>
-                                                        <td><p>B1-T1-101(60)</p><p>B1-T1-102(20)</p></td>
-                                                        <td>Kho Trần Đại Nghĩa</td>
-                                                        <td>Luân chuyển sang kho khác</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>4</td>
-                                                        <td><a href="#">ST001</a></td>
-                                                        <td>5-10-2020 7:30</td>
-                                                        <td>Tiêu hủy</td>
-                                                        <td>30</td>
-                                                        <td>Tạ Quang Bửu</td>
-                                                        <td><p>B1-T1-102(30)</p></td>
-                                                        <td></td>
-                                                        <td>Bị hỏng do bảo quản</td>
-                                                    </tr> */}
                                         </tbody>
                                     </table>
                                 </fieldset>
@@ -168,4 +145,8 @@ class LotDetailForm extends Component {
 
 const mapStateToProps = state => state;
 
-export default connect(mapStateToProps, null)(withTranslate(LotDetailForm));
+const mapDispatchToProps = {
+    getDetailBill: BillActions.getDetailBill
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(LotDetailForm));
