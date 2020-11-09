@@ -4,7 +4,7 @@ const Log = require(`${SERVER_LOGS_DIR}`);
 exports.createNewSLA = async (req, res) => {
     try {
         let data = req.body;
-        let sla = await SLAService.createNewSLA(data, req.portal)
+        let sla = await SLAService.createNewSLA(req.user._id, data, req.portal)
 
         await Log.info(req.user.email, "CREATED_NEW_SLA", req.portal);
 

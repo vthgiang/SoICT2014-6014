@@ -80,6 +80,7 @@ import { careTypes } from "../modules/crm/careType/redux/reducers";
 import { taxs } from "../modules/production/order/tax/redux/reducers";
 import { quotes } from '../modules/production/order/quote/redux/reducers';
 import { discounts } from "../modules/production/order/discount/redux/reducers";
+import { serviceLevelAgreements } from "../modules/production/order/service-level-agreement/redux/reducers";
 
 //plan
 import { plan } from "../modules/plan/redux/reducers";
@@ -186,6 +187,7 @@ const appReducer = combineReducers({
     taxs,
     quotes,
     discounts,
+    serviceLevelAgreements,
 
     //plane
     plan,

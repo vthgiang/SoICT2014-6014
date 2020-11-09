@@ -1,27 +1,25 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { TaxActions } from "../redux/actions";
+import { SLAActions } from "../redux/actions";
 import { PaginateBar, DataTableSetting, SelectBox, DeleteNotification, ConfirmNotification } from "../../../../../common-components";
-import TaxCreateForm from "./taxCreateForm";
-import TaxDetailForm from "./taxDetailForm";
-import TaxEditForm from "./taxEditForm";
+import SLACreateForm from "./slaCreateForm";
 
-class TaxManagementTable extends Component {
+class SLAMangementTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
             page: 1,
             limit: 5,
             code: "",
-            name: "",
+            title: "",
             status: true,
         };
     }
 
     componentDidMount() {
         const { page, limit, status } = this.state;
-        this.props.getAllTaxs({ page, limit, status });
+        this.props.getAllSLAs({ page, limit, status });
     }
 
     setPage = async (page) => {
@@ -31,8 +29,9 @@ class TaxManagementTable extends Component {
         const data = {
             limit: this.state.limit,
             page: page,
+            status: this.state.status,
         };
-        this.props.getAllTaxs(data);
+        this.props.getAllSLAs(data);
     };
 
     setLimit = async (limit) => {
@@ -42,28 +41,9 @@ class TaxManagementTable extends Component {
         const data = {
             limit: limit,
             page: this.state.page,
+            status: this.state.status,
         };
-        this.props.getAllTaxs(data);
-    };
-
-    handleShowDetailTax = async (taxId) => {
-        this.setState((state) => {
-            return {
-                ...state,
-                taxId: taxId,
-            };
-        });
-        window.$("#modal-detail-tax").modal("show");
-    };
-
-    handleEditTax = async (tax) => {
-        await this.setState((state) => {
-            return {
-                ...state,
-                currentRow: tax,
-            };
-        });
-        window.$("#modal-edit-tax").modal("show");
+        this.props.getAllSLAs(data);
     };
 
     handleCodeChange = (e) => {
@@ -72,9 +52,9 @@ class TaxManagementTable extends Component {
         });
     };
 
-    handleNameChange = (e) => {
+    handleTitleChange = (e) => {
         this.setState({
-            name: e.target.value,
+            title: e.target.value,
         });
     };
     handleStatusChange = (value) => {
@@ -90,53 +70,35 @@ class TaxManagementTable extends Component {
     };
 
     handleSubmitSearch = () => {
-        const { page, limit, code, name, status } = this.state;
+        const { page, limit, code, title, status } = this.state;
         const data = {
             limit: limit,
             page: page,
             code: code,
-            name: name,
+            title: title,
             status: status,
         };
-        this.props.getAllTaxs(data);
-    };
-
-    disableTax = (id) => {
-        let { limit, page, status } = this.state;
-        this.props.disableTax(id);
-        this.props.getAllTaxs({ limit, page, status });
-    };
-
-    deleteTax = (code) => {
-        let { limit, page, status } = this.state;
-        this.props.deleteTax({ code });
-        this.props.getAllTaxs({ limit, page, status });
+        this.props.getAllSLAs(data);
     };
 
     render() {
         const { translate } = this.props;
-        const { taxs } = this.props;
-        const { totalPages, page, listTaxs } = taxs;
-        const { code, name } = this.state;
+        const { serviceLevelAgreements } = this.props;
+        const { totalPages, page, listSLAs } = serviceLevelAgreements;
+        const { code, title } = this.state;
+        console.log("LOGGGGGGGG:", this.props.serviceLevelAgreements);
         return (
             <React.Fragment>
-                {<TaxDetailForm taxId={this.state.taxId} />}
-                {this.state.currentRow && (
-                    <TaxEditForm
-                        taxEdit={this.state.currentRow}
-                        reloadState={() => this.props.getAllTaxs({ limit: this.state.limit, page: this.state.page, status: this.state.status })}
-                    />
-                )}
                 <div className="box-body qlcv">
-                    <TaxCreateForm reloadState={() => this.props.getAllTaxs({ limit: this.state.limit, page: this.state.page })} />
+                    <SLACreateForm />
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate("manage_order.tax.tax_code")} </label>
                             <input type="text" className="form-control" value={code} onChange={this.handleCodeChange} />
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">{translate("manage_order.tax.tax_name")} </label>
-                            <input type="text" className="form-control" value={name} onChange={this.handleNameChange} />
+                            <label className="form-control-static">{"Tên"} </label>
+                            <input type="text" className="form-control" value={title} onChange={this.handleTitleChange} />
                         </div>
                         <div className="form-group">
                             <label className="form-control-static">Trạng thái đơn</label>
@@ -166,27 +128,20 @@ class TaxManagementTable extends Component {
                     <table id="tax-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th>{translate("manage_order.tax.index")}</th>
-                                <th>{translate("manage_order.tax.code")}</th>
-                                <th>{translate("manage_order.tax.name")}</th>
-                                <th>{translate("manage_order.tax.creator")}</th>
-                                <th>{translate("manage_order.tax.status")}</th>
+                                <th>STT</th>
+                                <th>Mã cam kết</th>
+                                <th>Tiêu đề</th>
+                                <th>Trạng thái</th>
                                 <th
                                     style={{
                                         width: "120px",
                                         textAlign: "center",
                                     }}
                                 >
-                                    {translate("table.action")}
+                                    Hành động
                                     <DataTableSetting
                                         tableId="tax-table"
-                                        columnArr={[
-                                            translate("manage_order.tax.index"),
-                                            translate("manage_order.tax.code"),
-                                            translate("manage_order.tax.name"),
-                                            translate("manage_order.tax.creator"),
-                                            translate("manage_order.tax.status"),
-                                        ]}
+                                        columnArr={["STT", "Mã cam kết", "Tiêu đề", "Trạng thái"]}
                                         limit={this.state.limit}
                                         hideColumnOption={true}
                                         setLimit={this.setLimit}
@@ -195,38 +150,37 @@ class TaxManagementTable extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {listTaxs &&
-                                listTaxs.length !== 0 &&
-                                listTaxs.map((tax, index) => (
+                            {listSLAs &&
+                                listSLAs.length !== 0 &&
+                                listSLAs.map((item, index) => (
                                     <tr key={index}>
                                         <td>{index + 1}</td>
-                                        <td>{tax.code}</td>
-                                        <td>{tax.name}</td>
-                                        <td>{tax.creator.name}</td>
+                                        <td>{item.code}</td>
+                                        <td>{item.title}</td>
                                         <td>
                                             <center>
                                                 {/* <i className={tax.status ? "fa  fa-check text-success" : "fa fa-close text-danger"}></i> */}
 
-                                                {tax.status ? (
+                                                {item.status ? (
                                                     <ConfirmNotification
                                                         icon="domain_verification"
                                                         name="domain_verification"
                                                         className="text-success"
                                                         title={"Click để thay đổi trạng thái"}
-                                                        content={`<h4>${"Vô hiệu hóa thuế " + tax.name}</h4>
-                                                        <br/> <h5>Điều này đồng nghĩa với việc không thể sử dụng loại thuế này về sau</h5>
-                                                        <h5>Tuy nhiên, đừng lo lắng vì dữ liệu liên quan về loại thuế này trước đó sẽ không bị ảnh hưởng</h5?`}
-                                                        func={() => this.disableTax(tax._id)}
+                                                        content={`<h4></h4>
+                                                        <br/> <h5></h5>
+                                                        <h5></h5?`}
+                                                        // func={() => this.disableTax(item._id)}
                                                     />
                                                 ) : (
                                                     <ConfirmNotification
                                                         icon="disabled_by_default"
                                                         name="disabled_by_default"
                                                         className="text-red"
-                                                        title={"Click để thay đổi trạng thái"}
-                                                        content={`<h4>${"Kích hoạt thuế " + tax.name}</h4>
-                                                    <br/> <h5>Điều này đồng nghĩa loại thuế này được mở khóa và có thể sử dụng</h5>`}
-                                                        func={() => this.disableTax(tax._id)}
+                                                        title={""}
+                                                        content={`<h4></h4>
+                                                    <br/> <h5></h5>`}
+                                                        // func={() => this.disableTax(item._id)}
                                                     />
                                                 )}
                                             </center>
@@ -234,21 +188,21 @@ class TaxManagementTable extends Component {
                                         <td style={{ textAlign: "center" }}>
                                             <a
                                                 style={{ width: "5px" }}
-                                                title={"Xem chi tiết thuế"}
-                                                onClick={() => {
-                                                    this.handleShowDetailTax(tax._id);
-                                                }}
+                                                title={"Xem chi tiết"}
+                                                // onClick={() => {
+                                                //     this.handleShowDetailSLA(item._id);
+                                                // }}
                                             >
                                                 <i className="material-icons">view_list</i>
                                             </a>
-                                            {tax.status ? (
+                                            {item.status ? (
                                                 <a
                                                     className="edit text-yellow"
                                                     style={{ width: "5px" }}
-                                                    title={"Sửa thông tin thuế"}
-                                                    onClick={() => {
-                                                        this.handleEditTax(tax);
-                                                    }}
+                                                    title={"Sửa thông tin"}
+                                                    // onClick={() => {
+                                                    //     this.handleEditSLA(item);
+                                                    // }}
                                                 >
                                                     <i className="material-icons">edit</i>
                                                 </a>
@@ -256,26 +210,18 @@ class TaxManagementTable extends Component {
                                                 ""
                                             )}
                                             <DeleteNotification
-                                                content={"Bạn có chắc chắn muốn xóa thuế này"}
+                                                content={"Bạn có chắc chắn muốn xóa cam kết này"}
                                                 data={{
-                                                    id: tax._id,
-                                                    info: tax.name,
+                                                    id: item._id,
+                                                    info: item.title,
                                                 }}
-                                                func={() => this.deleteTax(tax.code)}
+                                                // func={() => this.deleteSLA(item.code)}
                                             />
                                         </td>
                                     </tr>
                                 ))}
                         </tbody>
                     </table>
-                    {taxs.isLoading ? (
-                        <div className="table-info-panel">{translate("confirm.loading")}</div>
-                    ) : (
-                        (typeof listTaxs === "undefined" || listTaxs.length === 0) && (
-                            <div className="table-info-panel">{translate("confirm.no_data")}</div>
-                        )
-                    )}
-                    <PaginateBar pageTotal={totalPages ? totalPages : 0} currentPage={page} func={this.setPage} />
                 </div>
             </React.Fragment>
         );
@@ -283,14 +229,14 @@ class TaxManagementTable extends Component {
 }
 
 function mapStateToProps(state) {
-    const { taxs } = state;
-    return { taxs };
+    const { serviceLevelAgreements } = state;
+    return { serviceLevelAgreements };
 }
 
 const mapDispatchToProps = {
-    getAllTaxs: TaxActions.getAllTaxs,
-    disableTax: TaxActions.disableTax,
-    deleteTax: TaxActions.deleteTax,
+    getAllSLAs: SLAActions.getAllSLAs,
+    disableSLA: SLAActions.disableSLA,
+    deleteSLA: SLAActions.deleteSLA,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(TaxManagementTable));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(SLAMangementTable));
