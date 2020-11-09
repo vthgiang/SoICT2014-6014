@@ -24,6 +24,7 @@ export function customers(state = initState, action) {
         case CrmCustomerConstants.GET_CRM_CUSTOMER_REQUEST:
         case CrmCustomerConstants.EDIT_CRM_CUSTOMER_REQUEST:
         case CrmCustomerConstants.DELETE_CRM_CUSTOMER_REQUEST:
+        case CrmCustomerConstants.IMPORT_CRM_CUSTOMER_REQUEST:
 
             return {
                 ...state,
@@ -35,6 +36,7 @@ export function customers(state = initState, action) {
         case CrmCustomerConstants.GET_CRM_CUSTOMER_FAILE:
         case CrmCustomerConstants.EDIT_CRM_CUSTOMER_FAILE:
         case CrmCustomerConstants.DELETE_CRM_CUSTOMER_FAILE:
+        case CrmCustomerConstants.IMPORT_CRM_CUSTOMER_FAILE:
             return {
                 ...state,
                 isLoading: false
@@ -61,6 +63,13 @@ export function customers(state = initState, action) {
                 list: [action.payload, ...state.list],
                 isLoading: false
             };
+        
+        case CrmCustomerConstants.IMPORT_CRM_CUSTOMER_SUCCESS:
+            return {
+                ...state,
+                list: [...action.payload, ...state.list],
+                isLoading: false,
+            }
 
         case CrmCustomerConstants.EDIT_CRM_CUSTOMER_SUCCESS:
             return {

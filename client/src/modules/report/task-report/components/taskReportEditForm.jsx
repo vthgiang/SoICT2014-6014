@@ -25,12 +25,6 @@ class TaskReportEditForm extends Component {
     }
 
     componentDidMount() {
-        // get department of current user 
-        this.props.getDepartment();
-        // lấy tất cả nhân viên của công ty
-        this.props.getAllUserOfCompany();
-        // Lấy tất cả nhân viên trong công ty
-        this.props.getAllUserInAllUnitsOfCompany();
         this.props.getTaskTemplateByUser(1, 0, []);
         this.props.getRoleSameDepartment(localStorage.getItem("currentRole"));
     }
@@ -39,12 +33,11 @@ class TaskReportEditForm extends Component {
      * Hàm xử lý sự kiện thay đổi đơn vị
      * @param {*} e 
      */
-    handleReportOrganizationalUnitChangeEditForm = (value) => {
+    handleReportOrganizationalUnitChangeEditForm = (e) => {
+        let { value } = e.target;
         let { editingReport } = this.state;
-        value = value[0];
-
         if (value) {
-            this.props.getAllUserOfDepartment(value);
+            // this.props.getAllUserOfDepartment(value);
             this.props.getChildrenOfOrganizationalUnits(value);
             this.setState({
                 editingReport: {
@@ -52,7 +45,6 @@ class TaskReportEditForm extends Component {
                     organizationalUnit: value,
                     responsibleEmployees: [],
                     accountableEmployees: [],
-                    readByEmployees: [],
                     taskTemplate: '',
                 },
                 nameErrorEditForm: undefined,
@@ -670,6 +662,9 @@ class TaskReportEditForm extends Component {
             listTaskTemplate = tasktemplates.items.filter(function (taskTemplate) {
                 return taskTemplate.organizationalUnit._id === editingReport.organizationalUnit
             })
+
+            listTaskTemplate = listTaskTemplate.map(o => ({ value: o._id, text: o.name }));
+            listTaskTemplate.unshift({ value: '', text: '---Chọn---' });
         }
 
         return (
@@ -688,19 +683,12 @@ class TaskReportEditForm extends Component {
                             <div className={`form-group `}>
                                 <label className="control-label">Đơn vị <span className="text-red">*</span></label>
                                 {
-                                    units && units.length > 0 &&
-                                    <SelectBox
-                                        id="editOrganizationalUnitId"
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={editingReport.organizationalUnit}
-                                        onChange={this.handleReportOrganizationalUnitChangeEditForm}
-                                        items={
-                                            units.map(o => ({ value: o._id, text: o.name }))
-                                        }
-                                        options={{ minimumResultsForSearch: 100 }}
-                                        multiple={false}
-                                    />
+                                    units &&
+                                    <select value={editingReport.organizationalUnit} className="form-control" onChange={this.handleReportOrganizationalUnitChangeEditForm}>
+                                        {units.map(x => {
+                                            return <option key={x._id} value={x._id}>{x.name}</option>
+                                        })}
+                                    </select>
                                 }
                             </div>
                         </div>
@@ -740,7 +728,7 @@ class TaskReportEditForm extends Component {
                                         value={editingReport.taskTemplate}
                                         onChange={this.handleTaskTemplateChangeEditForm}
                                         items={
-                                            listTaskTemplate.map(o => ({ value: o._id, text: o.name }))
+                                            listTaskTemplate
                                         }
                                         multiple={false}
                                     />
@@ -1100,18 +1088,18 @@ class TaskReportEditForm extends Component {
     }
 }
 
-const mapState = state => state;
+function mapState(state) {
+    const { user, reports, tasktemplates } = state;
+    return { user, reports, tasktemplates };
+}
+
 const actionCreators = {
     getTaskReportById: TaskReportActions.getTaskReportById,
     editTaskReport: TaskReportActions.editTaskReport,
 
     getTaskTemplateByUser: taskTemplateActions.getAllTaskTemplateByUser,
-    getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
 
-    getAllUserOfCompany: UserActions.getAllUserOfCompany,
-    getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
-    getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
-    getDepartment: UserActions.getDepartmentOfUser,
+    getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
     getRoleSameDepartment: UserActions.getRoleSameDepartment,
 };
 const editReport = connect(mapState, actionCreators)(withTranslate(TaskReportEditForm));

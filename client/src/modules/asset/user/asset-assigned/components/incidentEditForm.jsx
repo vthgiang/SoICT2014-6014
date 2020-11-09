@@ -12,7 +12,7 @@ class IncidentEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            managedBy : this.props.managedBy?this.props.managedBy:''
+            managedBy: this.props.managedBy ? this.props.managedBy : ''
         };
     }
 
@@ -120,7 +120,7 @@ class IncidentEditForm extends Component {
     }
 
     save = () => {
-        let { managedBy } =this.state;
+        let { managedBy } = this.state;
         var partIncident = this.state.dateOfIncident.split('-');
         var dateOfIncident = [partIncident[2], partIncident[1], partIncident[0]].join('-');
         let assetId = !this.state.asset ? this.props.assetsManager.listAssets[0]._id : this.state.asset._id;
@@ -135,7 +135,7 @@ class IncidentEditForm extends Component {
                 status: this.state.type,
                 assetId
             }
-            return this.props.updateIncident(this.props._id, dataToSubmit,managedBy);
+            return this.props.updateIncident(this.props._id, dataToSubmit, managedBy);
         }
     };
 
@@ -261,13 +261,13 @@ class IncidentEditForm extends Component {
                                     placeholder={translate('asset.general_information.content')}></textarea>
                                 <ErrorLabel content={errorOnDescription} />
                             </div>
-                            
+
                             {/* Trạng thái */}
                             <div className="form-group">
                                 <label>{translate('asset.general_information.status')}</label>
                                 <select className="form-control" value={statusIncident} name="type" onChange={this.handleStatusIncidentChange}>
-                                    <option value="Chờ xử lý">{translate('asset.general_information.waiting')}</option>
-                                    <option value="Đã xử lý">{translate('asset.general_information.processed')}</option>
+                                    <option value="1">{translate('asset.general_information.waiting')}</option>
+                                    <option value="2">{translate('asset.general_information.processed')}</option>
                                 </select>
                             </div>
                         </div>

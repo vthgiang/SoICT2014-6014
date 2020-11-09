@@ -163,8 +163,8 @@ class MaintainanceEditForm extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result = this.validateCreateDate(this.state.createDate, false) 
-        
+        let result = this.validateCreateDate(this.state.createDate, false)
+
         return result;
     }
 
@@ -270,9 +270,9 @@ class MaintainanceEditForm extends Component {
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={[
-                                            { value: 1, text: translate('asset.asset_info.repair') },
-                                            { value: 2, text: translate('asset.asset_info.replace') },
-                                            { value: 3, text: translate('asset.asset_info.upgrade') }
+                                            { value: "1", text: translate('asset.asset_info.repair') },
+                                            { value: "2", text: translate('asset.asset_info.replace') },
+                                            { value: "3", text: translate('asset.asset_info.upgrade') }
                                         ]}
                                         onChange={this.handleTypeChange}
                                         multiple={false}
@@ -297,7 +297,7 @@ class MaintainanceEditForm extends Component {
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 {/* Nội dung */}
                                 <div className={`form-group ${!errorOnDescription ? "" : "has-error"}`}>
                                     <label>{translate('asset.general_information.content')}</label>
@@ -343,9 +343,9 @@ class MaintainanceEditForm extends Component {
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={[
-                                            { value: 1, text: translate('asset.asset_info.unfulfilled') },
-                                            { value: 2, text: translate('asset.asset_info.processing') },
-                                            { value: 3, text: translate('asset.asset_info.made') },
+                                            { value: "1", text: translate('asset.asset_info.unfulfilled') },
+                                            { value: "2", text: translate('asset.asset_info.processing') },
+                                            { value: "3", text: translate('asset.asset_info.made') },
                                         ]}
                                         onChange={this.handleStatusChange}
                                         multiple={false}

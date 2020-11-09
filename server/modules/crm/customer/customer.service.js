@@ -1,6 +1,5 @@
-const { Customer } = require(`${SERVER_MODELS_DIR}`);
+const { Customer,User } = require(`${SERVER_MODELS_DIR}`);
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
-
 
 exports.getUrl = (destination, filename) => {
     let url = `${destination}/${filename}`;
@@ -14,21 +13,24 @@ exports.getUrl = (destination, filename) => {
  * @param {*} data dữ liệu thông tin khách hàng
  * @param {*} userId  id người tạo
  */
+exports.formatDate = (value) => {
+    const date = value.split('-');
+    return [date[2],date[1],date[0]].join("-");
+}
+
 
 exports.createCustomer = async (portal, companyId, data, userId, fileConverts) => {
     let {companyEstablishmentDate, birthDate, files} = data;
     //format birthDate yy-mm-dd
     if (birthDate) {
-        const date = birthDate.split('-');
-        birthDate = [date[2], date[1], date[0]].join("-");
+        birthDate = this.formatDate(birthDate);
 
         data = { ...data, birthDate }; // merge giá trị mới của birthDate vào data
     }
 
     // format companyEstablishmentDate yy-mm-dd
     if (companyEstablishmentDate) {
-        const date = companyEstablishmentDate.split('-');
-        companyEstablishmentDate = [date[2], date[1], date[0]].join('-');
+        companyEstablishmentDate = this.formatDate(companyEstablishmentDate);
 
         data = { ...data, companyEstablishmentDate }; // merge giá trị mới của companyEstablishmentDate vào data
     }
@@ -62,9 +64,59 @@ exports.createCustomer = async (portal, companyId, data, userId, fileConverts) =
     const getNewCustomer = await Customer(connect(DB_CONNECTION, portal)).findById(newCustomer._id)
         .populate({ path: 'group', select: '_id name' })
         .populate({ path: 'status', select: '_id name' })
-        .populate({ path: 'owner', select: '_id name' })
-        .populate({path: 'creator',select: '_id name'})
+        .populate({ path: 'owner', select: '_id name email' })
+        .populate({path: 'creator',select: '_id name email'})
     return getNewCustomer;
+}
+
+
+exports.importCustomers = async (portal, companyId, data, userId) => {
+    for ([index, x] of data.entries()) {
+        x["creator"] = userId;
+        let owners = [];
+        for (y of x.owner) {
+            let owner = await User(connect(DB_CONNECTION, portal)).findOne({ email: y });
+            if (owner) {
+                owner = owner._id;
+                owners = [...owners, owner];
+            }
+        }
+        data[index].owner = owners;
+
+        // format lai định dạng date trước khi lưu
+        if (x.birthDate) {
+            x.birthDate = this.formatDate(x.birthDate);
+        }
+
+        if (x.companyEstablishmentDate) {
+            x.companyEstablishmentDate = this.formatDate(x.companyEstablishmentDate);
+        }
+
+        // ghi lại lịch sử tạo khách hàng
+
+        if (x.status && x.status.length > 0) {
+            x["statusHistories"] = [{
+                oldValue: x.status[x.status.length - 1],
+                newValue: x.status[x.status.length - 1],
+                createdAt: new Date(),
+                createdBy: userId,
+            }]
+        }
+    }
+
+    const result = await Customer(connect(DB_CONNECTION, portal)).insertMany(data);
+    
+    let getResult = [];
+    for (let obj of result) {
+        const newObj = await Customer(connect(DB_CONNECTION, portal)).findOne({ _id: obj._id })
+        .populate({ path: 'group', select: '_id name' })
+        .populate({ path: 'status', select: '_id name' })
+        .populate({ path: 'owner', select: '_id name email' });
+        if (newObj) {
+            getResult.push(newObj);
+        }
+    }
+    return getResult;
 }
 
 /**
@@ -82,7 +134,7 @@ exports.getCustomers = async (portal, companyId, query) => {
         .skip(parseInt(page)).limit(parseInt(limit))
         .populate({ path: 'group', select: '_id name' })
         .populate({ path: 'status', select: '_id name' })
-        .populate({ path: 'owner', select: '_id name' });
+        .populate({ path: 'owner', select: '_id name email' });
     
     return { listDocsTotal, customers };
 }
@@ -97,8 +149,8 @@ exports.getCustomerById = async (portal, companyId, id) => {
     const getCustomer = await Customer(connect(DB_CONNECTION, portal)).findById(id)
         .populate({ path: 'group', select: '_id name' })
         .populate({ path: 'status', select: '_id name' })
-        .populate({ path: 'owner', select: '_id name' })
-        .populate({path: 'creator', select: '_id name'})
+        .populate({ path: 'owner', select: '_id name email' })
+        .populate({path: 'creator', select: '_id name email'})
         .populate({path: 'statusHistories.oldValue statusHistories.newValue statusHistories.createdBy', select: '_id name'})
     return getCustomer;
 }
@@ -168,8 +220,8 @@ exports.editCustomer = async (portal, companyId, id, data, userId,fileInfo) => {
     return await Customer(connect(DB_CONNECTION, portal)).findOne({ _id: id })
         .populate({ path: 'group', select: '_id name' })
         .populate({ path: 'status', select: '_id name' })
-        .populate({ path: 'owner', select: '_id name' })
-        .populate({ path: 'creator', select: '_id name' })
+        .populate({ path: 'owner', select: '_id name email' })
+        .populate({ path: 'creator', select: '_id name email' })
         .populate({path: 'statusHistories.oldValue statusHistories.newValue statusHistories.createdBy', select: '_id name'})
 }
 

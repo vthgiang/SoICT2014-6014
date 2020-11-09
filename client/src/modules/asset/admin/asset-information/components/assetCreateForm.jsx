@@ -18,9 +18,9 @@ class AssetCreateForm extends Component {
         super(props);
         this.state = {
             img: process.env.REACT_APP_SERVER + '/upload/asset/pictures/picture5.png',
-            avatar: "",
+            avatar: "./upload/asset/pictures/picture5.png",
             asset: {
-                avatar: '/upload/asset/pictures/picture5.png',
+                avatar: './upload/asset/pictures/picture5.png',
                 purchaseDate: this.formatDate2(Date.now()),
                 warrantyExpirationDate: this.formatDate2(Date.now()),
                 assignedToUser: null,
@@ -169,11 +169,11 @@ class AssetCreateForm extends Component {
             // this.validatorInput(asset.managedBy) &&
             this.validatorInput(asset.status) &&
             this.validatorInput(asset.typeRegisterForUse) &&
-            this.validatorInput(asset.group) &&
-            this.validatorInput(asset.cost) &&
-            this.validatorInput(asset.usefulLife) &&
-            this.validatorInput(asset.startDepreciation) &&
-            this.validatorInput(asset.depreciationType);
+            this.validatorInput(asset.group)
+        // this.validatorInput(asset.cost) &&
+        // this.validatorInput(asset.usefulLife) &&
+        // this.validatorInput(asset.startDepreciation) &&
+        // this.validatorInput(asset.depreciationType);
 
         return result;
     }
@@ -202,7 +202,8 @@ class AssetCreateForm extends Component {
 
     render() {
         const { translate, assetsManager } = this.props;
-        const { img, asset, maintainanceLogs, usageLogs, incidentLogs, files } = this.state;
+        const { img, asset, maintainanceLogs, usageLogs, incidentLogs, files, avatar } = this.state;
+
         return (
             <React.Fragment>
                 {/* <ButtonModal modalID="modal-add-asset" button_name={translate('menu.add_asset')} title={translate('menu.add_asset')} /> */}
@@ -230,6 +231,7 @@ class AssetCreateForm extends Component {
                             <GeneralTab
                                 id={`create_general`}
                                 img={img}
+                                avatar={avatar}
                                 handleChange={this.handleChange}
                                 handleUpload={this.handleUpload}
                                 asset={asset}

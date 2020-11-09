@@ -308,7 +308,7 @@ function mapState(state) {
 }
 
 const actions = {
-    editEmployeeCollaboratedWithOrganizationalUnits: performTaskAction.editEmployeeCollaboratedWithOrganizationalUnits,
+    editEmployeeCollaboratedWithOrganizationalUnits: performTaskAction.editEmployeeCollaboratedWithOrganizationalUnits
 }
 
 const connectedCollaboratedWithOrganizationalUnits = connect(mapState, actions)(withTranslate(CollaboratedWithOrganizationalUnits));

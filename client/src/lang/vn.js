@@ -762,6 +762,8 @@ export default {
                 see: 'Xem thông tin khách hàng',
                 edit: 'Chỉnh sửa thông tin khách hàng',
                 delete: 'Xóa thông tin khách hàng',
+                cannot_be_empty: 'không được để trống',
+                value_duplicate: 'bị trùng lặp',
             },
             group: {
                 name: 'Tên nhóm khách hàng',
