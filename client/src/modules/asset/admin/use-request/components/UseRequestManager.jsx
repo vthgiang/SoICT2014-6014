@@ -332,9 +332,9 @@ class UseRequestManager extends Component {
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('page.all_status') }}
                                 onChange={this.handleStatusChange}
                                 items={[
-                                    { value: "Đã phê duyệt", text: translate('asset.usage.approved') },
-                                    { value: "Chờ phê duyệt", text: translate('asset.usage.waiting_approval') },
-                                    { value: "Không phê duyệt", text: translate('asset.usage.not_approved') }
+                                    { value: "approved", text: translate('asset.usage.approved') },
+                                    { value: "waiting_for_approval", text: translate('asset.usage.waiting_approval') },
+                                    { value: "disapproved", text: translate('asset.usage.not_approved') }
                                 ]}
                             >
                             </SelectMulti>
@@ -393,7 +393,7 @@ class UseRequestManager extends Component {
                                         <td>{x.asset ? x.asset.assetName : 'Asset is deleted'}</td>
                                         <td>{this.formatDate2(x.dateStartUse)}</td>
                                         <td>{this.formatDate2(x.dateEndUse)}</td>
-                                        <td>{x.approver ? x.approver.name : 'User is deleted'}</td>
+                                        <td>{x.approver ? x.approver.name : ''}</td>
                                         <td>{this.formatStatus(x.status)}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_usage_info')}><i className="material-icons">edit</i></a>
@@ -462,6 +462,7 @@ class UseRequestManager extends Component {
                         description={currentRowEditAsset.description}
                         status={currentRowEditAsset.status}
                         canRegisterForUse={currentRowEditAsset.canRegisterForUse}
+                        typeRegisterForUse={currentRowEditAsset.typeRegisterForUse}
                         detailInfo={currentRowEditAsset.detailInfo}
                         readByRoles={currentRowEditAsset.readByRoles}
                         cost={currentRowEditAsset.cost}

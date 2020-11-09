@@ -1,8 +1,7 @@
 export * from './agePyramidChart';
 export * from './employeeDashBoard';
-export * from './barAndLineChart';
-export * from './multipleBarChart';
-export * from './employeeDashBoardHeader';
+// export * from './barAndLineChart';
+// export * from './multipleBarChart';
 export * from './annualLeaveTrendsChart';
 export * from './humanResourceChartBySalary';
 export * from './humanResourceIncreaseAndDecreaseChart';
@@ -13,3 +12,4 @@ export * from './trendOfOvertime';
 export * from './tabHumanResource';
 export * from './tabSalary';
 export * from './tabAnualLeave';
+export * from './tabIntegratedStatistics';

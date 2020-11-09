@@ -49,16 +49,27 @@ class AssetImportForm extends Component {
             importUsageInformationData
         } = this.state;
 
-        let asset = {
-            ...importGeneralInformationData[0],
-            ...importDepreciationInformationData[0],
-            ...importDisposalInformationData[0],
-            maintainanceLogs: importMaintainanceInformationData,
-            usageLogs: importUsageInformationData,
-            incidentLogs: importIncidentInformationData,
+        let assets = [];
+        if (importGeneralInformationData && importGeneralInformationData.length !== 0) {
+            importGeneralInformationData.map((asset) => {
+                let importDisposalTemporary = importDisposalInformationData.filter(item => item.code === asset.code);
+                let importDepreciationTemporary = importDepreciationInformationData.filter(item => item.code === asset.code);
+                assets.push({
+                    ...asset,
+                    ...importDepreciationTemporary[0],
+                    ...importDisposalTemporary[0],
+                    maintainanceLogs: importMaintainanceInformationData.filter(item => item.code === asset.code),
+                    usageLogs: importUsageInformationData.filter(item => item.code === asset.code),
+                    incidentLogs: importIncidentInformationData.filter(item => item.code === asset.code),
+                })
+            })
         }
-
-        this.props.addNewAsset(asset)
+        
+        if (assets && assets.length !== 0) {
+            assets.map(item => {
+                this.props.addNewAsset(item)
+            })
+        }
     }
 
     isFormValidated = () => {
@@ -113,7 +124,7 @@ class AssetImportForm extends Component {
 
         // Sự cố tài sản
         incidentType = ["Hỏng hóc", "Mất"];
-        incidentStatus = ["Chờ xử lý", "Đấ xử lý"];
+        incidentStatus = ["Chờ xử lý", "Đã xử lý"];
 
         // Bảo trì tài sản
         maintainanceType = ["Sửa chữa", "Thay thế", "Nâng cấp"];
@@ -150,7 +161,7 @@ class AssetImportForm extends Component {
             roles.length, assetLocations.length, assetGroups.length, status.length,
             typeRegisterForUse.length, depreciationType.length, incidentType.length,
             incidentStatus.length, maintainanceType.length, maintainanceStatus.length, disposalType.length);
-        
+
         for (let i = 0; i < length; i++) {
             data.push({
                 userList: userList[i] ? userList[i] : "",
@@ -246,6 +257,7 @@ class AssetImportForm extends Component {
                 let dataTemporary = data[index];
 
                 let out = {
+                    code: dataTemporary.code,
                     cost: Number(dataTemporary.cost),
                     residualValue: Number(dataTemporary.residualValue),
                     usefulLife: Number(dataTemporary.usefulLife),
@@ -270,6 +282,7 @@ class AssetImportForm extends Component {
                 let dataTemporary = data[index];
 
                 let out = {
+                    code: dataTemporary.code,
                     usedByUser: userList && userList[0] ? userList[0] : "",
                     usedByOrganizationalUnit: departmentList && departmentList[0] ? departmentList[0] : "",
                     startDate: dataTemporary.startDate,
@@ -294,6 +307,7 @@ class AssetImportForm extends Component {
                 let dataTemporary = data[index];
 
                 let out = {
+                    code: dataTemporary.code,
                     incidentCode: dataTemporary.incidentCode,
                     type: incidentType[0],
                     reportedBy: userList && userList[0] ? userList[0] : "",
@@ -319,6 +333,7 @@ class AssetImportForm extends Component {
                 let dataTemporary = data[index];
 
                 let out = {
+                    code: dataTemporary.code,
                     maintainanceCode: dataTemporary.maintainanceCode,
                     createDate: dataTemporary.createDate,
                     type: maintainanceType[0],
@@ -346,6 +361,7 @@ class AssetImportForm extends Component {
                 let dataTemporary = data[index];
 
                 let out = {
+                    code: dataTemporary.code,
                     disposalDate: dataTemporary.disposalDate,
                     disposalType: disposalType[0],
                     disposalCost: Number(dataTemporary.disposalCost),
@@ -473,16 +489,16 @@ class AssetImportForm extends Component {
 
                 item = { ...item, errorAlert: errorAlert };
                 importGeneralInformationData = [...importGeneralInformationData,
-                    {
-                        ...item,
-                        assetType: assetTypeArray.map(type => assetTypes[type]),
-                        readByRoles: roleArray.map(role => roles[role]),
-                        managedBy: managers[item.manager],
-                        location: assetLocations[item.location],
-                        group: assetGroups[item.group],
-                        typeRegisterForUse: typeRegisterForUse[item.typeRegisterForUse],
-                        status: status[item.status]
-                    }
+                {
+                    ...item,
+                    assetType: assetTypeArray.map(type => assetTypes[type]),
+                    readByRoles: roleArray.map(role => roles[role]),
+                    managedBy: managers[item.manager],
+                    location: assetLocations[item.location],
+                    group: assetGroups[item.group],
+                    typeRegisterForUse: typeRegisterForUse[item.typeRegisterForUse],
+                    status: status[item.status]
+                }
                 ];
 
                 return item;
@@ -545,10 +561,10 @@ class AssetImportForm extends Component {
 
                 item = { ...item, errorAlert: errorAlert };
                 importDepreciationInformationData = [...importDepreciationInformationData,
-                    {
-                        ...item,
-                        depreciationType: depreciationType[item.depreciationType]
-                    }
+                {
+                    ...item,
+                    depreciationType: depreciationType[item.depreciationType]
+                }
                 ]
                 return item;
             });
@@ -616,11 +632,11 @@ class AssetImportForm extends Component {
                 }
 
                 importUsageInformationData = [...importUsageInformationData,
-                    {
-                        ...item,
-                        usedByUser: item.usedByUser && userList[item.usedByUser],
-                        usedByOrganizationalUnit: item.usedByOrganizationalUnit && departmentList[item.usedByOrganizationalUnit]
-                    }
+                {
+                    ...item,
+                    usedByUser: item.usedByUser && userList[item.usedByUser],
+                    usedByOrganizationalUnit: item.usedByOrganizationalUnit && departmentList[item.usedByOrganizationalUnit]
+                }
                 ];
                 item = { ...item, errorAlert: errorAlert };
                 return item;
@@ -663,7 +679,7 @@ class AssetImportForm extends Component {
             value = value.map((item, index) => {
                 let errorAlert = [];
                 let incidentType = ["Hỏng hóc", "Mất"];
-                let status = ["Chờ xử lý", "Đấ xử lý"];
+                let status = ["Chờ xử lý", "Đã xử lý"];
 
                 if (!item.dateOfIncident || !item.description || (item.reportedBy && !userList[item.reportedBy])
                     || (item.type && !incidentType.includes(item.type))
@@ -694,10 +710,10 @@ class AssetImportForm extends Component {
                 }
 
                 importIncidentInformationData = [...importIncidentInformationData,
-                    {
-                        ...item,
-                        reportedBy: item.reportedBy && userList[item.reportedBy],
-                    }
+                {
+                    ...item,
+                    reportedBy: item.reportedBy && userList[item.reportedBy],
+                }
                 ]
                 item = { ...item, errorAlert: errorAlert };
                 return item;

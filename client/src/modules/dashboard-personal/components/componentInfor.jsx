@@ -2,14 +2,20 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DatePicker, SelectBox, ApiImage } from '../../../common-components';
+import { DatePicker, SelectBox } from '../../../common-components';
 
-import { ViewAllTasks, ViewAllOverTime, ViewAllSalary, TrendWorkChart } from './combinedContent';
+import { ViewAllTasks, ViewAllOverTime, TrendWorkChart, ViewBirthdayList } from './combinedContent';
+import { ViewAllCommendation, ViewAllDiscipline } from '../../dashboard-unit/components/combinedContent';
 
-import { SalaryActions } from '../../human-resource/salary/redux/actions';
+import { DisciplineActions } from '../../human-resource/commendation-discipline/redux/actions';
+import { AnnualLeaveActions } from '../../human-resource/annual-leave/redux/actions';
+import { WorkPlanActions } from '../../human-resource/work-plan/redux/actions';
 import { TimesheetsActions } from '../../human-resource/timesheets/redux/actions';
+import { EmployeeManagerActions } from '../../human-resource/profile/employee-management/redux/actions'
 import { taskManagementActions } from '../../task/task-management/redux/actions';
+import { createKpiSetActions } from '../../kpi/employee/creation/redux/actions';
 import { UserActions } from '../../super-admin/user/redux/actions';
+
 
 class ComponentInfor extends Component {
     constructor(props) {
@@ -48,14 +54,27 @@ class ComponentInfor extends Component {
         const { month, organizationalUnits } = this.state;
         let partMonth = month.split('-');
         let monthNew = [partMonth[1], partMonth[0]].join('-');
-        this.props.searchSalary({ callApiDashboard: true, organizationalUnits: organizationalUnits, month: monthNew });
+
+        /* Lấy dánh sách khen thưởng, kỷ luật */
+        this.props.getListPraise({ organizationalUnits: organizationalUnits, month: monthNew });
+        this.props.getListDiscipline({ organizationalUnits: organizationalUnits, month: monthNew });
 
         /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
         this.props.getAllEmployeeOfUnitByIds(organizationalUnits);
         this.props.getTaskInOrganizationUnitByMonth(organizationalUnits, monthNew, monthNew);
 
+        /* Lấy dữ liệu kết quả kpi của nhân viên */
+        this.props.getAllEmployeeKpiSetByMonth(undefined, localStorage.getItem("userId"), monthNew, "2020-12");
+
         /* Lấy dữ liệu nghỉ phép tăng ca của nhân viên trong công ty */
-        this.props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: monthNew, endDate: monthNew })
+        this.props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: monthNew, endDate: monthNew });
+
+        /* Lấy số ngày nghỉ phép còn lại của nhân viên */
+        this.props.getNumberAnnaulLeave({ numberAnnulLeave: true, year: partMonth[1] });
+        this.props.getListWorkPlan({ year: partMonth[1] });
+
+        /* Lấy danh sách nhân viên theo tháng sinh*/
+        this.props.getAllEmployee({ status: 'active', page: 0, limit: 10000, birthdate: monthNew, organizationalUnits: organizationalUnits });
     }
 
     /**
@@ -83,19 +102,42 @@ class ComponentInfor extends Component {
         const { month, organizationalUnits } = this.state;
         let partMonth = month.split('-');
         let monthNew = [partMonth[1], partMonth[0]].join('-');
-        this.props.searchSalary({ callApiDashboard: true, organizationalUnits: organizationalUnits, month: monthNew });
+
+        /* Lấy dánh sách khen thưởng, kỷ luật */
+        this.props.getListPraise({ organizationalUnits: organizationalUnits, month: monthNew });
+        this.props.getListDiscipline({ organizationalUnits: organizationalUnits, month: monthNew });
 
         /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
         this.props.getAllEmployeeOfUnitByIds(organizationalUnits);
         this.props.getTaskInOrganizationUnitByMonth(organizationalUnits, monthNew, monthNew);
 
-        /* Lấy dữ liệu nghỉ phép tăng ca của nhân viên trong công ty */
-        this.props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: monthNew, endDate: monthNew })
+        /* Lấy dữ liệu kết quả kpi của nhân viên */
+        this.props.getAllEmployeeKpiSetByMonth(undefined, localStorage.getItem("userId"), monthNew, "2020-12");
+
+        /* Lấy dữ liệu nghỉ phép tăng ca của nhân viên */
+        this.props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: monthNew, endDate: monthNew });
+
+        /* Lấy số ngày nghỉ phép còn lại của nhân viên */
+        this.props.getNumberAnnaulLeave({ numberAnnulLeave: true, year: partMonth[1] });
+        this.props.getListWorkPlan({ year: partMonth[1] });
+
+        /* Lấy danh sách nhân viên theo tháng sinh*/
+        this.props.getAllEmployee({ status: 'active', page: 0, limit: 10000, birthdate: monthNew, organizationalUnits: organizationalUnits });
     }
 
     /** Function xem tất cả bảng tổng hợp công việc*/
     viewAllTasks = () => {
         window.$('#modal-view-all-task').modal('show');
+    }
+
+    /** Function xem tất cả bảng tổng hợp khen thưởng*/
+    viewAllCommendation = () => {
+        window.$('#modal-view-all-commendation').modal('show');
+    }
+
+    /** Function xem tất cả bảng tổng hợp kỷ luật*/
+    viewAllDiscipline = () => {
+        window.$('#modal-view-all-discipline').modal('show');
     }
 
     /** Function xem tất cả tình hình tăng ca */
@@ -114,32 +156,30 @@ class ComponentInfor extends Component {
         window.$(`#modal-view-${"hoursOff"}`).modal('show');
     }
 
-    /**  */
-    viewAllSalary = () => {
-        window.$(`#modal-view-all-salary`).modal('show');
+    /** Function xem danh sách sinh nhật */
+    ViewBirthdayList = () => {
+        window.$(`#modal-view-birthday-list`).modal('show');
     }
 
     render() {
-        const { department, translate, salary, timesheets, tasks, user } = this.props;
+        const { discipline, translate, timesheets, tasks, user, workPlan, annualLeave, employeesManager, createEmployeeKpiSet } = this.props;
 
         const { month, organizationalUnits, viewOverTime, viewHoursOff } = this.state;
 
         const { organizationalUnitsOfUser } = this.props;
 
-        /* Lấy dữ liệu lương thưởng của nhân viên trong đơn vị */
-        let dataSalary = salary.listSalaryByMonthAndOrganizationalUnits;
-        if (dataSalary.length !== 0) {
-            dataSalary = dataSalary.map(x => {
-                let total = parseInt(x.mainSalary);
-                if (x.bonus.length !== 0) {
-                    for (let count in x.bonus) {
-                        total = total + parseInt(x.bonus[count].number)
-                    }
-                };
-                return { ...x, total: total }
-            })
-        };
-        dataSalary = dataSalary.sort((a, b) => b.total - a.total);
+        let partMonth = month.split('-');
+        let year = partMonth[1];
+
+        console.log('employeeKpiSetByMonth', createEmployeeKpiSet.employeeKpiSetByMonth);
+
+        /* Lấy số ngày nghỉ phép còn lại của nhân viên */
+        let numberAnnualLeave = 0;
+        if (workPlan.maximumNumberOfLeaveDays && annualLeave.numberAnnulLeave && workPlan.maximumNumberOfLeaveDays - annualLeave.numberAnnulLeave > 0) {
+            numberAnnualLeave = workPlan.maximumNumberOfLeaveDays - annualLeave.numberAnnulLeave
+        } else if (annualLeave.numberAnnulLeave === 0 && workPlan.maximumNumberOfLeaveDays) {
+            numberAnnualLeave = workPlan.maximumNumberOfLeaveDays;
+        }
 
         /* Lấy dữ liệu công việc của môi nhân viên trong đơn vị */
         let taskListByStatus = tasks.organizationUnitTasks ? tasks.organizationUnitTasks.tasks : null;
@@ -161,11 +201,18 @@ class ComponentInfor extends Component {
                     if (listEmployee[i].userId._id == task.informedEmployees[j])
                         count += 1;
             });
-            employeeTasks = [...employeeTasks, { name: listEmployee[i].userId.name, totalTask: count }]
+            employeeTasks = [...employeeTasks, { _id: listEmployee[i].userId._id, name: listEmployee[i].userId.name, totalTask: count }]
         };
         if (employeeTasks.length !== 0) {
             employeeTasks = employeeTasks.sort((a, b) => b.totalTask - a.totalTask);
         };
+
+        /* Lấy tổng số công việc làm trong tháng của nhân viên */
+        let totalTask = 0;
+        let taskPersonal = employeeTasks.find(x => x._id === localStorage.getItem("userId"));
+        if (taskPersonal) {
+            totalTask = taskPersonal.totalTask;
+        }
 
         /* Lấy dữ liệu tăng ca và nghỉ phép của mỗi nhân viên trong đơn vị */
         let listOvertimeOfUnitsByStartDateAndEndDate = timesheets.listOvertimeOfUnitsByStartDateAndEndDate;
@@ -181,8 +228,8 @@ class ComponentInfor extends Component {
 
                 }
             });
-            employeeOvertime = [...employeeOvertime, { name: listEmployee[i].userId.name, totalHours: totalOvertime }];
-            employeeHoursOff = [...employeeHoursOff, { name: listEmployee[i].userId.name, totalHours: totalHoursOff }];
+            employeeOvertime = [...employeeOvertime, { _id: listEmployee[i].userId._id, name: listEmployee[i].userId.name, totalHours: totalOvertime }];
+            employeeHoursOff = [...employeeHoursOff, { _id: listEmployee[i].userId._id, name: listEmployee[i].userId.name, totalHours: totalHoursOff }];
         };
         /* Sắp xếp theo thứ tự giảm dần */
         if (employeeOvertime.length !== 0) {
@@ -191,6 +238,17 @@ class ComponentInfor extends Component {
         if (employeeHoursOff.length !== 0) {
             employeeHoursOff = employeeHoursOff.sort((a, b) => b.totalHours - a.totalHours);
         };
+
+        /* Lấy tổng thời gian nghỉ phép cua nhân viên */
+        let totalOvertime = 0, totalHoursOff = 0;
+        let overtimePersonal = employeeOvertime.find(x => x._id === localStorage.getItem("userId"));
+        let hoursOffPersonal = employeeHoursOff.find(x => x._id === localStorage.getItem("userId"));
+        if (overtimePersonal) {
+            totalOvertime = overtimePersonal.totalHours
+        };
+        if (hoursOffPersonal) {
+            totalHoursOff = hoursOffPersonal.totalHours
+        }
 
         return (
             <React.Fragment>
@@ -223,6 +281,7 @@ class ComponentInfor extends Component {
                             <button type="button" className="btn btn-success" onClick={this.handleUpdateData}>{translate('kpi.evaluation.dashboard.analyze')}</button>
                         </div>
                         <div className="row">
+
                             {/* Nhắc việc */}
                             <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                 <div className="box box-solid">
@@ -236,8 +295,8 @@ class ComponentInfor extends Component {
                                                     <i className="fa fa-ellipsis-v"></i>
                                                     <i className="fa fa-ellipsis-v"></i>
                                                 </span>
-                                                <span className="text"><a href='/hr-annual-leave-personal' target="_blank">Số ngày nghỉ phép còn lại của bạn</a></span>
-                                                <small className="label label-success">5 ngày</small>
+                                                <span className="text"><a href='/hr-annual-leave-personal' target="_blank">Số ngày nghỉ phép còn lại trong năm {year}</a></span>
+                                                <small className="label label-success">{numberAnnualLeave} ngày</small>
                                             </li>
 
                                             <li>
@@ -245,23 +304,23 @@ class ComponentInfor extends Component {
                                                     <i className="fa fa-ellipsis-v"></i>
                                                     <i className="fa fa-ellipsis-v"></i>
                                                 </span>
-                                                <span className="text"><a href='/hr-annual-leave-personal' >Số nhân viên có sinh nhật</a></span>
-                                                <small className="label label-info">7 nhân viên</small>
+                                                <span className="text"><a style={{ cursor: 'pointer' }} onClick={this.ViewBirthdayList} >Số nhân viên có sinh nhật</a></span>
+                                                <small className="label label-info">{employeesManager.listEmployees ? employeesManager.listEmployees.length : 0} nhân viên</small>
                                             </li>
                                             <li>
                                                 <span className="handle">
                                                     <i className="fa fa-ellipsis-v"></i>
                                                     <i className="fa fa-ellipsis-v"></i>
                                                 </span>
-                                                <span className="text"><a href='/task-management' target="_blank">Tổng số công việc</a></span>
-                                                <small className="label label-warning">15 công việc</small>
+                                                <span className="text"><a href='/task-management-dashboard' target="_blank">Tổng số công việc</a></span>
+                                                <small className="label label-warning">{totalTask} công việc</small>
                                             </li>
                                             <li>
                                                 <span className="handle">
                                                     <i className="fa fa-ellipsis-v"></i>
                                                     <i className="fa fa-ellipsis-v"></i>
                                                 </span>
-                                                <span className="text"><a href='/task-management' target="_blank">Kết quả KPI</a></span>
+                                                <span className="text"><a target="_blank">Kết quả KPI</a></span>
                                                 <small className="label label-success">80 điểm</small>
                                             </li>
                                             <li>
@@ -269,16 +328,16 @@ class ComponentInfor extends Component {
                                                     <i className="fa fa-ellipsis-v"></i>
                                                     <i className="fa fa-ellipsis-v"></i>
                                                 </span>
-                                                <span className="text"><a href='/hr-annual-leave-personal'>Tổng thời gian tăng ca</a></span>
-                                                <small className="label label-primary">45 giờ</small>
+                                                <span className="text"><a style={{ pointerEvents: "none" }} >Tổng thời gian tăng ca</a></span>
+                                                <small className="label label-primary">{totalOvertime} giờ</small>
                                             </li>
                                             <li>
                                                 <span className="handle">
                                                     <i className="fa fa-ellipsis-v"></i>
                                                     <i className="fa fa-ellipsis-v"></i>
                                                 </span>
-                                                <span className="text"><a href='/hr-annual-leave-personal'>Tổng thời gian nghỉ phép</a></span>
-                                                <small className="label label-danger">45 giờ</small>
+                                                <span className="text"><a style={{ pointerEvents: "none" }} >Tổng thời gian nghỉ phép</a></span>
+                                                <small className="label label-danger">{totalHoursOff} giờ</small>
                                             </li>
                                         </ul>
                                     </div>
@@ -318,34 +377,83 @@ class ComponentInfor extends Component {
                                     </div>
                                 </div>
                             </div>
-                            {/* Top lương thưởng của đơn vị*/}
-                            <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        </div>
+                        <div className='row'>
+                            {/* Tổng hợp khen thưởng */}
+                            <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                 <div className="box box-solid">
                                     <div className="box-header with-border">
-                                        <h3 className="box-title">Top lương thưởng cao nhất {month}</h3>
+                                        <h3 className="box-title">Tổng hợp khen thưởng {month}</h3>
                                     </div>
-                                    <div className="box-body no-parding">
-                                        <ul className="users-list clearfix">
-                                            {
-                                                (dataSalary && dataSalary.length !== 0) ?
-                                                    dataSalary.map((x, index) => (
-                                                        index < 5 &&
-                                                        <li key={index} style={{ maxWidth: 200 }}>
-                                                            <ApiImage src={`.${x.employee.avatar}`} />
-                                                            <a className="users-list-name">{x.employee.fullName}</a>
-                                                            <span className="users-list-date">{x.employee.employeeNumber}</span>
-                                                        </li>
-                                                    ))
-                                                    : <li>{translate('kpi.evaluation.employee_evaluation.data_not_found')}</li>
-                                            }
-                                        </ul>
+                                    <div className="box-body">
+                                        <table className="table table-striped table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>STT</th>
+                                                    <th>Họ và tên</th>
+                                                    <th>Lý do khen thưởng </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {discipline.totalListCommendation.length !== 0 &&
+                                                    discipline.totalListCommendation.map((x, index) => index < 5 ? (
+                                                        <tr key={index}>
+                                                            <td>{index + 1}</td>
+                                                            <td>{x.employee.fullName}</td>
+                                                            <td>{x.reason}</td>
+                                                        </tr>
+                                                    ) : null)
+                                                }
+                                            </tbody>
+                                        </table>
+                                        {
+                                            (!discipline.totalListCommendation || discipline.totalListCommendation.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                        }
                                     </div>
                                     <div className="box-footer text-center">
-                                        <a style={{ cursor: 'pointer' }} onClick={this.viewAllSalary} className="uppercase">Xem tất cả</a>
+                                        <a style={{ cursor: 'pointer' }} onClick={this.viewAllCommendation} className="uppercase">Xem tất cả</a>
                                     </div>
                                 </div>
                             </div>
+                            {/* Tổng hợp kỷ luật */}
+                            <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                <div className="box box-solid">
+                                    <div className="box-header with-border">
+                                        <h3 className="box-title">Tổng hợp kỷ luật {month}</h3>
+                                    </div>
+                                    <div className="box-body">
+                                        <table className="table table-striped table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>STT</th>
+                                                    <th>Họ và tên</th>
+                                                    <th>Lý do kỷ luật</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {discipline.totalListDiscipline.length !== 0 &&
+                                                    discipline.totalListDiscipline.map((x, index) => index < 5 ? (
+                                                        <tr key={index}>
+                                                            <td>{index + 1}</td>
+                                                            <td>{x.employee.fullName}</td>
+                                                            <td>{x.reason}</td>
+                                                        </tr>
+                                                    ) : null)
+                                                }
+                                            </tbody>
+                                        </table>
+                                        {
+                                            (!discipline.totalListDiscipline || discipline.totalListDiscipline.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                        }
+                                    </div>
+                                    <div className="box-footer text-center">
+                                        <a style={{ cursor: 'pointer' }} onClick={this.viewAllDiscipline} className="uppercase">Xem tất cả</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
+                        <div className="row">
                             {/* Tổng hợp nghỉ phép */}
                             <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                 <div className="box box-solid">
@@ -424,30 +532,41 @@ class ComponentInfor extends Component {
                     </div>
                 }
 
-                <ViewAllTasks employeeTasks={employeeTasks} title={`Tổng hợp công việc ${month}`} />
+                <ViewAllTasks employeeTasks={employeeTasks} title={`Tổng hợp công việc ${month}`} showCheck={true} />
+                <ViewAllCommendation dataCommendation={discipline.totalListCommendation} title={`Tổng hợp khen thưởng ${month}`} />
+                <ViewAllDiscipline dataDiscipline={discipline.totalListDiscipline} title={`Tổng hợp kỷ luật ${month}`} />
                 {
                     viewOverTime &&
-                    <ViewAllOverTime dataView={employeeOvertime} title={`Tổng hợp tình hình tăng ca ${month}`} id={viewOverTime} />
+                    <ViewAllOverTime dataView={employeeOvertime} title={`Tổng hợp tình hình tăng ca ${month}`} id={viewOverTime} showCheck={true} />
                 }
                 {
                     viewHoursOff &&
-                    <ViewAllOverTime dataView={employeeHoursOff} title={`Tổng hợp tình hình nghỉ phép ${month}`} id={viewHoursOff} />
+                    <ViewAllOverTime dataView={employeeHoursOff} title={`Tổng hợp tình hình nghỉ phép ${month}`} id={viewHoursOff} showCheck={true} />
                 }
-                <ViewAllSalary dataSalary={dataSalary} title={`Tổng hợp tình hình lương thưởng ${month}`} />
+                { employeesManager.listEmployees &&
+                    <ViewBirthdayList dataBirthday={employeesManager.listEmployees} title={`Danh sách nhân viên có sinh nhật trong tháng ${month}`} />
+                }
+
             </React.Fragment>
         );
     }
 };
 function mapState(state) {
-    const { department, salary, timesheets, tasks, user } = state;
-    return { department, salary, timesheets, tasks, user };
+    const { timesheets, tasks, user, workPlan, annualLeave, employeesManager, createEmployeeKpiSet, discipline } = state;
+    return { timesheets, tasks, user, workPlan, annualLeave, employeesManager, createEmployeeKpiSet, discipline };
 }
 
 const actionCreators = {
-    searchSalary: SalaryActions.searchSalary,
     getTimesheets: TimesheetsActions.searchTimesheets,
     getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
     getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
+    getListWorkPlan: WorkPlanActions.getListWorkPlan,
+    getNumberAnnaulLeave: AnnualLeaveActions.searchAnnualLeaves,
+    getAllEmployee: EmployeeManagerActions.getAllEmployee,
+    getAllEmployeeKpiSetByMonth: createKpiSetActions.getAllEmployeeKpiSetByMonth,
+
+    getListPraise: DisciplineActions.getListPraise,
+    getListDiscipline: DisciplineActions.getListDiscipline,
 };
 
 const componentInfor = connect(mapState, actionCreators)(withTranslate(ComponentInfor));

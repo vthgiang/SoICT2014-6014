@@ -13,7 +13,7 @@ class PurchaseRequestEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            status: "Chờ phê duyệt"
+            status: "waiting_approval"
         };
     }
 

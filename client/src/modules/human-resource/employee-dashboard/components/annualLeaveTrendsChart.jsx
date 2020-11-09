@@ -15,13 +15,12 @@ class AnnualLeaveTrendsChart extends Component {
         let startDate = ['01', new Date().getFullYear()].join('-');
         this.state = {
             lineChart: true,
-            numberMonth: 12,
-            numberMonthShow: 12,
             startDate: startDate,
             startDateShow: startDate,
             endDate: this.formatDate(Date.now(), true),
             endDateShow: this.formatDate(Date.now(), true),
-            organizationalUnitsSearch: []
+            organizationalUnitsSearch: this.props.defaultUnit ? this.props.organizationalUnits : [],
+            organizationalUnits: this.props.defaultUnit ? this.props.organizationalUnits : [],
         }
     }
 
@@ -224,7 +223,7 @@ class AnnualLeaveTrendsChart extends Component {
 
     render() {
         const { department, annualLeave, translate } = this.props;
-        const { lineChart, nameChart, numberMonth, nameData1, startDate, endDate, startDateShow, endDateShow, organizationalUnitsSearch } = this.state;
+        const { lineChart, nameChart, organizationalUnits, nameData1, startDate, endDate, startDateShow, endDateShow, organizationalUnitsSearch } = this.state;
 
         let organizationalUnitsName = [];
         if (organizationalUnitsSearch) {
@@ -265,6 +264,7 @@ class AnnualLeaveTrendsChart extends Component {
                                         items={department.list.map((p, i) => { return { value: p._id, text: p.name } })}
                                         options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
                                         onChange={this.handleSelectOrganizationalUnit}
+                                        value={organizationalUnits}
                                     >
                                     </SelectMulti>
                                 </div>

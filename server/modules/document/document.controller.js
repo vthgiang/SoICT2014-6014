@@ -28,12 +28,19 @@ exports.getDocuments = async (req, res) => {
 exports.createDocument = async (req, res) => {
     try {
         if (req.files.file) {
-            let pathFile = req.files.file[0].destination + '/' + req.files.file[0].filename;
-            req.body.file = pathFile;
+            req.body.files = []
+            req.files.file.map(x => {
+                let pathFile = x.destination + '/' + x.filename;
+                req.body.files.push(pathFile);
+            })
         }
         if (req.files.fileScan) {
-            let pathFileScan = req.files.fileScan[0].destination + '/' + req.files.fileScan[0].filename;
-            req.body.scannedFileOfSignedDocument = pathFileScan;
+
+            req.body.scannedFileOfSignedDocument = []
+            req.files.fileScan.map(x => {
+                let pathFileScan = x.destination + '/' + x.filename;
+                req.body.scannedFileOfSignedDocument.push(pathFileScan);
+            })
         }
         const document = await DocumentServices.createDocument(req.portal, req.body, req.user.company._id);
 
@@ -44,7 +51,6 @@ exports.createDocument = async (req, res) => {
             content: document
         });
     } catch (error) {
-        console.log(error)
         await Logger.error(req.user.email, 'create_document', req.portal);
         res.status(400).json({
             success: false,
@@ -169,50 +175,50 @@ exports.addDocumentLog = async (req, res) => {
 }
 
 exports.deleteDocument = async (req, res) => {
-    try {
-        const doc = await DocumentServices.deleteDocument(req.params.id, req.portal);
+    // try {
+    const doc = await DocumentServices.deleteDocument(req.params.id, req.portal);
 
-        await Logger.info(req.user.email, 'DELETE_DOCUMENT', req.portal);
-        res.status(200).json({
-            success: true,
-            messages: ['delete_document_success'],
-            content: doc
-        });
-    } catch (error) {
-        
-        await Logger.error(req.user.email, 'DELETE_DOCUMENT', req.portal);
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['delete_document_faile'],
-            content: error
-        });
-    }
+    await Logger.info(req.user.email, 'DELETE_DOCUMENT', req.portal);
+    res.status(200).json({
+        success: true,
+        messages: ['delete_document_success'],
+        content: doc
+    });
+    // } catch (error) {
+
+    //     await Logger.error(req.user.email, 'DELETE_DOCUMENT', req.portal);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: Array.isArray(error) ? error : ['delete_document_faile'],
+    //         content: error
+    //     });
+    // }
 };
 
 exports.downloadDocumentFile = async (req, res) => {
-    try {
-        const file = await DocumentServices.downloadDocumentFile({ id: req.params.id, numberVersion: req.query.numberVersion, downloaderId: req.user._id }, req.portal);
-        
-        await Logger.info(req.user.email, 'download_document_file', req.portal);
-        if (file.path) {
-            res.download(file.path, file.name);
-        }
+    //try {
+    const file = await DocumentServices.downloadDocumentFile({ id: req.params.id, numberVersion: req.query.numberVersion, downloaderId: req.user._id }, req.portal);
 
-    } catch (error) {
-        
-        await Logger.error(req.user.email, 'download_document_file', req.portal);
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['download_document_file_faile'],
-            content: error
-        });
+    await Logger.info(req.user.email, 'download_document_file', req.portal);
+    if (file.path) {
+        res.download(file.path, file.name);
     }
+
+    // } catch (error) {
+
+    //     await Logger.error(req.user.email, 'download_document_file', req.portal);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: Array.isArray(error) ? error : ['download_document_file_faile'],
+    //         content: error
+    //     });
+    // }
 };
 
 exports.downloadDocumentFileScan = async (req, res) => {
     try {
         const file = await DocumentServices.downloadDocumentFileScan({ id: req.params.id, numberVersion: req.query.numberVersion, downloaderId: req.user._id }, req.portal);
-        
+
         await Logger.info(req.user.email, 'download_document_file_scan', req.portal);
         if (file.path) {
             res.download(file.path, file.name);
@@ -309,7 +315,7 @@ exports.deleteDocumentCategory = async (req, res) => {
             content: doc
         });
     } catch (error) {
-    
+
         await Logger.error(req.user.email, 'delete_document_category', req.portal);
         res.status(400).json({
             success: false,

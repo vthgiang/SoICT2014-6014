@@ -8,13 +8,13 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import { ModalEditTaskByResponsibleEmployee } from './modalEditTaskByResponsibleEmployee';
 import { ModalEditTaskByAccountableEmployee } from './modalEditTaskByAccountableEmployee';
 import { HoursSpentOfEmployeeChart } from './hourSpentNewVersion';
-
-import { SelectBox } from '../../../../common-components/index';
+import { CollaboratedWithOrganizationalUnits } from './collaboratedWithOrganizationalUnits';
 
 import { EvaluationModal } from './evaluationModal';
 import { getStorage } from '../../../../config';
 import { SelectFollowingTaskModal } from './selectFollowingTaskModal';
 import { withTranslate } from 'react-redux-multilingual';
+import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import Swal from 'sweetalert2';
 
 class DetailTaskTab extends Component {
@@ -42,7 +42,6 @@ class DetailTaskTab extends Component {
         this.EMPLOYEE_SELECT_BOX = [];
 
         this.state = {
-            roleId: getStorage("currentRole"),
             collapseInfo: false,
             openTimeCounnt: false,
             startTimer: false,
@@ -53,14 +52,7 @@ class DetailTaskTab extends Component {
 
             currentMonth: currentYear + '-' + (currentMonth + 1),
             nextMonth: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2)),
-            dueForEvaluationOfTask: currentYear + '-' + (currentMonth + 1) + '-' + 7,
-
-            employeeCollaboratedWithUnit: {
-                responsibleEmployees: undefined,
-                consultedEmployees: undefined
-            },
-
-            editCollaboratedTask: false
+            dueForEvaluationOfTask: currentYear + '-' + (currentMonth + 1) + '-' + 7
         }
 
         this.props.getAllUserInAllUnitsOfCompany();
@@ -127,44 +119,13 @@ class DetailTaskTab extends Component {
                     }
                 }
 
-                // Xử lý nhân viên tham gia công việc phối hợp đơn vị
-                let responsibleEmployees = [], consultedEmployees = [];
-                this.EMPLOYEE_SELECT_BOX = this.checkRoleAndSetSelectBoxOfUserSameDepartment();
-
-                if (this.EMPLOYEE_SELECT_BOX && this.EMPLOYEE_SELECT_BOX.length !== 0) {
-                    if (task) {
-                        if (task.responsibleEmployees && task.responsibleEmployees.length !== 0) {
-                            task.responsibleEmployees.filter(item => {
-                                let temp = this.EMPLOYEE_SELECT_BOX.filter(employee => employee.value === item._id);
-                                if (temp && temp.length !== 0) return true;
-                            }).map(item => {
-                                if (item) {
-                                    responsibleEmployees.push(item._id);
-                                }
-                            })
-                            task.consultedEmployees.filter(item => {
-                                let temp = this.EMPLOYEE_SELECT_BOX.filter(employee => employee.value === item._id);
-                                if (temp && temp.length !== 0) return true;
-                            }).map(item => {
-                                if (item) {
-                                    consultedEmployees.push(item._id);
-                                }
-                            })
-                        }
-                    }
-                }
+                
                 this.setState(state => {
                     return {
                         ...state,
                         dataStatus: this.DATA_STATUS.FINISHED,
                         roles: roles,
-                        currentRole: roles.length > 0 ? roles[0].value : null,
-                        employeeCollaboratedWithUnit: {
-                            oldResponsibleEmployees: responsibleEmployees,
-                            oldConsultedEmployees: consultedEmployees,
-                            responsibleEmployees: responsibleEmployees,
-                            consultedEmployees: consultedEmployees
-                        }
+                        currentRole: roles.length > 0 ? roles[0].value : null
                     }
                 })
                 return false;
@@ -540,130 +501,61 @@ class DetailTaskTab extends Component {
     getTaskActionsNotPerform = (taskActions) => {
         return taskActions.filter(action => !action.creator).length;
     }
-    /** Chọn người thực hiện cho công việc phối hợp với đơn vị khác */
-    handleChangeResponsibleCollaboratedTask = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                employeeCollaboratedWithUnit: {
-                    ...state.employeeCollaboratedWithUnit,
-                    responsibleEmployees: value
-                }
-            }
-        })
-    }
-
-    /** Chọn người hỗ trợ cho công việc phối hợp với đơn vị khác */
-    handleChangeConsultedCollaboratedTask = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                employeeCollaboratedWithUnit: {
-                    ...state.employeeCollaboratedWithUnit,
-                    consultedEmployees: value
-                }
-            }
-        })
-    }
-
-    /** Lưu thay đổi nhân viên tham gia công việc phối hợp với đơn vị khác */
-    saveCollaboratedTask = (taskId) => {
-        const { employeeCollaboratedWithUnit } = this.state;
-        this.props.editEmployeeCollaboratedWithOrganizationalUnits(taskId, employeeCollaboratedWithUnit);
-
-        this.setState(state => {
-            return {
-                ...state,
-                editCollaboratedTask: false,
-                employeeCollaboratedWithUnit: {
-                    ...state.employeeCollaboratedWithUnit,
-                    oldResponsibleEmployees: employeeCollaboratedWithUnit.responsibleEmployees,
-                    oldConsultedEmployees: employeeCollaboratedWithUnit.consultedEmployees
-                }
-            }
-        })
-    }
 
     /** 
      * Kiểm tra role hiện tại có phải trưởng đơn vị ko
      * Nếu có, tạo SelectBox tất cả nhân viên của đơn vị 
      * Ngược lại, trả về mảng rỗng
     */
-    checkRoleAndSetSelectBoxOfUserSameDepartment = () => {
+    setSelectBoxOfUserSameDepartmentCollaborated = (task) => {
         const { user } = this.props;
-        const { roleId } = this.state;
-        let usersInUnitsOfCompany, checkRole = false, currentUnit, employeeSelectBox = [];
+        const { currentUser } = this.state;
+        let usersInUnitsOfCompany, unitThatCurrentUserIsDean, employeeSelectBox = [];
 
         if (user) {
             usersInUnitsOfCompany = user.usersInUnitsOfCompany;
         }
 
         if (usersInUnitsOfCompany && usersInUnitsOfCompany.length !== 0) {
-            currentUnit = usersInUnitsOfCompany.filter(item => {
-                if (item.deans) {
-                    let deans = Object.keys(item.deans);
-                    if (deans.length !== 0 && deans.includes(roleId)) {
-                        checkRole = true;
-                        return true;
+            unitThatCurrentUserIsDean = usersInUnitsOfCompany.filter(unit => {
+                let check = false;
+                let unitCollaborated = task.collaboratedWithOrganizationalUnits.map(item => item.organizationalUnit && item.organizationalUnit._id); 
+
+                if (unitCollaborated.includes(unit.id) && unit.deans) {
+                    let employee = Object.values(unit.deans);
+                    if (employee && employee.length !== 0) {
+                        employee.map(employee => {
+                            employee.members && employee.members.map(item => {
+                                if (item._id == currentUser) check = true;
+                            })
+                        })
                     }
                 }
-                if (item.viceDeans) {
-                    let viceDeans = Object.keys(item.viceDeans);
-                    if (viceDeans.length !== 0 && viceDeans.includes(roleId)) {
-                        return true;
-                    }
-                }
-                if (item.employees) {
-                    let employees = Object.keys(item.employees);
-                    if (employees.length !== 0 && employees.includes(roleId)) {
-                        return true;
-                    }
-                }
-                return false;
+
+                return check;
             })
         }
 
-        if (checkRole && currentUnit && currentUnit[0]) {
-            if (currentUnit[0].deans) {
-                let deans = Object.values(currentUnit[0].deans);
-                if (deans && deans.length !== 0) {
-                    deans.map(dean => {
-                        dean.members && dean.members.length !== 0 && dean.members.map(item => {
-                            item && employeeSelectBox.push({ text: item.name, value: item.id });
-                        })
-                    })
-                }
-            }
-            if (currentUnit[0].viceDeans) {
-                let viceDeans = Object.values(currentUnit[0].viceDeans);
-                if (viceDeans && viceDeans.length !== 0) {
-                    viceDeans.map(viceDean => {
-                        viceDean.members && viceDean.members.length !== 0 && viceDean.members.map(item => {
-                            item && employeeSelectBox.push({ text: item.name, value: item.id });
-                        })
-                    })
-                }
-            }
-            if (currentUnit[0].deans) {
-                let employees = Object.values(currentUnit[0].employees);
-                if (employees && employees.length !== 0) {
-                    employees.map(employee => {
-                        employee.members && employee.members.length !== 0 && employee.members.map(item => {
-                            item && employeeSelectBox.push({ text: item.name, value: item.id });
-                        })
-                    })
-                }
-            }
+        if (unitThatCurrentUserIsDean && unitThatCurrentUserIsDean.length !== 0) {
+            unitThatCurrentUserIsDean.map(item => {
+                let temporary = [];
+                temporary = getEmployeeSelectBoxItems([item]);
+                temporary[0] = {
+                    ...temporary[0],
+                    id: item.id
+                };
+                employeeSelectBox = employeeSelectBox.concat(temporary[0]);
+            })
         }
 
-        // employeeSelectBox rỗng = role hiện tại không phải trưởng đơn vị
+        // employeeSelectBox rỗng = user hiện tại không phải trưởng đơn vị các đơn vị phối hợp
         return employeeSelectBox;
     }
 
     render() {
         const { tasks, performtasks, user, translate } = this.props;
         const { showToolbar, id, isProcess } = this.props; // props form parent component ( task, id, showToolbar, onChangeTaskRole() )
-        const { currentUser, roles, currentRole, collapseInfo, showEdit, showEndTask, showEvaluate, employeeCollaboratedWithUnit, editCollaboratedTask, roleId } = this.state
+        const { currentUser, roles, currentRole, collapseInfo, showEdit, showEndTask, showEvaluate  } = this.state
 
         let task;
         let codeInProcess, typeOfTask, statusTask, checkInactive = true, evaluations, evalList = [];
@@ -672,7 +564,7 @@ class DetailTaskTab extends Component {
         // Các biến dùng cho biểu đồ đóng góp thời gian
         let hoursSpentOfEmployeeInTask, hoursSpentOfEmployeeInEvaluation = {};
         // Các biến check trưởng đơn vị phối hợp
-        let organizationalUnitsOfUser, checkDeanOfUnitThatHasCollaborated = false, unitOfCurrentRole;
+        let employeeCollaboratedWithUnitSelectBox;
 
         if (isProcess) {
             task = this.props.task
@@ -774,26 +666,9 @@ class DetailTaskTab extends Component {
             })
         }
 
-        // Check kiểm tra trưởng đơn vị phối hợp
-        if (user) {
-            organizationalUnitsOfUser = user.organizationalUnitsOfUser;
-        }
-        if (organizationalUnitsOfUser && organizationalUnitsOfUser.length !== 0) {
-            unitOfCurrentRole = organizationalUnitsOfUser.filter(unit => {
-                if (task && task.collaboratedWithOrganizationalUnits && task.collaboratedWithOrganizationalUnits.includes(unit._id)) {
-                    return true;
-                }
-                return false;
-            })
-        }
-        if (unitOfCurrentRole && unitOfCurrentRole.length !== 0) {
-            unitOfCurrentRole.map(item => {
-                if (item.deans && item.deans.length !== 0) {
-                    item.deans.map(dean => {
-                        if (dean === roleId) checkDeanOfUnitThatHasCollaborated = true;
-                    })
-                }
-            })
+        // Xử lý phần đơn vị phối hợp
+        if (task) {
+            employeeCollaboratedWithUnitSelectBox = this.setSelectBoxOfUserSameDepartmentCollaborated(task);
         }
 
         return (
@@ -952,94 +827,16 @@ class DetailTaskTab extends Component {
                         }
 
                         {/* Phân công công việc cho nhân viên */}
-                        {task && checkDeanOfUnitThatHasCollaborated && this.EMPLOYEE_SELECT_BOX && this.EMPLOYEE_SELECT_BOX.length !== 0
-                            && <div className="description-box">
-                                <h4>Phân công nhân viên đơn vị tham gia phối hợp</h4>
-
-                                {editCollaboratedTask
-                                    ? <div className="no-line-height">
-                                        <div className="form-group">
-                                            <label>{translate('task.task_management.responsible')}</label>
-                                            <SelectBox
-                                                id="multiSelectResponsibleEmployee"
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                items={this.EMPLOYEE_SELECT_BOX}
-                                                onChange={this.handleChangeResponsibleCollaboratedTask}
-                                                value={employeeCollaboratedWithUnit && employeeCollaboratedWithUnit.responsibleEmployees}
-                                                multiple={true}
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label>{translate('task.task_management.consulted')}</label>
-                                            <SelectBox
-                                                id="multiSelectConsultedEmployee"
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                items={this.EMPLOYEE_SELECT_BOX}
-                                                onChange={this.handleChangeConsultedCollaboratedTask}
-                                                value={employeeCollaboratedWithUnit && employeeCollaboratedWithUnit.consultedEmployees}
-                                                multiple={true}
-                                            />
-                                        </div>
-                                    </div>
-                                    : <div>
-                                        {/* Người thực hiện */}
-                                        <strong>{translate('task.task_management.responsible')}:</strong>
-                                        {
-                                            (employeeCollaboratedWithUnit && employeeCollaboratedWithUnit.responsibleEmployees && employeeCollaboratedWithUnit.responsibleEmployees.length !== 0)
-                                                ? <span>
-                                                    {
-                                                        employeeCollaboratedWithUnit.responsibleEmployees.map((item, index) => {
-                                                            let seperator = index !== 0 ? ", " : "";
-                                                            if (task.inactiveEmployees.indexOf(item) !== -1) { // tìm thấy item._id
-                                                                return <span key={index}><strike>{seperator}{this.EMPLOYEE_SELECT_BOX.filter(box => box.value == item)[0].text}</strike></span>
-                                                            } else {
-                                                                return <span key={index}>{seperator}{this.EMPLOYEE_SELECT_BOX.filter(box => box.value == item)[0].text}</span>
-                                                            }
-                                                        })
-                                                    }
-                                                </span>
-                                                : <span>{translate('task.task_management.task_empty_employee')}</span>
-                                        }
-                                        <br />
-                                        {/* Người hỗ trợ */}
-                                        <strong>{translate('task.task_management.consulted')}:</strong>
-                                        {
-                                            (employeeCollaboratedWithUnit && employeeCollaboratedWithUnit.consultedEmployees && employeeCollaboratedWithUnit.consultedEmployees.length !== 0)
-                                                ? <span>
-                                                    {
-                                                        employeeCollaboratedWithUnit.consultedEmployees.map((item, index) => {
-                                                            let seperator = index !== 0 ? ", " : "";
-                                                            if (task.inactiveEmployees.indexOf(item) !== -1) { // tìm thấy item._id
-                                                                return <span key={index}><strike>{seperator}{this.EMPLOYEE_SELECT_BOX.filter(box => box.value == item)[0].text}</strike></span>
-                                                            } else {
-                                                                return <span key={index}>{seperator}{this.EMPLOYEE_SELECT_BOX.filter(box => box.value == item)[0].text}</span>
-                                                            }
-                                                        })
-                                                    }
-                                                </span>
-                                                : <span>{translate('task.task_management.task_empty_employee')}</span>
-                                        }
-                                    </div>
-                                }
-
-                                {editCollaboratedTask
-                                    ? <div class="row">
-                                        <div className="col-xs-6">
-                                            <button type="button" className={`btn btn-danger btn-block`} onClick={() => { this.setState({ editCollaboratedTask: false }) }}>Hủy</button>
-                                        </div>
-                                        <div className="col-xs-6">
-                                            <button type="button" className={`btn btn-success btn-block`} onClick={() => this.saveCollaboratedTask(task._id)}>Lưu</button>
-                                        </div>
-
-                                    </div>
-                                    : <div style={{ marginTop: 7 }}>
-                                        <button className={`btn btn-block btn-default`} onClick={() => this.setState(state => { return { ...state, editCollaboratedTask: true } })} title="Chỉnh sửa">Chỉnh sửa</button>
-                                    </div>
-                                }
-                            </div>
+                        {employeeCollaboratedWithUnitSelectBox && employeeCollaboratedWithUnitSelectBox.length !== 0
+                            && employeeCollaboratedWithUnitSelectBox.map(item =>
+                                <CollaboratedWithOrganizationalUnits
+                                    task={task}
+                                    employeeSelectBox={item}
+                                    unitId={item.id}
+                                />
+                            )
                         }
+                        
 
                         {/* Các trường thông tin cơ bản */}
                         {task &&
@@ -1049,6 +846,22 @@ class DetailTaskTab extends Component {
                                 <div><strong>{translate('task.task_management.detail_link')}:</strong> <a href={`/task?taskId=${task._id}`} target="_blank">{task.name}</a></div>
                                 <div><strong>{translate('task.task_management.detail_time')}:</strong> {this.formatDate(task && task.startDate)} <i className="fa fa-fw fa-caret-right"></i> {this.formatDate(task && task.endDate)}</div>
                                 <div><strong>{translate('task.task_management.unit_manage_task')}:</strong> {task && task.organizationalUnit ? task.organizationalUnit.name : translate('task.task_management.err_organizational_unit')}</div>
+                                <div>
+                                    <strong>{translate('task.task_management.collaborated_with_organizational_units')}: </strong>
+                                    <span>
+                                        {task.collaboratedWithOrganizationalUnits.length !== 0
+                                            ? <span>
+                                                {
+                                                    task.collaboratedWithOrganizationalUnits.map((item, index) => {
+                                                        let seperator = index !== 0 ? ", " : "";
+                                                        return <span key={index}>{seperator}{item.organizationalUnit && item.organizationalUnit.name}</span>
+                                                    })
+                                                }
+                                            </span>
+                                            : <span>{translate('task.task_management.not_collaborated_with_organizational_units')}</span>
+                                        }
+                                    </span>
+                                </div>
                                 <div><strong>{translate('task.task_management.detail_priority')}:</strong> {task && this.formatPriority(task.priority)}</div>
                                 <div><strong>{translate('task.task_management.detail_status')}:</strong> {task && this.formatStatus(task.status)}</div>
                                 <div><strong>{translate('task.task_management.detail_progress')}:</strong> {task && task.progress}%</div>
@@ -1353,7 +1166,6 @@ const actionGetState = { //dispatchActionToProps
     editStatusTask: performTaskAction.editStatusOfTask,
     editHoursSpentInEvaluate: performTaskAction.editHoursSpentInEvaluate,
     confirmTask: performTaskAction.confirmTask,
-    editEmployeeCollaboratedWithOrganizationalUnits: performTaskAction.editEmployeeCollaboratedWithOrganizationalUnits,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany
 }
 

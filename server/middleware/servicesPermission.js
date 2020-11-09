@@ -334,6 +334,7 @@ exports.data = [
     { path: '/performtask/tasks/:taskId/documents/:documentId/files/:fileId', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
 
     //task action
+    { path: '/performtask/tasks/:taskId/sort', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/tasks/:taskId/task-actions/:actionId', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/tasks/:taskId/task-actions', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/tasks/:taskId/task-actions/:actionId', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
@@ -510,6 +511,10 @@ exports.data = [
     { path: '/lot', method: 'GET', roles: ['Super Admin', 'Admin']},
     { path: '/lot/get-detail/:id', method: 'GET', roles: ['Super Admin', 'Admin']},
     { path: '/lot/:id', method: 'PATCH', roles: ['Super Admin', 'Admin']},
+
+    { path: '/bills', method: 'GET', roles: ['Super Admin', 'Admin']},
+    { path: '/bills/get-bill-by-good', method: 'GET', roles: ['Super Admin', 'Admin']},
+    { path: '/bills/get-detail-bill/:id', method: 'GET', roles: ['Super Admin', 'Admin']},
 
     //order
     { path: "/orders", method: "GET", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },

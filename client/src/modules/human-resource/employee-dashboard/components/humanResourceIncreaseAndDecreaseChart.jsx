@@ -20,9 +20,8 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
             startDateShow: startDate,
             endDate: this.formatDate(Date.now(), true),
             endDateShow: this.formatDate(Date.now(), true),
-            organizationalUnitsSearch: [],
-            organizationalUnits: [this.props.childOrganizationalUnit[0].id],
-            organizationalUnitsSearch: [this.props.childOrganizationalUnit[0].id],
+            organizationalUnits: this.props.defaultUnit ? [this.props.childOrganizationalUnit[0].id] : [],
+            organizationalUnitsSearch: this.props.defaultUnit ? [this.props.childOrganizationalUnit[0].id] : [],
         }
     }
 
@@ -52,6 +51,7 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
 
     componentDidMount() {
         const { organizationalUnits, startDate, endDate } = this.state;
+        console.log(organizationalUnits);
         let arrStart = startDate.split('-');
         let startDateNew = [arrStart[1], arrStart[0]].join('-');
 

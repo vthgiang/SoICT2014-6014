@@ -33,6 +33,10 @@ const ProcessTemplateSchema = new Schema({
             ref: 'OrganizationalUnit',
             required: true
         },
+        collaboratedWithOrganizationalUnits: [{
+            type: Schema.Types.ObjectId,
+            ref: 'OrganizationalUnit',
+        }],
         name: {
             type: String,
             required: true

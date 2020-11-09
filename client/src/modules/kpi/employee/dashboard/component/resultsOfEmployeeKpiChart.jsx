@@ -26,8 +26,8 @@ class ResultsOfEmployeeKpiChart extends Component {
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
         this.INFO_SEARCH = {
-            startMonth: currentYear + '-' + 1,
-            endMonth: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2))
+            startMonth: currentYear + '-0' + 1,
+            endMonth: (currentMonth < 9) ? (currentYear + '-0' + currentMonth + 1) : (currentYear + '-' + (currentMonth + 1))
         }
 
         this.state = {
@@ -41,7 +41,7 @@ class ResultsOfEmployeeKpiChart extends Component {
     }
 
     componentDidMount = () => {
-        this.props.getAllEmployeeKpiSetByMonth(this.state.userId, this.state.startMonth, this.state.endMonth);
+        this.props.getAllEmployeeKpiSetByMonth(undefined, this.state.userId, this.state.startMonth, this.state.endMonth);
 
         this.setState(state => {
             return {
@@ -53,8 +53,8 @@ class ResultsOfEmployeeKpiChart extends Component {
 
     shouldComponentUpdate = async (nextProps, nextState) => {
         if(nextState.startMonth !== this.state.startMonth || nextState.endMonth !== this.state.endMonth) {
-            // Cầ đặt await, và phải đặt trước setState để kịp thiết lập createEmployeeKpiSet.employeeKpiSetByMonth là null khi gọi service
-            await this.props.getAllEmployeeKpiSetByMonth(this.state.userId, nextState.startMonth, nextState.endMonth);
+            // Cài đặt await, và phải đặt trước setState để kịp thiết lập createEmployeeKpiSet.employeeKpiSetByMonth là null khi gọi service
+            await this.props.getAllEmployeeKpiSetByMonth(undefined, this.state.userId, nextState.startMonth, nextState.endMonth);
        
             this.setState(state => {
                 return {
@@ -99,19 +99,11 @@ class ResultsOfEmployeeKpiChart extends Component {
 
     handleSelectMonthStart = (value) => {
         let month = value.slice(3,7) + '-' + value.slice(0,2);
-
         this.INFO_SEARCH.startMonth = month;
     }
 
     handleSelectMonthEnd = (value) => {
-        let month;
-
-        if (value.slice(0,2)<12) {
-            month = value.slice(3,7) + '-' + (new Number(value.slice(0,2)) + 1);
-        } else {
-            month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
-        }
-
+        let month = value.slice(3,7) + '-' + value.slice(0,2);
         this.INFO_SEARCH.endMonth = month;
     }
 
@@ -120,7 +112,7 @@ class ResultsOfEmployeeKpiChart extends Component {
         let startMonth = new Date(this.INFO_SEARCH.startMonth);
         let endMonth = new Date(this.INFO_SEARCH.endMonth);
 
-        if (startMonth.getTime() >= endMonth.getTime()) {
+        if (startMonth && endMonth && startMonth.getTime() > endMonth.getTime()) {
             Swal.fire({
                 title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
                 type: 'warning',

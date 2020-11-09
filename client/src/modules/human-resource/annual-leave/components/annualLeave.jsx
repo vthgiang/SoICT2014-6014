@@ -95,8 +95,10 @@ class AnnualLeave extends Component {
         let listAnnualLeavesOfOneYear = annualLeave.listAnnualLeavesOfOneYear;
         if (workPlan.listWorkPlan && workPlan.listWorkPlan.length !== 0) {
             workPlans = workPlan.listWorkPlan;
-            maximumNumberOfLeaveDays = workPlan.maximumNumberOfLeaveDays;
         };
+        if (workPlan.maximumNumberOfLeaveDays) {
+            maximumNumberOfLeaveDays = workPlan.maximumNumberOfLeaveDays;
+        }
 
         return (
             <div className="box" >
@@ -128,14 +130,14 @@ class AnnualLeave extends Component {
                                     {translate('human_resource.annual_leave_personal.total_number_leave_of_year')}:
                                 </strong>
                                 &nbsp;&nbsp;
-                                <span>{`${maximumNumberOfLeaveDays} ngày`}</span>
+                                <span>{`${maximumNumberOfLeaveDays} ${translate('human_resource.annual_leave_personal.day')}`}</span>
                             </div>
                             <div>
                                 <strong>
                                     {translate('human_resource.annual_leave_personal.leaved')}:
                                 </strong>
                                 &nbsp;&nbsp;
-                                <span>{`${annualLeave.numberAnnulLeave} ngày`}</span>
+                                <span>{`${annualLeave.numberAnnulLeave} ${translate('human_resource.annual_leave_personal.day')}`}</span>
                             </div>
                             <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                                 <thead>
