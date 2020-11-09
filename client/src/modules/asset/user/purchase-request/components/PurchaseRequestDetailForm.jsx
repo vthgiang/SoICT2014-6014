@@ -33,6 +33,16 @@ class PurchaseRequestDetailForm extends Component {
         }
     }
 
+    convertStatus(status) {
+        const { translate } = this.props;
+
+        switch (status) {
+            case 'approved': return translate('asset.usage.approved');
+            case 'waiting_approval': return translate('asset.usage.waiting_approval');
+            case 'disapproved': return translate('asset.usage.not_approved');
+            default: return 'Deleted';
+        }
+    }
 
     render() {
         const { translate, recommendProcure } = this.props;
@@ -118,7 +128,7 @@ class PurchaseRequestDetailForm extends Component {
                                 {/* Trạng thái */}
                                 <div className="form-group">
                                     <strong>{translate('asset.general_information.status')}&emsp; </strong>
-                                    {status}
+                                    {this.convertStatus(status)}
                                 </div>
 
                                 {/* Ghi chú */}

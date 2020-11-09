@@ -82,7 +82,8 @@ class EditTaskTemplate extends Component {
                     ...state,
                     id: nextProps.id,
                     editingTemplate: {
-                        organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit._id : [],
+                        organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit._id : "",
+                        collaboratedWithOrganizationalUnits: (info && info.collaboratedWithOrganizationalUnits) ? info.collaboratedWithOrganizationalUnits.map(item => { if (item) return item._id }) : [],
                         name: (info && info.name) ? info.name : '',
                         readByEmployees: info.readByEmployees,
                         responsibleEmployees: (info && info.responsibleEmployees) ? info.responsibleEmployees.map(item => { if (item) return item._id }) : [],
@@ -124,6 +125,7 @@ class EditTaskTemplate extends Component {
                 editingTemplate: {
                     _id: nextProps.taskTemplate._id,
                     organizationalUnit: nextProps.taskTemplate.organizationalUnit._id,
+                    collaboratedWithOrganizationalUnits: nextProps.taskTemplate.collaboratedWithOrganizationalUnits,
                     name: nextProps.taskTemplate.name,
                     readByEmployees: nextProps.taskTemplate.readByEmployees,
                     responsibleEmployees: nextProps.taskTemplate.responsibleEmployees,
@@ -301,6 +303,7 @@ class EditTaskTemplate extends Component {
                     editingTemplate: { // update lại unit, và reset các selection phía sau
                         ...this.state.editingTemplate,
                         organizationalUnit: value,
+                        collaboratedWithOrganizationalUnits: [],
                         errorOnUnit: msg,
                         readByEmployees: [],
                         responsibleEmployees: [],
@@ -313,6 +316,20 @@ class EditTaskTemplate extends Component {
         }
         this.props.onChangeTemplateData(this.state.editingTemplate);
         return msg == undefined;
+    }
+
+    handleChangeCollaboratedWithOrganizationalUnits = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                editingTemplate: { // update lại name,description và reset các selection phía sau
+                    ...this.state.editingTemplate,
+                    collaboratedWithOrganizationalUnits: value
+                }
+            };
+        });
+        console.log('quangdz', this.state.collaboratedWithOrganizationalUnits);
+        this.props.onChangeTemplateData(this.state.editingTemplate);
     }
 
     handleTaskTemplateRead = (value) => {
@@ -459,7 +476,7 @@ class EditTaskTemplate extends Component {
         var allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
         let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
 
-        console.log("editting tasktemplate: ", editingTemplate.taskActions, this.state.showMore)
+        console.log("editting tasktemplate action: ", editingTemplate.taskActions, this.state.showMore)
 
         return (
             <React.Fragment>
@@ -487,6 +504,25 @@ class EditTaskTemplate extends Component {
                             }
                             <ErrorLabel content={this.state.editingTemplate.errorOnUnit} />
                         </div>
+
+                        {/* Chọn đơn vị phối hợp công việc */}
+                        {usersInUnitsOfCompany &&
+                            <div className="form-group">
+                                <label>{translate('task.task_management.collaborated_with_organizational_units')}</label>
+                                <SelectBox
+                                    id="editMultiSelectUnitThatHaveCollaboratedTemplate"
+                                    lassName="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={usersInUnitsOfCompany.filter(item => String(item.id) !== String(editingTemplate.organizationalUnit)).map(x => {
+                                        return { text: x.department, value: x.id }
+                                    })}
+                                    options={{ placeholder: translate('kpi.evaluation.dashboard.select_units') }}
+                                    onChange={this.handleChangeCollaboratedWithOrganizationalUnits}
+                                    value={editingTemplate.collaboratedWithOrganizationalUnits}
+                                    multiple={true}
+                                />
+                            </div>
+                        }
                     </div>
                     {
                         !isProcess &&
@@ -647,7 +683,8 @@ class EditTaskTemplate extends Component {
                                     <div><span style={{ fontWeight: 600 }}>overdueDate</span> - Thời gian quá hạn (ngày)</div>
                                     <div><span style={{ fontWeight: 600 }}>dayUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
                                     <div><span style={{ fontWeight: 600 }}>totalDay</span> - Thời gian từ ngày bắt đầu đến ngày kết thúc công việc (ngày)</div>
-                                    <div><span style={{ fontWeight: 600 }}>averageActionRating</span> -  Trung bình cộng điểm đánh giá hoạt động (1-10)</div>
+                                    <div><span style={{ fontWeight: 600 }}>numberOfFailedAction</span> - Số hoạt động không đạt (rating &lt; 5)</div>
+                                    <div><span style={{ fontWeight: 600 }}>numberOfPassedAction</span> - Số hoạt động đạt (rating &ge; 5)</div>
                                     <div><span style={{ fontWeight: 600 }}>progress</span> - % Tiến độ công việc (0-100)</div>
                                 </div>
                             </div>

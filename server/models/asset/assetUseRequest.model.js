@@ -5,13 +5,10 @@ const Schema = mongoose.Schema;
 const AssetUseRequestSchema = new Schema({
     company: { //thuộc công ty nào
         type: Schema.Types.ObjectId,
-        ref: 'companies',
-        required: true
+        ref: 'companies'
     },
-
     recommendNumber: { //mã phiếu
-        type: String,
-        required: true
+        type: String
     },
     dateCreate: { //ngày lập
         type: String,

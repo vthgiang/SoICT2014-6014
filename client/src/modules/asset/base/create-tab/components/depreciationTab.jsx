@@ -355,7 +355,7 @@ class DepreciationTab extends Component {
 
                         {/* Nguyên giá */}
                         <div className={`form-group ${!errorOnCost ? "" : "has-error"} `}>
-                            <label htmlFor="cost">{translate('asset.general_information.original_price')} (VNĐ)<span className="text-red">*</span></label><br />
+                            <label htmlFor="cost">{translate('asset.general_information.original_price')} (VNĐ)</label><br />
                             <input type="number" className="form-control" name="cost" value={cost} onChange={this.handleCostChange}
                                 placeholder={translate('asset.general_information.original_price')} autoComplete="off" />
                             <ErrorLabel content={errorOnCost} />
@@ -370,7 +370,7 @@ class DepreciationTab extends Component {
 
                         {/* Thời gian sử dụng */}
                         <div className={`form-group ${!errorOnUsefulLife ? "" : "has-error"} `}>
-                            <label htmlFor="usefulLife">{translate('asset.asset_info.usage_time')} (Tháng)<span className="text-red">*</span></label>
+                            <label htmlFor="usefulLife">{translate('asset.asset_info.usage_time')} (Tháng)</label>
                             <input type="number" className="form-control" name="usefulLife" value={usefulLife} onChange={this.handleUsefulLifeChange}
                                 placeholder="Thời gian trích khấu hao" autoComplete="off" />
                             <ErrorLabel content={errorOnUsefulLife} />
@@ -378,7 +378,7 @@ class DepreciationTab extends Component {
 
                         {/* Thời gian bắt đầu trích khấu hao */}
                         <div className={`form-group ${!errorOnStartDepreciation ? "" : "has-error"} `}>
-                            <label htmlFor="startDepreciation">{translate('asset.general_information.start_depreciation')}<span className="text-red">*</span></label>
+                            <label htmlFor="startDepreciation">{translate('asset.general_information.start_depreciation')}</label>
                             <DatePicker
                                 id={`startDepreciation${id}`}
                                 value={startDepreciation}
@@ -389,7 +389,7 @@ class DepreciationTab extends Component {
 
                         {/* Phương pháp khấu hao */}
                         <div className={`form-group ${!errorOnDepreciationType ? "" : "has-error"}`}>
-                            <label htmlFor="depreciationType">{translate('asset.general_information.depreciation_type')}<span className="text-red">*</span></label>
+                            <label htmlFor="depreciationType">{translate('asset.general_information.depreciation_type')}</label>
                             <SelectBox
                                 id={`depreciationType${id}`}
                                 className="form-control select2"
@@ -410,7 +410,7 @@ class DepreciationTab extends Component {
                         {
                             depreciationType == 'units_of_production' &&
                             <div className={`form-group ${!errorOnEstimatedTotalProduction ? "" : "has-error"} `}>
-                                <label htmlFor="estimatedTotalProduction">{translate('asset.depreciation.estimated_production')}<span className="text-red">*</span></label>
+                                <label htmlFor="estimatedTotalProduction">{translate('asset.depreciation.estimated_production')}</label>
                                 <input type="number" className="form-control" name="estimatedTotalProduction" value={estimatedTotalProduction} onChange={this.handleEstimatedTotalProductionChange}
                                     placeholder='Sản lượng theo công suất thiết kế' autoComplete="off" />
                                 <ErrorLabel content={errorOnEstimatedTotalProduction} />

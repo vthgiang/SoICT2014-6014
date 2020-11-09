@@ -1746,7 +1746,7 @@ const initSampleCompanyDB = async () => {
     console.log("Khởi tạo dữ liệu tài sản");
     var listAsset = await Asset(vnistDB).insertMany([{
         company: vnist._id,
-        avatar: "/upload/asset/pictures/picture5.png",
+        avatar: "./upload/asset/pictures/picture5.png",
         assetName: "Laptop Sony Vaio",
         group: "machine",
         usefulLife: "12",
@@ -1805,7 +1805,7 @@ const initSampleCompanyDB = async () => {
         files: [],
     }, {
         company: vnist._id,
-        avatar: "/upload/asset/pictures/picture5.png",
+        avatar: "./upload/asset/pictures/picture5.png",
         assetName: "Điều hòa Panasonic 9.000BTU",
         code: "VVDH01.017",
         group: "machine",
@@ -1863,7 +1863,7 @@ const initSampleCompanyDB = async () => {
         files: [],
     }, {
         company: vnist._id,
-        avatar: "/upload/asset/pictures/picture5.png",
+        avatar: "./upload/asset/pictures/picture5.png",
         assetName: "Máy tính cây",
         code: "VVMV18.001",
         group: "other",
@@ -1922,7 +1922,7 @@ const initSampleCompanyDB = async () => {
     },
     {
         company: vnist._id,
-        avatar: "/upload/asset/pictures/picture5.png",
+        avatar: "./upload/asset/pictures/picture5.png",
         assetName: "Máy tính cây",
         code: "VVMV18.028",
         group: "other",
@@ -1981,7 +1981,7 @@ const initSampleCompanyDB = async () => {
     },
     {
         company: vnist._id,
-        avatar: "/upload/asset/pictures/picture5.png",
+        avatar: "./upload/asset/pictures/picture5.png",
         assetName: "Iphone XS Max",
         code: "VVMV18.027",
         group: "other",
@@ -2040,7 +2040,7 @@ const initSampleCompanyDB = async () => {
     },
     {
         company: vnist._id,
-        avatar: "/upload/asset/pictures/picture5.png",
+        avatar: "./upload/asset/pictures/picture5.png",
         assetName: "Card GTX 2050Ti",
         code: "VVMV18.0026",
         group: "other",
@@ -2095,7 +2095,7 @@ const initSampleCompanyDB = async () => {
 
     var asset = await Asset(vnistDB).create({
         company: vnist._id,
-        avatar: "/upload/asset/pictures/picture5.png",
+        avatar: "./upload/asset/pictures/picture5.png",
         assetName: "HUST",
         group: "building",
         usefulLife: "40",
@@ -2140,7 +2140,7 @@ const initSampleCompanyDB = async () => {
     })
     var assetManagedByEmployee2 = await Asset(vnistDB).create({
         company: vnist._id,
-        avatar: "/upload/asset/pictures/picture5.png",
+        avatar: "./upload/asset/pictures/picture5.png",
         assetName: "Phòng họp 02",
         group: "building",
         usefulLife: "40",
@@ -2197,7 +2197,7 @@ const initSampleCompanyDB = async () => {
     })
     var assetManagedByEmployee1 = await Asset(vnistDB).create({
         company: vnist._id,
-        avatar: "/upload/asset/pictures/picture5.png",
+        avatar: "./upload/asset/pictures/picture5.png",
         assetName: "Phòng họp 01",
         group: "building",
         usefulLife: "40",
@@ -2252,7 +2252,7 @@ const initSampleCompanyDB = async () => {
 
         { //1 B1
             company: vnist._id,
-            avatar: "/upload/asset/pictures/picture5.png",
+            avatar: "./upload/asset/pictures/picture5.png",
             assetName: "B1",
             group: "building",
             usefulLife: "32",
@@ -2298,7 +2298,7 @@ const initSampleCompanyDB = async () => {
         },
         { //2 TQB
             company: vnist._id,
-            avatar: "/upload/asset/pictures/picture5.png",
+            avatar: "./upload/asset/pictures/picture5.png",
             assetName: "TV TQB",
             group: "building",
             usefulLife: "50",
@@ -2346,7 +2346,7 @@ const initSampleCompanyDB = async () => {
 
     var listAsset2 = await Asset(vnistDB).insertMany([{ //3 B1 101
         company: vnist._id,
-        avatar: "/upload/asset/pictures/picture5.png",
+        avatar: "./upload/asset/pictures/picture5.png",
         assetName: "B1-101",
         group: "building",
         code: "VVTM02.003",
@@ -2391,7 +2391,7 @@ const initSampleCompanyDB = async () => {
     },
     { //04
         company: vnist._id,
-        avatar: "/upload/asset/pictures/picture5.png",
+        avatar: "./upload/asset/pictures/picture5.png",
         assetName: "B1-202",
         group: "building",
         usefulLife: "22",
@@ -2436,7 +2436,7 @@ const initSampleCompanyDB = async () => {
     },
     { //04
         company: vnist._id,
-        avatar: "/upload/asset/pictures/picture5.png",
+        avatar: "./upload/asset/pictures/picture5.png",
         assetName: "B1-202",
         group: "building",
         usefulLife: "22",
@@ -2481,7 +2481,7 @@ const initSampleCompanyDB = async () => {
     },
     { // 06
         company: vnist._id,
-        avatar: "/upload/asset/pictures/picture5.png",
+        avatar: "./upload/asset/pictures/picture5.png",
         assetName: "D3-102",
         group: "building",
         usefulLife: "20",
@@ -2544,7 +2544,7 @@ const initSampleCompanyDB = async () => {
     },
     { // 07
         company: vnist._id,
-        avatar: "/upload/asset/pictures/picture5.png",
+        avatar: "./upload/asset/pictures/picture5.png",
         assetName: "D3-103",
         group: "building",
         usefulLife: "12",
@@ -2608,7 +2608,7 @@ const initSampleCompanyDB = async () => {
     },
     { // 07
         company: vnist._id,
-        avatar: "/upload/asset/pictures/picture5.png",
+        avatar: "./upload/asset/pictures/picture5.png",
         assetName: "D3-103",
         group: "building",
         usefulLife: "12",

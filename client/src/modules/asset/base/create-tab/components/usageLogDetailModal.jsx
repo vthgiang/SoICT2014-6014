@@ -24,11 +24,11 @@ class UsageLogDetailModal extends Component {
         if (month.length < 2) {
             month = '0' + month;
         }
-            
+
         if (day.length < 2) {
             day = '0' + day;
         }
-            
+
         if (monthYear === true) {
             return [month, year].join('-');
         } else {
@@ -60,16 +60,14 @@ class UsageLogDetailModal extends Component {
         const { id } = this.props;
         const { translate, user, department } = this.props;
         const { usedByUser, usedByOrganizationalUnit, startDate, endDate, description, startTime, stopTime, errorOnDescription } = this.state;
-
         var userlist = user.list, departmentlist = department.list;
-        console.log("Dòng 63", this.props);
         return (
             <React.Fragment>
                 <DialogModal
                     size='50' modalID={`modal-display-usage-detail-infor-${id}`} isLoading={false}
                     formID={`display-usage-detail-infor-${id}`}
                     title={'Thông tin chi tiết sử dụng'}
-                    hasSaveButton = {false}                   
+                    hasSaveButton={false}
                 >
                     {/* Form chỉnh sửa thông tin sử dụng */}
                     <form className="form-group" id={`form-edit-usage-${id}`}>
@@ -84,7 +82,7 @@ class UsageLogDetailModal extends Component {
                                             id={`usedByUser${id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={[{value: 'null', text: 'Chọn người sử dụng'}, ...userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })]}
+                                            items={[{ value: 'null', text: 'Chọn người sử dụng' }, ...userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })]}
                                             value={usedByUser}
                                             multiple={false}
                                             disabled
@@ -102,7 +100,7 @@ class UsageLogDetailModal extends Component {
                                             id={`usedByOrganizationalUnit${id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={[{value: 'null', text: 'Chọn đơn vị sử dụng'}, ...departmentlist.map(x => { return { value: x._id, text: x.name} })]}
+                                            items={[{ value: 'null', text: 'Chọn đơn vị sử dụng' }, ...departmentlist.map(x => { return { value: x._id, text: x.name } })]}
                                             value={usedByOrganizationalUnit}
                                             multiple={false}
                                             disabled

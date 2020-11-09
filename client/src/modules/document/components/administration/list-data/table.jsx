@@ -132,6 +132,7 @@ class Table extends Component {
         return result;
     }
     handleCategoryChange = (value) => {
+        console.log('vaaaaaaaaaaa', value)
         this.setState(state => {
             return {
                 ...state,
@@ -140,6 +141,7 @@ class Table extends Component {
         })
     }
     handleDomainChange = (value) => {
+        console.log('dooooooooooo', value)
         this.setState(state => {
             return {
                 ...state,
@@ -158,6 +160,7 @@ class Table extends Component {
         })
     }
     handleArchiveChange = (value) => {
+        console.log('arrrrrrrr', value)
         this.setState(state => {
             return {
                 ...state,
@@ -186,7 +189,7 @@ class Table extends Component {
     convertData = (data) => {
         let array = data.map(item => {
             return {
-                value: item.path,
+                value: item._id,
                 text: item.name,
             }
         })
@@ -438,6 +441,7 @@ class Table extends Component {
         const listDomain = domains.list
         const listArchive = archives.list;
         const listCategory = this.convertData(categories.list)
+        console.log('caaaaaaaaa', listDomain, listArchive);
         let list = [];
         if (isLoading === false) {
             list = docs.paginate;

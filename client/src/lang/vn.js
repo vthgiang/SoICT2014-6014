@@ -762,6 +762,8 @@ export default {
                 see: 'Xem thông tin khách hàng',
                 edit: 'Chỉnh sửa thông tin khách hàng',
                 delete: 'Xóa thông tin khách hàng',
+                cannot_be_empty: 'không được để trống',
+                value_duplicate: 'bị trùng lặp',
             },
             group: {
                 name: 'Tên nhóm khách hàng',
@@ -2499,9 +2501,20 @@ export default {
                 special: 'Đặc tính',
                 select_all_special: 'Chọn tất cả các đặc tính',
                 select_special: 'Chọn đặc tính',
+                select_all_role: 'Chọn tất cả các vai trò',
+                select_role: 'Chọn vai trò',
                 stored: 'Lưu trong kho',
                 current_month: 'Tháng hiện tại',
 
+                assigned_collaborate: 'Trạng thái phân công công việc',
+                not_assigned: 'Chưa sắp xếp nhân viên',
+                assigned: 'Đã sắp xếp nhân viên',
+                none_select_assigned: 'Không phân loại',
+                role_in_collaborated_unit: 'Vai trò của nhân viên thuộc',
+                confirm_assigned: 'Xác nhận phân công công việc',
+                confirm_assigned_success: 'Bạn đã xác nhận phân công công việc',
+                confirm_assigned_failure: 'Bạn chưa xác nhận phân công công việc',
+                
                 name: 'Tên công việc',
                 search_by_name: 'Tìm kiếm theo tên',
 

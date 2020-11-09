@@ -17,7 +17,7 @@ class AmountBarChart extends Component {
 
     // Thiết lập dữ liệu biểu đồ
     setDataBarChart = () => {
-        const { listAssets, assetType, setAmountOfAsset } = this.props;
+        const { listAssets, assetType, setAmountOfAsset, translate } = this.props;
         let typeName = [], shortName = [], countAssetType = [], idAssetType = [];
         for (let i in assetType) {
             countAssetType[i] = 0;
@@ -40,7 +40,7 @@ class AmountBarChart extends Component {
             }
         }
 
-        countAssetType.unshift("count");
+        countAssetType.unshift(translate('asset.dashboard.amount'));
 
         let data = {
             count: countAssetType,

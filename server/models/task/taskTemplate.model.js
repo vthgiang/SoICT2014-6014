@@ -9,6 +9,10 @@ const TaskTemplateSchema = new Schema({
         ref: 'OrganizationalUnit',
         //require: true
     },
+    collaboratedWithOrganizationalUnits: [{
+        type: Schema.Types.ObjectId,
+        ref: 'OrganizationalUnit',
+    }],
     name: {
         type: String,
         //require: true

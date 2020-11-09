@@ -92,29 +92,29 @@ class TaskReportCreateForm extends Component {
      * Hàm xử lý khi thay đổi đơn vị
      * @param {*} e 
      */
-    handleChangeReportOrganizationalUnit = value => {
+    handleChangeReportOrganizationalUnit = e => {
         let { newReport } = this.state;
-        value = value[0];
-        // đổi người trong phòng ban khi đổi đơn vị
-        //  this.props.getAllUserOfDepartment(value);
-        //  this.props.getChildrenOfOrganizationalUnits(value);
-        this.setState({
-            newReport: {
-                ...newReport,
-                nameTaskReport: '',
-                descriptionTaskReport: '',
-                organizationalUnit: value,
-                responsibleEmployees: [],
-                accountableEmployees: [],
-                readByEmployees: [],
-                taskTemplate: '',
-            },
-            nameErrorCreateForm: undefined,
-            descriptionErrorCreateForm: undefined,
-            startDateErrorCreateForm: undefined,
-            readByEmployeeErrorCreateForm: undefined,
-            taskTemplateErrorCreateForm: undefined,
-        });
+        let { value } = e.target;
+        if (value) {
+            // this.props.getAllUserOfDepartment(value);
+            this.props.getChildrenOfOrganizationalUnits(value);
+            this.setState({
+                newReport: {
+                    ...newReport,
+                    nameTaskReport: '',
+                    descriptionTaskReport: '',
+                    organizationalUnit: value,
+                    responsibleEmployees: [],
+                    accountableEmployees: [],
+                    taskTemplate: '',
+                },
+                nameErrorCreateForm: undefined,
+                descriptionErrorCreateForm: undefined,
+                startDateErrorCreateForm: undefined,
+                readByEmployeeErrorCreateForm: undefined,
+                taskTemplateErrorCreateForm: undefined,
+            });
+        }
     }
 
 
@@ -638,9 +638,6 @@ class TaskReportCreateForm extends Component {
 
     componentDidMount() {
         this.props.getTaskTemplateByUser(1, 0, []);
-        this.props.getDepartment();
-        // Lấy tất cả nhân viên trong công ty
-        this.props.getAllUserOfCompany();
         this.props.getAllUserInAllUnitsOfCompany();
         this.props.getRoleSameDepartment(localStorage.getItem("currentRole"));
     }
@@ -689,12 +686,9 @@ class TaskReportCreateForm extends Component {
             listTaskTemplate = listTaskTemplate.map(x => {
                 return { value: x._id, text: x.name }
             })
-            listTaskTemplate.unshift({ value: '', text: 'Chọn mẫu công việc' });
+            listTaskTemplate.unshift({ value: '', text: '---Chọn---' });
         }
 
-        // console.log('state', this.state);
-        // console.log('====================')
-        console.log('newReport', newReport);
         return (
             <React.Fragment>
                 <DialogModal
@@ -723,22 +717,14 @@ class TaskReportCreateForm extends Component {
                     <div className="row">
                         <div className="col-md-6">
                             {/* Chọn đơn vị */}
-                            <div className={`form-group `}>
-                                <label className="control-label">Đơn vị <span className="text-red">*</span></label>
-                                {
-                                    units &&
-                                    <SelectBox
-                                        id={`organizationalUnitId-create-form`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={newReport.organizationalUnit}
-                                        onChange={this.handleChangeReportOrganizationalUnit}
-                                        items={
-                                            units.map(o => ({ value: o._id, text: o.name }))
-                                        }
-                                        options={{ minimumResultsForSearch: 100 }}
-                                        multiple={false}
-                                    />
+                            <div className={'form-group'}>
+                                <label className="control-label">Chọn đơn vị</label>
+                                {units &&
+                                    <select value={newReport.organizationalUnit} className="form-control" onChange={this.handleChangeReportOrganizationalUnit}>
+                                        {units.map(x => {
+                                            return <option key={x._id} value={x._id}>{x.name}</option>
+                                        })}
+                                    </select>
                                 }
                             </div>
                         </div>
@@ -1118,25 +1104,23 @@ class TaskReportCreateForm extends Component {
                             </div>
                         </React.Fragment>
                     }
-
                 </DialogModal>
             </React.Fragment>
         );
     }
 }
 function mapState(state) {
-    const { tasks, user, reports, tasktemplates } = state;
-    return { tasks, user, reports, tasktemplates };
+    const { user, reports, tasktemplates } = state;
+    return { user, reports, tasktemplates };
 }
+
 const actionCreators = {
     createTaskReport: TaskReportActions.createTaskReport,
+
     getTaskTemplateByUser: taskTemplateActions.getAllTaskTemplateByUser,
 
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
-    getAllUserOfCompany: UserActions.getAllUserOfCompany,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
-    getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
-    getDepartment: UserActions.getDepartmentOfUser,
     getRoleSameDepartment: UserActions.getRoleSameDepartment,
 
     getTaskEvaluations: taskManagementActions.getTaskEvaluations,

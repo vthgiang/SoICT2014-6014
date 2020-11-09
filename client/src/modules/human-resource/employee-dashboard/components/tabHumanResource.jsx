@@ -14,22 +14,22 @@ class TabHumanResource extends Component {
         this.state = {}
     };
     render() {
-        const { organizationalUnits, actionSearch, monthShow, childOrganizationalUnit } = this.props;
+        const { organizationalUnits, monthShow, childOrganizationalUnit, defaultUnit } = this.props;
 
         return (
             <div className="row qlcv">
                 <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <AgePyramidChart organizationalUnits={organizationalUnits} actionSearch={actionSearch} />
+                    <AgePyramidChart organizationalUnits={organizationalUnits} />
                     <div className='row'>
                         <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <HumanResourceChartBySalary organizationalUnits={organizationalUnits} monthShow={monthShow} handleMonthChange={this.handleMonthChange} />
                         </div>
                         <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                            <QualificationChart organizationalUnits={organizationalUnits} actionSearch={actionSearch} />
+                            <QualificationChart organizationalUnits={organizationalUnits} />
                         </div>
 
                     </div>
-                    <HumanResourceIncreaseAndDecreaseChart childOrganizationalUnit={childOrganizationalUnit} nameData1='Tuyển mới' nameData2='Nghỉ làm' nameData3='Tổng nhân sự' nameChart={'Tình hình tăng giảm nhân sự'} />
+                    <HumanResourceIncreaseAndDecreaseChart childOrganizationalUnit={childOrganizationalUnit} defaultUnit={defaultUnit} nameData1='Tuyển mới' nameData2='Nghỉ làm' nameData3='Tổng nhân sự' nameChart={'Tình hình tăng giảm nhân sự'} />
                 </div>
             </div>
         );

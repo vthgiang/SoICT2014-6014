@@ -10,7 +10,7 @@ class ViewAllTasks extends Component {
     };
 
     render() {
-        const { title, employeeTasks } = this.props;
+        const { title, employeeTasks, showCheck = false } = this.props;
         return (
             <React.Fragment>
                 <DialogModal
@@ -32,7 +32,7 @@ class ViewAllTasks extends Component {
                             <tbody>
                                 {employeeTasks.length !== 0 &&
                                     employeeTasks.map((x, index) => (
-                                        <tr key={index}>
+                                        <tr key={index} style={{ color: (x._id === localStorage.getItem('userId') && showCheck) ? "#00a65a" : "none" }}>
                                             <td>{index + 1}</td>
                                             <td>{x.name}</td>
                                             <td>{x.totalTask}</td>

@@ -686,7 +686,7 @@ exports.editTask = async (req, res) => {
     }
     else if (req.query.type === 'confirm_task') {
         confirmTask(req, res);
-    } 
+    }
     else if (req.query.type === 'edit_employee_collaborated_with_unit') {
         editEmployeeCollaboratedWithOrganizationalUnits(req, res);
     }
@@ -721,11 +721,11 @@ editTaskByResponsibleEmployees = async (req, res) => {
         var tasks = task.tasks;
         var data = { "organizationalUnits": tasks.organizationalUnit, "title": "Cập nhật thông tin công việc", "level": "general", "content": `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc <strong>${tasks.name}</strong> với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}" target="_blank">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`, "sender": user.name, "users": tasks.accountableEmployees };
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data,);
-        
+
         // sendEmail(task.email, "Cập nhật thông tin công việc", '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}" target="_blank">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`);
         let title = "Cập nhật thông tin công việc: " + task.tasks.name;
         sendEmail(task.email, title, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người thực hiện <a href="${process.env.WEBSITE}/task?taskId=${req.params.id}">${process.env.WEBSITE}/task?taskId=${req.params.id}</a></p>`);
-        
+
         await Logger.info(req.user.email, ` edit task  `, req.portal);
         res.status(200).json({
             success: true,
@@ -775,6 +775,15 @@ editEmployeeCollaboratedWithOrganizationalUnits = async (req, res) => {
     try {
         let data = await PerformTaskService.editEmployeeCollaboratedWithOrganizationalUnits(req.portal, req.params.taskId, req.body);
         
+        // Thêm nhật ký hoạt động
+        let log = {
+            createdAt: Date.now(),
+            creator: req.user._id,
+            title: "Phân công công việc"
+        }
+        await PerformTaskService.addTaskLog(req.portal, req.params, log);
+
+        // Gửi thông báo
         let notification = {
             organizationalUnits: data.task && data.task.organizationalUnit._id,
             title: "Phân công công việc",
@@ -786,7 +795,7 @@ editEmployeeCollaboratedWithOrganizationalUnits = async (req, res) => {
         await NotificationServices.createNotification(req.portal, data.task.organizationalUnit.company, notification);
         data.email && data.email.length !== 0
             && await sendEmail(data.email, "Phân công công việc", '', data.html);
-        
+
         await Logger.info(req.user.email, ` edit collaborate with organizational unit `, req.portal);
         res.status(200).json({
             success: true,
@@ -1293,6 +1302,25 @@ exports.getAllPreceedingTasks = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['get_all_preceeding_tasks_fail'],
+            content: error
+        })
+    }
+}
+
+exports.sortActions = async (req, res) => {
+    try {
+        var action = await PerformTaskService.sortActions(req.portal, req.params, req.body);
+        await Logger.info(req.user.email, ` sort actions `, req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['sort_actions_success'],
+            content: action
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` sort actions  `, req.portal)
+        res.status(400).json({
+            success: true,
+            messages: ['sort_actions_fail'],
             content: error
         })
     }
