@@ -12,6 +12,22 @@ class SalaryOfOrganizationalUnitsChart extends Component {
         this.state = {}
     }
 
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.salary.listSalaryByMonth !== prevState.listSalaryByMonth) {
+            return {
+                listSalaryByMonth: nextProps.salary.listSalaryByMonth
+            };
+        }
+        return null;
+    };
+
+    shouldComponentUpdate(nextProps, nextState) {
+        if (nextProps.salary.listSalaryByMonth !== this.state.listSalaryByMonth) {
+            return true
+        };
+        return false;
+    }
+
     /** Xóa các chart đã render khi chưa đủ dữ liệu */
     removePreviousChart() {
         const chart = this.refs.salaryChart;
@@ -23,12 +39,6 @@ class SalaryOfOrganizationalUnitsChart extends Component {
     /** Render chart */
     renderChart = (data) => {
         data.data1.shift();
-        let fakeData1 = data.data1.map((x, index) => {
-            if (index % 2 === 0) {
-                return x * 2
-            } else return x / 2
-        });
-
         this.removePreviousChart();
         let chart = c3.generate({
             bindto: this.refs.salaryChart,
@@ -56,15 +66,9 @@ class SalaryOfOrganizationalUnitsChart extends Component {
 
         setTimeout(function () {
             chart.load({
-                columns: [[data.nameData, ...fakeData1]],
-            });
-        }, 100);
-
-        setTimeout(function () {
-            chart.load({
                 columns: [[data.nameData, ...data.data1]],
             });
-        }, 300);
+        }, 100);
     };
 
     render() {

@@ -51,6 +51,7 @@ class IncidentLogTab extends Component {
                 ...data
             }]
         })
+        console.log('add', this.state.incidentLogs, data);
         this.props.handleAddIncident(this.state.incidentLogs, data)
     }
 
@@ -58,6 +59,7 @@ class IncidentLogTab extends Component {
     handleEditIncident = async (data) => {
         const { incidentLogs } = this.state;
         incidentLogs[data.index] = data;
+        console.log('update', data);
         await this.setState({
             incidentLogs: incidentLogs,
         })

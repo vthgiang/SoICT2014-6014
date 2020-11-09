@@ -210,6 +210,7 @@ class AddTaskTemplate extends Component {
                     newTemplate: { // update lại unit, và reset các selection phía sau
                         ...this.state.newTemplate,
                         organizationalUnit: value,
+                        collaboratedWithOrganizationalUnits: [],
                         errorOnUnit: msg,
                         readByEmployees: [],
                         responsibleEmployees: [],
@@ -222,6 +223,19 @@ class AddTaskTemplate extends Component {
         }
         this.props.onChangeTemplateData(this.state.newTemplate);
         return msg === undefined;
+    }
+
+    handleChangeCollaboratedWithOrganizationalUnits = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                newTemplate: { // update lại name,description và reset các selection phía sau
+                    ...this.state.newTemplate,
+                    collaboratedWithOrganizationalUnits: value
+                }
+            };
+        });
+        this.props.onChangeTemplateData(this.state.newTemplate);
     }
 
     handleTaskTemplateRead = (value) => {
@@ -320,9 +334,9 @@ class AddTaskTemplate extends Component {
                 return {
                     id: nextProps.id,
                     newTemplate: {
-                        organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : [],
+                        organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : "",
+                        collaboratedWithOrganizationalUnits: (info && info.collaboratedWithOrganizationalUnits) ? info.collaboratedWithOrganizationalUnits : [],
                         name: (info && info.name) ? info.name : '',
-                        // readByEmployees: [],
                         responsibleEmployees: (info && info.responsibleEmployees) ? info.responsibleEmployees : [],
                         accountableEmployees: (info && info.accountableEmployees) ? info.accountableEmployees : [],
                         consultedEmployees: (info && info.consultedEmployees) ? info.consultedEmployees : [],
@@ -462,8 +476,27 @@ class AddTaskTemplate extends Component {
                                     value={newTemplate.organizationalUnit}
                                 />
                             }
-                            <ErrorLabel content={this.state.newTemplate.errorOnUnit} />
+                            <ErrorLabel content={newTemplate.errorOnUnit} />
                         </div>
+
+                        {/* Chọn đơn vị phối hợp công việc */}
+                        {usersInUnitsOfCompany &&
+                            <div className="form-group">
+                                <label>{translate('task.task_management.collaborated_with_organizational_units')}</label>
+                                <SelectBox
+                                    id="multiSelectUnitThatHaveCollaboratedTemplate"
+                                    lassName="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={usersInUnitsOfCompany.filter(item => String(item.id) !== String(newTemplate.organizationalUnit)).map(x => {
+                                        return { text: x.department, value: x.id }
+                                    })}
+                                    options={{ placeholder: translate('kpi.evaluation.dashboard.select_units') }}
+                                    onChange={this.handleChangeCollaboratedWithOrganizationalUnits}
+                                    value={newTemplate.collaboratedWithOrganizationalUnits}
+                                    multiple={true}
+                                />
+                            </div>
+                        }
                     </div>
 
                     {/**Những Role có quyền xem mẫu công việc này*/}
@@ -625,7 +658,8 @@ class AddTaskTemplate extends Component {
                                     <div><span style={{ fontWeight: 600 }}>overdueDate</span> - Thời gian quá hạn (ngày)</div>
                                     <div><span style={{ fontWeight: 600 }}>dayUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
                                     <div><span style={{ fontWeight: 600 }}>totalDay</span> - Thời gian từ ngày bắt đầu đến ngày kết thúc công việc (ngày)</div>
-                                    <div><span style={{ fontWeight: 600 }}>averageActionRating</span> -  Trung bình cộng điểm đánh giá hoạt động (1-10)</div>
+                                    <div><span style={{ fontWeight: 600 }}>numberOfFailedAction</span> - Số hoạt động không đạt (rating &lt; 5)</div>
+                                    <div><span style={{ fontWeight: 600 }}>numberOfPassedAction</span> - Số hoạt động đạt (rating &ge; 5)</div>
                                     <div><span style={{ fontWeight: 600 }}>progress</span> - % Tiến độ công việc (0-100)</div>
                                 </div>
                             </div>

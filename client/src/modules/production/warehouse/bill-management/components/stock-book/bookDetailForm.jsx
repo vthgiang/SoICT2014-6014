@@ -12,29 +12,33 @@ class BookDetailForm extends Component {
         }
     }
 
-    // static getDerivedStateFromProps(nextProps, prevState){
-    //     if(nextProps.stockId !== prevState.stockId || nextProps.code !== prevState.code || nextProps.name !== prevState.name ||
-    //         nextProps.status !== prevState.status || nextProps.address !== prevState.address || nextProps.goods !== prevState.goods ||
-    //         nextProps.managementLocation !== prevState.managementLocation || nextProps.manageDepartment !== prevState.manageDepartment || nextProps.description !== prevState.description){
-    //         return {
-    //             ...prevState,
-    //             stockId: nextProps.stockId,
-    //             code: nextProps.code,
-    //             name: nextProps.name,
-    //             status: nextProps.status,
-    //             address: nextProps.address,
-    //             goods: nextProps.goodsManagement,
-    //             managementLocation: nextProps.managementLocation,
-    //             manageDepartment: nextProps.manageDepartment,
-    //             description: nextProps.description,
-    //         }
-    //     }
-    //     else {
-    //         return null;
-    //     }
-    // }
+    formatDate(date, monthYear = false) {
+        if (date) {
+            let d = new Date(date),
+                day = '' + d.getDate(),
+                month = '' + (d.getMonth() + 1),
+                year = d.getFullYear();
+
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+
+            if (monthYear === true) {
+                return [month, year].join('-');
+            } else return [day, month, year].join('-');
+        } else {
+            return date
+        }
+    }
+
     render() {
-        const { translate } = this.props;
+        const { translate, bills } = this.props;
+        const { billDetail } = bills;
+        let listGoods = [];
+        if(billDetail && billDetail.goodReceipts && billDetail.goodReceipts.length > 0) {
+            
+        }
         return (
             <React.Fragment>
                 <DialogModal
@@ -52,11 +56,11 @@ class BookDetailForm extends Component {
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.bill_management.code')}:&emsp;</strong>
-                                    BR012
+                                    {billDetail.code}
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.bill_management.type')}:&emsp;</strong>
-                                    Nhập nguyên vật liệu
+                                    {translate(`manage_warehouse.bill_management.billType.${billDetail.type}`)}
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.bill_management.proposal')}:&emsp;</strong>
@@ -64,13 +68,13 @@ class BookDetailForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.bill_management.stock')}:&emsp;</strong>
-                                    Tạ Quang Bửu
+                                    {billDetail.fromStock ? billDetail.fromStock.name : "Stock is deleted"}
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.bill_management.creator')}:&emsp;</strong>
-                                    Nguyễn Văn Thắng
+                                    {billDetail.creator ? billDetail.creator.name : "Creator is deleted"}
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.bill_management.approved')}:&emsp;</strong>
@@ -78,17 +82,17 @@ class BookDetailForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.bill_management.date')}:&emsp;</strong>
-                                    05-10-2020 7:30
+                                    {this.formatDate(billDetail.timestamp)}
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.bill_management.partner')}:&emsp;</strong>
-                                    Công ty TNHH XYZ
+                                    {billDetail.partner ? billDetail.partner : "Partner is deleted"}
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.bill_management.description')}:&emsp;</strong>
-                                    Nhập kho nguyên vật liệu
+                                    {billDetail.description}
                                 </div>
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manage_warehouse.bill_management.goods')}</legend>
@@ -105,38 +109,54 @@ class BookDetailForm extends Component {
                                             </tr>
                                         </thead>
                                         <tbody id={`good-edit-manage-by-archive`}>
-                                                    <tr>
-                                                        <td>1</td>
-                                                        <td>MT001</td>
-                                                        <td>Jucca Nước</td>
-                                                        <td>ml</td>
-                                                        <td>200</td>
-                                                        <td></td>
+                                            {(typeof billDetail.goodReceipts === 'undefined' || billDetail.goodReceipts.length === 0) ? '' :
+                                                billDetail.goodReceipts.map((x, index) =>
+                                                    <tr key={index}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{x.good.code}</td>
+                                                        <td>{x.good.name}</td>
+                                                        <td>{x.good.baseUnit}</td>
+                                                        <td>{x.quantity}</td>
+                                                        <td>{x.description}</td>
                                                     </tr>
-                                                    <tr>
-                                                        <td>2</td>
-                                                        <td>MT002</td>
-                                                        <td>Propylen Glycon</td>
-                                                        <td>kg</td>
-                                                        <td>60</td>
-                                                        <td></td>
+                                                )
+                                            }
+                                            {(typeof billDetail.goodIssues === 'undefined' || billDetail.goodIssues.length === 0) ? '' :
+                                                billDetail.goodIssues.map((x, index) =>
+                                                    <tr key={index}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{x.good.code}</td>
+                                                        <td>{x.good.name}</td>
+                                                        <td>{x.good.baseUnit}</td>
+                                                        <td>{x.quantity}</td>
+                                                        <td>{x.description}</td>
                                                     </tr>
-                                                    <tr>
-                                                        <td>3</td>
-                                                        <td>EQ001</td>
-                                                        <td>Máy nén</td>
-                                                        <td>Chiếc</td>
-                                                        <td>10</td>
-                                                        <td></td>
+                                                )
+                                            }
+                                            {(typeof billDetail.goodReturns === 'undefined' || billDetail.goodReturns.length === 0) ? '' :
+                                                billDetail.goodReturns.map((x, index) =>
+                                                    <tr key={index}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{x.good.code}</td>
+                                                        <td>{x.good.name}</td>
+                                                        <td>{x.good.baseUnit}</td>
+                                                        <td>{x.quantity}</td>
+                                                        <td>{x.description}</td>
                                                     </tr>
-                                                    <tr>
-                                                        <td>4</td>
-                                                        <td>PR001</td>
-                                                        <td>ĐƯỜNG ACESULFAME K</td>
-                                                        <td>Thùng</td>
-                                                        <td>30</td>
-                                                        <td></td>
+                                                )
+                                            }
+                                            {(typeof billDetail.stockTakes === 'undefined' || billDetail.stockTakes.length === 0) ? '' :
+                                                billDetail.stockTakes.map((x, index) =>
+                                                    <tr key={index}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{x.good.code}</td>
+                                                        <td>{x.good.name}</td>
+                                                        <td>{x.good.baseUnit}</td>
+                                                        <td>{x.realQuantity}</td>
+                                                        <td>{x.description}</td>
                                                     </tr>
+                                                )
+                                            }
                                         </tbody>
                                     </table>
                                 </fieldset>
@@ -149,4 +169,6 @@ class BookDetailForm extends Component {
     }
 }
 
-export default connect(null, null)(withTranslate(BookDetailForm));
+const mapStateToProps = state => state;
+
+export default connect(mapStateToProps, null)(withTranslate(BookDetailForm));

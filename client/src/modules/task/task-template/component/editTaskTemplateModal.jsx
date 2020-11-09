@@ -17,6 +17,7 @@ class ModalEditTaskTemplate extends Component {
             currentRole: localStorage.getItem('currentRole'),
             editingTemplate: {
                 organizationalUnit: '',
+                collaboratedWithOrganizationalUnits: [],
                 name: '',
                 readByEmployees: [],
                 responsibleEmployees: [],
@@ -35,13 +36,15 @@ class ModalEditTaskTemplate extends Component {
 
     static getDerivedStateFromProps(props, state) {
         if(props.taskTemplateId !== state.taskTemplateId){
+            console.log('qydsd', props.taskTemplate);
             return {
                 ...state,
                 taskTemplateId: props.taskTemplateId,
                 taskTemplate: props.taskTemplate,
                 editingTemplate: {
                     _id: props.taskTemplate._id,
-                    organizationalUnit: props.taskTemplate.organizationalUnit._id,
+                    organizationalUnit: props.taskTemplate.organizationalUnit,
+                    collaboratedWithOrganizationalUnits: props.taskTemplate.collaboratedWithOrganizationalUnits.map(item => { if (item) return item._id }),
                     name: props.taskTemplate.name,
                     readByEmployees: props.taskTemplate.readByEmployees,
                     responsibleEmployees: props.taskTemplate.responsibleEmployees,

@@ -84,7 +84,7 @@ class DepreciationBarChart extends Component {
     }
 
     setDataBarChart = () => {
-        const { listAssets, assetType, setDepreciationOfAsset } = this.props;
+        const { listAssets, assetType, setDepreciationOfAsset, translate } = this.props;
         let countDepreciation = [], typeName = [], shortName = [], idAssetType = [];
 
         for (let i in assetType) {
@@ -106,7 +106,7 @@ class DepreciationBarChart extends Component {
                 typeName.push(assetType[i].typeName);
             }
         }
-        countDepreciation.unshift('count')
+        countDepreciation.unshift(translate('asset.dashboard.lost_value'))
         let data = {
             count: countDepreciation,
             type: typeName,

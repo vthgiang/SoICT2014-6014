@@ -32,10 +32,12 @@ class ViewTaskTemplate extends Component {
 
     render() {
         const { translate, department } = this.props;
-        const { taskTemplate, isProcess, listUser } = this.props;
-        const { showMore } = this.state
-        let listUserAccountable = [], listUserResponsible = []
-        let organizationalUnitProcess
+        const { isProcess, data, taskTemplate, listUser } = this.props;// data là props dữ liệu của process được chọn nếu đây là process
+        const { showMore } = this.state;
+        let processTemplate = data;
+        console.log('processTemplate', taskTemplate);
+        let listUserAccountable = [], listUserResponsible = [];
+        let organizationalUnitProcess, collaboratedWithOrganizationalUnitsProcess;
         let priority = "";
         if (isProcess) {
             if (listUser) {
@@ -49,14 +51,10 @@ class ViewTaskTemplate extends Component {
                         listUserResponsible.push({ value: x._id, name: x.name })
                     }
                 })
-                department.list.forEach(x => {
-                    if (taskTemplate?.organizationalUnit === x._id) {
-                        organizationalUnitProcess = x.name
-                    }
-                })
             }
         }
-        let organizationalUnit = isProcess ? organizationalUnitProcess : taskTemplate?.organizationalUnit?.name
+        let organizationalUnit = taskTemplate?.organizationalUnit?.name
+        let collaboratedWithOrganizationalUnits = taskTemplate?.collaboratedWithOrganizationalUnits
         let accountableEmployees = isProcess ? listUserAccountable : taskTemplate?.accountableEmployees
         let responsibleEmployees = isProcess ? listUserResponsible : taskTemplate?.responsibleEmployees
 
@@ -78,7 +76,14 @@ class ViewTaskTemplate extends Component {
 
                             {/**Các thông tin của mẫu công việc */}
                             <div><strong>{translate('task_template.unit')}:</strong><span>{organizationalUnit}</span></div>
-
+                            {collaboratedWithOrganizationalUnits && <div><strong>{translate('task.task_management.collaborated_with_organizational_units')}:</strong></div>}
+                            {collaboratedWithOrganizationalUnits &&
+                                <ul>
+                                    {collaboratedWithOrganizationalUnits && collaboratedWithOrganizationalUnits.map(e =>
+                                        <li>{e.name}</li>
+                                    )}
+                                </ul>
+                            }
                             <div><strong>{translate('task_template.description')}:</strong><span>{taskTemplate?.description}</span></div>
 
                             <div><strong>{translate('task_template.priority')}:</strong><span>{taskTemplate && priority}</span></div>
@@ -95,7 +100,9 @@ class ViewTaskTemplate extends Component {
                                 <li><span style={{ fontWeight: 600 }}>overdueDate</span> - Thời gian quá hạn (ngày)</li>
                                 <li><span style={{ fontWeight: 600 }}>dayUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</li>
                                 <li><span style={{ fontWeight: 600 }}>totalDay</span> - Thời gian từ ngày bắt đầu đến ngày kết thúc công việc (ngày)</li>
-                                <li><span style={{ fontWeight: 600 }}>averageActionRating</span> -  Trung bình cộng điểm đánh giá hoạt động (1-10)</li>
+                                {/* <li><span style={{ fontWeight: 600 }}>averageActionRating</span> - Trung bình cộng điểm đánh giá hoạt động (1-10)</li> */}
+                                <li><span style={{ fontWeight: 600 }}>numberOfFailedAction</span> - Số hoạt động không đạt (rating &lt; 5)</li>
+                                <li><span style={{ fontWeight: 600 }}>numberOfPassedAction</span> - Số hoạt động đạt (rating &ge; 5)</li>
                                 <li><span style={{ fontWeight: 600 }}>progress</span> - % Tiến độ công việc (0-100)</li>
                             </ul>
                         </div>

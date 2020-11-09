@@ -11,7 +11,7 @@ export const exampleServices = {
 function getOnlyExampleName(queryData) {
     return sendRequest(
         {
-            url: `${process.env.REACT_APP_SERVER}/examples/getOnlyExampleName`,
+            url: `${process.env.REACT_APP_SERVER}/examples`,
             method: "GET",
             params: {
                 exampleName: queryData !== undefined ? queryData.exampleName : "",

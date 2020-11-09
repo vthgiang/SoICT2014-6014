@@ -1,28 +1,32 @@
 import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
-import { DialogModal, ErrorLabel, TreeSelect } from '../../../../../common-components';
+import { DialogModal, TreeSelect, ErrorLabel, ButtonModal } from '../../../../../common-components';
 import { GoodActions } from '../redux/actions';
 import { CategoryActions } from '../../category-management/redux/actions';
-import UnitCreateFrom from './unitCreateForm';
+import UnitCreateForm from './unitCreateForm';
 import ComponentCreateForm from './componentCreateForm';
+import InfoMillCreateForm from './infoMillCreateForm';
+
 class GoodEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-
         }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.goodId !== prevState.goodId) {
+
             return {
                 ...prevState,
                 goodId: nextProps.goodId,
                 type: nextProps.type,
                 baseUnit: nextProps.baseUnit,
+                packingRule: nextProps.packingRule,
                 units: nextProps.units,
                 materials: nextProps.materials,
+                manufacturingMills: nextProps.manufacturingMills,
                 description: nextProps.description,
                 code: nextProps.code,
                 name: nextProps.name,
@@ -31,7 +35,6 @@ class GoodEditForm extends Component {
                 errorOnCode: undefined,
                 errorOnBaseUnit: undefined,
                 errorOnCategory: undefined,
-
             }
         } else {
             return null;
@@ -158,11 +161,12 @@ class GoodEditForm extends Component {
         });
     }
 
-    handleListUnitChange = (data) => {
+    handleListUnitChange = (data, packingRule) => {
         this.setState(state => {
             return {
                 ...state,
-                units: data
+                units: data,
+                packingRule: packingRule
             }
         })
     }
@@ -176,22 +180,14 @@ class GoodEditForm extends Component {
         })
     }
 
-    validateComponentCreateForm = (value) => {
+    handleListMillsChange = (data) => {
         this.setState(state => {
             return {
                 ...state,
-                isValidatedComponentCreatedForm: value
+                manufacturingMills: data
             }
-        })
-    }
-
-    validateUnitCreateForm = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                isValidatedUnitCreateForm: value
-            }
-        })
+        });
+        console.log(this.state.manufacturingMills);
     }
 
     isFormValidated = () => {
@@ -200,8 +196,8 @@ class GoodEditForm extends Component {
             this.validateCode(this.state.code, false) &&
             this.validateBaseUnit(this.state.baseUnit, false) &&
             this.validateCategory(this.state.category, false) &&
-            this.state.isValidatedComponentCreatedForm &&
-            this.state.isValidatedUnitCreateForm;
+            this.state.materials.length > 0 &&
+            this.state.packingRule;
         return result;
     }
 
@@ -216,13 +212,14 @@ class GoodEditForm extends Component {
 
         let listUnit = [];
         let listMaterial = [];
+        let listManfaucturingMills = [];
         const { translate, goods, categories, type } = this.props;
-        const { errorOnName, errorOnCode, errorOnBaseUnit, errorOnCategory, goodId, code, name, category, units, materials, baseUnit, description } = this.state;
+        const { errorOnName, errorOnCode, errorOnBaseUnit, errorOnCategory, code, name, category, units, baseUnit, description, materials, manufacturingMills, goodId, packingRule } = this.state;
         const dataSelectBox = this.getAllCategory();
 
         if (units) listUnit = units;
         if (materials) listMaterial = materials;
-
+        if (manufacturingMills) listManfaucturingMills = manufacturingMills;
         return (
             <React.Fragment>
                 <DialogModal
@@ -250,6 +247,7 @@ class GoodEditForm extends Component {
                                 </div>
 
                             </div>
+
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group ${!errorOnName ? "" : "has-error"}`}>
                                     <label>{translate('manage_warehouse.good_management.name')}<span className="attention"> * </span></label>
@@ -257,7 +255,7 @@ class GoodEditForm extends Component {
                                     <ErrorLabel content={errorOnName} />
                                 </div>
                                 <div className={`form-group ${!errorOnCategory ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.good_management.category')}</label>
+                                    <label>{translate('manage_warehouse.good_management.category')}<span className="attention"> * </span></label>
                                     <TreeSelect
                                         data={dataSelectBox}
                                         value={category}
@@ -272,8 +270,15 @@ class GoodEditForm extends Component {
                                     <label>{translate('manage_warehouse.good_management.description')}</label>
                                     <textarea type="text" className="form-control" value={description} onChange={this.handleDescriptionChange} />
                                 </div>
-                                <UnitCreateFrom id={goodId} initialData={listUnit} onValidate={this.validateUnitCreateForm} onDataChange={this.handleListUnitChange} />
-                                {type === 'product' ? <ComponentCreateForm id={goodId} onValidate={this.validateComponentCreateForm} initialData={listMaterial} onDataChange={this.handleListMaterialChange} /> : ""}
+                                <UnitCreateForm packingRule={packingRule} id={goodId} baseUnit={baseUnit} onValidate={this.validateUnitCreateForm} initialData={listUnit} onDataChange={this.handleListUnitChange} />
+                                {
+                                    type === 'product'
+                                        ?
+                                        <React.Fragment>
+                                            <ComponentCreateForm id={goodId} initialData={listMaterial} onDataChange={this.handleListMaterialChange} />
+                                            <InfoMillCreateForm id={goodId} onDataChange={this.handleListMillsChange} initialData={listManfaucturingMills} />
+                                        </React.Fragment>
+                                        : ""}
                             </div>
                         </div>
                     </form>
@@ -292,3 +297,14 @@ const mapDispatchToProps = {
     getCategoriesByType: CategoryActions.getCategoriesByType
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(GoodEditForm));
+
+
+
+
+
+
+
+
+
+
+

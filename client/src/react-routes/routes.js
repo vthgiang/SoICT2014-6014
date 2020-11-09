@@ -136,8 +136,9 @@ import PlanManagement from "../modules/plan/components";
 
 // Example
 import ExampleManagement1 from "../modules/example/example1/components";
-import ExampleManagement2 from "../modules/example/example2/components";
 
+import ExampleManagement2 from "../modules/example/example2/components-hooks";
+import ExampleManagementHooks1 from "../modules/example/example1/components-hooks";
 // Manufacturing Managements
 
 import ManufacturingPlan from "../modules/production/manufacturing/manufacturing-plan/components";
@@ -1703,6 +1704,27 @@ class Routes extends Component {
                         pageName={"manage_examples_2"}
                         layout={Layout}
                         component={ExampleManagement2}
+                    />
+
+                    {/* Example Management Hooks*/}
+                    <PrivateRoute
+                        isLoading={this.props.example1.isLoading}
+                        key={"manage-examples-1"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-examples-hooks-1",
+                                name: "manage_examples_hooks_1",
+                                icon: "fa fa-circle",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-examples-hooks-1"}
+                        path={"/manage-examples-hooks-1"}
+                        pageName={"manage_examples_hooks_1"}
+                        layout={Layout}
+                        component={ExampleManagementHooks1}
                     />
 
                     {/* Manufacturing-management */}

@@ -10,7 +10,8 @@ class ViewAllOverTime extends Component {
     };
 
     render() {
-        const { title, dataView, id } = this.props;
+        const { title, dataView, id, showCheck = false } = this.props;
+        console.log(dataView);
         return (
             <React.Fragment>
                 <DialogModal
@@ -32,7 +33,7 @@ class ViewAllOverTime extends Component {
                             <tbody>
                                 {dataView.length !== 0 &&
                                     dataView.map((x, index) => (
-                                        <tr key={index}>
+                                        <tr key={index} style={{ color: (x._id === localStorage.getItem('userId') && showCheck) ? "#00a65a" : "none" }}>
                                             <td>{index + 1}</td>
                                             <td>{x.name}</td>
                                             <td>{x.totalHours}</td>

@@ -97,7 +97,7 @@ class ComponentCreateForm extends Component {
         listGoodsByType.map(item => {
             goodArr.push({
                 value: item._id,
-                text: item.name
+                text: item.name + " - " + item.baseUnit
             })
         })
 
@@ -122,6 +122,8 @@ class ComponentCreateForm extends Component {
             }
         })
         this.props.onDataChange(this.state.listMaterial);
+
+
     }
 
     handleEditMaterial = async (material, index) => {
@@ -153,6 +155,8 @@ class ComponentCreateForm extends Component {
             }
         })
         this.props.onDataChange(this.state.listMaterial);
+
+
     }
 
     handleCancelEditMaterial = async (e) => {
@@ -192,19 +196,9 @@ class ComponentCreateForm extends Component {
         this.props.onDataChange(this.state.listMaterial);
     }
 
-    validateComponentCreateForm = () => {
-        const { listMaterial } = this.state;
-        if (listMaterial.length > 0) {
-            this.props.onValidate(true);
-        } else {
-            this.props.onValidate(false);
-        }
-    }
-
     render() {
-        this.validateComponentCreateForm();
         const { translate, id, type } = this.props;
-        let { listMaterial, material, errorOnMaterialQuantity, errorOnGood } = this.state;
+        const { listMaterial, material, errorOnMaterialQuantity, errorOnGood } = this.state;
         const dataGoodByType = this.getGoodsByType();
         let component = '';
         if (material.good) {
@@ -214,7 +208,7 @@ class ComponentCreateForm extends Component {
         return (
 
             <fieldset className="scheduler-border">
-                <legend className="scheduler-border">{translate('manage_warehouse.good_management.materials')}</legend>
+                <legend className="scheduler-border">{translate('manage_warehouse.good_management.materials')}<span className="attention">*</span></legend>
 
                 <div className={`form-group ${!errorOnGood ? "" : "has-error"}`}>
                     <label>{translate('manage_warehouse.good_management.material')}</label>

@@ -25,6 +25,24 @@ exports.getEmployeeKPISets = async (portal, data) => {
     let enddate = null;
     let status = null;
     let user = data.user ? data.user : [0];
+    let year, month;
+
+    // config endDate để truy vấn (ví dụ endDate=2020-10 ---> 2020-11)
+    if (data.endDate) {
+        year = data.endDate.slice(0, 4);
+        month = data.endDate.slice(5, 7);
+    }
+    if ((new Number(month)) == 12) {
+        month = '1';
+        year = (new Number(year)) + 1;
+    } else {
+        month = (new Number(month)) + 1;
+    }
+    if (month < 10) {
+        data.endDate = year + '-0' + month;
+    } else {
+        data.endDate = year + '-' + month;
+    }
 
     if (data.startDate) {
         startdate = new Date(data.startDate);
@@ -58,6 +76,7 @@ exports.getEmployeeKPISets = async (portal, data) => {
             }
         }
     }
+    
     if (startdate !== null && enddate !== null) {
         keySearch = {
             ...keySearch,
@@ -300,17 +319,15 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
     for (let i = 0; i < kpiSet.kpis.length; i++) {
         let kpi = await EmployeeKpi(connect(DB_CONNECTION, portal)).findById(kpiSet.kpis[i]);
         if (kpi.automaticPoint !== 0 && kpi.automaticPoint !== null) {
-
             let weight = kpi.weight / 100;
             autoPointSet += kpi.automaticPoint * weight;
             employeePointSet += kpi.employeePoint * weight;
             approvedPointSet += kpi.approvedPoint * weight;
-            console.log('hihihiii', kpi.automaticPoint, kpi.employeePoint, kpi.approvedPoint, weight);
         } else {
             autoPointSet = -1;
         }
     };
-    console.log('hahahaaa', autoPointSet, employeePointSet, approvedPointSet);
+    
     if (autoPointSet !== -1) {
 
         let updateKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))

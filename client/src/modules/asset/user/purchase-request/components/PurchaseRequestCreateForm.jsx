@@ -20,7 +20,7 @@ class PurchaseRequestCreateForm extends Component {
             total: "",
             unit: "",
             estimatePrice: "",
-            status: "Chờ phê duyệt",
+            status: "waiting_approval",
             approver: null,
             note: "",
         };
@@ -36,7 +36,7 @@ class PurchaseRequestCreateForm extends Component {
         if (month.length < 2) {
             month = '0' + month;
         }
-            
+
         if (day.length < 2) {
             day = '0' + day;
         }
@@ -259,7 +259,7 @@ class PurchaseRequestCreateForm extends Component {
                                                 id={`add-proponent${_id}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
-                                                items={userlist.map(x => {
+                                                items={userlist && userlist.map(x => {
                                                     return { value: x._id, text: x.name + " - " + x.email }
                                                 })}
                                                 onChange={this.handleProponentChange}

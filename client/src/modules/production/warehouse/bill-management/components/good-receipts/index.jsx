@@ -11,7 +11,7 @@ class ReceiptManagement extends Component {
     
     render() {
         return (
-            <div>
+            <div id="bill-good-receipts">
                 <ReceiptManagementTable />
             </div>
         );

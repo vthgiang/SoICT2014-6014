@@ -11,7 +11,6 @@ const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 exports.getDocuments = async (portal, query, company) => {
     let page = query.page;
     let limit = query.limit;
-
     if (!(page || limit)) {
         return await Document(connect(DB_CONNECTION, portal))
             .find({ company })
@@ -125,9 +124,10 @@ exports.increaseNumberView = async (id, viewer, portal) => {
  * Tạo một tài liệu văn bản mới
  */
 exports.createDocument = async (portal, data, company) => {
+    let numberFile = 0, numberFileScan = 0;
     const existed = await Document(connect(DB_CONNECTION, portal)).findOne({ officialNumber: data.officialNumber });
     if (existed) throw ['document_exist'];
-    const newDoc = {
+    let newDoc = {
         company,
         name: data.name,
         domains: data.domains,
@@ -138,18 +138,37 @@ exports.createDocument = async (portal, data, company) => {
         signer: data.signer,
         officialNumber: data.officialNumber,
         relationshipDocuments: data.relationshipDocuments,
-        versions: [{
-            versionName: data.versionName,
-            issuingDate: data.issuingDate,
-            effectiveDate: data.effectiveDate,
-            expiredDate: data.expiredDate,
-            file: data.file,
-            scannedFileOfSignedDocument: data.scannedFileOfSignedDocument,
-        }],
+
         roles: data.roles,
         relationshipDescription: data.relationshipDescription,
         archivedRecordPlaceOrganizationalUnit: data.archivedRecordPlaceOrganizationalUnit,
     }
+    let versions = [];
+
+    if (!Array.isArray(data.versionName)) {
+        versions = [{
+            versionName: data.versionName,
+            issuingDate: data.issuingDate !== 'Invalid date' ? data.issuingDate : "",
+            effectiveDate: data.effectiveDate !== 'Invalid date' ? data.effectiveDate : "",
+            expiredDate: data.expiredDate !== 'Invalid date' ? data.expiredDate : "",
+            file: data.file,
+            scannedFileOfSignedDocument: data.scannedFileOfSignedDocument,
+        }];
+    }
+    else {
+        for (let i in data.versionName) {
+            let version = {
+                versionName: data.versionName[i],
+                issuingDate: data.issuingDate[i] !== 'Invalid date' ? data.issuingDate[i] : "",
+                effectiveDate: data.effectiveDate[i] !== 'Invalid date' ? data.effectiveDate[i] : "",
+                expiredDate: data.expiredDate[i] !== 'Invalid date' ? data.expiredDate[i] : "",
+                file: data.numberFile[i] == 1 && data.files ? data.files[numberFile++] : "",
+                scannedFileOfSignedDocument: data.numberFileScan[i] == 1 && data.scannedFileOfSignedDocument ? data.scannedFileOfSignedDocument[numberFileScan++] : "",
+            };
+            versions.push(version);
+        }
+    }
+    newDoc.versions = versions;
 
     const doc = await Document(connect(DB_CONNECTION, portal)).create(newDoc);
 
@@ -418,7 +437,6 @@ exports.importDocument = async (portal, data, company) => {
                 const role = await Role(connect(DB_CONNECTION, portal)).findOne({
                     name: data[i].roles[j]
                 });
-                console.log('rrrrrrrr', role, data[i].roles)
                 roles.push(role._id);
             }
             document.roles = roles;
@@ -845,7 +863,6 @@ findPath = async (data, portal) => {
         let parent = data.parent;
         while (parent) {
             let tmp = await DocumentArchive(connect(DB_CONNECTION, portal)).findById(parent);
-            console.log(tmp);
             arrayParent.push(tmp.name);
             parent = tmp.parent;
         }

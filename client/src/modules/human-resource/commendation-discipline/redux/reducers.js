@@ -4,13 +4,13 @@ import {
 
 const initState = {
     isLoading: false,
-    totalListDiscipline: 0,
+    totalListDiscipline: [],
     listDisciplines: [],
 
     totalListDisciplineOfYear: 0,
     totalListCommendationOfYear: 0,
 
-    totalListCommendation: 0,
+    totalListCommendation: [],
     listCommendations: [],
     error: ""
 }

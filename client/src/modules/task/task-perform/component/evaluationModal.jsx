@@ -18,13 +18,14 @@ class EvaluationModal extends Component {
             checkEval: data.checkEval,
             checkMonth: data.checkMonth,
             expire: data.expire,
+            isInNextMonthOfEndDate: data.isInNextMonthOfEndDate,
             showEval: false,
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
         };
     }
 
-    shouldComponentUpdate (nextProps, nextState) {
-        if(this.state.dataStatus === this.DATA_STATUS.QUERYING){
+    shouldComponentUpdate(nextProps, nextState) {
+        if (this.state.dataStatus === this.DATA_STATUS.QUERYING) {
             let data = this.handleData(this.formatDate(new Date()));
             this.setState(state => {
                 return {
@@ -32,6 +33,7 @@ class EvaluationModal extends Component {
                     checkEval: data.checkEval,
                     checkMonth: data.checkMonth,
                     expire: data.expire,
+                    isInNextMonthOfEndDate: data.isInNextMonthOfEndDate,
                     showEval: false,
                     dataStatus: this.DATA_STATUS.FINISHED,
                 }
@@ -41,25 +43,55 @@ class EvaluationModal extends Component {
         return true;
     }
 
+    getDayOfMonth = (dateParam) => {
+        let splitter = dateParam.split("-");
+
+        let day = splitter[0];
+        let month = splitter[1];
+        let year = splitter[2];
+
+        let dayOfMonth = 31;
+        if (month === 4 || month === 6 || month === 5 || month === 9 || month === 11) {
+            dayOfMonth = 30;
+        } else if (month === 2) {
+            if (((year % 4 === 0) && (year % 100 != 0)) || (year % 400 == 0)) { // là năm nhuận
+                dayOfMonth = 29;
+            } else {
+                dayOfMonth = 28;
+            }
+        }
+
+        return dayOfMonth;
+    }
+
     handleData = (dateParam) => {
         let { performtasks } = this.props;
         let data, checkMonth = false, checkEval = false;
-        
+
         let task;
         if (performtasks.task) {
             task = performtasks.task;
         }
-        
+
         let evaluations = task && task.evaluations;
         let evaluationOfMonth;
 
         let splitter = dateParam.split("-");
         let today = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+        let dateOfEval = today.getDate();
         let monthOfEval = today.getMonth();
         let yearOfEval = today.getFullYear();
 
         let endDate = new Date(task && task.endDate);
+        let monthOfEndDate = endDate.getMonth();
+        
+        // kiểm tra xem bước sang tháng mới so với ngày kết thúc hay chưa.
+        let isInNextMonthOfEndDate = false;
+        if(monthOfEval > monthOfEndDate){
+            isInNextMonthOfEndDate = true;
+        }
 
+        // nếu expire < 0 là đang quá hạn; ngược lại thì vẫn đúng hạn
         let expire = endDate.getTime() - today.getTime();
 
         evaluationOfMonth = task && task.evaluations.find(e => (monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()));
@@ -80,6 +112,7 @@ class EvaluationModal extends Component {
             checkEval: checkEval,
             checkMonth: checkMonth,
             expire: expire,
+            isInNextMonthOfEndDate: isInNextMonthOfEndDate,
         }
 
         return data;
@@ -136,7 +169,7 @@ class EvaluationModal extends Component {
     }
 
     handleChangeDataStatus = (value) => {
-        this.setState(state=>{
+        this.setState(state => {
             return {
                 ...state,
                 dataStatus: value,
@@ -147,7 +180,7 @@ class EvaluationModal extends Component {
 
     render() {
         const { translate, performtasks } = this.props;
-        const { evaluationsList, checkMonth, showEval, content, evaluation, expire } = this.state;
+        const { evaluationsList, checkMonth, showEval, content, evaluation, expire, isInNextMonthOfEndDate } = this.state;
         const { role, id, hasAccountable } = this.props;
 
         let task;
@@ -173,7 +206,7 @@ class EvaluationModal extends Component {
         else if (role === 'consulted') {
             title = translate('task.task_management.detail_cons_eval');
         }
-
+        console.log('stateQdz', this.state);
         return (
             <DialogModal
                 modalID={`task-evaluation-modal-${id}-`}
@@ -209,7 +242,8 @@ class EvaluationModal extends Component {
                                 )}
 
                                 {/* Thêm mới đánh giá */}
-                                {(checkMonth === false && showEval === false) && // (expire > 0) && 
+                                {/* Kiểm tra có phải tháng hiện tại hay không và chưa chọn đánh giá tháng này (showEval == false) */}
+                                {(checkMonth === false && showEval === false) && !(isInNextMonthOfEndDate) &&
                                     <li className={content === 'new' ? "active" : undefined}>
                                         <a style={{ cursor: 'pointer' }} onClick={() => this.handleAddEval()}>
                                             {translate('task.task_management.add_eval_of_this_month')}&nbsp;&nbsp;&nbsp;&nbsp;<i style={{ color: 'green' }} className="fa fa-plus-square"></i>
@@ -233,7 +267,7 @@ class EvaluationModal extends Component {
                             date={evaluation ? this.formatDate(evaluation.date) : dateParam}
                         />
                     }
-                    {(content !== undefined && role === "responsible") && hasAccountable === false && 
+                    {(content !== undefined && role === "responsible") && hasAccountable === false &&
                         <EvaluateByAccountableEmployee
                             hasAccountable={false}
                             id={content}

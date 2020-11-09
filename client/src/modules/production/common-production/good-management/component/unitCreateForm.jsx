@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { translate } from 'react-redux-multilingual/lib/utils';
-
-import { ErrorLabel, SelectBox, SelectMulti } from '../../../../../common-components';
+import { ErrorLabel, SelectMulti } from '../../../../../common-components';
 
 class UnitCreateForm extends Component {
     constructor(props) {
@@ -53,6 +51,7 @@ class UnitCreateForm extends Component {
     }
 
     validateMultiBaseUnit = (value, willUpdateState) => {
+        console.log(value);
         let msg = undefined;
 
         const { translate } = this.props;
@@ -117,7 +116,6 @@ class UnitCreateForm extends Component {
     convertToPackingRule = (value) => {
         let packingRule = '';
         let listUnitArray = this.getListUnitArray();
-        // console.log(value);
         let subListUnitArray = [];
         for (let i = 0; i < listUnitArray.length; i++) {
             for (let j = 0; j < value.length; j++) {
@@ -150,6 +148,7 @@ class UnitCreateForm extends Component {
                 ...prevState,
                 baseUnit: nextProps.baseUnit,
                 id: nextProps.id,
+                packingRule: nextProps.packingRule,
                 listUnit: nextProps.initialData
             }
         }
@@ -302,17 +301,7 @@ class UnitCreateForm extends Component {
         this.props.onDataChange(this.state.listUnit, this.state.packingRule);
     }
 
-    validateUnitCreateForm = () => {
-        const { packingRule } = this.state;
-        if (packingRule && packingRule !== "") {
-            this.props.onValidate(true)
-        } else {
-            this.props.onValidate(false);
-        }
-    }
-
     render() {
-        this.validateUnitCreateForm();
         const { translate, id } = this.props;
         let { listUnit, unit, errorOnUnitName, errorOnConversionRate, description, conversionRate, errorOnBaseUnit, listUnitSelected, packingRule } = this.state;
         return (
@@ -384,7 +373,7 @@ class UnitCreateForm extends Component {
                     <div className={`form-group ${!errorOnBaseUnit ? "" : "has-error"}`}>
                         <label style={{ width: 'auto' }}>{translate('manage_warehouse.good_management.packing_rule')} <span className="attention"> * </span></label>
                         <SelectMulti
-                            id="multiSelectBaseUnit"
+                            id={`multi-select-base-unit-${id}`}
                             items={this.getListUnitArray()}
                             options={{ nonSelectedText: translate('manage_warehouse.good_management.non_choose_base_unit'), allSelectedText: translate('manage_warehouse.good_management.choose_base_unit_all') }}
                             onChange={this.handleSelectMultiBaseUnit}
@@ -397,7 +386,7 @@ class UnitCreateForm extends Component {
                     <div className={`form-group ${!errorOnBaseUnit ? "" : "has-error"}`}>
                         <ErrorLabel content={errorOnBaseUnit} />
                         {
-                            !errorOnBaseUnit && listUnitSelected.length > 0 && packingRule
+                            packingRule || !errorOnBaseUnit && listUnitSelected.length > 0 && packingRule
                         }
                     </div>
                 </div>
