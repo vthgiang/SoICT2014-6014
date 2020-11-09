@@ -4,7 +4,8 @@ const { LotConstants } = require('./constants');
 export const LotActions = {
     getAllLots,
     getDetailLot,
-    editLot
+    editLot,
+    getLotsByGood
 }
 
 function getAllLots(data){
@@ -84,6 +85,27 @@ function editLot(id, data) {
         .catch(err => {
             dispatch({
                 type: LotConstants.EDIT_LOT_FAILURE,
+                error: err
+            })
+        })
+    }
+}
+
+function getLotsByGood(data) {
+    return dispatch => {
+        dispatch({
+            type: LotConstants.GET_LOT_BY_GOOD_REQUEST
+        })
+        LotServices.getLotsByGood(data)
+        .then(res => {
+            dispatch({
+                type: LotConstants.GET_LOT_BY_GOOD_SUCCESS,
+                payload: res.data.content
+            })
+        })
+        .catch(err => {
+            dispatch({
+                type: LotConstants.GET_LOT_BY_GOOD_FAILURE,
                 error: err
             })
         })
