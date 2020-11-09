@@ -3774,22 +3774,6 @@ export default {
                 detail_title: 'Chi tiết khu vực lưu trữ'
             },
             bill_management: {
-                1: {
-                    status: "Chờ phê duyệt",
-                    color: "green"
-                },
-                2: {
-                    status: 'Đã hoàn thành',
-                    color: 'blue'
-                },
-                3: {
-                    status: 'Chờ kiểm tra',
-                    color: 'violet'
-                },
-                4: {
-                    status: 'Đã hủy',
-                    color: 'red'
-                },
                 billType: {
                     1: "Nhập nguyên vật liệu",
                     2: "Nhập thành phẩm",
@@ -3799,6 +3783,34 @@ export default {
                     6: "Kiểm kê thường xuyên",
                     7: "Trả hàng",
                     8: "Luân chuyển"
+                },
+                1: {
+                    status: "Chờ phê duyệt",
+                    color: "green"
+                },
+                2: {
+                    status: 'Đã hoàn thành',
+                    color: 'blue'
+                },
+                3: {
+                    status: 'Đã phê duyệt',
+                    color: 'violet'
+                },
+                4: {
+                    status: 'Đã hủy',
+                    color: 'red'
+                },
+                bill_color: {
+                    1: "green",
+                    2: "blue",
+                    3: "violet",
+                    4: "red"
+                },
+                bill_status: {
+                    1: "Chờ phê duyệt",
+                    2: "Đã hoàn thành",
+                    3: "Đã phê duyệt",
+                    4: "Đã hủy"
                 },
                 stock_book: 'Sổ kho',
                 good_receipt: 'Nhập kho',
@@ -3836,10 +3848,35 @@ export default {
                 return_quantity: 'Số lượng trả lại',
                 real_quantity: 'Số lượng thực tế',
                 lot: 'Lô hàng',
+                lot_number: 'Số lô',
                 difference: 'Chênh lệch',
-                receiver: 'Người nhận hàng',
+                receiver: 'Người nhận, giao hàng',
                 choose_good: 'Chọn hàng hóa',
-                add_title: 'Thêm phiếu mới'
+                choose_type: 'Chọn loại phiếu',
+                choose_approver: 'Chọn người phê duyệt',
+                choose_customer: 'Chọn khách hàng',
+                choose_lot: 'Chọn lô',
+                choose_stock: 'Chọn kho',
+                add_title: {
+                    1: 'Thêm mới phiếu nhập kho',
+                    2: 'Thêm mới phiếu xuất kho',
+                    3: 'Thêm mới phiếu trả hàng',
+                    4: 'Thêm mới phiếu kiểm kê kho',
+                    5: 'Thêm mới phiếu luân chuyển kho'
+                },
+                infor: 'Thông tin chung',
+                name: 'Tên',
+                phone: 'Số điện thoại',
+                email: 'Email',
+                address: 'Địa chỉ',
+                validate_type: 'Không để trống loại phiếu',
+                validate_stock: 'Bạn cần chọn kho',
+                validate_approver: 'Bạn cần chọn người phê duyệt',
+                validate_customer: 'Bạn cần chọn khách hàng',
+                validate_lot: 'Bạn cần chọn lô hàng',
+                validate_quantity: 'Bạn cần nhập số lượng cho lô hàng',
+                validate_norm: 'Bạn đã nhập quá số lượng tồn kho'
+                
             },
             inventory_management: {
                 product: 'Sản phẩm',
@@ -3882,6 +3919,7 @@ export default {
                 total_stock: 'Tổng các kho',
                 number_over: 'Số lượng đã vượt quá số lượng tồn kho',
                 validate_number: 'Số lượng không được để trống',
+                validate_total: 'Số lượng đã vượt quá số lượng tồn kho',
                 number_over_norm: 'Số lượng đã vượt quá định mức nơi lưu trữ',
                 bin_contained: 'Nơi lưu trữ chỉ còn chứa được',
                 edit_title: 'Chỉnh sửa lô hàng',

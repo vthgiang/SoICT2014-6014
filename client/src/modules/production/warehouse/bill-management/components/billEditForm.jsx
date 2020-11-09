@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
 import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from '../../../../../common-components';
-import QuantityCreateForm from './quantityCreateForm';
+import QuantityEditForm from './quantityEditFrom';
 import { generateCode } from '../../../../../helpers/generateCode';
 import { LotActions } from '../../inventory-management/redux/actions';
 import { BillActions } from '../redux/actions';
 
-class BillCreateForm extends Component {
+class BillEditForm extends Component {
     constructor(props) {
         super(props);
         this.EMPTY_GOOD = {
@@ -66,7 +66,7 @@ class BillCreateForm extends Component {
     }
 
     addQuantity = () => {
-        window.$('#modal-add-quantity').modal('show');
+        window.$('#modal-edit-quantity').modal('show');
     }
 
     handleClickCreate = () => {
@@ -409,6 +409,7 @@ class BillCreateForm extends Component {
         })
 
         const { fromStock } = this.state;
+        console.log(fromStock, good);
 
         await this.props.getLotsByGood({ good: good.good._id, stock: fromStock });
     }
@@ -438,12 +439,26 @@ class BillCreateForm extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
-        if(nextProps.group !== prevState.group){
+        if(nextProps.billId !== prevState.billId){
             return {
                 ...prevState,
+                billId: nextProps.billId,
+                code: nextProps.code,
+                fromStock: nextProps.fromStock,
+                status: nextProps.status,
                 group: nextProps.group,
-                listGood: [],
-                lots: [],
+                type: nextProps.type,
+                toStock: nextProps.toStock,
+                users: nextProps.users,
+                approver: nextProps.approver,
+                description: nextProps.description,
+                customer: nextProps.customer,
+                supplier: nextProps.supplier,
+                name: nextProps.name,
+                phone: nextProps.phone,
+                email: nextProps.email,
+                address: nextProps.address,
+                listGood: nextProps.listGood,
                 errorStock: undefined, 
                 errorType: undefined, 
                 errorApprover: undefined, 
@@ -456,11 +471,11 @@ class BillCreateForm extends Component {
         }
     }
 
-    save =async () => {
-        const { fromStock, code, toStock, type, status, users, approver, customer, supplier, 
+    save = async () => {
+        const { billId, fromStock, code, toStock, type, status, users, approver, customer, supplier, 
             name, phone, email, address, description, listGood } = this.state;
         const { group } = this.props;
-        await this.props.createBill({
+        await this.props.editBill(billId, {
             fromStock: fromStock,
             toStock: toStock,
             code: code,
@@ -482,7 +497,7 @@ class BillCreateForm extends Component {
 
     render() {
         const { translate, group } = this.props;
-        const { lots, listGood, good, code, approver, status, customer, fromStock, type, name, phone, email, address, errorStock, errorType, errorApprover, errorCustomer, quantity } = this.state;
+        const { lots, listGood, good, code, approver, status, customer, fromStock, type, name, phone, email, address, description, errorStock, errorType, errorApprover, errorCustomer, quantity } = this.state;
         const listGoods = this.getAllGoods();
         const dataApprover = this.getApprover();
         const dataCustomer = this.getCustomer();
@@ -491,11 +506,10 @@ class BillCreateForm extends Component {
 
         return (
             <React.Fragment>
-                <ButtonModal onButtonCallBack={this.handleClickCreate} modalID={`modal-create-bill`} button_name={translate('manage_warehouse.good_management.add')} title={translate('manage_warehouse.good_management.add_title')} />
         
                 <DialogModal
-                    modalID={`modal-create-bill`}
-                    formID={`form-create-bill`}
+                    modalID={`modal-edit-bill`}
+                    formID={`form-edit-bill`}
                     title={translate(`manage_warehouse.bill_management.add_title.${group}`)}
                     msg_success={translate('manage_warehouse.bill_management.add_success')}
                     msg_faile={translate('manage_warehouse.bill_management.add_faile')}
@@ -503,8 +517,8 @@ class BillCreateForm extends Component {
                     func={this.save}
                     size={100}
                 >
-                    <QuantityCreateForm group={group} good={good} initialData={lots} onDataChange={this.handleLotsChange} />
-                    <form id={`form-create-bill`}>
+                    <form id={`form-edit-bill`}>
+                    <QuantityEditForm group={group} good={good} initialData={lots} onDataChange={this.handleLotsChange} />
                     <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{translate('manage_warehouse.bill_management.infor')}</legend>
@@ -516,20 +530,21 @@ class BillCreateForm extends Component {
                                     <div className={`form-group ${!errorType ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.type')}<span className="attention"> * </span></label>
                                         <SelectBox
-                                            id={`select-type-issue-create`}
+                                            id={`select-type-issue-edit`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={type}
                                             items={dataType}
                                             onChange={this.handleTypeChange}    
                                             multiple={false}
+                                            disabled={true}
                                         />
                                         <ErrorLabel content = { errorType } />
                                     </div>
                                     <div className={`form-group`}>
                                         <label>{translate('manage_warehouse.bill_management.status')}</label>
                                         <SelectBox
-                                            id={`select-status-issue-create`}
+                                            id={`select-status-issue-edit`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={status}
@@ -548,20 +563,21 @@ class BillCreateForm extends Component {
                                     <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.stock')}<span className="attention"> * </span></label>
                                         <SelectBox
-                                            id={`select-stock-bill-create`}
+                                            id={`select-stock-bill-edit`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={fromStock}
                                             items={dataStock}
                                             onChange={this.handleStockChange}    
                                             multiple={false}
+                                            disabled={true}
                                         />
                                         <ErrorLabel content = { errorStock } />
                                     </div>
                                     <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.approved')}<span className="attention"> * </span></label>
                                         <SelectBox
-                                            id={`select-approver-bill-create`}
+                                            id={`select-approver-bill-edit`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={approver}
@@ -574,7 +590,7 @@ class BillCreateForm extends Component {
                                     <div className={`form-group ${!errorCustomer ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.customer')}<span className="attention"> * </span></label>
                                         <SelectBox
-                                            id={`select-customer-issue-create`}
+                                            id={`select-customer-issue-edit`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={customer}
@@ -588,7 +604,7 @@ class BillCreateForm extends Component {
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     <div className="form-group">
                                         <label>{translate('manage_warehouse.bill_management.description')}</label>
-                                        <textarea type="text" className="form-control" onChange={this.handleDescriptionChange} />
+                                        <textarea type="text" className="form-control" value={description} onChange={this.handleDescriptionChange} />
                                     </div>
                                 </div>
                             </fieldset>
@@ -622,7 +638,7 @@ class BillCreateForm extends Component {
                                         <div className="form-group">
                                             <label>{translate('manage_warehouse.bill_management.choose_good')}</label>
                                             <SelectBox
-                                                id={`select-good-issue-create`}
+                                                id={`select-good-issue-edit`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 value={good.good ? good.good._id : '1'}
@@ -667,7 +683,7 @@ class BillCreateForm extends Component {
                                                     <th title={translate('manage_warehouse.bill_management.note')}>{translate('manage_warehouse.bill_management.note')}</th>
                                                 </tr>
                                             </thead>
-                                            <tbody id={`good-bill-create`}>
+                                            <tbody id={`good-bill-edit`}>
                                             {
                                                 (typeof listGood === 'undefined' || listGood.length === 0) ? <tr><td colSpan={7}><center>{translate('task_template.no_data')}</center></td></tr> :
                                                 listGood.map((x, index) =>
@@ -701,6 +717,6 @@ const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
     getLotsByGood: LotActions.getLotsByGood,
-    createBill: BillActions.createBill
+    editBill: BillActions.editBill
 }
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(BillCreateForm));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(BillEditForm));

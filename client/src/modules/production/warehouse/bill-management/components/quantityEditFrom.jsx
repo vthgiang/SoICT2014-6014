@@ -3,7 +3,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
 import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from '../../../../../common-components';
 
-class QuantityCreateForm extends Component {
+class QuantityEditForm extends Component {
     constructor(props) {
         super(props);
         this.EMPTY_LOT = {
@@ -215,15 +215,15 @@ class QuantityCreateForm extends Component {
     }
 
     render() {
-        const { translate, group, good } = this.props;
+        const { translate, group } = this.props;
         const { errorLot, lot, errorQuantity, lots } = this.state;
         const dataLots = this.getLotsByGood();
 
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID={`modal-add-quantity`}
-                    formID={`form-add-quantity`}
+                    modalID={`modal-edit-quantity`}
+                    formID={`form-edit-quantity`}
                     title="Thêm số lượng theo lô"
                     msg_success={translate('manage_warehouse.bill_management.add_success')}
                     msg_faile={translate('manage_warehouse.bill_management.add_faile')}
@@ -231,14 +231,14 @@ class QuantityCreateForm extends Component {
                     func={this.save}
                     size="50"
                 >
-                <form id={`form-add-quantity`}>
+                <form id={`form-edit-quantity`}>
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border">{translate('manage_warehouse.bill_management.lot')}</legend>
 
                         <div className={`form-group ${!errorLot ? "" : "has-error"}`}>
                             <label>{translate('manage_warehouse.bill_management.lot_number')}<span className="attention">*</span></label>
                             <SelectBox
-                                id={`select-material-by-${group}`}
+                                id={`select-lot-by-${group}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 value={lot.lot ? lot.lot._id : '1'}
@@ -276,7 +276,7 @@ class QuantityCreateForm extends Component {
                                     <th>{translate('task_template.action')}</th>
                                 </tr>
                             </thead>
-                            <tbody id={`quantity-bill-lot-create-${group}`}>
+                            <tbody id={`quantity-bill-lot-edit-${group}`}>
                                 {
                                     (typeof lots !== 'undefined' && lots.length > 0) ?
                                         lots.map((x, index) =>
@@ -306,4 +306,4 @@ const mapDispatchToProps = {
     
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuantityCreateForm));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuantityEditForm));
