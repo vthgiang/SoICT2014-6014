@@ -6,7 +6,7 @@ const app = express();
 const server = require('http').createServer(app);
 
 const swaggerUi = require('swagger-ui-express');
-const openApiDocumentation = require('./api-docs/swagger.json');
+const {swaggerJsonData} = require('./api-docs/swagger.js');
 
 require("dotenv").config();
 require('./connectDatabase');
@@ -21,7 +21,7 @@ app.use("/upload/avatars", express.static("upload/avatars"));
 const router = express.Router();
 
 // Api-docs
-router.use("/api-docs", swaggerUi.serve, swaggerUi.setup(openApiDocumentation))
+router.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerJsonData))
 
 router.use('/auth', require('./modules/auth/auth.route'));
 

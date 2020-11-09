@@ -6,6 +6,7 @@ export const CrmCustomerServices = {
     getCustomer,
     editCustomer,
     deleteCustomer,
+    importCustomers,
 };
 
 function getCustomers(params) {
@@ -19,6 +20,15 @@ function getCustomers(params) {
 function createCustomer(data) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/crm/customers`,
+        method: 'POST',
+        data,
+    }, true, true, 'crm.customer');
+}
+
+
+function importCustomers(data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/crm/customers/imports`,
         method: 'POST',
         data,
     }, true, true, 'crm.customer');

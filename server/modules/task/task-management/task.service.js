@@ -185,70 +185,74 @@ exports.getTaskEvaluations = async (portal, data) => {
     let result = await Task(connect(DB_CONNECTION, portal)).aggregate(condition); // kết quả sau khi truy vấn mongodb
 
     // lấy danh sachs điều kiện lọc của trường thông tin của công việc, vì dữ liệu gửi trong query là dạng string nên phải parse sang đối tượng
-    let taskInformations = data.taskInformations, listDataChart = [], configurations = [];
-    if (data.itemListBoxRight) {
-        listDataChart = data.itemListBoxRight;
-        listDataChart = listDataChart.map(item => JSON.parse(item));
-    }
-
-    taskInformations = taskInformations.map(item => JSON.parse(item));
-
-    // Lấy các điều kiện lọc của các trường thông tin từ client gửi về.
-    for (let [index, value] of taskInformations.entries()) { // tương tự for in. (for of sử dụng Array entries function get index)
-        configurations[index] = {
-            filter: value.filter,
-            newName: value.newName,
-            chartType: value.chartType,
-            coefficient: value.coefficient,
-            showInReport: value.showInReport,
-            aggregationType: value.aggregationType,
+    if (data.taskInformations) { // Bắt lỗi trường hợp chọn mẫu công việc, nhưng mãu đấy không có các trường thông tin và ấn nút xem biểu đồ
+        let taskInformations = data.taskInformations, listDataChart = [], configurations = [];
+        if (data.itemListBoxRight) {
+            listDataChart = data.itemListBoxRight;
+            listDataChart = listDataChart.map(item => JSON.parse(item));
         }
-    }
 
-    // Add thêm các trường điều kiện lọc vào result
-    let newResult = result.map((item) => {
-        let taskInformations = item.taskInformations;
+        taskInformations = taskInformations.map(item => JSON.parse(item));
 
-        /**
-         * Gộp trường taskInfomation của task vào array configurations
-         * Mục đích để đính kèm các điều kiện lọc của các trường thông tin vào taskInfomation để tính toán
-         */
-        let taskMerge = taskInformations.map((item, index) => Object.assign({}, item, configurations[index]))
-        taskMerge.map(item => {
-            if (item.filter) {
-                let replacer = new RegExp(item.code, 'g')
-                item.filter = eval(item.filter.replace(replacer, item.value));
-            } else {
-                item.filter = true;
+        // Lấy các điều kiện lọc của các trường thông tin từ client gửi về.
+        for (let [index, value] of taskInformations.entries()) { // tương tự for in. (for of sử dụng Array entries function get index)
+            configurations[index] = {
+                filter: value.filter,
+                newName: value.newName,
+                chartType: value.chartType,
+                coefficient: value.coefficient,
+                showInReport: value.showInReport,
+                aggregationType: value.aggregationType,
             }
-            return item;
-        })
-        return { // Lấy các trường cần thiết
-            _id: item._id,
-            name: item.name,
-            accountableEmployees: item.accountableEmployees,
-            responsibleEmployees: item.responsibleEmployees,
-            status: item.status,
-            date: item.date,
-            startDate: item.startDate,
-            endDate: item.endDate,
-            priority: item.priority,
-            frequency: frequency,
-            taskInformations: taskMerge,
-            results: item.results,
-            dataForAxisXInChart: listDataChart,
-        };
-    });
-
-
-    newResult.map(o => {
-        if (o.taskInformations.some(item => (item.filter === true))) {
-            return o;
-        } else {
-            newResult = [];
         }
-    })
-    return newResult;
+
+        // Add thêm các trường điều kiện lọc vào result
+        let newResult = result.map((item) => {
+            let taskInformations = item.taskInformations;
+
+            /**
+             * Gộp trường taskInfomation của task vào array configurations
+             * Mục đích để đính kèm các điều kiện lọc của các trường thông tin vào taskInfomation để tính toán
+             */
+            let taskMerge = taskInformations.map((item, index) => Object.assign({}, item, configurations[index]))
+            taskMerge.map(item => {
+                if (item.filter) {
+                    let replacer = new RegExp(item.code, 'g')
+                    item.filter = eval(item.filter.replace(replacer, item.value));
+                } else {
+                    item.filter = true;
+                }
+                return item;
+            })
+            return { // Lấy các trường cần thiết
+                _id: item._id,
+                name: item.name,
+                accountableEmployees: item.accountableEmployees,
+                responsibleEmployees: item.responsibleEmployees,
+                status: item.status,
+                date: item.date,
+                startDate: item.startDate,
+                endDate: item.endDate,
+                priority: item.priority,
+                frequency: frequency,
+                taskInformations: taskMerge,
+                results: item.results,
+                dataForAxisXInChart: listDataChart,
+            };
+        });
+
+
+        newResult.map(o => {
+            if (o.taskInformations.some(item => (item.filter === true))) {
+                return o;
+            } else {
+                newResult = [];
+            }
+        })
+        return newResult;
+    } else {
+        return result;
+    }
 }
 
 

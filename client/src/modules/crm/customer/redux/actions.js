@@ -4,6 +4,7 @@ import { CrmCustomerConstants } from "./constants";
 export const CrmCustomerActions = {
     getCustomers,
     createCustomer,
+    importCustomers,
     getCustomer,
     editCustomer,
     deleteCustomer,
@@ -34,6 +35,21 @@ function createCustomer(data) {
                 })
             })
             .catch(err => { dispatch({ type: CrmCustomerConstants.CREATE_CRM_CUSTOMER_FAILE }) })
+    }
+}
+
+
+function importCustomers(data) {
+    return dispatch => {
+        dispatch({ type: CrmCustomerConstants.IMPORT_CRM_CUSTOMER_REQUEST });
+        CrmCustomerServices.importCustomers(data)
+            .then(res => {
+                dispatch({
+                    type: CrmCustomerConstants.IMPORT_CRM_CUSTOMER_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => { dispatch({ type: CrmCustomerConstants.IMPORT_CRM_CUSTOMER_FAILE }) })
     }
 }
 
