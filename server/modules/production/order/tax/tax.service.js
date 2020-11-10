@@ -9,7 +9,6 @@ const {
 
 
 exports.createNewTax = async (userId, data, portal) => {
-    // console.log("data:", data);
     let newTax = await Tax(connect(DB_CONNECTION, portal)).create({
         code: data.code,
         name: data.name,
@@ -23,6 +22,7 @@ exports.createNewTax = async (userId, data, portal) => {
         }),
         version: 1,//default create = version 1
         status: true, // default create status = true
+        lastVersion: true
     })
     let tax = await Tax(connect(DB_CONNECTION, portal)).findById({ _id: newTax._id })
     return { tax };
@@ -30,13 +30,10 @@ exports.createNewTax = async (userId, data, portal) => {
 
 //Tạo ra 1 version (document) khác có code như cũ
 exports.editTaxByCode = async (userId, id, data, portal) => {
-    console.log("data", data, id);
     let oldTax = await Tax (connect(DB_CONNECTION, portal)).findById(id);
     if (!oldTax) {
         throw Error("Tax is not existing")
     }
-
-    console.log("OLD TAX", oldTax);
     
     //Tạo ra 1 phiên bản tax mới có code giống phiên bản cũ
     let newVersionTax = await Tax(connect(DB_CONNECTION, portal)).create({
@@ -52,9 +49,11 @@ exports.editTaxByCode = async (userId, id, data, portal) => {
         }),
         version: oldTax.version + 1,
         status: true,
+        lastVersion: true
     })
 
     oldTax.status = false;
+    oldTax.lastVersion = false
     oldTax.save();
     
     let tax = await Tax(connect(DB_CONNECTION, portal)).findById({ _id: newVersionTax._id });
@@ -64,7 +63,6 @@ exports.editTaxByCode = async (userId, id, data, portal) => {
 
 exports.getAllTaxs = async (query, portal) => {
     let { page, limit } = query;
-    console.log(query);
     let option = {};
     if (query.code) {
         option.code = new RegExp(query.code, "i")
@@ -72,9 +70,10 @@ exports.getAllTaxs = async (query, portal) => {
     if(query.name) {
         option.name = new RegExp(query.name, "i")
     }
-
-    //Chỉ lấy những tax đang có hiệu lực
-    option.status = true;
+    if (query.status) {
+        option.status = query.status == 'true' ? true : false;
+    }
+    option.lastVersion = true
 
     if ( !page || !limit ){
         let allTaxs = await Tax(connect(DB_CONNECTION, portal))
@@ -125,7 +124,7 @@ exports.disableTaxById = async (id, portal) => {
         throw Error("Tax is not existing")
     }
 
-    tax.status = false;
+    tax.status = !tax.status;
     tax.save();
 
     return { tax }
@@ -151,6 +150,21 @@ exports.getTaxByCode = async (query, portal) => {
     }
     //code này đã có sẵn trong db
     return { taxs };
+}
+
+exports.deleteTaxByCode = async (code, portal) => {
+    console.log("CODE", code);
+    let taxs = await Tax(connect(DB_CONNECTION, portal))
+        .find({ code: code })
+    if (!taxs.length) {
+            throw Error("Tax is not existing")
+    }
+    let taxsDeleted = [];
+    for (let index = 0; index < taxs.length; index++) {
+        let taxDeleted = await Tax(connect(DB_CONNECTION, portal)).findByIdAndDelete({ _id: taxs[index]._id })
+        taxsDeleted.push(taxDeleted);
+    }
+    return taxsDeleted;
 }
 
 

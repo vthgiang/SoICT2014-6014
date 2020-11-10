@@ -114,7 +114,6 @@ exports.disableTaxById = async ( req, res ) => {
 }
 
 exports.checkAvailabledCode = async ( req, res ) => {
-    console.log(req.query);
     let query = req.query;
     try {
         let checked = await TaxService.checkAvailabledCode( query, req.portal );
@@ -159,4 +158,26 @@ exports.getTaxByCode = async ( req, res ) => {
         });
     } 
         
+}
+
+exports.deleteTaxByCode = async ( req, res ) => {
+    try {
+        let code = req.query.code;
+        let Taxs = await TaxService.deleteTaxByCode(code, req.portal)
+        
+        await Log.info(req.user.email, "DELETE_TAX_BY_CODE", req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["delete_successfully"],
+            content: Taxs
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "DELETE_TAX_BY_CODE", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["delete_failed"],
+            content: error.message
+        });
+    }
 }

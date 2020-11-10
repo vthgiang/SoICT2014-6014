@@ -94,7 +94,7 @@ module.exports = {
     Quote: require('./production/order/quote.model'),
     Tax: require('./production/order/tax.model'),
     SalesOrder: require('./production/order/salesOrder.model'),
-    ServiceLevelAgreement: require('./production/order/serviceLevelAgreement'),
+    ServiceLevelAgreement: require('./production/order/serviceLevelAgreement.model'),
     PurchaseOrder: require('./production/order/purchseOrder.model'),
 
 

@@ -32,6 +32,10 @@ const TaxSchema = new Schema({
         type: Number,
         required: true
     },
+    lastVersion: {
+        type: Boolean,
+        required: true
+    },
     status: {
         type: Boolean,
         required: true

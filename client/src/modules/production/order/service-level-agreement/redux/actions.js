@@ -1,187 +1,187 @@
-import { TaxConstants } from './constants';
-import { TaxServices } from './services';
+import { SLAConstants } from './constants';
+import { SLAServices } from './services';
 
-export const TaxActions = {
-    createNewTax,
-    getAllTaxs,
-    getTaxById,
-    updateTax,
-    disableTax,
-    checkTaxCode,
-    getTaxByCode,
-    deleteTax
+export const SLAActions = {
+    createNewSLA,
+    getAllSLAs,
+    getSLAById,
+    updateSLA,
+    disableSLA,
+    checkSLACode,
+    getSLAByCode,
+    deleteSLA
 }
 
-function createNewTax (data) {
+function createNewSLA (data) {
     return (dispatch) => {
         dispatch({
-            type: TaxConstants.CREATE_TAX_REQUEST
+            type: SLAConstants.CREATE_SLA_REQUEST
         });
 
-        TaxServices.createNewTax(data)
+        SLAServices.createNewSLA(data)
         .then((res) => {
             dispatch({
-                type: TaxConstants.CREATE_TAX_SUCCESS,
+                type: SLAConstants.CREATE_SLA_SUCCESS,
                 payload: res.data.content
             })
         })
         .catch((error) => {
             dispatch({
-                type: TaxConstants.CREATE_TAX_FAILURE,
+                type: SLAConstants.CREATE_SLA_FAILURE,
                 error
             })
         })
     }
 }
 
-function getAllTaxs (queryData) {
+function getAllSLAs (queryData) {
     return (dispatch) => {
         dispatch({
-            type: TaxConstants.GET_ALL_TAXS_REQUEST
+            type: SLAConstants.GET_ALL_SLAS_REQUEST
         })
 
-        TaxServices.getAllTaxs(queryData)
+        SLAServices.getAllSLAs(queryData)
         .then((res) => {
             dispatch({
-                type: TaxConstants.GET_ALL_TAXS_SUCCESS,
+                type: SLAConstants.GET_ALL_SLAS_SUCCESS,
                 payload: res.data.content
             })
         })
         .catch((error) => {
             dispatch({
-                type: TaxConstants.GET_ALL_TAXS_FAILURE,
+                type: SLAConstants.GET_ALL_SLAS_FAILURE,
                 error
             })
         })
     }
 }
 
-function getTaxById(id){
+function getSLAById(id){
     return (dispatch) => {
         dispatch({
-            type: TaxConstants.GET_DETAIL_TAX_REQUEST
+            type: SLAConstants.GET_DETAIL_SLA_REQUEST
         })
 
-        TaxServices.getTaxById(id)
+        SLAServices.getSLAById(id)
         .then((res) => {
             dispatch({
-                type: TaxConstants.GET_DETAIL_TAX_SUCCESS,
+                type: SLAConstants.GET_DETAIL_SLA_SUCCESS,
                 payload: res.data.content
             })
         })
         .catch((error) => {
             dispatch({
-                type: TaxConstants.GET_DETAIL_TAX_FAILURE,
+                type: SLAConstants.GET_DETAIL_SLA_FAILURE,
                 error
             })
         })
     }
 }
 
-function updateTax (id, data) {
+function updateSLA (id, data) {
     return (dispatch) => {
         dispatch({
-            type: TaxConstants.UPDATE_TAX_REQUEST
+            type: SLAConstants.UPDATE_SLA_REQUEST
         })
 
-        TaxServices.updateTax(id, data)
+        SLAServices.updateSLA(id, data)
         .then((res) => {
             dispatch({
-                type: TaxConstants.UPDATE_TAX_SUCCESS,
+                type: SLAConstants.UPDATE_SLA_SUCCESS,
                 payload: res.data.content
             })
         })
         .catch((error) => {
             dispatch({
-                type: TaxConstants.UPDATE_TAX_FAILURE,
+                type: SLAConstants.UPDATE_SLA_FAILURE,
                 error
             })
         })
     }
 }
 
-function disableTax (id) {
+function disableSLA (id) {
     return (dispatch) => {
         dispatch({
-            type: TaxConstants.DISABLE_TAX_REQUEST
+            type: SLAConstants.DISABLE_SLA_REQUEST
         })
 
-        TaxServices.disableTax(id)
+        SLAServices.disableSLA(id)
         .then((res) => {
             dispatch({
-                type: TaxConstants.DISABLE_TAX_SUCCESS,
+                type: SLAConstants.DISABLE_SLA_SUCCESS,
                 payload: res.data.content
             })
         })
         .catch((error) => {
             dispatch({
-                type: TaxConstants.DISABLE_TAX_FAILURE,
+                type: SLAConstants.DISABLE_SLA_FAILURE,
                 error
             })
         })
     }
 }
 
-function checkTaxCode (code) {
+function checkSLACode (code) {
     return (dispatch) => {
         dispatch({
-            type: TaxConstants.CHECK_TAX_CODE_REQUEST
+            type: SLAConstants.CHECK_SLA_CODE_REQUEST
         })
 
-        TaxServices.checkTaxCode(code)
+        SLAServices.checkSLACode(code)
         .then((res) => {
             dispatch({
-                type: TaxConstants.CHECK_TAX_CODE_SUCCESS,
+                type: SLAConstants.CHECK_SLA_CODE_SUCCESS,
                 payload: res.data.content
             })
         })
         .catch((error) => {
             dispatch({
-                type: TaxConstants.CHECK_TAX_CODE_FAILURE,
+                type: SLAConstants.CHECK_SLA_CODE_FAILURE,
                 error
             })
         })
     }
 }
 
-function getTaxByCode (code) {
+function getSLAByCode (code) {
     return (dispatch) => {
         dispatch({
-            type: TaxConstants.GET_TAX_BY_CODE_REQUEST
+            type: SLAConstants.GET_SLA_BY_CODE_REQUEST
         })
 
-        TaxServices.getTaxByCode(code)
+        SLAServices.getSLAByCode(code)
         .then((res) => {
             dispatch({
-                type: TaxConstants.GET_TAX_BY_CODE_SUCCESS,
+                type: SLAConstants.GET_SLA_BY_CODE_SUCCESS,
                 payload: res.data.content
             })
         })
         .catch((error) => {
             dispatch({
-                type: TaxConstants.GET_TAX_BY_CODE_FAILURE,
+                type: SLAConstants.GET_SLA_BY_CODE_FAILURE,
                 error
             })
         })
     }
 }
 
-function deleteTax (code) {
+function deleteSLA (code) {
     return (dispatch) => {
         dispatch({
-            type: TaxConstants.DELETE_TAX_BY_CODE_REQUEST
+            type: SLAConstants.DELETE_SLA_BY_CODE_REQUEST
         })
 
-        TaxServices.deleteTax(code)
+        SLAServices.deleteSLA(code)
         .then((res) => {
             dispatch({
-                type: TaxConstants.DELETE_TAX_BY_CODE_SUCCESS,
+                type: SLAConstants.DELETE_SLA_BY_CODE_SUCCESS,
                 payload: res.data.content
             })
         })
         .catch((error) => {
             dispatch({
-                type: TaxConstants.DELETE_TAX_BY_CODE_FAILURE,
+                type: SLAConstants.DELETE_SLA_BY_CODE_FAILURE,
                 error
             })
         })
