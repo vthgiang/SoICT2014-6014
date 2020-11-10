@@ -2513,7 +2513,7 @@ export default {
                 confirm_assigned: 'Xác nhận phân công công việc',
                 confirm_assigned_success: 'Bạn đã xác nhận phân công công việc',
                 confirm_assigned_failure: 'Bạn chưa xác nhận phân công công việc',
-                
+
                 name: 'Tên công việc',
                 search_by_name: 'Tìm kiếm theo tên',
 
@@ -3888,7 +3888,7 @@ export default {
                 validate_lot: 'Bạn cần chọn lô hàng',
                 validate_quantity: 'Bạn cần nhập số lượng cho lô hàng',
                 validate_norm: 'Bạn đã nhập quá số lượng tồn kho'
-                
+
             },
             inventory_management: {
                 product: 'Sản phẩm',
@@ -4216,10 +4216,12 @@ export default {
                 manufacturingMill: "Xưởng sản xuất",
                 //employee
                 worker_schedule_list: "Lịch sản xuất của công nhân",
-                employee_number: "Mã nhân viên",
                 employee_name: "Tên nhân viên",
+                employee_email: "Email nhân viên",
                 works: "Nhà máy sản xuất",
-                all_works: "Tất cả"
+                all_works: "Tất cả",
+                employee: "Nhân viên",
+                choose_all_user: "Tất cả"
 
 
 

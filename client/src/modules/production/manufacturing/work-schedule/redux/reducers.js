@@ -52,14 +52,22 @@ export const workSchedule = (state = initialState, action) => {
         case workScheduleConstants.CREATE_WORK_SCHEDULE_SUCCESS:
             let month = action.payload.workSchedules[0].month;
             if (formatYearMonth(month) === state.currentMonth) {
-                action.payload.workSchedules.map((schedule) => {
-                    state.listWorkSchedules.push(schedule);
-                })
+                if (action.payload.workSchedules[0].manufacturingMill) {
+                    action.payload.workSchedules.map((schedule) => {
+                        state.listWorkSchedules.push(schedule);
+                    })
+                } else {
+                    action.payload.workSchedules.map((schedule) => {
+                        state.listWorkSchedulesWorker.push(schedule);
+                    })
+                }
+
             }
             return {
                 ...state,
                 isLoading: false,
-                listWorkSchedules: [...state.listWorkSchedules]
+                listWorkSchedules: [...state.listWorkSchedules],
+                listWorkSchedulesWorker: [...state.listWorkSchedulesWorker]
             }
         case workScheduleConstants.SET_CURRENT_MONTH:
             return {

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ButtonModal, DatePicker, DialogModal, SelectBox, SlimScroll } from '../../../../../../common-components';
 import { formatToTimeZoneDate, formatYearMonth } from '../../../../../../helpers/formatDate';
+import { UserActions } from '../../../../../super-admin/user/redux/actions';
 import { workScheduleActions } from '../../redux/actions';
 
 class WorkerScheduleCreateForm extends Component {
@@ -15,7 +16,10 @@ class WorkerScheduleCreateForm extends Component {
             month: currentMonthYear,
             allDaysOfMonth: allDaysOfMonth,
             numberOfTurns: 3,
-            manufacturingMill: 'all'
+            user: 'all',
+            // Biến showModal được dùng để nhận biết lần đầu tiên ấn vào ButtonModal Create
+            // Để gọi api lấy dữ liệu nhân viên
+            showModal: false
         }
     }
 
@@ -41,31 +45,47 @@ class WorkerScheduleCreateForm extends Component {
         }));
     }
 
-    getListManufacturingMills = () => {
-        const { translate, manufacturingMill } = this.props;
-        let listMillsArray = [{
+    getListUserOfAllWorks = () => {
+        const { translate, user, manufacturingWorks } = this.props;
+        // Lấy ra cá nhà máy đang hoạt động
+        const { employees } = user;
+        const { listWorks } = manufacturingWorks;
+        console.log(employees);
+        console.log(listWorks);
+        let arrayRoleIdDeans = [];
+        listWorks.map(works => {
+            arrayRoleIdDeans = [...arrayRoleIdDeans, ...works.organizationalUnit.deans]
+        });
+        arrayRoleIdDeans = arrayRoleIdDeans.map(role => role._id);
+
+        // Lấy ra tất cả các nhân viên trong 2 nhà máy đó
+        // Lấy ra các roleId của các trưởng phòng
+
+        let listUserArray = [{
             value: 'all',
-            text: translate('manufacturing.work_schedule.choose_all_mill')
+            text: translate('manufacturing.work_schedule.choose_all_user')
         }];
 
-        const { listMills } = manufacturingMill;
-        if (listMills) {
-            listMills.map((mill, index) => {
-                listMillsArray.push({
-                    value: mill._id,
-                    text: mill.code + " - " + mill.name
+        if (employees) {
+            let arrayEmployees = employees.filter((employee) => !arrayRoleIdDeans.includes(employee.roleId._id))
+            console.log(arrayEmployees);
+            arrayEmployees.map((e) => {
+                listUserArray.push({
+                    value: e.userId._id,
+                    text: e.userId.name + " - " + e.userId.email
                 })
             });
         }
 
-        return listMillsArray
+        return listUserArray;
+
     }
 
-    handleManufacturingMillChange = (value) => {
-        const manufacturingMill = value[0];
+    handleUserChange = (value) => {
+        const user = value[0];
         this.setState((state) => ({
             ...state,
-            manufacturingMill: manufacturingMill
+            user: user
         }))
     }
 
@@ -78,17 +98,17 @@ class WorkerScheduleCreateForm extends Component {
     // }
 
     save = () => {
-        let { manufacturingMill, month, numberOfTurns } = this.state;
+        let { user, month, numberOfTurns } = this.state;
         let data = {};
-        if (manufacturingMill === "all") {
+        if (user === "all") {
             data = {
-                allManufacturingMill: true,
+                allUser: true,
                 month: formatToTimeZoneDate(month),
                 numberOfTurns: numberOfTurns
             }
         } else {
             data = {
-                manufacturingMill: manufacturingMill,
+                user: user,
                 month: formatToTimeZoneDate(month),
                 numberOfTurns: numberOfTurns
             }
@@ -97,9 +117,33 @@ class WorkerScheduleCreateForm extends Component {
         this.props.createWorkSchedule(data);
     }
 
+    handleClickCreate = () => {
+        this.setState({
+            showModal: true
+        });
+    }
+
+    shouldComponentUpdate = (nextPorps, nextState) => {
+        if (nextState.showModal !== this.state.showModal) {
+            const { manufacturingWorks } = this.props;
+            const { listWorks } = manufacturingWorks;
+            let arrayOrganizationalUnitIds = []
+            if (listWorks.length) {
+                listWorks.map((works) => {
+                    arrayOrganizationalUnitIds.push(works.organizationalUnit._id)
+                });
+            }
+            this.props.getAllEmployeeOfUnitByIds(arrayOrganizationalUnitIds);
+            return false;
+        }
+        return true;
+    }
+
     render() {
         const { translate, workSchedule } = this.props;
-        const { manufacturingMill, month, allDaysOfMonth, numberOfTurns } = this.state;
+        const { user, month, allDaysOfMonth, numberOfTurns } = this.state;
+        const { employees } = this.props.user;
+        console.log(employees);
         // Tao mang cac ca
         let turns = []
         for (let i = 1; i <= numberOfTurns; i++) {
@@ -108,10 +152,10 @@ class WorkerScheduleCreateForm extends Component {
         console.log(workSchedule.listWorkSchedules);
         return (
             < React.Fragment >
-                <ButtonModal modalID="modal-create-worker-work-schedule" button_name={translate('manufacturing.work_schedule.add_work_schedule_button')} title={translate('manufacturing.work_schedule.add_work_schedule')} />
+                <ButtonModal onButtonCallBack={this.handleClickCreate} modalID="modal-create-worker-work-schedule" button_name={translate('manufacturing.work_schedule.add_work_schedule_button')} title={translate('manufacturing.work_schedule.add_work_schedule')} />
                 <DialogModal
                     modalID="modal-create-worker-work-schedule" isLoading={workSchedule.isLoading}
-                    formID="form-create-mill-work-schedule"
+                    formID="form-create-worker-work-schedule"
                     title={translate('manufacturing.work_schedule.add_work_schedule_mill')}
                     msg_success={translate('manufacturing.work_schedule.create_successfully')}
                     msg_faile={translate('manufacturing.work_schedule.create_failed')}
@@ -123,21 +167,21 @@ class WorkerScheduleCreateForm extends Component {
                 >
                     <form id="form-create-worker-work-schedule">
                         <div className={`form-group`}>
-                            <label>{translate('manufacturing.work_schedule.manufacturingMill')}</label>
+                            <label>{translate('manufacturing.work_schedule.employee')}</label>
                             <SelectBox
                                 id={`select-worker-create-work-schedule`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
-                                value={manufacturingMill}
-                                items={this.getListManufacturingMills()}
-                                onChange={this.handleManufacturingMillChange}
+                                value={user}
+                                items={this.getListUserOfAllWorks()}
+                                onChange={this.handleUserChange}
                                 multiple={false}
                             />
                         </div>
                         <div className={`form-group`}>
                             <label>{translate('manufacturing.work_schedule.month')}</label>
                             <DatePicker
-                                id={`work-schedule-create-month`}
+                                id={`work-schedule-create-month-worker`}
                                 value={month}
                                 dateFormat={"month-year"}
                                 onChange={this.handleMonthChange}
@@ -148,8 +192,8 @@ class WorkerScheduleCreateForm extends Component {
                             <label>{translate('manufacturing.work_schedule.number_turns')}<span className="text-red">*</span></label>
                             <input type="number" disabled={true} value={numberOfTurns} className="form-control" onChange={this.handleNumberOfTurnsChange}></input>
                         </div>
-                        <div id="create-croll-table" className="form-inline">
-                            <table id="create-work-schedule-table" className="table table-striped table-bordered table-hover">
+                        <div id="create-croll-table-worker" className="form-inline">
+                            <table id="create-work-schedule-table-worker" className="table table-striped table-bordered table-hover">
                                 <thead>
                                     <tr>
                                         <th style={{ width: 100 }}>{translate('manufacturing.work_schedule.work_turns')}</th>
@@ -184,7 +228,7 @@ class WorkerScheduleCreateForm extends Component {
                                 </tbody>
                             </table>
                         </div>
-                        <SlimScroll outerComponentId='create-croll-table' innerComponentId='create-work-schedule-table' innerComponentWidth={1000} activate={true} />
+                        <SlimScroll outerComponentId='create-croll-table-worker' innerComponentId='create-work-schedule-table-worker' innerComponentWidth={1000} activate={true} />
                     </form>
                 </DialogModal>
             </React.Fragment >
@@ -196,12 +240,13 @@ class WorkerScheduleCreateForm extends Component {
 }
 
 function mapStateToProps(state) {
-    const { workSchedule, manufacturingMill } = state;
-    return { workSchedule, manufacturingMill }
+    const { workSchedule, user, manufacturingWorks } = state;
+    return { workSchedule, user, manufacturingWorks }
 }
 
 const mapDispatchToProps = {
-    createWorkSchedule: workScheduleActions.createWorkSchedule
+    createWorkSchedule: workScheduleActions.createWorkSchedule,
+    getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(WorkerScheduleCreateForm));

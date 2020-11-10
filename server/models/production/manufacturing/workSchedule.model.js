@@ -4,9 +4,9 @@ const mongoosePaginate = require('mongoose-paginate-v2')
 
 // Bảng lịch làm việc
 const WorkScheduleSchema = new Schema({
-    employee: { // Nhân viên
+    user: { // Nhân viên
         type: Schema.Types.ObjectId,
-        ref: "Employee"
+        ref: "User"
     },
     manufacturingMill: {// Xưởng
         type: Schema.Types.ObjectId,
