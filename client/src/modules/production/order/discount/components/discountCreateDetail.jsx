@@ -640,7 +640,7 @@ class DiscountCreateDetail extends Component {
             goodError,
         } = this.state;
 
-        console.log("DISCOUNT ON GOOD", discountOnGoods);
+        console.log("DISCOUNT ON GOOD", this.state);
 
         return (
             <React.Fragment>
@@ -649,12 +649,15 @@ class DiscountCreateDetail extends Component {
                     discountType={this.props.discountType}
                     formality={this.props.formality}
                     actionType={this.props.actionType}
+                    bonusGoods={bonusGoods}
+                    editDiscountDetail={editDiscountDetail}
                 />
                 <CreateDiscountOnGoods
                     handleSubmitDiscountOnGoods={(data) => this.handleSubmitDiscountOnGoods(data)}
                     discountType={this.props.discountType}
                     formality={this.props.formality}
                     actionType={this.props.actionType}
+                    discountOnGoods={discountOnGoods}
                 />
                 {discountType >= 0 && formality >= 0 ? (
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">

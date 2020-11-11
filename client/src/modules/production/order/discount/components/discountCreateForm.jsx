@@ -139,6 +139,7 @@ class DiscountCreateForm extends Component {
     };
 
     onChangeDiscounts = (dataSubmit) => {
+        console.log("DATA SUBMIT", dataSubmit);
         this.setState({
             discounts: dataSubmit,
         });
@@ -212,7 +213,7 @@ class DiscountCreateForm extends Component {
                 <ButtonModal
                     onButtonCallBack={this.handleClickCreateCode}
                     modalID={`modal-create-discount`}
-                    button_name={"Thêm khuyến mãi"}
+                    button_name={"Thêm mới"}
                     title={"Thêm khuyến mãi"}
                     onButtonCallBack={this.handleClickCreateCode}
                 />

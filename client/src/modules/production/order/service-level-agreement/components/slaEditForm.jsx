@@ -3,18 +3,41 @@ import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { generateCode } from "../../../../../helpers/generateCode";
 import { SLAActions } from "../redux/actions";
-import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from "../../../../../common-components";
+import { DialogModal, SelectMulti, ButtonModal, ErrorLabel, SelectBox } from "../../../../../common-components";
 import ValidationHelper from "../../../../../helpers/validationHelper";
 
-class SlaCreateForm extends Component {
+class SlaEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
             code: "",
             goods: [],
+            title: "",
             descriptions: [],
             isAllGoodsSelected: false,
+            slaId: "",
         };
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.slaEdit._id !== prevState.slaId) {
+            let goods = [];
+            let isAllGoodsSelected = false;
+            if (nextProps.slaEdit.goods.length === nextProps.goods.listGoodsByType.length) {
+                goods = ["disSelectAll"];
+                isAllGoodsSelected = true;
+            } else {
+                goods = nextProps.slaEdit.goods.map((item) => item._id);
+            }
+            return {
+                slaId: nextProps.slaEdit._id,
+                code: nextProps.slaEdit.code,
+                descriptions: nextProps.slaEdit.descriptions,
+                title: nextProps.slaEdit.title,
+                goods,
+                isAllGoodsSelected,
+            };
+        }
     }
 
     getAllGoods = () => {
@@ -40,6 +63,12 @@ class SlaCreateForm extends Component {
         return listGoods;
     };
 
+    getLengthOfAllGoods = () => {
+        const { goods } = this.props;
+        const { listGoodsByType } = goods;
+        return listGoodsByType.length;
+    };
+
     handleTitleChange = (e) => {
         let { value } = e.target;
         this.setState({
@@ -61,6 +90,7 @@ class SlaCreateForm extends Component {
     };
 
     handleGoodsChange = (value) => {
+        console.log("VAL", value);
         let { goods } = this.state;
         let checkSelectAll = false;
         value.forEach((item) => {
@@ -203,7 +233,7 @@ class SlaCreateForm extends Component {
 
     save = async () => {
         if (this.isFormValidated()) {
-            const { code, descriptions, goods, title } = this.state;
+            const { code, descriptions, title, slaId } = this.state;
             let goodsSubmit = await this.getIdOfAllGoods();
             let data = {
                 code,
@@ -211,12 +241,9 @@ class SlaCreateForm extends Component {
                 goods: goodsSubmit,
                 title,
             };
-            await this.props.createNewSLA(data);
+            await this.props.updateSLA(slaId, data);
             await this.setState({
-                code: "",
-                descriptions: [],
-                goods: [],
-                title: "",
+                slaId: "",
             });
         }
     };
@@ -234,28 +261,22 @@ class SlaCreateForm extends Component {
             errorOnDescription,
             errorOnDescriptionPosition,
         } = this.state;
-        console.log("DATA", descriptions);
+        console.log("DATA", this.state);
         return (
             <React.Fragment>
-                <ButtonModal
-                    onButtonCallBack={this.handleClickCreateCode}
-                    modalID={`modal-add-sla`}
-                    button_name={"Thêm mới"}
-                    title={"Thêm cam kết chất lượng"}
-                />
                 <DialogModal
-                    modalID={`modal-add-sla`}
+                    modalID={`modal-edit-sla`}
                     isLoading={false}
-                    formID={`form-add-sla`}
-                    title={"Thêm cam kết chất lượng"}
-                    msg_success={"Thêm thành công"}
-                    msg_faile={"Thêm không thành công"}
+                    formID={`form-edit-sla`}
+                    title={"Sửa cam kết"}
+                    msg_success={"Sửa thành công"}
+                    msg_faile={"Sửa không thành công"}
                     disableSubmit={!this.isFormValidated()}
                     func={this.save}
                     size="50"
                     style={{ backgroundColor: "green" }}
                 >
-                    <form id={`form-add-sla`}>
+                    <form id={`form-edit-sla`}>
                         <div className="form-group">
                             <label>
                                 {"Mã"}
@@ -278,7 +299,7 @@ class SlaCreateForm extends Component {
                                 <br></br>
                             </label>
                             <SelectBox
-                                id={`select-create-multi-good-sla`}
+                                id={`select-edit-multi-good-sla`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={
@@ -286,7 +307,7 @@ class SlaCreateForm extends Component {
                                         ? [
                                               {
                                                   value: "disSelectAll",
-                                                  text: `Đã chọn tất cả (${this.getAllGoods().length - 1} mặt hàng)`,
+                                                  text: `Đã chọn tất cả (${this.getLengthOfAllGoods()} mặt hàng)`,
                                               },
                                           ]
                                         : this.getAllGoods()
@@ -382,7 +403,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    createNewSLA: SLAActions.createNewSLA,
+    updateSLA: SLAActions.updateSLA,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(SlaCreateForm));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(SlaEditForm));

@@ -17,6 +17,36 @@ class DiscountEditForm extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.discountEdit._id !== prevState.discountId) {
+            let discounts = nextProps.discountEdit.discounts.map((discount) => {
+                let bonusGoods = [];
+                let discountOnGoods = [];
+                if (discount.bonusGoods.length) {
+                    bonusGoods = discount.bonusGoods.map((item) => {
+                        return {
+                            good: item.good._id,
+                            code: item.good.code,
+                            name: item.good.name,
+                            quantityOfBonusGood: item.quantityOfBonusGood,
+                            expirationDateOfGoodBonus: item.expirationDateOfGoodBonus,
+                            baseUnit: item.baseUnit,
+                        };
+                    });
+                }
+                if (discount.discountOnGoods.length) {
+                    discountOnGoods = discount.discountOnGoods.map((item) => {
+                        return {
+                            good: item.good._id,
+                            code: item.good.code,
+                            name: item.good.name,
+                            expirationDate: item.expirationDate,
+                            discountedPrice: item.discountedPrice,
+                        };
+                    });
+                }
+                discount.bonusGoods = bonusGoods;
+                discount.discountOnGoods = discountOnGoods;
+                return discount;
+            });
             return {
                 ...prevState,
                 discountId: nextProps.discountEdit._id,
@@ -27,7 +57,7 @@ class DiscountEditForm extends Component {
                 expirationDate: nextProps.discountEdit.expirationDate ? formatDate(nextProps.discountEdit.expirationDate) : "",
                 discountType: nextProps.discountEdit.type,
                 formality: nextProps.discountEdit.formality,
-                discounts: nextProps.discountEdit.discounts,
+                discounts: discounts,
             };
         }
     }
@@ -178,6 +208,7 @@ class DiscountEditForm extends Component {
                 description,
                 discounts,
             };
+            console.log("DATA SUBMIT EDIT", data);
             await this.props.editDiscount(discountId, data);
         }
     };

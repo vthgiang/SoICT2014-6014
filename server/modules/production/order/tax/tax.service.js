@@ -153,7 +153,6 @@ exports.getTaxByCode = async (query, portal) => {
 }
 
 exports.deleteTaxByCode = async (code, portal) => {
-    console.log("CODE", code);
     let taxs = await Tax(connect(DB_CONNECTION, portal))
         .find({ code: code })
     if (!taxs.length) {
@@ -165,6 +164,27 @@ exports.deleteTaxByCode = async (code, portal) => {
         taxsDeleted.push(taxDeleted);
     }
     return taxsDeleted;
+}
+
+exports.getTaxsByGoodsId = async (goodId, portal) => {
+    let taxs = await Tax(connect(DB_CONNECTION, portal)).find({ goods: { $elemMatch: { good: goodId } }, lastVersion: true, status: true});
+    if (!taxs) {
+        throw Error("No tax for good!")
+    }
+    let taxsMap = taxs.map((tax) => {
+        let goodMap = tax.goods.filter((good) => good.good == goodId)
+
+        return {
+            _id: tax._id,
+            percent: goodMap[0].percent,
+            good: goodMap[0].good,
+            code: tax.code,
+            name: tax.name,
+            description: tax.description,
+            
+        }
+    })
+    return taxsMap;
 }
 
 
