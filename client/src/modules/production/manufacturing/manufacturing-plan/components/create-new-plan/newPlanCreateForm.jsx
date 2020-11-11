@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ButtonModal, DialogModal } from '../../../../../../../common-components';
+import { ButtonModal, DialogModal } from '../../../../../../common-components';
 import CommandCreateForm from './commandCreateForm';
 import PlanInfoForm from './generalPlanInfoForm';
 import MaterialInfoForm from './materialInfoForm';

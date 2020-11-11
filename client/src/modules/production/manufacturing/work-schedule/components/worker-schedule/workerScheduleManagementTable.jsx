@@ -148,9 +148,9 @@ class WorkerScheduleManagementTable extends Component {
         }
         const { totalPages, page } = workSchedule;
 
-        console.log(totalPages, page);
-
         const { month, allDaysOfMonth, name } = this.state;
+
+        const arrayStatus = [0, 1, 2, 3, 4, 5];
         return (
             <React.Fragment>
                 {
@@ -190,6 +190,21 @@ class WorkerScheduleManagementTable extends Component {
                             <button type="button" className="btn btn-success" title={translate('manufacturing.work_schedule.search')} onClick={this.handleSubmitSearch}>{translate('manufacturing.work_schedule.search')}</button>
                         </div>
                     </div>
+                </div>
+                <div className="form-inline">
+                    {
+                        arrayStatus.map((status, index) => (
+                            <span key={index}>
+                                <span className="icon" title={translate(`manufacturing.work_schedule.${status}.content`)} style={{ backgroundColor: translate(`manufacturing.work_schedule.${status}.color`) }}>
+                                </span>
+                                &emsp;
+                                {
+                                    translate(`manufacturing.work_schedule.${status}.content`)
+                                }
+                                &emsp;&emsp;
+                            </span>
+                        ))
+                    }
                 </div>
                 <DataTableSetting
                     tableId="info-mill-table-worker"

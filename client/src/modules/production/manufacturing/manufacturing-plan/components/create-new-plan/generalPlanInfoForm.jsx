@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { DatePicker, SelectBox } from '../../../../../../../common-components';
-import sampleData from '../../../../sampleData';
+import { DatePicker, SelectBox } from '../../../../../../common-components';
+import sampleData from '../../../sampleData';
 
 
 class PlanInfoForm extends Component {

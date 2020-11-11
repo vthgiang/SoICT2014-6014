@@ -4207,6 +4207,30 @@ export default {
                 create_successfully: "Tạo lịch làm việc thành công",
                 create_failed: "Tạo lịch làm việc thất bại",
                 is_existing: "Lịch đã tồn tại",
+                0: {
+                    color: "white",
+                    content: "Chưa có lệnh"
+                },
+                1: {
+                    color: "yellow",
+                    content: "Đang chờ duyệt"
+                },
+                2: {
+                    color: "black",
+                    content: "Đã phê duyệt"
+                },
+                3: {
+                    color: "orange",
+                    content: "Đang thực hiện"
+                },
+                4: {
+                    color: "green",
+                    content: "Đã hoàn thành"
+                },
+                5: {
+                    color: "red",
+                    content: "Đã hủy"
+                },
                 //mill
                 choose_all_mill: "Tất cả các xưởng",
                 manufacturing_mill_schedule_list: "Lịch sản xuất của xưởng",

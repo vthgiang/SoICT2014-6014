@@ -149,8 +149,6 @@ import WorkSchedule from "../modules/production/manufacturing/work-schedule/comp
 import ManufacturingWorks from "../modules/production/manufacturing/manufacturing-works/components";
 import PurchasingRequest from "../modules/production/manufacturing/purchasing-request/components";
 import ManufacturingDashboard from "../modules/production/manufacturing/manufacturing-dashboard/components";
-import manufacturingOrder from '../modules/production/manufacturing/manufacturing-plan/components/manufacturing-order';
-import purchaseOrderDetailForm from '../modules/production/order/purchase-order/components/purchaseOrderDetailForm';
 
 class Routes extends Component {
 

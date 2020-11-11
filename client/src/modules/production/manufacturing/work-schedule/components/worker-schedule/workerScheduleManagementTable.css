@@ -9,3 +9,10 @@
     height: 17px;
     position: inherit;
 }
+
+.icon {
+    display: inline-block;
+    width: 17px;
+    height: 17px;
+    border-radius: 4px;
+}

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import sampleData from '../../../../sampleData';
+import sampleData from '../../../sampleData';
 class CommandCreateForm extends Component {
     constructor(props) {
         super(props);

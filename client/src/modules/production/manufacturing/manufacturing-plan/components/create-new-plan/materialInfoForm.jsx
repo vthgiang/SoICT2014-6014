@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import sampleData from '../../../../sampleData';
-import PurchasingRequestCreateForm from '../../../../purchasing-request/components/purchasingRequestCreateForm';
+import sampleData from '../../../sampleData';
+import PurchasingRequestCreateForm from '../../../purchasing-request/components/purchasingRequestCreateForm';
 class MaterialInfoForm extends Component {
     constructor(props) {
         super(props);

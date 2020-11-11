@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import sampleData from '../../../sampleData';
-import { DataTableSetting, DatePicker, DeleteNotification, SelectMulti } from "../../../../../../common-components";
+import sampleData from '../../sampleData';
+import { DataTableSetting, DatePicker, SelectMulti } from "../../../../../common-components";
 import NewPlanCreateForm from './create-new-plan/newPlanCreateForm';
 class ManufacturingPlanManagementTable extends Component {
     constructor(props) {
@@ -49,6 +49,7 @@ class ManufacturingPlanManagementTable extends Component {
                             />
                         </div>
 
+
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
@@ -68,8 +69,8 @@ class ManufacturingPlanManagementTable extends Component {
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">Mã lệnh sản xuất</label>
-                            <input type="text" className="form-control" name="code" onChange={this.handleChangeData} placeholder="LSX001" autoComplete="off" />
+                            <label className="form-control-static">Mã đơn kinh doanh</label>
+                            <input type="text" className="form-control" name="code" onChange={this.handleChangeData} placeholder="DKD001" autoComplete="off" />
                         </div>
                         <div className="form-group">
                             <label className="form-control-static">Ngày tạo</label>
@@ -86,11 +87,11 @@ class ManufacturingPlanManagementTable extends Component {
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">Mã đơn kinh doanh</label>
-                            <input type="text" className="form-control" name="code" onChange={this.handleChangeData} placeholder="DKD001" autoComplete="off" />
+                            <label className="form-control-static">Mã lệnh sản xuất</label>
+                            <input type="text" className="form-control" name="code" onChange={this.handleChangeData} placeholder="LSX001" autoComplete="off" />
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">Tình trạng</label>
+                            <label className="form-control-static">Trạng thái</label>
                             <SelectMulti
                                 id={`select-multi-process`}
                                 multiple="multiple"
@@ -98,11 +99,11 @@ class ManufacturingPlanManagementTable extends Component {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={[
-                                    { value: '1', text: "Đã hoàn thành" },
-                                    { value: '2', text: "Đang thực hiện" },
-                                    { value: '3', text: "Chưa thực hiện" },
-                                    { value: '4', text: "Đã hủy bỏ" },
-                                    { value: '5', text: "Chưa được duyệt" },
+                                    { value: '1', text: "Đang chờ duyệt" },
+                                    { value: '2', text: "Đã duyệt" },
+                                    { value: '3', text: "Đang thực hiện" },
+                                    { value: '4', text: "Đã hoàn thành" },
+                                    { value: '5', text: "Đã hủy" },
                                 ]}
                             // onChange={this.handleChangeValue}
                             />
@@ -111,11 +112,39 @@ class ManufacturingPlanManagementTable extends Component {
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">Mã phiếu đề nghị</label>
-                            <input type="text" className="form-control" name="code" onChange={this.handleChangeData} placeholder="PDN001" autoComplete="off" />
+                            <label className="form-control-static">Nhà máy</label>
+                            <SelectMulti
+                                id={`select-multi-works`}
+                                multiple="multiple"
+                                options={{ nonSelectedText: "Chọn nhà máy", allSelectedText: "Chọn tất cả" }}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={[
+                                    { value: '1', text: "Nha may 1" },
+                                    { value: '2', text: "Nha may 2" },
+                                    { value: '3', text: "Nha may 3" },
+                                ]}
+                            // onChange={this.handleChangeValue}
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label className="form-control-static">Tiến độ</label>
+                            <SelectMulti
+                                id={`select-multi-progress`}
+                                multiple="multiple"
+                                options={{ nonSelectedText: "Chọn Tiến độ", allSelectedText: "Chọn tất cả" }}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={[
+                                    { value: '1', text: "Đúng tiến độ" },
+                                    { value: '2', text: "Chậm tiến độ" },
+                                    { value: '3', text: "Quá hạn" },
+                                ]}
+                            // onChange={this.handleChangeValue}
+                            />
                         </div>
                         <div className="form-group">
-                            <label></label>
                             <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={this.handleSubmitSearch}>Tìm kiếm</button>
                         </div>
                     </div>
@@ -125,7 +154,6 @@ class ManufacturingPlanManagementTable extends Component {
                             <tr>
                                 <th>STT</th>
                                 <th>Mã kế hoạch</th>
-                                <th>Mã đơn sản xuất</th>
                                 <th>Người tạo</th>
                                 <th>Thời gian tạo</th>
                                 <th>Thời gian bắt đầu</th>
@@ -137,7 +165,6 @@ class ManufacturingPlanManagementTable extends Component {
                                         columnArr={[
                                             "STT",
                                             "Mã kế hoạch",
-                                            "Mã đơn sản xuất",
                                             "Người tạo",
                                             "Thời gian tạo",
                                             "Thời gian bắt đầu",
@@ -157,7 +184,6 @@ class ManufacturingPlanManagementTable extends Component {
                                     <tr key={index}>
                                         <td>{index + 1}</td>
                                         <td>{manufacturingPlan.code}</td>
-                                        <td>{manufacturingPlan.manufacturingOrder !== undefined && manufacturingPlan.manufacturingOrder.code}</td>
                                         <td>{manufacturingPlan.creator.name}</td>
                                         <td>{manufacturingPlan.createdAt}</td>
                                         <td>{manufacturingPlan.startDate}</td>
