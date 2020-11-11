@@ -1,7 +1,9 @@
-const { split } = require("lodash");
+const { split, isElement } = require("lodash");
+const mongoose = require("mongoose");
+const { getAllEmployeeOfUnitByRole } = require("../../../super-admin/user/user.service");
 
 const {
-    WorkSchedule, ManufacturingMill, Employee, ManufacturingWorks
+    WorkSchedule, ManufacturingMill, ManufacturingWorks
 } = require(`${SERVER_MODELS_DIR}`);
 
 const {
@@ -15,31 +17,64 @@ function getAllDayOfMonth(month) {
     return lastDayOfMonth.getDate();
 }
 
-// Hàm lấy ra tất cả các nhân viên trong 1 nhà máy có vai trò là employee
+// Hàm lấy ra tất cả các nhân viên trong 1 array nhà máy có vai trò là employee
 
-async function getAllEmployeeOfManufacturingWorks(arrayWorks, code, portal) {
+async function getAllEmployeeOfManufacturingWorks(query = undefined, portal) {
     // tra ve mang id cac employee thoa man
     let employees = [];
-    let manufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
-        _id: {
-            $in: arrayWorks
+    let option = {
+        status: 1
+    };
+    if (query && query.works) {
+        option._id = {
+            $in: query.works
         }
-    }).populate([{
-        path: "organizationalUnit"
-    }]);
-    console.log(manufacturingWorks);
+    }
+
+    let manufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal))
+        .find(option)
+        .populate([{
+            path: "organizationalUnit",
+        }]);
+    for (let i = 0; i < manufacturingWorks.length; i++) {
+        let emplyeeArray = await getAllEmployeeOfUnitByRole(portal, manufacturingWorks[i].organizationalUnit.employees);
+        employees = [...employees, ...emplyeeArray]
+    }
+
+    if (query && query.name) {
+        employees = employees.filter(e => e.userId.name.includes(query.name));
+    }
+
+    // Nếu query = undefined thì lấy ra hết không chỉ mỗi Id
+
+    if (query) {
+        employees = employees.map(e => e.userId._id)
+    } else {
+        employees = employees.map(e => e.userId)
+    }
+
+    return employees;
 
 }
 
 
+// Function kiểm tra xem _id của đối tượng có năm trong array hay không
 
+function checkIdObjectInArray(array, object) {
+    for (let i = 0; i < array.length; i++) {
+        if (String(array[i]) == String(object._id)) {
+            return true;
+        }
+    }
+    return false;
+}
 
 // Hàm tạo một lịch trong tháng ứng với manufacturingMill hoặc employee
 exports.createWorkSchedule = async (data, portal) => {
     if (!data.month || !data.numberOfTurns) {
         throw Error("data is not defined")
     }
-    if (!data.manufacturingMill && !data.employee && !data.allManufacturingMill && !data.allEmployee) {
+    if (!data.manufacturingMill && !data.user && !data.allManufacturingMill && !data.allUser) {
         throw Error("data is not defined")
     }
     let month = new Date(data.month);
@@ -51,9 +86,9 @@ exports.createWorkSchedule = async (data, portal) => {
             month: month
         });
     }
-    if (data.employee) {
+    if (data.user) {
         checkWorkSchedule = await WorkSchedule(connect(DB_CONNECTION, portal)).find({
-            employee: data.employee,
+            user: data.user,
             month: month
         });
     }
@@ -79,7 +114,6 @@ exports.createWorkSchedule = async (data, portal) => {
 
         // Code them cho nhieu xuong
         if (data.allManufacturingMill) {
-            console.log("vao day");
             // Lấy ra tất cả lịch của các xưởng trong tháng truyền vào
             let manufacturingMillSchedules = await WorkSchedule(connect(DB_CONNECTION, portal)).find({
                 manufacturingMill: {
@@ -119,22 +153,43 @@ exports.createWorkSchedule = async (data, portal) => {
             workSchedules = await WorkSchedule(connect(DB_CONNECTION, portal)).insertMany(schedules);
 
         }
-        else if (data.allEmployee) {
-            // let employees = await Employee(connect(DB_CONNECTION, portal)).find({});
-            // let schedules = [];
-            // for (let i = 0; i < employees.length; i++) {
-            //     schedules.push({
-            //         employee: employees[i],
-            //         month: month,
-            //         turns: turns
-            //     });
-            // }
-            // workSchedules = await WorkSchedule(connect(DB_CONNECTION, portal)).insertMany(schedules);
+        else if (data.allUser) {
+            // Lấy ra tất cả lịch của các công nhân trong tháng truyền vào
+            let workerSchedules = await WorkSchedule(connect(DB_CONNECTION, portal)).find({
+                user: {
+                    $ne: null
+                },
+                month: month
+            });
+            let arrayUserId = workerSchedules.map(x => x.user);
+            // Lấy ra tất cả các nhân viên của các nhà máy luôn
+            let workers = await getAllEmployeeOfManufacturingWorks(undefined, portal);
+            // Lấy ra các công nhân của các nhà máy mà chưa được sếp lịch trong tháng
+            let arrayUserIdNotHaveSchedule = [];
+            for (let i = 0; i < workers.length; i++) {
+                if (checkIdObjectInArray(arrayUserId, workers[i])) {
+                    continue;
+                }
+                arrayUserIdNotHaveSchedule.push(workers[i]);
+            }
+
+            if (arrayUserIdNotHaveSchedule.length == 0) {
+                return -1;
+            }
+            let schedules = [];
+            for (let i = 0; i < arrayUserIdNotHaveSchedule.length; i++) {
+                schedules.push({
+                    user: arrayUserIdNotHaveSchedule[i],
+                    month: month,
+                    turns: turns
+                });
+            }
+            workSchedules = await WorkSchedule(connect(DB_CONNECTION, portal)).insertMany(schedules);
 
         }
         else {
             let newWorkSchedule = await WorkSchedule(connect(DB_CONNECTION, portal)).create({
-                employee: data.employee,
+                user: data.user,
                 manufacturingMill: data.manufacturingMill,
                 month: month,
                 turns: turns
@@ -144,7 +199,7 @@ exports.createWorkSchedule = async (data, portal) => {
                 .populate([{
                     path: 'manufacturingMill'
                 }, {
-                    path: 'employee'
+                    path: 'user'
                 }])
             workSchedules.push(workSchedule);
         }
@@ -159,8 +214,8 @@ exports.getWorkSchedules = async (query, portal) => {
     if (!query.object) {
         throw Error('params object is required');
     }
-    if (query.object !== 'manufacturingMill' && query.object !== 'employee') {
-        throw Error('params object is manufacturingMill or employee');
+    if (query.object !== 'manufacturingMill' && query.object !== 'user') {
+        throw Error('params object is manufacturingMill or user');
     }
 
     let { page, limit } = query;
@@ -207,25 +262,33 @@ exports.getWorkSchedules = async (query, portal) => {
         } else {
             let workSchedules = await WorkSchedule(connect(DB_CONNECTION, portal))
                 .paginate(options, {
-                    page: page,
-                    limit: limit,
+                    page,
+                    limit,
                     populate: [{
-                        path: 'manufacturingMill'
-                    }, {
-                        path: "turns.0"
+                        path: "manufacturingMill"
                     }]
                 });
+            for (let i = 0; i < workSchedules.docs.length; i++) {
+                for (let j = 0; j < workSchedules.docs[i].turns.length; j++) {
+                    for (k = 0; k < workSchedules.docs[i].turns[j].length; k++) {
+                        if (workSchedules.docs[i].turns[j][k] != null) {
+                            let works = await ManufacturingWorks(connect(DB_CONNECTION, portal)).findById(workSchedules.docs[i].turns[j][k]);
+                            workSchedules.docs[i].turns[j][k] = works;
+                        }
+                    }
+                }
+            }
             return { workSchedules }
         }
 
     }
 
-    if (query.object == 'employee') {
-        options.employee = {
+    if (query.object == 'user') {
+        options.user = {
             $ne: null
         }
-        if (query.employee) {
-            options.employee = query.employee
+        if (query.user) {
+            options.user = query.user
         }
 
         // Xử lý tìm ra mảng các employee với mảng manufacturingWorks, employeeNumber truyền vào
@@ -233,10 +296,19 @@ exports.getWorkSchedules = async (query, portal) => {
         // Lọc các nhân viên đó theo code
         // Tạo mảng id để workSchedule filter
 
+        let employeeIds = await getAllEmployeeOfManufacturingWorks(query, portal);
+        options.user = {
+            ...options.user,
+            $in: employeeIds
+        }
+
+
+
+
         if (!limit | !page) {
             let workSchedules = await WorkSchedule(connect(DB_CONNECTION, portal)).find(options)
                 .populate([{
-                    path: 'employee', select: 'fullName employeeNumber emailInCompany'
+                    path: 'user', select: 'name email'
                 }]);
 
             return { workSchedules };
@@ -246,7 +318,7 @@ exports.getWorkSchedules = async (query, portal) => {
                     page: page,
                     limit: limit,
                     populate: [{
-                        path: 'employee', select: 'fullName employeeNumber emailInCompany'
+                        path: 'user', select: 'name email'
                     }]
                 });
             return { workSchedules }

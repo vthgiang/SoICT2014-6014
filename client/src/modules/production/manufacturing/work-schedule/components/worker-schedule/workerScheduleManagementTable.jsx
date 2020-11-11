@@ -20,7 +20,7 @@ class WorkerScheduleManagementTable extends Component {
             page: 1,
             month: currentMonthYear,
             allDaysOfMonth: allDaysOfMonth,
-            employeeNumber: '',
+            name: '',
             works: []
         }
     }
@@ -30,7 +30,7 @@ class WorkerScheduleManagementTable extends Component {
         let data = {
             limit: limit,
             page: page,
-            object: "employee",
+            object: "user",
             month: formatToTimeZoneDate(month)
         }
         this.props.getAllWorkSchedulesWorker(data);
@@ -91,7 +91,7 @@ class WorkerScheduleManagementTable extends Component {
         let data = {
             limit: limit,
             page: page,
-            object: "employee",
+            object: "user",
             month: formatToTimeZoneDate(month)
         }
         this.props.getAllWorkSchedulesWorker(data)
@@ -106,17 +106,17 @@ class WorkerScheduleManagementTable extends Component {
         let data = {
             limit: limit,
             page: page,
-            object: "employee",
+            object: "user",
             month: formatToTimeZoneDate(month)
         }
         this.props.getAllWorkSchedulesWorker(data);
     }
 
-    handleEmployeeNumberChange = (e) => {
+    handleEmployeeNameChange = (e) => {
         const { value } = e.target;
         this.setState((state) => ({
             ...state,
-            employeeNumber: value
+            name: value
         }));
     }
 
@@ -127,13 +127,13 @@ class WorkerScheduleManagementTable extends Component {
             ...state,
             allDaysOfMonth: allDaysOfMonth
         }));
-        let { limit, page, employeeNumber, works } = this.state;
+        let { limit, page, name, works } = this.state;
         let data = {
-            employeeNumber: employeeNumber,
+            name: name,
             works: works,
             limit: limit,
             page: page,
-            object: "employee",
+            object: "user",
             month: formatToTimeZoneDate(month)
         }
         this.props.getAllWorkSchedulesWorker(data)
@@ -141,14 +141,16 @@ class WorkerScheduleManagementTable extends Component {
     }
 
     render() {
-        console.log(this.state);
         const { translate, workSchedule } = this.props;
         let listWorkSchedulesWorker = [];
         if (workSchedule.listWorkSchedulesWorker && workSchedule.isLoading === false) {
             listWorkSchedulesWorker = workSchedule.listWorkSchedulesWorker;
         }
         const { totalPages, page } = workSchedule;
-        const { month, allDaysOfMonth, employeeNumber } = this.state;
+
+        const { month, allDaysOfMonth, name } = this.state;
+
+        const arrayStatus = [0, 1, 2, 3, 4, 5];
         return (
             <React.Fragment>
                 {
@@ -157,8 +159,8 @@ class WorkerScheduleManagementTable extends Component {
                 <div className="box-body qlcv">
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">{translate('manufacturing.work_schedule.employee_number')}</label>
-                            <input type="text" className="form-control" value={employeeNumber} onChange={this.handleEmployeeNumberChange} placeholder="MS2015122" autoComplete="off" />
+                            <label className="form-control-static">{translate('manufacturing.work_schedule.employee_name')}</label>
+                            <input type="text" className="form-control" value={name} onChange={this.handleEmployeeNameChange} placeholder="Nguyễn Anh Phương" autoComplete="off" />
                         </div>
                         <div className="form-group">
                             <label className="form-control-static">{translate('manufacturing.work_schedule.works')}</label>
@@ -189,6 +191,21 @@ class WorkerScheduleManagementTable extends Component {
                         </div>
                     </div>
                 </div>
+                <div className="form-inline">
+                    {
+                        arrayStatus.map((status, index) => (
+                            <span key={index}>
+                                <span className="icon" title={translate(`manufacturing.work_schedule.${status}.content`)} style={{ backgroundColor: translate(`manufacturing.work_schedule.${status}.color`) }}>
+                                </span>
+                                &emsp;
+                                {
+                                    translate(`manufacturing.work_schedule.${status}.content`)
+                                }
+                                &emsp;&emsp;
+                            </span>
+                        ))
+                    }
+                </div>
                 <DataTableSetting
                     tableId="info-mill-table-worker"
                     limit={this.state.limit}
@@ -200,8 +217,8 @@ class WorkerScheduleManagementTable extends Component {
                         <table id="info-mill-table-worker" className="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>{translate('manufacturing.work_schedule.employee_number')}</th>
                                     <th>{translate('manufacturing.work_schedule.employee_name')}</th>
+                                    <th>{translate('manufacturing.work_schedule.employee_email')}</th>
                                     <th>{translate('manufacturing.work_schedule.work_turns')}</th>
                                 </tr>
                             </thead>
@@ -218,8 +235,8 @@ class WorkerScheduleManagementTable extends Component {
                                         return (
                                             <React.Fragment key={index}>
                                                 <tr key={index}>
-                                                    <td rowSpan={numberOfTurns}>{schedule.employee && schedule.employee.employeeNumber}</td>
-                                                    <td rowSpan={numberOfTurns}>{schedule.employee && schedule.employee.fullName}</td>
+                                                    <td rowSpan={numberOfTurns}>{schedule.user && schedule.user.name}</td>
+                                                    <td rowSpan={numberOfTurns}>{schedule.user && schedule.user.email}</td>
                                                     <td>
                                                         {translate('manufacturing.work_schedule.turn_1')}
                                                     </td>

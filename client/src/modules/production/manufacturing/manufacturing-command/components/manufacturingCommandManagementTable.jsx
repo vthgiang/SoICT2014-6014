@@ -31,9 +31,6 @@ class ManufacturingCommandManagementTable extends Component {
         const { manufacturingCommands } = sampleData;
         return (
             <React.Fragment>
-                {
-                    <ManufacturingCommandDetailInfo />
-                }
                 <div className="box-body qlcv">
                     <div className="form-inline">
                         <div className="form-group">

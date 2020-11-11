@@ -25,7 +25,7 @@ import { annualLeave } from '../modules/human-resource/annual-leave/redux/reduce
 import { workPlan } from '../modules/human-resource/work-plan/redux/reducers';
 import { timesheets } from '../modules/human-resource/timesheets/redux/reducers';
 
-import { career } from '../modules/human-resource/career-position/redux/reducers';
+import { career } from '../modules/human-resource/career/redux/reducers';
 import { major } from '../modules/human-resource/major/redux/reducers';
 
 import { notifications } from '../modules/notification/redux/reducers';

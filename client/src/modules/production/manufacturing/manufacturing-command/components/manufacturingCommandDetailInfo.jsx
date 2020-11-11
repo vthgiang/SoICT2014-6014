@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import ManufacturingOrderDetailInfo from '../../manufacturing-plan/components/manufacturing-order/manufacturingOrderDetailInfo';
-
 class ManufacturingCommandDetailInfo extends Component {
     constructor(props) {
         super(props);
@@ -14,4 +12,4 @@ class ManufacturingCommandDetailInfo extends Component {
     }
 }
 
-export default ManufacturingOrderDetailInfo;
+export default ManufacturingCommandDetailInfo;

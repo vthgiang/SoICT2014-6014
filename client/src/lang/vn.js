@@ -1059,6 +1059,7 @@ export default {
             manage_examples_1: "CRUD theo mô hình số 1",
             manage_examples_2: "CRUD theo mô hình số 2",
             manage_examples_hooks_1: "CRUD Hooks theo mô hình 1",
+            manage_examples_hooks_2: "CRUD Hooks theo mô hình 2",
 
             // Quản lý sản xuất
             manage_manufacturing: "Quản lý sản xuất",
@@ -2513,7 +2514,7 @@ export default {
                 confirm_assigned: 'Xác nhận phân công công việc',
                 confirm_assigned_success: 'Bạn đã xác nhận phân công công việc',
                 confirm_assigned_failure: 'Bạn chưa xác nhận phân công công việc',
-                
+
                 name: 'Tên công việc',
                 search_by_name: 'Tìm kiếm theo tên',
 
@@ -3888,7 +3889,7 @@ export default {
                 validate_lot: 'Bạn cần chọn lô hàng',
                 validate_quantity: 'Bạn cần nhập số lượng cho lô hàng',
                 validate_norm: 'Bạn đã nhập quá số lượng tồn kho'
-                
+
             },
             inventory_management: {
                 product: 'Sản phẩm',
@@ -4207,6 +4208,30 @@ export default {
                 create_successfully: "Tạo lịch làm việc thành công",
                 create_failed: "Tạo lịch làm việc thất bại",
                 is_existing: "Lịch đã tồn tại",
+                0: {
+                    color: "white",
+                    content: "Chưa có lệnh"
+                },
+                1: {
+                    color: "yellow",
+                    content: "Đang chờ duyệt"
+                },
+                2: {
+                    color: "black",
+                    content: "Đã phê duyệt"
+                },
+                3: {
+                    color: "orange",
+                    content: "Đang thực hiện"
+                },
+                4: {
+                    color: "green",
+                    content: "Đã hoàn thành"
+                },
+                5: {
+                    color: "red",
+                    content: "Đã hủy"
+                },
                 //mill
                 choose_all_mill: "Tất cả các xưởng",
                 manufacturing_mill_schedule_list: "Lịch sản xuất của xưởng",
@@ -4216,10 +4241,12 @@ export default {
                 manufacturingMill: "Xưởng sản xuất",
                 //employee
                 worker_schedule_list: "Lịch sản xuất của công nhân",
-                employee_number: "Mã nhân viên",
                 employee_name: "Tên nhân viên",
+                employee_email: "Email nhân viên",
                 works: "Nhà máy sản xuất",
-                all_works: "Tất cả"
+                all_works: "Tất cả",
+                employee: "Nhân viên",
+                choose_all_user: "Tất cả"
 
 
 
