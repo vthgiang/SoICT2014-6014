@@ -19,6 +19,8 @@ module.exports = {
 
     Major: require('./human-resource/major.model'),
     CareerPosition: require('./human-resource/careerPosition.model'),
+    CareerField: require('./human-resource/careerField.model'),
+    CareerAction: require('./human-resource/careerAction.model'),
 
     EmployeeKpi: require('./kpi/employeeKpi.model'),
     EmployeeKpiSet: require('./kpi/employeeKpiSet.model'),

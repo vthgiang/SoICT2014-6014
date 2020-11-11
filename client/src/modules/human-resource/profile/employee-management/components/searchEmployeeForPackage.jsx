@@ -272,32 +272,30 @@ class SearchEmployeeForPackage extends Component {
 
         let listPosition = career.listPosition;
         let dataTreeCareer = []
+        let position = listPosition.map(elm => {
+            return {
+                ...elm,
+                id: elm._id,
+                text: elm.name,
+                state: { "opened": true },
+                // parent: listPosition[i]._id.toString(),
+                parent: "#",
+            }
+        });
+        dataTreeCareer = [...dataTreeCareer, ...position];
         for (let i in listPosition) {
-            let posMap = listPosition[i].position;
-            let position = listPosition[i].position.map(elm => {
+            let desMap = listPosition[i].description;
+            let description = desMap.map(elm => {
                 return {
                     ...elm,
                     id: elm._id,
                     text: elm.name,
                     state: { "opened": true },
-                    // parent: listPosition[i]._id.toString(),
-                    parent: "#",
+                    parent: listPosition[i]._id.toString(),
                 }
             });
-            dataTreeCareer = [...dataTreeCareer, ...position];
-            for (let x in posMap) {
-                let descMap = posMap[x].description;
-                let description = posMap[x].description.map(elm => {
-                    return {
-                        ...elm,
-                        id: elm._id,
-                        text: elm.name,
-                        state: { "opened": true },
-                        parent: posMap[x]._id.toString(),
-                    }
-                });
-                dataTreeCareer = [...dataTreeCareer, ...description];
-            }
+            dataTreeCareer = [...dataTreeCareer, ...description];
+
         }
 
         const listMajor = major.listMajor;

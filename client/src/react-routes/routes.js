@@ -54,7 +54,7 @@ import { ListEducation } from '../modules/training/education-program/components/
 import { TrainingPlan } from '../modules/training/course/components/course';
 
 import { SearchEmployeeForPackage } from '../modules/human-resource/profile/employee-management/components/searchEmployeeForPackage';
-import CareerPosition from '../modules/human-resource/career-position/component';
+import CareerManagement from '../modules/human-resource/career/component';
 import Major from '../modules/human-resource/major/component';
 
 import { OrganizationalUnitKpiCreate } from "../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreate";
@@ -136,9 +136,11 @@ import PlanManagement from "../modules/plan/components";
 
 // Example
 import ExampleManagement1 from "../modules/example/example1/components";
+import ExampleManagement2 from "../modules/example/example2/components";
 
-import ExampleManagement2 from "../modules/example/example2/components-hooks";
 import ExampleManagementHooks1 from "../modules/example/example1/components-hooks";
+import ExampleManagementHooks2 from "../modules/example/example2/components-hooks";
+
 // Manufacturing Managements
 
 import ManufacturingPlan from "../modules/production/manufacturing/manufacturing-plan/components";
@@ -706,7 +708,7 @@ class Routes extends Component {
                         path={'/hr-list-career-position'}
                         pageName={'list_career_position'}
                         layout={Layout}
-                        component={CareerPosition}
+                        component={CareerManagement}
                     />
 
                     {/* kpi - routes */}
@@ -1722,6 +1724,26 @@ class Routes extends Component {
                         pageName={"manage_examples_hooks_1"}
                         layout={Layout}
                         component={ExampleManagementHooks1}
+                    />
+
+                    <PrivateRoute
+                        isLoading={this.props.example2.isLoading}
+                        key={"manage-examples-2"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-examples-hooks-2",
+                                name: "manage_examples_hooks_2",
+                                icon: "fa fa-circle",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-examples-hooks-2"}
+                        path={"/manage-examples-hooks-2"}
+                        pageName={"manage_examples_hooks_2"}
+                        layout={Layout}
+                        component={ExampleManagementHooks2}
                     />
 
                     {/* Manufacturing-management */}

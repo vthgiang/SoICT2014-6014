@@ -1,9 +1,9 @@
 import {
-    CareerPositionConstant
+    CareerConstant
 } from "./constants";
 
 import {
-    CareerPositionService
+    CareerService
 } from "./services";
 
 export const CareerPositionAction = {
@@ -19,18 +19,18 @@ export const CareerPositionAction = {
 function getListCareerPosition(data) {
     return dispatch => {
         dispatch({
-            type: CareerPositionConstant.GET_CAREER_POSITION_REQUEST
+            type: CareerConstant.GET_CAREER_POSITION_REQUEST
         });
-        CareerPositionService.getListCareerPosition(data)
+        CareerService.getListCareerPosition(data)
             .then(res => {
                 dispatch({
-                    type: CareerPositionConstant.GET_CAREER_POSITION_SUCCESS,
+                    type: CareerConstant.GET_CAREER_POSITION_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(err => {
                 dispatch({
-                    type: CareerPositionConstant.GET_CAREER_POSITION_FAILURE,
+                    type: CareerConstant.GET_CAREER_POSITION_FAILURE,
                     error: err
                 });
             })
@@ -44,18 +44,18 @@ function getListCareerPosition(data) {
 function getListCareerField(data) {
     return dispatch => {
         dispatch({
-            type: CareerPositionConstant.GET_CAREER_FIELD_REQUEST
+            type: CareerConstant.GET_CAREER_FIELD_REQUEST
         });
-        CareerPositionService.getListCareerField(data)
+        CareerService.getListCareerField(data)
             .then(res => {
                 dispatch({
-                    type: CareerPositionConstant.GET_CAREER_FIELD_SUCCESS,
+                    type: CareerConstant.GET_CAREER_FIELD_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(err => {
                 dispatch({
-                    type: CareerPositionConstant.GET_CAREER_FIELD_FAILURE,
+                    type: CareerConstant.GET_CAREER_FIELD_FAILURE,
                     error: err
                 });
             })
@@ -69,18 +69,18 @@ function getListCareerField(data) {
 function getListCareerAction(data) {
     return dispatch => {
         dispatch({
-            type: CareerPositionConstant.GET_CAREER_ACTION_REQUEST
+            type: CareerConstant.GET_CAREER_ACTION_REQUEST
         });
-        CareerPositionService.getListCareerAction(data)
+        CareerService.getListCareerAction(data)
             .then(res => {
                 dispatch({
-                    type: CareerPositionConstant.GET_CAREER_ACTION_SUCCESS,
+                    type: CareerConstant.GET_CAREER_ACTION_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(err => {
                 dispatch({
-                    type: CareerPositionConstant.GET_CAREER_ACTION_FAILURE,
+                    type: CareerConstant.GET_CAREER_ACTION_FAILURE,
                     error: err
                 });
             })

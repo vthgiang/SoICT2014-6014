@@ -35,12 +35,7 @@ class AssetManagement extends Component {
     }
 
     componentDidMount() {
-        console.log("manageed:", this.props.managedBy)
-
-        if (this.props.isActive === "tab-pane active") {
-            this.props.getAllAsset(this.state);
-        }
-
+        this.props.getAllAsset(this.state);
         this.props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
         this.props.getListBuildingAsTree();
         this.props.getUser();
