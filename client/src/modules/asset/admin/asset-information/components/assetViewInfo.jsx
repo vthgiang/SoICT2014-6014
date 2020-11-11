@@ -19,7 +19,6 @@ class AssetViewInfo extends Component {
                 ...prevState,
                 _id: nextProps._id,
                 img: process.env.REACT_APP_SERVER + nextProps.avatar,
-                avatar: "",
                 avatar: nextProps.avatar,
                 code: nextProps.code,
                 assetName: nextProps.assetName,
@@ -66,7 +65,7 @@ class AssetViewInfo extends Component {
             detailInfo, cost, residualValue, startDepreciation, usefulLife, depreciationType, estimatedTotalProduction,
             unitsProducedDuringTheYears, maintainanceLogs, usageLogs, incidentLogs, disposalDate, disposalType, disposalCost,
             disposalDesc, archivedRecordNumber, files
-        } = this.props;
+        } = this.state;
 
         return (
             <React.Fragment>

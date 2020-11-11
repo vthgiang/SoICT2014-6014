@@ -5,6 +5,7 @@ import { DiscountActions } from "../redux/actions";
 import { GoodActions } from "../../../common-production/good-management/redux/actions";
 import DiscountCreateForm from "./discountCreateForm";
 import { PaginateBar, DataTableSetting, SelectBox, DeleteNotification, ConfirmNotification } from "../../../../../common-components";
+import DiscountEditForm from "./discountEditForm";
 
 class DiscountManagementTable extends Component {
     constructor(props) {
@@ -43,23 +44,35 @@ class DiscountManagementTable extends Component {
         this.props.getAllDiscounts(data);
     };
 
+    handleEditDiscount = async (discount) => {
+        await this.setState((state) => {
+            return {
+                ...state,
+                currentRow: discount,
+            };
+        });
+        window.$("#modal-edit-discount").modal("show");
+    };
+
     render() {
         const { translate } = this.props;
         const { discounts } = this.props;
         const { totalPages, page, listDiscounts } = discounts;
+        const { currentRow } = this.state;
         console.log("DISCOUNT", discounts);
         return (
             <React.Fragment>
                 <div className="box-body qlcv">
                     <DiscountCreateForm />
+                    {currentRow && <DiscountEditForm discountEdit={currentRow} />}
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">Mã giảm giá </label>
-                            <input type="text" className="form-control" />
+                            <input type="text" className="form-control" onChange={this.handleCodeChange} />
                         </div>
                         <div className="form-group">
                             <label className="form-control-static">Tên giảm giá </label>
-                            <input type="text" className="form-control" />
+                            <input type="text" className="form-control" onChange={this.handleNameChange} />
                         </div>
                         <div className="form-group">
                             <button type="button" className="btn btn-success" title={"Tìm kiếm"} onClick={this.handleSubmitSearch}>
@@ -111,7 +124,7 @@ class DiscountManagementTable extends Component {
                                                 style={{ width: "5px" }}
                                                 title={"Xem chi tiết thuế"}
                                                 onClick={() => {
-                                                    this.handleShowDetailTax(discount._id);
+                                                    this.handleShowDetailDiscount(discount._id);
                                                 }}
                                             >
                                                 <i className="material-icons">view_list</i>
@@ -121,7 +134,7 @@ class DiscountManagementTable extends Component {
                                                 style={{ width: "5px" }}
                                                 title={"Sửa thông tin thuế"}
                                                 onClick={() => {
-                                                    this.handleEditTax(discount);
+                                                    this.handleEditDiscount(discount);
                                                 }}
                                             >
                                                 <i className="material-icons">edit</i>

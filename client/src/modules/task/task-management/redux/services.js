@@ -298,7 +298,7 @@ function getPaginateTasksByUser(unit, number, perPage, status, priority, special
  * @param {*} endDateBefore 
  * @param {*} aPeriodOfTime 
  */
-function getPaginatedTasksByOrganizationalUnit(roleId, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime) {
+function getPaginatedTasksByOrganizationalUnit(roleId, number, perPage, status, priority, special, name, startDate, endDate, isAssigned) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'GET',
@@ -313,9 +313,7 @@ function getPaginatedTasksByOrganizationalUnit(roleId, number, perPage, status, 
             name: name,
             startDate: startDate,
             endDate: endDate,
-            startDateAfter: startDateAfter,
-            endDateBefore: endDateBefore,
-            aPeriodOfTime: aPeriodOfTime
+            isAssigned: isAssigned
         }
     }, false, true, 'task.task_management');
 }

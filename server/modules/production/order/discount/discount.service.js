@@ -8,14 +8,15 @@ const {
 
 
 exports.createNewDiscount = async (userId, data, portal) => {
-
+    // console.log({ userId, data, portal });
+    console.log(data);
 
     let newDiscount = await Discount(connect(DB_CONNECTION, portal)).create({
         code: data.code,
         name: data.name,
         description: data.description ? data.description : "",
-        effectiveDate: data.effectiveDate,
-        expirationDate: data.expirationDate,
+        effectiveDate: data.effectiveDate ? data.effectiveDate : "",
+        expirationDate: data.expirationDate ? data.expirationDate : "",
         type: data.type,
         creator: userId,
         formality: data.formality,
@@ -48,8 +49,8 @@ exports.createNewDiscount = async (userId, data, portal) => {
         }) : undefined,
         version: 1,//default create = version 1
         status: true, // default create status = true
+        lastVersion: true
     })
-    console.log("New",newDiscount);
     let discount = await Discount(connect(DB_CONNECTION, portal))
     .findById({ _id: newDiscount._id })
     .populate([{
@@ -62,7 +63,7 @@ exports.createNewDiscount = async (userId, data, portal) => {
     return { discount };
 }
 
-exports.getAllDiscounts = async ( query, portal) => {
+exports.getAllDiscounts = async (query, portal) => {
     let { page, limit } = query;
     let option = {};
     if (query.code) {
@@ -103,6 +104,95 @@ exports.getAllDiscounts = async ( query, portal) => {
         return { allDiscounts }
     }
 }
+
+
+exports.editDiscount = async (userId, id, data, portal) => {
+    let oldDiscount = await Discount(connect(DB_CONNECTION, portal)).findById(id);
+    console.log(oldDiscount);
+    if (!oldDiscount) {
+        throw Error("Discount is not existing")
+    }
+
+    
+    //Tạo ra 1 phiên bản tax mới có code giống phiên bản cũ
+    let newVersionDiscount = await Discount(connect(DB_CONNECTION, portal)).create({
+        code: oldDiscount.code,
+        name: data.name,
+        description: data.description ? data.description : "",
+        effectiveDate: data.effectiveDate ? data.effectiveDate : "",
+        expirationDate: data.expirationDate ? data.expirationDate : "",
+        type: data.type,
+        creator: userId,
+        formality: data.formality,
+        discounts: data.discounts ? data.discounts.map((item) =>{
+            return{
+                discountedCash: item.discountedCash,
+                discountedPercentage: item.discountedPercentage,
+                loyaltyCoin: item.loyaltyCoin,
+                maximumFreeShippingCost: item.maximumFreeShippingCost,
+                maximumDiscountedCash: item.maximumDiscountedCash,
+                minimumThresholdToBeApplied: item.minimumThresholdToBeApplied,
+                maximumThresholdToBeApplied: item.maximumThresholdToBeApplied,
+                customerType: item.customerType,
+                bonusGoods: item.bonusGoods ? item.bonusGoods.map((good) => {
+                    return {
+                        good: good.good,
+                        quantityOfBonusGood: good.quantityOfBonusGood,
+                        expirationDateOfGoodBonus: good.expirationDateOfGoodBonus ? good.expirationDateOfGoodBonus : undefined,
+                        baseUnit: good.baseUnit ? good.baseUnit : undefined
+                    }
+                }) :  undefined,
+                discountOnGoods: item.discountOnGoods ? item.discountOnGoods.map((good) => {
+                    return {
+                        good: good.good,
+                        expirationDate: good.expirationDate ? good.expirationDate : undefined,
+                        discountedPrice: good.discountedPrice ? good.discountedPrice : undefined
+                    }
+                }) : undefined,
+            }
+        }) : undefined,
+        version: oldDiscount.version + 1,
+        status: true,
+        lastVersion: true
+    })
+
+    oldDiscount.status = false;
+    oldDiscount.lastVersion = false
+    await oldDiscount.save();
+    
+    let discount = await Discount(connect(DB_CONNECTION, portal)).findById({ _id: newVersionDiscount._id });
+    
+    return { discount }
+}
+
+exports.changeDiscountStatus = async (id, portal) => {
+    let discount = await Discount(connect(DB_CONNECTION, portal))
+    .findById(id)
+
+    if (!discount) {
+        throw Error("Discount is not existing")
+    }
+
+    discount.status = !discount.status;
+    discount.save();
+
+    return { discount }
+}
+
+exports.deleteDiscountByCode = async (code, portal) => {
+    let discounts = await Discount(connect(DB_CONNECTION, portal))
+        .find({ code: code })
+    if (!discounts.length) {
+            throw Error("Discount is not existing")
+    }
+    let discountsDeleted = [];
+    for (let index = 0; index < discounts.length; index++) {
+        let discountDeleted = await Discount(connect(DB_CONNECTION, portal)).findByIdAndDelete({ _id: discounts[index]._id })
+        discountsDeleted.push(discountDeleted);
+    }
+    return discountsDeleted;
+}
+
 
 
 

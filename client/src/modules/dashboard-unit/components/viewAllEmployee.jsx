@@ -9,14 +9,38 @@ class ViewAllEmployee extends Component {
         super(props);
     };
 
+    /**
+    * Function format dữ liệu Date thành string
+    * @param {*} date : Ngày muốn format
+    * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
+    */
+    formatDate(date, monthYear = false) {
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+
+            if (monthYear === true) {
+                return [month, year].join('-');
+            } else return [day, month, year].join('-');
+        }
+        return date;
+    };
+
     render() {
         const { translate } = this.props;
-        const { dataEmployee, title } = this.props;
+        const { dataEmployee, title, viewAll = false } = this.props;
 
         return (
             <React.Fragment>
                 <DialogModal
-                    size='50' modalID={'modal-view-all-employee'} isLoading={false}
+                    size='75' modalID={'modal-view-all-employee'} isLoading={false}
                     formID={`form-view-all-employee`}
                     title={title}
                     hasSaveButton={false}
@@ -29,6 +53,7 @@ class ViewAllEmployee extends Component {
                                     <th>STT</th>
                                     <th>Họ và tên</th>
                                     <th>Giới tính</th>
+                                    <th>Ngày sinh</th>
                                     <th>Trình độ chuyên môn</th>
                                 </tr>
                             </thead>
@@ -40,6 +65,7 @@ class ViewAllEmployee extends Component {
                                             <td>{index + 1}</td>
                                             <td>{x.fullName}</td>
                                             <td>{translate(`human_resource.profile.${x.gender}`)}</td>
+                                            <td>{this.formatDate(x.birthdate, false)}</td>
                                             <td>{translate(`human_resource.profile.${x.professionalSkill}`)}</td>
                                         </tr>
                                     ))

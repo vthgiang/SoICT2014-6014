@@ -12,13 +12,14 @@ class TabAnualLeave extends Component {
         this.state = {}
     };
     render() {
+        const { childOrganizationalUnit, defaultUnit } = this.props
         return (
             <React.Fragment>
                 <LazyLoadComponent>
-                    <AnnualLeaveTrendsChart nameData1='Số lượt nghỉ' nameChart={'Xu hướng nghỉ phép'} />
+                    <AnnualLeaveTrendsChart defaultUnit={defaultUnit} organizationalUnits={[childOrganizationalUnit[0].id]} nameData1='Số lượt nghỉ' nameChart={'Xu hướng nghỉ phép'} />
                 </LazyLoadComponent>
                 <LazyLoadComponent>
-                    <TrendOfOvertime nameData1='Số giờ tăng ca' nameChart={'Xu hướng tăng ca'} />
+                    <TrendOfOvertime defaultUnit={defaultUnit} organizationalUnits={[childOrganizationalUnit[0].id]} nameData1='Số giờ tăng ca' nameChart={'Xu hướng tăng ca'} />
                 </LazyLoadComponent>
             </React.Fragment>
         );

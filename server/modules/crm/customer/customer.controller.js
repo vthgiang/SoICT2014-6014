@@ -73,6 +73,25 @@ exports.createCustomer = async (req, res) => {
     }
 }
 
+exports.importCustomers = async (req, res) => {
+    try {
+        const newCustomers = await CustomerService.importCustomers(req.portal, req.user.company._id, req.body, req.user._id);
+        await Logger.info(req.user.email, 'import_customer_success');
+        res.status(200).json({
+            success: true,
+            messages: ['import_customer_success'],
+            content: newCustomers
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ' import_customer_faile ', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['import_customer_faile'],
+            content: error
+        })
+    }
+}
+
 /**
  * Chỉnh sửa một khách hàng
  * @param {*} req 

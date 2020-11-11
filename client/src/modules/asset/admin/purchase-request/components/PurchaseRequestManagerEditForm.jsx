@@ -13,7 +13,7 @@ class PurchaseRequestEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            status: "Chờ phê duyệt"
+            status: "waiting_approval"
         };
     }
 
@@ -305,7 +305,7 @@ class PurchaseRequestEditForm extends Component {
                                     <input type="number" className="form-control" name="total" value={total} onChange={this.handleTotalChange} />
                                     <ErrorLabel content={errorOnTotal} />
                                 </div>
-                                
+
                                 {/* Đơn vị tính */}
                                 <div className={`form-group ${!errorOnUnit ? "" : "has-error"}`}>
                                     <label>{translate('asset.manage_recommend_procure.unit')}<span className="text-red">*</span></label>
@@ -349,9 +349,9 @@ class PurchaseRequestEditForm extends Component {
                                         style={{ width: "100%" }}
                                         value={status}
                                         items={[
-                                            { value: 'Đã phê duyệt', text: translate('asset.usage.approved') },
-                                            { value: 'Chờ phê duyệt', text: translate('asset.usage.waiting_approval') },
-                                            { value: 'Không phê duyệt', text: translate('asset.usage.not_approved') },
+                                            { value: 'approved', text: translate('asset.usage.approved') },
+                                            { value: 'waiting_approval', text: translate('asset.usage.waiting_approval') },
+                                            { value: 'not_approved', text: translate('asset.usage.not_approved') },
                                         ]}
                                         onChange={this.handleStatusChange}
                                     />

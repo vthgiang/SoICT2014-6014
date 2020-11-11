@@ -12,12 +12,12 @@ class MaintainanceLogAddModal extends Component {
         this.state = {
             maintainanceCode: "",
             createDate: this.formatDate(Date.now()),
-            type: "Sửa chữa",
+            type: "1",
             description: "",
             startDate: this.formatDate(Date.now()),
             endDate: this.formatDate(Date.now()),
             expense: "",
-            status: "Đang thực hiện",
+            status: "2",
         };
     }
 
@@ -270,9 +270,9 @@ class MaintainanceLogAddModal extends Component {
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.status')}</label>
                                     <select className="form-control" value={status} name="status" onChange={this.handleStatusChange}>
-                                        <option value="1">{translate('asset.asset_info.made')}</option>
+                                        <option value="1">{translate('asset.asset_info.unfulfilled')}</option>
                                         <option value="2">{translate('asset.asset_info.processing')}</option>
-                                        <option value="3">{translate('asset.asset_info.unfulfilled')}</option>
+                                        <option value="3">{translate('asset.asset_info.made')}</option>
                                     </select>
                                 </div>
                             </div>

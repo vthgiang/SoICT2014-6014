@@ -42,6 +42,7 @@ class TaskTemplateImportForm extends Component {
                     "name": x.name,
                     "description": x.description,
                     "organizationalUnit": x.organizationalUnit,
+                    "collaboratedWithOrganizationalUnits": x.collaboratedWithOrganizationalUnits,
                     "readByEmployees": x.readByEmployees,
                     "priority": x.priority,
                     "responsibleEmployees": x.responsibleEmployees,
@@ -56,6 +57,7 @@ class TaskTemplateImportForm extends Component {
                     "name": x.name,
                     "description": x.description,
                     "organizationalUnit": x.organizationalUnit,
+                    "collaboratedWithOrganizationalUnits": [x.collaboratedWithOrganizationalUnits],
                     "readByEmployees": [x.readByEmployees],
                     "priority": x.priority,
                     "responsibleEmployees": [x.responsibleEmployees],
@@ -73,6 +75,7 @@ class TaskTemplateImportForm extends Component {
                         "name": "",
                         "description": "",
                         "organizationalUnit": "",
+                        "collaboratedWithOrganizationalUnits": "",
                         "readByEmployees": "",
                         "priority": "",
                         "responsibleEmployees": "",
@@ -95,6 +98,10 @@ class TaskTemplateImportForm extends Component {
                     if (x.readByEmployees) {
                         out.readByEmployees = x.readByEmployees;
                         valueShow[k].readByEmployees = [...valueShow[k].readByEmployees, x.readByEmployees];
+                    }
+                    if (x.collaboratedWithOrganizationalUnits){
+                        out.collaboratedWithOrganizationalUnits = x.collaboratedWithOrganizationalUnits;
+                        valueShow[k].collaboratedWithOrganizationalUnits = [...valueShow[k].collaboratedWithOrganizationalUnits, x.collaboratedWithOrganizationalUnits];
                     }
                     if (x.responsibleEmployees) {
                         out.responsibleEmployees = x.responsibleEmployees;
@@ -230,18 +237,13 @@ class TaskTemplateImportForm extends Component {
                                 infomationDescription[i] = x.taskInformations[i].description;
                                 type[i] = x.taskInformations[i].type;
                                 filledByAccountableEmployeesOnly[i] = x.taskInformations[i].filledByAccountableEmployeesOnly;
-                                // if (x.taskInformations[i].filledByAccountableEmployeesOnly) {
-                                //     filledByAccountableEmployeesOnly[i] = "true";
-                                // } else {
-                                //     filledByAccountableEmployeesOnly[i] = "false";
-                                // }
                             }
                         }
                         let numberOfUse = "Chưa sử dụng";
                         if (x.numberOfUse !== 0) {
                             numberOfUse = x.numberOfUse;
                         }
-                        let readByEmployees, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees;
+                        let readByEmployees, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, collaboratedWithOrganizationalUnits;
                         if (Array.isArray(x.readByEmployees)) {
                             if (x.readByEmployees.length > length) {
                                 length = x.readByEmployees.length;
@@ -249,9 +251,15 @@ class TaskTemplateImportForm extends Component {
                             }
                             readByEmployees = x.readByEmployees;
                         } else {
-                            length = 0;
                             readByEmployees = [x.readByEmployees];
-                            console.log(readByEmployees);
+                        }
+                        if (Array.isArray(x.collaboratedWithOrganizationalUnits)) {
+                            if (x.collaboratedWithOrganizationalUnits.length > length) {
+                                length = x.collaboratedWithOrganizationalUnits.length;
+                            }
+                            collaboratedWithOrganizationalUnits = x.collaboratedWithOrganizationalUnits;
+                        } else {
+                            collaboratedWithOrganizationalUnits = [x.collaboratedWithOrganizationalUnits];
                         }
                         if (Array.isArray(x.responsibleEmployees)) {
                             responsibleEmployees = x.responsibleEmployees.join(', ');
@@ -284,6 +292,7 @@ class TaskTemplateImportForm extends Component {
                             consultedEmployees: consultedEmployees,
                             informedEmployees: informedEmployees,
                             organizationalUnits: x.organizationalUnit,
+                            collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits[0],
                             priority: x.priority,
                             formula: x.formula,
                             actionName: actionName[0],
@@ -309,6 +318,7 @@ class TaskTemplateImportForm extends Component {
                                     consultedEmployees: "",
                                     informedEmployees: "",
                                     organizationalUnits: "",
+                                    collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits[i],
                                     priority: "",
                                     formula: "",
                                     actionName: actionName[i],

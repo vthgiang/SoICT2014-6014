@@ -20,7 +20,7 @@ class HighestSalaryChart extends Component {
     render() {
         const { translate, salary, department } = this.props;
 
-        const { monthShow, organizationalUnits } = this.props;
+        const { monthShow, organizationalUnits, childOrganizationalUnit } = this.props;
 
         let organizationalUnitsName;
         if (organizationalUnits) {
@@ -44,31 +44,35 @@ class HighestSalaryChart extends Component {
 
         return (
             <React.Fragment>
-                <div className="box box-solid">
-                    <div className="box-header with-border">
-                        <h3 className="box-title">{`Top 5 lương thưởng cao nhất của ${(!organizationalUnits || organizationalUnits.length === department.list.length) ? "công ty" : organizationalUnitsName.join(', ')} ${monthShow} `}</h3>
-                    </div>
-                    <div className="box-body no-parding">
-                        <ul className="users-list clearfix">
-                            {
-                                (dataSalary && dataSalary.length !== 0) ?
-                                    dataSalary.map((x, index) => (
-                                        index < 5 &&
-                                        <li key={index} style={{ maxWidth: 200 }}>
-                                            <ApiImage src={`.${x.employee.avatar}`} />
-                                            <a className="users-list-name">{x.employee.fullName}</a>
-                                            <span className="users-list-date">{x.employee.employeeNumber}</span>
-                                        </li>
-                                    ))
-                                    : <li>{translate('kpi.evaluation.employee_evaluation.data_not_found')}</li>
-                            }
-                        </ul>
-                    </div>
-                    <div className="box-footer text-center">
-                        <a style={{ cursor: 'pointer' }} onClick={this.viewAllSalary} className="uppercase">Xem tất cả</a>
-                    </div>
-                </div>
-                <ViewAllSalary dataSalary={dataSalary} title={`Tổng hợp tình hình lương thưởng ${monthShow}`} viewTotalSalary={true} />
+                {childOrganizationalUnit.length === department.list.length &&
+                    <React.Fragment>
+                        <div className="box box-solid">
+                            <div className="box-header with-border">
+                                <h3 className="box-title">{`Top 5 lương thưởng cao nhất của ${(!organizationalUnits || organizationalUnits.length === department.list.length) ? "công ty" : organizationalUnitsName.join(', ')} ${monthShow} `}</h3>
+                            </div>
+                            <div className="box-body no-parding">
+                                <ul className="users-list clearfix">
+                                    {
+                                        (dataSalary && dataSalary.length !== 0) ?
+                                            dataSalary.map((x, index) => (
+                                                index < 5 &&
+                                                <li key={index} style={{ maxWidth: 200 }}>
+                                                    <ApiImage src={`.${x.employee.avatar}`} />
+                                                    <a className="users-list-name">{x.employee.fullName}</a>
+                                                    <span className="users-list-date">{x.employee.employeeNumber}</span>
+                                                </li>
+                                            ))
+                                            : <li>{translate('kpi.evaluation.employee_evaluation.data_not_found')}</li>
+                                    }
+                                </ul>
+                            </div>
+                            <div className="box-footer text-center">
+                                <a style={{ cursor: 'pointer' }} onClick={this.viewAllSalary} className="uppercase">Xem tất cả</a>
+                            </div>
+                        </div>
+                        <ViewAllSalary dataSalary={dataSalary} title={`Tổng hợp tình hình lương thưởng ${monthShow}`} viewTotalSalary={true} />
+                    </React.Fragment>
+                }
             </React.Fragment>
         )
     }

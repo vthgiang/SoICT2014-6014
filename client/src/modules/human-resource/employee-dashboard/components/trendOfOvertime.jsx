@@ -19,7 +19,8 @@ class TrendOfOvertime extends Component {
             startDateShow: startDate,
             endDate: this.formatDate(Date.now(), true),
             endDateShow: this.formatDate(Date.now(), true),
-            organizationalUnitsSearch: []
+            organizationalUnitsSearch: this.props.defaultUnit ? this.props.organizationalUnits : [],
+            organizationalUnits: this.props.defaultUnit ? this.props.organizationalUnits : [],
         }
     }
 
@@ -223,7 +224,7 @@ class TrendOfOvertime extends Component {
 
     render() {
         const { department, timesheets, translate } = this.props;
-        const { lineChart, nameChart, nameData1, startDate, endDate, startDateShow, endDateShow, organizationalUnitsSearch } = this.state;
+        const { lineChart, nameChart, nameData1, startDate, endDate, startDateShow, endDateShow, organizationalUnits, organizationalUnitsSearch } = this.state;
 
         let organizationalUnitsName = [];
         if (organizationalUnitsSearch) {
@@ -263,6 +264,7 @@ class TrendOfOvertime extends Component {
                                         items={department.list.map((p, i) => { return { value: p._id, text: p.name } })}
                                         options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
                                         onChange={this.handleSelectOrganizationalUnit}
+                                        value={organizationalUnits}
                                     >
                                     </SelectMulti>
                                 </div>

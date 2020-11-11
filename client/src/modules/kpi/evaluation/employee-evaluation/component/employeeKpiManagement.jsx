@@ -26,14 +26,14 @@ class EmployeeKpiManagement extends Component {
             commenting: false,
             userId: '',
             status: -1,
-            startDate: currentMonth === 0 ? (currentYear - 1) + '-' + 12 : currentYear + '-' + currentMonth,
-            endDate: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2)),
+            startDate: currentMonth !== 0 ? ((currentMonth <= 9) ? (currentYear + '-0' + currentMonth) : (currentYear + '-' + currentMonth)) : ((currentYear - 1) + '-' + 12),
+            endDate: (currentMonth < 9) ? (currentYear + '-0' + currentMonth + 1) : (currentYear + '-' + (currentMonth + 1)),
             infosearch: {
                 role: localStorage.getItem("currentRole"),
                 user: '',
                 status: -1,
-                startDate: currentMonth === 0 ? (currentYear - 1) + '-' + 12 : currentYear + '-' + currentMonth,
-                endDate: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2)),
+                startDate: currentMonth !== 0 ? ((currentMonth <= 9) ? (currentYear + '-0' + currentMonth) : (currentYear + '-' + currentMonth)) : ((currentYear - 1) + '-' + 12),
+                endDate: (currentMonth < 9) ? (currentYear + '-0' + currentMonth + 1) : (currentYear + '-' + (currentMonth + 1)),
             },
             showApproveModal: null,
             showEvaluateModal: null,
@@ -128,29 +128,20 @@ class EmployeeKpiManagement extends Component {
     }
 
     handleStartDateChange = (value) => {
-        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
         this.setState(state => {
             return {
                 ...state,
-                startDate: month
+                startDate: value.slice(3, 7) + '-' + value.slice(0, 2)
             }
         });
 
     }
 
     handleEndDateChange = (value) => {
-        let month;
-
-        if (value.slice(0, 2) < 12) {
-            month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)) + 1);
-        } else {
-            month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
-        }
-        
         this.setState(state => {
             return {
                 ...state,
-                endDate: month,
+                endDate: value.slice(3, 7) + '-' + value.slice(0, 2),
             }
         });
 
@@ -178,8 +169,6 @@ class EmployeeKpiManagement extends Component {
         const { translate } = this.props;
         const { startDate, endDate, userId, status } = this.state;
 
-        if (startDate === "") startDate = null;
-        if (endDate === "") endDate = null;
         await this.setState(state => {
             return {
                 ...state,
@@ -187,23 +176,18 @@ class EmployeeKpiManagement extends Component {
                     ...state.infosearch,
                     user: userId,
                     status: status,
-                    startDate: startDate,
-                    endDate: endDate
+                    startDate: startDate !== "" ? startDate : null,
+                    endDate: endDate !== "" ? endDate : null
                 },
                 kpiId: null,
                 employeeKpiSet: { _id: null },
             }
         })
 
-        let startdate = null, enddate = null;
-        if (startDate) {
-            startdate = new Date(startDate);
-        }
-        if (endDate) {
-            enddate = new Date(endDate);
-        }
+        let startdate = new Date(startDate);
+        let enddate = new Date(endDate);
 
-        if (startdate && enddate && startdate.getTime() >= Date.parse(enddate)) {
+        if (startdate && enddate && startdate.getTime() > enddate.getTime()) {
             Swal.fire({
                 title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
                 type: 'warning',

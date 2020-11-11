@@ -7,12 +7,13 @@ const {
 } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 
-exports.createNewSLA = async (data, portal) => {
+exports.createNewSLA = async (userId, data, portal) => {
     let newSLA = await ServiceLevelAgreement(connect(DB_CONNECTION, portal)).create({
         code: data.code,
         goods: data.goods.map((item) => {
             return item;
         }),
+        creator: userId,
         title: data.title,
         descriptions: data.descriptions.map((item) => {
             return item;
@@ -20,6 +21,7 @@ exports.createNewSLA = async (data, portal) => {
         creator: data.creator,
         version: 1,//default create = version 1
         status: true, // default create status = true
+        lastVersion: true
     })
     let sla = await ServiceLevelAgreement(connect(DB_CONNECTION, portal)).findById({ _id: newSLA._id })
     return { sla };
@@ -57,7 +59,6 @@ exports.editSLAByCode = async (id, data, portal) => {
 
 exports.getAllSLAs = async (query, portal) => {
     let { page, limit } = query;
-    console.log(query);
     let option = {};
     if (query.code) {
         option.code = new RegExp(query.code, "i")
@@ -65,26 +66,27 @@ exports.getAllSLAs = async (query, portal) => {
     if(query.title) {
         option.title = new RegExp(query.title, "i")
     }
-
-    //Chỉ lấy những sla đang có hiệu lực
-    option.status = true;
+    if (query.status) {
+        option.status = query.status == 'true' ? true : false;
+    }
+    option.lastVersion = true;
 
     if ( !page || !limit ){
         let allSLAs = await ServiceLevelAgreement(connect(DB_CONNECTION, portal))
         .find(option)
         .populate([{
-            path: "goods", select: "code name"
+            path: "goods"
         },
         {
             path: "creator", select: "name"
         }])
         return { allSLAs }
     } else {
-        let allSLAs = await ServiceLevelAgreement(connect(DB_CONNECTION, portal)) .paginate(option, {
+        let allSLAs = await ServiceLevelAgreement(connect(DB_CONNECTION, portal)).paginate(option, {
             page,
             limit,
             populate: [{
-                path: "goods", select: "code name"
+                path: "goods",  select: "code name"
             },{
                 path: "creator", select: "name"
             }]

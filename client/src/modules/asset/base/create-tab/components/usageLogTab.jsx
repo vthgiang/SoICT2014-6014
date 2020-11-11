@@ -99,9 +99,9 @@ class UsageLogTab extends Component {
     handleAddUsage = async (data) => {
         const { assignedToUser, usageLogs, assignedToOrganizationalUnit } = this.state
         usageLogs.push(data);
+        let usageLogsData = usageLogs
         await this.setState({
-            ...this.state,
-            usageLogs: usageLogs,
+            usageLogs: usageLogsData,
             assignedToUser: data.usedByUser,
             assignedToOrganizationalUnit: data.usedByOrganizationalUnit,
             status: "in_use",
@@ -113,9 +113,10 @@ class UsageLogTab extends Component {
             assignedToUser: data.usedByUser,
             assignedToOrganizationalUnit: data.usedByOrganizationalUnit,
         }
-
-        await this.props.createUsage(this.props.assetId, createUsage)
-        await this.props.handleAddUsage(createUsage);
+        if (this.props.assetId) {
+            await this.props.createUsage(this.props.assetId, createUsage)
+        }
+        await this.props.handleAddUsage(usageLogsData);
     }
 
     // Function chỉnh sửa thông tin phiếu
@@ -182,7 +183,9 @@ class UsageLogTab extends Component {
             usageId: assignedToUser,
         }
 
-        await this.props.recallAsset(assetId, data);
+        if (this.props.assetId) {
+            await this.props.recallAsset(assetId, data);
+        }
         await this.props.handleRecallAsset({
             assignedToUser: null,
             assignedToOrganizationalUnit: null,
@@ -245,7 +248,7 @@ class UsageLogTab extends Component {
 
                     {/* Bảng thông tin sử dụng */}
                     {
-                        (typeRegisterForUse == 3 || typeRegisterForUse == 1) &&
+                        (typeRegisterForUse == 1 || typeRegisterForUse == 3) &&
                         <table className="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>

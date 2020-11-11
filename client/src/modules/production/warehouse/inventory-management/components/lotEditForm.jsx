@@ -103,7 +103,7 @@ class LotEditForm extends Component {
         }
         
         if(total > quantity){
-            msg = ` ${translate('manage_warehouse.category_management.validate_name')} (${quantity}) `;
+            msg = ` ${translate('manage_warehouse.inventory_management.validate_total')} (${quantity}) `;
         }
         
         if(!value) {
@@ -111,11 +111,11 @@ class LotEditForm extends Component {
         }
 
         if(value > binLocation.binLocation.capacity) {
-            msg = ` ${translate('manage_warehouse.category_management.number_over_norm')} (${binLocation.binLocation.capacity}) `;
+            msg = ` ${translate('manage_warehouse.inventory_management.number_over_norm')} (${binLocation.binLocation.capacity}) `;
         }
         if(binLocation.binLocation.contained !== null) {
             if(Number(value) > (Number(binLocation.binLocation.capacity) -Number(binLocation.binLocation.contained))) {
-                msg =  ` ${translate('manage_warehouse.category_management.bin_contained')} ${(Number(binLocation.binLocation.capacity) -Number(binLocation.binLocation.contained))} `
+                msg =  ` ${translate('manage_warehouse.inventory_management.bin_contained')} ${(Number(binLocation.binLocation.capacity) -Number(binLocation.binLocation.contained))} `
             }
         }
 
@@ -158,7 +158,9 @@ class LotEditForm extends Component {
         this.setState(state => {
             return {
                 ...state,
-                binLocation: Object.assign({}, this.EMPTY_BIN)
+                binLocation: Object.assign({}, this.EMPTY_BIN),
+                errorQuantity: undefined,
+                errorBin: undefined
             }
         })
     }
@@ -203,7 +205,9 @@ class LotEditForm extends Component {
             return {
                 ...state,
                 editInfo: false,
-                binLocation: Object.assign({}, this.EMPTY_BIN)
+                binLocation: Object.assign({}, this.EMPTY_BIN),
+                errorQuantity: undefined,
+                errorBin: undefined
             }
         })
     }

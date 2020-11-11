@@ -2399,6 +2399,15 @@ export default {
                 stored: 'Stored',
                 current_month: 'Current month',
 
+                assigned_collaborate: 'Task assignment status',
+                not_assigned: 'Unassigned task',
+                assigned: 'Assigned task',
+                none_select_assigned: 'None select',
+                role_in_collaborated_unit: 'The role of the employee in',
+                confirm_assigned: 'Confirm the assignment',
+                confirm_assigned_success: 'You have confirmed the assignment',
+                confirm_assigned_failure: 'You have not confirmed the assignment',
+                
                 name: "Name of task",
                 search_by_name: 'Search by name',
 

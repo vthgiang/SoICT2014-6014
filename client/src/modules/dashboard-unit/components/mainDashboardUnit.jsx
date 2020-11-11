@@ -5,7 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { TabEmployeeCapacity, TabIntegratedStatistics } from './combinedContent';
 import { TabHumanResource, TabSalary, TabAnualLeave } from '../../human-resource/employee-dashboard/components/combinedContent';
 
-import { DatePicker, SelectMulti, ApiImage, LazyLoadComponent, forceCheckOrVisible } from '../../../common-components';
+import { DatePicker, SelectMulti, LazyLoadComponent, forceCheckOrVisible } from '../../../common-components';
 
 import { EmployeeManagerActions } from '../../human-resource/profile/employee-management/redux/actions';
 import { TimesheetsActions } from '../../human-resource/timesheets/redux/actions';
@@ -99,7 +99,7 @@ class MainDashboardUnit extends Component {
 
     /** Bắt sự kiện phân tích dữ liệu */
     handleUpdateData = () => {
-        const { department } = this.props;
+        const { department, childOrganizationalUnit } = this.props;
         let { month, arrayUnitShow } = this.state;
         let partMonth = month.split('-');
         let newMonth = [partMonth[1], partMonth[0]].join('-');
@@ -112,6 +112,10 @@ class MainDashboardUnit extends Component {
         if (arrayUnitShow.length === department.list.length) {
             arrayUnitShow = undefined;
         };
+
+        if (arrayUnitShow.length == 0) {
+            arrayUnitShow = childOrganizationalUnit.map(x => x.id)
+        }
 
         /* Lấy danh sách nhân viên  */
         this.props.getAllEmployee({ organizationalUnits: arrayUnitShow, status: 'active' });
@@ -149,8 +153,6 @@ class MainDashboardUnit extends Component {
         const { childOrganizationalUnit } = this.props;
 
         const { monthShow, month, organizationalUnits, arrayUnitShow } = this.state;
-
-        let allOrganizationalUnits = department.list.map(x => x._id);
 
         let listAllEmployees = (!organizationalUnits || organizationalUnits.length === 0 || organizationalUnits.length === department.list.length) ?
             employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
@@ -274,23 +276,23 @@ class MainDashboardUnit extends Component {
                             {/* Tab năng lực nhân viên*/}
                             <div className="tab-pane active" id="employee-capacity">
                                 <LazyLoadComponent>
-                                    <TabEmployeeCapacity organizationalUnits={organizationalUnits} month={monthShow} allOrganizationalUnits={allOrganizationalUnits} />
+                                    <TabEmployeeCapacity organizationalUnits={organizationalUnits} month={monthShow} allOrganizationalUnits={childOrganizationalUnit.map(x => x.id)} />
                                 </LazyLoadComponent>
                             </div>
 
                             {/* Tab tổng quan nhân sự*/}
                             <div className="tab-pane" id="human-resourse">
-                                <TabHumanResource childOrganizationalUnit={childOrganizationalUnit} organizationalUnits={organizationalUnits} monthShow={monthShow} />
+                                <TabHumanResource childOrganizationalUnit={childOrganizationalUnit} defaultUnit={true} organizationalUnits={organizationalUnits} monthShow={monthShow} />
                             </div>
 
                             {/* Tab nghỉ phép tăng ca*/}
                             <div className="tab-pane" id="annualLeave">
-                                <TabAnualLeave />
+                                <TabAnualLeave childOrganizationalUnit={childOrganizationalUnit} defaultUnit={true} />
                             </div>
 
                             {/* Tab lương thưởng*/}
                             <div className="tab-pane" id="salary">
-                                <TabSalary organizationalUnits={organizationalUnits} monthShow={monthShow} />
+                                <TabSalary childOrganizationalUnit={childOrganizationalUnit} organizationalUnits={organizationalUnits} monthShow={monthShow} />
                             </div>
 
                             {/* Tab thống kê tổng hợp*/}
