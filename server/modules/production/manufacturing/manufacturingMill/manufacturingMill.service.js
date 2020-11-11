@@ -39,7 +39,7 @@ exports.createManufacturingMill = async (data, portal) => {
 
 exports.getAllManufacturingMills = async (query, portal) => {
     let option = {};
-    let { name, code, page, limit } = query;
+    let { name, code, page, limit, status } = query;
     if (name) {
         option.name = new RegExp(name, "i");
     }
@@ -47,9 +47,14 @@ exports.getAllManufacturingMills = async (query, portal) => {
         option.code = new RegExp(code, "i");
     }
 
+    if (status) {
+        option.status = status;
+    }
+
+
     if (!page || !limit) {
         let docs = await ManufacturingMill(connect(DB_CONNECTION, portal))
-            .find({})
+            .find(option)
             .populate([{
                 path: "manufacturingWorks",
                 select: "name"

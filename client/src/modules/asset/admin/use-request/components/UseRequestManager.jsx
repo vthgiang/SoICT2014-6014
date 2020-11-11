@@ -333,8 +333,8 @@ class UseRequestManager extends Component {
                                 onChange={this.handleStatusChange}
                                 items={[
                                     { value: "approved", text: translate('asset.usage.approved') },
-                                    { value: "waiting_approval", text: translate('asset.usage.waiting_approval') },
-                                    { value: "not_approved", text: translate('asset.usage.not_approved') }
+                                    { value: "waiting_for_approval", text: translate('asset.usage.waiting_approval') },
+                                    { value: "disapproved", text: translate('asset.usage.not_approved') }
                                 ]}
                             >
                             </SelectMulti>
@@ -462,6 +462,7 @@ class UseRequestManager extends Component {
                         description={currentRowEditAsset.description}
                         status={currentRowEditAsset.status}
                         canRegisterForUse={currentRowEditAsset.canRegisterForUse}
+                        typeRegisterForUse={currentRowEditAsset.typeRegisterForUse}
                         detailInfo={currentRowEditAsset.detailInfo}
                         readByRoles={currentRowEditAsset.readByRoles}
                         cost={currentRowEditAsset.cost}

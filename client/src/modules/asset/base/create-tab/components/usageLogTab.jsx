@@ -248,7 +248,7 @@ class UsageLogTab extends Component {
 
                     {/* Bảng thông tin sử dụng */}
                     {
-                        (typeRegisterForUse !== 2) &&
+                        (typeRegisterForUse == 1 || typeRegisterForUse == 3) &&
                         <table className="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>

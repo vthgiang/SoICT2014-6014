@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DatePicker, SelectMulti } from '../../../../../../../common-components';
-import ManufacturingSchedule from '../../../../manufacturing-schedule/components';
+import ManufacturingSchedule from '../../../../work-schedule/components';
 
 class ManufacturingMillSchedule extends Component {
     constructor(props) {

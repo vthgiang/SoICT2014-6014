@@ -92,42 +92,22 @@ class InventoryDetailForm extends Component {
     }
 
     render() {
-        const { translate, goods, lots, id, bills } = this.props;
+        const { translate, goods, lots, id, bills, quantity, stock } = this.props;
         const { endDate, startDate } = this.state;
         const { goodDetail } = goods;
         const { listLots } = lots;
         const { listBillByGood, totalPages, page } = bills;
-        let lotOfGood = listLots ? listLots.filter(x => x.good ? x.good._id === id : x ) : [];
-        let quantityTotal = lotOfGood ? lotOfGood.reduce(function (accumulator, currentValue){
-            return accumulator + currentValue.quantity;
-        }, 0) : 0;
 
-        let quantityReceiptArr = [];
-        let quantityIssueArr = [];
+        let goodQuantity = [];
         if(listBillByGood.length > 0) {
             for (let i = 0; i <listBillByGood.length; i++){
-                if(listBillByGood[i].goodReceipts && listBillByGood[i].goodReceipts.length > 0){
-                    for(let j = 0; j < listBillByGood[i].goodReceipts.length; j++){
-                        if(listBillByGood[i].goodReceipts[j].good === id){
-                            quantityReceiptArr.push(listBillByGood[i].goodReceipts[j].quantity)
+                if(listBillByGood[i].goods && listBillByGood[i].goods.length > 0){
+                    for(let j = 0; j < listBillByGood[i].goods.length; j++){
+                        if(listBillByGood[i].goods[j].good === id){
+                            goodQuantity.push(listBillByGood[i].goods[j].quantity)
                         }
                     }
                 }
-                else quantityReceiptArr.push(0);
-            }
-        }
-
-        if(listBillByGood.length > 0) {
-            for (let i = 0; i <listBillByGood.length; i++){
-                if(listBillByGood[i].goodIssues && listBillByGood[i].goodIssues.length > 0){
-                    for(let j = 0; j < listBillByGood[i].goodIssues.length; j++){
-                        if(listBillByGood[i].goodIssues[j].good === id){
-                            quantityIssueArr.push(listBillByGood[i].goodIssues[j].quantity)
-                        }
-                    }
-                }
-                else quantityIssueArr.push(0);
-                
             }
         }
 
@@ -163,7 +143,7 @@ class InventoryDetailForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.inventory_management.quantity')}:&emsp;</strong>
-                                    {quantityTotal} {goodDetail.baseUnit}
+                                    {quantity} {goodDetail.baseUnit}
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -221,8 +201,8 @@ class InventoryDetailForm extends Component {
                                                     <tr key={index}>
                                                         <td>{index + 1}</td>
                                                         <td>{this.formatDate(x.timestamp)}</td>
-                                                        <td>{quantityReceiptArr[index]}</td>
-                                                        <td>{quantityIssueArr[index]}</td>
+                                                        <td>{ x.group === '1' ? goodQuantity[index] : 0 }</td>
+                                                        <td>{ x.group === '2' ? goodQuantity[index] : 0 }</td>
                                                         <td>{x.fromStock.name}</td>
                                                     </tr>
                                                 ))

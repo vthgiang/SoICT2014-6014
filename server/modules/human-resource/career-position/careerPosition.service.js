@@ -1,5 +1,7 @@
 const {
+    CareerField,
     CareerPosition,
+    CareerAction,
     AnnualLeave
 } = require(`${SERVER_MODELS_DIR}`);
 
@@ -20,7 +22,7 @@ exports.searchCareerPosition = async (portal, params) => {
     if (params.name) {
         keySearch = {
             ...keySearch,
-            "position.description.name": {
+            "name": {
                 $regex: params.name,
                 $options: "i",
             }
@@ -37,6 +39,70 @@ exports.searchCareerPosition = async (portal, params) => {
     return {
         totalList,
         listPosition
+    }
+}
+
+
+/**
+ * Lấy danh sách thông tin nghỉ phép
+ * @params : Dữ liệu key tìm kiếm
+ * @company : Id công ty người dùng
+ */
+exports.searchCareerField = async (portal, params) => {
+    let keySearch = {};
+
+    if (params.name) {
+        keySearch = {
+            ...keySearch,
+            "name": {
+                $regex: params.name,
+                $options: "i",
+            }
+        };
+    }
+    console.log('key', params, keySearch, portal);
+
+    let listField = await CareerField(connect(DB_CONNECTION, portal)).find(keySearch)
+        .sort({
+            'createdAt': 'desc'
+        }).skip(params.limit * (params.page - 1)).limit(params.limit);
+    let totalList = await CareerField(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+
+    return {
+        totalList,
+        listField
+    }
+}
+
+
+/**
+ * Lấy danh sách thông tin nghỉ phép
+ * @params : Dữ liệu key tìm kiếm
+ * @company : Id công ty người dùng
+ */
+exports.searchCareerAction = async (portal, params) => {
+    let keySearch = {};
+
+    if (params.name) {
+        keySearch = {
+            ...keySearch,
+            "name": {
+                $regex: params.name,
+                $options: "i",
+            }
+        };
+    }
+    console.log('key', params, keySearch, portal);
+
+    let listAction = await CareerAction(connect(DB_CONNECTION, portal)).find(keySearch)
+        .sort({
+            'createdAt': 'desc'
+        }).skip(params.limit * (params.page - 1)).limit(params.limit);
+    let totalList = await CareerAction(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+
+    return {
+        totalList,
+        listAction
     }
 }
 

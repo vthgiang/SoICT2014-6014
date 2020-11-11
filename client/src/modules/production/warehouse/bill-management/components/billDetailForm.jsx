@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { DialogModal, SelectBox, Errorstrong, ButtonModal } from '../../../../../common-components';
 import { translate } from 'react-redux-multilingual/lib/utils';
 
+import QuantityLotDetailForm from './quantityLotDetail';
+
 class BillDetailForm extends Component {
     constructor(props) {
         super(props);
@@ -32,9 +34,21 @@ class BillDetailForm extends Component {
         }
     }
 
+    handleShowDetailQuantity = async (lot) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                quantityDetail: lot
+            }
+        })
+
+        window.$('#modal-detail-lot-quantity').modal('show');
+    }
+
     render() {
         const { translate, bills } = this.props;
         const { billDetail } = bills;
+        const { quantityDetail } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
@@ -43,12 +57,19 @@ class BillDetailForm extends Component {
                     title={translate('manage_warehouse.bill_management.bill_detail')}
                     msg_success={translate('manage_warehouse.bin_location_management.add_success')}
                     msg_faile={translate('manage_warehouse.bin_location_management.add_faile')}
-                    size={75}
+                    size={100}
                     hasSaveButton={false}
                     hasNote={false}
                 >
                     <form id={`form-detail-bill`} >
+                    {
+                        quantityDetail &&
+                        <QuantityLotDetailForm quantityDetail={quantityDetail} />
+                    }
                         <div className="row">
+                        <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">{translate('manage_warehouse.bill_management.infor')}</legend>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.bill_management.code')}:&emsp;</strong>
@@ -59,8 +80,8 @@ class BillDetailForm extends Component {
                                     {translate(`manage_warehouse.bill_management.billType.${billDetail.type}`)}
                                 </div>
                                 <div className="form-group">
-                                    <strong>{translate('manage_warehouse.bill_management.proposal')}:&emsp;</strong>
-                                    <a href="#">BP023</a>
+                                    <strong>{translate(`manage_warehouse.bill_management.status`)}:&emsp;</strong>
+                                    {billDetail ? <a style={{color: translate(`manage_warehouse.bill_management.bill_color.${billDetail.status}`)}}>{translate(`manage_warehouse.bill_management.bill_status.${billDetail.status}`)}</a> : []}
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.bill_management.stock')}:&emsp;</strong>
@@ -74,7 +95,7 @@ class BillDetailForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.bill_management.approved')}:&emsp;</strong>
-                                    Vũ Thị Hương Giang
+                                    {billDetail.approver ? billDetail.approver.name : "Approver is deleted"}
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.bill_management.date')}:&emsp;</strong>
@@ -82,7 +103,7 @@ class BillDetailForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.bill_management.partner')}:&emsp;</strong>
-                                    {billDetail.partner ? billDetail.partner : "Partner is deleted"}
+                                    {billDetail.customer ? billDetail.customer.name : "Partner is deleted"}
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -90,6 +111,31 @@ class BillDetailForm extends Component {
                                     <strong>{translate('manage_warehouse.bill_management.description')}:&emsp;</strong>
                                     {billDetail.description}
                                 </div>
+                            </div>
+                            </fieldset>
+                        </div>
+                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">{translate('manage_warehouse.bill_management.receiver')}</legend>
+                            <div className={`form-group`}>
+                                <strong>{translate('manage_warehouse.bill_management.name')}:&emsp;</strong>
+                                {billDetail.receiver ? billDetail.receiver.name : ''}
+                            </div>
+                            <div className={`form-group`}>
+                                <strong>{translate('manage_warehouse.bill_management.phone')}:&emsp;</strong>
+                                {billDetail.receiver ? billDetail.receiver.phone : ''}
+                            </div>
+                            <div className={`form-group`}>
+                                <strong>{translate('manage_warehouse.bill_management.email')}:&emsp;</strong>
+                                {billDetail.receiver ? billDetail.receiver.email : ''}
+                            </div>
+                            <div className={`form-group`}>
+                                <strong>{translate('manage_warehouse.bill_management.address')}:&emsp;</strong>
+                                {billDetail.receiver ? billDetail.receiver.address : ''}
+                            </div>
+                        </fieldset>
+                        </div>
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manage_warehouse.bill_management.goods')}</legend>
 
@@ -105,50 +151,14 @@ class BillDetailForm extends Component {
                                             </tr>
                                         </thead>
                                         <tbody id={`good-edit-manage-by-archive`}>
-                                            {(typeof billDetail.goodReceipts === 'undefined' || billDetail.goodReceipts.length === 0) ? '' :
-                                                billDetail.goodReceipts.map((x, index) =>
+                                            {(typeof billDetail.goods !== 'undefined' && billDetail.goods.length > 0) &&
+                                                billDetail.goods.map((x, index) =>
                                                     <tr key={index}>
                                                         <td>{index + 1}</td>
                                                         <td>{x.good.code}</td>
                                                         <td>{x.good.name}</td>
                                                         <td>{x.good.baseUnit}</td>
-                                                        <td>{x.quantity}</td>
-                                                        <td>{x.description}</td>
-                                                    </tr>
-                                                )
-                                            }
-                                            {(typeof billDetail.goodIssues === 'undefined' || billDetail.goodIssues.length === 0) ? '' :
-                                                billDetail.goodIssues.map((x, index) =>
-                                                    <tr key={index}>
-                                                        <td>{index + 1}</td>
-                                                        <td>{x.good.code}</td>
-                                                        <td>{x.good.name}</td>
-                                                        <td>{x.good.baseUnit}</td>
-                                                        <td>{x.quantity}</td>
-                                                        <td>{x.description}</td>
-                                                    </tr>
-                                                )
-                                            }
-                                            {(typeof billDetail.goodReturns === 'undefined' || billDetail.goodReturns.length === 0) ? '' :
-                                                billDetail.goodReturns.map((x, index) =>
-                                                    <tr key={index}>
-                                                        <td>{index + 1}</td>
-                                                        <td>{x.good.code}</td>
-                                                        <td>{x.good.name}</td>
-                                                        <td>{x.good.baseUnit}</td>
-                                                        <td>{x.quantity}</td>
-                                                        <td>{x.description}</td>
-                                                    </tr>
-                                                )
-                                            }
-                                            {(typeof billDetail.stockTakes === 'undefined' || billDetail.stockTakes.length === 0) ? '' :
-                                                billDetail.stockTakes.map((x, index) =>
-                                                    <tr key={index}>
-                                                        <td>{index + 1}</td>
-                                                        <td>{x.good.code}</td>
-                                                        <td>{x.good.name}</td>
-                                                        <td>{x.good.baseUnit}</td>
-                                                        <td>{x.realQuantity}</td>
+                                                        <td>{x.quantity} <a href="#" onClick={() => this.handleShowDetailQuantity(x)}> (Chi tiết)</a></td>
                                                         <td>{x.description}</td>
                                                     </tr>
                                                 )

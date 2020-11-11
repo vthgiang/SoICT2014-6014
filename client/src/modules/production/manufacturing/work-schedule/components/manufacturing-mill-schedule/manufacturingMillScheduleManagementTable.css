@@ -1,0 +1,11 @@
+.checkbox-custom {
+    width: 10px;
+    height: 10px;
+}
+
+.checkbox-custom > input[type="checkbox"] {
+    margin: auto;
+    width: 17px;
+    height: 17px;
+    position: inherit;
+}
