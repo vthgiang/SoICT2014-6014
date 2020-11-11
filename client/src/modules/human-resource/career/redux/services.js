@@ -2,7 +2,7 @@ import {
     sendRequest
 } from '../../../../helpers/requestHelper';
 
-export const CareerPositionService = {
+export const CareerService = {
     getListCareerPosition,
     getListCareerField,
     getListCareerAction,

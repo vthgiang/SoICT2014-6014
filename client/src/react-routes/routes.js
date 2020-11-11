@@ -54,7 +54,7 @@ import { ListEducation } from '../modules/training/education-program/components/
 import { TrainingPlan } from '../modules/training/course/components/course';
 
 import { SearchEmployeeForPackage } from '../modules/human-resource/profile/employee-management/components/searchEmployeeForPackage';
-import CareerPosition from '../modules/human-resource/career-position/component';
+import CareerManagement from '../modules/human-resource/career/component';
 import Major from '../modules/human-resource/major/component';
 
 import { OrganizationalUnitKpiCreate } from "../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreate";
@@ -708,7 +708,7 @@ class Routes extends Component {
                         path={'/hr-list-career-position'}
                         pageName={'list_career_position'}
                         layout={Layout}
-                        component={CareerPosition}
+                        component={CareerManagement}
                     />
 
                     {/* kpi - routes */}

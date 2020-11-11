@@ -2,18 +2,10 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 // Tạo bảng vị trí công việc
-const CareerPositionSchema = new Schema({
-    // name: { // tên lĩnh vực
-    //     type: String,
-    // },
-    // code: {
-    //     type: String,
-    // },
-    // position:
-    //     [{
+const CareerFieldSchema = new Schema({
     name: String,
     code: String, // lưu lại trong db của employees
-    description: [{
+    position: [{
         name: {
             type: String,
         },
@@ -26,13 +18,12 @@ const CareerPositionSchema = new Schema({
             default: 0, // 1 - default, 0 - additional
         },
     }]
-    // }]
 }, {
     timestamps: true,
 });
 
 module.exports = (db) => {
-    if (!db.models.CareerPosition)
-        return db.model('CareerPosition', CareerPositionSchema);
-    return db.models.CareerPosition;
+    if (!db.models.CareerField)
+        return db.model('CareerField', CareerFieldSchema);
+    return db.models.CareerField;
 }
