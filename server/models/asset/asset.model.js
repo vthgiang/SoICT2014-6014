@@ -103,9 +103,9 @@ const AssetSchema = new Schema({
      */
     depreciationType: { // Cách tính khấu hao
         type: String,
-        // enum: ["Đường thẳng", "Số dư giảm dần", "Sản lượng"],
         enum: ["none", "straight_line", "declining_balance", "units_of_production"],
         // Reducing balance chính là Declining Balance Method
+        // Không chọn gì sẽ lưu là none
     },
 
     cost: { //8. Nguyên giá

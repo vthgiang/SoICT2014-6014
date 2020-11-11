@@ -1057,6 +1057,7 @@ export default {
             manage_examples_1: "CRUD theo mô hình số 1",
             manage_examples_2: "CRUD theo mô hình số 2",
             manage_examples_hooks_1: "CRUD Hooks theo mô hình 1",
+            manage_examples_hooks_2: "CRUD Hooks theo mô hình 2",
 
             // Quản lý sản xuất
             manage_manufacturing: "Quản lý sản xuất",
@@ -2512,7 +2513,7 @@ export default {
                 confirm_assigned: 'Xác nhận phân công công việc',
                 confirm_assigned_success: 'Bạn đã xác nhận phân công công việc',
                 confirm_assigned_failure: 'Bạn chưa xác nhận phân công công việc',
-                
+
                 name: 'Tên công việc',
                 search_by_name: 'Tìm kiếm theo tên',
 
