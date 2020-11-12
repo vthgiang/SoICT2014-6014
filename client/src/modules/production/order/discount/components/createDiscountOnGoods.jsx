@@ -20,6 +20,23 @@ class CreateDiscountOnGoods extends Component {
         };
     }
 
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.discountType !== prevState.discountType || nextProps.formality !== prevState.formality) {
+            return {
+                goodOptions: [],
+                listGoods: [],
+                good: {
+                    goodId: "1",
+                    goodObject: "",
+                    expirationDateOfDiscountOnGood: "",
+                    discountedPrice: "",
+                },
+                discountType: nextProps.discountType,
+                formality: nextProps.formality,
+            };
+        }
+    }
+
     getAllGoods = () => {
         const { translate, goods } = this.props;
         let listGoods = [
@@ -225,6 +242,8 @@ class CreateDiscountOnGoods extends Component {
                 good: good.goodId,
                 expirationDate: good.expirationDateOfDiscountOnGood,
                 discountedPrice: good.discountedPrice,
+                name: good.goodObject.name,
+                code: good.goodObject.code,
             };
         });
 
@@ -248,20 +267,21 @@ class CreateDiscountOnGoods extends Component {
 
     render() {
         const { translate } = this.props;
+        const { actionType } = this.props;
         const { goodOptions, good, listGoods, discountedPriceError } = this.state;
         const { goodId, discountedPrice, expirationDateOfDiscountOnGood } = good;
         return (
             <DialogModal
-                modalID={`modal-create-discount-on-goods`}
+                modalID={`modal-${actionType}-discount-on-goods`}
                 isLoading={false}
-                formID={`form-create-discount-on-goods`}
+                formID={`form-${actionType}-discount-on-goods`}
                 title={"Các mặt hàng áp dụng"}
                 size="75"
                 style={{ backgroundColor: "green" }}
                 func={this.submitChange}
                 disableSubmit={!this.isFormValidated()}
             >
-                <form id={`form-create-discount-bonus-goods`}>
+                <form id={`form-${actionType}-discount-bonus-goods`}>
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border">Thêm hàng tặng kèm</legend>
                         <div className={`form-group`}>
@@ -269,7 +289,7 @@ class CreateDiscountOnGoods extends Component {
                                 Mặt hàng áp dụng <span className="attention"> * </span>
                             </label>
                             <SelectBox
-                                id={`select-discount-on-goods`}
+                                id={`select-${actionType}-discount-on-goods`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 value={goodId}
@@ -281,7 +301,7 @@ class CreateDiscountOnGoods extends Component {
                         <div className="form-group">
                             <label>Hạn sử dụng</label>
                             <DatePicker
-                                id="date_picker_discount_expiration_date_of_discount_on_good"
+                                id={`date_picker_${actionType}_discount_expiration_date_of_discount_on_good`}
                                 value={expirationDateOfDiscountOnGood}
                                 onChange={this.handleChangeExpirationDate}
                                 disabled={false}

@@ -146,7 +146,7 @@ class PurchaseRequest extends Component {
 
         switch (status) {
             case 'approved': return translate('asset.usage.approved');
-            case 'waiting_for_approval': return translate('asset.usage.waiting_approval');
+            case 'waiting_approval': return translate('asset.usage.waiting_approval');
             case 'disapproved': return translate('asset.usage.not_approved');
             default: return 'Deleted';
         }
@@ -172,6 +172,7 @@ class PurchaseRequest extends Component {
                 <div className="box-body qlcv">
 
                     {/* Form thêm mới phiếu đề nghị mua sắm thiết bị */}
+                    {/* Cần component đăng ký mua sắm thiết bị không ? - nếu có mã của component là ? */}
                     <PurchaseRequestCreateForm />
 
                     {/* Thanh tìm kiếm */}

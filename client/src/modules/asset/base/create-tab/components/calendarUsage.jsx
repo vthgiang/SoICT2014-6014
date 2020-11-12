@@ -77,6 +77,7 @@ class CalendarUsage extends Component {
       let title;
       await this.setState({
         ...this.state,
+        usageLogs: nextProps.assetsManager.currentAsset.usageLogs,
         createUsage: false
       })
       let calendarApi = this.state.currentRow.view.calendar;
@@ -215,9 +216,7 @@ class CalendarUsage extends Component {
       if (usageLog.length !== 0) {
         await this.setState(state => {
           return {
-            ...state,
             usageLogDetailInfor: {
-              ...clickInfo,
               displayId: id,
               usedByUser: usageLog[0].usedByUser,
               usedByOrganizationalUnit: usageLog[0].usedByOrganizationalUnit,
@@ -230,7 +229,6 @@ class CalendarUsage extends Component {
           }
         });
       }
-
 
       window.$(`#modal-display-usage-detail-infor-${id}`).modal('show');
     } else {
@@ -558,11 +556,10 @@ class CalendarUsage extends Component {
   render() {
     const { assetId } = this.props;
     var { currentRow, typeRegisterForUse, usageLogs, currentRowAdd, usageLogDetailInfor, recommendDistributeDetail } = this.state;
-
     return (
       <div className='demo-app'>
         <div className='demo-app-main'>
-          {((this.state.dataStatus == 2))
+          {((this.state.dataStatus == 2) || !this.props.assetId)
             &&
             <Scheduler
               className="asset-usage-scheduler"

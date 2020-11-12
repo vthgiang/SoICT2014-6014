@@ -11,7 +11,6 @@ const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 exports.getDocuments = async (portal, query, company) => {
     let page = query.page;
     let limit = query.limit;
-    console.log('dddddđ', query);
     if (!(page || limit)) {
         return await Document(connect(DB_CONNECTION, portal))
             .find({ company })
@@ -125,6 +124,7 @@ exports.increaseNumberView = async (id, viewer, portal) => {
  * Tạo một tài liệu văn bản mới
  */
 exports.createDocument = async (portal, data, company) => {
+    let numberFile = 0, numberFileScan = 0;
     const existed = await Document(connect(DB_CONNECTION, portal)).findOne({ officialNumber: data.officialNumber });
     if (existed) throw ['document_exist'];
     let newDoc = {
@@ -162,8 +162,8 @@ exports.createDocument = async (portal, data, company) => {
                 issuingDate: data.issuingDate[i] !== 'Invalid date' ? data.issuingDate[i] : "",
                 effectiveDate: data.effectiveDate[i] !== 'Invalid date' ? data.effectiveDate[i] : "",
                 expiredDate: data.expiredDate[i] !== 'Invalid date' ? data.expiredDate[i] : "",
-                file: data.files ? data.files[i] : "",
-                scannedFileOfSignedDocument: data.scannedFileOfSignedDocument ? data.scannedFileOfSignedDocument[i] : "",
+                file: data.numberFile[i] == 1 && data.files ? data.files[numberFile++] : "",
+                scannedFileOfSignedDocument: data.numberFileScan[i] == 1 && data.scannedFileOfSignedDocument ? data.scannedFileOfSignedDocument[numberFileScan++] : "",
             };
             versions.push(version);
         }
@@ -437,7 +437,6 @@ exports.importDocument = async (portal, data, company) => {
                 const role = await Role(connect(DB_CONNECTION, portal)).findOne({
                     name: data[i].roles[j]
                 });
-                console.log('rrrrrrrr', role, data[i].roles)
                 roles.push(role._id);
             }
             document.roles = roles;
@@ -864,7 +863,6 @@ findPath = async (data, portal) => {
         let parent = data.parent;
         while (parent) {
             let tmp = await DocumentArchive(connect(DB_CONNECTION, portal)).findById(parent);
-            console.log(tmp);
             arrayParent.push(tmp.name);
             parent = tmp.parent;
         }

@@ -3,7 +3,10 @@ import { DiscountServices } from './services';
 
 export const DiscountActions = {
     createNewDiscount,
-    getAllDiscounts
+    getAllDiscounts,
+    editDiscount,
+    changeDiscountStatus,
+    deleteDiscountByCode
 }
 
 function createNewDiscount (data) {
@@ -44,6 +47,72 @@ function getAllDiscounts (queryData) {
         .catch((error) => {
             dispatch({
                 type: DiscountConstants.GET_DETAIL_DISCOUNT_FAILURE,
+                error
+            })
+        })
+    }
+}
+
+function editDiscount(id, data) {
+    return (dispatch) => {
+        dispatch({
+            type: DiscountConstants.EDIT_DISCOUNT_REQUEST
+        })
+
+        DiscountServices.editDiscount(id, data)
+        .then((res) => {
+            dispatch({
+                type: DiscountConstants.EDIT_DISCOUNT_SUCCESS,
+                payload: res.data.content
+            })
+        })
+        .catch((error) => {
+            dispatch({
+                type: DiscountConstants.EDIT_DISCOUNT_FAILURE,
+                error
+            })
+        })
+    }
+}
+
+function changeDiscountStatus(id) {
+    return (dispatch) => {
+        dispatch({
+            type: DiscountConstants.CHANGE_DISCOUNT_STATUS_REQUEST
+        })
+
+        DiscountServices.changeDiscountStatus(id)
+        .then((res) => {
+            dispatch({
+                type: DiscountConstants.CHANGE_DISCOUNT_STATUS_SUCCESS,
+                payload: res.data.content
+            })
+        })
+        .catch((error) => {
+            dispatch({
+                type: DiscountConstants.CHANGE_DISCOUNT_STATUS_FAILURE,
+                error
+            })
+        })
+    }
+}
+
+function deleteDiscountByCode(code) {
+    return (dispatch) => {
+        dispatch({
+            type: DiscountConstants.DELETE_DISCOUNT_REQUEST
+        })
+
+        DiscountServices.deleteDiscountByCode(code)
+        .then((res) => {
+            dispatch({
+                type: DiscountConstants.DELETE_DISCOUNT_SUCCESS,
+                payload: res.data.content
+            })
+        })
+        .catch((error) => {
+            dispatch({
+                type: DiscountConstants.DELETE_DISCOUNT_FAILURE,
                 error
             })
         })

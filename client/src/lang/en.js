@@ -959,6 +959,7 @@ export default {
             manage_examples_1: "CRUD by model 1",
             manage_examples_2: "CRUD by model 2",
             manage_examples_hooks_1: "CRUD Hooks by model 1",
+            manage_examples_hooks_2: "CRUD Hooks by model 2",
 
             // Quản lý sản xuất
             manage_manufacturing: "Quản lý sản xuất",
@@ -2398,6 +2399,15 @@ export default {
                 select_role: 'Select role',
                 stored: 'Stored',
                 current_month: 'Current month',
+
+                assigned_collaborate: 'Task assignment status',
+                not_assigned: 'Unassigned task',
+                assigned: 'Assigned task',
+                none_select_assigned: 'None select',
+                role_in_collaborated_unit: 'The role of the employee in',
+                confirm_assigned: 'Confirm the assignment',
+                confirm_assigned_success: 'You have confirmed the assignment',
+                confirm_assigned_failure: 'You have not confirmed the assignment',
 
                 name: "Name of task",
                 search_by_name: 'Search by name',

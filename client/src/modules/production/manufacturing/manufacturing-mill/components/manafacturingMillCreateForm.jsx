@@ -21,7 +21,7 @@ class ManufacturingMillCreateForm extends Component {
     }
 
     handleClickCreate = () => {
-        const code = generateCode("NMSX");
+        const code = generateCode("XSX");
         this.setState((state) => ({
             ...state,
             code: code

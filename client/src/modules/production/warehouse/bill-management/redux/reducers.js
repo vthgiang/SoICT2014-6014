@@ -39,6 +39,8 @@ export function bills(state = initState, action) {
         case BillConstants.GET_PAGINATE_REQUEST:
         case BillConstants.GET_BILL_BY_GOOD_REQUEST:
         case BillConstants.GET_BILL_DETAIL_REQUEST:
+        case BillConstants.CREATE_BILL_REQUEST:
+        case BillConstants.UPDATE_BILL_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -90,10 +92,37 @@ export function bills(state = initState, action) {
                 isLoading: false
             }
 
+        case BillConstants.CREATE_BILL_SUCCESS:
+            return {
+                ...state,
+                listBills: [...state.listBills, action.payload],
+                listPaginate: [ ...state.listPaginate, action.payload],
+                isLoading: false
+            }
+
+        case BillConstants.UPDATE_BILL_SUCCESS:
+            index = findIndex(state.listBills, action.payload._id);
+            indexPaginate = findIndex(state.listPaginate, action.payload._id);
+
+            if(index !== -1) {
+                state.listBills[index] = action.payload;
+            }
+
+            if(indexPaginate !== -1) {
+                state.listPaginate[indexPaginate] = action.payload;
+            }
+
+            return {
+                ...state,
+                isLoading: false
+            }
+
         case BillConstants.GET_BILL_BY_TYPE_FAILURE:
         case BillConstants.GET_PAGINATE_FAILURE:
         case BillConstants.GET_BILL_BY_GOOD_FAILURE:
         case BillConstants.GET_BILL_DETAIL_FAILURE:
+        case BillConstants.CREATE_BILL_FAILURE:
+        case BillConstants.UPDATE_BILL_FAILURE:
             return {
                 ...state,
                 isLoading: false

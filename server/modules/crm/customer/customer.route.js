@@ -11,7 +11,8 @@ const data = [
 router.get('/', auth, CustomerController.getCustomers);
 
 router.get('/:id', auth, CustomerController.getCustomerById);
-router.post('/', auth, uploadFile([{name: 'file', path: '/crm/customer-files'}], 'array'), CustomerController.createCustomer);
+router.post('/', auth, uploadFile([{ name: 'file', path: '/crm/customer-files' }], 'array'), CustomerController.createCustomer);
+router.post('/imports', auth, CustomerController.importCustomers);
 router.patch('/:id', auth, uploadFile(data,'fields'), CustomerController.editCustomer);
 router.delete('/:id', auth, CustomerController.deleteCustomer);
 

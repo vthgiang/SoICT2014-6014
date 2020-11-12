@@ -31,7 +31,14 @@ class AssetImportForm extends Component {
             importDisposalInformationData: [],
             importIncidentInformationData: [],
             importMaintainanceInformationData: [],
-            importUsageInformationData: []
+            importUsageInformationData: [],
+
+            errorGeneralInformationData: false,
+            errorDepreciationInformationData: true,
+            errorDisposalInformationData: true,
+            errorIncidentInformationData: true,
+            errorMaintainanceInformationData: true,
+            errorUsageInformationData: true
         }
     }
 
@@ -49,16 +56,27 @@ class AssetImportForm extends Component {
             importUsageInformationData
         } = this.state;
 
-        let asset = {
-            ...importGeneralInformationData[0],
-            ...importDepreciationInformationData[0],
-            ...importDisposalInformationData[0],
-            maintainanceLogs: importMaintainanceInformationData,
-            usageLogs: importUsageInformationData,
-            incidentLogs: importIncidentInformationData,
+        let assets = [];
+        if (importGeneralInformationData && importGeneralInformationData.length !== 0) {
+            importGeneralInformationData.map((asset) => {
+                let importDisposalTemporary = importDisposalInformationData.filter(item => item.code === asset.code);
+                let importDepreciationTemporary = importDepreciationInformationData.filter(item => item.code === asset.code);
+                assets.push({
+                    ...asset,
+                    ...importDepreciationTemporary[0],
+                    ...importDisposalTemporary[0],
+                    maintainanceLogs: importMaintainanceInformationData.filter(item => item.code === asset.code),
+                    usageLogs: importUsageInformationData.filter(item => item.code === asset.code),
+                    incidentLogs: importIncidentInformationData.filter(item => item.code === asset.code),
+                })
+            })
         }
-
-        this.props.addNewAsset(asset)
+        
+        if (assets && assets.length !== 0) {
+            assets.map(item => {
+                this.props.addNewAsset(item)
+            })
+        }
     }
 
     isFormValidated = () => {
@@ -72,6 +90,23 @@ class AssetImportForm extends Component {
         } = this.state;
 
         return errorGeneralInformationData && errorDepreciationInformationData && errorDisposalInformationData && errorIncidentInformationData && errorMaintainanceInformationData && errorUsageInformationData;
+    }
+
+    /**
+     * Function chuyển dữ liệu date trong excel thành dạng dd-mm-yyyy
+     * @param {*} serial :số serial của ngày
+     */
+    convertExcelDateToJSDate = (serial) => {
+        let utc_days = Math.floor(serial - 25569);
+        let utc_value = utc_days * 86400;
+        let date_info = new Date(utc_value * 1000);
+        let month = date_info.getMonth() + 1;
+        let day = date_info.getDate();
+        if (month.toString().length < 2)
+            month = '0' + month;
+        if (day.toString().length < 2)
+            day = '0' + day;
+        return [day, month, date_info.getFullYear()].join('-');
     }
 
     // Xử lý dữ liệu export file mẫu import tài sản
@@ -88,7 +123,7 @@ class AssetImportForm extends Component {
             if (!userList) userList = [];
         }
         if (assetType) {
-            assetTypes = assetType.listAssetTypes.map(item => item.typeName);
+            assetTypes = assetType.listAssetTypes.map(item => item.typeNumber);
             if (!assetTypes) assetTypes = [];
         }
         if (role) {
@@ -113,7 +148,7 @@ class AssetImportForm extends Component {
 
         // Sự cố tài sản
         incidentType = ["Hỏng hóc", "Mất"];
-        incidentStatus = ["Chờ xử lý", "Đấ xử lý"];
+        incidentStatus = ["Chờ xử lý", "Đã xử lý"];
 
         // Bảo trì tài sản
         maintainanceType = ["Sửa chữa", "Thay thế", "Nâng cấp"];
@@ -150,7 +185,7 @@ class AssetImportForm extends Component {
             roles.length, assetLocations.length, assetGroups.length, status.length,
             typeRegisterForUse.length, depreciationType.length, incidentType.length,
             incidentStatus.length, maintainanceType.length, maintainanceStatus.length, disposalType.length);
-        
+
         for (let i = 0; i < length; i++) {
             data.push({
                 userList: userList[i] ? userList[i] : "",
@@ -218,7 +253,7 @@ class AssetImportForm extends Component {
                     assetName: dataTemporary.assetName,
                     serial: dataTemporary.serial,
                     group: assetGroups[0],
-                    assetType: assetTypes && assetTypes[0] ? (assetTypes[1] ? assetTypes[0] + ", " + assetTypes[1] : assetTypes[0]) : "",
+                    assetType: assetTypes && assetTypes[0],
                     purchaseDate: dataTemporary.purchaseDate,
                     warrantyExpirationDate: dataTemporary.warrantyExpirationDate,
                     managedBy: userList && userList[0] ? userList[0] : "",
@@ -246,6 +281,7 @@ class AssetImportForm extends Component {
                 let dataTemporary = data[index];
 
                 let out = {
+                    code: dataTemporary.code,
                     cost: Number(dataTemporary.cost),
                     residualValue: Number(dataTemporary.residualValue),
                     usefulLife: Number(dataTemporary.usefulLife),
@@ -270,6 +306,7 @@ class AssetImportForm extends Component {
                 let dataTemporary = data[index];
 
                 let out = {
+                    code: dataTemporary.code,
                     usedByUser: userList && userList[0] ? userList[0] : "",
                     usedByOrganizationalUnit: departmentList && departmentList[0] ? departmentList[0] : "",
                     startDate: dataTemporary.startDate,
@@ -294,6 +331,7 @@ class AssetImportForm extends Component {
                 let dataTemporary = data[index];
 
                 let out = {
+                    code: dataTemporary.code,
                     incidentCode: dataTemporary.incidentCode,
                     type: incidentType[0],
                     reportedBy: userList && userList[0] ? userList[0] : "",
@@ -319,6 +357,7 @@ class AssetImportForm extends Component {
                 let dataTemporary = data[index];
 
                 let out = {
+                    code: dataTemporary.code,
                     maintainanceCode: dataTemporary.maintainanceCode,
                     createDate: dataTemporary.createDate,
                     type: maintainanceType[0],
@@ -346,6 +385,7 @@ class AssetImportForm extends Component {
                 let dataTemporary = data[index];
 
                 let out = {
+                    code: dataTemporary.code,
                     disposalDate: dataTemporary.disposalDate,
                     disposalType: disposalType[0],
                     disposalCost: Number(dataTemporary.disposalCost),
@@ -373,7 +413,7 @@ class AssetImportForm extends Component {
         }
         if (assetType) {
             assetType.listAssetTypes.map(item => {
-                assetTypes[item.typeName] = item._id;
+                assetTypes[item.typeNumber] = item._id;
             })
         }
         if (role) {
@@ -396,15 +436,14 @@ class AssetImportForm extends Component {
 
             value = value.map((item, index) => {
                 let errorAlert = [];
-
-                assetTypeArray = item.assetType && item.assetType.split(", ");
-                roleArray = item.readByRoles && item.readByRoles.split(", ");
-                assetTypeArray.map(item => {
-                    if (!assetTypes[item]) {
-                        checkAssetType = true;
-                    }
-                })
-                roleArray.map(item => {
+                checkAssetType = false;             // Check loại tài sản có tồn tại ko
+                roleArray = item.readByRoles && item.readByRoles.split(" | ");
+                
+                if (!assetTypes[item.assetType]) {
+                    checkAssetType = true;
+                }
+                
+                roleArray && roleArray.map(item => {
                     if (!roles[item]) {
                         checkRole = true;
                     }
@@ -476,15 +515,16 @@ class AssetImportForm extends Component {
                     {
                         ...item,
                         assetType: assetTypeArray.map(type => assetTypes[type]),
-                        readByRoles: roleArray.map(role => roles[role]),
+                        readByRoles: roleArray && roleArray.map(role => roles[role]),
                         managedBy: managers[item.manager],
                         location: assetLocations[item.location],
                         group: assetGroups[item.group],
                         typeRegisterForUse: typeRegisterForUse[item.typeRegisterForUse],
-                        status: status[item.status]
+                        status: status[item.status],
+                        purchaseDate: item.purchaseDate && this.convertExcelDateToJSDate(item.purchaseDate),
+                        warrantyExpirationDate: item.warrantyExpirationDate && this.convertExcelDateToJSDate(item.warrantyExpirationDate)
                     }
                 ];
-
                 return item;
 
             });
@@ -519,37 +559,48 @@ class AssetImportForm extends Component {
                 let errorAlert = [];
                 let depreciationType = { "Đường thẳng": "straight_line", "Số dư giảm dần": "declining_balance", "Sản lượng": "units_of_production" };
 
-                if (!item.cost || !item.usefulLife || !item.startDepreciation || !item.depreciationType || !depreciationType[item.depreciationType]) {
+                /* Tạm thời k bắt buộc nhập các trường sau
+                    if (!item.cost || !item.usefulLife || !item.startDepreciation || !item.depreciationType || !depreciationType[item.depreciationType]) {
+                        rowError = [...rowError, index + 1];
+                        item = { ...item, error: true };
+                    }
+
+                    if (!item.cost) {
+                        errorAlert = [...errorAlert, 'Nguyên giá không được để trống'];
+                    }
+
+                    if (!item.usefulLife) {
+                        errorAlert = [...errorAlert, 'Thời gian sử dụng không được để trống'];
+                    }
+
+                    if (!item.startDepreciation) {
+                        errorAlert = [...errorAlert, 'Thời gian bắt đầu trích khấu hao không được để trống'];
+                    }
+
+                    if (!item.depreciationType) {
+                        errorAlert = [...errorAlert, 'Phương pháp khấu hao không được để trống'];
+                    }
+                    else 
+                */
+                
+                if (item.depreciationType && !depreciationType[item.depreciationType]) {
                     rowError = [...rowError, index + 1];
                     item = { ...item, error: true };
                 }
 
-                if (!item.cost) {
-                    errorAlert = [...errorAlert, 'Nguyên giá không được để trống'];
-                }
-
-                if (!item.usefulLife) {
-                    errorAlert = [...errorAlert, 'Thời gian sử dụng không được để trống'];
-                }
-
-                if (!item.startDepreciation) {
-                    errorAlert = [...errorAlert, 'Thời gian bắt đầu trích khấu hao không được để trống'];
-                }
-
-                if (!item.depreciationType) {
-                    errorAlert = [...errorAlert, 'Phương pháp khấu hao không được để trống'];
-                }
-                else if (!depreciationType[item.depreciationType]) {
+                if (item.depreciationType && !depreciationType[item.depreciationType]) {
                     errorAlert = [...errorAlert, 'Phương pháp khấu hao không chính xác'];
                 }
-
+                
                 item = { ...item, errorAlert: errorAlert };
                 importDepreciationInformationData = [...importDepreciationInformationData,
                     {
                         ...item,
-                        depreciationType: depreciationType[item.depreciationType]
+                        depreciationType: depreciationType[item.depreciationType],
+                        startDepreciation: item.startDepreciation && this.convertExcelDateToJSDate(item.startDepreciation)
                     }
                 ]
+
                 return item;
             });
 
@@ -595,22 +646,36 @@ class AssetImportForm extends Component {
             value = value.map((item, index) => {
                 let errorAlert = [];
 
-                if (!item.usedByUser || !item.startDate || !userList[item.usedByUser] || (item.usedByOrganizationalUnit && !departmentList[item.usedByOrganizationalUnit])) {
+                /* Tạm thời k bắt buộc nhập các trường sau
+                    if (!item.usedByUser || !item.startDate || !userList[item.usedByUser] || (item.usedByOrganizationalUnit && !departmentList[item.usedByOrganizationalUnit])) {
+                        rowError = [...rowError, index + 1];
+                        item = { ...item, error: true };
+                    }
+
+                    if (!item.usedByUser) {
+                        errorAlert = [...errorAlert, 'Người sử dụng không được để trống'];
+                    }
+                    else if (!userList[item.usedByUser]) {
+                        errorAlert = [...errorAlert, 'Người sử dụng không chính xác'];
+                    }
+
+                    if (!item.startDate) {
+                        errorAlert = [...errorAlert, 'Ngày bắt đầu sử dụng không được để trống'];
+                    }
+
+                    if (item.usedByOrganizationalUnit && !departmentList[item.usedByOrganizationalUnit]) {
+                        errorAlert = [...errorAlert, 'Đơn vị sử dụng không chính xác'];
+                    }
+                */
+                
+                if ((item.usedByUser && !userList[item.usedByUser]) || (item.usedByOrganizationalUnit && !departmentList[item.usedByOrganizationalUnit])) {
                     rowError = [...rowError, index + 1];
                     item = { ...item, error: true };
                 }
-
-                if (!item.usedByUser) {
-                    errorAlert = [...errorAlert, 'Người sử dụng không được để trống'];
-                }
-                else if (!userList[item.usedByUser]) {
+                
+                if (item.usedByUser && !userList[item.usedByUser]) {
                     errorAlert = [...errorAlert, 'Người sử dụng không chính xác'];
                 }
-
-                if (!item.startDate) {
-                    errorAlert = [...errorAlert, 'Ngày bắt đầu sử dụng không được để trống'];
-                }
-
                 if (item.usedByOrganizationalUnit && !departmentList[item.usedByOrganizationalUnit]) {
                     errorAlert = [...errorAlert, 'Đơn vị sử dụng không chính xác'];
                 }
@@ -619,9 +684,12 @@ class AssetImportForm extends Component {
                     {
                         ...item,
                         usedByUser: item.usedByUser && userList[item.usedByUser],
-                        usedByOrganizationalUnit: item.usedByOrganizationalUnit && departmentList[item.usedByOrganizationalUnit]
+                        usedByOrganizationalUnit: item.usedByOrganizationalUnit && departmentList[item.usedByOrganizationalUnit],
+                        startDate: item.startDate && this.convertExcelDateToJSDate(item.startDate),
+                        endDate: item.endDate && this.convertExcelDateToJSDate(item.endDate)
                     }
                 ];
+                
                 item = { ...item, errorAlert: errorAlert };
                 return item;
             });
@@ -663,32 +731,38 @@ class AssetImportForm extends Component {
             value = value.map((item, index) => {
                 let errorAlert = [];
                 let incidentType = ["Hỏng hóc", "Mất"];
-                let status = ["Chờ xử lý", "Đấ xử lý"];
+                let status = ["Chờ xử lý", "Đã xử lý"];
 
-                if (!item.dateOfIncident || !item.description || (item.reportedBy && !userList[item.reportedBy])
-                    || (item.type && !incidentType.includes(item.type))
-                    || (item.statusIncident && !status.includes(item.statusIncident))
-                ) {
+                /* Tạm thời không bắt buộc nhập các trường sau 
+                    if (!item.dateOfIncident || !item.description || (item.reportedBy && !userList[item.reportedBy])
+                        || (item.type && !incidentType.includes(item.type))
+                        || (item.statusIncident && !status.includes(item.statusIncident))
+                    ) {
+                        rowError = [...rowError, index + 1];
+                        item = { ...item, error: true };
+                    }
+                
+                    if (!item.dateOfIncident) {
+                        errorAlert = [...errorAlert, 'Ngày phát hiện không được để trống'];
+                    }
+
+                    if (!item.description) {
+                        errorAlert = [...errorAlert, 'Nội dung không được để trống'];
+                    }
+                */
+                
+                if ((item.type && !incidentType.includes(item.type)) || (item.reportedBy && !userList[item.reportedBy]) || (item.statusIncident && !status.includes(item.statusIncident))) {
                     rowError = [...rowError, index + 1];
                     item = { ...item, error: true };
+                }
+                
+                if (item.type && !incidentType.includes(item.type)) {
+                    errorAlert = [...errorAlert, 'Loại sự cố không chính xác'];
                 }
 
                 if (item.reportedBy && !userList[item.reportedBy]) {
                     errorAlert = [...errorAlert, 'Người báo cáo không chính xác'];
                 }
-
-                if (!item.dateOfIncident) {
-                    errorAlert = [...errorAlert, 'Ngày phát hiện không được để trống'];
-                }
-
-                if (!item.description) {
-                    errorAlert = [...errorAlert, 'Nội dung không được để trống'];
-                }
-
-                if (item.type && !incidentType.includes(item.type)) {
-                    errorAlert = [...errorAlert, 'Loại sự cố không chính xác'];
-                }
-
                 if (item.statusIncident && !status.includes(item.statusIncident)) {
                     errorAlert = [...errorAlert, 'Trạng thái không chính xác'];
                 }
@@ -697,6 +771,7 @@ class AssetImportForm extends Component {
                     {
                         ...item,
                         reportedBy: item.reportedBy && userList[item.reportedBy],
+                        dateOfIncident: item.dateOfIncident && this.convertExcelDateToJSDate(item.dateOfIncident)
                     }
                 ]
                 item = { ...item, errorAlert: errorAlert };
@@ -747,7 +822,14 @@ class AssetImportForm extends Component {
                     errorAlert = [...errorAlert, 'Trạng thái không chính xác'];
                 }
 
-                importMaintainanceInformationData = [...importMaintainanceInformationData, item]
+                importMaintainanceInformationData = [...importMaintainanceInformationData,
+                    {
+                        ...item,
+                        createDate: item.createDate && this.convertExcelDateToJSDate(item.createDate),
+                        startDate: item.startDate && this.convertExcelDateToJSDate(item.startDate),
+                        endDate: item.endDate && this.convertExcelDateToJSDate(item.endDate)
+                    }
+                ]
                 item = { ...item, errorAlert: errorAlert };
                 return item;
             });
@@ -791,7 +873,12 @@ class AssetImportForm extends Component {
                     errorAlert = [...errorAlert, 'Hình thức thanh lý không chính xác'];
                 }
 
-                importDisposalInformationData = [...importDisposalInformationData, item]
+                importDisposalInformationData = [...importDisposalInformationData,
+                    {
+                        ...item,
+                        disposalDate: item.disposalDate && this.convertExcelDateToJSDate(item.disposalDate)
+                    }
+                ]
                 item = { ...item, errorAlert: errorAlert };
                 return item;
             });

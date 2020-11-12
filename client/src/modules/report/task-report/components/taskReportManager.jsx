@@ -364,15 +364,13 @@ class TaskReportManager extends Component {
 }
 
 function mapState(state) {
-    const { tasktemplates, tasks, user, KPIPersonalManager, reports } = state;
-    return { tasktemplates, tasks, user, KPIPersonalManager, reports };
+    const { user, reports } = state;
+    return { user, reports };
 }
 const actionCreators = {
     getTaskReports: TaskReportActions.getTaskReports,
     deleteTaskReport: TaskReportActions.deleteTaskReport,
     getDepartment: UserActions.getDepartmentOfUser,
-    getTaskReportById: TaskReportActions.getTaskReportById,
-
 }
 
 export default connect(mapState, actionCreators)(withTranslate(TaskReportManager));

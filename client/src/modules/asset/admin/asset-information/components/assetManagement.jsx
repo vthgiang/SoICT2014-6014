@@ -35,15 +35,12 @@ class AssetManagement extends Component {
     }
 
     componentDidMount() {
+        this.props.getAllAsset(this.state);
         this.props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
         this.props.getListBuildingAsTree();
         this.props.getUser();
-        this.props.getAllRoles();
         this.props.getAllDepartments();
-
-        if (!this.props.isActive || this.props.isActive === "tab-pane active") {
-            this.props.getAllAsset(this.state);
-        }
+        this.props.getAllRoles();
     }
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
@@ -99,7 +96,7 @@ class AssetManagement extends Component {
     handleEdit = async (value) => {
         await this.setState(state => {
             return {
-                ...state,
+                // ...state,
                 currentRow: value
             }
         });

@@ -30,15 +30,15 @@ class TaskManagementOfUnit extends Component {
             name: "",
             startDate: "",
             endDate: "",
-            startDateAfter: "",
-            endDateBefore: "",
+
+            isAssigned: -1
         };
     }
 
     componentDidMount() {
         this.props.getDepartment();
         this.props.getAllDepartment();
-        this.props.getPaginatedTasksByOrganizationalUnit(this.state.roleId, 1, 20, this.state.status, [], [], null, null, null);
+        this.props.getPaginatedTasksByOrganizationalUnit(this.state.roleId, 1, 20, this.state.status, [], [], null, null, null, this.state.isAssigned);
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -129,7 +129,7 @@ class TaskManagementOfUnit extends Component {
     }
 
     handleGetDataPagination = async (index) => {
-        let { roleId, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = this.state;
+        let { roleId, status, priority, special, name, startDate, endDate, isAssigned } = this.state;
 
         let oldCurrentPage = this.state.currentPage;
         let perPage = this.state.perPage;
@@ -142,12 +142,12 @@ class TaskManagementOfUnit extends Component {
         })
         let newCurrentPage = this.state.currentPage;
         if (oldCurrentPage !== index) {
-            this.props.getPaginatedTasksByOrganizationalUnit(roleId, newCurrentPage, perPage, status, priority, special, name, startDate, endDate);
+            this.props.getPaginatedTasksByOrganizationalUnit(roleId, newCurrentPage, perPage, status, priority, special, name, startDate, endDate, isAssigned);
         };
     }
 
     nextPage = async (pageTotal) => {
-        let { roleId, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = this.state;
+        let { roleId, status, priority, special, name, startDate, endDate, isAssigned } = this.state;
 
         let oldCurrentPage = this.state.currentPage;
         await this.setState(state => {
@@ -158,12 +158,12 @@ class TaskManagementOfUnit extends Component {
         })
         let newCurrentPage = this.state.currentPage;
         if (oldCurrentPage !== newCurrentPage) {
-            this.props.getPaginatedTasksByOrganizationalUnit(roleId, newCurrentPage, 20, status, priority, special, name, startDate, endDate);
+            this.props.getPaginatedTasksByOrganizationalUnit(roleId, newCurrentPage, 20, status, priority, special, name, startDate, endDate, isAssigned);
         };
     }
 
     backPage = async () => {
-        let { roleId, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = this.state;
+        let { roleId, status, priority, special, name, startDate, endDate, isAssigned } = this.state;
 
         let oldCurrentPage = this.state.currentPage;
         await this.setState(state => {
@@ -174,14 +174,14 @@ class TaskManagementOfUnit extends Component {
         })
         let newCurrentPage = this.state.currentPage;
         if (oldCurrentPage !== newCurrentPage) {
-            this.props.getPaginatedTasksByOrganizationalUnit(roleId, newCurrentPage, 20, status, priority, special, name, startDate, endDate);
+            this.props.getPaginatedTasksByOrganizationalUnit(roleId, newCurrentPage, 20, status, priority, special, name, startDate, endDate, isAssigned);
         };
     }
 
     handleGetDataPerPage = (perPage) => {
-        let { roleId, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = this.state;
+        let { roleId, status, priority, special, name, startDate, endDate, isAssigned } = this.state;
         
-        this.props.getPaginatedTasksByOrganizationalUnit(roleId, 1, perPage, status, priority, special, name, startDate, endDate);
+        this.props.getPaginatedTasksByOrganizationalUnit(roleId, 1, perPage, status, priority, special, name, startDate, endDate, isAssigned);
 
         this.setState(state => {
             return {
@@ -192,9 +192,9 @@ class TaskManagementOfUnit extends Component {
     }
 
     handleUpdateData = () => {
-        let { roleId, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, perPage } = this.state;
+        let { roleId, status, priority, special, name, startDate, endDate, perPage, isAssigned } = this.state;
 
-        this.props.getPaginatedTasksByOrganizationalUnit(roleId, 1, perPage, status, priority, special, name, startDate, endDate);
+        this.props.getPaginatedTasksByOrganizationalUnit(roleId, 1, perPage, status, priority, special, name, startDate, endDate, isAssigned);
 
         this.setState(state => {
             return {
@@ -226,36 +226,6 @@ class TaskManagementOfUnit extends Component {
         window.$(`#modelPerformTask${id}`).modal('show');
     }
 
-    /**
-     * Mở modal thêm task mới
-     * @id task cha của task sẽ thêm (là "" nếu không có cha)
-     */
-    handleAddTask = async (id) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                parentTask: id
-            }
-        });
-        window.$(`#addNewTask`).modal('show')
-    }
-
-    getResponsibleOfItem = (data, id) => {
-        data.map(item => {
-            if (id === item._id) {
-                return item.responsibleEmployees
-            }
-        })
-    }
-
-    getUnitIdOfItem = (data, id) => {
-        data.map(item => {
-            if (id === item._id) {
-                return item.organizationalUnit._id
-            }
-        })
-    }
-
     formatPriority = (data) => {
         const { translate } = this.props;
         if (data === 1) return translate('task.task_management.low');
@@ -272,20 +242,16 @@ class TaskManagementOfUnit extends Component {
         else if (data === "canceled") return translate('task.task_management.canceled');
     }
 
-    handleRoleChange = (value) => {
+    handleChangeIsAssigned = (value) => {
         this.setState(state => {
             return {
                 ...state,
-                currentTab: value[0]
+                isAssigned: value[0]
             }
         });
     }
 
     handleSelectOrganizationalUnit = (value) => {
-        // if (value.length === 0) {
-        //     value = '[]';
-        // }
-
         this.setState(state => {
             return {
                 ...state,
@@ -295,10 +261,6 @@ class TaskManagementOfUnit extends Component {
     }
 
     handleSelectStatus = (value) => {
-        // if (value.length === 0) {
-        //     value = '[]';
-        // }
-
         this.setState(state => {
             console.log('val-status', value);
             return {
@@ -376,7 +338,7 @@ class TaskManagementOfUnit extends Component {
 
     render() {
         const { tasks, user, translate } = this.props;
-        const { currentTaskId, currentPage, currentTab, parentTask, startDate, endDate, perPage, status } = this.state;
+        const { currentTaskId, currentPage, startDate, endDate, perPage, status, isAssigned } = this.state;
         let currentTasks, units = [];
         let pageTotals;
 
@@ -386,7 +348,6 @@ class TaskManagementOfUnit extends Component {
         }
 
         if (user) units = user.organizationalUnitsOfUser;
-        const items = [];
 
         // khởi tạo dữ liệu TreeTable
         let column = [
@@ -485,46 +446,7 @@ class TaskManagementOfUnit extends Component {
                             <input className="form-control" type="text" placeholder={translate('task.task_management.search_by_name')} name="name" onChange={(e) => this.handleChangeName(e)} />
                         </div>
 
-                        {/* Vai trò */}
-                        <div className="form-group">
-                            <label>{translate('task.task_management.role')}</label>
-                            <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                id={`select-task-role`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={
-                                    [
-                                        { value: "responsible", text: translate('task.task_management.responsible') },
-                                        { value: "accountable", text: translate('task.task_management.accountable') },
-                                        { value: "consulted", text: translate('task.task_management.consulted') },
-                                        { value: "creator", text: translate('task.task_management.creator') },
-                                        { value: "informed", text: translate('task.task_management.informed') },
-                                        { value: "all", text: translate('task.task_management.all_role') },
-                                    ]
-                                }
-                                onChange={this.handleRoleChange}
-                                multiple={false}
-                            />
-                        </div>
-
-                        {/* Công việc chưa phân công nhân viên */}
-                        <div className="form-group">
-                            <label>Phân công công việc</label>
-                            <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                id={`select-task-employee`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={
-                                    [
-                                        { value: 1, text: "Đã sắp xếp nhân viên cho công việc" },
-                                        { value: 0, text: "Chưa sắp xếp nhân viên cho công việc" },
-                                    ]
-                                }
-                                onChange={this.handleRoleChange}
-                                multiple={false}
-                            />
-                        </div>
-
+                
                         {/* Ngày bắt đầu */}
                         <div className="form-group">
                             <label>{translate('task.task_management.start_date')}</label>
@@ -548,6 +470,29 @@ class TaskManagementOfUnit extends Component {
                                 disabled={false}                     // sử dụng khi muốn disabled, mặc định là false
                             />
                         </div>
+
+                        
+                        {/* Công việc chưa phân công nhân viên */}
+                        <div className="form-group">
+                            <label>{translate('task.task_management.assigned_collaborate')}</label>
+                            <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                id={`select-task-employee`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={
+                                    [
+                                        { value: -1, text: translate('task.task_management.none_select_assigned') },
+                                        { value: 1, text: translate('task.task_management.assigned') },
+                                        { value: 0, text: translate('task.task_management.not_assigned') }
+                                        
+                                    ]
+                                }
+                                onChange={this.handleChangeIsAssigned}
+                                value={isAssigned}
+                                multiple={false}
+                            />
+                        </div>
+
                     </div>
 
                     <div className="form-inline">
@@ -613,11 +558,6 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    getResponsibleTaskByUser: taskManagementActions.getResponsibleTaskByUser,
-    getAccountableTaskByUser: taskManagementActions.getAccountableTaskByUser,
-    getConsultedTaskByUser: taskManagementActions.getConsultedTaskByUser,
-    getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
-    getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
     getPaginatedTasksByOrganizationalUnit: taskManagementActions.getPaginatedTasksByOrganizationalUnit,
     getDepartment: UserActions.getDepartmentOfUser,
     getAllDepartment: DepartmentActions.get,

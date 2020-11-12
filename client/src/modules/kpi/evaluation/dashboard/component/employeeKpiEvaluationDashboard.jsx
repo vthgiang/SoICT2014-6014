@@ -26,8 +26,8 @@ class EmployeeKpiEvaluationDashboard extends Component {
 
         this.INFO_SEARCH = {
             userId: null,
-            startMonth: currentYear + '-' + 1,
-            endMonth: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2))
+            startMonth: currentYear + '-0' + 1,
+            endMonth: (currentMonth < 9) ? (currentYear + '-0' + currentMonth + 1) : (currentYear + '-' + (currentMonth + 1))
         }
         this.IDS = null;
 
@@ -218,19 +218,12 @@ class EmployeeKpiEvaluationDashboard extends Component {
     }
 
     handleSelectMonthStart = (value) => {
-        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
-
+        let month = value.slice(3,7) + '-' + value.slice(0,2);
         this.INFO_SEARCH.startMonth = month;
     }
 
     handleSelectMonthEnd = (value) => {
-        let month;
-        if (value.slice(0, 2) < 12) {
-            month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)) + 1);
-        } else {
-            month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
-        }
-
+        let month = value.slice(3,7) + '-' + value.slice(0,2);
         this.INFO_SEARCH.endMonth = month;
     }
 

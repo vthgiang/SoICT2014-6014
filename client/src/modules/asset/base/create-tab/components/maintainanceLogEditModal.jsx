@@ -162,13 +162,13 @@ class MaintainanceLogEditModal extends Component {
 
     // Bắt sự kiện submit form
     save = async () => {
-        var partCreate = this.state.createDate.split('-');
-        var createDate = [partCreate[2], partCreate[1], partCreate[0]].join('-');
-        var partStart = this.state.startDate.split('-');
-        var startDate = [partStart[2], partStart[1], partStart[0]].join('-');
-        var partEnd = this.state.endDate.split('-');
-        var endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
-
+        // var partCreate = this.state.createDate.split('-');
+        // var createDate = [partCreate[2], partCreate[1], partCreate[0]].join('-');
+        // var partStart = this.state.startDate.split('-');
+        // var startDate = [partStart[2], partStart[1], partStart[0]].join('-');
+        // var partEnd = this.state.endDate.split('-');
+        // var endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+        const { createDate, startDate, endDate } = this.state;
         if (this.isFormValidated()) {
             return this.props.handleChange({ ...this.state, createDate: createDate, startDate: startDate, endDate: endDate });
         }
@@ -291,9 +291,9 @@ class MaintainanceLogEditModal extends Component {
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.status')}</label>
                                     <select className="form-control" value={status} name="status" onChange={this.handleStatusChange}>
-                                        <option value="1">{translate('asset.asset_info.made')}</option>
+                                        <option value="1">{translate('asset.asset_info.unfulfilled')}</option>
                                         <option value="2">{translate('asset.asset_info.processing')}</option>
-                                        <option value="3">{translate('asset.asset_info.unfulfilled')}</option>
+                                        <option value="3">{translate('asset.asset_info.made')}</option>
                                     </select>
                                 </div>
                             </div>

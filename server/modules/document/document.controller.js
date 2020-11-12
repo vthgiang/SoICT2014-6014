@@ -26,40 +26,38 @@ exports.getDocuments = async (req, res) => {
 };
 
 exports.createDocument = async (req, res) => {
-    //try {
-    console.log('fileeeeee', req.files)
-    if (req.files.file) {
-        req.body.files = []
-        req.files.file.map(x => {
-            let pathFile = x.destination + '/' + x.filename;
-            req.body.files.push(pathFile);
-        })
-    }
-    if (req.files.fileScan) {
+    try {
+        if (req.files.file) {
+            req.body.files = []
+            req.files.file.map(x => {
+                let pathFile = x.destination + '/' + x.filename;
+                req.body.files.push(pathFile);
+            })
+        }
+        if (req.files.fileScan) {
 
-        req.body.scannedFileOfSignedDocument = []
-        req.files.file.map(x => {
-            let pathFileScan = x.destination + '/' + x.filename;
-            req.body.scannedFileOfSignedDocument.push(pathFileScan);
-        })
-    }
-    const document = await DocumentServices.createDocument(req.portal, req.body, req.user.company._id);
+            req.body.scannedFileOfSignedDocument = []
+            req.files.fileScan.map(x => {
+                let pathFileScan = x.destination + '/' + x.filename;
+                req.body.scannedFileOfSignedDocument.push(pathFileScan);
+            })
+        }
+        const document = await DocumentServices.createDocument(req.portal, req.body, req.user.company._id);
 
-    await Logger.info(req.user.email, 'create_document', req.portal);
-    res.status(200).json({
-        success: true,
-        messages: ['create_document_success'],
-        content: document
-    });
-    // } catch (error) {
-    //     console.log(error)
-    //     await Logger.error(req.user.email, 'create_document', req.portal);
-    //     res.status(400).json({
-    //         success: false,
-    //         messages: Array.isArray(error) ? error : ['create_document_faile'],
-    //         content: error
-    //     });
-    // }
+        await Logger.info(req.user.email, 'create_document', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['create_document_success'],
+            content: document
+        });
+    } catch (error) {
+        await Logger.error(req.user.email, 'create_document', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['create_document_faile'],
+            content: error
+        });
+    }
 };
 
 exports.importDocument = async (req, res) => {

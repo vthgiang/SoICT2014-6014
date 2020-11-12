@@ -106,11 +106,17 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (portal, roleId, organizat
                 {
                     $match:
                     {
-                        $expr: {
-                            $eq: [organizationalUnit, mongoose.Types.ObjectId(organizationalUnit._id)],
-                            $eq: [{ $month: '$date' }, currentMonth],
-                            $eq: [{ $year: '$date' }, currentYear]
-                        }
+                        $and: [
+                            {
+                                $expr: {
+                                    $eq: [{ $year: '$date' }, currentYear],
+                                    $eq: [{ $month: '$date' }, currentMonth],
+                                
+                                }
+                            },
+                            { organizationalUnit: organizationalUnit._id }
+                        ]
+                        
                     }
                 },
 
