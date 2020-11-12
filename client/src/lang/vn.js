@@ -1059,13 +1059,13 @@ export default {
             manage_examples_1: "CRUD theo mô hình số 1",
             manage_examples_2: "CRUD theo mô hình số 2",
             manage_examples_hooks_1: "CRUD Hooks theo mô hình 1",
+            manage_examples_hooks_2: "CRUD Hooks theo mô hình 2",
 
             // Quản lý sản xuất
             manage_manufacturing: "Quản lý sản xuất",
             manage_manufacturing_plan: "Quản lý kế hoạch sản xuất",
             manage_manufacturing_command: "Quản lý lệnh sản xuất",
-            manage_manufacturing_process: "Quản lý tiến độ sản xuất",
-            manage_manufacturing_schedule: "Quản lý lịch sản xuất",
+            manage_work_schedule: "Quản lý lịch sản xuất",
             manage_purchasing_request: "Quản lý phiếu đề nghị mua nguyên vật liệu",
             manufacturing_dashboard: "Dashboard Quản lý sản xuất",
             analysis_manufacturing_performance: "Phân tích hiệu suất sản xuất",
@@ -2514,7 +2514,7 @@ export default {
                 confirm_assigned: 'Xác nhận phân công công việc',
                 confirm_assigned_success: 'Bạn đã xác nhận phân công công việc',
                 confirm_assigned_failure: 'Bạn chưa xác nhận phân công công việc',
-                
+
                 name: 'Tên công việc',
                 search_by_name: 'Tìm kiếm theo tên',
 
@@ -3906,8 +3906,9 @@ export default {
                 validate_quantity: 'Bạn cần nhập số lượng cho lô hàng',
                 validate_norm: 'Bạn đã nhập quá số lượng tồn kho',
                 add_lot: 'Thêm mới lô hàng',
-                expiration_date: 'Ngày hết hạn'
-                
+                expiration_date: 'Ngày hết hạn',
+                validate_norm: 'Bạn đã nhập quá số lượng tồn kho'
+
             },
             inventory_management: {
                 product: 'Sản phẩm',
@@ -4205,6 +4206,68 @@ export default {
                 purchasing_request_edit: "Sửa phiếu đề nghị",
                 edit_successfully: "Sửa phiếu dề nghị thành công",
                 edit_failed: "Sửa phiếu đề nghị thất bại"
+
+            },
+            work_schedule: {
+                //general             
+                time: "Thời gian",
+                search: "Tìm kiếm",
+                work_turns: "Ca làm việc",
+                edit_work_schedule: "Sửa lịch sản xuất",
+                delete_work_schedule: "Xóa lịch sản xuất",
+                month: "Tháng",
+                turn_1: "Ca 1",
+                turn_2: "Ca 2",
+                turn_3: "Ca 3",
+                turn_4: "Ca 4",
+                turn_5: "Ca 5",
+                add_work_schedule_button: "Tạo lịch",
+                add_work_schedule: "Tạo lịch làm việc",
+                number_turns: "Số ca / ngày",
+                create_successfully: "Tạo lịch làm việc thành công",
+                create_failed: "Tạo lịch làm việc thất bại",
+                is_existing: "Lịch đã tồn tại",
+                0: {
+                    color: "white",
+                    content: "Chưa có lệnh"
+                },
+                1: {
+                    color: "yellow",
+                    content: "Đang chờ duyệt"
+                },
+                2: {
+                    color: "black",
+                    content: "Đã phê duyệt"
+                },
+                3: {
+                    color: "orange",
+                    content: "Đang thực hiện"
+                },
+                4: {
+                    color: "green",
+                    content: "Đã hoàn thành"
+                },
+                5: {
+                    color: "red",
+                    content: "Đã hủy"
+                },
+                //mill
+                choose_all_mill: "Tất cả các xưởng",
+                manufacturing_mill_schedule_list: "Lịch sản xuất của xưởng",
+                mill_name: "Tên xưởng",
+                mill_code: "Mã xưởng",
+                add_work_schedule_mill: "Tạo lịch làm việc cho xưởng sản xuất",
+                manufacturingMill: "Xưởng sản xuất",
+                //employee
+                worker_schedule_list: "Lịch sản xuất của công nhân",
+                employee_name: "Tên nhân viên",
+                employee_email: "Email nhân viên",
+                works: "Nhà máy sản xuất",
+                all_works: "Tất cả",
+                employee: "Nhân viên",
+                choose_all_user: "Tất cả"
+
+
 
             }
         }

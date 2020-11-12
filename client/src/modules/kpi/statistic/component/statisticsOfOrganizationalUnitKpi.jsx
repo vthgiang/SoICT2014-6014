@@ -29,8 +29,6 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
             month: this.today.getFullYear() + '-' + (this.today.getMonth() + 1)
         }
                  
-        this.TREE_INDEX = 0;        // Dùng làm id cho những phàn tử trong tree nếu phần tử đó k có kpi con
-
         this.state = {
             currentRole: localStorage.getItem("currentRole"),
             dataStatus: this.DATA_STATUS.QUERYING,

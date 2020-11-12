@@ -8,6 +8,8 @@ import {
 
 export const CareerPositionAction = {
     getListCareerPosition,
+    getListCareerField,
+    getListCareerAction,
 };
 
 /**
@@ -29,6 +31,56 @@ function getListCareerPosition(data) {
             .catch(err => {
                 dispatch({
                     type: CareerPositionConstant.GET_CAREER_POSITION_FAILURE,
+                    error: err
+                });
+            })
+    }
+}
+
+/**
+ * Lấy danh sách kỷ luật
+ * @data : Dữ liệu key tìm kiếm 
+ */
+function getListCareerField(data) {
+    return dispatch => {
+        dispatch({
+            type: CareerPositionConstant.GET_CAREER_FIELD_REQUEST
+        });
+        CareerPositionService.getListCareerField(data)
+            .then(res => {
+                dispatch({
+                    type: CareerPositionConstant.GET_CAREER_FIELD_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: CareerPositionConstant.GET_CAREER_FIELD_FAILURE,
+                    error: err
+                });
+            })
+    }
+}
+
+/**
+ * Lấy danh sách kỷ luật
+ * @data : Dữ liệu key tìm kiếm 
+ */
+function getListCareerAction(data) {
+    return dispatch => {
+        dispatch({
+            type: CareerPositionConstant.GET_CAREER_ACTION_REQUEST
+        });
+        CareerPositionService.getListCareerAction(data)
+            .then(res => {
+                dispatch({
+                    type: CareerPositionConstant.GET_CAREER_ACTION_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: CareerPositionConstant.GET_CAREER_ACTION_FAILURE,
                     error: err
                 });
             })

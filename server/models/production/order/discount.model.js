@@ -84,17 +84,24 @@ const DiscountSchema = new Schema({
             },
             expirationDate: {
                 type: Date
+            }, 
+            discountedPrice: {
+                type: Number
             }
         }]
     }],
     status: {
-        type: String,
+        type: Boolean,
         required: true
     },
     version: {
         type: Number,
         required: true
-    }
+    },
+    lastVersion: {
+        type: Boolean,
+        required: true
+    },
 }, {
     timestamps: true,
 })
