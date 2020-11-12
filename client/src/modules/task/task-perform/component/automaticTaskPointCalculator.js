@@ -55,6 +55,10 @@ function calcAutoPoint(data) {
     let numberOfPassedAction = actions.filter(act => act.rating >= 5).length;
     let numberOfFailedAction = actions.filter(act => act.rating < 5).length;
 
+    if ((numberOfPassedAction === 0 && numberOfFailedAction === 0) || a === 0) {
+        numberOfPassedAction = 1;
+        numberOfFailedAction = 1;
+    }
 
     // Tổng số hoạt động
     let a = 0;
