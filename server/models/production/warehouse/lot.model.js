@@ -29,6 +29,11 @@ const LotSchema = new Schema ({
             type: Number
         },
 
+        expectedNumber: {
+            type: Number,
+            default: 0
+        },
+
         binLocations: [{
             binLocation: {
                 type: Schema.Types.ObjectId,

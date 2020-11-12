@@ -32,13 +32,13 @@ class TaxCreateForm extends Component {
     }
 
     componentDidMount() {
-        let creator = {};
-        creator.id = this.props.auth.user._id;
-        creator.name = this.props.auth.user.name;
+        // let creator = {};
+        // creator.id = this.props.auth.user._id;
+        // creator.name = this.props.auth.user.name;
         this.props.getAllGoodsByType({ type: this.state.type });
-        this.setState({
-            creator,
-        });
+        // this.setState({
+        //     creator,
+        // });
     }
 
     getAllGoods = () => {

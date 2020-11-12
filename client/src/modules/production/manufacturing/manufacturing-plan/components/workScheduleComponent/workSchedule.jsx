@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { SlimScroll } from '../../../../../../common-components';
 import './workSchedule.css';
 
 class WorkSchedule extends Component {
@@ -17,7 +16,7 @@ class WorkSchedule extends Component {
                 <div className="box-header with-border">
                     <div className="box-title">Lịch sản xuất xưởng thuốc nước tháng 10/2020</div>
                     <div className="box-content" style={{ marginTop: "1rem" }}>
-                        <table className="table-custom table-custom-bordered">
+                        <table className="plan-table-custom plan-table-custom-bordered">
                             <thead>
                                 <tr>
                                     <th rowSpan={2} style={{ backgroundColor: "#F0F0F0", width: "10%" }}>Ca</th>
@@ -37,7 +36,7 @@ class WorkSchedule extends Component {
                                     {
                                         days.map((day, index) => (
                                             <td key={index}>
-                                                <div className="checkbox-custom">
+                                                <div className="plan-checkbox-custom">
                                                     <input type="checkbox" onChange={() => this.handleCheckBoxChange()} />
                                                 </div>
                                             </td>
@@ -50,7 +49,7 @@ class WorkSchedule extends Component {
                                     {
                                         days.map((day, index) => (
                                             <td key={index}>
-                                                <div className="checkbox-custom">
+                                                <div className="plan-checkbox-custom">
                                                     <input type="checkbox" onChange={() => this.handleCheckBoxChange('shift1s', index)} />
                                                 </div>
                                             </td>
@@ -62,7 +61,7 @@ class WorkSchedule extends Component {
                                     {
                                         days.map((day, index) => (
                                             <td key={index}>
-                                                <div className="checkbox-custom">
+                                                <div className="plan-checkbox-custom">
                                                     <input type="checkbox" onChange={() => this.handleCheckBoxChange('shift1s', index)} />
                                                 </div>
                                             </td>

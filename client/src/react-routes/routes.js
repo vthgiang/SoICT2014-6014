@@ -136,9 +136,11 @@ import PlanManagement from "../modules/plan/components";
 
 // Example
 import ExampleManagement1 from "../modules/example/example1/components";
+import ExampleManagement2 from "../modules/example/example2/components";
 
-import ExampleManagement2 from "../modules/example/example2/components-hooks";
 import ExampleManagementHooks1 from "../modules/example/example1/components-hooks";
+import ExampleManagementHooks2 from "../modules/example/example2/components-hooks";
+
 // Manufacturing Managements
 
 import ManufacturingPlan from "../modules/production/manufacturing/manufacturing-plan/components";
@@ -149,8 +151,6 @@ import WorkSchedule from "../modules/production/manufacturing/work-schedule/comp
 import ManufacturingWorks from "../modules/production/manufacturing/manufacturing-works/components";
 import PurchasingRequest from "../modules/production/manufacturing/purchasing-request/components";
 import ManufacturingDashboard from "../modules/production/manufacturing/manufacturing-dashboard/components";
-import manufacturingOrder from '../modules/production/manufacturing/manufacturing-plan/components/manufacturing-order';
-import purchaseOrderDetailForm from '../modules/production/order/purchase-order/components/purchaseOrderDetailForm';
 
 class Routes extends Component {
 
@@ -1724,6 +1724,26 @@ class Routes extends Component {
                         pageName={"manage_examples_hooks_1"}
                         layout={Layout}
                         component={ExampleManagementHooks1}
+                    />
+
+                    <PrivateRoute
+                        isLoading={this.props.example2.isLoading}
+                        key={"manage-examples-2"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-examples-hooks-2",
+                                name: "manage_examples_hooks_2",
+                                icon: "fa fa-circle",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-examples-hooks-2"}
+                        path={"/manage-examples-hooks-2"}
+                        pageName={"manage_examples_hooks_2"}
+                        layout={Layout}
+                        component={ExampleManagementHooks2}
                     />
 
                     {/* Manufacturing-management */}

@@ -27,7 +27,8 @@ class Login extends Component {
         });
     }
 
-    handleSubmit = () => {
+    handleSubmit = (e) => {
+        e.preventDefault();
         let { email, password, portal } = this.state;
 		this.props.login({ email, password, portal});
     }
@@ -54,7 +55,7 @@ class Login extends Component {
                         </div>
                     }
                     <div className="login-box-body">
-                        <form> 
+                        <form onSubmit={this.handleSubmit}> 
                             <div className="form-group has-feedback">
                                 <input name="email" onChange={this.handleChange} type="email" className="form-control" placeholder={ translate('form.email') } required/>
                                 <span className="glyphicon glyphicon-envelope form-control-feedback" />
@@ -73,7 +74,7 @@ class Login extends Component {
                                     <ForgotPassword />
                                 </div>
                                 <div className="col-xs-4">
-                                    <button type="button" className="btn btn-primary btn-block btn-flat" onClick={this.handleSubmit}>{ translate('form.signin') }</button>
+                                    <button type="submit" className="btn btn-primary btn-block btn-flat">{ translate('form.signin') }</button>
                                 </div>
                             </div>
                         </form>

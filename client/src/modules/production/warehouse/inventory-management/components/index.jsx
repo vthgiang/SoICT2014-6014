@@ -149,7 +149,11 @@ class InventoryManagement extends Component {
         const data = {
             limit: number,
             page: this.state.page,
-            type: this.state.type
+            type: this.state.type,
+            name: this.state.name,
+            good: this.state.good,
+            expirationDate: this.state.expirationDate,
+            stock: this.state.stock,
         };
         this.props.getAllLots(data);
     }
@@ -159,27 +163,21 @@ class InventoryManagement extends Component {
         const data = {
             limit: this.state.limit,
             page: page,
-            type: this.state.type
+            type: this.state.type,
+            name: this.state.name,
+            good: this.state.good,
+            expirationDate: this.state.expirationDate,
+            stock: this.state.stock,
         };
         this.props.getAllLots(data);
     }
 
     handleStockChange = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                stock: value
-            }
-        })
+        this.state.stock = value;
     }
 
     handleGoodChange = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                good: value[0]
-            }
-        })
+        this.state.good = value[0];
     }
 
     handleExpirationDateChange = (value) => {
@@ -187,22 +185,12 @@ class InventoryManagement extends Component {
             value = null;
         }
 
-        this.setState(state => {
-            return {
-                ...state,
-                expirationDate: value
-            }
-        })
+        this.state.expirationDate = value;
     }
 
     handleLotChange = (e) => {
         let value = e.target.value;
-        this.setState(state => {
-            return {
-                ...state,
-                name: value
-            }
-        })
+        this.state.name = value;
     }
 
     handleSubmitSearch = async () => {
@@ -261,7 +249,7 @@ class InventoryManagement extends Component {
         if(listLots && listLots.length > 0){
             if(stock.length === 0){
                 for(let i = 0; i < listLots.length; i++) {
-                    inventoryQuantity.push({quantity: listLots[i].quantity, good: listLots[i].good})
+                    inventoryQuantity.push({quantity: listLots[i].quantity, good: listLots[i].good, name: listLots[i].name})
                 }
             }
             else{
@@ -274,11 +262,10 @@ class InventoryManagement extends Component {
                             }
                         }
                     }
-                    inventoryQuantity.push({quantity: quantity, good: listLots[i].good});
+                    inventoryQuantity.push({quantity: quantity, good: listLots[i].good, name: listLots[i].name});
                 }
             }
         }
-
         let quantityTotal = 0;
         if(inventoryQuantity.length > 0) {
             for(let i = 0; i < inventoryQuantity.length; i++) {
@@ -411,7 +398,7 @@ class InventoryManagement extends Component {
                                             <td>{index + 1}</td>
                                             <td>{x.good.name}</td>
                                             <td>{x.good.baseUnit}</td>
-                                            <td>{inventoryQuantity[index].quantity}</td>
+                                            <td>{inventoryQuantity ? inventoryQuantity.map(y => {if(y.name === x.name) { return y.quantity}}) : 0}</td>
                                             <td>{x.name}</td>
                                             <td>{this.formatDate(x.expirationDate)}</td>
                                             <td style={{textAlign: 'center'}}>

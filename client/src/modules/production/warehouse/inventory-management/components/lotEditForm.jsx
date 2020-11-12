@@ -408,7 +408,7 @@ class LotEditForm extends Component {
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('manage_warehouse.inventory_management.bin_location')}</legend>
-                                { stock ? (difference > 0 ? <div className="form-group" style={{ color: 'red', textAlign: 'center'}}>{`Bạn còn ${difference} số lượng chưa sắp xếp vào kho`}</div> :
+                                { stock ? (difference !== 0 ? <div className="form-group" style={{ color: 'red', textAlign: 'center'}}>{`Bạn còn ${difference} số lượng chưa sắp xếp vào kho`}</div> :
                                 <div className="form-group" style={{ color: 'green', textAlign: 'center'}}>Bạn đã xếp hết lô hàng vào kho</div>) : []}
                                 <div className={`form-group ${!errorBin ? "" : "has-error"}`}>
                                     <label>{translate('manage_warehouse.inventory_management.archive')}</label>

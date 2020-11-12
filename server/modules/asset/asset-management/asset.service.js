@@ -248,37 +248,38 @@ exports.createAsset = async (portal, company, data, fileInfo) => {
     let { maintainanceLogs, usageLogs, incidentLogs, locationLogs, files } = data;
     files = files && this.mergeUrlFileToObject(file, files);
 
-    data.purchaseDate = new Date(data.purchaseDate);
+    data.purchaseDate = data.purchaseDate && new Date(data.purchaseDate);
 
-    data.warrantyExpirationDate = new Date(data.warrantyExpirationDate);
+    data.warrantyExpirationDate = data.warrantyExpirationDate && new Date(data.warrantyExpirationDate);
 
-    data.startDepreciation = new Date(data.startDepreciation);
+    console.log(data.startDepreciation)
+    data.startDepreciation = data.startDepreciation && new Date(data.startDepreciation);
 
-    data.disposalDate = data.disposalDate ? new Date(data.disposalDate) : "";
+    data.disposalDate = data.disposalDate && new Date(data.disposalDate);
 
     usageLogs = usageLogs && usageLogs.map(item => {
         return {
             usedByUser: item.assignedToUser ? item.assignedToUser : null,
             usedByOrganizationalUnit: item.assignedToOrganizationalUnit ? item.assignedToOrganizationalUnit : null,
             description: item.description,
-            startDate: new Date(item.startDate),
-            endDate: new Date(item.endDate)
+            startDate: item.startDate && new Date(item.startDate),
+            endDate: item.endDate && new Date(item.endDate)
         }
     })
 
     incidentLogs = incidentLogs && incidentLogs.map(item => {
         return {
             ...item,
-            dateOfIncident: new Date(item.dateOfIncident)
+            dateOfIncident: item.dateOfIncident && new Date(item.dateOfIncident)
         }
     })
 
     maintainanceLogs = maintainanceLogs && maintainanceLogs.map(item => {
         return {
             ...item,
-            createDate: new Date(item.createDate),
-            startDate: new Date(item.startDate),
-            endDate: new Date(item.endDate)
+            createDate: item.createDate && new Date(item.createDate),
+            startDate: item.startDate && new Date(item.startDate),
+            endDate: item.endDate && new Date(item.endDate)
         }
     })
     let createAsset = await Asset(connect(DB_CONNECTION, portal)).create({

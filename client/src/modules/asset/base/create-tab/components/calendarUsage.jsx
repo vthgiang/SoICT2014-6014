@@ -20,7 +20,8 @@ class CalendarUsage extends Component {
       currentEvents: [],
       nowDate: new Date(),
       data: [],
-      dataStatus: 1
+      dataStatus: 1,
+      updateUsageLogs: 1,
     }
   }
 
@@ -78,6 +79,7 @@ class CalendarUsage extends Component {
       await this.setState({
         ...this.state,
         usageLogs: nextProps.assetsManager.currentAsset.usageLogs,
+        updateUsageLogs: 2,
         createUsage: false
       })
       let calendarApi = this.state.currentRow.view.calendar;
@@ -283,6 +285,7 @@ class CalendarUsage extends Component {
     await this.setState({
       ...this.state,
       usageLogs: [...usageLogs],
+      updateUsageLogs: 2,
       currentEvent: undefined,
     })
     clickInfo.event.remove()
@@ -511,7 +514,8 @@ class CalendarUsage extends Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.id !== prevState.id || nextProps.usageLogs !== prevState.usageLogs) {
+    if (nextProps.id !== prevState.id ||
+      ((nextProps.usageLogs !== prevState.usageLogs) && (prevState.updateUsageLogs == 1 || prevState.updateUsageLogs == 2))) {
       let usageLogs = [];
       let userlist = nextProps.user.list
       let departmentlist = nextProps.department.list
@@ -542,11 +546,12 @@ class CalendarUsage extends Component {
       return {
         ...prevState,
         id: nextProps.id,
-        usageLogs: nextProps.usageLogs,
+        usageLogs: prevState.updateUsageLogs == 2 ? prevState.usageLogs : nextProps.usageLogs,
         assignedToUser: nextProps.assignedToUser,
         assignedToOrganizationalUnit: nextProps.assignedToOrganizationalUnit,
         typeRegisterForUse: nextProps.typeRegisterForUse,
-        data: [...prevState.data, ...usageLogs]
+        data: [...prevState.data, ...usageLogs],
+        updateUsageLogs: 3,
       }
     } else {
       return null;

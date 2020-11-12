@@ -1059,6 +1059,7 @@ export default {
             manage_examples_1: "CRUD theo mô hình số 1",
             manage_examples_2: "CRUD theo mô hình số 2",
             manage_examples_hooks_1: "CRUD Hooks theo mô hình 1",
+            manage_examples_hooks_2: "CRUD Hooks theo mô hình 2",
 
             // Quản lý sản xuất
             manage_manufacturing: "Quản lý sản xuất",
@@ -2510,7 +2511,7 @@ export default {
                 assigned: 'Đã sắp xếp nhân viên',
                 none_select_assigned: 'Không phân loại',
                 role_in_collaborated_unit: 'Vai trò của nhân viên thuộc',
-                confirm_assigned: 'Xác nhận phân công công việc',
+                confirm_assigned: 'Xác nhận đã phân công công việc',
                 confirm_assigned_success: 'Bạn đã xác nhận phân công công việc',
                 confirm_assigned_failure: 'Bạn chưa xác nhận phân công công việc',
 
@@ -3817,13 +3818,15 @@ export default {
                     1: "green",
                     2: "blue",
                     3: "violet",
-                    4: "red"
+                    4: "red",
+                    5: "blue"
                 },
                 bill_status: {
                     1: "Chờ phê duyệt",
                     2: "Đã hoàn thành",
                     3: "Đã phê duyệt",
-                    4: "Đã hủy"
+                    4: "Đã hủy",
+                    5: "Đang thực hiện"
                 },
                 stock_book: 'Sổ kho',
                 good_receipt: 'Nhập kho',
@@ -3863,7 +3866,7 @@ export default {
                 lot: 'Lô hàng',
                 lot_number: 'Số lô',
                 difference: 'Chênh lệch',
-                receiver: 'Người nhận, giao hàng',
+                receiver: 'Người giao hàng',
                 choose_good: 'Chọn hàng hóa',
                 choose_type: 'Chọn loại phiếu',
                 choose_approver: 'Chọn người phê duyệt',
@@ -3877,6 +3880,20 @@ export default {
                     4: 'Thêm mới phiếu kiểm kê kho',
                     5: 'Thêm mới phiếu luân chuyển kho'
                 },
+                edit_title: {
+                    1: 'Chỉnh sửa phiếu nhập kho',
+                    2: 'Chỉnh sửa phiếu xuất kho',
+                    3: 'Chỉnh sửa phiếu trả hàng',
+                    4: 'Chỉnh sửa phiếu kiểm kê kho',
+                    5: 'Chỉnh sửa phiếu luân chuyển kho'
+                },
+                detail_title: {
+                    1: 'Xem chi tiết phiếu nhập kho',
+                    2: 'Xem chi tiết phiếu xuất kho',
+                    3: 'Xem chi tiết phiếu trả hàng',
+                    4: 'Xem chi tiết phiếu kiểm kê kho',
+                    5: 'Xem chi tiết phiếu luân chuyển kho'
+                },
                 infor: 'Thông tin chung',
                 name: 'Tên',
                 phone: 'Số điện thoại',
@@ -3888,6 +3905,9 @@ export default {
                 validate_customer: 'Bạn cần chọn khách hàng',
                 validate_lot: 'Bạn cần chọn lô hàng',
                 validate_quantity: 'Bạn cần nhập số lượng cho lô hàng',
+                validate_norm: 'Bạn đã nhập quá số lượng tồn kho',
+                add_lot: 'Thêm mới lô hàng',
+                expiration_date: 'Ngày hết hạn',
                 validate_norm: 'Bạn đã nhập quá số lượng tồn kho'
 
             },
@@ -4208,6 +4228,30 @@ export default {
                 create_successfully: "Tạo lịch làm việc thành công",
                 create_failed: "Tạo lịch làm việc thất bại",
                 is_existing: "Lịch đã tồn tại",
+                0: {
+                    color: "white",
+                    content: "Chưa có lệnh"
+                },
+                1: {
+                    color: "yellow",
+                    content: "Đang chờ duyệt"
+                },
+                2: {
+                    color: "black",
+                    content: "Đã phê duyệt"
+                },
+                3: {
+                    color: "orange",
+                    content: "Đang thực hiện"
+                },
+                4: {
+                    color: "green",
+                    content: "Đã hoàn thành"
+                },
+                5: {
+                    color: "red",
+                    content: "Đã hủy"
+                },
                 //mill
                 choose_all_mill: "Tất cả các xưởng",
                 manufacturing_mill_schedule_list: "Lịch sản xuất của xưởng",
