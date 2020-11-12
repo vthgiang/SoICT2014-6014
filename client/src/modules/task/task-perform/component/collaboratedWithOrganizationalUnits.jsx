@@ -10,7 +10,7 @@ class CollaboratedWithOrganizationalUnits extends Component {
 
     constructor(props) {
         super(props);
-        
+
         this.state = {
             isAssigned: false,
             responsibleEmployees: undefined,
@@ -99,7 +99,7 @@ class CollaboratedWithOrganizationalUnits extends Component {
             }
         })
     }
-    
+
     /** Chỉnh sửa người tham gia */
     handleCancelEditCollaboratedTask = () => {
         const { employeeCollaboratedWithUnit } = this.state;
@@ -137,14 +137,14 @@ class CollaboratedWithOrganizationalUnits extends Component {
     /** Lưu thay đổi nhân viên tham gia công việc phối hợp với đơn vị khác */
     saveCollaboratedTask = (taskId) => {
         const { employeeCollaboratedWithUnit, responsibleEmployees, consultedEmployees, isAssigned, unitId } = this.state;
-        
+
         let newEmployeeCollaboratedWithUnit = {
-                unitId: unitId,
-                isAssigned: isAssigned,
-                oldResponsibleEmployees: employeeCollaboratedWithUnit.responsibleEmployees,
-                oldConsultedEmployees: employeeCollaboratedWithUnit.consultedEmployees,
-                responsibleEmployees: responsibleEmployees,
-                consultedEmployees: consultedEmployees,
+            unitId: unitId,
+            isAssigned: isAssigned,
+            oldResponsibleEmployees: employeeCollaboratedWithUnit.responsibleEmployees,
+            oldConsultedEmployees: employeeCollaboratedWithUnit.consultedEmployees,
+            responsibleEmployees: responsibleEmployees,
+            consultedEmployees: consultedEmployees,
         }
         this.props.editEmployeeCollaboratedWithOrganizationalUnits(taskId, newEmployeeCollaboratedWithUnit);
 
@@ -162,7 +162,7 @@ class CollaboratedWithOrganizationalUnits extends Component {
             }
         })
     }
-    
+
     render() {
         const { task, translate } = this.props;
         const { editCollaboratedTask, employeeCollaboratedWithUnit, employeeSelectBox, unitId, responsibleEmployees, consultedEmployees, isAssigned } = this.state;
@@ -171,17 +171,17 @@ class CollaboratedWithOrganizationalUnits extends Component {
         if (employeeCollaboratedWithUnit) {
             if (employeeCollaboratedWithUnit.responsibleEmployees && employeeCollaboratedWithUnit.responsibleEmployees.length !== 0
                 && task && task.responsibleEmployees && task.responsibleEmployees.length !== 0) {
-                    responsibleEmployeesOfUnit = task.responsibleEmployees.filter(
-                        item => {
-                            if (employeeCollaboratedWithUnit.responsibleEmployees.includes(item._id)) {
-                                return true;
-                            }
+                responsibleEmployeesOfUnit = task.responsibleEmployees.filter(
+                    item => {
+                        if (employeeCollaboratedWithUnit.responsibleEmployees.includes(item._id)) {
+                            return true;
                         }
-                    )
+                    }
+                )
             }
             if (employeeCollaboratedWithUnit.consultedEmployees && employeeCollaboratedWithUnit.consultedEmployees.length !== 0
                 && task && task.consultedEmployees && task.consultedEmployees.length !== 0) {
-                    consultedEmployeesOfUnit = task.consultedEmployees.filter(
+                consultedEmployeesOfUnit = task.consultedEmployees.filter(
                     item => {
                         if (employeeCollaboratedWithUnit.consultedEmployees.includes(item._id)) {
                             return true;
@@ -196,9 +196,18 @@ class CollaboratedWithOrganizationalUnits extends Component {
                 {task && employeeSelectBox && employeeSelectBox.length !== 0
                     && <div className="description-box">
                         <h4>{translate('task.task_management.role_in_collaborated_unit')} {employeeSelectBox && employeeSelectBox.text}</h4>
-                        
+
                         {editCollaboratedTask
                             ? <div>
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        title={translate('task.task_process.export_info')}
+                                        onClick={() => this.handleCheckBoxAssigned()}
+                                        checked={isAssigned}
+                                    />
+                                    <strong>{translate('task.task_management.confirm_assigned')}</strong>
+                                </label>
                                 <div className="form-group no-line-height">
                                     <label>{translate('task.task_management.responsible')}</label>
                                     <SelectBox
@@ -223,17 +232,15 @@ class CollaboratedWithOrganizationalUnits extends Component {
                                         multiple={true}
                                     />
                                 </div>
-                                <label>
-                                    <input
-                                        type="checkbox"
-                                        title={translate('task.task_process.export_info')}
-                                        onClick={() => this.handleCheckBoxAssigned()}
-                                        checked={isAssigned}
-                                    />
-                                    <strong>{translate('task.task_management.confirm_assigned')}</strong>
-                                </label>
                             </div>
                             : <div>
+                                {/* Đã/Chưa xác nhận phân công công việc*/}
+                                {employeeCollaboratedWithUnit && employeeCollaboratedWithUnit.isAssigned
+                                    ? <strong><a className="fa fa-check" style={{ color: "green" }}></a> {translate('task.task_management.confirm_assigned_success')}</strong>
+                                    : <strong><a className="fa fa-exclamation-triangle" style={{ color: "red" }}></a> {translate('task.task_management.confirm_assigned_failure')}</strong>
+                                }
+                                <br />
+
                                 {/* Người thực hiện */}
                                 <strong>{translate('task.task_management.responsible')}:</strong>
                                 {
@@ -271,20 +278,13 @@ class CollaboratedWithOrganizationalUnits extends Component {
                                         </span>
                                         : <span>{translate('task.task_management.task_empty_employee')}</span>
                                 }
-                            
-                                <br />
-                                {/* Đã/Chưa xác nhận phân công công việc*/}
-                                {employeeCollaboratedWithUnit && employeeCollaboratedWithUnit.isAssigned
-                                    ? <strong><a className="fa fa-check" style={{ color: "green" }}></a> {translate('task.task_management.confirm_assigned_success')}</strong>
-                                    : <strong><a className="fa fa-exclamation-triangle" style={{ color: "red" }}></a> {translate('task.task_management.confirm_assigned_failure')}</strong>
-                                }
                             </div>
                         }
 
                         {editCollaboratedTask
                             ? <div class="row">
                                 <div className="col-xs-6">
-                                <button type="button" className={`btn btn-danger btn-block`} onClick={() => this.handleCancelEditCollaboratedTask()}>Hủy</button>
+                                    <button type="button" className={`btn btn-danger btn-block`} onClick={() => this.handleCancelEditCollaboratedTask()}>Hủy</button>
                                 </div>
                                 <div className="col-xs-6">
                                     <button type="button" className={`btn btn-success btn-block`} onClick={() => this.saveCollaboratedTask(task._id)}>Lưu</button>
@@ -303,7 +303,7 @@ class CollaboratedWithOrganizationalUnits extends Component {
 }
 
 function mapState(state) {
-    const {} = state;
+    const { } = state;
     return {}
 }
 
@@ -312,4 +312,4 @@ const actions = {
 }
 
 const connectedCollaboratedWithOrganizationalUnits = connect(mapState, actions)(withTranslate(CollaboratedWithOrganizationalUnits));
-export { connectedCollaboratedWithOrganizationalUnits as CollaboratedWithOrganizationalUnits}
+export { connectedCollaboratedWithOrganizationalUnits as CollaboratedWithOrganizationalUnits }

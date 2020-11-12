@@ -54,7 +54,7 @@ import { ListEducation } from '../modules/training/education-program/components/
 import { TrainingPlan } from '../modules/training/course/components/course';
 
 import { SearchEmployeeForPackage } from '../modules/human-resource/profile/employee-management/components/searchEmployeeForPackage';
-import CareerPosition from '../modules/human-resource/career-position/component';
+import CareerManagement from '../modules/human-resource/career/component';
 import Major from '../modules/human-resource/major/component';
 
 import { OrganizationalUnitKpiCreate } from "../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreate";
@@ -136,22 +136,21 @@ import PlanManagement from "../modules/plan/components";
 
 // Example
 import ExampleManagement1 from "../modules/example/example1/components";
+import ExampleManagement2 from "../modules/example/example2/components";
 
-import ExampleManagement2 from "../modules/example/example2/components-hooks";
 import ExampleManagementHooks1 from "../modules/example/example1/components-hooks";
+import ExampleManagementHooks2 from "../modules/example/example2/components-hooks";
+
 // Manufacturing Managements
 
 import ManufacturingPlan from "../modules/production/manufacturing/manufacturing-plan/components";
 import ManufacturingCommand from "../modules/production/manufacturing/manufacturing-command/components";
 import ManufacturingMill from "../modules/production/manufacturing/manufacturing-mill/components";
 import ManufacturingPerformance from "../modules/production/manufacturing/manufacturing-performance/components";
-import ManufacturingProcess from "../modules/production/manufacturing/manufacturing-process/components";
-import ManufacturingSchedule from "../modules/production/manufacturing/manufacturing-schedule/components";
+import WorkSchedule from "../modules/production/manufacturing/work-schedule/components";
 import ManufacturingWorks from "../modules/production/manufacturing/manufacturing-works/components";
 import PurchasingRequest from "../modules/production/manufacturing/purchasing-request/components";
 import ManufacturingDashboard from "../modules/production/manufacturing/manufacturing-dashboard/components";
-import manufacturingOrder from '../modules/production/manufacturing/manufacturing-plan/components/manufacturing-order';
-import purchaseOrderDetailForm from '../modules/production/order/purchase-order/components/purchaseOrderDetailForm';
 
 class Routes extends Component {
 
@@ -709,7 +708,7 @@ class Routes extends Component {
                         path={'/hr-list-career-position'}
                         pageName={'list_career_position'}
                         layout={Layout}
-                        component={CareerPosition}
+                        component={CareerManagement}
                     />
 
                     {/* kpi - routes */}
@@ -1727,6 +1726,26 @@ class Routes extends Component {
                         component={ExampleManagementHooks1}
                     />
 
+                    <PrivateRoute
+                        isLoading={this.props.example2.isLoading}
+                        key={"manage-examples-2"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-examples-hooks-2",
+                                name: "manage_examples_hooks_2",
+                                icon: "fa fa-circle",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-examples-hooks-2"}
+                        path={"/manage-examples-hooks-2"}
+                        pageName={"manage_examples_hooks_2"}
+                        layout={Layout}
+                        component={ExampleManagementHooks2}
+                    />
+
                     {/* Manufacturing-management */}
 
                     <PrivateRoute
@@ -1768,45 +1787,24 @@ class Routes extends Component {
                         layout={Layout}
                         component={ManufacturingCommand}
                     />
-
                     <PrivateRoute
-                        isLoading={false}
-                        key={"manage-manufacturing-process"}
+                        isLoading={this.props.workSchedule.isLoading}
+                        key={"manage-work-schedule"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
                             {
-                                link: "/manage-manufacturing-process",
-                                name: "manage_manufacturing_process",
-                                icon: "fa fa-line-chart",
-                            },
-                        ]}
-                        auth={auth}
-                        exact={true}
-                        link={"/manage-manufacturing-process"}
-                        path={"/manage-manufacturing-process"}
-                        pageName={"manage_manufacturing_process"}
-                        layout={Layout}
-                        component={ManufacturingProcess}
-                    />
-
-                    <PrivateRoute
-                        isLoading={false}
-                        key={"manage-manufacturing-schedule"}
-                        arrPage={[
-                            { link: "/", name: "home", icon: "fa fa-home" },
-                            {
-                                link: "/manage-manufacturing-schedule",
-                                name: "manage_manufacturing_schedule",
+                                link: "/manage-work-schedule",
+                                name: "manage_work_schedule",
                                 icon: "fa fa-calendar",
                             },
                         ]}
                         auth={auth}
                         exact={true}
-                        link={"/manage-manufacturing-schedule"}
-                        path={"/manage-manufacturing-schedule"}
-                        pageName={"manage_manufacturing_schedule"}
+                        link={"/manage-work-schedule"}
+                        path={"/manage-work-schedule"}
+                        pageName={"manage_work_schedule"}
                         layout={Layout}
-                        component={ManufacturingSchedule}
+                        component={WorkSchedule}
                     />
 
                     <PrivateRoute

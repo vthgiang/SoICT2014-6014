@@ -14,7 +14,9 @@ const initState = {
     isLoading: false,
     listLots: [],
     lotDetail: "",
+    listLotsByGood: [],
     listPaginate: [],
+    listCreateOrEdit: [],
     totalDocs: 0,
     limit: 0,
     totalPages: 0,
@@ -37,6 +39,8 @@ export function lots(state = initState, action){
         case LotConstants.GET_LOT_PAGINATE_REQUEST:
         case LotConstants.GET_LOT_DETAIL_REQUEST:
         case LotConstants.EDIT_LOT_REQUEST:
+        case LotConstants.GET_LOT_BY_GOOD_REQUEST:
+        case LotConstants.CREATE_OR_EDIT_LOT_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -89,10 +93,26 @@ export function lots(state = initState, action){
                 isLoading: false
             }
 
+        case LotConstants.GET_LOT_BY_GOOD_SUCCESS:
+            return {
+                ...state,
+                listLotsByGood: action.payload,
+                isLoading: false
+            }
+
+        case LotConstants.CREATE_OR_EDIT_LOT_SUCCESS:
+            return {
+                ...state,
+                listCreateOrEdit: action.payload,
+                isLoading: false
+            }
+
         case LotConstants.GET_LOT_FAILURE:
         case LotConstants.GET_LOT_PAGINATE_FAILURE:
         case LotConstants.GET_LOT_DETAIL_FAILURE:
         case LotConstants.GET_LOT_DETAIL_FAILURE:
+        case LotConstants.GET_LOT_BY_GOOD_FAILURE:
+        case LotConstants.CREATE_OR_EDIT_LOT_FAILURE:
             return {
                 ...state,
                 isLoading: false

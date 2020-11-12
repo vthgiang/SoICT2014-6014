@@ -66,8 +66,8 @@ class ComponentCreateForm extends Component {
         this.validateGood(material, true);
     }
 
-    validateGood = (value, willUpdateState = true) => {
-        const dataGoodByType = this.getGoodsByType();
+    validateGood = async (value, willUpdateState = true) => {
+        const dataGoodByType = await this.getGoodsByType();
 
         let msg = undefined;
         const { translate } = this.props;

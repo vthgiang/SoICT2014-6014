@@ -1185,6 +1185,19 @@ const LINKS = [{
     components: getComponentsInLink('/manage-examples-hooks-1'),
 },
 {
+    url: "/manage-examples-hooks-2",
+    description: "Quản lý Ví dụ Hooks 2",
+    category: LINK_CATEGORY.EXAMPLE.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/manage-examples-hooks-2'),
+},
+{
     url: "/manage-manufacturing-plan",
     description: "Quản lý kế hoạch sản xuất",
     category: LINK_CATEGORY.MANUFACTURING.name,
@@ -1205,24 +1218,14 @@ const LINKS = [{
     components: getComponentsInLink('/manage-manufacturing-command'),
 },
 {
-    url: "/manage-manufacturing-process",
-    description: "Quản lý tiến trình sản xuất",
-    category: LINK_CATEGORY.MANUFACTURING.name,
-    roles: [
-        ROOT_ROLES.SUPER_ADMIN.name,
-        ROOT_ROLES.ADMIN.name
-    ],
-    components: getComponentsInLink('/manage-manufacturing-process'),
-},
-{
-    url: "/manage-manufacturing-schedule",
+    url: "/manage-work-schedule",
     description: "Quản lý lịch sản xuất",
     category: LINK_CATEGORY.MANUFACTURING.name,
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name
     ],
-    components: getComponentsInLink('/manage-manufacturing-schedule'),
+    components: getComponentsInLink('/manage-work-schedule'),
 },
 {
     url: "/manage-purchasing-request",

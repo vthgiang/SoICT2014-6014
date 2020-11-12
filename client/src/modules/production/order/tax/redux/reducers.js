@@ -36,6 +36,7 @@ export function taxs(state = initState, action) {
             case TaxConstants.DISABLE_TAX_REQUEST:
             case TaxConstants.CHECK_TAX_CODE_REQUEST:
             case TaxConstants.GET_TAX_BY_CODE_REQUEST:
+            case TaxConstants.DELETE_TAX_BY_CODE_REQUEST:
                 return {
                     ...state,
                     isLoading: true
@@ -47,13 +48,13 @@ export function taxs(state = initState, action) {
                 case TaxConstants.DISABLE_TAX_FAILURE:
                 case TaxConstants.CHECK_TAX_CODE_FAILURE:
                 case TaxConstants.GET_TAX_BY_CODE_FAILURE:
+                case TaxConstants.DELETE_TAX_BY_CODE_FAILURE:
                 return {
                     ...state,
                     isLoading: false,
                     error: action.error
                 }
         case TaxConstants.GET_ALL_TAXS_SUCCESS:
-            console.log("PAYLOAD", action.payload.allTaxs);
                 return {
                     ...state,
                     isLoading: false,
@@ -93,6 +94,16 @@ export function taxs(state = initState, action) {
                     isLoading: false
                 }
             case TaxConstants.DISABLE_TAX_SUCCESS:
+                index = findIndex(state.listTaxs, action.payload);
+
+                if(index !== -1){
+                    state.listTaxs.splice(index, 1);
+                }
+                return {
+                    ...state,
+                    isLoading: false
+            }
+            case TaxConstants.DELETE_TAX_BY_CODE_SUCCESS:
                 index = findIndex(state.listTaxs, action.payload);
 
                 if(index !== -1){

@@ -29,6 +29,9 @@ export function discounts(state = initState, action) {
     switch (action.type) {
         case DiscountConstants.CREATE_DISCOUNT_REQUEST:
         case DiscountConstants.GET_ALL_DISCOUNTS_REQUEST:
+        case DiscountConstants.EDIT_DISCOUNT_REQUEST:
+        case DiscountConstants.CHANGE_DISCOUNT_STATUS_REQUEST:
+        case DiscountConstants.DELETE_DISCOUNT_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -36,6 +39,9 @@ export function discounts(state = initState, action) {
         
         case DiscountConstants.CREATE_DISCOUNT_FAILURE:
         case DiscountConstants.GET_ALL_DISCOUNTS_FAILURE:
+        case DiscountConstants.EDIT_DISCOUNT_FAILURE:
+        case DiscountConstants.CHANGE_DISCOUNT_STATUS_FAILURE:
+        case DiscountConstants.DELETE_DISCOUNT_FAILURE:
             return {
                 ...state,
                 isLoading: false,
@@ -43,7 +49,6 @@ export function discounts(state = initState, action) {
             }
         
         case DiscountConstants.GET_ALL_DISCOUNTS_SUCCESS: 
-            console.log("REDUCER", action.payload);
             return {
                 ...state,
                 isLoading: false,
@@ -66,6 +71,35 @@ export function discounts(state = initState, action) {
                     ...state.listDiscounts,
                     action.payload.discount
                 ],
+                isLoading: false
+            }
+        case DiscountConstants.EDIT_DISCOUNT_SUCCESS:
+            index = findIndex(state.listDiscounts, action.payload.discount.code);
+                if (index !== -1) {
+                    state.listDiscounts[index] = action.payload.discount
+                }
+                return {
+                    ...state,
+                    isLoading: false
+            }
+        case DiscountConstants.CHANGE_DISCOUNT_STATUS_SUCCESS:
+            index = findIndex(state.listDiscounts, action.payload);
+
+            if(index !== -1){
+                state.listDiscounts.splice(index, 1);
+            }
+            return {
+                ...state,
+                isLoading: false
+            }
+        case DiscountConstants.DELETE_DISCOUNT_SUCCESS:
+            index = findIndex(state.listDiscounts, action.payload);
+
+            if(index !== -1){
+                state.listDiscounts.splice(index, 1);
+            }
+            return {
+                ...state,
                 isLoading: false
             }
         default:

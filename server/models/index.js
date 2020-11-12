@@ -19,6 +19,8 @@ module.exports = {
 
     Major: require('./human-resource/major.model'),
     CareerPosition: require('./human-resource/careerPosition.model'),
+    CareerField: require('./human-resource/careerField.model'),
+    CareerAction: require('./human-resource/careerAction.model'),
 
     EmployeeKpi: require('./kpi/employeeKpi.model'),
     EmployeeKpiSet: require('./kpi/employeeKpiSet.model'),
@@ -70,7 +72,7 @@ module.exports = {
     Proposal: require('./production/warehouse/proposal.model'),
     Partner: require('./production/warehouse/partner.model'),
     Good: require('./production/common-production/good.model'),
-    Lot: require('./production/warehouse/lot.model'),
+    Lot: require('./production/common-production/lot.model'),
     Category: require('./production/common-production/category.model'),
     Bill: require('./production/warehouse/bill.model'),
 
@@ -94,7 +96,7 @@ module.exports = {
     Quote: require('./production/order/quote.model'),
     Tax: require('./production/order/tax.model'),
     SalesOrder: require('./production/order/salesOrder.model'),
-    ServiceLevelAgreement: require('./production/order/serviceLevelAgreement'),
+    ServiceLevelAgreement: require('./production/order/serviceLevelAgreement.model'),
     PurchaseOrder: require('./production/order/purchseOrder.model'),
 
 
@@ -112,4 +114,5 @@ module.exports = {
     ManufacturingPlan: require('./production/manufacturing/manufacturingPlan.model'),
     ManufacturingCommand: require('./production/manufacturing/manufacturingCommand.model'),
     PurchasingRequest: require('./production/manufacturing/purchasingRequest.model'),
+    WorkSchedule: require('./production/manufacturing/workSchedule.model'),
 }

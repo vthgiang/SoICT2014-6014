@@ -7,7 +7,8 @@ export const TaxServices = {
     updateTax,
     disableTax,
     checkTaxCode,
-    getTaxByCode
+    getTaxByCode,
+    deleteTax,
 }
 
 function createNewTax(data) {
@@ -88,6 +89,19 @@ function getTaxByCode (code) {
             params: code
         },
         false,
+        true,
+        "manage_order.tax"
+    )
+}
+
+function deleteTax(code) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/tax`,
+            method: "DELETE",
+            params: code
+        },
+        true,
         true,
         "manage_order.tax"
     )

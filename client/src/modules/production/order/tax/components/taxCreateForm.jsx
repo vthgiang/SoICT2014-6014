@@ -12,7 +12,7 @@ class TaxCreateForm extends Component {
     constructor(props) {
         super(props);
         this.EMPTY_GOOD = {
-            goods: "",
+            goods: [],
             percent: "",
         };
         this.state = {
@@ -27,18 +27,48 @@ class TaxCreateForm extends Component {
             allGoodsSelected: [],
             type: "product",
             goodOptionsState: [],
+            isSelectAll: true,
         };
     }
 
     componentDidMount() {
-        let creator = {};
-        creator.id = this.props.auth.user._id;
-        creator.name = this.props.auth.user.name;
+        // let creator = {};
+        // creator.id = this.props.auth.user._id;
+        // creator.name = this.props.auth.user.name;
         this.props.getAllGoodsByType({ type: this.state.type });
-        this.setState({
-            creator,
-        });
+        // this.setState({
+        //     creator,
+        // });
     }
+
+    getAllGoods = () => {
+        const { translate, goods } = this.props;
+        const { isSelectAll } = this.state;
+        let listGoods = [
+            isSelectAll
+                ? {
+                      value: "all",
+                      text: "CHỌN TẤT CẢ",
+                  }
+                : {
+                      value: "unselected",
+                      text: "BỎ CHỌN TẤT CẢ",
+                  },
+        ];
+
+        const { listGoodsByType } = goods;
+
+        if (listGoodsByType) {
+            listGoodsByType.map((item) => {
+                listGoods.push({
+                    value: item._id,
+                    text: item.code + "-" + item.name,
+                });
+            });
+        }
+
+        return listGoods;
+    };
 
     handleClickCreateCode = () => {
         this.setState((state) => {
@@ -75,33 +105,64 @@ class TaxCreateForm extends Component {
         this.validatePercent(value, true);
     };
 
-    handleGoodsChange = (value) => {
-        if (value.length === 0) {
-            value = null;
-        }
-        this.validateGoods(value, true);
-    };
+    handleGoodsChange = async (goods) => {
+        let { goodOptionsState, allGoodsSelected } = this.state;
 
-    handleSubmitGoods = (e) => {
-        e.preventDefault();
-
-        let { goodsSelected, allGoodsSelected, goodOptionsState } = this.state;
-
-        //Nếu chưa có goodOptionsState thì thêm vào
-        if (!goodOptionsState.length && !allGoodsSelected.length) {
-            goodOptionsState = this.props.goods.listGoodsByType.map((item) => {
-                return {
-                    value: item._id,
-                    text: item.name,
-                    code: item.code,
-                };
+        let checkSelectedAll = [];
+        if (goods) {
+            checkSelectedAll = await goods.filter((item) => {
+                return item === "all" || item === "unselected";
             });
         }
 
+        if (checkSelectedAll.length && checkSelectedAll[0] === "all" && goods) {
+            if (!goodOptionsState.length && !allGoodsSelected.length) {
+                goods = await this.getAllGoods().map((item) => {
+                    return item.value;
+                });
+            } else {
+                goods = await goodOptionsState.map((item) => {
+                    return item.value;
+                });
+            }
+
+            goods.splice(0, 1); //lấy phần tử all ra khỏi mảng
+        } else if (checkSelectedAll.length && checkSelectedAll[0] === "unselected" && goods) {
+            goods = [];
+        }
+
+        if (goods && goods.length === this.getAllGoods().length - 1) {
+            //Tất cả các mặt hàng đã được chọn
+            this.setState({
+                isSelectAll: false,
+            });
+        } else if (!this.state.isSelectAll) {
+            this.setState({
+                isSelectAll: true,
+            });
+        }
+
+        this.state.goodsSelected.goods = goods;
+        await this.setState((state) => {
+            return {
+                ...state,
+                goodsError: this.validateGoods(goods, true),
+            };
+        });
+    };
+
+    filterOption = (goodsSelectedNeedFilter) => {
+        let { goodOptionsState, allGoodsSelected } = this.state;
+        //Nếu chưa có goodOptionsState thì thêm vào
+        if (!goodOptionsState.length && !allGoodsSelected.length) {
+            goodOptionsState = this.getAllGoods();
+            // goodOptionsState.splice(0, 1);
+        }
+
         //Lọc bỏ những option đã được chọn
-        let mapOption = goodOptionsState.filter((good) => {
+        let optionsFilter = goodOptionsState.filter((good) => {
             let check = false;
-            goodsSelected.goods.forEach((e) => {
+            goodsSelectedNeedFilter.goods.forEach((e) => {
                 if (e === good.value) {
                     check = true;
                 }
@@ -111,6 +172,20 @@ class TaxCreateForm extends Component {
             }
         });
 
+        if (optionsFilter.length === 1) {
+            //Nếu không còn phần tử nào thì lấy phần tử chọn tất cả ra khỏi mảng
+            optionsFilter = [];
+        }
+        return optionsFilter;
+    };
+
+    handleSubmitGoods = (e) => {
+        e.preventDefault();
+
+        let { goodsSelected, allGoodsSelected, goodOptionsState } = this.state;
+
+        goodOptionsState = this.filterOption(goodsSelected); //Lọc bỏ những options đã được chọn
+
         goodsSelected.key = goodsSelected.goods[0]; //Thêm key để có thể xóa
         allGoodsSelected.push(goodsSelected);
 
@@ -118,7 +193,8 @@ class TaxCreateForm extends Component {
             ...this.state,
             allGoodsSelected,
             goodsSelected: Object.assign({}, this.EMPTY_GOOD),
-            goodOptionsState: mapOption,
+            goodOptionsState,
+            isSelectAll: true,
         });
     };
 
@@ -128,12 +204,15 @@ class TaxCreateForm extends Component {
             return {
                 ...state,
                 goodsSelected: Object.assign({}, this.EMPTY_GOOD),
+                isSelectAll: true,
+                goodsError: undefined,
+                percentError: undefined,
             };
         });
     };
 
-    handleDeleteGoodsTaxCollection = (item) => {
-        let { allGoodsSelected, goodOptionsState } = this.state;
+    reOptionsSelected = (item) => {
+        let { goodOptionsState } = this.state;
         //Các mặt hàng bị xóa được trả về option, có thể tiếp tục lựa chọn mặt hàng này
         let OptionsOfReOption = item.goods.map((good) => {
             let option = {};
@@ -150,7 +229,20 @@ class TaxCreateForm extends Component {
         });
 
         //Thêm lại các phần tử vừa bị xóa vào select option
+        if (goodOptionsState.length === 0) {
+            goodOptionsState.push({
+                value: "all",
+                text: "CHỌN TẤT CẢ",
+            });
+        }
         goodOptionsState = goodOptionsState.concat(OptionsOfReOption);
+        return goodOptionsState;
+    };
+
+    handleDeleteGoodsTaxCollection = (item) => {
+        let { allGoodsSelected, goodOptionsState } = this.state;
+
+        goodOptionsState = this.reOptionsSelected(item);
 
         //Xóa các phần tử bị xóa
         let collections = allGoodsSelected.filter((collection) => {
@@ -163,6 +255,45 @@ class TaxCreateForm extends Component {
                 allGoodsSelected: collections,
                 goodOptionsState,
             };
+        });
+    };
+
+    handleEditGoodsTaxCollection = (item, index) => {
+        let { goodOptionsState } = this.state;
+        goodOptionsState = this.reOptionsSelected(item);
+        this.setState({
+            editGoodsTaxCollection: true,
+            goodOptionsState,
+            goodsSelected: { ...item },
+            indexEditting: index,
+        });
+    };
+
+    handleCancelEditGoodTaxCollection = (e) => {
+        e.preventDefault();
+        let { goodOptionsState, allGoodsSelected, indexEditting } = this.state;
+        goodOptionsState = this.filterOption(allGoodsSelected[indexEditting]);
+        this.setState({
+            editGoodsTaxCollection: false,
+            goodsSelected: Object.assign({}, this.EMPTY_GOOD),
+            goodOptionsState,
+            isSelectAll: true,
+            goodsError: undefined,
+            percentError: undefined,
+        });
+    };
+
+    handleSaveEditGoodTaxCollection = () => {
+        let { goodsSelected, indexEditting, goodOptionsState, allGoodsSelected } = this.state;
+        goodOptionsState = this.filterOption(goodsSelected); //Lọc bỏ những options đã được chọn
+        allGoodsSelected[indexEditting] = goodsSelected;
+        this.setState({
+            ...this.state,
+            allGoodsSelected,
+            goodsSelected: Object.assign({}, this.EMPTY_GOOD),
+            goodOptionsState,
+            isSelectAll: true,
+            editGoodsTaxCollection: false,
         });
     };
 
@@ -207,56 +338,11 @@ class TaxCreateForm extends Component {
         }
     };
 
-    getGoodOptions = () => {
-        let { allGoodsSelected, goodOptionsState } = this.state;
-
-        let goodOptions =
-            goodOptionsState.length || allGoodsSelected.length
-                ? goodOptionsState
-                : this.props.goods.listGoodsByType.map((item) => {
-                      return {
-                          value: item._id,
-                          text: item.name,
-                          code: item.code,
-                      };
-                  });
-
-        //Xếp theo alphabet
-        goodOptions.sort((a, b) => {
-            if (a.text.toLowerCase() < b.text.toLowerCase()) {
-                return -1;
-            } else {
-                return 1;
-            }
-        });
-
-        console.log("Goo", goodOptions);
-
-        return goodOptions;
-    };
-
-    checkDisabledSelectGoods = () => {
-        let { allGoodsSelected, goodOptionsState } = this.state;
-
-        let disabledSelectGoods = !goodOptionsState.length && allGoodsSelected.length ? true : false;
-        return disabledSelectGoods;
-    };
-
     validateGoods = (goods, willUpdateState = true) => {
         let msg = undefined;
-        if (!goods) {
+        if (!goods || goods.length === 0) {
             const { translate } = this.props;
             msg = translate("manage_order.tax.choose_at_least_one_item");
-        }
-
-        if (willUpdateState) {
-            this.state.goodsSelected.goods = goods;
-            this.setState((state) => {
-                return {
-                    ...state,
-                    goodsError: msg,
-                };
-            });
         }
         return msg;
     };
@@ -273,7 +359,6 @@ class TaxCreateForm extends Component {
     isFormValidated = () => {
         const { taxName, allGoodsSelected, percent } = this.state;
         let { translate } = this.props;
-        console.log("ALL GOOD", allGoodsSelected);
         if (!ValidationHelper.validateEmpty(translate, taxName).status || this.validateGoods(allGoodsSelected, false)) {
             return false;
         }
@@ -367,14 +452,22 @@ class TaxCreateForm extends Component {
         }
     };
     render() {
-        let { taxName, code, description, creator, goodsSelected, allGoodsSelected, currentRow, nameTaxError, percentError, goodsError } = this.state;
-
-        let goodOptions = this.getGoodOptions();
-        let disabledSelectGoods = this.checkDisabledSelectGoods();
+        let {
+            taxName,
+            code,
+            description,
+            creator,
+            goodsSelected,
+            allGoodsSelected,
+            currentRow,
+            nameTaxError,
+            percentError,
+            goodsError,
+            goodOptionsState,
+            editGoodsTaxCollection,
+        } = this.state;
 
         const { translate } = this.props;
-
-        console.log("CREATE STATE", this.state);
 
         return (
             <React.Fragment>
@@ -442,25 +535,11 @@ class TaxCreateForm extends Component {
                                     {translate("manage_order.tax.select_goods")}
                                     <span className="attention"> * </span>
                                 </label>
-                                {/* <SelectMulti
-                                    id={`select-multi-good-tax`}
-                                    multiple="multiple"
-                                    options={{
-                                        nonSelectedText: translate("manage_order.tax.select_goods"),
-                                        allSelectedText: translate("manage_order.tax.selected_all"),
-                                    }}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    items={goodOptions}
-                                    value={goodsSelected.goods}
-                                    onChange={this.handleGoodsChange}
-                                    disabled={disabledSelectGoods}
-                                /> */}
                                 <SelectBox
-                                    id={`select-multi-good-tax`}
+                                    id={`select-create-multi-good-tax`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
-                                    items={goodOptions}
+                                    items={!goodOptionsState.length && !allGoodsSelected.length ? this.getAllGoods() : goodOptionsState}
                                     onChange={this.handleGoodsChange}
                                     multiple={true}
                                     value={goodsSelected.goods}
@@ -482,14 +561,34 @@ class TaxCreateForm extends Component {
                                 <ErrorLabel content={percentError} />
                             </div>
                             <div className={"pull-right"} style={{ padding: 10 }}>
-                                <button
-                                    className="btn btn-success"
-                                    style={{ marginLeft: "10px" }}
-                                    disabled={!this.isGoodsValidated()}
-                                    onClick={this.handleSubmitGoods}
-                                >
-                                    {translate("manage_order.tax.add")}
-                                </button>
+                                {editGoodsTaxCollection ? (
+                                    <React.Fragment>
+                                        <button
+                                            className="btn btn-success"
+                                            onClick={this.handleCancelEditGoodTaxCollection}
+                                            style={{ marginLeft: "10px" }}
+                                        >
+                                            Hủy chỉnh sửa
+                                        </button>
+                                        <button
+                                            className="btn btn-success"
+                                            disabled={!this.isGoodsValidated()}
+                                            onClick={this.handleSaveEditGoodTaxCollection}
+                                            style={{ marginLeft: "10px" }}
+                                        >
+                                            Lưu
+                                        </button>
+                                    </React.Fragment>
+                                ) : (
+                                    <button
+                                        className="btn btn-success"
+                                        style={{ marginLeft: "10px" }}
+                                        disabled={!this.isGoodsValidated()}
+                                        onClick={this.handleSubmitGoods}
+                                    >
+                                        {translate("manage_order.tax.add")}
+                                    </button>
+                                )}
                                 <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearGood}>
                                     {translate("manage_order.tax.reset")}
                                 </button>
@@ -515,13 +614,25 @@ class TaxCreateForm extends Component {
                                                     </td>
                                                     <td style={{ textAlign: "center" }}>
                                                         <a
-                                                            onClick={() => this.handleDeleteGoodsTaxCollection(item)}
-                                                            className="delete text-red"
-                                                            style={{ width: "5px" }}
-                                                            title={translate("manage_order.tax.delete_list_goods")}
+                                                            href="#abc"
+                                                            className="edit"
+                                                            title="Sửa"
+                                                            onClick={() => this.handleEditGoodsTaxCollection(item, index)}
                                                         >
-                                                            <i className="material-icons">delete</i>
+                                                            <i className="material-icons">edit</i>
                                                         </a>
+                                                        {!editGoodsTaxCollection ? (
+                                                            <a
+                                                                onClick={() => this.handleDeleteGoodsTaxCollection(item)}
+                                                                className="delete text-red"
+                                                                style={{ width: "5px" }}
+                                                                title={translate("manage_order.tax.delete_list_goods")}
+                                                            >
+                                                                <i className="material-icons">delete</i>
+                                                            </a>
+                                                        ) : (
+                                                            ""
+                                                        )}
                                                     </td>
                                                 </tr>
                                             );

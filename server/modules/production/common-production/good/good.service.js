@@ -89,8 +89,12 @@ exports.createGoodByType = async (company, data, portal) => {
             }
         }),
         description: data.description,
-        quantity: data.quantity ? data.quantity : 0
+        quantity: data.quantity ? data.quantity : 0,
+        pricePerBaseUnit: data.pricePerBaseUnit,
+        salesPriceVariance: data.salesPriceVariance
     });
+
+    console.log("good", good);
 
     return await Good(connect(DB_CONNECTION, portal))
         .findById(good._id)
@@ -138,7 +142,10 @@ exports.editGood = async (id, data, portal) => {
         }),
         good.description = data.description,
         good.quantity = data.quantity
+        good.pricePerBaseUnit = data.pricePerBaseUnit,
+        good.salesPriceVariance = data.salesPriceVariance
     await good.save();
+    console.log("data", good);
 
     return await Good(connect(DB_CONNECTION, portal))
         .findById(id)

@@ -460,7 +460,7 @@ class AssetEditForm extends Component {
                                 handleChange={this.handleChange}
                                 cost={cost}
                                 residualValue={residualValue}
-                                startDepreciation={moment(startDepreciation).format('DD-MM-YYYY')}
+                                startDepreciation={startDepreciation && moment(startDepreciation).format('DD-MM-YYYY')}
                                 endDepreciation={this.addMonth(startDepreciation, usefulLife)}
                                 usefulLife={usefulLife}
                                 depreciationType={depreciationType}
