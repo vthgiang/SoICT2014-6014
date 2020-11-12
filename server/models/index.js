@@ -70,7 +70,7 @@ module.exports = {
     Proposal: require('./production/warehouse/proposal.model'),
     Partner: require('./production/warehouse/partner.model'),
     Good: require('./production/common-production/good.model'),
-    Lot: require('./production/warehouse/lot.model'),
+    Lot: require('./production/common-production/lot.model'),
     Category: require('./production/common-production/category.model'),
     Bill: require('./production/warehouse/bill.model'),
 

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
-import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from '../../../../../common-components';
+import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from '../../../../../../common-components';
 
-class QuantityEditForm extends Component {
+class QuantityLotGoodIssue extends Component {
     constructor(props) {
         super(props);
         this.EMPTY_LOT = {
@@ -48,14 +48,15 @@ class QuantityEditForm extends Component {
 
         if(lots.listLotsByGood && lots.listLotsByGood.length > 0) {
             lots.listLotsByGood.map(item => {
+                let stock = item.stocks.filter(x => x.stock._id === this.props.stock);
+                let quantity = stock[0] ? stock[0].quantity : 0;
                 lotArr.push({ 
                     value: item._id, 
                     text: item.name,
-                    quantity: item.quantity
+                    quantity: quantity,
                 });
             })
         }
-
         return lotArr;
     }
 
@@ -122,7 +123,7 @@ class QuantityEditForm extends Component {
         return false
     }
 
-    isMaterialsValidated = () => {
+    isLotsValidated = () => {
         let result =
             this.validateQuantity(this.state.lot.quantity, false) &&
             this.validateLot(this.state.lot.lot, false)
@@ -215,15 +216,15 @@ class QuantityEditForm extends Component {
     }
 
     render() {
-        const { translate, group } = this.props;
+        const { translate, group, good } = this.props;
         const { errorLot, lot, errorQuantity, lots } = this.state;
         const dataLots = this.getLotsByGood();
 
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID={`modal-edit-quantity`}
-                    formID={`form-edit-quantity`}
+                    modalID={`modal-add-quantity-issue`}
+                    formID={`form-add-quantity-issue`}
                     title="Thêm số lượng theo lô"
                     msg_success={translate('manage_warehouse.bill_management.add_success')}
                     msg_faile={translate('manage_warehouse.bill_management.add_faile')}
@@ -231,14 +232,14 @@ class QuantityEditForm extends Component {
                     func={this.save}
                     size="50"
                 >
-                <form id={`form-edit-quantity`}>
+                <form id={`form-add-quantity-issue`}>
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border">{translate('manage_warehouse.bill_management.lot')}</legend>
 
                         <div className={`form-group ${!errorLot ? "" : "has-error"}`}>
                             <label>{translate('manage_warehouse.bill_management.lot_number')}<span className="attention">*</span></label>
                             <SelectBox
-                                id={`select-lot-by-${group}`}
+                                id={`select-lot-issue-by-${group}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 value={lot.lot ? lot.lot._id : '1'}
@@ -261,9 +262,9 @@ class QuantityEditForm extends Component {
                             {this.state.editInfo ?
                                 <React.Fragment>
                                     <button className="btn btn-success" onClick={this.handleCancelEditLot} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
-                                    <button className="btn btn-success" disabled={!this.isMaterialsValidated()} onClick={this.handleSaveEditLot} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
+                                    <button className="btn btn-success" disabled={!this.isLotsValidated()} onClick={this.handleSaveEditLot} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
                                 </React.Fragment> :
-                                <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isMaterialsValidated()} onClick={this.handleAddLot}>{translate('task_template.add')}</button>
+                                <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isLotsValidated()} onClick={this.handleAddLot}>{translate('task_template.add')}</button>
                             }
                             <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearLot}>{translate('task_template.delete')}</button>
                         </div>
@@ -276,7 +277,7 @@ class QuantityEditForm extends Component {
                                     <th>{translate('task_template.action')}</th>
                                 </tr>
                             </thead>
-                            <tbody id={`quantity-bill-lot-edit-${group}`}>
+                            <tbody id={`quantity-bill-lot-create-${group}`}>
                                 {
                                     (typeof lots !== 'undefined' && lots.length > 0) ?
                                         lots.map((x, index) =>
@@ -306,4 +307,4 @@ const mapDispatchToProps = {
     
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuantityEditForm));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuantityLotGoodIssue));

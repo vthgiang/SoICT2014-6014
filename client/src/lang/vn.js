@@ -3817,13 +3817,15 @@ export default {
                     1: "green",
                     2: "blue",
                     3: "violet",
-                    4: "red"
+                    4: "red",
+                    5: "blue"
                 },
                 bill_status: {
                     1: "Chờ phê duyệt",
                     2: "Đã hoàn thành",
                     3: "Đã phê duyệt",
-                    4: "Đã hủy"
+                    4: "Đã hủy",
+                    5: "Đang thực hiện"
                 },
                 stock_book: 'Sổ kho',
                 good_receipt: 'Nhập kho',
@@ -3863,7 +3865,7 @@ export default {
                 lot: 'Lô hàng',
                 lot_number: 'Số lô',
                 difference: 'Chênh lệch',
-                receiver: 'Người nhận, giao hàng',
+                receiver: 'Người giao hàng',
                 choose_good: 'Chọn hàng hóa',
                 choose_type: 'Chọn loại phiếu',
                 choose_approver: 'Chọn người phê duyệt',
@@ -3877,6 +3879,20 @@ export default {
                     4: 'Thêm mới phiếu kiểm kê kho',
                     5: 'Thêm mới phiếu luân chuyển kho'
                 },
+                edit_title: {
+                    1: 'Chỉnh sửa phiếu nhập kho',
+                    2: 'Chỉnh sửa phiếu xuất kho',
+                    3: 'Chỉnh sửa phiếu trả hàng',
+                    4: 'Chỉnh sửa phiếu kiểm kê kho',
+                    5: 'Chỉnh sửa phiếu luân chuyển kho'
+                },
+                detail_title: {
+                    1: 'Xem chi tiết phiếu nhập kho',
+                    2: 'Xem chi tiết phiếu xuất kho',
+                    3: 'Xem chi tiết phiếu trả hàng',
+                    4: 'Xem chi tiết phiếu kiểm kê kho',
+                    5: 'Xem chi tiết phiếu luân chuyển kho'
+                },
                 infor: 'Thông tin chung',
                 name: 'Tên',
                 phone: 'Số điện thoại',
@@ -3888,7 +3904,9 @@ export default {
                 validate_customer: 'Bạn cần chọn khách hàng',
                 validate_lot: 'Bạn cần chọn lô hàng',
                 validate_quantity: 'Bạn cần nhập số lượng cho lô hàng',
-                validate_norm: 'Bạn đã nhập quá số lượng tồn kho'
+                validate_norm: 'Bạn đã nhập quá số lượng tồn kho',
+                add_lot: 'Thêm mới lô hàng',
+                expiration_date: 'Ngày hết hạn'
                 
             },
             inventory_management: {

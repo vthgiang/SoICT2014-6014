@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
-import { DialogModal, SelectBox, Errorstrong, ButtonModal } from '../../../../../common-components';
+import { DialogModal, SelectBox, Errorstrong, ButtonModal } from '../../../../../../common-components';
 import { translate } from 'react-redux-multilingual/lib/utils';
 
 import QuantityLotDetailForm from './quantityLotDetail';
@@ -54,7 +54,7 @@ class BillDetailForm extends Component {
                 <DialogModal
                     modalID={`modal-detail-bill`}
                     formID={`form-detail-bill`}
-                    title={translate('manage_warehouse.bill_management.bill_detail')}
+                    title={translate(`manage_warehouse.bill_management.detail_title.${billDetail.group}`)}
                     msg_success={translate('manage_warehouse.bin_location_management.add_success')}
                     msg_faile={translate('manage_warehouse.bin_location_management.add_faile')}
                     size={100}

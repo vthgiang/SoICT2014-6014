@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
-import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from '../../../../../common-components';
-import QuantityEditForm from './quantityEditFrom';
-import { generateCode } from '../../../../../helpers/generateCode';
-import { LotActions } from '../../inventory-management/redux/actions';
-import { BillActions } from '../redux/actions';
+import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from '../../../../../../common-components';
+import QuantityLotGoodReceipt from './quantityLotGoodReceipt';
+import { generateCode } from '../../../../../../helpers/generateCode';
+import { LotActions } from '../../../inventory-management/redux/actions';
+import { BillActions } from '../../redux/actions';
 
-class BillEditForm extends Component {
+class GoodReceiptEditForm extends Component {
     constructor(props) {
         super(props);
         this.EMPTY_GOOD = {
@@ -19,7 +19,6 @@ class BillEditForm extends Component {
         }
         this.state = {
             list: [],
-            code: generateCode("ST"),
             lots: [],
             listGood: [],
             good: Object.assign({}, this.EMPTY_GOOD),
@@ -66,14 +65,7 @@ class BillEditForm extends Component {
     }
 
     addQuantity = () => {
-        window.$('#modal-edit-quantity').modal('show');
-    }
-
-    handleClickCreate = () => {
-        const value = generateCode("BI");
-        this.setState({
-            code: value
-        });
+        window.$('#modal-edit-quantity-receipt').modal('show');
     }
 
     getApprover = () => {
@@ -121,39 +113,11 @@ class BillEditForm extends Component {
     getType = () => {
         const { group, translate} = this.props;
         let typeArr = [];
-        if(group === '1') {
-            typeArr = [
-                { value: '0', text: translate('manage_warehouse.bill_management.choose_type')},
-                { value: '1', text: translate('manage_warehouse.bill_management.billType.1')},
-                { value: '2', text: translate('manage_warehouse.bill_management.billType.2')},
-            ]
-        }
-        if(group === '2') {
-            typeArr = [
-                { value: '0', text: translate('manage_warehouse.bill_management.choose_type')},
-                { value: '3', text: translate('manage_warehouse.bill_management.billType.3')},
-                { value: '4', text: translate('manage_warehouse.bill_management.billType.4')},
-            ]
-        }
-        if(group === '3') {
-            typeArr = [
-                { value: '0', text: translate('manage_warehouse.bill_management.choose_type')},
-                { value: '7', text: translate('manage_warehouse.bill_management.billType.7')},
-            ]
-        }
-        if(group === '4') {
-            typeArr = [
-                { value: '0', text: translate('manage_warehouse.bill_management.choose_type')},
-                { value: '5', text: translate('manage_warehouse.bill_management.billType.5')},
-                { value: '6', text: translate('manage_warehouse.bill_management.billType.6')},
-            ]
-        }
-        if(group === '5') {
-            typeArr = [
-                { value: '0', text: translate('manage_warehouse.bill_management.choose_type')},
-                { value: '8', text: translate('manage_warehouse.bill_management.billType.8')},
-            ]
-        }
+        typeArr = [
+            { value: '0', text: translate('manage_warehouse.bill_management.choose_type')},
+            { value: '1', text: translate('manage_warehouse.bill_management.billType.1')},
+            { value: '2', text: translate('manage_warehouse.bill_management.billType.2')},
+        ]
         return typeArr;
     }
 
@@ -241,7 +205,7 @@ class BillEditForm extends Component {
             this.setState(state => {
                 return {
                     ...state,
-                    customer: value,
+                    supplier: value,
                     errorCustomer: msg,
                 }
             })
@@ -313,7 +277,7 @@ class BillEditForm extends Component {
             this.validateType(this.state.type, false) &&
             this.validateStock(this.state.fromStock, false) &&
             this.validateApprover(this.state.approver, false) &&
-            this.validatePartner(this.state.customer, false)
+            this.validatePartner(this.state.supplier, false)
         return result;
     }
 
@@ -334,16 +298,28 @@ class BillEditForm extends Component {
 
     handleQuantityChange = (e) => {
         let value = e.target.value;
+        this.state.good.quantity = value;
         this.setState(state => {
             return {
-                ...state,
-                quantity: value
+                ...state
             }
         })
     }
 
     handleAddGood = async (e) => {
         e.preventDefault();
+        const { good } = this.state;
+        const { lots } = this.props;
+        const { listCreateOrEdit } = lots;
+        if(good.lots.length > 0) {
+            for(let i = 0; i < good.lots.length; i++) {
+                for(let j = 0; j < listCreateOrEdit.length; j++) {
+                    if(good.lots[i].name === listCreateOrEdit[j].name) {
+                        good.lots[i].lot = listCreateOrEdit[j]._id;
+                    }
+                }
+            }
+        }
         await this.setState(state => {
             let listGood = [ ...(this.state.listGood), state.good];
             return {
@@ -360,20 +336,33 @@ class BillEditForm extends Component {
         this.setState(state => {
             return {
                 ...state,
-                good: Object.assign({}, this.EMPTY_GOOD)
+                good: Object.assign({}, this.EMPTY_GOOD),
+                lots: []
             }
         })
     }
 
     handleSaveEditGood = async (e) => {
         e.preventDefault();
-        const { indexInfo, listGood } = this.state;
+        const { indexInfo, listGood, good } = this.state;
+        const { lots } = this.props;
+        const { listCreateOrEdit } = lots;
+        if(good.lots.length > 0) {
+            for(let i = 0; i < good.lots.length; i++) {
+                for(let j = 0; j < listCreateOrEdit.length; j++) {
+                    if(good.lots[i].name === listCreateOrEdit[j].name) {
+                        good.lots[i].lot = listCreateOrEdit[j]._id;
+                    }
+                }
+            }
+        }
         let newListGood;
         if(listGood){
             newListGood = listGood.map((item, index) => {
                 return (index === indexInfo) ? this.state.good : item;
             })
         }
+
         await this.setState(state => {
             return {
                 ...state,
@@ -391,7 +380,8 @@ class BillEditForm extends Component {
             return {
                 ...state,
                 editInfo: false,
-                good: Object.assign({}, this.EMPTY_GOOD)
+                good: Object.assign({}, this.EMPTY_GOOD),
+                lots: []
             }
         })
     }
@@ -409,7 +399,6 @@ class BillEditForm extends Component {
         })
 
         const { fromStock } = this.state;
-        console.log(fromStock, good);
 
         await this.props.getLotsByGood({ good: good.good._id, stock: fromStock });
     }
@@ -448,11 +437,9 @@ class BillEditForm extends Component {
                 status: nextProps.status,
                 group: nextProps.group,
                 type: nextProps.type,
-                toStock: nextProps.toStock,
                 users: nextProps.users,
                 approver: nextProps.approver,
                 description: nextProps.description,
-                customer: nextProps.customer,
                 supplier: nextProps.supplier,
                 name: nextProps.name,
                 phone: nextProps.phone,
@@ -495,9 +482,14 @@ class BillEditForm extends Component {
         })
     }
 
+    handleAddLots = (e) => {
+        e.preventDefault();
+        window.$('#modal-edit-quantity-receipt').modal('show');
+    }
+
     render() {
         const { translate, group } = this.props;
-        const { lots, listGood, good, code, approver, status, customer, fromStock, type, name, phone, email, address, description, errorStock, errorType, errorApprover, errorCustomer, quantity } = this.state;
+        const { lots, lotName, listGood, good, billId, code, approver, status, supplier, fromStock, type, name, phone, email, address, description, errorStock, errorType, errorApprover, errorCustomer, quantity } = this.state;
         const listGoods = this.getAllGoods();
         const dataApprover = this.getApprover();
         const dataCustomer = this.getCustomer();
@@ -508,17 +500,17 @@ class BillEditForm extends Component {
             <React.Fragment>
         
                 <DialogModal
-                    modalID={`modal-edit-bill`}
-                    formID={`form-edit-bill`}
-                    title={translate(`manage_warehouse.bill_management.add_title.${group}`)}
+                    modalID={`modal-edit-bill-receipt`}
+                    formID={`form-edit-bill-receipt`}
+                    title={translate(`manage_warehouse.bill_management.edit_title.${group}`)}
                     msg_success={translate('manage_warehouse.bill_management.add_success')}
                     msg_faile={translate('manage_warehouse.bill_management.add_faile')}
                     disableSubmit={!this.isFormValidated()}
                     func={this.save}
                     size={100}
                 >
-                    <form id={`form-edit-bill`}>
-                    <QuantityEditForm group={group} good={good} initialData={lots} onDataChange={this.handleLotsChange} />
+                    <form id={`form-edit-bill-receipt`}>
+                    <QuantityLotGoodReceipt group={group} good={good} stock={fromStock} type={type} quantity={quantity} bill={billId} lotName={lotName} stock={fromStock} initialData={lots} onDataChange={this.handleLotsChange} />
                     <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{translate('manage_warehouse.bill_management.infor')}</legend>
@@ -530,7 +522,7 @@ class BillEditForm extends Component {
                                     <div className={`form-group ${!errorType ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.type')}<span className="attention"> * </span></label>
                                         <SelectBox
-                                            id={`select-type-issue-edit`}
+                                            id={`select-type-receipt-edit`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={type}
@@ -544,7 +536,7 @@ class BillEditForm extends Component {
                                     <div className={`form-group`}>
                                         <label>{translate('manage_warehouse.bill_management.status')}</label>
                                         <SelectBox
-                                            id={`select-status-issue-edit`}
+                                            id={`select-status-receipt-edit`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={status}
@@ -553,6 +545,7 @@ class BillEditForm extends Component {
                                                 { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2')},
                                                 { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3')},
                                                 { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4')},
+                                                { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5')},
                                             ]}
                                             onChange={this.handleStatusChange}    
                                             multiple={false}
@@ -563,7 +556,7 @@ class BillEditForm extends Component {
                                     <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.stock')}<span className="attention"> * </span></label>
                                         <SelectBox
-                                            id={`select-stock-bill-edit`}
+                                            id={`select-stock-bill-receipt-edit`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={fromStock}
@@ -577,7 +570,7 @@ class BillEditForm extends Component {
                                     <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.approved')}<span className="attention"> * </span></label>
                                         <SelectBox
-                                            id={`select-approver-bill-edit`}
+                                            id={`select-approver-bill-receipt-edit`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={approver}
@@ -588,12 +581,12 @@ class BillEditForm extends Component {
                                         <ErrorLabel content = { errorApprover } />
                                     </div>
                                     <div className={`form-group ${!errorCustomer ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.customer')}<span className="attention"> * </span></label>
+                                        <label>{translate('manage_warehouse.bill_management.supplier')}<span className="attention"> * </span></label>
                                         <SelectBox
-                                            id={`select-customer-issue-edit`}
+                                            id={`select-supplier-receipt-edit`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            value={customer}
+                                            value={supplier}
                                             items={dataCustomer}
                                             onChange={this.handlePartnerChange}    
                                             multiple={false}
@@ -618,7 +611,7 @@ class BillEditForm extends Component {
                             </div>
                             <div className={`form-group`}>
                                 <label>{translate('manage_warehouse.bill_management.phone')}<span className="attention"> * </span></label>
-                                <input type="number" className="form-control" value={phone} onChange={this.handlePhoneChange} />
+                                <input type="number" className="form-control" value={phone ? phone : ""} onChange={this.handlePhoneChange} />
                             </div>
                             <div className={`form-group`}>
                                 <label>{translate('manage_warehouse.bill_management.email')}<span className="attention"> * </span></label>
@@ -638,7 +631,7 @@ class BillEditForm extends Component {
                                         <div className="form-group">
                                             <label>{translate('manage_warehouse.bill_management.choose_good')}</label>
                                             <SelectBox
-                                                id={`select-good-issue-edit`}
+                                                id={`select-good-receipt-edit`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 value={good.good ? good.good._id : '1'}
@@ -651,7 +644,7 @@ class BillEditForm extends Component {
                                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                         <div className="form-group">
                                             <label>{translate('manage_warehouse.bill_management.number')}</label>
-                                            <div style={{display: "flex"}}><input className="form-control" value={good.quantity} onChange={this.handleQuantityChange} disabled type="number" /><i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: '5px', marginTop: '9px', cursor:'pointer' }} onClick={() => this.addQuantity()}></i></div>
+                                            <div style={{display: "flex"}}><input className="form-control" value={good.quantity} onChange={this.handleQuantityChange} type="number" />{good.good && status === '2' && <i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: '5px', marginTop: '9px', cursor:'pointer' }} onClick={() => this.addQuantity()}></i>}</div>
                                         </div>
                                     </div>
                                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -681,6 +674,7 @@ class BillEditForm extends Component {
                                                     <th title={translate('manage_warehouse.bill_management.unit')}>{translate('manage_warehouse.bill_management.unit')}</th>
                                                     <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
                                                     <th title={translate('manage_warehouse.bill_management.note')}>{translate('manage_warehouse.bill_management.note')}</th>
+                                                    <th>{translate('task_template.action')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody id={`good-bill-edit`}>
@@ -703,6 +697,11 @@ class BillEditForm extends Component {
                                             }
                                         </tbody>
                                         </table>
+                                        { status === '2' &&
+                                            <div className="pull-right" style={{marginBottom: "10px"}}>
+                                                <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={this.handleAddLots}>{translate('manage_warehouse.bill_management.add_lot')}</button>
+                                            </div>
+                                        }
                                     </div>
                                 </fieldset>
                             </div>
@@ -719,4 +718,4 @@ const mapDispatchToProps = {
     getLotsByGood: LotActions.getLotsByGood,
     editBill: BillActions.editBill
 }
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(BillEditForm));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(GoodReceiptEditForm));

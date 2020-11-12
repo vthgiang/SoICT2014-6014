@@ -5,7 +5,7 @@ import { DialogModal } from '../../../../../common-components';
 import { translate } from 'react-redux-multilingual/lib/utils';
 
 import { BillActions } from '../../bill-management/redux/actions';
-import BillDetailForm from '../../bill-management/components/billDetailForm';
+import BillDetailForm from '../../bill-management/components/genaral/billDetailForm';
 
 class LotDetailForm extends Component {
     constructor(props) {
@@ -93,7 +93,7 @@ class LotDetailForm extends Component {
                                 </div>
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manage_warehouse.inventory_management.bin')}</legend>
-                                    {lotDetail.stocks.map((x, index) => <p key={index}><b>Kho {x.stock.name}: </b>{x.binLocations.map(item => item.binLocation.path + "(" + item.quantity + "), " )}</p>)}
+                                    {lotDetail.stocks.map((x, index) => <p key={index}><b>Kho {x.stock.name} có {x.quantity} {lotDetail.good.baseUnit}: </b>{x.binLocations.map(item => item.binLocation.path + "(" + item.quantity + lotDetail.good.baseUnit +"), " )}</p>)}
                                 </fieldset>
                                 <BillDetailForm />
                                 <fieldset className="scheduler-border">
