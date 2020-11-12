@@ -2511,7 +2511,7 @@ export default {
                 assigned: 'Đã sắp xếp nhân viên',
                 none_select_assigned: 'Không phân loại',
                 role_in_collaborated_unit: 'Vai trò của nhân viên thuộc',
-                confirm_assigned: 'Xác nhận phân công công việc',
+                confirm_assigned: 'Xác nhận đã phân công công việc',
                 confirm_assigned_success: 'Bạn đã xác nhận phân công công việc',
                 confirm_assigned_failure: 'Bạn chưa xác nhận phân công công việc',
 
