@@ -99,9 +99,8 @@ exports.authFunc = (checkPage = true) => {
                 //const url = req.headers.referer.substr(req.headers.origin.length, req.headers.referer.length - req.headers.origin.length);
                 const url = req.header('current-page');
                 const device = req.header('device');
-                console.log("DEVICE: ", device);
 
-                if(!device){
+                if (!device) {
                     const link = role.name !== 'System Admin' ?
                         await Link(connect(DB_CONNECTION, req.portal)).findOne({
                             url,

@@ -91,7 +91,7 @@ const SalesOrderSchema = new Schema({
             type: Number,
             required: true
         },
-        tax: [{
+        taxs: [{
             type: Schema.Types.ObjectId,
             ref: 'Tax'
         }],

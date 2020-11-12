@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
-import { DialogModal, SelectBox, Errorstrong, ButtonModal } from '../../../../../common-components';
+import { DialogModal } from '../../../../../common-components';
 import { translate } from 'react-redux-multilingual/lib/utils';
+
+import { BillActions } from '../../bill-management/redux/actions';
+import BillDetailForm from '../../bill-management/components/billDetailForm';
 
 class LotDetailForm extends Component {
     constructor(props) {
@@ -24,6 +27,12 @@ class LotDetailForm extends Component {
             day = '0' + day;
 
         return [day, month, year].join('-');
+    }
+
+    handleShowDetailInfo = async (id) => {
+        console.log(id);
+        await this.props.getDetailBill(id);
+        window.$('#modal-detail-bill').modal('show');
     }
 
     render() {
@@ -86,6 +95,7 @@ class LotDetailForm extends Component {
                                     <legend className="scheduler-border">{translate('manage_warehouse.inventory_management.bin')}</legend>
                                     {lotDetail.stocks.map((x, index) => <p key={index}><b>Kho {x.stock.name}: </b>{x.binLocations.map(item => item.binLocation.path + "(" + item.quantity + "), " )}</p>)}
                                 </fieldset>
+                                <BillDetailForm />
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manage_warehouse.inventory_management.history')}</legend>
 
@@ -109,7 +119,7 @@ class LotDetailForm extends Component {
                                                 lotDetail.lotLogs.map((x, index) =>
                                                 <tr key={index}>
                                                         <td>{index + 1}</td>
-                                                        <td>{x.bill ? x.bill : ""}</td>
+                                                        {x.bill ? <td><a href="#" onClick={() => this.handleShowDetailInfo(x.bill._id)}>{x.bill.code}</a></td> : <td></td>}
                                                         <td>{this.formatDate(x.createdAt)}</td>
                                                         <td>{x.type}</td>
                                                         <td>{x.quantity}</td>
@@ -135,4 +145,8 @@ class LotDetailForm extends Component {
 
 const mapStateToProps = state => state;
 
-export default connect(mapStateToProps, null)(withTranslate(LotDetailForm));
+const mapDispatchToProps = {
+    getDetailBill: BillActions.getDetailBill
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(LotDetailForm));

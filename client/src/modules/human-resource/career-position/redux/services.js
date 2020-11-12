@@ -4,7 +4,10 @@ import {
 
 export const CareerPositionService = {
     getListCareerPosition,
+    getListCareerField,
+    getListCareerAction,
 }
+
 /**
  * Lấy danh sách kỷ luật
  * @data : Dữ liệu key tìm kiếm 
@@ -12,6 +15,38 @@ export const CareerPositionService = {
 function getListCareerPosition(data) {
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/career-positions/career-positions`,
+        method: 'GET',
+        params: {
+            name: data.name,
+            page: data.page,
+            limit: data.limit
+        }
+    }, false, true, 'human_resource.commendation_discipline.discipline');
+}
+
+/**
+ * Lấy danh sách kỷ luật
+ * @data : Dữ liệu key tìm kiếm 
+ */
+function getListCareerField(data) {
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/career-positions/career-fields`,
+        method: 'GET',
+        params: {
+            name: data.name,
+            page: data.page,
+            limit: data.limit
+        }
+    }, false, true, 'human_resource.commendation_discipline.discipline');
+}
+
+/**
+ * Lấy danh sách kỷ luật
+ * @data : Dữ liệu key tìm kiếm 
+ */
+function getListCareerAction(data) {
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/career-positions/career-actions`,
         method: 'GET',
         params: {
             name: data.name,

@@ -43,21 +43,21 @@ const ManufacturingCommandSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: "User"
         },
-        approveredTime: { // Thời gian phê duyệt
+        approvedTime: { // Thời gian phê duyệt
             type: Date
         }
     }],
-    responsible: [{ // Danh sách người thực hiện lệnh
-        type: Schema.Types.ObjectId,
-        ref: "Worker"
-    }],
-    accountable: [{ // Người giám sát lệnh
+    responsibles: [{ // Danh sách người thực hiện lệnh
         type: Schema.Types.ObjectId,
         ref: "User"
     }],
-    status: { //  Trạng thái lệnh sản xuất: 0. Lệnh được tạo, 1. Lệnh đã duyệt, 2. Lệnh đang được thực thi, 3. Lệnh trễ tiến độ, 4. Lệnh đúng tiến độ, 5. Lệnh quá hạn, 6. Lệnh bị hoãn 
+    accountables: [{ // Người giám sát lệnh
+        type: Schema.Types.ObjectId,
+        ref: "User"
+    }],
+    status: { //  Trạng thái lệnh sản xuất: 1. Chờ phê duyệt || 2. Lệnh đã duyệt || 3. Lệnh đang được thực thi || 4. Đã hoàn thành || 5. Đã hủy
         type: Number,
-        default: 0
+        default: 1
     },
     description: { // Mô tả về lệnh
         type: String

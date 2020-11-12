@@ -258,6 +258,8 @@ class AssetCreateForm extends Component {
                             <UsageLogTab
                                 id="usage"
                                 usageLogs={usageLogs}
+                                typeRegisterForUse={asset.typeRegisterForUse}
+                                managedBy={asset.managedBy}
                                 handleAddUsage={this.handleChangeUsageLog}
                                 handleEditUsage={this.handleChangeUsageLog}
                                 handleDeleteUsage={this.handleChangeUsageLog}

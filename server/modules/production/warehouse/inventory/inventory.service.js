@@ -63,13 +63,13 @@ exports.getAllLots = async (query, portal) => {
             }
 
             if(query.expirationDate){
-                let month = new Date(query.expirationDate).getMonth() + 1;
+                let date = query.expirationDate.split("-");
+                let end = new Date(date[2], date[1] - 1, date[0]);
+
                 option = {
                     ...option,
-                    "$expr": {
-                        "$eq": [{
-                            "$month": "$expirationDate"
-                        }, month]
+                    expirationDate: {
+                        $lte: end
                     }
                 }
             }
@@ -99,13 +99,13 @@ exports.getAllLots = async (query, portal) => {
             }
 
             if(query.expirationDate){
-                let month = new Date(query.expirationDate).getMonth() + 1;
+                let date = query.expirationDate.split("-");
+                let end = new Date(date[2], date[1] - 1, date[0]);
+
                 option = {
                     ...option,
-                    "$expr": {
-                        "$eq": [{
-                            "$month": "$expirationDate"
-                        }, month]
+                    expirationDate: {
+                        $lte: end
                     }
                 }
             }
@@ -238,4 +238,22 @@ exports.editLot = async (id, data, portal) => {
             { path: 'lotLogs.binLocations.binLocation'},
             { path: 'lotLogs.stock', select: 'id name'}
         ])
+}
+
+exports.getLotsByGood = async (query, portal) => {
+    const { good, stock } = query;
+    if(!stock) {
+        return [];
+    }
+    const lots = await Lot(connect(DB_CONNECTION, portal))
+        .find({ good: good, stocks: { $elemMatch: { stock: stock } } })
+        .populate([
+            { path: 'good'},
+            { path: 'stocks.binLocations.binLocation', select: 'id path'},
+            { path: 'stocks.stock'},
+            { path: 'lotLogs.bill', select: 'id code type'},
+            { path: 'lotLogs.binLocations.binLocation'},
+            { path: 'lotLogs.stock', select: 'id name'}
+        ])
+    return lots;
 }
