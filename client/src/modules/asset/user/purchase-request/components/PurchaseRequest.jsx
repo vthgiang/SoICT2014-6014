@@ -172,6 +172,7 @@ class PurchaseRequest extends Component {
                 <div className="box-body qlcv">
 
                     {/* Form thêm mới phiếu đề nghị mua sắm thiết bị */}
+                    {/* Cần component đăng ký mua sắm thiết bị không ? - nếu có mã của component là ? */}
                     <PurchaseRequestCreateForm />
 
                     {/* Thanh tìm kiếm */}
