@@ -62,6 +62,7 @@ exports.createManufacturingPlan = async (data, portal) => {
 }
 
 exports.getAllManufacturingPlans = async (query, portal) => {
+    console.log(query);
     let { code, manufacturingOrder, salesOrder, manufacturingCommand, manufacturingWorks
         , startDate, endDate, createdAt, status, progress, page, limit, currentRole } = query;
     if (!currentRole) {

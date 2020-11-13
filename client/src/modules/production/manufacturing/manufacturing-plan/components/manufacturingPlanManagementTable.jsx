@@ -1,15 +1,25 @@
 import React, { Component } from 'react';
-import { DataTableSetting, DatePicker, formatDate, SelectMulti } from "../../../../../common-components";
+import { formatDate } from '../../../../../helpers/formatDate';
+import { DataTableSetting, DatePicker, PaginateBar, SelectMulti } from "../../../../../common-components";
 import NewPlanCreateForm from './create-new-plan/newPlanCreateForm';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { manufacturingPlanActions } from '../redux/actions';
+import { worksActions } from '../../manufacturing-works/redux/actions';
 class ManufacturingPlanManagementTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            currentRole: localStorage.getItem("currentRole"),
             page: 1,
-            limit: 5
+            limit: 5,
+            code: '',
+            startDate: '',
+            endDate: '',
+            createdAt: '',
+            status: [],
+
+            manufacturingWorks: [],
         }
     }
 
@@ -21,6 +31,7 @@ class ManufacturingPlanManagementTable extends Component {
             currentRole: currentRole
         }
         this.props.getAllManufacturingPlans(data);
+        this.props.getAllManufacturingWorks({});
     }
 
     handleShowDetailInfo = async (id) => {
@@ -33,12 +44,115 @@ class ManufacturingPlanManagementTable extends Component {
         window.$(`#modal-detail-info-manufacturing-order`).modal('show');
     }
 
+    checkHasComponent = (name) => {
+        let { auth } = this.props;
+        let result = false;
+        auth.components.forEach(component => {
+            if (component.name === name) result = true;
+        });
+
+        return result;
+    }
+
+    handleCodeChange = (e) => {
+        const { value } = e.target;
+        this.setState((state) => ({
+            ...state,
+            code: value
+        }))
+    }
+
+    handleStartDateChange = (value) => {
+        this.setState((state) => ({
+            ...state,
+            startDate: value
+        }))
+    }
+
+    handleEndDateChange = (value) => {
+        this.setState((state) => ({
+            ...state,
+            endDate: value
+        }))
+    }
+
+    handleCreatedAtChange = (value) => {
+        this.setState((state) => ({
+            ...state,
+            createdAt: value
+        }))
+    }
+
+    handleStatusChange = (value) => {
+        this.setState((state) => ({
+            ...state,
+            status: value
+        }))
+    }
+
+    handleSubmitSearch = () => {
+        const { code, startDate, endDate, createdAt, status, page, limit, manufacturingWorks, currentRole } = this.state;
+        const data = {
+            currentRole: currentRole,
+            page: page,
+            limit: limit,
+            code: code,
+            startDate: startDate,
+            endDate: endDate,
+            createdAt: createdAt,
+            status: status,
+            manufacturingWorks: manufacturingWorks,
+        }
+        this.props.getAllManufacturingPlans(data);
+    }
+
+    getListManufacturingWorksArr = () => {
+        const { manufacturingWorks } = this.props;
+        const { listWorks } = manufacturingWorks;
+        let listManufacturingWorksArr = [];
+        if (listWorks) {
+            listWorks.map((works) => {
+                listManufacturingWorksArr.push({
+                    value: works._id,
+                    text: works.code + " - " + works.name
+                });
+            });
+        }
+        return listManufacturingWorksArr;
+    }
+
+    handleManufacturingWorksChange = (value) => {
+        this.setState((state) => ({
+            ...state,
+            manufacturingWorks: value
+        }))
+    }
+
+    setLimit = async (limit) => {
+        await this.setState({
+            limit: limit,
+            page: this.state.page
+        });
+        this.props.getAllManufacturingPlans(this.state);
+    }
+
+    setPage = async (page) => {
+        await this.setState({
+            page: page,
+            limit: this.state.limit
+        });
+        this.props.getAllManufacturingPlans(this.state);
+    }
+
+
     render() {
         const { translate, manufacturingPlan } = this.props;
         let listPlans = [];
         if (manufacturingPlan.listPlans && manufacturingPlan.isLoading === false) {
             listPlans = manufacturingPlan.listPlans;
         }
+        const { code, startDate, endDate, createdAt } = this.state;
+        const { totalPages, page } = manufacturingPlan;
         return (
             <React.Fragment>
                 <div className="box-body qlcv">
@@ -46,15 +160,14 @@ class ManufacturingPlanManagementTable extends Component {
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('manufacturing.plan.code')}</label>
-                            <input type="text" className="form-control" name="code" onChange={this.handleChangeData} placeholder="KH001" autoComplete="off" />
+                            <input type="text" className="form-control" value={code} onChange={this.handleCodeChange} placeholder="KH202012212" autoComplete="off" />
                         </div>
                         <div className="form-group">
                             <label className="form-control-static">{translate('manufacturing.plan.start_date')}</label>
                             <DatePicker
-                                id={`maintain_after`}
-                                // dateFormat={dateFormat}
-                                // value={startValue}
-                                // onChange={this.handleChangeDateAfter}
+                                id={`start-date-manufacturing-plan`}
+                                value={startDate}
+                                onChange={this.handleStartDateChange}
                                 disabled={false}
                             />
                         </div>
@@ -69,10 +182,9 @@ class ManufacturingPlanManagementTable extends Component {
                         <div className="form-group">
                             <label className="form-control-static">{translate('manufacturing.plan.end_date')}</label>
                             <DatePicker
-                                id={`maintain_after_1`}
-                                // dateFormat={dateFormat}
-                                // value={startValue}
-                                // onChange={this.handleChangeDateAfter}
+                                id={`end-date-manufacturing-plan`}
+                                value={endDate}
+                                onChange={this.handleEndDateChange}
                                 disabled={false}
                             />
                         </div>
@@ -85,10 +197,9 @@ class ManufacturingPlanManagementTable extends Component {
                         <div className="form-group">
                             <label className="form-control-static">{translate('manufacturing.plan.created_at')}</label>
                             <DatePicker
-                                id={`maintain_after_2`}
-                                // dateFormat={dateFormat}
-                                // value={startValue}
-                                // onChange={this.handleChangeDateAfter}
+                                id={`createdAt-manufacturing-plan`}
+                                value={createdAt}
+                                onChange={this.handleCreatedAtChange}
                                 disabled={false}
                             />
                         </div>
@@ -107,35 +218,34 @@ class ManufacturingPlanManagementTable extends Component {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={[
-                                    { value: '1', text: "Đang chờ duyệt" },
-                                    { value: '2', text: "Đã duyệt" },
-                                    { value: '3', text: "Đang thực hiện" },
-                                    { value: '4', text: "Đã hoàn thành" },
-                                    { value: '5', text: "Đã hủy" },
+                                    { value: '1', text: translate('manufacturing.plan.1.content') },
+                                    { value: '2', text: translate('manufacturing.plan.2.content') },
+                                    { value: '3', text: translate('manufacturing.plan.3.content') },
+                                    { value: '4', text: translate('manufacturing.plan.4.content') },
+                                    { value: '5', text: translate('manufacturing.plan.5.content') },
                                 ]}
-                            // onChange={this.handleChangeValue}
+                                onChange={this.handleStatusChange}
                             />
                         </div>
 
                     </div>
-                    <div className="form-inline">
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('manufacturing.plan.works')}</label>
-                            <SelectMulti
-                                id={`select-multi-works`}
-                                multiple="multiple"
-                                options={{ nonSelectedText: "Chọn nhà máy", allSelectedText: "Chọn tất cả" }}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={[
-                                    { value: '1', text: "Nha may 1" },
-                                    { value: '2', text: "Nha may 2" },
-                                    { value: '3', text: "Nha may 3" },
-                                ]}
-                            // onChange={this.handleChangeValue}
-                            />
-                        </div>
 
+                    <div className="form-inline">
+                        {
+                            this.checkHasComponent('select-manufacturing-works') &&
+                            <div className="form-group">
+                                <label className="form-control-static">{translate('manufacturing.plan.works')}</label>
+                                <SelectMulti
+                                    id={`select-multi-works`}
+                                    multiple="multiple"
+                                    options={{ nonSelectedText: translate('manufacturing.plan.choose_works'), allSelectedText: translate('manufacturing.plan.choose_all') }}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={this.getListManufacturingWorksArr()}
+                                    onChange={this.handleManufacturingWorksChange}
+                                />
+                            </div>
+                        }
                         <div className="form-group">
                             <label className="form-control-static">{translate('manufacturing.plan.progess')}</label>
                             <SelectMulti
@@ -153,6 +263,7 @@ class ManufacturingPlanManagementTable extends Component {
                             />
                         </div>
                         <div className="form-group">
+                            <label className="form-control-static"></label>
                             <button type="button" className="btn btn-success" title={translate('manufacturing.plan.search')} onClick={this.handleSubmitSearch}>{translate('manufacturing.plan.search')}</button>
                         </div>
                     </div>
@@ -206,6 +317,11 @@ class ManufacturingPlanManagementTable extends Component {
                             }
                         </tbody>
                     </table>
+                    {manufacturingPlan.isLoading ?
+                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                        (typeof listPlans === 'undefined' || listPlans.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    }
+                    <PaginateBar pageTotal={totalPages ? totalPages : 0} currentPage={page} func={this.setPage} />
                 </div>
             </React.Fragment >
         );
@@ -213,12 +329,13 @@ class ManufacturingPlanManagementTable extends Component {
 }
 
 function mapStateToProps(state) {
-    const { manufacturingPlan } = state;
-    return { manufacturingPlan };
+    const { manufacturingPlan, auth, manufacturingWorks } = state;
+    return { manufacturingPlan, auth, manufacturingWorks };
 }
 
 const mapDispatchToProps = {
-    getAllManufacturingPlans: manufacturingPlanActions.getAllManufacturingPlans
+    getAllManufacturingPlans: manufacturingPlanActions.getAllManufacturingPlans,
+    getAllManufacturingWorks: worksActions.getAllManufacturingWorks
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManufacturingPlanManagementTable));

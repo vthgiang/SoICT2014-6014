@@ -4310,6 +4310,7 @@ export default {
                     color: "red",
                     content: "Đã hủy"
                 },
+                choose_works: "Chọn nhà máy"
 
 
             }
