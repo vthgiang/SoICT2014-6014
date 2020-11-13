@@ -90,6 +90,8 @@ class AssetCreateForm extends Component {
             if (value) {
                 let partValue = value.split('-');
                 value = [partValue[2], partValue[1], partValue[0]].join('-');
+            } else {
+                value = null
             }
         }
 
