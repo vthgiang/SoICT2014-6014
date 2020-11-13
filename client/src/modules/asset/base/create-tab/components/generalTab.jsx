@@ -632,7 +632,7 @@ class GeneralTab extends Component {
 
                                 {/* Ngày nhập */}
                                 <div className={`form-group ${!errorOnPurchaseDate ? "" : "has-error"}`}>
-                                    <label htmlFor="purchaseDate">{translate('asset.general_information.purchase_date')}<span className="text-red">*</span></label>
+                                    <label htmlFor="purchaseDate">{translate('asset.general_information.purchase_date')}</label>
                                     <DatePicker
                                         id={`purchaseDate${id}`}
                                         value={purchaseDate ? this.formatDate(purchaseDate) : ''}
