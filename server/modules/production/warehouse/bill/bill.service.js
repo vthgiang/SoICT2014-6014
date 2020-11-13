@@ -13,7 +13,7 @@ exports.getBillsByType = async (query, portal) => {
                 { path: 'fromStock' },
                 { path: 'toStock' },
                 { path: 'customer' },
-                // { path: 'partner.supplier' },
+                { path: 'supplier' },
                 { path: 'goods.lots.lot' },
                 { path: 'goods.good' }
             ])
@@ -27,7 +27,7 @@ exports.getBillsByType = async (query, portal) => {
                 { path: 'fromStock' },
                 { path: 'toStock' },
                 { path: 'customer' },
-                // { path: 'partner.supplier' },
+                { path: 'supplier' },
                 { path: 'goods.lots.lot' },
                 { path: 'goods.good' }
             ])
@@ -110,7 +110,7 @@ exports.getBillsByType = async (query, portal) => {
                     { path: 'fromStock' },
                     { path: 'toStock' },
                     { path: 'customer' },
-                    // { path: 'partner.supplier' },
+                    { path: 'supplier' },
                     { path: 'goods.lots.lot' },
                     { path: 'goods.good' }
                 ],
@@ -192,7 +192,7 @@ exports.getBillsByType = async (query, portal) => {
                     { path: 'fromStock' },
                     { path: 'toStock' },
                     { path: 'customer' },
-                    // { path: 'partner.supplier' },
+                    { path: 'supplier' },
                     { path: 'goods.lots.lot' },
                     { path: 'goods.good' }
                 ],
@@ -265,7 +265,7 @@ exports.getDetailBill = async (id, portal) => {
             { path: 'fromStock' },
             { path: 'toStock' },
             { path: 'customer' },
-            // { path: 'partner.supplier' },
+            { path: 'supplier' },
             { path: 'goods.lots.lot' },
             { path: 'goods.good' }
         ])
@@ -310,12 +310,27 @@ exports.createBill = async (userId, data, portal) => {
             }
         })
     }
-
+    
     const bill = await Bill(connect(DB_CONNECTION, portal)).create(query);
-    if(bill.group === '2') {
+    if(data.group === '2') {
         if(data.goods && data.goods.length > 0) {
             for(let i = 0; i < data.goods.length; i++) {
-                
+                if(data.goods[i].lots && data.goods[i].lots.length > 0) {
+                    for(let j = 0; j < data.goods[i].lots.length; j++) {
+                        var quantity = data.goods[i].lots[j].quantity;
+                        let lotId = data.goods[i].lots[j].lot._id;
+                        let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
+                        if(lot.stocks && lot.stocks.length > 0) {
+                            for(let k = 0; k < lot.stocks.length; k++) {
+                                if(lot.stocks[k].stock.toString() === data.fromStock.toString()) {
+                                    lot.stocks[k].expectedNumber = quantity;
+                                    await lot.save();
+                                }
+                            }
+                        }
+                        
+                    }
+                }
             }
         }
     }
@@ -328,7 +343,7 @@ exports.createBill = async (userId, data, portal) => {
             { path: 'fromStock' },
             { path: 'toStock' },
             { path: 'customer' },
-            // { path: 'partner.supplier' },
+            { path: 'supplier' },
             { path: 'goods.lots.lot' },
             { path: 'goods.good' }
         ])
@@ -373,6 +388,60 @@ exports.editBill = async (id, data, portal) => {
     }) : bill.goods;
     await bill.save();
 
+    if(data.group === '2') {
+        if(data.status === '2') {
+            if(data.goods && data.goods.length > 0) {
+                for(let i = 0; i < data.goods.length; i++) {
+                    if(data.goods[i].lots && data.goods[i].lots.length > 0) {
+                        for(let j = 0; j < data.goods[i].lots.length; j++) {
+                            var quantity = data.goods[i].lots[j].quantity;
+                            let lotId = data.goods[i].lots[j].lot._id;
+                            let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
+                            lot.quantity = Number(lot.quantity) - Number(quantity);
+                            if(lot.stocks && lot.stocks.length > 0) {
+                                for(let k = 0; k < lot.stocks.length; k++) {
+                                    if(lot.stocks[k].stock.toString() === data.fromStock.toString()) {
+                                        lot.stocks[k].quantity = Number(lot.stocks[k].quantity) - Number(quantity);
+                                    }
+                                }
+                            }
+                            let lotLog = {};
+                            lotLog.bill = bill._id;
+                            lotLog.quantity = quantity;
+                            lotLog.description = data.goods[i].description ? data.goods[i].description : '';
+                            lotLog.type = bill.type;
+                            lotLog.createdAt = bill.timestamp;
+                            lotLog.stock = data.fromStock;
+                            lot.lotLogs = [ ...lot.lotLogs, lotLog ];
+                            await lot.save();
+                        }
+                    }
+                }
+            }
+        } else {
+            if(data.goods && data.goods.length > 0) {
+                for(let i = 0; i < data.goods.length; i++) {
+                    if(data.goods[i].lots && data.goods[i].lots.length > 0) {
+                        for(let j = 0; j < data.goods[i].lots.length; j++) {
+                            var quantity = data.goods[i].lots[j].quantity;
+                            let lotId = data.goods[i].lots[j].lot._id;
+                            let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
+                            if(lot.stocks && lot.stocks.length > 0) {
+                                for(let k = 0; k < lot.stocks.length; k++) {
+                                    if(lot.stocks[k].stock.toString() === data.fromStock.toString()) {
+                                        lot.stocks[k].expectedNumber = quantity;
+                                        await lot.save();
+                                    }
+                                }
+                            }
+                            
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     return await Bill(connect(DB_CONNECTION, portal))
         .findById(bill._id)
         .populate([
@@ -382,7 +451,7 @@ exports.editBill = async (id, data, portal) => {
             { path: 'fromStock' },
             { path: 'toStock' },
             { path: 'customer' },
-            // { path: 'partner.supplier' },
+            { path: 'supplier' },
             { path: 'goods.lots.lot' },
             { path: 'goods.good' }
         ])

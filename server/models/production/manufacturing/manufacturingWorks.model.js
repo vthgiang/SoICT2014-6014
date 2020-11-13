@@ -35,6 +35,11 @@ const ManufacturingWorksSchema = new Schema({
         ref: "OrganizationalUnit"
     },
 
+    manageRoles: [{ // Các quyền quản lý nhà máy
+        type: Schema.Types.ObjectId,
+        ref: "Role"
+    }]
+
 }, {
     timestamps: true
 });

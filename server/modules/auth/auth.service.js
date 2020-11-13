@@ -13,7 +13,7 @@ const {connect, initModels} =  require(`${SERVER_HELPERS_DIR}/dbHelper`);
  */
 exports.login = async (fingerprint, data) => { // data bao gom email va password
     if(!data.portal) throw ["portal_invalid"];
-
+    console.log("LOGIN")
     let company;
     if(data.portal !== process.env.DB_NAME){
         company = await Company(connect(DB_CONNECTION, process.env.DB_NAME))
@@ -147,7 +147,10 @@ exports.forgetPassword = async (portal, email) => {
     }
     await transporter.sendMail(mainOptions);
 
-    return true;
+    return {
+        email, 
+        portal
+    };
 }
 
 /**

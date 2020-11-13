@@ -120,6 +120,8 @@ class ManufacturingMillScheduleManagentTable extends Component {
         }
         const { totalPages, page } = workSchedule;
         const { month, allDaysOfMonth, code } = this.state;
+
+        const arrayStatus = [0, 1, 2, 3, 4, 5]
         return (
             <React.Fragment>
                 {
@@ -148,6 +150,23 @@ class ManufacturingMillScheduleManagentTable extends Component {
                         </div>
                     </div>
                 </div>
+                <div className="form-inline">
+                    {
+                        arrayStatus.map((status, index) => (
+                            <span key={index}>
+                                <span className="icon" title={translate(`manufacturing.work_schedule.${status}.content`)} style={{ backgroundColor: translate(`manufacturing.work_schedule.${status}.color`) }}>
+                                </span>
+                                &emsp;
+                                {
+                                    translate(`manufacturing.work_schedule.${status}.content`)
+                                }
+                                &emsp;&emsp;
+                            </span>
+
+                        ))
+                    }
+                </div>
+
                 <DataTableSetting
                     tableId="info-mill-table"
                     limit={this.state.limit}
@@ -218,14 +237,20 @@ class ManufacturingMillScheduleManagentTable extends Component {
                                                 <tr key={index2}>
                                                     {
                                                         turn.map((mill, index3) => {
-                                                            if (mill === null)
+                                                            if (mill !== null)
                                                                 return (
-                                                                    <td key={index3}>
-                                                                        <input type="checkbox" disabled={true} />
+                                                                    <td key={index3} className="tooltip-checkbox">
+                                                                        <input type="checkbox" disabled={true} style={{ backgroundColor: translate(`manufacturing.work_schedule.${mill.status}.color`) }}>
+                                                                        </input>
+                                                                        <span className="tooltiptext">Detail</span>
                                                                     </td>
                                                                 )
 
-                                                            return null;
+                                                            return (
+                                                                <td key={index3}>
+                                                                    <input type="checkbox" disabled={true} />
+                                                                </td>
+                                                            );
                                                         })
                                                     }
                                                 </tr>

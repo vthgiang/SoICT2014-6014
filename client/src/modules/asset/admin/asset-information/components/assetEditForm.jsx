@@ -233,7 +233,7 @@ class AssetEditForm extends Component {
                 // this.validatorInput(serial) && 
                 this.validatorInput(assetType) && this.validatorInput(group) &&
                 // this.validatorInput(managedBy) && 
-                this.validatorInput(purchaseDate) &&
+                // this.validatorInput(purchaseDate) &&
                 // this.validatorInput(warrantyExpirationDate) && //this.validatorInput(location) &&
                 this.validatorInput(status) && this.validatorInput(typeRegisterForUse)
 
@@ -460,7 +460,7 @@ class AssetEditForm extends Component {
                                 handleChange={this.handleChange}
                                 cost={cost}
                                 residualValue={residualValue}
-                                startDepreciation={moment(startDepreciation).format('DD-MM-YYYY')}
+                                startDepreciation={startDepreciation && moment(startDepreciation).format('DD-MM-YYYY')}
                                 endDepreciation={this.addMonth(startDepreciation, usefulLife)}
                                 usefulLife={usefulLife}
                                 depreciationType={depreciationType}

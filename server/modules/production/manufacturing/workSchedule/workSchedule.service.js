@@ -1,8 +1,9 @@
 const { split, isElement } = require("lodash");
+const mongoose = require("mongoose");
 const { getAllEmployeeOfUnitByRole } = require("../../../super-admin/user/user.service");
 
 const {
-    WorkSchedule, ManufacturingMill, ManufacturingWorks
+    WorkSchedule, ManufacturingMill, ManufacturingWorks, ManufacturingCommand
 } = require(`${SERVER_MODELS_DIR}`);
 
 const {
@@ -261,14 +262,22 @@ exports.getWorkSchedules = async (query, portal) => {
         } else {
             let workSchedules = await WorkSchedule(connect(DB_CONNECTION, portal))
                 .paginate(options, {
-                    page: page,
-                    limit: limit,
+                    page,
+                    limit,
                     populate: [{
-                        path: 'manufacturingMill'
-                    }, {
-                        path: "turns.0"
+                        path: "manufacturingMill"
                     }]
                 });
+            for (let i = 0; i < workSchedules.docs.length; i++) {
+                for (let j = 0; j < workSchedules.docs[i].turns.length; j++) {
+                    for (k = 0; k < workSchedules.docs[i].turns[j].length; k++) {
+                        if (workSchedules.docs[i].turns[j][k] != null) {
+                            let manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal)).findById(workSchedules.docs[i].turns[j][k]);
+                            workSchedules.docs[i].turns[j][k] = manufacturingCommand;
+                        }
+                    }
+                }
+            }
             return { workSchedules }
         }
 

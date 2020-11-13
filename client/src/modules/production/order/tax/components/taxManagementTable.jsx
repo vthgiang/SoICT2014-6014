@@ -120,7 +120,7 @@ class TaxManagementTable extends Component {
         const { code, name } = this.state;
         return (
             <React.Fragment>
-                {<TaxDetailForm taxId={this.state.taxId} />}
+                <TaxDetailForm taxId={this.state.taxId} />
                 {this.state.currentRow && (
                     <TaxEditForm
                         taxEdit={this.state.currentRow}
@@ -139,9 +139,9 @@ class TaxManagementTable extends Component {
                             <input type="text" className="form-control" value={name} onChange={this.handleNameChange} />
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">Trạng thái đơn</label>
+                            <label className="form-control-static">Trạng thái thuế</label>
                             <SelectBox
-                                id={`select-filter-status-material-purchase-order`}
+                                id={`select-filter-status-taxs`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={[

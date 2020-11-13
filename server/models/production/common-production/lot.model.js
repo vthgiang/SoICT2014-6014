@@ -2,14 +2,9 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-const LotSchema = new Schema({
+const LotSchema = new Schema ({
 
     name: {
-        type: String,
-        required: true
-    },
-
-    code: {
         type: String,
         required: true
     },
@@ -17,6 +12,11 @@ const LotSchema = new Schema({
     good: {
         type: Schema.Types.ObjectId,
         ref: 'Good'
+    },
+
+    type: {
+        type: String,
+        enum: ["product", "material", "equipment", "asset"],
     },
 
     stocks: [{
@@ -29,9 +29,20 @@ const LotSchema = new Schema({
             type: Number
         },
 
+        expectedNumber: {
+            type: Number,
+            default: 0
+        },
+
         binLocations: [{
-            type: Schema.Types.ObjectId,
-            ref: 'BinLocation'
+            binLocation: {
+                type: Schema.Types.ObjectId,
+                ref: 'BinLocation'
+            },
+
+            quantity: {
+                type: Number
+            }
         }]
     }],
 
@@ -53,6 +64,11 @@ const LotSchema = new Schema({
         type: String
     },
 
+    timestamp: {
+        type: Date,
+        default: Date.now
+    },
+
     lotLogs: [{
 
         bill: {
@@ -72,9 +88,14 @@ const LotSchema = new Schema({
             type: String
         },
 
-        timestamp: {
+        createdAt: {
             type: Date,
             default: Date.now
+        },
+
+        stock: {
+            type: Schema.Types.ObjectId,
+            ref: 'Stock',
         },
 
         binLocations: [{
@@ -108,19 +129,13 @@ const LotSchema = new Schema({
         description: {
             type: String
         }
-    }],
-
-    manufacturingCommand: {
-        type: Schema.Types.ObjectId,
-        ref: "ManufacturingCommand"
-    }
-
+    }]
 });
 
 LotSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
-    if (!db.models.Lot)
+    if(!db.models.Lot)
         return db.model('Lot', LotSchema);
     return db.models.Lot;
 }

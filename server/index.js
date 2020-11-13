@@ -6,7 +6,7 @@ const app = express();
 const server = require('http').createServer(app);
 
 const swaggerUi = require('swagger-ui-express');
-const {swaggerJsonData} = require('./api-docs/swagger.js');
+const { swaggerJsonData } = require('./api-docs/swagger.js');
 
 require("dotenv").config();
 require('./connectDatabase');
@@ -100,6 +100,9 @@ app.use("/manufacturing-mill", require("./modules/production/manufacturing/manuf
 app.use("/manufacturing-works", require("./modules/production/manufacturing/manufacturingWorks/manufacturingWorks.route"));
 app.use("/purchasing-request", require("./modules/production/manufacturing/purchasingRequest/purchasingRequest.route"));
 app.use("/work-schedule", require('./modules/production/manufacturing/workSchedule/workSchedule.route'));
+app.use("/manufacturing-plan", require('./modules/production/manufacturing/manufacturingPlan/manufacturingPlan.route'));
+app.use("/manufacturing-command", require("./modules/production/manufacturing/manufacturingCommand/manufacturingCommand.route"));
+
 //order
 app.use("/quote", require("./modules/production/order/quote/quote.route"));
 app.use("/coin-rule", require("./modules/production/order/coin-rule/coinRule.route"));

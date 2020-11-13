@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const mongoosePaginate = require('mongoose-paginate-v2')
 
 // Bảng kế hoạch sản xuất
 const ManufacturingPlanSchema = new Schema({
@@ -11,6 +12,14 @@ const ManufacturingPlanSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "ManufacturingOrder"
     },
+    salesOrder: {
+        type: Schema.Types.ObjectId,
+        ref: "SalesOrder"
+    },
+    manufacturingWorks: [{
+        type: Schema.Types.ObjectId,
+        ref: "ManufacturingWorks"
+    }],
     products: [{ // Danh sách danh mục mặt hàng
         good: { // Mặt hàng
             type: Schema.Types.ObjectId,
@@ -28,7 +37,7 @@ const ManufacturingPlanSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: "User"
         },
-        approveredTime: { // Thời gian phê duyệt
+        approvedTime: { // Thời gian phê duyệt
             type: Date
         }
     }],
@@ -40,9 +49,9 @@ const ManufacturingPlanSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User"
     },
-    status: { // Trạng thái kế hoạch: 0. Chưa được duyệt xong || 1. Đã được duyệt xong
+    status: { // Trạng thái kế hoạch: 1. Đang chờ duyệt || 2. Đã phê duyệt || 3. Đang thực hiện || 4. Đã hoàn thành || 5. Đã hủy
         type: Number,
-        default: 0
+        default: 1
     },
     description: { //  Mô tả kế hoạch
         type: String
@@ -65,15 +74,15 @@ const ManufacturingPlanSchema = new Schema({
             type: String
         },
         createdAt: { // Thời gian sửa
-            type: Date
+            type: Date,
+            default: Date.now
         }
-    }],
-    manufacturingWorks: {
-
-    }
+    }]
 }, {
     timestamps: true
 });
+
+ManufacturingPlanSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
     if (!db.models.ManufacturingPlan)

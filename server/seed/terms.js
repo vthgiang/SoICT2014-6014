@@ -139,7 +139,17 @@ const COMPONENTS = [{
     links: [
         '/employee-manage-info-asset',
         '/manage-info-asset'
-    ]
+    ],
+}, {
+    name: 'select-manufacturing-works',
+    description: 'Select Box chọn nhà máy sản xuất',
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ],
+    links: [
+        '/manage-manufacturing-plan',
+    ],
 }];
 exports.COMPONENTS = COMPONENTS;
 

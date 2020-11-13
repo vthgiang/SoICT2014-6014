@@ -94,7 +94,6 @@ class AssetManagement extends Component {
 
     // Bắt sự kiện click chỉnh sửa thông tin tài sản
     handleEdit = async (value) => {
-        console.log('currentRow==========', value);
         await this.setState(state => {
             return {
                 // ...state,
@@ -453,7 +452,7 @@ class AssetManagement extends Component {
         let typeArr = this.getAssetTypes();
         let dataSelectBox = this.getDepartment();
         let assetTypeName = this.state.assetType ? this.state.assetType : [];
-        // console.log("curentRowView,-=============", currentRowView)
+
         if (assetsManager.isLoading === false) {
             lists = assetsManager.listAssets;
         }

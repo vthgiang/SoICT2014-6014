@@ -227,7 +227,8 @@ class ProcessTemplate extends Component {
                     accountableEmployees: accountableEmployees,
                     consultedEmployees: consultedEmployees,
                     informedEmployees: informedEmployees,
-                    organizationalUnits: x.organizationalUnit.name,
+                    organizationalUnit: x.organizationalUnit.name,
+                    collaboratedWithOrganizationalUnits: x.collaboratedWithOrganizationalUnits.map(e => e?.name).join(', '),
                     priority: x.priority,
                     formula: x.formula,
 
@@ -261,7 +262,8 @@ class ProcessTemplate extends Component {
                             accountableEmployees: "",
                             consultedEmployees: "",
                             informedEmployees: "",
-                            organizationalUnits: "",
+                            organizationalUnit: "",
+                            collaboratedWithOrganizationalUnits: "",
                             priority: "",
                             formula: "",
 
@@ -293,7 +295,7 @@ class ProcessTemplate extends Component {
                         key: "generalInfoTask",
                         columnName: "Thông tin chung",
                         keyMerge: 'taskName',
-                        colspan: 10,
+                        colspan: 11,
                     }, {
                         key: "taskActions",
                         columnName: "Danh sách hoạt động",
@@ -308,7 +310,7 @@ class ProcessTemplate extends Component {
                         key: "tasks",
                         columnName: "Danh sách công việc",
                         keyMerge: 'generalInfoTask',
-                        colspan: 17,
+                        colspan: 18,
                     }],
                     columns: [
                         { key: "STT", value: "STT" },
@@ -321,7 +323,8 @@ class ProcessTemplate extends Component {
                         { key: "taskName", value: "Tên công việc" },
                         { key: "code", value: "Mã công việc trong quy trình" },
                         { key: "taskDescription", value: "Mô tả công việc" },
-                        { key: "organizationalUnits", value: "Đơn vị" },
+                        { key: "organizationalUnit", value: "Đơn vị" },
+                        { key: "collaboratedWithOrganizationalUnits", value: "Đơn vị phối hợp thực hiện công việc" },
                         { key: "priority", value: "Độ ưu tiên" },
                         { key: "responsibleEmployees", value: "Người thực hiện" },
                         { key: "accountableEmployees", value: "Người phê duyệt" },
