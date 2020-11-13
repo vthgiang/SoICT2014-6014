@@ -139,7 +139,7 @@ const COMPONENTS = [{
     links: [
         '/employee-manage-info-asset',
         '/manage-info-asset'
-    ]
+    ],
 }];
 exports.COMPONENTS = COMPONENTS;
 

@@ -4115,7 +4115,10 @@ export default {
                 organizational_unit: "Đơn vị liên kết",
                 choose_organizational_unit: "---Chọn đơn vị---",
                 error_organizational_unit: "Vui lòng chọn đơn vị liên kết",
-                list_roles: "Chức vụ trưởng đơn vị"
+                list_roles: "Chức vụ trưởng đơn vị",
+                manage_roles: "Thêm quyền quản lý",
+                role_manages_another: "Các quyền quản lý khác",
+                no_roles: "Không có"
             },
             manufacturing_mill: {
                 name: "Tên xưởng",
@@ -4217,7 +4220,7 @@ export default {
                     content: "Đang chờ duyệt"
                 },
                 2: {
-                    color: "black",
+                    color: "#367FA9",
                     content: "Đã phê duyệt"
                 },
                 3: {
@@ -4247,7 +4250,46 @@ export default {
                 all_works: "Tất cả",
                 employee: "Nhân viên",
                 choose_all_user: "Tất cả"
-
+            },
+            plan: {
+                code: "Mã kế hoạch",
+                manufacturing_order_code: "Mã đơn sản xuất",
+                sales_order_code: "Mã đơn kinh doanh",
+                start_date: "Ngày bắt đầu",
+                end_date: "Ngày dự kiến hoàn thành",
+                approvers: "Người phê duyệt",
+                description: "Mô tả",
+                created_at: "Ngày tạo",
+                command_code: "Mã lệnh sản xuất",
+                status: "Trạng thái",
+                choose_status: "Chọn trạng thái",
+                choose_all: "Chọn tất cả",
+                works: "Nhà máy",
+                progess: "Tiến độ",
+                choose_progess: "Chọn tiến độ",
+                search: "Tìm kiếm",
+                index: "STT",
+                creator: "Người tạo",
+                1: {
+                    color: "yellow",
+                    content: "Đang chờ duyệt"
+                },
+                2: {
+                    color: "#367FA9",
+                    content: "Đã phê duyệt"
+                },
+                3: {
+                    color: "orange",
+                    content: "Đang thực hiện"
+                },
+                4: {
+                    color: "green",
+                    content: "Đã hoàn thành"
+                },
+                5: {
+                    color: "red",
+                    content: "Đã hủy"
+                },
 
 
             }

@@ -17,7 +17,10 @@ exports.createManufacturingWorks = async (data, portal) => {
         status: data.status,
         manufacturingMills: data.manufacturingMills,
         description: data.description,
-        organizationalUnit: data.organizationalUnit
+        organizationalUnit: data.organizationalUnit,
+        manageRoles: data.manageRoles.map(role => {
+            return role
+        })
     });
 
     let manufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal))
@@ -142,6 +145,8 @@ exports.getManufacturingWorksById = async (id, portal) => {
             },
             { path: 'viceDeans' },
             { path: 'employees' }]
+        }, {
+            path: 'manageRoles'
         }]);
     if (!manufacturingWorks) {
         throw Error("ManufacturingWorks is not existing")
@@ -171,7 +176,8 @@ exports.editManufacturingWorks = async (id, data, portal) => {
     oldManufacturingWorks.phoneNumber = data.phoneNumber ? data.phoneNumber : oldManufacturingWorks.phoneNumber;
     oldManufacturingWorks.address = data.address ? data.address : oldManufacturingWorks.address;
     oldManufacturingWorks.description = data.description ? data.description : oldManufacturingWorks.description;
-    oldManufacturingWorks.status = data.status ? data.status : oldManufacturingWorks.status
+    oldManufacturingWorks.status = data.status ? data.status : oldManufacturingWorks.status;
+    oldManufacturingWorks.manageRoles = data.manageRoles ? data.manageRoles.map(role => { return role }) : oldManufacturingWorks.manageRoles
 
     await oldManufacturingWorks.save();
 

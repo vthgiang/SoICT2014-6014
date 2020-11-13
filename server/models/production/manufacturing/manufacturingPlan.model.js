@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const mongoosePaginate = require('mongoose-paginate-v2')
 
 // Bảng kế hoạch sản xuất
 const ManufacturingPlanSchema = new Schema({
@@ -15,10 +16,10 @@ const ManufacturingPlanSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "SalesOrder"
     },
-    manufacturingWorks: {
+    manufacturingWorks: [{
         type: Schema.Types.ObjectId,
         ref: "ManufacturingWorks"
-    },
+    }],
     products: [{ // Danh sách danh mục mặt hàng
         good: { // Mặt hàng
             type: Schema.Types.ObjectId,
@@ -80,6 +81,8 @@ const ManufacturingPlanSchema = new Schema({
 }, {
     timestamps: true
 });
+
+ManufacturingPlanSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
     if (!db.models.ManufacturingPlan)
