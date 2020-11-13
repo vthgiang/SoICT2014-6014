@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
-import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from '../../../../../common-components';
+import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from '../../../../../../common-components';
 
 class QuantityLotDetailForm extends Component {
     constructor(props) {
@@ -33,6 +33,7 @@ class QuantityLotDetailForm extends Component {
                                 <tr>
                                     <th title={translate('manage_warehouse.bill_management.lot_number')}>{translate('manage_warehouse.bill_management.lot_number')}</th>
                                     <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
+                                    <th title={translate('manage_warehouse.bill_management.description')}>{translate('manage_warehouse.bill_management.description')}</th>
                                 </tr>
                             </thead>
                             <tbody id={`quantity-bill-lot-create`}>
@@ -42,6 +43,7 @@ class QuantityLotDetailForm extends Component {
                                             <tr key={index}>
                                                 <td>{x.lot.name}</td>
                                                 <td>{x.quantity}</td>
+                                                <td>{x.note}</td>
                                             </tr>
                                         ) : <tr><td colSpan={3}><center>{translate('task_template.no_data')}</center></td></tr>
                                 }

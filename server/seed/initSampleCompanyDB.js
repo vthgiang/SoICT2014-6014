@@ -3366,6 +3366,7 @@ const initSampleCompanyDB = async () => {
                 {
                     stock: listStock[0]._id,
                     quantity: 100,
+                    expectedNumber: 0,
                     binLocations: [
                         {
                             binLocation: listBinLocationChilds[3]._id,
@@ -3380,6 +3381,7 @@ const initSampleCompanyDB = async () => {
                 {
                     stock: listStock[1]._id,
                     quantity: 200,
+                    expectedNumber: 0,
                     binLocations: [
                         {
                             binLocation: listBinLocationChilds[0]._id,
@@ -3441,6 +3443,7 @@ const initSampleCompanyDB = async () => {
                 {
                     stock: listStock[0]._id,
                     quantity: 200,
+                    expectedNumber: 0,
                     binLocations: [
                         {
                             binLocation: listBinLocationChilds[3]._id,
@@ -3455,6 +3458,7 @@ const initSampleCompanyDB = async () => {
                 {
                     stock: listStock[1]._id,
                     quantity: 250,
+                    expectedNumber: 0,
                     binLocations: [
                         {
                             binLocation: listBinLocationChilds[2]._id,
@@ -3516,6 +3520,7 @@ const initSampleCompanyDB = async () => {
                 {
                     stock: listStock[0]._id,
                     quantity: 120,
+                    expectedNumber: 0,
                     binLocations: [
                         {
                             binLocation: listBinLocationChilds[3]._id,
@@ -3530,6 +3535,7 @@ const initSampleCompanyDB = async () => {
                 {
                     stock: listStock[1]._id,
                     quantity: 200,
+                    expectedNumber: 0,
                     binLocations: [
                         {
                             binLocation: listBinLocationChilds[0]._id,
@@ -3591,6 +3597,7 @@ const initSampleCompanyDB = async () => {
                 {
                     stock: listStock[0]._id,
                     quantity: 100,
+                    expectedNumber: 0,
                     binLocations: [
                         {
                             binLocation: listBinLocationChilds[3]._id,
@@ -3605,6 +3612,7 @@ const initSampleCompanyDB = async () => {
                 {
                     stock: listStock[1]._id,
                     quantity: 200,
+                    expectedNumber: 0,
                     binLocations: [
                         {
                             binLocation: listBinLocationChilds[0]._id,
@@ -3666,6 +3674,7 @@ const initSampleCompanyDB = async () => {
                 {
                     stock: listStock[0]._id,
                     quantity: 100,
+                    expectedNumber: 0,
                     binLocations: [
                         {
                             binLocation: listBinLocationChilds[3]._id,
@@ -3680,6 +3689,7 @@ const initSampleCompanyDB = async () => {
                 {
                     stock: listStock[1]._id,
                     quantity: 200,
+                    expectedNumber: 0,
                     binLocations: [
                         {
                             binLocation: listBinLocationChilds[0]._id,
@@ -3741,6 +3751,7 @@ const initSampleCompanyDB = async () => {
                 {
                     stock: listStock[0]._id,
                     quantity: 100,
+                    expectedNumber: 0,
                     binLocations: [
                         {
                             binLocation: listBinLocationChilds[3]._id,
@@ -3755,6 +3766,7 @@ const initSampleCompanyDB = async () => {
                 {
                     stock: listStock[1]._id,
                     quantity: 200,
+                    expectedNumber: 0,
                     binLocations: [
                         {
                             binLocation: listBinLocationChilds[0]._id,

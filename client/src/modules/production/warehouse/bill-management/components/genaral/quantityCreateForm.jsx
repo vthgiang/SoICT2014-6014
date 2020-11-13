@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
-import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from '../../../../../common-components';
+import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from '../../../../../../common-components';
 
 class QuantityCreateForm extends Component {
     constructor(props) {
@@ -48,14 +48,15 @@ class QuantityCreateForm extends Component {
 
         if(lots.listLotsByGood && lots.listLotsByGood.length > 0) {
             lots.listLotsByGood.map(item => {
+                let stock = item.stocks.filter(x => x.stock._id === this.props.stock);
+                let quantity = stock[0] ? stock[0].quantity : 0;
                 lotArr.push({ 
                     value: item._id, 
                     text: item.name,
-                    quantity: item.quantity
+                    quantity: quantity,
                 });
             })
         }
-
         return lotArr;
     }
 

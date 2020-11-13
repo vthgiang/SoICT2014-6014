@@ -103,7 +103,6 @@ exports.getXmlDiagramById = (portal, params) => {
 exports.createXmlDiagram = async (portal, body) => {
     let info = [];
     for (const x in body.info) {
-        // if (Object.keys(body.info[x]).length > 4) {
         body.info[x].taskActions = (body.info[x].taskActions) ? body.info[x].taskActions.map(item => {
             return {
                 name: item.name,
@@ -122,12 +121,11 @@ exports.createXmlDiagram = async (portal, body) => {
             }
         }) : [];
         if (body.info[x].formula === '') {
-            body.info[x].formula = "progress / (dayUsed / totalDay) - 0.5 * (10 - (averageActionRating)) * 10"
+            body.info[x].formula = "progress / (dayUsed / totalDay) - (numberOfFailedAction / (numberOfFailedAction + numberOfPassedAction)) * 100"
         }
         info.push(body.info[x])
-        // }
     }
-    console.log(info)
+
     let data = await ProcessTemplate(connect(DB_CONNECTION, portal)).create({
         xmlDiagram: body.xmlDiagram,
         processName: body.processName,
@@ -320,7 +318,6 @@ exports.createTaskByProcess = async (portal, processId, body) => {
         splitter = data[i].endDate.split("-");
         let endDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
 
-        // if (data[i].taskTemplate !== "") {
         taskInformations = data[i].taskInformations;
         taskActions = data[i].taskActions;
 
@@ -331,7 +328,6 @@ exports.createTaskByProcess = async (portal, processId, body) => {
                 description: taskActions[i].description,
             }
         }
-        // }
 
         let status = "wait_for_approval";
         if (isStartTask(data[i])) {
@@ -343,14 +339,14 @@ exports.createTaskByProcess = async (portal, processId, body) => {
             formula = "progress / (dayUsed / totalDay) - 0.5 * (10 - (averageActionRating)) * 10";
         }
 
+        let collaboratedWithOrganizationalUnits = data[i].collaboratedWithOrganizationalUnits.map(item => { return { "organizationalUnit": item } })
         let process = taskProcessId;
         let newTaskItem = await Task(connect(DB_CONNECTION, portal)).create({
             process: process,
             codeInProcess: data[i].code,
             numberOfDaysTaken: data[i].numberOfDaysTaken,
             organizationalUnit: data[i].organizationalUnit,
-            collaboratedWithOrganizationalUnits: data[i].collaboratedWithOrganizationalUnits,
-            // creator: data[i].creator, //id của người tạo
+            collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits,
             creator: body.creator, //id của người tạo
             name: data[i].name,
             description: data[i].description,
@@ -622,7 +618,7 @@ exports.importProcessTemplate = async (portal, data, idUser) => {
         // xử lý dữ liệu người quản lý
         let listManager = [];
         for (let x in data[i].manager) {
-            let managerItem = await Role(connect(DB_CONNECTION, portal)).findOne({ name: data[i].manager[x] });
+            let managerItem = await Role(connect(DB_CONNECTION, portal)).findOne({ name: data[i].manager[x].trim() });
             if (managerItem) {
                 listManager = [...listManager, managerItem._id];
             }
@@ -632,7 +628,7 @@ exports.importProcessTemplate = async (portal, data, idUser) => {
         // xử lý dữ liệu người được xem
         let listViewer = [];
         for (let x in data[i].viewer) {
-            let viewerItem = await Role(connect(DB_CONNECTION, portal)).findOne({ name: data[i].viewer[x] });
+            let viewerItem = await Role(connect(DB_CONNECTION, portal)).findOne({ name: data[i].viewer[x].trim() });
             if (viewerItem) {
                 listViewer = [...listViewer, viewerItem._id];
             }
@@ -645,11 +641,11 @@ exports.importProcessTemplate = async (portal, data, idUser) => {
             data[i].tasks[k]["creator"] = idUser;
             // chuyen dia chi email sang id
             for (let j = 0; j < data[i].tasks[k].accountableEmployees.length; j++) {
-                let accountableEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ name: data[i].tasks[k].accountableEmployees[j] });
+                let accountableEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ name: data[i].tasks[k].accountableEmployees[j].trim() });
                 if (accountableEmployees) {
                     data[i].tasks[k].accountableEmployees[j] = accountableEmployees._id;
                 } else {
-                    accountableEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].tasks[k].accountableEmployees[j] });
+                    accountableEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].tasks[k].accountableEmployees[j].trim() });
                     if (accountableEmployees) {
                         data[i].tasks[k].accountableEmployees[j] = accountableEmployees._id;
                     } else {
@@ -659,11 +655,11 @@ exports.importProcessTemplate = async (portal, data, idUser) => {
                 }
             };
             for (let j = 0; j < data[i].tasks[k].consultedEmployees.length; j++) {
-                let consultedEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ name: data[i].tasks[k].consultedEmployees[j] });
+                let consultedEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ name: data[i].tasks[k].consultedEmployees[j].trim() });
                 if (consultedEmployees) {
                     data[i].tasks[k].consultedEmployees[j] = consultedEmployees._id;
                 } else {
-                    consultedEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].tasks[k].consultedEmployees[j] });
+                    consultedEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].tasks[k].consultedEmployees[j].trim() });
                     if (consultedEmployees) {
                         data[i].tasks[k].consultedEmployees[j] = consultedEmployees._id;
                     } else {
@@ -673,11 +669,11 @@ exports.importProcessTemplate = async (portal, data, idUser) => {
                 }
             };
             for (let j = 0; j < data[i].tasks[k].informedEmployees.length; j++) {
-                let informedEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ name: data[i].tasks[k].informedEmployees[j] });
+                let informedEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ name: data[i].tasks[k].informedEmployees[j].trim() });
                 if (informedEmployees) {
                     data[i].tasks[k].informedEmployees[j] = informedEmployees._id;
                 } else {
-                    informedEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].tasks[k].informedEmployees[j] });
+                    informedEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].tasks[k].informedEmployees[j].trim() });
                     if (informedEmployees) {
                         data[i].tasks[k].informedEmployees[j] = informedEmployees._id;
                     } else {
@@ -687,11 +683,11 @@ exports.importProcessTemplate = async (portal, data, idUser) => {
                 }
             };
             for (let j = 0; j < data[i].tasks[k].responsibleEmployees.length; j++) {
-                let responsibleEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ name: data[i].tasks[k].responsibleEmployees[j] });
+                let responsibleEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ name: data[i].tasks[k].responsibleEmployees[j].trim() });
                 if (responsibleEmployees) {
                     data[i].tasks[k].responsibleEmployees[j] = responsibleEmployees._id;
                 } else {
-                    responsibleEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].tasks[k].responsibleEmployees[j] });
+                    responsibleEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ email: data[i].tasks[k].responsibleEmployees[j].trim() });
                     if (responsibleEmployees) {
                         data[i].tasks[k].responsibleEmployees[j] = responsibleEmployees._id;
                     } else {
@@ -747,8 +743,18 @@ exports.importProcessTemplate = async (portal, data, idUser) => {
             }
 
             // xử lý đơn vị công việc
-            let unit = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({ name: data[i].tasks[k].organizationalUnit });
+            let unit = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({ name: data[i].tasks[k].organizationalUnit.trim() });
             data[i].tasks[k].organizationalUnit = String(unit._id);
+
+            let collaboratedWithOrganizationalUnits = []
+            for (let j = 0; j < data[i].tasks[k].collaboratedWithOrganizationalUnits.length; j++) {
+                console.log('data[i].tasks[k].collaboratedWithOrganizationalUnits[j].trim()', data[i].tasks[k].collaboratedWithOrganizationalUnits[j].trim());
+                if (data[i].tasks[k].collaboratedWithOrganizationalUnits[j].trim() !== 0) {
+                    let collaborateItem = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({ name: data[i].tasks[k].collaboratedWithOrganizationalUnits[j].trim() })
+                    collaborateItem && collaboratedWithOrganizationalUnits.push(String(collaborateItem._id));
+                }
+            }
+            data[i].tasks[k].collaboratedWithOrganizationalUnits = collaboratedWithOrganizationalUnits;
         }
 
 

@@ -3,9 +3,16 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { SelectMulti, DatePicker, DataTableSetting, PaginateBar } from '../../../../../common-components';
 
-import BillDetailForm from './billDetailForm';
-import BillCreateForm from './billCreateForm';
-import BillEditForm from './billEditForm';
+// import BillDetailForm from './billDetailForm';
+// import BillCreateForm from './billCreateForm';
+// import BillEditForm from './billEditForm';
+
+import BookManagement from '../components/stock-book';
+import ReceiptManagement from '../components/good-receipts';
+import IssueManagement from '../components/good-issues';
+import ReturnManagement from '../components/good-returns';
+import RotateManagement from '../components/stock-rotate';
+import TakeManagement from '../components/stock-takes';
 
 import { BillActions } from '../redux/actions';
 import { StockActions } from '../../stock-management/redux/actions';
@@ -74,7 +81,15 @@ class BillManagement extends Component {
         this.setState({ page });
         const data = {
             limit: this.state.limit,
-            page: page
+            page: page,
+            code: this.state.code,
+            status: this.state.status,
+            stock: this.state.stock,
+            type: this.state.type,
+            startDate: this.state.startDate,
+            endDate: this.state.endDate,
+            customer: this.state.customer,
+            creator: this.state.creator
         };
         const { group } = this.state;
         if(group !== '') {
@@ -88,6 +103,14 @@ class BillManagement extends Component {
         const data = {
             limit: number,
             page: this.state.page,
+            code: this.state.code,
+            status: this.state.status,
+            stock: this.state.stock,
+            type: this.state.type,
+            startDate: this.state.startDate,
+            endDate: this.state.endDate,
+            customer: this.state.customer,
+            creator: this.state.creator
         };
         const { group } = this.state;
         if(group !== '') {
@@ -320,7 +343,128 @@ class BillManagement extends Component {
                 </ul>
                 <div className="tab-content">
 
-                <div className="box-body qlcv">
+                { group === '' && 
+                    <BookManagement 
+                        handleEdit={this.handleEdit}
+                        formatDate={this.formatDate}
+                        setPage={this.setPage}
+                        setLimit={this.setLimit}
+                        handleStockChange={this.handleStockChange}
+                        handleCreatorChange={this.handleCreatorChange}
+                        handleTypeChange={this.handleTypeChange}
+                        handleStatusChange={this.handleStatusChange}
+                        handleCodeChange={this.handleCodeChange}
+                        handlePartnerChange={this.handlePartnerChange}
+                        handleSubmitSearch={this.handleSubmitSearch}
+                        handleChangeStartDate={this.handleChangeStartDate}
+                        handleChangeEndDate={this.handleChangeEndDate}
+                        getPartner={this.getPartner}
+                        handleShowDetailInfo={this.handleShowDetailInfo}
+
+                    />
+                }
+
+                { group === '1' && 
+                    <ReceiptManagement 
+                        handleEdit={this.handleEdit}
+                        formatDate={this.formatDate}
+                        setPage={this.setPage}
+                        setLimit={this.setLimit}
+                        handleStockChange={this.handleStockChange}
+                        handleCreatorChange={this.handleCreatorChange}
+                        handleTypeChange={this.handleTypeChange}
+                        handleStatusChange={this.handleStatusChange}
+                        handleCodeChange={this.handleCodeChange}
+                        handlePartnerChange={this.handlePartnerChange}
+                        handleSubmitSearch={this.handleSubmitSearch}
+                        handleChangeStartDate={this.handleChangeStartDate}
+                        handleChangeEndDate={this.handleChangeEndDate}
+                        getPartner={this.getPartner}
+                        handleShowDetailInfo={this.handleShowDetailInfo}
+                    />
+                }
+
+                { group === '2' && 
+                    <IssueManagement 
+                        handleEdit={this.handleEdit}
+                        formatDate={this.formatDate}
+                        setPage={this.setPage}
+                        setLimit={this.setLimit}
+                        handleStockChange={this.handleStockChange}
+                        handleCreatorChange={this.handleCreatorChange}
+                        handleTypeChange={this.handleTypeChange}
+                        handleStatusChange={this.handleStatusChange}
+                        handleCodeChange={this.handleCodeChange}
+                        handlePartnerChange={this.handlePartnerChange}
+                        handleSubmitSearch={this.handleSubmitSearch}
+                        handleChangeStartDate={this.handleChangeStartDate}
+                        handleChangeEndDate={this.handleChangeEndDate}
+                        getPartner={this.getPartner}
+                        handleShowDetailInfo={this.handleShowDetailInfo}
+                    />
+                }
+
+                { group === '3' && 
+                    <ReturnManagement 
+                        handleEdit={this.handleEdit}
+                        formatDate={this.formatDate}
+                        setPage={this.setPage}
+                        setLimit={this.setLimit}
+                        handleStockChange={this.handleStockChange}
+                        handleCreatorChange={this.handleCreatorChange}
+                        handleTypeChange={this.handleTypeChange}
+                        handleStatusChange={this.handleStatusChange}
+                        handleCodeChange={this.handleCodeChange}
+                        handlePartnerChange={this.handlePartnerChange}
+                        handleSubmitSearch={this.handleSubmitSearch}
+                        handleChangeStartDate={this.handleChangeStartDate}
+                        handleChangeEndDate={this.handleChangeEndDate}
+                        getPartner={this.getPartner}
+                        handleShowDetailInfo={this.handleShowDetailInfo}
+                    />
+                }
+
+                { group === '4' &&
+                    <TakeManagement 
+                        handleEdit={this.handleEdit}
+                        formatDate={this.formatDate}
+                        setPage={this.setPage}
+                        setLimit={this.setLimit}
+                        handleStockChange={this.handleStockChange}
+                        handleCreatorChange={this.handleCreatorChange}
+                        handleTypeChange={this.handleTypeChange}
+                        handleStatusChange={this.handleStatusChange}
+                        handleCodeChange={this.handleCodeChange}
+                        handlePartnerChange={this.handlePartnerChange}
+                        handleSubmitSearch={this.handleSubmitSearch}
+                        handleChangeStartDate={this.handleChangeStartDate}
+                        handleChangeEndDate={this.handleChangeEndDate}
+                        getPartner={this.getPartner}
+                        handleShowDetailInfo={this.handleShowDetailInfo}
+                    />
+                }
+
+                { group === '5' && 
+                    <RotateManagement 
+                        handleEdit={this.handleEdit}
+                        formatDate={this.formatDate}
+                        setPage={this.setPage}
+                        setLimit={this.setLimit}
+                        handleStockChange={this.handleStockChange}
+                        handleCreatorChange={this.handleCreatorChange}
+                        handleTypeChange={this.handleTypeChange}
+                        handleStatusChange={this.handleStatusChange}
+                        handleCodeChange={this.handleCodeChange}
+                        handlePartnerChange={this.handlePartnerChange}
+                        handleSubmitSearch={this.handleSubmitSearch}
+                        handleChangeStartDate={this.handleChangeStartDate}
+                        handleChangeEndDate={this.handleChangeEndDate}
+                        getPartner={this.getPartner}
+                        handleShowDetailInfo={this.handleShowDetailInfo}
+                    />
+                }
+
+                {/* <div className="box-body qlcv">
                     { group !== '' ? <BillCreateForm group={group} /> : ''}
                     <div className="form-inline">
                         <div className="form-group">
@@ -424,6 +568,7 @@ class BillManagement extends Component {
                                     { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2')},
                                     { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3')},
                                     { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4')},
+                                    { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5')},
                                 ]}
                                 onChange={this.handleStatusChange}
                             />
@@ -523,7 +668,7 @@ class BillManagement extends Component {
                             (typeof listPaginate === 'undefined' || listPaginate.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                         <PaginateBar pageTotal = {totalPages} currentPage = {page} func = {this.setPage} />
-                    </div>
+                    </div> */}
                 </div>
             </div>
         );

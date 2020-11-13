@@ -8,17 +8,17 @@ const {
 
 
 exports.createNewSLA = async (userId, data, portal) => {
+    console.log(userId);
     let newSLA = await ServiceLevelAgreement(connect(DB_CONNECTION, portal)).create({
         code: data.code,
         goods: data.goods.map((item) => {
             return item;
         }),
-        creator: userId,
         title: data.title,
         descriptions: data.descriptions.map((item) => {
             return item;
         }),
-        creator: data.creator,
+        creator: userId,
         version: 1,//default create = version 1
         status: true, // default create status = true
         lastVersion: true
@@ -28,7 +28,7 @@ exports.createNewSLA = async (userId, data, portal) => {
 }
 
 //Tạo ra 1 version (document) khác có code như cũ
-exports.editSLAByCode = async (id, data, portal) => {
+exports.editSLAByCode = async (userId, id, data, portal) => {
     let oldSLA = await ServiceLevelAgreement(connect(DB_CONNECTION, portal)).findById(id);
     if (!oldSLA) {
         throw Error("SLA is not existing")
@@ -44,12 +44,14 @@ exports.editSLAByCode = async (id, data, portal) => {
         descriptions: data.descriptions.map((item) => {
             return item;
         }),
-        creator: data.creator,
+        creator: userId,
         version: oldSLA.version + 1,
         status: true,
+        lastVersion: true
     })
 
     oldSLA.status = false;
+    oldSLA.lastVersion = false;
     oldSLA.save();
     
     let sla = await ServiceLevelAgreement(connect(DB_CONNECTION, portal)).findById({ _id: newVersionSLA._id });
@@ -120,7 +122,7 @@ exports.disableSLAById = async (id, portal) => {
         throw Error("SLA is not existing")
     }
 
-    sla.status = false;
+    sla.status = !sla.status;
     sla.save();
 
     return { sla }
@@ -146,4 +148,38 @@ exports.getSLAByCode = async (query, portal) => {
     }
     //code này đã có sẵn trong db
     return { sla };
+}
+
+exports.deleteSLA = async (code, portal) => {
+    console.log("CODE", code);
+    let slas = await ServiceLevelAgreement(connect(DB_CONNECTION, portal))
+        .find({ code: code })
+    if (!slas.length) {
+            throw Error("Tax is not existing")
+    }
+    let slasDeleted = [];
+    for (let index = 0; index < slas.length; index++) {
+        let slaDeleted = await ServiceLevelAgreement(connect(DB_CONNECTION, portal)).findByIdAndDelete({ _id: slas[index]._id })
+        slasDeleted.push(slaDeleted);
+    }
+    return slasDeleted;
+}
+
+
+exports.getSlaByGoodsId = async (goodId, portal) => {
+    let slas = await ServiceLevelAgreement(connect(DB_CONNECTION, portal)).find({ goods: goodId, lastVersion: true, status: true });
+    if (!slas) {
+        throw Error("No service level agreement for good!")
+    }
+
+    let slasMap = slas.map(sla => {
+        return {
+            _id: sla._id,
+            code: sla.code,
+            title: sla.title,
+            descriptions: sla.descriptions,
+
+        }
+    })
+    return slasMap;
 }

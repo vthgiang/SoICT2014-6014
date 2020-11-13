@@ -19,7 +19,6 @@ class CollapsibleShowBonusGoods extends Component {
 
     render() {
         let { bonusGoods } = this.props;
-        console.log("BOus", bonusGoods);
         const { visible } = this.state;
         return (
             <React.Fragment>

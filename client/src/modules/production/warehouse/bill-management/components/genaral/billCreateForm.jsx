@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
-import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from '../../../../../common-components';
+import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from '../../../../../../common-components';
 import QuantityCreateForm from './quantityCreateForm';
-import { generateCode } from '../../../../../helpers/generateCode';
-import { LotActions } from '../../inventory-management/redux/actions';
-import { BillActions } from '../redux/actions';
+import QuantityCreateReceipt from './quantityCreateReceipt';
+import { generateCode } from '../../../../../../helpers/generateCode';
+import { LotActions } from '../../../inventory-management/redux/actions';
+import { BillActions } from '../../redux/actions';
 
 class BillCreateForm extends Component {
     constructor(props) {
@@ -20,6 +21,7 @@ class BillCreateForm extends Component {
         this.state = {
             list: [],
             code: generateCode("ST"),
+            lotName: generateCode("LOT"),
             lots: [],
             listGood: [],
             good: Object.assign({}, this.EMPTY_GOOD),
@@ -51,13 +53,15 @@ class BillCreateForm extends Component {
     handleGoodChange = async (value) => {
         const dataGoods = await this.getAllGoods();
         let good = value[0];
+        const lotName = generateCode("LOT");
         this.state.good.quantity = 0;
         let goodName = dataGoods.find(x => x.value === good);
         this.state.good.good = { _id: good, code: goodName.code, name: goodName.name, baseUnit: goodName.baseUnit };
         await this.setState(state => {
             return {
                 ...state,
-                lots: []
+                lots: [],
+                lotName: lotName
             }
         })
         const { fromStock } = this.state;
@@ -243,6 +247,29 @@ class BillCreateForm extends Component {
                     ...state,
                     customer: value,
                     errorCustomer: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+
+    handleSupplierChange = (value) => {
+        let supplier = value[0];
+        this.validateSupplier(supplier, true);
+    }
+
+    validateSupplier = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = this.props;
+        if(!value) {
+            msg = translate('manage_warehouse.bill_management.validate_customer')
+        }
+        if(willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    supplier: value,
+                    errorSuppler: msg,
                 }
             })
         }
@@ -444,6 +471,7 @@ class BillCreateForm extends Component {
                 group: nextProps.group,
                 listGood: [],
                 lots: [],
+                type: '',
                 errorStock: undefined, 
                 errorType: undefined, 
                 errorApprover: undefined, 
@@ -482,7 +510,7 @@ class BillCreateForm extends Component {
 
     render() {
         const { translate, group } = this.props;
-        const { lots, listGood, good, code, approver, status, customer, fromStock, type, name, phone, email, address, errorStock, errorType, errorApprover, errorCustomer, quantity } = this.state;
+        const { lots, lotName, listGood, good, code, approver, status, customer, supplier, fromStock, type, name, phone, email, address, errorStock, errorType, errorApprover, errorCustomer, errorSupplier } = this.state;
         const listGoods = this.getAllGoods();
         const dataApprover = this.getApprover();
         const dataCustomer = this.getCustomer();
@@ -503,7 +531,8 @@ class BillCreateForm extends Component {
                     func={this.save}
                     size={100}
                 >
-                    <QuantityCreateForm group={group} good={good} initialData={lots} onDataChange={this.handleLotsChange} />
+                    {group === '2' && <QuantityCreateForm group={group} good={good} stock={fromStock} initialData={lots} onDataChange={this.handleLotsChange} />}
+                    {group === '1' && <QuantityCreateReceipt group={group} good={good} lotName={lotName} stock={fromStock} initialData={lots} onDataChange={this.handleLotsChange} />}
                     <form id={`form-create-bill`}>
                     <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
                         <fieldset className="scheduler-border">
@@ -538,9 +567,11 @@ class BillCreateForm extends Component {
                                                 { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2')},
                                                 { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3')},
                                                 { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4')},
+                                                { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5')},
                                             ]}
                                             onChange={this.handleStatusChange}    
                                             multiple={false}
+                                            disabled={true}
                                         />
                                     </div>
                                 </div>
@@ -571,19 +602,36 @@ class BillCreateForm extends Component {
                                         />
                                         <ErrorLabel content = { errorApprover } />
                                     </div>
-                                    <div className={`form-group ${!errorCustomer ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.customer')}<span className="attention"> * </span></label>
-                                        <SelectBox
-                                            id={`select-customer-issue-create`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            value={customer}
-                                            items={dataCustomer}
-                                            onChange={this.handlePartnerChange}    
-                                            multiple={false}
-                                        />
-                                        <ErrorLabel content = { errorCustomer } />
-                                    </div>
+                                    { group === '1' && 
+                                        <div className={`form-group ${!errorSupplier ? "" : "has-error"}`}>
+                                            <label>{translate('manage_warehouse.bill_management.supplier')}<span className="attention"> * </span></label>
+                                            <SelectBox
+                                                id={`select-customer-issue-create`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                value={supplier}
+                                                items={dataCustomer}
+                                                onChange={this.handleSupplierChange}    
+                                                multiple={false}
+                                            />
+                                            <ErrorLabel content = { errorSupplier } />
+                                        </div>
+                                    }
+                                    { (group === '2' || group === '3') && 
+                                        <div className={`form-group ${!errorCustomer ? "" : "has-error"}`}>
+                                            <label>{translate('manage_warehouse.bill_management.customer')}<span className="attention"> * </span></label>
+                                            <SelectBox
+                                                id={`select-customer-issue-create`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                value={customer}
+                                                items={dataCustomer}
+                                                onChange={this.handlePartnerChange}    
+                                                multiple={false}
+                                            />
+                                            <ErrorLabel content = { errorCustomer } />
+                                        </div>
+                                    }
                                 </div>
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     <div className="form-group">

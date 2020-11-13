@@ -73,8 +73,10 @@ exports.getAllDiscounts = async (query, portal) => {
         option.name = new RegExp(query.name, "i")
     }
 
-    //Chỉ lấy những tax đang có hiệu lực
-    option.status = true;
+    if (query.status) {
+        option.status = query.status == 'true' ? true : false;
+    }
+    option.lastVersion = true;
 
     if (!page || !limit) {
         let allDiscounts = await Discount(connect(DB_CONNECTION, portal))
@@ -82,9 +84,9 @@ exports.getAllDiscounts = async (query, portal) => {
             .populate([{
                 path: 'creator', select: 'name'
             }, {
-                path: 'bonusGoods.good', select: 'name code'
+                path: 'discounts.bonusGoods.good', select: 'name code'
             }, {
-                path: 'discountOnGoods.good', select: 'name code'
+                path: 'discounts.discountOnGoods.good', select: 'name code'
             }])
             return { allDiscounts }
     } else {
@@ -95,9 +97,9 @@ exports.getAllDiscounts = async (query, portal) => {
                 populate: [{
                     path: 'creator', select: 'name'
                 }, {
-                    path: 'bonusGoods.good', select: 'name code'
+                    path: 'discounts.bonusGoods.good', select: 'name code'
                 }, {
-                    path: 'discountOnGoods.good', select: 'name code'
+                    path: 'discounts.discountOnGoods.good', select: 'name code'
                 }]
             })
         

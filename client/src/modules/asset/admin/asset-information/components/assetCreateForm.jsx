@@ -21,8 +21,8 @@ class AssetCreateForm extends Component {
             avatar: "./upload/asset/pictures/picture5.png",
             asset: {
                 avatar: './upload/asset/pictures/picture5.png',
-                purchaseDate: this.formatDate2(Date.now()),
-                warrantyExpirationDate: this.formatDate2(Date.now()),
+                purchaseDate: null,
+                warrantyExpirationDate: null,
                 assignedToUser: null,
                 assignedToOrganizationalUnit: null,
                 handoverFromDate: null,
@@ -33,7 +33,7 @@ class AssetCreateForm extends Component {
                 description: "",
                 detailInfo: [],
                 residualValue: null,
-                startDepreciation: this.formatDate2(Date.now()),
+                startDepreciation: null,
                 disposalDate: null,
                 disposalType: "",
                 disposalCost: null,
@@ -87,8 +87,12 @@ class AssetCreateForm extends Component {
 
         if (name === 'purchaseDate' || name === 'warrantyExpirationDate' || name === 'handoverFromDate' ||
             name === 'handoverToDate' || name === 'startDepreciation' || name === 'disposalDate') {
-            var partValue = value.split('-');
-            value = [partValue[2], partValue[1], partValue[0]].join('-');
+            if (value) {
+                let partValue = value.split('-');
+                value = [partValue[2], partValue[1], partValue[0]].join('-');
+            } else {
+                value = null
+            }
         }
 
         this.setState({
@@ -162,7 +166,7 @@ class AssetCreateForm extends Component {
             this.validatorInput(asset.code) &&
             this.validatorInput(asset.assetName) &&
             // this.validatorInput(asset.serial) &&
-            this.validatorInput(asset.purchaseDate) &&
+            // this.validatorInput(asset.purchaseDate) &&
             // && this.validatorInput(asset.warrantyExpirationDate) &&
             // //this.validatorInput(asset.location) &&
             this.validatorInput(asset.assetType) &&

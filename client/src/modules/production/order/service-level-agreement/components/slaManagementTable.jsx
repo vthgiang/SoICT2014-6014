@@ -2,8 +2,11 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { SLAActions } from "../redux/actions";
+import { GoodActions } from "../../../common-production/good-management/redux/actions";
 import { PaginateBar, DataTableSetting, SelectBox, DeleteNotification, ConfirmNotification } from "../../../../../common-components";
-import SLACreateForm from "./slaCreateForm";
+import SlaCreateForm from "./slaCreateForm";
+import SlaEditForm from "./slaEditForm";
+import SlaDetailForm from "./slaDetailForm";
 
 class SLAMangementTable extends Component {
     constructor(props) {
@@ -14,12 +17,14 @@ class SLAMangementTable extends Component {
             code: "",
             title: "",
             status: true,
+            slaDetail: {},
         };
     }
 
     componentDidMount() {
         const { page, limit, status } = this.state;
         this.props.getAllSLAs({ page, limit, status });
+        this.props.getAllGoodsByType({ type: "product" });
     }
 
     setPage = async (page) => {
@@ -81,29 +86,62 @@ class SLAMangementTable extends Component {
         this.props.getAllSLAs(data);
     };
 
+    handleEditSla = async (item) => {
+        await this.setState((state) => {
+            return {
+                ...state,
+                currentRow: item,
+            };
+        });
+        window.$("#modal-edit-sla").modal("show");
+    };
+
+    handleShowDetailSLA = async (slaDetail) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                slaDetail: slaDetail,
+            };
+        });
+        window.$("#modal-detail-sla").modal("show");
+    };
+
+    deleteSLA = (code) => {
+        let { limit, page, status } = this.state;
+        this.props.deleteSLA({ code });
+        this.props.getAllSLAs({ limit, page, status });
+    };
+
+    disableSLA = (id) => {
+        let { limit, page, status } = this.state;
+        this.props.disableSLA(id);
+        this.props.getAllSLAs({ limit, page, status });
+    };
+
     render() {
         const { translate } = this.props;
         const { serviceLevelAgreements } = this.props;
         const { totalPages, page, listSLAs } = serviceLevelAgreements;
-        const { code, title } = this.state;
-        console.log("LOGGGGGGGG:", this.props.serviceLevelAgreements);
+        const { code, title, currentRow, slaDetail } = this.state;
         return (
             <React.Fragment>
                 <div className="box-body qlcv">
-                    <SLACreateForm />
+                    {slaDetail ? <SlaDetailForm slaDetail={slaDetail} /> : ""}
+                    <SlaCreateForm />
+                    {currentRow ? <SlaEditForm slaEdit={currentRow} /> : ""}
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">{translate("manage_order.tax.tax_code")} </label>
+                            <label className="form-control-static">{"Mã"} </label>
                             <input type="text" className="form-control" value={code} onChange={this.handleCodeChange} />
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">{"Tên"} </label>
+                            <label className="form-control-static">{"Tiêu đề"} </label>
                             <input type="text" className="form-control" value={title} onChange={this.handleTitleChange} />
                         </div>
                         <div className="form-group">
                             <label className="form-control-static">Trạng thái đơn</label>
                             <SelectBox
-                                id={`select-filter-status-material-purchase-order`}
+                                id={`select-filter-status-slas`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={[
@@ -159,28 +197,26 @@ class SLAMangementTable extends Component {
                                         <td>{item.title}</td>
                                         <td>
                                             <center>
-                                                {/* <i className={tax.status ? "fa  fa-check text-success" : "fa fa-close text-danger"}></i> */}
-
                                                 {item.status ? (
                                                     <ConfirmNotification
                                                         icon="domain_verification"
                                                         name="domain_verification"
                                                         className="text-success"
                                                         title={"Click để thay đổi trạng thái"}
-                                                        content={`<h4></h4>
-                                                        <br/> <h5></h5>
-                                                        <h5></h5?`}
-                                                        // func={() => this.disableTax(item._id)}
+                                                        content={`<h4>Bỏ kích hoạt cam kết này</h4>
+                                                        <br/> <h5>Điều đó đồng ghĩa với việc cam kết này sẽ không còn được áp dụng vào các đơn hàng</h5>
+                                                        <h5>Tuy nhiên các dữ liệu đơn hàng liên quan đến cam kết này trước đó không bị ảnh hưởng và bạn có thể kích hoạt lại nó</h5?`}
+                                                        func={() => this.disableSLA(item._id)}
                                                     />
                                                 ) : (
                                                     <ConfirmNotification
                                                         icon="disabled_by_default"
                                                         name="disabled_by_default"
                                                         className="text-red"
-                                                        title={""}
-                                                        content={`<h4></h4>
-                                                    <br/> <h5></h5>`}
-                                                        // func={() => this.disableTax(item._id)}
+                                                        title={"Click để thay đổi trạng thái"}
+                                                        content={`<h4>Kích hoạt cam kết này</h4>
+                                                    <br/> <h5>Cam kết này có thể áp dụng vào các đơn hàng nếu được kích hoạt trở lại</h5>`}
+                                                        func={() => this.disableSLA(item._id)}
                                                     />
                                                 )}
                                             </center>
@@ -189,9 +225,9 @@ class SLAMangementTable extends Component {
                                             <a
                                                 style={{ width: "5px" }}
                                                 title={"Xem chi tiết"}
-                                                // onClick={() => {
-                                                //     this.handleShowDetailSLA(item._id);
-                                                // }}
+                                                onClick={() => {
+                                                    this.handleShowDetailSLA(item);
+                                                }}
                                             >
                                                 <i className="material-icons">view_list</i>
                                             </a>
@@ -200,9 +236,9 @@ class SLAMangementTable extends Component {
                                                     className="edit text-yellow"
                                                     style={{ width: "5px" }}
                                                     title={"Sửa thông tin"}
-                                                    // onClick={() => {
-                                                    //     this.handleEditSLA(item);
-                                                    // }}
+                                                    onClick={() => {
+                                                        this.handleEditSla(item);
+                                                    }}
                                                 >
                                                     <i className="material-icons">edit</i>
                                                 </a>
@@ -215,13 +251,21 @@ class SLAMangementTable extends Component {
                                                     id: item._id,
                                                     info: item.title,
                                                 }}
-                                                // func={() => this.deleteSLA(item.code)}
+                                                func={() => this.deleteSLA(item.code)}
                                             />
                                         </td>
                                     </tr>
                                 ))}
                         </tbody>
                     </table>
+                    {serviceLevelAgreements.isLoading ? (
+                        <div className="table-info-panel">{translate("confirm.loading")}</div>
+                    ) : (
+                        (typeof listSLAs === "undefined" || listSLAs.length === 0) && (
+                            <div className="table-info-panel">{translate("confirm.no_data")}</div>
+                        )
+                    )}
+                    <PaginateBar pageTotal={totalPages ? totalPages : 0} currentPage={page} func={this.setPage} />
                 </div>
             </React.Fragment>
         );
@@ -237,6 +281,7 @@ const mapDispatchToProps = {
     getAllSLAs: SLAActions.getAllSLAs,
     disableSLA: SLAActions.disableSLA,
     deleteSLA: SLAActions.deleteSLA,
+    getAllGoodsByType: GoodActions.getAllGoodsByType,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(SLAMangementTable));

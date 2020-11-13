@@ -6,6 +6,7 @@ import { GoodActions } from "../../../common-production/good-management/redux/ac
 import DiscountCreateForm from "./discountCreateForm";
 import { PaginateBar, DataTableSetting, SelectBox, DeleteNotification, ConfirmNotification } from "../../../../../common-components";
 import DiscountEditForm from "./discountEditForm";
+import DiscountDetailForm from "./discountDetailForm";
 
 class DiscountManagementTable extends Component {
     constructor(props) {
@@ -13,12 +14,16 @@ class DiscountManagementTable extends Component {
         this.state = {
             page: 1,
             limit: 5,
+            code: "",
+            name: "",
+            status: true,
+            discountDetail: {},
         };
     }
 
     componentDidMount() {
-        const { page, limit } = this.state;
-        this.props.getAllDiscounts({ page, limit });
+        const { page, limit, status } = this.state;
+        this.props.getAllDiscounts({ page, limit, status });
         this.props.getAllGoodsByType({ type: "product" });
     }
 
@@ -54,25 +59,98 @@ class DiscountManagementTable extends Component {
         window.$("#modal-edit-discount").modal("show");
     };
 
+    changeDiscountStatus = (id) => {
+        let { limit, page, status } = this.state;
+        this.props.changeDiscountStatus(id);
+        this.props.getAllDiscounts({ limit, page, status });
+    };
+
+    deleteDiscountByCode = (code) => {
+        let { limit, page, status } = this.state;
+        this.props.deleteDiscountByCode({ code });
+        this.props.getAllDiscounts({ limit, page, status });
+    };
+
+    handleStatusChange = (value) => {
+        if (value[0] === "all") {
+            this.setState({
+                status: undefined,
+            });
+        } else {
+            this.setState({
+                status: value[0],
+            });
+        }
+    };
+
+    handleCodeChange = (e) => {
+        this.setState({
+            code: e.target.value,
+        });
+    };
+
+    handleNameChange = (e) => {
+        this.setState({
+            name: e.target.value,
+        });
+    };
+
+    handleSubmitSearch = () => {
+        const { page, limit, code, name, status } = this.state;
+        const data = {
+            limit: limit,
+            page: page,
+            code: code,
+            name: name,
+            status: status,
+        };
+        this.props.getAllDiscounts(data);
+    };
+
+    handleShowDetailDiscount = (discountDetail) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                discountDetail: discountDetail,
+            };
+        });
+        window.$("#modal-detail-discount").modal("show");
+    };
+
     render() {
         const { translate } = this.props;
         const { discounts } = this.props;
         const { totalPages, page, listDiscounts } = discounts;
-        const { currentRow } = this.state;
+        const { currentRow, discountDetail } = this.state;
         console.log("DISCOUNT", discounts);
         return (
             <React.Fragment>
                 <div className="box-body qlcv">
                     <DiscountCreateForm />
-                    {currentRow && <DiscountEditForm discountEdit={currentRow} />}
+                    <DiscountDetailForm discountDetail={discountDetail} />
+                    {/* {currentRow && <DiscountEditForm discountEdit={currentRow} />} */}
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">Mã giảm giá </label>
+                            <label className="form-control-static">Mã giảm giá</label>
                             <input type="text" className="form-control" onChange={this.handleCodeChange} />
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">Tên giảm giá </label>
+                            <label className="form-control-static">Tên giảm giá</label>
                             <input type="text" className="form-control" onChange={this.handleNameChange} />
+                        </div>
+                        <div className="form-group">
+                            <label className="form-control-static">Trạng thái giảm giá</label>
+                            <SelectBox
+                                id={`select-filter-status-discounts`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={[
+                                    { value: true, text: "Đang hiệu lực" },
+                                    { value: false, text: "Hết hiệu lực" },
+                                    { value: "all", text: "Tất cả" },
+                                ]}
+                                onChange={this.handleStatusChange}
+                            />
                         </div>
                         <div className="form-group">
                             <button type="button" className="btn btn-success" title={"Tìm kiếm"} onClick={this.handleSubmitSearch}>
@@ -116,15 +194,36 @@ class DiscountManagementTable extends Component {
                                         <td>{discount.type}</td>
                                         <td>
                                             <center>
-                                                <i className={discount.status ? "fa  fa-check text-success" : "fa fa-close text-danger"}></i>
+                                                {discount.status ? (
+                                                    <ConfirmNotification
+                                                        icon="domain_verification"
+                                                        name="domain_verification"
+                                                        className="text-success"
+                                                        title={"Click để thay đổi trạng thái"}
+                                                        content={`<h4>Bỏ kích hoạt khuyến mãi</h4>
+                                                        <br/> <h5>Điều đó đồng ghĩa với việc khuyến mãi này sẽ không còn được áp dụng vào các đơn hàng</h5>
+                                                        <h5>Tuy nhiên các dữ liệu đơn hàng liên quan đến khuyến mãi này trước đó không bị ảnh hưởng và bạn có thể kích hoạt lại nó</h5?`}
+                                                        func={() => this.changeDiscountStatus(discount._id)}
+                                                    />
+                                                ) : (
+                                                    <ConfirmNotification
+                                                        icon="disabled_by_default"
+                                                        name="disabled_by_default"
+                                                        className="text-red"
+                                                        title={"Click để thay đổi trạng thái"}
+                                                        content={`<h4>Kích hoạt khuyến mãi này</h4>
+                                                    <br/> <h5>Khuyến mãi này có thể áp dụng vào các đơn hàng nếu được kích hoạt trở lại</h5>`}
+                                                        func={() => this.changeDiscountStatus(discount._id)}
+                                                    />
+                                                )}
                                             </center>
                                         </td>
                                         <td style={{ textAlign: "center" }}>
                                             <a
                                                 style={{ width: "5px" }}
-                                                title={"Xem chi tiết thuế"}
+                                                title={"Xem chi tiết khuyến mãi"}
                                                 onClick={() => {
-                                                    this.handleShowDetailDiscount(discount._id);
+                                                    this.handleShowDetailDiscount(discount);
                                                 }}
                                             >
                                                 <i className="material-icons">view_list</i>
@@ -132,22 +231,20 @@ class DiscountManagementTable extends Component {
                                             <a
                                                 className="edit text-yellow"
                                                 style={{ width: "5px" }}
-                                                title={"Sửa thông tin thuế"}
+                                                title={"Sửa thông tin khuyến mãi"}
                                                 onClick={() => {
                                                     this.handleEditDiscount(discount);
                                                 }}
                                             >
                                                 <i className="material-icons">edit</i>
                                             </a>
-                                            <ConfirmNotification
-                                                icon="disabled_by_default"
-                                                title={"Vô hiệu hóa thuế"}
-                                                content={`<h4>${"Vô hiệu hóa thuế " + discount.name}</h4>
-                                                    <br/> <h5>Điều này đồng nghĩa với việc không thể sử dụng loại thuế này về sau</h5>
-                                                    <h5>Tuy nhiên, đừng lo lắng vì dữ liệu liên quan về loại thuế này trước đó sẽ không bị ảnh hưởng</h5?`}
-                                                name="disabled_by_default"
-                                                className="text-red"
-                                                func={() => this.disableTax(discount._id)}
+                                            <DeleteNotification
+                                                content={"Bạn có chắc chắn muốn xóa khuyến mãi này"}
+                                                data={{
+                                                    id: discount._id,
+                                                    info: discount.name,
+                                                }}
+                                                func={() => this.deleteDiscountByCode(discount.code)}
                                             />
                                         </td>
                                     </tr>
@@ -176,6 +273,8 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
     getAllDiscounts: DiscountActions.getAllDiscounts,
     getAllGoodsByType: GoodActions.getAllGoodsByType,
+    changeDiscountStatus: DiscountActions.changeDiscountStatus,
+    deleteDiscountByCode: DiscountActions.deleteDiscountByCode,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(DiscountManagementTable));

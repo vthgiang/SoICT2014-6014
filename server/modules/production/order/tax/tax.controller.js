@@ -181,3 +181,25 @@ exports.deleteTaxByCode = async ( req, res ) => {
         });
     }
 }
+
+exports.getTaxsByGoodsId = async (req, res) => {
+    try {
+        let goodId = req.query.goodId;
+        let taxs = await TaxService.getTaxsByGoodsId(goodId, req.portal)
+        
+        await Log.info(req.user.email, "GET_TAX_BY_GOOD_ID", req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["get_successfully"],
+            content: taxs
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "GET_TAX_BY_GOOD_ID", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["get_failed"],
+            content: error.message
+        });
+    }
+}

@@ -3,7 +3,8 @@ export const LotServices = {
     getAllLots,
     getDetailLot,
     editLot,
-    getLotsByGood
+    getLotsByGood,
+    createOrUpdateLots
 }
 
 function getAllLots(params) {
@@ -35,4 +36,12 @@ function getLotsByGood(params) {
         method: 'GET',
         params
     }, false, true, 'manage_warehouse.inventory_management')
+}
+
+function createOrUpdateLots(data) {
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/lot/create-or-edit-lot`,
+        method: 'POST',
+        data
+    }, true, true, 'manage_warehouse.inventory_management')
 }
