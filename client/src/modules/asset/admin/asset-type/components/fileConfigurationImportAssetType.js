@@ -48,7 +48,19 @@ export const importAssetTypeTemplate = {
                     code: "BA",
                     name: "Bàn",
                     description: "Các loại bàn",
-                    information: ["Chiều dài", "Chiều rộng", "Chiều cao"]
+                    information: "Chiều dài"
+                },
+                {
+                    code: null,
+                    name: null,
+                    description: null,
+                    information: "Chiều rộng"
+                },
+                {
+                    code: null,
+                    name: null,
+                    description: null,
+                    information: "Chiều cao"
                 }
             ]
         }]
