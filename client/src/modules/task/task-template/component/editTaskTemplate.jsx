@@ -539,7 +539,7 @@ class EditTaskTemplate extends Component {
                                             listRoles.map(x => { return { value: x._id, text: x.name } })
                                         }
                                         onChange={this.handleTaskTemplateRead}
-                                        value={editingTemplate.readByEmployees}
+                                        value={editingTemplate.readByEmployees.map(item => item._id)}
                                         multiple={true}
                                         options={{ placeholder: `${translate('task_template.permission_view')}` }}
                                     />
@@ -596,7 +596,7 @@ class EditTaskTemplate extends Component {
                                     style={{ width: "100%" }}
                                     items={allUnitsMember}
                                     onChange={this.handleTaskTemplateResponsible}
-                                    value={editingTemplate.responsibleEmployees}
+                                    value={editingTemplate.responsibleEmployees.map(item => item._id)}
                                     multiple={true}
                                     options={{ placeholder: `${translate('task_template.performer')}` }}
                                 />
@@ -613,7 +613,7 @@ class EditTaskTemplate extends Component {
                                     style={{ width: "100%" }}
                                     items={allUnitsMember}
                                     onChange={this.handleTaskTemplateAccountable}
-                                    value={editingTemplate.accountableEmployees}
+                                    value={editingTemplate.accountableEmployees.map(item => item._id)}
                                     multiple={true}
                                     options={{ placeholder: `${translate('task_template.approver')}` }}
                                 />
@@ -629,7 +629,7 @@ class EditTaskTemplate extends Component {
                                     style={{ width: "100%" }}
                                     items={allUnitsMember}
                                     onChange={this.handleTaskTemplateConsult}
-                                    value={editingTemplate.consultedEmployees}
+                                    value={editingTemplate.consultedEmployees.map(item => item._id)}
                                     multiple={true}
                                     options={{ placeholder: `${translate('task_template.consultant')}` }}
                                 />
@@ -647,7 +647,7 @@ class EditTaskTemplate extends Component {
                                     items={allUnitsMember}
                                     onChange={this.handleTaskTemplateInform}
                                     multiple={true}
-                                    value={editingTemplate.informedEmployees}
+                                    value={editingTemplate.informedEmployees.map(item => item._id)}
                                     options={{ placeholder: `${translate('task_template.observer')}` }}
                                 />
                             }

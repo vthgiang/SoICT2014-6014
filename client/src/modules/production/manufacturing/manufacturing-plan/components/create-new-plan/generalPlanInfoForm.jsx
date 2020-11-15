@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import withTranslate from 'react-redux-multilingual/lib/withTranslate';
+import { connect } from 'react-redux';
 import { DatePicker, SelectBox } from '../../../../../../common-components';
 import sampleData from '../../../sampleData';
 
@@ -7,60 +9,21 @@ class PlanInfoForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            status: "1",
-            value: "0",
-            products: [],
         };
     }
 
-    handleChangeStatus = (value) => {
-        this.setState((state) => {
-            return {
-                ...state,
-                status: value[0]
-            }
-        })
-    }
-
-    handleChangeValue = (value) => {
-        this.setState((state) => {
-            return {
-                ...state,
-                value: value[0]
-            }
-        })
-    }
-
-    handleAddProduct = () => {
-        this.setState((state) => {
-            return {
-                ...state,
-                products: [
-                    ...state.products,
-                    {
-                        _id: "4",
-                        code: "TIF1222"
-                    }
-                ]
-
-            }
-        });
-    }
-
     render() {
-        const { products, status } = this.state;
-        const { manufacturingOrders } = sampleData;
-        const goods = manufacturingOrders[0].goods;
+        const { translate } = this.props;
         return (
             <React.Fragment>
                 <div className="row">
                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                         <div className="form-group">
-                            <label>Mã kế hoạch<span className="text-red">*</span></label>
+                            <label>{translate('manufacturing.plan.code')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control"></input>
                         </div>
                         <div className="form-group">
-                            <label>Mã đơn sản xuất</label>
+                            <label>{translate('manufacturing.plan.manufacturing_order_code')}</label>
                             <SelectBox
                                 id="selectDSX"
                                 className="form-control select"
@@ -77,13 +40,26 @@ class PlanInfoForm extends Component {
                             />
                         </div>
                         <div className="form-group">
-                            <label>Người tạo<span className="text-red">*</span></label>
-                            <input type="text" className="form-control"></input>
+                            <label>{translate('manufacturing.plan.sales_order_code')}</label>
+                            <SelectBox
+                                id="selectDKD"
+                                className="form-control select"
+                                style={{ width: "100%" }}
+                                items={[
+                                    { value: "0", text: "None" },
+                                    { value: "1", text: "DKD001" },
+                                    { value: "2", text: "DKD002" },
+                                    { value: "3", text: "DSKD03" },
+                                ]}
+                                onChange={this.handleChangeValue}
+                                value={this.state.value}
+                                multiple={false}
+                            />
                         </div>
                     </div>
                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                         <div className="form-group">
-                            <label>Ngày bắt đầu<span className="text-red">*</span></label>
+                            <label>{translate('manufacturing.plan.start_date')}<span className="text-red">*</span></label>
                             <DatePicker
                                 id={`maintain_after`}
                                 // dateFormat={dateFormat}
@@ -93,7 +69,7 @@ class PlanInfoForm extends Component {
                             />
                         </div>
                         <div className="form-group">
-                            <label>Ngày dự kiến hoàn thành<span className="text-red">*</span></label>
+                            <label>{translate('manufacturing.plan.end_date')}<span className="text-red">*</span></label>
                             <DatePicker
                                 id={`maintain_after_1`}
                                 // dateFormat={dateFormat}
@@ -103,12 +79,33 @@ class PlanInfoForm extends Component {
                             />
                         </div>
                         <div className="form-group">
-                            <label>Mô tả</label>
-                            <input type="text" className="form-control"></input>
+                            <label>{translate('manufacturing.plan.approvers')}</label>
+                            <SelectBox
+                                id="selectNPD"
+                                className="form-control select"
+                                style={{ width: "100%" }}
+                                items={[
+                                    { value: "0", text: "Nguoi 1" },
+                                    { value: "1", text: "Nguoi 2" },
+                                    { value: "2", text: "Nguoi 3" },
+                                    { value: "3", text: "Nguoi 4" },
+                                ]}
+                                onChange={this.handleChangeValue}
+                                value={this.state.value}
+                                multiple={true}
+                            />
                         </div>
                     </div>
                 </div>
                 <div className="row">
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div className="form-group">
+                            <label>{translate('manufacturing.plan.description')}</label>
+                            <textarea type="text" className="form-control"></textarea>
+                        </div>
+                    </div>
+                </div>
+                {/* <div className="row">
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         {
                             this.state.value === "0"
@@ -121,7 +118,7 @@ class PlanInfoForm extends Component {
                                                 <label>Thêm: <a style={{ cursor: "pointer" }} title='Thêm thông tin mặt hàng'><i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: 5 }}
                                                     onClick={() => this.handleAddProduct()} /></a></label>
                                                 <div className={`form-group`}>
-                                                    {/* Bảng thông tin chi tiết */}
+
                                                     <table className="table table-striped table-bordered table-hover">
                                                         <thead>
                                                             <tr>
@@ -147,19 +144,19 @@ class PlanInfoForm extends Component {
                                                                     :
                                                                     products.map((product, index) => {
                                                                         return <tr key={index}>
-                                                                            {/* Tên trường dữ liệu */}
+
                                                                             <td>{index + 1}</td>
                                                                             <td>
                                                                                 <SelectBox
-                                                                                    id={`select-product`}
+                                                                                    id={`select-product-${index}`}
                                                                                     className="form-control select2"
                                                                                     style={{ width: "100%" }}
                                                                                     value={status}
                                                                                     items={[
-                                                                                        { value: '1', text: "TB0001" },
-                                                                                        { value: '2', text: "CD0002" },
-                                                                                        { value: '3', text: "W3Q001" },
-                                                                                        { value: '4', text: "TIF112" },
+                                                                                        { value: index, text: "TB0001" },
+                                                                                        { value: index + 1, text: "CD0002" },
+                                                                                        { value: index + 2, text: "W3Q001" },
+                                                                                        { value: index + 3, text: "TIF112" },
                                                                                     ]}
                                                                                     onChange={this.handleChangeStatus}
                                                                                     multiple={false}
@@ -224,10 +221,11 @@ class PlanInfoForm extends Component {
                         }
 
                     </div>
-                </div>
-            </React.Fragment>
+                </div> */}
+            </React.Fragment >
         );
     }
 }
 
-export default PlanInfoForm;
+
+export default connect(null, null)(withTranslate(PlanInfoForm));

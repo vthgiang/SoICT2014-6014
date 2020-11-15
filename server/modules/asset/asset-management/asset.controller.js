@@ -287,7 +287,6 @@ exports.getMaintainances = async (req, res) => {
             content: data
         });
     } catch (error) {
-        console.log("get_maintainance_false", error);
         res.status(400).json({
             success: false,
             messages: ["get_maintainance_false"],
@@ -416,7 +415,6 @@ exports.updateIncident = async (req, res) => {
  * Xóa thông tin sự cố tài sản
  */
 exports.deleteIncident = async (req, res) => {
-    console.log('req.params.id, req.body.incidentId', req.params.id, req.body);
     try {
         let data = await AssetService.deleteIncident(req.portal, req.params.id, req.body.incidentId);
         res.status(200).json({

@@ -1,21 +1,38 @@
 import React, { Component } from 'react';
-import sampleData from '../../sampleData';
-import { DataTableSetting, DatePicker, SelectMulti } from "../../../../../common-components";
+import { formatDate } from '../../../../../helpers/formatDate';
+import { DataTableSetting, DatePicker, PaginateBar, SelectMulti } from "../../../../../common-components";
 import NewPlanCreateForm from './create-new-plan/newPlanCreateForm';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+import { manufacturingPlanActions } from '../redux/actions';
+import { worksActions } from '../../manufacturing-works/redux/actions';
 class ManufacturingPlanManagementTable extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            currentRole: localStorage.getItem("currentRole"),
+            page: 1,
+            limit: 5,
+            code: '',
+            startDate: '',
+            endDate: '',
+            createdAt: '',
+            status: [],
+
+            manufacturingWorks: [],
+        }
     }
 
-    // handleChangeValue = async (value) => {
-    //     this.setState(state => {
-    //         return {
-    //             ...state,
-    //             value: value
-    //         }
-    //     })
-    // }
+    componentDidMount = () => {
+        const currentRole = localStorage.getItem("currentRole");
+        const data = {
+            page: this.state.page,
+            limit: this.state.limit,
+            currentRole: currentRole
+        }
+        this.props.getAllManufacturingPlans(data);
+        this.props.getAllManufacturingWorks({});
+    }
 
     handleShowDetailInfo = async (id) => {
         await this.setState((state) => {
@@ -27,24 +44,130 @@ class ManufacturingPlanManagementTable extends Component {
         window.$(`#modal-detail-info-manufacturing-order`).modal('show');
     }
 
+    checkHasComponent = (name) => {
+        let { auth } = this.props;
+        let result = false;
+        auth.components.forEach(component => {
+            if (component.name === name) result = true;
+        });
+
+        return result;
+    }
+
+    handleCodeChange = (e) => {
+        const { value } = e.target;
+        this.setState((state) => ({
+            ...state,
+            code: value
+        }))
+    }
+
+    handleStartDateChange = (value) => {
+        this.setState((state) => ({
+            ...state,
+            startDate: value
+        }))
+    }
+
+    handleEndDateChange = (value) => {
+        this.setState((state) => ({
+            ...state,
+            endDate: value
+        }))
+    }
+
+    handleCreatedAtChange = (value) => {
+        this.setState((state) => ({
+            ...state,
+            createdAt: value
+        }))
+    }
+
+    handleStatusChange = (value) => {
+        this.setState((state) => ({
+            ...state,
+            status: value
+        }))
+    }
+
+    handleSubmitSearch = () => {
+        const { code, startDate, endDate, createdAt, status, page, limit, manufacturingWorks, currentRole } = this.state;
+        const data = {
+            currentRole: currentRole,
+            page: page,
+            limit: limit,
+            code: code,
+            startDate: startDate,
+            endDate: endDate,
+            createdAt: createdAt,
+            status: status,
+            manufacturingWorks: manufacturingWorks,
+        }
+        this.props.getAllManufacturingPlans(data);
+    }
+
+    getListManufacturingWorksArr = () => {
+        const { manufacturingWorks } = this.props;
+        const { listWorks } = manufacturingWorks;
+        let listManufacturingWorksArr = [];
+        if (listWorks) {
+            listWorks.map((works) => {
+                listManufacturingWorksArr.push({
+                    value: works._id,
+                    text: works.code + " - " + works.name
+                });
+            });
+        }
+        return listManufacturingWorksArr;
+    }
+
+    handleManufacturingWorksChange = (value) => {
+        this.setState((state) => ({
+            ...state,
+            manufacturingWorks: value
+        }))
+    }
+
+    setLimit = async (limit) => {
+        await this.setState({
+            limit: limit,
+            page: this.state.page
+        });
+        this.props.getAllManufacturingPlans(this.state);
+    }
+
+    setPage = async (page) => {
+        await this.setState({
+            page: page,
+            limit: this.state.limit
+        });
+        this.props.getAllManufacturingPlans(this.state);
+    }
+
+
     render() {
-        const { manufacturingPlans } = sampleData;
+        const { translate, manufacturingPlan } = this.props;
+        let listPlans = [];
+        if (manufacturingPlan.listPlans && manufacturingPlan.isLoading === false) {
+            listPlans = manufacturingPlan.listPlans;
+        }
+        const { code, startDate, endDate, createdAt } = this.state;
+        const { totalPages, page } = manufacturingPlan;
         return (
             <React.Fragment>
                 <div className="box-body qlcv">
                     <NewPlanCreateForm />
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">Mã kế hoạch</label>
-                            <input type="text" className="form-control" name="code" onChange={this.handleChangeData} placeholder="KH001" autoComplete="off" />
+                            <label className="form-control-static">{translate('manufacturing.plan.code')}</label>
+                            <input type="text" className="form-control" value={code} onChange={this.handleCodeChange} placeholder="KH202012212" autoComplete="off" />
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">Ngày bắt đầu</label>
+                            <label className="form-control-static">{translate('manufacturing.plan.start_date')}</label>
                             <DatePicker
-                                id={`maintain_after`}
-                                // dateFormat={dateFormat}
-                                // value={startValue}
-                                // onChange={this.handleChangeDateAfter}
+                                id={`start-date-manufacturing-plan`}
+                                value={startDate}
+                                onChange={this.handleStartDateChange}
                                 disabled={false}
                             />
                         </div>
@@ -53,87 +176,82 @@ class ManufacturingPlanManagementTable extends Component {
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">Mã đơn sản xuất</label>
+                            <label className="form-control-static">{translate('manufacturing.plan.manufacturing_order_code')}</label>
                             <input type="text" className="form-control" name="code" onChange={this.handleChangeData} placeholder="DSX001" autoComplete="off" />
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">Ngày dự kiến hoàn thành</label>
+                            <label className="form-control-static">{translate('manufacturing.plan.end_date')}</label>
                             <DatePicker
-                                id={`maintain_after_1`}
-                                // dateFormat={dateFormat}
-                                // value={startValue}
-                                // onChange={this.handleChangeDateAfter}
+                                id={`end-date-manufacturing-plan`}
+                                value={endDate}
+                                onChange={this.handleEndDateChange}
                                 disabled={false}
                             />
                         </div>
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">Mã đơn kinh doanh</label>
+                            <label className="form-control-static">{translate('manufacturing.plan.sales_order_code')}</label>
                             <input type="text" className="form-control" name="code" onChange={this.handleChangeData} placeholder="DKD001" autoComplete="off" />
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">Ngày tạo</label>
+                            <label className="form-control-static">{translate('manufacturing.plan.created_at')}</label>
                             <DatePicker
-                                id={`maintain_after_2`}
-                                // dateFormat={dateFormat}
-                                // value={startValue}
-                                // onChange={this.handleChangeDateAfter}
+                                id={`createdAt-manufacturing-plan`}
+                                value={createdAt}
+                                onChange={this.handleCreatedAtChange}
                                 disabled={false}
                             />
                         </div>
-
-
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">Mã lệnh sản xuất</label>
+                            <label className="form-control-static">{translate('manufacturing.plan.command_code')}</label>
                             <input type="text" className="form-control" name="code" onChange={this.handleChangeData} placeholder="LSX001" autoComplete="off" />
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">Trạng thái</label>
+                            <label className="form-control-static">{translate('manufacturing.plan.status')}</label>
                             <SelectMulti
-                                id={`select-multi-process`}
+                                id={`select-multi-status-plan`}
                                 multiple="multiple"
-                                options={{ nonSelectedText: "Chọn trạng thái", allSelectedText: "Chọn tất cả" }}
+                                options={{ nonSelectedText: translate('manufacturing.plan.choose_status'), allSelectedText: translate('manufacturing.plan.choose_all') }}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={[
-                                    { value: '1', text: "Đang chờ duyệt" },
-                                    { value: '2', text: "Đã duyệt" },
-                                    { value: '3', text: "Đang thực hiện" },
-                                    { value: '4', text: "Đã hoàn thành" },
-                                    { value: '5', text: "Đã hủy" },
+                                    { value: '1', text: translate('manufacturing.plan.1.content') },
+                                    { value: '2', text: translate('manufacturing.plan.2.content') },
+                                    { value: '3', text: translate('manufacturing.plan.3.content') },
+                                    { value: '4', text: translate('manufacturing.plan.4.content') },
+                                    { value: '5', text: translate('manufacturing.plan.5.content') },
                                 ]}
-                            // onChange={this.handleChangeValue}
+                                onChange={this.handleStatusChange}
                             />
                         </div>
 
                     </div>
-                    <div className="form-inline">
-                        <div className="form-group">
-                            <label className="form-control-static">Nhà máy</label>
-                            <SelectMulti
-                                id={`select-multi-works`}
-                                multiple="multiple"
-                                options={{ nonSelectedText: "Chọn nhà máy", allSelectedText: "Chọn tất cả" }}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={[
-                                    { value: '1', text: "Nha may 1" },
-                                    { value: '2', text: "Nha may 2" },
-                                    { value: '3', text: "Nha may 3" },
-                                ]}
-                            // onChange={this.handleChangeValue}
-                            />
-                        </div>
 
+                    <div className="form-inline">
+                        {
+                            this.checkHasComponent('select-manufacturing-works') &&
+                            <div className="form-group">
+                                <label className="form-control-static">{translate('manufacturing.plan.works')}</label>
+                                <SelectMulti
+                                    id={`select-multi-works`}
+                                    multiple="multiple"
+                                    options={{ nonSelectedText: translate('manufacturing.plan.choose_works'), allSelectedText: translate('manufacturing.plan.choose_all') }}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={this.getListManufacturingWorksArr()}
+                                    onChange={this.handleManufacturingWorksChange}
+                                />
+                            </div>
+                        }
                         <div className="form-group">
-                            <label className="form-control-static">Tiến độ</label>
+                            <label className="form-control-static">{translate('manufacturing.plan.progess')}</label>
                             <SelectMulti
-                                id={`select-multi-progress`}
+                                id={`select-multi-progress-plan`}
                                 multiple="multiple"
-                                options={{ nonSelectedText: "Chọn Tiến độ", allSelectedText: "Chọn tất cả" }}
+                                options={{ nonSelectedText: translate('manufacturing.plan.choose_progess'), allSelectedText: translate('manufacturing.plan.choose_all') }}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={[
@@ -145,31 +263,32 @@ class ManufacturingPlanManagementTable extends Component {
                             />
                         </div>
                         <div className="form-group">
-                            <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={this.handleSubmitSearch}>Tìm kiếm</button>
+                            <label className="form-control-static"></label>
+                            <button type="button" className="btn btn-success" title={translate('manufacturing.plan.search')} onClick={this.handleSubmitSearch}>{translate('manufacturing.plan.search')}</button>
                         </div>
                     </div>
 
                     <table id="manufacturing-plan-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th>STT</th>
-                                <th>Mã kế hoạch</th>
-                                <th>Người tạo</th>
-                                <th>Thời gian tạo</th>
-                                <th>Thời gian bắt đầu</th>
-                                <th>Thời gian dự kiến hoàn thành</th>
-                                <th>Trạng thái</th>
-                                <th>Hành động
+                                <th>{translate('manufacturing.plan.index')}</th>
+                                <th>{translate('manufacturing.plan.code')}</th>
+                                <th>{translate('manufacturing.plan.creator')}</th>
+                                <th>{translate('manufacturing.plan.created_at')}</th>
+                                <th>{translate('manufacturing.plan.start_date')}</th>
+                                <th>{translate('manufacturing.plan.end_date')}</th>
+                                <th>{translate('manufacturing.plan.status')}</th>
+                                <th>{translate('general.action')}
                                     <DataTableSetting
                                         tableId="manufacturing-plan-table"
                                         columnArr={[
-                                            "STT",
-                                            "Mã kế hoạch",
-                                            "Người tạo",
-                                            "Thời gian tạo",
-                                            "Thời gian bắt đầu",
-                                            "Thời gian dự kiến hoàn thành",
-                                            "Trạng thái"
+                                            translate('manufacturing.plan.index'),
+                                            translate('manufacturing.plan.code'),
+                                            translate('manufacturing.plan.creator'),
+                                            translate('manufacturing.plan.created_at'),
+                                            translate('manufacturing.plan.start_date'),
+                                            translate('manufacturing.plan.end_date'),
+                                            translate('manufacturing.plan.status')
                                         ]}
                                         limit={this.state.limit}
                                         hideColumnOption={true}
@@ -179,18 +298,18 @@ class ManufacturingPlanManagementTable extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(manufacturingPlans && manufacturingPlans.length !== 0) &&
-                                manufacturingPlans.map((manufacturingPlan, index) => (
+                            {(listPlans && listPlans.length !== 0) &&
+                                listPlans.map((plan, index) => (
                                     <tr key={index}>
                                         <td>{index + 1}</td>
-                                        <td>{manufacturingPlan.code}</td>
-                                        <td>{manufacturingPlan.creator.name}</td>
-                                        <td>{manufacturingPlan.createdAt}</td>
-                                        <td>{manufacturingPlan.startDate}</td>
-                                        <td>{manufacturingPlan.endDate}</td>
-                                        <td>{manufacturingPlan.status}</td>
+                                        <td>{plan.code}</td>
+                                        <td>{plan.creator && plan.creator.name}</td>
+                                        <td>{formatDate(plan.createdAt)}</td>
+                                        <td>{formatDate(plan.startDate)}</td>
+                                        <td>{formatDate(plan.endDate)}</td>
+                                        <td style={{ color: translate(`manufacturing.plan.${plan.status}.color`) }}>{translate(`manufacturing.plan.${plan.status}.content`)}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a className="edit text-green" style={{ width: '5px' }} title="Xem chi tiết kế hoạch sản xuất" onClick={() => this.handleShowDetailInfo(manufacturingPlan._id)}><i className="material-icons">visibility</i></a>
+                                            <a className="edit text-green" style={{ width: '5px' }} title="Xem chi tiết kế hoạch sản xuất" onClick={() => this.handleShowDetailInfo(plan._id)}><i className="material-icons">visibility</i></a>
                                             <a className="edit text-yellow" style={{ width: '5px' }} title="Sửa kế hoạch sản xuất"><i className="material-icons">edit</i></a>
                                         </td>
                                     </tr>
@@ -198,10 +317,25 @@ class ManufacturingPlanManagementTable extends Component {
                             }
                         </tbody>
                     </table>
+                    {manufacturingPlan.isLoading ?
+                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                        (typeof listPlans === 'undefined' || listPlans.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    }
+                    <PaginateBar pageTotal={totalPages ? totalPages : 0} currentPage={page} func={this.setPage} />
                 </div>
             </React.Fragment >
         );
     }
 }
 
-export default ManufacturingPlanManagementTable;
+function mapStateToProps(state) {
+    const { manufacturingPlan, auth, manufacturingWorks } = state;
+    return { manufacturingPlan, auth, manufacturingWorks };
+}
+
+const mapDispatchToProps = {
+    getAllManufacturingPlans: manufacturingPlanActions.getAllManufacturingPlans,
+    getAllManufacturingWorks: worksActions.getAllManufacturingWorks
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManufacturingPlanManagementTable));

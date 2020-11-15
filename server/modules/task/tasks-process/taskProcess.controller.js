@@ -143,9 +143,34 @@ exports.createTaskByProcess = async (req, res) => {
 			let email = mails[i].email;
 			let html = mails[i].html;
 
-			let mailData = { "organizationalUnits": task.organizationalUnit._id, "title": "Tạo mới công việc", "level": "general", "content": html, "sender": task.organizationalUnit.name, "users": user };
+			let mailData = { 
+				"organizationalUnits": task.organizationalUnit._id, 
+				"title": "Tạo mới công việc", 
+				"level": "general", 
+				"content": html, 
+				"sender": task.organizationalUnit.name, 
+				"users": user 
+			};
+			
+			// Gửi mail cho trưởng đơn vị phối hợp thực hiện công việc
+			let collaboratedEmail = mails[i].collaboratedEmail;
+			let collaboratedHtml = mails[i].collaboratedHtml;
+			let collaboratedData = {
+				organizationalUnits: task.organizationalUnit._id,
+				title: "Tạo mới công việc được phối hợp với đơn vị bạn",
+				level: "general",
+				content: collaboratedHtml,
+				sender: task.organizationalUnit.name,
+				users: mails[i].deansOfOrganizationalUnitThatHasCollaborated
+			};
+			
 			NotificationServices.createNotification(req.portal, task.organizationalUnit.company, mailData,);
 			sendEmail(email, "Tạo mới công việc hành công", '', html);
+
+			NotificationServices.createNotification(req.portal, task.organizationalUnit.company, collaboratedData);
+			collaboratedEmail && collaboratedEmail.length !== 0
+            && sendEmail(collaboratedEmail, "Đơn vị bạn được phối hợp thực hiện công việc mới", '', collaboratedHtml);
+
 		}
 		await Logger.info(req.user.email, `create_task_by_process`, req.portal);
 		res.status(200).json({
