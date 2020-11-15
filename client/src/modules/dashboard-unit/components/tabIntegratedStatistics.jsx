@@ -51,6 +51,14 @@ class TabIntegratedStatistics extends Component {
         const { translate, timesheets, discipline } = this.props;
 
         const { month, employeeTasks, listEmployee, listAllEmployees } = this.props;
+        let maxTask = 1;
+        if (employeeTasks && employeeTasks.length !== 0) {
+            employeeTasks.forEach(x => {
+                if (x.totalTask > maxTask) {
+                    maxTask = x.totalTask
+                }
+            })
+        }
 
         const { viewOverTime, viewHoursOff } = this.state;
 
@@ -142,7 +150,13 @@ class TabIntegratedStatistics extends Component {
                                                     <tr key={index}>
                                                         <td>{index + 1}</td>
                                                         <td>{x.name}</td>
-                                                        <td>{x.totalTask}</td>
+                                                        <td>
+                                                            <div className="clearfix"> <small class="pull-right">{x.totalTask}</small> </div>
+                                                            <div className="progress xs">
+                                                                <div style={{ width: `${(x.totalTask / maxTask).toFixed(2) * 100}%` }} className="progress-bar progress-bar-green">
+                                                                </div>
+                                                            </div>
+                                                        </td>
                                                     </tr>
                                                 ) : null)
                                             }
