@@ -11,12 +11,9 @@ class ImportFileExcel extends Component {
         this.state = {};
     }
 
-    // Bắt xự kiện chọn file import
-    handleChangeFileImport = (files) => {
-        let { configData } = this.props;
+    static importData(file, configData, handleImportExcel) {
         let sheets = configData.sheets.value;
         let rowHeader = configData.rowHeader ? Number(configData.rowHeader.value) : 1;
-        let file = files[0];
 
         if (file !== undefined) {
             const reader = new FileReader();
@@ -124,11 +121,22 @@ class ImportFileExcel extends Component {
                     importData = importData.concat(data);
                 })
 
-                this.props.handleImportExcel(importData, checkFileImport);
+                handleImportExcel(importData, checkFileImport);
             };
         } else {
-            this.props.handleImportExcel([], true);
+            handleImportExcel([], true);
         }
+    }
+
+    // Bắt xự kiện chọn file import
+    handleChangeFileImport = (files) => {
+        let { configData, getFileImport, handleImportExcel } = this.props;
+        let file = files[0];
+        if (getFileImport) {
+            getFileImport(file)
+        }
+        ImportFileExcel.importData(file, configData, handleImportExcel);
+
     }
 
     render() {
