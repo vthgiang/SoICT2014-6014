@@ -774,7 +774,7 @@ class EmployeeEditFrom extends Component {
                 commendations: nextProps.employeesInfo.commendations,
                 disciplines: nextProps.employeesInfo.disciplines,
                 courses: nextProps.employeesInfo.courses,
-                roles: nextProps.employeesInfo.roles.map(x => x._id),
+                roles: nextProps.employeesInfo.roles.map(x => x.roleId.id),
                 organizationalUnits: nextProps.employeesInfo.organizationalUnits.map(x => x._id),
             });
             return true;

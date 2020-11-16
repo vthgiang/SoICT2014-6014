@@ -17,7 +17,7 @@ const WorkScheduleSchema = new Schema({
     },
     turns: [[{// Mảng các ca làm việc. Mỗi ca lại là mảng các lệnh hoặc phần tử null
         type: Schema.Types.ObjectId,
-        ref: "ManufacturingWorks",
+        ref: "ManufacturingCommand",
         default: null
     }]]
 }, {

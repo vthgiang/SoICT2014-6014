@@ -358,6 +358,24 @@ const initSampleCompanyDB = async () => {
         type: roleChucDanh._id
     });
 
+    // Khỏi tạo role cho phòng kế hoạch
+
+    const nvPhongKH = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: "Nhân viên phòng kế hoạch",
+        type: roleChucDanh._id
+    });
+    const phoPhongKH = await Role(vnistDB).create({
+        parents: [roleViceDean._id, nvPhongKH._id],
+        name: "Phó phòng kế hoạch",
+        type: roleChucDanh._id
+    });
+    const truongPhongKH = await Role(vnistDB).create({
+        parents: [roleDean._id, nvPhongKH._id, phoPhongKH._id],
+        name: "Trưởng phòng kế hoạch",
+        type: roleChucDanh._id
+    });
+
     // Khỏi tạo role cho khối sản xuất
 
     const nvNhaMayThuocBot = await Role(vnistDB).create({
@@ -441,6 +459,20 @@ const initSampleCompanyDB = async () => {
     }, {
         userId: users[9]._id,
         roleId: nvPhongHC._id
+    },
+    // Gán quyền cho phòng kế hoạch
+    {
+        userId: users[7]._id,
+        roleId: nvPhongKH._id
+    },
+    {
+        userId: users[12]._id,
+        roleId: phoPhongKH._id
+
+    },
+    {
+        userId: users[13]._id,
+        roleId: truongPhongKH._id
     },
     // Gán quyền cho khối sản xuất
 
@@ -543,7 +575,16 @@ const initSampleCompanyDB = async () => {
         employees: [nvNhaMayTPCN._id],
         parent: Directorate._id
     },]);
-    console.log("Đã tạo dữ liệu phòng ban: ", Directorate, departments, nhamaythuocbot, nhamaythuocnuoc, nhamaythucphamchucnang);
+
+    const phongkehoach = await OrganizationalUnit(vnistDB).insertMany([{
+        name: "Phòng kế hoạch",
+        description: "Phòng kế hoạch của Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+        deans: [truongPhongKH._id],
+        viceDeans: [phoPhongKH._id],
+        employees: [nvPhongKH._id],
+        parent: Directorate._id
+    }])
+    console.log("Đã tạo dữ liệu phòng ban: ", Directorate, departments, nhamaythuocbot, nhamaythuocnuoc, nhamaythucphamchucnang, phongkehoach);
 
     /**
      * 8. Tạo link cho các trang web của công ty VNIST

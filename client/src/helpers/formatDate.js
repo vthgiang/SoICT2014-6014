@@ -1,6 +1,6 @@
 export const formatDate = (date) => {
     let d = new Date(date);
-    const day = d.getUTCDate();
+    const day = d.getDate();
     const month = d.getMonth() + 1;
     const year = d.getFullYear();
 

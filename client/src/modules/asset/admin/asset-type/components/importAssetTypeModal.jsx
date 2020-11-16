@@ -42,40 +42,20 @@ class ImportAssetTypeModal extends Component {
 
                 for (let index = 0; index < data.length; index++) {
                     let dataTemporary = data[index];
-                    let information = [], length = 0;
-
-                    if (dataTemporary && Array.isArray(dataTemporary.information)) {
-                        information = dataTemporary.information;
-                        if (information && information.length !== 0) {
-                            length = information.length;
-                        }
-                    } 
-
                     let out = {
-                        STT: index + 1,
+                        STT: dataTemporary.code ? index + 1 : null,
                         code: dataTemporary.code,
                         name: dataTemporary.name,
                         description: dataTemporary.description,
-                        information: information[0]
+                        information: dataTemporary.information
                     }
                     datas = [...datas, out];
-
-                    if (length > 1) {
-                        for (let i = 1; i < length; i++) {
-                            out = {
-                                STT: "",
-                                code: "",
-                                name: "",
-                                description: "",
-                                information: information[i],
-                            };
-                            datas = [...datas, out];
-                        }
-                    }
                 }
+                
                 dataExport.dataSheets[i].tables[j].data = datas;
             }
         }
+
         return dataExport;
     }
 
@@ -157,8 +137,8 @@ class ImportAssetTypeModal extends Component {
 
     render() {
         const { configData, importData, rowError, checkFileImport, limit, page } = this.state;
-
         let importDataTemplate = this.convertDataExport(importAssetTypeTemplate);
+
         return (
             <React.Fragment>
                 <DialogModal 
