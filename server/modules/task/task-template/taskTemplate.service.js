@@ -186,7 +186,10 @@ exports.createTaskTemplate = async (portal, body) => {
             action: readByEmployee //quyền READ
         });
     }
-    tasktemplate = await tasktemplate.populate("organizationalUnit creator collaboratedWithOrganizationalUnits").execPopulate();
+    tasktemplate = await tasktemplate.populate([
+        { path: "organizationalUnit collaboratedWithOrganizationalUnits", select: "name deans" },
+        { path: "readByEmployees", select: "name" },
+        { path: "creator responsibleEmployees accountableEmployees consultedEmployees informedEmployees", select: "name email" }]).execPopulate();
     return tasktemplate;
 }
 
