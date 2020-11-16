@@ -787,59 +787,7 @@ exports.evaluationAction = async (portal, params, body) => {
             { $new: true }
         )
 
-
-
-        //danh sách người phê duyệt
-        let task1 = await Task(connect(DB_CONNECTION, portal)).findOne({ "_id": params.taskId, "taskActions._id": params.actionId })
-        let accountableEmployees = task1.accountableEmployees
-
-
-
-        //danh sách các đánh giá
-        let evaluations = await Task(connect(DB_CONNECTION, portal)).aggregate([
-            { $match: { "_id": mongoose.Types.ObjectId(params.taskId) } },
-            { $unwind: "$taskActions" },
-            { $replaceRoot: { newRoot: "$taskActions" } },
-            { $match: { "_id": mongoose.Types.ObjectId(params.actionId) } },
-            { $unwind: "$evaluations" },
-            { $replaceRoot: { newRoot: "$evaluations" } }
-        ])
-
-
-        //tim xem trong danh sách đánh giá ai là người phê duyệt
-        let rating = [];
-        evaluations.forEach(x => {
-            if (accountableEmployees.some(elem => x.creator.toString() === elem.toString())) {
-                rating.push(x.rating)
-            }
-        })
-
-
-        //tính điểm trung bình
-        let accountableRating
-        if (rating.length > 0) {
-            accountableRating = rating.reduce((accumulator, currentValue) => { return accumulator + currentValue }, 0) / rating.length
-        }
-
-
-
-        //check xem th đấnh giá có là người phê duyệt không
-        let idAccountableEmployee = task1.accountableEmployees.some(elem => body.creator === elem.toString())
-        if (idAccountableEmployee) {
-            let evaluationActionRating = await Task(connect(DB_CONNECTION, portal)).updateOne(
-                { "_id": params.taskId, "taskActions._id": params.actionId },
-                {
-                    $set:
-                    {
-                        "taskActions.$.rating": accountableRating
-                    }
-                },
-                { $new: true }
-            )
-        }
-
-
-        // đánh giá lại
+    // đánh giá lại
     } else if (body.firstTime === 0) {
         let taskAction = await Task(connect(DB_CONNECTION, portal)).update(
             { $and: [{ "_id": params.taskId, "taskActions._id": params.actionId }, { "taskActions.evaluations.creator": body.creator }] },
@@ -862,6 +810,57 @@ exports.evaluationAction = async (portal, params, body) => {
             }
         )
     }
+
+      //danh sách người phê duyệt
+      let task1 = await Task(connect(DB_CONNECTION, portal)).findOne({ "_id": params.taskId, "taskActions._id": params.actionId })
+      let accountableEmployees = task1.accountableEmployees
+
+
+
+      //danh sách các đánh giá
+      let evaluations = await Task(connect(DB_CONNECTION, portal)).aggregate([
+          { $match: { "_id": mongoose.Types.ObjectId(params.taskId) } },
+          { $unwind: "$taskActions" },
+          { $replaceRoot: { newRoot: "$taskActions" } },
+          { $match: { "_id": mongoose.Types.ObjectId(params.actionId) } },
+          { $unwind: "$evaluations" },
+          { $replaceRoot: { newRoot: "$evaluations" } }
+      ])
+
+
+      //tim xem trong danh sách đánh giá ai là người phê duyệt
+      let rating = [];
+      evaluations.forEach(x => {
+          if (accountableEmployees.some(elem => x.creator.toString() === elem.toString())) {
+              rating.push(x.rating)
+          }
+      })
+
+
+      //tính điểm trung bình
+      let accountableRating
+      if (rating.length > 0) {
+          accountableRating = rating.reduce((accumulator, currentValue) => { return accumulator + currentValue }, 0) / rating.length
+      }
+
+
+
+      //check xem th đấnh giá có là người phê duyệt không
+      let idAccountableEmployee = task1.accountableEmployees.some(elem => body.creator === elem.toString())
+      if (idAccountableEmployee) {
+          let evaluationActionRating = await Task(connect(DB_CONNECTION, portal)).updateOne(
+              { "_id": params.taskId, "taskActions._id": params.actionId },
+              {
+                  $set:
+                  {
+                      "taskActions.$.rating": accountableRating
+                  }
+              },
+              { $new: true }
+          )
+      }
+
+
 
     let task = await Task(connect(DB_CONNECTION, portal)).findOne({ "_id": params.taskId, "taskActions._id": params.actionId }).populate([
         { path: "taskActions.creator", select: 'name email avatar avatar ' },
