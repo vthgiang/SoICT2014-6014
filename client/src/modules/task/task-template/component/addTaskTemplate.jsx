@@ -503,7 +503,7 @@ class AddTaskTemplate extends Component {
                     {!isProcess &&
                         <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
                             <div className={`form-group ${this.state.newTemplate.errorOnRead === undefined ? "" : "has-error"}`} >
-                                <label className="control-label">{translate('task_template.permission_view')} <span style={{ color: "red" }}>*</span></label>
+                                <label className="control-label">{translate('task_template.permission_view')} </label>
                                 {listRoles &&
                                     <SelectBox
                                         id={`read-select-box`}
@@ -518,7 +518,7 @@ class AddTaskTemplate extends Component {
                                         options={{ placeholder: `${translate('task_template.permission_view')}` }}
                                     />
                                 }
-                                <ErrorLabel content={this.state.newTemplate.errorOnRead} />
+                                {/* <ErrorLabel content={this.state.newTemplate.errorOnRead} /> */}
                             </div>
                         </div>
                     }

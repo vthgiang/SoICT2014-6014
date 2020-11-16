@@ -354,6 +354,32 @@ class TaskTemplate extends Component {
                             mandatory[i] = "Không bắt buộc";
                         }
                     }
+                    for (let i in x.taskActions) {
+                        let str = x.taskActions[i].description;
+                        let vt = str.indexOf("&nbsp;");
+                        let st;
+                        while (vt >= 0) {
+                            if (vt == 0) {
+                                st = str.slice(vt+6);
+                            } else {
+                                st = str.slice(0,vt-1) + str.slice(vt+6);
+                            }
+                            str = st;
+                            vt = str.indexOf("&nbsp;");
+                        }
+                        vt = str.indexOf("<");
+                        while (vt >= 0) {
+                            let vt2 = str.indexOf(">");
+                            if (vt == 0) {
+                                st = str.slice(vt2+1);
+                            } else {
+                                st = str.slice(0,vt-1) + str.slice(vt2+1);
+                            }
+                            str = st;
+                            vt = str.indexOf("<");
+                        }
+                        x.taskActions[i].description = str;
+                    }
                 }
                 let infomationName = [], type = [], infomationDescription = [], filledByAccountableEmployeesOnly = [];
                 if (x.taskInformations) {
@@ -365,6 +391,32 @@ class TaskTemplate extends Component {
                         infomationDescription[i] = x.taskInformations[i].description;
                         type[i] = x.taskInformations[i].type;
                         filledByAccountableEmployeesOnly[i] = x.taskInformations[i].filledByAccountableEmployeesOnly;
+                    }
+                    for (let i in x.taskInformations) {
+                        let str = x.taskInformations[i].description;
+                        let vt = str.indexOf("&nbsp;");
+                        let st;
+                        while (vt >= 0) {
+                            if (vt == 0) {
+                                st = str.slice(vt+6);
+                            } else {
+                                st = str.slice(0,vt-1) + str.slice(vt+6);
+                            }
+                            str = st;
+                            vt = str.indexOf("&nbsp;");
+                        }
+                        vt = str.indexOf("<");
+                        while (vt >= 0) {
+                            let vt2 = str.indexOf(">");
+                            if (vt == 0) {
+                                st = str.slice(vt2+1);
+                            } else {
+                                st = str.slice(0,vt-1) + str.slice(vt2+1);
+                            }
+                            str = st;
+                            vt = str.indexOf("<");
+                        }
+                        x.taskInformations[i].description = str;
                     }
                 }
                 let numberOfUse = 0;
@@ -397,6 +449,7 @@ class TaskTemplate extends Component {
                 if (x.informedEmployees && x.informedEmployees[0]) {
                     informedEmployees = x.informedEmployees.map(item => item.name);
                 }
+                // console.log(this.state.currentRole);
                 let out = {
                     STT: k + 1,
                     name: x.name,
@@ -409,6 +462,8 @@ class TaskTemplate extends Component {
                     informedEmployees: informedEmployees.join(', '),
                     organizationalUnits: x.organizationalUnit.name,
                     collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits[0],
+                    creator: x.creator.name,
+                    // annunciator: x.creator,
                     priority: x.priority,
                     formula: x.formula,
                     actionName: actionName[0],
@@ -434,6 +489,8 @@ class TaskTemplate extends Component {
                             informedEmployees: "",
                             organizationalUnits: "",
                             collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits[i],
+                            creator: "",
+                            // annunciator: "",
                             priority: "",
                             formula: "",
                             actionName: actionName[i],
@@ -477,7 +534,8 @@ class TaskTemplate extends Component {
                                 { key: "organizationalUnits", value: "Đơn vị" },
                                 { key: "collaboratedWithOrganizationalUnits", value: "Đơn vị phối hợp thực hiện công việc"},
                                 { key: "numberOfUse", value: "Số lần sử dụng" },
-                                // { key: "creator", value: "Người tạo mẫu" },
+                                { key: "creator", value: "Người tạo mẫu" },
+                                // { key: "annunciator", value: "Người xuất báo cáo" },
                                 { key: "readByEmployees", value: "Người được xem" },
                                 { key: "priority", value: "Độ ưu tiên" },
                                 { key: "responsibleEmployees", value: "Người thực hiện" },
