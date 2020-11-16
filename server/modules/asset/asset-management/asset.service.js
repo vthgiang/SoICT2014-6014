@@ -252,7 +252,6 @@ exports.createAsset = async (portal, company, data, fileInfo) => {
 
     data.warrantyExpirationDate = data.warrantyExpirationDate && new Date(data.warrantyExpirationDate);
 
-    console.log(data.startDepreciation)
     data.startDepreciation = data.startDepreciation && new Date(data.startDepreciation);
 
     data.disposalDate = data.disposalDate && new Date(data.disposalDate);
@@ -523,7 +522,6 @@ exports.getMaintainances = async (portal, params) => {
     let page = parseInt(params.page);
     let limit = parseInt(params.limit);
 
-    console.log(code, maintainanceCode, maintainCreateDate, type, status, page, limit);
     let assetSearch = [];
     if (code) {
         assetSearch = [...assetSearch, { code: { "$regex": code, "$options": "i" } }]
@@ -802,6 +800,5 @@ exports.updateIncident = async (portal, incidentId, data) => {
  * Xóa thông tin sự cố tài sản
  */
 exports.deleteIncident = async (portal, assetId, incidentId) => {
-    console.log(assetId, incidentId);
     return await Asset(connect(DB_CONNECTION, portal)).update({ _id: assetId }, { "$pull": { "incidentLogs": { "_id": incidentId } } });
 }
