@@ -79,7 +79,7 @@ const ManufacturingPlanSchema = new Schema({
         }
     }]
 }, {
-    timestamps: true
+    timestamps: true,
 });
 
 ManufacturingPlanSchema.plugin(mongoosePaginate);

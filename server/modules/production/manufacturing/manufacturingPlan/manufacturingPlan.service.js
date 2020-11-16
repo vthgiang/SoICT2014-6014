@@ -1,5 +1,5 @@
 const {
-    ManufacturingPlan, OrganizationalUnit, ManufacturingWorks
+    ManufacturingPlan, OrganizationalUnit, ManufacturingWorks, ManufacturingCommand, ManufacturingOrder, SalesOrder
 } = require(`${SERVER_MODELS_DIR}`);
 
 const {
@@ -62,8 +62,7 @@ exports.createManufacturingPlan = async (data, portal) => {
 }
 
 exports.getAllManufacturingPlans = async (query, portal) => {
-    console.log(query);
-    let { code, manufacturingOrder, salesOrder, manufacturingCommand, manufacturingWorks
+    let { code, manufacturingOrderCode, salesOrderCode, commandCode, manufacturingWorks
         , startDate, endDate, createdAt, status, progress, page, limit, currentRole } = query;
     if (!currentRole) {
         throw Error("Role is not defined")
@@ -138,6 +137,45 @@ exports.getAllManufacturingPlans = async (query, portal) => {
         let manufacturingPlans = await ManufacturingPlan(connect(DB_CONNECTION, portal)).find(options);
         return { manufacturingPlans }
     } else {
+        // Xử lý mã đơn sản xuất truyền vào
+        if (manufacturingOrderCode) {
+            console.log(query);
+            let manufacturingOrders = await ManufacturingOrder(connect(DB_CONNECTION, portal)).find({
+                code: new RegExp(manufacturingOrderCode, "i")
+            });
+            let manufacturingOrderIds = manufacturingOrders.map(x => x._id);
+            options.manufacturingOrder = {
+                $in: manufacturingOrderIds
+            }
+
+        }
+        // Xử lý mã đơn kinh doanh
+        if (salesOrderCode) {
+            console.log(query);
+            let salesOrders = await SalesOrder(connect(DB_CONNECTION, portal)).find({
+                code: new RegExp(salesOrderCode, "i")
+            });
+            let salesOrderIds = salesOrders.map(x => x._id);
+            options.salesOrder = {
+                $in: salesOrderIds
+            }
+
+        }
+        // Xử lý mã lệnh sản xuất truyền vào
+        if (commandCode) {
+            let manufacturingCommands = await ManufacturingCommand(connect(DB_CONNECTION, portal)).find({
+                code: new RegExp(commandCode, "i")
+            });
+            let manufacturingCommandIds = manufacturingCommands.map(x => x._id);
+            options.manufacturingCommands = {
+                $in: manufacturingCommandIds
+            }
+        }
+        // Xử lý tình trạng truyền vào
+        if (progress) {
+
+        }
+
         let manufacturingPlans = await ManufacturingPlan(connect(DB_CONNECTION, portal))
             .paginate(options, {
                 limit,
@@ -146,21 +184,6 @@ exports.getAllManufacturingPlans = async (query, portal) => {
                     path: "creator"
                 }]
             });
-
-        // Xử lý mã đơn sản xuất truyền vào
-        if (manufacturingOrder) {
-        }
-        // Xử lý mã đơn kinh doanh
-        if (salesOrder) {
-        }
-        // Xử lý mã lệnh sản xuất truyền vào
-        if (manufacturingCommand) {
-
-        }
-        // Xử lý tình trạng truyền vào
-        if (progress) {
-
-        }
         return { manufacturingPlans }
     }
 }
