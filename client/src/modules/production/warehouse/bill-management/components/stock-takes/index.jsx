@@ -5,7 +5,7 @@ import { SelectMulti, DatePicker, DataTableSetting, PaginateBar } from '../../..
 
 import BillDetailForm from '../genaral/billDetailForm';
 import BillEditForm from '../genaral/billEditForm';
-import BillCreateForm from '../genaral/billCreateForm';
+import StockTakeCreateForm from './stockTakeCreateForm';
 
 class TakeManagement extends Component {
     constructor(props) {
@@ -37,7 +37,7 @@ class TakeManagement extends Component {
         return (
             <div id="bill-stock-takes">
                 <div className="box-body qlcv">
-                    <BillCreateForm group={group} />
+                    <StockTakeCreateForm group={group} />
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('manage_warehouse.bill_management.stock')}</label>
@@ -155,7 +155,6 @@ class TakeManagement extends Component {
                                 <tr>
                                     <th style={{ width: '5%' }}>{translate('manage_warehouse.bill_management.index')}</th>
                                     <th>{translate('manage_warehouse.bill_management.code')}</th>
-                                    { group === '3' ? <th>{translate('manage_warehouse.bill_management.issued')}</th> : []}
                                     <th>{translate('manage_warehouse.bill_management.type')}</th>
                                     <th>{translate('manage_warehouse.bill_management.status')}</th> 
                                     <th>{translate('manage_warehouse.bill_management.creator')}</th> 

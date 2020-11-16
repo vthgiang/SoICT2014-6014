@@ -341,7 +341,7 @@ class InventoryManagement extends Component {
                             {
                                 good ?
                                 <li>
-                                    <span className="text"><a href="#" onClick={() => this.handleShowDetailInfo(goodName.value)}>Số lượng tồn kho của {goodName.text} (xem thẻ kho)</a></span>
+                                    <span className="text">Số lượng tồn kho của {goodName.text} <a href="#" onClick={() => this.handleShowDetailInfo(goodName.value)}>(xem thẻ kho)</a></span>
                                     <span className="label label-success" style={{fontSize: '11px'}}>{quantityTotal} {goodName.baseUnit}</span>
                                 </li> : []
                             }

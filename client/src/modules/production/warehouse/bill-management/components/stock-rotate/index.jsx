@@ -4,8 +4,8 @@ import { withTranslate } from 'react-redux-multilingual';
 import { SelectMulti, DatePicker, DataTableSetting, PaginateBar } from '../../../../../../common-components';
 
 import BillDetailForm from '../genaral/billDetailForm';
-import BillEditForm from '../genaral/billEditForm';
-import BillCreateForm from '../genaral/billCreateForm';
+import StockRotateEditForm from './stockRotateEditForm';
+import StockRotateCreateForm from './stockRotateCreateForm';
 
 class RotateManagement extends Component {
     constructor(props) {
@@ -25,7 +25,7 @@ class RotateManagement extends Component {
             }
         })
 
-        window.$('#modal-edit-bill').modal('show');
+        window.$('#modal-edit-bill-rotate').modal('show');
     }
     
     render() {
@@ -37,7 +37,7 @@ class RotateManagement extends Component {
         return (
             <div id="bill-stock-rotate">
                 <div className="box-body qlcv">
-                    <BillCreateForm group={group} />
+                    <StockRotateCreateForm group={group} />
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('manage_warehouse.bill_management.stock')}</label>
@@ -142,10 +142,10 @@ class RotateManagement extends Component {
                     <BillDetailForm />
                     {
                         currentRow &&
-                        <BillEditForm 
+                        <StockRotateEditForm 
                             billId={currentRow._id}
                             fromStock={currentRow.fromStock ? currentRow.fromStock._id : null}
-                            toStock={currentRow.toStock ? currentRow.toStock_id : null}
+                            toStock={currentRow.toStock ? currentRow.toStock._id : null}
                             code={currentRow.code}
                             group={currentRow.group}
                             type={currentRow.type}

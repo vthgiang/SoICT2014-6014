@@ -3907,7 +3907,12 @@ export default {
                 validate_norm: 'Bạn đã nhập quá số lượng tồn kho',
                 add_lot: 'Thêm mới lô hàng',
                 expiration_date: 'Ngày hết hạn',
-                validate_norm: 'Bạn đã nhập quá số lượng tồn kho'
+                validate_norm: 'Bạn đã nhập quá số lượng tồn kho',
+                quantity_return: 'Số lượng trả lại',
+                quantity_issue: 'Số lượng xuất ra',
+                bill_issued: 'Đơn đã xuất',
+                choose_bill: 'Chọn đơn hàng',
+                users: 'Những người thực hiện'
 
             },
             inventory_management: {
