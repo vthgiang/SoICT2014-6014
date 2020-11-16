@@ -324,16 +324,16 @@ const importGeneralInformationOfAssetTemplate = {
                 code: "BG",
                 assetName: "Bàn gỗ",
                 serial: "BG1234",
-                purchaseDate: "2020-09-01",
-                warrantyExpirationDate: "2021-09-01",
+                purchaseDate: "01-09-2020",
+                warrantyExpirationDate: "01-09-2020",
                 description: "Bàn gỗ xoan"
             },
             {
                 code: "BN",
                 assetName: "Bàn nhôm",
                 serial: "BG1235",
-                purchaseDate: "2020-09-01",
-                warrantyExpirationDate: "2021-09-01",
+                purchaseDate: "01-09-2020",
+                warrantyExpirationDate: "01-09-2020",
                 description: "Kim loại"
             }
         ]
@@ -361,14 +361,14 @@ const importDepreciationInformationOfAssetTemplate = {
                 cost: "2000000",
                 residualValue: "1600000",
                 usefulLife: "12",
-                startDepreciation: "2020-03-20",
+                startDepreciation: "20-03-2020",
             },
             {
                 code: "BN",
                 cost: "2000000",
                 residualValue: "1600000",
                 usefulLife: "12",
-                startDepreciation: "2020-03-20",
+                startDepreciation: "20-03-2020",
             }
         ]
     }]
@@ -392,20 +392,20 @@ const importUsageInformationOfAssetTemplate = {
         data: [
             {
                 code: "BG",
-                startDate: "2020-03-20",
-                endDate: "2020-09-20",
+                startDate: "20-03-2020",
+                endDate: "20-03-2020",
                 description: "Cho phép sử dụng"
             },
             {
                 code: "BG",
-                startDate: "2020-03-20",
-                endDate: "2020-09-20",
+                startDate: "20-03-2020",
+                endDate: "20-03-2020",
                 description: "Cho phép sử dụng"
             },
             {
                 code: "BN",
-                startDate: "2020-03-20",
-                endDate: "2020-09-20",
+                startDate: "20-03-2020",
+                endDate: "20-03-2020",
                 description: "Cho phép sử dụng"
             }
         ]
@@ -432,13 +432,13 @@ const importIncidentInformationOfAssetTemplate = {
             {
                 code: "BG",
                 incidentCode: "IS_20",
-                dateOfIncident: "2020-03-20",
+                dateOfIncident: "20-03-2020",
                 description: "Sự cố do ăn mòn"
             },
             {
                 code: "BN",
                 incidentCode: "IS_20",
-                dateOfIncident: "2020-03-20",
+                dateOfIncident: "20-03-2020",
                 description: "Sự cố do ăn mòn"
             }
         ]
@@ -467,19 +467,19 @@ const importMaintainanceInformationOfAssetTemplate = {
             {
                 code: "BG",
                 maintainanceCode: "IS_20",
-                createDate: "2020-03-20",
+                createDate: "20-03-2020",
                 description: "Bảo trì do ăn mòn",
-                startDate: "2020-04-20",
-                endDate: "2020-05-20",
+                startDate: "20-04-2020",
+                endDate: "20-05-2020",
                 expense: "2000000"
             },
             {
                 code: "BN",
                 maintainanceCode: "IS_20",
-                createDate: "2020-03-20",
+                createDate: "20-03-2020",
                 description: "Bảo trì do ăn mòn",
-                startDate: "2020-04-20",
-                endDate: "2020-05-20",
+                startDate: "20-04-2020",
+                endDate: "20-05-2020",
                 expense: "2000000"
             }
         ]
@@ -503,13 +503,13 @@ const importDisposalInformationOfAssetTemplate = {
         data: [
             {
                 code: "BG",
-                disposalDate: "2020-05-20",
+                disposalDate: "20-03-2020",
                 disposalCost: "2000000",
                 disposalDesc: "Thanh lý do ăn mòn"
             },
             {
                 code: "BN",
-                disposalDate: "2020-05-20",
+                disposalDate: "20-03-2020",
                 disposalCost: "2000000",
                 disposalDesc: "Thanh lý do ăn mòn"
             }

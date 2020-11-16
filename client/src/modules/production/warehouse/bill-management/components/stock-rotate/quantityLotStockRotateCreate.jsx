@@ -1,38 +1,32 @@
 import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
-import { DialogModal, SelectBox, ErrorLabel, ButtonModal, DatePicker } from '../../../../../../common-components';
+import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from '../../../../../../common-components';
 
-import { generateCode } from '../../../../../../helpers/generateCode';
-
-import { LotActions } from '../../../inventory-management/redux/actions';
-
-class QuantityLotGoodReceipt extends Component {
+class QuantityLotStockRotateCreate extends Component {
     constructor(props) {
         super(props);
         this.EMPTY_LOT = {
-            lot: null,
-            name: generateCode("LOT"),
-            quantity: 0,
-            note: '',
-            expirationDate: ''
+            lot: '',
+            quantity: '',
+            returnQuantity: '',
+            damagedQuantity: '',
+            note: ''
         }
         this.state = {
             lot: Object.assign({}, this.EMPTY_LOT),
             lots: this.props.initialData,
             editInfo: false,
-            good: '',
-            name: this.props.lotName
+            good: ''
         }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        prevState.name = nextProps.lotName;
         if (nextProps.good !== prevState.good) {
             return {
                 ...prevState,
                 good: nextProps.good,
-                lots: nextProps.initialData,
+                lots: nextProps.initialData
             }
         } else {
             return null;
@@ -122,16 +116,6 @@ class QuantityLotGoodReceipt extends Component {
         return msg === undefined;
     }
 
-    handleNoteChange = (e) => {
-        let value = e.target.value;
-        this.state.lot.note = value;
-        this.setState(state => {
-            return {
-                ...state,
-            }
-        })
-    }
-
     isFormValidated = () => {
         if(this.state.lots.length > 0) {
             return true;
@@ -142,7 +126,7 @@ class QuantityLotGoodReceipt extends Component {
     isLotsValidated = () => {
         let result =
             this.validateQuantity(this.state.lot.quantity, false) &&
-            this.validateExpirationDate(this.state.lot.expirationDate, false);
+            this.validateLot(this.state.lot.lot, false)
         return result
     }
 
@@ -156,17 +140,15 @@ class QuantityLotGoodReceipt extends Component {
                 lot: Object.assign({}, this.EMPTY_LOT),
             }
         })
-        this.state.lot.name = generateCode("LOT");
         this.props.onDataChange(this.state.lots);
     }
 
     handleClearLot = (e) => {
         e.preventDefault();
-        this.state.lot = Object.assign({}, this.EMPTY_LOT);
-        this.state.lot.name = generateCode("LOT");
         this.setState(state => {
             return {
-                ...state
+                ...state,
+                lot: Object.assign({}, this.EMPTY_LOT)
             }
         })
     }
@@ -180,13 +162,12 @@ class QuantityLotGoodReceipt extends Component {
                 return (index === indexInfo) ? this.state.lot : item;
             })
         }
-        this.state.lot = Object.assign({}, this.EMPTY_LOT);
-        this.state.lot.name = generateCode("LOT");
         await this.setState(state => {
             return {
                 ...state,
                 lots: newLots,
                 editInfo: false,
+                lot: Object.assign({}, this.EMPTY_LOT),
             }
         })
         this.props.onDataChange(this.state.lots);
@@ -194,12 +175,11 @@ class QuantityLotGoodReceipt extends Component {
 
     handleCancelEditLot = (e) => {
         e.preventDefault();
-        this.state.lot = Object.assign({}, this.EMPTY_LOT);
-        this.state.lot.name = generateCode("LOT");
         this.setState(state => {
             return {
                 ...state,
-                editInfo: false
+                editInfo: false,
+                lot: Object.assign({}, this.EMPTY_LOT)
             }
         })
     }
@@ -231,88 +211,43 @@ class QuantityLotGoodReceipt extends Component {
         this.props.onDataChange(this.state.lots);
     }
 
-    save = async() => {
-        const { stock, good, quantity, bill, type } = this.props;
-        const { lots } = this.state;
-        const data = {};
-        data.stock = stock;
-        data.lots = lots;
-        data.bill = bill;
-        data.typeBill = type;
-        if(good.good) {
-            data.good = good.good._id;
-            data.type = good.good.type;
-        }
-
-        await this.props.createOrUpdateLots(data);
-
-        await this.props.onDataChange(this.state.lots);
-    }
-
-    formatDate(date, monthYear = false) {
-        if (date) {
-            let d = new Date(date),
-                day = '' + d.getDate(),
-                month = '' + (d.getMonth() + 1),
-                year = d.getFullYear();
-
-            if (month.length < 2)
-                month = '0' + month;
-            if (day.length < 2)
-                day = '0' + day;
-
-            if (monthYear === true) {
-                return [month, year].join('-');
-            } else return [day, month, year].join('-');
-        } else {
-            return date
-        }
-    }
-    handleExpirationDateChange = (value) => {
-        this.validateExpirationDate(value, true)
-    }
-    validateExpirationDate = (value, willUpdateState = true) => {
-        let msg = undefined
-        if(!value) {
-            msg = 'Chưa nhập ngày hết hạn'
-        }
-
-        if (willUpdateState) {
-            this.state.lot.expirationDate = value;
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorExpirationDate: msg,
-                    expirationDate: value,
-                }
-            });
-        }
-        return msg === undefined;
+    save = () => {
+        this.props.onDataChange(this.state.lots);
     }
 
     render() {
         const { translate, group, good } = this.props;
-        const { lot, errorQuantity, lots, errorExpirationDate } = this.state;
+        const { errorLot, lot, errorQuantity, lots } = this.state;
+        const dataLots = this.getLotsByGood();
 
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID={`modal-edit-quantity-receipt`}
-                    formID={`form-edit-quantity-receipt`}
-                    title="Thêm mới lô hàng"
+                    modalID={`modal-add-quantity-rotate`}
+                    formID={`form-add-quantity-rotate`}
+                    title="Thêm số lượng theo lô"
                     msg_success={translate('manage_warehouse.bill_management.add_success')}
                     msg_faile={translate('manage_warehouse.bill_management.add_faile')}
                     disableSubmit={!this.isFormValidated()}
                     func={this.save}
-                    size="75"
+                    size="50"
                 >
-                <form id={`form-edit-quantity-receipt`}>
+                <form id={`form-add-quantity-rotate`}>
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border">{translate('manage_warehouse.bill_management.lot')}</legend>
 
-                        <div className={`form-group`}>
-                            <label>{translate('manage_warehouse.bill_management.lot_number')}</label>
-                            <input type="text" className="form-control" value={lot.name} disabled/>
+                        <div className={`form-group ${!errorLot ? "" : "has-error"}`}>
+                            <label>{translate('manage_warehouse.bill_management.lot_number')}<span className="attention">*</span></label>
+                            <SelectBox
+                                id={`select-lot-rotate-create-by-${group}`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={lot.lot ? lot.lot._id : '1'}
+                                items={dataLots}
+                                onChange={this.handleLotChange}
+                                multiple={false}
+                            />
+                            <ErrorLabel content={errorLot} />
                         </div>
 
                         <div className={`form-group ${!errorQuantity ? "" : "has-error"}`}>
@@ -321,23 +256,6 @@ class QuantityLotGoodReceipt extends Component {
                                 <input type="number" className="form-control" placeholder={translate('manage_warehouse.bill_management.number')} value={lot.quantity} onChange={this.handleQuantityChange} />
                             </div>
                             <ErrorLabel content={errorQuantity} />
-                        </div>
-
-                        <div className={`form-group ${!errorExpirationDate ? "" : "has-error"}`}>
-                            <label htmlFor="expirationDate">{translate('manage_warehouse.bill_management.expiration_date')}</label>
-                            <DatePicker
-                                id={`expirationDate-lot`}
-                                value={lot.expirationDate ? lot.expirationDate : ''}
-                                onChange={this.handleExpirationDateChange}
-                            />
-                            <ErrorLabel content={errorExpirationDate} />
-                        </div>
-
-                        <div className={`form-group`}>
-                            <label className="control-label">{translate('manage_warehouse.bill_management.description')}</label>
-                            <div>
-                                <input type="text" className="form-control" placeholder={translate('manage_warehouse.bill_management.description')} value={lot.note} onChange={this.handleNoteChange} />
-                            </div>
                         </div>
 
                         <div className="pull-right" style={{ marginBottom: "10px" }}>
@@ -356,8 +274,6 @@ class QuantityLotGoodReceipt extends Component {
                                 <tr>
                                     <th title={translate('manage_warehouse.bill_management.lot_number')}>{translate('manage_warehouse.bill_management.lot_number')}</th>
                                     <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
-                                    <th title={translate('manage_warehouse.bill_management.description')}>{translate('manage_warehouse.bill_management.description')}</th>
-                                    <th title={translate('manage_warehouse.bill_management.expiration_date')}>{translate('manage_warehouse.bill_management.expiration_date')}</th>
                                     <th>{translate('task_template.action')}</th>
                                 </tr>
                             </thead>
@@ -366,21 +282,19 @@ class QuantityLotGoodReceipt extends Component {
                                     (typeof lots !== 'undefined' && lots.length > 0) ?
                                         lots.map((x, index) =>
                                             <tr key={index}>
-                                                <td>{x.name}</td>
+                                                <td>{x.lot.name}</td>
                                                 <td>{x.quantity}</td>
-                                                <td>{x.note}</td>
-                                                <td>{x.expirationDate}</td>
                                                 <td>
                                                     <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => this.handleEditLot(x, index)}><i className="material-icons"></i></a>
-                                                    {/* <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => this.handleDeleteLot(index)}><i className="material-icons"></i></a> */}
+                                                    <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => this.handleDeleteLot(index)}><i className="material-icons"></i></a>
                                                 </td>
                                             </tr>
-                                        ) : <tr><td colSpan={5}><center>{translate('task_template.no_data')}</center></td></tr>
+                                        ) : <tr><td colSpan={3}><center>{translate('task_template.no_data')}</center></td></tr>
                                 }
                             </tbody>
                         </table>
                     </fieldset>
-                </form>
+                    </form>
                 </DialogModal>
             </React.Fragment>
         );
@@ -390,7 +304,7 @@ class QuantityLotGoodReceipt extends Component {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
-    createOrUpdateLots: LotActions.createOrUpdateLots,
+    
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuantityLotGoodReceipt));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuantityLotStockRotateCreate));

@@ -4,8 +4,10 @@ import { withTranslate } from 'react-redux-multilingual';
 import { SelectMulti, DatePicker, DataTableSetting, PaginateBar } from '../../../../../../common-components';
 
 import BillDetailForm from '../genaral/billDetailForm';
-import BillEditForm from '../genaral/billEditForm';
-import BillCreateForm from '../genaral/billCreateForm';
+import GoodReturnEditForm from './goodReturnEditForm';
+import GoodReturnCreateForm from './goodReturnCreateForm';
+
+import { BillActions } from '../../redux/actions';
 
 class ReturnManagement extends Component {
     constructor(props) {
@@ -24,8 +26,12 @@ class ReturnManagement extends Component {
                 currentRow: bill
             }
         })
-
-        window.$('#modal-edit-bill').modal('show');
+        const group = '2';
+        const status = '2';
+        const fromStock = bill.fromStock._id;
+        await this.props.getBillsByStatus({ group, status, fromStock})
+        window.$('#modal-edit-bill-return').modal('show');
+        
     }
     
     render() {
@@ -37,7 +43,7 @@ class ReturnManagement extends Component {
         return (
             <div id="bill-good-returns">
                 <div className="box-body qlcv">
-                    <BillCreateForm group={group} />
+                    <GoodReturnCreateForm group={group} />
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('manage_warehouse.bill_management.stock')}</label>
@@ -142,8 +148,9 @@ class ReturnManagement extends Component {
                     <BillDetailForm />
                     {
                         currentRow &&
-                        <BillEditForm 
+                        <GoodReturnEditForm 
                             billId={currentRow._id}
+                            bill={currentRow.bill ? currentRow.bill._id : null}
                             fromStock={currentRow.fromStock ? currentRow.fromStock._id : null}
                             code={currentRow.code}
                             group={currentRow.group}
@@ -205,6 +212,7 @@ class ReturnManagement extends Component {
                                         <tr key={index}>
                                             <td>{index + 1}</td>
                                             <td>{x.code}</td>
+                                            <td><a href="#">{x.bill ? x.bill.code : ''}</a></td>
                                             <td>{translate(`manage_warehouse.bill_management.billType.${x.type}`)}</td>
                                             <td style={{ color: translate(`manage_warehouse.bill_management.bill_color.${x.status}`)}}>{translate(`manage_warehouse.bill_management.bill_status.${x.status}`)}</td>
                                             <td>{x.creator ? x.creator.name : "Creator is deleted"}</td>
@@ -236,4 +244,8 @@ class ReturnManagement extends Component {
 
 const mapStateToProps = state => state;
 
-export default connect(mapStateToProps, null)(withTranslate(ReturnManagement));
+const mapDispatchToProps = {
+    getBillsByStatus: BillActions.getBillsByStatus,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ReturnManagement));

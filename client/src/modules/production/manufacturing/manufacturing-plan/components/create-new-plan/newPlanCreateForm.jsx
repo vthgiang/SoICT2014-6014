@@ -6,8 +6,8 @@ import MaterialInfoForm from './materialInfoForm';
 import MillScheduleBooking from './millScheduleBooking';
 import WorkerBooking from './workerBooking';
 import './planCreate.css';
-
-
+import { connect } from 'react-redux';
+import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 
 class NewPlanCreateForm extends Component {
     constructor(props) {
@@ -154,4 +154,5 @@ class NewPlanCreateForm extends Component {
     }
 }
 
-export default NewPlanCreateForm;
+export default connect(null, null)(withTranslate(NewPlanCreateForm));
+// export default NewPlanCreateForm;

@@ -49,8 +49,6 @@ const AssetSchema = new Schema({
     purchaseDate: {
         //6.ngày nhập, ngày mua
         type: Date,
-        defaut: Date.now,
-        required: true,
     },
 
     warrantyExpirationDate: {

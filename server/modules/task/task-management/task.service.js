@@ -330,6 +330,7 @@ exports.getPaginatedTasks = async (portal, task) => {
     }
 
     if (special) {
+        console.log('special', special);
         for (var i = 0; i < special.length; i++) {
             if (special[i] === "Lưu trong kho") {
                 keySearch = {
@@ -1508,6 +1509,7 @@ exports.sendEmailForCreateTask = async (portal, task) => {
     var html = `<p>Bạn có công việc mới: ` + body;
     collaboratedHtml = `<p>Đơn vị bạn được phối hợp thực hiện công việc mới: ` + body;
 
+
     return {
         task: task,
         user: userIds, email: email, html: html,
@@ -1552,7 +1554,7 @@ exports.createTask = async (portal, task) => {
         formula = taskTemplate.formula;
     } else if (task.formula) {
         // formula = "progress / (dayUsed / totalDay)"; // default
-        formula = "progress / (dayUsed / totalDay) - 0.5 * (10 - (averageActionRating)) * 10"
+        formula = "progress / (dayUsed / totalDay) - (numberOfFailedAction / (numberOfFailedAction + numberOfPassedAction)) * 100"
     }
 
     var task = await Task(connect(DB_CONNECTION, portal)).create({ //Tạo dữ liệu mẫu công việc

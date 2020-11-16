@@ -63,6 +63,13 @@ class ModalShowAutoPointInfo extends Component {
         // Tổng số hoạt động
         let a = actionRating.length;
 
+        let noteNotHasFailedAndPassedAction = '';
+        if ((numberOfPassedAction === 0 && numberOfFailedAction === 0) || a === 0) {
+            numberOfPassedAction = 1;
+            numberOfFailedAction = 1;
+            noteNotHasFailedAndPassedAction = translate('task.task_management.explain_not_has_failed_and_passed_action');
+        }
+
         // Tổng số điểm của các hoạt động
         let reduceAction = actionRating.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
         reduceAction = reduceAction > 0 ? reduceAction : 0;
@@ -76,8 +83,8 @@ class ModalShowAutoPointInfo extends Component {
             // automaticPoint = a ? autoHasActionInfo : autoDependOnDay;
             formula = task.formula;
 
-            if(formula.includes("numberOfFailedAction")) checkFormulaHasFailedAction = true;
-            if(formula.includes("numberOfPassedAction")) checkFormulaHasPassedAction = true;
+            if (formula.includes("numberOfFailedAction")) checkFormulaHasFailedAction = true;
+            if (formula.includes("numberOfPassedAction")) checkFormulaHasPassedAction = true;
 
             formula = formula.replace(/overdueDate/g, `(${overdueDate})`);
             formula = formula.replace(/totalDay/g, `(${totalDay})`);
@@ -86,11 +93,11 @@ class ModalShowAutoPointInfo extends Component {
             formula = formula.replace(/numberOfFailedAction/g, `(${numberOfFailedAction})`);
             formula = formula.replace(/numberOfPassedAction/g, `(${numberOfPassedAction})`);
             formula = formula.replace(/progress/g, `(${progressTask})`);
-            
+
 
             // automaticPoint = eval(formula);
         }
-        else{
+        else {
             formula = task.formula;
             let taskInformations = info;
 
@@ -156,12 +163,12 @@ class ModalShowAutoPointInfo extends Component {
                         <div>
                             <p><strong>{translate('task.task_management.calc_formula')}: </strong>{task.formula}</p>
                             <p>{translate('task.task_management.calc_where')}: </p>
-                            <ul>
+                            <ul style={{lineHeight: 2.3}}>
                                 <li>overdueDate - {translate('task.task_management.calc_overdue_date')}: {overdueDate} ({translate('task.task_management.calc_days')})</li>
                                 <li>dayUsed - {translate('task.task_management.calc_day_used')}: {dayUsed} ({translate('task.task_management.calc_days')})</li>
                                 <li>totalDay - {translate('task.task_management.calc_total_day')}: {totalDay} ({translate('task.task_management.calc_days')})</li>
-                                <li>numberOfFailedAction - {translate('task.task_management.calc_failed_action_rating')}: {numberOfFailedAction}</li>
-                                <li>numberOfPassedAction - {translate('task.task_management.calc_passed_action_rating')}: {numberOfPassedAction}</li> {/** {!a && `(${avgActionNote})`} */}
+                                <li>numberOfFailedAction - {translate('task.task_management.calc_failed_action_rating')}: {numberOfFailedAction}{`${noteNotHasFailedAndPassedAction}`}</li>
+                                <li>numberOfPassedAction - {translate('task.task_management.calc_passed_action_rating')}: {numberOfPassedAction}{`${noteNotHasFailedAndPassedAction}`}</li>
                                 <li>progress - {translate('task.task_management.calc_progress')}: {progressTask === undefined ? translate('task.task_management.calc_no_value') : `${progress}(%)`}</li>
                                 {
                                     taskInformations && taskInformations.map((e, index) => {
@@ -178,10 +185,10 @@ class ModalShowAutoPointInfo extends Component {
                         <div>
                             <p><strong>{translate('task.task_management.calc_formula')}: </strong> {task.formula} </p>
                             <p>{translate('task.task_management.calc_where')}: </p>
-                            <ul>
+                            <ul style={{lineHeight: 2.3}}>
                                 <li>progress - {translate('task.task_management.calc_progress')}: {progressTask === undefined ? translate('task.task_management.calc_no_value') : `${progress}(%)`}</li>
-                                {checkFormulaHasFailedAction && <li>numberOfFailedAction - {translate('task.task_management.calc_failed_action_rating')}: {numberOfFailedAction}</li>}
-                                {checkFormulaHasPassedAction && <li>numberOfPassedAction - {translate('task.task_management.calc_passed_action_rating')}: {numberOfPassedAction}</li>}
+                                {checkFormulaHasFailedAction && <li>numberOfFailedAction - {translate('task.task_management.calc_failed_action_rating')}: {numberOfFailedAction}{`${noteNotHasFailedAndPassedAction}`}</li>}
+                                {checkFormulaHasPassedAction && <li>numberOfPassedAction - {translate('task.task_management.calc_passed_action_rating')}: {numberOfPassedAction}{`${noteNotHasFailedAndPassedAction}`}</li>}
                                 <li>dayUsed - {translate('task.task_management.calc_day_used')}: {dayUsed} ({translate('task.task_management.calc_days')})</li>
                                 <li>totalDay - {translate('task.task_management.calc_total_day')}: {totalDay} ({translate('task.task_management.calc_days')})</li>
                             </ul>

@@ -104,6 +104,9 @@ class InventoryDetailForm extends Component {
                 if(listBillByGood[i].goods && listBillByGood[i].goods.length > 0){
                     for(let j = 0; j < listBillByGood[i].goods.length; j++){
                         if(listBillByGood[i].goods[j].good === id){
+                            if(listBillByGood[i].group === '3'){
+                                goodQuantity.push(listBillByGood[i].goods[j].returnQuantity)
+                            }
                             goodQuantity.push(listBillByGood[i].goods[j].quantity)
                         }
                     }
@@ -202,7 +205,7 @@ class InventoryDetailForm extends Component {
                                                         <td>{index + 1}</td>
                                                         <td>{this.formatDate(x.timestamp)}</td>
                                                         <td>{ x.group === '1' ? goodQuantity[index] : 0 }</td>
-                                                        <td>{ x.group === '2' ? goodQuantity[index] : 0 }</td>
+                                                        <td>{ (x.group === '2' || x.group === '3')? goodQuantity[index] : 0 }</td>
                                                         <td>{x.fromStock.name}</td>
                                                     </tr>
                                                 ))

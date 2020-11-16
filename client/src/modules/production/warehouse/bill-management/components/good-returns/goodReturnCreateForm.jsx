@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
 import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from '../../../../../../common-components';
+import QuantityLotGoodReturn from './quantityLotGoodReturn';
 import { generateCode } from '../../../../../../helpers/generateCode';
 import { LotActions } from '../../../inventory-management/redux/actions';
 import { BillActions } from '../../redux/actions';
 
-class GoodReceiptCreateForm extends Component {
+class GoodReturnCreateForm extends Component {
     constructor(props) {
         super(props);
         this.EMPTY_GOOD = {
@@ -18,16 +19,36 @@ class GoodReceiptCreateForm extends Component {
         }
         this.state = {
             list: [],
-            code: generateCode("BIRE"),
-            lotName: generateCode("LOT"),
+            code: generateCode("BIGR"),
             lots: [],
             listGood: [],
             good: Object.assign({}, this.EMPTY_GOOD),
             editInfo: false,
+            getGoodInfo: false,
             customer: '',
             users: [],
             status: '1',
             fromStock: ''
+        }
+    }
+
+    formatDate(date, monthYear = false) {
+        if (date) {
+            let d = new Date(date),
+                day = '' + d.getDate(),
+                month = '' + (d.getMonth() + 1),
+                year = d.getFullYear();
+
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+
+            if (monthYear === true) {
+                return [month, year].join('-');
+            } else return [day, month, year].join('-');
+        } else {
+            return date
         }
     }
 
@@ -48,24 +69,44 @@ class GoodReceiptCreateForm extends Component {
         return goodArr;
     }
 
+    getBillByStatus = () => {
+        let { translate, bills } = this.props;
+        let billArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_bill') }];
+
+        bills.listBillByStatus.map(item => {
+            billArr.push({
+                value: item._id,
+                text: item.code + " -- " + this.formatDate(item.timestamp),
+                code: item.code,
+            })
+        })
+
+        return billArr;
+    }
+
     handleGoodChange = async (value) => {
         const dataGoods = await this.getAllGoods();
         let good = value[0];
-        const lotName = generateCode("LOT");
         this.state.good.quantity = 0;
         let goodName = dataGoods.find(x => x.value === good);
         this.state.good.good = { _id: good, code: goodName.code, name: goodName.name, baseUnit: goodName.baseUnit };
         await this.setState(state => {
             return {
                 ...state,
-                lots: [],
-                lotName: lotName
+                lots: []
             }
         })
+        const { fromStock } = this.state;
+
+        await this.props.getLotsByGood({ good, stock: fromStock });
+    }
+
+    addQuantity = () => {
+        window.$('#modal-add-quantity-return').modal('show');
     }
 
     handleClickCreate = () => {
-        const value = generateCode("BIRE");
+        const value = generateCode("BIGR");
         this.setState({
             code: value
         });
@@ -85,18 +126,18 @@ class GoodReceiptCreateForm extends Component {
         return ApproverArr;
     }
 
-    getSupplier = () => {
+    getCustomer = () => {
         const { crm, translate } = this.props;
-        let supplierArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_customer') }];
+        let CustomerArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_customer') }];
 
         crm.customers.list.map(item => {
-            supplierArr.push({
+            CustomerArr.push({
                 value: item._id,
                 text: item.name
             })
         })
 
-        return supplierArr;
+        return CustomerArr;
     }
 
     getStock = () => {
@@ -115,12 +156,10 @@ class GoodReceiptCreateForm extends Component {
 
     getType = () => {
         const { group, translate} = this.props;
-        let typeArr = [];
-        typeArr = [
+        let typeArr = [
             { value: '0', text: translate('manage_warehouse.bill_management.choose_type')},
-            { value: '1', text: translate('manage_warehouse.bill_management.billType.1')},
-            { value: '2', text: translate('manage_warehouse.bill_management.billType.2')},
-        ]
+            { value: '7', text: translate('manage_warehouse.bill_management.billType.7')},
+        ];
         return typeArr;
     }
 
@@ -147,9 +186,18 @@ class GoodReceiptCreateForm extends Component {
         return msg === undefined;
     }
 
-    handleStockChange = (value) => {
+    handleStockChange = async (value) => {
         let fromStock = value[0];
-        this.validateStock(fromStock, true);
+        await this.validateStock(fromStock, true);
+        
+        let group = '2';
+        let status = '2';
+        if(fromStock) {
+            await this.props.getBillsByStatus({ group, status, fromStock});
+        } else {
+            await this.props.getBillsByStatus({ group, status, fromStock: null});
+        }
+        
     }
 
     validateStock = (value, willUpdateState = true) => {
@@ -167,6 +215,7 @@ class GoodReceiptCreateForm extends Component {
                 }
             })
         }
+        
         return msg === undefined;
     }
 
@@ -187,6 +236,29 @@ class GoodReceiptCreateForm extends Component {
                     ...state,
                     approver: value,
                     errorApprover: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+
+    handlePartnerChange = (value) => {
+        let partner = value[0];
+        this.validatePartner(partner, true);
+    }
+
+    validatePartner = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = this.props;
+        if(!value) {
+            msg = translate('manage_warehouse.bill_management.validate_customer')
+        }
+        if(willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    customer: value,
+                    errorCustomer: msg,
                 }
             })
         }
@@ -279,40 +351,31 @@ class GoodReceiptCreateForm extends Component {
         let result =
             this.validateType(this.state.type, false) &&
             this.validateStock(this.state.fromStock, false) &&
-            this.validateApprover(this.state.approver, false) &&
-            this.validateSupplier(this.state.supplier, false)
+            this.validateApprover(this.state.approver, false)
         return result;
+    }
+
+    handleLotsChange = (data) => {
+        let totalQuantity = data.length > 0 ? data.reduce(function (accumulator, currentValue) {
+            return Number(accumulator) + Number(currentValue.returnQuantity);
+          }, 0) : 0;
+        this.state.good.returnQuantity = totalQuantity;
+        this.state.good.lots = data;
+        this.setState(state => {
+            return {
+                ...state,
+                lots: data,
+                returnQuantity: totalQuantity
+            }
+        })
     }
 
     handleQuantityChange = (e) => {
         let value = e.target.value;
-        this.state.good.quantity = value;
-        this.setState(state => {
-            return {
-                ...state
-            }
-        })
-    }
-
-    handleAddGood = async (e) => {
-        e.preventDefault();
-        await this.setState(state => {
-            let listGood = [ ...(this.state.listGood), state.good];
-            return {
-                ...state,
-                listGood: listGood,
-                lots: [],
-                good: Object.assign({}, this.EMPTY_GOOD)
-            }
-        })
-    }
-
-    handleClearGood = (e) => {
-        e.preventDefault();
         this.setState(state => {
             return {
                 ...state,
-                good: Object.assign({}, this.EMPTY_GOOD)
+                returnQuantity: value
             }
         })
     }
@@ -343,7 +406,8 @@ class GoodReceiptCreateForm extends Component {
             return {
                 ...state,
                 editInfo: false,
-                good: Object.assign({}, this.EMPTY_GOOD)
+                good: Object.assign({}, this.EMPTY_GOOD),
+                lots: []
             }
         })
     }
@@ -389,38 +453,53 @@ class GoodReceiptCreateForm extends Component {
         })
     }
 
-    static getDerivedStateFromProps(nextProps, prevState){
-        if(nextProps.group !== prevState.group){
-            return {
-                ...prevState,
-                group: nextProps.group,
-                listGood: [],
-                lots: [],
-                type: '',
-                errorStock: undefined, 
-                errorType: undefined, 
-                errorApprover: undefined, 
-                errorCustomer: undefined
+    handleBillChange = async (value) => {
+        let bill = value[0];
+        if(bill){
+            await this.setState(state => {
+                return {
+                    ...state,
+                    bill: bill,
+                    getGoodInfo: true
+                }
+            })
+            await this.props.getDetailBill(bill);
+        } else {
+            this.setState(state => {
+                return {
+                    ...state,
+                    bill: bill,
+                    getGoodInfo: false
+                }
+            })
+        }
+        
+    }
 
-            }
+    shouldComponentUpdate(nextProps, nextState) {
+        if(nextProps.bills.billDetail){
+            this.state.listGood = nextProps.bills.billDetail.goods;
         }
-        else {
-            return null;
-        }
+        return true;
     }
 
     save =async () => {
-        const { fromStock, code, toStock, type, status, users, approver, customer, supplier, 
-            name, phone, email, address, description, listGood } = this.state;
-        const { group } = this.props;
+        const { fromStock, code, toStock, type, status, users, approver, supplier, 
+            name, phone, email, address, description, listGood, bill } = this.state;
+        const { group, bills } = this.props;
+        if(bills.billDetail){
+            var customer = bills.billDetail.customer;
+        }
         await this.props.createBill({
             fromStock: fromStock,
+            bill: bill,
             code: code,
             type: type,
             group: group,
             status: status,
             users: users,
             approver: approver,
+            customer: customer,
             supplier: supplier,
             name: name,
             phone: phone,
@@ -432,21 +511,20 @@ class GoodReceiptCreateForm extends Component {
     }
 
     render() {
-        const { translate, group } = this.props;
-        const { lots, lotName, listGood, good, code, approver, status, supplier, fromStock, type, name, phone, email, address, errorStock, errorType, errorApprover, errorSupplier } = this.state;
-        const listGoods = this.getAllGoods();
+        const { translate, group, bills } = this.props;
+        const { lots, listGood, good, code, approver, status, customer, fromStock, type, name, phone, email, address, errorStock, errorType, errorApprover, errorCustomer, errorSupplier, bill } = this.state;
         const dataApprover = this.getApprover();
-        const dataCustomer = this.getSupplier();
         const dataStock = this.getStock();
         const dataType = this.getType();
+        const dataBill = this.getBillByStatus();
 
         return (
             <React.Fragment>
-                <ButtonModal onButtonCallBack={this.handleClickCreate} modalID={`modal-create-bill-receipt`} button_name={translate('manage_warehouse.good_management.add')} title={translate('manage_warehouse.good_management.add_title')} />
+                <ButtonModal onButtonCallBack={this.handleClickCreate} modalID={`modal-create-bill-return`} button_name={translate('manage_warehouse.good_management.add')} title={translate('manage_warehouse.good_management.add_title')} />
         
                 <DialogModal
-                    modalID={`modal-create-bill-receipt`}
-                    formID={`form-create-bill-receipt`}
+                    modalID={`modal-create-bill-return`}
+                    formID={`form-create-bill-return`}
                     title={translate(`manage_warehouse.bill_management.add_title.${group}`)}
                     msg_success={translate('manage_warehouse.bill_management.add_success')}
                     msg_faile={translate('manage_warehouse.bill_management.add_faile')}
@@ -454,7 +532,8 @@ class GoodReceiptCreateForm extends Component {
                     func={this.save}
                     size={100}
                 >
-                    <form id={`form-create-bill-receipt`}>
+                    <QuantityLotGoodReturn group={group} good={good} stock={fromStock} initialData={lots} onDataChange={this.handleLotsChange} />
+                    <form id={`form-create-bill-return`}>
                     <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{translate('manage_warehouse.bill_management.infor')}</legend>
@@ -466,7 +545,7 @@ class GoodReceiptCreateForm extends Component {
                                     <div className={`form-group ${!errorType ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.type')}<span className="attention"> * </span></label>
                                         <SelectBox
-                                            id={`select-type-receipt-create`}
+                                            id={`select-type-return-create`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={type}
@@ -479,7 +558,7 @@ class GoodReceiptCreateForm extends Component {
                                     <div className={`form-group`}>
                                         <label>{translate('manage_warehouse.bill_management.status')}</label>
                                         <SelectBox
-                                            id={`select-status-receipt-create`}
+                                            id={`select-status-return-create`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={status}
@@ -500,7 +579,7 @@ class GoodReceiptCreateForm extends Component {
                                     <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.stock')}<span className="attention"> * </span></label>
                                         <SelectBox
-                                            id={`select-stock-bill-receipt-create`}
+                                            id={`select-stock-bill-return-create`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={fromStock}
@@ -513,7 +592,7 @@ class GoodReceiptCreateForm extends Component {
                                     <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.approved')}<span className="attention"> * </span></label>
                                         <SelectBox
-                                            id={`select-approver-bill-receipt-create`}
+                                            id={`select-approver-bill-return-create`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={approver}
@@ -523,18 +602,18 @@ class GoodReceiptCreateForm extends Component {
                                         />
                                         <ErrorLabel content = { errorApprover } />
                                     </div>
-                                    <div className={`form-group ${!errorSupplier ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.supplier')}<span className="attention"> * </span></label>
+                                    <div className={`form-group ${!errorCustomer ? "" : "has-error"}`}>
+                                        <label>{translate('manage_warehouse.bill_management.bill_issued')}<span className="attention"> * </span></label>
                                         <SelectBox
-                                            id={`select-customer-receipt-create`}
+                                            id={`select-customer-return-create`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            value={supplier}
-                                            items={dataCustomer}
-                                            onChange={this.handleSupplierChange}    
+                                            value={bill}
+                                            items={dataBill}
+                                            onChange={this.handleBillChange}    
                                             multiple={false}
                                         />
-                                        <ErrorLabel content = { errorSupplier } />
+                                        <ErrorLabel content = { errorCustomer } />
                                     </div>
                                 </div>
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -567,44 +646,41 @@ class GoodReceiptCreateForm extends Component {
                         </fieldset>
                         </div>
                         
+                        { this.state.getGoodInfo &&
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manage_warehouse.bill_management.goods')}</legend>
-                                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                        <div className="form-group">
-                                            <label>{translate('manage_warehouse.bill_management.choose_good')}</label>
-                                            <SelectBox
-                                                id={`select-good-receipt-create`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                value={good.good ? good.good._id : '1'}
-                                                items={listGoods}
-                                                onChange={this.handleGoodChange}    
-                                                multiple={false}
-                                            />
+                                    <div>
+                                        { this.state.editInfo &&
+                                        <div>
+                                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                            <div className="form-group">
+                                                <label>{translate('manage_warehouse.bill_management.quantity_issue')}</label>
+                                                <input className="form-control" value={good.quantity} disabled type="number" />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                        <div className="form-group">
-                                            <label>{translate('manage_warehouse.bill_management.number')}</label>
-                                            <input className="form-control" value={good.quantity} onChange={this.handleQuantityChange} type="number" />
+                                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                            <div className="form-group">
+                                                <label>{translate('manage_warehouse.bill_management.quantity_return')}</label>
+                                                <div style={{display: "flex"}}><input className="form-control" value={good.returnQuantity ? good.returnQuantity : 0} onChange={this.handleQuantityChange} type="number" /><i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: '5px', marginTop: '9px', cursor:'pointer' }} onClick={() => this.addQuantity()}></i></div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <div className="form-group">
-                                            <label>{translate('manage_warehouse.bill_management.description')}</label>
-                                            <textarea type="text" className="form-control" value={good.description} onChange={this.handleGoodDescriptionChange} />
+                                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                            <div className="form-group">
+                                                <label>{translate('manage_warehouse.bill_management.description')}</label>
+                                                <textarea type="text" className="form-control" value={good.description} onChange={this.handleGoodDescriptionChange} />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="pull-right" style={{marginBottom: "10px"}}>
-                                        {this.state.editInfo ?
-                                            <React.Fragment>
-                                                <button className="btn btn-success" onClick={this.handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
-                                                <button className="btn btn-success" onClick={this.handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
-                                            </React.Fragment>:
-                                            <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={this.handleAddGood}>{translate('task_template.add')}</button>
+                                        <div className="pull-right" style={{marginBottom: "10px"}}>
+                                            {this.state.editInfo &&
+                                                <React.Fragment>
+                                                    <button className="btn btn-success" onClick={this.handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
+                                                    <button className="btn btn-success" onClick={this.handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
+                                                </React.Fragment>
+                                            }
+                                        </div>
+                                        </div>
                                         }
-                                        <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearGood}>{translate('task_template.delete')}</button>
                                     </div>
                                     <div className={`form-group`}>
                                         {/* Bảng thông tin chi tiết */}
@@ -615,14 +691,15 @@ class GoodReceiptCreateForm extends Component {
                                                     <th title={translate('manage_warehouse.bill_management.good_code')}>{translate('manage_warehouse.bill_management.good_code')}</th>
                                                     <th title={translate('manage_warehouse.bill_management.good_name')}>{translate('manage_warehouse.bill_management.good_name')}</th>
                                                     <th title={translate('manage_warehouse.bill_management.unit')}>{translate('manage_warehouse.bill_management.unit')}</th>
-                                                    <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
+                                                    <th title={translate('manage_warehouse.bill_management.quantity_issue')}>{translate('manage_warehouse.bill_management.quantity_issue')}</th>
+                                                    <th title={translate('manage_warehouse.bill_management.quantity_return')}>{translate('manage_warehouse.bill_management.quantity_return')}</th>
                                                     <th title={translate('manage_warehouse.bill_management.note')}>{translate('manage_warehouse.bill_management.note')}</th>
                                                     <th>{translate('task_template.action')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody id={`good-bill-create`}>
                                             {
-                                                (typeof listGood === 'undefined' || listGood.length === 0) ? <tr><td colSpan={7}><center>{translate('task_template.no_data')}</center></td></tr> :
+                                                (typeof listGood === 'undefined' || listGood.length === 0) ? <tr><td colSpan={8}><center>{translate('task_template.no_data')}</center></td></tr> :
                                                 listGood.map((x, index) =>
                                                     <tr key={index}>
                                                         <td>{index + 1}</td>
@@ -630,6 +707,7 @@ class GoodReceiptCreateForm extends Component {
                                                         <td>{x.good.name}</td>
                                                         <td>{x.good.baseUnit}</td>
                                                         <td>{x.quantity}</td>
+                                                        <td>{x.returnQuantity}</td>
                                                         <td>{x.description}</td>
                                                         <td>
                                                             <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => this.handleEditGood(x, index)}><i className="material-icons"></i></a>
@@ -643,6 +721,7 @@ class GoodReceiptCreateForm extends Component {
                                     </div>
                                 </fieldset>
                             </div>
+                        }
                     </form>
                 </DialogModal>
             </React.Fragment>
@@ -654,6 +733,8 @@ const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
     getLotsByGood: LotActions.getLotsByGood,
-    createBill: BillActions.createBill
+    getBillsByStatus: BillActions.getBillsByStatus,
+    createBill: BillActions.createBill,
+    getDetailBill: BillActions.getDetailBill,
 }
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(GoodReceiptCreateForm));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(GoodReturnCreateForm));

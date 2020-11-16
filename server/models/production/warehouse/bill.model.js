@@ -19,6 +19,11 @@ const BillSchema = new Schema ({
         ref: 'Stock'
     },
 
+    bill: {
+        type: Schema.Types.ObjectId,
+        replies: this
+    },
+
     code: {
         type: String,
         required: true
@@ -94,13 +99,24 @@ const BillSchema = new Schema ({
         },
 
         quantity: {
-            type: Number
+            type: Number,
+            default: 0
         },
 
         returnQuantity: {
-            type: Number
+            type: Number,
+            default: 0
         },
 
+        damagedQuantity: {
+            type: Number,
+            default: 0
+        },
+
+        realQuantity: {
+            type: Number
+        },
+        
         lots: [{
 
             lot: {
@@ -109,14 +125,21 @@ const BillSchema = new Schema ({
             },
 
             quantity: {
-                type: Number
+                type: Number,
+                default: 0
             },
 
             returnQuantity: {
-                type: Number
+                type: Number,
+                default: 0
             },
 
             damagedQuantity: {
+                type: Number,
+                default: 0
+            },
+
+            realQuantity: {
                 type: Number
             },
 
