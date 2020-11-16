@@ -186,7 +186,10 @@ exports.createTaskTemplate = async (portal, body) => {
             action: readByEmployee //quyền READ
         });
     }
-    tasktemplate = await tasktemplate.populate("organizationalUnit creator collaboratedWithOrganizationalUnits").execPopulate();
+    tasktemplate = await tasktemplate.populate([
+        { path: "organizationalUnit collaboratedWithOrganizationalUnits", select: "name deans" },
+        { path: "readByEmployees", select: "name" },
+        { path: "creator responsibleEmployees accountableEmployees consultedEmployees informedEmployees", select: "name email" }]).execPopulate();
     return tasktemplate;
 }
 
@@ -387,7 +390,12 @@ exports.importTaskTemplate = async (portal, data, id) => {
         for (let j = 0; j < data[i].taskInformations.length; j++) {
             if (data[i].taskInformations[j][0]) {
                 // format thong tin "chi qua ly duoc dien"
-                data[i].taskInformations[j]["filledByAccountableEmployeesOnly"] = String(data[i].taskInformations[j][3]);
+                if (data[i].taskInformations[j][3] === "true") {
+                    data[i].taskInformations[j]["filledByAccountableEmployeesOnly"] = "true";
+                } else {
+                    data[i].taskInformations[j]["filledByAccountableEmployeesOnly"] = "false";
+                }
+                
                 // formart thong tin kieu du lieu
                 data[i].taskInformations[j]["type"] = data[i].taskInformations[j][2].toLowerCase();
                 data[i].taskInformations[j]["name"] = data[i].taskInformations[j][0];
@@ -395,8 +403,8 @@ exports.importTaskTemplate = async (portal, data, id) => {
                 data[i].taskInformations[j]["extra"] = "";
             } else {
                 if (!data[i].taskInformations[j][0]) {
-                    data[i].taskInformations = [];
-                    break;
+                    data[i].taskInformations[j] = [];
+                    // break;
                 }
                 data[i].taskInformations.splice(j, 1);
                 j--;
@@ -414,8 +422,8 @@ exports.importTaskTemplate = async (portal, data, id) => {
                 data[i].taskActions[j]["description"] = data[i].taskActions[j][1];
             } else {
                 if (!data[i].taskActions[j][0]){
-                    data[i].taskActions = [];
-                    break;
+                    data[i].taskActions[j] = [];
+                    // break;
                 }
                 data[i].taskActions.splice(j, 1);
                 j--;
@@ -424,7 +432,6 @@ exports.importTaskTemplate = async (portal, data, id) => {
         let unit = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({ name: data[i].organizationalUnit });
         data[i].organizationalUnit = String(unit._id);
 
-        // console.log(data[i].collaboratedWithOrganizationalUnits);
         if (data[i].collaboratedWithOrganizationalUnits[0]) {
             let collaboratedWithOrganizationalUnit = [];
             for (let j = 0; j < data[i].collaboratedWithOrganizationalUnits.length; j++) {
@@ -434,10 +441,10 @@ exports.importTaskTemplate = async (portal, data, id) => {
             }
             data[i].collaboratedWithOrganizationalUnits = collaboratedWithOrganizationalUnit;
         } else {
-            data[i].collaboratedWithOrganizationalUnits = '';
+            data[i].collaboratedWithOrganizationalUnits = undefined;
         }
         
-        
+
         let result = await this.createTaskTemplate(portal, data[i]);
         results = [...results, result];
     };

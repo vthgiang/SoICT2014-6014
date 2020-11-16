@@ -497,7 +497,7 @@ class EditTaskTemplate extends Component {
                                         })
                                     }
                                     onChange={this.handleTaskTemplateUnit}
-                                    value={editingTemplate.organizationalUnit}
+                                    value={editingTemplate.organizationalUnit._id}
                                     multiple={false}
 
                                 />
@@ -539,7 +539,7 @@ class EditTaskTemplate extends Component {
                                             listRoles.map(x => { return { value: x._id, text: x.name } })
                                         }
                                         onChange={this.handleTaskTemplateRead}
-                                        value={editingTemplate.readByEmployees}
+                                        value={editingTemplate.readByEmployees.map(item => item._id)}
                                         multiple={true}
                                         options={{ placeholder: `${translate('task_template.permission_view')}` }}
                                     />
@@ -596,7 +596,7 @@ class EditTaskTemplate extends Component {
                                     style={{ width: "100%" }}
                                     items={allUnitsMember}
                                     onChange={this.handleTaskTemplateResponsible}
-                                    value={editingTemplate.responsibleEmployees}
+                                    value={editingTemplate.responsibleEmployees.map(item => item._id)}
                                     multiple={true}
                                     options={{ placeholder: `${translate('task_template.performer')}` }}
                                 />
@@ -613,7 +613,7 @@ class EditTaskTemplate extends Component {
                                     style={{ width: "100%" }}
                                     items={allUnitsMember}
                                     onChange={this.handleTaskTemplateAccountable}
-                                    value={editingTemplate.accountableEmployees}
+                                    value={editingTemplate.accountableEmployees.map(item => item._id)}
                                     multiple={true}
                                     options={{ placeholder: `${translate('task_template.approver')}` }}
                                 />
@@ -629,7 +629,7 @@ class EditTaskTemplate extends Component {
                                     style={{ width: "100%" }}
                                     items={allUnitsMember}
                                     onChange={this.handleTaskTemplateConsult}
-                                    value={editingTemplate.consultedEmployees}
+                                    value={editingTemplate.consultedEmployees.map(item => item._id)}
                                     multiple={true}
                                     options={{ placeholder: `${translate('task_template.consultant')}` }}
                                 />
@@ -647,7 +647,7 @@ class EditTaskTemplate extends Component {
                                     items={allUnitsMember}
                                     onChange={this.handleTaskTemplateInform}
                                     multiple={true}
-                                    value={editingTemplate.informedEmployees}
+                                    value={editingTemplate.informedEmployees.map(item => item._id)}
                                     options={{ placeholder: `${translate('task_template.observer')}` }}
                                 />
                             }
@@ -673,11 +673,11 @@ class EditTaskTemplate extends Component {
                                 {/**Công thức tính điểm mẫu công việc này */}
                                 <div className={`form-group ${this.state.editingTemplate.errorOnFormula === undefined ? "" : "has-error"}`} >
                                     <label className="control-label" htmlFor="inputFormula">{translate('task_template.formula')}</label>
-                                    <input type="text" className="form-control" id="inputFormula" placeholder="progress/(dayUsed/totalDay) - (10-averageActionRating)*10 - 100*(1-p1/p2)" value={editingTemplate.formula} onChange={this.handleTaskTemplateFormula} />
+                                    <input type="text" className="form-control" id="inputFormula" placeholder="progress / (dayUsed / totalDay) - (numberOfFailedAction / (numberOfFailedAction + numberOfPassedAction)) * 100" value={editingTemplate.formula} onChange={this.handleTaskTemplateFormula} />
                                     <ErrorLabel content={this.state.editingTemplate.errorOnFormula} />
 
                                     <br />
-                                    <div><span style={{ fontWeight: 800 }}>Ví dụ: </span>progress/(dayUsed/totalDay) - (10-averageActionRating)*10 - 100*(1-p1/p2)</div>
+                                    <div><span style={{ fontWeight: 800 }}>Ví dụ: </span>progress / (dayUsed / totalDay) - (numberOfFailedAction / (numberOfFailedAction + numberOfPassedAction)) * 100</div>
                                     <br />
                                     <div><span style={{ fontWeight: 800 }}>{translate('task_template.parameters')}:</span></div>
                                     <div><span style={{ fontWeight: 600 }}>overdueDate</span> - Thời gian quá hạn (ngày)</div>

@@ -162,22 +162,27 @@ class MainDashboardUnit extends Component {
         let listEmployee = user.employees;
         let employeeTasks = [];
         for (let i in listEmployee) {
-            let count = 0;
+            let tasks = [];
+            let accountableEmployees = [], consultedEmployees = [], responsibleEmployees = [], informedEmployees = [];
             taskListByStatus && taskListByStatus.forEach(task => {
                 for (let j in task.accountableEmployees)
-                    if (listEmployee[i].userId._id == task.accountableEmployees[j])
-                        count += 1;
+                    if (listEmployee[i].userId._id === task.accountableEmployees[j])
+                        accountableEmployees = [...accountableEmployees, task.accountableEmployees[j]];
                 for (let j in task.consultedEmployees)
-                    if (listEmployee[i].userId._id == task.consultedEmployees[j])
-                        count += 1;
+                    if (listEmployee[i].userId._id === task.consultedEmployees[j])
+                        consultedEmployees = [...consultedEmployees, task.accountableEmployees[j]];
                 for (let j in task.responsibleEmployees)
-                    if (listEmployee[i].userId._id == task.responsibleEmployees[j]._id)
-                        count += 1;
+                    if (listEmployee[i].userId._id === task.responsibleEmployees[j]._id)
+                        responsibleEmployees = [...responsibleEmployees, task.accountableEmployees[j]];
                 for (let j in task.informedEmployees)
-                    if (listEmployee[i].userId._id == task.informedEmployees[j])
-                        count += 1;
+                    if (listEmployee[i].userId._id === task.informedEmployees[j])
+                        informedEmployees = [...informedEmployees, task.accountableEmployees[j]];
             });
-            employeeTasks = [...employeeTasks, { _id: listEmployee[i].userId._id, name: listEmployee[i].userId.name, totalTask: count }]
+            tasks = tasks.concat(accountableEmployees).concat(consultedEmployees).concat(responsibleEmployees).concat(informedEmployees);
+            let totalTask = tasks.filter(function (item, pos) {
+                return tasks.indexOf(item) == pos;
+            })
+            employeeTasks = [...employeeTasks, { _id: listEmployee[i].userId._id, name: listEmployee[i].userId.name, totalTask: totalTask.length }]
         };
 
         /* Lấy tổng số công việc của đơn vị */

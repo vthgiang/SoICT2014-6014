@@ -96,7 +96,7 @@ class AssetImportForm extends Component {
      * Function chuyển dữ liệu date trong excel thành dạng dd-mm-yyyy
      * @param {*} serial :số serial của ngày
      */
-    convertExcelDateToJSDate = (serial) => {
+    convertExcelDateToJSDate = (serial, type) => {
         let utc_days = Math.floor(serial - 25569);
         let utc_value = utc_days * 86400;
         let date_info = new Date(utc_value * 1000);
@@ -106,7 +106,33 @@ class AssetImportForm extends Component {
             month = '0' + month;
         if (day.toString().length < 2)
             day = '0' + day;
-        return [day, month, date_info.getFullYear()].join('-');
+
+        switch (type) {
+            case "yy-mm-dd":
+                return [date_info.getFullYear(), month, day].join('-');
+            case "dd-mm-yy":
+                return [day, month, date_info.getFullYear()].join('-');
+        }
+    }
+
+    /**
+     * Hàm tiện ích dùng cho các function bên dưới
+     * Function chuyển String(dd-mm-yyyy) sang date
+     * @param {*} data 
+     */
+    convertStringToDate = (data, monthYear = false) => {
+        if (data) {
+            data = data.split('-');
+            let date;
+            if (monthYear) {
+                date = [data[1], data[0]];
+            } else {
+                date = [data[2], data[1], data[0]];
+            }
+            return date.join('-');
+        } else {
+            return data;
+        }
     }
 
     // Xử lý dữ liệu export file mẫu import tài sản
@@ -253,12 +279,12 @@ class AssetImportForm extends Component {
                     assetName: dataTemporary.assetName,
                     serial: dataTemporary.serial,
                     group: assetGroups[0],
-                    assetType: assetTypes && assetTypes[0],
+                    assetType: assetTypes && assetTypes[0] ? (assetTypes[1] ? assetTypes[0] + " | " + assetTypes[1] : assetTypes[0]) : null,
                     purchaseDate: dataTemporary.purchaseDate,
                     warrantyExpirationDate: dataTemporary.warrantyExpirationDate,
-                    managedBy: userList && userList[0] ? userList[0] : "",
-                    readByRoles: roles && roles[0] ? (roles[1] ? roles[0] + ", " + roles[1] : roles[0]) : "",
-                    location: assetLocations && assetLocations[0] ? assetLocations[0] : "",
+                    managedBy: userList && userList[0] ? userList[0] : null,
+                    readByRoles: roles && roles[0] ? (roles[1] ? roles[0] + " | " + roles[1] : roles[0]) : null,
+                    location: assetLocations && assetLocations[0] ? assetLocations[0] : null,
                     status: status[0],
                     typeRegisterForUse: typeRegisterForUse[0],
                     description: dataTemporary.description
@@ -307,8 +333,8 @@ class AssetImportForm extends Component {
 
                 let out = {
                     code: dataTemporary.code,
-                    usedByUser: userList && userList[0] ? userList[0] : "",
-                    usedByOrganizationalUnit: departmentList && departmentList[0] ? departmentList[0] : "",
+                    usedByUser: userList && userList[0] ? userList[0] : null,
+                    usedByOrganizationalUnit: departmentList && departmentList[0] ? departmentList[0] : null,
                     startDate: dataTemporary.startDate,
                     endDate: dataTemporary.endDate,
                     description: dataTemporary.description
@@ -334,7 +360,7 @@ class AssetImportForm extends Component {
                     code: dataTemporary.code,
                     incidentCode: dataTemporary.incidentCode,
                     type: incidentType[0],
-                    reportedBy: userList && userList[0] ? userList[0] : "",
+                    reportedBy: userList && userList[0] ? userList[0] : null,
                     dateOfIncident: dataTemporary.dateOfIncident,
                     description: dataTemporary.description,
                     statusIncident: status[0]
@@ -436,19 +462,25 @@ class AssetImportForm extends Component {
 
             value = value.map((item, index) => {
                 let errorAlert = [];
-                checkAssetType = false;             // Check loại tài sản có tồn tại ko
+                checkAssetType = false;             // Reset biến check khi check dòng tiếp theo
+                checkRole = false;
+
+                // Láy dữ liệu từ 1 ô trong file excel thành 1 mảng
                 roleArray = item.readByRoles && item.readByRoles.split(" | ");
-                
-                if (!assetTypes[item.assetType]) {
-                    checkAssetType = true;
-                }
-                
+                assetTypeArray = item.assetType && item.assetType.split(" | ");
+
+                assetTypeArray && assetTypeArray.map(item => {
+                    if (!assetTypes[item]) {
+                        checkAssetType = true;
+                    }
+                })
                 roleArray && roleArray.map(item => {
                     if (!roles[item]) {
                         checkRole = true;
                     }
                 })
 
+                // Check lỗi dữ liệu import
                 if (!item.code || !item.assetName || !item.group || !item.assetType || !item.purchaseDate || !item.status || !item.typeRegisterForUse
                     || (item.group && !assetGroups[item.group])
                     || (item.assetType && checkAssetType)
@@ -510,21 +542,31 @@ class AssetImportForm extends Component {
                     errorAlert = [...errorAlert, 'Vị trí tài sản không chính xác'];
                 }
 
-                item = { ...item, errorAlert: errorAlert };
+                // Format date
+                let purchaseDate = item.purchaseDate;
+                let warrantyExpirationDate = item.warrantyExpirationDate;
+
+                item = {
+                    ...item,
+                    purchaseDate: (purchaseDate && typeof purchaseDate === 'string') ? purchaseDate : this.convertExcelDateToJSDate(purchaseDate, "dd-mm-yy"),
+                    warrantyExpirationDate: (warrantyExpirationDate && typeof warrantyExpirationDate === 'string') ? warrantyExpirationDate : this.convertExcelDateToJSDate(warrantyExpirationDate, "dd-mm-yy"),
+                    errorAlert: errorAlert
+                };
                 importGeneralInformationData = [...importGeneralInformationData,
                     {
                         ...item,
-                        assetType: assetTypeArray.map(type => assetTypes[type]),
+                        assetType: assetTypeArray && assetTypeArray.map(type => assetTypes[type]),
                         readByRoles: roleArray && roleArray.map(role => roles[role]),
                         managedBy: managers[item.manager],
                         location: assetLocations[item.location],
                         group: assetGroups[item.group],
                         typeRegisterForUse: typeRegisterForUse[item.typeRegisterForUse],
                         status: status[item.status],
-                        purchaseDate: item.purchaseDate && this.convertExcelDateToJSDate(item.purchaseDate),
-                        warrantyExpirationDate: item.warrantyExpirationDate && this.convertExcelDateToJSDate(item.warrantyExpirationDate)
+                        purchaseDate: (purchaseDate && typeof purchaseDate === 'string') ? this.convertStringToDate(purchaseDate) : this.convertExcelDateToJSDate(purchaseDate, "yy-mm-dd"),
+                        warrantyExpirationDate: (warrantyExpirationDate && typeof warrantyExpirationDate === 'string') ? this.convertStringToDate(warrantyExpirationDate) : this.convertExcelDateToJSDate(warrantyExpirationDate, "yy-mm-dd")
                     }
                 ];
+
                 return item;
 
             });
@@ -592,12 +634,19 @@ class AssetImportForm extends Component {
                     errorAlert = [...errorAlert, 'Phương pháp khấu hao không chính xác'];
                 }
                 
-                item = { ...item, errorAlert: errorAlert };
+                // Format date
+                let startDepreciation = item.startDepreciation;
+
+                item = {
+                    ...item,
+                    startDepreciation: (startDepreciation && typeof startDepreciation === 'string') ? startDepreciation : this.convertExcelDateToJSDate(startDepreciation, "dd-mm-yy"),
+                    errorAlert: errorAlert
+                };
                 importDepreciationInformationData = [...importDepreciationInformationData,
                     {
                         ...item,
                         depreciationType: depreciationType[item.depreciationType],
-                        startDepreciation: item.startDepreciation && this.convertExcelDateToJSDate(item.startDepreciation)
+                        startDepreciation: (startDepreciation && typeof startDepreciation === 'string') ? this.convertStringToDate(startDepreciation) : this.convertExcelDateToJSDate(startDepreciation, "yy-mm-dd")
                     }
                 ]
 
@@ -680,17 +729,26 @@ class AssetImportForm extends Component {
                     errorAlert = [...errorAlert, 'Đơn vị sử dụng không chính xác'];
                 }
 
+                // Format date
+                let startDate = item.startDate;
+                let endDate = item.endDate;
+
+                item = {
+                    ...item,
+                    startDate: (startDate && typeof startDate === 'string') ? startDate : this.convertExcelDateToJSDate(startDate, "dd-mm-yy"),
+                    endDate: (endDate && typeof endDate === 'string') ? endDate : this.convertExcelDateToJSDate(endDate, "dd-mm-yy"),
+                    errorAlert: errorAlert
+                }
                 importUsageInformationData = [...importUsageInformationData,
                     {
                         ...item,
                         usedByUser: item.usedByUser && userList[item.usedByUser],
                         usedByOrganizationalUnit: item.usedByOrganizationalUnit && departmentList[item.usedByOrganizationalUnit],
-                        startDate: item.startDate && this.convertExcelDateToJSDate(item.startDate),
-                        endDate: item.endDate && this.convertExcelDateToJSDate(item.endDate)
+                        startDate: (startDate && typeof startDate === 'string') ? this.convertStringToDate(startDate) : this.convertExcelDateToJSDate(startDate, "yy-mm-dd"),
+                        endDate: (endDate && typeof endDate === 'string') ? this.convertStringToDate(endDate) : this.convertExcelDateToJSDate(endDate, "yy-mm-dd")
                     }
                 ];
                 
-                item = { ...item, errorAlert: errorAlert };
                 return item;
             });
 
@@ -767,14 +825,22 @@ class AssetImportForm extends Component {
                     errorAlert = [...errorAlert, 'Trạng thái không chính xác'];
                 }
 
+                // Format date
+                let dateOfIncident = item.dateOfIncident;
+
+                item = {
+                    ...item,
+                    dateOfIncident: (dateOfIncident && typeof dateOfIncident === 'string') ? dateOfIncident : this.convertExcelDateToJSDate(dateOfIncident, "dd-mm-yy"),
+                    errorAlert: errorAlert
+                }
                 importIncidentInformationData = [...importIncidentInformationData,
                     {
                         ...item,
                         reportedBy: item.reportedBy && userList[item.reportedBy],
-                        dateOfIncident: item.dateOfIncident && this.convertExcelDateToJSDate(item.dateOfIncident)
+                        dateOfIncident: (dateOfIncident && typeof dateOfIncident === 'string') ? this.convertStringToDate(dateOfIncident) : this.convertExcelDateToJSDate(dateOfIncident, "yy-mm-dd")
                     }
                 ]
-                item = { ...item, errorAlert: errorAlert };
+
                 return item;
             });
 
@@ -822,15 +888,27 @@ class AssetImportForm extends Component {
                     errorAlert = [...errorAlert, 'Trạng thái không chính xác'];
                 }
 
+                // Format date
+                let createDate = item.createDate;
+                let startDate = item.startDate;
+                let endDate = item.endDate;
+
+                item = {
+                    ...item,
+                    createDate: (createDate && typeof createDate === 'string') ? createDate : this.convertExcelDateToJSDate(createDate, "dd-mm-yy"),
+                    startDate: (startDate && typeof startDate === 'string') ? startDate : this.convertExcelDateToJSDate(startDate, "dd-mm-yy"),
+                    endDate: (endDate && typeof endDate === 'string') ? endDate : this.convertExcelDateToJSDate(endDate, "dd-mm-yy"),
+                    errorAlert: errorAlert
+                };
                 importMaintainanceInformationData = [...importMaintainanceInformationData,
                     {
                         ...item,
-                        createDate: item.createDate && this.convertExcelDateToJSDate(item.createDate),
-                        startDate: item.startDate && this.convertExcelDateToJSDate(item.startDate),
-                        endDate: item.endDate && this.convertExcelDateToJSDate(item.endDate)
+                        createDate: (createDate && typeof createDate === 'string') ? this.convertStringToDate(createDate) : this.convertExcelDateToJSDate(createDate, "yy-mm-dd"),
+                        startDate: (startDate && typeof startDate === 'string') ? this.convertStringToDate(startDate) : this.convertExcelDateToJSDate(startDate, "yy-mm-dd"),
+                        endDate: (endDate && typeof endDate === 'string') ? this.convertStringToDate(endDate) : this.convertExcelDateToJSDate(endDate, "yy-mm-dd")
                     }
                 ]
-                item = { ...item, errorAlert: errorAlert };
+
                 return item;
             });
 
@@ -873,13 +951,21 @@ class AssetImportForm extends Component {
                     errorAlert = [...errorAlert, 'Hình thức thanh lý không chính xác'];
                 }
 
+                //Format date
+                let disposalDate = item.disposalDate;
+
+                item = {
+                    ...item,
+                    disposalDate: (disposalDate && typeof disposalDate === 'string') ? disposalDate : this.convertExcelDateToJSDate(disposalDate, "dd-mm-yy"),
+                    errorAlert: errorAlert
+                };
                 importDisposalInformationData = [...importDisposalInformationData,
                     {
                         ...item,
-                        disposalDate: item.disposalDate && this.convertExcelDateToJSDate(item.disposalDate)
+                        disposalDate: (disposalDate && typeof disposalDate === 'string') ? this.convertStringToDate(disposalDate) : this.convertExcelDateToJSDate(disposalDate, "yy-mm-dd")
                     }
                 ]
-                item = { ...item, errorAlert: errorAlert };
+
                 return item;
             });
 
