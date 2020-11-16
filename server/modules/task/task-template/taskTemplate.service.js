@@ -387,7 +387,12 @@ exports.importTaskTemplate = async (portal, data, id) => {
         for (let j = 0; j < data[i].taskInformations.length; j++) {
             if (data[i].taskInformations[j][0]) {
                 // format thong tin "chi qua ly duoc dien"
-                data[i].taskInformations[j]["filledByAccountableEmployeesOnly"] = String(data[i].taskInformations[j][3]);
+                if (data[i].taskInformations[j][3] === "true") {
+                    data[i].taskInformations[j]["filledByAccountableEmployeesOnly"] = "true";
+                } else {
+                    data[i].taskInformations[j]["filledByAccountableEmployeesOnly"] = "false";
+                }
+                
                 // formart thong tin kieu du lieu
                 data[i].taskInformations[j]["type"] = data[i].taskInformations[j][2].toLowerCase();
                 data[i].taskInformations[j]["name"] = data[i].taskInformations[j][0];
@@ -395,8 +400,8 @@ exports.importTaskTemplate = async (portal, data, id) => {
                 data[i].taskInformations[j]["extra"] = "";
             } else {
                 if (!data[i].taskInformations[j][0]) {
-                    data[i].taskInformations = [];
-                    break;
+                    data[i].taskInformations[j] = [];
+                    // break;
                 }
                 data[i].taskInformations.splice(j, 1);
                 j--;
@@ -414,8 +419,8 @@ exports.importTaskTemplate = async (portal, data, id) => {
                 data[i].taskActions[j]["description"] = data[i].taskActions[j][1];
             } else {
                 if (!data[i].taskActions[j][0]){
-                    data[i].taskActions = [];
-                    break;
+                    data[i].taskActions[j] = [];
+                    // break;
                 }
                 data[i].taskActions.splice(j, 1);
                 j--;
@@ -436,7 +441,7 @@ exports.importTaskTemplate = async (portal, data, id) => {
             data[i].collaboratedWithOrganizationalUnits = undefined;
         }
         
-        
+
         let result = await this.createTaskTemplate(portal, data[i]);
         results = [...results, result];
     };

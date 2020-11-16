@@ -363,30 +363,32 @@ class TaskTemplate extends Component {
                         }
                     }
                     for (let i in x.taskActions) {
-                        let str = x.taskActions[i].description;
-                        let vt = str.indexOf("&nbsp;");
-                        let st;
-                        while (vt >= 0) {
-                            if (vt == 0) {
-                                st = str.slice(vt+6);
-                            } else {
-                                st = str.slice(0,vt-1) + str.slice(vt+6);
+                        if (x.taskActions[i].description) {
+                            let str = x.taskActions[i].description;
+                            let vt = str.indexOf("&nbsp;");
+                            let st;
+                            while (vt >= 0) {
+                                if (vt == 0) {
+                                    st = str.slice(vt + 6);
+                                } else {
+                                    st = str.slice(0, vt - 1) + str.slice(vt + 6);
+                                }
+                                str = st;
+                                vt = str.indexOf("&nbsp;");
                             }
-                            str = st;
-                            vt = str.indexOf("&nbsp;");
-                        }
-                        vt = str.indexOf("<");
-                        while (vt >= 0) {
-                            let vt2 = str.indexOf(">");
-                            if (vt == 0) {
-                                st = str.slice(vt2+1);
-                            } else {
-                                st = str.slice(0,vt-1) + str.slice(vt2+1);
-                            }
-                            str = st;
                             vt = str.indexOf("<");
+                            while (vt >= 0) {
+                                let vt2 = str.indexOf(">");
+                                if (vt == 0) {
+                                    st = str.slice(vt2 + 1);
+                                } else {
+                                    st = str.slice(0, vt - 1) + str.slice(vt2 + 1);
+                                }
+                                str = st;
+                                vt = str.indexOf("<");
+                            }
+                            x.taskActions[i].description = str;
                         }
-                        x.taskActions[i].description = str;
                     }
                 }
                 let infomationName = [], type = [], infomationDescription = [], filledByAccountableEmployeesOnly = [];
@@ -401,30 +403,32 @@ class TaskTemplate extends Component {
                         filledByAccountableEmployeesOnly[i] = x.taskInformations[i].filledByAccountableEmployeesOnly;
                     }
                     for (let i in x.taskInformations) {
-                        let str = x.taskInformations[i].description;
-                        let vt = str.indexOf("&nbsp;");
-                        let st;
-                        while (vt >= 0) {
-                            if (vt == 0) {
-                                st = str.slice(vt+6);
-                            } else {
-                                st = str.slice(0,vt-1) + str.slice(vt+6);
+                        if (x.taskInformations[i].description) {
+                            let str = x.taskInformations[i].description;
+                            let vt = str.indexOf("&nbsp;");
+                            let st;
+                            while (vt >= 0) {
+                                if (vt == 0) {
+                                    st = str.slice(vt + 6);
+                                } else {
+                                    st = str.slice(0, vt - 1) + str.slice(vt + 6);
+                                }
+                                str = st;
+                                vt = str.indexOf("&nbsp;");
                             }
-                            str = st;
-                            vt = str.indexOf("&nbsp;");
-                        }
-                        vt = str.indexOf("<");
-                        while (vt >= 0) {
-                            let vt2 = str.indexOf(">");
-                            if (vt == 0) {
-                                st = str.slice(vt2+1);
-                            } else {
-                                st = str.slice(0,vt-1) + str.slice(vt2+1);
-                            }
-                            str = st;
                             vt = str.indexOf("<");
+                            while (vt >= 0) {
+                                let vt2 = str.indexOf(">");
+                                if (vt == 0) {
+                                    st = str.slice(vt2 + 1);
+                                } else {
+                                    st = str.slice(0, vt - 1) + str.slice(vt2 + 1);
+                                }
+                                str = st;
+                                vt = str.indexOf("<");
+                            }
+                            x.taskInformations[i].description = str;
                         }
-                        x.taskInformations[i].description = str;
                     }
                 }
                 let numberOfUse = 0;
@@ -457,7 +461,7 @@ class TaskTemplate extends Component {
                 if (x.informedEmployees && x.informedEmployees[0]) {
                     informedEmployees = x.informedEmployees.map(item => item.name);
                 }
-                // console.log(this.state.currentRole);
+
                 let out = {
                     STT: k + 1,
                     name: x.name,
