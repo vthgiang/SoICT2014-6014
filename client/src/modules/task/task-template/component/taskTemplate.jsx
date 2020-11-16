@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { UserActions } from '../../../super-admin/user/redux/actions';
+import { RoleActions } from '../../../super-admin/role/redux/actions';
 import { taskTemplateActions } from '../redux/actions';
 import { PaginateBar, SelectMulti, DataTableSetting } from '../../../../common-components';
 import { ExportExcel } from '../../../../common-components';
@@ -27,9 +28,10 @@ class TaskTemplate extends Component {
     }
 
     componentDidMount() {
-        let { currentPage, perPage, unit, name } = this.state;
+        let { currentPage, perPage, unit, name, currentRole } = this.state;
         this.props.getDepartment();
         this.props.getTaskTemplateByUser(currentPage, perPage, unit, name);
+        this.props.show(currentRole);
     }
 
     render() {
@@ -338,9 +340,15 @@ class TaskTemplate extends Component {
         let datas = [];
         if (data) {
             for (let k = 0; k < data.length; k++) {
+                const { auth, role } = this.props;
+                let annunciator ;
                 let x = data[k];
                 let length = 0;
                 let actionName = [], actionDescription = [], mandatory = [];
+
+                if (!role.isLoading && !auth.isLoading){
+                    annunciator = auth.user.name + " - " + role.item.name;
+                }
                 if (x.taskActions) {
                     if (x.taskActions.length > length) {
                         length = x.taskActions.length;
@@ -463,7 +471,7 @@ class TaskTemplate extends Component {
                     organizationalUnits: x.organizationalUnit.name,
                     collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits[0],
                     creator: x.creator.name,
-                    // annunciator: x.creator,
+                    annunciator: annunciator,
                     priority: x.priority,
                     formula: x.formula,
                     actionName: actionName[0],
@@ -490,7 +498,7 @@ class TaskTemplate extends Component {
                             organizationalUnits: "",
                             collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits[i],
                             creator: "",
-                            // annunciator: "",
+                            annunciator: "",
                             priority: "",
                             formula: "",
                             actionName: actionName[i],
@@ -535,7 +543,7 @@ class TaskTemplate extends Component {
                                 { key: "collaboratedWithOrganizationalUnits", value: "Đơn vị phối hợp thực hiện công việc"},
                                 { key: "numberOfUse", value: "Số lần sử dụng" },
                                 { key: "creator", value: "Người tạo mẫu" },
-                                // { key: "annunciator", value: "Người xuất báo cáo" },
+                                { key: "annunciator", value: "Người xuất báo cáo" },
                                 { key: "readByEmployees", value: "Người được xem" },
                                 { key: "priority", value: "Độ ưu tiên" },
                                 { key: "responsibleEmployees", value: "Người thực hiện" },
@@ -562,14 +570,15 @@ class TaskTemplate extends Component {
 }
 
 function mapState(state) {
-    const { tasktemplates, user, auth } = state;
-    return { tasktemplates, user, auth };
+    const { tasktemplates, user, auth, role } = state;
+    return { tasktemplates, user, auth, role };
 }
 
 const actionCreators = {
     getTaskTemplateByUser: taskTemplateActions.getAllTaskTemplateByUser,
     getDepartment: UserActions.getDepartmentOfUser,
-    _delete: taskTemplateActions._delete
+    _delete: taskTemplateActions._delete,
+    show: RoleActions.show,
 };
 const connectedTaskTemplate = connect(mapState, actionCreators)(withTranslate(TaskTemplate));
 export { connectedTaskTemplate as TaskTemplate };

@@ -424,7 +424,6 @@ exports.importTaskTemplate = async (portal, data, id) => {
         let unit = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({ name: data[i].organizationalUnit });
         data[i].organizationalUnit = String(unit._id);
 
-        // console.log(data[i].collaboratedWithOrganizationalUnits);
         if (data[i].collaboratedWithOrganizationalUnits[0]) {
             let collaboratedWithOrganizationalUnit = [];
             for (let j = 0; j < data[i].collaboratedWithOrganizationalUnits.length; j++) {
@@ -434,7 +433,7 @@ exports.importTaskTemplate = async (portal, data, id) => {
             }
             data[i].collaboratedWithOrganizationalUnits = collaboratedWithOrganizationalUnit;
         } else {
-            data[i].collaboratedWithOrganizationalUnits = '';
+            data[i].collaboratedWithOrganizationalUnits = undefined;
         }
         
         
