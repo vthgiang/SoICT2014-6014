@@ -187,6 +187,10 @@ const AssetSchema = new Schema({
     usageLogs: [
         {
             //ghi lại lịch sử sử dụng
+            assetUseRequest: {
+                type: Schema.Types.ObjectId,
+                ref: "AssetUseRequest",
+            },
             usedByUser: {
                 // người sử dụng
                 type: Schema.Types.ObjectId,

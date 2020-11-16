@@ -5,7 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, TimePicker, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components';
 
 import { UseRequestFromValidator } from '../../../user/use-request/components/UseRequestFromValidator';
-
+import { UseRequestActions } from '../../../admin/use-request/redux/actions'
 import { RecommendDistributeActions } from '../../../user/use-request/redux/actions';
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { AssetManagerActions } from '../../asset-information/redux/actions';
@@ -19,7 +19,17 @@ class UseRequestManagerEditForm extends Component {
         };
     }
 
-
+    shouldComponentUpdate = async (nextProps, nextState) => {
+        if (nextState.status !== this.state.status) {
+            if (nextState.status == "approved") {
+                this.setState(state => {
+                    return {
+                        createUsage: true
+                    }
+                })
+            }
+        }
+    }
     formatDate(date, monthYear = false) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -217,7 +227,7 @@ class UseRequestManagerEditForm extends Component {
     }
 
     save = () => {
-        let { managedBy } = this.state
+        let { managedBy, createUsage } = this.state
 
         let dataToSubmit = { ...this.state, approver: this.props.auth.user._id };
         if (this.isFormValidated()) {
@@ -234,6 +244,50 @@ class UseRequestManagerEditForm extends Component {
                 note: dataToSubmit.note,
                 stopTime: dataToSubmit.stopTime,
                 startTime: dataToSubmit.startTime
+            }
+            if (createUsage == true) {
+                let checkCreateUsage = false;
+                for (let i in dataToSubmit.asset.usageLogs) {
+                    if (dataToSubmit.asset.usageLogs[i].assetUseRequest && dataToSubmit.asset.usageLogs[i].assetUseRequest == this.state._id) {
+                        checkCreateUsage = true
+                    }
+                }
+                if (checkCreateUsage == false) {
+                    let start = dataToSubmit.dateStartUse.split("-");
+                    let end = dataToSubmit.dateEndUse.split("-");
+                    let dateStartUse, dateEndUse;
+                    if (dataToSubmit.startTime) {
+                        dateStartUse = start[2] + "-" + start[1] + "-" + start[0] + " " + dataToSubmit.startTime
+                    } else {
+                        dateStartUse = start[2] + "-" + start[1] + "-" + start[0]
+                    }
+
+                    if (dataToSubmit.stopTime) {
+                        dateEndUse = end[2] + "-" + end[1] + "-" + end[0] + " " + dataToSubmit.stopTime
+                    } else {
+                        dateEndUse = end[2] + "-" + end[1] + "-" + end[0]
+                    }
+
+                    let newUsage = {
+                        usedByUser: dataToSubmit.proponent._id,
+                        usedByOrganizationalUnit: null,
+                        startDate: dateStartUse,
+                        endDate: dateEndUse,
+                        assetUseRequest: this.state._id,
+                        description: dataToSubmit.note
+
+                    }
+
+                    let usageLogs = dataToSubmit.asset.usageLogs
+                    usageLogs.push(newUsage)
+                    let createNewUsage = {
+                        usageLogs: usageLogs,
+                        status: "in_use",
+                        assignedToUser: newUsage.usedByUser,
+                        assignedToOrganizationalUnit: undefined,
+                    }
+                    this.props.createUsage(dataToSubmit.asset._id, createNewUsage)
+                }
             }
             return this.props.updateRecommendDistribute(this.state._id, data, managedBy);
         }
@@ -477,7 +531,7 @@ const actionCreators = {
     getUser: UserActions.get,
     getAllAsset: AssetManagerActions.getAllAsset,
     updateRecommendDistribute: RecommendDistributeActions.updateRecommendDistribute,
-
+    createUsage: UseRequestActions.createUsage,
 };
 
 const editUseRequestManager = connect(mapState, actionCreators)(withTranslate(UseRequestManagerEditForm));
