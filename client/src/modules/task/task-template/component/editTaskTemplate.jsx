@@ -497,7 +497,7 @@ class EditTaskTemplate extends Component {
                                         })
                                     }
                                     onChange={this.handleTaskTemplateUnit}
-                                    value={editingTemplate.organizationalUnit}
+                                    value={editingTemplate.organizationalUnit._id}
                                     multiple={false}
 
                                 />
