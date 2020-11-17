@@ -8,8 +8,10 @@ import { AssetManagerActions } from '../redux/actions';
 
 import { AssetImportTab } from './assetImportTab';
 
+import { UploadFile, ImportFileExcel, ExportExcel } from '../../../../../common-components';
+
 import {
-    configurationGeneralInformationOfAsset,
+    configurationGeneralInformationOfAssetTemplate,
     configurationUsageInformationOfAssetTemplate,
     configurationIncidentInformationOfAssetTemplate,
     configurationMaintainanceInformationOfAssetTemplate,
@@ -26,6 +28,7 @@ class AssetImportForm extends Component {
         super(props);
 
         this.state = {
+            // Dữ liệu tài sản lưu vào database
             importGeneralInformationData: [],
             importDepreciationInformationData: [],
             importDisposalInformationData: [],
@@ -33,12 +36,21 @@ class AssetImportForm extends Component {
             importMaintainanceInformationData: [],
             importUsageInformationData: [],
 
-            errorGeneralInformationData: false,
-            errorDepreciationInformationData: true,
-            errorDisposalInformationData: true,
-            errorIncidentInformationData: true,
-            errorMaintainanceInformationData: true,
-            errorUsageInformationData: true
+            // Lỗi ở các tab
+            rowErrorGeneralInformationData: [],
+            rowErrorDepreciationInformationData: [],
+            rowErrorDisposalInformationData: [],
+            rowErrorMaintainanceInformationData: [],
+            rowErrorUsageInformationData: [],
+            rowErrorIncidentInformationData: [],
+
+            // Chech định dạng file import
+            checkFileImportGeneralInformation: true,
+            checkFileImportDepreciationInformation: true,
+            checkFileImportDisposalInformation: true,
+            checkFileImportMaintainanceInformation: true,
+            checkFileImportIncidentInformation: true,
+            checkFileImportUsageInformation: true
         }
     }
 
@@ -53,7 +65,7 @@ class AssetImportForm extends Component {
             importDisposalInformationData,
             importIncidentInformationData,
             importMaintainanceInformationData,
-            importUsageInformationData
+            importUsageInformationData,
         } = this.state;
 
         let assets = [];
@@ -81,15 +93,36 @@ class AssetImportForm extends Component {
 
     isFormValidated = () => {
         const {
-            errorGeneralInformationData,
-            errorDepreciationInformationData,
-            errorDisposalInformationData,
-            errorIncidentInformationData,
-            errorMaintainanceInformationData,
-            errorUsageInformationData
+            rowErrorGeneralInformationData,
+            rowErrorDepreciationInformationData,
+            rowErrorDisposalInformationData,
+            rowErrorMaintainanceInformationData,
+            rowErrorUsageInformationData,
+            rowErrorIncidentInformationData,
+
+            checkFileImportGeneralInformation,
+            checkFileImportDepreciationInformation,
+            checkFileImportDisposalInformation,
+            checkFileImportMaintainanceInformation,
+            checkFileImportIncidentInformation,
+            checkFileImportUsageInformation
         } = this.state;
 
-        return errorGeneralInformationData && errorDepreciationInformationData && errorDisposalInformationData && errorIncidentInformationData && errorMaintainanceInformationData && errorUsageInformationData;
+        return (rowErrorGeneralInformationData.length === 0
+                && rowErrorDepreciationInformationData.length === 0
+                && rowErrorDisposalInformationData.length === 0
+                && rowErrorMaintainanceInformationData.length === 0
+                && rowErrorUsageInformationData.length === 0
+                && rowErrorIncidentInformationData.length === 0
+            )
+            &&
+            (checkFileImportGeneralInformation
+                && checkFileImportDepreciationInformation
+                && checkFileImportDisposalInformation
+                && checkFileImportMaintainanceInformation
+                && checkFileImportIncidentInformation 
+                && checkFileImportUsageInformation
+            );
     }
 
     /**
@@ -575,20 +608,18 @@ class AssetImportForm extends Component {
                 return {
                     ...state,
                     importGeneralInformationData: importGeneralInformationData,
-                    errorGeneralInformationData: rowError.length === 0
+
+                    importGeneralInformationDataShow: value,
+                    rowErrorGeneralInformationData: rowError
                 }
             })
-
-            return { importData: value, rowError: rowError }
         } else {
             this.setState(state => {
                 return {
                     ...state,
-                    checkFileImport: checkFileImport,
+                    checkFileImportGeneralInformation: checkFileImport,
                 }
             })
-
-            return { checkFileImport: checkFileImport }
         }
     }
 
@@ -657,20 +688,18 @@ class AssetImportForm extends Component {
                 return {
                     ...state,
                     importDepreciationInformationData: importDepreciationInformationData,
-                    errorDepreciationInformationData: rowError.length === 0
+
+                    importDepreciationInformationDataShow: value,
+                    rowErrorDepreciationInformationData: rowError
                 }
             })
-
-            return { importData: value, rowError: rowError }
         } else {
             this.setState(state => {
                 return {
                     ...state,
-                    checkFileImport: checkFileImport,
+                    checkFileImportDepreciationInformation: checkFileImport,
                 }
             })
-
-            return { checkFileImport: checkFileImport }
         }
     }
 
@@ -756,20 +785,18 @@ class AssetImportForm extends Component {
                 return {
                     ...state,
                     importUsageInformationData: importUsageInformationData,
-                    errorUsageInformationData: rowError.length === 0
+
+                    importUsageInformationDataShow: value,
+                    rowErrorUsageInformationData: rowError
                 }
             })
-
-            return { importData: value, rowError: rowError }
         } else {
             this.setState(state => {
                 return {
                     ...state,
-                    checkFileImport: checkFileImport,
+                    checkFileImportUsageInformation: checkFileImport,
                 }
             })
-
-            return { checkFileImport: checkFileImport }
         }
     }
 
@@ -848,20 +875,18 @@ class AssetImportForm extends Component {
                 return {
                     ...state,
                     importIncidentInformationData: importIncidentInformationData,
-                    errorIncidentInformationData: rowError.length === 0
+
+                    importIncidentInformationDataShow: value,
+                    rowErrorIncidentInformationData: rowError
                 }
             })
-
-            return { importData: value, rowError: rowError }
         } else {
             this.setState(state => {
                 return {
                     ...state,
-                    checkFileImport: checkFileImport,
+                    checkFileImportIncidentInformation: checkFileImport,
                 }
             })
-
-            return { checkFileImport: checkFileImport }
         }
     }
 
@@ -916,20 +941,18 @@ class AssetImportForm extends Component {
                 return {
                     ...state,
                     importMaintainanceInformationData: importMaintainanceInformationData,
-                    errorMaintainanceInformationData: rowError.length === 0
+
+                    importMaintainanceInformationDataShow: value,
+                    rowErrorMaintainanceInformationData: rowError
                 }
             })
-
-            return { importData: value, rowError: rowError }
         } else {
             this.setState(state => {
                 return {
                     ...state,
-                    checkFileImport: checkFileImport,
+                    checkFileImportMaintainanceInformation: checkFileImport,
                 }
             })
-
-            return { checkFileImport: checkFileImport }
         }
     }
 
@@ -965,33 +988,91 @@ class AssetImportForm extends Component {
                         disposalDate: (disposalDate && typeof disposalDate === 'string') ? this.convertStringToDate(disposalDate) : this.convertExcelDateToJSDate(disposalDate, "yy-mm-dd")
                     }
                 ]
-
+                console.log(item)
                 return item;
             });
-
+            
             this.setState(state => {
                 return {
                     ...state,
                     importDisposalInformationData: importDisposalInformationData,
-                    errorDisposalInformationData: rowError.length === 0
+
+                    importDisposalInformationDataShow: value,
+                    rowErrorDisposalInformationData: rowError
                 }
             })
-
-            return { importData: value, rowError: rowError }
         } else {
             this.setState(state => {
                 return {
                     ...state,
-                    checkFileImport: checkFileImport,
+                    checkFileImportDisposalInformation: checkFileImport,
                 }
             })
-
-            return { checkFileImport: checkFileImport }
         }
+    }
+
+    /** Bắt sự kiện import file */
+    handleImportExcel = (files) => {
+        // Reset các biến check lỗi và dữ liệu cũ
+        this.setState(state => {
+            return {
+                ...state,
+                importGeneralInformationData: [],
+                importDepreciationInformationData: [],
+                importDisposalInformationData: [],
+                importIncidentInformationData: [],
+                importMaintainanceInformationData: [],
+                importUsageInformationData: [],
+
+                importGeneralInformationDataShow: [],
+                importDepreciationInformationDataShow: [],
+                importDisposalInformationDataShow: [],
+                importIncidentInformationDataShow: [],
+                importMaintainanceInformationDataShow: [],
+                importUsageInformationDataShow: [],
+
+                checkFileImportGeneralInformation: true,
+                checkFileImportDepreciationInformation: true,
+                checkFileImportDisposalInformation: true,
+                checkFileImportMaintainanceInformation: true,
+                checkFileImportIncidentInformation: true,
+                checkFileImportUsageInformation: true
+            }
+        })
+
+        // Xử lý các sheet trong file excel
+        ImportFileExcel.importData(files[0], configurationGeneralInformationOfAssetTemplate, this.handleImportExcelGeneralInformation);
+        ImportFileExcel.importData(files[0], configurationDepreciationInformationOfAssetTemplate, this.handleImportExcelDepreciationInformation);
+        ImportFileExcel.importData(files[0], configurationDisposalInformationOfAssetTemplate, this.handleImportExcelDisposalInformation);
+        ImportFileExcel.importData(files[0], configurationIncidentInformationOfAssetTemplate, this.handleImportExcelIncidentInformation);
+        ImportFileExcel.importData(files[0], configurationMaintainanceInformationOfAssetTemplate, this.handleImportExcelMaintainanceInformation);
+        ImportFileExcel.importData(files[0], configurationUsageInformationOfAssetTemplate, this.handleImportExcelUsageInformation);
     }
 
     render() {
         const { translate } = this.props;
+        const {
+            importGeneralInformationDataShow,
+            importUsageInformationDataShow,
+            importDepreciationInformationDataShow,
+            importIncidentInformationDataShow,
+            importMaintainanceInformationDataShow,
+            importDisposalInformationDataShow,
+
+            rowErrorGeneralInformationData,
+            rowErrorDepreciationInformationData,
+            rowErrorDisposalInformationData,
+            rowErrorMaintainanceInformationData,
+            rowErrorUsageInformationData,
+            rowErrorIncidentInformationData,
+
+            checkFileImportGeneralInformation,
+            checkFileImportDepreciationInformation,
+            checkFileImportDisposalInformation,
+            checkFileImportMaintainanceInformation,
+            checkFileImportIncidentInformation,
+            checkFileImportUsageInformation
+        } = this.state;
 
         let importAssetTemplateData = this.convertAssetTemplate(importAssetTemplate);
 
@@ -1004,7 +1085,19 @@ class AssetImportForm extends Component {
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    <div className="nav-tabs-custom row" style={{ marginTop: '-15px' }}>
+                     <div className="box-body row">
+                        <div className="form-group col-md-6 col-xs-12">
+                            <UploadFile
+                                importFile={this.handleImportExcel}
+                            />
+                        </div>
+                        <div className="form-group col-md-6 col-xs-12">
+                            <ExportExcel id={`download_asset_file`} type='link' exportData={importAssetTemplateData}
+                                buttonName='Download file import mẫu' />
+                        </div>
+                    </div>
+                        
+                    <div className="nav-tabs-custom row" style={{ marginTop: '-10px' }}>
                         <ul className="nav nav-tabs">
                             <li className="active"><a title="Thông tin chung" data-toggle="tab" href="#import_create_general">Thông tin chung</a></li>
                             <li><a title="Thông tin khấu hao" data-toggle="tab" href="#import_depreciation">Thông tin khấu hao</a></li>
@@ -1012,51 +1105,67 @@ class AssetImportForm extends Component {
                             <li><a title="Thông tin sự cố" data-toggle="tab" href="#import_incident">Thông tin sự cố</a></li>
                             <li><a title="Thông tin bảo trì" data-toggle="tab" href="#import_maintainance">Thông tin bảo trì</a></li>
                             <li><a title="Thông tin thanh lý" data-toggle="tab" href="#import_disposal">Thông tin thanh lý</a></li>
-
                         </ul>
                         <div className="tab-content">
+                            {/* Thông tin chung */}
                             <AssetImportTab
                                 id="import_create_general"
                                 scrollTable={true}
                                 className="tab-pane active"
-                                configuration={configurationGeneralInformationOfAsset}
-                                importDataTemplate={importAssetTemplateData}
-                                handleCheckImportData={this.handleImportExcelGeneralInformation}
+                                configuration={configurationGeneralInformationOfAssetTemplate}
+                                importData={importGeneralInformationDataShow}
+                                rowError={rowErrorGeneralInformationData}
+                                checkFileImport={checkFileImportGeneralInformation}
                             />
+
+                            {/* Thông tin khấu hao */}
                             <AssetImportTab
                                 id="import_depreciation"
                                 className="tab-pane"
                                 configuration={configurationDepreciationInformationOfAssetTemplate}
-                                importDataTemplate={importAssetTemplateData}
-                                handleCheckImportData={this.handleImportExcelDepreciationInformation}
+                                importData={importDepreciationInformationDataShow}
+                                rowError={rowErrorDepreciationInformationData}
+                                checkFileImport={checkFileImportDepreciationInformation}
                             />
+
+                            {/* Thông tin sử dụng */}
                             <AssetImportTab
                                 id="import_usage"
                                 className="tab-pane"
                                 configuration={configurationUsageInformationOfAssetTemplate}
-                                importDataTemplate={importAssetTemplateData}
-                                handleCheckImportData={this.handleImportExcelUsageInformation}
+                                importData={importUsageInformationDataShow}
+                                rowError={rowErrorUsageInformationData}
+                                checkFileImport={checkFileImportUsageInformation}
                             />
+
+                            {/* Thông tin sự cố */}
                             <AssetImportTab
                                 id="import_incident"
                                 className="tab-pane"
                                 configuration={configurationIncidentInformationOfAssetTemplate}
-                                importDataTemplate={importAssetTemplateData}
-                                handleCheckImportData={this.handleImportExcelIncidentInformation}
+                                importData={importIncidentInformationDataShow}
+                                rowError={rowErrorIncidentInformationData}
+                                checkFileImport={checkFileImportIncidentInformation}
                             />
+
+                            {/* Thông tin bảo trì */}
                             <AssetImportTab
                                 id="import_maintainance"
                                 className="tab-pane"
                                 configuration={configurationMaintainanceInformationOfAssetTemplate}
-                                importDataTemplate={importAssetTemplateData}
-                                handleCheckImportData={this.handleImportExcelMaintainanceInformation}
+                                importData={importMaintainanceInformationDataShow}
+                                rowError={rowErrorMaintainanceInformationData}
+                                checkFileImport={checkFileImportMaintainanceInformation}
                             />
+
+                            {/* Thông tin thanh lý */}
                             <AssetImportTab
                                 id="import_disposal"
                                 className="tab-pane"
                                 configuration={configurationDisposalInformationOfAssetTemplate}
-                                importDataTemplate={importAssetTemplateData}
-                                handleCheckImportData={this.handleImportExcelDisposalInformation}
+                                importData={importDisposalInformationDataShow}
+                                rowError={rowErrorDisposalInformationData}
+                                checkFileImport={checkFileImportDisposalInformation}
                             />
                         </div>
                     </div>
