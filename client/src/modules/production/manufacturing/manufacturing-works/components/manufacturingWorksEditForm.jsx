@@ -89,6 +89,35 @@ class ManufacturingWorksEditForm extends Component {
         return msg;
     }
 
+    getListRolesArr = () => {
+        const { role } = this.props;
+        let { list } = role;
+        let listRolesArr = [];
+        const { currentDepartment } = this.state;
+        // Lấy ra các role trưởng đơn vị của đơn vị hiện tại
+        let currentRolesDeanIds = currentDepartment.deans.map(role => role._id);
+        if (list) {
+            // Lọc các role hiện tại ra khỏi list
+            list = list.filter(role => !currentRolesDeanIds.includes(role._id));
+            list.map(role => {
+                listRolesArr.push({
+                    value: role._id,
+                    text: role.name
+                });
+            });
+        }
+        return listRolesArr;
+    }
+
+    handleChangeRoles = (value) => {
+        console.log(value);
+        this.setState((state) => ({
+            ...state,
+            manageRoles: value
+        }));
+        console.log(this.state.manageRoles)
+    }
+
 
     handlePhoneNumberChange = (e) => {
         const { value } = e.target;
@@ -165,7 +194,8 @@ class ManufacturingWorksEditForm extends Component {
                 address: this.state.address,
                 phoneNumber: this.state.phoneNumber,
                 status: this.state.status,
-                description: this.state.description
+                description: this.state.description,
+                manageRoles: this.state.manageRoles
             }
             this.props.editManufacturingWorks(this.state.worksId, data);
         }
@@ -183,6 +213,7 @@ class ManufacturingWorksEditForm extends Component {
                 phoneNumber: nextProps.phoneNumber,
                 status: nextProps.status,
                 currentDepartment: nextProps.organizationalUnit,
+                manageRoles: nextProps.manageRoles,
                 description: nextProps.description,
                 nameError: undefined,
                 organizationalUnitError: undefined,
@@ -196,11 +227,10 @@ class ManufacturingWorksEditForm extends Component {
 
 
     render() {
-        const { translate, manufacturingWorks } = this.props;
+        const { translate, manufacturingWorks, worksId } = this.props;
         const { name, nameError, organizationalUnitValue, organizationalUnitError, currentDepartment,
             phoneNumber, phoneNumberError, address, addressError, status, statusError, description, code
-        } = this.state;
-        console.log(organizationalUnitValue);
+            , manageRoles } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
@@ -239,26 +269,42 @@ class ManufacturingWorksEditForm extends Component {
                         </div>
                         {
                             currentDepartment && currentDepartment.deans &&
-                            <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">{translate('manufacturing.manufacturing_works.list_roles')}</legend>
-                                {
-                                    currentDepartment.deans.map((role, index) => {
-                                        return (
-                                            <div className={`form-group`} key={index}>
-                                                <strong>{role.name}: &emsp;</strong>
-                                                {
-                                                    role.users.map((user, index) => {
-                                                        if (index === role.users.length - 1) {
-                                                            return user.userId.name
-                                                        }
-                                                        return user.userId.name + ", "
-                                                    })
-                                                }
-                                            </div>
-                                        )
-                                    })
-                                }
-                            </fieldset>
+                            <React.Fragment>
+                                <fieldset className="scheduler-border">
+                                    <legend className="scheduler-border">{translate('manufacturing.manufacturing_works.list_roles')}</legend>
+                                    {
+                                        currentDepartment.deans.map((role, index) => {
+                                            return (
+                                                <div className={`form-group`} key={index}>
+                                                    <strong>{role.name}: &emsp;</strong>
+                                                    {
+                                                        role.users.map((user, index) => {
+                                                            if (index === role.users.length - 1) {
+                                                                return user.userId.name
+                                                            }
+                                                            return user.userId.name + ", "
+                                                        })
+                                                    }
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </fieldset>
+                                <div className="form-group">
+                                    <label>{translate('manufacturing.manufacturing_works.manage_roles')}</label>
+                                    <div>
+                                        <SelectBox
+                                            id={`select-manage-roles-works-${worksId}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            items={this.getListRolesArr()}
+                                            value={manageRoles}
+                                            onChange={this.handleChangeRoles}
+                                            multiple={true}
+                                        />
+                                    </div>
+                                </div>
+                            </React.Fragment>
                         }
                         <div className={`form-group ${!phoneNumberError ? "" : "has-error"}`}>
                             <label>{translate('manufacturing.manufacturing_works.phone')}<span className="text-red">*</span></label>
@@ -299,8 +345,8 @@ class ManufacturingWorksEditForm extends Component {
 }
 
 function mapStateToProps(state) {
-    const { manufacturingWorks, department } = state;
-    return { manufacturingWorks, department }
+    const { manufacturingWorks, department, role } = state;
+    return { manufacturingWorks, department, role }
 }
 
 const mapDispatchToProps = {

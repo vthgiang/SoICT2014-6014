@@ -20,7 +20,8 @@ class CalendarUsage extends Component {
       currentEvents: [],
       nowDate: new Date(),
       data: [],
-      dataStatus: 1
+      dataStatus: 1,
+      updateUsageLogs: 1,
     }
   }
 
@@ -78,6 +79,7 @@ class CalendarUsage extends Component {
       await this.setState({
         ...this.state,
         usageLogs: nextProps.assetsManager.currentAsset.usageLogs,
+        updateUsageLogs: 2,
         createUsage: false
       })
       let calendarApi = this.state.currentRow.view.calendar;
@@ -283,6 +285,7 @@ class CalendarUsage extends Component {
     await this.setState({
       ...this.state,
       usageLogs: [...usageLogs],
+      updateUsageLogs: 2,
       currentEvent: undefined,
     })
     clickInfo.event.remove()
@@ -360,6 +363,7 @@ class CalendarUsage extends Component {
       dataRecommendDistribute = list.filter(item => item._id == value);
     }
     if (dataRecommendDistribute) {
+      let checkCreateUsage = false;
       await this.props.updateRecommendDistribute(
         dataRecommendDistribute[0]._id,
         {
@@ -375,22 +379,32 @@ class CalendarUsage extends Component {
           status: "approved",
         })
 
-      let newUsage = {
-        usedByUser: dataRecommendDistribute[0].proponent,
-        usedByOrganizationalUnit: null,
-        startDate: dataRecommendDistribute[0].dateStartUse,
-        endDate: dataRecommendDistribute[0].dateEndUse,
+      for (let i in usageLogs) {
+        if (usageLogs[i].assetUseRequest && usageLogs[i].assetUseRequest == dataRecommendDistribute[0]._id) {
+          checkCreateUsage = true
+        }
       }
-      usageLogs.push(newUsage)
+      if (checkCreateUsage == false) {
+        let newUsage = {
+          usedByUser: dataRecommendDistribute[0].proponent,
+          usedByOrganizationalUnit: null,
+          startDate: dataRecommendDistribute[0].dateStartUse,
+          endDate: dataRecommendDistribute[0].dateEndUse,
+          assetUseRequest: dataRecommendDistribute[0]._id,
+          description: dataRecommendDistribute[0].note,
+        }
+        usageLogs.push(newUsage)
 
-      let createUsage = {
-        usageLogs: usageLogs,
-        status: "in_use",
-        assignedToUser: dataRecommendDistribute[0].proponent,
-        assignedToOrganizationalUnit: undefined,
+        let createUsage = {
+          usageLogs: usageLogs,
+          status: "in_use",
+          assignedToUser: dataRecommendDistribute[0].proponent,
+          assignedToOrganizationalUnit: undefined,
+        }
+
+        await this.props.createUsage(this.props.assetId, createUsage)
       }
 
-      await this.props.createUsage(this.props.assetId, createUsage)
       await this.props.getRecommendDistributeByAsset(this.props.assetId);
 
       // setState giá trị approved để xử lý dữ liệu của event trong shouldComponentUpdate (đợi dữ liệu trả về)
@@ -511,7 +525,8 @@ class CalendarUsage extends Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.id !== prevState.id || nextProps.usageLogs !== prevState.usageLogs) {
+    if (nextProps.id !== prevState.id ||
+      ((nextProps.usageLogs !== prevState.usageLogs) && (prevState.updateUsageLogs == 1 || prevState.updateUsageLogs == 2))) {
       let usageLogs = [];
       let userlist = nextProps.user.list
       let departmentlist = nextProps.department.list
@@ -542,11 +557,12 @@ class CalendarUsage extends Component {
       return {
         ...prevState,
         id: nextProps.id,
-        usageLogs: nextProps.usageLogs,
+        usageLogs: prevState.updateUsageLogs == 2 ? prevState.usageLogs : nextProps.usageLogs,
         assignedToUser: nextProps.assignedToUser,
         assignedToOrganizationalUnit: nextProps.assignedToOrganizationalUnit,
         typeRegisterForUse: nextProps.typeRegisterForUse,
-        data: [...prevState.data, ...usageLogs]
+        data: [...prevState.data, ...usageLogs],
+        updateUsageLogs: 3,
       }
     } else {
       return null;

@@ -7,6 +7,7 @@ import ManufacturingWorksCreateForm from './manufacturingWorksCreateForm';
 import ManufacturingWorksDetailForm from './manufacturingWorksDetailForm';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import ManufacturingWorksEditForm from './manufacturingWorksEditForm';
+import { RoleActions } from '../../../../super-admin/role/redux/actions';
 class ManufacturingWorksManagementTable extends Component {
     constructor(props) {
         super(props);
@@ -22,6 +23,7 @@ class ManufacturingWorksManagementTable extends Component {
         const { page, limit } = this.state;
         this.props.getAllManufacturingWorks({ page, limit });
         this.props.getAllDepartments();
+        this.props.getAllRoles();
     }
 
     setPage = async (page) => {
@@ -117,6 +119,7 @@ class ManufacturingWorksManagementTable extends Component {
                         description={this.state.currentRow.description}
                         organizationalUnit={this.state.currentRow.organizationalUnit}
                         organizationalUnitValue={this.state.currentRow.organizationalUnit._id}
+                        manageRoles={this.state.currentRow.manageRoles}
                     />
                 }
                 <div className="box-body qlcv">
@@ -211,6 +214,7 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
     getAllManufacturingWorks: worksActions.getAllManufacturingWorks,
     getAllDepartments: DepartmentActions.get,
+    getAllRoles: RoleActions.get
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManufacturingWorksManagementTable));

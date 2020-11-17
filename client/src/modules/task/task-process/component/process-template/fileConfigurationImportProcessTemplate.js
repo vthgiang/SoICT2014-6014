@@ -52,6 +52,11 @@ export const configProcessTemplate = {
         description: "Tên tiêu đề ứng với đơn vị",
         value: "Đơn vị"
     },
+    collaboratedWithOrganizationalUnits: {
+        columnName: "Đơn vị phối hợp thực hiện công việc",
+        description: "Tên tiêu đề ứng với đơn vị phối hợp thực hiện công việc",
+        value: "Đơn vị phối hợp thực hiện công việc"
+    },
     priority: {
         columnName: "Độ ưu tiên",
         description: "Tên tiêu đề ứng với độ ưu tiên",
@@ -93,15 +98,6 @@ export const configProcessTemplate = {
         description: "Tên tiêu đề ứng với tên thông tin",
         value: ["Tên thông tin", "Mô tả thông tin", "Kiểu dữ liệu", "Chỉ quản lý được điền"]
     },
-    // tasks: {
-    //     columnName: "Danh sách công việc trong quy trình",
-    //     description: "Tên tiêu đề ứng với danh sách công việc trong quy trình",
-    //     value: [
-    //         "Mã công việc trong quy trình", "Tên mẫu", "Mô tả", "Đơn vị", "Độ ưu tiên",
-    //         "Người thực hiện", "Người phê duyệt", "Người tư vấn", "Người quan sát",
-    //         "Công thức tính điểm", "Danh sách hoạt động", "Danh sách thông tin"
-    //     ]
-    // }
 }
 
 export const templateImportProcessTemplate = {
@@ -115,7 +111,7 @@ export const templateImportProcessTemplate = {
                 key: "generalInfoTask",
                 columnName: "Thông tin chung",
                 keyMerge: 'taskName',
-                colspan: 10,
+                colspan: 11,
             }, {
                 key: "taskActions",
                 columnName: "Danh sách hoạt động",
@@ -130,7 +126,7 @@ export const templateImportProcessTemplate = {
                 key: "tasks",
                 columnName: "Danh sách công việc",
                 keyMerge: 'generalInfoTask',
-                colspan: 17,
+                colspan: 18,
             }],
             columns: [
                 { key: "STT", value: "STT" },
@@ -143,7 +139,8 @@ export const templateImportProcessTemplate = {
                 { key: "taskName", value: "Tên công việc" },
                 { key: "code", value: "Mã công việc trong quy trình" },
                 { key: "taskDescription", value: "Mô tả công việc" },
-                { key: "organizationalUnits", value: "Đơn vị" },
+                { key: "organizationalUnit", value: "Đơn vị" },
+                { key: "collaboratedWithOrganizationalUnits", value: "Đơn vị phối hợp thực hiện công việc" },
                 { key: "priority", value: "Độ ưu tiên" },
                 { key: "responsibleEmployees", value: "Người thực hiện" },
                 { key: "accountableEmployees", value: "Người phê duyệt" },
@@ -163,24 +160,56 @@ export const templateImportProcessTemplate = {
             // Do ở file export, dữ liệu được đọc theo dòng nên đối với dữ liệu mảng (taskAction, taskInfomation), mỗi phần tử của mảng là 1 dòng
             data: [
                 {
-                    processName: "Triển khai sản phẩm mới qquy trình",
-                    processDescription: "Triển khai sản phẩm mới",
-                    manager: "Giám đốc",
-                    viewer: "Thành viên ban giám đốc",
-                    xmlDiagram: "abc xyz",
+                    processName: "Mẫu Quy trình Import mẫu",
+                    processDescription: "Mẫu quy trình import mẫu",
+                    manager: "Thành viên ban giám đốc",
+                    viewer: "Thành viên ban giám đốc, Nhân viên phòng kinh doanh",
+                    xmlDiagram: `<?xml version="1.0" encoding="UTF-8"?>
+                    <bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+                      <bpmn:process id="Process_1" isExecutable="false">
+                        <bpmn:startEvent id="Event_1uie98m">
+                          <bpmn:outgoing>Flow_0tpqfuv</bpmn:outgoing>
+                        </bpmn:startEvent>
+                        <bpmn:task id="Activity_0y1k81z" shapeName="Start" responsibleName="Nguyễn Văn Danh" accountableName="Vũ Thị Cúc">
+                          <bpmn:incoming>Flow_0tpqfuv</bpmn:incoming>
+                          <bpmn:outgoing>Flow_19ytczt</bpmn:outgoing>
+                        </bpmn:task>
+                        <bpmn:sequenceFlow id="Flow_0tpqfuv" sourceRef="Event_1uie98m" targetRef="Activity_0y1k81z" />
+                        <bpmn:exclusiveGateway id="Gateway_0fivnpb" shapeName="Kiểm tra" responsibleName="Nguyễn Văn Danh">
+                          <bpmn:incoming>Flow_19ytczt</bpmn:incoming>
+                          <bpmn:outgoing>Flow_06w7nds</bpmn:outgoing>
+                          <bpmn:outgoing>Flow_0m6ks29</bpmn:outgoing>
+                        </bpmn:exclusiveGateway>
+                        <bpmn:sequenceFlow id="Flow_19ytczt" name="link 1" sourceRef="Activity_0y1k81z" targetRef="Gateway_0fivnpb" />
+                        <bpmn:task id="Activity_1jsvw26" shapeName="Sản xuất thuốc bột" responsibleName="Nguyễn Văn Danh" accountableName="Trần Văn Bình">
+                          <bpmn:incoming>Flow_06w7nds</bpmn:incoming>
+                          <bpmn:outgoing>Flow_0fnmbiw</bpmn:outgoing>
+                        </bpmn:task>
+                        <bpmn:sequenceFlow id="Flow_06w7nds" name="high-quality" sourceRef="Gateway_0fivnpb" targetRef="Activity_1jsvw26" />
+                        <bpmn:endEvent id="Event_1q8gks8">
+                          <bpmn:incoming>Flow_0fnmbiw</bpmn:incoming>
+                          <bpmn:incoming>Flow_1oc92kq</bpmn:incoming>
+                        </bpmn:endEvent>
+                        <bpmn:sequenceFlow id="Flow_0fnmbiw" sourceRef="Activity_1jsvw26" targetRef="Event_1q8gks8" />
+                        <bpmn:task id="Activity_0gy49ud" shapeName="Liên kết sản xuất thuốc bột" responsibleName="Nguyễn Việt Anh,Nguyễn Gia Huy" accountableName="Vũ Thị Cúc">
+                          <bpmn:incoming>Flow_0m6ks29</bpmn:incoming>
+                          <bpmn:outgoing>Flow_1oc92kq</bpmn:outgoing>
+                        </bpmn:task>
+                        <bpmn:sequenceFlow id="Flow_0m6ks29" name="low-quality" sourceRef="Gateway_0fivnpb" targetRef="Activity_0gy49ud" />`,
 
                     tasks: [
                         {
-                            taskName: "cv1",
-                            taskDescription: "moota cv1",
-                            code: "activity-1",
+                            taskName: "Start",
+                            taskDescription: "CV khởi tạo",
+                            code: "Activity_0y1k81z",
                             organizationalUnit: "Phòng kinh doanh",
-                            priority: 1,
-                            responsibleEmployees: ["pdp.vnist@gmail.com"],
-                            accountableEmployees: ["nvd.vnist@gmail.com"],
-                            consultedEmployees: ["nvd.vnist@gmail.com"],
-                            informedEmployees: ["nvd.vnist@gmail.com"],
-                            formula: 80,
+                            collaboratedWithOrganizationalUnits: "Phòng kinh doanh, Nhà máy sản xuất thuốc bột",
+                            priority: 2,
+                            responsibleEmployees: ["nvd.vnist@gmail.com"],
+                            accountableEmployees: ["vtc.vnist@gmail.com"],
+                            consultedEmployees: ["tvb.vnist@gmail.com"],
+                            informedEmployees: [],
+                            formula: "progress / (dayUsed / totalDay) - (numberOfFailedAction / (numberOfFailedAction + numberOfPassedAction)) * 100",
                             taskActions: [
                                 {
                                     name: "Xây dựng định mức kỹ thuật",
@@ -222,16 +251,17 @@ export const templateImportProcessTemplate = {
                             ],
                         },
                         {
-                            taskName: "cv2",
-                            taskDescription: "mta cv2",
-                            code: "activity-0",
+                            taskName: "Kiểm tra",
+                            taskDescription: "Kiểm tra",
+                            code: "Gateway_0fivnpb",
                             organizationalUnit: "Phòng kinh doanh",
+                            collaboratedWithOrganizationalUnits: "Ban giám đốc",
                             priority: 1,
-                            responsibleEmployees: ["pdp.vnist@gmail.com"],
-                            accountableEmployees: ["nvd.vnist@gmail.com"],
-                            consultedEmployees: ["nvd.vnist@gmail.com"],
-                            informedEmployees: ["nvd.vnist@gmail.com"],
-                            formula: 90,
+                            responsibleEmployees: ["nvd.vnist@gmail.com"],
+                            accountableEmployees: [],
+                            consultedEmployees: [],
+                            informedEmployees: [],
+                            formula: "progress / (dayUsed / totalDay)",
                             taskActions: [
                                 {
                                     name: "Duyệt maquette",
@@ -261,42 +291,43 @@ export const templateImportProcessTemplate = {
                                     filledByAccountableEmployeesOnly: "true",
                                 },
                             ],
-                        }
-                    ]
-                },
-                {
-                    processName: "QT2",
-                    processDescription: "Triển khai sản phẩm mới",
-                    manager: "Giám đốc",
-                    viewer: "Thành viên ban giám đốc",
-                    xmlDiagram: "abc xyz",
-
-                    tasks: [
+                        },
                         {
-                            taskName: "cv1",
-                            taskDescription: "moota cv1",
-                            code: "activity-1",
+                            taskName: "Sản xuất thuốc bột",
+                            taskDescription: "Sản xuất thuốc bột",
+                            code: "Activity_1jsvw26",
                             organizationalUnit: "Phòng kinh doanh",
+                            collaboratedWithOrganizationalUnits: "Nhà máy sản xuất thuốc bột",
                             priority: 1,
-                            responsibleEmployees: ["pdp.vnist@gmail.com"],
-                            accountableEmployees: ["nvd.vnist@gmail.com"],
-                            consultedEmployees: ["nvd.vnist@gmail.com"],
-                            informedEmployees: ["nvd.vnist@gmail.com"],
-                            formula: 80,
+                            responsibleEmployees: ["nvd.vnist@gmail.com"],
+                            accountableEmployees: ["tvb.vnist@gmail.com"],
+                            consultedEmployees: [],
+                            informedEmployees: [],
+                            formula: "progress / (dayUsed / totalDay) - (numberOfFailedAction / (numberOfFailedAction + numberOfPassedAction)) * 100",
                             taskActions: [
                                 {
-                                    name: "Xây dựng định mức kỹ thuật",
-                                    description: "Phòng R&D xây dựng kế hoạch và thực hiện nghiên cứu sản phẩm, xây dựng Định mức kỹ thuật",
+                                    name: "Duyệt maquette",
+                                    description: "Phòng Kinh doanh duyệt thiết kế maquette ",
                                     mandatory: "true",
                                 }, {
-                                    name: "Khảo sát nguyên liệu",
-                                    description: "Phòng Kế hoạch kho GSP khảo sát nguyên liệu, tài liệu nguyên liệu (CA)",
+                                    name: "Kiểm soát nội dung maquette",
+                                    description: "Phòng Đảm bảo chất lượng kiểm soát nội dung trên maquette",
                                     mandatory: "true",
-                                },
+                                }, {
+                                    name: "Chuyển TGĐ ký duyệt maquette",
+                                    description: "Phòng Marketing chuyển maquette đã được Phòng Đảm bảo chất lượng kiểm soát nội dung cho TGĐ phê duyệt",
+                                    mandatory: "true",
+                                }
                             ],
                             taskInformations: [
                                 {
-                                    name: "Số lượng nguyên liệu",
+                                    name: "Số nợ cần thu",
+                                    description: "Số lượng nguyên liệu dùng để khảo sát",
+                                    type: "Number",
+                                    filledByAccountableEmployeesOnly: "true",
+                                },
+                                {
+                                    name: "Số nợ đã thu",
                                     description: "Số lượng nguyên liệu dùng để khảo sát",
                                     type: "Number",
                                     filledByAccountableEmployeesOnly: "true",
@@ -304,22 +335,31 @@ export const templateImportProcessTemplate = {
                             ],
                         },
                         {
-                            taskName: "cv2",
-                            taskDescription: "mta cv2",
-                            code: "activity-0",
-                            organizationalUnit: "Phòng kinh doanh",
+                            taskName: "Liên kết sản xuất thuốc bột",
+                            taskDescription: "LIÊN KẾT SX",
+                            code: "Gateway_0fivnpb",
+                            organizationalUnit: "Nhà máy sản xuất thuốc bột",
+                            collaboratedWithOrganizationalUnits: "Nhà máy sản xuất thuốc nước, Nhà máy sản xuất thực phẩm chức năng",
                             priority: 1,
-                            responsibleEmployees: ["pdp.vnist@gmail.com"],
-                            accountableEmployees: ["nvd.vnist@gmail.com"],
-                            consultedEmployees: ["nvd.vnist@gmail.com"],
-                            informedEmployees: ["nvd.vnist@gmail.com"],
-                            formula: 90,
+                            responsibleEmployees: ["nguyenvietanh.vnist@gmail.com, nguyengiahuy.vnist@gmail.com"],
+                            accountableEmployees: ["vtc.vnist@gmail.com"],
+                            consultedEmployees: ["nhungnt.vnist@gmail.com"],
+                            informedEmployees: [],
+                            formula: "progress / (dayUsed / totalDay) - (numberOfFailedAction / (numberOfFailedAction + numberOfPassedAction)) * 100",
                             taskActions: [
                                 {
                                     name: "Duyệt maquette",
                                     description: "Phòng Kinh doanh duyệt thiết kế maquette ",
                                     mandatory: "true",
-                                },
+                                }, {
+                                    name: "Kiểm soát nội dung maquette",
+                                    description: "Phòng Đảm bảo chất lượng kiểm soát nội dung trên maquette",
+                                    mandatory: "true",
+                                }, {
+                                    name: "Chuyển TGĐ ký duyệt maquette",
+                                    description: "Phòng Marketing chuyển maquette đã được Phòng Đảm bảo chất lượng kiểm soát nội dung cho TGĐ phê duyệt",
+                                    mandatory: "true",
+                                }
                             ],
                             taskInformations: [
                                 {

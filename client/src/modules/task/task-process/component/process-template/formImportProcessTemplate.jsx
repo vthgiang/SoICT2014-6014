@@ -57,6 +57,7 @@ class FormImportProcessTemplate extends Component {
                 "consultedEmployees": x.consultedEmployees ? x.consultedEmployees : '',
                 "informedEmployees": x.informedEmployees ? x.informedEmployees : '',
                 "organizationalUnit": x.organizationalUnit ? x.organizationalUnit : '',
+                "collaboratedWithOrganizationalUnits": x.collaboratedWithOrganizationalUnits ? x.collaboratedWithOrganizationalUnits : '',
                 "priority": x.priority ? x.priority : '',
                 "formula": x.formula ? x.formula : '',
 
@@ -79,6 +80,7 @@ class FormImportProcessTemplate extends Component {
                 "consultedEmployees": x.consultedEmployees ? x.consultedEmployees : '',
                 "informedEmployees": x.informedEmployees ? x.informedEmployees : '',
                 "organizationalUnit": x.organizationalUnit ? x.organizationalUnit : '',
+                "collaboratedWithOrganizationalUnits": x.collaboratedWithOrganizationalUnits ? x.collaboratedWithOrganizationalUnits : '',
                 "priority": x.priority ? x.priority : '',
                 "formula": x.formula ? x.formula : '',
 
@@ -115,6 +117,7 @@ class FormImportProcessTemplate extends Component {
                 elm.description = e.taskDescription;
                 elm.code = e.code;
                 elm.organizationalUnit = e.organizationalUnit;
+                elm.collaboratedWithOrganizationalUnits = e.collaboratedWithOrganizationalUnits.split(",");
                 elm.priority = e.priority;
                 elm.formula = e.formula;
 
@@ -137,6 +140,7 @@ class FormImportProcessTemplate extends Component {
                     elm.description = e.taskDescription;
                     elm.code = e.code;
                     elm.organizationalUnit = e.organizationalUnit;
+                    elm.collaboratedWithOrganizationalUnits = e.collaboratedWithOrganizationalUnits.split(",");
                     elm.priority = e.priority;
                     elm.formula = e.formula;
 
@@ -330,7 +334,8 @@ class FormImportProcessTemplate extends Component {
                             accountableEmployees: accountableEmployees,
                             consultedEmployees: consultedEmployees,
                             informedEmployees: informedEmployees,
-                            organizationalUnits: x.organizationalUnit,
+                            organizationalUnit: x.organizationalUnit,
+                            collaboratedWithOrganizationalUnits: x.collaboratedWithOrganizationalUnits,
                             priority: x.priority,
                             formula: x.formula,
 
@@ -364,7 +369,8 @@ class FormImportProcessTemplate extends Component {
                                     accountableEmployees: "",
                                     consultedEmployees: "",
                                     informedEmployees: "",
-                                    organizationalUnits: "",
+                                    organizationalUnit: "",
+                                    collaboratedWithOrganizationalUnits: "",
                                     priority: "",
                                     formula: "",
 
@@ -394,7 +400,7 @@ class FormImportProcessTemplate extends Component {
         const { translate } = this.props;
         let { limit, page, importData, importShowData, rowError, configData, checkFileImport } = this.state;
         let templateImportProcessTemplate2 = this.convertDataExport(templateImportProcessTemplate);
-
+        console.log('templateImportProcessTemplate2', templateImportProcessTemplate2);
         return (
             <React.Fragment>
                 <DialogModal

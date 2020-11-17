@@ -19,19 +19,24 @@ const BillSchema = new Schema ({
         ref: 'Stock'
     },
 
+    bill: {
+        type: Schema.Types.ObjectId,
+        replies: this
+    },
+
     code: {
         type: String,
         required: true
     },
 
-    type: { //1: Nhập nguyên vật liệu, 2: Nhập thành phẩm, 3:Xuất sản phẩm, 4: Xuất nguyên vật liệu, 5: Kiểm kê định kỳ, 6: Kiểm kê thường xuyên, 7: Trả hàng, 8: luân chuyển
+    type: { //1: Nhập nguyên vật liệu, 2: Nhập thành phẩm, 3:Xuất sản phẩm, 4: Xuất nguyên vật liệu, 5: Kiểm kê định kỳ, 6: Kiểm kê thường xuyên, 7: Trả hàng, 8: Luân chuyển
         type: String,
         enum: ["1", "2", "3", "4", "5", "6", "7", "8"]
     },
 
-    status: { //1: Chờ phê duyệt, 2:Đã hủy, 3: Đã hoàn thành, 4: đã phê duyệt,
+    status: { //1: Chờ phê duyệt, 2:Đã hủy, 3: Đã hoàn thành, 4: chờ kiểm tra, 5: đang thực hiện
         type: String,
-        enum: ["1", "2", "3", "4"]
+        enum: ["1", "2", "3", "4", "5"]
     },
 
     users: [{
@@ -94,13 +99,24 @@ const BillSchema = new Schema ({
         },
 
         quantity: {
-            type: Number
+            type: Number,
+            default: 0
         },
 
         returnQuantity: {
-            type: Number
+            type: Number,
+            default: 0
         },
 
+        damagedQuantity: {
+            type: Number,
+            default: 0
+        },
+
+        realQuantity: {
+            type: Number
+        },
+        
         lots: [{
 
             lot: {
@@ -109,14 +125,21 @@ const BillSchema = new Schema ({
             },
 
             quantity: {
-                type: Number
+                type: Number,
+                default: 0
             },
 
             returnQuantity: {
-                type: Number
+                type: Number,
+                default: 0
             },
 
             damagedQuantity: {
+                type: Number,
+                default: 0
+            },
+
+            realQuantity: {
                 type: Number
             },
 

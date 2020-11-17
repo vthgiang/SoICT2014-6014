@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const { getAllEmployeeOfUnitByRole } = require("../../../super-admin/user/user.service");
 
 const {
-    WorkSchedule, ManufacturingMill, ManufacturingWorks
+    WorkSchedule, ManufacturingMill, ManufacturingWorks, ManufacturingCommand
 } = require(`${SERVER_MODELS_DIR}`);
 
 const {
@@ -272,8 +272,8 @@ exports.getWorkSchedules = async (query, portal) => {
                 for (let j = 0; j < workSchedules.docs[i].turns.length; j++) {
                     for (k = 0; k < workSchedules.docs[i].turns[j].length; k++) {
                         if (workSchedules.docs[i].turns[j][k] != null) {
-                            let works = await ManufacturingWorks(connect(DB_CONNECTION, portal)).findById(workSchedules.docs[i].turns[j][k]);
-                            workSchedules.docs[i].turns[j][k] = works;
+                            let manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal)).findById(workSchedules.docs[i].turns[j][k]);
+                            workSchedules.docs[i].turns[j][k] = manufacturingCommand;
                         }
                     }
                 }

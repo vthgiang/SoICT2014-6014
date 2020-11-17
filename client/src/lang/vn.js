@@ -2016,7 +2016,7 @@ export default {
             general_information: {
                 view_more: 'Xem thêm',
                 asset: 'Tài sản',
-                asset_list: 'Dang sách tài sản',
+                asset_list: 'Danh sách tài sản',
                 search: 'Tìm kiếm',
                 add: 'Thêm',
                 basic_information: 'Thông tin cơ bản',
@@ -2511,7 +2511,7 @@ export default {
                 assigned: 'Đã sắp xếp nhân viên',
                 none_select_assigned: 'Không phân loại',
                 role_in_collaborated_unit: 'Vai trò của nhân viên thuộc',
-                confirm_assigned: 'Xác nhận phân công công việc',
+                confirm_assigned: 'Xác nhận đã phân công công việc',
                 confirm_assigned_success: 'Bạn đã xác nhận phân công công việc',
                 confirm_assigned_failure: 'Bạn chưa xác nhận phân công công việc',
 
@@ -2683,6 +2683,7 @@ export default {
 
                 info_eval_month: 'Thông tin công việc trong đánh giá này',
                 explain_avg_rating: 'Do chưa có hoạt động nào được đánh giá nên mặc định điểm đánh giá hoạt động là 10',
+                explain_not_has_failed_and_passed_action: ' - (Do chưa có hành động nào được đánh giá qua hay không qua, nên số lượng hành động qua và không qua sẽ được coi bằng nhau và bằng 1)',
 
                 auto_point_field: 'Điểm công việc tự động trong đánh giá này',
                 get_outside_info: 'Nhập tự động từ thông tin công việc hiện tại',
@@ -3817,13 +3818,15 @@ export default {
                     1: "green",
                     2: "blue",
                     3: "violet",
-                    4: "red"
+                    4: "red",
+                    5: "blue"
                 },
                 bill_status: {
                     1: "Chờ phê duyệt",
                     2: "Đã hoàn thành",
                     3: "Đã phê duyệt",
-                    4: "Đã hủy"
+                    4: "Đã hủy",
+                    5: "Đang thực hiện"
                 },
                 stock_book: 'Sổ kho',
                 good_receipt: 'Nhập kho',
@@ -3863,7 +3866,7 @@ export default {
                 lot: 'Lô hàng',
                 lot_number: 'Số lô',
                 difference: 'Chênh lệch',
-                receiver: 'Người nhận, giao hàng',
+                receiver: 'Người giao hàng',
                 choose_good: 'Chọn hàng hóa',
                 choose_type: 'Chọn loại phiếu',
                 choose_approver: 'Chọn người phê duyệt',
@@ -3877,6 +3880,20 @@ export default {
                     4: 'Thêm mới phiếu kiểm kê kho',
                     5: 'Thêm mới phiếu luân chuyển kho'
                 },
+                edit_title: {
+                    1: 'Chỉnh sửa phiếu nhập kho',
+                    2: 'Chỉnh sửa phiếu xuất kho',
+                    3: 'Chỉnh sửa phiếu trả hàng',
+                    4: 'Chỉnh sửa phiếu kiểm kê kho',
+                    5: 'Chỉnh sửa phiếu luân chuyển kho'
+                },
+                detail_title: {
+                    1: 'Xem chi tiết phiếu nhập kho',
+                    2: 'Xem chi tiết phiếu xuất kho',
+                    3: 'Xem chi tiết phiếu trả hàng',
+                    4: 'Xem chi tiết phiếu kiểm kê kho',
+                    5: 'Xem chi tiết phiếu luân chuyển kho'
+                },
                 infor: 'Thông tin chung',
                 name: 'Tên',
                 phone: 'Số điện thoại',
@@ -3888,7 +3905,15 @@ export default {
                 validate_customer: 'Bạn cần chọn khách hàng',
                 validate_lot: 'Bạn cần chọn lô hàng',
                 validate_quantity: 'Bạn cần nhập số lượng cho lô hàng',
-                validate_norm: 'Bạn đã nhập quá số lượng tồn kho'
+                validate_norm: 'Bạn đã nhập quá số lượng tồn kho',
+                add_lot: 'Thêm mới lô hàng',
+                expiration_date: 'Ngày hết hạn',
+                validate_norm: 'Bạn đã nhập quá số lượng tồn kho',
+                quantity_return: 'Số lượng trả lại',
+                quantity_issue: 'Số lượng xuất ra',
+                bill_issued: 'Đơn đã xuất',
+                choose_bill: 'Chọn đơn hàng',
+                users: 'Những người thực hiện'
 
             },
             inventory_management: {
@@ -4115,7 +4140,10 @@ export default {
                 organizational_unit: "Đơn vị liên kết",
                 choose_organizational_unit: "---Chọn đơn vị---",
                 error_organizational_unit: "Vui lòng chọn đơn vị liên kết",
-                list_roles: "Chức vụ trưởng đơn vị"
+                list_roles: "Chức vụ trưởng đơn vị",
+                manage_roles: "Thêm quyền quản lý",
+                role_manages_another: "Các quyền quản lý khác",
+                no_roles: "Không có"
             },
             manufacturing_mill: {
                 name: "Tên xưởng",
@@ -4217,7 +4245,7 @@ export default {
                     content: "Đang chờ duyệt"
                 },
                 2: {
-                    color: "black",
+                    color: "#367FA9",
                     content: "Đã phê duyệt"
                 },
                 3: {
@@ -4247,7 +4275,47 @@ export default {
                 all_works: "Tất cả",
                 employee: "Nhân viên",
                 choose_all_user: "Tất cả"
-
+            },
+            plan: {
+                code: "Mã kế hoạch",
+                manufacturing_order_code: "Mã đơn sản xuất",
+                sales_order_code: "Mã đơn kinh doanh",
+                start_date: "Ngày bắt đầu",
+                end_date: "Ngày dự kiến hoàn thành",
+                approvers: "Người phê duyệt",
+                description: "Mô tả",
+                created_at: "Ngày tạo",
+                command_code: "Mã lệnh sản xuất",
+                status: "Trạng thái",
+                choose_status: "Chọn trạng thái",
+                choose_all: "Chọn tất cả",
+                works: "Nhà máy",
+                progess: "Tiến độ",
+                choose_progess: "Chọn tiến độ",
+                search: "Tìm kiếm",
+                index: "STT",
+                creator: "Người tạo",
+                1: {
+                    color: "yellow",
+                    content: "Đang chờ duyệt"
+                },
+                2: {
+                    color: "#367FA9",
+                    content: "Đã phê duyệt"
+                },
+                3: {
+                    color: "orange",
+                    content: "Đang thực hiện"
+                },
+                4: {
+                    color: "green",
+                    content: "Đã hoàn thành"
+                },
+                5: {
+                    color: "red",
+                    content: "Đã hủy"
+                },
+                choose_works: "Chọn nhà máy"
 
 
             }

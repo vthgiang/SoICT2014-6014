@@ -1,8 +1,8 @@
 export const formatDate = (date) => {
     let d = new Date(date);
-    let day = d.getUTCDate();
-    let month = d.getMonth() + 1;
-    let year = d.getFullYear();
+    const day = d.getDate();
+    const month = d.getMonth() + 1;
+    const year = d.getFullYear();
 
     if (month < 10)
         month = '0' + month;

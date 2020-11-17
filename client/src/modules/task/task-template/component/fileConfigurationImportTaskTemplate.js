@@ -129,7 +129,7 @@ export const templateImportTaskTemplate = {
                     accountableEmployees: ["nvd.vnist@gmail.com"],
                     consultedEmployees: ["nvd.vnist@gmail.com"],
                     informedEmployees: ["nvd.vnist@gmail.com"],
-                    formula: 80,
+                    formula: "progress / (dayUsed / totalDay) - (numberOfFailedAction / (numberOfFailedAction + numberOfPassedAction)) * 100",
                     taskActions: [
                         {
                             name: "Xây dựng định mức kỹ thuật",

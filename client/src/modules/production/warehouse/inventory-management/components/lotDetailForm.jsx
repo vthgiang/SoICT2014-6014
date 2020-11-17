@@ -5,7 +5,7 @@ import { DialogModal } from '../../../../../common-components';
 import { translate } from 'react-redux-multilingual/lib/utils';
 
 import { BillActions } from '../../bill-management/redux/actions';
-import BillDetailForm from '../../bill-management/components/billDetailForm';
+import BillDetailForm from '../../bill-management/components/genaral/billDetailForm';
 
 class LotDetailForm extends Component {
     constructor(props) {
@@ -93,7 +93,7 @@ class LotDetailForm extends Component {
                                 </div>
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manage_warehouse.inventory_management.bin')}</legend>
-                                    {lotDetail.stocks.map((x, index) => <p key={index}><b>Kho {x.stock.name}: </b>{x.binLocations.map(item => item.binLocation.path + "(" + item.quantity + "), " )}</p>)}
+                                    {lotDetail.stocks.map((x, index) => <p key={index}><b>Kho {x.stock.name} có {x.quantity} {lotDetail.good.baseUnit}: </b>{x.binLocations.map(item => item.binLocation.path + "(" + item.quantity + lotDetail.good.baseUnit +"), " )}</p>)}
                                 </fieldset>
                                 <BillDetailForm />
                                 <fieldset className="scheduler-border">
@@ -121,8 +121,8 @@ class LotDetailForm extends Component {
                                                         <td>{index + 1}</td>
                                                         {x.bill ? <td><a href="#" onClick={() => this.handleShowDetailInfo(x.bill._id)}>{x.bill.code}</a></td> : <td></td>}
                                                         <td>{this.formatDate(x.createdAt)}</td>
-                                                        <td>{x.type}</td>
-                                                        <td>{x.quantity}</td>
+                                                        <td>{x.bill ? translate(`manage_warehouse.bill_management.billType.${x.bill.type}`) : ''}</td>
+                                                        <td>{x.quantity ? x.quantity : 0}</td>
                                                         <td>{x.stock ? x.stock.name : ""}</td>
                                                         {/* <td>{x.binLocations ? x.binLocations.map((item, index) => <p key={index}>{item.binLocation.path} ({item.quantity})</p>) : ""}</td> */}
                                                         <td></td>

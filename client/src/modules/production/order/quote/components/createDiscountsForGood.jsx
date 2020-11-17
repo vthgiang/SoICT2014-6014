@@ -21,7 +21,6 @@ class CreateDiscountsForGood extends Component {
                             disabled = true;
                         }
                     }
-
                     if (item.maximumThresholdToBeApplied) {
                         if (quantity < item.maximumThresholdToBeApplied) {
                             disabled = true;

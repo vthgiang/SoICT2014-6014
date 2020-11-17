@@ -233,7 +233,7 @@ class AssetEditForm extends Component {
                 // this.validatorInput(serial) && 
                 this.validatorInput(assetType) && this.validatorInput(group) &&
                 // this.validatorInput(managedBy) && 
-                this.validatorInput(purchaseDate) &&
+                // this.validatorInput(purchaseDate) &&
                 // this.validatorInput(warrantyExpirationDate) && //this.validatorInput(location) &&
                 this.validatorInput(status) && this.validatorInput(typeRegisterForUse)
 
