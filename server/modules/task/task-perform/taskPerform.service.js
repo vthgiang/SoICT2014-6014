@@ -13,17 +13,6 @@ const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
  * Lấy mẫu công việc theo Id
  */
 exports.getTaskById = async (portal, id, userId) => {
-    //req.params.id
-    var superTask = await Task(connect(DB_CONNECTION, portal))
-        .findById(id)
-        .populate({
-            path:
-                "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator parent",
-        })
-        .populate("evaluations.results.employee")
-        .populate("evaluations.results.organizationalUnit")
-        .populate("evaluations.results.kpis.kpis");
-
     var task = await Task(connect(DB_CONNECTION, portal))
         .findById(id)
         .populate([
@@ -429,7 +418,7 @@ exports.stopTimesheetLog = async (portal, params, body) => {
             {
                 path:
                     "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
-                select: "name email _id active",
+                select: "name email _id active avatar",
             },
             {
                 path: "evaluations.results.employee",
@@ -490,7 +479,7 @@ exports.stopTimesheetLog = async (portal, params, body) => {
                         {
                             path:
                                 "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
-                            select: "name email _id active",
+                            select: "name email _id active avatar",
                         },
                         {
                             path: "evaluations.results.employee",
@@ -1520,7 +1509,7 @@ exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
             {
                 path:
                     "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
-                select: "name email _id active",
+                select: "name email _id active avatar",
             },
             {
                 path: "evaluations.results.employee",
@@ -1581,7 +1570,7 @@ exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
                         {
                             path:
                                 "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
-                            select: "name email _id active",
+                            select: "name email _id active avatar",
                         },
                         {
                             path: "evaluations.results.employee",
@@ -1782,7 +1771,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
             {
                 path:
                     "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
-                select: "name email _id active",
+                select: "name email _id active avatar",
             },
             {
                 path: "evaluations.results.employee",
@@ -1843,7 +1832,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
                         {
                             path:
                                 "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
-                            select: "name email _id active",
+                            select: "name email _id active avatar",
                         },
                         {
                             path: "evaluations.results.employee",
@@ -1899,7 +1888,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
         _id: { $in: userId },
     });
     let email = user.map((item) => item.email);
-    email.push("trinhhong102@gmail.com");
+
     user = await User(connect(DB_CONNECTION, portal)).findById(data.user);
     newTask.evaluations.reverse();
 
@@ -2599,7 +2588,7 @@ exports.evaluateTaskByResponsibleEmployees = async (portal, data, taskId) => {
             {
                 path:
                     "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
-                select: "name email _id active",
+                select: "name email _id active avatar",
             },
             {
                 path: "evaluations.results.employee",
@@ -2660,7 +2649,7 @@ exports.evaluateTaskByResponsibleEmployees = async (portal, data, taskId) => {
                         {
                             path:
                                 "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
-                            select: "name email _id active",
+                            select: "name email _id active avatar",
                         },
                         {
                             path: "evaluations.results.employee",
@@ -3100,7 +3089,7 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
             {
                 path:
                     "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
-                select: "name email _id active",
+                select: "name email _id active avatar",
             },
             {
                 path: "evaluations.results.employee",
@@ -3161,7 +3150,7 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
                         {
                             path:
                                 "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
-                            select: "name email _id active",
+                            select: "name email _id active avatar",
                         },
                         {
                             path: "evaluations.results.employee",
@@ -3275,7 +3264,7 @@ exports.editHoursSpentInEvaluate = async (portal, data, taskId) => {
             {
                 path:
                     "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
-                select: "name email _id active",
+                select: "name email _id active avatar",
             },
             {
                 path: "evaluations.results.employee",
@@ -3336,7 +3325,7 @@ exports.editHoursSpentInEvaluate = async (portal, data, taskId) => {
                         {
                             path:
                                 "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
-                            select: "name email _id active",
+                            select: "name email _id active avatar",
                         },
                         {
                             path: "evaluations.results.employee",
@@ -3411,7 +3400,7 @@ exports.deleteEvaluation = async (portal, params) => {
             {
                 path:
                     "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
-                select: "name email _id active",
+                select: "name email _id active avatar",
             },
             {
                 path: "evaluations.results.employee",
@@ -3472,7 +3461,7 @@ exports.deleteEvaluation = async (portal, params) => {
                         {
                             path:
                                 "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
-                            select: "name email _id active",
+                            select: "name email _id active avatar",
                         },
                         {
                             path: "evaluations.results.employee",
@@ -3695,11 +3684,6 @@ exports.sendEmailForActivateTask = async (portal, task) => {
         .populate("organizationalUnit creator parent")
         .execPopulate();
 
-    var transporter = nodemailer.createTransport({
-        service: "Gmail",
-        auth: { user: "vnist.qlcv@gmail.com", pass: "qlcv123@" },
-    });
-
     var email, userId, user, users, userIds;
 
     var resId = task.responsibleEmployees; // lấy id người thực hiện
@@ -3738,8 +3722,8 @@ exports.sendEmailForActivateTask = async (portal, task) => {
         _id: { $in: userIds },
     });
 
-    email = user.map((item) => item.email); // Lấy ra tất cả email của người dùng
-    // email.push("trinhhong102@gmail.com");
+    email = user.map((item) => item.email);
+
     var html =
         `<p>Công việc mà bạn tham gia đã được kích hoạt từ trạng thái đang chờ thành đang thực hiện:  <a href="${process.env.WEBSITE}/task?taskId=${task._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${task._id} </a></p> ` +
         `<h3>Thông tin công việc</h3>` +
@@ -3904,7 +3888,7 @@ exports.editActivateOfTask = async (portal, taskID, body) => {
                         {
                             path:
                                 "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
-                            select: "name email _id active",
+                            select: "name email _id active avatar",
                         },
                         {
                             path: "evaluations.results.employee",
@@ -4165,7 +4149,7 @@ exports.createComment = async (portal, params, body, files) => {
             {
                 path:
                     "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
-                select: "name email _id active",
+                select: "name email _id active avatar",
             },
             {
                 path: "evaluations.results.employee",
@@ -4226,7 +4210,7 @@ exports.createComment = async (portal, params, body, files) => {
                         {
                             path:
                                 "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
-                            select: "name email _id active",
+                            select: "name email _id active avatar",
                         },
                         {
                             path: "evaluations.results.employee",
@@ -4306,7 +4290,7 @@ exports.editComment = async (portal, params, body, files) => {
             {
                 path:
                     "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
-                select: "name email _id active",
+                select: "name email _id active avatar",
             },
             {
                 path: "evaluations.results.employee",
@@ -4367,7 +4351,7 @@ exports.editComment = async (portal, params, body, files) => {
                         {
                             path:
                                 "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
-                            select: "name email _id active",
+                            select: "name email _id active avatar",
                         },
                         {
                             path: "evaluations.results.employee",
@@ -4489,7 +4473,7 @@ exports.createChildComment = async (portal, params, body, files) => {
             {
                 path:
                     "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
-                select: "name email _id active",
+                select: "name email _id active avatar",
             },
             {
                 path: "evaluations.results.employee",
@@ -4550,7 +4534,7 @@ exports.createChildComment = async (portal, params, body, files) => {
                         {
                             path:
                                 "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
-                            select: "name email _id active",
+                            select: "name email _id active avatar",
                         },
                         {
                             path: "evaluations.results.employee",
@@ -4656,7 +4640,7 @@ exports.editChildComment = async (portal, params, body, files) => {
             {
                 path:
                     "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
-                select: "name email _id active",
+                select: "name email _id active avatar",
             },
             {
                 path: "evaluations.results.employee",
@@ -4717,7 +4701,7 @@ exports.editChildComment = async (portal, params, body, files) => {
                         {
                             path:
                                 "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
-                            select: "name email _id active",
+                            select: "name email _id active avatar",
                         },
                         {
                             path: "evaluations.results.employee",
