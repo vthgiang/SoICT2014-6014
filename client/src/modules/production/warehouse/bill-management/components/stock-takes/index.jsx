@@ -4,15 +4,8 @@ import { withTranslate } from 'react-redux-multilingual';
 import { SelectMulti, DatePicker, DataTableSetting, PaginateBar } from '../../../../../../common-components';
 
 import BillDetailForm from '../genaral/billDetailForm';
-<<<<<<< HEAD
-<<<<<<< HEAD
 import BillEditForm from '../genaral/billEditForm';
-=======
 import StockTakeEditForm from './stockTakeEditForm';
->>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
-=======
-import StockTakeEditForm from './stockTakeEditForm';
->>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
 import StockTakeCreateForm from './stockTakeCreateForm';
 
 class TakeManagement extends Component {
@@ -35,9 +28,9 @@ class TakeManagement extends Component {
 
         window.$('#modal-edit-bill-take').modal('show');
     }
-    
+
     render() {
-        const { translate, bills, stocks, user} = this.props;
+        const { translate, bills, stocks, user } = this.props;
         const { listPaginate, totalPages, page } = bills;
         const { listStocks } = stocks;
         const { startDate, endDate, group, currentRow } = this.state;
@@ -55,7 +48,7 @@ class TakeManagement extends Component {
                                 options={{ nonSelectedText: "Tổng các kho", allSelectedText: "Tổng các kho" }}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
-                                items={listStocks.map((x, index) => { return { value: x._id, text: x.name }})}
+                                items={listStocks.map((x, index) => { return { value: x._id, text: x.name } })}
                                 onChange={this.props.handleStockChange}
                             />
                         </div>
@@ -86,8 +79,8 @@ class TakeManagement extends Component {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={[
-                                    { value: '5', text: translate('manage_warehouse.bill_management.billType.5')},
-                                    { value: '6', text: translate('manage_warehouse.bill_management.billType.6')},
+                                    { value: '5', text: translate('manage_warehouse.bill_management.billType.5') },
+                                    { value: '6', text: translate('manage_warehouse.bill_management.billType.6') },
                                 ]}
                                 onChange={this.props.handleTypeChange}
                             />
@@ -123,11 +116,11 @@ class TakeManagement extends Component {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={[
-                                    { value: '1', text: translate('manage_warehouse.bill_management.bill_status.1')},
-                                    { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2')},
-                                    { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3')},
-                                    { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4')},
-                                    { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5')},
+                                    { value: '1', text: translate('manage_warehouse.bill_management.bill_status.1') },
+                                    { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2') },
+                                    { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3') },
+                                    { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') },
+                                    { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5') },
                                 ]}
                                 onChange={this.props.handleStatusChange}
                             />
@@ -140,7 +133,7 @@ class TakeManagement extends Component {
                     <BillDetailForm />
                     {
                         currentRow &&
-                        <StockTakeEditForm 
+                        <StockTakeEditForm
                             billId={currentRow._id}
                             fromStock={currentRow.fromStock ? currentRow.fromStock._id : null}
                             code={currentRow.code}
@@ -154,68 +147,68 @@ class TakeManagement extends Component {
                         />
                     }
 
-                        <table id={`good-table`} className="table table-striped table-bordered table-hover" style={{marginTop: '15px'}}>
-                            <thead>
-                                <tr>
-                                    <th style={{ width: '5%' }}>{translate('manage_warehouse.bill_management.index')}</th>
-                                    <th>{translate('manage_warehouse.bill_management.code')}</th>
-                                    <th>{translate('manage_warehouse.bill_management.type')}</th>
-                                    <th>{translate('manage_warehouse.bill_management.status')}</th> 
-                                    <th>{translate('manage_warehouse.bill_management.creator')}</th> 
-                                    <th>{translate('manage_warehouse.bill_management.approved')}</th> 
-                                    <th>{translate('manage_warehouse.bill_management.date')}</th>
-                                    <th>{translate('manage_warehouse.bill_management.stock')}</th>
-                                    <th>{translate('manage_warehouse.bill_management.description')}</th>
-                                    <th style={{ width: '120px' }}>{translate('table.action')}
+                    <table id={`good-table`} className="table table-striped table-bordered table-hover" style={{ marginTop: '15px' }}>
+                        <thead>
+                            <tr>
+                                <th style={{ width: '5%' }}>{translate('manage_warehouse.bill_management.index')}</th>
+                                <th>{translate('manage_warehouse.bill_management.code')}</th>
+                                <th>{translate('manage_warehouse.bill_management.type')}</th>
+                                <th>{translate('manage_warehouse.bill_management.status')}</th>
+                                <th>{translate('manage_warehouse.bill_management.creator')}</th>
+                                <th>{translate('manage_warehouse.bill_management.approved')}</th>
+                                <th>{translate('manage_warehouse.bill_management.date')}</th>
+                                <th>{translate('manage_warehouse.bill_management.stock')}</th>
+                                <th>{translate('manage_warehouse.bill_management.description')}</th>
+                                <th style={{ width: '120px' }}>{translate('table.action')}
                                     <DataTableSetting
-                                            tableId={`stock-take-table`}
-                                            columnArr={[
-                                                translate('manage_warehouse.bill_management.index'),
-                                                translate('manage_warehouse.bill_management.code'),
-                                                translate('manage_warehouse.bill_management.type'),
-                                                translate('manage_warehouse.bill_management.status'),
-                                                translate('manage_warehouse.bill_management.creator'),
-                                                translate('manage_warehouse.bill_management.approved'),
-                                                translate('manage_warehouse.bill_management.date'),
-                                                translate('manage_warehouse.bill_management.stock'),
-                                                translate('manage_warehouse.bill_management.description')
-                                            ]}
-                                            limit={this.state.limit}
-                                            setLimit={this.props.setLimit}
-                                            hideColumnOption={true}
-                                        />
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            { (typeof listPaginate !== undefined && listPaginate.length !== 0) &&
-                                    listPaginate.map((x, index) => (
-                                        <tr key={index}>
-                                            <td>{index + 1}</td>
-                                            <td>{x.code}</td>
-                                            <td>{translate(`manage_warehouse.bill_management.billType.${x.type}`)}</td>
-                                            <td style={{ color: translate(`manage_warehouse.bill_management.bill_color.${x.status}`)}}>{translate(`manage_warehouse.bill_management.bill_status.${x.status}`)}</td>
-                                            <td>{x.creator ? x.creator.name : "Creator is deleted"}</td>
-                                            <td>{x.approver ? x.approver.name : "approver is deleted"}</td>
-                                            <td>{this.props.formatDate(x.timestamp)}</td>
-                                            <td>{x.fromStock ? x.fromStock.name : "Stock is deleted"}</td>
-                                            <td>{x.description}</td>
-                                            <td style={{textAlign: 'center'}}>
-                                                <a className="text-green" onClick={() => this.props.handleShowDetailInfo(x._id)}><i className="material-icons">visibility</i></a>
-                                                { this.state.group !== '' ? <a onClick={() => this.handleEdit(x)} className="text-yellow" ><i className="material-icons">edit</i></a> : ''}
-                                                <a className="text-black" onClick={() => this.props.handleShow()}><i className="material-icons">print</i></a>
-                                            </td>
-                                        </tr>
-                                    ))
-                                }
-                            </tbody>
-                        </table>
-                        {bills.isLoading ?
-                            <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                            (typeof listPaginate === 'undefined' || listPaginate.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                        }
-                        <PaginateBar pageTotal = {totalPages} currentPage = {page} func = {this.props.setPage} />
-                    </div>
+                                        tableId={`stock-take-table`}
+                                        columnArr={[
+                                            translate('manage_warehouse.bill_management.index'),
+                                            translate('manage_warehouse.bill_management.code'),
+                                            translate('manage_warehouse.bill_management.type'),
+                                            translate('manage_warehouse.bill_management.status'),
+                                            translate('manage_warehouse.bill_management.creator'),
+                                            translate('manage_warehouse.bill_management.approved'),
+                                            translate('manage_warehouse.bill_management.date'),
+                                            translate('manage_warehouse.bill_management.stock'),
+                                            translate('manage_warehouse.bill_management.description')
+                                        ]}
+                                        limit={this.state.limit}
+                                        setLimit={this.props.setLimit}
+                                        hideColumnOption={true}
+                                    />
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {(typeof listPaginate !== undefined && listPaginate.length !== 0) &&
+                                listPaginate.map((x, index) => (
+                                    <tr key={index}>
+                                        <td>{index + 1}</td>
+                                        <td>{x.code}</td>
+                                        <td>{translate(`manage_warehouse.bill_management.billType.${x.type}`)}</td>
+                                        <td style={{ color: translate(`manage_warehouse.bill_management.bill_color.${x.status}`) }}>{translate(`manage_warehouse.bill_management.bill_status.${x.status}`)}</td>
+                                        <td>{x.creator ? x.creator.name : "Creator is deleted"}</td>
+                                        <td>{x.approver ? x.approver.name : "approver is deleted"}</td>
+                                        <td>{this.props.formatDate(x.timestamp)}</td>
+                                        <td>{x.fromStock ? x.fromStock.name : "Stock is deleted"}</td>
+                                        <td>{x.description}</td>
+                                        <td style={{ textAlign: 'center' }}>
+                                            <a className="text-green" onClick={() => this.props.handleShowDetailInfo(x._id)}><i className="material-icons">visibility</i></a>
+                                            {this.state.group !== '' ? <a onClick={() => this.handleEdit(x)} className="text-yellow" ><i className="material-icons">edit</i></a> : ''}
+                                            <a className="text-black" onClick={() => this.props.handleShow()}><i className="material-icons">print</i></a>
+                                        </td>
+                                    </tr>
+                                ))
+                            }
+                        </tbody>
+                    </table>
+                    {bills.isLoading ?
+                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                        (typeof listPaginate === 'undefined' || listPaginate.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    }
+                    <PaginateBar pageTotal={totalPages} currentPage={page} func={this.props.setPage} />
+                </div>
             </div>
         );
     }

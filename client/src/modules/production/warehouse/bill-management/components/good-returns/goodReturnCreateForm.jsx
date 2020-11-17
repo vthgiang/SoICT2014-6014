@@ -155,10 +155,10 @@ class GoodReturnCreateForm extends Component {
     }
 
     getType = () => {
-        const { group, translate} = this.props;
+        const { group, translate } = this.props;
         let typeArr = [
-            { value: '0', text: translate('manage_warehouse.bill_management.choose_type')},
-            { value: '7', text: translate('manage_warehouse.bill_management.billType.7')},
+            { value: '0', text: translate('manage_warehouse.bill_management.choose_type') },
+            { value: '7', text: translate('manage_warehouse.bill_management.billType.7') },
         ];
         return typeArr;
     }
@@ -171,10 +171,10 @@ class GoodReturnCreateForm extends Component {
     validateType = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
-        if(!value) {
+        if (!value) {
             msg = translate('manage_warehouse.bill_management.validate_type')
         }
-        if(willUpdateState) {
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
@@ -189,43 +189,35 @@ class GoodReturnCreateForm extends Component {
     handleStockChange = async (value) => {
         let fromStock = value[0];
         await this.validateStock(fromStock, true);
-        
+
         let group = '2';
         let status = '2';
-        if(fromStock) {
-            await this.props.getBillsByStatus({ group, status, fromStock});
+        if (fromStock) {
+            await this.props.getBillsByStatus({ group, status, fromStock });
         } else {
-            await this.props.getBillsByStatus({ group, status, fromStock: null});
+            await this.props.getBillsByStatus({ group, status, fromStock: null });
         }
-        
+
     }
 
     validateStock = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
-        if(!value) {
+        if (!value) {
             msg = translate('manage_warehouse.bill_management.validate_stock')
         }
-        if(willUpdateState) {
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
                     fromStock: value,
                     errorStock: msg,
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
                     bill: '',
                     getGoodInfo: false
->>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
-=======
-                    bill: '',
-                    getGoodInfo: false
->>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
                 }
             })
         }
-        
+
         return msg === undefined;
     }
 
@@ -237,10 +229,10 @@ class GoodReturnCreateForm extends Component {
     validateApprover = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
-        if(!value) {
+        if (!value) {
             msg = translate('manage_warehouse.bill_management.validate_approver')
         }
-        if(willUpdateState) {
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
@@ -260,10 +252,10 @@ class GoodReturnCreateForm extends Component {
     validatePartner = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
-        if(!value) {
+        if (!value) {
             msg = translate('manage_warehouse.bill_management.validate_customer')
         }
-        if(willUpdateState) {
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
@@ -283,10 +275,10 @@ class GoodReturnCreateForm extends Component {
     validateSupplier = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
-        if(!value) {
+        if (!value) {
             msg = translate('manage_warehouse.bill_management.validate_customer')
         }
-        if(willUpdateState) {
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
@@ -368,7 +360,7 @@ class GoodReturnCreateForm extends Component {
     handleLotsChange = (data) => {
         let totalQuantity = data.length > 0 ? data.reduce(function (accumulator, currentValue) {
             return Number(accumulator) + Number(currentValue.returnQuantity);
-          }, 0) : 0;
+        }, 0) : 0;
         this.state.good.returnQuantity = totalQuantity;
         this.state.good.lots = data;
         this.setState(state => {
@@ -394,7 +386,7 @@ class GoodReturnCreateForm extends Component {
         e.preventDefault();
         const { indexInfo, listGood } = this.state;
         let newListGood;
-        if(listGood){
+        if (listGood) {
             newListGood = listGood.map((item, index) => {
                 return (index === indexInfo) ? this.state.good : item;
             })
@@ -425,7 +417,7 @@ class GoodReturnCreateForm extends Component {
     handleEditGood = async (good, index) => {
         let lots = good.lots ? good.lots : [];
         this.setState(state => {
-            return{
+            return {
                 ...state,
                 editInfo: true,
                 indexInfo: index,
@@ -442,7 +434,7 @@ class GoodReturnCreateForm extends Component {
     handleDeleteGood = async (index) => {
         let { listGood } = this.state;
         let newListGood;
-        if(listGood){
+        if (listGood) {
             newListGood = listGood.filter((item, x) => index !== x);
         }
         await this.setState(state => {
@@ -465,15 +457,8 @@ class GoodReturnCreateForm extends Component {
 
     handleBillChange = async (value) => {
         let bill = value[0];
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
         this.state.listGood = [];
->>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
-=======
-        this.state.listGood = [];
->>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
-        if(bill){
+        if (bill) {
             await this.setState(state => {
                 return {
                     ...state,
@@ -491,35 +476,27 @@ class GoodReturnCreateForm extends Component {
                 }
             })
         }
-        
+
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-        if(nextProps.bills.billDetail){
+        if (nextProps.bills.billDetail) {
             this.state.listGood = nextProps.bills.billDetail.goods;
         }
-=======
-=======
->>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
-        if(nextProps.bills.billDetail !== this.state.billDetail){
+
+        if (nextProps.bills.billDetail !== this.state.billDetail) {
             this.state.listGood = nextProps.bills.billDetail.goods;
             this.state.billDetail = nextProps.bills.billDetail;
         }
-        
-<<<<<<< HEAD
->>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
-=======
->>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
+
         return true;
     }
 
-    save =async () => {
-        const { fromStock, code, toStock, type, status, users, approver, supplier, 
+    save = async () => {
+        const { fromStock, code, toStock, type, status, users, approver, supplier,
             name, phone, email, address, description, listGood, bill } = this.state;
         const { group, bills } = this.props;
-        if(bills.billDetail){
+        if (bills.billDetail) {
             var customer = bills.billDetail.customer;
         }
         await this.props.createBill({
@@ -553,19 +530,11 @@ class GoodReturnCreateForm extends Component {
         return (
             <React.Fragment>
                 <ButtonModal onButtonCallBack={this.handleClickCreate} modalID={`modal-create-bill-return`} button_name={translate('manage_warehouse.good_management.add')} title={translate('manage_warehouse.good_management.add_title')} />
-        
+
                 <DialogModal
                     modalID={`modal-create-bill-return`}
                     formID={`form-create-bill-return`}
-<<<<<<< HEAD
-<<<<<<< HEAD
-                    title={translate(`manage_warehouse.bill_management.add_title.${group}`)}
-=======
                     title={translate(`manage_warehouse.bill_management.edit_title.${group}`)}
->>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
-=======
-                    title={translate(`manage_warehouse.bill_management.edit_title.${group}`)}
->>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
                     msg_success={translate('manage_warehouse.bill_management.add_success')}
                     msg_faile={translate('manage_warehouse.bill_management.add_faile')}
                     disableSubmit={!this.isFormValidated()}
@@ -574,13 +543,13 @@ class GoodReturnCreateForm extends Component {
                 >
                     <QuantityLotGoodReturn group={group} good={good} stock={fromStock} initialData={lots} onDataChange={this.handleLotsChange} />
                     <form id={`form-create-bill-return`}>
-                    <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{translate('manage_warehouse.bill_management.infor')}</legend>
+                        <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+                            <fieldset className="scheduler-border">
+                                <legend className="scheduler-border">{translate('manage_warehouse.bill_management.infor')}</legend>
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className={`form-group`}>
                                         <label>{translate('manage_warehouse.bill_management.code')}</label>
-                                        <input type="text" className="form-control" value={code} disabled/>
+                                        <input type="text" className="form-control" value={code} disabled />
                                     </div>
                                     <div className={`form-group ${!errorType ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.type')}<span className="attention"> * </span></label>
@@ -590,10 +559,10 @@ class GoodReturnCreateForm extends Component {
                                             style={{ width: "100%" }}
                                             value={type}
                                             items={dataType}
-                                            onChange={this.handleTypeChange}    
+                                            onChange={this.handleTypeChange}
                                             multiple={false}
                                         />
-                                        <ErrorLabel content = { errorType } />
+                                        <ErrorLabel content={errorType} />
                                     </div>
                                     <div className={`form-group`}>
                                         <label>{translate('manage_warehouse.bill_management.status')}</label>
@@ -603,13 +572,13 @@ class GoodReturnCreateForm extends Component {
                                             style={{ width: "100%" }}
                                             value={status}
                                             items={[
-                                                { value: '1', text: translate('manage_warehouse.bill_management.bill_status.1')},
-                                                { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2')},
-                                                { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3')},
-                                                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4')},
-                                                { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5')},
+                                                { value: '1', text: translate('manage_warehouse.bill_management.bill_status.1') },
+                                                { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2') },
+                                                { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3') },
+                                                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') },
+                                                { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5') },
                                             ]}
-                                            onChange={this.handleStatusChange}    
+                                            onChange={this.handleStatusChange}
                                             multiple={false}
                                             disabled={true}
                                         />
@@ -624,10 +593,10 @@ class GoodReturnCreateForm extends Component {
                                             style={{ width: "100%" }}
                                             value={fromStock}
                                             items={dataStock}
-                                            onChange={this.handleStockChange}    
+                                            onChange={this.handleStockChange}
                                             multiple={false}
                                         />
-                                        <ErrorLabel content = { errorStock } />
+                                        <ErrorLabel content={errorStock} />
                                     </div>
                                     <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.approved')}<span className="attention"> * </span></label>
@@ -637,10 +606,10 @@ class GoodReturnCreateForm extends Component {
                                             style={{ width: "100%" }}
                                             value={approver}
                                             items={dataApprover}
-                                            onChange={this.handleApproverChange}    
+                                            onChange={this.handleApproverChange}
                                             multiple={false}
                                         />
-                                        <ErrorLabel content = { errorApprover } />
+                                        <ErrorLabel content={errorApprover} />
                                     </div>
                                     <div className={`form-group ${!errorCustomer ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.bill_issued')}<span className="attention"> * </span></label>
@@ -650,10 +619,10 @@ class GoodReturnCreateForm extends Component {
                                             style={{ width: "100%" }}
                                             value={bill}
                                             items={dataBill}
-                                            onChange={this.handleBillChange}    
+                                            onChange={this.handleBillChange}
                                             multiple={false}
                                         />
-                                        <ErrorLabel content = { errorCustomer } />
+                                        <ErrorLabel content={errorCustomer} />
                                     </div>
                                 </div>
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -665,61 +634,61 @@ class GoodReturnCreateForm extends Component {
                             </fieldset>
                         </div>
                         <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{translate('manage_warehouse.bill_management.receiver')}</legend>
-                            <div className={`form-group`}>
-                                <label>{translate('manage_warehouse.bill_management.name')}<span className="attention"> * </span></label>
-                                <input type="text" className="form-control" value={name} onChange={this.handleNameChange} />
-                            </div>
-                            <div className={`form-group`}>
-                                <label>{translate('manage_warehouse.bill_management.phone')}<span className="attention"> * </span></label>
-                                <input type="number" className="form-control" value={phone} onChange={this.handlePhoneChange} />
-                            </div>
-                            <div className={`form-group`}>
-                                <label>{translate('manage_warehouse.bill_management.email')}<span className="attention"> * </span></label>
-                                <input type="text" className="form-control" value={email} onChange={this.handleEmailChange} />
-                            </div>
-                            <div className={`form-group`}>
-                                <label>{translate('manage_warehouse.bill_management.address')}<span className="attention"> * </span></label>
-                                <input type="text" className="form-control" value={address} onChange={this.handleAddressChange} />
-                            </div>
-                        </fieldset>
+                            <fieldset className="scheduler-border">
+                                <legend className="scheduler-border">{translate('manage_warehouse.bill_management.receiver')}</legend>
+                                <div className={`form-group`}>
+                                    <label>{translate('manage_warehouse.bill_management.name')}<span className="attention"> * </span></label>
+                                    <input type="text" className="form-control" value={name} onChange={this.handleNameChange} />
+                                </div>
+                                <div className={`form-group`}>
+                                    <label>{translate('manage_warehouse.bill_management.phone')}<span className="attention"> * </span></label>
+                                    <input type="number" className="form-control" value={phone} onChange={this.handlePhoneChange} />
+                                </div>
+                                <div className={`form-group`}>
+                                    <label>{translate('manage_warehouse.bill_management.email')}<span className="attention"> * </span></label>
+                                    <input type="text" className="form-control" value={email} onChange={this.handleEmailChange} />
+                                </div>
+                                <div className={`form-group`}>
+                                    <label>{translate('manage_warehouse.bill_management.address')}<span className="attention"> * </span></label>
+                                    <input type="text" className="form-control" value={address} onChange={this.handleAddressChange} />
+                                </div>
+                            </fieldset>
                         </div>
-                        
-                        { this.state.getGoodInfo &&
+
+                        {this.state.getGoodInfo &&
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manage_warehouse.bill_management.goods')}</legend>
                                     <div>
-                                        { this.state.editInfo &&
-                                        <div>
-                                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                            <div className="form-group">
-                                                <label>{translate('manage_warehouse.bill_management.quantity_issue')}</label>
-                                                <input className="form-control" value={good.quantity} disabled type="number" />
+                                        {this.state.editInfo &&
+                                            <div>
+                                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                                    <div className="form-group">
+                                                        <label>{translate('manage_warehouse.bill_management.quantity_issue')}</label>
+                                                        <input className="form-control" value={good.quantity} disabled type="number" />
+                                                    </div>
+                                                </div>
+                                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                                    <div className="form-group">
+                                                        <label>{translate('manage_warehouse.bill_management.quantity_return')}</label>
+                                                        <div style={{ display: "flex" }}><input className="form-control" value={good.returnQuantity ? good.returnQuantity : 0} onChange={this.handleQuantityChange} type="number" /><i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: '5px', marginTop: '9px', cursor: 'pointer' }} onClick={() => this.addQuantity()}></i></div>
+                                                    </div>
+                                                </div>
+                                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                    <div className="form-group">
+                                                        <label>{translate('manage_warehouse.bill_management.description')}</label>
+                                                        <textarea type="text" className="form-control" value={good.description} onChange={this.handleGoodDescriptionChange} />
+                                                    </div>
+                                                </div>
+                                                <div className="pull-right" style={{ marginBottom: "10px" }}>
+                                                    {this.state.editInfo &&
+                                                        <React.Fragment>
+                                                            <button className="btn btn-success" onClick={this.handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
+                                                            <button className="btn btn-success" onClick={this.handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
+                                                        </React.Fragment>
+                                                    }
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                            <div className="form-group">
-                                                <label>{translate('manage_warehouse.bill_management.quantity_return')}</label>
-                                                <div style={{display: "flex"}}><input className="form-control" value={good.returnQuantity ? good.returnQuantity : 0} onChange={this.handleQuantityChange} type="number" /><i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: '5px', marginTop: '9px', cursor:'pointer' }} onClick={() => this.addQuantity()}></i></div>
-                                            </div>
-                                        </div>
-                                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                            <div className="form-group">
-                                                <label>{translate('manage_warehouse.bill_management.description')}</label>
-                                                <textarea type="text" className="form-control" value={good.description} onChange={this.handleGoodDescriptionChange} />
-                                            </div>
-                                        </div>
-                                        <div className="pull-right" style={{marginBottom: "10px"}}>
-                                            {this.state.editInfo &&
-                                                <React.Fragment>
-                                                    <button className="btn btn-success" onClick={this.handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
-                                                    <button className="btn btn-success" onClick={this.handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
-                                                </React.Fragment>
-                                            }
-                                        </div>
-                                        </div>
                                         }
                                     </div>
                                     <div className={`form-group`}>
@@ -727,7 +696,7 @@ class GoodReturnCreateForm extends Component {
                                         <table className="table">
                                             <thead>
                                                 <tr>
-                                                    <th style={{width: "5%"}} title={translate('manage_warehouse.bill_management.index')}>{translate('manage_warehouse.bill_management.index')}</th>
+                                                    <th style={{ width: "5%" }} title={translate('manage_warehouse.bill_management.index')}>{translate('manage_warehouse.bill_management.index')}</th>
                                                     <th title={translate('manage_warehouse.bill_management.good_code')}>{translate('manage_warehouse.bill_management.good_code')}</th>
                                                     <th title={translate('manage_warehouse.bill_management.good_name')}>{translate('manage_warehouse.bill_management.good_name')}</th>
                                                     <th title={translate('manage_warehouse.bill_management.unit')}>{translate('manage_warehouse.bill_management.unit')}</th>
@@ -738,25 +707,25 @@ class GoodReturnCreateForm extends Component {
                                                 </tr>
                                             </thead>
                                             <tbody id={`good-bill-create`}>
-                                            {
-                                                (typeof listGood === 'undefined' || listGood.length === 0) ? <tr><td colSpan={8}><center>{translate('task_template.no_data')}</center></td></tr> :
-                                                listGood.map((x, index) =>
-                                                    <tr key={index}>
-                                                        <td>{index + 1}</td>
-                                                        <td>{x.good.code}</td>
-                                                        <td>{x.good.name}</td>
-                                                        <td>{x.good.baseUnit}</td>
-                                                        <td>{x.quantity}</td>
-                                                        <td>{x.returnQuantity}</td>
-                                                        <td>{x.description}</td>
-                                                        <td>
-                                                            <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => this.handleEditGood(x, index)}><i className="material-icons"></i></a>
-                                                            <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => this.handleDeleteGood(index)}><i className="material-icons"></i></a>
-                                                        </td>
-                                                    </tr>
-                                                )
-                                            }
-                                        </tbody>
+                                                {
+                                                    (typeof listGood === 'undefined' || listGood.length === 0) ? <tr><td colSpan={8}><center>{translate('task_template.no_data')}</center></td></tr> :
+                                                        listGood.map((x, index) =>
+                                                            <tr key={index}>
+                                                                <td>{index + 1}</td>
+                                                                <td>{x.good.code}</td>
+                                                                <td>{x.good.name}</td>
+                                                                <td>{x.good.baseUnit}</td>
+                                                                <td>{x.quantity}</td>
+                                                                <td>{x.returnQuantity}</td>
+                                                                <td>{x.description}</td>
+                                                                <td>
+                                                                    <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => this.handleEditGood(x, index)}><i className="material-icons"></i></a>
+                                                                    <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => this.handleDeleteGood(index)}><i className="material-icons"></i></a>
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                }
+                                            </tbody>
                                         </table>
                                     </div>
                                 </fieldset>
