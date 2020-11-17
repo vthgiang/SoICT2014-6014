@@ -228,6 +228,21 @@ class InventoryManagement extends Component {
         return goodArr;
     }
 
+    totaQuantity = (stocks) => {
+        const { stock } = this.state; 
+        let result = 0;
+        for(let i = 0; i < stock.length; i++) {
+            let quantity = 0;
+            for(let j = 0; j < stocks.length; j++) {
+                if(stocks[j].stock.toString() === stock[i].toString()) {
+                    quantity += stocks[j].quantity;
+                }
+            }
+            result += quantity;
+        }
+        return result;
+    }
+
     render() {
 
         const { translate, lots, goods, stocks } = this.props;
@@ -341,7 +356,7 @@ class InventoryManagement extends Component {
                             {
                                 good ?
                                 <li>
-                                    <span className="text"><a href="#" onClick={() => this.handleShowDetailInfo(goodName.value)}>Số lượng tồn kho của {goodName.text} (xem thẻ kho)</a></span>
+                                    <span className="text">Số lượng tồn kho của {goodName.text} <a href="#" onClick={() => this.handleShowDetailInfo(goodName.value)}>(xem thẻ kho)</a></span>
                                     <span className="label label-success" style={{fontSize: '11px'}}>{quantityTotal} {goodName.baseUnit}</span>
                                 </li> : []
                             }
@@ -398,7 +413,7 @@ class InventoryManagement extends Component {
                                             <td>{index + 1}</td>
                                             <td>{x.good.name}</td>
                                             <td>{x.good.baseUnit}</td>
-                                            <td>{inventoryQuantity ? inventoryQuantity.map(y => {if(y.name === x.name) { return y.quantity}}) : 0}</td>
+                                            <td>{(stock && stock.length > 0) ? this.totaQuantity(x.stocks) : x. quantity}</td>
                                             <td>{x.name}</td>
                                             <td>{this.formatDate(x.expirationDate)}</td>
                                             <td style={{textAlign: 'center'}}>

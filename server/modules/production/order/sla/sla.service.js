@@ -181,5 +181,5 @@ exports.getSlaByGoodsId = async (goodId, portal) => {
 
         }
     })
-    return slasMap;
+    return { slas: slasMap };
 }

@@ -6,7 +6,6 @@ import { commandActions } from '../redux/actions';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { formatDate } from '../../../../../helpers/formatDate';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
-import { timesheets } from '../../../../human-resource/timesheets/redux/reducers';
 class ManufacturingCommandManagementTable extends Component {
     constructor(props) {
         super(props);

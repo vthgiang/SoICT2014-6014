@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { DialogModal, ErrorLabel, SelectBox, DatePicker } from "../../../../../common-components";
 import { connect } from "react-redux";
 import { formatToTimeZoneDate } from "../../../../../helpers/formatDate";
+import { formatDate } from "../../../../../helpers/formatDate";
 import { withTranslate } from "react-redux-multilingual";
 
 class CreateBonusGoods extends Component {
@@ -39,42 +40,45 @@ class CreateBonusGoods extends Component {
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
-        console.log("NEXT", nextProps, nextState);
-        if (nextProps.editDiscountDetail && this.state.editState && nextProps.bonusGoods.length) {
+        let enableIndexEdit =
+            this.props.indexEdittingDiscount !== nextProps.indexEdittingDiscount || nextState.discountCode !== nextProps.discountCode;
+        let bonusGoodsIsNotNull = nextProps.bonusGoods && nextProps.bonusGoods.length;
+
+        if (nextProps.editDiscountDetail && enableIndexEdit && bonusGoodsIsNotNull) {
             let { listGoods, goodOptions } = this.state;
+            goodOptions = [];
+            listGoods = [];
             // Lấy các thông tin của good đưa vào goodObject va day good vao listGoods
             const { goods } = this.props;
             const { listGoodsByType } = goods;
             listGoods = nextProps.bonusGoods.map((item) => {
                 let good = {};
-                let goodArrFilter = listGoodsByType.filter((x) => x._id === item.good);
+                let goodArrFilter = listGoodsByType.filter((x) => x._id === item.good._id);
                 if (goodArrFilter) {
                     good.goodObject = goodArrFilter[0];
-                    good.goodId = item.good;
+                    good.goodId = item.good._id;
                     good.quantityOfBonusGood = item.quantityOfBonusGood;
-                    good.expirationDateOfGoodBonus = item.expirationDateOfGoodBonus;
+                    good.expirationDateOfGoodBonus = formatDate(item.expirationDateOfGoodBonus);
                     good.baseUnit = item.baseUnit;
                 }
-
-                // listGoods.push(good);
 
                 // filter good ra khoi getAllGoods() va gan state vao goodOption
                 if (goodOptions.length === 0) {
                     goodOptions = this.getAllGoods().filter((x) => x.value !== good.goodId);
                 } else {
                     // Nếu state đang là goodOptions thi vẫn phải filter những thằng còn lại
-                    goodOptions = goodOptions.filter((x) => x.value !== item.good);
+                    goodOptions = goodOptions.filter((x) => x.value !== item.good._id);
                 }
                 return good;
             });
 
             // Cập nhật lại good state
-
             this.setState((state) => ({
                 ...state,
                 listGoods: [...listGoods],
                 goodOptions: [...goodOptions],
                 editState: false,
+                discountCode: nextProps.discountCode,
             }));
             return false;
         }
@@ -188,8 +192,6 @@ class CreateBonusGoods extends Component {
     handleAddGood = (e) => {
         e.preventDefault();
         let { listGoods, good } = this.state;
-        console.log("listGoods", listGoods);
-
         // Lấy các thông tin của good đưa vào goodObject va day good vao listGoods
         const { goods } = this.props;
         const { listGoodsByType } = goods;
@@ -283,17 +285,22 @@ class CreateBonusGoods extends Component {
         let { listGoods } = this.state;
         let dataSubmit = listGoods.map((good) => {
             return {
-                good: good.goodId,
+                good: {
+                    _id: good.goodId,
+                    name: good.goodObject.name,
+                    code: good.goodObject.code,
+                    baseUnit: good.goodObject.baseUnit,
+                },
                 expirationDateOfGoodBonus: good.expirationDateOfGoodBonus,
-                baseUnit: good.goodObject.baseUnit,
                 quantityOfBonusGood: good.quantityOfBonusGood,
-                name: good.goodObject.name,
-                code: good.goodObject.code,
             };
         });
-        console.log("dataSubmit", dataSubmit);
 
         this.props.handleSubmitBonusGoods(dataSubmit);
+        this.setState({
+            listGoods: [],
+            goodOptions: [],
+        });
     };
 
     isGoodValidated = () => {
@@ -316,7 +323,6 @@ class CreateBonusGoods extends Component {
         const { actionType } = this.props;
         const { goodOptions, good, listGoods, quantityOfBonusGoodError } = this.state;
         const { goodId, expirationDateOfGoodBonus, quantityOfBonusGood, baseUnit } = good;
-        console.log("STATE CREATE BONUS", this.state.listGoods);
         return (
             <DialogModal
                 modalID={`modal-${actionType}-discount-bonus-goods`}

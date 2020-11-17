@@ -11,8 +11,8 @@ class GoodReceiptCreateForm extends Component {
         super(props);
         this.EMPTY_GOOD = {
             good: '',
-            quantity: '',
-            returnQuantity: '',
+            quantity: 0,
+            returnQuantity: 0,
             description: '',
             lots: []
         }
@@ -617,6 +617,7 @@ class GoodReceiptCreateForm extends Component {
                                                     <th title={translate('manage_warehouse.bill_management.unit')}>{translate('manage_warehouse.bill_management.unit')}</th>
                                                     <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
                                                     <th title={translate('manage_warehouse.bill_management.note')}>{translate('manage_warehouse.bill_management.note')}</th>
+                                                    <th>{translate('task_template.action')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody id={`good-bill-create`}>

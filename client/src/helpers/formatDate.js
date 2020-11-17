@@ -4,7 +4,7 @@ export const formatDate = (date) => {
     let month = d.getMonth() + 1;
     let year = d.getFullYear();
 
-    if (month.length < 2)
+    if (month < 10)
         month = '0' + month;
 
     if (day.length < 2 || day < 10)
@@ -23,19 +23,19 @@ export const formatFullDate = (date) => {
     let month = d.getMonth() + 1;
     let year = d.getFullYear();
 
-    if (month.length < 2)
+    if (month < 10)
         month = '0' + month;
 
-    if (day.length < 2)
+    if (day < 10)
         day = '0' + day;
 
-    if (hour.length < 2)
+    if (hour < 10)
         hour = '0' + hour;
 
-    if (minute.length < 2)
+    if (minute < 10)
         minute = '0' + minute;
 
-    if (second.length < 2)
+    if (second < 10)
         second = '0' + second;
 
     //hh:mm:ss dd/mm/yyyy

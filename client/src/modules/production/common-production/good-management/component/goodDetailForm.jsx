@@ -105,11 +105,11 @@ class GoodDetailForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <strong>{"Giá một đơn vị tính cơ bản"}:&emsp;</strong>
-                                    {formatCurrency(pricePerBaseUnit)} (vnđ)
+                                    {pricePerBaseUnit ? `${formatCurrency(pricePerBaseUnit)} (vnđ)` : ""}
                                 </div>
                                 <div className="form-group">
                                     <strong>{"Phương sai giá bán"}:&emsp;</strong>
-                                    {formatCurrency(salesPriceVariance)} (vnđ)
+                                    {salesPriceVariance ? `${formatCurrency(salesPriceVariance)} (vnđ)` : ""}
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate("manage_warehouse.good_management.description")}:&emsp;</strong>

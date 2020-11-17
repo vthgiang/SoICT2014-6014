@@ -122,9 +122,11 @@ class SlaDetailForm extends Component {
                                                     );
                                                 })}
                                             {goods && goods.length > page * limitLoader ? (
-                                                <a style={{ cursor: "pointer" }} onClick={this.ShowMore}>
-                                                    Xem thêm
-                                                </a>
+                                                <div style={{ marginTop: "10px" }}>
+                                                    <a style={{ cursor: "pointer" }} onClick={this.ShowMore}>
+                                                        Xem thêm
+                                                    </a>
+                                                </div>
                                             ) : (
                                                 ""
                                             )}

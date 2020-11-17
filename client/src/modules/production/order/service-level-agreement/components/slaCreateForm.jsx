@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { generateCode } from "../../../../../helpers/generateCode";
-import { SLAActions } from "../redux/actions";
+import { SlaActions } from "../redux/actions";
 import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from "../../../../../common-components";
 import ValidationHelper from "../../../../../helpers/validationHelper";
 
@@ -382,7 +382,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    createNewSLA: SLAActions.createNewSLA,
+    createNewSLA: SlaActions.createNewSLA,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(SlaCreateForm));

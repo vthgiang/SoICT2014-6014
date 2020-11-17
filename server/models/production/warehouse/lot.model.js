@@ -29,11 +29,6 @@ const LotSchema = new Schema ({
             type: Number
         },
 
-        expectedNumber: {
-            type: Number,
-            default: 0
-        },
-
         binLocations: [{
             binLocation: {
                 type: Schema.Types.ObjectId,
@@ -89,6 +84,11 @@ const LotSchema = new Schema ({
         },
 
         stock: {
+            type: Schema.Types.ObjectId,
+            ref: 'Stock',
+        },
+
+        toStock: {
             type: Schema.Types.ObjectId,
             ref: 'Stock',
         },

@@ -1,7 +1,7 @@
 import { SLAConstants } from './constants';
 import { SLAServices } from './services';
 
-export const SLAActions = {
+export const SlaActions = {
     createNewSLA,
     getAllSLAs,
     getSLAById,
@@ -9,7 +9,8 @@ export const SLAActions = {
     disableSLA,
     checkSLACode,
     getSLAByCode,
-    deleteSLA
+    deleteSLA, 
+    getSlaByGoodsId
 }
 
 function createNewSLA (data) {
@@ -182,6 +183,28 @@ function deleteSLA (code) {
         .catch((error) => {
             dispatch({
                 type: SLAConstants.DELETE_SLA_BY_CODE_FAILURE,
+                error
+            })
+        })
+    }
+}
+
+function getSlaByGoodsId(goodId) {
+    return (dispatch) => {
+        dispatch({
+            type: SLAConstants.GET_SLA_BY_GOOD_ID_REQUEST
+        })
+
+        SLAServices.getSlaByGoodsId(goodId)
+        .then((res) => {
+            dispatch({
+                type: SLAConstants.GET_SLA_BY_GOOD_ID_SUCCESS,
+                payload: res.data.content
+            })
+        })
+        .catch((error) => {
+            dispatch({
+                type: SLAConstants.GET_SLA_BY_GOOD_ID_FAILURE,
                 error
             })
         })

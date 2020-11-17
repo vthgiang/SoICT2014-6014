@@ -94,8 +94,6 @@ exports.createGoodByType = async (company, data, portal) => {
         salesPriceVariance: data.salesPriceVariance
     });
 
-    console.log("good", good);
-
     return await Good(connect(DB_CONNECTION, portal))
         .findById(good._id)
         .populate([
@@ -145,7 +143,6 @@ exports.editGood = async (id, data, portal) => {
         good.pricePerBaseUnit = data.pricePerBaseUnit,
         good.salesPriceVariance = data.salesPriceVariance
     await good.save();
-    console.log("data", good);
 
     return await Good(connect(DB_CONNECTION, portal))
         .findById(id)

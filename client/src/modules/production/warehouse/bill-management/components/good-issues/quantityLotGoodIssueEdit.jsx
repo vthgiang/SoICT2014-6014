@@ -225,7 +225,7 @@ class QuantityLotGoodIssueEdit extends Component {
                 <DialogModal
                     modalID={`modal-edit-quantity-issue`}
                     formID={`form-edit-quantity-issue`}
-                    title="Thêm số lượng theo lô"
+                    title="Sửa số lượng theo lô"
                     msg_success={translate('manage_warehouse.bill_management.add_success')}
                     msg_faile={translate('manage_warehouse.bill_management.add_faile')}
                     disableSubmit={!this.isFormValidated()}
@@ -239,7 +239,7 @@ class QuantityLotGoodIssueEdit extends Component {
                         <div className={`form-group ${!errorLot ? "" : "has-error"}`}>
                             <label>{translate('manage_warehouse.bill_management.lot_number')}<span className="attention">*</span></label>
                             <SelectBox
-                                id={`select-lot-issue-by-${group}`}
+                                id={`select-lot-issue-edit-by-${group}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 value={lot.lot ? lot.lot._id : '1'}
