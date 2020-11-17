@@ -181,8 +181,8 @@ class TaskAddModal extends Component {
         }
     }
 
-    handleChangeCollaboratedWithOrganizationalUnits = (value) => {
-        this.setState(state => {
+    handleChangeCollaboratedWithOrganizationalUnits = async (value) => {
+        await this.setState(state => {
             return {
                 ...state,
                 newTask: { // update lại name,description và reset các selection phía sau
@@ -191,6 +191,7 @@ class TaskAddModal extends Component {
                 }
             };
         });
+        console.log('new Task', this.state.newTask);
     }
 
     handleChangeTaskTemplate = async (event) => {
@@ -227,6 +228,7 @@ class TaskAddModal extends Component {
                     ...state,
                     newTask: { // update lại name,description và reset các selection phía sau
                         ...this.state.newTask,
+                        collaboratedWithOrganizationalUnits: taskTemplate.collaboratedWithOrganizationalUnits.map(item => { return { "organizationalUnit": item._id } }),
                         name: taskTemplate.name,
                         description: taskTemplate.description,
                         priority: taskTemplate.priority,
@@ -489,7 +491,7 @@ class TaskAddModal extends Component {
                                         })}
                                         options={{ placeholder: translate('kpi.evaluation.dashboard.select_units') }}
                                         onChange={this.handleChangeCollaboratedWithOrganizationalUnits}
-                                        value={collaboratedWithOrganizationalUnits}
+                                        value={newTask.collaboratedWithOrganizationalUnits?.map(e => e.organizationalUnit)}
                                         multiple={true}
                                     />
                                 </div>

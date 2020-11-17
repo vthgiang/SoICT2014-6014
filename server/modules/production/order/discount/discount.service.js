@@ -31,6 +31,7 @@ exports.createNewDiscount = async (userId, data, portal) => {
                 maximumThresholdToBeApplied: item.maximumThresholdToBeApplied,
                 customerType: item.customerType,
                 bonusGoods: item.bonusGoods ? item.bonusGoods.map((good) => {
+                    console.log("bonus",good);
                     return {
                         good: good.good,
                         quantityOfBonusGood: good.quantityOfBonusGood,
@@ -65,7 +66,27 @@ exports.createNewDiscount = async (userId, data, portal) => {
 
 exports.getAllDiscounts = async (query, portal) => {
     let { page, limit } = query;
-    let option = {};
+    let option = {}
+    console.log(query.queryDate);
+
+    if (query.queryDate) {
+        switch (query.queryDate) {
+            case "expire": option.expirationDate = { $lt: new Date(), $exists: true }; break;
+            case "effective":
+                option = {
+                    $or: [{ effectiveDate: { $lte: new Date() }, expirationDate: { $gte: new Date() } },
+                        { effectiveDate: { $lte: new Date() }, expirationDate: null  },
+                        { effectiveDate: null, expirationDate: { $gte: new Date()}  },
+                        { effectiveDate: null, expirationDate: null }],
+                };
+                
+                break;
+            case "upcoming": option = { $or: [{expirationDate:{ $gte: new Date(), $exists: true } }, {expirationDate: null}] }; break;
+            case "all": break;
+            default: 
+        }
+    }
+
     if (query.code) {
         option.code = new RegExp(query.code, "i")
     }
@@ -73,9 +94,7 @@ exports.getAllDiscounts = async (query, portal) => {
         option.name = new RegExp(query.name, "i")
     }
 
-    if (query.status) {
-        option.status = query.status == 'true' ? true : false;
-    }
+    console.log(option);
     option.lastVersion = true;
 
     if (!page || !limit) {
@@ -84,7 +103,7 @@ exports.getAllDiscounts = async (query, portal) => {
             .populate([{
                 path: 'creator', select: 'name'
             }, {
-                path: 'discounts.bonusGoods.good', select: 'name code'
+                path: 'discounts.bonusGoods.good', select: 'name code baseUnit'
             }, {
                 path: 'discounts.discountOnGoods.good', select: 'name code'
             }])
@@ -97,7 +116,7 @@ exports.getAllDiscounts = async (query, portal) => {
                 populate: [{
                     path: 'creator', select: 'name'
                 }, {
-                    path: 'discounts.bonusGoods.good', select: 'name code'
+                    path: 'discounts.bonusGoods.good', select: 'name code baseUnit'
                 }, {
                     path: 'discounts.discountOnGoods.good', select: 'name code'
                 }]
@@ -110,7 +129,6 @@ exports.getAllDiscounts = async (query, portal) => {
 
 exports.editDiscount = async (userId, id, data, portal) => {
     let oldDiscount = await Discount(connect(DB_CONNECTION, portal)).findById(id);
-    console.log(oldDiscount);
     if (!oldDiscount) {
         throw Error("Discount is not existing")
     }
@@ -193,6 +211,51 @@ exports.deleteDiscountByCode = async (code, portal) => {
         discountsDeleted.push(discountDeleted);
     }
     return discountsDeleted;
+}
+
+exports.getDiscountByGoodsId = async (query, portal) => {
+    let { goodId, quantity } = query;
+    
+    let queryDate = 
+    [{ effectiveDate: { $lte: new Date() }, expirationDate: { $gte: new Date() } },
+    { effectiveDate: { $lte: new Date() }, expirationDate: null },
+    { effectiveDate: null, expirationDate: { $gte: new Date() } },
+    { effectiveDate: null, expirationDate: null }];
+
+    let discounts = await Discount(connect(DB_CONNECTION, portal)).find({
+        discounts:
+            { $elemMatch: { discountOnGoods: { $elemMatch: { good: goodId } } } },
+        lastVersion: true,
+        status: true,
+        type: 1,
+        $or: queryDate,
+    });
+    if (!discounts) {
+        throw Error("No discount for good!")
+    }
+
+    return { discounts };
+}
+
+exports.getDiscountForOrderValue = async (query, portal) => {
+
+    let queryDate =
+    [{ effectiveDate: { $lte: new Date() }, expirationDate: { $gte: new Date() } },
+    { effectiveDate: { $lte: new Date() }, expirationDate: null },
+    { effectiveDate: null, expirationDate: { $gte: new Date() } },
+    { effectiveDate: null, expirationDate: null }];
+
+    let discounts = await Discount(connect(DB_CONNECTION, portal)).find({
+        lastVersion: true,
+        status: true,
+        type: 0,
+        $or: queryDate,
+    });
+    if (!discounts) {
+        throw Error("No discount for order value!")
+    }
+
+    return { discounts };
 }
 
 

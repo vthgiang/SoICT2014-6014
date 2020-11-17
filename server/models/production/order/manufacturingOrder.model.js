@@ -9,12 +9,12 @@ const ManufacturingOrderSchema = new Schema({
     },
     status: { //1: Chờ phê duyệt, 2: Đã phê duyệt, 3: Đang sản xuất, 4: Hoàn thành, 5: Đã hủy
         type: Number,
-        enum: [ 1, 2, 3, 4, 5 ],
+        enum: [1, 2, 3, 4, 5],
         required: true
     },
     type: { //1: Sản xuất từ đơn đề nghị, 2: Sản xuất từ đơn kinh doanh, 3: Sản xuất tồn kho
         type: Number,
-        enum: [ 1, 2, 3 ],
+        enum: [1, 2, 3],
         required: true
     },
     deadline: {
@@ -41,7 +41,7 @@ const ManufacturingOrderSchema = new Schema({
     },
     priority: { //1: Thấp, 2: Trung bình, 3: Cao, 4: Khẩn cấp 
         type: Number,
-        enum: [ 1, 2, 3, 4 ],
+        enum: [1, 2, 3, 4],
         required: true
     },
     proposalOrders: [{
@@ -55,7 +55,7 @@ const ManufacturingOrderSchema = new Schema({
         },
         status: { //1: Chưa hoàn thành, 2: Đã hoàn thành
             type: Number,
-            enum: [ 1, 2 ],
+            enum: [1, 2],
             required: true
         }
     }],
@@ -70,7 +70,7 @@ const ManufacturingOrderSchema = new Schema({
         },
         status: { //1: Chưa hoàn thành, 2: Đã hoàn thành
             type: Number,
-            enum: [ 1, 2 ],
+            enum: [1, 2],
             required: true
         }
     }],
@@ -100,7 +100,7 @@ const ManufacturingOrderSchema = new Schema({
 ManufacturingOrderSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
-    if (db.models.ManufacturingOrder)
+    if (!db.models.ManufacturingOrder)
         return db.model('ManufacturingOrder', ManufacturingOrderSchema)
     return db.models.ManufacturingOrder
 }

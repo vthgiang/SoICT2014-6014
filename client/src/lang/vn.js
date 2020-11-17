@@ -2016,7 +2016,7 @@ export default {
             general_information: {
                 view_more: 'Xem thêm',
                 asset: 'Tài sản',
-                asset_list: 'Dang sách tài sản',
+                asset_list: 'Danh sách tài sản',
                 search: 'Tìm kiếm',
                 add: 'Thêm',
                 basic_information: 'Thông tin cơ bản',
@@ -3910,7 +3910,12 @@ export default {
                 validate_norm: 'Bạn đã nhập quá số lượng tồn kho',
                 add_lot: 'Thêm mới lô hàng',
                 expiration_date: 'Ngày hết hạn',
-                validate_norm: 'Bạn đã nhập quá số lượng tồn kho'
+                validate_norm: 'Bạn đã nhập quá số lượng tồn kho',
+                quantity_return: 'Số lượng trả lại',
+                quantity_issue: 'Số lượng xuất ra',
+                bill_issued: 'Đơn đã xuất',
+                choose_bill: 'Chọn đơn hàng',
+                users: 'Những người thực hiện'
 
             },
             inventory_management: {

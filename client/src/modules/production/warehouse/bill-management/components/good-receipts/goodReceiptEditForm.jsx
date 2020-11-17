@@ -12,8 +12,8 @@ class GoodReceiptEditForm extends Component {
         super(props);
         this.EMPTY_GOOD = {
             good: '',
-            quantity: '',
-            returnQuantity: '',
+            quantity: 0,
+            returnQuantity: 0,
             description: '',
             lots: []
         }

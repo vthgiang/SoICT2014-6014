@@ -6,6 +6,7 @@ export const BillServices = {
     getDetailBill,
     createBill,
     editBill,
+    getBillsByStatus
 }
 
 function getBillsByType(params) {
@@ -45,4 +46,12 @@ function editBill(id, data) {
         method: 'PATCH',
         data
     }, true, true, 'manage_warehouse.bill_management');
+}
+
+function getBillsByStatus(params) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/bills/get-bill-by-status`,
+        method: 'GET',
+        params
+    }, false, true, 'manage_warehouse.bill_management');
 }

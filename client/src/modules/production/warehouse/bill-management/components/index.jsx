@@ -33,8 +33,8 @@ class BillManagement extends Component {
 
     componentDidMount() {
         const { limit, page } = this.state;
-        this.props.getBillsByType();
         this.props.getBillsByType({ page, limit });
+        this.props.getBillsByType();
         this.props.getAllStocks();
         this.props.getUser();
         this.props.getAllGoods();

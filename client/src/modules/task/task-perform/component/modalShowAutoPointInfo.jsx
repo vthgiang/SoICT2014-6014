@@ -60,15 +60,15 @@ class ModalShowAutoPointInfo extends Component {
         let numberOfPassedAction = actions.filter(act => act.rating >= 5).length;
         let numberOfFailedAction = actions.filter(act => act.rating < 5).length;
 
+        // Tổng số hoạt động
+        let a = actionRating.length;
+
         let noteNotHasFailedAndPassedAction = '';
         if ((numberOfPassedAction === 0 && numberOfFailedAction === 0) || a === 0) {
             numberOfPassedAction = 1;
             numberOfFailedAction = 1;
             noteNotHasFailedAndPassedAction = translate('task.task_management.explain_not_has_failed_and_passed_action');
         }
-
-        // Tổng số hoạt động
-        let a = actionRating.length;
 
         // Tổng số điểm của các hoạt động
         let reduceAction = actionRating.reduce((accumulator, currentValue) => accumulator + currentValue, 0);

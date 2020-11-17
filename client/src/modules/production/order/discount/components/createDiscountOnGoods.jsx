@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { DialogModal, ErrorLabel, SelectBox, DatePicker } from "../../../../../common-components";
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import { connect } from "react-redux";
+import { formatDate } from "../../../../../helpers/formatDate";
 import { withTranslate } from "react-redux-multilingual";
 
 class CreateDiscountOnGoods extends Component {
@@ -10,7 +11,7 @@ class CreateDiscountOnGoods extends Component {
         this.EMPTY_GOOD = {
             goodId: "1",
             goodObject: "",
-            expirationDateOfDiscountOnGood: "",
+            expirationDate: "",
             discountedPrice: "",
         };
         this.state = {
@@ -28,7 +29,7 @@ class CreateDiscountOnGoods extends Component {
                 good: {
                     goodId: "1",
                     goodObject: "",
-                    expirationDateOfDiscountOnGood: "",
+                    expirationDate: "",
                     discountedPrice: "",
                 },
                 discountType: nextProps.discountType,
@@ -36,6 +37,50 @@ class CreateDiscountOnGoods extends Component {
             };
         }
     }
+
+    shouldComponentUpdate = (nextProps, nextState) => {
+        let enableIndexEdit =
+            this.props.indexEdittingDiscount !== nextProps.indexEdittingDiscount || nextState.discountCode !== nextProps.discountCode;
+        let discountOnGoodsIsNotNull = nextProps.discountOnGoods && nextProps.discountOnGoods.length;
+
+        if (nextProps.editDiscountDetail && enableIndexEdit && discountOnGoodsIsNotNull) {
+            let { listGoods, goodOptions } = this.state;
+            goodOptions = [];
+            listGoods = [];
+            // Lấy các thông tin của good đưa vào goodObject va day good vao listGoods
+            const { goods } = this.props;
+            const { listGoodsByType } = goods;
+            listGoods = nextProps.discountOnGoods.map((item) => {
+                let good = {};
+                let goodArrFilter = listGoodsByType.filter((x) => x._id === item.good._id);
+                if (goodArrFilter) {
+                    good.goodObject = goodArrFilter[0];
+                    good.goodId = item.good._id;
+                    good.expirationDate = formatDate(item.expirationDate);
+                    good.discountedPrice = item.discountedPrice;
+                }
+
+                // filter good ra khoi getAllGoods() va gan state vao goodOption
+                if (goodOptions.length === 0) {
+                    goodOptions = this.getAllGoods().filter((x) => x.value !== good.goodId);
+                } else {
+                    // Nếu state đang là goodOptions thi vẫn phải filter những thằng còn lại
+                    goodOptions = goodOptions.filter((x) => x.value !== item.good._id);
+                }
+                return good;
+            });
+
+            // Cập nhật lại good state
+            this.setState((state) => ({
+                ...state,
+                listGoods: [...listGoods],
+                goodOptions: [...goodOptions],
+                discountCode: nextProps.discountCode,
+            }));
+            return false;
+        }
+        return true;
+    };
 
     getAllGoods = () => {
         const { translate, goods } = this.props;
@@ -109,7 +154,7 @@ class CreateDiscountOnGoods extends Component {
             value = null;
         }
         let { good } = this.state;
-        good.expirationDateOfDiscountOnGood = value;
+        good.expirationDate = value;
         this.setState({
             ...this.state,
             good: { ...good },
@@ -239,11 +284,13 @@ class CreateDiscountOnGoods extends Component {
         let { listGoods } = this.state;
         let dataSubmit = listGoods.map((good) => {
             return {
-                good: good.goodId,
-                expirationDate: good.expirationDateOfDiscountOnGood,
+                good: {
+                    _id: good.goodId,
+                    name: good.goodObject.name,
+                    code: good.goodObject.code,
+                },
+                expirationDate: good.expirationDate,
                 discountedPrice: good.discountedPrice,
-                name: good.goodObject.name,
-                code: good.goodObject.code,
             };
         });
 
@@ -269,7 +316,7 @@ class CreateDiscountOnGoods extends Component {
         const { translate } = this.props;
         const { actionType } = this.props;
         const { goodOptions, good, listGoods, discountedPriceError } = this.state;
-        const { goodId, discountedPrice, expirationDateOfDiscountOnGood } = good;
+        const { goodId, discountedPrice, expirationDate } = good;
         return (
             <DialogModal
                 modalID={`modal-${actionType}-discount-on-goods`}
@@ -302,7 +349,7 @@ class CreateDiscountOnGoods extends Component {
                             <label>Hạn sử dụng</label>
                             <DatePicker
                                 id={`date_picker_${actionType}_discount_expiration_date_of_discount_on_good`}
-                                value={expirationDateOfDiscountOnGood}
+                                value={expirationDate}
                                 onChange={this.handleChangeExpirationDate}
                                 disabled={false}
                             />
@@ -377,7 +424,7 @@ class CreateDiscountOnGoods extends Component {
                                             <td>{index + 1}</td>
                                             <td>{good.goodObject.code}</td>
                                             <td>{good.goodObject.name}</td>
-                                            <td>{good.expirationDateOfDiscountOnGood}</td>
+                                            <td>{good.expirationDate}</td>
                                             <td>{formatCurrency(good.discountedPrice)}</td>
                                             <td>
                                                 <a href="#abc" className="edit" title="Sửa" onClick={() => this.handleEditGood(good, index)}>

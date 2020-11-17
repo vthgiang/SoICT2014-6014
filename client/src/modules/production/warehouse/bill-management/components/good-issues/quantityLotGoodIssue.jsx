@@ -239,7 +239,7 @@ class QuantityLotGoodIssue extends Component {
                         <div className={`form-group ${!errorLot ? "" : "has-error"}`}>
                             <label>{translate('manage_warehouse.bill_management.lot_number')}<span className="attention">*</span></label>
                             <SelectBox
-                                id={`select-lot-issue-by-${group}`}
+                                id={`select-lot-issue-create-by-${group}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 value={lot.lot ? lot.lot._id : '1'}
