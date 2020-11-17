@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { SelectMulti, DatePicker, DataTableSetting, PaginateBar } from '../../../../../../common-components';
 
 import BillDetailForm from '../genaral/billDetailForm';
-import BillEditForm from '../genaral/billEditForm';
+import StockTakeEditForm from './stockTakeEditForm';
 import StockTakeCreateForm from './stockTakeCreateForm';
 
 class TakeManagement extends Component {
@@ -25,7 +25,7 @@ class TakeManagement extends Component {
             }
         })
 
-        window.$('#modal-edit-bill').modal('show');
+        window.$('#modal-edit-bill-take').modal('show');
     }
     
     render() {
@@ -132,7 +132,7 @@ class TakeManagement extends Component {
                     <BillDetailForm />
                     {
                         currentRow &&
-                        <BillEditForm 
+                        <StockTakeEditForm 
                             billId={currentRow._id}
                             fromStock={currentRow.fromStock ? currentRow.fromStock._id : null}
                             code={currentRow.code}
@@ -141,10 +141,6 @@ class TakeManagement extends Component {
                             status={currentRow.status}
                             users={currentRow.users}
                             approver={currentRow.approver ? currentRow.approver._id : null}
-                            name={currentRow.receiver ? currentRow.receiver.name : ''}
-                            phone={currentRow.receiver ? currentRow.receiver.phone : ''}
-                            email={currentRow.receiver ? currentRow.receiver.email : ''}
-                            address={currentRow.receiver ? currentRow.receiver.address : ''}
                             description={currentRow.description}
                             listGood={currentRow.goods}
                         />

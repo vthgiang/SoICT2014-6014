@@ -15,6 +15,7 @@ class StockTakeCreateForm extends Component {
             good: '',
             quantity: '',
             realQuantity: '',
+            damagedQuantity: 0,
             description: '',
             lots: []
         }
@@ -156,6 +157,7 @@ class StockTakeCreateForm extends Component {
                     ...state,
                     fromStock: value,
                     errorStock: msg,
+                    listGood: []
                 }
             })
         }
@@ -236,20 +238,20 @@ class StockTakeCreateForm extends Component {
         return result;
     }
 
-    handleLotsChange = (data) => {
-        let totalQuantity = data.length > 0 ? data.reduce(function (accumulator, currentValue) {
-            return Number(accumulator) + Number(currentValue.quantity);
-          }, 0) : 0;
-        this.state.good.quantity = totalQuantity;
-        this.state.good.lots = data;
-        this.setState(state => {
-            return {
-                ...state,
-                lots: data,
-                quantity: totalQuantity
-            }
-        })
-    }
+    // handleLotsChange = (data) => {
+    //     let totalQuantity = data.length > 0 ? data.reduce(function (accumulator, currentValue) {
+    //         return Number(accumulator) + Number(currentValue.quantity);
+    //       }, 0) : 0;
+    //     this.state.good.quantity = totalQuantity;
+    //     this.state.good.lots = data;
+    //     this.setState(state => {
+    //         return {
+    //             ...state,
+    //             lots: data,
+    //             quantity: totalQuantity
+    //         }
+    //     })
+    // }
 
     handleQuantityChange = (e) => {
         let value = e.target.value;
@@ -263,6 +265,7 @@ class StockTakeCreateForm extends Component {
 
     handleAddGood = async (e) => {
         e.preventDefault();
+        this.state.good.realQuantity = this.state.good.quantity;
         await this.setState(state => {
             let listGood = [ ...(this.state.listGood), state.good];
             return {
@@ -380,8 +383,7 @@ class StockTakeCreateForm extends Component {
     }
 
     save =async () => {
-        const { fromStock, code, toStock, type, status, users, approver, customer, supplier, 
-            name, phone, email, address, description, listGood } = this.state;
+        const { fromStock, code, toStock, type, status, users, approver, customer, supplier, description, listGood } = this.state;
         const { group } = this.props;
         await this.props.createBill({
             fromStock: fromStock,
@@ -394,10 +396,6 @@ class StockTakeCreateForm extends Component {
             approver: approver,
             customer: customer,
             supplier: supplier,
-            name: name,
-            phone: phone,
-            email: email,
-            address: address,
             description: description,
             goods: listGood
         })
@@ -411,7 +409,6 @@ class StockTakeCreateForm extends Component {
         
         const dataStock = this.getStock();
         const dataType = this.getType();
-        console.log(lots);
 
         let quantity = 0;
         if(listLot && listLot.length > 0){
@@ -452,7 +449,7 @@ class StockTakeCreateForm extends Component {
                                         <div className={`form-group ${!errorType ? "" : "has-error"}`}>
                                             <label>{translate('manage_warehouse.bill_management.type')}<span className="attention"> * </span></label>
                                             <SelectBox
-                                                id={`select-type-issue-create`}
+                                                id={`select-type-take-create`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 value={type}
@@ -465,7 +462,7 @@ class StockTakeCreateForm extends Component {
                                         <div className={`form-group`}>
                                             <label>{translate('manage_warehouse.bill_management.status')}</label>
                                             <SelectBox
-                                                id={`select-status-issue-create`}
+                                                id={`select-status-take-create`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 value={status}
@@ -486,7 +483,7 @@ class StockTakeCreateForm extends Component {
                                         <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
                                             <label>{translate('manage_warehouse.bill_management.stock')}<span className="attention"> * </span></label>
                                             <SelectBox
-                                                id={`select-stock-bill-create`}
+                                                id={`select-stock-bill-take-create`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 value={fromStock}
@@ -499,7 +496,7 @@ class StockTakeCreateForm extends Component {
                                         <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
                                             <label>{translate('manage_warehouse.bill_management.approved')}<span className="attention"> * </span></label>
                                             <SelectBox
-                                                id={`select-approver-bill-create`}
+                                                id={`select-approver-bill-take-create`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 value={approver}
@@ -512,7 +509,7 @@ class StockTakeCreateForm extends Component {
                                         <div className={`form-group ${!errorUsers ? "" : "has-error"}`}>
                                             <label>{translate('manage_warehouse.bill_management.users')}<span className="attention"> * </span></label>
                                             <SelectBox
-                                                id={`select-management-location-stock`}
+                                                id={`select-management-location-take-stock`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 value={users}
@@ -539,7 +536,7 @@ class StockTakeCreateForm extends Component {
                                         <div className="form-group">
                                             <label>{translate('manage_warehouse.bill_management.choose_good')}</label>
                                             <SelectBox
-                                                id={`select-good-issue-create`}
+                                                id={`select-good-take-create`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 value={good.good ? good.good._id : '1'}
@@ -588,7 +585,7 @@ class StockTakeCreateForm extends Component {
                                             </thead>
                                             <tbody id={`good-bill-create`}>
                                             {
-                                                (typeof listGood === 'undefined' || listGood.length === 0) ? <tr><td colSpan={7}><center>{translate('task_template.no_data')}</center></td></tr> :
+                                                (typeof listGood === 'undefined' || listGood.length === 0) ? <tr><td colSpan={8}><center>{translate('task_template.no_data')}</center></td></tr> :
                                                 listGood.map((x, index) =>
                                                     <tr key={index}>
                                                         <td>{index + 1}</td>
