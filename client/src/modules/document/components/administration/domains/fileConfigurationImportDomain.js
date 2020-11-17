@@ -8,41 +8,56 @@ export const configDomain = {
         value: 1
     },
     name: {
-        columnName: "Tên danh mục",
-        description: "Tên tiêu đề ứng với tên danh mục",
-        value: "Tên danh mục"
+        columnName: "Tên lĩnh vực",
+        description: "Tên tiêu đề ứng với tên lĩnh vực",
+        value: "Tên lĩnh vực"
     },
     description: {
-        columnName: "Mô tả danh mục",
-        description: "Tên tiêu đề ứng với mô tả danh mục",
-        value: "Mô tả danh mục"
+        columnName: "Mô tả lĩnh vực",
+        description: "Tên tiêu đề ứng với mô tả lĩnh vực",
+        value: "Mô tả lĩnh vực"
     },
     parent: {
-        columnName: "Tên danh mục cha",
-        description: "Tên tiêu đề ứng với tên danh mục cha",
-        value: "Tên danh mục cha"
+        columnName: "Tên lĩnh vực cha",
+        description: "Tên tiêu đề ứng với tên lĩnh vực cha",
+        value: "Tên lĩnh vực cha"
     },
 }
 export const exportDomain = {
-    fileName: "Mẫu import danh mục",
+    fileName: "Mẫu import lĩnh vực",
     dataSheets: [{
         sheetName: "Sheet1",
-        sheetTitle: "Danh sách danh mục",
+        sheetTitle: "Danh sách lĩnh vực",
         tables: [{
             rowHeader: 1,
             columns: [
-                { key: "name", value: "Tên danh mục" },
-                { key: "description", value: "Mô tả danh mục" },
-                { key: "parent", value: "Tên danh mục cha" },
+                { key: "name", value: "Tên lĩnh vực", width: 40, vertical: 'middle', horizontal: 'center' },
+                { key: "description", value: "Mô tả lĩnh vực", width: 60, vertical: 'middle', horizontal: 'center' },
+                { key: "parent", value: "Tên lĩnh vực cha", width: 40, vertical: 'middle', horizontal: 'center' },
             ],
+            styleColumn: {
+                STT: {                                  // Khoá tương ứng của tiêu đề bảng (key)
+                    vertical: 'middle',
+                    horizontal: 'center'
+                },
+                name: {                                  // Khoá tương ứng của tiêu đề bảng (key)
+                    vertical: 'middle',
+                    //horizontal: 'center'
+                },
+                description: {                                  // Khoá tương ứng của tiêu đề bảng (key)
+                    vertical: 'middle',
+                    //  horizontal: 'center'
+                },
+
+            },
             data: [
                 {
-                    name: "Hello",
-                    description: "xin chào",
+                    name: "Tài liệu thông tin công ty",
+                    description: "Tài liệu thông tin công ty",
                 },
                 {
-                    name: "abc",
-                    pathParent: "Hello",
+                    name: "Hồ sơ nhân sự",
+                    parent: "Tài liệu thông tin công ty",
                 },
 
             ]

@@ -2016,7 +2016,7 @@ export default {
             general_information: {
                 view_more: 'Xem thêm',
                 asset: 'Tài sản',
-                asset_list: 'Dang sách tài sản',
+                asset_list: 'Danh sách tài sản',
                 search: 'Tìm kiếm',
                 add: 'Thêm',
                 basic_information: 'Thông tin cơ bản',
@@ -3020,6 +3020,8 @@ export default {
                 error_task_template_creator_null: 'Nguời tạo mẫu công việc này không tồn tại hoặc đã bị xóa !',
                 error_task_template_organizational_unit: 'Phòng ban của mẫu công việc này không tồn tại hoặc đã bị xóa !',
                 view_task_process_template: 'Xem mẫu quy trình công việc',
+                import_task_template_success: 'Thêm mẫu công việc thành công',
+                import_task_template_faile: 'Thêm mẫu công việc thất bại !'
             }
         },
 

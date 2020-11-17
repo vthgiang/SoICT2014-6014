@@ -634,7 +634,7 @@ class TaskManagement extends Component {
                                     { value: "Tháng hiện tại", text: translate('task.task_management.current_month') }
                                 ]}
                                 onChange={this.handleSelectSpecial}
-                                options={{ nonSelectedText: translate('task.task_management.select_role'), allSelectedText: translate('task.task_management.select_all_role') }}>
+                                options={{ nonSelectedText: translate('task.task_management.select_special'), allSelectedText: translate('task.task_management.select_all_special') }}>
                             </SelectMulti>
                         </div>
                         <div className="form-group">

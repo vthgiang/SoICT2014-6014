@@ -112,6 +112,7 @@ class CalendarOrganizationUnit extends Component {
                     let responsibleEmployeeIds = [];
                     let responsibleEmployeeNames = [];
                     let addDate;
+                    let fontColor = (tasksByStatus[i - 1] && tasksByStatus[i - 1].status === "inprocess") ? "rgba(0, 0, 0, 0.8)" : "#555"
 
                     currentTime = new Date();
 
@@ -164,7 +165,7 @@ class CalendarOrganizationUnit extends Component {
 
                         itemProps: {
                             style: {
-                                color: "rgb(0, 0, 0, 0.8)",
+                                color: fontColor,
                                 borderStyle: "solid",
                                 fontWeight: '600',
                                 fontSize: 14,

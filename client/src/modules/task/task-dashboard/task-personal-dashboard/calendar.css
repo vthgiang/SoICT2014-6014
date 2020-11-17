@@ -55,13 +55,12 @@
     padding: 20px 0px 0px 5px;
   }
   .rct-items .rct-item {
-    background: #ECF0F5;
+    background: #ECF0F5 !important;
     /* border: #000000 ; */
   }
   .task-background {
     background: #CCC !important;
     border: none !important;
-    /* background: red !important; */
   }
   
   
