@@ -47,26 +47,33 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
                     dataStatus: this.DATA_STATUS.QUERYING
                 }
             });
+
             return false;
         } else if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
             if (!nextProps.createEmployeeKpiSet.employeeKpiSetByMonth)
                 return false;
+            
             this.setState(state => {
                 return {
                     ...state,
                     dataStatus: this.DATA_STATUS.AVAILABLE
                 };
             });
+
             return false;
         } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE) {
             this.multiLineChart();
+
             this.setState(state => {
                 return {
                     ...state,
                     dataStatus: this.DATA_STATUS.FINISHED
                 };
             });
+
+            return true
         }
+
         return false;
     }
 
@@ -125,6 +132,7 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
                 return this.setDataMultiLineChart(kpi);
             })
         }
+
         return dataChart;
     }
 
@@ -175,7 +183,6 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
 
         const { translate } = this.props;
         let dataMultiLineChart = this.filterEmloyeeKpiSetSameOrganizationaUnit();
-        
         if (dataMultiLineChart && dataMultiLineChart.length !== 0) {
             dataMultiLineChart.map(data => {
                 let div = document.createElement('div');
@@ -250,19 +257,19 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
     convertDataToExportData = (data,name) => {
         let convertedData=[],names = name.split("("),temp;
-        let fileName = "Kết quả KPI "+ (names?names[0]:"") +" theo từng tháng ";               
+        let fileName = "Kết quả KPI " + (names?names[0]:"") + " theo từng tháng ";               
         if (data) {      
-            for(let i=0; i< data.length;i++){
-                for(let j=0; j< data[i].length;j++)
+            for (let i = 0; i < data.length; i++) {
+                for (let j = 0; j < data[i].length; j++)
                 {
                    convertedData.push(data[i][j])
                 }    
             }
             let d1, d2;
             //Sap xep tap kpi theo thu tu thoi gian
-            for(let i=0; i< convertedData.length-1;i++)
+            for (let i = 0; i < convertedData.length - 1; i++)
             {
-                for(let j=i+1;j<convertedData.length;j++)
+                for(let j = i + 1; j < convertedData.length; j++)
                 {
                     d1= new Date(convertedData[i].date);
                     d2= new Date(convertedData[j].date)
@@ -276,18 +283,18 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
             }
                          
 
-            for(let i=0; i< convertedData.length;i++){
-                let d =new Date(convertedData[i].date);
-                convertedData[i]["time"]=d;
-                convertedData[i]["STT"]=i+1;
-                convertedData[i]["unit"] =convertedData[i].organizationalUnit.name
+            for (let i = 0; i < convertedData.length; i++){
+                let d = new Date(convertedData[i].date);
+                convertedData[i]["time"] = d;
+                convertedData[i]["STT"] = i+1;
+                convertedData[i]["unit"] = convertedData[i].organizationalUnit.name
             }
         }     
             
 
         let exportData = {
             fileName: fileName,
-            dataSheets:[
+            dataSheets: [
                 {
                     sheetName: "sheet1" ,
                     sheetTitle : fileName,
