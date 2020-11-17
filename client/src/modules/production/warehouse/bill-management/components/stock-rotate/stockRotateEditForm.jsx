@@ -404,7 +404,10 @@ class StockRotateEditForm extends Component {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
     getStatus = () => {
         const { translate } = this.props;
         const { oldStatus } = this.state;
@@ -446,6 +449,9 @@ class StockRotateEditForm extends Component {
         return statusArr;
     }
 
+<<<<<<< HEAD
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
+=======
 >>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
     static getDerivedStateFromProps(nextProps, prevState){
         if(nextProps.billId !== prevState.billId){
@@ -457,6 +463,10 @@ class StockRotateEditForm extends Component {
                 toStock: nextProps.toStock,
                 status: nextProps.status,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+                oldStatus: nextProps.status,
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
 =======
                 oldStatus: nextProps.status,
 >>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
@@ -485,7 +495,11 @@ class StockRotateEditForm extends Component {
 
     save = async () => {
 <<<<<<< HEAD
+<<<<<<< HEAD
         const { billId, fromStock, code, toStock, type, status, users, approver, 
+=======
+        const { billId, fromStock, code, toStock, type, status, oldStatus, users, approver, 
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
 =======
         const { billId, fromStock, code, toStock, type, status, oldStatus, users, approver, 
 >>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
@@ -499,6 +513,10 @@ class StockRotateEditForm extends Component {
             group: group,
             status: status,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+            oldStatus: oldStatus,
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
 =======
             oldStatus: oldStatus,
 >>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
@@ -522,7 +540,11 @@ class StockRotateEditForm extends Component {
         const dataStock = this.getStock();
         const dataType = this.getType();
 <<<<<<< HEAD
+<<<<<<< HEAD
         console.log(toStock);
+=======
+        const dataStatus = this.getStatus();
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
 =======
         const dataStatus = this.getStatus();
 >>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
@@ -572,6 +594,7 @@ class StockRotateEditForm extends Component {
                                             style={{ width: "100%" }}
                                             value={status}
 <<<<<<< HEAD
+<<<<<<< HEAD
                                             items={[
                                                 { value: '1', text: translate('manage_warehouse.bill_management.bill_status.1')},
                                                 { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2')},
@@ -579,6 +602,9 @@ class StockRotateEditForm extends Component {
                                                 { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4')},
                                                 { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5')},
                                             ]}
+=======
+                                            items={dataStatus}
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
 =======
                                             items={dataStatus}
 >>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b

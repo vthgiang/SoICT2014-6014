@@ -213,6 +213,11 @@ class GoodReturnCreateForm extends Component {
                     fromStock: value,
                     errorStock: msg,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+                    bill: '',
+                    getGoodInfo: false
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
 =======
                     bill: '',
                     getGoodInfo: false
@@ -461,6 +466,10 @@ class GoodReturnCreateForm extends Component {
     handleBillChange = async (value) => {
         let bill = value[0];
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        this.state.listGood = [];
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
 =======
         this.state.listGood = [];
 >>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
@@ -487,15 +496,21 @@ class GoodReturnCreateForm extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
 <<<<<<< HEAD
+<<<<<<< HEAD
         if(nextProps.bills.billDetail){
             this.state.listGood = nextProps.bills.billDetail.goods;
         }
 =======
+=======
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
         if(nextProps.bills.billDetail !== this.state.billDetail){
             this.state.listGood = nextProps.bills.billDetail.goods;
             this.state.billDetail = nextProps.bills.billDetail;
         }
         
+<<<<<<< HEAD
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
+=======
 >>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
         return true;
     }
@@ -543,7 +558,11 @@ class GoodReturnCreateForm extends Component {
                     modalID={`modal-create-bill-return`}
                     formID={`form-create-bill-return`}
 <<<<<<< HEAD
+<<<<<<< HEAD
                     title={translate(`manage_warehouse.bill_management.add_title.${group}`)}
+=======
+                    title={translate(`manage_warehouse.bill_management.edit_title.${group}`)}
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
 =======
                     title={translate(`manage_warehouse.bill_management.edit_title.${group}`)}
 >>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b

@@ -259,6 +259,7 @@ exports.getBillByGood = async (query, portal) => {
 exports.getDetailBill = async (id, portal) => {
     return await Bill(connect(DB_CONNECTION, portal)).findById(id)
         .populate([
+<<<<<<< HEAD
             { path: 'creator' },
             { path: 'approver' },
             { path: 'fromStock' },
@@ -279,6 +280,8 @@ exports.getBillsByStatus = async (query, portal) => {
             { path: 'users' },
 =======
 >>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
+=======
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
             { path: 'creator' },
             { path: 'approver' },
             { path: 'fromStock' },
@@ -286,6 +289,25 @@ exports.getBillsByStatus = async (query, portal) => {
             { path: 'customer' },
             { path: 'supplier' },
             { path: 'bill'},
+<<<<<<< HEAD
+=======
+            { path: 'goods.lots.lot' },
+            { path: 'goods.good' }
+        ])
+}
+
+exports.getBillsByStatus = async (query, portal) => {
+    const { group, status, fromStock } = query;
+    return await Bill(connect(DB_CONNECTION, portal)).find({ group, status, fromStock })
+        .populate([
+            { path: 'creator' },
+            { path: 'approver' },
+            { path: 'fromStock' },
+            { path: 'toStock' },
+            { path: 'customer' },
+            { path: 'supplier' },
+            { path: 'bill'},
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
             { path: 'goods.lots.lot' },
             { path: 'goods.good' }
         ])
@@ -450,7 +472,48 @@ exports.editBill = async (id, data, portal) => {
 
         if(data.group === '3') {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+            if(data.goods && data.goods.length > 0) {
+                for(let i = 0; i < data.goods.length; i++) {
+                    if(data.goods[i].lots && data.goods[i].lots.length > 0) {
+                        for(let j = 0; j < data.goods[i].lots.length; j++) {
+                            var returnQuantity = data.goods[i].lots[j].returnQuantity;
+                            if(returnQuantity > 0) {
+                                let lotId = data.goods[i].lots[j].lot._id;
+                                let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
+                                lot.quantity = Number(lot.quantity) + Number(returnQuantity);
+                                if(lot.stocks && lot.stocks.length > 0) {
+                                    for(let k = 0; k < lot.stocks.length; k++) {
+                                        if(lot.stocks[k].stock.toString() === data.fromStock.toString()) {
+                                            lot.stocks[k].quantity = Number(lot.stocks[k].quantity) + Number(returnQuantity);
+                                        }
+                                    }
+                                }
+                                let lotLog = {};
+                                lotLog.bill = bill._id;
+                                lotLog.quantity = returnQuantity;
+                                lotLog.description = data.goods[i].description ? data.goods[i].description : '';
+                                lotLog.type = bill.type;
+                                lotLog.createdAt = bill.timestamp;
+                                lotLog.stock = data.fromStock;
+                                lot.lotLogs = [ ...lot.lotLogs, lotLog ];
+                                await lot.save();
+                            }
+                            
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if(data.group === '5')  {
+        //chuyển trạng thái từ đã phê duyệt sang thực hiện
+        //Thực hiện việc xuất kho của kho xuất
+        if(data.oldStatus === '3' && data.status === '5') {
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
             if(data.goods && data.goods.length > 0) {
                 for(let i = 0; i < data.goods.length; i++) {
                     if(data.goods[i].lots && data.goods[i].lots.length > 0) {
@@ -513,6 +576,9 @@ exports.editBill = async (id, data, portal) => {
                                 for(let k = 0; k < lot.stocks.length; k++) {
                                     if(lot.stocks[k].stock.toString() === data.fromStock.toString()) {
                                         lot.stocks[k].quantity = Number(lot.stocks[k].quantity) - Number(quantity);
+<<<<<<< HEAD
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
+=======
 >>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
                                     }
                                 }
@@ -567,6 +633,33 @@ exports.editBill = async (id, data, portal) => {
                             lotLog.toStock = data.toStock;
                             lot.lotLogs = [ ...lot.lotLogs, lotLog ];
                             await lot.save();
+<<<<<<< HEAD
+=======
+                        }
+                    }
+                }
+            }
+        }
+
+        //chuyển trạng thái từ đang thực hiện sang trạng thái đã hủy
+        // Thực hiện lại việc nhập kho, trả lại thông tin cho từng lô hàng
+        if(data.oldStatus === '5' && data.status === '4') {
+            if(data.goods && data.goods.length > 0) {
+                for(let i = 0; i < data.goods.length; i++) {
+                    if(data.goods[i].lots && data.goods[i].lots.length > 0) {
+                        for(let j = 0; j < data.goods[i].lots.length; j++) {
+                            var quantity = data.goods[i].lots[j].quantity;
+                            let lotId = data.goods[i].lots[j].lot._id;
+                            let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
+                            if(lot.stocks && lot.stocks.length > 0) {
+                                for(let k = 0; k < lot.stocks.length; k++) {
+                                    if(lot.stocks[k].stock.toString() === data.fromStock.toString()) {
+                                        lot.stocks[k].quantity = Number(lot.stocks[k].quantity) + Number(quantity);
+                                    }
+                                }
+                            }
+                            await lot.save();
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
                         }
                     }
                 }

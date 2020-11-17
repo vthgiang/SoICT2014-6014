@@ -16,6 +16,10 @@ class StockTakeCreateForm extends Component {
             quantity: '',
             realQuantity: '',
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+            damagedQuantity: 0,
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
 =======
             damagedQuantity: 0,
 >>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
@@ -161,6 +165,10 @@ class StockTakeCreateForm extends Component {
                     fromStock: value,
                     errorStock: msg,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+                    listGood: []
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
 =======
                     listGood: []
 >>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
@@ -245,6 +253,7 @@ class StockTakeCreateForm extends Component {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     handleLotsChange = (data) => {
         let totalQuantity = data.length > 0 ? data.reduce(function (accumulator, currentValue) {
             return Number(accumulator) + Number(currentValue.quantity);
@@ -260,6 +269,8 @@ class StockTakeCreateForm extends Component {
         })
     }
 =======
+=======
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
     // handleLotsChange = (data) => {
     //     let totalQuantity = data.length > 0 ? data.reduce(function (accumulator, currentValue) {
     //         return Number(accumulator) + Number(currentValue.quantity);
@@ -274,6 +285,9 @@ class StockTakeCreateForm extends Component {
     //         }
     //     })
     // }
+<<<<<<< HEAD
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
+=======
 >>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
 
     handleQuantityChange = (e) => {
@@ -289,6 +303,10 @@ class StockTakeCreateForm extends Component {
     handleAddGood = async (e) => {
         e.preventDefault();
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        this.state.good.realQuantity = this.state.good.quantity;
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
 =======
         this.state.good.realQuantity = this.state.good.quantity;
 >>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
@@ -410,8 +428,12 @@ class StockTakeCreateForm extends Component {
 
     save =async () => {
 <<<<<<< HEAD
+<<<<<<< HEAD
         const { fromStock, code, toStock, type, status, users, approver, customer, supplier, 
             name, phone, email, address, description, listGood } = this.state;
+=======
+        const { fromStock, code, toStock, type, status, users, approver, customer, supplier, description, listGood } = this.state;
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
 =======
         const { fromStock, code, toStock, type, status, users, approver, customer, supplier, description, listGood } = this.state;
 >>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
@@ -428,10 +450,13 @@ class StockTakeCreateForm extends Component {
             customer: customer,
             supplier: supplier,
 <<<<<<< HEAD
+<<<<<<< HEAD
             name: name,
             phone: phone,
             email: email,
             address: address,
+=======
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
 =======
 >>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
             description: description,
@@ -448,7 +473,10 @@ class StockTakeCreateForm extends Component {
         const dataStock = this.getStock();
         const dataType = this.getType();
 <<<<<<< HEAD
+<<<<<<< HEAD
         console.log(lots);
+=======
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
 =======
 >>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
 
@@ -492,7 +520,11 @@ class StockTakeCreateForm extends Component {
                                             <label>{translate('manage_warehouse.bill_management.type')}<span className="attention"> * </span></label>
                                             <SelectBox
 <<<<<<< HEAD
+<<<<<<< HEAD
                                                 id={`select-type-issue-create`}
+=======
+                                                id={`select-type-take-create`}
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
 =======
                                                 id={`select-type-take-create`}
 >>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
@@ -509,7 +541,11 @@ class StockTakeCreateForm extends Component {
                                             <label>{translate('manage_warehouse.bill_management.status')}</label>
                                             <SelectBox
 <<<<<<< HEAD
+<<<<<<< HEAD
                                                 id={`select-status-issue-create`}
+=======
+                                                id={`select-status-take-create`}
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
 =======
                                                 id={`select-status-take-create`}
 >>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
@@ -534,7 +570,11 @@ class StockTakeCreateForm extends Component {
                                             <label>{translate('manage_warehouse.bill_management.stock')}<span className="attention"> * </span></label>
                                             <SelectBox
 <<<<<<< HEAD
+<<<<<<< HEAD
                                                 id={`select-stock-bill-create`}
+=======
+                                                id={`select-stock-bill-take-create`}
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
 =======
                                                 id={`select-stock-bill-take-create`}
 >>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
@@ -551,7 +591,11 @@ class StockTakeCreateForm extends Component {
                                             <label>{translate('manage_warehouse.bill_management.approved')}<span className="attention"> * </span></label>
                                             <SelectBox
 <<<<<<< HEAD
+<<<<<<< HEAD
                                                 id={`select-approver-bill-create`}
+=======
+                                                id={`select-approver-bill-take-create`}
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
 =======
                                                 id={`select-approver-bill-take-create`}
 >>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
@@ -568,7 +612,11 @@ class StockTakeCreateForm extends Component {
                                             <label>{translate('manage_warehouse.bill_management.users')}<span className="attention"> * </span></label>
                                             <SelectBox
 <<<<<<< HEAD
+<<<<<<< HEAD
                                                 id={`select-management-location-stock`}
+=======
+                                                id={`select-management-location-take-stock`}
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
 =======
                                                 id={`select-management-location-take-stock`}
 >>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
@@ -599,7 +647,11 @@ class StockTakeCreateForm extends Component {
                                             <label>{translate('manage_warehouse.bill_management.choose_good')}</label>
                                             <SelectBox
 <<<<<<< HEAD
+<<<<<<< HEAD
                                                 id={`select-good-issue-create`}
+=======
+                                                id={`select-good-take-create`}
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
 =======
                                                 id={`select-good-take-create`}
 >>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
@@ -652,7 +704,11 @@ class StockTakeCreateForm extends Component {
                                             <tbody id={`good-bill-create`}>
                                             {
 <<<<<<< HEAD
+<<<<<<< HEAD
                                                 (typeof listGood === 'undefined' || listGood.length === 0) ? <tr><td colSpan={7}><center>{translate('task_template.no_data')}</center></td></tr> :
+=======
+                                                (typeof listGood === 'undefined' || listGood.length === 0) ? <tr><td colSpan={8}><center>{translate('task_template.no_data')}</center></td></tr> :
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
 =======
                                                 (typeof listGood === 'undefined' || listGood.length === 0) ? <tr><td colSpan={8}><center>{translate('task_template.no_data')}</center></td></tr> :
 >>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b

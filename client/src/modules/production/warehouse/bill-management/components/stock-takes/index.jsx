@@ -5,7 +5,11 @@ import { SelectMulti, DatePicker, DataTableSetting, PaginateBar } from '../../..
 
 import BillDetailForm from '../genaral/billDetailForm';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import BillEditForm from '../genaral/billEditForm';
+=======
+import StockTakeEditForm from './stockTakeEditForm';
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
 =======
 import StockTakeEditForm from './stockTakeEditForm';
 >>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
