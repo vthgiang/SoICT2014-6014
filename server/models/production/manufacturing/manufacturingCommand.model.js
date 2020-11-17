@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const mongoosePaginate = require('mongoose-paginate-v2')
 
 // Bảng lệnh sản xuất
 const ManufacturingCommandSchema = new Schema({
@@ -65,6 +66,8 @@ const ManufacturingCommandSchema = new Schema({
 }, {
     timestamps: true
 });
+
+ManufacturingCommandSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
     if (!db.models.ManufacturingCommand)

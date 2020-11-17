@@ -4310,9 +4310,46 @@ export default {
                     color: "red",
                     content: "Đã hủy"
                 },
-                choose_works: "Chọn nhà máy"
+                choose_works: "Chọn nhà máy",
+                progress_1: "Đúng tiến độ",
+                progress_2: "Chậm tiến độ",
+                progress_3: "Quá hạn"
 
 
+            },
+            command: {
+                code: "Mã lệnh sản xuất",
+                accountables: "Người giám sát",
+                plan_code: "Mã kế hoạch",
+                start_date: "Ngày bắt đầu",
+                end_date: "Ngày kết thúc",
+                manufacturing_order_code: "Mã đơn sản xuất",
+                sales_order_code: "Mã đơn kinh doanh",
+                lot_code: "Mã lô sản xuất",
+                status: "Trạng thái",
+                search: "Tìm kiếm",
+                index: "STT",
+                created_at: "Ngày tạo",
+                responsibles: "Người thực hiện",
+                mill: "Xưởng sản xuất",
+                1: {
+                    color: "yellow",
+                    content: "Đang chờ duyệt"
+                },
+                2: {
+                    color: "#367FA9",
+                    content: "Đã phê duyệt"
+                },
+                3: {
+                    color: "orange",
+                    content: "Đang thực hiện"
+                },
+                4: {
+                    color: "green",
+                    content: "Đã hoàn thành"
+                },
+                choose_status: "Chọn trạng thái",
+                choose_all: "Chọn tất cả"
             }
         }
     }

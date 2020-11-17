@@ -1,13 +1,13 @@
 export const formatDate = (date) => {
     let d = new Date(date);
-    const day = d.getDate();
-    const month = d.getMonth() + 1;
-    const year = d.getFullYear();
+    let day = d.getDate();
+    let month = d.getMonth() + 1;
+    let year = d.getFullYear();
 
     if (month.length < 2)
         month = '0' + month;
 
-    if (day.length < 2)
+    if (day.length < 2 || day < 10)
         day = '0' + day;
 
     return [day, month, year].join('-');
@@ -15,13 +15,13 @@ export const formatDate = (date) => {
 
 export const formatFullDate = (date) => {
     let d = new Date(date);
-    const hour = date.getHours() + 7;
-    const minute = date.getMinutes();
-    const second = date.getSeconds();
+    let hour = date.getHours() + 7;
+    let minute = date.getMinutes();
+    let second = date.getSeconds();
 
-    const day = d.getUTCDate();
-    const month = d.getMonth() + 1;
-    const year = d.getFullYear();
+    let day = d.getDate();
+    let month = d.getMonth() + 1;
+    let year = d.getFullYear();
 
     if (month.length < 2)
         month = '0' + month;
