@@ -2016,7 +2016,7 @@ export default {
             general_information: {
                 view_more: 'Xem thêm',
                 asset: 'Tài sản',
-                asset_list: 'Dang sách tài sản',
+                asset_list: 'Danh sách tài sản',
                 search: 'Tìm kiếm',
                 add: 'Thêm',
                 basic_information: 'Thông tin cơ bản',
