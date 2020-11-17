@@ -16,7 +16,8 @@ class IncidentLogAddModal extends Component {
             type: "broken",
             dateOfIncident: this.formatDate(Date.now()),
             description: "",
-            statusIncident: "Chờ xử lý",
+            statusIncident: "1",
+            reportedBy: localStorage.getItem('userId'),
         };
     }
 

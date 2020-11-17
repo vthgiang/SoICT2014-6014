@@ -98,6 +98,23 @@ class ManufacturingWorksDetailForm extends Component {
                         </div>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <fieldset className="scheduler-border">
+                                <legend className="scheduler-border">{translate('manufacturing.manufacturing_works.role_manages_another')}</legend>
+                                {
+                                    currentWorks.manageRoles && currentWorks.manageRoles.length ?
+                                        <div>
+                                            {
+                                                currentWorks.manageRoles.map((role, index) => (
+                                                    <p key={index}>{role.name}</p>
+                                                ))
+                                            }
+                                        </div>
+                                        :
+                                        translate('manufacturing.manufacturing_works.no_roles')
+                                }
+                            </fieldset>
+                        </div>
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('manufacturing.manufacturing_works.list_mills')}</legend>
                                 <table className="table table-bordered">
                                     <thead>
@@ -137,7 +154,7 @@ class ManufacturingWorksDetailForm extends Component {
                         </div>
                     </form>
                 </DialogModal>
-            </React.Fragment>
+            </React.Fragment >
         );
     }
 }

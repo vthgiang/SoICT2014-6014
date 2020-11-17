@@ -96,8 +96,14 @@ const TaskSchema = new Schema({
         required: true
     },
     collaboratedWithOrganizationalUnits: [{
-        type: Schema.Types.ObjectId,
-        ref: 'OrganizationalUnit',
+        organizationalUnit: {
+            type: Schema.Types.ObjectId,
+            ref: 'OrganizationalUnit'
+        },
+        isAssigned: {
+            type: Boolean,
+            default: false
+        }
     }],
     creator: {
         type: Schema.Types.ObjectId,

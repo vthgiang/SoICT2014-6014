@@ -1,6 +1,7 @@
 const {
     ManufacturingWorks,
-    ManufacturingMill
+    ManufacturingMill,
+    OrganizationalUnit
 } = require(`${SERVER_MODELS_DIR}`);
 
 const {
@@ -17,7 +18,10 @@ exports.createManufacturingWorks = async (data, portal) => {
         status: data.status,
         manufacturingMills: data.manufacturingMills,
         description: data.description,
-        organizationalUnit: data.organizationalUnit
+        organizationalUnit: data.organizationalUnit,
+        manageRoles: data.manageRoles.map(role => {
+            return role
+        })
     });
 
     let manufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal))
@@ -71,6 +75,30 @@ exports.getAllManufacturingWorks = async (query, portal) => {
     }
     if (query.status) {
         option.status = query.status
+    }
+
+    if (query.currentRole) {
+        // Nếu truyền vào currentRole thì sẽ lấy ra tất cả các nhà máy mà role đó có quyền quản lý
+        let role = [query.currentRole];
+        const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'deans': { $in: role } });
+        let organizationalUnitId = departments.map(department => department._id);
+        let listManufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+            organizationalUnit: {
+                $in: organizationalUnitId
+            }
+        });
+        // Lấy ra các nhà máy à currentRole cũng quản lý
+        let listWorksByManageRole = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+            manageRoles: {
+                $in: role
+            }
+        })
+        listManufacturingWorks = [...listManufacturingWorks, ...listWorksByManageRole];
+
+        let listWorksId = listManufacturingWorks.map(x => x._id);
+        option._id = {
+            $in: listWorksId
+        }
     }
 
     if (!page || !limit) {
@@ -142,6 +170,8 @@ exports.getManufacturingWorksById = async (id, portal) => {
             },
             { path: 'viceDeans' },
             { path: 'employees' }]
+        }, {
+            path: 'manageRoles'
         }]);
     if (!manufacturingWorks) {
         throw Error("ManufacturingWorks is not existing")
@@ -171,7 +201,8 @@ exports.editManufacturingWorks = async (id, data, portal) => {
     oldManufacturingWorks.phoneNumber = data.phoneNumber ? data.phoneNumber : oldManufacturingWorks.phoneNumber;
     oldManufacturingWorks.address = data.address ? data.address : oldManufacturingWorks.address;
     oldManufacturingWorks.description = data.description ? data.description : oldManufacturingWorks.description;
-    oldManufacturingWorks.status = data.status ? data.status : oldManufacturingWorks.status
+    oldManufacturingWorks.status = data.status ? data.status : oldManufacturingWorks.status;
+    oldManufacturingWorks.manageRoles = data.manageRoles ? data.manageRoles.map(role => { return role }) : oldManufacturingWorks.manageRoles
 
     await oldManufacturingWorks.save();
 

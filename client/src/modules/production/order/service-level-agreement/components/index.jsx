@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import SLAMangementTable from "./slaManagementTable";
 
 class ServiceLevelAgreement extends Component {
     constructor(props) {
@@ -8,7 +9,9 @@ class ServiceLevelAgreement extends Component {
     render() {
         return (
             <div className="box" style={{ minHeight: "450px" }}>
-                <div className="box-body">SLA</div>
+                <div className="box-body">
+                    <SLAMangementTable />
+                </div>
             </div>
         );
     }

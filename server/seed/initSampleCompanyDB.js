@@ -358,6 +358,24 @@ const initSampleCompanyDB = async () => {
         type: roleChucDanh._id
     });
 
+    // Khỏi tạo role cho phòng kế hoạch
+
+    const nvPhongKH = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: "Nhân viên phòng kế hoạch",
+        type: roleChucDanh._id
+    });
+    const phoPhongKH = await Role(vnistDB).create({
+        parents: [roleViceDean._id, nvPhongKH._id],
+        name: "Phó phòng kế hoạch",
+        type: roleChucDanh._id
+    });
+    const truongPhongKH = await Role(vnistDB).create({
+        parents: [roleDean._id, nvPhongKH._id, phoPhongKH._id],
+        name: "Trưởng phòng kế hoạch",
+        type: roleChucDanh._id
+    });
+
     // Khỏi tạo role cho khối sản xuất
 
     const nvNhaMayThuocBot = await Role(vnistDB).create({
@@ -441,6 +459,20 @@ const initSampleCompanyDB = async () => {
     }, {
         userId: users[9]._id,
         roleId: nvPhongHC._id
+    },
+    // Gán quyền cho phòng kế hoạch
+    {
+        userId: users[7]._id,
+        roleId: nvPhongKH._id
+    },
+    {
+        userId: users[12]._id,
+        roleId: phoPhongKH._id
+
+    },
+    {
+        userId: users[13]._id,
+        roleId: truongPhongKH._id
     },
     // Gán quyền cho khối sản xuất
 
@@ -543,7 +575,16 @@ const initSampleCompanyDB = async () => {
         employees: [nvNhaMayTPCN._id],
         parent: Directorate._id
     },]);
-    console.log("Đã tạo dữ liệu phòng ban: ", Directorate, departments, nhamaythuocbot, nhamaythuocnuoc, nhamaythucphamchucnang);
+
+    const phongkehoach = await OrganizationalUnit(vnistDB).insertMany([{
+        name: "Phòng kế hoạch",
+        description: "Phòng kế hoạch của Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+        deans: [truongPhongKH._id],
+        viceDeans: [phoPhongKH._id],
+        employees: [nvPhongKH._id],
+        parent: Directorate._id
+    }])
+    console.log("Đã tạo dữ liệu phòng ban: ", Directorate, departments, nhamaythuocbot, nhamaythuocnuoc, nhamaythucphamchucnang, phongkehoach);
 
     /**
      * 8. Tạo link cho các trang web của công ty VNIST
@@ -1746,7 +1787,7 @@ const initSampleCompanyDB = async () => {
     console.log("Khởi tạo dữ liệu tài sản");
     var listAsset = await Asset(vnistDB).insertMany([{
         company: vnist._id,
-        avatar: "/upload/asset/pictures/picture5.png",
+        avatar: "./upload/asset/pictures/picture5.png",
         assetName: "Laptop Sony Vaio",
         group: "machine",
         usefulLife: "12",
@@ -1805,7 +1846,7 @@ const initSampleCompanyDB = async () => {
         files: [],
     }, {
         company: vnist._id,
-        avatar: "/upload/asset/pictures/picture5.png",
+        avatar: "./upload/asset/pictures/picture5.png",
         assetName: "Điều hòa Panasonic 9.000BTU",
         code: "VVDH01.017",
         group: "machine",
@@ -1863,7 +1904,7 @@ const initSampleCompanyDB = async () => {
         files: [],
     }, {
         company: vnist._id,
-        avatar: "/upload/asset/pictures/picture5.png",
+        avatar: "./upload/asset/pictures/picture5.png",
         assetName: "Máy tính cây",
         code: "VVMV18.001",
         group: "other",
@@ -1922,7 +1963,7 @@ const initSampleCompanyDB = async () => {
     },
     {
         company: vnist._id,
-        avatar: "/upload/asset/pictures/picture5.png",
+        avatar: "./upload/asset/pictures/picture5.png",
         assetName: "Máy tính cây",
         code: "VVMV18.028",
         group: "other",
@@ -1981,7 +2022,7 @@ const initSampleCompanyDB = async () => {
     },
     {
         company: vnist._id,
-        avatar: "/upload/asset/pictures/picture5.png",
+        avatar: "./upload/asset/pictures/picture5.png",
         assetName: "Iphone XS Max",
         code: "VVMV18.027",
         group: "other",
@@ -2040,7 +2081,7 @@ const initSampleCompanyDB = async () => {
     },
     {
         company: vnist._id,
-        avatar: "/upload/asset/pictures/picture5.png",
+        avatar: "./upload/asset/pictures/picture5.png",
         assetName: "Card GTX 2050Ti",
         code: "VVMV18.0026",
         group: "other",
@@ -2095,7 +2136,7 @@ const initSampleCompanyDB = async () => {
 
     var asset = await Asset(vnistDB).create({
         company: vnist._id,
-        avatar: "/upload/asset/pictures/picture5.png",
+        avatar: "./upload/asset/pictures/picture5.png",
         assetName: "HUST",
         group: "building",
         usefulLife: "40",
@@ -2140,7 +2181,7 @@ const initSampleCompanyDB = async () => {
     })
     var assetManagedByEmployee2 = await Asset(vnistDB).create({
         company: vnist._id,
-        avatar: "/upload/asset/pictures/picture5.png",
+        avatar: "./upload/asset/pictures/picture5.png",
         assetName: "Phòng họp 02",
         group: "building",
         usefulLife: "40",
@@ -2197,7 +2238,7 @@ const initSampleCompanyDB = async () => {
     })
     var assetManagedByEmployee1 = await Asset(vnistDB).create({
         company: vnist._id,
-        avatar: "/upload/asset/pictures/picture5.png",
+        avatar: "./upload/asset/pictures/picture5.png",
         assetName: "Phòng họp 01",
         group: "building",
         usefulLife: "40",
@@ -2252,7 +2293,7 @@ const initSampleCompanyDB = async () => {
 
         { //1 B1
             company: vnist._id,
-            avatar: "/upload/asset/pictures/picture5.png",
+            avatar: "./upload/asset/pictures/picture5.png",
             assetName: "B1",
             group: "building",
             usefulLife: "32",
@@ -2298,7 +2339,7 @@ const initSampleCompanyDB = async () => {
         },
         { //2 TQB
             company: vnist._id,
-            avatar: "/upload/asset/pictures/picture5.png",
+            avatar: "./upload/asset/pictures/picture5.png",
             assetName: "TV TQB",
             group: "building",
             usefulLife: "50",
@@ -2346,7 +2387,7 @@ const initSampleCompanyDB = async () => {
 
     var listAsset2 = await Asset(vnistDB).insertMany([{ //3 B1 101
         company: vnist._id,
-        avatar: "/upload/asset/pictures/picture5.png",
+        avatar: "./upload/asset/pictures/picture5.png",
         assetName: "B1-101",
         group: "building",
         code: "VVTM02.003",
@@ -2391,7 +2432,7 @@ const initSampleCompanyDB = async () => {
     },
     { //04
         company: vnist._id,
-        avatar: "/upload/asset/pictures/picture5.png",
+        avatar: "./upload/asset/pictures/picture5.png",
         assetName: "B1-202",
         group: "building",
         usefulLife: "22",
@@ -2436,7 +2477,7 @@ const initSampleCompanyDB = async () => {
     },
     { //04
         company: vnist._id,
-        avatar: "/upload/asset/pictures/picture5.png",
+        avatar: "./upload/asset/pictures/picture5.png",
         assetName: "B1-202",
         group: "building",
         usefulLife: "22",
@@ -2481,7 +2522,7 @@ const initSampleCompanyDB = async () => {
     },
     { // 06
         company: vnist._id,
-        avatar: "/upload/asset/pictures/picture5.png",
+        avatar: "./upload/asset/pictures/picture5.png",
         assetName: "D3-102",
         group: "building",
         usefulLife: "20",
@@ -2544,7 +2585,7 @@ const initSampleCompanyDB = async () => {
     },
     { // 07
         company: vnist._id,
-        avatar: "/upload/asset/pictures/picture5.png",
+        avatar: "./upload/asset/pictures/picture5.png",
         assetName: "D3-103",
         group: "building",
         usefulLife: "12",
@@ -2608,7 +2649,7 @@ const initSampleCompanyDB = async () => {
     },
     { // 07
         company: vnist._id,
-        avatar: "/upload/asset/pictures/picture5.png",
+        avatar: "./upload/asset/pictures/picture5.png",
         assetName: "D3-103",
         group: "building",
         usefulLife: "12",
@@ -3780,11 +3821,21 @@ const initSampleCompanyDB = async () => {
             fromStock: listStock[0]._id,
             users: [],
             creator: users[7]._id,
-            partner: null,
+            partner: {
+                customer: null,
+                supplier: null
+            },
+            approver: users[1]._id,
+            receiver: {
+                name: "Phạm Đại Tài",
+                phone: 0344213030,
+                email: "thangbao2698@gmail.com",
+                address: "Thuần Thiện - Can Lộc - Hà Tĩnh"
+            },
             status: "3",
             timestamp: "02-06-2020",
             description: "Nhập kho thành phẩm",
-            goodReceipts: [
+            goods: [
                 {
                     good: listProduct[0]._id,
                     quantity: 200,
@@ -3819,34 +3870,44 @@ const initSampleCompanyDB = async () => {
             group: "2",
             fromStock: listStock[0]._id,
             users: [],
-            creator: users[7]._id,
-            partner: null,
+            creator: users[5]._id,
+            partner: {
+                customer: null,
+                supplier: null
+            },
+            approver: users[2]._id,
+            receiver: {
+                name: "Nguyễn Văn Thắng",
+                phone: 0344213030,
+                email: "thangbao2698@gmail.com",
+                address: "Thuần Thiện - Can Lộc - Hà Tĩnh"
+            },
             status: "2",
-            timestamp: "10-20-2020",
+            timestamp: "10-12-2020",
             description: "Xuất kho thành phẩm",
-            goodIssues: [
+            goods: [
                 {
                     good: listProduct[0]._id,
-                    quantity: 200,
+                    quantity: 275,
                     lots: [
                         {
                             lot: listLot[0]._id,
-                            quantity: 80
+                            quantity: 135
                         },
                         {
                             lot: listLot[2]._id,
-                            quantity: 120
+                            quantity: 140
                         }
                     ],
                     description: "Xuất hàng"
                 },
                 {
                     good: listProduct[1]._id,
-                    quantity: 250,
+                    quantity: 345,
                     lots: [
                         {
                             lot: listLot[1]._id,
-                            quantity: 250
+                            quantity: 345
                         }
                     ],
                     description: "Xuất thành phẩm"
@@ -3855,6 +3916,87 @@ const initSampleCompanyDB = async () => {
         },
     ])
     console.log("Tạo xong dữ liệu mẫu các loại phiếu");
+
+    var lotUpdate = await Lot(vnistDB).update(
+        {
+            _id: listLot[0]._id,
+            name: "LOT001",
+            good: listProduct[0]._id,
+            type: "product",
+            stocks: [
+                {
+                    stock: listStock[0]._id,
+                    quantity: 100,
+                    binLocations: [
+                        {
+                            binLocation: listBinLocationChilds[3]._id,
+                            quantity: 40
+                        },
+                        {
+                            binLocation: listBinLocationChilds[4]._id,
+                            quantity: 60
+                        }
+                    ]
+                },
+                {
+                    stock: listStock[1]._id,
+                    quantity: 200,
+                    binLocations: [
+                        {
+                            binLocation: listBinLocationChilds[0]._id,
+                            quantity: 80
+                        },
+                        {
+                            binLocation: listBinLocationChilds[1]._id,
+                            quantity: 120
+                        }
+                    ]
+                }
+            ],
+            originalQuantity: 300,
+            quantity: 300,
+            expirationDate: new Date("12-12-2021"),
+            description: "Lô hàng tự tạo",
+            lotLogs: [
+                {
+                    bill: listBill[0]._id,
+                    quantity: 200,
+                    description: "Nhập hàng lần đầu",
+                    type: "Nhập kho thành phẩm",
+                    createdAt: new Date("05-06-2020"),
+                    stock: listStock[1]._id,
+                    binLocations: [
+                        {
+                            binLocation: listBinLocationChilds[0]._id,
+                            quantity: 80
+                        },
+                        {
+                            binLocation: listBinLocationChilds[1]._id,
+                            quantity: 120
+                        },
+                    ]
+                },
+                {
+                    bill: listBill[1]._id,
+                    quantity: 100,
+                    description: "Nhập hàng lần hai",
+                    type: "Nhập kho thành phẩm",
+                    createdAt: new Date("05-10-2020"),
+                    stock: listStock[0]._id,
+                    binLocations: [
+                        {
+                            binLocation: listBinLocationChilds[3]._id,
+                            quantity: 40
+                        },
+                        {
+                            binLocation: listBinLocationChilds[4]._id,
+                            quantity: 60
+                        }
+                    ]
+                }
+            ]
+        }
+    );
 
 
     // ****************** Tạo mẫu dữ liệu khách hàng********************

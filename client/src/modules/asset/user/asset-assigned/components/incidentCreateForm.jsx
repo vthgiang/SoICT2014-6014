@@ -150,7 +150,7 @@ class IncidentCreateForm extends Component {
                 reportedBy: this.props.auth.user._id,
                 dateOfIncident: dateOfIncident,
                 description: this.state.description,
-                statusIncident: "Chờ xử lý",
+                statusIncident: "1",
                 status: this.state.type,
                 assetId
             }

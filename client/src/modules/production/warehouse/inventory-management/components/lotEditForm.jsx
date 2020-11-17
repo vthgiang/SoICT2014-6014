@@ -103,7 +103,7 @@ class LotEditForm extends Component {
         }
         
         if(total > quantity){
-            msg = ` ${translate('manage_warehouse.category_management.validate_name')} (${quantity}) `;
+            msg = ` ${translate('manage_warehouse.inventory_management.validate_total')} (${quantity}) `;
         }
         
         if(!value) {
@@ -111,11 +111,11 @@ class LotEditForm extends Component {
         }
 
         if(value > binLocation.binLocation.capacity) {
-            msg = ` ${translate('manage_warehouse.category_management.number_over_norm')} (${binLocation.binLocation.capacity}) `;
+            msg = ` ${translate('manage_warehouse.inventory_management.number_over_norm')} (${binLocation.binLocation.capacity}) `;
         }
         if(binLocation.binLocation.contained !== null) {
             if(Number(value) > (Number(binLocation.binLocation.capacity) -Number(binLocation.binLocation.contained))) {
-                msg =  ` ${translate('manage_warehouse.category_management.bin_contained')} ${(Number(binLocation.binLocation.capacity) -Number(binLocation.binLocation.contained))} `
+                msg =  ` ${translate('manage_warehouse.inventory_management.bin_contained')} ${(Number(binLocation.binLocation.capacity) -Number(binLocation.binLocation.contained))} `
             }
         }
 
@@ -158,7 +158,9 @@ class LotEditForm extends Component {
         this.setState(state => {
             return {
                 ...state,
-                binLocation: Object.assign({}, this.EMPTY_BIN)
+                binLocation: Object.assign({}, this.EMPTY_BIN),
+                errorQuantity: undefined,
+                errorBin: undefined
             }
         })
     }
@@ -203,7 +205,9 @@ class LotEditForm extends Component {
             return {
                 ...state,
                 editInfo: false,
-                binLocation: Object.assign({}, this.EMPTY_BIN)
+                binLocation: Object.assign({}, this.EMPTY_BIN),
+                errorQuantity: undefined,
+                errorBin: undefined
             }
         })
     }
@@ -404,7 +408,7 @@ class LotEditForm extends Component {
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('manage_warehouse.inventory_management.bin_location')}</legend>
-                                { stock ? (difference > 0 ? <div className="form-group" style={{ color: 'red', textAlign: 'center'}}>{`Bạn còn ${difference} số lượng chưa sắp xếp vào kho`}</div> :
+                                { stock ? (difference !== 0 ? <div className="form-group" style={{ color: 'red', textAlign: 'center'}}>{`Bạn còn ${difference} số lượng chưa sắp xếp vào kho`}</div> :
                                 <div className="form-group" style={{ color: 'green', textAlign: 'center'}}>Bạn đã xếp hết lô hàng vào kho</div>) : []}
                                 <div className={`form-group ${!errorBin ? "" : "has-error"}`}>
                                     <label>{translate('manage_warehouse.inventory_management.archive')}</label>

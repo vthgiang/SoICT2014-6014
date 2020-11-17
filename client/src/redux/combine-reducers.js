@@ -25,7 +25,7 @@ import { annualLeave } from '../modules/human-resource/annual-leave/redux/reduce
 import { workPlan } from '../modules/human-resource/work-plan/redux/reducers';
 import { timesheets } from '../modules/human-resource/timesheets/redux/reducers';
 
-import { career } from '../modules/human-resource/career-position/redux/reducers';
+import { career } from '../modules/human-resource/career/redux/reducers';
 import { major } from '../modules/human-resource/major/redux/reducers';
 
 import { notifications } from '../modules/notification/redux/reducers';
@@ -81,6 +81,7 @@ import { careTypes } from "../modules/crm/careType/redux/reducers";
 import { taxs } from "../modules/production/order/tax/redux/reducers";
 import { quotes } from '../modules/production/order/quote/redux/reducers';
 import { discounts } from "../modules/production/order/discount/redux/reducers";
+import { serviceLevelAgreements } from "../modules/production/order/service-level-agreement/redux/reducers";
 
 //plan
 import { plan } from "../modules/plan/redux/reducers";
@@ -96,6 +97,8 @@ import { example2 } from "../modules/example/example2/redux/reducers";
 import { manufacturingWorks } from "../modules/production/manufacturing/manufacturing-works/redux/reducers";
 import { manufacturingMill } from "../modules/production/manufacturing/manufacturing-mill/redux/reducers";
 import { purchasingRequest } from "../modules/production/manufacturing/purchasing-request/redux/reducers";
+import { workSchedule } from "../modules/production/manufacturing/work-schedule/redux/reducers";
+import { manufacturingPlan } from "../modules/production/manufacturing/manufacturing-plan/redux/reducers";
 
 const appReducer = combineReducers({
     socket,
@@ -188,6 +191,7 @@ const appReducer = combineReducers({
     taxs,
     quotes,
     discounts,
+    serviceLevelAgreements,
 
     //plane
     plan,
@@ -203,6 +207,9 @@ const appReducer = combineReducers({
     manufacturingWorks,
     manufacturingMill,
     purchasingRequest,
+    workSchedule,
+    manufacturingPlan,
+
 
     Intl
 

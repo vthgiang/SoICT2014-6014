@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, TimePicker ,ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components';
+import { DialogModal, TimePicker, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components';
 
 import { UseRequestFromValidator } from '../../../user/use-request/components/UseRequestFromValidator';
-
+import { UseRequestActions } from '../../../admin/use-request/redux/actions'
 import { RecommendDistributeActions } from '../../../user/use-request/redux/actions';
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { AssetManagerActions } from '../../asset-information/redux/actions';
@@ -14,12 +14,22 @@ class UseRequestManagerEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            status: "Chờ phê duyệt",
-            managedBy : this.props.employeeId?this.props.employeeId:''
+            status: "waiting_approval",
+            managedBy: this.props.employeeId ? this.props.employeeId : ''
         };
     }
 
-
+    shouldComponentUpdate = async (nextProps, nextState) => {
+        if (nextState.status !== this.state.status) {
+            if (nextState.status == "approved") {
+                this.setState(state => {
+                    return {
+                        createUsage: true
+                    }
+                })
+            }
+        }
+    }
     formatDate(date, monthYear = false) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -67,7 +77,7 @@ class UseRequestManagerEditForm extends Component {
     validateDateCreate = (value, willUpdateState = true) => {
         let msg = UseRequestFromValidator.validateDateCreate(value, this.props.translate)
         let partCreate = value.split('-');
-        let dateCreate = [partCreate[2], partCreate[1], partCreate[0]].join('-'); 
+        let dateCreate = [partCreate[2], partCreate[1], partCreate[0]].join('-');
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -212,13 +222,13 @@ class UseRequestManagerEditForm extends Component {
         let result = this.validateDateCreate(this.state.dateCreate, false) &&
             this.validateReqContent(this.state.reqContent, false) &&
             this.validateDateStartUse(this.state.dateCreate, false)
-            
+
         return result;
     }
 
     save = () => {
-        let {managedBy} =this.state
-        
+        let { managedBy, createUsage } = this.state
+
         let dataToSubmit = { ...this.state, approver: this.props.auth.user._id };
         if (this.isFormValidated()) {
             let data = {
@@ -235,23 +245,67 @@ class UseRequestManagerEditForm extends Component {
                 stopTime: dataToSubmit.stopTime,
                 startTime: dataToSubmit.startTime
             }
-            return this.props.updateRecommendDistribute(this.state._id, data,managedBy);
+            if (createUsage == true) {
+                let checkCreateUsage = false;
+                for (let i in dataToSubmit.asset.usageLogs) {
+                    if (dataToSubmit.asset.usageLogs[i].assetUseRequest && dataToSubmit.asset.usageLogs[i].assetUseRequest == this.state._id) {
+                        checkCreateUsage = true
+                    }
+                }
+                if (checkCreateUsage == false) {
+                    let start = dataToSubmit.dateStartUse.split("-");
+                    let end = dataToSubmit.dateEndUse.split("-");
+                    let dateStartUse, dateEndUse;
+                    if (dataToSubmit.startTime) {
+                        dateStartUse = start[2] + "-" + start[1] + "-" + start[0] + " " + dataToSubmit.startTime
+                    } else {
+                        dateStartUse = start[2] + "-" + start[1] + "-" + start[0]
+                    }
+
+                    if (dataToSubmit.stopTime) {
+                        dateEndUse = end[2] + "-" + end[1] + "-" + end[0] + " " + dataToSubmit.stopTime
+                    } else {
+                        dateEndUse = end[2] + "-" + end[1] + "-" + end[0]
+                    }
+
+                    let newUsage = {
+                        usedByUser: dataToSubmit.proponent._id,
+                        usedByOrganizationalUnit: null,
+                        startDate: dateStartUse,
+                        endDate: dateEndUse,
+                        assetUseRequest: this.state._id,
+                        description: dataToSubmit.note
+
+                    }
+
+                    let usageLogs = dataToSubmit.asset.usageLogs
+                    usageLogs.push(newUsage)
+                    let createNewUsage = {
+                        usageLogs: usageLogs,
+                        status: "in_use",
+                        assignedToUser: newUsage.usedByUser,
+                        assignedToOrganizationalUnit: undefined,
+                    }
+                    this.props.createUsage(dataToSubmit.asset._id, createNewUsage)
+                }
+            }
+            return this.props.updateRecommendDistribute(this.state._id, data, managedBy);
         }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        
+
         if (nextProps._id !== prevState._id) {
             let startDate, endDate, startTime, stopTime, month, day, year;
             let partStart = new Date(nextProps.dateStartUse);
-            if(nextProps.asset.typeRegisterForUse == 2){
+            if (nextProps.asset.typeRegisterForUse == 2) {
                 startTime = [partStart.getHours(), partStart.getMinutes()].join(':');
                 startDate = [partStart.getDate(), (partStart.getMonth() + 1), partStart.getFullYear()].join('-');
             } else {
                 startDate = [partStart.getDate(), (partStart.getMonth() + 1), partStart.getFullYear()].join('-');
             }
             let partStop = new Date(nextProps.dateEndUse);
-            if(nextProps.asset.typeRegisterForUse == 2){
+            if (nextProps.asset.typeRegisterForUse == 2) {
                 stopTime = [partStop.getHours(), partStop.getMinutes()].join(':');
                 endDate = [partStop.getDate(), (partStop.getMonth() + 1), partStop.getFullYear()].join('-');
             } else {
@@ -267,8 +321,8 @@ class UseRequestManagerEditForm extends Component {
                 asset: nextProps.asset,
                 dateStartUse: startDate,
                 dateEndUse: endDate,
-                startTime: nextProps.asset.typeRegisterForUse == 2? startTime : null,
-                stopTime: nextProps.asset.typeRegisterForUse == 2? stopTime : null,
+                startTime: nextProps.asset.typeRegisterForUse == 2 ? startTime : null,
+                stopTime: nextProps.asset.typeRegisterForUse == 2 ? stopTime : null,
                 approver: nextProps.approver,
                 status: nextProps.status,
                 note: nextProps.note,
@@ -385,12 +439,12 @@ class UseRequestManagerEditForm extends Component {
                                         value={dateStartUse}
                                         onChange={this.handleDateStartUseChange}
                                     />
-                                    {   asset.typeRegisterForUse == 2 && 
+                                    {asset.typeRegisterForUse == 2 &&
                                         < TimePicker
                                             id={`edit_start_time_use${_id}`}
                                             value={startTime}
                                             onChange={this.handleStartTimeChange}
-                                        /> 
+                                        />
                                     }
 
                                     <ErrorLabel content={errorOnDateStartUse} />
@@ -405,13 +459,13 @@ class UseRequestManagerEditForm extends Component {
                                         onChange={this.handleDateEndUseChange}
                                     />
                                     {
-                                        asset.typeRegisterForUse == 2 && 
+                                        asset.typeRegisterForUse == 2 &&
                                         < TimePicker
                                             id={`edit_stop_time_use${_id}`}
                                             value={stopTime}
                                             onChange={this.handleStopTimeChange}
-                                        /> 
-                                    }  
+                                        />
+                                    }
                                     <ErrorLabel content={errorOnDateEndUse} />
                                 </div>
 
@@ -477,7 +531,7 @@ const actionCreators = {
     getUser: UserActions.get,
     getAllAsset: AssetManagerActions.getAllAsset,
     updateRecommendDistribute: RecommendDistributeActions.updateRecommendDistribute,
-
+    createUsage: UseRequestActions.createUsage,
 };
 
 const editUseRequestManager = connect(mapState, actionCreators)(withTranslate(UseRequestManagerEditForm));

@@ -5,6 +5,9 @@ const BillController = require('./bill.controller');
 
 router.get('/', auth, BillController.getBillsByType);
 router.get('/get-bill-by-good', auth, BillController.getBillByGood);
+router.get('/get-bill-by-status', auth, BillController.getBillsByStatus);
+router.post('/', auth, BillController.createBill);
+router.patch('/:id', auth, BillController.editBill);
 router.get('/get-detail-bill/:id', auth, BillController.getDetailBill);
 
 module.exports = router

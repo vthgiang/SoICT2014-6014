@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { UserActions } from '../../../super-admin/user/redux/actions';
+import { RoleActions } from '../../../super-admin/role/redux/actions';
 import { taskTemplateActions } from '../redux/actions';
 import { PaginateBar, SelectMulti, DataTableSetting } from '../../../../common-components';
 import { ExportExcel } from '../../../../common-components';
@@ -27,9 +28,10 @@ class TaskTemplate extends Component {
     }
 
     componentDidMount() {
-        let { currentPage, perPage, unit, name } = this.state;
+        let { currentPage, perPage, unit, name, currentRole } = this.state;
         this.props.getDepartment();
         this.props.getTaskTemplateByUser(currentPage, perPage, unit, name);
+        this.props.show(currentRole);
     }
 
     render() {
@@ -338,9 +340,15 @@ class TaskTemplate extends Component {
         let datas = [];
         if (data) {
             for (let k = 0; k < data.length; k++) {
+                const { auth, role } = this.props;
+                let annunciator ;
                 let x = data[k];
                 let length = 0;
                 let actionName = [], actionDescription = [], mandatory = [];
+
+                if (!role.isLoading && !auth.isLoading){
+                    annunciator = auth.user.name + " - " + role.item.name;
+                }
                 if (x.taskActions) {
                     if (x.taskActions.length > length) {
                         length = x.taskActions.length;
@@ -352,6 +360,34 @@ class TaskTemplate extends Component {
                             mandatory[i] = "Bắt buộc";
                         } else {
                             mandatory[i] = "Không bắt buộc";
+                        }
+                    }
+                    for (let i in x.taskActions) {
+                        if (x.taskActions[i].description) {
+                            let str = x.taskActions[i].description;
+                            let vt = str.indexOf("&nbsp;");
+                            let st;
+                            while (vt >= 0) {
+                                if (vt == 0) {
+                                    st = str.slice(vt + 6);
+                                } else {
+                                    st = str.slice(0, vt - 1) + str.slice(vt + 6);
+                                }
+                                str = st;
+                                vt = str.indexOf("&nbsp;");
+                            }
+                            vt = str.indexOf("<");
+                            while (vt >= 0) {
+                                let vt2 = str.indexOf(">");
+                                if (vt == 0) {
+                                    st = str.slice(vt2 + 1);
+                                } else {
+                                    st = str.slice(0, vt - 1) + str.slice(vt2 + 1);
+                                }
+                                str = st;
+                                vt = str.indexOf("<");
+                            }
+                            x.taskActions[i].description = str;
                         }
                     }
                 }
@@ -366,17 +402,51 @@ class TaskTemplate extends Component {
                         type[i] = x.taskInformations[i].type;
                         filledByAccountableEmployeesOnly[i] = x.taskInformations[i].filledByAccountableEmployeesOnly;
                     }
+                    for (let i in x.taskInformations) {
+                        if (x.taskInformations[i].description) {
+                            let str = x.taskInformations[i].description;
+                            let vt = str.indexOf("&nbsp;");
+                            let st;
+                            while (vt >= 0) {
+                                if (vt == 0) {
+                                    st = str.slice(vt + 6);
+                                } else {
+                                    st = str.slice(0, vt - 1) + str.slice(vt + 6);
+                                }
+                                str = st;
+                                vt = str.indexOf("&nbsp;");
+                            }
+                            vt = str.indexOf("<");
+                            while (vt >= 0) {
+                                let vt2 = str.indexOf(">");
+                                if (vt == 0) {
+                                    st = str.slice(vt2 + 1);
+                                } else {
+                                    st = str.slice(0, vt - 1) + str.slice(vt2 + 1);
+                                }
+                                str = st;
+                                vt = str.indexOf("<");
+                            }
+                            x.taskInformations[i].description = str;
+                        }
+                    }
                 }
                 let numberOfUse = 0;
                 if (x.numberOfUse !== 0) {
                     numberOfUse = x.numberOfUse;
                 }
-                let readByEmployees = [], responsibleEmployees = [], accountableEmployees = [], consultedEmployees = [], informedEmployees = [];
+                let collaboratedWithOrganizationalUnits = [], readByEmployees = [], responsibleEmployees = [], accountableEmployees = [], consultedEmployees = [], informedEmployees = [];
 
                 if (x.readByEmployees && x.readByEmployees[0]) {
                     readByEmployees = x.readByEmployees.map(item => item.name);
                     if (length < readByEmployees.length) {
                         length = readByEmployees.length
+                    }
+                }
+                if (x.collaboratedWithOrganizationalUnits && x.collaboratedWithOrganizationalUnits[0]) {
+                    collaboratedWithOrganizationalUnits = x.collaboratedWithOrganizationalUnits.map(item => item.name);
+                    if (length < collaboratedWithOrganizationalUnits.length) {
+                        length = collaboratedWithOrganizationalUnits.length
                     }
                 }
                 if (x.responsibleEmployees && x.responsibleEmployees[0]) {
@@ -391,6 +461,7 @@ class TaskTemplate extends Component {
                 if (x.informedEmployees && x.informedEmployees[0]) {
                     informedEmployees = x.informedEmployees.map(item => item.name);
                 }
+
                 let out = {
                     STT: k + 1,
                     name: x.name,
@@ -402,6 +473,9 @@ class TaskTemplate extends Component {
                     consultedEmployees: consultedEmployees.join(', '),
                     informedEmployees: informedEmployees.join(', '),
                     organizationalUnits: x.organizationalUnit.name,
+                    collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits[0],
+                    creator: x.creator.name,
+                    annunciator: annunciator,
                     priority: x.priority,
                     formula: x.formula,
                     actionName: actionName[0],
@@ -426,6 +500,9 @@ class TaskTemplate extends Component {
                             consultedEmployees: "",
                             informedEmployees: "",
                             organizationalUnits: "",
+                            collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits[i],
+                            creator: "",
+                            annunciator: "",
                             priority: "",
                             formula: "",
                             actionName: actionName[i],
@@ -467,8 +544,10 @@ class TaskTemplate extends Component {
                                 { key: "name", value: "Tên mẫu" },
                                 { key: "description", value: "Mô tả" },
                                 { key: "organizationalUnits", value: "Đơn vị" },
+                                { key: "collaboratedWithOrganizationalUnits", value: "Đơn vị phối hợp thực hiện công việc"},
                                 { key: "numberOfUse", value: "Số lần sử dụng" },
-                                // { key: "creator", value: "Người tạo mẫu" },
+                                { key: "creator", value: "Người tạo mẫu" },
+                                { key: "annunciator", value: "Người xuất báo cáo" },
                                 { key: "readByEmployees", value: "Người được xem" },
                                 { key: "priority", value: "Độ ưu tiên" },
                                 { key: "responsibleEmployees", value: "Người thực hiện" },
@@ -495,14 +574,15 @@ class TaskTemplate extends Component {
 }
 
 function mapState(state) {
-    const { tasktemplates, user, auth } = state;
-    return { tasktemplates, user, auth };
+    const { tasktemplates, user, auth, role } = state;
+    return { tasktemplates, user, auth, role };
 }
 
 const actionCreators = {
     getTaskTemplateByUser: taskTemplateActions.getAllTaskTemplateByUser,
     getDepartment: UserActions.getDepartmentOfUser,
-    _delete: taskTemplateActions._delete
+    _delete: taskTemplateActions._delete,
+    show: RoleActions.show,
 };
 const connectedTaskTemplate = connect(mapState, actionCreators)(withTranslate(TaskTemplate));
 export { connectedTaskTemplate as TaskTemplate };

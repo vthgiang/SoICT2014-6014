@@ -4,7 +4,10 @@ import { BillConstants } from './constants';
 export const BillActions = {
     getBillsByType,
     getBillByGood,
-    getDetailBill
+    getDetailBill,
+    createBill,
+    editBill,
+    getBillsByStatus
 }
 
 function getBillsByType(data) {
@@ -84,6 +87,70 @@ function getDetailBill(id) {
         .catch(err => {
             dispatch({
                 type: BillConstants.GET_BILL_DETAIL_FAILURE,
+                error: err
+            })
+        })
+    }
+}
+
+function createBill(data) {
+    return dispatch => {
+        dispatch({
+            type: BillConstants.CREATE_BILL_REQUEST
+        })
+        BillServices.createBill(data)
+        .then(res => {
+            dispatch({
+                type: BillConstants.CREATE_BILL_SUCCESS,
+                payload: res.data.content
+            })
+        })
+        .catch(err => {
+            dispatch({
+                type: BillConstants.CREATE_BILL_FAILURE,
+                error: err
+            })
+        })
+    }
+}
+
+function editBill(id, data) {
+    console.log(id, data);
+    return dispatch => {
+        dispatch({
+            type: BillConstants.UPDATE_BILL_REQUEST
+        })
+        BillServices.editBill(id, data)
+        .then(res => {
+            dispatch({
+                type: BillConstants.UPDATE_BILL_SUCCESS,
+                payload: res.data.content
+            })
+        })
+        .catch(err => {
+            dispatch({
+                type: BillConstants.UPDATE_BILL_FAILURE,
+                error: err
+            })
+        })
+    }
+}
+
+function getBillsByStatus(data) {
+    return dispatch => {
+        dispatch({
+            type: BillConstants.GET_BILL_BY_STATUS_REQUEST
+        })
+        BillServices.getBillsByStatus(data)
+        .then(res => {
+            dispatch({
+                type: BillConstants.GET_BILL_BY_STATUS_SUCCESS,
+                payload: res.data.content
+            })
+        })
+        .catch(err => {
+            dispatch({
+                type: BillConstants.GET_BILL_BY_STATUS_FAILURE,
                 error: err
             })
         })

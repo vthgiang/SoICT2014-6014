@@ -181,21 +181,22 @@ class TaskAddModal extends Component {
         }
     }
 
-    handleChangeCollaboratedWithOrganizationalUnits = (value) => {
-        this.setState(state => {
+    handleChangeCollaboratedWithOrganizationalUnits = async (value) => {
+        await this.setState(state => {
             return {
                 ...state,
                 newTask: { // update lại name,description và reset các selection phía sau
                     ...this.state.newTask,
-                    collaboratedWithOrganizationalUnits: value
+                    collaboratedWithOrganizationalUnits: value.map(item => { return { "organizationalUnit": item } })
                 }
             };
         });
+        console.log('new Task', this.state.newTask);
     }
 
     handleChangeTaskTemplate = async (event) => {
         let value = event.target.value;
-
+        console.log(value);
         if (value === "") {
             this.setState(state => {
                 return {
@@ -228,13 +229,14 @@ class TaskAddModal extends Component {
                     ...state,
                     newTask: { // update lại name,description và reset các selection phía sau
                         ...this.state.newTask,
+                        collaboratedWithOrganizationalUnits: taskTemplate.collaboratedWithOrganizationalUnits.map(item => { return { "organizationalUnit": item._id } }),
                         name: taskTemplate.name,
                         description: taskTemplate.description,
                         priority: taskTemplate.priority,
-                        responsibleEmployees: taskTemplate.responsibleEmployees,
-                        accountableEmployees: taskTemplate.accountableEmployees,
-                        consultedEmployees: taskTemplate.consultedEmployees,
-                        informedEmployees: taskTemplate.informedEmployees,
+                        responsibleEmployees: taskTemplate.responsibleEmployees.map(item => item._id),
+                        accountableEmployees: taskTemplate.accountableEmployees.map(item => item._id),
+                        consultedEmployees: taskTemplate.consultedEmployees.map(item => item._id),
+                        informedEmployees: taskTemplate.informedEmployees.map(item => item._id),
                         taskTemplate: taskTemplate._id,
                     }
                 };
@@ -435,6 +437,7 @@ class TaskAddModal extends Component {
         }
 
         console.log('abccccc', this.props, newTask.parent);
+        console.log(newTask);
 
         return (
             <React.Fragment>
@@ -489,7 +492,7 @@ class TaskAddModal extends Component {
                                         })}
                                         options={{ placeholder: translate('kpi.evaluation.dashboard.select_units') }}
                                         onChange={this.handleChangeCollaboratedWithOrganizationalUnits}
-                                        value={collaboratedWithOrganizationalUnits}
+                                        value={newTask.collaboratedWithOrganizationalUnits?.map(e => e.organizationalUnit)}
                                         multiple={true}
                                     />
                                 </div>

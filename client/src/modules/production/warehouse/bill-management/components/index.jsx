@@ -3,13 +3,22 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { SelectMulti, DatePicker, DataTableSetting, PaginateBar } from '../../../../../common-components';
 
-import BillDetailForm from './billDetailForm';
-import BillCreateForm from './billCreateForm';
+// import BillDetailForm from './billDetailForm';
+// import BillCreateForm from './billCreateForm';
+// import BillEditForm from './billEditForm';
+
+import BookManagement from '../components/stock-book';
+import ReceiptManagement from '../components/good-receipts';
+import IssueManagement from '../components/good-issues';
+import ReturnManagement from '../components/good-returns';
+import RotateManagement from '../components/stock-rotate';
+import TakeManagement from '../components/stock-takes';
 
 import { BillActions } from '../redux/actions';
 import { StockActions } from '../../stock-management/redux/actions';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { GoodActions } from '../../../common-production/good-management/redux/actions';
+import { CrmCustomerActions } from '../../../../crm/customer/redux/actions';
 
 class BillManagement extends Component {
 
@@ -24,16 +33,28 @@ class BillManagement extends Component {
 
     componentDidMount() {
         const { limit, page } = this.state;
-        this.props.getBillsByType();
         this.props.getBillsByType({ page, limit });
+        this.props.getBillsByType();
         this.props.getAllStocks();
         this.props.getUser();
         this.props.getAllGoods();
+        this.props.getCustomers();
     }
 
     handleShowDetailInfo = async (id) => {
         await this.props.getDetailBill(id);
         window.$('#modal-detail-bill').modal('show');
+    }
+
+    handleEdit = async (bill) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                currentRow: bill
+            }
+        })
+
+        window.$('#modal-edit-bill').modal('show');
     }
 
     formatDate(date, monthYear = false) {
@@ -60,7 +81,15 @@ class BillManagement extends Component {
         this.setState({ page });
         const data = {
             limit: this.state.limit,
-            page: page
+            page: page,
+            code: this.state.code,
+            status: this.state.status,
+            stock: this.state.stock,
+            type: this.state.type,
+            startDate: this.state.startDate,
+            endDate: this.state.endDate,
+            customer: this.state.customer,
+            creator: this.state.creator
         };
         const { group } = this.state;
         if(group !== '') {
@@ -74,6 +103,14 @@ class BillManagement extends Component {
         const data = {
             limit: number,
             page: this.state.page,
+            code: this.state.code,
+            status: this.state.status,
+            stock: this.state.stock,
+            type: this.state.type,
+            startDate: this.state.startDate,
+            endDate: this.state.endDate,
+            customer: this.state.customer,
+            creator: this.state.creator
         };
         const { group } = this.state;
         if(group !== '') {
@@ -128,6 +165,15 @@ class BillManagement extends Component {
         })
     }
 
+    handlePartnerChange = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                customer: value
+            }
+        })
+    }
+
     handleSubmitSearch = () => {
         let data = {
             page: this.state.page,
@@ -138,7 +184,7 @@ class BillManagement extends Component {
             type: this.state.type,
             startDate: this.state.startDate,
             endDate: this.state.endDate,
-            partner: this.state.partner,
+            customer: this.state.customer,
             creator: this.state.creator
         }
         const { group } = this.state;
@@ -263,12 +309,27 @@ class BillManagement extends Component {
         await this.props.getBillsByType({ page, limit, group })
     }
 
+    getPartner = () => {
+        const { crm } = this.props;
+        let partnerArr = [];
+
+        crm.customers.list.map(item => {
+            partnerArr.push({
+                value: item._id,
+                text: item.name
+            })
+        })
+
+        return partnerArr;
+    }
+
     render() {
 
         const { translate, bills, stocks, user} = this.props;
         const { listPaginate, totalPages, page } = bills;
         const { listStocks } = stocks;
-        const { startDate, endDate, group } = this.state;
+        const { startDate, endDate, group, currentRow } = this.state;
+        const dataPartner = this.getPartner();
 
         return (
             <div className="nav-tabs-custom">
@@ -282,8 +343,129 @@ class BillManagement extends Component {
                 </ul>
                 <div className="tab-content">
 
-                <div className="box-body qlcv">
-                    { group !== '' ? <BillCreateForm /> : ''}
+                { group === '' && 
+                    <BookManagement 
+                        handleEdit={this.handleEdit}
+                        formatDate={this.formatDate}
+                        setPage={this.setPage}
+                        setLimit={this.setLimit}
+                        handleStockChange={this.handleStockChange}
+                        handleCreatorChange={this.handleCreatorChange}
+                        handleTypeChange={this.handleTypeChange}
+                        handleStatusChange={this.handleStatusChange}
+                        handleCodeChange={this.handleCodeChange}
+                        handlePartnerChange={this.handlePartnerChange}
+                        handleSubmitSearch={this.handleSubmitSearch}
+                        handleChangeStartDate={this.handleChangeStartDate}
+                        handleChangeEndDate={this.handleChangeEndDate}
+                        getPartner={this.getPartner}
+                        handleShowDetailInfo={this.handleShowDetailInfo}
+
+                    />
+                }
+
+                { group === '1' && 
+                    <ReceiptManagement 
+                        handleEdit={this.handleEdit}
+                        formatDate={this.formatDate}
+                        setPage={this.setPage}
+                        setLimit={this.setLimit}
+                        handleStockChange={this.handleStockChange}
+                        handleCreatorChange={this.handleCreatorChange}
+                        handleTypeChange={this.handleTypeChange}
+                        handleStatusChange={this.handleStatusChange}
+                        handleCodeChange={this.handleCodeChange}
+                        handlePartnerChange={this.handlePartnerChange}
+                        handleSubmitSearch={this.handleSubmitSearch}
+                        handleChangeStartDate={this.handleChangeStartDate}
+                        handleChangeEndDate={this.handleChangeEndDate}
+                        getPartner={this.getPartner}
+                        handleShowDetailInfo={this.handleShowDetailInfo}
+                    />
+                }
+
+                { group === '2' && 
+                    <IssueManagement 
+                        handleEdit={this.handleEdit}
+                        formatDate={this.formatDate}
+                        setPage={this.setPage}
+                        setLimit={this.setLimit}
+                        handleStockChange={this.handleStockChange}
+                        handleCreatorChange={this.handleCreatorChange}
+                        handleTypeChange={this.handleTypeChange}
+                        handleStatusChange={this.handleStatusChange}
+                        handleCodeChange={this.handleCodeChange}
+                        handlePartnerChange={this.handlePartnerChange}
+                        handleSubmitSearch={this.handleSubmitSearch}
+                        handleChangeStartDate={this.handleChangeStartDate}
+                        handleChangeEndDate={this.handleChangeEndDate}
+                        getPartner={this.getPartner}
+                        handleShowDetailInfo={this.handleShowDetailInfo}
+                    />
+                }
+
+                { group === '3' && 
+                    <ReturnManagement 
+                        handleEdit={this.handleEdit}
+                        formatDate={this.formatDate}
+                        setPage={this.setPage}
+                        setLimit={this.setLimit}
+                        handleStockChange={this.handleStockChange}
+                        handleCreatorChange={this.handleCreatorChange}
+                        handleTypeChange={this.handleTypeChange}
+                        handleStatusChange={this.handleStatusChange}
+                        handleCodeChange={this.handleCodeChange}
+                        handlePartnerChange={this.handlePartnerChange}
+                        handleSubmitSearch={this.handleSubmitSearch}
+                        handleChangeStartDate={this.handleChangeStartDate}
+                        handleChangeEndDate={this.handleChangeEndDate}
+                        getPartner={this.getPartner}
+                        handleShowDetailInfo={this.handleShowDetailInfo}
+                    />
+                }
+
+                { group === '4' &&
+                    <TakeManagement 
+                        handleEdit={this.handleEdit}
+                        formatDate={this.formatDate}
+                        setPage={this.setPage}
+                        setLimit={this.setLimit}
+                        handleStockChange={this.handleStockChange}
+                        handleCreatorChange={this.handleCreatorChange}
+                        handleTypeChange={this.handleTypeChange}
+                        handleStatusChange={this.handleStatusChange}
+                        handleCodeChange={this.handleCodeChange}
+                        handlePartnerChange={this.handlePartnerChange}
+                        handleSubmitSearch={this.handleSubmitSearch}
+                        handleChangeStartDate={this.handleChangeStartDate}
+                        handleChangeEndDate={this.handleChangeEndDate}
+                        getPartner={this.getPartner}
+                        handleShowDetailInfo={this.handleShowDetailInfo}
+                    />
+                }
+
+                { group === '5' && 
+                    <RotateManagement 
+                        handleEdit={this.handleEdit}
+                        formatDate={this.formatDate}
+                        setPage={this.setPage}
+                        setLimit={this.setLimit}
+                        handleStockChange={this.handleStockChange}
+                        handleCreatorChange={this.handleCreatorChange}
+                        handleTypeChange={this.handleTypeChange}
+                        handleStatusChange={this.handleStatusChange}
+                        handleCodeChange={this.handleCodeChange}
+                        handlePartnerChange={this.handlePartnerChange}
+                        handleSubmitSearch={this.handleSubmitSearch}
+                        handleChangeStartDate={this.handleChangeStartDate}
+                        handleChangeEndDate={this.handleChangeEndDate}
+                        getPartner={this.getPartner}
+                        handleShowDetailInfo={this.handleShowDetailInfo}
+                    />
+                }
+
+                {/* <div className="box-body qlcv">
+                    { group !== '' ? <BillCreateForm group={group} /> : ''}
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('manage_warehouse.bill_management.stock')}</label>
@@ -331,6 +513,7 @@ class BillManagement extends Component {
                                     { value: '5', text: translate('manage_warehouse.bill_management.billType.5')},
                                     { value: '6', text: translate('manage_warehouse.bill_management.billType.6')},
                                     { value: '7', text: translate('manage_warehouse.bill_management.billType.7')},
+                                    { value: '8', text: translate('manage_warehouse.bill_management.billType.8')},
                                 ]}
                                 onChange={this.handleTypeChange}
                             />
@@ -367,14 +550,10 @@ class BillManagement extends Component {
                                     options={{ nonSelectedText: "Chọn đối tác", allSelectedText: "Chọn tất cả" }}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
-                                    items={[
-                                        { value: '1', text: "Công ty TNHH ABC"},
-                                        { value: '2', text: "Xưởng máy A"},
-                                        { value: '3', text: "Công ty B"},
-                                    ]}
-                                    onChange={this.handleCategoryChange}
+                                    items={dataPartner}
+                                    onChange={this.handlePartnerChange}
                                 />
-                            </div> : ''
+                            </div> : []
                         }
                         <div className="form-group">
                             <label className="form-control-static">{translate('manage_warehouse.bill_management.status')}</label>
@@ -385,33 +564,57 @@ class BillManagement extends Component {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={[
-                                    { value: '1', text: translate('manage_warehouse.bill_management.1.status')},
-                                    { value: '2', text: translate('manage_warehouse.bill_management.2.status')},
-                                    { value: '3', text: translate('manage_warehouse.bill_management.3.status')},
-                                    { value: '4', text: translate('manage_warehouse.bill_management.4.status')},
+                                    { value: '1', text: translate('manage_warehouse.bill_management.bill_status.1')},
+                                    { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2')},
+                                    { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3')},
+                                    { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4')},
+                                    { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5')},
                                 ]}
                                 onChange={this.handleStatusChange}
                             />
                         </div>
                         <div className="form-group">
-                            { group === '4' ? <label></label> : ''}
+                            { group === '4' ? <label></label> : []}
                             <button type="button" className="btn btn-success" title={translate('manage_warehouse.bill_management.search')} onClick={this.handleSubmitSearch}>{translate('manage_warehouse.bill_management.search')}</button>
                         </div>
                     </div>
                     <BillDetailForm />
+                    {
+                        currentRow &&
+                        <BillEditForm 
+                            billId={currentRow._id}
+                            fromStock={currentRow.fromStock ? currentRow.fromStock._id : null}
+                            toStock={currentRow.toStock ? currentRow.toStock_id : null}
+                            code={currentRow.code}
+                            group={currentRow.group}
+                            type={currentRow.type}
+                            status={currentRow.status}
+                            users={currentRow.users}
+                            approver={currentRow.approver ? currentRow.approver._id : null}
+                            customer={currentRow.customer ? currentRow.customer._id : null}
+                            supplier={currentRow.supplier ? currentRow.supplier._id : null}
+                            name={currentRow.receiver ? currentRow.receiver.name : ''}
+                            phone={currentRow.receiver ? currentRow.receiver.phone : ''}
+                            email={currentRow.receiver ? currentRow.receiver.email : ''}
+                            address={currentRow.receiver ? currentRow.receiver.address : ''}
+                            description={currentRow.description}
+                            listGood={currentRow.goods}
+                        />
+                    }
 
                         <table id={`good-table`} className="table table-striped table-bordered table-hover" style={{marginTop: '15px'}}>
                             <thead>
                                 <tr>
                                     <th style={{ width: '5%' }}>{translate('manage_warehouse.bill_management.index')}</th>
                                     <th>{translate('manage_warehouse.bill_management.code')}</th>
-                                    { group === '3' ? <th>{translate('manage_warehouse.bill_management.issued')}</th> : ''}
+                                    { group === '3' ? <th>{translate('manage_warehouse.bill_management.issued')}</th> : []}
                                     <th>{translate('manage_warehouse.bill_management.type')}</th>
                                     <th>{translate('manage_warehouse.bill_management.status')}</th> 
                                     <th>{translate('manage_warehouse.bill_management.creator')}</th> 
+                                    <th>{translate('manage_warehouse.bill_management.approved')}</th> 
                                     <th>{translate('manage_warehouse.bill_management.date')}</th>
                                     <th>{translate('manage_warehouse.bill_management.stock')}</th>
-                                    {group === '1' ? <th>{translate('manage_warehouse.bill_management.supplier')}</th> : group === '2' ? <th>{translate('manage_warehouse.bill_management.customer')}</th> : group === '5' ? <th>{translate('manage_warehouse.bill_management.receipt_stock')}</th> : group === '4' ? '' : <th>{translate('manage_warehouse.bill_management.partner')}</th>}
+                                    {group === '1' ? <th>{translate('manage_warehouse.bill_management.supplier')}</th> : group === '2' ? <th>{translate('manage_warehouse.bill_management.customer')}</th> : group === '5' ? <th>{translate('manage_warehouse.bill_management.receipt_stock')}</th> : group === '4' ? [] : <th>{translate('manage_warehouse.bill_management.partner')}</th>}
                                     <th>{translate('manage_warehouse.bill_management.description')}</th>
                                     <th style={{ width: '120px' }}>{translate('table.action')}
                                     <DataTableSetting
@@ -423,6 +626,7 @@ class BillManagement extends Component {
                                                 translate('manage_warehouse.bill_management.type'),
                                                 translate('manage_warehouse.bill_management.status'),
                                                 translate('manage_warehouse.bill_management.creator'),
+                                                translate('manage_warehouse.bill_management.approved'),
                                                 translate('manage_warehouse.bill_management.date'),
                                                 translate('manage_warehouse.bill_management.stock'),
                                                 group === '1' ? translate('manage_warehouse.bill_management.supplier') : group === '2' ? translate('manage_warehouse.bill_management.customer') : group === '5' ? translate('manage_warehouse.bill_management.receipt_stock') : group === '4' ? '' : translate('manage_warehouse.bill_management.partner'),
@@ -442,15 +646,16 @@ class BillManagement extends Component {
                                             <td>{index + 1}</td>
                                             <td>{x.code}</td>
                                             <td>{translate(`manage_warehouse.bill_management.billType.${x.type}`)}</td>
-                                            <td style={{ color: translate(`manage_warehouse.bill_management.${x.status}.color`)}}>{translate(`manage_warehouse.bill_management.${x.status}.status`)}</td>
-                                            <td>{x.creator ? x.creator.name : "creator is deleted"}</td>
+                                            <td style={{ color: translate(`manage_warehouse.bill_management.bill_color.${x.status}`)}}>{translate(`manage_warehouse.bill_management.bill_status.${x.status}`)}</td>
+                                            <td>{x.creator ? x.creator.name : "Creator is deleted"}</td>
+                                            <td>{x.approver ? x.approver.name : "approver is deleted"}</td>
                                             <td>{this.formatDate(x.timestamp)}</td>
                                             <td>{x.fromStock ? x.fromStock.name : "Stock is deleted"}</td>
-                                            <td>{x.partner ? x.partner.name : "Partner is deleted"}</td>
+                                            <td>{x.customer ? x.customer.name : 'Partner is deleted'}</td>
                                             <td>{x.description}</td>
                                             <td style={{textAlign: 'center'}}>
                                                 <a className="text-green" onClick={() => this.handleShowDetailInfo(x._id)}><i className="material-icons">visibility</i></a>
-                                                { this.state.group !== '' ? <a onClick={() => this.handleEdit()} className="text-yellow" ><i className="material-icons">edit</i></a> : ''}
+                                                { this.state.group !== '' ? <a onClick={() => this.handleEdit(x)} className="text-yellow" ><i className="material-icons">edit</i></a> : ''}
                                                 <a className="text-black" onClick={() => this.handleShow()}><i className="material-icons">print</i></a>
                                             </td>
                                         </tr>
@@ -463,7 +668,7 @@ class BillManagement extends Component {
                             (typeof listPaginate === 'undefined' || listPaginate.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                         <PaginateBar pageTotal = {totalPages} currentPage = {page} func = {this.setPage} />
-                    </div>
+                    </div> */}
                 </div>
             </div>
         );
@@ -478,7 +683,8 @@ const mapDispatchToProps = {
     getDetailBill: BillActions.getDetailBill,
     getAllStocks: StockActions.getAllStocks,
     getUser: UserActions.get,
-    getAllGoods: GoodActions.getAllGoods
+    getAllGoods: GoodActions.getAllGoods,
+    getCustomers: CrmCustomerActions.getCustomers
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(BillManagement));

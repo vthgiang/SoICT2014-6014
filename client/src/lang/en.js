@@ -959,6 +959,7 @@ export default {
             manage_examples_1: "CRUD by model 1",
             manage_examples_2: "CRUD by model 2",
             manage_examples_hooks_1: "CRUD Hooks by model 1",
+            manage_examples_hooks_2: "CRUD Hooks by model 2",
 
             // Quản lý sản xuất
             manage_manufacturing: "Quản lý sản xuất",
@@ -2399,6 +2400,15 @@ export default {
                 stored: 'Stored',
                 current_month: 'Current month',
 
+                assigned_collaborate: 'Task assignment status',
+                not_assigned: 'Unassigned task',
+                assigned: 'Assigned task',
+                none_select_assigned: 'None select',
+                role_in_collaborated_unit: 'The role of the employee in',
+                confirm_assigned: 'Confirm the assignment',
+                confirm_assigned_success: 'You have confirmed the assignment',
+                confirm_assigned_failure: 'You have not confirmed the assignment',
+
                 name: "Name of task",
                 search_by_name: 'Search by name',
 
@@ -2566,6 +2576,7 @@ export default {
                 err_eval_end: 'Evaluate date should be less than equal end date',
                 err_eval_on_month: 'Evaluate date should be day of month',
                 explain_avg_rating: 'Since no activity has been evaluated, the activity rating default is 10',
+                explain_not_has_failed_and_passed_action: ' - (Since no failed or passed activity, so the number of passed action and failed action will be considered equal and equal to 1)',
 
                 info_eval_month: 'Task infomation in evaluation',
 

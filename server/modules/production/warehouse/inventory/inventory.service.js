@@ -63,13 +63,13 @@ exports.getAllLots = async (query, portal) => {
             }
 
             if(query.expirationDate){
-                let month = new Date(query.expirationDate).getMonth() + 1;
+                let date = query.expirationDate.split("-");
+                let end = new Date(date[2], date[1] - 1, date[0]);
+
                 option = {
                     ...option,
-                    "$expr": {
-                        "$eq": [{
-                            "$month": "$expirationDate"
-                        }, month]
+                    expirationDate: {
+                        $lte: end
                     }
                 }
             }
@@ -99,13 +99,13 @@ exports.getAllLots = async (query, portal) => {
             }
 
             if(query.expirationDate){
-                let month = new Date(query.expirationDate).getMonth() + 1;
+                let date = query.expirationDate.split("-");
+                let end = new Date(date[2], date[1] - 1, date[0]);
+
                 option = {
                     ...option,
-                    "$expr": {
-                        "$eq": [{
-                            "$month": "$expirationDate"
-                        }, month]
+                    expirationDate: {
+                        $lte: end
                     }
                 }
             }
@@ -143,6 +143,72 @@ exports.getDetailLot = async (id, portal) => {
             { path: 'lotLogs.stock', select: 'id name'}
         ])
     return lot;
+}
+
+exports.createOrUpdateLots = async (data, portal) => {
+    let lots = [];
+    if(data.lots && data.lots.length > 0) {
+        for(let i = 0; i < data.lots.length; i++) {
+            let date = data.lots[i].expirationDate.split("-");
+            let expirationDate = new Date(date[2], date[1] - 1, date[0]);
+            let lot = await Lot(connect(DB_CONNECTION, portal)).find({ name: data.lots[i].name });
+            if(lot && lot.length > 0) {
+                lot[0].stocks[0].stock = data.stock;
+                lot[0].stocks[0].quantity = data.lots[i].quantity;
+                lot[0].originalQuantity = data.lots[i].quantity;
+                lot[0].quantity = data.lots[i].quantity;
+                lot[0].expirationDate = expirationDate;
+                lot[0].name = data.lots[i].name;
+                lot[0].good = data.good;
+                lot[0].type = data.type;
+                lot[0].description = data.lots[i].note;
+                lot[0].lotLogs[0].bill = data.bill;
+                lot[0].lotLogs[0].quantity = data.lots[i].quantity;
+                lot[0].lotLogs[0].description =data.lots[0].note;
+                lot[0].lotLogs[0].type = data.typeBill;
+                lot[0].lotLogs[0].stock = data.stock;
+
+                await lot[0].save();
+                lots.push(lot[0]);
+            }
+            else {
+                let stock = {
+                    stock: data.stock,
+                    quantity: data.lots[i].quantity
+                }
+                let stocks = [];
+                stocks.push(stock);
+
+                let lotLog = {
+                    bill: data.bill,
+                    stock: data.stock,
+                    quantity: data.lots[i].quantity,
+                    type: data.typeBill,
+                    description: data.lots[i].note,
+                }
+                let lotLogs = [];
+                lotLogs.push(lotLog);
+
+                let query = {
+                    name: data.lots[i].name,
+                    good: data.good,
+                    type: data.type,
+                    stocks: stocks,
+                    originalQuantity: data.lots[i].quantity,
+                    quantity: data.lots[i].quantity,
+                    expirationDate: expirationDate,
+                    description: data.lots[i].note,
+                    lotLogs: lotLogs
+
+                }
+
+                let lot = await Lot(connect(DB_CONNECTION, portal)).create(query);
+                lots.push(lot);
+            }
+        }
+    }
+
+    return lots;
 }
 
 exports.editLot = async (id, data, portal) => {
@@ -238,4 +304,22 @@ exports.editLot = async (id, data, portal) => {
             { path: 'lotLogs.binLocations.binLocation'},
             { path: 'lotLogs.stock', select: 'id name'}
         ])
+}
+
+exports.getLotsByGood = async (query, portal) => {
+    const { good, stock } = query;
+    if(!stock) {
+        return [];
+    }
+    const lots = await Lot(connect(DB_CONNECTION, portal))
+        .find({ good: good, stocks: { $elemMatch: { stock: stock } } })
+        .populate([
+            { path: 'good'},
+            { path: 'stocks.binLocations.binLocation', select: 'id path'},
+            { path: 'stocks.stock'},
+            { path: 'lotLogs.bill', select: 'id code type'},
+            { path: 'lotLogs.binLocations.binLocation'},
+            { path: 'lotLogs.stock', select: 'id name'}
+        ])
+    return lots;
 }

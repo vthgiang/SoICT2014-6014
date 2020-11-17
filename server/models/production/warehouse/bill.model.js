@@ -4,14 +4,14 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 
 const BillSchema = new Schema ({
 
-    company: {
-        type: Schema.Types.ObjectId,
-        ref: 'Company'
-    },
-
     fromStock: {
         type: Schema.Types.ObjectId,
         ref: 'Stock'
+    },
+
+    group: {
+        type: String,
+        enum: ["1", "2", "3", "4", "5"]
     },
 
     toStock: {
@@ -19,9 +19,24 @@ const BillSchema = new Schema ({
         ref: 'Stock'
     },
 
+    bill: {
+        type: Schema.Types.ObjectId,
+        replies: this
+    },
+
     code: {
         type: String,
         required: true
+    },
+
+    type: { //1: Nhập nguyên vật liệu, 2: Nhập thành phẩm, 3:Xuất sản phẩm, 4: Xuất nguyên vật liệu, 5: Kiểm kê định kỳ, 6: Kiểm kê thường xuyên, 7: Trả hàng, 8: Luân chuyển
+        type: String,
+        enum: ["1", "2", "3", "4", "5", "6", "7", "8"]
+    },
+
+    status: { //1: Chờ phê duyệt, 2:Đã hủy, 3: Đã hoàn thành, 4: chờ kiểm tra, 5: đang thực hiện
+        type: String,
+        enum: ["1", "2", "3", "4", "5"]
     },
 
     users: [{
@@ -29,14 +44,42 @@ const BillSchema = new Schema ({
         ref: 'User'
     }],
 
-    partner: {
+    creator: {
         type: Schema.Types.ObjectId,
-        ref: 'Partner'
+        ref: 'User'
     },
 
-    proposal: {
+    approver: {
         type: Schema.Types.ObjectId,
-        ref: 'Proposal'
+        ref: 'User'
+    },
+
+    customer: {
+        type: Schema.Types.ObjectId,
+        ref: 'Customer'
+    },
+
+    supplier: {
+        type: Schema.Types.ObjectId,
+        ref: 'Customer'
+    },
+
+    receiver: {
+        name: {
+            type: String
+        },
+
+        phone: {
+            type: Number
+        },
+
+        email: {
+            type: String
+        },
+
+        address: {
+            type: String
+        }
     },
 
     timestamp: {
@@ -48,101 +91,21 @@ const BillSchema = new Schema ({
         type: String
     },
 
-    goodReceipts: [{
+    goods: [{
 
         good: {
             type: Schema.Types.ObjectId,
             ref: 'Good'
-        },
-
-        lot: {
-            type: Schema.Types.ObjectId,
-            ref: 'Lot'
-        },
-
-        type: {
-            type: String,
-            enum: [""]
         },
 
         quantity: {
-            type: Number
-        }
-    }],
-
-    goodIssues: [{
-
-        good: {
-            type: Schema.Types.ObjectId,
-            ref: 'Good'
-        },
-
-        lot: {
-            type: Schema.Types.ObjectId,
-            ref: 'Lot'
-        },
-
-        type: {
-            type: String,
-            enum: [""]
-        },
-
-        quantity: {
-            type: Number
-        }
-    }],
-
-    goodReturns: [{
-
-        good: {
-            type: Schema.Types.ObjectId,
-            ref: 'Good'
-        },
-
-        lot: {
-            type: Schema.Types.ObjectId,
-            ref: 'Lot'
-        },
-
-        type: {
-            type: String,
-            enum: [""]
-        },
-
-        bill: {
-            type: Schema.Types.ObjectId,
-            replies: this
+            type: Number,
+            default: 0
         },
 
         returnQuantity: {
-            type: Number
-        },
-
-        note: {
-            type: String,
-            enum: [""]
-        }
-    }],
-
-    stockTakes: [{
-
-        good: {
-            type: Schema.Types.ObjectId,
-            ref: 'Good'
-        },
-
-        lot: {
-            type: Schema.Types.ObjectId,
-            ref: 'Lot'
-        },
-
-        type: {
-            type: String,
-            enum: [""]
-        },
-
-        realQuantity: {
-            type: Number
+            type: Number,
+            default: 0
         },
 
         damagedQuantity: {
@@ -150,7 +113,42 @@ const BillSchema = new Schema ({
             default: 0
         },
 
-        note: {
+        realQuantity: {
+            type: Number
+        },
+        
+        lots: [{
+
+            lot: {
+                type: Schema.Types.ObjectId,
+                ref: 'Lot'
+            },
+
+            quantity: {
+                type: Number,
+                default: 0
+            },
+
+            returnQuantity: {
+                type: Number,
+                default: 0
+            },
+
+            damagedQuantity: {
+                type: Number,
+                default: 0
+            },
+
+            realQuantity: {
+                type: Number
+            },
+
+            note: {
+                type: String
+            }
+        }],
+
+        description: {
             type: String
         }
     }]

@@ -28,17 +28,6 @@ const ManufacturingMillSchema = new Schema({
         type: Number,
         default: 1
     },
-    workSchedules: [{// Lịch làm việc của xưởng
-        year: Number, // Năm
-        numberOfTurn: [{ // Mảng số ca [3, 3 ,3 ,3, 3 ...]
-            type: Number
-        }],
-        stateOfTurn: [{ // Mảng trạng thái ca [Mã lệnh, null, null, Mã lệnh, Mã lệnh, ...]
-            type: Schema.Types.ObjectId,
-            ref: "ManufacturingCommand",
-            default: null
-        }]
-    }],
 }, {
     timestamps: true
 });

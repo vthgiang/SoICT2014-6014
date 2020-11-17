@@ -774,7 +774,16 @@ editTaskByAccountableEmployees = async (req, res) => {
 editEmployeeCollaboratedWithOrganizationalUnits = async (req, res) => {
     try {
         let data = await PerformTaskService.editEmployeeCollaboratedWithOrganizationalUnits(req.portal, req.params.taskId, req.body);
+        
+        // Thêm nhật ký hoạt động
+        let log = {
+            createdAt: Date.now(),
+            creator: req.user._id,
+            title: "Phân công công việc"
+        }
+        await PerformTaskService.addTaskLog(req.portal, req.params, log);
 
+        // Gửi thông báo
         let notification = {
             organizationalUnits: data.task && data.task.organizationalUnit._id,
             title: "Phân công công việc",

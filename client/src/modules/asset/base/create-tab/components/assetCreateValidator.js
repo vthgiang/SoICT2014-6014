@@ -124,9 +124,6 @@ function validateAssetType(value, translate) {
  */
 function validatePurchaseDate(value, translate) {
     let msg = undefined;
-    if (value.trim() === "") {
-        msg = "Ngày nhập không được để trống";
-    }
     return msg;
 }
 
@@ -135,9 +132,6 @@ function validatePurchaseDate(value, translate) {
  */
 function validateWarrantyExpirationDate(value, translate) {
     let msg = undefined;
-    if (value.trim() === "") {
-        msg = "Ngày bảo hành không được để trống";
-    }
     return msg;
 }
 
@@ -297,9 +291,6 @@ function validateResidualValue(value, translate) {
 //kiểm tra thời  gian bắt đầu trích khấu hao
 function validateStartDepreciation(value, translate) {
     let msg = undefined;
-    if (value.trim() === "") {
-        msg = "Thời gian bắt đầu trích khấu hao không được để trống";
-    }
     return msg;
 }
 

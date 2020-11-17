@@ -40,17 +40,17 @@ class DetailsOfOrganizationalUnitKpiForm extends Component {
                     <div className="col-xs-6">
                         <div className="form-group">
                             <strong>{translate('document.administration.domains.name')}:  </strong>
-                            {details.name}
+                            {details && details.name}
                         </div>
 
                         <div className="form-group">
                             <strong>Đơn vị:  </strong>
-                            {details.organizationalUnit}
+                            {details && details.organizationalUnit}
                         </div>
 
                         <div className="form-group">
                             <strong>Trọng số:  </strong>
-                            {details.weight}
+                            {details && details.weight}
                         </div>
                     </div>
 
@@ -59,7 +59,7 @@ class DetailsOfOrganizationalUnitKpiForm extends Component {
                         <div className="form-group">
                             <a title="Chi tiết KPI nhân viên" data-toggle="modal" data-target="#modal-employee-kpi-detail" data-backdrop="static" data-keyboard="false" style={{ cursor: "pointer" }}>
                                 <strong>Số lượng Kpi nhân viên:  </strong>
-                                {details.listEmployeeKpi.length}
+                                {details && details.listEmployeeKpi && details.listEmployeeKpi.length}
                             </a>
                             <DetailOfEmployeeKpiDialogModal listEmployeeKpi={details.listEmployeeKpi}/>
                         </div>
@@ -68,18 +68,18 @@ class DetailsOfOrganizationalUnitKpiForm extends Component {
                         <div className="form-group">
                             <a title="Chi tiết công việc" data-toggle="modal" data-target="#modal-task-detail" data-backdrop="static" data-keyboard="false" style={{ cursor: "pointer" }}>
                                 <strong>Số lượng công việc:  </strong>
-                                {details.listTask.length}
+                                {details && details.listTask && details.listTask.length}
                             </a>
-                            <DetailOfTaskDialogModal listTask={details.listTask}/>
+                            <DetailOfTaskDialogModal listTask={details && details.listTask}/>
                         </div>
 
                         {/** Chi tiết người tham gia */}
                         <div className="form-group">
                             <a title="Chi tiết người tham gia" data-toggle="modal" data-target="#modal-participant-detail" data-backdrop="static" data-keyboard="false" style={{ cursor: "pointer" }}>
                                 <strong>Số người tham gia:  </strong>
-                                {details.listParticipant.length}
+                                {details && details.listParticipant && details.listParticipant.length}
                             </a>
-                            <DetailOfParticipantDialogModal listParticipant={details.listParticipant}/>
+                            <DetailOfParticipantDialogModal listParticipant={details && details.listParticipant}/>
                         </div>
                     </div>
                 </div>

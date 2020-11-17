@@ -18,7 +18,7 @@ class AssetEditForm extends Component {
         this.state = {
             employeeId: this.props.employeeId ? this.props.employeeId : '',
             img: './upload/human-resource/avatars/avatar5.png',
-            avatar: "",
+            avatar: "./upload/asset/pictures/picture5.png",
         };
     }
 
@@ -65,6 +65,7 @@ class AssetEditForm extends Component {
                 maintainanceLogs: data
             })
         }
+        console.log('maintain', this.state);
     }
 
     // Function xoá sửa chữa, thay thế, nâng cấp
@@ -232,11 +233,12 @@ class AssetEditForm extends Component {
                 // this.validatorInput(serial) && 
                 this.validatorInput(assetType) && this.validatorInput(group) &&
                 // this.validatorInput(managedBy) && 
-                this.validatorInput(purchaseDate) &&
+                // this.validatorInput(purchaseDate) &&
                 // this.validatorInput(warrantyExpirationDate) && //this.validatorInput(location) &&
-                this.validatorInput(status) && this.validatorInput(typeRegisterForUse) &&
-                this.validatorInput(cost) && this.validatorInput(usefulLife) &&
-                this.validatorInput(startDepreciation) && this.validatorInput(depreciationType)
+                this.validatorInput(status) && this.validatorInput(typeRegisterForUse)
+
+                // this.validatorInput(cost) && this.validatorInput(usefulLife) &&
+                // this.validatorInput(startDepreciation) && this.validatorInput(depreciationType)
                 && unitProductionValidate;
 
             // console.log('\n\n\n ***', this.validatorInput(code) , this.validatorInput(assetName) ,
@@ -265,7 +267,7 @@ class AssetEditForm extends Component {
             createIncidentLogs: incidentLogs.filter(x => !x._id),
             createFiles: files.filter(x => !x._id),
         })
-
+        console.log('formdata', this.state);
         let formData = convertJsonObjectToFormData(this.state);
         files.forEach(x => {
             x.files.forEach(item => {
@@ -458,7 +460,7 @@ class AssetEditForm extends Component {
                                 handleChange={this.handleChange}
                                 cost={cost}
                                 residualValue={residualValue}
-                                startDepreciation={moment(startDepreciation).format('DD-MM-YYYY')}
+                                startDepreciation={startDepreciation && moment(startDepreciation).format('DD-MM-YYYY')}
                                 endDepreciation={this.addMonth(startDepreciation, usefulLife)}
                                 usefulLife={usefulLife}
                                 depreciationType={depreciationType}
@@ -484,6 +486,7 @@ class AssetEditForm extends Component {
                             {/* Thông tin sự cố */}
                             <IncidentLogTab
                                 id={`edit_incident${_id}`}
+                                assetId={_id}
                                 incidentLogs={incidentLogs}
                                 handleAddIncident={this.handleCreateIncidentLogs}
                                 handleEditIncident={this.handleEditIncidentLogs}

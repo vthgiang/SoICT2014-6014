@@ -15,12 +15,13 @@ class TaxManagementTable extends Component {
             limit: 5,
             code: "",
             name: "",
+            status: true,
         };
     }
 
     componentDidMount() {
-        const { page, limit } = this.state;
-        this.props.getAllTaxs({ page, limit });
+        const { page, limit, status } = this.state;
+        this.props.getAllTaxs({ page, limit, status });
     }
 
     setPage = async (page) => {
@@ -76,21 +77,40 @@ class TaxManagementTable extends Component {
             name: e.target.value,
         });
     };
+    handleStatusChange = (value) => {
+        if (value[0] === "all") {
+            this.setState({
+                status: undefined,
+            });
+        } else {
+            this.setState({
+                status: value[0],
+            });
+        }
+    };
 
     handleSubmitSearch = () => {
-        const { page, limit, code, name } = this.state;
+        const { page, limit, code, name, status } = this.state;
         const data = {
             limit: limit,
             page: page,
             code: code,
             name: name,
+            status: status,
         };
         this.props.getAllTaxs(data);
     };
 
     disableTax = (id) => {
+        let { limit, page, status } = this.state;
         this.props.disableTax(id);
-        this.props.getAllTaxs({ limit: this.state.limit, page: this.state.page });
+        this.props.getAllTaxs({ limit, page, status });
+    };
+
+    deleteTax = (code) => {
+        let { limit, page, status } = this.state;
+        this.props.deleteTax({ code });
+        this.props.getAllTaxs({ limit, page, status });
     };
 
     render() {
@@ -100,11 +120,11 @@ class TaxManagementTable extends Component {
         const { code, name } = this.state;
         return (
             <React.Fragment>
-                {<TaxDetailForm taxId={this.state.taxId} />}
+                <TaxDetailForm taxId={this.state.taxId} />
                 {this.state.currentRow && (
                     <TaxEditForm
                         taxEdit={this.state.currentRow}
-                        reloadState={() => this.props.getAllTaxs({ limit: this.state.limit, page: this.state.page })}
+                        reloadState={() => this.props.getAllTaxs({ limit: this.state.limit, page: this.state.page, status: this.state.status })}
                     />
                 )}
                 <div className="box-body qlcv">
@@ -117,6 +137,20 @@ class TaxManagementTable extends Component {
                         <div className="form-group">
                             <label className="form-control-static">{translate("manage_order.tax.tax_name")} </label>
                             <input type="text" className="form-control" value={name} onChange={this.handleNameChange} />
+                        </div>
+                        <div className="form-group">
+                            <label className="form-control-static">Trạng thái thuế</label>
+                            <SelectBox
+                                id={`select-filter-status-taxs`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={[
+                                    { value: true, text: "Đang hiệu lực" },
+                                    { value: false, text: "Hết hiệu lực" },
+                                    { value: "all", text: "Tất cả" },
+                                ]}
+                                onChange={this.handleStatusChange}
+                            />
                         </div>
                         <div className="form-group">
                             <button
@@ -171,7 +205,30 @@ class TaxManagementTable extends Component {
                                         <td>{tax.creator.name}</td>
                                         <td>
                                             <center>
-                                                <i className={tax.status ? "fa  fa-check text-success" : "fa fa-close text-danger"}></i>
+                                                {/* <i className={tax.status ? "fa  fa-check text-success" : "fa fa-close text-danger"}></i> */}
+
+                                                {tax.status ? (
+                                                    <ConfirmNotification
+                                                        icon="domain_verification"
+                                                        name="domain_verification"
+                                                        className="text-success"
+                                                        title={"Click để thay đổi trạng thái"}
+                                                        content={`<h4>${"Vô hiệu hóa thuế " + tax.name}</h4>
+                                                        <br/> <h5>Điều này đồng nghĩa với việc không thể sử dụng loại thuế này về sau</h5>
+                                                        <h5>Tuy nhiên, đừng lo lắng vì dữ liệu liên quan về loại thuế này trước đó sẽ không bị ảnh hưởng</h5?`}
+                                                        func={() => this.disableTax(tax._id)}
+                                                    />
+                                                ) : (
+                                                    <ConfirmNotification
+                                                        icon="disabled_by_default"
+                                                        name="disabled_by_default"
+                                                        className="text-red"
+                                                        title={"Click để thay đổi trạng thái"}
+                                                        content={`<h4>${"Kích hoạt thuế " + tax.name}</h4>
+                                                    <br/> <h5>Điều này đồng nghĩa loại thuế này được mở khóa và có thể sử dụng</h5>`}
+                                                        func={() => this.disableTax(tax._id)}
+                                                    />
+                                                )}
                                             </center>
                                         </td>
                                         <td style={{ textAlign: "center" }}>
@@ -184,25 +241,27 @@ class TaxManagementTable extends Component {
                                             >
                                                 <i className="material-icons">view_list</i>
                                             </a>
-                                            <a
-                                                className="edit text-yellow"
-                                                style={{ width: "5px" }}
-                                                title={"Sửa thông tin thuế"}
-                                                onClick={() => {
-                                                    this.handleEditTax(tax);
+                                            {tax.status ? (
+                                                <a
+                                                    className="edit text-yellow"
+                                                    style={{ width: "5px" }}
+                                                    title={"Sửa thông tin thuế"}
+                                                    onClick={() => {
+                                                        this.handleEditTax(tax);
+                                                    }}
+                                                >
+                                                    <i className="material-icons">edit</i>
+                                                </a>
+                                            ) : (
+                                                ""
+                                            )}
+                                            <DeleteNotification
+                                                content={"Bạn có chắc chắn muốn xóa thuế này"}
+                                                data={{
+                                                    id: tax._id,
+                                                    info: tax.name,
                                                 }}
-                                            >
-                                                <i className="material-icons">edit</i>
-                                            </a>
-                                            <ConfirmNotification
-                                                icon="disabled_by_default"
-                                                title={"Vô hiệu hóa thuế"}
-                                                content={`<h4>${"Vô hiệu hóa thuế " + tax.name}</h4>
-                                                            <br/> <h5>Điều này đồng nghĩa với việc không thể sử dụng loại thuế này về sau</h5>
-                                                            <h5>Tuy nhiên, đừng lo lắng vì dữ liệu liên quan về loại thuế này trước đó sẽ không bị ảnh hưởng</h5?`}
-                                                name="disabled_by_default"
-                                                className="text-red"
-                                                func={() => this.disableTax(tax._id)}
+                                                func={() => this.deleteTax(tax.code)}
                                             />
                                         </td>
                                     </tr>
@@ -231,6 +290,7 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
     getAllTaxs: TaxActions.getAllTaxs,
     disableTax: TaxActions.disableTax,
+    deleteTax: TaxActions.deleteTax,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(TaxManagementTable));

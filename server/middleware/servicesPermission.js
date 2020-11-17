@@ -201,6 +201,8 @@ exports.data = [
     { path: '/majors/major/:id', method: 'DELETE', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
 
     { path: '/career-positions/career-positions', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/career-positions/career-fields', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/career-positions/career-actions', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/career-positions/career-positions', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/career-positions/career-positions/:id', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/career-positions/career-positions/:id', method: 'DELETE', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
@@ -507,13 +509,18 @@ exports.data = [
     { path: '/goods/:id', method: 'GET', roles: ['Super Admin', 'Admin'] },
     { path: '/goods/:id', method: 'DELETE', roles: ['Super Admin', 'Admin'] },
     { path: '/goods/by-category/:id', method: 'GET', roles: ['Super Admin', 'Admin'] },
-
+    
     { path: '/lot', method: 'GET', roles: ['Super Admin', 'Admin']},
+    { path: '/lot/get-lot-by-good', method: 'GET', roles: ['Super Admin', 'Admin'] },
+    { path: '/lot/create-or-edit-lot', method: 'POST', roles: ['Super Admin', 'Admin'] },
     { path: '/lot/get-detail/:id', method: 'GET', roles: ['Super Admin', 'Admin']},
     { path: '/lot/:id', method: 'PATCH', roles: ['Super Admin', 'Admin']},
 
     { path: '/bills', method: 'GET', roles: ['Super Admin', 'Admin']},
     { path: '/bills/get-bill-by-good', method: 'GET', roles: ['Super Admin', 'Admin']},
+    { path: '/bills/get-bill-by-status', method: 'GET', roles: ['Super Admin', 'Admin']},
+    { path: '/bills', method: 'POST', roles: ['Super Admin', 'Admin']},
+    { path: '/bills/:id', method: 'PATCH', roles: ['Super Admin', 'Admin']},
     { path: '/bills/get-detail-bill/:id', method: 'GET', roles: ['Super Admin', 'Admin']},
 
     //order
