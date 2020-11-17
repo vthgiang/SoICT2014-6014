@@ -2016,7 +2016,7 @@ export default {
             general_information: {
                 view_more: 'Xem thêm',
                 asset: 'Tài sản',
-                asset_list: 'Dang sách tài sản',
+                asset_list: 'Danh sách tài sản',
                 search: 'Tìm kiếm',
                 add: 'Thêm',
                 basic_information: 'Thông tin cơ bản',
@@ -3020,6 +3020,8 @@ export default {
                 error_task_template_creator_null: 'Nguời tạo mẫu công việc này không tồn tại hoặc đã bị xóa !',
                 error_task_template_organizational_unit: 'Phòng ban của mẫu công việc này không tồn tại hoặc đã bị xóa !',
                 view_task_process_template: 'Xem mẫu quy trình công việc',
+                import_task_template_success: 'Thêm mẫu công việc thành công',
+                import_task_template_faile: 'Thêm mẫu công việc thất bại !'
             }
         },
 
@@ -3908,7 +3910,12 @@ export default {
                 validate_norm: 'Bạn đã nhập quá số lượng tồn kho',
                 add_lot: 'Thêm mới lô hàng',
                 expiration_date: 'Ngày hết hạn',
-                validate_norm: 'Bạn đã nhập quá số lượng tồn kho'
+                validate_norm: 'Bạn đã nhập quá số lượng tồn kho',
+                quantity_return: 'Số lượng trả lại',
+                quantity_issue: 'Số lượng xuất ra',
+                bill_issued: 'Đơn đã xuất',
+                choose_bill: 'Chọn đơn hàng',
+                users: 'Những người thực hiện'
 
             },
             inventory_management: {
@@ -4310,9 +4317,46 @@ export default {
                     color: "red",
                     content: "Đã hủy"
                 },
-                choose_works: "Chọn nhà máy"
+                choose_works: "Chọn nhà máy",
+                progress_1: "Đúng tiến độ",
+                progress_2: "Chậm tiến độ",
+                progress_3: "Quá hạn"
 
 
+            },
+            command: {
+                code: "Mã lệnh sản xuất",
+                accountables: "Người giám sát",
+                plan_code: "Mã kế hoạch",
+                start_date: "Ngày bắt đầu",
+                end_date: "Ngày kết thúc",
+                manufacturing_order_code: "Mã đơn sản xuất",
+                sales_order_code: "Mã đơn kinh doanh",
+                lot_code: "Mã lô sản xuất",
+                status: "Trạng thái",
+                search: "Tìm kiếm",
+                index: "STT",
+                created_at: "Ngày tạo",
+                responsibles: "Người thực hiện",
+                mill: "Xưởng sản xuất",
+                1: {
+                    color: "yellow",
+                    content: "Đang chờ duyệt"
+                },
+                2: {
+                    color: "#367FA9",
+                    content: "Đã phê duyệt"
+                },
+                3: {
+                    color: "orange",
+                    content: "Đang thực hiện"
+                },
+                4: {
+                    color: "green",
+                    content: "Đã hoàn thành"
+                },
+                choose_status: "Chọn trạng thái",
+                choose_all: "Chọn tất cả"
             }
         }
     }

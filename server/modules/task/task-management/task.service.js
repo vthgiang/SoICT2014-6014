@@ -330,6 +330,7 @@ exports.getPaginatedTasks = async (portal, task) => {
     }
 
     if (special) {
+        console.log('special', special);
         for (var i = 0; i < special.length; i++) {
             if (special[i] === "Lưu trong kho") {
                 keySearch = {

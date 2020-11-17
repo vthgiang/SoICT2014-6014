@@ -101,10 +101,24 @@ class BillDetailForm extends Component {
                                     <strong>{translate('manage_warehouse.bill_management.date')}:&emsp;</strong>
                                     {this.formatDate(billDetail.timestamp)}
                                 </div>
-                                <div className="form-group">
-                                    <strong>{translate('manage_warehouse.bill_management.partner')}:&emsp;</strong>
-                                    {billDetail.customer ? billDetail.customer.name : "Partner is deleted"}
-                                </div>
+                                { billDetail.group === '1' &&
+                                    <div className="form-group">
+                                        <strong>{translate('manage_warehouse.bill_management.supplier')}:&emsp;</strong>
+                                        {billDetail.supplier ? billDetail.supplier.name : "Supplier is deleted"}
+                                    </div>
+                                }
+                                { (billDetail.group === '2' || billDetail.group === '3') &&
+                                    <div className="form-group">
+                                        <strong>{translate('manage_warehouse.bill_management.customer')}:&emsp;</strong>
+                                        {billDetail.customer ? billDetail.customer.name : "Customer is deleted"}
+                                    </div>
+                                }
+                                { billDetail.group === '5' &&
+                                    <div className="form-group">
+                                        <strong>{translate('manage_warehouse.bill_management.receipt_stock')}:&emsp;</strong>
+                                        {billDetail.toStock ? billDetail.toStock.name : "Stock is deleted"}
+                                    </div>
+                                }
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <div className="form-group">

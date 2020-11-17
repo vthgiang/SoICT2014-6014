@@ -13,6 +13,6 @@ function getAllManufacturingPlans(query) {
         },
         false,
         true,
-        'manufacturing.manufacturing_plan'
+        'manufacturing.plan'
     )
 }

@@ -13,7 +13,7 @@ class QuantityLotGoodReceipt extends Component {
         this.EMPTY_LOT = {
             lot: null,
             name: generateCode("LOT"),
-            quantity: '',
+            quantity: 0,
             note: '',
             expirationDate: ''
         }

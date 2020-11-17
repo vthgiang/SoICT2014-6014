@@ -1,13 +1,17 @@
 export const formatDate = (date) => {
     let d = new Date(date);
-    const day = d.getDate();
-    const month = d.getMonth() + 1;
-    const year = d.getFullYear();
+    let day = d.getDate();
+    let month = d.getMonth() + 1;
+    let year = d.getFullYear();
 
-    if (month.length < 2)
+    if (month < 10)
         month = '0' + month;
 
-    if (day.length < 2)
+<<<<<<< HEAD
+    if (day.length < 2 || day < 10)
+=======
+    if (day < 10)
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
         day = '0' + day;
 
     return [day, month, year].join('-');
@@ -15,27 +19,35 @@ export const formatDate = (date) => {
 
 export const formatFullDate = (date) => {
     let d = new Date(date);
-    const hour = date.getHours() + 7;
-    const minute = date.getMinutes();
-    const second = date.getSeconds();
+    let hour = date.getHours() + 7;
+    let minute = date.getMinutes();
+    let second = date.getSeconds();
 
-    const day = d.getUTCDate();
-    const month = d.getMonth() + 1;
-    const year = d.getFullYear();
+<<<<<<< HEAD
+    let day = d.getDate();
+=======
+    let day = d.getUTCDate();
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
+    let month = d.getMonth() + 1;
+    let year = d.getFullYear();
 
-    if (month.length < 2)
+    if (month < 10)
         month = '0' + month;
 
-    if (day.length < 2)
+<<<<<<< HEAD
+    if (day < 10)
+=======
+    if (day< 10)
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
         day = '0' + day;
 
-    if (hour.length < 2)
+    if (hour < 10)
         hour = '0' + hour;
 
-    if (minute.length < 2)
+    if (minute < 10)
         minute = '0' + minute;
 
-    if (second.length < 2)
+    if (second < 10)
         second = '0' + second;
 
     //hh:mm:ss dd/mm/yyyy

@@ -5,6 +5,7 @@ import { DiscountActions } from "../redux/actions";
 import { GoodActions } from "../../../common-production/good-management/redux/actions";
 import DiscountCreateForm from "./discountCreateForm";
 import { PaginateBar, DataTableSetting, SelectBox, DeleteNotification, ConfirmNotification } from "../../../../../common-components";
+import { formatDate } from "../../../../../helpers/formatDate";
 import DiscountEditForm from "./discountEditForm";
 import DiscountDetailForm from "./discountDetailForm";
 
@@ -16,14 +17,14 @@ class DiscountManagementTable extends Component {
             limit: 5,
             code: "",
             name: "",
-            status: true,
+            queryDate: "all",
             discountDetail: {},
         };
     }
 
     componentDidMount() {
-        const { page, limit, status } = this.state;
-        this.props.getAllDiscounts({ page, limit, status });
+        const { page, limit, queryDate } = this.state;
+        this.props.getAllDiscounts({ page, limit, queryDate });
         this.props.getAllGoodsByType({ type: "product" });
     }
 
@@ -60,27 +61,27 @@ class DiscountManagementTable extends Component {
     };
 
     changeDiscountStatus = (id) => {
-        let { limit, page, status } = this.state;
+        let { limit, page, queryDate } = this.state;
         this.props.changeDiscountStatus(id);
-        this.props.getAllDiscounts({ limit, page, status });
+        this.props.getAllDiscounts({ limit, page, queryDate });
     };
 
     deleteDiscountByCode = (code) => {
-        let { limit, page, status } = this.state;
+        let { limit, page, queryDate } = this.state;
         this.props.deleteDiscountByCode({ code });
-        this.props.getAllDiscounts({ limit, page, status });
+        this.props.getAllDiscounts({ limit, page, queryDate });
     };
 
-    handleStatusChange = (value) => {
-        if (value[0] === "all") {
-            this.setState({
-                status: undefined,
-            });
-        } else {
-            this.setState({
-                status: value[0],
-            });
-        }
+    handleQueryDateChange = (value) => {
+        // if (value[0] === "all") {
+        //     this.setState({
+        //         queryDate: undefined,
+        //     });
+        // } else {
+        this.setState({
+            queryDate: value[0],
+        });
+        // }
     };
 
     handleCodeChange = (e) => {
@@ -96,13 +97,13 @@ class DiscountManagementTable extends Component {
     };
 
     handleSubmitSearch = () => {
-        const { page, limit, code, name, status } = this.state;
+        const { page, limit, code, name, queryDate } = this.state;
         const data = {
             limit: limit,
             page: page,
             code: code,
             name: name,
-            status: status,
+            queryDate: queryDate,
         };
         this.props.getAllDiscounts(data);
     };
@@ -128,7 +129,7 @@ class DiscountManagementTable extends Component {
                 <div className="box-body qlcv">
                     <DiscountCreateForm />
                     <DiscountDetailForm discountDetail={discountDetail} />
-                    {/* {currentRow && <DiscountEditForm discountEdit={currentRow} />} */}
+                    {currentRow && <DiscountEditForm discountEdit={currentRow} />}
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">Mã giảm giá</label>
@@ -145,11 +146,12 @@ class DiscountManagementTable extends Component {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={[
-                                    { value: true, text: "Đang hiệu lực" },
-                                    { value: false, text: "Hết hiệu lực" },
+                                    { value: "effective", text: "Đang hiệu lực" },
+                                    { value: "expire", text: "Hết hiệu lực" },
+                                    { value: "upcoming", text: "Khả dụng" },
                                     { value: "all", text: "Tất cả" },
                                 ]}
-                                onChange={this.handleStatusChange}
+                                onChange={this.handleQueryDateChange}
                             />
                         </div>
                         <div className="form-group">
@@ -165,7 +167,8 @@ class DiscountManagementTable extends Component {
                                 <th>Mã</th>
                                 <th>Tên</th>
                                 <th>Loại giảm giá</th>
-                                <th>Trạng thái</th>
+                                <th>Ngày bắt đầu</th>
+                                <th>Ngày kết thúc</th>
                                 <th
                                     style={{
                                         width: "120px",
@@ -192,7 +195,9 @@ class DiscountManagementTable extends Component {
                                         <td>{discount.code}</td>
                                         <td>{discount.name}</td>
                                         <td>{discount.type}</td>
-                                        <td>
+                                        <td>{discount.effectiveDate ? formatDate(discount.effectiveDate) : "---"}</td>
+                                        <td>{discount.expirationDate ? formatDate(discount.expirationDate) : "---"}</td>
+                                        {/* <td>
                                             <center>
                                                 {discount.status ? (
                                                     <ConfirmNotification
@@ -217,7 +222,7 @@ class DiscountManagementTable extends Component {
                                                     />
                                                 )}
                                             </center>
-                                        </td>
+                                        </td> */}
                                         <td style={{ textAlign: "center" }}>
                                             <a
                                                 style={{ width: "5px" }}

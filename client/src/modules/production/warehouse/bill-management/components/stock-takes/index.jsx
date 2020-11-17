@@ -4,8 +4,12 @@ import { withTranslate } from 'react-redux-multilingual';
 import { SelectMulti, DatePicker, DataTableSetting, PaginateBar } from '../../../../../../common-components';
 
 import BillDetailForm from '../genaral/billDetailForm';
+<<<<<<< HEAD
 import BillEditForm from '../genaral/billEditForm';
-import BillCreateForm from '../genaral/billCreateForm';
+=======
+import StockTakeEditForm from './stockTakeEditForm';
+>>>>>>> 67d2c490169e3a9c25bb701bff68a4d95466996b
+import StockTakeCreateForm from './stockTakeCreateForm';
 
 class TakeManagement extends Component {
     constructor(props) {
@@ -25,7 +29,7 @@ class TakeManagement extends Component {
             }
         })
 
-        window.$('#modal-edit-bill').modal('show');
+        window.$('#modal-edit-bill-take').modal('show');
     }
     
     render() {
@@ -37,7 +41,7 @@ class TakeManagement extends Component {
         return (
             <div id="bill-stock-takes">
                 <div className="box-body qlcv">
-                    <BillCreateForm group={group} />
+                    <StockTakeCreateForm group={group} />
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('manage_warehouse.bill_management.stock')}</label>
@@ -132,7 +136,7 @@ class TakeManagement extends Component {
                     <BillDetailForm />
                     {
                         currentRow &&
-                        <BillEditForm 
+                        <StockTakeEditForm 
                             billId={currentRow._id}
                             fromStock={currentRow.fromStock ? currentRow.fromStock._id : null}
                             code={currentRow.code}
@@ -141,10 +145,6 @@ class TakeManagement extends Component {
                             status={currentRow.status}
                             users={currentRow.users}
                             approver={currentRow.approver ? currentRow.approver._id : null}
-                            name={currentRow.receiver ? currentRow.receiver.name : ''}
-                            phone={currentRow.receiver ? currentRow.receiver.phone : ''}
-                            email={currentRow.receiver ? currentRow.receiver.email : ''}
-                            address={currentRow.receiver ? currentRow.receiver.address : ''}
                             description={currentRow.description}
                             listGood={currentRow.goods}
                         />
@@ -155,7 +155,6 @@ class TakeManagement extends Component {
                                 <tr>
                                     <th style={{ width: '5%' }}>{translate('manage_warehouse.bill_management.index')}</th>
                                     <th>{translate('manage_warehouse.bill_management.code')}</th>
-                                    { group === '3' ? <th>{translate('manage_warehouse.bill_management.issued')}</th> : []}
                                     <th>{translate('manage_warehouse.bill_management.type')}</th>
                                     <th>{translate('manage_warehouse.bill_management.status')}</th> 
                                     <th>{translate('manage_warehouse.bill_management.creator')}</th> 
