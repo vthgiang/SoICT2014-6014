@@ -90,11 +90,11 @@ class DiscountDetailForm extends Component {
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className="form-group">
                                 <strong>Ngày bắt đầu:&emsp;</strong>
-                                {formatDate(effectiveDate)}
+                                {effectiveDate ? formatDate(effectiveDate) : ""}
                             </div>
                             <div className="form-group">
                                 <strong>Ngày kết thúc:&emsp;</strong>
-                                {formatDate(expirationDate)}
+                                {expirationDate ? formatDate(expirationDate) : ""}
                             </div>
                             <div className="form-group">
                                 <strong>Mô tả:&emsp;</strong>
@@ -133,15 +133,23 @@ class DiscountDetailForm extends Component {
                                                     <tr key={index}>
                                                         <td>{index + 1}</td>
                                                         <td>{item.customerType}</td>
-                                                        <td>{item.minimumThresholdToBeApplied}</td>
-                                                        <td>{item.maximumThresholdToBeApplied}</td>
+                                                        <td>
+                                                            {item.minimumThresholdToBeApplied ? formatCurrency(item.minimumThresholdToBeApplied) : ""}
+                                                        </td>
+                                                        <td>
+                                                            {item.maximumThresholdToBeApplied ? formatCurrency(item.maximumThresholdToBeApplied) : ""}
+                                                        </td>
                                                         {type == "1" && item.discountOnGoods ? (
                                                             <td className="discount-create-goods-block-td">
                                                                 <a>{"Có " + item.discountOnGoods.length + " mặt hàng"}</a>
                                                             </td>
                                                         ) : null}
                                                         {formality != "5" ? <td>{this.getContentDiscountTable(formality, item)}</td> : ""}
-                                                        {formality == "1" ? <td>{formatCurrency(item.maximumDiscountedCash)}</td> : ""}
+                                                        {formality == "1" ? (
+                                                            <td>{item.maximumDiscountedCash ? formatCurrency(item.maximumDiscountedCash) : ""}</td>
+                                                        ) : (
+                                                            ""
+                                                        )}
                                                     </tr>
                                                 );
                                             })

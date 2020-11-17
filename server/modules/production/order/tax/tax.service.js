@@ -184,7 +184,7 @@ exports.getTaxsByGoodsId = async (goodId, portal) => {
             
         }
     })
-    return taxsMap;
+    return { taxs: taxsMap };
 }
 
 
