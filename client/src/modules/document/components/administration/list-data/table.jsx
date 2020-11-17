@@ -9,6 +9,7 @@ import { DepartmentActions } from '../../../../super-admin/organizational-unit/r
 import DocumentInformation from '../../user/documents/documentInformation';
 import { DocumentActions } from '../../../redux/actions';
 
+import { getStorage } from "../../../../../config";
 import CreateForm from './createForm';
 import EditForm from './editForm';
 import ListView from './listView';
@@ -132,7 +133,6 @@ class Table extends Component {
         return result;
     }
     handleCategoryChange = (value) => {
-        console.log('vaaaaaaaaaaa', value)
         this.setState(state => {
             return {
                 ...state,
@@ -141,7 +141,6 @@ class Table extends Component {
         })
     }
     handleDomainChange = (value) => {
-        console.log('dooooooooooo', value)
         this.setState(state => {
             return {
                 ...state,
@@ -160,7 +159,6 @@ class Table extends Component {
         })
     }
     handleArchiveChange = (value) => {
-        console.log('arrrrrrrr', value)
         this.setState(state => {
             return {
                 ...state,
@@ -441,7 +439,6 @@ class Table extends Component {
         const listDomain = domains.list
         const listArchive = archives.list;
         const listCategory = this.convertData(categories.list)
-        console.log('caaaaaaaaa', listDomain, listArchive);
         let list = [];
         if (isLoading === false) {
             list = docs.paginate;

@@ -31,25 +31,28 @@ class DomainImportForm extends Component {
     handleImportExcel = (value, checkFileImport) => {
         let values = [];
         let showValues = [];
-        let k = -1;
+        let k = 0;
+
         for (let i in value) {
             let x = value[i];
             if (x.name) {
-                values = [...value, {
-                    "STT": k + 1,
+                values = [...values, {
+                    "STT": k,
                     "name": x.name,
                     "description": x.description,
                     "parent": x.parent,
 
                 }];
                 showValues = [...showValues, {
-                    "STT": k + 1,
+                    "STT": k,
                     "name": x.name,
                     "description": x.description,
                     "parent": x.parent,
 
                 }]
+                k++;
             }
+
         }
         value = values;
         if (checkFileImport) {

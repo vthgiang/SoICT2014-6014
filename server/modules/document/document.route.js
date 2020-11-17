@@ -19,7 +19,7 @@ router.patch("/documents/:id/increase-number-view", auth, DocumentController.inc
 router.get("/documents/permission-view", auth, DocumentController.getDocumentsThatRoleCanView);
 router.get("/documents/user-statistical", auth, DocumentController.getDocumentsUserStatistical);
 
-// Danh mục văn bản - domain
+// Lĩnh vực văn bản - domain
 router.get("/document-domains", auth, DocumentController.getDocumentDomains);
 router.post("/document-domains", auth, DocumentController.createDocumentDomain);
 router.post("/document-domains/delete-many", auth, DocumentController.deleteManyDocumentDomain);

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { DocumentActions } from '../../../redux/actions';
 import { Tree, SlimScroll, ExportExcel } from '../../../../../common-components';
 
+import { UserActions } from '../../../../super-admin/user/redux/actions';
 import CreateForm from './createForm';
 import EditForm from './editForm';
 import { DomainImportForm } from './domainImportForm';
@@ -20,7 +21,7 @@ class AdministrationDocumentDomains extends Component {
     }
 
     componentDidMount() {
-        //this.props.getDocumentDomains();
+        this.props.getDepartment();
     }
 
     onChanged = (e, data) => {
@@ -73,6 +74,7 @@ class AdministrationDocumentDomains extends Component {
         window.$('#modal-create-document-domain').modal('show');
     }
     convertDataToExportData = (data) => {
+        let department = this.props.department.list;
         data = data ? data.map((x, index) => {
             return {
                 STT: index + 1,
@@ -80,22 +82,71 @@ class AdministrationDocumentDomains extends Component {
                 description: x.description,
             }
         }) : "";
+        department = department ? department.map((x, index) => {
+            return {
+                STT: index + 1,
+                name: x.name,
+                description: x.description,
+            }
+        }) : "";
+        console.log('dataaaa', data, department)
         let exportData = {
-            fileName: "Bảng thống kê danh mục",
+            fileName: "Bảng thống kê lĩnh vực",
             dataSheets: [
                 {
                     sheetName: "Sheet1",
                     tables: [
                         {
-                            tableName: "Bảng thống kê danh mục",
+                            tableName: "Bảng thống kê lĩnh vực",
                             rowHeader: 1,
                             columns: [
-                                { key: "STT", value: "STT" },
-                                { key: "name", value: "Tên danh mục" },
-                                { key: "description", value: "Mô tả danh mục" },
+                                { key: "STT", value: "STT", vertical: 'middle', horizontal: 'center'},
+                                { key: "name", value: "Tên lĩnh vực", width: 40 },
+                                { key: "description", value: "Mô tả lĩnh vực", width: 60 },
                             ],
+                            styleColumn: {
+                                STT: {                                  // Khoá tương ứng của tiêu đề bảng (key)
+                                    vertical: 'middle',
+                                    horizontal: 'center'
+                                },
+                                name: {                                  // Khoá tương ứng của tiêu đề bảng (key)
+                                    vertical: 'middle',
+                                    //horizontal: 'center'
+                                },
+                                description: {                                  // Khoá tương ứng của tiêu đề bảng (key)
+                                    vertical: 'middle',
+                                    //  horizontal: 'center'
+                                },
+
+                            },
                             data: data
                         },
+                        {
+                            tableName: "Thông tin phòng ban người xuất báo cáo",
+                            rowHeader: 1,
+                            columns: [
+                                { key: "STT", value: "STT", vertical: 'middle', horizontal: 'center' },
+                                { key: "name", value: "Tên lĩnh vực", width: 40 },
+                                { key: "description", value: "Mô tả lĩnh vực", width: 60 },
+                            ],
+                            styleColumn: {
+                                STT: {                                  // Khoá tương ứng của tiêu đề bảng (key)
+                                    vertical: 'middle',
+                                    horizontal: 'center'
+                                },
+                                name: {                                  // Khoá tương ứng của tiêu đề bảng (key)
+                                    vertical: 'middle',
+                                    //horizontal: 'center'
+                                },
+                                description: {                                  // Khoá tương ứng của tiêu đề bảng (key)
+                                    vertical: 'middle',
+                                    //  horizontal: 'center'
+                                },
+
+                            },
+                            data: department,
+
+                        }
                     ]
                 },
             ]
@@ -134,6 +185,7 @@ class AdministrationDocumentDomains extends Component {
         if (documents.isLoading === false) {
             dataExport = list;
         }
+        console.log('propsss', this.props.department);
         let exportData = this.convertDataToExportData(dataExport);
         let unChooseNode = currentDomain ? this.findChildrenNode(list, currentDomain) : [];
         return (
@@ -190,6 +242,8 @@ const mapDispatchToProps = {
     getDocumentDomains: DocumentActions.getDocumentDomains,
     editDocumentDomain: DocumentActions.editDocumentDomain,
     deleteDocumentDomain: DocumentActions.deleteDocumentDomain,
+
+    getDepartment: UserActions.getDepartmentOfUser,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(AdministrationDocumentDomains));
