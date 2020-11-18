@@ -1,5 +1,5 @@
 // Config import thông tin chung
-export const configurationGeneralInformationOfAsset = {
+export const configurationGeneralInformationOfAssetTemplate = {
     sheets: {
         description: "Tên các sheet",
         value: ["Thông tin chung"]

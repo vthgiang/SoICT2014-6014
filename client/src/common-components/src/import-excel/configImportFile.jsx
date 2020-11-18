@@ -112,7 +112,8 @@ class ConFigImportFile extends Component {
         return (
             <React.Fragment>
                 <button type="button" data-toggle="collapse" data-target={`#confic_import_file-${id}`} className="pull-right"
-                    style={{ border: "none", background: "none", padding: 0 }}><i className="fa fa-gear" style={{ fontSize: "19px" }}></i></button>
+                    style={{ border: "none", background: "none", paddingLeft: "5px" }}><i className="fa fa-gear" style={{ fontSize: "19px" }}></i></button>
+                <label className="pull-right">Cấu hình file import</label>
 
                 <div id={`confic_import_file-${id}`} className="box box-solid box-default collapse col-sm-12 col-xs-12" style={{ padding: 0 }}>
                     <div className="box-header with-border">
