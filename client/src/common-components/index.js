@@ -30,3 +30,4 @@ export * from './src/upload-file/uploadFile';
 export * from './src/comment/comment'
 export * from './src/scheduler/scheduler';
 export * from './src/text-editor';
+export * from './src/trix-editor/trixEditor';
