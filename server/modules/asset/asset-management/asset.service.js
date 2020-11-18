@@ -243,9 +243,19 @@ exports.mergeUrlFileToObject = (arrayFile, arrayObject) => {
  * @fileInfo : Thông tin file đính kèm
  */
 exports.createAsset = async (portal, company, data, fileInfo) => {
+    // kiểm tra trùng mã tài sản
+    let checkCodeAsset = await Asset(connect(DB_CONNECTION, portal)).findOne({
+        code: data.code
+    });
+
+    if (checkCodeAsset) {
+        throw ['asset_code_exist'];
+    }
+
     let avatar = fileInfo && fileInfo.avatar === "" ? data.avatar : fileInfo.avatar,
         file = fileInfo && fileInfo.file;
     let { maintainanceLogs, usageLogs, incidentLogs, locationLogs, files } = data;
+
     files = files && this.mergeUrlFileToObject(file, files);
 
     data.purchaseDate = data.purchaseDate && new Date(data.purchaseDate);
@@ -331,7 +341,7 @@ exports.createAsset = async (portal, company, data, fileInfo) => {
         files: files,
     });
 
-    // Lấy thông tin nhân viên vừa thêm vào
+    // Lấy thông tin tài sản vừa thêm vào
     let assets = await Asset(connect(DB_CONNECTION, portal)).find({ _id: createAsset._id });
 
     return { assets };
@@ -342,6 +352,14 @@ exports.createAsset = async (portal, company, data, fileInfo) => {
  * Cập nhât thông tin tài sản theo id
  */
 exports.updateAssetInformation = async (portal, company, id, data, fileInfo) => {
+    let checkCodeAsset = await Asset(connect(DB_CONNECTION, portal)).findOne({
+        code: data.code
+    });
+
+    if (checkCodeAsset) {
+        throw ['asset_code_exist'];
+    }
+
     let {
         createMaintainanceLogs,
         deleteMaintainanceLogs,
