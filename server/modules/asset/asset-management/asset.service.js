@@ -711,7 +711,6 @@ exports.getIncidents = async (portal, params) => {
     let { code, assetName, incidentCode, incidentType, incidentStatus } = params;
     let page = parseInt(params.page);
     let limit = parseInt(params.limit);
-
     let assetSearch = [];
     if (code) {
         assetSearch = [...assetSearch, { code: { "$regex": code, "$options": "i" } }]
@@ -746,23 +745,24 @@ exports.getIncidents = async (portal, params) => {
     let incidentLength = 0;
     let aggregateLengthQuery = [...aggregateQuery, { $count: "incident_length" }]
     let count = await Asset(connect(DB_CONNECTION, portal)).aggregate(aggregateLengthQuery);
-    incidentLength = count[0].incident_length;
+    if(count.length){
+        incidentLength = count[0].incident_length;
 
-    // Tìm kiếm câc danh sách sự cố
-    let aggregateListQuery = [...aggregateQuery, { $sort: { 'createdAt': 1 } }, { $skip: (page - 1) * limit }, { $limit: limit }]
-    incidents = await Asset(connect(DB_CONNECTION, portal)).aggregate(aggregateListQuery);
+        // Tìm kiếm câc danh sách sự cố
+        let aggregateListQuery = [...aggregateQuery, { $sort: { 'createdAt': 1 } }, { $skip: (page - 1) * limit }, { $limit: limit }]
+        incidents = await Asset(connect(DB_CONNECTION, portal)).aggregate(aggregateListQuery);
+        // Tìm tài sản ứng với sự cố tài sản
+        for (let i = 0; i < incidents.length; i++) {
+            let item = incidents[i];
 
-    // Tìm tài sản ứng với sự cố tài sản
-    for (let i = 0; i < incidents.length; i++) {
-        let item = incidents[i];
+            let asset = await Asset(connect(DB_CONNECTION, portal)).findOne(
+                { "incidentLogs": { $elemMatch: { "_id": mongoose.Types.ObjectId(item._id) } } }
+            );
 
-        let asset = await Asset(connect(DB_CONNECTION, portal)).findOne(
-            { "incidentLogs": { $elemMatch: { "_id": mongoose.Types.ObjectId(item._id) } } }
-        );
-
-        incidents[i].asset = asset;
+            incidents[i].asset = asset;
+        }
     }
-
+    
     return {
         incidentList: incidents,
         incidentLength: incidentLength,
