@@ -8,18 +8,30 @@ import { SlaActions } from "../../service-level-agreement/redux/actions";
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import { DatePicker, DialogModal, SelectBox, ButtonModal, ErrorLabel } from "../../../../../common-components";
 import CreateDiscountsForGood from "./createDiscountsForGood";
+import { findDOMNode } from "react-dom";
 
 class QuoteCreateGood extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            quantity: 0,
+            // quantity: 0,
+            discountsOfGood: [],
+            taxs: [],
         };
     }
 
     componentDidMount() {
         this.props.getAllGoodsByType({ type: "product" });
     }
+
+    handleDiscountsChange = (data) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                discountsOfGood: data,
+            };
+        });
+    };
 
     getGoodOptions = () => {
         let options = [];
@@ -42,18 +54,20 @@ class QuoteCreateGood extends Component {
     handleGoodChange = async (value) => {
         let { listGoodsByType } = this.props.goods;
         const goodInfo = listGoodsByType.filter((item) => item._id === value[0]);
-        console.log("goodInfo", goodInfo);
-        await this.setState({
-            good: goodInfo[0]._id,
-            goodName: goodInfo[0].name,
-            baseUnit: goodInfo[0].baseUnit,
-            pricePerBaseUnit: goodInfo[0].pricePerBaseUnit,
-            pricePerBaseUnitOrigin: goodInfo[0].pricePerBaseUnit, //giá gốc
-            inventory: goodInfo[0].quantity,
-            salesPriceVariance: goodInfo[0].salesPriceVariance ? goodInfo[0].salesPriceVariance : 0,
-            pricePerBaseUnitError: undefined,
+        await this.setState((state) => {
+            return {
+                ...state,
+                good: goodInfo[0]._id,
+                goodName: goodInfo[0].name,
+                baseUnit: goodInfo[0].baseUnit,
+                pricePerBaseUnit: goodInfo[0].pricePerBaseUnit,
+                pricePerBaseUnitOrigin: goodInfo[0].pricePerBaseUnit, //giá gốc
+                inventory: goodInfo[0].quantity,
+                salesPriceVariance: goodInfo[0].salesPriceVariance ? goodInfo[0].salesPriceVariance : 0,
+                pricePerBaseUnitError: undefined,
+            };
         });
-        console.log("value[0]", value[0]);
+
         await this.props.getSlaByGoodsId(value[0]);
         await this.props.getTaxsByGoodsId(value[0]);
         await this.props.getDiscountByGoodsId(value[0]);
@@ -127,8 +141,39 @@ class QuoteCreateGood extends Component {
         return options;
     };
 
+    handleTaxsChange = (value) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                taxs: value,
+            };
+        });
+    };
+
+    getPaymentAmountOfGood = () => {
+        const { listTaxsByGoodId } = this.props.taxs;
+        const { taxs, discountsOfGood, pricePerBaseUnit, quantity } = this.state;
+        let listTaxs = taxs.map((item) => {
+            return listTaxsByGoodId.find((element) => element._id == item);
+        });
+
+        let paymentAmount = 0;
+
+        if (pricePerBaseUnit && quantity) {
+            paymentAmount = pricePerBaseUnit * quantity;
+        }
+        if (taxs.length) {
+            paymentAmount = ((listTaxs[0].percent + 100) / 100) * paymentAmount;
+        }
+
+        paymentAmount = Math.round(paymentAmount * 100) / 100;
+
+        return paymentAmount ? `${formatCurrency(paymentAmount)} (vnđ)` : "";
+    };
+
     render() {
-        let { good, goodName, pricePerBaseUnit, baseUnit, inventory, quantity, pricePerBaseUnitError } = this.state;
+        let { good, goodName, pricePerBaseUnit, baseUnit, inventory, quantity, pricePerBaseUnitError, discountsOfGood, taxs } = this.state;
+        console.log("DISCOUNT", this.state.discountsOfGood);
         return (
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <fieldset className="scheduler-border" style={{ padding: 10 }}>
@@ -232,16 +277,13 @@ class QuoteCreateGood extends Component {
 
                         <div className="form-group">
                             <label>
-                                Thuế <span className="attention"> * </span>
+                                Khuyến mãi <span className="attention"> * </span>
                             </label>
-                            <SelectBox
-                                id={`select-good-name-quote`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                value={goodName}
-                                items={this.getTaxOptionsForGood()}
-                                // onChange={this.handleGoodCodeChange}
-                                multiple={true}
+                            <CreateDiscountsForGood
+                                quantity={quantity}
+                                goodId={good}
+                                handleDiscountsChange={(data) => this.handleDiscountsChange(data)}
+                                discountsProps={discountsOfGood}
                             />
                         </div>
                     </div>
@@ -249,23 +291,17 @@ class QuoteCreateGood extends Component {
                     <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4" style={{ padding: 10, height: "100%" }}>
                         <div className="form-group">
                             <label>
-                                Khuyến mãi <span className="attention"> * </span>
+                                Thuế <span className="attention"> * </span>
                             </label>
-                            {/* <SelectBox
-                                id={`select-create-quote-discount`}
+                            <SelectBox
+                                id={`select-good-name-quote`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
-                                value={goodName}
-                                items={[
-                                    {
-                                        value: "Mua 1000 sản phẩm được tặng 10 sản phẩm",
-                                        text: "Mua 1000 sản phẩm được tặng 10 sản phẩm",
-                                    },
-                                ]}
-                                // onChange={this.handleGoodCodeChange}
+                                value={taxs}
+                                items={this.getTaxOptionsForGood()}
+                                onChange={this.handleTaxsChange}
                                 multiple={true}
-                            /> */}
-                            <CreateDiscountsForGood quantity={quantity} />
+                            />
                         </div>
 
                         <div className="form-group">
@@ -273,11 +309,17 @@ class QuoteCreateGood extends Component {
                                 Tổng tiền
                                 <span className="attention"> * </span>
                             </label>
-                            <input type="number" className="form-control" value={`6,500,000 vnđ`} disabled={true} />
+                            <input
+                                type="text"
+                                className="form-control"
+                                value={`6,500,000 vnđ`}
+                                disabled={true}
+                                value={this.getPaymentAmountOfGood()}
+                            />
                         </div>
                         <div className="form-group">
                             <label>
-                                Cam kế chất lượng
+                                Cam kết chất lượng
                                 <span className="attention"> * </span>
                             </label>
                             <SelectBox

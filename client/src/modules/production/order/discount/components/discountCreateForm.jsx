@@ -171,30 +171,15 @@ class DiscountCreateForm extends Component {
         let discountsMap = discounts.map((item) => {
             let discount = {};
 
-            if (item.discountedCash) {
-                discount.discountedCash = item.discountedCash;
-            }
-            if (item.discountedPercentage) {
-                discount.discountedPercentage = item.discountedPercentage;
-            }
-            if (item.loyaltyCoin) {
-                discount.loyaltyCoin = item.loyaltyCoin;
-            }
-            if (item.maximumFreeShippingCost) {
-                discount.maximumFreeShippingCost = item.maximumFreeShippingCost;
-            }
-            if (item.maximumDiscountedCash) {
-                discount.maximumDiscountedCash = item.maximumDiscountedCash;
-            }
-            if (item.minimumThresholdToBeApplied) {
-                discount.minimumThresholdToBeApplied = item.minimumThresholdToBeApplied;
-            }
-            if (item.maximumThresholdToBeApplied) {
-                discount.maximumThresholdToBeApplied = item.maximumThresholdToBeApplied;
-            }
-            if (item.customerType) {
-                discount.customerType = item.customerType;
-            }
+            discount.discountedCash = item.discountedCash;
+            discount.discountedPercentage = item.discountedPercentage;
+            discount.loyaltyCoin = item.loyaltyCoin;
+            discount.maximumFreeShippingCost = item.maximumFreeShippingCost;
+            discount.maximumDiscountedCash = item.maximumDiscountedCash;
+            discount.minimumThresholdToBeApplied = item.minimumThresholdToBeApplied;
+            discount.maximumThresholdToBeApplied = item.maximumThresholdToBeApplied;
+            discount.customerType = item.customerType;
+
             if (item.bonusGoods && item.bonusGoods.length !== 0) {
                 discount.bonusGoods = item.bonusGoods.map((good) => {
                     return {
