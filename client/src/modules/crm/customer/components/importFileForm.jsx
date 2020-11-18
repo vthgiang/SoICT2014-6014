@@ -216,6 +216,7 @@ class CrmCustomerImportFile extends Component {
                             />
                         </div>
                         <div className="form-group">
+                            <label>{translate('human_resource.choose_file')}</label>
                             <ImportFileExcel
                                 configData={configData}
                                 handleImportExcel={this.handleImportExcel}

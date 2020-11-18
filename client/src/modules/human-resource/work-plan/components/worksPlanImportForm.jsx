@@ -199,6 +199,7 @@ class WorkPlanImportForm extends Component {
                         <div className="row">
                             {/* Chọn file import */}
                             <div className="form-group col-md-4 col-xs-12 col-sm-12">
+                                <label>{translate('human_resource.choose_file')}</label>
                                 <ImportFileExcel
                                     configData={configData}
                                     handleImportExcel={this.handleImportExcel}
