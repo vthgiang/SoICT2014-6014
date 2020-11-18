@@ -22,7 +22,8 @@ class QuantityLotGoodReceipt extends Component {
             lots: this.props.initialData,
             editInfo: false,
             good: '',
-            name: this.props.lotName
+            name: this.props.lotName,
+            arrayId: []
         }
     }
 
@@ -132,12 +133,12 @@ class QuantityLotGoodReceipt extends Component {
         })
     }
 
-    isFormValidated = () => {
-        if(this.state.lots.length > 0) {
-            return true;
-        }
-        return false
-    }
+    // isFormValidated = () => {
+    //     if(this.state.lots.length > 0) {
+    //         return true;
+    //     }
+    //     return false
+    // }
 
     isLotsValidated = () => {
         let result =
@@ -215,8 +216,8 @@ class QuantityLotGoodReceipt extends Component {
         })
     }
 
-    handleDeleteLot = async (index) => {
-        const { lots } = this.state;
+    handleDeleteLot = async (lotId, index) => {
+        const { lots, arrayId } = this.state;
         let newLots;
         if (lots) {
             newLots = lots.filter((item, x) => index !== x);
@@ -224,6 +225,7 @@ class QuantityLotGoodReceipt extends Component {
         await this.setState(state => {
             return {
                 ...state,
+                arrayId: [ ...arrayId, lotId ],
                 lots: newLots
             }
         })
@@ -233,7 +235,7 @@ class QuantityLotGoodReceipt extends Component {
 
     save = async() => {
         const { stock, good, quantity, bill, type } = this.props;
-        const { lots } = this.state;
+        const { lots, arrayId } = this.state;
         const data = {};
         data.stock = stock;
         data.lots = lots;
@@ -242,6 +244,9 @@ class QuantityLotGoodReceipt extends Component {
         if(good.good) {
             data.good = good.good._id;
             data.type = good.good.type;
+        }
+        if(arrayId && arrayId.length > 0) {
+            await this.props.deleteLot(arrayId);
         }
 
         await this.props.createOrUpdateLots(data);
@@ -302,7 +307,7 @@ class QuantityLotGoodReceipt extends Component {
                     title="Thêm mới lô hàng"
                     msg_success={translate('manage_warehouse.bill_management.add_success')}
                     msg_faile={translate('manage_warehouse.bill_management.add_faile')}
-                    disableSubmit={!this.isFormValidated()}
+                    // disableSubmit={!this.isFormValidated()}
                     func={this.save}
                     size="75"
                 >
@@ -327,7 +332,7 @@ class QuantityLotGoodReceipt extends Component {
                             <label htmlFor="expirationDate">{translate('manage_warehouse.bill_management.expiration_date')}</label>
                             <DatePicker
                                 id={`expirationDate-lot`}
-                                value={lot.expirationDate ? lot.expirationDate : ''}
+                                value={lot.expirationDate}
                                 onChange={this.handleExpirationDateChange}
                             />
                             <ErrorLabel content={errorExpirationDate} />
@@ -372,7 +377,7 @@ class QuantityLotGoodReceipt extends Component {
                                                 <td>{x.expirationDate}</td>
                                                 <td>
                                                     <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => this.handleEditLot(x, index)}><i className="material-icons"></i></a>
-                                                    {/* <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => this.handleDeleteLot(index)}><i className="material-icons"></i></a> */}
+                                                    <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => this.handleDeleteLot(x.lot, index)}><i className="material-icons"></i></a>
                                                 </td>
                                             </tr>
                                         ) : <tr><td colSpan={5}><center>{translate('task_template.no_data')}</center></td></tr>
@@ -391,6 +396,7 @@ const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
     createOrUpdateLots: LotActions.createOrUpdateLots,
+    deleteLot: LotActions.deleteManyLots,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuantityLotGoodReceipt));

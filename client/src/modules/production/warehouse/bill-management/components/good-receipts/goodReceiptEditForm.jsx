@@ -386,8 +386,39 @@ class GoodReceiptEditForm extends Component {
         })
     }
 
+    formatDate(date, monthYear = false) {
+        if (date) {
+            let d = new Date(date),
+                day = '' + d.getDate(),
+                month = '' + (d.getMonth() + 1),
+                year = d.getFullYear();
+
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+
+            if (monthYear === true) {
+                return [month, year].join('-');
+            } else return [day, month, year].join('-');
+        } else {
+            return date
+        }
+    }
+
     handleEditGood = async (good, index) => {
-        let lots = good.lots ? good.lots : [];
+        let lots = [];
+        if(good.lots && good.lots.length > 0) {
+            good.lots.map(item => {
+                lots.push({
+                    lot: item.lot._id,
+                    expirationDate: this.formatDate(item.lot.expirationDate),
+                    name: item.lot.name,
+                    quantity: item.quantity,
+                    note: item.note,
+                })
+            })
+        } 
         this.setState(state => {
             return{
                 ...state,

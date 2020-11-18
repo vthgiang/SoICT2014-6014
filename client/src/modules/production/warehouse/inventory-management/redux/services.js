@@ -4,7 +4,8 @@ export const LotServices = {
     getDetailLot,
     editLot,
     getLotsByGood,
-    createOrUpdateLots
+    createOrUpdateLots,
+    deleteManyLots,
 }
 
 function getAllLots(params) {
@@ -43,5 +44,13 @@ function createOrUpdateLots(data) {
         url: `${ process.env.REACT_APP_SERVER }/lot/create-or-edit-lot`,
         method: 'POST',
         data
+    }, true, true, 'manage_warehouse.inventory_management')
+}
+
+function deleteManyLots(array) {
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/lot/delete-many`,
+        method: 'POST',
+        data: { array }
     }, true, true, 'manage_warehouse.inventory_management')
 }
