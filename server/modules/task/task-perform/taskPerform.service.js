@@ -238,7 +238,7 @@ exports.getTaskById = async (portal, id, userId) => {
                                 if (
                                     !f &&
                                     task.collaboratedWithOrganizationalUnits[
-                                        k
+                                    k
                                     ] &&
                                     task.collaboratedWithOrganizationalUnits[k]
                                         .organizationalUnit
@@ -1913,8 +1913,8 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
 
     // Mô tả nhật ký thay đổi
     if (task) {
-        let unit = task.collaboratedWithOrganizationalUnits.filter(item => item.organizationalUnit?._id.toString() === unitId);
-        descriptionLogs = descriptionLogs + unit[0].organizationalUnit?.name;
+        let unit = task.collaboratedWithOrganizationalUnits.filter(item => item.organizationalUnit._id.toString() === unitId);
+        descriptionLogs = descriptionLogs + unit[0].organizationalUnit.name;
 
         if (unit[0] && unit[0].isAssigned !== isAssigned) {
             if (isAssigned) {
@@ -2144,23 +2144,21 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
             return `<li>${item.name} - ${item.email}</li>`;
         })}
                     </ul>` +
-        `${
-            newTask.consultedEmployees.length > 0
-                ? `<p>Người tư vấn</p> ` +
-                  `<ul>${newTask.consultedEmployees.map((item) => {
-                      return `<li>${item.name} - ${item.email}</li>`;
-                  })}
+        `${newTask.consultedEmployees.length > 0
+            ? `<p>Người tư vấn</p> ` +
+            `<ul>${newTask.consultedEmployees.map((item) => {
+                return `<li>${item.name} - ${item.email}</li>`;
+            })}
                     </ul>`
-                : ""
+            : ""
         }` +
-        `${
-            newTask.informedEmployees.length > 0
-                ? `<p>Người quan sát</p> ` +
-                  `<ul>${newTask.informedEmployees.map((item) => {
-                      return `<li>${item.name} - ${item.email}</li>`;
-                  })}
+        `${newTask.informedEmployees.length > 0
+            ? `<p>Người quan sát</p> ` +
+            `<ul>${newTask.informedEmployees.map((item) => {
+                return `<li>${item.name} - ${item.email}</li>`;
+            })}
                     </ul>`
-                : ""
+            : ""
         }`;
 
     newEmployees = await User(connect(DB_CONNECTION, portal)).find({
@@ -3761,23 +3759,21 @@ exports.sendEmailForActivateTask = async (portal, task) => {
             return `<li>${item.name}</li>`;
         })}
                     </ul>` +
-        `${
-            con.length > 0
-                ? `<p>Người tư vấn</p> ` +
-                  `<ul>${con.map((item) => {
-                      return `<li>${item.name}</li>`;
-                  })}
+        `${con.length > 0
+            ? `<p>Người tư vấn</p> ` +
+            `<ul>${con.map((item) => {
+                return `<li>${item.name}</li>`;
+            })}
                     </ul>`
-                : ""
+            : ""
         }` +
-        `${
-            inf.length > 0
-                ? `<p>Người quan sát</p> ` +
-                  `<ul>${inf.map((item) => {
-                      return `<li>${item.name}</li>`;
-                  })}
+        `${inf.length > 0
+            ? `<p>Người quan sát</p> ` +
+            `<ul>${inf.map((item) => {
+                return `<li>${item.name}</li>`;
+            })}
                     </ul>`
-                : ""
+            : ""
         }`;
     return { task: task, user: userIds, email: email, html: html };
 };
