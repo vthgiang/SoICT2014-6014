@@ -99,6 +99,8 @@ import { manufacturingMill } from "../modules/production/manufacturing/manufactu
 import { purchasingRequest } from "../modules/production/manufacturing/purchasing-request/redux/reducers";
 import { workSchedule } from "../modules/production/manufacturing/work-schedule/redux/reducers";
 import { manufacturingPlan } from "../modules/production/manufacturing/manufacturing-plan/redux/reducers";
+import { manufacturingCommand } from "../modules/production/manufacturing/manufacturing-command/redux/reducers";
+
 
 const appReducer = combineReducers({
     socket,
@@ -209,7 +211,7 @@ const appReducer = combineReducers({
     purchasingRequest,
     workSchedule,
     manufacturingPlan,
-
+    manufacturingCommand,
 
     Intl
 

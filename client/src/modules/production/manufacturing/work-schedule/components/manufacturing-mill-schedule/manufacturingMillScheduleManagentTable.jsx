@@ -154,13 +154,15 @@ class ManufacturingMillScheduleManagentTable extends Component {
                     {
                         arrayStatus.map((status, index) => (
                             <span key={index}>
-                                <span className="icon" title={translate(`manufacturing.work_schedule.${status}.content`)} style={{ backgroundColor: translate(`manufacturing.work_schedule.${status}.color`) }}>
+                                <span className="icon" title={translate(`manufacturing.work_schedule.${status}.content`)} style={{ backgroundColor: translate(`manufacturing.work_schedule.${status}.color`), verticalAlign: "middle" }}>
                                 </span>
-                                &emsp;
-                                {
-                                    translate(`manufacturing.work_schedule.${status}.content`)
-                                }
-                                &emsp;&emsp;
+                                <span style={{ verticalAlign: "middle" }}>
+                                    &emsp;
+                                    {
+                                        translate(`manufacturing.work_schedule.${status}.content`)
+                                    }
+                                    &emsp;&emsp;
+                                </span>
                             </span>
 
                         ))

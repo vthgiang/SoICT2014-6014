@@ -1,5 +1,5 @@
 // Config import thông tin chung
-export const configurationGeneralInformationOfAsset = {
+export const configurationGeneralInformationOfAssetTemplate = {
     sheets: {
         description: "Tên các sheet",
         value: ["Thông tin chung"]
@@ -329,12 +329,18 @@ const importGeneralInformationOfAssetTemplate = {
                 description: "Bàn gỗ xoan"
             },
             {
+                code: undefined
+            },
+            {
                 code: "BN",
                 assetName: "Bàn nhôm",
                 serial: "BG1235",
                 purchaseDate: "01-09-2020",
                 warrantyExpirationDate: "01-09-2020",
                 description: "Kim loại"
+            },
+            {
+                code: undefined
             }
         ]
     }]

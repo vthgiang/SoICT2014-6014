@@ -2013,6 +2013,8 @@ export default {
                 create_reception_date: 'Reception date',
                 select_reception_type: 'Select reception type',
                 select_all_reception_type: 'Select all reception types',
+
+                no_data: 'No data'
             },
 
             // Dashboard
@@ -2054,14 +2056,15 @@ export default {
                 parent_asset_type: 'Parent asset type',
 
                 //Thông điệp trả về từ server
-                get_asset_type_success: 'Lấy thông tin loại tài sản successfully',
-                get_asset_type_faile: 'Lấy thông tin loại tài sản faile',
-                create_asset_type_success: 'Thêm loại tài sản successfully',
-                create_asset_type_faile: 'Thêm loại tài sản faile',
-                delete_asset_type_success: 'Xoá loại tài sản successfully',
-                delete_asset_type_faile: 'Xoá loại tài sản faile',
-                edit_asset_type_success: 'Chỉnh sửa thông tin loại tài sản successfully',
-                edit_asset_type_faile: 'Chỉnh sửa thông tin loại tài sản faile',
+                get_asset_type_success: 'Get asset type successfully',
+                get_asset_type_faile: 'Get asset type fail',
+                create_asset_type_success: 'Create asset type successfully',
+                create_asset_type_faile: 'Create asset type fail',
+                delete_asset_type_success: 'Delete asset type successfully',
+                delete_asset_type_faile: 'Delete asset type fail',
+                edit_asset_type_success: 'Edit asset type successfully',
+                edit_asset_type_faile: 'Edit asset type fail',
+                asset_type_name_exist: 'Asset type name exist'
             },
 
             // Quản lý thông tin tài sản
@@ -2114,6 +2117,7 @@ export default {
                 delete_asset_faile: 'Delete asset faile',
                 edit_asset_success: 'Edit asset successfully',
                 edit_asset_faile: 'Edit asset faile',
+                asset_code_exist: 'Asset code exist'
 
             },
 
@@ -2898,7 +2902,9 @@ export default {
                 delete_task_template_success: 'Delete task template success !',
                 delete_task_template_fail: 'Delete task template fail !',
                 error_task_template_creator_null: 'Creator of this task template does not exist or has deleted',
-                view_task_process_template: 'View task process template'
+                view_task_process_template: 'View task process template',
+                import_task_template_success: 'Import task template success',
+                import_task_template_faile: 'Import task template faile'
             }
         },
 

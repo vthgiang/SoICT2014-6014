@@ -8,8 +8,10 @@ import { AssetManagerActions } from '../redux/actions';
 
 import { AssetImportTab } from './assetImportTab';
 
+import { UploadFile, ImportFileExcel, ExportExcel } from '../../../../../common-components';
+
 import {
-    configurationGeneralInformationOfAsset,
+    configurationGeneralInformationOfAssetTemplate,
     configurationUsageInformationOfAssetTemplate,
     configurationIncidentInformationOfAssetTemplate,
     configurationMaintainanceInformationOfAssetTemplate,
@@ -26,6 +28,7 @@ class AssetImportForm extends Component {
         super(props);
 
         this.state = {
+            // Dữ liệu tài sản lưu vào database
             importGeneralInformationData: [],
             importDepreciationInformationData: [],
             importDisposalInformationData: [],
@@ -33,12 +36,21 @@ class AssetImportForm extends Component {
             importMaintainanceInformationData: [],
             importUsageInformationData: [],
 
-            errorGeneralInformationData: false,
-            errorDepreciationInformationData: true,
-            errorDisposalInformationData: true,
-            errorIncidentInformationData: true,
-            errorMaintainanceInformationData: true,
-            errorUsageInformationData: true
+            // Lỗi ở các tab
+            rowErrorGeneralInformationData: [],
+            rowErrorDepreciationInformationData: [],
+            rowErrorDisposalInformationData: [],
+            rowErrorMaintainanceInformationData: [],
+            rowErrorUsageInformationData: [],
+            rowErrorIncidentInformationData: [],
+
+            // Chech định dạng file import
+            checkFileImportGeneralInformation: true,
+            checkFileImportDepreciationInformation: true,
+            checkFileImportDisposalInformation: true,
+            checkFileImportMaintainanceInformation: true,
+            checkFileImportIncidentInformation: true,
+            checkFileImportUsageInformation: true
         }
     }
 
@@ -53,7 +65,7 @@ class AssetImportForm extends Component {
             importDisposalInformationData,
             importIncidentInformationData,
             importMaintainanceInformationData,
-            importUsageInformationData
+            importUsageInformationData,
         } = this.state;
 
         let assets = [];
@@ -81,15 +93,36 @@ class AssetImportForm extends Component {
 
     isFormValidated = () => {
         const {
-            errorGeneralInformationData,
-            errorDepreciationInformationData,
-            errorDisposalInformationData,
-            errorIncidentInformationData,
-            errorMaintainanceInformationData,
-            errorUsageInformationData
+            rowErrorGeneralInformationData,
+            rowErrorDepreciationInformationData,
+            rowErrorDisposalInformationData,
+            rowErrorMaintainanceInformationData,
+            rowErrorUsageInformationData,
+            rowErrorIncidentInformationData,
+
+            checkFileImportGeneralInformation,
+            checkFileImportDepreciationInformation,
+            checkFileImportDisposalInformation,
+            checkFileImportMaintainanceInformation,
+            checkFileImportIncidentInformation,
+            checkFileImportUsageInformation
         } = this.state;
 
-        return errorGeneralInformationData && errorDepreciationInformationData && errorDisposalInformationData && errorIncidentInformationData && errorMaintainanceInformationData && errorUsageInformationData;
+        return (rowErrorGeneralInformationData.length === 0
+                && rowErrorDepreciationInformationData.length === 0
+                && rowErrorDisposalInformationData.length === 0
+                && rowErrorMaintainanceInformationData.length === 0
+                && rowErrorUsageInformationData.length === 0
+                && rowErrorIncidentInformationData.length === 0
+            )
+            &&
+            (checkFileImportGeneralInformation
+                && checkFileImportDepreciationInformation
+                && checkFileImportDisposalInformation
+                && checkFileImportMaintainanceInformation
+                && checkFileImportIncidentInformation 
+                && checkFileImportUsageInformation
+            );
     }
 
     /**
@@ -273,22 +306,42 @@ class AssetImportForm extends Component {
 
             for (let index = 0; index < data.length; index++) {
                 let dataTemporary = data[index];
+                let out;
 
-                let out = {
-                    code: dataTemporary.code,
-                    assetName: dataTemporary.assetName,
-                    serial: dataTemporary.serial,
-                    group: assetGroups[0],
-                    assetType: assetTypes && assetTypes[0] ? (assetTypes[1] ? assetTypes[0] + " | " + assetTypes[1] : assetTypes[0]) : null,
-                    purchaseDate: dataTemporary.purchaseDate,
-                    warrantyExpirationDate: dataTemporary.warrantyExpirationDate,
-                    managedBy: userList && userList[0] ? userList[0] : null,
-                    readByRoles: roles && roles[0] ? (roles[1] ? roles[0] + " | " + roles[1] : roles[0]) : null,
-                    location: assetLocations && assetLocations[0] ? assetLocations[0] : null,
-                    status: status[0],
-                    typeRegisterForUse: typeRegisterForUse[0],
-                    description: dataTemporary.description
+                if (dataTemporary.code) {
+                    out = {
+                        code: dataTemporary.code,
+                        assetName: dataTemporary.assetName,
+                        serial: dataTemporary.serial,
+                        group: assetGroups[0],
+                        assetType: assetTypes && assetTypes[0],
+                        purchaseDate: dataTemporary.purchaseDate,
+                        warrantyExpirationDate: dataTemporary.warrantyExpirationDate,
+                        managedBy: userList && userList[0],
+                        readByRoles: roles && roles[0],
+                        location: assetLocations && assetLocations[0],
+                        status: status[0],
+                        typeRegisterForUse: typeRegisterForUse[0],
+                        description: dataTemporary.description
+                    }
+                } else {
+                    out = {
+                        code: undefined,
+                        assetName: undefined,
+                        serial: undefined,
+                        group: undefined,
+                        assetType: assetTypes && assetTypes[1],
+                        purchaseDate: undefined,
+                        warrantyExpirationDate: undefined,
+                        managedBy: undefined,
+                        readByRoles: roles && roles[1],
+                        location: undefined,
+                        status: undefined,
+                        typeRegisterForUse: undefined,
+                        description: undefined
+                    }
                 }
+                
                 datas = [...datas, out];
             }
             dataTemplate.tables[j].data = datas;
@@ -454,141 +507,164 @@ class AssetImportForm extends Component {
         }
 
         if (checkFileImport) {
-            let assetTypeArray = [], roleArray = [], assetGroups, status, typeRegisterForUse, checkAssetType = false, checkRole = false;
+            let assetGroups, status, typeRegisterForUse;
 
             assetGroups = { "Mặt bằng": "building", "Xe cộ": "vehicle", "Máy móc": "machine", "Khác": "other" };
             status = { "Sẵn sàng sử dụng": "ready_to_use", "Đang sử dụng": "in_use", "Hỏng hóc": "broken", "Mất": "lost", "Thanh lý": "disposed" };
             typeRegisterForUse = { "Không đươc đăng ký sử dụng": 1, "Đăng ký sử dụng theo giờ": 2, "Đăng ký sử dụng lâu dài": 3 };
 
-            value = value.map((item, index) => {
-                let errorAlert = [];
-                checkAssetType = false;             // Reset biến check khi check dòng tiếp theo
-                checkRole = false;
+            for (let i = 0; i < value.length; i++) {
+                let valueTemporary = value[i];
 
-                // Láy dữ liệu từ 1 ô trong file excel thành 1 mảng
-                roleArray = item.readByRoles && item.readByRoles.split(" | ");
-                assetTypeArray = item.assetType && item.assetType.split(" | ");
+                if (valueTemporary.code) {
+                    let errorAlert = [];
 
-                assetTypeArray && assetTypeArray.map(item => {
-                    if (!assetTypes[item]) {
-                        checkAssetType = true;
+                    // Check lỗi dữ liệu import
+                    if (!valueTemporary.code || !valueTemporary.assetName || !valueTemporary.group || !valueTemporary.assetType || !valueTemporary.purchaseDate || !valueTemporary.status || !valueTemporary.typeRegisterForUse
+                        || (valueTemporary.group && !assetGroups[valueTemporary.group])
+                        || (valueTemporary.assetType && !assetTypes[valueTemporary.assetType])
+                        || (valueTemporary.typeRegisterForUse && !typeRegisterForUse[valueTemporary.typeRegisterForUse])
+                        || (valueTemporary.status && !status[valueTemporary.status])
+                        || (valueTemporary.managedBy && !managers[valueTemporary.managedBy])
+                        || (valueTemporary.readByRoles && !roles[valueTemporary.readByRoles])
+                        || (valueTemporary.location && !assetLocations[valueTemporary.location])
+                    ) {
+                        rowError = [...rowError, i+1];
+                        valueTemporary = { ...valueTemporary, error: true };
                     }
-                })
-                roleArray && roleArray.map(item => {
-                    if (!roles[item]) {
-                        checkRole = true;
+
+                    if (!valueTemporary.code) {
+                        errorAlert = [...errorAlert, 'Mã tài sản không được để trống'];
                     }
-                })
 
-                // Check lỗi dữ liệu import
-                if (!item.code || !item.assetName || !item.group || !item.assetType || !item.purchaseDate || !item.status || !item.typeRegisterForUse
-                    || (item.group && !assetGroups[item.group])
-                    || (item.assetType && checkAssetType)
-                    || (item.typeRegisterForUse && !typeRegisterForUse[item.typeRegisterForUse])
-                    || (item.status && !status[item.status])
-                    || (item.managedBy && !managers[item.managedBy])
-                    || (item.readByRoles && checkRole)
-                    || (item.location && !assetLocations[item.location])
-                ) {
-                    rowError = [...rowError, index + 1];
-                    item = { ...item, error: true };
-                }
-
-                if (!item.code) {
-                    errorAlert = [...errorAlert, 'Mã tài sản không được để trống'];
-                }
-
-                if (!item.assetName) {
-                    errorAlert = [...errorAlert, 'Tên tài sản không được để trống'];
-                }
-
-                if (!item.group) {
-                    errorAlert = [...errorAlert, 'Nhóm tài sản không được để trống'];
-                } else if (item.group && !assetGroups[item.group]) {
-                    errorAlert = [...errorAlert, 'Nhóm tài sản không chính xác'];
-                }
-
-                if (!item.assetType) {
-                    errorAlert = [...errorAlert, 'Loại tài sản không được để trống'];
-                } else if (item.assetType && checkAssetType) {
-                    errorAlert = [...errorAlert, 'Loại tài sản không chính xác'];
-                }
-
-                if (!item.status) {
-                    errorAlert = [...errorAlert, 'Trạng thái không được để trống'];
-                } else if (item.status && !status[item.status]) {
-                    errorAlert = [...errorAlert, 'Trạng thái không chính xác'];
-                }
-
-                if (!item.typeRegisterForUse) {
-                    errorAlert = [...errorAlert, 'Quyền đăng ký sử dụng không được để trống'];
-                } else if (item.typeRegisterForUse && !typeRegisterForUse[item.typeRegisterForUse]) {
-                    errorAlert = [...errorAlert, 'Quyền đăng ký sử dụng không chính xác'];
-                }
-
-                if (!item.purchaseDate) {
-                    errorAlert = [...errorAlert, 'Ngày nhập không được để trống'];
-                }
-
-                if (item.managedBy && !managers[item.managedBy]) {
-                    errorAlert = [...errorAlert, 'Người quản lý không chính xác'];
-                }
-
-                if (item.readByRoles && checkRole) {
-                    errorAlert = [...errorAlert, 'Những roles có quyèn không chính xác'];
-                }
-
-                if (item.location && !assetLocations[item.location]) {
-                    errorAlert = [...errorAlert, 'Vị trí tài sản không chính xác'];
-                }
-
-                // Format date
-                let purchaseDate = item.purchaseDate;
-                let warrantyExpirationDate = item.warrantyExpirationDate;
-
-                item = {
-                    ...item,
-                    purchaseDate: (purchaseDate && typeof purchaseDate === 'string') ? purchaseDate : this.convertExcelDateToJSDate(purchaseDate, "dd-mm-yy"),
-                    warrantyExpirationDate: (warrantyExpirationDate && typeof warrantyExpirationDate === 'string') ? warrantyExpirationDate : this.convertExcelDateToJSDate(warrantyExpirationDate, "dd-mm-yy"),
-                    errorAlert: errorAlert
-                };
-                importGeneralInformationData = [...importGeneralInformationData,
-                    {
-                        ...item,
-                        assetType: assetTypeArray && assetTypeArray.map(type => assetTypes[type]),
-                        readByRoles: roleArray && roleArray.map(role => roles[role]),
-                        managedBy: managers[item.manager],
-                        location: assetLocations[item.location],
-                        group: assetGroups[item.group],
-                        typeRegisterForUse: typeRegisterForUse[item.typeRegisterForUse],
-                        status: status[item.status],
-                        purchaseDate: (purchaseDate && typeof purchaseDate === 'string') ? this.convertStringToDate(purchaseDate) : this.convertExcelDateToJSDate(purchaseDate, "yy-mm-dd"),
-                        warrantyExpirationDate: (warrantyExpirationDate && typeof warrantyExpirationDate === 'string') ? this.convertStringToDate(warrantyExpirationDate) : this.convertExcelDateToJSDate(warrantyExpirationDate, "yy-mm-dd")
+                    if (!valueTemporary.assetName) {
+                        errorAlert = [...errorAlert, 'Tên tài sản không được để trống'];
                     }
-                ];
 
-                return item;
+                    if (!valueTemporary.group) {
+                        errorAlert = [...errorAlert, 'Nhóm tài sản không được để trống'];
+                    } else if (valueTemporary.group && !assetGroups[valueTemporary.group]) {
+                        errorAlert = [...errorAlert, 'Nhóm tài sản không chính xác'];
+                    }
 
-            });
+                    if (!valueTemporary.assetType) {
+                        errorAlert = [...errorAlert, 'Loại tài sản không được để trống'];
+                    } else if (valueTemporary.assetType && !assetTypes[valueTemporary.assetType]) {
+                        errorAlert = [...errorAlert, 'Loại tài sản không chính xác'];
+                    }
+
+                    if (!valueTemporary.status) {
+                        errorAlert = [...errorAlert, 'Trạng thái không được để trống'];
+                    } else if (valueTemporary.status && !status[valueTemporary.status]) {
+                        errorAlert = [...errorAlert, 'Trạng thái không chính xác'];
+                    }
+
+                    if (!valueTemporary.typeRegisterForUse) {
+                        errorAlert = [...errorAlert, 'Quyền đăng ký sử dụng không được để trống'];
+                    } else if (valueTemporary.typeRegisterForUse && !typeRegisterForUse[valueTemporary.typeRegisterForUse]) {
+                        errorAlert = [...errorAlert, 'Quyền đăng ký sử dụng không chính xác'];
+                    }
+
+                    if (!valueTemporary.purchaseDate) {
+                        errorAlert = [...errorAlert, 'Ngày nhập không được để trống'];
+                    }
+
+                    if (valueTemporary.managedBy && !managers[valueTemporary.managedBy]) {
+                        errorAlert = [...errorAlert, 'Người quản lý không chính xác'];
+                    }
+
+                    if (valueTemporary.readByRoles && !roles[valueTemporary.readByRoles]) {
+                        errorAlert = [...errorAlert, 'Những roles có quyèn không chính xác'];
+                    }
+
+                    if (valueTemporary.location && !assetLocations[valueTemporary.location]) {
+                        errorAlert = [...errorAlert, 'Vị trí tài sản không chính xác'];
+                    }
+
+                    // Format date
+                    let purchaseDate = valueTemporary.purchaseDate;
+                    let warrantyExpirationDate = valueTemporary.warrantyExpirationDate;
+
+                    valueTemporary = {
+                        ...valueTemporary,
+                        purchaseDate: (purchaseDate && typeof purchaseDate === 'string') ? purchaseDate : this.convertExcelDateToJSDate(purchaseDate, "dd-mm-yy"),
+                        warrantyExpirationDate: (warrantyExpirationDate && typeof warrantyExpirationDate === 'string') ? warrantyExpirationDate : this.convertExcelDateToJSDate(warrantyExpirationDate, "dd-mm-yy"),
+                        errorAlert: errorAlert
+                    };
+                    importGeneralInformationData = [...importGeneralInformationData,
+                        {
+                            ...valueTemporary,
+                            assetType: [assetTypes[valueTemporary.assetType]],
+                            readByRoles: [roles[valueTemporary.readByRoles]],
+                            managedBy: managers[valueTemporary.managedBy],
+                            location: assetLocations[valueTemporary.location],
+                            group: assetGroups[valueTemporary.group],
+                            typeRegisterForUse: typeRegisterForUse[valueTemporary.typeRegisterForUse],
+                            status: status[valueTemporary.status],
+                            purchaseDate: (purchaseDate && typeof purchaseDate === 'string') ? this.convertStringToDate(purchaseDate) : this.convertExcelDateToJSDate(purchaseDate, "yy-mm-dd"),
+                            warrantyExpirationDate: (warrantyExpirationDate && typeof warrantyExpirationDate === 'string') ? this.convertStringToDate(warrantyExpirationDate) : this.convertExcelDateToJSDate(warrantyExpirationDate, "yy-mm-dd")
+                        }
+                    ];
+
+                    value[i] = valueTemporary;
+                } else {
+                    let errorAlert = [];
+
+                    // Check lỗi dữ liệu import
+                    if ((valueTemporary.assetType && !assetTypes[valueTemporary.assetType])
+                        || (valueTemporary.readByRoles && !roles[valueTemporary.readByRoles])
+                    ) {
+                        rowError = [...rowError, i+1];
+                        valueTemporary = { ...valueTemporary, error: true };
+                    }
+
+                    if (valueTemporary.assetType && !assetTypes[valueTemporary.assetType]) {
+                        errorAlert = [...errorAlert, 'Loại tài sản không chính xác'];
+                    }
+                    if (valueTemporary.readByRoles && !roles[valueTemporary.readByRoles]) {
+                        errorAlert = [...errorAlert, 'Những roles có quyèn không chính xác'];
+                    }
+
+                    valueTemporary = {
+                        ...valueTemporary,
+                        errorAlert: errorAlert
+                    };
+                    value[i] = valueTemporary;
+
+                    importGeneralInformationData[importGeneralInformationData.length - 1 ] = {
+                        ...importGeneralInformationData[importGeneralInformationData.length - 1],
+                        assetType: valueTemporary.assetType
+                            ? [
+                                ...importGeneralInformationData[importGeneralInformationData.length - 1].assetType,
+                                valueTemporary.assetType && assetTypes[valueTemporary.assetType]
+                            ]
+                            : importGeneralInformationData[importGeneralInformationData.length - 1].assetType,
+                        readByRoles: valueTemporary.readByRoles
+                            ? [
+                                ...importGeneralInformationData[importGeneralInformationData.length - 1].readByRoles,
+                                valueTemporary.readByRoles && roles[valueTemporary.readByRoles]
+                            ]
+                            : importGeneralInformationData[importGeneralInformationData.length - 1].readByRoles
+                    }
+                }
+            }
 
             this.setState(state => {
                 return {
                     ...state,
                     importGeneralInformationData: importGeneralInformationData,
-                    errorGeneralInformationData: rowError.length === 0
+
+                    importGeneralInformationDataShow: value,
+                    rowErrorGeneralInformationData: rowError
                 }
             })
-
-            return { importData: value, rowError: rowError }
         } else {
             this.setState(state => {
                 return {
                     ...state,
-                    checkFileImport: checkFileImport,
+                    checkFileImportGeneralInformation: checkFileImport,
                 }
             })
-
-            return { checkFileImport: checkFileImport }
         }
     }
 
@@ -657,20 +733,20 @@ class AssetImportForm extends Component {
                 return {
                     ...state,
                     importDepreciationInformationData: importDepreciationInformationData,
-                    errorDepreciationInformationData: rowError.length === 0
+
+                    importDepreciationInformationDataShow: value,
+                    rowErrorDepreciationInformationData: rowError
                 }
             })
-
-            return { importData: value, rowError: rowError }
         } else {
-            this.setState(state => {
-                return {
-                    ...state,
-                    checkFileImport: checkFileImport,
-                }
-            })
-
-            return { checkFileImport: checkFileImport }
+            if (!(value.length === 1 && !value[0].code)) {
+                this.setState(state => {
+                    return {
+                        ...state,
+                        checkFileImportDepreciationInformation: checkFileImport,
+                    }
+                })
+            }
         }
     }
 
@@ -756,20 +832,20 @@ class AssetImportForm extends Component {
                 return {
                     ...state,
                     importUsageInformationData: importUsageInformationData,
-                    errorUsageInformationData: rowError.length === 0
+
+                    importUsageInformationDataShow: value,
+                    rowErrorUsageInformationData: rowError
                 }
             })
-
-            return { importData: value, rowError: rowError }
         } else {
-            this.setState(state => {
-                return {
-                    ...state,
-                    checkFileImport: checkFileImport,
-                }
-            })
-
-            return { checkFileImport: checkFileImport }
+            if (!(value.length === 1 && !value[0].code)) {
+                this.setState(state => {
+                    return {
+                        ...state,
+                        checkFileImportUsageInformation: checkFileImport,
+                    }
+                })
+            } 
         }
     }
 
@@ -848,20 +924,20 @@ class AssetImportForm extends Component {
                 return {
                     ...state,
                     importIncidentInformationData: importIncidentInformationData,
-                    errorIncidentInformationData: rowError.length === 0
+
+                    importIncidentInformationDataShow: value,
+                    rowErrorIncidentInformationData: rowError
                 }
             })
-
-            return { importData: value, rowError: rowError }
         } else {
-            this.setState(state => {
-                return {
-                    ...state,
-                    checkFileImport: checkFileImport,
-                }
-            })
-
-            return { checkFileImport: checkFileImport }
+            if (!(value.length === 1 && !value[0].code)) {
+                this.setState(state => {
+                    return {
+                        ...state,
+                        checkFileImportIncidentInformation: checkFileImport,
+                    }
+                })
+            }
         }
     }
 
@@ -916,20 +992,20 @@ class AssetImportForm extends Component {
                 return {
                     ...state,
                     importMaintainanceInformationData: importMaintainanceInformationData,
-                    errorMaintainanceInformationData: rowError.length === 0
+
+                    importMaintainanceInformationDataShow: value,
+                    rowErrorMaintainanceInformationData: rowError
                 }
             })
-
-            return { importData: value, rowError: rowError }
         } else {
-            this.setState(state => {
-                return {
-                    ...state,
-                    checkFileImport: checkFileImport,
-                }
-            })
-
-            return { checkFileImport: checkFileImport }
+            if (!(value.length === 1 && !value[0].code)) {
+                this.setState(state => {
+                    return {
+                        ...state,
+                        checkFileImportMaintainanceInformation: checkFileImport,
+                    }
+                })
+            }
         }
     }
 
@@ -965,33 +1041,92 @@ class AssetImportForm extends Component {
                         disposalDate: (disposalDate && typeof disposalDate === 'string') ? this.convertStringToDate(disposalDate) : this.convertExcelDateToJSDate(disposalDate, "yy-mm-dd")
                     }
                 ]
-
                 return item;
             });
-
+            
             this.setState(state => {
                 return {
                     ...state,
                     importDisposalInformationData: importDisposalInformationData,
-                    errorDisposalInformationData: rowError.length === 0
+
+                    importDisposalInformationDataShow: value,
+                    rowErrorDisposalInformationData: rowError
                 }
             })
-
-            return { importData: value, rowError: rowError }
         } else {
-            this.setState(state => {
-                return {
-                    ...state,
-                    checkFileImport: checkFileImport,
-                }
-            })
-
-            return { checkFileImport: checkFileImport }
+            if (!(value.length === 1 && !value[0].code)) {
+                this.setState(state => {
+                    return {
+                        ...state,
+                        checkFileImportDisposalInformation: checkFileImport,
+                    }
+                })
+            }
         }
+    }
+
+    /** Bắt sự kiện import file */
+    handleImportExcel = (files) => {
+        // Reset các biến check lỗi và dữ liệu cũ
+        this.setState(state => {
+            return {
+                ...state,
+                importGeneralInformationData: [],
+                importDepreciationInformationData: [],
+                importDisposalInformationData: [],
+                importIncidentInformationData: [],
+                importMaintainanceInformationData: [],
+                importUsageInformationData: [],
+
+                importGeneralInformationDataShow: [],
+                importDepreciationInformationDataShow: [],
+                importDisposalInformationDataShow: [],
+                importIncidentInformationDataShow: [],
+                importMaintainanceInformationDataShow: [],
+                importUsageInformationDataShow: [],
+
+                checkFileImportGeneralInformation: true,
+                checkFileImportDepreciationInformation: true,
+                checkFileImportDisposalInformation: true,
+                checkFileImportMaintainanceInformation: true,
+                checkFileImportIncidentInformation: true,
+                checkFileImportUsageInformation: true
+            }
+        })
+
+        // Xử lý các sheet trong file excel
+        ImportFileExcel.importData(files[0], configurationGeneralInformationOfAssetTemplate, this.handleImportExcelGeneralInformation);
+        ImportFileExcel.importData(files[0], configurationDepreciationInformationOfAssetTemplate, this.handleImportExcelDepreciationInformation);
+        ImportFileExcel.importData(files[0], configurationDisposalInformationOfAssetTemplate, this.handleImportExcelDisposalInformation);
+        ImportFileExcel.importData(files[0], configurationIncidentInformationOfAssetTemplate, this.handleImportExcelIncidentInformation);
+        ImportFileExcel.importData(files[0], configurationMaintainanceInformationOfAssetTemplate, this.handleImportExcelMaintainanceInformation);
+        ImportFileExcel.importData(files[0], configurationUsageInformationOfAssetTemplate, this.handleImportExcelUsageInformation);
     }
 
     render() {
         const { translate } = this.props;
+        const {
+            importGeneralInformationDataShow,
+            importUsageInformationDataShow,
+            importDepreciationInformationDataShow,
+            importIncidentInformationDataShow,
+            importMaintainanceInformationDataShow,
+            importDisposalInformationDataShow,
+
+            rowErrorGeneralInformationData,
+            rowErrorDepreciationInformationData,
+            rowErrorDisposalInformationData,
+            rowErrorMaintainanceInformationData,
+            rowErrorUsageInformationData,
+            rowErrorIncidentInformationData,
+
+            checkFileImportGeneralInformation,
+            checkFileImportDepreciationInformation,
+            checkFileImportDisposalInformation,
+            checkFileImportMaintainanceInformation,
+            checkFileImportIncidentInformation,
+            checkFileImportUsageInformation
+        } = this.state;
 
         let importAssetTemplateData = this.convertAssetTemplate(importAssetTemplate);
 
@@ -1004,7 +1139,20 @@ class AssetImportForm extends Component {
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    <div className="nav-tabs-custom row" style={{ marginTop: '-15px' }}>
+                     <div className="box-body row">
+                        <div className="form-group col-md-6 col-xs-12">
+                            <label>{translate('human_resource.choose_file')}</label>
+                            <UploadFile
+                                importFile={this.handleImportExcel}
+                            />
+                        </div>
+                        <div className="form-group col-md-6 col-xs-12">
+                            <ExportExcel id={`download_asset_file`} type='link' exportData={importAssetTemplateData}
+                                buttonName='Download file import mẫu' />
+                        </div>
+                    </div>
+                        
+                    <div className="nav-tabs-custom row" style={{ marginTop: '-10px' }}>
                         <ul className="nav nav-tabs">
                             <li className="active"><a title="Thông tin chung" data-toggle="tab" href="#import_create_general">Thông tin chung</a></li>
                             <li><a title="Thông tin khấu hao" data-toggle="tab" href="#import_depreciation">Thông tin khấu hao</a></li>
@@ -1012,51 +1160,67 @@ class AssetImportForm extends Component {
                             <li><a title="Thông tin sự cố" data-toggle="tab" href="#import_incident">Thông tin sự cố</a></li>
                             <li><a title="Thông tin bảo trì" data-toggle="tab" href="#import_maintainance">Thông tin bảo trì</a></li>
                             <li><a title="Thông tin thanh lý" data-toggle="tab" href="#import_disposal">Thông tin thanh lý</a></li>
-
                         </ul>
                         <div className="tab-content">
+                            {/* Thông tin chung */}
                             <AssetImportTab
                                 id="import_create_general"
                                 scrollTable={true}
                                 className="tab-pane active"
-                                configuration={configurationGeneralInformationOfAsset}
-                                importDataTemplate={importAssetTemplateData}
-                                handleCheckImportData={this.handleImportExcelGeneralInformation}
+                                configuration={configurationGeneralInformationOfAssetTemplate}
+                                importData={importGeneralInformationDataShow}
+                                rowError={rowErrorGeneralInformationData}
+                                checkFileImport={checkFileImportGeneralInformation}
                             />
+
+                            {/* Thông tin khấu hao */}
                             <AssetImportTab
                                 id="import_depreciation"
                                 className="tab-pane"
                                 configuration={configurationDepreciationInformationOfAssetTemplate}
-                                importDataTemplate={importAssetTemplateData}
-                                handleCheckImportData={this.handleImportExcelDepreciationInformation}
+                                importData={importDepreciationInformationDataShow}
+                                rowError={rowErrorDepreciationInformationData}
+                                checkFileImport={checkFileImportDepreciationInformation}
                             />
+
+                            {/* Thông tin sử dụng */}
                             <AssetImportTab
                                 id="import_usage"
                                 className="tab-pane"
                                 configuration={configurationUsageInformationOfAssetTemplate}
-                                importDataTemplate={importAssetTemplateData}
-                                handleCheckImportData={this.handleImportExcelUsageInformation}
+                                importData={importUsageInformationDataShow}
+                                rowError={rowErrorUsageInformationData}
+                                checkFileImport={checkFileImportUsageInformation}
                             />
+
+                            {/* Thông tin sự cố */}
                             <AssetImportTab
                                 id="import_incident"
                                 className="tab-pane"
                                 configuration={configurationIncidentInformationOfAssetTemplate}
-                                importDataTemplate={importAssetTemplateData}
-                                handleCheckImportData={this.handleImportExcelIncidentInformation}
+                                importData={importIncidentInformationDataShow}
+                                rowError={rowErrorIncidentInformationData}
+                                checkFileImport={checkFileImportIncidentInformation}
                             />
+
+                            {/* Thông tin bảo trì */}
                             <AssetImportTab
                                 id="import_maintainance"
                                 className="tab-pane"
                                 configuration={configurationMaintainanceInformationOfAssetTemplate}
-                                importDataTemplate={importAssetTemplateData}
-                                handleCheckImportData={this.handleImportExcelMaintainanceInformation}
+                                importData={importMaintainanceInformationDataShow}
+                                rowError={rowErrorMaintainanceInformationData}
+                                checkFileImport={checkFileImportMaintainanceInformation}
                             />
+
+                            {/* Thông tin thanh lý */}
                             <AssetImportTab
                                 id="import_disposal"
                                 className="tab-pane"
                                 configuration={configurationDisposalInformationOfAssetTemplate}
-                                importDataTemplate={importAssetTemplateData}
-                                handleCheckImportData={this.handleImportExcelDisposalInformation}
+                                importData={importDisposalInformationDataShow}
+                                rowError={rowErrorDisposalInformationData}
+                                checkFileImport={checkFileImportDisposalInformation}
                             />
                         </div>
                     </div>

@@ -6,7 +6,8 @@ export const LotActions = {
     getDetailLot,
     editLot,
     getLotsByGood,
-    createOrUpdateLots
+    createOrUpdateLots,
+    deleteManyLots,
 }
 
 function getAllLots(data){
@@ -129,6 +130,27 @@ function createOrUpdateLots(data) {
             dispatch({
                 type: LotConstants.CREATE_OR_EDIT_LOT_FAILURE,
                 error:err
+            })
+        })
+    }
+}
+
+function deleteManyLots(data) {
+    return dispatch => {
+        dispatch({
+            type: LotConstants.DELETE_LOT_REQUEST
+        })
+        LotServices.deleteManyLots(data)
+        .then(res => {
+            dispatch({
+                type: LotConstants.DELETE_LOT_SUCCESS,
+                payload:res.data.content
+            })
+        })
+        .catch(err => {
+            dispatch({
+                type: LotConstants.DELETE_LOT_FAILURE,
+                error: err
             })
         })
     }

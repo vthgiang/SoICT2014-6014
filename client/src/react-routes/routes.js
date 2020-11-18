@@ -96,7 +96,7 @@ import AssetManager from "../modules/asset/admin/asset-information/components";
 import { ManagerAssetAssignedCrash } from '../modules/asset/user/asset-assigned/components';
 import { DashBoardAssets } from '../modules/asset/admin/asset-dashboard/components/assetDashBoard';
 import { BuildingAsset } from '../modules/asset/admin/building/components';
-import EmployeeAssetManagement from '../modules/asset/user/asser-managed/components';
+import EmployeeAssetManagement from '../modules/asset/user/asset-managed/components';
 
 
 //report
@@ -1749,7 +1749,7 @@ class Routes extends Component {
                     {/* Manufacturing-management */}
 
                     <PrivateRoute
-                        isLoading={false}
+                        isLoading={this.props.manufacturingPlan.isLoading}
                         key={"manage-manufacturing-plan"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1769,7 +1769,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={false}
+                        isLoading={this.props.manufacturingCommand.isLoading}
                         key={"manage-manufacturing-command"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },

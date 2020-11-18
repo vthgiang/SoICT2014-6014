@@ -402,6 +402,47 @@ class GoodIssueEditForm extends Component {
         })
     }
 
+    getStatus = () => {
+        const { translate } = this.props;
+        const { oldStatus } = this.state;
+        let statusArr = [];
+        if(oldStatus === '1') {
+            statusArr = [
+                { value: '1', text: translate('manage_warehouse.bill_management.bill_status.1')},
+                { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3')},
+                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4')}
+            ]
+        }
+        if(oldStatus === '2') {
+            statusArr = [
+                { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2')},
+                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4')}
+            ]
+        }
+        if(oldStatus === '3') {
+            statusArr = [
+                { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3')},
+                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4')},
+                { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5')}
+            ]
+        }
+        if(oldStatus === '5') {
+            statusArr = [
+                { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2')},
+                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4')},
+                { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5')}
+            ]
+        }
+
+        if(oldStatus === '4') {
+            statusArr = [
+                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4')}
+            ]
+        }
+
+        return statusArr;
+    }
+
     static getDerivedStateFromProps(nextProps, prevState){
         if(nextProps.billId !== prevState.billId){
             return {
@@ -410,6 +451,7 @@ class GoodIssueEditForm extends Component {
                 code: nextProps.code,
                 fromStock: nextProps.fromStock,
                 status: nextProps.status,
+                oldStatus: nextProps.status,
                 group: nextProps.group,
                 type: nextProps.type,
                 users: nextProps.users,
@@ -434,7 +476,7 @@ class GoodIssueEditForm extends Component {
     }
 
     save = async () => {
-        const { billId, fromStock, code, toStock, type, status, users, approver, customer, supplier, 
+        const { billId, fromStock, code, toStock, type, status, oldStatus, users, approver, customer, supplier, 
             name, phone, email, address, description, listGood } = this.state;
         const { group } = this.props;
         await this.props.editBill(billId, {
@@ -443,6 +485,7 @@ class GoodIssueEditForm extends Component {
             type: type,
             group: group,
             status: status,
+            oldStatus: oldStatus,
             users: users,
             approver: approver,
             customer: customer,
@@ -463,6 +506,7 @@ class GoodIssueEditForm extends Component {
         const dataCustomer = this.getCustomer();
         const dataStock = this.getStock();
         const dataType = this.getType();
+        const dataStatus = this.getStatus();
 
         return (
             <React.Fragment>
@@ -508,13 +552,7 @@ class GoodIssueEditForm extends Component {
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={status}
-                                            items={[
-                                                { value: '1', text: translate('manage_warehouse.bill_management.bill_status.1')},
-                                                { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2')},
-                                                { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3')},
-                                                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4')},
-                                                { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5')},
-                                            ]}
+                                            items={dataStatus}
                                             onChange={this.handleStatusChange}    
                                             multiple={false}
                                         />

@@ -805,7 +805,7 @@ class ActionTab extends Component {
         }
     }
     showSort = async () => {
-        let { taskActions,showSort } = this.state
+        let { taskActions, showSort } = this.state
         if (showSort) {
             this.setState({ showSort: false });
         } else {
@@ -837,11 +837,11 @@ class ActionTab extends Component {
         let { taskActions } = this.state
         let i
         let arrayActions = []
-        for( i = 0; i < taskActions.length; i ++) {
-            arrayActions.push({id: taskActions[i]._id, order: i})
+        for (i = 0; i < taskActions.length; i++) {
+            arrayActions.push({ id: taskActions[i]._id, order: i })
         }
-        this.props.sortActions(taskId,arrayActions)
-        this.setState({showSort: false});
+        this.props.sortActions(taskId, arrayActions)
+        this.setState({ showSort: false });
     }
     setSrc = (src) => {
         this.setState({ src: src });
@@ -918,25 +918,36 @@ class ActionTab extends Component {
                                                             );
                                                         })
                                                         }
-                                                        {(role === 'responsible' && item.creator) &&
+                                                       
                                                             <div className="btn-group pull-right">
-                                                                {showSort === true ?
+                                                            {(role === 'responsible' && item.creator && showSort === false) &&
+                                                                <React.Fragment>
+                                                                <span data-toggle="dropdown">
+                                                                    <i className="fa fa-ellipsis-h"></i>
+                                                                </span>
+                                                                <ul className="dropdown-menu">
+                                                                    <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditAction(item._id)} >{translate("task.task_perform.edit_action")}</a></li>
+                                                                    <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteTaskAction(item._id, task._id)} >{translate("task.task_perform.delete_action")}</a></li>
+                                                                </ul>
+                                                                </React.Fragment>
+                                                            }
+                                                            { showSort === true && (role === 'responsible' || role === 'accountable') &&
+                                                                <div className="sort-action">
+                                                                {index !== 0 && <a style={{ marginTop: index === taskActions.length - 1 ? "10px" : "0px" }} onClick={() => this.sort(index, "up")}><i className="fa fa-caret-up fa-2x"></i> </a>}
+                                                                {index !== taskActions.length - 1 && <a style={{ marginTop: index === 0 ? "13px" : "-10px" }} onClick={() => this.sort(index, "down")}><i className="fa fa-caret-down fa-2x"></i> </a>}
+                                                                </div>
+                                                            }
+                                                                {/* {showSort === true ?
                                                                     <div className="sort-action">
                                                                         {index !== 0 && <a style={{ marginTop: index === taskActions.length - 1 ? "10px" : "0px" }} onClick={() => this.sort(index, "up")}><i className="fa fa-caret-up fa-2x"></i> </a>}
                                                                         {index !== taskActions.length - 1 && <a style={{ marginTop: index === 0 ? "13px" : "-10px" }} onClick={() => this.sort(index, "down")}><i className="fa fa-caret-down fa-2x"></i> </a>}
                                                                     </div>
                                                                     :
                                                                     <React.Fragment>
-                                                                        <span data-toggle="dropdown">
-                                                                            <i className="fa fa-ellipsis-h"></i>
-                                                                        </span>
-                                                                        <ul className="dropdown-menu">
-                                                                            <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditAction(item._id)} >{translate("task.task_perform.edit_action")}</a></li>
-                                                                            <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteTaskAction(item._id, task._id)} >{translate("task.task_perform.delete_action")}</a></li>
-                                                                        </ul>
+                                                                        
                                                                     </React.Fragment>
-                                                                }
-                                                            </div>}
+                                                                } */}
+                                                            </div>
                                                     </div>
 
                                                     {/* Các file đính kèm */}

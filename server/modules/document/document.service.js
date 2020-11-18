@@ -555,8 +555,15 @@ exports.getDocumentDomains = async (portal, company) => {
 }
 
 exports.createDocumentDomain = async (portal, data, company) => {
+    console.log('data', data)
     const existed = await DocumentDomain(connect(DB_CONNECTION, portal)).findOne({ name: data.name });
-    if (existed) throw ['domain_name_exist'];
+    if (existed) {
+        if (data.type === "import") {
+            return null;
+        } else {
+            throw ['domain_name_exist'];
+        }
+    }
     let query = {
         company,
         name: data.name,
@@ -776,7 +783,8 @@ exports.importDocumentDomain = async (portal, data, company) => {
                 domain.parent = parentDomain.id;
             }
         }
-        let res = await this.createDocumentDomain(portal, domain, company);
+        domain.type = "import";
+        await this.createDocumentDomain(portal, domain, company);
 
     }
     return await this.getDocumentDomains(portal, company);

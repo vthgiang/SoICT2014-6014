@@ -663,6 +663,7 @@ class GeneralTab extends Component {
                                             items={userlist.map(x => { return { value: x.id, text: x.name + " - " + x.email } })}
                                             onChange={this.handleManagedByChange}
                                             value={managedBy}
+                                            options={{ placeholder: "" }}
                                             multiple={false}
                                         />
                                     </div>

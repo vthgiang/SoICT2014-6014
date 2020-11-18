@@ -53,28 +53,22 @@ class EmployeeKpiEvaluationDashboard extends Component {
     }
 
     componentDidMount() {
-        let currentDate = new Date();
-        let currentMonth = currentDate.getMonth();
-        let currentYear = currentDate.getFullYear();
-
         let infosearch = {
             role: localStorage.getItem("currentRole"),
             user: null,
             status: 5,
-            startDate: currentMonth === 0 ? (currentYear - 1) + '-' + 12 : currentYear + '-' + ( currentMonth + 1 ),
-            endDate: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2))
+            startDate: this.INFO_SEARCH.startMonth,
+            endDate: this.INFO_SEARCH.endMonth
         }
 
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
         this.props.getEmployeeKPISets(infosearch);
-        this.props.getAllEmployeeKpiSetOfUnitByRole(localStorage.getItem("currentRole"));
         this.props.getAllEmployeeOfUnitByRole(localStorage.getItem("currentRole"));
         this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        if (!this.state.ids && this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
-
+        if (!this.state.ids && this.props.dashboardEvaluationEmployeeKpiSet && this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
             await this.setState((state) => {
                 return {
                     ...state,
@@ -85,8 +79,8 @@ class EmployeeKpiEvaluationDashboard extends Component {
                     organizationalUnitIds: [this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id]
                 }
             });
-
             this.props.getAllEmployeeOfUnitByIds(this.state.ids);
+            this.props.getAllEmployeeKpiSetOfUnitByIds(this.state.ids);
             return false;
         }
 
@@ -617,7 +611,6 @@ const actionCreators = {
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
     getEmployeeKPISets: kpiMemberActions.getEmployeeKPISets,
-    getAllEmployeeKpiSetOfUnitByRole: DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeKpiSetOfUnitByRole,
     getAllEmployeeOfUnitByRole: UserActions.getAllEmployeeOfUnitByRole,
     getAllEmployeeKpiSetOfUnitByIds: DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeKpiSetOfUnitByIds,
     getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
