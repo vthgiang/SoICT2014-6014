@@ -1914,11 +1914,13 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
     // Mô tả nhật ký thay đổi
     if (task) {
         let unit = task.collaboratedWithOrganizationalUnits.filter(item => item.organizationalUnit?._id.toString() === unitId);
+        descriptionLogs = descriptionLogs + unit[0].organizationalUnit?.name;
+
         if (unit[0] && unit[0].isAssigned !== isAssigned) {
             if (isAssigned) {
-                descriptionLogs = unit[0].organizationalUnit?.name + " - Xác nhận phân công công việc - ";
+                descriptionLogs = descriptionLogs + " - Xác nhận phân công công việc";
             } else {
-                descriptionLogs = unit[0].organizationalUnit?.name + " - Hủy xác nhận phân công công việc - ";
+                descriptionLogs = descriptionLogs + " - Hủy xác nhận phân công công việc";
             }
         }
     }
@@ -2168,12 +2170,12 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
 
     // Update nhật ký chỉnh sửa
     if (newEmployees.length !== 0) {
-        descriptionLogs = descriptionLogs + "Thêm mới nhân viên tham gia công việc: ";
+        descriptionLogs = descriptionLogs + " - Thêm mới nhân viên tham gia công việc: ";
         newEmployees.map((item, index) => {
             descriptionLogs = descriptionLogs + (index > 0 ? ", " : "") + item.name;
         });
     } else {
-        descriptionLogs = descriptionLogs + "Không nhân viên nào được thêm mới"
+        descriptionLogs = descriptionLogs + " - Không nhân viên nào được thêm mới"
     }
 
     return {
