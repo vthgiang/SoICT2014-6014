@@ -2118,6 +2118,8 @@ export default {
                 create_reception_date: 'Ngày lập phiếu',
                 select_reception_type: 'Chọn loại phiếu',
                 select_all_reception_type: 'Chọn tất cả loại phiếu',
+
+                no_data: 'Chưa có dữ liệu'
             },
 
             // Dashboard

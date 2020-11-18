@@ -2013,6 +2013,8 @@ export default {
                 create_reception_date: 'Reception date',
                 select_reception_type: 'Select reception type',
                 select_all_reception_type: 'Select all reception types',
+
+                no_data: 'No data'
             },
 
             // Dashboard
