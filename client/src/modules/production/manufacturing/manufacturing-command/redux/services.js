@@ -1,7 +1,9 @@
 import { sendRequest } from "../../../../../helpers/requestHelper"
 
 export const commandServices = {
-    getAllManufacturingCommands
+    getAllManufacturingCommands,
+    getDetailManufacturingCommand,
+    handleEditCommand
 }
 
 function getAllManufacturingCommands(query) {
@@ -12,6 +14,31 @@ function getAllManufacturingCommands(query) {
             params: query
         },
         false,
+        true,
+        'manufacturing.command'
+    )
+}
+
+function getDetailManufacturingCommand(id) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/manufacturing-command/${id}`,
+            method: "GET"
+        },
+        false,
+        true,
+        'manufacturing.command'
+    )
+}
+
+function handleEditCommand(id, data) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/manufacturing-command/${id}`,
+            method: "PATCH",
+            data
+        },
+        true,
         true,
         'manufacturing.command'
     )

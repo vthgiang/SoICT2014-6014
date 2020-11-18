@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti } from "../../../../../common-components";
+import { ConfirmNotification, DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti } from "../../../../../common-components";
 import ManufacturingCommandDetailInfo from './manufacturingCommandDetailInfo';
 import { connect } from 'react-redux';
 import { commandActions } from '../redux/actions';
@@ -20,8 +20,8 @@ class ManufacturingCommandManagementTable extends Component {
             lotCode: '',
             accountables: [],
             createdAt: '',
-            startDate: '',
-            endDate: '',
+            fromDate: '',
+            toDate: '',
             status: []
         }
     }
@@ -105,7 +105,7 @@ class ManufacturingCommandManagementTable extends Component {
 
     handleStartDateChange = (value) => {
         this.setState({
-            startDate: value
+            fromDate: value
         });
     }
 
@@ -118,7 +118,7 @@ class ManufacturingCommandManagementTable extends Component {
 
     handleEndDateChange = (value) => {
         this.setState({
-            endDate: value
+            toDate: value
         });
     }
 
@@ -136,8 +136,8 @@ class ManufacturingCommandManagementTable extends Component {
     }
 
     handleSubmitSearch = () => {
-        const { currentRole, page, limit, code, accountables, planCode, createdAt, manufacturingOrderCode, startDate, salesOrderCode,
-            endDate, lotCode, status } = this.state;
+        const { currentRole, page, limit, code, accountables, planCode, createdAt, manufacturingOrderCode, fromDate, salesOrderCode,
+            toDate, lotCode, status } = this.state;
         const data = {
             currentRole: currentRole,
             page: page,
@@ -147,15 +147,46 @@ class ManufacturingCommandManagementTable extends Component {
             planCode: planCode,
             createdAt: createdAt,
             manufacturingOrderCode: manufacturingOrderCode,
-            startDate: startDate,
+            fromDate: fromDate,
             salesOrderCode: salesOrderCode,
-            endDate: endDate,
+            toDate: toDate,
             lotCode: lotCode,
             status: status
         }
         this.props.getAllManufacturingCommands(data);
     }
 
+    handleShowDetailManufacturingCommand = async (command) => {
+        await this.setState((state) => ({
+            ...state,
+            commandDetail: command
+        }));
+        window.$('#modal-detail-info-manufacturing-command').modal('show');
+    }
+
+    checkRoleReponsibles = (commands) => {
+        const { accountables } = commands;
+        const userId = localStorage.getItem("userId");
+        let accoutableIds = accountables.map(x => x._id);
+        if (accoutableIds.includes(userId)) {
+            return true;
+        }
+        return false
+    }
+
+    handleStartCommand = (command) => {
+        const data = {
+            status: 3
+        }
+        this.props.handleEditCommand(command._id, data);
+    }
+
+    handleEndCommand = (command) => {
+        const data = {
+            status: 4
+        }
+        this.props.handleEditCommand(command._id, data);
+    }
     render() {
         const { translate, manufacturingCommand } = this.props;
         let listCommands = [];
@@ -163,10 +194,13 @@ class ManufacturingCommandManagementTable extends Component {
             listCommands = manufacturingCommand.listCommands
         }
         const { totalPages, page } = manufacturingCommand;
-        const { code, accountables, planCode, createdAt, manufacturingOrderCode, startDate, salesOrderCode, endDate, lotCode, status } = this.state;
+        const { code, accountables, planCode, createdAt, manufacturingOrderCode, fromDate, salesOrderCode, toDate, lotCode, status } = this.state;
         this.getUserArray();
         return (
             <React.Fragment>
+                {
+                    <ManufacturingCommandDetailInfo commandDetail={this.state.commandDetail} />
+                }
                 <div className="box-body qlcv">
                     <div className="form-inline">
                         <div className="form-group">
@@ -209,10 +243,10 @@ class ManufacturingCommandManagementTable extends Component {
                             <input type="text" className="form-control" value={manufacturingOrderCode} onChange={this.handleManufacturingOrderCodeChange} placeholder="DSX202012221" autoComplete="off" />
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">{translate('manufacturing.command.start_date')}</label>
+                            <label className="form-control-static">{translate('manufacturing.command.from_date')}</label>
                             <DatePicker
                                 id={`start-date-command-managemet-table`}
-                                value={startDate}
+                                value={fromDate}
                                 onChange={this.handleStartDateChange}
                                 disabled={false}
                             />
@@ -224,10 +258,10 @@ class ManufacturingCommandManagementTable extends Component {
                             <input type="text" className="form-control" value={salesOrderCode} onChange={this.handleSalesOrderCodeChange} placeholder="DKD202032210" autoComplete="off" />
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">{translate('manufacturing.command.end_date')}</label>
+                            <label className="form-control-static">{translate('manufacturing.command.to_date')}</label>
                             <DatePicker
                                 id={`end-date-command-managemet-table`}
-                                value={endDate}
+                                value={toDate}
                                 onChange={this.handleEndDateChange}
                                 disabled={false}
                             />
@@ -266,7 +300,7 @@ class ManufacturingCommandManagementTable extends Component {
                                 <th>{translate('manufacturing.command.code')}</th>
                                 <th>{translate('manufacturing.command.plan_code')}</th>
                                 <th>{translate('manufacturing.command.created_at')}</th>
-                                <th>{translate('manufacturing.command.responsibles')}</th>
+                                {/* <th>{translate('manufacturing.command.responsibles')}</th> */}
                                 <th>{translate('manufacturing.command.accountables')}</th>
                                 <th>{translate('manufacturing.command.mill')}</th>
                                 <th>{translate('manufacturing.command.start_date')}</th>
@@ -280,7 +314,7 @@ class ManufacturingCommandManagementTable extends Component {
                                             translate('manufacturing.command.code'),
                                             translate('manufacturing.command.plan_code'),
                                             translate('manufacturing.command.created_at'),
-                                            translate('manufacturing.command.responsibles'),
+                                            // translate('manufacturing.command.responsibles'),
                                             translate('manufacturing.command.accountables'),
                                             translate('manufacturing.command.mill'),
                                             translate('manufacturing.command.start_date'),
@@ -302,24 +336,45 @@ class ManufacturingCommandManagementTable extends Component {
                                         <td>{command.code}</td>
                                         <td>{command.manufacturingPlan !== undefined && command.manufacturingPlan.code}</td>
                                         <td>{formatDate(command.createdAt)}</td>
-                                        <td>{command.responsibles.length && command.responsibles.map((res, index) => {
+                                        {/* <td>{command.responsibles && command.responsibles.map((res, index) => {
                                             if (command.responsibles.length === index + 1)
                                                 return res.name
                                             return res.name + ", "
                                         })}
-                                        </td>
-                                        <td>{command.accountables.length && command.accountables.map((acc, index) => {
+                                        </td> */}
+                                        <td>{command.accountables && command.accountables.map((acc, index) => {
                                             if (command.accountables.length === index + 1)
                                                 return acc.name;
                                             return acc.name + ", "
                                         })}</td>
-                                        <td>{command.manufacturingMill !== undefined && command.manufacturingMill.name}</td>
-                                        <td>{"Ca " + command.startTurn + " ngày " + formatDate(command.startDate)}</td>
-                                        <td>{"Ca " + command.endTurn + " ngày " + formatDate(command.endDate)}</td>
+                                        <td>{command.manufacturingMill && command.manufacturingMill.name}</td>
+                                        <td>{translate('manufacturing.command.turn') + " " + command.startTurn + " " + translate('manufacturing.command.day') + " " + formatDate(command.startDate)}</td>
+                                        < td > {translate('manufacturing.command.turn') + " " + command.endTurn + " " + translate('manufacturing.command.day') + " " + formatDate(command.endDate)}</td>
                                         <td style={{ color: translate(`manufacturing.command.${command.status}.color`) }}>{translate(`manufacturing.command.${command.status}.content`)}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a style={{ width: '5px' }} title={translate('manufacturing.purchasing_request.purchasing_request_detail')} onClick={() => { this.handleShowDetailPurchasingRequest(command) }}><i className="material-icons">view_list</i></a>
-                                            <a className="edit text-yellow" style={{ width: '5px' }} title="Sửa lệnh sản xuất"><i className="material-icons">edit</i></a>
+                                            <a style={{ width: '5px' }} title={translate('manufacturing.command.command_detail')} onClick={() => { this.handleShowDetailManufacturingCommand(command) }}><i className="material-icons">view_list</i></a>
+                                            {
+                                                this.checkRoleReponsibles(command) && command.status === 2 &&
+                                                <ConfirmNotification
+                                                    icon="play_circle_filled"
+                                                    title={translate('manufacturing.command.start_command')}
+                                                    content={translate('manufacturing.command.start_command') + " " + command.code}
+                                                    name="play_circle_filled"
+                                                    className="text-yellow"
+                                                    func={() => this.handleStartCommand(command)}
+                                                />
+                                            }
+                                            {
+                                                this.checkRoleReponsibles(command) && command.status === 3 &&
+                                                <ConfirmNotification
+                                                    icon="check_circle"
+                                                    title={translate('manufacturing.command.end_command')}
+                                                    content={translate('manufacturing.command.end_command') + " " + command.code}
+                                                    name="check_circle"
+                                                    className="text-green"
+                                                    func={() => this.handleEndCommand(command)}
+                                                />
+                                            }
                                         </td>
                                     </tr>
                                 ))
@@ -344,7 +399,8 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     getAllManufacturingCommands: commandActions.getAllManufacturingCommands,
-    getAllUserOfCompany: UserActions.getAllUserOfCompany
+    getAllUserOfCompany: UserActions.getAllUserOfCompany,
+    handleEditCommand: commandActions.handleEditCommand
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManufacturingCommandManagementTable));

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
 import { UploadFile } from '../../../common-components'
 
 import XLSX from 'xlsx';
@@ -140,13 +139,11 @@ class ImportFileExcel extends Component {
     }
 
     render() {
-        const { translate } = this.props;
-
         const { disabled = false } = this.props;
 
         return (
             <React.Fragment>
-                <label>{translate('human_resource.choose_file')}</label>
+                {/* <label>{translate('human_resource.choose_file')}</label> */}
                 <UploadFile onChange={this.handleChangeFile} deleteValue={false} importFile={this.handleChangeFileImport} disabled={disabled}
                     accept=".xlms,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
             </React.Fragment>
@@ -154,5 +151,5 @@ class ImportFileExcel extends Component {
     }
 }
 
-const importExcel = connect(null, null)(withTranslate(ImportFileExcel));
+const importExcel = connect(null, null)(ImportFileExcel);
 export { importExcel as ImportFileExcel };

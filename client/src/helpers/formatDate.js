@@ -15,9 +15,9 @@ export const formatDate = (date) => {
 
 export const formatFullDate = (date) => {
     let d = new Date(date);
-    let hour = date.getHours() + 7;
-    let minute = date.getMinutes();
-    let second = date.getSeconds();
+    let hour = d.getHours() + 7;
+    let minute = d.getMinutes();
+    let second = d.getSeconds();
 
     let day = d.getDate();
     let month = d.getMonth() + 1;
@@ -39,7 +39,7 @@ export const formatFullDate = (date) => {
         second = '0' + second;
 
     //hh:mm:ss dd/mm/yyyy
-    const dateFormat = hour + ':' + minute + ':' + second + ' ' + day + '/' + month + '/' + year;
+    const dateFormat = hour + ':' + minute + ':' + second + ' ' + day + '-' + month + '-' + year;
     return dateFormat;
 }
 

@@ -1,6 +1,6 @@
 const {
     ManufacturingCommand, ManufacturingPlan, ManufacturingWorks, OrganizationalUnit,
-    ManufacturingOrder, SalesOrder
+    ManufacturingOrder, SalesOrder, Lot
 } = require(`${SERVER_MODELS_DIR}`);
 const {
     connect
@@ -32,14 +32,14 @@ exports.createManufacturingCommand = async (data, portal) => {
         startTurn: data.startTurn,
         endTurn: data.endTurn,
         good: data.good,
-        quantity: data.quantity,
+        // quantity: data.quantity,
         creator: data.creator,
-        approvers: data.approvers.map(x => {
-            return {
-                approver: x.approver,
-                approvedTime: null
-            }
-        }),
+        // approvers: data.approvers.map(x => {
+        //     return {
+        //         approver: x.approver,
+        //         approvedTime: null
+        //     }
+        // }),
         responsibles: data.responsibles.map(x => {
             return x
         }),
@@ -63,7 +63,7 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
     // Quyền quản lý nhà máy => xưởng => lệnh tương ứng
     // Trường accountables được phân cho người nên ta phân chia cho người nào thì người đó được quyền xem
     let { currentRole, code, planCode, manufacturingOrderCode, salesOrderCode,
-        lotCode, accountables, startDate, endDate, status, createdAt, page, limit
+        lotCode, accountables, fromDate, toDate, status, createdAt, page, limit
     } = query;
     if (!currentRole) {
         throw Error("currentRole is not defined")
@@ -150,18 +150,17 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
     }
 
     // Xử lý ngày bắt đầu
-    if (startDate) {
+    if (fromDate) {
         options.startDate = {
-            '$gte': getArrayTimeFromString(startDate)[0],
-            '$lte': getArrayTimeFromString(startDate)[1]
+            '$gte': getArrayTimeFromString(fromDate)[0],
         }
     }
 
     // Xử lý ngày kết thúc
-    if (endDate) {
-        options.endDate = {
-            '$gte': getArrayTimeFromString(endDate)[0],
-            '$lte': getArrayTimeFromString(endDate)[1]
+    if (toDate) {
+        options.startDate = {
+            ...options.startDate,
+            '$lte': getArrayTimeFromString(toDate)[1]
         }
     }
     // Xử lý ngày tạo
@@ -203,10 +202,100 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
             });
         return { manufacturingCommands }
     }
+}
+
+exports.getManufacturingCommandById = async (id, portal) => {
+    let manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+        .findById(id)
+        .lean()
+        .populate([{
+            path: "manufacturingPlan",
+            select: "code",
+            populate: [{
+                path: "manufacturingOrder",
+                select: "code"
+            }, {
+                path: "salesOrder",
+                select: "code"
+            }, {
+                path: "approvers",
+                populate: [{
+                    path: "approver"
+                }]
+            }]
+        }, {
+            path: "manufacturingMill",
+            select: "code name"
+        }, {
+            path: "responsibles"
+        }, {
+            path: "accountables"
+        }, {
+            path: "creator"
+        }, {
+            path: "good.good",
+            select: "code name baseUnit"
+        }]);
+    if (!manufacturingCommand) {
+        throw Error("ManufacturingCommand is not existing");
+    }
+    let lot = await Lot(connect(DB_CONNECTION, portal)).findOne({
+        manufacturingCommand: manufacturingCommand._id
+    }).select('code _id');
+    if (lot) {
+        // await manufacturingCommand.markModified('attribute');
+        manufacturingCommand.lot = lot;
+    }
+
+    return { manufacturingCommand }
+}
 
 
+exports.editManufaturingCommand = async (id, data, portal) => {
+    console.log(id, data);
+    let oldManufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+        .findById(id);
+    if (!oldManufacturingCommand) {
+        throw Error("manufacturing Command is not existing");
+    }
+    oldManufacturingCommand.code = data.code ? data.code : oldManufacturingCommand.code;
+    oldManufacturingCommand.manufacturingPlan = data.manufacturingPlan ? data.manufacturingPlan : oldManufacturingCommand.manufacturingPlan;
+    oldManufacturingCommand.manufacturingMill = data.manufacturingMill ? data.manufacturingMill : oldManufacturingCommand.manufacturingMill;
+    oldManufacturingCommand.startDate = data.startDate ? data.startDate : oldManufacturingCommand.startDate;
+    oldManufacturingCommand.endDate = data.endDate ? data.endDate : oldManufacturingCommand.endDate;
+    oldManufacturingCommand.startTurn = data.startTurn ? data.startTurn : oldManufacturingCommand.startTurn;
+    oldManufacturingCommand.endTurn = data.endTurn ? data.endTurn : oldManufacturingCommand.endTurn;
+    oldManufacturingCommand.good = data.good ? data.good : oldManufacturingCommand.good;
+    oldManufacturingCommand.creator = data.creator ? data.creator : oldManufacturingCommand.creator;
+    oldManufacturingCommand.responsibles = data.responsibles ?
+        data.responsibles.map(x => {
+            return x
+        }) : oldManufacturingCommand.responsibles;
+    oldManufacturingCommand.accountables = data.accountables ?
+        data.accountables.map(x => {
+            return x
+        }) : oldManufacturingCommand.accountables;
+    oldManufacturingCommand.description = data.description ? data.description : oldManufacturingCommand.description
+    oldManufacturingCommand.status = data.status ? data.status : oldManufacturingCommand.status;
 
+    await oldManufacturingCommand.save();
 
+    let manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+        .findById({ _id: oldManufacturingCommand._id })
+        .populate([{
+            path: "manufacturingPlan",
+            select: "code"
+        }, {
+            path: "manufacturingMill",
+            select: "code name"
+        }, {
+            path: "responsibles"
+        }, {
+            path: "accountables"
+        }, {
+            path: "creator"
+        }]);
 
+    return { manufacturingCommand }
 
 }

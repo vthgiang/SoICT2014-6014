@@ -238,7 +238,7 @@ exports.getTaskById = async (portal, id, userId) => {
                                 if (
                                     !f &&
                                     task.collaboratedWithOrganizationalUnits[
-                                        k
+                                    k
                                     ] &&
                                     task.collaboratedWithOrganizationalUnits[k]
                                         .organizationalUnit
@@ -1896,11 +1896,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
 };
 
 /** Chỉnh sửa nhân viên tham gia công việc mà đơn vị được phối hợp */
-exports.editEmployeeCollaboratedWithOrganizationalUnits = async (
-    portal,
-    taskId,
-    data
-) => {
+exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId, data) => {
     let {
         responsibleEmployees,
         consultedEmployees,
@@ -1909,10 +1905,25 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (
         unitId,
         isAssigned,
     } = data;
-    let task,
-        newEmployees = [];
+    let task, newEmployees = [], descriptionLogs = "";
 
-    task = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
+    task = await Task(connect(DB_CONNECTION, portal))
+        .findById(taskId)
+        .populate({ path: "collaboratedWithOrganizationalUnits.organizationalUnit" });
+
+    // Mô tả nhật ký thay đổi
+    if (task) {
+        let unit = task.collaboratedWithOrganizationalUnits.filter(item => item.organizationalUnit._id.toString() === unitId);
+        descriptionLogs = descriptionLogs + unit[0].organizationalUnit.name;
+
+        if (unit[0] && unit[0].isAssigned !== isAssigned) {
+            if (isAssigned) {
+                descriptionLogs = descriptionLogs + " - Xác nhận phân công công việc";
+            } else {
+                descriptionLogs = descriptionLogs + " - Hủy xác nhận phân công công việc";
+            }
+        }
+    }
 
     // Lấy nhân viên mới để gửi mail
     if (responsibleEmployees && responsibleEmployees.length !== 0) {
@@ -2133,23 +2144,21 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (
             return `<li>${item.name} - ${item.email}</li>`;
         })}
                     </ul>` +
-        `${
-            newTask.consultedEmployees.length > 0
-                ? `<p>Người tư vấn</p> ` +
-                  `<ul>${newTask.consultedEmployees.map((item) => {
-                      return `<li>${item.name} - ${item.email}</li>`;
-                  })}
+        `${newTask.consultedEmployees.length > 0
+            ? `<p>Người tư vấn</p> ` +
+            `<ul>${newTask.consultedEmployees.map((item) => {
+                return `<li>${item.name} - ${item.email}</li>`;
+            })}
                     </ul>`
-                : ""
+            : ""
         }` +
-        `${
-            newTask.informedEmployees.length > 0
-                ? `<p>Người quan sát</p> ` +
-                  `<ul>${newTask.informedEmployees.map((item) => {
-                      return `<li>${item.name} - ${item.email}</li>`;
-                  })}
+        `${newTask.informedEmployees.length > 0
+            ? `<p>Người quan sát</p> ` +
+            `<ul>${newTask.informedEmployees.map((item) => {
+                return `<li>${item.name} - ${item.email}</li>`;
+            })}
                     </ul>`
-                : ""
+            : ""
         }`;
 
     newEmployees = await User(connect(DB_CONNECTION, portal)).find({
@@ -2157,11 +2166,22 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (
     });
     email = newEmployees.map((item) => item.email);
 
+    // Update nhật ký chỉnh sửa
+    if (newEmployees.length !== 0) {
+        descriptionLogs = descriptionLogs + " - Thêm mới nhân viên tham gia công việc: ";
+        newEmployees.map((item, index) => {
+            descriptionLogs = descriptionLogs + (index > 0 ? ", " : "") + item.name;
+        });
+    } else {
+        descriptionLogs = descriptionLogs + " - Không nhân viên nào được thêm mới"
+    }
+
     return {
         task: newTask,
         html: html,
         email: email,
         newEmployees: newEmployees.map((item) => item._id),
+        descriptionLogs: descriptionLogs
     };
 };
 
@@ -3739,23 +3759,21 @@ exports.sendEmailForActivateTask = async (portal, task) => {
             return `<li>${item.name}</li>`;
         })}
                     </ul>` +
-        `${
-            con.length > 0
-                ? `<p>Người tư vấn</p> ` +
-                  `<ul>${con.map((item) => {
-                      return `<li>${item.name}</li>`;
-                  })}
+        `${con.length > 0
+            ? `<p>Người tư vấn</p> ` +
+            `<ul>${con.map((item) => {
+                return `<li>${item.name}</li>`;
+            })}
                     </ul>`
-                : ""
+            : ""
         }` +
-        `${
-            inf.length > 0
-                ? `<p>Người quan sát</p> ` +
-                  `<ul>${inf.map((item) => {
-                      return `<li>${item.name}</li>`;
-                  })}
+        `${inf.length > 0
+            ? `<p>Người quan sát</p> ` +
+            `<ul>${inf.map((item) => {
+                return `<li>${item.name}</li>`;
+            })}
                     </ul>`
-                : ""
+            : ""
         }`;
     return { task: task, user: userIds, email: email, html: html };
 };

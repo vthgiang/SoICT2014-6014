@@ -4243,15 +4243,15 @@ export default {
                     content: "Chưa có lệnh"
                 },
                 1: {
-                    color: "yellow",
+                    color: "#ffbf00",
                     content: "Đang chờ duyệt"
                 },
                 2: {
-                    color: "#367FA9",
+                    color: "#00bfff",
                     content: "Đã phê duyệt"
                 },
                 3: {
-                    color: "orange",
+                    color: "#ff00bf",
                     content: "Đang thực hiện"
                 },
                 4: {
@@ -4298,15 +4298,15 @@ export default {
                 index: "STT",
                 creator: "Người tạo",
                 1: {
-                    color: "yellow",
+                    color: "#ffbf00",
                     content: "Đang chờ duyệt"
                 },
                 2: {
-                    color: "#367FA9",
+                    color: "#00bfff",
                     content: "Đã phê duyệt"
                 },
                 3: {
-                    color: "orange",
+                    color: "#ff00bf",
                     content: "Đang thực hiện"
                 },
                 4: {
@@ -4329,6 +4329,8 @@ export default {
                 accountables: "Người giám sát",
                 plan_code: "Mã kế hoạch",
                 start_date: "Ngày bắt đầu",
+                from_date: "Từ ngày",
+                to_date: "Đến ngày",
                 end_date: "Ngày kết thúc",
                 manufacturing_order_code: "Mã đơn sản xuất",
                 sales_order_code: "Mã đơn kinh doanh",
@@ -4340,15 +4342,15 @@ export default {
                 responsibles: "Người thực hiện",
                 mill: "Xưởng sản xuất",
                 1: {
-                    color: "yellow",
+                    color: "#ffbf00",
                     content: "Đang chờ duyệt"
                 },
                 2: {
-                    color: "#367FA9",
+                    color: "#00bfff",
                     content: "Đã phê duyệt"
                 },
                 3: {
-                    color: "orange",
+                    color: "#ff00bf",
                     content: "Đang thực hiện"
                 },
                 4: {
@@ -4356,7 +4358,30 @@ export default {
                     content: "Đã hoàn thành"
                 },
                 choose_status: "Chọn trạng thái",
-                choose_all: "Chọn tất cả"
+                choose_all: "Chọn tất cả",
+                command_detail: "Chi tiết lệnh sản xuất",
+                start_turn: "Ca bắt đầu",
+                end_turn: "Ca kết thúc",
+                creator: "Người tạo",
+                good_name: "Tên mặt hàng",
+                quantity: "Số lượng",
+                description: "Mô tả",
+                approvers: "Người phê duyệt",
+                good_info: "Thông tin sản phẩm",
+                good_code: "Mã sản phẩm",
+                good_name: "Tên sản phẩm",
+                good_base_unit: "Đơn vị sản phẩm",
+                packing_rule: "Quy cách đóng gói",
+                good_base_unit_quantity: "Số lượng đơn vị sản phẩm",
+                packing_rule_quantity: "Số lượng theo quy cách đóng gói",
+                approved: "Đã phê duyệt",
+                approvedTime: "Thời gian phê duyệt",
+                turn: "Ca",
+                day: "ngày",
+                start_command: "Thực hiện lệnh",
+                end_command: "Hoàn thành lệnh",
+                edit_successfully: "Sửa lệnh sản xuất thành công",
+                edit_failed: "Sửa lện sản xuất thất bại",
             }
         }
     }
