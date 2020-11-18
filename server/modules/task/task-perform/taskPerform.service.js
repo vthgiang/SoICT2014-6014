@@ -1896,11 +1896,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
 };
 
 /** Chỉnh sửa nhân viên tham gia công việc mà đơn vị được phối hợp */
-exports.editEmployeeCollaboratedWithOrganizationalUnits = async (
-    portal,
-    taskId,
-    data
-) => {
+exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId, data) => {
     let {
         responsibleEmployees,
         consultedEmployees,
@@ -1909,10 +1905,23 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (
         unitId,
         isAssigned,
     } = data;
-    let task,
-        newEmployees = [];
+    let task, newEmployees = [], descriptionLogs = "";
 
-    task = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
+    task = await Task(connect(DB_CONNECTION, portal))
+        .findById(taskId)
+        .populate({ path: "collaboratedWithOrganizationalUnits.organizationalUnit" });
+
+    // Mô tả nhật ký thay đổi
+    if (task) {
+        let unit = task.collaboratedWithOrganizationalUnits.filter(item => item.organizationalUnit?._id.toString() === unitId);
+        if (unit[0] && unit[0].isAssigned !== isAssigned) {
+            if (isAssigned) {
+                descriptionLogs = unit[0].organizationalUnit?.name + " - Xác nhận phân công công việc - ";
+            } else {
+                descriptionLogs = unit[0].organizationalUnit?.name + " - Hủy xác nhận phân công công việc - ";
+            }
+        }
+    }
 
     // Lấy nhân viên mới để gửi mail
     if (responsibleEmployees && responsibleEmployees.length !== 0) {
@@ -2157,11 +2166,22 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (
     });
     email = newEmployees.map((item) => item.email);
 
+    // Update nhật ký chỉnh sửa
+    if (newEmployees.length !== 0) {
+        descriptionLogs = descriptionLogs + "Thêm mới nhân viên tham gia công việc: ";
+        newEmployees.map((item, index) => {
+            descriptionLogs = descriptionLogs + (index > 0 ? ", " : "") + item.name;
+        });
+    } else {
+        descriptionLogs = descriptionLogs + "Không nhân viên nào được thêm mới"
+    }
+
     return {
         task: newTask,
         html: html,
         email: email,
         newEmployees: newEmployees.map((item) => item._id),
+        descriptionLogs: descriptionLogs
     };
 };
 
