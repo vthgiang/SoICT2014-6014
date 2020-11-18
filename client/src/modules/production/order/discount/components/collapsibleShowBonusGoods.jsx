@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { formatDate } from "../../../../../helpers/formatDate";
 import "./discount.css";
 
 class CollapsibleShowBonusGoods extends Component {
@@ -37,9 +38,9 @@ class CollapsibleShowBonusGoods extends Component {
                                 return (
                                     <>
                                         <li className="discount-bonus-goods-collapsible-li">
-                                            <div className="discount-bonus-goods-collapsible-code">{item.code}</div>
-                                            <div className="discount-bonus-goods-collapsible-name">{item.name}</div>
-                                            <div className="discount-bonus-goods-collapsible-baseunit">{item.baseUnit}</div>
+                                            <div className="discount-bonus-goods-collapsible-code">{item.good.code}</div>
+                                            <div className="discount-bonus-goods-collapsible-name">{item.good.name}</div>
+                                            <div className="discount-bonus-goods-collapsible-baseunit">{item.good.baseUnit}</div>
                                             <div className="discount-bonus-goods-collapsible-quantity">{item.quantityOfBonusGood}</div>
                                             <div className="discount-bonus-goods-collapsible-date">{item.expirationDateOfGoodBonus}</div>
                                         </li>

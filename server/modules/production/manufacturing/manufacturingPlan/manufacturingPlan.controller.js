@@ -6,6 +6,8 @@ exports.createManufacturingPlan = async (req, res) => {
         let data = req.body;
         let manufacturingPlan = await ManufacturingPlanService.createManufacturingPlan(data, req.portal);
 
+        await Logger.info(req.user.email, "CREATE_MANUFACTURING_PLAN", req.portal);
+
         res.status(201).json({
             success: true,
             messages: ["create_successfully"],

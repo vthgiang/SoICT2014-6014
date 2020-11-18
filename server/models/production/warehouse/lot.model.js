@@ -88,6 +88,11 @@ const LotSchema = new Schema ({
             ref: 'Stock',
         },
 
+        toStock: {
+            type: Schema.Types.ObjectId,
+            ref: 'Stock',
+        },
+
         binLocations: [{
             binLocation: {
                 type: Schema.Types.ObjectId,

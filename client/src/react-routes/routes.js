@@ -1749,7 +1749,7 @@ class Routes extends Component {
                     {/* Manufacturing-management */}
 
                     <PrivateRoute
-                        isLoading={false}
+                        isLoading={this.props.manufacturingPlan.isLoading}
                         key={"manage-manufacturing-plan"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1769,7 +1769,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={false}
+                        isLoading={this.props.manufacturingCommand.isLoading}
                         key={"manage-manufacturing-command"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },

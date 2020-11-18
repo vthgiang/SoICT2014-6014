@@ -2900,7 +2900,9 @@ export default {
                 delete_task_template_success: 'Delete task template success !',
                 delete_task_template_fail: 'Delete task template fail !',
                 error_task_template_creator_null: 'Creator of this task template does not exist or has deleted',
-                view_task_process_template: 'View task process template'
+                view_task_process_template: 'View task process template',
+                import_task_template_success: 'Import task template success',
+                import_task_template_faile: 'Import task template faile'
             }
         },
 

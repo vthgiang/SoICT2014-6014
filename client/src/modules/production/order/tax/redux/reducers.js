@@ -23,7 +23,8 @@ const initState = {
     nextPage: 0,
     listTaxs: [],
     availabledTaxCode: false,
-    listTaxsByCode: []
+    listTaxsByCode: [],
+    listTaxsByGoodId: []
 }
 
 export function taxs(state = initState, action) {
@@ -37,24 +38,26 @@ export function taxs(state = initState, action) {
             case TaxConstants.CHECK_TAX_CODE_REQUEST:
             case TaxConstants.GET_TAX_BY_CODE_REQUEST:
             case TaxConstants.DELETE_TAX_BY_CODE_REQUEST:
+            case TaxConstants.GET_TAX_BY_GOOD_ID_REQUEST: 
                 return {
                     ...state,
                     isLoading: true
                 }
             case TaxConstants.GET_ALL_TAXS_FAILURE:
-                case TaxConstants.CREATE_TAX_FAILURE:
-                case TaxConstants.GET_DETAIL_TAX_FAILURE:
-                case TaxConstants.UPDATE_TAX_FAILURE:
-                case TaxConstants.DISABLE_TAX_FAILURE:
-                case TaxConstants.CHECK_TAX_CODE_FAILURE:
-                case TaxConstants.GET_TAX_BY_CODE_FAILURE:
-                case TaxConstants.DELETE_TAX_BY_CODE_FAILURE:
+            case TaxConstants.CREATE_TAX_FAILURE:
+            case TaxConstants.GET_DETAIL_TAX_FAILURE:
+            case TaxConstants.UPDATE_TAX_FAILURE:
+            case TaxConstants.DISABLE_TAX_FAILURE:
+            case TaxConstants.CHECK_TAX_CODE_FAILURE:
+            case TaxConstants.GET_TAX_BY_CODE_FAILURE:
+            case TaxConstants.DELETE_TAX_BY_CODE_FAILURE:
+            case TaxConstants.GET_TAX_BY_GOOD_ID_FAILURE: 
                 return {
                     ...state,
                     isLoading: false,
                     error: action.error
                 }
-        case TaxConstants.GET_ALL_TAXS_SUCCESS:
+            case TaxConstants.GET_ALL_TAXS_SUCCESS:
                 return {
                     ...state,
                     isLoading: false,
@@ -123,6 +126,12 @@ export function taxs(state = initState, action) {
                 return {
                     ...state,
                     listTaxsByCode: action.payload.taxs,
+                    isLoading: false
+            }
+            case TaxConstants.GET_TAX_BY_GOOD_ID_SUCCESS: 
+                return {
+                    ...state,
+                    listTaxsByGoodId: action.payload.taxs,
                     isLoading: false
                 }
             default:

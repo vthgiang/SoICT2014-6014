@@ -27,6 +27,14 @@ class CollaboratedWithOrganizationalUnits extends Component {
         }
     }
 
+    shouldComponentUpdate = (nextProps, nextState) => {
+        if (nextProps.performtasks?.task?.logs !== this.props.performtasks?.task?.logs) {
+            nextProps.performtasks?.task && this.props.getTaskLog(nextProps.performtasks?.task?._id);
+            return true;
+        }
+        return true;
+    }
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.unitId !== prevState.unitId) {
             // Xử lý nhân viên tham gia công việc phối hợp đơn vị
@@ -146,8 +154,9 @@ class CollaboratedWithOrganizationalUnits extends Component {
             responsibleEmployees: responsibleEmployees,
             consultedEmployees: consultedEmployees,
         }
+        
         this.props.editEmployeeCollaboratedWithOrganizationalUnits(taskId, newEmployeeCollaboratedWithUnit);
-
+        
         this.setState(state => {
             return {
                 ...state,
@@ -303,12 +312,13 @@ class CollaboratedWithOrganizationalUnits extends Component {
 }
 
 function mapState(state) {
-    const { } = state;
-    return {}
+    const { performtasks } = state;
+    return { performtasks }
 }
 
 const actions = {
-    editEmployeeCollaboratedWithOrganizationalUnits: performTaskAction.editEmployeeCollaboratedWithOrganizationalUnits
+    editEmployeeCollaboratedWithOrganizationalUnits: performTaskAction.editEmployeeCollaboratedWithOrganizationalUnits,
+    getTaskLog: performTaskAction.getTaskLog,
 }
 
 const connectedCollaboratedWithOrganizationalUnits = connect(mapState, actions)(withTranslate(CollaboratedWithOrganizationalUnits));

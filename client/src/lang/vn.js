@@ -3021,6 +3021,8 @@ export default {
                 error_task_template_creator_null: 'Nguời tạo mẫu công việc này không tồn tại hoặc đã bị xóa !',
                 error_task_template_organizational_unit: 'Phòng ban của mẫu công việc này không tồn tại hoặc đã bị xóa !',
                 view_task_process_template: 'Xem mẫu quy trình công việc',
+                import_task_template_success: 'Thêm mẫu công việc thành công',
+                import_task_template_faile: 'Thêm mẫu công việc thất bại !'
             }
         },
 
@@ -4242,15 +4244,15 @@ export default {
                     content: "Chưa có lệnh"
                 },
                 1: {
-                    color: "yellow",
+                    color: "#ffbf00",
                     content: "Đang chờ duyệt"
                 },
                 2: {
-                    color: "#367FA9",
+                    color: "#00bfff",
                     content: "Đã phê duyệt"
                 },
                 3: {
-                    color: "orange",
+                    color: "#ff00bf",
                     content: "Đang thực hiện"
                 },
                 4: {
@@ -4297,15 +4299,15 @@ export default {
                 index: "STT",
                 creator: "Người tạo",
                 1: {
-                    color: "yellow",
+                    color: "#ffbf00",
                     content: "Đang chờ duyệt"
                 },
                 2: {
-                    color: "#367FA9",
+                    color: "#00bfff",
                     content: "Đã phê duyệt"
                 },
                 3: {
-                    color: "orange",
+                    color: "#ff00bf",
                     content: "Đang thực hiện"
                 },
                 4: {
@@ -4316,9 +4318,71 @@ export default {
                     color: "red",
                     content: "Đã hủy"
                 },
-                choose_works: "Chọn nhà máy"
+                choose_works: "Chọn nhà máy",
+                progress_1: "Đúng tiến độ",
+                progress_2: "Chậm tiến độ",
+                progress_3: "Quá hạn"
 
 
+            },
+            command: {
+                code: "Mã lệnh sản xuất",
+                accountables: "Người giám sát",
+                plan_code: "Mã kế hoạch",
+                start_date: "Ngày bắt đầu",
+                from_date: "Từ ngày",
+                to_date: "Đến ngày",
+                end_date: "Ngày kết thúc",
+                manufacturing_order_code: "Mã đơn sản xuất",
+                sales_order_code: "Mã đơn kinh doanh",
+                lot_code: "Mã lô sản xuất",
+                status: "Trạng thái",
+                search: "Tìm kiếm",
+                index: "STT",
+                created_at: "Ngày tạo",
+                responsibles: "Người thực hiện",
+                mill: "Xưởng sản xuất",
+                1: {
+                    color: "#ffbf00",
+                    content: "Đang chờ duyệt"
+                },
+                2: {
+                    color: "#00bfff",
+                    content: "Đã phê duyệt"
+                },
+                3: {
+                    color: "#ff00bf",
+                    content: "Đang thực hiện"
+                },
+                4: {
+                    color: "green",
+                    content: "Đã hoàn thành"
+                },
+                choose_status: "Chọn trạng thái",
+                choose_all: "Chọn tất cả",
+                command_detail: "Chi tiết lệnh sản xuất",
+                start_turn: "Ca bắt đầu",
+                end_turn: "Ca kết thúc",
+                creator: "Người tạo",
+                good_name: "Tên mặt hàng",
+                quantity: "Số lượng",
+                description: "Mô tả",
+                approvers: "Người phê duyệt",
+                good_info: "Thông tin sản phẩm",
+                good_code: "Mã sản phẩm",
+                good_name: "Tên sản phẩm",
+                good_base_unit: "Đơn vị sản phẩm",
+                packing_rule: "Quy cách đóng gói",
+                good_base_unit_quantity: "Số lượng đơn vị sản phẩm",
+                packing_rule_quantity: "Số lượng theo quy cách đóng gói",
+                approved: "Đã phê duyệt",
+                approvedTime: "Thời gian phê duyệt",
+                turn: "Ca",
+                day: "ngày",
+                start_command: "Thực hiện lệnh",
+                end_command: "Hoàn thành lệnh",
+                edit_successfully: "Sửa lệnh sản xuất thành công",
+                edit_failed: "Sửa lện sản xuất thất bại",
             }
         }
     }

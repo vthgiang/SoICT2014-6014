@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const mongoosePaginate = require('mongoose-paginate-v2')
 
 // Bảng lệnh sản xuất
 const ManufacturingCommandSchema = new Schema({
@@ -28,25 +29,33 @@ const ManufacturingCommandSchema = new Schema({
         type: Number
     },
     good: { // Mặt hàng
-        type: Schema.Types.ObjectId,
-        ref: "Good"
-    },
-    quantity: { // Số lượng
-        type: Number
+        good: {
+            type: Schema.Types.ObjectId,
+            ref: "Good"
+        },
+        packingRule: {
+            type: String
+        },
+        conversionRate: {
+            type: Number
+        },
+        quantity: { // Số lượng
+            type: Number
+        },
     },
     creator: { // Người tạo
         type: Schema.Types.ObjectId,
         ref: "User"
     },
-    approvers: [{ // Danh sách người phê duyệt
-        approver: { // Người phê duyệt
-            type: Schema.Types.ObjectId,
-            ref: "User"
-        },
-        approvedTime: { // Thời gian phê duyệt
-            type: Date
-        }
-    }],
+    // approvers: [{ // Danh sách người phê duyệt
+    //     approver: { // Người phê duyệt
+    //         type: Schema.Types.ObjectId,
+    //         ref: "User"
+    //     },
+    //     approvedTime: { // Thời gian phê duyệt
+    //         type: Date
+    //     }
+    // }],
     responsibles: [{ // Danh sách người thực hiện lệnh
         type: Schema.Types.ObjectId,
         ref: "User"
@@ -65,6 +74,8 @@ const ManufacturingCommandSchema = new Schema({
 }, {
     timestamps: true
 });
+
+ManufacturingCommandSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
     if (!db.models.ManufacturingCommand)

@@ -9,6 +9,7 @@ export const TaxServices = {
     checkTaxCode,
     getTaxByCode,
     deleteTax,
+    getTaxsByGoodsId
 }
 
 function createNewTax(data) {
@@ -102,6 +103,19 @@ function deleteTax(code) {
             params: code
         },
         true,
+        true,
+        "manage_order.tax"
+    )
+}
+
+function getTaxsByGoodsId (goodId) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/tax/get-by-good-id`,
+            method: "GET",
+            params: { goodId }
+        },
+        false,
         true,
         "manage_order.tax"
     )

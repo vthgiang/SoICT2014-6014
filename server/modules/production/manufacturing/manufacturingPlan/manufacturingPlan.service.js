@@ -1,3 +1,4 @@
+const moment = require('moment');
 const {
     ManufacturingPlan, OrganizationalUnit, ManufacturingWorks, ManufacturingCommand, ManufacturingOrder, SalesOrder
 } = require(`${SERVER_MODELS_DIR}`);
@@ -22,6 +23,45 @@ function getArrayTimeFromString(stringDate) {
     var end = moment(date).endOf('day');
 
     return [start, end];
+}
+// Hàm check lệnh sản xuất có chậm tiến độ hay không, nhận vào 1 array các lệnh sản xuất
+function checkProgressManufacturingCommand(arrayCommands) {
+    let date = new Date(moment().subtract(1, "days"));
+    for (let i = 0; i < arrayCommands.length; i++) {
+        if ((arrayCommands[i].status == 2 && arrayCommands[i].startDate < date)
+            || (arrayCommands[i].status == 3 && arrayCommands[i].endDate < date)
+        ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+// Hàm filter kế hoạch theo tiến độ
+function filterPlansWithProgress(arrayPlans, progress) {
+    let date = new Date(moment().subtract(1, "days"));
+    if (progress == 3) {// Qúa hạn
+        console.log(arrayPlans);
+        arrayPlans = arrayPlans.filter(x => {
+            return (x.status == 2 || x.status == 3) && (x.endDate < date);
+        });
+    }
+    else if (progress == 2) {// Trễ tiến độ khi có 1 command bị quá hạn
+        // Command ở trạng thái đã duyệt status = 2 và startDate < now;
+        // Hoặc command ở trạng thái đang thực hiện status = 3 và endDate < now
+        arrayPlans = arrayPlans.filter(x => checkProgressManufacturingCommand(x.manufacturingCommands))
+    } else if (progress == 1) {
+        // Lấy ra những kế hoạch quá hạn và chậm tiến độ
+        let plans2 = filterPlansWithProgress(arrayPlans, 2);
+        let plans3 = filterPlansWithProgress(arrayPlans, 3);
+        let plans23 = [...plans2, ...plans3];
+        plans23Code = plans23.map(x => x._id);
+        arrayPlans = arrayPlans.filter(x => !plans23Code.includes(x._id));
+    }
+
+    // Trả về những kế hoạch đúng tiến độ
+    return arrayPlans;
 }
 
 exports.createManufacturingPlan = async (data, portal) => {
@@ -139,7 +179,6 @@ exports.getAllManufacturingPlans = async (query, portal) => {
     } else {
         // Xử lý mã đơn sản xuất truyền vào
         if (manufacturingOrderCode) {
-            console.log(query);
             let manufacturingOrders = await ManufacturingOrder(connect(DB_CONNECTION, portal)).find({
                 code: new RegExp(manufacturingOrderCode, "i")
             });
@@ -151,7 +190,6 @@ exports.getAllManufacturingPlans = async (query, portal) => {
         }
         // Xử lý mã đơn kinh doanh
         if (salesOrderCode) {
-            console.log(query);
             let salesOrders = await SalesOrder(connect(DB_CONNECTION, portal)).find({
                 code: new RegExp(salesOrderCode, "i")
             });
@@ -171,19 +209,56 @@ exports.getAllManufacturingPlans = async (query, portal) => {
                 $in: manufacturingCommandIds
             }
         }
-        // Xử lý tình trạng truyền vào
-        if (progress) {
 
+        // let manufacturingPlans = await ManufacturingPlan(connect(DB_CONNECTION, portal))
+        //     .paginate(options, {
+        //         limit,
+        //         page,
+        //         populate: [{
+        //             path: "creator"
+        //         }]
+        //     });
+        let plans = await ManufacturingPlan(connect(DB_CONNECTION, portal))
+            .find(options)
+            .populate([{
+                path: "creator"
+            }, {
+                path: "manufacturingCommands"
+            }]);
+
+
+
+        // Xử lý tình trạng truyền vào
+        if (progress && (progress.length == 1 || progress.length == 2)) {
+            // Trả về kế hoạch đúng tiến độ, trễ tiến độ và qúa hạn ứng  với progress 1, 2, 3 truyền vào
+            // 1. Đúng hạn 2. Trễ tiến độ 3. Qúa hạn
+            if (progress.length == 1 && progress.includes("3")) {
+                plans = filterPlansWithProgress(plans, 3);
+            } else if (progress.length == 1 && progress.includes("2")) {
+                plans = filterPlansWithProgress(plans, 2);
+            } else if (progress.length == 1 && progress.includes("1")) {
+                plans = filterPlansWithProgress(plans, 1);
+            } else if (progress.length == 2 && !progress.includes("1")) {
+                plans2 = filterPlansWithProgress(plans, 2);
+                plans3 = filterPlansWithProgress(plans, 3);
+                plans = [...plans2, ...plans3];
+            } else if (progress.length == 2 && !progress.includes("2")) {
+                plans1 = filterPlansWithProgress(plans, 1);
+                plans3 = filterPlansWithProgress(plans, 3);
+                plans = [...plans1, ...plans3];
+            } else if (progress.length == 2 && !progress.includes("3")) {
+                plans1 = filterPlansWithProgress(plans, 1);
+                plans2 = filterPlansWithProgress(plans, 2);
+                plans = [...plans1, ...plans2];
+            }
         }
 
-        let manufacturingPlans = await ManufacturingPlan(connect(DB_CONNECTION, portal))
-            .paginate(options, {
-                limit,
-                page,
-                populate: [{
-                    path: "creator"
-                }]
-            });
+        let manufacturingPlans = {};
+        manufacturingPlans.totalPages = Math.ceil(plans.length / limit);
+        manufacturingPlans.page = parseInt(page);
+        const offset = (page - 1) * limit;
+        plans = plans.slice(offset).slice(0, limit);
+        manufacturingPlans.docs = plans;
         return { manufacturingPlans }
     }
 }

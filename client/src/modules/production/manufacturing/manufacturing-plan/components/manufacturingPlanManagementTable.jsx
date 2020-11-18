@@ -21,7 +21,8 @@ class ManufacturingPlanManagementTable extends Component {
             manufacturingWorks: [],
             commandCode: '',
             manufacturingOrderCode: '',
-            salesOrderCode: ''
+            salesOrderCode: '',
+            progress: []
         }
     }
 
@@ -94,7 +95,7 @@ class ManufacturingPlanManagementTable extends Component {
 
     handleSubmitSearch = () => {
         const { code, startDate, endDate, createdAt, status, page, limit,
-            manufacturingWorks, currentRole, commandCode, manufacturingOrderCode, salesOrderCode } = this.state;
+            manufacturingWorks, currentRole, commandCode, manufacturingOrderCode, salesOrderCode, progress } = this.state;
         const data = {
             currentRole: currentRole,
             page: page,
@@ -108,6 +109,7 @@ class ManufacturingPlanManagementTable extends Component {
             commandCode: commandCode,
             manufacturingOrderCode: manufacturingOrderCode,
             salesOrderCode: salesOrderCode,
+            progress: progress
         }
         this.props.getAllManufacturingPlans(data);
     }
@@ -171,6 +173,13 @@ class ManufacturingPlanManagementTable extends Component {
         this.setState((state) => ({
             ...state,
             salesOrderCode: value
+        }))
+    }
+
+    handleProgressChange = (value) => {
+        this.setState((state) => ({
+            ...state,
+            progress: value
         }))
     }
 
@@ -281,11 +290,11 @@ class ManufacturingPlanManagementTable extends Component {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={[
-                                    { value: '1', text: "Đúng tiến độ" },
-                                    { value: '2', text: "Chậm tiến độ" },
-                                    { value: '3', text: "Quá hạn" },
+                                    { value: '1', text: translate('manufacturing.plan.progress_1') },
+                                    { value: '2', text: translate('manufacturing.plan.progress_2') },
+                                    { value: '3', text: translate('manufacturing.plan.progress_3') },
                                 ]}
-                            // onChange={this.handleChangeValue}
+                                onChange={this.handleProgressChange}
                             />
                         </div>
                         <div className="form-group">
@@ -334,7 +343,7 @@ class ManufacturingPlanManagementTable extends Component {
                                         <td>{formatDate(plan.endDate)}</td>
                                         <td style={{ color: translate(`manufacturing.plan.${plan.status}.color`) }}>{translate(`manufacturing.plan.${plan.status}.content`)}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a className="edit text-green" style={{ width: '5px' }} title="Xem chi tiết kế hoạch sản xuất" onClick={() => this.handleShowDetailInfo(plan._id)}><i className="material-icons">visibility</i></a>
+                                            <a style={{ width: '5px' }} title={translate('manufacturing.purchasing_request.purchasing_request_detail')} onClick={() => { this.handleShowDetailPurchasingRequest(plan) }}><i className="material-icons">view_list</i></a>
                                             <a className="edit text-yellow" style={{ width: '5px' }} title="Sửa kế hoạch sản xuất"><i className="material-icons">edit</i></a>
                                         </td>
                                     </tr>
