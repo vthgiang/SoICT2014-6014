@@ -2118,6 +2118,8 @@ export default {
                 create_reception_date: 'Ngày lập phiếu',
                 select_reception_type: 'Chọn loại phiếu',
                 select_all_reception_type: 'Chọn tất cả loại phiếu',
+
+                no_data: 'Chưa có dữ liệu'
             },
 
             // Dashboard
@@ -2169,6 +2171,7 @@ export default {
                 delete_asset_type_faile: 'Xoá loại tài sản thất bại',
                 edit_asset_type_success: 'Chỉnh sửa thông tin loại tài sản thành công',
                 edit_asset_type_faile: 'Chỉnh sửa thông tin loại tài sản thất bại',
+                asset_type_name_exist: 'Tên loại tài sản đã tồn tại'
             },
 
             // Quản lý thông tin tài sản
@@ -2221,7 +2224,7 @@ export default {
                 delete_asset_faile: 'Xoá tài sản thất bại',
                 edit_asset_success: 'Chỉnh sửa thông tin tài sản thành công',
                 edit_asset_faile: 'Chỉnh sửa thông tin tài sản thất bại',
-
+                asset_code_exist: 'Mã tài sản đã tồn tại'
             },
 
             // Quản lý bảo trì

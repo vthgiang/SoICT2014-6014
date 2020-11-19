@@ -96,7 +96,7 @@ import AssetManager from "../modules/asset/admin/asset-information/components";
 import { ManagerAssetAssignedCrash } from '../modules/asset/user/asset-assigned/components';
 import { DashBoardAssets } from '../modules/asset/admin/asset-dashboard/components/assetDashBoard';
 import { BuildingAsset } from '../modules/asset/admin/building/components';
-import EmployeeAssetManagement from '../modules/asset/user/asser-managed/components';
+import EmployeeAssetManagement from '../modules/asset/user/asset-managed/components';
 
 
 //report
