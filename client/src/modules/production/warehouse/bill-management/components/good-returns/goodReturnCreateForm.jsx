@@ -480,10 +480,7 @@ class GoodReturnCreateForm extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.bills.billDetail) {
-            this.state.listGood = nextProps.bills.billDetail.goods;
-        }
-
+        
         if (nextProps.bills.billDetail !== this.state.billDetail) {
             this.state.listGood = nextProps.bills.billDetail.goods;
             this.state.billDetail = nextProps.bills.billDetail;
@@ -534,7 +531,7 @@ class GoodReturnCreateForm extends Component {
                 <DialogModal
                     modalID={`modal-create-bill-return`}
                     formID={`form-create-bill-return`}
-                    title={translate(`manage_warehouse.bill_management.edit_title.${group}`)}
+                    title={translate(`manage_warehouse.bill_management.add_title.${group}`)}
                     msg_success={translate('manage_warehouse.bill_management.add_success')}
                     msg_faile={translate('manage_warehouse.bill_management.add_faile')}
                     disableSubmit={!this.isFormValidated()}

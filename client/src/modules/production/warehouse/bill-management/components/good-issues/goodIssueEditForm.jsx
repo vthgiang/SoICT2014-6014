@@ -463,6 +463,7 @@ class GoodIssueEditForm extends Component {
                 email: nextProps.email,
                 address: nextProps.address,
                 listGood: nextProps.listGood,
+                oldGoods: nextProps.listGood,
                 errorStock: undefined, 
                 errorType: undefined, 
                 errorApprover: undefined, 
@@ -477,7 +478,7 @@ class GoodIssueEditForm extends Component {
 
     save = async () => {
         const { billId, fromStock, code, toStock, type, status, oldStatus, users, approver, customer, supplier, 
-            name, phone, email, address, description, listGood } = this.state;
+            name, phone, email, address, description, listGood, oldGoods } = this.state;
         const { group } = this.props;
         await this.props.editBill(billId, {
             fromStock: fromStock,
@@ -494,7 +495,8 @@ class GoodIssueEditForm extends Component {
             email: email,
             address: address,
             description: description,
-            goods: listGood
+            goods: listGood,
+            oldGoods: oldGoods
         })
     }
 

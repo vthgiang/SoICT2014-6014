@@ -40,7 +40,8 @@ class GoodReceiptEditForm extends Component {
                 text: item.code + " -- " + item.name,
                 code: item.code,
                 name: item.name,
-                baseUnit: item.baseUnit
+                baseUnit: item.baseUnit,
+                type: item.type
             })
         })
 
@@ -52,7 +53,7 @@ class GoodReceiptEditForm extends Component {
         let good = value[0];
         this.state.good.quantity = 0;
         let goodName = dataGoods.find(x => x.value === good);
-        this.state.good.good = { _id: good, code: goodName.code, name: goodName.name, baseUnit: goodName.baseUnit };
+        this.state.good.good = { _id: good, code: goodName.code, name: goodName.name, baseUnit: goodName.baseUnit, type: goodName.type};
         await this.setState(state => {
             return {
                 ...state,
@@ -281,16 +282,18 @@ class GoodReceiptEditForm extends Component {
         return result;
     }
 
-    handleLotsChange = (data) => {
-        let totalQuantity = data.length > 0 ? data.reduce(function (accumulator, currentValue) {
+    handleLotsChange = (lots, data, arrayId) => {
+        let totalQuantity = lots.length > 0 ? lots.reduce(function (accumulator, currentValue) {
             return Number(accumulator) + Number(currentValue.quantity);
           }, 0) : 0;
         this.state.good.quantity = totalQuantity;
-        this.state.good.lots = data;
+        this.state.good.lots = lots;
         this.setState(state => {
             return {
                 ...state,
-                lots: data,
+                lots: lots,
+                data: data,
+                arrayId: arrayId,
                 quantity: totalQuantity
             }
         })
@@ -308,7 +311,13 @@ class GoodReceiptEditForm extends Component {
 
     handleAddGood = async (e) => {
         e.preventDefault();
-        const { good } = this.state;
+        const { good, data, arrayId } = this.state;
+        if(arrayId && arrayId.length > 0) {
+            await this.props.deleteLot(arrayId);
+        }
+
+        // await this.props.createOrUpdateLots(data);
+
         const { lots } = this.props;
         const { listCreateOrEdit } = lots;
         if(good.lots.length > 0) {
@@ -344,7 +353,12 @@ class GoodReceiptEditForm extends Component {
 
     handleSaveEditGood = async (e) => {
         e.preventDefault();
-        const { indexInfo, listGood, good } = this.state;
+        const { indexInfo, listGood, good, arrayId, data } = this.state;
+        if(arrayId && arrayId.length > 0) {
+            await this.props.deleteLot(arrayId);
+        }
+
+        // await this.props.createOrUpdateLots(data);
         const { lots } = this.props;
         const { listCreateOrEdit } = lots;
         if(good.lots.length > 0) {
@@ -408,7 +422,7 @@ class GoodReceiptEditForm extends Component {
 
     handleEditGood = async (good, index) => {
         let lots = [];
-        if(good.lots && good.lots.length > 0) {
+        if(good.lots && good.lots.length > 0 && good.lots[0].lot._id !== undefined) {
             good.lots.map(item => {
                 lots.push({
                     lot: item.lot._id,
@@ -418,7 +432,17 @@ class GoodReceiptEditForm extends Component {
                     note: item.note,
                 })
             })
-        } 
+        } else {
+            good.lots.map(item => {
+                lots.push({
+                    lot: item.lot,
+                    expirationDate: item.expirationDate,
+                    name: item.name,
+                    quantity: item.quantity,
+                    note: item.note,
+                })
+            })
+        }
         this.setState(state => {
             return{
                 ...state,
@@ -434,7 +458,17 @@ class GoodReceiptEditForm extends Component {
         await this.props.getLotsByGood({ good: good.good._id, stock: fromStock });
     }
 
-    handleDeleteGood = async (index) => {
+    handleDeleteGood = async (good, index) => {
+        let arrayId = [];
+        if(good.lots && good.lots.length > 0 && good.lots[0].lot._id !== undefined) {
+            good.lots.map(item => {
+                arrayId = [ ...arrayId, item.lot._id ];
+            })
+        } else {
+            good.lots.map(item => {
+                arrayId = [ ...arrayId, item.lot ];
+            })
+        }
         let { listGood } = this.state;
         let newListGood;
         if(listGood){
@@ -443,7 +477,8 @@ class GoodReceiptEditForm extends Component {
         await this.setState(state => {
             return {
                 ...state,
-                listGood: newListGood
+                listGood: newListGood,
+                arrayId: arrayId
             }
         })
     }
@@ -519,6 +554,7 @@ class GoodReceiptEditForm extends Component {
                 email: nextProps.email,
                 address: nextProps.address,
                 listGood: nextProps.listGood,
+                oldGoods: nextProps.listGood,
                 errorStock: undefined, 
                 errorType: undefined, 
                 errorApprover: undefined, 
@@ -533,8 +569,13 @@ class GoodReceiptEditForm extends Component {
 
     save = async () => {
         const { billId, fromStock, code, toStock, type, status, oldStatus, users, approver, customer, supplier, 
-            name, phone, email, address, description, listGood } = this.state;
+            name, phone, email, address, description, listGood, oldGoods, arrayId } = this.state;
         const { group } = this.props;
+
+        if(arrayId && arrayId.length > 0) {
+            await this.props.deleteLot(arrayId);
+        }
+
         await this.props.editBill(billId, {
             fromStock: fromStock,
             toStock: toStock,
@@ -552,7 +593,8 @@ class GoodReceiptEditForm extends Component {
             email: email,
             address: address,
             description: description,
-            goods: listGood
+            goods: listGood,
+            oldGoods: oldGoods
         })
     }
 
@@ -759,7 +801,7 @@ class GoodReceiptEditForm extends Component {
                                                         <td>{x.description}</td>
                                                         <td>
                                                             <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => this.handleEditGood(x, index)}><i className="material-icons"></i></a>
-                                                            <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => this.handleDeleteGood(index)}><i className="material-icons"></i></a>
+                                                            <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => this.handleDeleteGood(x, index)}><i className="material-icons"></i></a>
                                                         </td>
                                                     </tr>
                                                 )
@@ -785,6 +827,8 @@ const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
     getLotsByGood: LotActions.getLotsByGood,
+    createOrUpdateLots: LotActions.createOrUpdateLots,
+    deleteLot: LotActions.deleteManyLots,
     editBill: BillActions.editBill
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(GoodReceiptEditForm));
