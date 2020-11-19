@@ -23,8 +23,7 @@ const initState = {
     nextPage: 0,
     listTaxs: [],
     availabledTaxCode: false,
-    listTaxsByCode: [],
-    listTaxsByGoodId: []
+    listTaxsByCode: []
 }
 
 export function taxs(state = initState, action) {
@@ -38,7 +37,6 @@ export function taxs(state = initState, action) {
             case TaxConstants.CHECK_TAX_CODE_REQUEST:
             case TaxConstants.GET_TAX_BY_CODE_REQUEST:
             case TaxConstants.DELETE_TAX_BY_CODE_REQUEST:
-            case TaxConstants.GET_TAX_BY_GOOD_ID_REQUEST: 
                 return {
                     ...state,
                     isLoading: true
@@ -51,7 +49,6 @@ export function taxs(state = initState, action) {
             case TaxConstants.CHECK_TAX_CODE_FAILURE:
             case TaxConstants.GET_TAX_BY_CODE_FAILURE:
             case TaxConstants.DELETE_TAX_BY_CODE_FAILURE:
-            case TaxConstants.GET_TAX_BY_GOOD_ID_FAILURE: 
                 return {
                     ...state,
                     isLoading: false,
@@ -128,12 +125,6 @@ export function taxs(state = initState, action) {
                     listTaxsByCode: action.payload.taxs,
                     isLoading: false
             }
-            case TaxConstants.GET_TAX_BY_GOOD_ID_SUCCESS: 
-                return {
-                    ...state,
-                    listTaxsByGoodId: action.payload.taxs,
-                    isLoading: false
-                }
             default:
                 return state
     }

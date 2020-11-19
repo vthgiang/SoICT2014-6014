@@ -41,6 +41,7 @@ export function lots(state = initState, action){
         case LotConstants.EDIT_LOT_REQUEST:
         case LotConstants.GET_LOT_BY_GOOD_REQUEST:
         case LotConstants.CREATE_OR_EDIT_LOT_REQUEST:
+        case LotConstants.DELETE_LOT_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -107,12 +108,19 @@ export function lots(state = initState, action){
                 isLoading: false
             }
 
+        case LotConstants.DELETE_LOT_SUCCESS:
+            return {
+                ...state,
+                isLoading: false
+            }
+
         case LotConstants.GET_LOT_FAILURE:
         case LotConstants.GET_LOT_PAGINATE_FAILURE:
         case LotConstants.GET_LOT_DETAIL_FAILURE:
         case LotConstants.GET_LOT_DETAIL_FAILURE:
         case LotConstants.GET_LOT_BY_GOOD_FAILURE:
         case LotConstants.CREATE_OR_EDIT_LOT_FAILURE:
+        case LotConstants.DELETE_LOT_FAILURE:
             return {
                 ...state,
                 isLoading: false

@@ -306,22 +306,42 @@ class AssetImportForm extends Component {
 
             for (let index = 0; index < data.length; index++) {
                 let dataTemporary = data[index];
+                let out;
 
-                let out = {
-                    code: dataTemporary.code,
-                    assetName: dataTemporary.assetName,
-                    serial: dataTemporary.serial,
-                    group: assetGroups[0],
-                    assetType: assetTypes && assetTypes[0] ? (assetTypes[1] ? assetTypes[0] + " | " + assetTypes[1] : assetTypes[0]) : null,
-                    purchaseDate: dataTemporary.purchaseDate,
-                    warrantyExpirationDate: dataTemporary.warrantyExpirationDate,
-                    managedBy: userList && userList[0] ? userList[0] : null,
-                    readByRoles: roles && roles[0] ? (roles[1] ? roles[0] + " | " + roles[1] : roles[0]) : null,
-                    location: assetLocations && assetLocations[0] ? assetLocations[0] : null,
-                    status: status[0],
-                    typeRegisterForUse: typeRegisterForUse[0],
-                    description: dataTemporary.description
+                if (dataTemporary.code) {
+                    out = {
+                        code: dataTemporary.code,
+                        assetName: dataTemporary.assetName,
+                        serial: dataTemporary.serial,
+                        group: assetGroups[0],
+                        assetType: assetTypes && assetTypes[0],
+                        purchaseDate: dataTemporary.purchaseDate,
+                        warrantyExpirationDate: dataTemporary.warrantyExpirationDate,
+                        managedBy: userList && userList[0],
+                        readByRoles: roles && roles[0],
+                        location: assetLocations && assetLocations[0],
+                        status: status[0],
+                        typeRegisterForUse: typeRegisterForUse[0],
+                        description: dataTemporary.description
+                    }
+                } else {
+                    out = {
+                        code: undefined,
+                        assetName: undefined,
+                        serial: undefined,
+                        group: undefined,
+                        assetType: assetTypes && assetTypes[1],
+                        purchaseDate: undefined,
+                        warrantyExpirationDate: undefined,
+                        managedBy: undefined,
+                        readByRoles: roles && roles[1],
+                        location: undefined,
+                        status: undefined,
+                        typeRegisterForUse: undefined,
+                        description: undefined
+                    }
                 }
+                
                 datas = [...datas, out];
             }
             dataTemplate.tables[j].data = datas;
@@ -487,122 +507,147 @@ class AssetImportForm extends Component {
         }
 
         if (checkFileImport) {
-            let assetTypeArray = [], roleArray = [], assetGroups, status, typeRegisterForUse, checkAssetType = false, checkRole = false;
+            let assetGroups, status, typeRegisterForUse;
 
             assetGroups = { "Mặt bằng": "building", "Xe cộ": "vehicle", "Máy móc": "machine", "Khác": "other" };
             status = { "Sẵn sàng sử dụng": "ready_to_use", "Đang sử dụng": "in_use", "Hỏng hóc": "broken", "Mất": "lost", "Thanh lý": "disposed" };
             typeRegisterForUse = { "Không đươc đăng ký sử dụng": 1, "Đăng ký sử dụng theo giờ": 2, "Đăng ký sử dụng lâu dài": 3 };
 
-            value = value.map((item, index) => {
-                let errorAlert = [];
-                checkAssetType = false;             // Reset biến check khi check dòng tiếp theo
-                checkRole = false;
+            for (let i = 0; i < value.length; i++) {
+                let valueTemporary = value[i];
 
-                // Láy dữ liệu từ 1 ô trong file excel thành 1 mảng
-                roleArray = item.readByRoles && item.readByRoles.split(" | ");
-                assetTypeArray = item.assetType && item.assetType.split(" | ");
+                if (valueTemporary.code) {
+                    let errorAlert = [];
 
-                assetTypeArray && assetTypeArray.map(item => {
-                    if (!assetTypes[item]) {
-                        checkAssetType = true;
+                    // Check lỗi dữ liệu import
+                    if (!valueTemporary.code || !valueTemporary.assetName || !valueTemporary.group || !valueTemporary.assetType || !valueTemporary.purchaseDate || !valueTemporary.status || !valueTemporary.typeRegisterForUse
+                        || (valueTemporary.group && !assetGroups[valueTemporary.group])
+                        || (valueTemporary.assetType && !assetTypes[valueTemporary.assetType])
+                        || (valueTemporary.typeRegisterForUse && !typeRegisterForUse[valueTemporary.typeRegisterForUse])
+                        || (valueTemporary.status && !status[valueTemporary.status])
+                        || (valueTemporary.managedBy && !managers[valueTemporary.managedBy])
+                        || (valueTemporary.readByRoles && !roles[valueTemporary.readByRoles])
+                        || (valueTemporary.location && !assetLocations[valueTemporary.location])
+                    ) {
+                        rowError = [...rowError, i+1];
+                        valueTemporary = { ...valueTemporary, error: true };
                     }
-                })
-                roleArray && roleArray.map(item => {
-                    if (!roles[item]) {
-                        checkRole = true;
+
+                    if (!valueTemporary.code) {
+                        errorAlert = [...errorAlert, 'Mã tài sản không được để trống'];
                     }
-                })
 
-                // Check lỗi dữ liệu import
-                if (!item.code || !item.assetName || !item.group || !item.assetType || !item.purchaseDate || !item.status || !item.typeRegisterForUse
-                    || (item.group && !assetGroups[item.group])
-                    || (item.assetType && checkAssetType)
-                    || (item.typeRegisterForUse && !typeRegisterForUse[item.typeRegisterForUse])
-                    || (item.status && !status[item.status])
-                    || (item.managedBy && !managers[item.managedBy])
-                    || (item.readByRoles && checkRole)
-                    || (item.location && !assetLocations[item.location])
-                ) {
-                    rowError = [...rowError, index + 1];
-                    item = { ...item, error: true };
-                }
-
-                if (!item.code) {
-                    errorAlert = [...errorAlert, 'Mã tài sản không được để trống'];
-                }
-
-                if (!item.assetName) {
-                    errorAlert = [...errorAlert, 'Tên tài sản không được để trống'];
-                }
-
-                if (!item.group) {
-                    errorAlert = [...errorAlert, 'Nhóm tài sản không được để trống'];
-                } else if (item.group && !assetGroups[item.group]) {
-                    errorAlert = [...errorAlert, 'Nhóm tài sản không chính xác'];
-                }
-
-                if (!item.assetType) {
-                    errorAlert = [...errorAlert, 'Loại tài sản không được để trống'];
-                } else if (item.assetType && checkAssetType) {
-                    errorAlert = [...errorAlert, 'Loại tài sản không chính xác'];
-                }
-
-                if (!item.status) {
-                    errorAlert = [...errorAlert, 'Trạng thái không được để trống'];
-                } else if (item.status && !status[item.status]) {
-                    errorAlert = [...errorAlert, 'Trạng thái không chính xác'];
-                }
-
-                if (!item.typeRegisterForUse) {
-                    errorAlert = [...errorAlert, 'Quyền đăng ký sử dụng không được để trống'];
-                } else if (item.typeRegisterForUse && !typeRegisterForUse[item.typeRegisterForUse]) {
-                    errorAlert = [...errorAlert, 'Quyền đăng ký sử dụng không chính xác'];
-                }
-
-                if (!item.purchaseDate) {
-                    errorAlert = [...errorAlert, 'Ngày nhập không được để trống'];
-                }
-
-                if (item.managedBy && !managers[item.managedBy]) {
-                    errorAlert = [...errorAlert, 'Người quản lý không chính xác'];
-                }
-
-                if (item.readByRoles && checkRole) {
-                    errorAlert = [...errorAlert, 'Những roles có quyèn không chính xác'];
-                }
-
-                if (item.location && !assetLocations[item.location]) {
-                    errorAlert = [...errorAlert, 'Vị trí tài sản không chính xác'];
-                }
-
-                // Format date
-                let purchaseDate = item.purchaseDate;
-                let warrantyExpirationDate = item.warrantyExpirationDate;
-
-                item = {
-                    ...item,
-                    purchaseDate: (purchaseDate && typeof purchaseDate === 'string') ? purchaseDate : this.convertExcelDateToJSDate(purchaseDate, "dd-mm-yy"),
-                    warrantyExpirationDate: (warrantyExpirationDate && typeof warrantyExpirationDate === 'string') ? warrantyExpirationDate : this.convertExcelDateToJSDate(warrantyExpirationDate, "dd-mm-yy"),
-                    errorAlert: errorAlert
-                };
-                importGeneralInformationData = [...importGeneralInformationData,
-                    {
-                        ...item,
-                        assetType: assetTypeArray && assetTypeArray.map(type => assetTypes[type]),
-                        readByRoles: roleArray && roleArray.map(role => roles[role]),
-                        managedBy: managers[item.manager],
-                        location: assetLocations[item.location],
-                        group: assetGroups[item.group],
-                        typeRegisterForUse: typeRegisterForUse[item.typeRegisterForUse],
-                        status: status[item.status],
-                        purchaseDate: (purchaseDate && typeof purchaseDate === 'string') ? this.convertStringToDate(purchaseDate) : this.convertExcelDateToJSDate(purchaseDate, "yy-mm-dd"),
-                        warrantyExpirationDate: (warrantyExpirationDate && typeof warrantyExpirationDate === 'string') ? this.convertStringToDate(warrantyExpirationDate) : this.convertExcelDateToJSDate(warrantyExpirationDate, "yy-mm-dd")
+                    if (!valueTemporary.assetName) {
+                        errorAlert = [...errorAlert, 'Tên tài sản không được để trống'];
                     }
-                ];
 
-                return item;
+                    if (!valueTemporary.group) {
+                        errorAlert = [...errorAlert, 'Nhóm tài sản không được để trống'];
+                    } else if (valueTemporary.group && !assetGroups[valueTemporary.group]) {
+                        errorAlert = [...errorAlert, 'Nhóm tài sản không chính xác'];
+                    }
 
-            });
+                    if (!valueTemporary.assetType) {
+                        errorAlert = [...errorAlert, 'Loại tài sản không được để trống'];
+                    } else if (valueTemporary.assetType && !assetTypes[valueTemporary.assetType]) {
+                        errorAlert = [...errorAlert, 'Loại tài sản không chính xác'];
+                    }
+
+                    if (!valueTemporary.status) {
+                        errorAlert = [...errorAlert, 'Trạng thái không được để trống'];
+                    } else if (valueTemporary.status && !status[valueTemporary.status]) {
+                        errorAlert = [...errorAlert, 'Trạng thái không chính xác'];
+                    }
+
+                    if (!valueTemporary.typeRegisterForUse) {
+                        errorAlert = [...errorAlert, 'Quyền đăng ký sử dụng không được để trống'];
+                    } else if (valueTemporary.typeRegisterForUse && !typeRegisterForUse[valueTemporary.typeRegisterForUse]) {
+                        errorAlert = [...errorAlert, 'Quyền đăng ký sử dụng không chính xác'];
+                    }
+
+                    if (!valueTemporary.purchaseDate) {
+                        errorAlert = [...errorAlert, 'Ngày nhập không được để trống'];
+                    }
+
+                    if (valueTemporary.managedBy && !managers[valueTemporary.managedBy]) {
+                        errorAlert = [...errorAlert, 'Người quản lý không chính xác'];
+                    }
+
+                    if (valueTemporary.readByRoles && !roles[valueTemporary.readByRoles]) {
+                        errorAlert = [...errorAlert, 'Những roles có quyèn không chính xác'];
+                    }
+
+                    if (valueTemporary.location && !assetLocations[valueTemporary.location]) {
+                        errorAlert = [...errorAlert, 'Vị trí tài sản không chính xác'];
+                    }
+
+                    // Format date
+                    let purchaseDate = valueTemporary.purchaseDate;
+                    let warrantyExpirationDate = valueTemporary.warrantyExpirationDate;
+
+                    valueTemporary = {
+                        ...valueTemporary,
+                        purchaseDate: (purchaseDate && typeof purchaseDate === 'string') ? purchaseDate : this.convertExcelDateToJSDate(purchaseDate, "dd-mm-yy"),
+                        warrantyExpirationDate: (warrantyExpirationDate && typeof warrantyExpirationDate === 'string') ? warrantyExpirationDate : this.convertExcelDateToJSDate(warrantyExpirationDate, "dd-mm-yy"),
+                        errorAlert: errorAlert
+                    };
+                    importGeneralInformationData = [...importGeneralInformationData,
+                        {
+                            ...valueTemporary,
+                            assetType: [assetTypes[valueTemporary.assetType]],
+                            readByRoles: [roles[valueTemporary.readByRoles]],
+                            managedBy: managers[valueTemporary.managedBy],
+                            location: assetLocations[valueTemporary.location],
+                            group: assetGroups[valueTemporary.group],
+                            typeRegisterForUse: typeRegisterForUse[valueTemporary.typeRegisterForUse],
+                            status: status[valueTemporary.status],
+                            purchaseDate: (purchaseDate && typeof purchaseDate === 'string') ? this.convertStringToDate(purchaseDate) : this.convertExcelDateToJSDate(purchaseDate, "yy-mm-dd"),
+                            warrantyExpirationDate: (warrantyExpirationDate && typeof warrantyExpirationDate === 'string') ? this.convertStringToDate(warrantyExpirationDate) : this.convertExcelDateToJSDate(warrantyExpirationDate, "yy-mm-dd")
+                        }
+                    ];
+
+                    value[i] = valueTemporary;
+                } else {
+                    let errorAlert = [];
+
+                    // Check lỗi dữ liệu import
+                    if ((valueTemporary.assetType && !assetTypes[valueTemporary.assetType])
+                        || (valueTemporary.readByRoles && !roles[valueTemporary.readByRoles])
+                    ) {
+                        rowError = [...rowError, i+1];
+                        valueTemporary = { ...valueTemporary, error: true };
+                    }
+
+                    if (valueTemporary.assetType && !assetTypes[valueTemporary.assetType]) {
+                        errorAlert = [...errorAlert, 'Loại tài sản không chính xác'];
+                    }
+                    if (valueTemporary.readByRoles && !roles[valueTemporary.readByRoles]) {
+                        errorAlert = [...errorAlert, 'Những roles có quyèn không chính xác'];
+                    }
+
+                    valueTemporary = {
+                        ...valueTemporary,
+                        errorAlert: errorAlert
+                    };
+                    value[i] = valueTemporary;
+
+                    importGeneralInformationData[importGeneralInformationData.length - 1 ] = {
+                        ...importGeneralInformationData[importGeneralInformationData.length - 1],
+                        assetType: valueTemporary.assetType
+                            ? [
+                                ...importGeneralInformationData[importGeneralInformationData.length - 1].assetType,
+                                valueTemporary.assetType && assetTypes[valueTemporary.assetType]
+                            ]
+                            : importGeneralInformationData[importGeneralInformationData.length - 1].assetType,
+                        readByRoles: valueTemporary.readByRoles
+                            ? [
+                                ...importGeneralInformationData[importGeneralInformationData.length - 1].readByRoles,
+                                valueTemporary.readByRoles && roles[valueTemporary.readByRoles]
+                            ]
+                            : importGeneralInformationData[importGeneralInformationData.length - 1].readByRoles
+                    }
+                }
+            }
 
             this.setState(state => {
                 return {
@@ -694,12 +739,14 @@ class AssetImportForm extends Component {
                 }
             })
         } else {
-            this.setState(state => {
-                return {
-                    ...state,
-                    checkFileImportDepreciationInformation: checkFileImport,
-                }
-            })
+            if (!(value.length === 1 && !value[0].code)) {
+                this.setState(state => {
+                    return {
+                        ...state,
+                        checkFileImportDepreciationInformation: checkFileImport,
+                    }
+                })
+            }
         }
     }
 
@@ -791,12 +838,14 @@ class AssetImportForm extends Component {
                 }
             })
         } else {
-            this.setState(state => {
-                return {
-                    ...state,
-                    checkFileImportUsageInformation: checkFileImport,
-                }
-            })
+            if (!(value.length === 1 && !value[0].code)) {
+                this.setState(state => {
+                    return {
+                        ...state,
+                        checkFileImportUsageInformation: checkFileImport,
+                    }
+                })
+            } 
         }
     }
 
@@ -881,12 +930,14 @@ class AssetImportForm extends Component {
                 }
             })
         } else {
-            this.setState(state => {
-                return {
-                    ...state,
-                    checkFileImportIncidentInformation: checkFileImport,
-                }
-            })
+            if (!(value.length === 1 && !value[0].code)) {
+                this.setState(state => {
+                    return {
+                        ...state,
+                        checkFileImportIncidentInformation: checkFileImport,
+                    }
+                })
+            }
         }
     }
 
@@ -947,12 +998,14 @@ class AssetImportForm extends Component {
                 }
             })
         } else {
-            this.setState(state => {
-                return {
-                    ...state,
-                    checkFileImportMaintainanceInformation: checkFileImport,
-                }
-            })
+            if (!(value.length === 1 && !value[0].code)) {
+                this.setState(state => {
+                    return {
+                        ...state,
+                        checkFileImportMaintainanceInformation: checkFileImport,
+                    }
+                })
+            }
         }
     }
 
@@ -988,7 +1041,6 @@ class AssetImportForm extends Component {
                         disposalDate: (disposalDate && typeof disposalDate === 'string') ? this.convertStringToDate(disposalDate) : this.convertExcelDateToJSDate(disposalDate, "yy-mm-dd")
                     }
                 ]
-                console.log(item)
                 return item;
             });
             
@@ -1002,12 +1054,14 @@ class AssetImportForm extends Component {
                 }
             })
         } else {
-            this.setState(state => {
-                return {
-                    ...state,
-                    checkFileImportDisposalInformation: checkFileImport,
-                }
-            })
+            if (!(value.length === 1 && !value[0].code)) {
+                this.setState(state => {
+                    return {
+                        ...state,
+                        checkFileImportDisposalInformation: checkFileImport,
+                    }
+                })
+            }
         }
     }
 
@@ -1087,6 +1141,7 @@ class AssetImportForm extends Component {
                 >
                      <div className="box-body row">
                         <div className="form-group col-md-6 col-xs-12">
+                            <label>{translate('human_resource.choose_file')}</label>
                             <UploadFile
                                 importFile={this.handleImportExcel}
                             />

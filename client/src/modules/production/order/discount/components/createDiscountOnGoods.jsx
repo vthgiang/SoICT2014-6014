@@ -56,7 +56,7 @@ class CreateDiscountOnGoods extends Component {
                 if (goodArrFilter) {
                     good.goodObject = goodArrFilter[0];
                     good.goodId = item.good._id;
-                    good.expirationDate = formatDate(item.expirationDate);
+                    good.expirationDate = item.expirationDate ? formatDate(item.expirationDate) : undefined;
                     good.discountedPrice = item.discountedPrice;
                 }
 

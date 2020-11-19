@@ -8,8 +8,7 @@ export const SLAServices = {
     disableSLA,
     checkSLACode,
     getSLAByCode,
-    deleteSLA,
-    getSlaByGoodsId
+    deleteSLA
 }
 
 function createNewSLA(data) {
@@ -103,19 +102,6 @@ function deleteSLA(code) {
             params: code
         },
         true,
-        true,
-        "manage_order.sla"
-    )
-}
-
-function getSlaByGoodsId(goodId) {
-    return sendRequest(
-        {
-            url: `${process.env.REACT_APP_SERVER}/sla/get-by-good-id`,
-            method: "GET",
-            params: { goodId }
-        },
-        false,
         true,
         "manage_order.sla"
     )

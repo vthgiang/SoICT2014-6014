@@ -296,6 +296,7 @@ class SalaryImportForm extends Component {
                         <div className="row">
                             {/* File import */}
                             <div className="form-group col-md-4 col-sm-12 col-xs-12">
+                                <label>{translate('human_resource.choose_file')}</label>
                                 <ImportFileExcel
                                     id={'file-import-salary'}
                                     configData={configData}
