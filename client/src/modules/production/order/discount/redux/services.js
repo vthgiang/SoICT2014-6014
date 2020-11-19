@@ -6,7 +6,6 @@ export const DiscountServices = {
     editDiscount,
     changeDiscountStatus,
     deleteDiscountByCode,
-    getDiscountByGoodsId, 
     getDiscountForOrderValue
 }
 
@@ -64,18 +63,6 @@ function deleteDiscountByCode(code) {
         true,
         "manage_order.discount"
     )
-}
-
-function getDiscountByGoodsId(goodId) {
-    return sendRequest(
-        {
-            url: `${process.env.REACT_APP_SERVER}/discount/get-by-good-id`,
-            method: "GET",
-            params: { goodId }
-        },
-        false,
-        true,
-        "manage_order.discount")
 }
 
 function getDiscountForOrderValue() {

@@ -156,7 +156,7 @@ class DepreciationTab extends Component {
             return translate('asset.depreciation.units_production')
         }
         else {
-            return 'Deleted'
+            return translate('asset.general_information.no_data')
         }
     }
 
@@ -181,45 +181,45 @@ class DepreciationTab extends Component {
                     <fieldset className="scheduler-border">
                         <div className="form-group" style={{ marginTop: "10px" }}>
                             <strong>{translate('asset.general_information.original_price')}&emsp; </strong>
-                            {formater.format(parseInt(cost))} VNĐ
+                            {cost ? `${formater.format(parseInt(cost))} VND` : translate('asset.general_information.no_data')}
                         </div>
                         <div className="form-group">
                             <strong>{translate('asset.general_information.residual_price')}&emsp; </strong>
-                            {residualValue ? formater.format(parseInt(residualValue)) : ''} VNĐ
+                            {residualValue ? `${formater.format(parseInt(residualValue))} VND` : translate('asset.general_information.no_data')}
 
                         </div>
                         <div className={`form-group`}>
                             <strong>{translate('asset.general_information.start_depreciation')}&emsp; </strong>
-                            {this.formatDate(startDepreciation)}
+                            {startDepreciation ? this.formatDate(startDepreciation) : translate('asset.general_information.no_data')}
                         </div>
                         <div className={`form-group`}>
                             <strong>{translate('asset.asset_info.usage_time')}&emsp; </strong>
-                            {usefulLife} tháng
+                            {usefulLife ? `${usefulLife} tháng` : translate('asset.general_information.no_data')}
 
                         </div>
                         <div className="form-group">
                             <strong>{translate('asset.general_information.end_depreciation')}&emsp; </strong>
-                            {startDepreciation ? this.addMonthToEndDepreciation(this.formatDate(startDepreciation)) : ""}
+                            {startDepreciation ? this.addMonthToEndDepreciation(this.formatDate(startDepreciation)) : translate('asset.general_information.no_data')}
                         </div>
                         <div className="form-group">
                             <strong>{translate('asset.general_information.depreciation_type')}&emsp; </strong>
-                            {depreciationType ? this.formatDepreciationType(depreciationType) : ''}
+                            {depreciationType ? this.formatDepreciationType(depreciationType) : translate('asset.general_information.no_data')}
                         </div>
                         <div className="form-group">
                             <strong>{translate('asset.asset_info.annual_depreciation')}&emsp; </strong>
-                            {formater.format(annualDepreciation)} VNĐ/năm
+                            {annualDepreciation ? `${formater.format(annualDepreciation)} VNĐ/năm` : translate('asset.general_information.no_data')}
 
                         </div>
                         <div className="form-group">
                             <strong>{translate('asset.asset_info.monthly_depreciation')}&emsp; </strong>
-                            {formater.format(monthlyDepreciation)} VNĐ/tháng
+                            {monthlyDepreciation ? `${formater.format(monthlyDepreciation)} VNĐ/tháng` : translate('asset.general_information.no_data')}
 
                         </div>
 
                         {/* Giá trị hiện tại */}
                         <div className="form-group">
                             <strong>{translate('asset.depreciation.remaining_value')}&emsp; </strong>
-                            {formater.format(remainingValue)} VNĐ
+                            {remainingValue ? `${formater.format(parseInt(remainingValue))} VND` : translate('asset.general_information.no_data')}
                         </div>
                     </fieldset>
                 </div>

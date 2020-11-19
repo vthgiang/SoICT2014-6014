@@ -53,6 +53,13 @@ const {
     ProductDiscount,
     Status,
 
+
+    ManufacturingWorks,
+    ManufacturingMill,
+    ManufacturingPlan,
+    ManufacturingCommand,
+    WorkSchedule
+
 } = require('../models');
 
 require('dotenv').config();
@@ -164,6 +171,12 @@ const initSampleCompanyDB = async () => {
         if (!db.models.CareType) CareType(db);
         if (!db.models.Group) Group(db);
         if (!db.models.Status) Status(db);
+
+
+        if (!db.models.ManufacturingWorks) ManufacturingWorks(db);
+        if (!db.models.ManufacturingMill) ManufacturingMill(db);
+        if (!db.models.ManufacturingPlan) ManufacturingPlan(db);
+        if (!db.models.ManufacturingCommand) ManufacturingCommand(db);
 
         console.log("models_list", db.models);
     }
@@ -551,39 +564,39 @@ const initSampleCompanyDB = async () => {
     },]);
 
     // Khỏi tạo cơ cấu tổ chức cho khối sản xuất
-    const nhamaythuocbot = await OrganizationalUnit(vnistDB).insertMany([{
+    const nhamaythuocbot = await OrganizationalUnit(vnistDB).create({
         name: "Nhà máy sản xuất thuốc bột",
         description: "Nhà máy sản xuất thuốc bột của Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
         deans: [quanDocNhaMayThuocBot._id],
         viceDeans: [],
         employees: [nvNhaMayThuocBot._id],
         parent: Directorate._id
-    },]);
-    const nhamaythuocnuoc = await OrganizationalUnit(vnistDB).insertMany([{
+    });
+    const nhamaythuocnuoc = await OrganizationalUnit(vnistDB).create({
         name: "Nhà máy sản xuất thuốc nước",
         description: "Nhà máy sản xuất thuốc nước của Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
         deans: [quanDocNhaMayThuocNuoc._id],
         viceDeans: [],
         employees: [nvNhaMayThuocNuoc._id],
         parent: Directorate._id
-    },]);
-    const nhamaythucphamchucnang = await OrganizationalUnit(vnistDB).insertMany([{
+    });
+    const nhamaythucphamchucnang = await OrganizationalUnit(vnistDB).create({
         name: "Nhà máy sản xuất thực phẩm chức năng",
         description: "Nhà máy sản xuất thực phẩm chức năng của Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
         deans: [quanDocNhaMayTPCN._id],
         viceDeans: [],
         employees: [nvNhaMayTPCN._id],
         parent: Directorate._id
-    },]);
+    });
 
-    const phongkehoach = await OrganizationalUnit(vnistDB).insertMany([{
+    const phongkehoach = await OrganizationalUnit(vnistDB).create({
         name: "Phòng kế hoạch",
         description: "Phòng kế hoạch của Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
         deans: [truongPhongKH._id],
         viceDeans: [phoPhongKH._id],
         employees: [nvPhongKH._id],
         parent: Directorate._id
-    }])
+    })
     console.log("Đã tạo dữ liệu phòng ban: ", Directorate, departments, nhamaythuocbot, nhamaythuocnuoc, nhamaythucphamchucnang, phongkehoach);
 
     /**
@@ -4167,6 +4180,386 @@ const initSampleCompanyDB = async () => {
         }
     ])
     console.log("Xong! Đã tạo mẫu dữ liệu khách hàng")
+
+
+
+    // ****************** Tạo mẫu dữ liệu mẫu nhà máy sản xuất********************
+
+    const manufacturingWorksData = [{
+        code: "NMSX202011111",
+        name: "Nhà máy sản xuất thuốc bột",
+        phoneNumber: "0337479966",
+        status: 1,
+        address: "Bắc Ninh",
+        description: "Nhà máy sản xuất thuốc bột của công ty trách nhiệm hữu hạn VNIST Việt Nam",
+        organizationalUnit: nhamaythuocbot._id,
+        manageRoles: [roleSuperAdmin._id, roleAdmin._id]
+    }, {
+        code: "NMSX202011112",
+        name: "Nhà máy sản xuất thuốc nước",
+        phoneNumber: "372109881",
+        status: 1,
+        address: "Hà Nội",
+        description: "Nhà máy sản xuất thuốc nước của công ty trách nhiệm hữu hạn VNIST Việt Nam",
+        organizationalUnit: nhamaythuocnuoc._id,
+        manageRoles: [roleSuperAdmin._id, roleAdmin._id]
+    }, {
+        code: "NMSX202011113",
+        name: "Nhà máy sản xuất thực phẩm chức năng",
+        phoneNumber: "03669916015",
+        status: 1,
+        address: "Thành phố Hồ Chí Minh",
+        description: "Nhà máy sản xuất thực phẩm chức năng của công ty trách nhiệm hữu hạn VNIST Việt Nam",
+        organizationalUnit: nhamaythucphamchucnang._id,
+        manageRoles: [roleSuperAdmin._id, roleAdmin._id]
+    }]
+    const manufacturingWorks = await ManufacturingWorks(vnistDB).insertMany(manufacturingWorksData);;
+    console.log("Tạo dữ liệu nhà máy");
+
+    // ****************** Tạo mẫu dữ liệu mẫu xưởng sản xuất********************
+    const manufacturingMillsData = [{
+        code: "XSX202010000",
+        name: "Xưởng thuốc viên",
+        description: "Xưởng thuốc viên của nhà máy sản xuất thuốc bột",
+        manufacturingWorks: manufacturingWorks[0]._id,
+        status: 1,
+        teamLeader: users[14]._id
+    }, {
+        code: "XSX202010001",
+        name: "Xưởng thuốc cốm",
+        description: "Xưởng thuốc cốm của nhà máy sản xuất thuốc bột",
+        manufacturingWorks: manufacturingWorks[0]._id,
+        status: 1,
+        teamLeader: users[15]._id
+    }, {
+        code: "XSX202010002",
+        name: "Xưởng thuốc bổ",
+        description: "Xưởng thuốc bổ của nhà máy sản xuất thuốc bột",
+        manufacturingWorks: manufacturingWorks[0]._id,
+        status: 1,
+        teamLeader: users[16]._id
+    }, {
+        code: "XSX202010003",
+        name: "Xưởng thuốc nước uống",
+        description: "Xưởng thuốc nước uống của nhà máy sản xuất thuốc nước",
+        manufacturingWorks: manufacturingWorks[1]._id,
+        status: 1,
+        teamLeader: users[5]._id
+    }, {
+        code: "XSX202010004",
+        name: "Xưởng thuốc tiêm",
+        description: "Xưởng thuốc tiêm của nhà máy sản xuất thuốc nước",
+        manufacturingWorks: manufacturingWorks[1]._id,
+        status: 1,
+        teamLeader: users[6]._id
+    }, {
+        code: "XSX202010005",
+        name: "Xưởng thuốc dinh dưỡng",
+        description: "Xưởng thuốc dinh dưỡng của nhà máy sản xuất thực phẩm chức năng",
+        manufacturingWorks: manufacturingWorks[2]._id,
+        status: 1,
+        teamLeader: users[8]._id
+    }, {
+        code: "XSX202010006",
+        name: "Xưởng thuốc tăng trưởng",
+        description: "Xưởng thuốc tăng trưởng của nhà máy sản xuất thực phẩm chức năng",
+        manufacturingWorks: manufacturingWorks[2]._id,
+        status: 1,
+        teamLeader: users[9]._id
+    }];
+
+    const manufacturingMills = await ManufacturingMill(vnistDB).insertMany(manufacturingMillsData);
+
+    console.log("Tạo dữ liệu xưởng sản xuất")
+
+    // Cập nhật lại dữ liệu nhà máy sản xuất
+
+    const manufacturingWorks0 = await ManufacturingWorks(vnistDB).findById(manufacturingWorks[0]._id);
+    manufacturingWorks0.manufacturingMills = [manufacturingMills[0]._id, manufacturingMills[1]._id, manufacturingMills[2]._id];
+    await manufacturingWorks0.save();
+
+    const manufacturingWorks1 = await ManufacturingWorks(vnistDB).findById(manufacturingWorks[1]._id);
+    manufacturingWorks1.manufacturingMills = [manufacturingMills[3]._id, manufacturingMills[4]._id];
+    await manufacturingWorks1.save();
+
+    const manufacturingWorks2 = await ManufacturingWorks(vnistDB).findById(manufacturingWorks[2]._id);
+    manufacturingWorks2.manufacturingMills = [manufacturingMills[5]._id, manufacturingMills[6]._id];
+    await manufacturingWorks2.save();
+
+
+    // ****************** Tạo mẫu dữ liệu mẫu kế hoạch sản xuất********************
+
+    const manufacturingPlansData = [{
+        code: "KHSX202000001",
+        manufacturingOrder: "5fa4fa483b746017bca19a3d",
+        manufacturingWorks: [manufacturingWorks[0]._id],
+        goods: [{
+            good: listProduct[0]._id,
+            quantity: 200,
+            orderedQuantity: 150
+        },
+        {
+            good: listProduct[1]._id,
+            quantity: 300,
+            orderedQuantity: 200
+        }],
+
+        approvers: [{
+            approver: users[3]._id,
+            approvedTime: new Date("2020-11-14 18:00:00")
+        }],
+        creator: users[13]._id,
+        startDate: "2020-11-05",
+        endDate: "2020-12-2",
+        description: "Kế hoạch sản xuất trong tháng 11 năm 2020",
+        logs: [{
+            creator: users[13]._id,
+            title: "Tạo kế hoạch sản xuất",
+            description: "Tạo kế hoạch sản xuất KHSX202000001"
+        }]
+    }, {
+        code: "KHSX202000002",
+        manufacturingOrder: "5fa4fa483b746017bca19a3d",
+        manufacturingWorks: [manufacturingWorks[0]._id],
+        goods: [{
+            good: listProduct[0]._id,
+            quantity: 50,
+            orderedQuantity: 0
+        },
+        {
+            good: listProduct[1]._id,
+            quantity: 100,
+            orderedQuantity: 0
+        }],
+
+        approvers: [{
+            approver: users[3]._id
+        }],
+        creator: users[13]._id,
+        startDate: "2020-12-03",
+        endDate: "2020-12-20",
+        description: "Kế hoạch sản xuất trong tháng 12 năm 2020",
+        logs: [{
+            creator: users[13]._id,
+            title: "Tạo kế hoạch sản xuất",
+            description: "Tạo kế hoạch sản xuất KHSX202000002"
+        }]
+    }, {
+        code: "KHSX202000003",
+        manufacturingOrder: "5fa4fa483b746017bca19a3d",
+        manufacturingWorks: [manufacturingWorks[1]._id],
+        goods: [{
+            good: listProduct[0]._id,
+            quantity: 50,
+            orderedQuantity: 0
+        },
+        {
+            good: listProduct[1]._id,
+            quantity: 100,
+            orderedQuantity: 0
+        }],
+
+        approvers: [{
+            approver: users[3]._id,
+            approvedTime: new Date("2020-12-01 17:00:00")
+        }, {
+            approver: users[13]._id,
+            approvedTime: new Date("2020-12-02 6:00:00")
+        }],
+        creator: users[12]._id,
+        startDate: "2020-12-03",
+        endDate: "2020-12-20",
+        description: "Kế hoạch sản xuất trong tháng 12 năm 2020",
+        logs: [{
+            creator: users[12]._id,
+            title: "Tạo kế hoạch sản xuất",
+            description: "Tạo kế hoạch sản xuất KHSX202000002"
+        }]
+    }, {
+        code: "KHSX202000004",
+        manufacturingOrder: "5fa4fa483b746017bca19a3d",
+        manufacturingWorks: [manufacturingWorks[2]._id],
+        goods: [{
+            good: listProduct[0]._id,
+            quantity: 100,
+            orderedQuantity: 0
+        },
+        {
+            good: listProduct[1]._id,
+            quantity: 200,
+            orderedQuantity: 0
+        }],
+
+        approvers: [{
+            approver: users[3]._id
+        }, {
+            approver: users[13]._id
+        }],
+        creator: users[13]._id,
+        startDate: "2020-12-03",
+        endDate: "2020-12-20",
+        description: "Kế hoạch sản xuất trong tháng 12 năm 2020",
+        logs: [{
+            creator: users[13]._id,
+            title: "Tạo kế hoạch sản xuất",
+            description: "Tạo kế hoạch sản xuất KHSX202000004"
+        }]
+    }];
+
+    const manufacturingPlans = await ManufacturingPlan(vnistDB).insertMany(manufacturingPlansData);
+
+    console.log("Tạo kế hoạch sản xuất");
+
+
+    // ****************** Tạo mẫu dữ liệu mẫu lệnh sản xuất sản xuất********************
+    const manufacturingCommandData = [{
+        code: "LSX202000001",
+        manufacturingPlan: manufacturingPlans[0]._id,
+        manufacturingMill: manufacturingMills[0]._id,
+        startDate: "2020-11-03",
+        endDate: "2020-11-04",
+        startTurn: 1,
+        endTurn: 3,
+        good: {
+            good: listProduct[0],
+            packingRule: "Baox10Thung",
+            conversionRate: 10,
+            quantity: 20
+        },
+        status: 2,
+        creator: users[13]._id,
+        responsibles: [users[14]._id, users[15]._id, users[16]._id],
+        accountables: [users[11]._id, users[0]._id],
+        description: "Lệnh sản xuất thuốc của nhà máy sản xuất thuốc bột"
+    }, {
+        code: "LSX202000002",
+        manufacturingPlan: manufacturingPlans[2]._id,
+        manufacturingMill: manufacturingMills[3]._id,
+        startDate: "2020-12-01",
+        endDate: "2020-12-02",
+        startTurn: 2,
+        endTurn: 3,
+        good: {
+            good: listProduct[1],
+            packingRule: "Thungx12Bao",
+            conversionRate: 12,
+            quantity: 25
+        },
+        status: 2,
+        creator: users[13]._id,
+        responsibles: [users[5]._id, users[6]._id, users[7]._id],
+        accountables: [users[5]._id, users[0]._id],
+        description: "Lệnh sản xuất thuốc của nhà máy sản xuất thuốc nước"
+    }, {
+        code: "LSX202000003",
+        manufacturingPlan: manufacturingPlans[3]._id,
+        manufacturingMill: manufacturingMills[5]._id,
+        startDate: "2020-12-02",
+        endDate: "2020-12-03",
+        startTurn: 3,
+        endTurn: 1,
+        good: {
+            good: listProduct[0],
+            packingRule: "Baox10Thung",
+            conversionRate: 10,
+            quantity: 30
+        },
+        status: 1,
+        creator: users[13]._id,
+        responsibles: [users[8]._id, users[9]._id, users[10]._id],
+        accountables: [users[8]._id],
+        description: "Lệnh sản xuất thuốc của nhà máy sản xuất thuốc nước"
+    }];
+
+    const manufacturingCommands = await ManufacturingCommand(vnistDB).insertMany(manufacturingCommandData);
+
+    console.log("Tạo lệnh sản xuất")
+
+    // ****************** Tạo mẫu dữ liệu mẫu lịch làm việc cho xưởng và công nhân********************
+    let array30days = [];
+    for (let i = 0; i < 30; i++) {
+        // if (i == 2 || i == 3) {
+        //     array30days.push(manufacturingCommands[0]._id);
+        // } else {
+        //     array30days.push(null);
+        // }
+        array30days.push(null);
+
+    }
+    let array31days = [];
+    for (let i = 0; i < 31; i++) {
+        array31days.push(null);
+    }
+
+    const workScheduleData = [{
+        manufacturingMill: manufacturingMills[0]._id,
+        month: "2020-11",
+        turns: [array30days, array30days, array30days]
+    }, {
+        manufacturingMill: manufacturingMills[3]._id,
+        month: "2020-12",
+        turns: [array31days, array31days, array31days]
+    }, {
+        manufacturingMill: manufacturingMills[5]._id,
+        month: "2020-12",
+        turns: [array31days, array31days, array31days]
+    }, {
+        user: users[14]._id,
+        month: "2020-11",
+        turns: [array30days, array30days, array30days]
+    }, {
+        user: users[15]._id,
+        month: "2020-11",
+        turns: [array30days, array30days, array30days]
+    }, {
+        user: users[5]._id,
+        month: "2020-11",
+        turns: [array30days, array30days, array30days]
+    }, {
+        user: users[6]._id,
+        month: "2020-11",
+        turns: [array30days, array30days, array30days]
+    }, {
+        user: users[8]._id,
+        month: "2020-11",
+        turns: [array30days, array30days, array30days]
+    }]
+
+    const workSchedules = await WorkSchedule(vnistDB).insertMany(workScheduleData);
+
+    let workSchedule0 = await WorkSchedule(vnistDB).findById(workSchedules[0]._id);
+    workSchedule0.turns[0][2] = manufacturingCommands[0]._id;
+    workSchedule0.turns[1][2] = manufacturingCommands[0]._id;
+    workSchedule0.turns[2][2] = manufacturingCommands[0]._id;
+    workSchedule0.turns[0][3] = manufacturingCommands[0]._id;
+    workSchedule0.turns[1][3] = manufacturingCommands[0]._id;
+    workSchedule0.turns[2][3] = manufacturingCommands[0]._id;
+
+    await workSchedule0.markModified('turns');
+    await workSchedule0.save();
+
+    workSchedule1 = await WorkSchedule(vnistDB).findById(workSchedules[1]._id);
+    workSchedule1.turns[0][1] = manufacturingCommands[1]._id;
+    workSchedule1.turns[1][1] = manufacturingCommands[1]._id;
+    workSchedule1.turns[2][1] = manufacturingCommands[1]._id;
+    workSchedule1.turns[1][0] = manufacturingCommands[1]._id;
+    workSchedule1.turns[2][0] = manufacturingCommands[1]._id;
+    await workSchedule1.markModified('turns');
+    await workSchedule1.save();
+
+    workSchedule2 = await WorkSchedule(vnistDB).findById(workSchedules[2]._id);
+    workSchedule2.turns[2][1] = manufacturingCommands[2]._id;
+    workSchedule2.turns[0][2] = manufacturingCommands[2]._id;
+    await workSchedule2.markModified('turns');
+    await workSchedule2.save();
+
+
+
+    console.log("Tạo dữ liệu lịch làm việc cho xưởng và công nhân")
+
+
+
+
 
     /**
      * Ngắt kết nối db

@@ -86,10 +86,12 @@ exports.createAsset = async (req, res) => {
             content: data
         });
     } catch (error) {
+        let messages = error[0] === 'asset_code_exist' ? ["asset_code_exist"] : ["create_asset_faile"];
+
         await Logger.error(req.user.email, 'CREATE_ASSET', req.portal);
         res.status(400).json({
             success: false,
-            messages: ["create_asset_faile"],
+            messages: messages,
             content: { error: error }
         });
     }
@@ -117,10 +119,12 @@ exports.updateAssetInformation = async (req, res) => {
             content: data
         });
     } catch (error) {
+        let messages = error[0] === 'asset_code_exist' ? ["asset_code_exist"] : ["create_asset_faile"];
+
         await Logger.error(req.user.email, 'EDIT_ASSET', req.portal);
         res.status(400).json({
             success: false,
-            messages: ["edit_asset_false"],
+            messages: messages,
             content: { error: error }
         });
     }

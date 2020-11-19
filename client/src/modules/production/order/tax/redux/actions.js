@@ -9,8 +9,7 @@ export const TaxActions = {
     disableTax,
     checkTaxCode,
     getTaxByCode,
-    deleteTax, 
-    getTaxsByGoodsId
+    deleteTax
 }
 
 function createNewTax (data) {
@@ -183,28 +182,6 @@ function deleteTax (code) {
         .catch((error) => {
             dispatch({
                 type: TaxConstants.DELETE_TAX_BY_CODE_FAILURE,
-                error
-            })
-        })
-    }
-}
-
-function getTaxsByGoodsId (goodId) {
-    return (dispatch) => {
-        dispatch({
-            type: TaxConstants.GET_TAX_BY_GOOD_ID_REQUEST
-        })
-
-        TaxServices.getTaxsByGoodsId(goodId)
-        .then((res) => {
-            dispatch({
-                type: TaxConstants.GET_TAX_BY_GOOD_ID_SUCCESS,
-                payload: res.data.content
-            })
-        })
-        .catch((error) => {
-            dispatch({
-                type: TaxConstants.GET_TAX_BY_GOOD_ID_FAILURE,
                 error
             })
         })

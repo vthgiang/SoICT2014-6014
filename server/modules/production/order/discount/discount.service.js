@@ -229,7 +229,11 @@ exports.getDiscountByGoodsId = async (query, portal) => {
         status: true,
         type: 1,
         $or: queryDate,
-    });
+    }).populate([ {
+        path: 'discounts.bonusGoods.good', select: 'name code baseUnit'
+    }, {
+        path: 'discounts.discountOnGoods.good', select: 'name code baseUnit'
+    }])
     if (!discounts) {
         throw Error("No discount for good!")
     }
@@ -250,7 +254,11 @@ exports.getDiscountForOrderValue = async (query, portal) => {
         status: true,
         type: 0,
         $or: queryDate,
-    });
+    }).populate([ {
+        path: 'discounts.bonusGoods.good', select: 'name code baseUnit'
+    }, {
+        path: 'discounts.discountOnGoods.good', select: 'name code baseUnit'
+    }])
     if (!discounts) {
         throw Error("No discount for order value!")
     }

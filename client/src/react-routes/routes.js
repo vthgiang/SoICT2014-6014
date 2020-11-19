@@ -96,7 +96,7 @@ import AssetManager from "../modules/asset/admin/asset-information/components";
 import { ManagerAssetAssignedCrash } from '../modules/asset/user/asset-assigned/components';
 import { DashBoardAssets } from '../modules/asset/admin/asset-dashboard/components/assetDashBoard';
 import { BuildingAsset } from '../modules/asset/admin/building/components';
-import EmployeeAssetManagement from '../modules/asset/user/asser-managed/components';
+import EmployeeAssetManagement from '../modules/asset/user/asset-managed/components';
 
 
 //report
@@ -151,7 +151,7 @@ import WorkSchedule from "../modules/production/manufacturing/work-schedule/comp
 import ManufacturingWorks from "../modules/production/manufacturing/manufacturing-works/components";
 import PurchasingRequest from "../modules/production/manufacturing/purchasing-request/components";
 import ManufacturingDashboard from "../modules/production/manufacturing/manufacturing-dashboard/components";
-
+import ManufacturingLot from "../modules/production/manufacturing/manufacturing-lot/components";
 class Routes extends Component {
 
     render() {
@@ -1905,6 +1905,27 @@ class Routes extends Component {
                         pageName={"manage_manufacturing_mill"}
                         layout={Layout}
                         component={ManufacturingMill}
+                    />
+
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"manage-manufacturing-lot"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-manufacturing-lot",
+                                name: "manage_manufacturing_lot",
+                                icon: "fa fa-navicon",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-manufacturing-lot"}
+                        path={"/manage-manufacturing-lot"}
+                        pageName={"manage_manufacturing_lot"}
+                        layout={Layout}
+                        component={ManufacturingLot}
                     />
 
 

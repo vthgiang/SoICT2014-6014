@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-const BillSchema = new Schema ({
+const BillSchema = new Schema({
 
     fromStock: {
         type: Schema.Types.ObjectId,
@@ -34,7 +34,7 @@ const BillSchema = new Schema ({
         enum: ["1", "2", "3", "4", "5", "6", "7", "8"]
     },
 
-    status: { //1: Chờ phê duyệt, 2:Đã hủy, 3: Đã hoàn thành, 4: chờ kiểm tra, 5: đang thực hiện
+    status: { //1: Chờ phê duyệt, 2: Đã hoàn thành, 3: Đã phê duyệt, 4: Đã hủy, 5: Đang thực hiện
         type: String,
         enum: ["1", "2", "3", "4", "5"]
     },
@@ -116,7 +116,7 @@ const BillSchema = new Schema ({
         realQuantity: {
             type: Number
         },
-        
+
         lots: [{
 
             lot: {
@@ -151,13 +151,18 @@ const BillSchema = new Schema ({
         description: {
             type: String
         }
-    }]
+    }],
+
+    manufacturingMill: {
+        type: Schema.Types.ObjectId,
+        ref: "ManufacturingMill"
+    }
 });
 
 BillSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
-    if(!db.models.Bill)
+    if (!db.models.Bill)
         return db.model('Bill', BillSchema);
     return db.models.Bill;
 }
