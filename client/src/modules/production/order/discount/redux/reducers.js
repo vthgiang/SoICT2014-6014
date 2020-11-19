@@ -22,7 +22,6 @@ const initState = {
     prevPage: 0,
     nextPage: 0,
     listDiscounts: [],
-    listDiscountsByGoodId: [],
     listDiscountsByOrderValue: []
 }
 
@@ -34,7 +33,6 @@ export function discounts(state = initState, action) {
         case DiscountConstants.EDIT_DISCOUNT_REQUEST:
         case DiscountConstants.CHANGE_DISCOUNT_STATUS_REQUEST:
         case DiscountConstants.DELETE_DISCOUNT_REQUEST:
-        case DiscountConstants.GET_DISCOUNT_BY_GOOD_ID_REQUEST:
         case DiscountConstants.GET_DISCOUNT_BY_ORDER_VALUE_REQUEST:
             return {
                 ...state,
@@ -46,7 +44,6 @@ export function discounts(state = initState, action) {
         case DiscountConstants.EDIT_DISCOUNT_FAILURE:
         case DiscountConstants.CHANGE_DISCOUNT_STATUS_FAILURE:
         case DiscountConstants.DELETE_DISCOUNT_FAILURE:
-        case DiscountConstants.GET_DISCOUNT_BY_GOOD_ID_FAILURE:
         case DiscountConstants.GET_DISCOUNT_BY_ORDER_VALUE_FAILURE:
             return {
                 ...state,
@@ -106,12 +103,6 @@ export function discounts(state = initState, action) {
             }
             return {
                 ...state,
-                isLoading: false
-            }
-        case DiscountConstants.GET_DISCOUNT_BY_GOOD_ID_SUCCESS:
-            return {
-                ...state,
-                listDiscountsByGoodId: action.payload.discounts,
                 isLoading: false
             }
         case DiscountConstants.GET_DISCOUNT_BY_ORDER_VALUE_SUCCESS:

@@ -7,9 +7,7 @@ export const DiscountActions = {
     editDiscount,
     changeDiscountStatus,
     deleteDiscountByCode, 
-    getDiscountByGoodsId,
     getDiscountForOrderValue
-
 }
 
 function createNewDiscount (data) {
@@ -116,28 +114,6 @@ function deleteDiscountByCode(code) {
         .catch((error) => {
             dispatch({
                 type: DiscountConstants.DELETE_DISCOUNT_FAILURE,
-                error
-            })
-        })
-    }
-}
-
-function getDiscountByGoodsId(goodId) {
-    return (dispatch) => {
-        dispatch({
-            type: DiscountConstants.GET_DISCOUNT_BY_GOOD_ID_REQUEST
-        })
-
-        DiscountServices.getDiscountByGoodsId(goodId)
-        .then((res) => {
-            dispatch({
-                type: DiscountConstants.GET_DISCOUNT_BY_GOOD_ID_SUCCESS,
-                payload: res.data.content
-            })
-        })
-        .catch((error) => {
-            dispatch({
-                type: DiscountConstants.GET_DISCOUNT_BY_GOOD_ID_FAILURE,
                 error
             })
         })

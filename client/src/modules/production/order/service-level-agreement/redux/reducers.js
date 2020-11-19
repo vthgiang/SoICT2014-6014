@@ -24,7 +24,6 @@ const initState = {
     listSLAs: [],
     availabledSLACode: false,
     listSLAsByCode: [],
-    listSlasByGoodId: []
 }
 
 export function serviceLevelAgreements(state = initState, action) {
@@ -38,7 +37,6 @@ export function serviceLevelAgreements(state = initState, action) {
         case SLAConstants.CHECK_SLA_CODE_REQUEST:
         case SLAConstants.GET_SLA_BY_CODE_REQUEST:
         case SLAConstants.DELETE_SLA_BY_CODE_REQUEST:
-        case SLAConstants.GET_SLA_BY_GOOD_ID_REQUEST: 
             return {
                 ...state,
                 isLoading: true
@@ -51,7 +49,6 @@ export function serviceLevelAgreements(state = initState, action) {
         case SLAConstants.CHECK_SLA_CODE_FAILURE:
         case SLAConstants.GET_SLA_BY_CODE_FAILURE:
         case SLAConstants.DELETE_SLA_BY_CODE_FAILURE:
-        case SLAConstants.GET_SLA_BY_GOOD_ID_FAILURE: 
             return {
                 ...state,
                 isLoading: false,
@@ -126,12 +123,6 @@ export function serviceLevelAgreements(state = initState, action) {
             return {
                 ...state,
                 listSLAsByCode: action.payload.sla,
-                isLoading: false
-            }
-        case SLAConstants.GET_SLA_BY_GOOD_ID_SUCCESS: 
-            return {
-                ...state,
-                listSlasByGoodId: action.payload.slas,
                 isLoading: false
             }
         default:

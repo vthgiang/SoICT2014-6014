@@ -3,8 +3,6 @@ import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { GoodActions } from "../../../common-production/good-management/redux/actions";
 import { DiscountActions } from "../../discount/redux/actions";
-import { TaxActions } from "../../tax/redux/actions";
-import { SlaActions } from "../../service-level-agreement/redux/actions";
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import { DatePicker, DialogModal, SelectBox, ButtonModal, ErrorLabel } from "../../../../../common-components";
 import CreateDiscountsForGood from "./createDiscountsForGood";
@@ -65,12 +63,15 @@ class QuoteCreateGood extends Component {
                 inventory: goodInfo[0].quantity,
                 salesPriceVariance: goodInfo[0].salesPriceVariance ? goodInfo[0].salesPriceVariance : 0,
                 pricePerBaseUnitError: undefined,
+                taxs: [],
             };
         });
 
-        await this.props.getSlaByGoodsId(value[0]);
-        await this.props.getTaxsByGoodsId(value[0]);
-        await this.props.getDiscountByGoodsId(value[0]);
+        await this.props.getItemsForGood(value[0]);
+
+        // await this.props.getSlaByGoodsId(value[0]);
+        // await this.props.getTaxsByGoodsId(value[0]);
+        // await this.props.getDiscountByGoodsId(value[0]);
     };
 
     validatePrice = (value, willUpdateState = true) => {
@@ -114,7 +115,7 @@ class QuoteCreateGood extends Component {
     };
 
     getServiceLevelAgreementOptionsForGood = () => {
-        let { listSlasByGoodId } = this.props.serviceLevelAgreements;
+        let { listSlasByGoodId } = this.props.goods.goodItems;
         let options = [];
         if (listSlasByGoodId && listSlasByGoodId.length) {
             options = listSlasByGoodId.map((item) => {
@@ -128,7 +129,7 @@ class QuoteCreateGood extends Component {
     };
 
     getTaxOptionsForGood = () => {
-        let { listTaxsByGoodId } = this.props.taxs;
+        let { listTaxsByGoodId } = this.props.goods.goodItems;
         let options = [];
         if (listTaxsByGoodId && listTaxsByGoodId.length) {
             options = listTaxsByGoodId.map((item) => {
@@ -151,7 +152,7 @@ class QuoteCreateGood extends Component {
     };
 
     getPaymentAmountOfGood = () => {
-        const { listTaxsByGoodId } = this.props.taxs;
+        const { listTaxsByGoodId } = this.props.goods.goodItems;
         const { taxs, discountsOfGood, pricePerBaseUnit, quantity } = this.state;
         let listTaxs = taxs.map((item) => {
             return listTaxsByGoodId.find((element) => element._id == item);
@@ -174,6 +175,7 @@ class QuoteCreateGood extends Component {
     render() {
         let { good, goodName, pricePerBaseUnit, baseUnit, inventory, quantity, pricePerBaseUnitError, discountsOfGood, taxs } = this.state;
         console.log("DISCOUNT", this.state.discountsOfGood);
+        console.log("REDUX", this.props.goods.goodItems);
         return (
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <fieldset className="scheduler-border" style={{ padding: 10 }}>
@@ -436,15 +438,13 @@ class QuoteCreateGood extends Component {
 }
 
 function mapStateToProps(state) {
-    const { goods, taxs, serviceLevelAgreements, discounts } = state;
-    return { goods, taxs, serviceLevelAgreements, discounts };
+    const { goods, discounts } = state;
+    return { goods, discounts };
 }
 
 const mapDispatchToProps = {
     getAllGoodsByType: GoodActions.getAllGoodsByType,
-    getSlaByGoodsId: SlaActions.getSlaByGoodsId,
-    getTaxsByGoodsId: TaxActions.getTaxsByGoodsId,
-    getDiscountByGoodsId: DiscountActions.getDiscountByGoodsId,
+    getItemsForGood: GoodActions.getItemsForGood,
     getDiscountForOrderValue: DiscountActions.getDiscountForOrderValue,
 };
 

@@ -24,7 +24,7 @@ class CreateDiscountsForGood extends Component {
     }
 
     getDiscountValue = (idCheckBox) => {
-        let { listDiscountsByGoodId } = this.props.discounts;
+        let { listDiscountsByGoodId } = this.props.goods.goodItems;
         let { goodId } = this.props;
 
         let hash = idCheckBox.split("-");
@@ -213,7 +213,7 @@ class CreateDiscountsForGood extends Component {
     };
 
     render() {
-        let { listDiscountsByGoodId } = this.props.discounts;
+        let { listDiscountsByGoodId } = this.props.goods.goodItems;
         return (
             <React.Fragment>
                 <ButtonModal
@@ -231,7 +231,7 @@ class CreateDiscountsForGood extends Component {
                     size="50"
                     style={{ backgroundColor: "green" }}
                 >
-                    {!listDiscountsByGoodId.length ? (
+                    {!listDiscountsByGoodId && !listDiscountsByGoodId.length ? (
                         <div style={{ display: "flex", alignItems: "center" }}>
                             <i className="fa fa-frown-o text-warning"></i> &ensp; <span>Chưa có khuyến mãi nào</span>
                         </div>
@@ -254,8 +254,8 @@ class CreateDiscountsForGood extends Component {
 }
 
 function mapStateToProps(state) {
-    const { discounts } = state;
-    return { discounts };
+    const { goods } = state;
+    return { goods };
 }
 
 const mapDispatchToProps = {};
