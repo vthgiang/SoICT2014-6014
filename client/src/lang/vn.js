@@ -1070,7 +1070,8 @@ export default {
             manufacturing_dashboard: "Dashboard Quản lý sản xuất",
             analysis_manufacturing_performance: "Phân tích hiệu suất sản xuất",
             manage_manufacturing_works: "Quản lý nhà máy sản xuất",
-            manage_manufacturing_mill: "Quản lý xưởng sản xuất"
+            manage_manufacturing_mill: "Quản lý xưởng sản xuất",
+            manage_manufacturing_lot: "Quản lý lô sản xuất"
         },
 
         manage_system: {

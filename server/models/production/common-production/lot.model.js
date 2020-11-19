@@ -138,14 +138,14 @@ const LotSchema = new Schema({
         type: Number
     },
 
-    finishedProductQuantity: {
+    finishedProductQuantity: { // Số lượng thành phẩm
         type: Number
     },
 
-    substandardProductQuantity: {
+    substandardProductQuantity: { // Số lượng phế phẩm
         type: Number
     },
-    status: {
+    status: { // 1. Chưa được xử lý 2. Đã được xử lý
         type: Number
     }
 

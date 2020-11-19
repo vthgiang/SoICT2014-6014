@@ -80,6 +80,10 @@ class ManufacturingCommandDetailInfo extends Component {
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className="form-group">
+                                    <strong>{translate('manufacturing.command.mill')}:&emsp;</strong>
+                                    {currentCommand.manufacturingMill && currentCommand.manufacturingMill.name}
+                                </div>
+                                <div className="form-group">
                                     <strong>{translate('manufacturing.command.start_date')}:&emsp;</strong>
                                     {formatDate(currentCommand.startDate)}
                                 </div>
