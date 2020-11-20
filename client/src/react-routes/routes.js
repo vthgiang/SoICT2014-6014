@@ -477,7 +477,7 @@ class Routes extends Component {
                             { link: "/", name: "home", icon: "fa fa-home" },
                             {
                                 link: "/documents/organizational-unit",
-                                name: "documents",
+                                name: "documents_og",
                                 icon: "fa fa-folder-open",
                             },
                         ]}
@@ -485,7 +485,7 @@ class Routes extends Component {
                         exact={true}
                         link={"/documents/organizational-unit"}
                         path={"/documents/organizational-unit"}
-                        pageName={"documents"}
+                        pageName={"documents_og"}
                         layout={Layout}
                         component={ManageDocument}
                     />
