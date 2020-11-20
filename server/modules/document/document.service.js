@@ -161,10 +161,16 @@ exports.increaseNumberView = async (id, viewer, portal) => {
 exports.createDocument = async (portal, data, company) => {
     let numberFile = 0,
         numberFileScan = 0;
-    const existed = await Document(connect(DB_CONNECTION, portal)).findOne({
+    const existedName = await Document(connect(DB_CONNECTION, portal)).findOne({
+        name: data.name,
+    });
+    if (existedName) throw ["document_exist"];
+    const existedNumber = await Document(
+        connect(DB_CONNECTION, portal)
+    ).findOne({
         officialNumber: data.officialNumber,
     });
-    if (existed) throw ["document_exist"];
+    if (existedNumber) throw ["document_number_exist"];
     let newDoc = {
         company,
         name: data.name,

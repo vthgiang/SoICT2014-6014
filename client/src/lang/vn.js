@@ -769,7 +769,8 @@ export default {
             domain_name_exist: "Tên lĩnh vực đã được sử dụng",
             category_name_exist: "Tên loại đã được sử dụng",
             name_exist: "Tên đã được sử dụng",
-            document_exist: "Tài liệu đã sử dựng",
+            document_exist: "Tên tài liệu liệu đã tồn tại",
+            document_number_exist: "Số hiệu tài liệu đã tồn tại",
         },
 
         crm: {
