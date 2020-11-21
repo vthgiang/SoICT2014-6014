@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { SLAActions } from "../redux/actions";
+import { SlaActions } from "../redux/actions";
 import { GoodActions } from "../../../common-production/good-management/redux/actions";
 import { PaginateBar, DataTableSetting, SelectBox, DeleteNotification, ConfirmNotification } from "../../../../../common-components";
 import SlaCreateForm from "./slaCreateForm";
@@ -278,9 +278,9 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    getAllSLAs: SLAActions.getAllSLAs,
-    disableSLA: SLAActions.disableSLA,
-    deleteSLA: SLAActions.deleteSLA,
+    getAllSLAs: SlaActions.getAllSLAs,
+    disableSLA: SlaActions.disableSLA,
+    deleteSLA: SlaActions.deleteSLA,
     getAllGoodsByType: GoodActions.getAllGoodsByType,
 };
 

@@ -196,7 +196,6 @@ class TaskAddModal extends Component {
 
     handleChangeTaskTemplate = async (event) => {
         let value = event.target.value;
-        console.log(value);
         if (value === "") {
             this.setState(state => {
                 return {
@@ -233,10 +232,10 @@ class TaskAddModal extends Component {
                         name: taskTemplate.name,
                         description: taskTemplate.description,
                         priority: taskTemplate.priority,
-                        responsibleEmployees: taskTemplate.responsibleEmployees.map(item => item._id),
-                        accountableEmployees: taskTemplate.accountableEmployees.map(item => item._id),
-                        consultedEmployees: taskTemplate.consultedEmployees.map(item => item._id),
-                        informedEmployees: taskTemplate.informedEmployees.map(item => item._id),
+                        responsibleEmployees: taskTemplate.responsibleEmployees,
+                        accountableEmployees: taskTemplate.accountableEmployees,
+                        consultedEmployees: taskTemplate.consultedEmployees,
+                        informedEmployees: taskTemplate.informedEmployees,
                         taskTemplate: taskTemplate._id,
                     }
                 };

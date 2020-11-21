@@ -6,7 +6,8 @@ export const DiscountActions = {
     getAllDiscounts,
     editDiscount,
     changeDiscountStatus,
-    deleteDiscountByCode
+    deleteDiscountByCode, 
+    getDiscountForOrderValue
 }
 
 function createNewDiscount (data) {
@@ -113,6 +114,28 @@ function deleteDiscountByCode(code) {
         .catch((error) => {
             dispatch({
                 type: DiscountConstants.DELETE_DISCOUNT_FAILURE,
+                error
+            })
+        })
+    }
+}
+
+function getDiscountForOrderValue() {
+    return (dispatch) => {
+        dispatch({
+            type: DiscountConstants.GET_DISCOUNT_BY_ORDER_VALUE_REQUEST
+        })
+
+        DiscountServices.getDiscountForOrderValue()
+        .then((res) => {
+            dispatch({
+                type: DiscountConstants.GET_DISCOUNT_BY_ORDER_VALUE_SUCCESS,
+                payload: res.data.content
+            })
+        })
+        .catch((error) => {
+            dispatch({
+                type: DiscountConstants.GET_DISCOUNT_BY_ORDER_VALUE_FAILURE,
                 error
             })
         })

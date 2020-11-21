@@ -363,6 +363,7 @@ class TaskTemplateImportForm extends Component {
                         />
                         <div className="row">
                             <div className="form-group col-md-4 col-xs-12">
+                                <label>{translate('human_resource.choose_file')}</label>
                                 <ImportFileExcel
                                     configData={configData}
                                     handleImportExcel={this.handleImportExcel}

@@ -1,7 +1,7 @@
 import { SLAConstants } from './constants';
 import { SLAServices } from './services';
 
-export const SLAActions = {
+export const SlaActions = {
     createNewSLA,
     getAllSLAs,
     getSLAById,

@@ -8,7 +8,7 @@ export const SLAServices = {
     disableSLA,
     checkSLACode,
     getSLAByCode,
-    deleteSLA,
+    deleteSLA
 }
 
 function createNewSLA(data) {

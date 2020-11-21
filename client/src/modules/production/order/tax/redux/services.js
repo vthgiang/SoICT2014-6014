@@ -8,7 +8,7 @@ export const TaxServices = {
     disableTax,
     checkTaxCode,
     getTaxByCode,
-    deleteTax,
+    deleteTax
 }
 
 function createNewTax(data) {

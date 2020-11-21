@@ -1287,6 +1287,17 @@ const LINKS = [{
     ],
     components: getComponentsInLink('/manage-manufacturing-mill'),
 },
+{
+    url: "/manage-manufacturing-lot",
+    description: "Quản lý lô sản xuất",
+    category: LINK_CATEGORY.MANUFACTURING.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ],
+    components: getComponentsInLink('/manage-manufacturing-lot'),
+},
+
 ];
 
 exports.LINKS = LINKS;

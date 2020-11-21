@@ -112,3 +112,45 @@ exports.deleteDiscountByCode = async ( req, res ) => {
     }
 }
 
+exports.getDiscountByGoodsId = async (req, res) => {
+    try {
+        let discounts = await DiscountService.getDiscountByGoodsId(req.query, req.portal)
+        
+        await Log.info(req.user.email, "GET_DISCOUNT_BY_GOOD_ID", req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["get_successfully"],
+            content: discounts
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "GET_DISCOUNT_BY_GOOD_ID", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["get_failed"],
+            content: error.message
+        });
+    }
+}
+
+exports.getDiscountForOrderValue = async (req, res) => {
+    try {
+        let discounts = await DiscountService.getDiscountForOrderValue(req.query, req.portal)
+        
+        await Log.info(req.user.email, "GET_DISCOUNT_BY_ORDER_VALUE", req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["get_successfully"],
+            content: discounts
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "GET_DISCOUNT_BY_ORDER_VALUE", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["get_failed"],
+            content: error.message
+        });
+    }
+}
+

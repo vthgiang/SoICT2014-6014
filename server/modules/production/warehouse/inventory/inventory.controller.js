@@ -105,3 +105,24 @@ exports.createOrUpdateLots = async (req, res) => {
         })
     }
 }
+
+exports.deleteManyLots = async (req, res) => {
+    try {
+        let lots = await LotService.deleteManyLots(req.body.array, req.portal);
+
+        await Logger.info(req.user.email, 'DELETE_LOTS_SUCCESS', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['delete_success'],
+            content: lots
+        })
+    }
+    catch (error) {
+        await Log.error(req.user.email, 'DELETE_LOTS_FAILED', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['delete_failed'],
+            error: error
+        })
+    }
+}

@@ -107,6 +107,7 @@ class EmployeeImportTab extends Component {
 
                         {/* File import */}
                         <div className="form-group col-md-4 col-xs-12" style={{ paddingTop: 5 }}>
+                            <label>{translate('human_resource.choose_file')}</label>
                             <ImportFileExcel
                                 configData={configData}
                                 handleImportExcel={this.handleImportExcel}

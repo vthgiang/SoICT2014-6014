@@ -48,6 +48,13 @@ exports.getAssetTypes = async (portal, company, query) => {
 }
 
 exports.createAssetTypes = async (portal, company, data) => {
+    let checkName = await AssetType(connect(DB_CONNECTION, portal)).findOne({
+        typeName: data.typeName
+    });
+
+    if (checkName) {
+        throw ['asset_type_name_exist'];
+    }
 
     let dataArray;
     if (!Array.isArray(data)) {
@@ -55,6 +62,7 @@ exports.createAssetTypes = async (portal, company, data) => {
     } else {
         dataArray = data;
     }
+
     for (let i = 0; i < dataArray.length; i++) {
         let query = {
             company: company,
@@ -75,6 +83,14 @@ exports.createAssetTypes = async (portal, company, data) => {
 
 exports.editAssetType = async (portal, id, data) => {
     const type = await AssetType(connect(DB_CONNECTION, portal)).findById(id);
+
+    let checkName = await AssetType(connect(DB_CONNECTION, portal)).findOne({
+        typeName: data.typeName
+    });
+
+    if (checkName) {
+        throw ['asset_type_name_exist'];
+    }
 
     type.typeNumber = data.typeNumber,
         type.typeName = data.typeName,

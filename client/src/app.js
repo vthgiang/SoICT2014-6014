@@ -66,7 +66,7 @@ class App extends Component {
                 </Router>
                 <PinnedPanel>
                     <TaskTimesheetLog />
-                    </PinnedPanel> 
+                </PinnedPanel> 
             </React.Fragment>
         );
     }

@@ -115,7 +115,6 @@ function createBill(data) {
 }
 
 function editBill(id, data) {
-    console.log(id, data);
     return dispatch => {
         dispatch({
             type: BillConstants.UPDATE_BILL_REQUEST

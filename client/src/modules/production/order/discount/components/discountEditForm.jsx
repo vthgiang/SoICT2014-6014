@@ -17,36 +17,37 @@ class DiscountEditForm extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.discountEdit._id !== prevState.discountId) {
-            let discounts = nextProps.discountEdit.discounts.map((discount) => {
-                let bonusGoods = [];
-                let discountOnGoods = [];
-                if (discount.bonusGoods.length) {
-                    bonusGoods = discount.bonusGoods.map((item) => {
-                        return {
-                            good: item.good._id,
-                            code: item.good.code,
-                            name: item.good.name,
-                            quantityOfBonusGood: item.quantityOfBonusGood,
-                            expirationDateOfGoodBonus: item.expirationDateOfGoodBonus,
-                            baseUnit: item.baseUnit,
-                        };
-                    });
-                }
-                if (discount.discountOnGoods.length) {
-                    discountOnGoods = discount.discountOnGoods.map((item) => {
-                        return {
-                            good: item.good._id,
-                            code: item.good.code,
-                            name: item.good.name,
-                            expirationDate: item.expirationDate,
-                            discountedPrice: item.discountedPrice,
-                        };
-                    });
-                }
-                discount.bonusGoods = bonusGoods;
-                discount.discountOnGoods = discountOnGoods;
-                return discount;
-            });
+            // let discounts = nextProps.discountEdit.discounts.map((discount) => {
+            // let bonusGoods = [];
+            // let discountOnGoods = [];
+            // if (discount.bonusGoods.length) {
+            //     bonusGoods = discount.bonusGoods.map((item) => {
+            //         return {
+            //             good: item.good._id,
+            //             code: item.good.code,
+            //             name: item.good.name,
+            //             quantityOfBonusGood: item.quantityOfBonusGood,
+            //             expirationDateOfGoodBonus: item.expirationDateOfGoodBonus,
+            //             baseUnit: item.baseUnit,
+            //         };
+            //     });
+            // }
+            // if (discount.discountOnGoods.length) {
+            //     discountOnGoods = discount.discountOnGoods.map((item) => {
+            //         return {
+            //             good: item.good._id,
+            //             code: item.good.code,
+            //             name: item.good.name,
+            //             expirationDate: item.expirationDate,
+            //             discountedPrice: item.discountedPrice,
+            //         };
+            //     });
+            // }
+            // discount.bonusGoods = bonusGoods;
+            // discount.discountOnGoods = discountOnGoods;
+            // return discount;
+            // });
+            console.log("nextProps.discountEdit.discounts", nextProps.discountEdit.discounts);
             return {
                 ...prevState,
                 discountId: nextProps.discountEdit._id,
@@ -57,7 +58,7 @@ class DiscountEditForm extends Component {
                 expirationDate: nextProps.discountEdit.expirationDate ? formatDate(nextProps.discountEdit.expirationDate) : "",
                 discountType: nextProps.discountEdit.type,
                 formality: nextProps.discountEdit.formality,
-                discounts: discounts,
+                discounts: nextProps.discountEdit.discounts,
             };
         }
     }
@@ -195,6 +196,45 @@ class DiscountEditForm extends Component {
         return true;
     };
 
+    getFieldsForDiscounts = () => {
+        let { discounts } = this.state;
+        let discountsMap = discounts.map((item) => {
+            let discount = {};
+            discount.discountedCash = item.discountedCash;
+            discount.discountedPercentage = item.discountedPercentage;
+            discount.loyaltyCoin = item.loyaltyCoin;
+            discount.maximumFreeShippingCost = item.maximumFreeShippingCost;
+            discount.maximumDiscountedCash = item.maximumDiscountedCash;
+            discount.minimumThresholdToBeApplied = item.minimumThresholdToBeApplied;
+            discount.maximumThresholdToBeApplied = item.maximumThresholdToBeApplied;
+            discount.customerType = item.customerType;
+            if (item.bonusGoods && item.bonusGoods.length !== 0) {
+                discount.bonusGoods = item.bonusGoods.map((good) => {
+                    return {
+                        good: good.good ? good.good._id : undefined,
+                        expirationDateOfGoodBonus: good.expirationDateOfGoodBonus
+                            ? new Date(formatToTimeZoneDate(good.expirationDateOfGoodBonus))
+                            : undefined,
+                        quantityOfBonusGood: good.quantityOfBonusGood,
+                    };
+                });
+            }
+            if (item.discountOnGoods && item.discountOnGoods.length !== 0) {
+                discount.discountOnGoods = item.discountOnGoods.map((good) => {
+                    return {
+                        good: good.good ? good.good._id : undefined,
+                        expirationDate: good.expirationDate ? new Date(formatToTimeZoneDate(good.expirationDate)) : undefined,
+                        discountedPrice: good.discountedPrice ? good.discountedPrice : undefined,
+                    };
+                });
+            }
+
+            return discount;
+        });
+
+        return discountsMap;
+    };
+
     save = async () => {
         if (this.isFormValidated()) {
             let { discountId, code, name, effectiveDate, expirationDate, discountType, formality, description, discounts } = this.state;
@@ -206,7 +246,7 @@ class DiscountEditForm extends Component {
                 type: discountType,
                 formality,
                 description,
-                discounts,
+                discounts: this.getFieldsForDiscounts(),
             };
             console.log("DATA SUBMIT EDIT", data);
             await this.props.editDiscount(discountId, data);
@@ -328,6 +368,7 @@ class DiscountEditForm extends Component {
                         discounts={discounts}
                         onChangeDiscounts={(data) => this.onChangeDiscounts(data)}
                         actionType="edit"
+                        discountCode={code}
                     />
                 </form>
             </DialogModal>

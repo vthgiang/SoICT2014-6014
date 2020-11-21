@@ -84,6 +84,7 @@ class FormCreateTaskByProcess extends Component {
                     id: nextProps.id,
                     taskItem: {
                         numberOfDaysTaken: (info && info.numberOfDaysTaken) ? info.numberOfDaysTaken : null,
+                        collaboratedWithOrganizationalUnits: (info && info.collaboratedWithOrganizationalUnits) ? info.collaboratedWithOrganizationalUnits.map(item => { if (item) return item._id }) : [],
                         // code: (info && info.code) ? info.code : "",
                         startDate: (info && info.startDate) ? info.startDate : nextProps.startDate,
                         endDate: (info && info.endDate) ? info.endDate : nextProps.endDate,
@@ -234,6 +235,7 @@ class FormCreateTaskByProcess extends Component {
             }
         }
     }
+
     validateTaskTemplateUnit = (value, willUpdateState = true) => {
         let msg = TaskTemplateFormValidator.validateTaskTemplateUnit(value);
 
@@ -256,6 +258,19 @@ class FormCreateTaskByProcess extends Component {
         }
         this.props.onChangeTemplateData(this.state.taskItem);
         return msg == undefined;
+    }
+
+    handleChangeCollaboratedWithOrganizationalUnits = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                taskItem: {
+                    ...this.state.editingTemplate,
+                    collaboratedWithOrganizationalUnits: value
+                }
+            };
+        });
+        this.props.onChangeTemplateData(this.state.taskItem);
     }
 
     handleTaskTemplateResponsible = (value) => {
@@ -412,6 +427,7 @@ class FormCreateTaskByProcess extends Component {
         var units, taskActions, taskInformations, listRole, departmentsThatUserIsDean, listRoles, usercompanys, userdepartments = [];
         var { taskItem, id, showMore } = this.state;
 
+        console.log('taskItem', taskItem);
         if (taskItem && taskItem.taskActions) taskActions = taskItem.taskActions;
         if (taskItem && taskItem.taskInformations) taskInformations = taskItem.taskInformations;
 
@@ -462,8 +478,26 @@ class FormCreateTaskByProcess extends Component {
                             }
                             <ErrorLabel content={this.state.taskItem.errorOnUnit} />
                         </div>
-                    </div>
 
+                        {/* Chọn đơn vị phối hợp công việc */}
+                        {usersInUnitsOfCompany &&
+                            <div className="form-group">
+                                <label>{translate('task.task_management.collaborated_with_organizational_units')}</label>
+                                <SelectBox
+                                    id="multiSelectUnitThatHaveCollaboratedTaskByProcess"
+                                    lassName="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={usersInUnitsOfCompany.filter(item => String(item.id) !== String(taskItem.organizationalUnit)).map(x => {
+                                        return { text: x.department, value: x.id }
+                                    })}
+                                    options={{ placeholder: translate('kpi.evaluation.dashboard.select_units') }}
+                                    onChange={this.handleChangeCollaboratedWithOrganizationalUnits}
+                                    value={taskItem.collaboratedWithOrganizationalUnits}
+                                    multiple={true}
+                                />
+                            </div>
+                        }
+                    </div>
                 </div>
 
                 <div className="row">

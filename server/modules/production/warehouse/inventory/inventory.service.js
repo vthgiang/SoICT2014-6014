@@ -211,6 +211,13 @@ exports.createOrUpdateLots = async (data, portal) => {
     return lots;
 }
 
+exports.deleteManyLots = async (arrayId, portal) => {
+    for(let i = 0; i < arrayId.length; i++) {
+        await Lot(connect(DB_CONNECTION, portal)).deleteOne({ _id: arrayId[i] });
+    }
+    return arrayId;
+}
+
 exports.editLot = async (id, data, portal) => {
     let lot = await Lot(connect(DB_CONNECTION, portal)).findById(id);
     const oldLot = lot;

@@ -27,7 +27,12 @@ const initState = {
     hasNextPage: false,
     prevPage: 0,
     nextPage: 0,
-    type: ''
+    type: '',
+    goodItems: {
+        listTaxsByGoodId: [],
+        listSlasByGoodId: [],
+        listDiscountsByGoodId: []
+    }
 }
 
 export function goods(state = initState, action) {
@@ -45,6 +50,7 @@ export function goods(state = initState, action) {
         case GoodConstants.UPDATE_GOOD_REQUEST:
         case GoodConstants.GET_GOOD_DETAIL_REQUEST:
         case GoodConstants.DELETE_GOOD_REQUEST:
+        case GoodConstants.GET_ITEMS_FOR_GOOD_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -59,6 +65,7 @@ export function goods(state = initState, action) {
         case GoodConstants.UPDATE_GOOD_FAILURE:
         case GoodConstants.GET_GOOD_DETAIL_FAILURE:
         case GoodConstants.DELETE_GOOD_FAILURE:
+        case GoodConstants.GET_ITEMS_FOR_GOOD_FAILURE:
             return {
                 ...state,
                 isLoading: false
@@ -161,7 +168,11 @@ export function goods(state = initState, action) {
                 ...state,
                 isLoading: false
             };
-
+        case GoodConstants.GET_ITEMS_FOR_GOOD_SUCCESS: 
+        return {
+            ...state,
+            goodItems: action.payload
+        };
         default:
             return state;
     }

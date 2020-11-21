@@ -813,7 +813,8 @@ editEmployeeCollaboratedWithOrganizationalUnits = async (req, res) => {
         let log = {
             createdAt: Date.now(),
             creator: req.user._id,
-            title: "Phân công công việc"
+            title: "Phân công công việc",
+            description: data.descriptionLogs
         }
         await PerformTaskService.addTaskLog(req.portal, req.params, log);
 
