@@ -12,6 +12,7 @@ exports.searchCourses = async (req, res) => {
         } else {
             let params = {
                 courseId: req.query.courseId,
+                name: req.query.name,
                 educationProgram: req.query.educationProgram,
                 type: req.query.type,
                 page: Number(req.query.page),

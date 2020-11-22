@@ -27,6 +27,31 @@ exports.searchEducationPrograms = async (portal, params, company) => {
     let keySearch = {
         company: company
     }
+
+    console.log(params.programId);
+    console.log(params.name)
+    // Bắt sựu kiện tìm kiếm theo mã chương trình đào tạo
+    if(params.programId){
+        keySearch = {
+            ...keySearch,
+            programId: {
+                $regex: params.programId,
+                $options: "i"
+            }
+        }
+    };
+
+    // Bắt sựu kiện tìm kiếm theo tên chương trình đào tạo
+    if(params.name){
+        keySearch = {
+            ...keySearch,
+            name: {
+                $regex: params.name,
+                $options: "i"
+            }
+        }
+    };
+
     // Bắt sựu kiện tìm kiếm theo đơn vị áp dụng
     if (params.organizationalUnit) {
         keySearch = {

@@ -20,6 +20,8 @@ function getListEducation(data) {
         params: {
             organizationalUnit: data !== undefined ? data.organizationalUnit : data,
             position: data !== undefined ? data.position : data,
+            programId: data !== undefined ? data.programId : data,
+            name: data !== undefined ? data.name : data,
             page: data !== undefined ? data.page : data,
             limit: data !== undefined ? data.limit : data
         }

@@ -18,6 +18,7 @@ function getListCourse(data) {
         method: 'GET',
         params: {
             courseId: data !== undefined ? data.courseId : data,
+            name: data !== undefined ? data.name : data,
             type: data !== undefined ? data.type : data,
             page: data !== undefined ? data.page : data,
             limit: data !== undefined ? data.limit : data,
