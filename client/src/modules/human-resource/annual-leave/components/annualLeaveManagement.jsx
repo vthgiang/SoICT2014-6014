@@ -354,8 +354,8 @@ class AnnualLeaveManagement extends Component {
                                         <tr key={index}>
                                             <td><a style={{ cursor: 'pointer' }} onClick={() => this.handleView(x.employee)}>{x.employee.employeeNumber}</a></td>
                                             <td>{x.employee.fullName}</td>
-                                            <td>{this.formatDate(x.startDate)}</td>
-                                            <td>{this.formatDate(x.endDate)}</td>
+                                            <td><p>{this.formatDate(x.startDate)}</p>{x.startTime ? x.startTime : null}</td>
+                                            <td><p>{this.formatDate(x.endDate)}</p>{x.endTime ? x.endTime : null}</td>
                                             <td>{organizationalUnit ? organizationalUnit.name : null}</td>
                                             <td>{x.reason}</td>
                                             <td style={{ color: x.status === "approved" ? "#00a65a" : (x.status === "waiting_for_approval" ? '#ff7f0e' : '#dd4b39') }}>{translate(`human_resource.annual_leave.status.${x.status}`)}</td>
@@ -390,6 +390,10 @@ class AnnualLeaveManagement extends Component {
                         endDate={this.formatDate(currentRow.endDate)}
                         startDate={this.formatDate(currentRow.startDate)}
                         reason={currentRow.reason}
+                        endTime={currentRow.endTime}
+                        startTime={currentRow.startTime}
+                        totalHours={currentRow.totalHours}
+                        type={currentRow.type}
                         status={currentRow.status}
                     />
                 }

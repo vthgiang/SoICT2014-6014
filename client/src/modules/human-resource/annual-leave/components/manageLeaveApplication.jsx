@@ -184,7 +184,7 @@ class ManageLeaveApplication extends Component {
             confirmButtonText: this.props.translate('general.yes'),
         }).then((result) => {
             if (result.value) {
-                this.props.updateAnnualLeave(value._id, { ...value, startDate: startDateNew, endDate: endDateNew, status: 'pass', approvedApplication: true })
+                this.props.updateAnnualLeave(value._id, { ...value, startDate: startDateNew, endDate: endDateNew, status: 'approved', approvedApplication: true })
             }
         })
     };
@@ -208,7 +208,7 @@ class ManageLeaveApplication extends Component {
             confirmButtonText: this.props.translate('general.yes'),
         }).then((result) => {
             if (result.value) {
-                this.props.updateAnnualLeave(value._id, { ...value, startDate: startDateNew, endDate: endDateNew, status: 'faile', approvedApplication: true })
+                this.props.updateAnnualLeave(value._id, { ...value, startDate: startDateNew, endDate: endDateNew, status: 'disapproved', approvedApplication: true })
             }
         })
     }
@@ -306,8 +306,8 @@ class ManageLeaveApplication extends Component {
                                     <tr key={index}>
                                         <td><a style={{ cursor: 'pointer' }} onClick={() => this.handleView(x.employee)}>{x.employee.employeeNumber}</a></td>
                                         <td>{x.employee.fullName}</td>
-                                        <td>{this.formatDate(x.startDate)}</td>
-                                        <td>{this.formatDate(x.endDate)}</td>
+                                        <td><p>{this.formatDate(x.startDate)}</p>{x.startTime ? x.startTime : null}</td>
+                                        <td><p>{this.formatDate(x.endDate)}</p>{x.endTime ? x.endTime : null}</td>
                                         <td>{x.reason}</td>
                                         <td>{translate(`human_resource.annual_leave.status.${x.status}`)}</td>
                                         <td style={{ textAlign: "center" }}>

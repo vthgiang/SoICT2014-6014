@@ -15,6 +15,19 @@ const AnnualLeaveSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'OrganizationalUnit',
     },
+    type:{  // true: nghỉ phép theo ngày, false: nghỉ phép theo giờ
+        type: Boolean,
+        required: true
+    },
+    startTime:{
+        type: String
+    },
+    endTime:{
+        type: String
+    },
+    totalHours:{
+        type: Number
+    },
     startDate: {
         type: Date,
         required: true

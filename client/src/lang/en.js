@@ -1258,11 +1258,13 @@ export default {
             // Quản lý nghỉ phép
             annual_leave: {
                 file_export_name: "Annual leave statistics table",
+                type: "Annual leave by hours",
+                totalHours:"Total hours",
 
                 // Nhóm dành cho table
                 table: {
-                    start_date: "Start date",
-                    end_date: "End date",
+                    start_date: "Start time",
+                    end_date: "End time",
                     reason: "Reason",
                     action: "action",
                 },
@@ -1451,6 +1453,7 @@ export default {
                 active: "Working",
                 leave: "Quit job",
                 status_work: "Labor status",
+                hours_off_remaining: 'Total hours annual leave remaining',
 
                 mobile_phone: "Mobile phone",
                 mobile_phone_1: "Mobile phone 1",

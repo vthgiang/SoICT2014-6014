@@ -61,11 +61,15 @@ exports.getNumberAnnaulLeave = async (portal, email, year, company) => {
         })
 
         data.forEach(x => {
-            total = total + Math.round((new Date(x.endDate).getTime() - new Date(x.startDate).getTime()) / (21 * 60 * 60 * 1000)) + 1;
+            if (x.totalHours && x.totalHours !== 0) {
+                total = total + (x.totalHours/8);
+            } else {
+                total = total + Math.round((new Date(x.endDate).getTime() - new Date(x.startDate).getTime()) / (24 * 60 * 60 * 1000)) + 1;
+            }
         });
 
         return {
-            numberAnnulLeave: total,
+            numberAnnulLeave: total.toFixed(1),
             listAnnualLeavesOfOneYear: listAnnualLeavesOfOneYear
 
         }
@@ -377,6 +381,10 @@ exports.createAnnualLeave = async (portal, data, company) => {
         organizationalUnit: data.organizationalUnit,
         startDate: data.startDate,
         endDate: data.endDate,
+        startTime: data.startTime,
+        endTime: data.endTime,
+        type: data.type,
+        totalHours: data.totalHours,
         status: data.status,
         reason: data.reason,
     });
@@ -411,6 +419,11 @@ exports.updateAnnualLeave = async (portal, id, data) => {
     annualLeave.status = data.status;
     annualLeave.endDate = data.endDate;
     annualLeave.reason = data.reason;
+    annualLeave.startTime = data.startTime;
+    annualLeave.endTime = data.endTime;
+    annualLeave.type = data.type;
+    annualLeave.totalHours = data.totalHours;
+
     await annualLeave.save();
 
     return await AnnualLeave(connect(DB_CONNECTION, portal)).findOne({

@@ -1406,11 +1406,13 @@ export default {
             // Quản lý nghỉ phép
             annual_leave: {
                 file_export_name: "Bảng thống kê nghỉ phép",
+                type: "Xin nghỉ theo giờ",
+                totalHours: "Tổng số giờ nghỉ",
 
                 // Nhóm dành cho table
                 table: {
-                    start_date: "Ngày bắt đầu",
-                    end_date: "Ngày kết thúc",
+                    start_date: "Thời gian bắt đầu",
+                    end_date: "Thời gian kết thúc",
                     reason: "Lý do",
                     action: "Hành động",
                 },
@@ -1622,6 +1624,7 @@ export default {
                 active: "Đang làm việc",
                 leave: "Đã nghỉ làm",
                 status_work: "Tình trạng lao động",
+                hours_off_remaining: "Số giờ nghỉ phép còn lại",
 
                 mobile_phone: "Điện thoại di động",
                 mobile_phone_1: "Điện thoại di động 1",

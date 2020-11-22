@@ -144,6 +144,7 @@ class AnnualLeave extends Component {
                                     <tr>
                                         <th>{translate('human_resource.annual_leave.table.start_date')}</th>
                                         <th>{translate('human_resource.annual_leave.table.end_date')}</th>
+                                        <th>{translate('human_resource.annual_leave.totalHours')}</th>
                                         <th>{translate('human_resource.unit')}</th>
                                         <th>{translate('human_resource.annual_leave.table.reason')}</th>
                                         <th>{translate('human_resource.status')}</th>
@@ -154,10 +155,12 @@ class AnnualLeave extends Component {
                                         listAnnualLeavesOfOneYear && listAnnualLeavesOfOneYear.length !== 0 &&
                                         listAnnualLeavesOfOneYear.map((x, index) => {
                                             let organizationalUnit = department.list.find(y => y._id === x.organizationalUnit);
+                                            let totalHours = x.totalHours ? x.totalHours : (Math.round((new Date(x.endDate).getTime() - new Date(x.startDate).getTime()) / (24 * 60 * 60 * 1000)) + 1) * 8
                                             return (
                                                 <tr key={index}>
-                                                    <td>{this.formatDate2(x.startDate)}</td>
-                                                    <td>{this.formatDate2(x.endDate)}</td>
+                                                    <td><p>{this.formatDate2(x.startDate)}</p>{x.startTime ? x.startTime : null}</td>
+                                                    <td><p>{this.formatDate2(x.endDate)}</p>{x.endTime ? x.endTime : null}</td>
+                                                    <td>{totalHours}</td>
                                                     <td>{organizationalUnit ? organizationalUnit.name : null}</td>
                                                     <td>{x.reason}</td>
                                                     <td>{translate(`human_resource.annual_leave.status.${x.status}`)}</td>
