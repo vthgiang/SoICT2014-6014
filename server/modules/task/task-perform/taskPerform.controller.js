@@ -745,7 +745,7 @@ editTaskByResponsibleEmployees = async (req, res) => {
  * edit task by responsible employee
  */
 editTaskByAccountableEmployees = async (req, res) => {
-    try {
+    // try {
         var task = await PerformTaskService.editTaskByAccountableEmployees(req.portal, req.body.data, req.params.taskId);
         var user = task.user;
         var tasks = task.tasks;
@@ -754,20 +754,54 @@ editTaskByAccountableEmployees = async (req, res) => {
         // sendEmail(task.email, "Cập nhật thông tin công việc", '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`);
         let title = "Cập nhật thông tin công việc: " + task.tasks.name;
         sendEmail(task.email, title, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.id}">${process.env.WEBSITE}/task?taskId=${req.params.id}</a></p>`);
+        
+
+        console.log('TASSKKKKKK', task.deletedCollabEmail, task.additionalCollabEmail);
+        // Gửi mail cho trưởng đơn vị phối hợp thực hiện công việc
+        let deletedCollabEmail = task.deletedCollabEmail;
+        let deletedCollabHtml = task.deletedCollabHtml;
+        let deletedCollabData = {
+            organizationalUnits: task.newTask.organizationalUnit._id,
+            title: "Xóa đơn vi phối hợp công việc",
+            level: "general",
+            content: deletedCollabHtml,
+            sender: task.newTask.organizationalUnit.name,
+            users: task.deansOfDeletedCollab
+        };
+
+        await NotificationServices.createNotification(req.portal, tasks.organizationalUnit.company, deletedCollabData);
+        deletedCollabEmail && deletedCollabEmail.length !== 0
+            && await sendEmail(deletedCollabEmail, "Đơn vị bạn bị xóa khỏi các đơn vị phối hợp thực hiện công việc mới", '', deletedCollabHtml);
+        
+        let additionalCollabEmail = task.additionalCollabEmail;
+        let additionalCollabHtml = task.additionalCollabHtml;
+        let additionalCollabData = {
+            organizationalUnits: task.newTask.organizationalUnit._id,
+            title: "Mời làm đơn vi phối hợp công việc",
+            level: "general",
+            content: additionalCollabHtml,
+            sender: task.newTask.organizationalUnit.name,
+            users: task.deansOfAdditionalCollab
+        };
+
+        await NotificationServices.createNotification(req.portal, tasks.organizationalUnit.company, additionalCollabData);
+        additionalCollabEmail && additionalCollabEmail.length !== 0
+            && await sendEmail(additionalCollabEmail, "Đơn vị bạn được mời phối hợp thực hiện công việc mới", '', additionalCollabHtml);
+        
         await Logger.info(req.user.email, ` edit task  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['edit_task_success'],
             content: task.newTask
         })
-    } catch (error) {
-        await Logger.error(req.user.email, ` edit task `, req.portal);
-        res.status(400).json({
-            success: false,
-            messages: ['edit_task_fail'],
-            content: error
-        });
-    }
+    // } catch (error) {
+    //     await Logger.error(req.user.email, ` edit task `, req.portal);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ['edit_task_fail'],
+    //         content: error
+    //     });
+    // }
 }
 
 /** Chỉnh sửa đơn vị phối hợp */
@@ -779,7 +813,8 @@ editEmployeeCollaboratedWithOrganizationalUnits = async (req, res) => {
         let log = {
             createdAt: Date.now(),
             creator: req.user._id,
-            title: "Phân công công việc"
+            title: "Phân công công việc",
+            description: data.descriptionLogs
         }
         await PerformTaskService.addTaskLog(req.portal, req.params, log);
 

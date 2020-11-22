@@ -4,11 +4,11 @@ import { withTranslate } from "react-redux-multilingual";
 import ValidationHelper from "../../../../../helpers/validationHelper";
 import CreateBonusGoods from "./createBonusGoods";
 import CreateDiscountOnGoods from "./createDiscountOnGoods";
+import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import { DialogModal, DatePicker, ButtonModal, ErrorLabel, SelectBox } from "../../../../../common-components";
 import "./discount.css";
 import CollapsibleShowDiscountOnGoods from "./collapsibleShowDiscountOnGoods";
 import CollapsibleShowBonusGoods from "./collapsibleShowBonusGoods";
-import { translate } from "react-redux-multilingual/lib/utils";
 
 class DiscountCreateDetail extends Component {
     constructor(props) {
@@ -50,6 +50,19 @@ class DiscountCreateDetail extends Component {
         }
     }
 
+    shouldComponentUpdate = (nextProps, nextState) => {
+        if (nextProps.discountCode !== this.props.discountCode) {
+            this.setState({
+                bonusGoods: [],
+                discountOnGoods: [],
+                goods: [],
+                editDiscountDetail: false,
+            });
+            return false;
+        }
+        return true;
+    };
+
     getAllGoods = () => {
         const { translate, goods } = this.props;
         const { selectAll } = this.state;
@@ -90,6 +103,7 @@ class DiscountCreateDetail extends Component {
     };
 
     handleSubmitBonusGoods = (dataSubmit) => {
+        console.log("Data bonus", dataSubmit);
         this.setState({
             bonusGoods: dataSubmit,
         });
@@ -358,7 +372,7 @@ class DiscountCreateDetail extends Component {
         if (formality != 5) {
             discountOnGoods = goods.map((item) => {
                 return {
-                    good: item,
+                    good: { _id: item },
                 };
             });
         }
@@ -447,11 +461,10 @@ class DiscountCreateDetail extends Component {
     };
 
     handleEditDiscountDetail = (discountDetail, index) => {
-        console.log("DISCOUNT DETAIL", discountDetail);
         let { formality } = this.props;
         let goods = [];
         if (formality !== 5 && discountDetail.discountOnGoods && discountDetail.discountOnGoods.length) {
-            goods = discountDetail.discountOnGoods.map((item) => item.good);
+            goods = discountDetail.discountOnGoods.map((item) => item.good._id);
         }
 
         this.setState({
@@ -464,7 +477,7 @@ class DiscountCreateDetail extends Component {
             maximumFreeShippingCost: discountDetail.maximumFreeShippingCost,
             maximumDiscountedCash: discountDetail.maximumDiscountedCash,
             bonusGoods: discountDetail.bonusGoods,
-            discountOnGoods: discountDetail.discountOnGoods,
+            discountOnGoods: formality == 5 ? discountDetail.discountOnGoods : [],
             goods,
             indexEditting: index,
             editDiscountDetail: true,
@@ -651,6 +664,8 @@ class DiscountCreateDetail extends Component {
                     actionType={this.props.actionType}
                     bonusGoods={bonusGoods}
                     editDiscountDetail={editDiscountDetail}
+                    discountCode={this.props.discountCode}
+                    indexEdittingDiscount={this.state.indexEditting}
                 />
                 <CreateDiscountOnGoods
                     handleSubmitDiscountOnGoods={(data) => this.handleSubmitDiscountOnGoods(data)}
@@ -658,6 +673,9 @@ class DiscountCreateDetail extends Component {
                     formality={this.props.formality}
                     actionType={this.props.actionType}
                     discountOnGoods={discountOnGoods}
+                    editDiscountDetail={editDiscountDetail}
+                    discountCode={this.props.discountCode}
+                    indexEdittingDiscount={this.state.indexEditting}
                 />
                 {discountType >= 0 && formality >= 0 ? (
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -938,8 +956,12 @@ class DiscountCreateDetail extends Component {
                                                 <tr key={index}>
                                                     <td>{index + 1}</td>
                                                     <td>{item.customerType}</td>
-                                                    <td>{item.minimumThresholdToBeApplied}</td>
-                                                    <td>{item.maximumThresholdToBeApplied}</td>
+                                                    <td>
+                                                        {item.minimumThresholdToBeApplied ? formatCurrency(item.minimumThresholdToBeApplied) : ""}
+                                                    </td>
+                                                    <td>
+                                                        {item.maximumThresholdToBeApplied ? formatCurrency(item.maximumThresholdToBeApplied) : ""}
+                                                    </td>
                                                     {discountType == "1" && item.discountOnGoods ? (
                                                         <td className="discount-create-goods-block-td">
                                                             <a>{"Có " + item.discountOnGoods.length + " mặt hàng"}</a>

@@ -9,6 +9,7 @@ import { DepartmentActions } from '../../../../super-admin/organizational-unit/r
 import DocumentInformation from '../../user/documents/documentInformation';
 import { DocumentActions } from '../../../redux/actions';
 
+import { getStorage } from "../../../../../config";
 import CreateForm from './createForm';
 import EditForm from './editForm';
 import ListView from './listView';
@@ -43,9 +44,10 @@ class Table extends Component {
     }
 
     componentDidMount() {
-        this.props.getAllDocuments({ calledId: "all" });
-        this.props.getAllDocuments({ page: this.state.page, limit: this.state.limit, calledId: "paginate" });
-        this.props.getAllDocuments({ page: this.state.page, limit: this.state.limit, calledId: "relationshipDocs" });
+        const currentPage = window.location.pathname;
+        this.props.getAllDocuments({ calledId: "all", by: currentPage === '/documents/organizational-unit' ? 'organizational-unit' : undefined});
+        this.props.getAllDocuments({ page: this.state.page, limit: this.state.limit, calledId: "paginate", by: currentPage === '/documents/organizational-unit' ? 'organizational-unit' : undefined });
+        this.props.getAllDocuments({ page: this.state.page, limit: this.state.limit, calledId: "relationshipDocs", by: currentPage === '/documents/organizational-unit' ? 'organizational-unit' : undefined });
         this.props.getAllRoles();
         this.props.getAllDepartments();
         this.props.getDocumentDomains();
@@ -132,7 +134,6 @@ class Table extends Component {
         return result;
     }
     handleCategoryChange = (value) => {
-        console.log('vaaaaaaaaaaa', value)
         this.setState(state => {
             return {
                 ...state,
@@ -141,7 +142,6 @@ class Table extends Component {
         })
     }
     handleDomainChange = (value) => {
-        console.log('dooooooooooo', value)
         this.setState(state => {
             return {
                 ...state,
@@ -160,7 +160,6 @@ class Table extends Component {
         })
     }
     handleArchiveChange = (value) => {
-        console.log('arrrrrrrr', value)
         this.setState(state => {
             return {
                 ...state,
@@ -389,11 +388,12 @@ class Table extends Component {
         return exportData
     }
     setPage = async (page) => {
+        const currentPage = window.location.pathname;
         this.setState({ page });
         const data = {
             limit: this.state.limit,
             page: page,
-            calledId: "paginate"
+            calledId: "paginate", by: currentPage === '/documents/organizational-unit' ? 'organizational-unit' : undefined
         };
         await this.props.getAllDocuments(data);
     }
@@ -408,14 +408,16 @@ class Table extends Component {
 
     }
     setLimit = (number) => {
+        const currentPage = window.location.pathname;
         if (this.state.limit !== number) {
             this.setState({ limit: number });
-            const data = { limit: number, page: this.state.page, calledId: "paginate" };
+            const data = { limit: number, page: this.state.page, calledId: "paginate", by: currentPage === '/documents/organizational-unit' ? 'organizational-unit' : undefined };
             this.props.getAllDocuments(data);
         }
     }
 
     searchWithOption = async () => {
+        const currentPage = window.location.pathname;
         let path = this.state.archive ? this.findPath(this.state.archive) : "";
         const data = {
             limit: this.state.limit,
@@ -424,7 +426,7 @@ class Table extends Component {
             category: this.state.category ? this.state.category[0] : "",
             domains: this.state.domain ? this.state.domain : "",
             archives: path && path.length ? path : "",
-            calledId: "paginate"
+            calledId: "paginate", by: currentPage === '/documents/organizational-unit' ? 'organizational-unit' : undefined
         };
         await this.props.getAllDocuments(data);
     }
@@ -441,7 +443,6 @@ class Table extends Component {
         const listDomain = domains.list
         const listArchive = archives.list;
         const listCategory = this.convertData(categories.list)
-        console.log('caaaaaaaaa', listDomain, listArchive);
         let list = [];
         if (isLoading === false) {
             list = docs.paginate;

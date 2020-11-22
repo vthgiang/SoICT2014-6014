@@ -3,71 +3,11 @@ import { RecommendDistributeService } from "./services";
 import { AssetManagerActions } from "../../asset-information/redux/actions";
 
 export const UseRequestActions = {
-    searchRecommendDistributes,
-    updateRecommendDistribute,
     createUsage,
     updateUsage,
     deleteUsage,
     recallAsset,
 };
-
-// Lấy danh sách phiếu đề nghị mua sắm thiết bị
-function searchRecommendDistributes(data) {
-    return async (dispatch) => {
-        try {
-            const result = await RecommendDistributeService.searchRecommendDistributes(data);
-            dispatch({
-                type: RecommendDistributeConstants.GET_RECOMMEND_DISTRIBUTE_SUCCESS,
-                payload: result.data.content
-            })
-
-        } catch (error) {
-            dispatch({
-                type: RecommendDistributeConstants.GET_RECOMMEND_DISTRIBUTE_FAILURE,
-                error: error.response.data
-            });
-        }
-    };
-}
-
-// Cập nhật thông tin phiếu đăng ký sử dụng
-function updateRecommendDistribute(id, infoRecommendDistribute) {
-    return async dispatch => {
-        try {
-            dispatch({
-                type: RecommendDistributeConstants.UPDATE_RECOMMEND_DISTRIBUTE_REQUEST
-            });
-            const response = await RecommendDistributeService.updateRecommendDistribute(id, infoRecommendDistribute)
-            dispatch(searchRecommendDistributes({
-                recommendNumber: "",
-                month: "",
-                status: "",
-                page: 0,
-                limit: 5,
-            }));
-            dispatch(AssetManagerActions.getAllAsset({
-                code: "",
-                assetName: "",
-                month: "",
-                type: null,
-                page: 0,
-                limit: 5,
-            }));
-            dispatch({
-                type: RecommendDistributeConstants.UPDATE_RECOMMEND_DISTRIBUTE_SUCCESS,
-                payload: response.data.content
-            });
-            return {
-                response
-            }
-        } catch (err) {
-            dispatch({
-                type: RecommendDistributeConstants.UPDATE_RECOMMEND_DISTRIBUTE_FAILURE,
-                error: err.response.data
-            });
-        }
-    }
-}
 
 function createUsage(id, data) {
     return async dispatch => {

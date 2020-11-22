@@ -223,7 +223,14 @@ class SideBar extends Component {
                             />
                             <Item
                                 item={{
-                                    name: "menu.manage_document",
+                                    name: "menu.documents_og",
+                                    icon: "fa fa-folder-open",
+                                    path: "/documents/organizational-unit",
+                                }}
+                            />
+                            <Item
+                                item={{
+                                    name: "menu.documents",
                                     icon: "fa fa-file-text",
                                     path: "/documents",
                                 }}
@@ -714,6 +721,13 @@ class SideBar extends Component {
                                             icon: "fa fa-calendar",
                                             path:
                                                 "/manage-work-schedule",
+                                        },
+                                        {
+                                            name:
+                                                "menu.manage_manufacturing_lot",
+                                            icon: "fa fa-navicon",
+                                            path:
+                                                "/manage-manufacturing-lot",
                                         },
                                         {
                                             name:

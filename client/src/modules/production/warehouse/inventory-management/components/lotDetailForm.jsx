@@ -121,8 +121,8 @@ class LotDetailForm extends Component {
                                                         <td>{index + 1}</td>
                                                         {x.bill ? <td><a href="#" onClick={() => this.handleShowDetailInfo(x.bill._id)}>{x.bill.code}</a></td> : <td></td>}
                                                         <td>{this.formatDate(x.createdAt)}</td>
-                                                        <td>{x.type}</td>
-                                                        <td>{x.quantity}</td>
+                                                        <td>{x.bill ? translate(`manage_warehouse.bill_management.billType.${x.bill.type}`) : ''}</td>
+                                                        <td>{x.quantity ? x.quantity : 0}</td>
                                                         <td>{x.stock ? x.stock.name : ""}</td>
                                                         {/* <td>{x.binLocations ? x.binLocations.map((item, index) => <p key={index}>{item.binLocation.path} ({item.quantity})</p>) : ""}</td> */}
                                                         <td></td>

@@ -42,19 +42,19 @@ export function taxs(state = initState, action) {
                     isLoading: true
                 }
             case TaxConstants.GET_ALL_TAXS_FAILURE:
-                case TaxConstants.CREATE_TAX_FAILURE:
-                case TaxConstants.GET_DETAIL_TAX_FAILURE:
-                case TaxConstants.UPDATE_TAX_FAILURE:
-                case TaxConstants.DISABLE_TAX_FAILURE:
-                case TaxConstants.CHECK_TAX_CODE_FAILURE:
-                case TaxConstants.GET_TAX_BY_CODE_FAILURE:
-                case TaxConstants.DELETE_TAX_BY_CODE_FAILURE:
+            case TaxConstants.CREATE_TAX_FAILURE:
+            case TaxConstants.GET_DETAIL_TAX_FAILURE:
+            case TaxConstants.UPDATE_TAX_FAILURE:
+            case TaxConstants.DISABLE_TAX_FAILURE:
+            case TaxConstants.CHECK_TAX_CODE_FAILURE:
+            case TaxConstants.GET_TAX_BY_CODE_FAILURE:
+            case TaxConstants.DELETE_TAX_BY_CODE_FAILURE:
                 return {
                     ...state,
                     isLoading: false,
                     error: action.error
                 }
-        case TaxConstants.GET_ALL_TAXS_SUCCESS:
+            case TaxConstants.GET_ALL_TAXS_SUCCESS:
                 return {
                     ...state,
                     isLoading: false,
@@ -124,7 +124,7 @@ export function taxs(state = initState, action) {
                     ...state,
                     listTaxsByCode: action.payload.taxs,
                     isLoading: false
-                }
+            }
             default:
                 return state
     }

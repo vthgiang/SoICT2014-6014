@@ -9,7 +9,8 @@ export const GoodActions = {
     createGoodByType,
     editGood,
     getGoodDetail,
-    deleteGood
+    deleteGood,
+    getItemsForGood
 }
 
 function getGoodsByType(data = undefined){
@@ -194,6 +195,59 @@ function deleteGood(id){
         .catch(err => {
             dispatch({
                 type: GoodConstants.UPDATE_GOOD_FAILURE,
+                error: err
+            })
+        })
+    }
+}
+
+function getTaxByGoodsId(goodId) {
+    return new Promise((resolve, reject) => {
+        GoodServices.getTaxByGoodsId(goodId).then(res => { console.log("res.data.content", res.data.content); resolve(res.data.content) }).catch(err => {
+            reject(err)
+        })
+    })
+}
+
+function getSlaByGoodsId(goodId) {
+    return new Promise((resolve, reject) => {
+        GoodServices.getSlaByGoodsId(goodId).then(res => { console.log("res.data.content", res.data.content); resolve(res.data.content) }).catch(err => {
+            reject(err)
+        })
+    })
+}
+
+function getDiscountByGoodsId(goodId) {
+    return new Promise((resolve, reject) => {
+        GoodServices.getDiscountByGoodsId(goodId).then(res => { console.log("res.data.content", res.data.content); resolve(res.data.content) }).catch(err => {
+            reject(err)
+        })
+    })
+}
+
+function getItemsForGood(goodId) {
+    return dispatch => {
+        dispatch({
+            type: GoodConstants.GET_ITEMS_FOR_GOOD_REQUEST
+        })
+        Promise.all([
+            getTaxByGoodsId(goodId),
+            getSlaByGoodsId(goodId),
+            getDiscountByGoodsId(goodId)
+        ])
+            .then(res => {
+            dispatch({
+                type: GoodConstants.GET_ITEMS_FOR_GOOD_SUCCESS,
+                payload: {
+                    listTaxsByGoodId: res[0].taxs,
+                    listSlasByGoodId: res[1].slas,
+                    listDiscountsByGoodId: res[2].discounts
+                }
+            })
+        })
+        .catch(err => {
+            dispatch({
+                type: GoodConstants.GET_ITEMS_FOR_GOOD_FAILURE,
                 error: err
             })
         })

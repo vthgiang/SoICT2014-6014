@@ -11,8 +11,8 @@ class GoodReceiptCreateForm extends Component {
         super(props);
         this.EMPTY_GOOD = {
             good: '',
-            quantity: '',
-            returnQuantity: '',
+            quantity: 0,
+            returnQuantity: 0,
             description: '',
             lots: []
         }
@@ -41,7 +41,8 @@ class GoodReceiptCreateForm extends Component {
                 text: item.code + " -- " + item.name,
                 code: item.code,
                 name: item.name,
-                baseUnit: item.baseUnit
+                baseUnit: item.baseUnit,
+                type: item.type
             })
         })
 
@@ -54,7 +55,7 @@ class GoodReceiptCreateForm extends Component {
         const lotName = generateCode("LOT");
         this.state.good.quantity = 0;
         let goodName = dataGoods.find(x => x.value === good);
-        this.state.good.good = { _id: good, code: goodName.code, name: goodName.name, baseUnit: goodName.baseUnit };
+        this.state.good.good = { _id: good, code: goodName.code, name: goodName.name, baseUnit: goodName.baseUnit, type: goodName.type };
         await this.setState(state => {
             return {
                 ...state,
@@ -617,6 +618,7 @@ class GoodReceiptCreateForm extends Component {
                                                     <th title={translate('manage_warehouse.bill_management.unit')}>{translate('manage_warehouse.bill_management.unit')}</th>
                                                     <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
                                                     <th title={translate('manage_warehouse.bill_management.note')}>{translate('manage_warehouse.bill_management.note')}</th>
+                                                    <th>{translate('task_template.action')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody id={`good-bill-create`}>

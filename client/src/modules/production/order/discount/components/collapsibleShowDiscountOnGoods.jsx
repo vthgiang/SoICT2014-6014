@@ -19,6 +19,7 @@ class CollapsibleShowDiscountOnGoods extends Component {
 
     render() {
         let { discountOnGoods } = this.props;
+        console.log("discountOnGoods", discountOnGoods);
         const { visible } = this.state;
         return (
             <React.Fragment>
@@ -37,8 +38,8 @@ class CollapsibleShowDiscountOnGoods extends Component {
                                 return (
                                     <>
                                         <li className="discount-on-goods-collapsible-li">
-                                            <div className="discount-on-goods-collapsible-code">{item.code}</div>
-                                            <div className="discount-on-goods-collapsible-name">{item.name}</div>
+                                            <div className="discount-on-goods-collapsible-code">{item.good.code}</div>
+                                            <div className="discount-on-goods-collapsible-name">{item.good.name}</div>
                                             <div className="discount-on-goods-collapsible-price">{item.discountedPrice}</div>
                                             <div className="discount-on-goods-collapsible-date">{item.expirationDate}</div>
                                         </li>

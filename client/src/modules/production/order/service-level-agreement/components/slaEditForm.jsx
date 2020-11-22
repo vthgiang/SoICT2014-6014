@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { generateCode } from "../../../../../helpers/generateCode";
-import { SLAActions } from "../redux/actions";
+import { SlaActions } from "../redux/actions";
 import { DialogModal, SelectMulti, ButtonModal, ErrorLabel, SelectBox } from "../../../../../common-components";
 import ValidationHelper from "../../../../../helpers/validationHelper";
 
@@ -403,7 +403,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    updateSLA: SLAActions.updateSLA,
+    updateSLA: SlaActions.updateSLA,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(SlaEditForm));

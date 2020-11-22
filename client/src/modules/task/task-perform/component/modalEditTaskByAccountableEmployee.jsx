@@ -21,6 +21,9 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
         let { task } = this.props;
 
+        let organizationalUnit = task && task.organizationalUnit?._id;
+        let collaboratedWithOrganizationalUnits = task && task.collaboratedWithOrganizationalUnits.map(e => { if (e) return e.organizationalUnit._id });
+
         let statusOptions = []; statusOptions.push(task && task.status);
         let priorityOptions = []; priorityOptions.push(task && task.priority);
         let taskName = task && task.name;
@@ -115,6 +118,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
             info: info,
             taskName: taskName,
             taskDescription: taskDescription,
+            organizationalUnit: organizationalUnit,
+            collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits,
             statusOptions: statusOptions,
             priorityOptions: priorityOptions,
             progress: progress,
@@ -727,6 +732,16 @@ class ModalEditTaskByAccountableEmployee extends Component {
         });
     }
 
+    handleChangeCollaboratedWithOrganizationalUnits = async (value) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                collaboratedWithOrganizationalUnits: value
+            };
+        });
+        console.log('new edit Task', this.state);
+    }
+
     handleSelectedStatus = (value) => {
         this.setState(state => {
             return {
@@ -783,7 +798,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
     handleAddTaskLog = (inactiveEmployees) => {
         let currentTask = this.state.task;
-        let { taskName, taskDescription, statusOptions, priorityOptions, progress, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees } = this.state;
+        let { taskName, organizationalUnit, collaboratedWithOrganizationalUnits, taskDescription, statusOptions, priorityOptions, progress, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees } = this.state;
 
         let title = '';
         let description = '';
@@ -800,8 +815,11 @@ class ModalEditTaskByAccountableEmployee extends Component {
             }
         }
 
+        let previousCollaboratedUnit = currentTask.collaboratedWithOrganizationalUnits;
+
         if (statusOptions[0] !== currentTask.status ||
             priorityOptions[0] !== currentTask.priority ||
+            JSON.stringify(previousCollaboratedUnit.map(e => { if (e) return e.organizationalUnit._id })) !== JSON.stringify(collaboratedWithOrganizationalUnits) ||
             JSON.stringify(responsibleEmployees) !== JSON.stringify(currentTask.responsibleEmployees.map(employee => { return employee._id })) ||
             JSON.stringify(accountableEmployees) !== JSON.stringify(currentTask.accountableEmployees.map(employee => { return employee._id })) ||
             JSON.stringify(consultedEmployees) !== JSON.stringify(currentTask.consultedEmployees.map(employee => { return employee._id })) ||
@@ -813,6 +831,14 @@ class ModalEditTaskByAccountableEmployee extends Component {
             if (user.usercompanys) usercompanys = user.usercompanys;
 
             title = title === '' ? title + 'Chỉnh sửa thông tin chi tiết' : title + '. ' + 'Chỉnh sửa thông tin chi tiết';
+
+            if (JSON.stringify(previousCollaboratedUnit) !== JSON.stringify(collaboratedWithOrganizationalUnits)) {
+                let collabUnitNameArr = [];
+                for (const element of previousCollaboratedUnit) {
+                    collabUnitNameArr.push(element.organizationalUnit.name)
+                }
+                description = description === '' ? description + 'Những đơn vị phối hợp thực hiện công việc mới: ' + JSON.stringify(collabUnitNameArr) : description + '. ' + 'Những đơn vị phối hợp thực hiện công việc mới: ' + JSON.stringify(collabUnitNameArr);
+            }
 
             if (statusOptions[0] !== currentTask.status) {
                 description = description === '' ? description + 'Trạng thái công việc mới: ' + this.formatStatus(statusOptions[0]) : description + '. ' + 'Trạng thái công việc mới: ' + this.formatStatus(statusOptions[0]);
@@ -905,6 +931,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             startDate: this.state.startDate,
             endDate: this.state.endDate,
 
+            collaboratedWithOrganizationalUnits: this.state.collaboratedWithOrganizationalUnits,
             accountableEmployees: this.state.accountableEmployees,
             consultedEmployees: this.state.consultedEmployees,
             responsibleEmployees: this.state.responsibleEmployees,
@@ -943,9 +970,10 @@ class ModalEditTaskByAccountableEmployee extends Component {
     }
 
     render() {
+        console.log('new edit Task', this.state);
 
-        const { user, tasktemplates, translate } = this.props;
-        const { task, errorOnEndDate, errorOnStartDate, errorTaskName, errorTaskDescription, errorOnFormula, taskName, taskDescription, statusOptions, priorityOptions,
+        const { user, tasktemplates, department, translate } = this.props;
+        const { task, organizationalUnit, collaboratedWithOrganizationalUnits, errorOnEndDate, errorOnStartDate, errorTaskName, errorTaskDescription, errorOnFormula, taskName, taskDescription, statusOptions, priorityOptions,
             startDate, endDate, formula, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, inactiveEmployees, parent, parentTask
         } = this.state;
 
@@ -999,6 +1027,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
         }
         let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
+        let listDepartment = department?.list;
 
         return (
             <div>
@@ -1054,6 +1083,26 @@ class ModalEditTaskByAccountableEmployee extends Component {
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('task.task_management.edit_detail_info')}</legend>
                                 <div>
+
+                                    {/* Đơn vị phối hợp thực hiện công việc */}
+                                    {listDepartment &&
+                                        <div className="form-group">
+                                            <label>{translate('task.task_management.collaborated_with_organizational_units')}</label>
+                                            <SelectBox
+                                                id={`editMultiSelectUnitThatHaveCollaborated-${perform}-${role}`}
+                                                lassName="form-control select2"
+                                                style={{ width: "100%" }}
+                                                items={listDepartment.filter(item => item._id !== organizationalUnit).map(x => {
+                                                    return { text: x.name, value: x._id }
+                                                })}
+                                                options={{ placeholder: translate('kpi.evaluation.dashboard.select_units') }}
+                                                onChange={this.handleChangeCollaboratedWithOrganizationalUnits}
+                                                value={collaboratedWithOrganizationalUnits}
+                                                multiple={true}
+                                            />
+                                        </div>
+                                    }
+
                                     <div className="form-group">
                                         <label>{translate('task.task_management.detail_status')}</label>
                                         {
@@ -1114,13 +1163,14 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                     <ErrorLabel content={errorOnFormula} />
 
                                     <br />
-                                    <div><span style={{ fontWeight: 800 }}>Ví dụ: </span>progress/(dayUsed/totalDay) - (10-averageActionRating)*10</div>
+                                    <div><span style={{ fontWeight: 800 }}>Ví dụ: </span>progress / (dayUsed / totalDay) - (numberOfFailedAction / (numberOfFailedAction + numberOfPassedAction)) * 100</div>
                                     <br />
                                     <div><span style={{ fontWeight: 800 }}>{translate('task_template.parameters')}:</span></div>
                                     <div><span style={{ fontWeight: 600 }}>overdueDate</span> - Thời gian quá hạn (ngày)</div>
                                     <div><span style={{ fontWeight: 600 }}>dayUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
                                     <div><span style={{ fontWeight: 600 }}>totalDay</span> - Thời gian từ ngày bắt đầu đến ngày kết thúc công việc (ngày)</div>
-                                    <div><span style={{ fontWeight: 600 }}>averageActionRating</span> -  Trung bình cộng điểm đánh giá hoạt động (1-10)</div>
+                                    <div><span style={{ fontWeight: 600 }}>numberOfFailedAction</span> - Số hoạt động không đạt (rating &lt; 5)</div>
+                                    <div><span style={{ fontWeight: 600 }}>numberOfPassedAction</span> - Số hoạt động đạt (rating &ge; 5)</div>
                                     <div><span style={{ fontWeight: 600 }}>progress</span> - % Tiến độ công việc (0-100)</div>
                                     <div><span style={{ fontWeight: 600 }}>p1, p2,...</span> - Thông tin công việc kiểu số (Chỉ có với các công việc theo mẫu)</div>
                                 </div>
@@ -1293,8 +1343,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
 }
 
 function mapStateToProps(state) {
-    const { tasks, user, tasktemplates, performtasks } = state;
-    return { tasks, user, tasktemplates, performtasks };
+    const { tasks, user, tasktemplates, performtasks, department } = state;
+    return { tasks, user, tasktemplates, performtasks, department };
 }
 
 const actionGetState = { //dispatchActionToProps

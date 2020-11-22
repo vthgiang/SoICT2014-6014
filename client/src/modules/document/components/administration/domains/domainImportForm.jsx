@@ -31,25 +31,28 @@ class DomainImportForm extends Component {
     handleImportExcel = (value, checkFileImport) => {
         let values = [];
         let showValues = [];
-        let k = -1;
+        let k = 0;
+
         for (let i in value) {
             let x = value[i];
             if (x.name) {
-                values = [...value, {
-                    "STT": k + 1,
+                values = [...values, {
+                    "STT": k,
                     "name": x.name,
                     "description": x.description,
                     "parent": x.parent,
 
                 }];
                 showValues = [...showValues, {
-                    "STT": k + 1,
+                    "STT": k,
                     "name": x.name,
                     "description": x.description,
                     "parent": x.parent,
 
                 }]
+                k++;
             }
+
         }
         value = values;
         if (checkFileImport) {
@@ -86,6 +89,7 @@ class DomainImportForm extends Component {
         this.props.importDomain(importShowData);
     }
     render() {
+        const { translate } = this.props;
         let { limit, page, importData, rowError, configData, checkFileImport } = this.state;
 
         return (
@@ -107,6 +111,7 @@ class DomainImportForm extends Component {
                         />
                         <div className="row">
                             <div className="form-group col-md-4 col-xs-12">
+                                <label>{translate('human_resource.choose_file')}</label>
                                 <ImportFileExcel
                                     configData={configData}
                                     handleImportExcel={this.handleImportExcel}

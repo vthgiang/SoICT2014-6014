@@ -5,7 +5,8 @@ export const DiscountServices = {
     getAllDiscounts,
     editDiscount,
     changeDiscountStatus,
-    deleteDiscountByCode
+    deleteDiscountByCode,
+    getDiscountForOrderValue
 }
 
 function createNewDiscount(data) {
@@ -62,4 +63,15 @@ function deleteDiscountByCode(code) {
         true,
         "manage_order.discount"
     )
+}
+
+function getDiscountForOrderValue() {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/discount/get-by-order-value`,
+            method: "GET"
+        },
+        false,
+        true,
+        "manage_order.discount")
 }

@@ -153,7 +153,6 @@ exports.createOrUpdateLots = async (data, portal) => {
             let expirationDate = new Date(date[2], date[1] - 1, date[0]);
             let lot = await Lot(connect(DB_CONNECTION, portal)).find({ name: data.lots[i].name });
             if(lot && lot.length > 0) {
-                console.log("xxx");
                 lot[0].stocks[0].stock = data.stock;
                 lot[0].stocks[0].quantity = data.lots[i].quantity;
                 lot[0].originalQuantity = data.lots[i].quantity;
@@ -210,6 +209,13 @@ exports.createOrUpdateLots = async (data, portal) => {
     }
 
     return lots;
+}
+
+exports.deleteManyLots = async (arrayId, portal) => {
+    for(let i = 0; i < arrayId.length; i++) {
+        await Lot(connect(DB_CONNECTION, portal)).deleteOne({ _id: arrayId[i] });
+    }
+    return arrayId;
 }
 
 exports.editLot = async (id, data, portal) => {

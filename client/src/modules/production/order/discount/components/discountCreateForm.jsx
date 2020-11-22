@@ -166,9 +166,50 @@ class DiscountCreateForm extends Component {
         return true;
     };
 
+    getFieldsForDiscounts = () => {
+        let { discounts } = this.state;
+        let discountsMap = discounts.map((item) => {
+            let discount = {};
+
+            discount.discountedCash = item.discountedCash;
+            discount.discountedPercentage = item.discountedPercentage;
+            discount.loyaltyCoin = item.loyaltyCoin;
+            discount.maximumFreeShippingCost = item.maximumFreeShippingCost;
+            discount.maximumDiscountedCash = item.maximumDiscountedCash;
+            discount.minimumThresholdToBeApplied = item.minimumThresholdToBeApplied;
+            discount.maximumThresholdToBeApplied = item.maximumThresholdToBeApplied;
+            discount.customerType = item.customerType;
+
+            if (item.bonusGoods && item.bonusGoods.length !== 0) {
+                discount.bonusGoods = item.bonusGoods.map((good) => {
+                    return {
+                        good: good.good ? good.good._id : undefined,
+                        expirationDateOfGoodBonus: good.expirationDateOfGoodBonus
+                            ? new Date(formatToTimeZoneDate(good.expirationDateOfGoodBonus))
+                            : undefined,
+                        quantityOfBonusGood: good.quantityOfBonusGood,
+                    };
+                });
+            }
+            if (item.discountOnGoods && item.discountOnGoods.length !== 0) {
+                discount.discountOnGoods = item.discountOnGoods.map((good) => {
+                    return {
+                        good: good.good ? good.good._id : undefined,
+                        expirationDate: good.expirationDate ? new Date(formatToTimeZoneDate(good.expirationDate)) : undefined,
+                        discountedPrice: good.discountedPrice ? good.discountedPrice : undefined,
+                    };
+                });
+            }
+
+            return discount;
+        });
+
+        return discountsMap;
+    };
+
     save = async () => {
         if (this.isFormValidated()) {
-            let { code, name, effectiveDate, expirationDate, discountType, formality, description, discounts } = this.state;
+            let { code, name, effectiveDate, expirationDate, discountType, formality, description } = this.state;
             const data = {
                 code,
                 name,
@@ -177,7 +218,7 @@ class DiscountCreateForm extends Component {
                 type: discountType,
                 formality,
                 description,
-                discounts,
+                discounts: this.getFieldsForDiscounts(),
             };
             await this.props.createNewDiscount(data);
             this.setState({
@@ -324,6 +365,7 @@ class DiscountCreateForm extends Component {
                             discounts={discounts}
                             onChangeDiscounts={(data) => this.onChangeDiscounts(data)}
                             actionType="create"
+                            discountCode={code}
                         />
                     </form>
                 </DialogModal>

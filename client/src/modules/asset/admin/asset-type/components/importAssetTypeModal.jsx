@@ -136,7 +136,9 @@ class ImportAssetTypeModal extends Component {
     }
 
     render() {
+        const { translate } = this.props;
         const { configData, importData, rowError, checkFileImport, limit, page } = this.state;
+        
         let importDataTemplate = this.convertDataExport(importAssetTypeTemplate);
 
         return (
@@ -158,6 +160,7 @@ class ImportAssetTypeModal extends Component {
                         />
                         <div className="row">
                             <div className="form-group col-md-6 col-xs-6">
+                                <label>{translate('human_resource.choose_file')}</label>
                                 <ImportFileExcel
                                     configData={configData}
                                     handleImportExcel={this.handleImportExcel}

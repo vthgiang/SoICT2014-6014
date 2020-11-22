@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-const LotSchema = new Schema ({
+const LotSchema = new Schema({
 
     name: {
         type: String,
@@ -27,11 +27,6 @@ const LotSchema = new Schema ({
 
         quantity: {
             type: Number
-        },
-
-        expectedNumber: {
-            type: Number,
-            default: 0
         },
 
         binLocations: [{
@@ -129,13 +124,39 @@ const LotSchema = new Schema ({
         description: {
             type: String
         }
-    }]
+    }],
+
+    /* 
+        Các thuộc tính thêm để làm phần lô sản xuất
+    */
+    manufacturingCommand: {
+        type: Schema.Types.ObjectId,
+        ref: 'ManufacturingCommand'
+    },
+
+    lotType: { // Loại lô 1. Lô sản xuất 2. Lô nhập kho
+        type: Number
+    },
+
+    finishedProductQuantity: { // Số lượng thành phẩm
+        type: Number
+    },
+
+    substandardProductQuantity: { // Số lượng phế phẩm
+        type: Number
+    },
+    status: { // 1. Chưa được xử lý 2. Đã được xử lý
+        type: Number
+    }
+
+}, {
+    timestamps: true
 });
 
 LotSchema.plugin(mongoosePaginate);
 
 module.exports = (db) => {
-    if(!db.models.Lot)
+    if (!db.models.Lot)
         return db.model('Lot', LotSchema);
     return db.models.Lot;
 }
