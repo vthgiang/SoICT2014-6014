@@ -20,6 +20,7 @@ function searchTimesheets(data) {
         params: {
             employeeId: data.employeeId,
             organizationalUnits: data.organizationalUnits,
+            employeeName: data.employeeName,
             employeeNumber: data.employeeNumber,
             startDate: data.startDate,
             endDate: data.endDate,

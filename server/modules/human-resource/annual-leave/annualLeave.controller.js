@@ -23,6 +23,7 @@ exports.searchAnnualLeaves = async (req, res) => {
             let params = {
                 organizationalUnits: req.query.organizationalUnits,
                 employeeNumber: req.query.employeeNumber,
+                employeeName: req.query.employeeName,
                 month: req.query.month,
                 status: req.query.status,
                 page: Number(req.query.page),

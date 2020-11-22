@@ -8,6 +8,7 @@ exports.searchSalaries = async (req, res) => {
         if (req.query.page !== undefined && req.query.limit !== undefined) {
             let params = {
                 organizationalUnits: req.query.organizationalUnits,
+                employeeName: req.query.employeeName,
                 employeeNumber: req.query.employeeNumber,
                 month: req.query.month,
                 page: Number(req.query.page),

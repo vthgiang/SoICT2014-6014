@@ -23,6 +23,7 @@ function searchAnnualLeaves(data) {
             organizationalUnits: data.organizationalUnits,
             year: data.year,
             employeeNumber: data.employeeNumber,
+            employeeName: data.employeeName,
             month: data.month,
             page: data.page,
             status: data.status,

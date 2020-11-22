@@ -31,6 +31,7 @@ class CommendationManagement extends Component {
             type: null,
             decisionNumber: "",
             employeeNumber: "",
+            employeeName: "",
             organizationalUnits: organizationalUnits,
             page: 0,
             limit: 5,
@@ -231,24 +232,35 @@ class CommendationManagement extends Component {
                                 items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
                         </div>
+                        {/* Số quyết định */}
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('human_resource.commendation_discipline.commendation.table.decision_number')}</label>
+                            <input type="text" className="form-control" name="decisionNumber" onChange={this.handleChange} placeholder={translate('human_resource.commendation_discipline.commendation.table.decision_number')} autoComplete="off" />
+                        </div>
+
+                    </div>
+                    <div className="form-inline">
                         {/* Mã nhân viên*/}
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.staff_number')}</label>
                             <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')} autoComplete="off" />
                         </div>
+                        {/* Tên nhân viên  */}
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('human_resource.staff_name')}</label>
+                            <input type="text" className="form-control" name="employeeName" onChange={this.handleChange} placeholder={translate('human_resource.staff_name')} autoComplete="off" />
+                        </div>
                     </div>
 
                     <div className="form-inline" style={{ marginBottom: 10 }}>
-                        {/* Số quyết định */}
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('human_resource.commendation_discipline.commendation.table.decision_number')}</label>
-                            <input type="text" className="form-control" name="decisionNumber" onChange={this.handleChange} placeholder={translate('human_resource.commendation_discipline.commendation.table.decision_number')} autoComplete="off" />
-
-                        </div>
                         {/* Hình thức khen thưởng*/}
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.commendation_discipline.commendation.table.reward_forms_short')}</label>
                             <input type="text" className="form-control" name="type" onChange={this.handleChange} placeholder={translate('human_resource.commendation_discipline.commendation.table.reward_forms')} autoComplete="off" />
+                        </div>
+                        {/* Nút tìm kiếm */}
+                        <div className="form-group">
+                            <label></label>
                             <button type="button" className="btn btn-success" onClick={this.handleSubmitSearch} title={translate('page.add_search')} >{translate('page.add_search')}</button>
                         </div>
                     </div>

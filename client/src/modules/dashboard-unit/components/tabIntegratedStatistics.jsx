@@ -151,7 +151,7 @@ class TabIntegratedStatistics extends Component {
                                                         <td>{index + 1}</td>
                                                         <td>{x.name}</td>
                                                         <td>
-                                                            <div className="clearfix"> <small class="pull-right">{x.totalTask}</small> </div>
+                                                            <div className="clearfix"> <small className="pull-right">{x.totalTask}</small> </div>
                                                             <div className="progress xs">
                                                                 <div style={{ width: `${(x.totalTask / maxTask).toFixed(2) * 100}%` }} className="progress-bar progress-bar-green">
                                                                 </div>

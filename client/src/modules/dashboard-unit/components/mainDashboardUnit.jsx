@@ -2,14 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { TabEmployeeCapacity, TabIntegratedStatistics } from './combinedContent';
+import { TabEmployeeCapacity, TabIntegratedStatistics, TabTask } from './combinedContent';
 import { TabHumanResource, TabSalary, TabAnualLeave } from '../../human-resource/employee-dashboard/components/combinedContent';
 
 import { DatePicker, SelectMulti, LazyLoadComponent, forceCheckOrVisible } from '../../../common-components';
 
 import { EmployeeManagerActions } from '../../human-resource/profile/employee-management/redux/actions';
 import { TimesheetsActions } from '../../human-resource/timesheets/redux/actions';
-import { AnnualLeaveActions } from '../../human-resource/annual-leave/redux/actions';
 import { DisciplineActions } from '../../human-resource/commendation-discipline/redux/actions';
 import { SalaryActions } from '../../human-resource/salary/redux/actions';
 import { taskManagementActions } from '../../task/task-management/redux/actions';
@@ -34,9 +33,15 @@ class MainDashboardUnit extends Component {
         /* Lấy danh sách nhân viên  */
         this.props.getAllEmployee({ organizationalUnits: organizationalUnits, status: 'active' });
 
+        /* Lấy danh sách nhân viên theo tháng sinh*/
+        this.props.getAllEmployee({ status: 'active', page: 0, limit: 10000, birthdate: newMonth, organizationalUnits: organizationalUnits });
+
         /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
         this.props.getAllEmployeeOfUnitByIds(organizationalUnits);
         this.props.getTaskInOrganizationUnitByMonth(organizationalUnits, newMonth, newMonth);
+
+        /** Lấy dữ liệu công việc sắp hết hạn */
+        this.props.getTaskByUser({ organizationUnitId: organizationalUnits, type: "organizationUnit", })
 
         /* Lấy dánh sách khen thưởng, kỷ luật */
         this.props.getListPraise({ organizationalUnits: organizationalUnits, month: newMonth });
@@ -109,20 +114,29 @@ class MainDashboardUnit extends Component {
             monthShow: month
         });
 
+        let arrayUnit = arrayUnitShow;
         if (arrayUnitShow.length === department.list.length) {
-            arrayUnitShow = undefined;
-        };
-
-        if (arrayUnitShow.length == 0) {
-            arrayUnitShow = childOrganizationalUnit.map(x => x.id)
+            arrayUnitShow = department.list.map(x => x._id);
+            arrayUnit = undefined;
+        } else if (arrayUnitShow.length === 0) {
+            arrayUnitShow = childOrganizationalUnit.map(x => x.id);
+            arrayUnit = childOrganizationalUnit.map(x => x.id);
         }
 
+
+
         /* Lấy danh sách nhân viên  */
-        this.props.getAllEmployee({ organizationalUnits: arrayUnitShow, status: 'active' });
+        this.props.getAllEmployee({ organizationalUnits: arrayUnit, status: 'active' });
+
+        /* Lấy danh sách nhân viên theo tháng sinh*/
+        this.props.getAllEmployee({ status: 'active', page: 0, limit: 10000, birthdate: newMonth, organizationalUnits: arrayUnitShow });
 
         /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
         this.props.getAllEmployeeOfUnitByIds(arrayUnitShow);
         this.props.getTaskInOrganizationUnitByMonth(arrayUnitShow, newMonth, newMonth);
+
+        /** Lấy dữ liệu công việc sắp hết hạn */
+        this.props.getTaskByUser({ organizationUnitId: arrayUnitShow, type: "organizationUnit", })
 
         // this.props.searchAnnualLeaves({ organizationalUnits: arrayUnitShow, month: newMonth });
         /* Lấy dánh sách khen thưởng, kỷ luật */
@@ -154,7 +168,7 @@ class MainDashboardUnit extends Component {
 
         const { monthShow, month, organizationalUnits, arrayUnitShow } = this.state;
 
-        let listAllEmployees = (!organizationalUnits || organizationalUnits.length === 0 || organizationalUnits.length === department.list.length) ?
+        let listAllEmployees = (!organizationalUnits || organizationalUnits.length === department.list.length) ?
             employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
 
         /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
@@ -184,14 +198,9 @@ class MainDashboardUnit extends Component {
             })
             employeeTasks = [...employeeTasks, { _id: listEmployee[i].userId._id, name: listEmployee[i].userId.name, totalTask: totalTask.length }]
         };
-
-        /* Lấy tổng số công việc của đơn vị */
-        let totalTask = 0;
         if (employeeTasks.length !== 0) {
             employeeTasks = employeeTasks.sort((a, b) => b.totalTask - a.totalTask);
-            employeeTasks.forEach(x => {
-                totalTask += x.totalTask;
-            })
+
         };
 
         return (
@@ -238,9 +247,9 @@ class MainDashboardUnit extends Component {
                             <div className="info-box with-border">
                                 <span className="info-box-icon bg-yellow"><i className="fa fa-tasks"></i></span>
                                 <div className="info-box-content">
-                                    <span className="info-box-text">Số công việc</span>
+                                    <span className="info-box-text">Số sinh nhật</span>
                                     <span className="info-box-number">
-                                        {totalTask}
+                                        {employeesManager.listEmployees ? employeesManager.listEmployees.length : 0}
                                     </span>
                                 </div>
                             </div>
@@ -271,15 +280,19 @@ class MainDashboardUnit extends Component {
                     </div>
                     <div className="nav-tabs-custom">
                         <ul className="nav nav-tabs">
-                            <li className="active"><a href="#employee-capacity" data-toggle="tab" onClick={() => this.handleNavTabs()}>Năng lực nhân viên</a></li>
+                            <li className="active"><a href="#task" data-toggle="tab" onClick={() => this.handleNavTabs()}>Công việc</a></li>
+                            <li><a href="#employee-capacity" data-toggle="tab" onClick={() => this.handleNavTabs()}>Năng lực nhân viên</a></li>
                             <li><a href="#human-resourse" data-toggle="tab" onClick={() => this.handleNavTabs(true)}>Tổng quan nhân sự</a></li>
                             <li><a href="#annualLeave" data-toggle="tab" onClick={() => this.handleNavTabs()}>Nghỉ phép-Tăng ca</a></li>
                             <li><a href="#salary" data-toggle="tab" onClick={() => this.handleNavTabs(true)}>Lương thưởng nhân viên</a></li>
                             <li><a href="#integrated-statistics" data-toggle="tab">Thống kê tổng hợp</a></li>
                         </ul>
                         <div className="tab-content ">
+                            <div className="tab-pane active" id="task">
+                                <TabTask />
+                            </div>
                             {/* Tab năng lực nhân viên*/}
-                            <div className="tab-pane active" id="employee-capacity">
+                            <div className="tab-pane" id="employee-capacity">
                                 <LazyLoadComponent>
                                     <TabEmployeeCapacity organizationalUnits={organizationalUnits} month={monthShow} allOrganizationalUnits={childOrganizationalUnit.map(x => x.id)} />
                                 </LazyLoadComponent>
@@ -319,7 +332,6 @@ function mapState(state) {
 
 const actionCreators = {
     getAllEmployee: EmployeeManagerActions.getAllEmployee,
-    // searchAnnualLeaves: AnnualLeaveActions.searchAnnualLeaves,
     getListPraise: DisciplineActions.getListPraise,
     getListDiscipline: DisciplineActions.getListDiscipline,
     searchSalary: SalaryActions.searchSalary,
@@ -327,6 +339,7 @@ const actionCreators = {
 
     getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
     getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
+    getTaskByUser: taskManagementActions.getTasksByUser,
 };
 
 const mainDashboardUnit = connect(mapState, actionCreators)(withTranslate(MainDashboardUnit));

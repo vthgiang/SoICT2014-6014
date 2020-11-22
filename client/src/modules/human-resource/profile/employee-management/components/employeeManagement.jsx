@@ -29,6 +29,7 @@ class EmployeeManagement extends Component {
         this.state = {
             position: null,
             gender: null,
+            employeeName: null,
             employeeNumber: null,
             organizationalUnits: organizationalUnits,
             status: 'active',
@@ -833,6 +834,21 @@ class EmployeeManagement extends Component {
                             <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')} autoComplete="off" />
                         </div>
                     </div>
+                    <div className="form-inline">
+                        {/* Tên nhân viên  */}
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('human_resource.staff_name')}</label>
+                            <input type="text" className="form-control" name="employeeName" onChange={this.handleChange} placeholder={translate('human_resource.staff_name')} autoComplete="off" />
+                        </div>
+                        {/* Trạng thái */}
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('page.status')}</label>
+                            <SelectMulti id={`multiSelectStatus`} multiple="multiple"
+                                options={{ nonSelectedText: translate('human_resource.non_status'), allSelectedText: translate('human_resource.all_status') }}
+                                items={[{ value: "active", text: translate('human_resource.profile.active') }, { value: "leave", text: translate('human_resource.profile.leave') }]} onChange={this.handleStatusChange}>
+                            </SelectMulti>
+                        </div>
+                    </div>
 
                     <div className="form-inline">
                         {/* Giới tính */}
@@ -855,7 +871,7 @@ class EmployeeManagement extends Component {
                         </div>
                     </div>
 
-                    <div className="form-inline">
+                    <div className="form-inline" style={{ marginBottom: 15 }}>
                         {/* Loại hợp đồng lao động */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.profile.type_contract')}</label>
@@ -871,23 +887,27 @@ class EmployeeManagement extends Component {
                                 onChange={this.handleEndDateOfContractChange}
                             />
                         </div>
-                    </div>
-
-                    <div className="form-inline" style={{ marginBottom: 15 }}>
-                        {/* Trạng thái */}
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('page.status')}</label>
-                            <SelectMulti id={`multiSelectStatus`} multiple="multiple"
-                                options={{ nonSelectedText: translate('human_resource.non_status'), allSelectedText: translate('human_resource.all_status') }}
-                                items={[{ value: "active", text: translate('human_resource.profile.active') }, { value: "leave", text: translate('human_resource.profile.leave') }]} onChange={this.handleStatusChange}>
-                            </SelectMulti>
-                        </div>
                         {/* Button tìm kiếm */}
                         <div className="form-group">
-                            <label></label>
                             <button type="button" className="btn btn-success" title={translate('general.search')} onClick={this.handleSunmitSearch} >{translate('general.search')}</button>
                         </div>
                     </div>
+
+                    {/* <div className="form-inline" style={{ marginBottom: 15 }}>
+                        {/* Trạng thái */}
+                    {/* <div className="form-group">
+                        <label className="form-control-static">{translate('page.status')}</label>
+                        <SelectMulti id={`multiSelectStatus`} multiple="multiple"
+                            options={{ nonSelectedText: translate('human_resource.non_status'), allSelectedText: translate('human_resource.all_status') }}
+                            items={[{ value: "active", text: translate('human_resource.profile.active') }, { value: "leave", text: translate('human_resource.profile.leave') }]} onChange={this.handleStatusChange}>
+                        </SelectMulti>
+                    </div>
+                    {/* Button tìm kiếm */}
+                    {/* <div className="form-group">
+                        <label></label>
+                        <button type="button" className="btn btn-success" title={translate('general.search')} onClick={this.handleSunmitSearch} >{translate('general.search')}</button>
+                    </div> */}
+                    {/* </div> */}
 
                     <div className="form-group col-md-12 row" >
                         {(Number(employeesManager.expiresContract) > 0 || Number(employeesManager.employeesHaveBirthdateInCurrentMonth) > 0) &&
@@ -996,7 +1016,7 @@ class EmployeeManagement extends Component {
                         _id={currentRow ? currentRow._id : ""}
                     />
                 }
-            </div>
+            </div >
         );
     };
 }
