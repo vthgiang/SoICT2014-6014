@@ -1288,6 +1288,7 @@ export default {
 
         // Modules cấu hình các chức năng
         module_configuration: {
+            timekeeping: 'Chấm công',
             timekeeping_type: "Kiểu chấm công",
             contract_notice_time: "Báo hết hạn hợp đồng (ngày)",
             contract_notice_time_title: "Báo trước hết hạn hợp đồng",

@@ -143,12 +143,12 @@ class TrainingPlan extends Component {
                     <div className="form-inline">
                         {/* Mã khoá đào tạo*/}
                         <div className="form-group">
-                            <label style={{ width: 110 }} className="form-control-static">{translate('training.course.table.course_code')}</label>
+                            <label className="form-control-static">{translate('training.course.table.course_code')}</label>
                             <input type="text" className="form-control" name="courseId" onChange={this.handleChange} placeholder={translate('training.course.table.course_code')} autoComplete="off" />
                         </div>
                         {/* Tên khoá đào tạo  */}
                         <div className="form-group">
-                            <label style={{ width: 110 }} className="form-control-static">{translate('training.course.table.course_name')}</label>
+                            <label className="form-control-static">{translate('training.course.table.course_name')}</label>
                             <input type="text" className="form-control" name="name" onChange={this.handleChange} placeholder={translate('training.course.table.course_name')} autoComplete="off" />
                         </div>
                     </div>
@@ -156,7 +156,7 @@ class TrainingPlan extends Component {
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         {/* Loại đào tạo */}
                         <div className="form-group">
-                            <label style={{ width: 110 }} className="form-control-static">{translate('training.course.table.course_type')}</label>
+                            <label className="form-control-static">{translate('training.course.table.course_type')}</label>
                             <SelectMulti id={`multiSelectTypeCourse`} multiple="multiple"
                                 options={{ nonSelectedText: translate('training.course.no_course_type'), allSelectedText: translate('training.course.all_course_type') }}
                                 onChange={this.handleTypeChange}

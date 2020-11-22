@@ -1139,6 +1139,7 @@ export default {
 
         // Modules cấu hình các chức năng
         module_configuration: {
+            timekeeping: "Timekeeping",
             timekeeping_type: "Timekeeping type",
             contract_notice_time: "Notice of contract expiration (date)",
             contract_notice_time_title: "Notice advance of contract expiration",
