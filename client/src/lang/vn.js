@@ -2752,9 +2752,9 @@ export default {
                 role_in_collaborated_unit: "Vai trò của nhân viên thuộc",
                 confirm_assigned: "Xác nhận đã phân công công việc",
                 confirm_assigned_success: "Bạn đã xác nhận phân công công việc",
-                confirm_assigned_failure:
-                    "Bạn chưa xác nhận phân công công việc",
-
+                confirm_assigned_failure: "Bạn chưa xác nhận phân công công việc",
+                unit_not_confirm_assigned_task: "Đơn vị chưa xác nhận phân công công việc",
+                
                 name: "Tên công việc",
                 search_by_name: "Tìm kiếm theo tên",
 
