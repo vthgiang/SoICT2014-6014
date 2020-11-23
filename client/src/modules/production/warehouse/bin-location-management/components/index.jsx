@@ -12,14 +12,15 @@ class BinLocationManagement extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            currentRole: localStorage.getItem("currentRole"),
             page: 1,
             limit: 5
         }
     }
 
     updateStateArchive = async () => {
-        let { page, limit } = this.state;
-        await this.props.getChildBinLocations({ page, limit });
+        let { page, limit, currentRole } = this.state;
+        await this.props.getChildBinLocations({ page, limit, managementLocation: currentRole });
         forceCheckOrVisible(true, false);
     }
 

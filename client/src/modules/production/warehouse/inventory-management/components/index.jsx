@@ -17,6 +17,7 @@ class InventoryManagement extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            currentRole: localStorage.getItem("currentRole"),
             page: 1,
             limit: 5,
             oldType: 'product',
@@ -28,18 +29,18 @@ class InventoryManagement extends Component {
     }
 
     componentDidMount(){
-        const { page, limit, type } = this.state;
-        this.props.getAllStocks();
-        this.props.getAllLots({ type });
-        this.props.getAllLots({ page, limit, type });
+        const { page, limit, type, currentRole } = this.state;
+        this.props.getAllStocks({ managementLocation: currentRole });
+        this.props.getAllLots({ type, managementLocation: currentRole });
+        this.props.getAllLots({ page, limit, type, managementLocation: currentRole });
         this.props.getAllGoodsByType({ type });
     };
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if(prevState.oldType !== prevState.type) {
             nextProps.getGoodsByType({ page: prevState.page, limit: prevState.limit, type: prevState.type });
-            nextProps.getAllLots({ type: prevState.type });
-            nextProps.getAllLots({ page: prevState.page, limit: prevState.limit, type: prevState.type });
+            nextProps.getAllLots({ type: prevState.type, managementLocation: prevState.currentRole });
+            nextProps.getAllLots({ page: prevState.page, limit: prevState.limit, type: prevState.type, managementLocation: prevState.currentRole });
             nextProps.getAllGoodsByType({ type: prevState.type });
             return { 
                 oldType: prevState.type,
@@ -149,6 +150,7 @@ class InventoryManagement extends Component {
         const data = {
             limit: number,
             page: this.state.page,
+            managementLocation: this.state.currentRole,
             type: this.state.type,
             name: this.state.name,
             good: this.state.good,
@@ -162,6 +164,7 @@ class InventoryManagement extends Component {
         this.setState({ page });
         const data = {
             limit: this.state.limit,
+            managementLocation: this.state.currentRole,
             page: page,
             type: this.state.type,
             name: this.state.name,
@@ -198,6 +201,7 @@ class InventoryManagement extends Component {
             type: this.state.type,
             page: this.state.page,
             limit: this.state.limit,
+            managementLocation: this.state.currentRole,
             name: this.state.name,
             good: this.state.good,
             expirationDate: this.state.expirationDate,

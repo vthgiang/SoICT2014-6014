@@ -1,9 +1,21 @@
-const { Lot, BinLocation } = require(`${SERVER_MODELS_DIR}`);
+const { Lot, BinLocation, Stock } = require(`${SERVER_MODELS_DIR}`);
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 exports.getAllLots = async (query, portal) => {
-    let { stock, good, page, limit, type } = query;
+    let { stock, good, page, limit, type, managementLocation } = query;
     let lots;
+
+    if(!managementLocation) throw new Error("roles not avaiable");
+
+    //lấy id các kho của role hiện tại
+    const stocks = await Stock(connect(DB_CONNECTION, portal)).find({ managementLocation: { $in: managementLocation } })
+    var arrayStock = [];
+    if(stocks && stocks.length > 0) {
+        for(let i = 0; i < stocks.length; i++) {
+            arrayStock = [ ...arrayStock, stocks[i]._id ];
+        }
+    }
+
     if(!limit && !page){
         if(stock) {
             if(good) {
@@ -32,7 +44,7 @@ exports.getAllLots = async (query, portal) => {
         else {
             if(good){
                 lots = await Lot(connect(DB_CONNECTION, portal))
-                .find({ quantity: { $ne: 0 }, good, type })
+                .find({ stocks: { $elemMatch: { stock: arrayStock }}, quantity: { $ne: 0 }, good, type })
                 .populate([
                     { path: 'good', select: 'id name baseUnit type'},
                     { path: 'stocks.binLocations.binlocation', select: 'id code name'},
@@ -43,7 +55,7 @@ exports.getAllLots = async (query, portal) => {
             }
             else {
                 lots = await Lot(connect(DB_CONNECTION, portal))
-                .find({ quantity: { $ne: 0 }, type })
+                .find({ stocks: { $elemMatch: { stock: arrayStock }}, quantity: { $ne: 0 }, type })
                 .populate([
                     { path: 'good', select: 'id name baseUnit type'},
                     { path: 'stocks.binLocations.binlocation', select: 'id code name'},
@@ -92,7 +104,7 @@ exports.getAllLots = async (query, portal) => {
                 })
         }
         else {
-            let option = { quantity: { $ne: 0 }, type: type };
+            let option = { stocks: { $elemMatch: { stock: arrayStock }}, quantity: { $ne: 0 }, type: type };
 
             if(query.name) {
                 option.name = new RegExp(query.name, "i");

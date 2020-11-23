@@ -9,8 +9,8 @@ export const StockActions = {
     deleteStock
 }
 
-function getAllStocks(data=undefined){
-    if(data !== undefined){
+function getAllStocks(data){
+    if(data !== undefined && data.limit !== undefined && data.page !== undefined){
         return dispatch => {
             dispatch({
                 type: StockConstants.PAGINATE_STOCK_REQUEST
@@ -30,23 +30,25 @@ function getAllStocks(data=undefined){
             })
         }
     }
-    return dispatch => {
-        dispatch({
-            type: StockConstants.GET_STOCK_REQUEST
-        })
-        StockServices.getAllStocks()
-        .then(res => {
+    else {
+        return dispatch => {
             dispatch({
-                type: StockConstants.GET_STOCK_SUCCESS,
-                payload: res.data.content
+                type: StockConstants.GET_STOCK_REQUEST
             })
-        })
-        .catch(err => {
-            dispatch({
-                type: StockConstants.GET_STOCK_FAILURE,
-                error: err
+            StockServices.getAllStocks(data)
+            .then(res => {
+                dispatch({
+                    type: StockConstants.GET_STOCK_SUCCESS,
+                    payload: res.data.content
+                })
             })
-        })
+            .catch(err => {
+                dispatch({
+                    type: StockConstants.GET_STOCK_FAILURE,
+                    error: err
+                })
+            })
+        }
     }
 }
 
