@@ -11,6 +11,8 @@ exports.searchEducationPrograms = async (req, res) => {
             let params = {
                 organizationalUnit: req.query.organizationalUnit,
                 position: req.query.position,
+                programId: req.query.programId,
+                name: req.query.name,
                 page: Number(req.query.page),
                 limit: Number(req.query.limit),
             }

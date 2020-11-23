@@ -10,6 +10,7 @@ import { UserActions } from "../../../super-admin/user/redux/actions";
 import { performTaskAction } from '../redux/actions';
 
 import qs from 'qs';
+import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 
 class TaskComponent extends Component {
     constructor(props) {
@@ -25,6 +26,7 @@ class TaskComponent extends Component {
         this.flag= 1;
 
         this.props.getAllUserOfCompany();
+        this.props.getAllDepartment();
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
@@ -118,6 +120,7 @@ function mapState(state) {
 
 const actionCreators = {
     getTaskById: performTaskAction.getTaskById,
+    getAllDepartment: DepartmentActions.get,
     getDepartment: UserActions.getDepartmentOfUser,
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
 };

@@ -279,7 +279,7 @@ class StockTakeCreateForm extends Component {
 
     handleAddGood = async (e) => {
         e.preventDefault();
-        this.state.good.realQuantity = this.state.good.quantity;
+        this.state.good.realQuantity = this.state.good.realQuantity;
         await this.setState(state => {
             let listGood = [...(this.state.listGood), state.good];
             return {

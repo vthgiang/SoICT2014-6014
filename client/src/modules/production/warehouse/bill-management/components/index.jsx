@@ -25,6 +25,7 @@ class BillManagement extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            currentRole: localStorage.getItem("currentRole"),
             limit: 5,
             page: 1,
             group: '',
@@ -32,10 +33,10 @@ class BillManagement extends Component {
     }
 
     componentDidMount() {
-        const { limit, page } = this.state;
-        this.props.getBillsByType({ page, limit });
-        this.props.getBillsByType();
-        this.props.getAllStocks();
+        const { limit, page, currentRole } = this.state;
+        this.props.getBillsByType({ page, limit, managementLocation: currentRole });
+        this.props.getBillsByType({ managementLocation: currentRole });
+        this.props.getAllStocks({ managementLocation: currentRole });
         this.props.getUser();
         this.props.getAllGoods();
         this.props.getCustomers();
@@ -81,6 +82,7 @@ class BillManagement extends Component {
         this.setState({ page });
         const data = {
             limit: this.state.limit,
+            managementLocation: this.state.currentRole,
             page: page,
             code: this.state.code,
             status: this.state.status,
@@ -103,6 +105,7 @@ class BillManagement extends Component {
         const data = {
             limit: number,
             page: this.state.page,
+            managementLocation: this.state.currentRole,
             code: this.state.code,
             status: this.state.status,
             stock: this.state.stock,
@@ -178,6 +181,7 @@ class BillManagement extends Component {
         let data = {
             page: this.state.page,
             limit: this.state.limit,
+            managementLocation: this.state.currentRole,
             code: this.state.code,
             status: this.state.status,
             stock: this.state.stock,
@@ -231,7 +235,7 @@ class BillManagement extends Component {
             }
         })
         const { limit } = this.state;
-        await this.props.getBillsByType({ page, limit})
+        await this.props.getBillsByType({ page, limit, managementLocation: this.state.currentRole })
     }
 
     handleGoodReceipt = async () => {
@@ -246,7 +250,7 @@ class BillManagement extends Component {
             }
         })
 
-        await this.props.getBillsByType({ page, limit, group })
+        await this.props.getBillsByType({ page, limit, group, managementLocation: this.state.currentRole })
     }
 
     handleGoodIssue = async () => {
@@ -261,7 +265,7 @@ class BillManagement extends Component {
             }
         })
 
-        await this.props.getBillsByType({ page, limit, group })
+        await this.props.getBillsByType({ page, limit, group, managementLocation: this.state.currentRole })
     }
 
     handleGoodReturn = async () => {
@@ -276,7 +280,7 @@ class BillManagement extends Component {
             }
         })
 
-        await this.props.getBillsByType({ page, limit, group })
+        await this.props.getBillsByType({ page, limit, group, managementLocation: this.state.currentRole })
     }
 
     handleStockTake = async () => {
@@ -291,7 +295,7 @@ class BillManagement extends Component {
             }
         })
 
-        await this.props.getBillsByType({ page, limit, group })
+        await this.props.getBillsByType({ page, limit, group, managementLocation: this.state.currentRole })
     }
 
     handleStockRotate = async () => {
@@ -306,7 +310,7 @@ class BillManagement extends Component {
             }
         })
 
-        await this.props.getBillsByType({ page, limit, group })
+        await this.props.getBillsByType({ page, limit, group, managementLocation: this.state.currentRole })
     }
 
     getPartner = () => {

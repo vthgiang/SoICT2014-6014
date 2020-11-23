@@ -9,7 +9,7 @@ import {
 } from '../../employee-info/components/combinedContent';
 
 import { EmployeeInfoActions } from '../../employee-info/redux/actions';
-
+import { WorkPlanActions } from '../../../work-plan/redux/actions'
 class EmployeeViewForm extends Component {
     constructor(props) {
         super(props);
@@ -34,18 +34,43 @@ class EmployeeViewForm extends Component {
     shouldComponentUpdate = async (nextProps, nextState) => {
         if (nextProps._id !== this.state._id && !nextProps.employeesInfo.isLoading) {
             await this.props.getEmployeeProfile({ id: nextProps._id, callAPIByUser: false });
+            this.props.getListWorkPlan({ year: new Date().getFullYear() });
             this.setState({
                 dataStatus: this.DATA_STATUS.QUERYING,
                 employees: [],
-                roles: []
+                roles: [],
+                totalAnnualLeaves: "",
             })
             return false;
         };
-        if (this.state.dataStatus === this.DATA_STATUS.QUERYING && !nextProps.employeesInfo.isLoading) {
+        if (this.state.dataStatus === this.DATA_STATUS.QUERYING && !nextProps.employeesInfo.isLoading && !nextProps.workPlan.isLoading) {
+            let annualLeaves = nextProps.employeesInfo.annualLeaves;
+            let total = 0, data = [];
+            annualLeaves.forEach(x => {
+                let check = false;
+                data.forEach(y => {
+                    if (x.startDate === y.startDate && x.endDate === y.endDate) {
+                        check = true;
+                    }
+                })
+                if (!check) {
+                    data = [...data, x];
+                }
+            })
+            data = data.filter(x => x.status === 'approved');
+            data.forEach(x => {
+                if (x.totalHours && x.totalHours !== 0) {
+                    total = total + x.totalHours;
+                } else {
+                    total = total + (Math.round((new Date(x.endDate).getTime() - new Date(x.startDate).getTime()) / (24 * 60 * 60 * 1000)) + 1) * 8;
+                }
+            });
+            let totalAnnualLeaves = nextProps.workPlan.maximumNumberOfLeaveDays * 8 - total;
             this.setState({
                 dataStatus: this.DATA_STATUS.AVAILABLE,
                 employees: nextProps.employeesInfo.employees,
                 roles: nextProps.employeesInfo.roles,
+                totalAnnualLeaves: totalAnnualLeaves > 0 ? totalAnnualLeaves : 0
 
             });
             return true;
@@ -58,7 +83,7 @@ class EmployeeViewForm extends Component {
 
         const { duplicate } = this.props;
 
-        let { _id, employees, roles = [] } = this.state;
+        let { _id, employees, roles = [], totalAnnualLeaves } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
@@ -71,12 +96,13 @@ class EmployeeViewForm extends Component {
                     <form className="form-group" id={`form-view-employee${_id}`}>
                         {employees && employees.length !== 0 &&
                             employees.map((x, index) => (
-                                <React.Fragment>
+                                <React.Fragment key={index}>
                                     {/* Thông tin chung */}
                                     <GeneralTab
                                         id={`view_one_general${_id}`}
                                         employee={x}
                                         roles={roles}
+                                        totalAnnualLeaves={totalAnnualLeaves}
                                     />
                                 </React.Fragment>
                             ))}
@@ -88,12 +114,13 @@ class EmployeeViewForm extends Component {
 }
 
 function mapState(state) {
-    const { employeesInfo } = state;
-    return { employeesInfo };
+    const { employeesInfo, workPlan } = state;
+    return { employeesInfo, workPlan };
 };
 
 const actionCreators = {
     getEmployeeProfile: EmployeeInfoActions.getEmployeeProfile,
+    getListWorkPlan: WorkPlanActions.getListWorkPlan,
 }
 
 const viewForm = connect(mapState, actionCreators)(withTranslate(EmployeeViewForm));

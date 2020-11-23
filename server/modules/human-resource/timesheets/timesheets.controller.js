@@ -14,6 +14,7 @@ exports.searchTimesheets = async (req, res) => {
             let params = {
                 organizationalUnits: req.query.organizationalUnits,
                 employeeNumber: req.query.employeeNumber,
+                employeeName: req.query.employeeName,
                 month: req.query.month,
                 page: Number(req.query.page),
                 limit: Number(req.query.limit),

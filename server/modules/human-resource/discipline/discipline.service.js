@@ -88,16 +88,34 @@ exports.searchDisciplines = async (portal, params, company) => {
         company: company
     };
 
-    // Bắt sựu kiện tìm kiếm them MSNV
-    if (params.employeeNumber) {
-        let employee = await Employee(connect(DB_CONNECTION, portal)).find({
-            employeeNumber: {
-                $regex: params.employeeNumber,
-                $options: "i"
+    // Bắt sựu kiện MSNV hoặc tên nhân viên tìm kiếm khác undefined
+    if (params.employeeNumber || params.employeeName) {
+        let keySearchEmployee = {
+            company: company
+        };
+        if(params.employeeNumber){
+            keySearchEmployee = {
+                ...keySearchEmployee,
+                employeeNumber: {
+                    $regex: params.employeeNumber,
+                    $options: "i"
+                }
             }
-        }, {
+        };
+        if(params.employeeName){
+            keySearchEmployee = {
+                ...keySearchEmployee,
+                fullName: {
+                    $regex: params.employeeName,
+                    $options: "i"
+                }
+            }
+        };
+
+        let employee = await Employee(connect(DB_CONNECTION, portal)).find(keySearchEmployee, {
             _id: 1
         });
+
         if (employee.length !== 0) {
             employee = employee.map(x => x._id);
             keySearch = {

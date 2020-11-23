@@ -15,6 +15,8 @@ class ManageLeaveApplication extends Component {
         super(props);
         this.state = {
             dataStatus: 0,
+            employeeNumber: "",
+            employeeName: "",
             status: ['waiting_for_approval'],
             page: 0,
             limit: 5,
@@ -80,6 +82,14 @@ class ManageLeaveApplication extends Component {
             }
         });
         window.$(`#modal-view-employee${value._id}`).modal('show');
+    }
+
+    /** Function bắt sự kiện thay đổi mã nhân viên, tên nhân viên */
+    handleChange = (e) => {
+        const { name, value } = e.target;
+        this.setState({
+            [name]: value
+        });
     }
 
     /**
@@ -174,7 +184,7 @@ class ManageLeaveApplication extends Component {
             confirmButtonText: this.props.translate('general.yes'),
         }).then((result) => {
             if (result.value) {
-                this.props.updateAnnualLeave(value._id, { ...value, startDate: startDateNew, endDate: endDateNew, status: 'pass', approvedApplication: true })
+                this.props.updateAnnualLeave(value._id, { ...value, startDate: startDateNew, endDate: endDateNew, status: 'approved', approvedApplication: true })
             }
         })
     };
@@ -198,7 +208,7 @@ class ManageLeaveApplication extends Component {
             confirmButtonText: this.props.translate('general.yes'),
         }).then((result) => {
             if (result.value) {
-                this.props.updateAnnualLeave(value._id, { ...value, startDate: startDateNew, endDate: endDateNew, status: 'faile', approvedApplication: true })
+                this.props.updateAnnualLeave(value._id, { ...value, startDate: startDateNew, endDate: endDateNew, status: 'disapproved', approvedApplication: true })
             }
         })
     }
@@ -220,10 +230,23 @@ class ManageLeaveApplication extends Component {
         return (
             <div className="box" >
                 <div className="box-body qlcv">
+                    <div className="form-inline">
+                        {/* Mã nhân viên*/}
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('human_resource.staff_number')}</label>
+                            <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')} autoComplete="off" />
+                        </div>
+                        {/* Tên nhân viên  */}
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('human_resource.staff_name')}</label>
+                            <input type="text" className="form-control" name="employeeName" onChange={this.handleChange} placeholder={translate('human_resource.staff_name')} autoComplete="off" />
+                        </div>
+                    </div>
+
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         {/* Tháng */}
                         <div className="form-group">
-                            <label style={{ width: 'auto' }}>{translate('human_resource.month')}</label>
+                            <label className="form-control-static">{translate('human_resource.month')}</label>
                             <DatePicker
                                 id="month"
                                 dateFormat="month-year"
@@ -233,7 +256,7 @@ class ManageLeaveApplication extends Component {
                         </div>
                         {/* Trạng thái */}
                         <div className="form-group">
-                            <label style={{ width: 'auto' }}>{translate('human_resource.status')}</label>
+                            <label className="form-control-static">{translate('human_resource.status')}</label>
                             <SelectMulti id={`multiSelectStatus`} multiple="multiple"
                                 options={{ nonSelectedText: translate('human_resource.non_status'), allSelectedText: translate('human_resource.all_status') }}
                                 onChange={this.handleStatusChange}
@@ -283,8 +306,8 @@ class ManageLeaveApplication extends Component {
                                     <tr key={index}>
                                         <td><a style={{ cursor: 'pointer' }} onClick={() => this.handleView(x.employee)}>{x.employee.employeeNumber}</a></td>
                                         <td>{x.employee.fullName}</td>
-                                        <td>{this.formatDate(x.startDate)}</td>
-                                        <td>{this.formatDate(x.endDate)}</td>
+                                        <td><p>{this.formatDate(x.startDate)}</p>{x.startTime ? x.startTime : null}</td>
+                                        <td><p>{this.formatDate(x.endDate)}</p>{x.endTime ? x.endTime : null}</td>
                                         <td>{x.reason}</td>
                                         <td>{translate(`human_resource.annual_leave.status.${x.status}`)}</td>
                                         <td style={{ textAlign: "center" }}>

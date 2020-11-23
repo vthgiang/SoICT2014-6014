@@ -79,7 +79,7 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
             $in: organizationalUnitId
         }
     });
-    // Lấy ra các nhà máy à currentRole cũng quản lý
+    // Lấy ra các nhà máy mà currentRole cũng quản lý
     let listWorksByManageRole = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
         manageRoles: {
             $in: role
@@ -90,7 +90,7 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
     let listWorksId = listManufacturingWorks.map(x => x._id);
 
     // Lấy ra các kế hoạch mà nằm trong các nhà máy này
-
+    console.log(listWorksId);
     let listManufacturingPlans = await ManufacturingPlan(connect(DB_CONNECTION, portal))
         .find({
             manufacturingWorks: {

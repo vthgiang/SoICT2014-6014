@@ -2,7 +2,7 @@ const arrayToTree = require("array-to-tree");
 const fs = require('fs');
 const ObjectId = require('mongoose').Types.ObjectId;
 
-const { BinLocation } = require(`${SERVER_MODELS_DIR}`);
+const { BinLocation, Stock } = require(`${SERVER_MODELS_DIR}`);
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 async function getBin(portal) {
@@ -52,23 +52,34 @@ exports.getBinLocations = async (query, portal) => {
 }
 
 exports.getChildBinLocations = async (query, portal) => {
-    let { page, limit, stock, good } = query;
+    let { page, limit, stock, managementLocation } = query;
+    
+    if(!managementLocation) throw new Error("roles not avaiable");
+
+    //lấy id các kho của role hiện tại
+    const stocks = await Stock(connect(DB_CONNECTION, portal)).find({ managementLocation: { $in: managementLocation } })
+    var arrayStock = [];
+    if(stocks && stocks.length > 0) {
+        for(let i = 0; i < stocks.length; i++) {
+            arrayStock = [ ...arrayStock, stocks[i]._id ];
+        }
+    }
     const arr = [];
     if(!page && !limit) {
         if(stock){
-            return await BinLocation(connect(DB_CONNECTION, portal)).find({ child: arr, stock, good })
+            return await BinLocation(connect(DB_CONNECTION, portal)).find({ child: arr, stock })
             .populate([
                 { path: 'enableGoods.good', select: 'id name type baseUnit'}
             ]);
         } else {
-            return await BinLocation(connect(DB_CONNECTION, portal)).find({ child: arr, good })
+            return await BinLocation(connect(DB_CONNECTION, portal)).find({ child: arr, stock: { $in: arrayStock } })
             .populate([
                 { path: 'enableGoods.good', select: 'id name type baseUnit'}
             ]);
         }
     } else {
         if(stock) {
-            let option = { child: [], stock, good };
+            let option = { child: [], stock };
 
             if(query.path) {
                 option.path = new RegExp(query.path, "i")
@@ -88,7 +99,7 @@ exports.getChildBinLocations = async (query, portal) => {
                 })
         }
         else {
-            let option = { child: [], good };
+            let option = { child: [], stock: arrayStock };
 
             if(query.stock) {
                 option.stock = query.stock

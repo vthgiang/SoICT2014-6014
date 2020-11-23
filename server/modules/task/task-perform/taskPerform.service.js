@@ -3,7 +3,7 @@ const fs = require("fs");
 const moment = require("moment");
 const nodemailer = require("nodemailer");
 
-const { Task, User, UserRole, Role } = require(`${SERVER_MODELS_DIR}`);
+const { Task, User, UserRole, Role, OrganizationalUnit } = require(`${SERVER_MODELS_DIR}`);
 
 const OrganizationalUnitService = require(`${SERVER_MODULES_DIR}/super-admin/organizational-unit/organizationalUnit.service`);
 
@@ -705,34 +705,17 @@ exports.createTaskAction = async (portal, params, body, files) => {
     let task = await Task(connect(DB_CONNECTION, portal))
         .findOne({ _id: params.taskId })
         .populate([
-            { path: "taskActions.creator", select: "name email avatar" },
-            {
-                path: "taskActions.comments.creator",
-                select: "name email avatar",
-            },
-            {
-                path: "taskActions.evaluations.creator",
-                select: "name email avatar ",
-            },
-        ]);
+            { path: "taskActions.creator", select: 'name email avatar' },
+            { path: "taskActions.comments.creator", select: 'name email avatar' },
+            { path: "taskActions.evaluations.creator", select: 'name email avatar ' }])
 
-    let user = await User(connect(DB_CONNECTION, portal)).findOne({
-        _id: body.creator,
-    });
-    let tasks = await Task(connect(DB_CONNECTION, portal)).findOne({
-        _id: params.taskId,
-    });
-    let userEmail = await User(connect(DB_CONNECTION, portal)).find({
-        _id: { $in: tasks.accountableEmployees },
-    });
-    let email = userEmail.map((item) => item.email);
-    return {
-        taskActions: task.taskActions,
-        tasks: tasks,
-        user: user,
-        email: email,
-    };
-};
+
+    let user = await User(connect(DB_CONNECTION, portal)).findOne({ _id: body.creator });
+    let tasks = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: params.taskId });
+    let userEmail = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: tasks.accountableEmployees } });
+    let email = userEmail.map(item => item.email);
+    return { taskActions: task.taskActions, tasks: tasks, user: user, email: email };
+}
 /**
  * Sửa hoạt động của cộng việc
  */
@@ -1656,6 +1639,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
         responsibleEmployees,
         informedEmployees,
         inactiveEmployees,
+        collaboratedWithOrganizationalUnits,
     } = data;
 
     // Chuẩn hóa parent
@@ -1698,6 +1682,32 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
         }
     }
 
+    let taskItem = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
+
+    // update collaboratedWithOrganizationalUnits
+    let newCollab = [];
+    let oldCollab = taskItem.collaboratedWithOrganizationalUnits.map(e => { return e.organizationalUnit });
+    for (let i in collaboratedWithOrganizationalUnits) {
+        let elem = collaboratedWithOrganizationalUnits[i];
+
+        let checkCollab = taskItem.collaboratedWithOrganizationalUnits.find(e => String(e.organizationalUnit) === String(elem));
+        console.log('checkCollab', checkCollab);
+
+        if (checkCollab) {
+            newCollab.push({
+                organizationalUnit: elem,
+                isAssigned: checkCollab.isAssigned,
+            })
+        } else {
+            newCollab.push({
+                organizationalUnit: elem,
+                isAssigned: false,
+            })
+        }
+    }
+
+
+
     // cập nhật thông tin cơ bản
     await Task(connect(DB_CONNECTION, portal)).updateOne(
         { _id: taskId },
@@ -1713,6 +1723,8 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
 
                 startDate: startOfTask,
                 endDate: endOfTask,
+
+                collaboratedWithOrganizationalUnits: newCollab,
 
                 responsibleEmployees: responsibleEmployees,
                 consultedEmployees: consultedEmployees,
@@ -1759,6 +1771,119 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
             }
         }
     }
+
+    let deletedCollab = [];
+    //  = oldCollab.map(e => String(e)).filter(item => newCollab.find(e => String(e) !== item));
+    let additionalCollab = [];
+    //  = newCollab.map(e => String(e.organizationalUnit)).filter(item => oldCollab.find(e => String(e) !== item));
+
+    for (let i in oldCollab) {
+        let tmp = newCollab.map(e => String(e.organizationalUnit));
+        if (tmp.indexOf(String(oldCollab[i])) === -1) {
+            deletedCollab.push(String(oldCollab[i]))
+        }
+    }
+    for (let i in newCollab) {
+        let tmp = oldCollab.map(e => String(e));
+        if (tmp.indexOf(String(newCollab[i].organizationalUnit)) === -1) {
+            additionalCollab.push(String(newCollab[i].organizationalUnit))
+        }
+    }
+
+    let deansOfDeletedCollabID = [],
+        deansOfAdditionalCollabID = [],
+        deansOfDeletedCollab,
+        deansOfAdditionalCollab,
+        deletedCollabHtml, deletedCollabEmail,
+        additionalCollabHtml, additionalCollabEmail;
+
+    // Lấy id trưởng phòng các đơn vị phối hợp
+    for (let i = 0; i < deletedCollab.length; i++) {
+        let unit = deletedCollab[i] && await OrganizationalUnit(connect(DB_CONNECTION, portal)).findById(deletedCollab[i])
+
+        unit && unit.deans.map(item => {
+            deansOfDeletedCollabID.push(item);
+        })
+    }
+
+    console.log('deletedCollab, additionalCollab', oldCollab, newCollab, deletedCollab, additionalCollab);
+
+    for (let i = 0; i < additionalCollab.length; i++) {
+        let unit = additionalCollab[i] && await OrganizationalUnit(connect(DB_CONNECTION, portal)).findById(additionalCollab[i])
+
+        unit && unit.deans.map(item => {
+            deansOfAdditionalCollabID.push(item);
+        })
+    }
+
+    deansOfDeletedCollab = await UserRole(connect(DB_CONNECTION, portal))
+        .find({
+            roleId: { $in: deansOfDeletedCollabID }
+        })
+        .populate("userId")
+    deletedCollabEmail = deansOfDeletedCollab.map(item => item.userId && item.userId.email) // Lấy email trưởng đơn vị phối hợp 
+
+    deansOfAdditionalCollab = await UserRole(connect(DB_CONNECTION, portal))
+        .find({
+            roleId: { $in: deansOfAdditionalCollabID }
+        })
+        .populate("userId")
+    additionalCollabEmail = deansOfAdditionalCollab.map(item => item.userId && item.userId.email) // Lấy email trưởng đơn vị phối hợp 
+
+    let users, userIds
+
+    let resId = task.responsibleEmployees;  // lấy id người thực hiện
+    let res = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: resId } });
+    userIds = resId;
+
+    let accId = task.accountableEmployees;  // lấy id người phê duyệt
+    let acc = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: accId } });
+    userIds.push(...accId);
+
+    let conId = task.consultedEmployees;  // lấy id người tư vấn
+    let con = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: conId } })
+    userIds.push(...conId);
+
+    let infId = task.informedEmployees;  // lấy id người quan sát
+    let inf = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: infId } })
+    userIds.push(...infId);  // lấy ra id của tất cả người dùng có nhiệm vụ
+
+    // loại bỏ các id trùng nhau
+    userIds = userIds.map(u => u.toString());
+    for (let i = 0, max = userIds.length; i < max; i++) {
+        if (userIds.indexOf(userIds[i]) != userIds.lastIndexOf(userIds[i])) {
+            userIds.splice(userIds.indexOf(userIds[i]), 1);
+            i--;
+        }
+    }
+
+    let body = `<a href="${process.env.WEBSITE}/task?taskId=${task._id}" target="_blank" title="${process.env.WEBSITE}/task?taskId=${task._id}"><strong>${task.name}</strong></a></p> ` +
+        `<h3>Nội dung công việc</h3>` +
+        `<p>Mô tả : ${task.description}</p>` +
+        `<p>Người thực hiện</p> ` +
+        `<ul>${res.map((item) => {
+            return `<li>${item.name} - ${item.email}</li>`
+        })}
+                    </ul>`+
+        `<p>Người phê duyệt</p> ` +
+        `<ul>${acc.map((item) => {
+            return `<li>${item.name} - ${item.email}</li>`
+        })}
+                    </ul>` +
+        `${con.length > 0 ? `<p>Người tư vấn</p> ` +
+            `<ul>${con.map((item) => {
+                return `<li>${item.name} - ${item.email}</li>`
+            })}
+                    </ul>` : ""}` +
+        `${inf.length > 0 ? `<p>Người quan sát</p> ` +
+            `<ul>${inf.map((item) => {
+                return `<li>${item.name} - ${item.email}</li>`
+            })}
+                    </ul>` : ""}`
+        ;
+
+    additionalCollabHtml = `<p>Đơn vị của bạn được phối hợp thực hiện công việc mới: ` + body;
+    deletedCollabHtml = `<p>Đơn vị của bạn đã bị loại khỏi các đơn vị phối hợp thực hiện của công việc: ` + body;
 
     // let newTask = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
     let newTask = await Task(connect(DB_CONNECTION, portal))
@@ -1892,8 +2017,16 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
     user = await User(connect(DB_CONNECTION, portal)).findById(data.user);
     newTask.evaluations.reverse();
 
-    return { newTask: newTask, email: email, user: user, tasks: tasks };
-};
+    return {
+        newTask: newTask, email: email, user: user, tasks: tasks,
+        deletedCollabEmail: deletedCollabEmail, deletedCollabHtml: deletedCollabHtml,
+        deansOfDeletedCollab: deansOfDeletedCollab.map(item => item.userId && item.userId._id),
+
+        additionalCollabEmail: additionalCollabEmail, additionalCollabHtml: additionalCollabHtml,
+        deansOfAdditionalCollab: deansOfAdditionalCollab.map(item => item.userId && item.userId._id),
+    };
+
+}
 
 /** Chỉnh sửa nhân viên tham gia công việc mà đơn vị được phối hợp */
 exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId, data) => {

@@ -3,10 +3,8 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import Sortable from 'sortablejs';
-import {ErrorLabel} from '../../../../common-components';
+import { ErrorLabel, TrixEditor } from '../../../../common-components';
 import { TaskTemplateFormValidator} from './taskTemplateFormValidator';
-import CKEditor from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import parse from 'html-react-parser';
 
 class ActionForm extends Component{
@@ -100,13 +98,12 @@ class ActionForm extends Component{
         return msg == undefined;
     }
 
-    handleChangeActionDesc = (e, editor) => {
-        const description = editor.getData();
-        const {action} = this.state;
+    handleChangeActionDesc = (value) => {
+        const { action } = this.state;
             this.setState({
                 action: {
                     ...action,
-                    description
+                    description: value
                 }
             })
     }
@@ -240,10 +237,9 @@ class ActionForm extends Component{
                         <textarea type="text" className="form-control" name="description" placeholder={translate('task_template.description')} value={action.description} onChange={this.handleChangeActionDesc} />
                         <ErrorLabel content={this.state.action.errorOnDescription}/>
                     </div> */}
-                    <CKEditor
-                        editor={ ClassicEditor }
-                        onChange={this.handleChangeActionDesc}
-                        data={action.description}
+                    <TrixEditor
+                        handleChange={this.handleChangeActionDesc}
+                        value={action.description}
                     />
                 </div>
 

@@ -18,11 +18,13 @@ function searchAnnualLeaves(data) {
         method: 'GET',
         params: {
             numberAnnulLeave: data.numberAnnulLeave,
+            email: data.email,
             startDate: data.startDate,
             endDate: data.endDate,
             organizationalUnits: data.organizationalUnits,
             year: data.year,
             employeeNumber: data.employeeNumber,
+            employeeName: data.employeeName,
             month: data.month,
             page: data.page,
             status: data.status,
