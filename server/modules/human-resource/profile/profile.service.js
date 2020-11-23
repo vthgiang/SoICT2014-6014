@@ -524,6 +524,17 @@ exports.searchEmployeeProfiles = async (portal, params, company) => {
         }
     };
 
+    // Bắt sựu kiện theo tên nhân viên nhân viên
+    if (params.employeeName) {
+        keySearch = {
+            ...keySearch,
+            fullName: {
+                $regex: params.employeeName,
+                $options: "i"
+            }
+        }
+    };
+
     // Bắt sựu kiện tìm kiếm theo giới tính
     if (params.gender !== undefined) {
         keySearch = {

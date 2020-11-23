@@ -41,7 +41,19 @@ exports.searchTimesheets = async (portal, params, company) => {
                 $options: "i"
             }
         }
-    }
+    };
+
+    // Bắt sựu kiện tên nhân viên tìm kiếm khác undefined
+    if (params.employeeName) {
+        keySearchEmployee = {
+            ...keySearchEmployee,
+            fullName: {
+                $regex: params.employeeName,
+                $options: "i"
+            }
+        }
+    };
+
     if (keySearchEmployee) {
         let employeeInfo = await Employee(connect(DB_CONNECTION, portal)).find(keySearchEmployee);
         let employee = employeeInfo.map(x => x._id);

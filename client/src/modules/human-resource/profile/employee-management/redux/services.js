@@ -24,6 +24,7 @@ function getAll(data) {
             endDate: data ? data.endDate : data,
             organizationalUnits: data ? data.organizationalUnits : data,
             position: data ? data.position : data,
+            employeeName: data? data.employeeName : data,
             employeeNumber: data ? data.employeeNumber : data,
             gender: data ? data.gender : data,
             status: data ? data.status : data,

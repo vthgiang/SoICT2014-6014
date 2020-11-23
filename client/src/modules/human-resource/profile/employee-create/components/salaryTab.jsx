@@ -260,8 +260,8 @@ class SalaryTab extends Component {
                                             let organizationalUnit = department.list.find(y => y._id === x.organizationalUnit);
                                             return (
                                                 <tr key={index}>
-                                                    <td>{this.formatDate(x.startDate)}</td>
-                                                    <td>{this.formatDate(x.endDate)}</td>
+                                                    <td><p>{this.formatDate(x.startDate)}</p>{x.startTime ? x.startTime : null}</td>
+                                                    <td><p>{this.formatDate(x.endDate)}</p>{x.endTime ? x.endTime : null}</td>
                                                     <td>{x.reason}</td>
                                                     <td>{translate(`human_resource.annual_leave.status.${x.status}`)}</td>
                                                     <td>{organizationalUnit.name}</td>
@@ -304,6 +304,10 @@ class SalaryTab extends Component {
                         startDate={this.formatDate(currentRowSabbatical.startDate)}
                         endDate={this.formatDate(currentRowSabbatical.endDate)}
                         reason={currentRowSabbatical.reason}
+                        endTime={currentRowSabbatical.endTime}
+                        startTime={currentRowSabbatical.startTime}
+                        totalHours={currentRowSabbatical.totalHours}
+                        type={currentRowSabbatical.type}
                         status={currentRowSabbatical.status}
                         handleChange={this.handleEditAnnualLeave}
                     />

@@ -25,6 +25,7 @@ class TimesheetsManagement extends Component {
             dayNow: dayNow,
             month: this.formatDate(Date.now(), true),
             employeeNumber: "",
+            employeeName: "",
             organizationalUnits: null,
             page: 0,
             limit: 5,
@@ -144,7 +145,7 @@ class TimesheetsManagement extends Component {
 
 
     /** Function lưu giá trị mã nhân viên vào state khi thay đổi */
-    handleMSNVChange = (e) => {
+    handleChange = (e) => {
         const { name, value } = e.target;
         this.setState({
             [name]: value
@@ -424,14 +425,6 @@ class TimesheetsManagement extends Component {
                                 items={department.list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
                         </div>
-                        {/* Mã nhân viên */}
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('human_resource.staff_number')}</label>
-                            <input type="text" className="form-control" name="employeeNumber" onChange={this.handleMSNVChange} placeholder={translate('human_resource.staff_number')} autoComplete="off" />
-                        </div>
-                    </div>
-
-                    <div className="form-inline" style={{ marginBottom: 10 }}>
                         {/* Tháng */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.month')}</label>
@@ -443,6 +436,23 @@ class TimesheetsManagement extends Component {
                                 onChange={this.handleMonthChange}
                             />
                         </div>
+                    </div>
+
+                    <div className="form-inline">
+                        {/* Mã nhân viên */}
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('human_resource.staff_number')}</label>
+                            <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('human_resource.staff_number')} autoComplete="off" />
+                        </div>
+                        {/* Tên nhân viên  */}
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('human_resource.staff_name')}</label>
+                            <input type="text" className="form-control" name="employeeName" onChange={this.handleChange} placeholder={translate('human_resource.staff_name')} autoComplete="off" />
+                        </div>
+                    </div>
+
+                    <div className="form-inline" style={{ marginBottom: 10 }}>
+                        {/* Nút tìm kiếm */}
                         <div className="form-group">
                             <label></label>
                             <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} >{translate('general.search')}</button>
