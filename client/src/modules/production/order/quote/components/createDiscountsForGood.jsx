@@ -9,19 +9,26 @@ class CreateDiscountsForGood extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            discountsChecked: {},
+            discountsChecked: {
+                goodId: "",
+            },
         };
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
+        console.log("nextProps.goodId", nextProps.goodId, prevState.goodId);
         if (nextProps.goodId !== prevState.goodId) {
-            nextProps.handleDiscountsChange([]); // xóa sạch discounts ở component cha
             return {
                 discountsChecked: {},
                 goodId: nextProps.goodId,
             };
         }
     }
+    shouldComponentUpdate = (nextProps, nextState) => {
+        if (nextProps.goodId !== nextState.goodId) {
+            nextProps.handleDiscountsChange([]); // xóa sạch discounts ở component cha
+        }
+    };
 
     getDiscountValue = (idCheckBox) => {
         let { listDiscountsByGoodId } = this.props.goods.goodItems;
@@ -78,6 +85,12 @@ class CreateDiscountsForGood extends Component {
             handleDiscountsChange(discountsProps);
         } else {
             let filterDiscountsProps = discountsProps.filter((element) => element._id !== id.split("-")[0]); //lọc phần tử có id ra khỏi state
+            for (let key in discountsChecked) {
+                //Lọc những discount cùng mức do bất đồng bộ chưa lọc được khi nhận discount props
+                if (discountsChecked[`${key}`] === false) {
+                    filterDiscountsProps = filterDiscountsProps.filter((element) => element._id !== key.split("-")[0]);
+                }
+            }
             handleDiscountsChange(filterDiscountsProps);
         }
 
@@ -187,7 +200,7 @@ class CreateDiscountsForGood extends Component {
                         }
 
                         return (
-                            <div class="form-check" style={{ display: "flex" }}>
+                            <div class="form-check" style={{ display: "flex", padding: "10px 0px" }}>
                                 <input
                                     type="checkbox"
                                     className={`form-check-input`}
@@ -196,6 +209,7 @@ class CreateDiscountsForGood extends Component {
                                     checked={discountsChecked[`${item._id}-${index}`]}
                                     onChange={this.handleDiscountChange}
                                     style={{ minWidth: "20px" }}
+                                    key={index}
                                 />
                                 <label
                                     className={`form-check-label ${disabled ? "text-muted" : "text-success"}`}
@@ -214,14 +228,19 @@ class CreateDiscountsForGood extends Component {
 
     render() {
         let { listDiscountsByGoodId } = this.props.goods.goodItems;
+        console.log("STATE", this.state);
         return (
             <React.Fragment>
-                <ButtonModal
-                    modalID={`modal-add-quote-discount-for-good`}
-                    button_name={"Chọn khuyến mãi"}
-                    title={"Chọn khuyến mãi"}
-                    className="form-control text-muted"
-                />
+                <a
+                    style={{
+                        cursor: "pointer",
+                    }}
+                    data-toggle="modal"
+                    data-backdrop="static"
+                    href={"#modal-add-quote-discount-for-good"}
+                >
+                    Chọn khuyến mãi
+                </a>
                 <DialogModal
                     modalID={`modal-add-quote-discount-for-good`}
                     isLoading={false}
@@ -231,7 +250,7 @@ class CreateDiscountsForGood extends Component {
                     size="50"
                     style={{ backgroundColor: "green" }}
                 >
-                    {!listDiscountsByGoodId && !listDiscountsByGoodId.length ? (
+                    {!listDiscountsByGoodId.length ? (
                         <div style={{ display: "flex", alignItems: "center" }}>
                             <i className="fa fa-frown-o text-warning"></i> &ensp; <span>Chưa có khuyến mãi nào</span>
                         </div>
