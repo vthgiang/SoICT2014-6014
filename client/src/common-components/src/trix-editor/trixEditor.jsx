@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
+import parse from 'html-react-parser';
 class TrixEditor extends Component {
     constructor(props) {
         super(props);
@@ -11,59 +11,69 @@ class TrixEditor extends Component {
 
         this.trixInput = React.createRef();
     }
-    
-    shouldComponentUpdate = (nextProps, nextState) => {
-        if (nextProps.value !== this.props.value) {
-            this.trixInput.current.innerHTML = nextProps.value;
-            return true;
-        }
-        return true;
-    }
 
     componentDidMount() {
+        // Disable button import file
+        if (!this.props.handleAddAttachment) {
+            document.getElementsByClassName("trix-button trix-button--icon trix-button--icon-attach")[0].disabled = true;
+        }
+
         // Bắt sự kiện change text
-        this.trixInput.current.addEventListener("trix-change", event => {
-            console.log("trix change event fired");
-            this.props.handleTrixChange(event.target.innerHTML);
+        this.trixInput.current && this.trixInput.current.addEventListener("trix-change", event => {
+            if (this.props.handleChange) {
+                this.props.handleChange(event.target.innerHTML);
+            }
         });
 
         // Bắt sự kiện add attachment
-        this.trixInput.current.addEventListener("trix-attachment-add", event => {
+        this.trixInput.current && this.trixInput.current.addEventListener("trix-attachment-add", event => {
             if (event.attachment && event.attachment.file) {
-                event.attachment.setUploadProgress(100);
-                this.props.handleAddAttachment(event.attachment.file);
+                if (this.props.handleAddAttachment) {
+                    event.attachment.setUploadProgress(100);
+                    this.props.handleAddAttachment(event.attachment.file);
+                } else {
+                    event.attachment.setUploadProgress(100);
+                }
             }
         })
 
         // Bắt sự kiện remove attachment
-        this.trixInput.current.addEventListener("trix-attachment-remove", event => {
+        this.trixInput.current && this.trixInput.current.addEventListener("trix-attachment-remove", event => {
             if (event.attachment && event.attachment.file) {
-                this.props.handleRemoveAttachment(event.attachment.file);
+                if (this.props.handleRemoveAttachment) {
+                    this.props.handleRemoveAttachment(event.attachment.file);
+                }
             }
         });
     }
 
     render() {
-        const { trixId, value } = this.props;
+        const { trixId = "trix-editor", value, edit = true } = this.props;
 
         return (
-            <div id={trixId + "form"} className="container-fluid">
-                <form>
-                    <input
-                        id={trixId}
-                        name="description"
-                        className="form-control"
-                        type="hidden"
-                        value={value}
-                    />
-                    <trix-editor
-                        classname="trix-content"
-                        input={trixId} 
-                        placeholder="Start typing here...."
-                        ref={this.trixInput}
-                    />
-                </form>
-            </div>
+            <React.Fragment>
+                {
+                    edit ?
+                        <div id = {trixId + "form"} className = "container-fluid" >
+                            <form>
+                                <input
+                                    id={trixId}
+                                    name="description"
+                                    className="form-control"
+                                    type="hidden"
+                                    value={value}
+                                />
+                                <trix-editor
+                                    classname="trix-content"
+                                    input={trixId} 
+                                    placeholder="Start typing here...."
+                                    ref={this.trixInput}
+                                />
+                            </form>
+                        </div>
+                    : parse(value)
+                }
+            </React.Fragment>
         );
     }
 }
