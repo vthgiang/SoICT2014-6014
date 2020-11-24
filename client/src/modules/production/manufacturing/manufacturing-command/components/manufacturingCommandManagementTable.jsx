@@ -161,10 +161,10 @@ class ManufacturingCommandManagementTable extends Component {
             ...state,
             commandDetail: command
         }));
-        window.$('#modal-detail-info-manufacturing-command').modal('show');
+        window.$('#modal-detail-info-manufacturing-command-1').modal('show');
     }
 
-    checkRoleReponsibles = (commands) => {
+    checkRoleAccountables = (commands) => {
         const { accountables } = commands;
         const userId = localStorage.getItem("userId");
         let accoutableIds = accountables.map(x => x._id);
@@ -187,6 +187,28 @@ class ManufacturingCommandManagementTable extends Component {
         }
         this.props.handleEditCommand(command._id, data);
     }
+
+
+    checkRoleQualityControl = (command) => {
+        const { qualityControlStaffs } = command;
+        const userId = localStorage.getItem("userId");
+        let qcIds = qualityControlStaffs.map(x => x.staff._id);
+
+        if (qcIds.includes(userId) && qualityControlStaffs[qcIds.indexOf(userId)].time === null) {
+            return true;
+        }
+        return false;
+    }
+
+    handleQualityControlCommand = (command) => {
+        const userId = localStorage.getItem("userId");
+        const data = {
+            qualityControlStaffId: userId
+        }
+        this.props.handleEditCommand(command._id, data);
+    }
+
+
     render() {
         const { translate, manufacturingCommand } = this.props;
         let listCommands = [];
@@ -199,7 +221,7 @@ class ManufacturingCommandManagementTable extends Component {
         return (
             <React.Fragment>
                 {
-                    <ManufacturingCommandDetailInfo commandDetail={this.state.commandDetail} />
+                    <ManufacturingCommandDetailInfo idModal={1} commandDetail={this.state.commandDetail} />
                 }
                 <div className="box-body qlcv">
                     <div className="form-inline">
@@ -284,6 +306,7 @@ class ManufacturingCommandManagementTable extends Component {
                                     { value: '1', text: translate('manufacturing.command.1.content') },
                                     { value: '2', text: translate('manufacturing.command.2.content') },
                                     { value: '3', text: translate('manufacturing.command.3.content') },
+                                    { value: '5', text: translate('manufacturing.command.5.content') },
                                     { value: '4', text: translate('manufacturing.command.4.content') }
                                 ]}
                                 onChange={this.handleStatusChange}
@@ -300,7 +323,7 @@ class ManufacturingCommandManagementTable extends Component {
                                 <th>{translate('manufacturing.command.code')}</th>
                                 <th>{translate('manufacturing.command.plan_code')}</th>
                                 <th>{translate('manufacturing.command.created_at')}</th>
-                                {/* <th>{translate('manufacturing.command.responsibles')}</th> */}
+                                <th>{translate('manufacturing.command.qualityControlStaffs')}</th>
                                 <th>{translate('manufacturing.command.accountables')}</th>
                                 <th>{translate('manufacturing.command.mill')}</th>
                                 <th>{translate('manufacturing.command.start_date')}</th>
@@ -314,7 +337,7 @@ class ManufacturingCommandManagementTable extends Component {
                                             translate('manufacturing.command.code'),
                                             translate('manufacturing.command.plan_code'),
                                             translate('manufacturing.command.created_at'),
-                                            // translate('manufacturing.command.responsibles'),
+                                            translate('manufacturing.command.qualityControlStaffs'),
                                             translate('manufacturing.command.accountables'),
                                             translate('manufacturing.command.mill'),
                                             translate('manufacturing.command.start_date'),
@@ -336,12 +359,12 @@ class ManufacturingCommandManagementTable extends Component {
                                         <td>{command.code}</td>
                                         <td>{command.manufacturingPlan !== undefined && command.manufacturingPlan.code}</td>
                                         <td>{formatDate(command.createdAt)}</td>
-                                        {/* <td>{command.responsibles && command.responsibles.map((res, index) => {
-                                            if (command.responsibles.length === index + 1)
-                                                return res.name
-                                            return res.name + ", "
+                                        <td>{command.qualityControlStaffs && command.qualityControlStaffs.map((staff, index) => {
+                                            if (command.qualityControlStaffs.length === index + 1)
+                                                return staff.staff.name
+                                            return staff.staff.name + ", "
                                         })}
-                                        </td> */}
+                                        </td>
                                         <td>{command.accountables && command.accountables.map((acc, index) => {
                                             if (command.accountables.length === index + 1)
                                                 return acc.name;
@@ -354,7 +377,7 @@ class ManufacturingCommandManagementTable extends Component {
                                         <td style={{ textAlign: "center" }}>
                                             <a style={{ width: '5px' }} title={translate('manufacturing.command.command_detail')} onClick={() => { this.handleShowDetailManufacturingCommand(command) }}><i className="material-icons">view_list</i></a>
                                             {
-                                                this.checkRoleReponsibles(command) && command.status === 2 &&
+                                                this.checkRoleAccountables(command) && command.status === 2 &&
                                                 <ConfirmNotification
                                                     icon="play_circle_filled"
                                                     title={translate('manufacturing.command.start_command')}
@@ -365,7 +388,7 @@ class ManufacturingCommandManagementTable extends Component {
                                                 />
                                             }
                                             {
-                                                this.checkRoleReponsibles(command) && command.status === 3 &&
+                                                this.checkRoleAccountables(command) && command.status === 5 &&
                                                 <ConfirmNotification
                                                     icon="check_circle"
                                                     title={translate('manufacturing.command.end_command')}
@@ -373,6 +396,17 @@ class ManufacturingCommandManagementTable extends Component {
                                                     name="check_circle"
                                                     className="text-green"
                                                     func={() => this.handleEndCommand(command)}
+                                                />
+                                            }
+                                            {
+                                                this.checkRoleQualityControl(command) && command.status === 3 &&
+                                                <ConfirmNotification
+                                                    icon="thumb_up"
+                                                    title={translate('manufacturing.command.quality_control_command')}
+                                                    content={translate('manufacturing.command.quality_control_command') + " " + command.code}
+                                                    name="thumb_up"
+                                                    className="text-green"
+                                                    func={() => this.handleQualityControlCommand(command)}
                                                 />
                                             }
                                         </td>

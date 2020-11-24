@@ -2543,8 +2543,8 @@ export default {
                 role_in_collaborated_unit: "The role of the employee in",
                 confirm_assigned: "Confirm the assignment",
                 confirm_assigned_success: "You have confirmed the assignment",
-                confirm_assigned_failure:
-                    "You have not confirmed the assignment",
+                confirm_assigned_failure: "You have not confirmed the assignment",
+                unit_not_confirm_assigned_task: "Organizational unit has not confirmed the assignment",
 
                 name: "Name of task",
                 search_by_name: "Search by name",

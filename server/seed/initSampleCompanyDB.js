@@ -4404,6 +4404,34 @@ const initSampleCompanyDB = async () => {
             title: "Tạo kế hoạch sản xuất",
             description: "Tạo kế hoạch sản xuất KHSX202000004"
         }]
+    }, {
+        code: "KHSX202000005",
+        manufacturingOrder: "5fa4fa483b746017bca19a3d",
+        manufacturingWorks: [manufacturingWorks[0]._id, manufacturingWorks[1]._id],
+        goods: [{
+            good: listProduct[0]._id,
+            quantity: 100,
+            orderedQuantity: 10
+        },
+        {
+            good: listProduct[1]._id,
+            quantity: 200,
+            orderedQuantity: 100
+        }],
+
+        approvers: [{
+            approver: users[3]._id,
+            approvedTime: new Date("2020-11-04 18:00:00")
+        }],
+        creator: users[13]._id,
+        startDate: "2020-11-05",
+        endDate: "2020-12-2",
+        description: "Kế hoạch sản xuất trong tháng 11 năm 2020",
+        logs: [{
+            creator: users[13]._id,
+            title: "Tạo kế hoạch sản xuất",
+            description: "Tạo kế hoạch sản xuất KHSX202000005"
+        }]
     }];
 
     const manufacturingPlans = await ManufacturingPlan(vnistDB).insertMany(manufacturingPlansData);
@@ -4426,6 +4454,13 @@ const initSampleCompanyDB = async () => {
             conversionRate: 10,
             quantity: 20
         },
+        qualityControlStaffs: [{
+            staff: users[11]._id,
+            time: null
+        }, {
+            staff: users[0]._id,
+            time: null
+        }],
         status: 2,
         creator: users[13]._id,
         responsibles: [users[14]._id, users[15]._id, users[16]._id],
@@ -4446,6 +4481,13 @@ const initSampleCompanyDB = async () => {
             quantity: 25
         },
         status: 2,
+        qualityControlStaffs: [{
+            staff: users[5]._id,
+            time: new Date("2020-12-01 6:00:00")
+        }, {
+            staff: users[0]._id,
+            time: null
+        }],
         creator: users[13]._id,
         responsibles: [users[5]._id, users[6]._id, users[7]._id],
         accountables: [users[5]._id, users[0]._id],
@@ -4464,11 +4506,44 @@ const initSampleCompanyDB = async () => {
             conversionRate: 10,
             quantity: 30
         },
+        qualityControlStaffs: [{
+            staff: users[8]._id,
+            time: null
+        }, {
+            staff: users[0]._id,
+            time: new Date("2020-12-02 6:00:00")
+        }],
         status: 1,
         creator: users[13]._id,
         responsibles: [users[8]._id, users[9]._id, users[10]._id],
         accountables: [users[8]._id],
         description: "Lệnh sản xuất thuốc của nhà máy sản xuất thuốc nước"
+    }, {
+        code: "LSX202000004",
+        manufacturingPlan: manufacturingPlans[4]._id,
+        manufacturingMill: manufacturingMills[0]._id,
+        startDate: "2020-11-03",
+        endDate: "2020-11-04",
+        startTurn: 1,
+        endTurn: 3,
+        good: {
+            good: listProduct[0],
+            packingRule: "Baox10Thung",
+            conversionRate: 10,
+            quantity: 20
+        },
+        qualityControlStaffs: [{
+            staff: users[11]._id,
+            time: null
+        }, {
+            staff: users[0]._id,
+            time: new Date("2020-11-03 6:00:00")
+        }],
+        status: 2,
+        creator: users[13]._id,
+        responsibles: [users[14]._id, users[15]._id, users[16]._id],
+        accountables: [users[11]._id, users[0]._id],
+        description: "Lệnh sản xuất thuốc của nhà máy sản xuất thuốc bột"
     }];
 
     const manufacturingCommands = await ManufacturingCommand(vnistDB).insertMany(manufacturingCommandData);
@@ -4512,48 +4587,108 @@ const initSampleCompanyDB = async () => {
         month: "2020-11",
         turns: [array30days, array30days, array30days]
     }, {
-        user: users[5]._id,
+        user: users[16]._id,
         month: "2020-11",
         turns: [array30days, array30days, array30days]
+    }, {
+        user: users[5]._id,
+        month: "2020-12",
+        turns: [array31days, array31days, array31days]
     }, {
         user: users[6]._id,
-        month: "2020-11",
-        turns: [array30days, array30days, array30days]
+        month: "2020-12",
+        turns: [array31days, array31days, array31days]
+    }, {
+        user: users[7]._id,
+        month: "2020-12",
+        turns: [array31days, array31days, array31days]
     }, {
         user: users[8]._id,
-        month: "2020-11",
-        turns: [array30days, array30days, array30days]
+        month: "2020-12",
+        turns: [array31days, array31days, array31days]
+    }, {
+        user: users[9]._id,
+        month: "2020-12",
+        turns: [array31days, array31days, array31days]
+    }, {
+        user: users[10]._id,
+        month: "2020-12",
+        turns: [array31days, array31days, array31days]
     }]
 
     const workSchedules = await WorkSchedule(vnistDB).insertMany(workScheduleData);
 
-    let workSchedule0 = await WorkSchedule(vnistDB).findById(workSchedules[0]._id);
-    workSchedule0.turns[0][2] = manufacturingCommands[0]._id;
-    workSchedule0.turns[1][2] = manufacturingCommands[0]._id;
-    workSchedule0.turns[2][2] = manufacturingCommands[0]._id;
-    workSchedule0.turns[0][3] = manufacturingCommands[0]._id;
-    workSchedule0.turns[1][3] = manufacturingCommands[0]._id;
-    workSchedule0.turns[2][3] = manufacturingCommands[0]._id;
+    // let workSchedule0 = await WorkSchedule(vnistDB).findById(workSchedules[0]._id);
+    // workSchedule0.turns[0][2] = manufacturingCommands[0]._id;
+    // workSchedule0.turns[1][2] = manufacturingCommands[0]._id;
+    // workSchedule0.turns[2][2] = manufacturingCommands[0]._id;
+    // workSchedule0.turns[0][3] = manufacturingCommands[0]._id;
+    // workSchedule0.turns[1][3] = manufacturingCommands[0]._id;
+    // workSchedule0.turns[2][3] = manufacturingCommands[0]._id;
 
-    await workSchedule0.markModified('turns');
-    await workSchedule0.save();
+    let workSchedule0 = await WorkSchedule(vnistDB).find({
+        _id: {
+            $in: [workSchedules[0]._id, workSchedules[3]._id, workSchedules[4]._id, workSchedules[5]._id]
+        }
+    });
 
-    workSchedule1 = await WorkSchedule(vnistDB).findById(workSchedules[1]._id);
-    workSchedule1.turns[0][1] = manufacturingCommands[1]._id;
-    workSchedule1.turns[1][1] = manufacturingCommands[1]._id;
-    workSchedule1.turns[2][1] = manufacturingCommands[1]._id;
-    workSchedule1.turns[1][0] = manufacturingCommands[1]._id;
-    workSchedule1.turns[2][0] = manufacturingCommands[1]._id;
-    await workSchedule1.markModified('turns');
-    await workSchedule1.save();
+    for (let i = 0; i < workSchedule0.length; i++) {
+        workSchedule0[i].turns[0][2] = manufacturingCommands[0]._id;
+        workSchedule0[i].turns[1][2] = manufacturingCommands[0]._id;
+        workSchedule0[i].turns[2][2] = manufacturingCommands[0]._id;
+        workSchedule0[i].turns[0][3] = manufacturingCommands[0]._id;
+        workSchedule0[i].turns[1][3] = manufacturingCommands[0]._id;
+        workSchedule0[i].turns[2][3] = manufacturingCommands[0]._id;
+        await workSchedule0[i].markModified('turns');
+        await workSchedule0[i].save();
+    }
 
-    workSchedule2 = await WorkSchedule(vnistDB).findById(workSchedules[2]._id);
-    workSchedule2.turns[2][1] = manufacturingCommands[2]._id;
-    workSchedule2.turns[0][2] = manufacturingCommands[2]._id;
-    await workSchedule2.markModified('turns');
-    await workSchedule2.save();
+    // workSchedule1 = await WorkSchedule(vnistDB).findById(workSchedules[1]._id);
+    // workSchedule1.turns[0][1] = manufacturingCommands[1]._id;
+    // workSchedule1.turns[1][1] = manufacturingCommands[1]._id;
+    // workSchedule1.turns[2][1] = manufacturingCommands[1]._id;
+    // workSchedule1.turns[1][0] = manufacturingCommands[1]._id;
+    // workSchedule1.turns[2][0] = manufacturingCommands[1]._id;
+    // await workSchedule1.markModified('turns');
+    // await workSchedule1.save();
 
 
+    let workSchedule1 = await WorkSchedule(vnistDB).find({
+        _id: {
+            $in: [workSchedules[1]._id, workSchedules[6]._id, workSchedules[7]._id, workSchedules[8]._id]
+        }
+    });
+
+    for (let i = 0; i < workSchedule1.length; i++) {
+        workSchedule1[i].turns[0][1] = manufacturingCommands[1]._id;
+        workSchedule1[i].turns[1][1] = manufacturingCommands[1]._id;
+        workSchedule1[i].turns[2][1] = manufacturingCommands[1]._id;
+        workSchedule1[i].turns[1][0] = manufacturingCommands[1]._id;
+        workSchedule1[i].turns[2][0] = manufacturingCommands[1]._id;
+        await workSchedule1[i].markModified('turns');
+        await workSchedule1[i].save();
+    }
+
+
+    // workSchedule2 = await WorkSchedule(vnistDB).findById(workSchedules[2]._id);
+    // workSchedule2.turns[2][1] = manufacturingCommands[2]._id;
+    // workSchedule2.turns[0][2] = manufacturingCommands[2]._id;
+    // await workSchedule2.markModified('turns');
+    // await workSchedule2.save();
+
+
+    let workSchedule2 = await WorkSchedule(vnistDB).find({
+        _id: {
+            $in: [workSchedules[2]._id, workSchedules[9]._id, workSchedules[10]._id, workSchedules[11]._id]
+        }
+    });
+
+    for (let i = 0; i < workSchedule2.length; i++) {
+        workSchedule2[i].turns[2][1] = manufacturingCommands[2]._id;
+        workSchedule2[i].turns[0][2] = manufacturingCommands[2]._id;
+        await workSchedule2[i].markModified('turns');
+        await workSchedule2[i].save();
+    }
 
     console.log("Tạo dữ liệu lịch làm việc cho xưởng và công nhân")
 

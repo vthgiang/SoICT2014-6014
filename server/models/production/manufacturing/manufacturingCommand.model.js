@@ -47,15 +47,15 @@ const ManufacturingCommandSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User"
     },
-    // approvers: [{ // Danh sách người phê duyệt
-    //     approver: { // Người phê duyệt
-    //         type: Schema.Types.ObjectId,
-    //         ref: "User"
-    //     },
-    //     approvedTime: { // Thời gian phê duyệt
-    //         type: Date
-    //     }
-    // }],
+    qualityControlStaffs: [{ // Danh sách người kiểm định chất lượng 
+        staff: { // Người kiểm định
+            type: Schema.Types.ObjectId,
+            ref: "User"
+        },
+        time: { // Thời gian phê duyệt
+            type: Date
+        }
+    }],
     responsibles: [{ // Danh sách người thực hiện lệnh
         type: Schema.Types.ObjectId,
         ref: "User"
@@ -64,13 +64,20 @@ const ManufacturingCommandSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User"
     }],
-    status: { //  Trạng thái lệnh sản xuất: 1. Chờ phê duyệt || 2. Lệnh đã duyệt || 3. Lệnh đang được thực thi || 4. Đã hoàn thành || 5. Đã hủy
+    status: { //  Trạng thái lệnh sản xuất: 1. Chờ phê duyệt || 2. Lệnh đã duyệt || 3. Lệnh đang được thực thi || 4. Đã hoàn thành || 5. Đã kiểm định chất lượng
         type: Number,
         default: 1
     },
     description: { // Mô tả về lệnh
         type: String
-    }
+    },
+    finishedProductQuantity: { // Số lượng thành phẩm
+        type: Number
+    },
+
+    substandardProductQuantity: { // Số lượng phế phẩm
+        type: Number
+    },
 }, {
     timestamps: true
 });
