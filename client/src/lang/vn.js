@@ -4263,6 +4263,10 @@ export default {
                     content: "Đã hoàn thành"
                 },
                 5: {
+                    color: "orange",
+                    content: "Đã kiểm định chất lượng"
+                },
+                6: {
                     color: "red",
                     content: "Đã hủy"
                 },
@@ -4318,6 +4322,10 @@ export default {
                     content: "Đã hoàn thành"
                 },
                 5: {
+                    color: "orange",
+                    content: "Đã kiểm định chất lượng"
+                },
+                6: {
                     color: "red",
                     content: "Đã hủy"
                 },
@@ -4361,6 +4369,10 @@ export default {
                     color: "green",
                     content: "Đã hoàn thành"
                 },
+                5: {
+                    color: "orange",
+                    content: "Đã kiểm định chất lượng"
+                },
                 choose_status: "Chọn trạng thái",
                 choose_all: "Chọn tất cả",
                 command_detail: "Chi tiết lệnh sản xuất",
@@ -4385,7 +4397,33 @@ export default {
                 start_command: "Thực hiện lệnh",
                 end_command: "Hoàn thành lệnh",
                 edit_successfully: "Sửa lệnh sản xuất thành công",
-                edit_failed: "Sửa lện sản xuất thất bại",
+                edit_failed: "Sửa lệnh sản xuất thất bại",
+                qualityControlStaffs: "Người kiểm định chất lượng",
+                time: "Thời gian kiểm định",
+                quality_control_command: "Kiếm định chất lượng lệnh"
+            },
+            lot: {
+                code: "Mã lô",
+                command_code: "Mã lệnh",
+                good: "Sản phẩm",
+                status: "Trạng thái",
+                created_at: "Ngày tạo",
+                expiration_date: "Ngày hết hạn",
+                1: {
+                    color: "#ffbf00",
+                    content: "Chưa xử lý"
+                },
+                2: {
+                    color: "#00bfff",
+                    content: "Đã xử lý"
+                },
+                3: {
+                    color: "green",
+                    content: "Đã nhập kho"
+                },
+                choose_status: "Chọn trạng thái",
+                choose_all: "Chọn tất cả"
+
             }
         }
     }
