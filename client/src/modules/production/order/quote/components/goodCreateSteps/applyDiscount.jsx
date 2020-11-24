@@ -2,8 +2,10 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { SelectBox } from "../../../../../../common-components";
-import CreateDiscountsForGood from "../createDiscountsForGood";
+import CreateDiscountsForGood from "./createDiscountsForGood";
 import { formatCurrency } from "../../../../../../helpers/formatCurrency";
+import "../quote.css";
+import CreateSlaForGood from "./createSlaForGood";
 
 class ApplyDiscount extends Component {
     constructor(props) {
@@ -25,12 +27,32 @@ class ApplyDiscount extends Component {
         return options;
     };
 
+    handleQuantity = (quantity, e) => {
+        e.preventDefault();
+        let data = { target: { value: quantity } };
+        this.props.handleQuantityChange(data);
+    };
+
     render() {
-        let { quantity, good, discountsOfGood, slas, inventory, pricePerBaseUnit, code, goodName, baseUnit } = this.props;
-        const { handleDiscountsChange, handleServiceLevelAgreementChange } = this.props;
+        let {
+            quantity,
+            good,
+            discountsOfGood,
+            inventory,
+            pricePerBaseUnit,
+            code,
+            goodName,
+            baseUnit,
+            discountsChecked,
+            slasOfGood,
+            slasOfGoodChecked,
+            handleSlasOfGoodChange,
+            setSlasOfGoodChecked,
+        } = this.props;
+        const { handleDiscountsChange, handleServiceLevelAgreementChange, setDiscountsChecked } = this.props;
         return (
             <React.Fragment>
-                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 10 }}>
+                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: "10px 10px 20px 10px" }}>
                     <div>
                         <h3>{code + " - " + goodName}</h3>
                     </div>
@@ -39,12 +61,23 @@ class ApplyDiscount extends Component {
                         <h4 className="text-red">{pricePerBaseUnit ? formatCurrency(pricePerBaseUnit) + " (vnđ) " : "0 (vnđ) "}</h4>{" "}
                         <h6>/ {baseUnit}</h6>
                     </div>
-                    <div style={{ display: "flex" }}>
-                        <div>Số lượng &ensp;</div>
-                        <div>
-                            <input type="number" value={quantity} />
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                        <div>Số lượng: &ensp;</div>
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                            <button className="button-add-quantity-for-quote" onClick={(e) => this.handleQuantity(parseInt(quantity) - 1, e)}>
+                                -
+                            </button>
+                            <input
+                                type="number"
+                                value={quantity}
+                                className="input-add-quantity-for-quote"
+                                onChange={this.props.handleQuantityChange}
+                            />
+                            <button className="button-add-quantity-for-quote" onClick={(e) => this.handleQuantity(parseInt(quantity) + 1, e)}>
+                                +
+                            </button>
                         </div>
-                        <div>&ensp;{inventory} sản phẩm có sẵn</div>
+                        <div>&ensp;{inventory} sản phẩm có sẵn trong kho</div>
                     </div>
                 </div>
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 10, height: "100%", borderTop: "solid 0.3px #c5c5c5" }}>
@@ -57,6 +90,8 @@ class ApplyDiscount extends Component {
                             goodId={good}
                             handleDiscountsChange={(data) => handleDiscountsChange(data)}
                             discountsProps={discountsOfGood}
+                            setDiscountsChecked={(checked) => setDiscountsChecked(checked)}
+                            discountsChecked={discountsChecked}
                         />
                     </div>
                 </div>
@@ -65,7 +100,14 @@ class ApplyDiscount extends Component {
                         <span>
                             <i className="fa  fa-registered text-info"></i> Cam kết chất lượng &ensp;
                         </span>
-                        <a>Chọn cam kết chất lượng</a>
+                        <CreateSlaForGood
+                            goodId={good}
+                            slasOfGood={slasOfGood}
+                            handleSlasOfGoodChange={(data) => handleSlasOfGoodChange(data)}
+                            slasOfGoodChecked={slasOfGoodChecked}
+                            setSlasOfGoodChecked={(checked) => setSlasOfGoodChecked(checked)}
+                        />
+                        {/* <a>Chọn cam kết chất lượng</a> */}
                         {/* <SelectBox
                             id={`select-create-quote-sla-${good}`}
                             className="form-control select2"
