@@ -212,7 +212,7 @@ class ReturnManagement extends Component {
                                         <tr key={index}>
                                             <td>{index + 1}</td>
                                             <td>{x.code}</td>
-                                            <td><a href="#">{x.bill ? x.bill.code : ''}</a></td>
+                                            <td><a href="#" onClick={() => this.props.handleShowDetailInfo(x.bill ? x.bill._id : '')}>{x.bill ? x.bill.code : ''}</a></td>
                                             <td>{translate(`manage_warehouse.bill_management.billType.${x.type}`)}</td>
                                             <td style={{ color: translate(`manage_warehouse.bill_management.bill_color.${x.status}`)}}>{translate(`manage_warehouse.bill_management.bill_status.${x.status}`)}</td>
                                             <td>{x.creator ? x.creator.name : "Creator is deleted"}</td>
@@ -222,8 +222,8 @@ class ReturnManagement extends Component {
                                             <td>{x.customer ? x.customer.name : 'Customer is deleted'}</td>
                                             <td>{x.description}</td>
                                             <td style={{textAlign: 'center'}}>
-                                                <a className="text-green" onClick={() => this.props.handleShowDetailInfo(x._id)}><i className="material-icons">visibility</i></a>
-                                                { this.state.group !== '' ? <a onClick={() => this.handleEdit(x)} className="text-yellow" ><i className="material-icons">edit</i></a> : ''}
+                                                <a onClick={() => this.props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>
+                                                <a onClick={() => this.handleEdit(x)} className="text-yellow" ><i className="material-icons">edit</i></a>
                                                 <a className="text-black" onClick={() => this.props.handleShow()}><i className="material-icons">print</i></a>
                                             </td>
                                         </tr>

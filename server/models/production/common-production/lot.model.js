@@ -3,10 +3,12 @@ const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
 const LotSchema = new Schema({
+    code: {
+        type: String
+    },
 
     name: {
-        type: String,
-        required: true
+        type: String
     },
 
     good: {
@@ -138,14 +140,11 @@ const LotSchema = new Schema({
         type: Number
     },
 
-    finishedProductQuantity: { // Số lượng thành phẩm
+    productType: {// Loại sản phẩm. 1. Phế phẩm 2. Thành phẩm
         type: Number
     },
 
-    substandardProductQuantity: { // Số lượng phế phẩm
-        type: Number
-    },
-    status: { // 1. Chưa được xử lý 2. Đã được xử lý
+    status: { // 1. Chưa được xử lý 2. Đã được xử lý 3. Đã nhập kho
         type: Number
     }
 

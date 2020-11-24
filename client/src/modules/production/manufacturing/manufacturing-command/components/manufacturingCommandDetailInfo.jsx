@@ -19,16 +19,15 @@ class ManufacturingCommandDetailInfo extends Component {
     }
 
     render() {
-        const { translate, manufacturingCommand } = this.props;
+        const { translate, manufacturingCommand, idModal } = this.props;
         let currentCommand = {};
         if (manufacturingCommand.currentCommand && manufacturingCommand.isLoading === false) {
             currentCommand = manufacturingCommand.currentCommand;
         }
-        console.log(currentCommand);
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID={`modal-detail-info-manufacturing-command`} isLoading={manufacturingCommand.isLoading}
+                    modalID={`modal-detail-info-manufacturing-command-${idModal}`} isLoading={manufacturingCommand.isLoading}
                     title={translate('manufacturing.command.command_detail')}
                     formID={`form-detail-manufacturing-command`}
                     size={75}
@@ -175,6 +174,37 @@ class ManufacturingCommandDetailInfo extends Component {
                                             return (
                                                 <div className="form-group" key={index}>
                                                     <p>{x.name}{" - "}{x.email}</p>
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <fieldset className="scheduler-border">
+                                    <legend className="scheduler-border">{translate('manufacturing.command.qualityControlStaffs')}</legend>
+                                    {
+                                        currentCommand.qualityControlStaffs && currentCommand.qualityControlStaffs.length &&
+                                        currentCommand.qualityControlStaffs.map((x, index) => {
+                                            return (
+                                                <div className="form-group" key={index}>
+                                                    <p>
+                                                        {x.staff.name}
+                                                        {" - "}
+                                                        {x.staff.email}
+                                                        {
+                                                            x.time &&
+                                                            <React.Fragment>
+                                                                &emsp; &emsp; &emsp;
+                                                                {translate('manufacturing.command.time')}
+                                                                : &emsp;
+                                                                {formatFullDate(x.time)}
+                                                            </React.Fragment>
+
+                                                        }
+                                                    </p>
                                                 </div>
                                             )
                                         })
