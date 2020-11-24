@@ -74,8 +74,6 @@ class ComponentInfor extends Component {
         this.props.getNumberAnnaulLeave({ numberAnnulLeave: true, year: partMonth[1] });
         this.props.getListWorkPlan({ year: partMonth[1] });
 
-        /* Lấy danh sách nhân viên theo tháng sinh*/
-        // this.props.getAllEmployee({ status: 'active', page: 0, limit: 10000, birthdate: monthNew, organizationalUnits: organizationalUnits });
     }
 
     /**
@@ -125,8 +123,6 @@ class ComponentInfor extends Component {
         this.props.getNumberAnnaulLeave({ numberAnnulLeave: true, year: partMonth[1] });
         this.props.getListWorkPlan({ year: partMonth[1] });
 
-        /* Lấy danh sách nhân viên theo tháng sinh*/
-        // this.props.getAllEmployee({ status: 'active', page: 0, limit: 10000, birthdate: monthNew, organizationalUnits: organizationalUnits });
     }
 
     /** Function xem tất cả bảng tổng hợp công việc*/
@@ -399,7 +395,7 @@ class ComponentInfor extends Component {
                                                             <td>{index + 1}</td>
                                                             <td>{x.name}</td>
                                                             <td>
-                                                                <div className="clearfix"> <small class="pull-right">{x.totalTask}</small> </div>
+                                                                <div className="clearfix"> <small className="pull-right">{x.totalTask}</small> </div>
                                                                 <div className="progress xs">
                                                                     <div style={{ width: `${(x.totalTask / maxTask).toFixed(2) * 100}%` }} className="progress-bar progress-bar-green">
                                                                     </div>
@@ -598,7 +594,6 @@ const actionCreators = {
     getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
     getListWorkPlan: WorkPlanActions.getListWorkPlan,
     getNumberAnnaulLeave: AnnualLeaveActions.searchAnnualLeaves,
-    getAllEmployee: EmployeeManagerActions.getAllEmployee,
     getAllEmployeeKpiSetByMonth: createKpiSetActions.getAllEmployeeKpiSetByMonth,
 
     getListPraise: DisciplineActions.getListPraise,

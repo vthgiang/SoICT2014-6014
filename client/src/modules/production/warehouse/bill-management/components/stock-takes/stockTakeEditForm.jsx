@@ -409,6 +409,7 @@ class StockTakeEditForm extends Component {
                 approver: nextProps.approver,
                 description: nextProps.description,
                 listGood: nextProps.listGood,
+                oldGoods: nextProps.listGood,
                 errorStock: undefined, 
                 errorType: undefined, 
                 errorApprover: undefined, 
@@ -423,7 +424,7 @@ class StockTakeEditForm extends Component {
     }
 
     save = async () => {
-        const { billId, fromStock, code, type, status, oldStatus, approver, users, description, listGood } = this.state;
+        const { billId, fromStock, code, type, status, oldStatus, approver, users, description, listGood, oldGoods } = this.state;
         const { group } = this.props;
         await this.props.editBill(billId, {
             fromStock: fromStock,
@@ -435,7 +436,8 @@ class StockTakeEditForm extends Component {
             users: users,
             approver: approver,
             description: description,
-            goods: listGood
+            goods: listGood,
+            oldGoods: oldGoods
         })
     }
 
@@ -569,7 +571,7 @@ class StockTakeEditForm extends Component {
                                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                         <div className="form-group">
                                             <label>{translate('manage_warehouse.bill_management.real_quantity')}</label>
-                                            <div style={{display: "flex"}}><input className="form-control" value={good.realQuantity} onChange={this.handleQuantityChange} type="number" /><i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: '5px', marginTop: '9px', cursor:'pointer' }} onClick={() => this.addQuantity()}></i></div>
+                                            <div style={{display: "flex"}}><input className="form-control" value={good.realQuantity} onChange={this.handleQuantityChange} type="number" />{status === '2' && good.good && <i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: '5px', marginTop: '9px', cursor:'pointer' }} onClick={() => this.addQuantity()}></i>}</div>
                                         </div>
                                     </div>
                                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">

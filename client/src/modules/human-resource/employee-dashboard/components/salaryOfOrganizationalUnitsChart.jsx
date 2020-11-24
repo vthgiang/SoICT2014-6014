@@ -39,6 +39,7 @@ class SalaryOfOrganizationalUnitsChart extends Component {
     /** Render chart */
     renderChart = (data) => {
         data.data1.shift();
+        let setHeightChart = (data.ratioX.length * 40) < 320 ? 320 : (data.ratioX.length * 40);
         this.removePreviousChart();
         let chart = c3.generate({
             bindto: this.refs.salaryChart,
@@ -47,8 +48,11 @@ class SalaryOfOrganizationalUnitsChart extends Component {
                 hide: true,
                 type: 'bar',
             },
+            padding: {
+                bottom: 20,
+            },
             size: {
-                height: 400
+                height: setHeightChart
             },
             axis: {
                 rotated: true,
@@ -112,12 +116,12 @@ class SalaryOfOrganizationalUnitsChart extends Component {
 
         return (
             <React.Fragment>
-                <div className="box box-solid">
+                <div className="box box-solid" style={{ paddingBottom: 20 }}>
                     <div className="box-header with-border">
                         <h3 className="box-title">{`Biểu đồ lương thưởng các đơn vị trong công ty ${monthShow} `}</h3>
                     </div>
                     <div className="box-body">
-                        <div style={{ height: 420 }}>
+                        <div>
                             <p className="pull-right" style={{ marginBottom: 0 }} > < b > ĐV tính: {data[0] && data[0].unit === 'VND' ? 'Triệu VND' : "1000USD"}</b></p >
                             <div ref="salaryChart"></div>
                         </div>
