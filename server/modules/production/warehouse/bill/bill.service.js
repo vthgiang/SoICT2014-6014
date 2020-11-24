@@ -53,6 +53,14 @@ exports.getBillsByType = async (query, portal) => {
                 option.fromStock = query.stock
             }
 
+            if (query.toStock) {
+                option.toStock = query.toStock
+            }
+
+            if(query.supplier) {
+                option.supplier = query.supplier
+            }
+
             if (query.creator) {
                 option.creator = query.creator
             }
@@ -109,6 +117,14 @@ exports.getBillsByType = async (query, portal) => {
 
             if (query.customer) {
                 option.customer = query.customer
+            }
+
+            if (query.toStock) {
+                option.toStock = query.toStock
+            }
+
+            if(query.supplier) {
+                option.supplier = query.supplier
             }
 
             return await Bill(connect(DB_CONNECTION, portal))
@@ -135,6 +151,14 @@ exports.getBillsByType = async (query, portal) => {
                 option.fromStock = query.stock
             }
 
+            if (query.toStock) {
+                option.toStock = query.toStock
+            }
+
+            if(query.supplier) {
+                option.supplier = query.supplier
+            }
+
             if (query.creator) {
                 option.creator = query.creator
             }
@@ -191,6 +215,14 @@ exports.getBillsByType = async (query, portal) => {
 
             if (query.customer) {
                 option.customer = query.customer
+            }
+
+            if (query.toStock) {
+                option.toStock = query.toStock
+            }
+
+            if(query.supplier) {
+                option.supplier = query.supplier
             }
 
             return await Bill(connect(DB_CONNECTION, portal))
