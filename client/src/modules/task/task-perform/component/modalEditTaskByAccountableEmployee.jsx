@@ -612,14 +612,18 @@ class ModalEditTaskByAccountableEmployee extends Component {
         this.validateTaskStartDate(value, true);
     }
     validateTaskStartDate = (value, willUpdateState = true) => {
+        let { translate } = this.props;
         let msg = TaskFormValidator.validateTaskStartDate(value, this.state.endDate, this.props.translate);
 
+        if (value === "") {
+            msg = translate('task.task_perform.modal_approve_task.err_empty');
+        }
         if (willUpdateState) {
-            this.state.startDate = value;
-            this.state.errorOnStartDate = msg;
             this.setState(state => {
                 return {
                     ...state,
+                    startDate : value,
+                    errorOnStartDate : msg,
                 };
             });
         }
@@ -630,8 +634,12 @@ class ModalEditTaskByAccountableEmployee extends Component {
         this.validateTaskEndDate(value, true);
     }
     validateTaskEndDate = (value, willUpdateState = true) => {
+        let { translate } = this.props;
         let msg = TaskFormValidator.validateTaskEndDate(this.state.startDate, value, this.props.translate);
 
+        if (value === "") {
+            msg = translate('task.task_perform.modal_approve_task.err_empty');
+        }
         if (willUpdateState) {
             this.state.endDate = value;
             this.state.errorOnEndDate = msg;
@@ -650,14 +658,18 @@ class ModalEditTaskByAccountableEmployee extends Component {
     }
 
     validateFormula = (value, willUpdateState = true) => {
+        let { translate } = this.props;
         let msg = TaskTemplateFormValidator.validateTaskTemplateFormula(value);
 
+        if (value === "") {
+            msg = translate('task.task_perform.modal_approve_task.err_empty');
+        }
         if (willUpdateState) {
-            this.state.formula = value;
-            this.state.errorOnFormula = msg;
             this.setState(state => {
                 return {
                     ...state,
+                    formula: value,
+                    errorOnFormula: msg,
                 };
             });
         }
@@ -798,7 +810,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
     handleAddTaskLog = (inactiveEmployees) => {
         let currentTask = this.state.task;
-        let { taskName, organizationalUnit, collaboratedWithOrganizationalUnits, taskDescription, statusOptions, priorityOptions, progress, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees } = this.state;
+        let { taskName, organizationalUnit, collaboratedWithOrganizationalUnits, taskDescription, statusOptions, priorityOptions, startDate, endDate, formula, progress, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees } = this.state;
 
         let title = '';
         let description = '';
@@ -819,6 +831,9 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
         if (statusOptions[0] !== currentTask.status ||
             priorityOptions[0] !== currentTask.priority ||
+            startDate !== currentTask.startDate ||
+            endDate !== currentTask.endDate ||
+            formula !== currentTask.formula ||
             JSON.stringify(previousCollaboratedUnit.map(e => { if (e) return e.organizationalUnit._id })) !== JSON.stringify(collaboratedWithOrganizationalUnits) ||
             JSON.stringify(responsibleEmployees) !== JSON.stringify(currentTask.responsibleEmployees.map(employee => { return employee._id })) ||
             JSON.stringify(accountableEmployees) !== JSON.stringify(currentTask.accountableEmployees.map(employee => { return employee._id })) ||
@@ -837,7 +852,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 for (const element of previousCollaboratedUnit) {
                     collabUnitNameArr.push(element.organizationalUnit.name)
                 }
-                description = description === '' ? description + 'Những đơn vị phối hợp thực hiện công việc mới: ' + JSON.stringify(collabUnitNameArr) : description + '. ' + 'Những đơn vị phối hợp thực hiện công việc mới: ' + JSON.stringify(collabUnitNameArr);
+                description = description === '' ? description + 'Những đơn vị phối hợp thực hiện công việc mới: ' + JSON.stringify(collabUnitNameArr) : description + '. ' + 'Những đơn vị phối hợp thực hiện công việc mới: ' + JSON.stringify(collabUnitNameArr) ;
             }
 
             if (statusOptions[0] !== currentTask.status) {
@@ -846,6 +861,18 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
             if (priorityOptions[0] !== currentTask.priority) {
                 description = description === '' ? description + 'Mức độ ưu tiên mới: ' + this.formatPriority(parseInt(priorityOptions[0])) : description + '. ' + 'Mức độ ưu tiên mới: ' + this.formatPriority(parseInt(priorityOptions[0]));
+            }
+
+            if (startDate !== currentTask.startDate) {
+                description = description === '' ? description + 'Ngày bắt đầu mới: ' + startDate : description + '.' +  'Ngày bắt đầu mới: ' + startDate;
+            }
+
+            if (endDate !== currentTask.endDate) {
+                description = description === '' ? description + 'Ngày kết thúc mới: ' + endDate : description + '.' +  'Ngày kết thúc mới: ' + endDate;
+            }
+
+            if (formula !== currentTask.formula) {
+                description = description === '' ? description + 'Công thức tính điểm mới: ' + formula : description + '.' + 'Công thức tính điểm mới: ' + formula;
             }
 
             if (JSON.stringify(responsibleEmployees) !== JSON.stringify(currentTask.responsibleEmployees.map(employee => { return employee._id }))) {
