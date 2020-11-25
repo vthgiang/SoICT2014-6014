@@ -584,7 +584,7 @@ class DashBoardAssets extends Component {
                         </div>
 
                         {/* Danh sách các tài sản sắp hết hạn */}
-                        <div className="tab-pane" id="administration-asset-is-expired">
+                        {/* <div className="tab-pane" id="administration-asset-is-expired">
                             <LazyLoadComponent
                                 key="AdministrationAssetExpired"
                             >
@@ -592,7 +592,7 @@ class DashBoardAssets extends Component {
                                     setAssetIsExpiredExportData={this.setAssetIsExpiredExportData}
                                 />
                             </LazyLoadComponent>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>

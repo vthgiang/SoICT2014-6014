@@ -17,8 +17,8 @@ class UsageLogAddModal extends Component {
             startDate: this.props.startDate ? this.formatDate(this.props.startDate) : this.formatDate(Date.now()),
             endDate: this.props.endDate ? this.formatDate(this.props.endDate) : this.formatDate(Date.now()),
             description: "",
-            startTime: this.props.startTime ? this.props.startTime : "" ,
-            stopTime: this.props.stopTime ? this.props.stopTime: "",
+            startTime: this.props.startTime ? this.props.startTime : "",
+            stopTime: this.props.stopTime ? this.props.stopTime : "",
         };
     }
 
@@ -164,7 +164,7 @@ class UsageLogAddModal extends Component {
         let userlist = user.list;
         let partStart, startDate, partEnd, endDate;
         partStart = this.state.startDate.split('-');
-        if( this.state.startTime != ""){
+        if (this.state.startTime != "") {
             let date = [partStart[2], partStart[1], partStart[0]].join('-');
             startDate = [date, this.state.startTime].join(' ');
         } else {
@@ -172,7 +172,7 @@ class UsageLogAddModal extends Component {
         }
 
         partEnd = this.state.endDate.split('-');
-        if( this.state.stopTime != ""){
+        if (this.state.stopTime != "") {
             let date = [partEnd[2], partEnd[1], partEnd[0]].join('-');
             endDate = [date, this.state.stopTime].join(' ')
         } else {
