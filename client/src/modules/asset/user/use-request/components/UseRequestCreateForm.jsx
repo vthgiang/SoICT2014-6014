@@ -9,7 +9,7 @@ import { UseRequestFromValidator } from './UseRequestFromValidator';
 import { RecommendDistributeActions } from '../redux/actions';
 import { AssetManagerActions } from '../../../admin/asset-information/redux/actions';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
-
+import Swal from 'sweetalert2';
 class UseRequestCreateForm extends Component {
     constructor(props) {
         super(props);
@@ -205,9 +205,23 @@ class UseRequestCreateForm extends Component {
     save = async () => {
         let dataToSubmit = { ...this.state, proponent: this.props.auth.user._id }
         if (this.isFormValidated() && this.validateExitsRecommendNumber(this.state.recommendNumber) === false) {
-            await this.props.createRecommendDistribute(dataToSubmit);
-            if (this.props._id == `calendar-${this.props.asset}`) {
-                await this.props.handleChange(dataToSubmit)
+            let nowDate = new Date();
+            let dateStartUse, date;
+            date = this.state.dateStartUse.split("-");
+            date = [date[2], date[1], date[0]].join('-')
+            dateStartUse = new Date(date)
+            if (dateStartUse < nowDate) {
+                Swal.fire({
+                    title: 'Ngày đã qua không thể tạo đăng ký sử dụng',
+                    type: 'warning',
+                    confirmButtonColor: '#dd4b39',
+                    confirmButtonText: "Đóng",
+                })
+            } else {
+                await this.props.createRecommendDistribute(dataToSubmit);
+                if (this.props._id == `calendar-${this.props.asset}`) {
+                    await this.props.handleChange(dataToSubmit)
+                }
             }
         }
     }
@@ -236,7 +250,6 @@ class UseRequestCreateForm extends Component {
         // 
         var assetlist = assetsManager.listAssets;
         var userlist = user.list;
-        console.log("This.props", `modal-create-recommenddistribute-${_id}`, this.props)
         return (
             <React.Fragment>
                 <DialogModal
