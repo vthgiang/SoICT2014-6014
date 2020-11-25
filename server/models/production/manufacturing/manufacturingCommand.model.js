@@ -78,6 +78,9 @@ const ManufacturingCommandSchema = new Schema({
     substandardProductQuantity: { // Số lượng phế phẩm
         type: Number
     },
+    fishedTime: { // Thời gian chính xác hoàn thành lệnh sản xuất
+        type: Date
+    }
 }, {
     timestamps: true
 });

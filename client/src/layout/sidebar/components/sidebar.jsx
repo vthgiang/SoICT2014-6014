@@ -726,13 +726,6 @@ class SideBar extends Component {
                                         },
                                         {
                                             name:
-                                                "menu.manage_manufacturing_lot",
-                                            icon: "fa fa-navicon",
-                                            path:
-                                                "/manage-manufacturing-lot",
-                                        },
-                                        {
-                                            name:
                                                 "menu.manage_purchasing_request",
                                             icon: "fa fa-file-text-o",
                                             path: "/manage-purchasing-request",
