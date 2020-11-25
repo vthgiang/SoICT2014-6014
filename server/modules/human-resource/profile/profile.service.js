@@ -774,20 +774,6 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
             });
         }
     }
-    if (data.salaries !== undefined) {
-        let salaries = data.salaries;
-        for (let x in salaries) {
-            await Salary(connect(DB_CONNECTION, portal)).create({
-                employee: createEmployee._id,
-                company: company,
-                organizationalUnit: salaries[x].organizationalUnit,
-                month: salaries[x].month,
-                mainSalary: salaries[x].mainSalary,
-                unit: salaries[x].unit,
-                bonus: salaries[x].bonus
-            });
-        }
-    }
     if (data.annualLeaves !== undefined) {
         let annualLeaves = data.annualLeaves;
         for (let x in annualLeaves) {
@@ -854,9 +840,6 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
         createCommendations,
         editConmmendations,
         deleteConmmendations,
-        createSalaries,
-        editSalaries,
-        deleteSalaries,
         createAnnualLeaves,
         editAnnualLeaves,
         deleteAnnualLeaves,
@@ -1036,7 +1019,6 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
     };
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, Discipline, deleteDisciplines, editDisciplines, createDisciplines);
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, Commendation, deleteConmmendations, editConmmendations, createCommendations);
-    queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, Salary, deleteSalaries, editSalaries, createSalaries);
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, AnnualLeave, deleteAnnualLeaves, editAnnualLeaves, createAnnualLeaves);
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, EmployeeCourse, deleteCourses, editCourses, createCourses);
 

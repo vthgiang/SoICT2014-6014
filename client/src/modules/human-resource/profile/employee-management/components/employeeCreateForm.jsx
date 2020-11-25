@@ -34,7 +34,6 @@ class EmployeeCreateForm extends Component {
             files: [],
             disciplines: [],
             commendations: [],
-            salaries: [],
             annualLeaves: [],
         };
         this.handleChangeCourse = this.handleChangeCourse.bind(this);
@@ -183,17 +182,6 @@ class EmployeeCreateForm extends Component {
     }
 
     /**
-     * Function thêm thông tin lịch sử lương
-     * @param {*} data : Dữ liệu thông tin lịch sử lương
-     * @param {*} addData : Lịch sử lương muốn thêm
-     */
-    handleChangeSalary = (data, addData) => {
-        this.setState({
-            salaries: data
-        })
-    }
-
-    /**
      * Function thêm thông tin nghỉ phép
      * @param {*} data : Dữ liệu thông tin nghỉ phép
      * @param {*} addData : Nghỉ phép muốn thêm
@@ -266,7 +254,7 @@ class EmployeeCreateForm extends Component {
     /** Function thêm mới thông tin nhân viên */
     save = async () => {
         let { employee, degrees, certificates, contracts, files, avatar,
-            disciplines, commendations, salaries, annualLeaves, courses } = this.state;
+            disciplines, commendations, annualLeaves, courses } = this.state;
 
         await this.setState({
             employee: {
@@ -277,7 +265,6 @@ class EmployeeCreateForm extends Component {
                 files,
                 disciplines,
                 commendations,
-                salaries,
                 annualLeaves,
                 courses
             }
@@ -303,7 +290,7 @@ class EmployeeCreateForm extends Component {
     render() {
         const { translate, employeesManager } = this.props;
 
-        const { img, employee, degrees, certificates, contracts, courses, commendations, disciplines, salaries, annualLeaves, files } = this.state;
+        const { img, employee, degrees, certificates, contracts, courses, commendations, disciplines, annualLeaves, files } = this.state;
 
         return (
             <React.Fragment>
@@ -325,7 +312,7 @@ class EmployeeCreateForm extends Component {
                             <li><a title={translate('human_resource.profile.tab_name.menu_insurrance_infor_title')} data-toggle="tab" href="#insurrance">{translate('human_resource.profile.tab_name.menu_insurrance_infor')}</a></li>
                             <li><a title={translate('human_resource.profile.tab_name.menu_contract_training_title')} data-toggle="tab" href="#contract">{translate('human_resource.profile.tab_name.menu_contract_training')}</a></li>
                             <li><a title={translate('human_resource.profile.tab_name.menu_reward_discipline_title')} data-toggle="tab" href="#reward">{translate('human_resource.profile.tab_name.menu_reward_discipline')}</a></li>
-                            <li><a title={translate('human_resource.profile.tab_name.menu_salary_sabbatical_title')} data-toggle="tab" href="#salary">{translate('human_resource.profile.tab_name.menu_salary_sabbatical')}</a></li>
+                            <li><a title={translate('menu.annual_leave_personal')} data-toggle="tab" href="#salary">{translate('menu.annual_leave_personal')}</a></li>
                             <li><a title={translate('human_resource.profile.tab_name.menu_attachments_title')} data-toggle="tab" href="#attachments">{translate('human_resource.profile.tab_name.menu_attachments')}</a></li>
                         </ul>
                         < div className="tab-content">
@@ -419,12 +406,7 @@ class EmployeeCreateForm extends Component {
                             <SalaryTab
                                 id="salary"
                                 pageCreate={true}
-                                salaries={salaries}
                                 annualLeaves={annualLeaves}
-
-                                handleAddSalary={this.handleChangeSalary}
-                                handleEditSalary={this.handleChangeSalary}
-                                handleDeleteSalary={this.handleChangeSalary}
 
                                 handleAddAnnualLeave={this.handleChangeAnnualLeave}
                                 handleEditAnnualLeave={this.handleChangeAnnualLeave}

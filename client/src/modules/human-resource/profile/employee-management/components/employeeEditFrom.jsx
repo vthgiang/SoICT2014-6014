@@ -400,55 +400,6 @@ class EmployeeEditFrom extends Component {
 
 
     /**
-     * Function thêm thông tin lịch sử lương
-     * @param {*} data : Dữ liệu thông tin lịch sử lương
-     * @param {*} addData : Lịch sử lương muốn thêm
-     */
-    handleCreateSalary = (data, addData) => {
-        this.setState({
-            salaries: data
-        })
-    }
-
-    /**
-     * Function chỉnh sửa thông tin lịch sử lương
-     * @param {*} data : Dữ liệu thông tin lịch sử lương
-     * @param {*} editData : Lịch sử lương muốn chỉnh sửa
-     */
-    handleEditSalary = (data, editData) => {
-        const { editSalaries } = this.state;
-        if (editData._id) {
-            this.setState({
-                editSalaries: [...editSalaries, editData]
-            })
-        } else {
-            this.setState({
-                salaries: data
-            })
-        }
-    }
-
-    /**
-     * Function xoá thông tin lịch sử lương
-     * @param {*} data : Dữ liệu thông tin lịch sử lương
-     * @param {*} deleteData : Lịch sử lương muốn xoá
-     */
-    handleDeleteSalary = (data, deleteData) => {
-        const { editSalaries, deleteSalaries } = this.state;
-        if (deleteData._id) {
-            this.setState({
-                deleteSalaries: [...deleteSalaries, deleteData],
-                editSalaries: editSalaries.filter(x => x._id !== deleteData._id)
-            })
-        } else {
-            this.setState({
-                salaries: data
-            })
-        }
-    }
-
-
-    /**
      * Function thêm thông tin nghỉ phép
      * @param {*} data : Dữ liệu thông tin nghỉ phép
      * @param {*} addData : Nghỉ phép muốn thêm
@@ -639,7 +590,7 @@ class EmployeeEditFrom extends Component {
 
     save = async () => {
         let { _id, experiences, degrees, certificates, contracts, files, avatar,
-            disciplines, commendations, salaries, annualLeaves, socialInsuranceDetails, courses } = this.state;
+            disciplines, commendations, annualLeaves, socialInsuranceDetails, courses } = this.state;
 
         await this.setState({
             createExperiences: experiences.filter(x => x._id === undefined),
@@ -648,7 +599,6 @@ class EmployeeEditFrom extends Component {
             createContracts: contracts.filter(x => x._id === undefined),
             createDisciplines: disciplines.filter(x => x._id === undefined),
             createCommendations: commendations.filter(x => x._id === undefined),
-            createSalaries: salaries.filter(x => x._id === undefined),
             createAnnualLeaves: annualLeaves.filter(x => x._id === undefined),
             createCourses: courses.filter(x => x._id === undefined),
             createSocialInsuranceDetails: socialInsuranceDetails.filter(x => x._id === undefined),
@@ -719,8 +669,6 @@ class EmployeeEditFrom extends Component {
                 deleteConmmendations: [],
                 editDisciplines: [],
                 deleteDisciplines: [],
-                editSalaries: [],
-                deleteSalaries: [],
                 editAnnualLeaves: [],
                 deleteAnnualLeaves: [],
                 editCourses: [],
@@ -747,7 +695,6 @@ class EmployeeEditFrom extends Component {
                 contracts: [],
                 files: [],
                 socialInsuranceDetails: [],
-                salaries: [],
                 annualLeaves: [],
                 commendations: [],
                 disciplines: [],
@@ -769,7 +716,6 @@ class EmployeeEditFrom extends Component {
                 contracts: nextProps.employeesInfo.employees[0].contracts,
                 files: nextProps.employeesInfo.employees[0].files,
                 socialInsuranceDetails: nextProps.employeesInfo.employees[0].socialInsuranceDetails,
-                salaries: nextProps.employeesInfo.salaries,
                 annualLeaves: nextProps.employeesInfo.annualLeaves,
                 commendations: nextProps.employeesInfo.commendations,
                 disciplines: nextProps.employeesInfo.disciplines,
@@ -786,7 +732,7 @@ class EmployeeEditFrom extends Component {
         const { translate, employeesInfo } = this.props;
 
         let { _id, img, employee, degrees, certificates, socialInsuranceDetails, contracts, courses,
-            organizationalUnits, roles, commendations, disciplines, salaries, annualLeaves, files } = this.state;
+            organizationalUnits, roles, commendations, disciplines, annualLeaves, files } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
@@ -902,10 +848,6 @@ class EmployeeEditFrom extends Component {
                                 <SalaryTab
                                     id={`edit_salary${_id}`}
                                     annualLeaves={annualLeaves}
-
-                                    handleAddSalary={this.handleCreateSalary}
-                                    handleEditSalary={this.handleEditSalary}
-                                    handleDeleteSalary={this.handleDeleteSalary}
 
                                     handleAddAnnualLeave={this.handleCreateAnnualLeave}
                                     handleEditAnnualLeave={this.handleEditAnnualLeave}
