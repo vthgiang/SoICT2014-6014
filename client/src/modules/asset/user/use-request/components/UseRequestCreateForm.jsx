@@ -236,7 +236,6 @@ class UseRequestCreateForm extends Component {
         // 
         var assetlist = assetsManager.listAssets;
         var userlist = user.list;
-        console.log("This.props", `modal-create-recommenddistribute-${_id}`, this.props)
         return (
             <React.Fragment>
                 <DialogModal
