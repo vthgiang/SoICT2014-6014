@@ -4781,8 +4781,9 @@ export default {
                 quality_control_command: "Kiếm định chất lượng lệnh"
             },
             lot: {
+                index: "STT",
                 code: "Mã lô",
-                command_code: "Mã lệnh",
+                command_code: "Mã lệnh sản xuất",
                 good: "Sản phẩm",
                 status: "Trạng thái",
                 created_at: "Ngày tạo",
@@ -4800,7 +4801,37 @@ export default {
                     content: "Đã nhập kho"
                 },
                 choose_status: "Chọn trạng thái",
-                choose_all: "Chọn tất cả"
+                choose_all: "Chọn tất cả",
+                original_quantity: "Số lượng",
+                product_type: "Loại sản phẩm",
+                creator: "Người tạo",
+                created_at: "Ngày tạo",
+                expiration_date: "Ngày hết hạn",
+                status: "Trạng thái",
+                product_type_obect: {
+                    "1": "Thành phẩm",
+                    "2": "Phế phẩm"
+                },
+                choose_good: "Chọn hàng hóa",
+                add: "Tạo lô",
+                add_lot: "Tạo lô sản xuất",
+                base_unit: "Đơn vị tính",
+                packing_rule: "Quy cách đóng gói",
+                conversion_rate: "Trọng số chuyển đổi",
+                quantity_packing_rule: "Số lượng theo quy cách đóng gói",
+                quantity_base_unit: "Số lượng cần sản xuất theo đơn vị tính",
+                product_lot_code: "Mã lô thành phẩm",
+                code1: "Mã lô thành phẩm",
+                code2: "Mã lô phế phẩm",
+                finished_product: "Thành phẩm",
+                substandard_product: "Phế phẩm",
+                quantity: "Số lượng theo đơn vị tính",
+                error_quantity_1: "Số lượng nhập vào không hợp lệ",
+                error_quantity_1_input: "Số lượng nhập vào phải lớn hơn 0",
+                description: "Mô tả",
+                create_manufacturing_lot_successfully: "Tạo lô sản xuất thành công",
+                create_manufacturing_lot_failed: "Tạo lô sản xuất thất bại"
+
 
             }
         }

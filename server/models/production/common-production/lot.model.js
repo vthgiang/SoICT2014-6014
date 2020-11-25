@@ -61,11 +61,6 @@ const LotSchema = new Schema({
         type: String
     },
 
-    timestamp: {
-        type: Date,
-        default: Date.now
-    },
-
     lotLogs: [{
 
         bill: {
@@ -146,6 +141,11 @@ const LotSchema = new Schema({
 
     status: { // 1. Chưa được xử lý 2. Đã được xử lý 3. Đã nhập kho
         type: Number
+    },
+
+    creator: {// Người tạo ra lô sản xuất
+        type: Schema.Types.ObjectId,
+        ref: "User"
     }
 
 }, {

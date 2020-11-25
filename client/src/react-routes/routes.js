@@ -2326,7 +2326,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={false}
+                        isLoading={this.props.lots.isLoading}
                         key={"manage-manufacturing-lot"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
