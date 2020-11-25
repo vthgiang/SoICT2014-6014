@@ -2320,7 +2320,6 @@ export default {
                 lost_value: "Giá trị hao mòn (Triệu)",
                 sum_value: "Tổng giá trị (Triệu)",
                 building: "Mặt bằng",
-                vehicle: "Phương tiện",
                 machine: "Máy móc",
                 other: "Khác",
                 asset_by_group: "Thống kê theo nhóm",

@@ -44,7 +44,7 @@ class ValuePieChart extends Component {
 
         dataPieChart = [
             [translate('asset.dashboard.building'), valueOfBuilding],
-            [translate('asset.dashboard.vehicle'), valueOfVehicle],
+            [translate('asset.asset_info.vehicle'), valueOfVehicle],
             [translate('asset.dashboard.machine'), valueOfMachine],
             [translate('asset.dashboard.other'), valueOfOther],
         ];
