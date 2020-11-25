@@ -808,7 +808,7 @@ class EmployeeEditFrom extends Component {
                                 <li><a title={translate('human_resource.profile.tab_name.menu_insurrance_infor_title')} data-toggle="tab" href={`#edit_insurrance${_id}`}>{translate('human_resource.profile.tab_name.menu_insurrance_infor')}</a></li>
                                 <li><a title={translate('human_resource.profile.tab_name.menu_contract_training_title')} data-toggle="tab" href={`#edit_contract${_id}`}>{translate('human_resource.profile.tab_name.menu_contract_training')}</a></li>
                                 <li><a title={translate('human_resource.profile.tab_name.menu_reward_discipline_title')} data-toggle="tab" href={`#edit_reward${_id}`}>{translate('human_resource.profile.tab_name.menu_reward_discipline')}</a></li>
-                                <li><a title={translate('human_resource.profile.tab_name.menu_salary_sabbatical_title')} data-toggle="tab" href={`#edit_salary${_id}`}>{translate('human_resource.profile.tab_name.menu_salary_sabbatical')}</a></li>
+                                <li><a title={translate('menu.annual_leave_personal')} data-toggle="tab" href={`#edit_salary${_id}`}>{translate('menu.annual_leave_personal')}</a></li>
                                 <li><a title={translate('human_resource.profile.tab_name.menu_attachments_title')} data-toggle="tab" href={`#edit_attachments${_id}`}>{translate('human_resource.profile.tab_name.menu_attachments')}</a></li>
                             </ul>
                             <div className="tab-content">
@@ -901,7 +901,6 @@ class EmployeeEditFrom extends Component {
                                 {/* Tab lương thưởng - nghỉ phép*/}
                                 <SalaryTab
                                     id={`edit_salary${_id}`}
-                                    salaries={salaries}
                                     annualLeaves={annualLeaves}
 
                                     handleAddSalary={this.handleCreateSalary}

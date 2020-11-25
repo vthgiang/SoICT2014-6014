@@ -38,7 +38,6 @@ class EmployeeDetailForm extends Component {
             this.setState({
                 dataStatus: this.DATA_STATUS.QUERYING,
                 employees: [],
-                salaries: [],
                 annualLeaves: [],
                 commendations: [],
                 disciplines: [],
@@ -51,7 +50,6 @@ class EmployeeDetailForm extends Component {
             this.setState({
                 dataStatus: this.DATA_STATUS.AVAILABLE,
                 employees: nextProps.employeesInfo.employees,
-                salaries: nextProps.employeesInfo.salaries,
                 annualLeaves: nextProps.employeesInfo.annualLeaves,
                 commendations: nextProps.employeesInfo.commendations,
                 disciplines: nextProps.employeesInfo.disciplines,
@@ -67,7 +65,7 @@ class EmployeeDetailForm extends Component {
     render() {
         const { employeesInfo, translate } = this.props;
 
-        let { _id, employees, salaries, annualLeaves, commendations, disciplines, courses, roles = [] } = this.state;
+        let { _id, employees, annualLeaves, commendations, disciplines, courses, roles = [] } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
@@ -90,7 +88,7 @@ class EmployeeDetailForm extends Component {
                                         <li><a title={translate('human_resource.profile.tab_name.menu_insurrance_infor_title')} data-toggle="tab" href={`#view_insurrance${_id}`}>{translate('human_resource.profile.tab_name.menu_insurrance_infor')}</a></li>
                                         <li><a title={translate('human_resource.profile.tab_name.menu_contract_training_title')} data-toggle="tab" href={`#view_contract${_id}`}>{translate('human_resource.profile.tab_name.menu_contract_training')}</a></li>
                                         <li><a title={translate('human_resource.profile.tab_name.menu_reward_discipline_title')} data-toggle="tab" href={`#view_reward${_id}`}>{translate('human_resource.profile.tab_name.menu_reward_discipline')}</a></li>
-                                        <li><a title={translate('human_resource.profile.tab_name.menu_salary_sabbatical_title')} data-toggle="tab" href={`#view_salary${_id}`}>{translate('human_resource.profile.tab_name.menu_salary_sabbatical')}</a></li>
+                                        <li><a title={translate('menu.annual_leave_personal')} data-toggle="tab" href={`#view_salary${_id}`}>{translate('menu.annual_leave_personal')}</a></li>
                                         <li><a title={translate('human_resource.profile.tab_name.menu_attachments_title')} data-toggle="tab" href={`#view_attachments${_id}`}>{translate('human_resource.profile.tab_name.menu_attachments')}</a></li>
                                     </ul>
                                     <div className="tab-content">
@@ -144,7 +142,6 @@ class EmployeeDetailForm extends Component {
                                         <SalaryTab
                                             id={`view_salary${_id}`}
                                             annualLeaves={annualLeaves}
-                                            salaries={salaries}
                                         />
                                         {/* Tài liệu đính kèm*/}
                                         <AttachmentTab

@@ -57,44 +57,46 @@ class SalaryTab extends Component {
             <div id={id} className="tab-pane">
                 <div className="box-body">
                     {/* Lịch sử lương */}
-                    <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.historySalary')}</h4></legend>
-                        <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
-                            <thead>
-                                <tr>
-                                    <th>{translate('human_resource.month')}</th>
-                                    <th>{translate('human_resource.salary.table.main_salary')}</th>
-                                    <th>{translate('human_resource.salary.table.total_salary')}</th>
-                                    <th>{translate('human_resource.unit')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {salaries && salaries.length !== 0 &&
-                                    salaries.map((x, index) => {
-                                        let total = parseInt(x.mainSalary);
-                                        if (x.bonus && x.bonus.length !== 0) {
+                    {salaries &&
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.historySalary')}</h4></legend>
+                            <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
+                                <thead>
+                                    <tr>
+                                        <th>{translate('human_resource.month')}</th>
+                                        <th>{translate('human_resource.salary.table.main_salary')}</th>
+                                        <th>{translate('human_resource.salary.table.total_salary')}</th>
+                                        <th>{translate('human_resource.unit')}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {salaries && salaries.length !== 0 &&
+                                        salaries.map((x, index) => {
+                                            let total = parseInt(x.mainSalary);
+                                            if (x.bonus && x.bonus.length !== 0) {
 
-                                            for (let count in x.bonus) {
-                                                total = total + parseInt(x.bonus[count].number)
+                                                for (let count in x.bonus) {
+                                                    total = total + parseInt(x.bonus[count].number)
+                                                }
                                             }
-                                        }
-                                        let organizationalUnit = department.list.find(y => y._id === x.organizationalUnit);
-                                        return (
-                                            <tr key={index}>
-                                                <td>{this.formatDate(x.month, true)}</td>
-                                                <td>{formater.format(parseInt(x.mainSalary))} {x.unit}</td>
-                                                <td>{formater.format(total)} {x.unit}</td>
-                                                <td>{organizationalUnit ? organizationalUnit.name : 'Deleted'}</td>
-                                            </tr>
-                                        )
-                                    })
-                                }
-                            </tbody>
-                        </table>
-                        {
-                            (!salaries || salaries.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                        }
-                    </fieldset>
+                                            let organizationalUnit = department.list.find(y => y._id === x.organizationalUnit);
+                                            return (
+                                                <tr key={index}>
+                                                    <td>{this.formatDate(x.month, true)}</td>
+                                                    <td>{formater.format(parseInt(x.mainSalary))} {x.unit}</td>
+                                                    <td>{formater.format(total)} {x.unit}</td>
+                                                    <td>{organizationalUnit ? organizationalUnit.name : 'Deleted'}</td>
+                                                </tr>
+                                            )
+                                        })
+                                    }
+                                </tbody>
+                            </table>
+                            {
+                                (!salaries || salaries.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            }
+                        </fieldset>
+                    }
 
                     {/* Thông tin nghỉ phép */}
                     <fieldset className="scheduler-border">

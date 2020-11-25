@@ -193,50 +193,53 @@ class SalaryTab extends Component {
                 <div className="box-body">
                     <div className=" row col-md-12">
                         {/* Table lịch sử lương */}
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border" ><h4 className="box-title">{translate('human_resource.profile.historySalary')}</h4></legend>
-                            {(pageCreate || employeesInfo.organizationalUnits.length === 0) && <a style={{ marginBottom: '10px', marginTop: '2px' }} className="btn btn-success pull-right" title={translate('human_resource.profile.employee_management.staff_no_unit_title')} disabled >{translate('modal.create')}</a>}
-                            {!pageCreate && employeesInfo.organizationalUnits.length !== 0 && <SalaryAddModal handleChange={this.handleAddSalary} id={`addSalary${id}`} />}
-                            <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
-                                <thead>
-                                    <tr>
-                                        <th>{translate('human_resource.month')}</th>
-                                        <th>{translate('human_resource.salary.table.main_salary')}</th>
-                                        <th>{translate('human_resource.salary.table.total_salary')}</th>
-                                        <th>{translate('human_resource.unit')}</th>
-                                        <th style={{ width: '120px' }}>{translate('table.action')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {salaries && salaries.length !== 0 &&
-                                        salaries.map((x, index) => {
-                                            let total = parseInt(x.mainSalary);
-                                            if (x.bonus && x.bonus.length !== 0) {
-                                                for (let count in x.bonus) {
-                                                    total = total + parseInt(x.bonus[count].number)
+                        {
+                            salaries &&
+                            <fieldset className="scheduler-border">
+                                <legend className="scheduler-border" ><h4 className="box-title">{translate('human_resource.profile.historySalary')}</h4></legend>
+                                {(pageCreate || employeesInfo.organizationalUnits.length === 0) && <a style={{ marginBottom: '10px', marginTop: '2px' }} className="btn btn-success pull-right" title={translate('human_resource.profile.employee_management.staff_no_unit_title')} disabled >{translate('modal.create')}</a>}
+                                {!pageCreate && employeesInfo.organizationalUnits.length !== 0 && <SalaryAddModal handleChange={this.handleAddSalary} id={`addSalary${id}`} />}
+                                <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
+                                    <thead>
+                                        <tr>
+                                            <th>{translate('human_resource.month')}</th>
+                                            <th>{translate('human_resource.salary.table.main_salary')}</th>
+                                            <th>{translate('human_resource.salary.table.total_salary')}</th>
+                                            <th>{translate('human_resource.unit')}</th>
+                                            <th style={{ width: '120px' }}>{translate('table.action')}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {salaries && salaries.length !== 0 &&
+                                            salaries.map((x, index) => {
+                                                let total = parseInt(x.mainSalary);
+                                                if (x.bonus && x.bonus.length !== 0) {
+                                                    for (let count in x.bonus) {
+                                                        total = total + parseInt(x.bonus[count].number)
+                                                    }
                                                 }
-                                            }
-                                            let organizationalUnit = department.list.find(y => y._id === x.organizationalUnit);
-                                            return (
-                                                <tr key={index}>
-                                                    <td>{this.formatDate(x.month, true)}</td>
-                                                    <td>{formater.format(parseInt(x.mainSalary))} {x.unit}</td>
-                                                    <td>{formater.format(total)} {x.unit}</td>
-                                                    <td>{organizationalUnit.name}</td>
-                                                    <td>
-                                                        <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.salary.edit_salary')}><i className="material-icons">edit</i></a>
-                                                        <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteSalary(index)}><i className="material-icons"></i></a>
-                                                    </td>
-                                                </tr>
-                                            )
-                                        })
-                                    }
-                                </tbody>
-                            </table>
-                            {
-                                (typeof salaries === 'undefined' || salaries.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                            }
-                        </fieldset>
+                                                let organizationalUnit = department.list.find(y => y._id === x.organizationalUnit);
+                                                return (
+                                                    <tr key={index}>
+                                                        <td>{this.formatDate(x.month, true)}</td>
+                                                        <td>{formater.format(parseInt(x.mainSalary))} {x.unit}</td>
+                                                        <td>{formater.format(total)} {x.unit}</td>
+                                                        <td>{organizationalUnit.name}</td>
+                                                        <td>
+                                                            <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.salary.edit_salary')}><i className="material-icons">edit</i></a>
+                                                            <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteSalary(index)}><i className="material-icons"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            })
+                                        }
+                                    </tbody>
+                                </table>
+                                {
+                                    (typeof salaries === 'undefined' || salaries.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                }
+                            </fieldset>
+                        }
 
                         {/* Table thông tin nghỉ phép */}
                         <fieldset className="scheduler-border">
