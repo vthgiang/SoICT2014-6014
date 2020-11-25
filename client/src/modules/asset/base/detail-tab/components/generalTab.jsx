@@ -182,7 +182,7 @@ class GeneralTab extends Component {
                                     {/* Người quản lý */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.manager')}&emsp; </strong>
-                                        {managedBy && userlist.length && userlist.filter(item => item._id === managedBy).pop() ? userlist.filter(item => item._id === managedBy).pop().name : 'User is deleted'}
+                                        {managedBy && userlist.length && userlist.filter(item => item._id === managedBy).pop() ? userlist.filter(item => item._id === managedBy).pop().name : ''}
                                     </div>
                                 </div>
 
@@ -191,13 +191,13 @@ class GeneralTab extends Component {
                                     {/* Người sử dụng */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.user')}&emsp; </strong>
-                                        {assignedToUser ? (userlist.length && userlist.filter(item => item._id === assignedToUser).pop() ? userlist.filter(item => item._id === assignedToUser).pop().name : 'User is deleted') : ''}
+                                        {assignedToUser ? (userlist.length && userlist.filter(item => item._id === assignedToUser).pop() ? userlist.filter(item => item._id === assignedToUser).pop().name : '') : ''}
                                     </div>
 
                                     {/* Đơn vị sử dụng */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.organization_unit')}&emsp; </strong>
-                                        {assignedToOrganizationalUnit ? (departmentlist.length && departmentlist.filter(item => item._id === assignedToOrganizationalUnit).pop() ? departmentlist.filter(item => item._id === assignedToOrganizationalUnit).pop().name : 'User is deleted') : ''}
+                                        {assignedToOrganizationalUnit ? (departmentlist.length && departmentlist.filter(item => item._id === assignedToOrganizationalUnit).pop() ? departmentlist.filter(item => item._id === assignedToOrganizationalUnit).pop().name : '') : ''}
                                     </div>
                                     {/* Thời gian bắt đầu sử dụng */}
                                     <div className="form-group">
