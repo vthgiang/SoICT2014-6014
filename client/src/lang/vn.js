@@ -1623,6 +1623,10 @@ export default {
                 religion: "Tôn giáo",
                 active: "Đang làm việc",
                 leave: "Đã nghỉ làm",
+                maternity_leave: 'Nghỉ thai sản',
+                unpaid_leave:'Nghỉ không lương',
+                probationary:'Đang thử việc',
+                sick_leave:'Nghỉ ốm đau',
                 status_work: "Tình trạng lao động",
                 hours_off_remaining: "Số giờ nghỉ phép còn lại",
 

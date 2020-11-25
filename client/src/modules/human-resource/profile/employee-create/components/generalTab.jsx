@@ -486,7 +486,14 @@ class GeneralTab extends Component {
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={status}
-                                    items={[{ value: 'active', text: translate('human_resource.profile.active') }, { value: 'leave', text: translate('human_resource.profile.leave') }]}
+                                    items={[
+                                        { value: 'active', text: translate('human_resource.profile.active') },
+                                        { value: 'leave', text: translate('human_resource.profile.leave') },
+                                        { value: 'maternity_leave', text: translate('human_resource.profile.maternity_leave') },
+                                        { value: 'unpaid_leave', text: translate('human_resource.profile.unpaid_leave') },
+                                        { value: 'probationary', text: translate('human_resource.profile.probationary') },
+                                        { value: 'sick_leave', text: translate('human_resource.profile.sick_leave') },
+                                    ]}
                                     onChange={this.handleChangeStatus}
                                 />
                             </div>
