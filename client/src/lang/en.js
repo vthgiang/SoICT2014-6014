@@ -2117,6 +2117,7 @@ export default {
                 amount: "Amount",
                 time: "Times",
                 value: "Value",
+                maintainance_cost: "Maintainance Cost",
                 lost_value: "Lost value (Million)",
                 sum_value: "Total value (Million)",
                 building: "Building",

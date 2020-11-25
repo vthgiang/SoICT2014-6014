@@ -2317,6 +2317,7 @@ export default {
                 amount: "Số lượng",
                 time: "Số lần",
                 value: "Giá trị",
+                maintainance_cost: "Chi phí bảo trì-sửa chữa",
                 lost_value: "Giá trị hao mòn (Triệu)",
                 sum_value: "Tổng giá trị (Triệu)",
                 building: "Mặt bằng",
