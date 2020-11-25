@@ -6,6 +6,7 @@ import { commandActions } from '../redux/actions';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { formatDate } from '../../../../../helpers/formatDate';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
+import ManufacturingLotCreateForm from '../../manufacturing-lot/components/manufacturingLotCreateForm';
 class ManufacturingCommandManagementTable extends Component {
     constructor(props) {
         super(props);
@@ -181,11 +182,17 @@ class ManufacturingCommandManagementTable extends Component {
         this.props.handleEditCommand(command._id, data);
     }
 
-    handleEndCommand = (command) => {
-        const data = {
-            status: 4
-        }
-        this.props.handleEditCommand(command._id, data);
+    handleEndCommand = async (command) => {
+        // const data = {
+        //     status: 4
+        // }
+        // this.props.handleEditCommand(command._id, data);
+        await this.setState(({
+            command: command
+        }));
+
+        window.$('#modal-create-manufacturing-lot').modal('show');
+
     }
 
 
@@ -222,6 +229,9 @@ class ManufacturingCommandManagementTable extends Component {
             <React.Fragment>
                 {
                     <ManufacturingCommandDetailInfo idModal={1} commandDetail={this.state.commandDetail} />
+                }
+                {
+                    <ManufacturingLotCreateForm command={this.state.command} />
                 }
                 <div className="box-body qlcv">
                     <div className="form-inline">
@@ -379,7 +389,7 @@ class ManufacturingCommandManagementTable extends Component {
                                             {
                                                 this.checkRoleAccountables(command) && command.status === 2 &&
                                                 <ConfirmNotification
-                                                    icon="play_circle_filled"
+                                                    icon="question"
                                                     title={translate('manufacturing.command.start_command')}
                                                     content={translate('manufacturing.command.start_command') + " " + command.code}
                                                     name="play_circle_filled"
@@ -390,7 +400,7 @@ class ManufacturingCommandManagementTable extends Component {
                                             {
                                                 this.checkRoleAccountables(command) && command.status === 5 &&
                                                 <ConfirmNotification
-                                                    icon="check_circle"
+                                                    icon="question"
                                                     title={translate('manufacturing.command.end_command')}
                                                     content={translate('manufacturing.command.end_command') + " " + command.code}
                                                     name="check_circle"
@@ -401,7 +411,7 @@ class ManufacturingCommandManagementTable extends Component {
                                             {
                                                 this.checkRoleQualityControl(command) && command.status === 3 &&
                                                 <ConfirmNotification
-                                                    icon="thumb_up"
+                                                    icon="question"
                                                     title={translate('manufacturing.command.quality_control_command')}
                                                     content={translate('manufacturing.command.quality_control_command') + " " + command.code}
                                                     name="thumb_up"

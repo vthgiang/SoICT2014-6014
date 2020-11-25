@@ -124,6 +124,7 @@ class TabIntegratedStatistics extends Component {
                                                 <th>Giới tính</th>
                                                 <th>Ngày sinh</th>
                                                 <th>Trình độ chuyên môn</th>
+                                                <th>Tình trạng làm việc</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -135,6 +136,7 @@ class TabIntegratedStatistics extends Component {
                                                         <td>{translate(`human_resource.profile.${x.gender}`)}</td>
                                                         <td>{this.formatDate(x.birthdate, false)}</td>
                                                         <td>{translate(`human_resource.profile.${x.professionalSkill}`)}</td>
+                                                        <td>{translate(`human_resource.profile.${x.status}`)}</td>
                                                     </tr>
                                                 ) : null)
                                             }

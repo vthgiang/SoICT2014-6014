@@ -1450,8 +1450,13 @@ export default {
                 ethnic: "Ethnic group",
                 nationality: "Nationality",
                 religion: "Religion",
-                active: "Working",
+                active: "Official staff",
                 leave: "Quit job",
+                maternity_leave: 'Maternity leave',
+                unpaid_leave:'Unpaid leave',
+                probationary:'Probationary',
+                sick_leave:'Sick leave',
+
                 status_work: "Labor status",
                 hours_off_remaining: 'Total hours annual leave remaining',
 

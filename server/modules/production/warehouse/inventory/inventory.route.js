@@ -10,4 +10,10 @@ router.post('/delete-many', auth, LotController.deleteManyLots);
 router.get('/get-detail/:id', auth, LotController.getDetailLot);
 router.patch('/:id', auth, LotController.editLot);
 
+//Tạo lô sản xuất, Hàm này sẽ tạo một lúc hai lô (lô thành phẩm và lô phế phẩm)
+router.post('/create-manufacturing-lot', auth, LotController.createManufacturingLot);
+//Lấy ra tất cả các lô sản xuất
+router.get('/get-manufacturing-lot', auth, LotController.getAllManufacturingLot);
+
+
 module.exports = router
