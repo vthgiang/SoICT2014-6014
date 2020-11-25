@@ -285,7 +285,7 @@ class AssetAssignedManager extends Component {
                                 onChange={this.handleGroupChange}
                                 items={[
                                     { value: "building", text: translate('asset.dashboard.building') },
-                                    { value: "vehicle", text: translate('asset.dashboard.vehicle') },
+                                    { value: "vehicle", text: translate('asset.asset_info.vehicle') },
                                     { value: "machine", text: translate('asset.dashboard.machine') },
                                     { value: "other", text: translate('asset.dashboard.other') },
                                 ]}

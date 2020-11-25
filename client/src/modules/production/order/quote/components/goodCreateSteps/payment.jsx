@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { SelectBox } from "../../../../../../common-components";
-import CreateDiscountsForGood from "../createDiscountsForGood";
+import { formatCurrency } from "../../../../../../helpers/formatCurrency";
 
 class Payment extends Component {
     constructor(props) {
@@ -35,15 +35,30 @@ class Payment extends Component {
         return percentString;
     };
     render() {
-        let { taxs, note } = this.props;
+        let { quantity, inventory, pricePerBaseUnit, code, goodName, baseUnit, taxs, note } = this.props;
         const { handleTaxsChange, handleNoteChange } = this.props;
         return (
             <React.Fragment>
-                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4" style={{ padding: 10, height: "100%" }}>
-                    <div className="form-group">
-                        <label>
-                            Thuế <span className="attention"> * </span>
-                        </label>
+                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: "10px 10px 20px 10px" }}>
+                    <div>
+                        <h3>{code + " - " + goodName}</h3>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "baseline" }}>
+                        <span>Giá: &ensp;</span>
+                        <h4 className="text-red">{pricePerBaseUnit ? formatCurrency(pricePerBaseUnit) + " (vnđ) " : "0 (vnđ) "}</h4>{" "}
+                        <h6>/ {baseUnit}</h6>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "baseline" }}>
+                        <div>Số lượng: &ensp;</div>
+                        <h4> {quantity} </h4>
+                        <div> / {inventory} sản phẩm có sẵn trong kho</div>
+                    </div>
+                </div>
+                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 10, height: "100%", borderTop: "solid 0.3px #c5c5c5" }}>
+                    <div className="form-group" style={{ display: "flex" }}>
+                        <span className="text-red" style={{ width: "100px" }}>
+                            <i className="fa  fa-money"></i> Thuế &ensp;
+                        </span>
                         <SelectBox
                             id={`select-quote-taxs-${this.getSelectTaxsId()}`}
                             className="form-control select2"
@@ -54,12 +69,13 @@ class Payment extends Component {
                             multiple={true}
                         />
                     </div>
-                    <div className="form-group">
-                        <label>
-                            Ghi chú
-                            <span className="attention"> * </span>
-                        </label>
-                        <input type="text" className="form-control" value={note} onChange={handleNoteChange} />
+                </div>
+                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 10, height: "100%", borderTop: "solid 0.3px #c5c5c5" }}>
+                    <div className="form-group" style={{ display: "flex" }}>
+                        <span style={{ width: "100px" }}>
+                            <i className="fa fa-paint-brush text-info"></i> Ghi chú &ensp;
+                        </span>
+                        <textarea type="text" className="form-control" value={note} onChange={handleNoteChange} placeholder="Nhập vào ghi chú..." />
                     </div>
                 </div>
             </React.Fragment>

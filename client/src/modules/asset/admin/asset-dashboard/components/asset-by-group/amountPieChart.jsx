@@ -41,7 +41,7 @@ class AmountPieChart extends Component {
 
         dataPieChart = [
             [translate('asset.dashboard.building'), numberOfBuilding],
-            [translate('asset.dashboard.vehicle'), numberOfVehicle],
+            [translate('asset.asset_info.vehicle'), numberOfVehicle],
             [translate('asset.dashboard.machine'), numberOfMachine],
             [translate('asset.dashboard.other'), numberOfOther],
         ];

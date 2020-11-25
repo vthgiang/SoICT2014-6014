@@ -5,7 +5,6 @@ import { GoodActions } from "../../../common-production/good-management/redux/ac
 import { DiscountActions } from "../../discount/redux/actions";
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import { DatePicker, DialogModal, SelectBox, ButtonModal, ErrorLabel } from "../../../../../common-components";
-import CreateDiscountsForGood from "./createDiscountsForGood";
 import GoodSelected from "./goodCreateSteps/goodSelected";
 import ApplyDiscount from "./goodCreateSteps/applyDiscount";
 import Payment from "./goodCreateSteps/payment";
@@ -15,10 +14,12 @@ class QuoteCreateGood extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            // quantity: 0,
+            goods: [],
             discountsOfGood: [],
+            discountsOfGoodChecked: {},
+            slasOfGood: [],
+            slasOfGoodChecked: {},
             taxs: [],
-            slas: [],
             step: 0,
             steps: [
                 {
@@ -88,6 +89,15 @@ class QuoteCreateGood extends Component {
         });
     };
 
+    setDiscountsOfGoodChecked = (discountsOfGoodChecked) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                discountsOfGoodChecked,
+            };
+        });
+    };
+
     handleChangeDate = () => {};
 
     isGoodsValidated = () => {};
@@ -108,8 +118,10 @@ class QuoteCreateGood extends Component {
                 salesPriceVariance: goodInfo[0].salesPriceVariance ? goodInfo[0].salesPriceVariance : 0,
                 pricePerBaseUnitError: undefined,
                 taxs: [],
-                slas: [],
+                slasOfGood: [],
+                slasOfGoodChecked: {},
                 discountsOfGood: [],
+                discountsOfGoodChecked: {},
                 quantity: "",
             };
         });
@@ -157,11 +169,20 @@ class QuoteCreateGood extends Component {
         });
     };
 
-    handleServiceLevelAgreementChange = (value) => {
+    handleSlasOfGoodChange = (value) => {
         this.setState((state) => {
             return {
                 ...state,
-                slas: value,
+                slasOfGood: value,
+            };
+        });
+    };
+
+    setSlasOfGoodChecked = (slasOfGoodChecked) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                slasOfGoodChecked,
             };
         });
     };
@@ -181,37 +202,6 @@ class QuoteCreateGood extends Component {
             };
         });
     };
-
-    // applyDiscountForGood = (paymentAmount) => {
-    //     const { discountsOfGood, pricePerBaseUnit } = this.state;
-    //     let discountForFormality = {
-    //         0: [],
-    //         1: [],
-    //         2: [],
-    //         3: [],
-    //         4: [],
-    //         5: [],
-    //     };
-    //     discountsOfGood.forEach((element) => {
-    //         discountForFormality[element.formality].push(element);
-    //     });
-
-    //     if (discountForFormality[5].length) {
-    //         if (discountForFormality[5][0].discountOnGoods.discountedPrice !== pricePerBaseUnit) {
-    //             this.setState({
-    //                 pricePerBaseUnit: discountForFormality[5][0].discountOnGoods.discountedPrice,
-    //             });
-    //         }
-    //     }
-    //     if (discountForFormality[0].length) {
-    //         paymentAmount = paymentAmount - discountForFormality[0][0].discountedCash;
-    //     }
-    //     if (discountForFormality[1].length) {
-    //         paymentAmount = (paymentAmount * (100 - discountForFormality[1][0].discountedPercentage)) / 100;
-    //     }
-    //     console.log("discountForFormality", discountForFormality);
-    //     return paymentAmount;
-    // };
 
     getOriginAmountOfGood = () => {
         const { quantity, pricePerBaseUnit } = this.state;
@@ -278,32 +268,6 @@ class QuoteCreateGood extends Component {
         return amountAfterApplyTax;
     };
 
-    // getPaymentAmountOfGood = () => {
-    //     const { listTaxsByGoodId } = this.props.goods.goodItems;
-    //     const { taxs, discountsOfGood, pricePerBaseUnit, quantity } = this.state;
-    //     let listTaxs = taxs.map((item) => {
-    //         let tax = listTaxsByGoodId.find((element) => element._id == item);
-    //         if (tax) {
-    //             return tax;
-    //         }
-    //     });
-
-    //     let paymentAmount = 0;
-
-    //     if (pricePerBaseUnit && quantity) {
-    //         paymentAmount = pricePerBaseUnit * quantity;
-    //     }
-    //     paymentAmount = this.applyDiscountForGood(paymentAmount);
-
-    //     if (listTaxs && listTaxs.length) {
-    //         paymentAmount = ((listTaxs[0].percent + 100) / 100) * paymentAmount;
-    //     }
-
-    //     paymentAmount = Math.round(paymentAmount * 100) / 100;
-
-    //     return paymentAmount ? `${formatCurrency(paymentAmount)} (vnđ)` : "";
-    // };
-
     handleClearGood = (e) => {
         e.preventDefault();
         this.setState((state) => {
@@ -311,8 +275,7 @@ class QuoteCreateGood extends Component {
                 ...state,
                 discountsOfGood: [],
                 taxs: [],
-                slas: [],
-                slas: [],
+                slasOfGood: [],
                 quantity: "",
                 pricePerBaseUnit: "",
                 pricePerBaseUnitError: "",
@@ -326,9 +289,65 @@ class QuoteCreateGood extends Component {
         });
     };
 
+    addGood = (e) => {
+        e.preventDefault();
+        const {
+            taxs,
+            slasOfGood,
+            pricePerBaseUnit,
+            discountsOfGood,
+            good,
+            goodName,
+            baseUnit,
+            quantity,
+            code,
+            pricePerBaseUnitOrigin,
+            note,
+        } = this.state;
+        let { goods } = this.state;
+
+        let additionGood = {
+            good: {
+                _id: good,
+                name: goodName,
+                baseUnit: baseUnit,
+                code: code,
+            },
+            pricePerBaseUnit: pricePerBaseUnit,
+            pricePerBaseUnitOrigin: pricePerBaseUnitOrigin,
+            quantity: quantity,
+            taxs: taxs,
+            slasOfGood: slasOfGood,
+            discountsOfGood: discountsOfGood,
+            note: note,
+        };
+
+        goods.push(additionGood);
+        this.setState((state) => {
+            return {
+                ...state,
+                goods,
+                discountsOfGood: [],
+                taxs: [],
+                slasOfGood: [],
+                quantity: "",
+                pricePerBaseUnit: "",
+                pricePerBaseUnitError: undefined,
+                pricePerBaseUnitOrigin: "",
+                note: "",
+                inventory: "",
+                baseUnit: "",
+                good: "",
+                goodName: "",
+                step: 0,
+            };
+        });
+    };
+
     render() {
         let {
             good,
+            goods,
             goodName,
             code,
             pricePerBaseUnit,
@@ -337,8 +356,10 @@ class QuoteCreateGood extends Component {
             quantity,
             pricePerBaseUnitError,
             discountsOfGood,
+            discountsOfGoodChecked,
+            slasOfGood,
+            slasOfGoodChecked,
             taxs,
-            slas,
             note,
             steps,
             step,
@@ -347,6 +368,7 @@ class QuoteCreateGood extends Component {
         let originAmount = this.getOriginAmountOfGood();
         let amountAfterApplyDiscount = this.getAmountAfterApplyDiscount();
         let amountAfterApplyTax = this.getAmountAfterApplyTax();
+        console.log("GOOD", goods);
         return (
             // <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <fieldset className="scheduler-border" style={{ padding: 10 }}>
@@ -382,6 +404,7 @@ class QuoteCreateGood extends Component {
                             {step === 1 && (
                                 <ApplyDiscount
                                     quantity={quantity}
+                                    handleQuantityChange={this.handleQuantityChange}
                                     good={good}
                                     goodName={goodName}
                                     code={code}
@@ -389,13 +412,29 @@ class QuoteCreateGood extends Component {
                                     inventory={inventory}
                                     pricePerBaseUnit={pricePerBaseUnit}
                                     handleDiscountsChange={(data) => this.handleDiscountsChange(data)}
+                                    setDiscountsChecked={(checked) => this.setDiscountsOfGoodChecked(checked)}
+                                    discountsChecked={discountsOfGoodChecked}
                                     discountsOfGood={discountsOfGood}
-                                    handleServiceLevelAgreementChange={this.handleServiceLevelAgreementChange}
-                                    slas={slas}
+                                    slasOfGood={slasOfGood}
+                                    handleSlasOfGoodChange={(data) => this.handleSlasOfGoodChange(data)}
+                                    slasOfGoodChecked={slasOfGoodChecked}
+                                    setSlasOfGoodChecked={(checked) => this.setSlasOfGoodChecked(checked)}
                                 />
                             )}
                             {step === 2 && (
-                                <Payment taxs={taxs} note={note} handleTaxsChange={this.handleTaxsChange} handleNoteChange={this.handleNoteChange} />
+                                <Payment
+                                    quantity={quantity}
+                                    good={good}
+                                    goodName={goodName}
+                                    code={code}
+                                    baseUnit={baseUnit}
+                                    inventory={inventory}
+                                    pricePerBaseUnit={pricePerBaseUnit}
+                                    taxs={taxs}
+                                    note={note}
+                                    handleTaxsChange={this.handleTaxsChange}
+                                    handleNoteChange={this.handleNoteChange}
+                                />
                             )}
                         </div>
                     </div>
@@ -457,7 +496,13 @@ class QuoteCreateGood extends Component {
                                             Sau
                                         </button>
                                     )}
-                                    {step === steps.length - 1 ? <button className="btn btn-success">Thêm</button> : ""}
+                                    {step === steps.length - 1 ? (
+                                        <button className="btn btn-success" onClick={this.addGood}>
+                                            Thêm
+                                        </button>
+                                    ) : (
+                                        ""
+                                    )}
                                 </div>
                             </div>
                             {/* <button
@@ -483,8 +528,8 @@ class QuoteCreateGood extends Component {
                             <th title={"Mã sản phẩm"}>Mã sản phẩm</th>
                             <th title={"Tên sản phẩm"}>Tên sản phẩm</th>
                             <th title={"Đơn vị tính"}>Đ/v tính</th>
-                            <th title={"Giá gốc"}>Giá niêm yết (vnđ)</th>
-                            <th title={"giá tính tiền"}>giá (vnđ)</th>
+                            <th title={"Giá niêm yết"}>Giá niêm yết (vnđ)</th>
+                            <th title={"giá tính tiền"}>giá tính tiền (vnđ)</th>
                             <th title={"Số lượng"}>Số lượng</th>
                             <th title={"Khuyến mãi"}>Khuyến mãi</th>
                             <th title={"Thuế"}>Thuế</th>
@@ -497,6 +542,52 @@ class QuoteCreateGood extends Component {
                         </tr>
                     </thead>
                     <tbody id={`good-edit-manage-by-stock`}>
+                        {goods &&
+                            goods.length &&
+                            goods.map((item, index) => (
+                                <tr key={index}>
+                                    <td>{index + 1}</td>
+                                    <td>{item.good ? item.good.code : ""}</td>
+                                    <td>{item.good ? item.good.name : ""}</td>
+                                    <td>{item.good ? item.good.baseUnit : ""}</td>
+                                    <td>{item.pricePerBaseUnitOrigin ? formatCurrency(item.pricePerBaseUnitOrigin) : ""}</td>
+                                    <td>{item.pricePerBaseUnit ? formatCurrency(item.pricePerBaseUnit) : ""}</td>
+                                    <td>{item.quantity}</td>
+                                    <td>0 vnđ</td>
+                                    <td>350,000 vnđ (10%)</td>
+                                    <td>3,500,000</td>
+                                    <td>3,850,000 vnđ</td>
+                                    <td>0.00 vnđ</td>
+                                    <td>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                            }}
+                                        >
+                                            <a
+                                                style={{
+                                                    cursor: "pointer",
+                                                }}
+                                                data-toggle="modal"
+                                                data-backdrop="static"
+                                                href={"#modal-create-quote-sla"}
+                                            >
+                                                Chi tiết
+                                                <i className="fa fa-arrow-circle-right"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                    <td>
+                                        <a className="edit text-yellow">
+                                            <i className="material-icons">edit</i>
+                                        </a>
+                                        <a className="edit text-red">
+                                            <i className="material-icons">delete</i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            ))}
                         <tr>
                             <td>1</td>
                             <td>SP_0395</td>

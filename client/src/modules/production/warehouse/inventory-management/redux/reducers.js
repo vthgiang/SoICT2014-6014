@@ -26,14 +26,15 @@ const initState = {
     hasNextPage: false,
     prevPage: 0,
     nextPage: 0,
-    type: ''
+    type: '',
+    listManufacturingLots: []
 }
 
-export function lots(state = initState, action){
+export function lots(state = initState, action) {
     var index = -1;
     var indexPaginate = -1;
 
-    switch(action.type){
+    switch (action.type) {
 
         case LotConstants.GET_LOT_REQUEST:
         case LotConstants.GET_LOT_PAGINATE_REQUEST:
@@ -42,6 +43,8 @@ export function lots(state = initState, action){
         case LotConstants.GET_LOT_BY_GOOD_REQUEST:
         case LotConstants.CREATE_OR_EDIT_LOT_REQUEST:
         case LotConstants.DELETE_LOT_REQUEST:
+        case LotConstants.GET_ALL_MANUFACTURING_LOT_REQUEST:
+        case LotConstants.CREATE_MANUFACTURING_LOT_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -76,16 +79,16 @@ export function lots(state = initState, action){
                 lotDetail: action.payload,
                 isLoading: false
             }
-        
+
         case LotConstants.EDIT_LOT_SUCCESS:
             index = findIndex(state.listLots, action.payload._id);
             indexPaginate = findIndex(state.listPaginate, action.payload._id)
 
-            if(index !== -1){
+            if (index !== -1) {
                 state.listLots[index] = action.payload
             }
 
-            if(indexPaginate !== -1) {
+            if (indexPaginate !== -1) {
                 state.listPaginate[indexPaginate] = action.payload
             }
 
@@ -113,6 +116,26 @@ export function lots(state = initState, action){
                 ...state,
                 isLoading: false
             }
+        case LotConstants.GET_ALL_MANUFACTURING_LOT_SUCCESS:
+            return {
+                ...state,
+                listManufacturingLots: action.payload.lots.docs,
+                totalDocs: action.payload.lots.totalDocs,
+                limit: action.payload.lots.limit,
+                totalPages: action.payload.lots.totalPages,
+                page: action.payload.lots.page,
+                pagingCounter: action.payload.lots.pagingCounter,
+                hasPrevPage: action.payload.lots.hasPrevPage,
+                hasNextPage: action.payload.lots.hasNextPage,
+                prevPage: action.payload.lots.prevPage,
+                nextPage: action.payload.lots.nextPage,
+                isLoading: false
+            }
+        case LotConstants.CREATE_MANUFACTURING_LOT_SUCCESS:
+            return {
+                ...state,
+                isLoading: false
+            }
 
         case LotConstants.GET_LOT_FAILURE:
         case LotConstants.GET_LOT_PAGINATE_FAILURE:
@@ -121,6 +144,8 @@ export function lots(state = initState, action){
         case LotConstants.GET_LOT_BY_GOOD_FAILURE:
         case LotConstants.CREATE_OR_EDIT_LOT_FAILURE:
         case LotConstants.DELETE_LOT_FAILURE:
+        case LotConstants.GET_ALL_MANUFACTURING_LOT_FAILURE:
+        case LotConstants.CREATE_MANUFACTURING_LOT_FAILURE:
             return {
                 ...state,
                 isLoading: false

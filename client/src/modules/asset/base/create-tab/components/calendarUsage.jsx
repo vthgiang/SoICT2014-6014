@@ -82,6 +82,10 @@ class CalendarUsage extends Component {
         updateUsageLogs: 2,
         createUsage: false
       })
+      this.props.handleChange({
+        newUsage: newUsage,
+        calendar: "CalendarUsage"
+      })
       let calendarApi = this.state.currentRow.view.calendar;
       if (newUsage.usedByUser && newUsage.usedByOrganizationalUnit) {
         let usedByUser = userlist.filter(item => item._id === newUsage.usedByUser).pop() ? userlist.filter(item => item._id === newUsage.usedByUser).pop().name : "Chưa có đối tượng sử dụng"
