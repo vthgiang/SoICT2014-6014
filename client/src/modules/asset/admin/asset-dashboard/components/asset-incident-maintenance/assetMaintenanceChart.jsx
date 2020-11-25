@@ -92,7 +92,7 @@ class AssetMaintenanceChart extends Component {
         category.pop();
         category.unshift('x');
         countAsset.unshift(translate('asset.dashboard.time'));
-        value.unshift(translate('asset.dashboard.value'));
+        value.unshift(translate('asset.dashboard.maintainance_cost'));
 
         let dataColumnChart = {
             category: category,
@@ -148,7 +148,7 @@ class AssetMaintenanceChart extends Component {
 
         category.unshift('x');
         countAsset.unshift(translate('asset.dashboard.time'));
-        value.unshift(translate('asset.dashboard.value'));
+        value.unshift(translate('asset.dashboard.maintainance_cost'));
 
         let dataColumnChart = {
             category: category,

@@ -399,7 +399,7 @@ class AssetManagement extends Component {
             return translate('asset.dashboard.building')
         }
         else if (group === 'vehicle') {
-            return translate('asset.dashboard.vehicle')
+            return translate('asset.asset_info.vehicle')
         }
         else if (group === 'machine') {
             return translate('asset.dashboard.machine')
@@ -506,7 +506,7 @@ class AssetManagement extends Component {
                                 onChange={this.handleGroupChange}
                                 items={[
                                     { value: "building", text: translate('asset.dashboard.building') },
-                                    { value: "vehicle", text: translate('asset.dashboard.vehicle') },
+                                    { value: "vehicle", text: translate('asset.asset_info.vehicle') },
                                     { value: "machine", text: translate('asset.dashboard.machine') },
                                     { value: "other", text: translate('asset.dashboard.other') },
                                 ]}

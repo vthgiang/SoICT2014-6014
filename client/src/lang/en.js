@@ -1259,7 +1259,7 @@ export default {
             annual_leave: {
                 file_export_name: "Annual leave statistics table",
                 type: "Annual leave by hours",
-                totalHours:"Total hours",
+                totalHours: "Total hours",
 
                 // Nhóm dành cho table
                 table: {
@@ -2122,10 +2122,10 @@ export default {
                 amount: "Amount",
                 time: "Times",
                 value: "Value",
+                maintainance_cost: "Maintainance Cost",
                 lost_value: "Lost value (Million)",
                 sum_value: "Total value (Million)",
                 building: "Building",
-                vehicle: "Vehicle",
                 machine: "Machine",
                 other: "Other",
                 asset_by_group: " Asset by group",
