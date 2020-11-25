@@ -4,12 +4,10 @@ import { withTranslate } from "react-redux-multilingual";
 import { GoodActions } from "../../../common-production/good-management/redux/actions";
 import { DiscountActions } from "../../discount/redux/actions";
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
-import { DatePicker, DialogModal, SelectBox, ButtonModal, ErrorLabel } from "../../../../../common-components";
 import GoodSelected from "./goodCreateSteps/goodSelected";
 import ApplyDiscount from "./goodCreateSteps/applyDiscount";
 import Payment from "./goodCreateSteps/payment";
 import "./quote.css";
-
 class QuoteCreateGood extends Component {
     constructor(props) {
         super(props);
@@ -97,10 +95,6 @@ class QuoteCreateGood extends Component {
             };
         });
     };
-
-    handleChangeDate = () => {};
-
-    isGoodsValidated = () => {};
 
     handleGoodChange = async (value) => {
         let { listGoodsByType } = this.props.goods;
@@ -291,7 +285,9 @@ class QuoteCreateGood extends Component {
 
     addGood = (e) => {
         e.preventDefault();
-        const {
+        console.log("STATE", this.state);
+        const { listTaxsByGoodId } = this.props.goods.goodItems;
+        let {
             taxs,
             slasOfGood,
             pricePerBaseUnit,
@@ -303,8 +299,32 @@ class QuoteCreateGood extends Component {
             code,
             pricePerBaseUnitOrigin,
             note,
+            steps,
+            salesPriceVariance,
         } = this.state;
         let { goods } = this.state;
+
+        let amount = this.getOriginAmountOfGood();
+        let amountAfterDiscount = this.getAmountAfterApplyDiscount();
+        let amountAfterTax = this.getAmountAfterApplyTax();
+
+        let listTaxs = taxs.map((item) => {
+            let tax = listTaxsByGoodId.find((element) => element._id == item);
+            if (tax) {
+                return tax;
+            }
+        });
+
+        let listSlas = [];
+        let { listSlasByGoodId } = this.props.goods.goodItems;
+        for (const key in slasOfGood) {
+            let slaInfo = listSlasByGoodId.find((element) => element._id === key);
+            listSlas.push({
+                _id: key,
+                title: slaInfo.title,
+                descriptions: slasOfGood[key],
+            });
+        }
 
         let additionGood = {
             good: {
@@ -316,32 +336,116 @@ class QuoteCreateGood extends Component {
             pricePerBaseUnit: pricePerBaseUnit,
             pricePerBaseUnitOrigin: pricePerBaseUnitOrigin,
             quantity: quantity,
-            taxs: taxs,
-            slasOfGood: slasOfGood,
+            taxs: listTaxs,
+            slasOfGood: listSlas,
             discountsOfGood: discountsOfGood,
             note: note,
+            amount,
+            amountAfterDiscount,
+            amountAfterTax,
+            salesPriceVariance,
         };
 
         goods.push(additionGood);
+        steps = steps.map((step, index) => {
+            step.active = !index ? true : false;
+            return step;
+        });
         this.setState((state) => {
             return {
                 ...state,
                 goods,
                 discountsOfGood: [],
+                discountsOfGoodChecked: {},
                 taxs: [],
                 slasOfGood: [],
+                slasOfGoodChecked: {},
                 quantity: "",
                 pricePerBaseUnit: "",
                 pricePerBaseUnitError: undefined,
                 pricePerBaseUnitOrigin: "",
+                salesPriceVariance: "",
                 note: "",
                 inventory: "",
                 baseUnit: "",
                 good: "",
+                code: "",
                 goodName: "",
                 step: 0,
+                steps,
             };
         });
+    };
+
+    deleteGood = (goodId) => {
+        let { goods } = this.state;
+        let goodsSlice = goods.filter((item) => item._id !== goodId);
+
+        this.setState((state) => {
+            return {
+                ...state,
+                goods: goodsSlice,
+            };
+        });
+    };
+
+    handleEditGood = (item, index) => {
+        let { listDiscountsByGoodId } = this.props.goods.goodItems;
+        let { discountsOfGoodChecked, slasOfGoodChecked } = this.state;
+
+        item.discountsOfGood.forEach((element) => {
+            let discount = listDiscountsByGoodId.find((dis) => dis._id === element._id);
+            if (discount) {
+                console.log("discount", discount);
+            }
+        });
+
+        this.setState({
+            editGood: true,
+            indexEditting: index,
+            taxs: item.taxs.map((tax) => tax._id),
+            quantity: item.quantity,
+            pricePerBaseUnit: item.pricePerBaseUnit,
+            pricePerBaseUnitError: undefined,
+            pricePerBaseUnitOrigin: item.pricePerBaseUnitOrigin,
+            salesPriceVariance: item.salesPriceVariance,
+            note: item.note,
+            inventory: item.good.inventory,
+            goodName: item.good.name,
+            good: item.good._id,
+            baseUnit: item.good.baseUnit,
+            code: item.good.code,
+            discountsOfGood: item.discountsOfGood,
+            slasOfGood: item.slasOfGood,
+        });
+    };
+
+    handleCancelEditGood = (e) => {
+        // e.preventDefault();
+        // let { goodOptionsState, allGoodsSelected, indexEditting } = this.state;
+        // goodOptionsState = this.filterOption(allGoodsSelected[indexEditting]);
+        // this.setState({
+        //     editGoodsTaxCollection: false,
+        //     goodsSelected: Object.assign({}, this.EMPTY_GOOD),
+        //     goodOptionsState,
+        //     isSelectAll: true,
+        //     goodsError: undefined,
+        //     percentError: undefined,
+        // });
+    };
+
+    handleSaveEditGood = () => {
+        // let { goodsSelected, indexEditting, goodOptionsState, allGoodsSelected } = this.state;
+        // goodOptionsState = this.filterOption(goodsSelected); //Lọc bỏ những options đã được chọn
+        // allGoodsSelected[indexEditting] = goodsSelected;
+        // this.setState({
+        //     ...this.state,
+        //     allGoodsSelected,
+        //     goodsSelected: Object.assign({}, this.EMPTY_GOOD),
+        //     goodOptionsState,
+        //     isSelectAll: true,
+        //     editGoodsTaxCollection: false,
+        // });
     };
 
     render() {
@@ -369,143 +473,151 @@ class QuoteCreateGood extends Component {
         let amountAfterApplyDiscount = this.getAmountAfterApplyDiscount();
         let amountAfterApplyTax = this.getAmountAfterApplyTax();
         console.log("GOOD", goods);
+        console.log("DIS", this.props.goods.goodItems.listDiscountsByGoodId);
         return (
-            // <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <fieldset className="scheduler-border" style={{ padding: 10 }}>
-                <legend className="scheduler-border">Các mặt hàng</legend>
-                {/* ---------------------STEP--------------------- */}
-                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ backgroundColor: "#f5f5f5" }}>
-                    <div className="timeline">
-                        <div className="timeline-progress" style={{ width: `${(step * 100) / (steps.length - 1)}%` }}></div>
-                        <div className="timeline-items">
-                            {steps.map((item, index) => (
-                                <div className={`timeline-item ${item.active ? "active" : ""}`} key={index}>
-                                    <div className="timeline-contain">{item.label}</div>
+            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <fieldset className="scheduler-border" style={{ padding: 10 }}>
+                    <legend className="scheduler-border">Các mặt hàng</legend>
+                    {/* ---------------------STEP--------------------- */}
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ backgroundColor: "#f5f5f5" }}>
+                        <div className="timeline">
+                            <div className="timeline-progress" style={{ width: `${(step * 100) / (steps.length - 1)}%` }}></div>
+                            <div className="timeline-items">
+                                {steps.map((item, index) => (
+                                    <div className={`timeline-item ${item.active ? "active" : ""}`} key={index}>
+                                        <div className="timeline-contain">{item.label}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8" style={{ padding: 10, height: "100%" }}>
+                            <div
+                                style={{ padding: 10, backgroundColor: "white", height: "100%" }}
+                                className="col-xs-12 col-sm-12 col-md-12 col-lg-12"
+                            >
+                                {step === 0 && (
+                                    <GoodSelected
+                                        good={good}
+                                        goodName={goodName}
+                                        pricePerBaseUnit={pricePerBaseUnit}
+                                        baseUnit={baseUnit}
+                                        inventory={inventory}
+                                        quantity={quantity}
+                                        pricePerBaseUnitError={pricePerBaseUnitError}
+                                        handleGoodChange={this.handleGoodChange}
+                                        handlePriceChange={this.handlePriceChange}
+                                        handleQuantityChange={this.handleQuantityChange}
+                                    />
+                                )}
+                                {step === 1 && (
+                                    <ApplyDiscount
+                                        quantity={quantity}
+                                        handleQuantityChange={this.handleQuantityChange}
+                                        good={good}
+                                        goodName={goodName}
+                                        code={code}
+                                        baseUnit={baseUnit}
+                                        inventory={inventory}
+                                        pricePerBaseUnit={pricePerBaseUnit}
+                                        handleDiscountsChange={(data) => this.handleDiscountsChange(data)}
+                                        setDiscountsChecked={(checked) => this.setDiscountsOfGoodChecked(checked)}
+                                        discountsChecked={discountsOfGoodChecked}
+                                        discountsOfGood={discountsOfGood}
+                                        slasOfGood={slasOfGood}
+                                        handleSlasOfGoodChange={(data) => this.handleSlasOfGoodChange(data)}
+                                        slasOfGoodChecked={slasOfGoodChecked}
+                                        setSlasOfGoodChecked={(checked) => this.setSlasOfGoodChecked(checked)}
+                                    />
+                                )}
+                                {step === 2 && (
+                                    <Payment
+                                        quantity={quantity}
+                                        good={good}
+                                        goodName={goodName}
+                                        code={code}
+                                        baseUnit={baseUnit}
+                                        inventory={inventory}
+                                        pricePerBaseUnit={pricePerBaseUnit}
+                                        taxs={taxs}
+                                        note={note}
+                                        handleTaxsChange={this.handleTaxsChange}
+                                        handleNoteChange={this.handleNoteChange}
+                                    />
+                                )}
+                            </div>
+                        </div>
+
+                        {/* ---------------------END-STEP--------------------- */}
+
+                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4" style={{ padding: 10, minHeight: "250px" }}>
+                            <div style={{ padding: 10, backgroundColor: "white" }}>
+                                <div className="form-group">
+                                    <strong>Thành tiền: </strong>
+                                    <span style={{ float: "right" }}>{originAmount ? formatCurrency(originAmount) + " (vnđ)" : "0 (vnđ)"}</span>
                                 </div>
-                            ))}
-                        </div>
-                    </div>
-                    <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8" style={{ padding: 10, height: "100%" }}>
-                        <div style={{ padding: 10, backgroundColor: "white", height: "100%" }} className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            {step === 0 && (
-                                <GoodSelected
-                                    good={good}
-                                    goodName={goodName}
-                                    pricePerBaseUnit={pricePerBaseUnit}
-                                    baseUnit={baseUnit}
-                                    inventory={inventory}
-                                    quantity={quantity}
-                                    pricePerBaseUnitError={pricePerBaseUnitError}
-                                    handleGoodChange={this.handleGoodChange}
-                                    handlePriceChange={this.handlePriceChange}
-                                    handleQuantityChange={this.handleQuantityChange}
-                                />
-                            )}
-                            {step === 1 && (
-                                <ApplyDiscount
-                                    quantity={quantity}
-                                    handleQuantityChange={this.handleQuantityChange}
-                                    good={good}
-                                    goodName={goodName}
-                                    code={code}
-                                    baseUnit={baseUnit}
-                                    inventory={inventory}
-                                    pricePerBaseUnit={pricePerBaseUnit}
-                                    handleDiscountsChange={(data) => this.handleDiscountsChange(data)}
-                                    setDiscountsChecked={(checked) => this.setDiscountsOfGoodChecked(checked)}
-                                    discountsChecked={discountsOfGoodChecked}
-                                    discountsOfGood={discountsOfGood}
-                                    slasOfGood={slasOfGood}
-                                    handleSlasOfGoodChange={(data) => this.handleSlasOfGoodChange(data)}
-                                    slasOfGoodChecked={slasOfGoodChecked}
-                                    setSlasOfGoodChecked={(checked) => this.setSlasOfGoodChecked(checked)}
-                                />
-                            )}
-                            {step === 2 && (
-                                <Payment
-                                    quantity={quantity}
-                                    good={good}
-                                    goodName={goodName}
-                                    code={code}
-                                    baseUnit={baseUnit}
-                                    inventory={inventory}
-                                    pricePerBaseUnit={pricePerBaseUnit}
-                                    taxs={taxs}
-                                    note={note}
-                                    handleTaxsChange={this.handleTaxsChange}
-                                    handleNoteChange={this.handleNoteChange}
-                                />
-                            )}
-                        </div>
-                    </div>
+                                <div className="form-group">
+                                    <strong>Khuyến mãi: </strong>
+                                    <span style={{ float: "right" }} className="text-red">
+                                        {amountAfterApplyDiscount
+                                            ? formatCurrency(Math.round((amountAfterApplyDiscount - originAmount) * 100) / 100) + " (vnđ)"
+                                            : "0 (vnđ)"}
+                                    </span>
+                                </div>
+                                <div className="form-group">
+                                    <strong>Tổng tiền trước thuế: </strong>
+                                    <span style={{ float: "right" }}>
+                                        {amountAfterApplyDiscount ? formatCurrency(amountAfterApplyDiscount) + " (vnđ)" : "0 (vnđ)"}
+                                    </span>
+                                </div>
+                                <div className="form-group">
+                                    <strong>Thuế: </strong>
+                                    <span style={{ float: "right" }}>
+                                        {amountAfterApplyTax
+                                            ? formatCurrency(Math.round((amountAfterApplyTax - amountAfterApplyDiscount) * 100) / 100) + " (vnđ)"
+                                            : "0 (vnđ)"}
+                                    </span>
+                                </div>
 
-                    {/* ---------------------END-STEP--------------------- */}
-
-                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4" style={{ padding: 10, minHeight: "250px" }}>
-                        <div style={{ padding: 10, backgroundColor: "white" }}>
-                            <div className="form-group">
-                                <strong>Thành tiền: </strong>
-                                <span style={{ float: "right" }}>{originAmount ? formatCurrency(originAmount) + " (vnđ)" : "0 (vnđ)"}</span>
-                            </div>
-                            <div className="form-group">
-                                <strong>Khuyến mãi: </strong>
-                                <span style={{ float: "right" }} className="text-red">
-                                    {amountAfterApplyDiscount ? formatCurrency(amountAfterApplyDiscount - originAmount) + " (vnđ)" : "0 (vnđ)"}
-                                </span>
-                            </div>
-                            <div className="form-group">
-                                <strong>Tổng tiền trước thuế: </strong>
-                                <span style={{ float: "right" }}>
-                                    {amountAfterApplyDiscount ? formatCurrency(amountAfterApplyDiscount) + " (vnđ)" : "0 (vnđ)"}
-                                </span>
-                            </div>
-                            <div className="form-group">
-                                <strong>Thuế: </strong>
-                                <span style={{ float: "right" }}>
-                                    {amountAfterApplyTax ? formatCurrency(amountAfterApplyTax - amountAfterApplyDiscount) + " (vnđ)" : "0 (vnđ)"}
-                                </span>
-                            </div>
-
-                            <div className="form-group" style={{ borderTop: "solid 0.3px #c5c5c5", padding: "10px 0px" }}>
-                                <strong>Tổng tiền sau thuế: </strong>
-                                <span style={{ float: "right" }} className="text-red">
-                                    {amountAfterApplyTax ? formatCurrency(amountAfterApplyTax) + " (vnđ)" : "0 (vnđ)"}
-                                </span>
+                                <div className="form-group" style={{ borderTop: "solid 0.3px #c5c5c5", padding: "10px 0px" }}>
+                                    <strong>Tổng tiền sau thuế: </strong>
+                                    <span style={{ float: "right" }} className="text-red">
+                                        {amountAfterApplyTax ? formatCurrency(amountAfterApplyTax) + " (vnđ)" : "0 (vnđ)"}
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <div className={"pull-right"} style={{ padding: 10 }}>
-                            <div>
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <div className={"pull-right"} style={{ padding: 10 }}>
                                 <div>
-                                    {step + 1} / {steps.length}
+                                    <div>
+                                        {step + 1} / {steps.length}
+                                    </div>
+                                    <div>
+                                        {step !== 0 ? (
+                                            <button className="btn" onClick={this.preStep}>
+                                                Trước
+                                            </button>
+                                        ) : (
+                                            ""
+                                        )}
+                                        {step === steps.length - 1 ? (
+                                            ""
+                                        ) : (
+                                            <button className="btn btn-success" onClick={this.nextStep}>
+                                                Sau
+                                            </button>
+                                        )}
+                                        {step === steps.length - 1 ? (
+                                            <button className="btn btn-success" onClick={this.addGood}>
+                                                Thêm
+                                            </button>
+                                        ) : (
+                                            ""
+                                        )}
+                                    </div>
                                 </div>
-                                <div>
-                                    {step !== 0 ? (
-                                        <button className="btn" onClick={this.preStep}>
-                                            Trước
-                                        </button>
-                                    ) : (
-                                        ""
-                                    )}
-                                    {step === steps.length - 1 ? (
-                                        ""
-                                    ) : (
-                                        <button className="btn btn-success" onClick={this.nextStep}>
-                                            Sau
-                                        </button>
-                                    )}
-                                    {step === steps.length - 1 ? (
-                                        <button className="btn btn-success" onClick={this.addGood}>
-                                            Thêm
-                                        </button>
-                                    ) : (
-                                        ""
-                                    )}
-                                </div>
-                            </div>
-                            {/* <button
+                                {/* <button
                                 className="btn btn-success"
                                 style={{ marginLeft: "10px" }}
                                 disabled={!this.isGoodsValidated()}
@@ -516,133 +628,129 @@ class QuoteCreateGood extends Component {
                             <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearGood}>
                                 Xóa trắng
                             </button> */}
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                {/* Hiển thị bảng */}
-                <table className="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th title={"STT"}>STT</th>
-                            <th title={"Mã sản phẩm"}>Mã sản phẩm</th>
-                            <th title={"Tên sản phẩm"}>Tên sản phẩm</th>
-                            <th title={"Đơn vị tính"}>Đ/v tính</th>
-                            <th title={"Giá niêm yết"}>Giá niêm yết (vnđ)</th>
-                            <th title={"giá tính tiền"}>giá tính tiền (vnđ)</th>
-                            <th title={"Số lượng"}>Số lượng</th>
-                            <th title={"Khuyến mãi"}>Khuyến mãi</th>
-                            <th title={"Thuế"}>Thuế</th>
-                            <th title={"Thành tiền"}>Thành tiền</th>
-                            <th title={"Tổng tiền"}>Tổng tiền</th>
-                            <th title={"Tiết kiệm được"}>Tiết kiệm được</th>
-                            <th>Cam kết chất lượng</th>
-                            <th title={"Ghi chú"}>Ghi chú</th>
-                            <th title={"Hành động"}>Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody id={`good-edit-manage-by-stock`}>
-                        {goods &&
-                            goods.length &&
-                            goods.map((item, index) => (
-                                <tr key={index}>
-                                    <td>{index + 1}</td>
-                                    <td>{item.good ? item.good.code : ""}</td>
-                                    <td>{item.good ? item.good.name : ""}</td>
-                                    <td>{item.good ? item.good.baseUnit : ""}</td>
-                                    <td>{item.pricePerBaseUnitOrigin ? formatCurrency(item.pricePerBaseUnitOrigin) : ""}</td>
-                                    <td>{item.pricePerBaseUnit ? formatCurrency(item.pricePerBaseUnit) : ""}</td>
-                                    <td>{item.quantity}</td>
-                                    <td>0 vnđ</td>
-                                    <td>350,000 vnđ (10%)</td>
-                                    <td>3,500,000</td>
-                                    <td>3,850,000 vnđ</td>
-                                    <td>0.00 vnđ</td>
-                                    <td>
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                            }}
-                                        >
-                                            <a
+                    {/* Hiển thị bảng */}
+                    <table className="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th title={"STT"}>STT</th>
+                                <th title={"Mã sản phẩm"}>Mã sản phẩm</th>
+                                <th title={"Tên sản phẩm"}>Tên sản phẩm</th>
+                                <th title={"Đơn vị tính"}>Đ/v tính</th>
+                                <th title={"Giá niêm yết"}>Giá niêm yết (vnđ)</th>
+                                <th title={"giá tính tiền"}>giá tính tiền (vnđ)</th>
+                                <th title={"Số lượng"}>Số lượng</th>
+                                <th title={"Khuyến mãi"}>Khuyến mãi</th>
+                                <th title={"Thành tiền"}>Thành tiền</th>
+                                <th title={"Thuế"}>Thuế</th>
+                                <th title={"Tổng tiền"}>Tổng tiền</th>
+                                <th>Cam kết chất lượng</th>
+                                <th title={"Ghi chú"}>Ghi chú</th>
+                                <th title={"Hành động"}>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id={`good-edit-manage-by-stock`}>
+                            {goods &&
+                                goods.length !== 0 &&
+                                goods.map((item, index) => (
+                                    <tr key={index}>
+                                        <td>{index + 1}</td>
+                                        <td>{item.good ? item.good.code : ""}</td>
+                                        <td>{item.good ? item.good.name : ""}</td>
+                                        <td>{item.good ? item.good.baseUnit : ""}</td>
+                                        <td>{item.pricePerBaseUnitOrigin ? formatCurrency(item.pricePerBaseUnitOrigin) + " (vnđ)" : " 0 (vnđ)"}</td>
+                                        <td>{item.pricePerBaseUnit ? formatCurrency(item.pricePerBaseUnit) + "(vnđ)" : " 0 (vnđ)"}</td>
+                                        <td>{item.quantity}</td>
+                                        <td>
+                                            {item.amount && item.amountAfterDiscount
+                                                ? formatCurrency(item.amount - item.amountAfterDiscount) + " (vnđ)"
+                                                : " 0 (vnđ)"}
+                                        </td>
+                                        <td>{item.amountAfterDiscount ? formatCurrency(item.amountAfterDiscount) : ""}</td>
+                                        <td>
+                                            {item.amountAfterDiscount && item.amountAfterTax
+                                                ? formatCurrency(item.amountAfterTax - item.amountAfterDiscount) + " (vnđ)"
+                                                : " 0 (vnđ)"}
+                                            ({item.taxs.length ? item.taxs[0].percent : "0"}%)
+                                        </td>
+                                        <td>{item.amountAfterTax ? formatCurrency(item.amountAfterTax) + " (vnđ)" : "0 (vnđ)"}</td>
+                                        <td>
+                                            <div
                                                 style={{
-                                                    cursor: "pointer",
+                                                    display: "flex",
                                                 }}
-                                                data-toggle="modal"
-                                                data-backdrop="static"
-                                                href={"#modal-create-quote-sla"}
                                             >
-                                                Chi tiết
-                                                <i className="fa fa-arrow-circle-right"></i>
+                                                <a
+                                                    style={{
+                                                        cursor: "pointer",
+                                                    }}
+                                                    data-toggle="modal"
+                                                    data-backdrop="static"
+                                                    href={"#modal-create-quote-sla"}
+                                                >
+                                                    Chi tiết
+                                                    <i className="fa fa-arrow-circle-right"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                        <td>{item.note}</td>
+                                        <td>
+                                            <a className="edit text-yellow">
+                                                <i className="material-icons" onClick={() => this.handleEditGood(item, index)}>
+                                                    edit
+                                                </i>
                                             </a>
-                                        </div>
+                                            <a className="edit text-red">
+                                                <i className="material-icons" onClick={() => this.deleteGood(item._id)}>
+                                                    delete
+                                                </i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                ))}
+                            {goods.length !== 0 && (
+                                <tr>
+                                    <td colSpan={7} style={{ fontWeight: 600 }}>
+                                        <center>Tổng</center>
                                     </td>
-                                    <td></td>
-                                    <td>
-                                        <a className="edit text-yellow">
-                                            <i className="material-icons">edit</i>
-                                        </a>
-                                        <a className="edit text-red">
-                                            <i className="material-icons">delete</i>
-                                        </a>
+                                    <td style={{ fontWeight: 600 }}>
+                                        {formatCurrency(
+                                            goods.reduce((accumulator, currentValue) => {
+                                                return accumulator + (currentValue.amount - currentValue.amountAfterDiscount);
+                                            }, 0)
+                                        ) + " (vnđ)"}
                                     </td>
+                                    <td style={{ fontWeight: 600 }}>
+                                        {formatCurrency(
+                                            goods.reduce((accumulator, currentValue) => {
+                                                return accumulator + currentValue.amountAfterDiscount;
+                                            }, 0)
+                                        ) + " (vnđ)"}
+                                    </td>
+                                    <td style={{ fontWeight: 600 }}>
+                                        {formatCurrency(
+                                            goods.reduce((accumulator, currentValue) => {
+                                                return accumulator + (currentValue.amountAfterTax - currentValue.amountAfterDiscount);
+                                            }, 0)
+                                        ) + " (vnđ)"}
+                                    </td>
+                                    <td style={{ fontWeight: 600 }}>
+                                        {formatCurrency(
+                                            goods.reduce((accumulator, currentValue) => {
+                                                return accumulator + currentValue.amountAfterTax;
+                                            }, 0)
+                                        ) + " (vnđ)"}
+                                    </td>
+                                    <td colSpan={3}></td>
                                 </tr>
-                            ))}
-                        <tr>
-                            <td>1</td>
-                            <td>SP_0395</td>
-                            <td>Thuốc úm gà</td>
-                            <td>Hộp</td>
-                            <td>400,000</td>
-                            <td>350,000</td>
-                            <td>10</td>
-                            <td>0 vnđ</td>
-                            <td>350,000 vnđ (10%)</td>
-                            <td>3,500,000</td>
-                            <td>3,850,000 vnđ</td>
-                            <td>0.00 vnđ</td>
-                            <td>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                    }}
-                                >
-                                    <a
-                                        style={{
-                                            cursor: "pointer",
-                                        }}
-                                        data-toggle="modal"
-                                        data-backdrop="static"
-                                        href={"#modal-create-quote-sla"}
-                                    >
-                                        Chi tiết
-                                        <i className="fa fa-arrow-circle-right"></i>
-                                    </a>
-                                </div>
-                            </td>
-                            <td></td>
-                            <td>
-                                <a className="edit text-yellow">
-                                    <i className="material-icons">edit</i>
-                                </a>
-                                <a className="edit text-red">
-                                    <i className="material-icons">delete</i>
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colSpan={7} style={{ fontWeight: 600 }}>
-                                <center>Tổng</center>
-                            </td>
-                            <td style={{ fontWeight: 600 }}>0 (vnđ)</td>
-                            <td style={{ fontWeight: 600 }}>400,000 (vnđ)</td>
-                            <td style={{ fontWeight: 600 }}>4,400,000 (vnđ)</td>
-                            <td colSpan={3}></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </fieldset>
-            // </div>
+                            )}
+                        </tbody>
+                    </table>
+                </fieldset>
+            </div>
         );
     }
 }
