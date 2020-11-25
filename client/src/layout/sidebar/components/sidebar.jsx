@@ -372,11 +372,6 @@ class SideBar extends Component {
                                             path: "/manage-asset-use-request",
                                         },
                                         {
-                                            name: "menu.manage_usage_asset",
-                                            icon: "fa fa-sitemap",
-                                            path: "/manage-usage-asset",
-                                        },
-                                        {
                                             name:
                                                 "menu.manage_recommend_procure",
                                             icon: "fa fa-sitemap",

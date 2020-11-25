@@ -91,6 +91,8 @@ class BillManagement extends Component {
             startDate: this.state.startDate,
             endDate: this.state.endDate,
             customer: this.state.customer,
+            supplier: this.state.supplier,
+            toStock: this.state.toStock,
             creator: this.state.creator
         };
         const { group } = this.state;
@@ -113,6 +115,8 @@ class BillManagement extends Component {
             startDate: this.state.startDate,
             endDate: this.state.endDate,
             customer: this.state.customer,
+            supplier: this.state.supplier,
+            toStock: this.state.toStock,
             creator: this.state.creator
         };
         const { group } = this.state;
@@ -127,6 +131,15 @@ class BillManagement extends Component {
             return {
                 ...state,
                 stock: value
+            }
+        })
+    }
+
+    handleToStockChange = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                toStock: value
             }
         })
     }
@@ -177,6 +190,15 @@ class BillManagement extends Component {
         })
     }
 
+    handleSupplierChange = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                supplier: value
+            }
+        })
+    }
+
     handleSubmitSearch = () => {
         let data = {
             page: this.state.page,
@@ -189,6 +211,8 @@ class BillManagement extends Component {
             startDate: this.state.startDate,
             endDate: this.state.endDate,
             customer: this.state.customer,
+            supplier: this.state.supplier,
+            toStock: this.state.toStock,
             creator: this.state.creator
         }
         const { group } = this.state;
@@ -329,11 +353,8 @@ class BillManagement extends Component {
 
     render() {
 
-        const { translate, bills, stocks, user} = this.props;
-        const { listPaginate, totalPages, page } = bills;
-        const { listStocks } = stocks;
-        const { startDate, endDate, group, currentRow } = this.state;
-        const dataPartner = this.getPartner();
+        const { translate, bills, stocks} = this.props;
+        const { group } = this.state;
 
         return (
             <div className="nav-tabs-custom">
@@ -379,7 +400,7 @@ class BillManagement extends Component {
                         handleTypeChange={this.handleTypeChange}
                         handleStatusChange={this.handleStatusChange}
                         handleCodeChange={this.handleCodeChange}
-                        handlePartnerChange={this.handlePartnerChange}
+                        handlePartnerChange={this.handleSupplierChange}
                         handleSubmitSearch={this.handleSubmitSearch}
                         handleChangeStartDate={this.handleChangeStartDate}
                         handleChangeEndDate={this.handleChangeEndDate}
@@ -459,7 +480,7 @@ class BillManagement extends Component {
                         handleTypeChange={this.handleTypeChange}
                         handleStatusChange={this.handleStatusChange}
                         handleCodeChange={this.handleCodeChange}
-                        handlePartnerChange={this.handlePartnerChange}
+                        handlePartnerChange={this.handleToStockChange}
                         handleSubmitSearch={this.handleSubmitSearch}
                         handleChangeStartDate={this.handleChangeStartDate}
                         handleChangeEndDate={this.handleChangeEndDate}

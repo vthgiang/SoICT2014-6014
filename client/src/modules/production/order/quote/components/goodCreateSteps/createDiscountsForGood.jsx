@@ -1,34 +1,25 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { ButtonModal, DialogModal, formatDate } from "../../../../../common-components";
-import { formatCurrency } from "../../../../../helpers/formatCurrency";
-import { capitalize } from "../../../../../helpers/stringMethod";
+import { ButtonModal, DialogModal, formatDate } from "../../../../../../common-components";
+import { formatCurrency } from "../../../../../../helpers/formatCurrency";
+import { capitalize } from "../../../../../../helpers/stringMethod";
 
 class CreateDiscountsForGood extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            discountsChecked: {
-                goodId: "",
-            },
+            goodId: "",
         };
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        console.log("nextProps.goodId", nextProps.goodId, prevState.goodId);
-        if (nextProps.goodId !== prevState.goodId) {
-            return {
-                discountsChecked: {},
-                goodId: nextProps.goodId,
-            };
-        }
-    }
-    shouldComponentUpdate = (nextProps, nextState) => {
-        if (nextProps.goodId !== nextState.goodId) {
-            nextProps.handleDiscountsChange([]); // xóa sạch discounts ở component cha
-        }
-    };
+    // static getDerivedStateFromProps(nextProps, prevState) {
+    //     if (nextProps.goodId !== prevState.goodId) {
+    //         return {
+    //             goodId: nextProps.goodId,
+    //         };
+    //     }
+    // }
 
     getDiscountValue = (idCheckBox) => {
         let { listDiscountsByGoodId } = this.props.goods.goodItems;
@@ -74,7 +65,7 @@ class CreateDiscountsForGood extends Component {
     };
 
     handleDiscountChange = (e) => {
-        let { discountsChecked } = this.state;
+        let { discountsChecked } = this.props;
         const { handleDiscountsChange } = this.props;
         let { discountsProps } = this.props;
         let { id, checked } = e.target;
@@ -95,12 +86,7 @@ class CreateDiscountsForGood extends Component {
         }
 
         discountsChecked[`${id}`] = checked;
-        this.setState((state) => {
-            return {
-                ...state,
-                discountsChecked,
-            };
-        });
+        this.props.setDiscountsChecked(discountsChecked);
     };
 
     getThresholdToBeAppliedTitle = (discount) => {
@@ -166,7 +152,7 @@ class CreateDiscountsForGood extends Component {
 
     getDiscountOptions = (item) => {
         let { quantity, goodId } = this.props;
-        let { discountsChecked } = this.state;
+        let { discountsChecked } = this.props;
         const { discounts, formality } = item;
         return (
             <div style={{ paddingLeft: "2rem" }}>
@@ -200,7 +186,7 @@ class CreateDiscountsForGood extends Component {
                         }
 
                         return (
-                            <div class="form-check" style={{ display: "flex", padding: "10px 0px" }}>
+                            <div class="form-check" style={{ display: "flex", paddingTop: "10px" }}>
                                 <input
                                     type="checkbox"
                                     className={`form-check-input`}
@@ -228,7 +214,6 @@ class CreateDiscountsForGood extends Component {
 
     render() {
         let { listDiscountsByGoodId } = this.props.goods.goodItems;
-        console.log("STATE", this.state);
         return (
             <React.Fragment>
                 <a
@@ -252,7 +237,8 @@ class CreateDiscountsForGood extends Component {
                 >
                     {!listDiscountsByGoodId.length ? (
                         <div style={{ display: "flex", alignItems: "center" }}>
-                            <i className="fa fa-frown-o text-warning"></i> &ensp; <span>Chưa có khuyến mãi nào</span>
+                            <i className="fa fa-frown-o text-warning" style={{ fontSize: "20px" }}></i> &ensp;{" "}
+                            <span>Không có khuyến mãi nào cho sản phẩm này</span>
                         </div>
                     ) : (
                         listDiscountsByGoodId.map((item) => {

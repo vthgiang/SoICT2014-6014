@@ -240,14 +240,16 @@ exports.getEmployeeInforByEmailInCompany = async (portal, emailInCompany, compan
  * @positions : Array id chức vụ
  * @allInfor : 'true' lấy hết thông tin của mỗi nhân viên, false lấy 1 số thông tin của mỗi nhân viên
  */
-exports.getEmployees = async (portal, company, organizationalUnits, positions, allInfor = true, status = 'active') => {
+exports.getEmployees = async (portal, company, organizationalUnits, positions, allInfor = true, status = ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave']) => {
     let keySearch = {
         company: company
     };
     if (status) {
         keySearch = {
             ...keySearch,
-            status: status
+            status: {
+                $in: status
+            }
         }
     }
     if (allInfor === true) {
@@ -292,6 +294,7 @@ exports.getEmployees = async (portal, company, organizationalUnits, positions, a
                 startingDate: 1,
                 leavingDate: 1,
                 professionalSkill: 1,
+                status:1
 
             });
             let totalEmployee = listEmployeesOfOrganizationalUnits.length;
@@ -310,7 +313,8 @@ exports.getEmployees = async (portal, company, organizationalUnits, positions, a
             birthdate: 1,
             startingDate: 1,
             leavingDate: 1,
-            professionalSkill: 1
+            professionalSkill: 1,
+            status:1
         });
         return {
             totalAllEmployee,
@@ -328,7 +332,9 @@ exports.getEmployeeNumberExpiresContractInCurrentMonth = async (portal, company,
     let lastDay = new Date(month.getFullYear(), month.getMonth() + 1, 1);
     let results = await Employee(connect(DB_CONNECTION, portal)).countDocuments({
         company: company,
-        status: "active",
+        status: {
+            $in: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave']
+        },
         contractEndDate: {
             "$gt": firstDay,
             "$lte": lastDay
@@ -345,7 +351,9 @@ exports.getEmployeeNumberExpiresContractInCurrentMonth = async (portal, company,
 exports.getEmployeeNumberHaveBirthdateInCurrentMonth = async (portal, company, month = new Date()) => {
     return await Employee(connect(DB_CONNECTION, portal)).countDocuments({
         company: company,
-        status: "active",
+        status: {
+            $in: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave']
+        },
         "$expr": {
             "$eq": [{
                 "$month": "$birthdate"
@@ -425,7 +433,9 @@ exports.getEmployeesByStartingAndLeaving = async (portal, organizationalUnits, s
                     }
                 }];
             let total = await Employee(connect(DB_CONNECTION, portal)).countDocuments({
-                status: "active",
+                status: {
+                    $in: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave']
+                },
                 startingDate: {
                     "$lt": lastDay,
                 }
