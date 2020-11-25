@@ -14,6 +14,7 @@ const initState = {
     list: [],
     searchUses: [],
     listPaginate: [],
+    employeesOfUnitsUserIsDean:[],
     totalDocs: 0,
     limit: 0,
     totalPages: 0,
@@ -80,6 +81,12 @@ export function user(state = initState, action) {
                 isLoading: false
             };
         case UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_REQUEST:
+            if(action.callApi){
+                return {
+                    ...state,
+                    isLoading: true
+                };
+            }
             return {
                 ...state,
                 loading: true,
@@ -87,12 +94,20 @@ export function user(state = initState, action) {
             };
 
         case UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_SUCCESS:
+            if(action.callApi){
+                return {
+                    ...state,
+                    employeesOfUnitsUserIsDean: action.payload,
+                    isLoading: false
+                };
+            }
             return {
                 ...state,
                 loading: false,
                 employees: action.payload,
                 isLoading: false
             };
+
 
         case UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_FAILURE:
             return {

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
+import { TaskOrganizationalUnitsChart } from './combinedContent';
+
 class TabTask extends Component {
     constructor(props) {
         super(props);
@@ -9,9 +11,13 @@ class TabTask extends Component {
 
     render() {
         const { translate, tasks } = this.props;
+        const { childOrganizationalUnit } = this.props;
         return (
             <React.Fragment>
                 <div className="row">
+                    <div className="col-md-12">
+                        <TaskOrganizationalUnitsChart childOrganizationalUnit={childOrganizationalUnit} />
+                    </div>
                     <div className="col-xs-6">
                         <div className="box box-solid">
                             <div className="box-header with-border">

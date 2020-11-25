@@ -51,7 +51,6 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
 
     componentDidMount() {
         const { organizationalUnits, startDate, endDate } = this.state;
-        console.log(organizationalUnits);
         let arrStart = startDate.split('-');
         let startDateNew = [arrStart[1], arrStart[0]].join('-');
 

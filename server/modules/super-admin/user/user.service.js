@@ -183,7 +183,8 @@ exports.getAllEmployeeOfUnitByIds = async (portal, id) => {
 
             }
             if (check == 0) {
-                data.push(employees[j]);
+                let employee = {_id: employees[j]._id, idUnit:id[i], userId: employees[j].userId, roleId: employees[j].roleId };
+                data.push(employee);
             }
         }
     };
