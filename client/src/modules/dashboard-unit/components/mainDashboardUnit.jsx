@@ -31,14 +31,14 @@ class MainDashboardUnit extends Component {
         let newMonth = [partMonth[1], partMonth[0]].join('-');
 
         /* Lấy danh sách nhân viên  */
-        this.props.getAllEmployee({ organizationalUnits: organizationalUnits, status: 'active' });
+        this.props.getAllEmployee({ organizationalUnits: organizationalUnits, status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'] });
 
         /* Lấy danh sách nhân viên theo tháng sinh*/
-        this.props.getAllEmployee({ status: 'active', page: 0, limit: 10000, birthdate: newMonth, organizationalUnits: organizationalUnits });
+        this.props.getAllEmployee({ status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'], page: 0, limit: 10000, birthdate: newMonth, organizationalUnits: organizationalUnits });
 
         /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
         this.props.getAllEmployeeOfUnitByIds(organizationalUnits);
-        this.props.getTaskInOrganizationUnitByMonth(organizationalUnits, newMonth, newMonth);
+        this.props.getTaskInOrganizationUnitByMonth(organizationalUnits, newMonth, newMonth, "in_month");
 
         /** Lấy dữ liệu công việc sắp hết hạn */
         this.props.getTaskByUser({ organizationUnitId: organizationalUnits, type: "organizationUnit", })
@@ -126,14 +126,14 @@ class MainDashboardUnit extends Component {
 
 
         /* Lấy danh sách nhân viên  */
-        this.props.getAllEmployee({ organizationalUnits: arrayUnit, status: 'active' });
+        this.props.getAllEmployee({ organizationalUnits: arrayUnit, status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'] });
 
         /* Lấy danh sách nhân viên theo tháng sinh*/
-        this.props.getAllEmployee({ status: 'active', page: 0, limit: 10000, birthdate: newMonth, organizationalUnits: arrayUnitShow });
+        this.props.getAllEmployee({ status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'], page: 0, limit: 10000, birthdate: newMonth, organizationalUnits: arrayUnitShow });
 
         /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
         this.props.getAllEmployeeOfUnitByIds(arrayUnitShow);
-        this.props.getTaskInOrganizationUnitByMonth(arrayUnitShow, newMonth, newMonth);
+        this.props.getTaskInOrganizationUnitByMonth(arrayUnitShow, newMonth, newMonth, "in_month");
 
         /** Lấy dữ liệu công việc sắp hết hạn */
         this.props.getTaskByUser({ organizationUnitId: arrayUnitShow, type: "organizationUnit", })
@@ -172,7 +172,7 @@ class MainDashboardUnit extends Component {
             employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
 
         /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
-        let taskListByStatus = tasks.organizationUnitTasks ? tasks.organizationUnitTasks.tasks : null;
+        let taskListByStatus = tasks.organizationUnitTasksInMonth ? tasks.organizationUnitTasksInMonth.tasks : null;
         let listEmployee = user.employees;
         let employeeTasks = [];
         for (let i in listEmployee) {
@@ -289,7 +289,7 @@ class MainDashboardUnit extends Component {
                         </ul>
                         <div className="tab-content ">
                             <div className="tab-pane active" id="task">
-                                <TabTask />
+                                <TabTask childOrganizationalUnit={childOrganizationalUnit} />
                             </div>
                             {/* Tab năng lực nhân viên*/}
                             <div className="tab-pane" id="employee-capacity">

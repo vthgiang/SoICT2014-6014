@@ -151,6 +151,7 @@ class ReceiptManagement extends Component {
                             group={currentRow.group}
                             type={currentRow.type}
                             status={currentRow.status}
+                            oldStatus={currentRow.status}
                             users={currentRow.users}
                             approver={currentRow.approver ? currentRow.approver._id : null}
                             supplier={currentRow.supplier ? currentRow.supplier._id : null}

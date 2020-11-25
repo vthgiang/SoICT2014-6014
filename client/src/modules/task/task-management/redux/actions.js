@@ -613,13 +613,14 @@ function getTaskEvaluations(data) {
     };
 }
 
-function getTaskInOrganizationUnitByMonth(organizationUnitId, startDateAfter, endDateBefore) {
+function getTaskInOrganizationUnitByMonth(organizationUnitId, startDateAfter, endDateBefore, typeApi = null) {
     return dispatch => {
-        dispatch({ type: taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_REQUEST });
+        dispatch({ type: taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_REQUEST, typeApi: typeApi });
         taskManagementService.getTaskInOrganizationUnitByMonth(organizationUnitId, startDateAfter, endDateBefore)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_SUCCESS,
+                    typeApi: typeApi,
                     payload: res.data.content
                 });
             })

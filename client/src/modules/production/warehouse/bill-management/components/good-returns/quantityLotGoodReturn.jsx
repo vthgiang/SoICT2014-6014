@@ -148,7 +148,7 @@ class QuantityLotGoodReturn extends Component {
                 lot: Object.assign({}, this.EMPTY_LOT),
             }
         })
-        this.props.onDataChange(this.state.lots);
+        // this.props.onDataChange(this.state.lots);
     }
 
     handleCancelEditLot = (e) => {
@@ -186,7 +186,7 @@ class QuantityLotGoodReturn extends Component {
             }
         })
 
-        this.props.onDataChange(this.state.lots);
+        // this.props.onDataChange(this.state.lots);
     }
 
     handleLotNoteChange = (e) => {

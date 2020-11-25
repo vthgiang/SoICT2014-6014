@@ -452,6 +452,10 @@ class GoodIssueEditForm extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState){
         if(nextProps.billId !== prevState.billId){
+            prevState.good.quantity = 0;
+            prevState.good.good = '';
+            prevState.good.description = '';
+            prevState.good.lots = [];
             return {
                 ...prevState,
                 billId: nextProps.billId,
@@ -471,6 +475,7 @@ class GoodIssueEditForm extends Component {
                 address: nextProps.address,
                 listGood: nextProps.listGood,
                 oldGoods: nextProps.listGood,
+                editInfo: false,
                 errorStock: undefined, 
                 errorType: undefined, 
                 errorApprover: undefined, 

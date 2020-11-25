@@ -260,6 +260,9 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
                 }, {
                     path: "creator"
                 }, {
+                    path: "good.good",
+                    select: "code name baseUnit"
+                }, {
                     path: "qualityControlStaffs.staff"
                 }]
             });
@@ -390,6 +393,9 @@ exports.editManufaturingCommand = async (id, data, portal) => {
             path: "creator"
         }, {
             path: "qualityControlStaffs.staff"
+        }, {
+            path: "good.good",
+            select: "code name baseUnit"
         }]);
 
     return { manufacturingCommand }
