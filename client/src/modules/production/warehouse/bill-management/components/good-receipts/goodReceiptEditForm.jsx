@@ -449,7 +449,8 @@ class GoodReceiptEditForm extends Component {
                 editInfo: true,
                 indexInfo: index,
                 good: Object.assign({}, good),
-                lots: lots
+                lots: lots,
+                quantity: good.quantity
             }
         })
 
@@ -542,14 +543,18 @@ class GoodReceiptEditForm extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
-        if(nextProps.billId !== prevState.billId){
+        if(nextProps.billId !== prevState.billId || nextProps.oldStatus !== prevState.oldStatus){
+            prevState.good.quantity = 0;
+            prevState.good.good = '';
+            prevState.good.description = '';
+            prevState.good.lots = [];
             return {
                 ...prevState,
                 billId: nextProps.billId,
                 code: nextProps.code,
                 fromStock: nextProps.fromStock,
                 status: nextProps.status,
-                oldStatus: nextProps.status,
+                oldStatus: nextProps.oldStatus,
                 group: nextProps.group,
                 type: nextProps.type,
                 users: nextProps.users,
@@ -562,6 +567,7 @@ class GoodReceiptEditForm extends Component {
                 address: nextProps.address,
                 listGood: nextProps.listGood,
                 oldGoods: nextProps.listGood,
+                editInfo: false,
                 errorStock: undefined, 
                 errorType: undefined, 
                 errorApprover: undefined, 

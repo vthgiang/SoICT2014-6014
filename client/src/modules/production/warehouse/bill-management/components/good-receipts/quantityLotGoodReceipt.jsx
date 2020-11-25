@@ -296,8 +296,9 @@ class QuantityLotGoodReceipt extends Component {
     }
 
     render() {
-        const { translate, group, good } = this.props;
+        const { translate, group, good, quantity } = this.props;
         const { lot, errorQuantity, lots, errorExpirationDate } = this.state;
+        console.log(quantity);
 
         return (
             <React.Fragment>

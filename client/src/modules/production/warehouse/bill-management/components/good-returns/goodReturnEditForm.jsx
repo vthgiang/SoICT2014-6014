@@ -529,6 +529,7 @@ class GoodReturnEditForm extends Component {
                 address: nextProps.address,
                 listGood: nextProps.listGood,
                 oldGoods: nextProps.listGood,
+                editInfo: false,
                 errorStock: undefined,
                 errorType: undefined,
                 errorApprover: undefined,
