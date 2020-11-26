@@ -97,27 +97,46 @@ class UsageLogTab extends Component {
 
     // Function thêm thông tin phiếu
     handleAddUsage = async (data) => {
-        const { assignedToUser, usageLogs, assignedToOrganizationalUnit } = this.state
-        usageLogs.push(data);
+        const { usageLogs } = this.state
+        let assignedToUser, assignedToOrganizationalUnit;
+        if (data && data.calendar) {
+            usageLogs.push(data.newUsage);
+            assignedToUser = data.newUsage.usedByUser;
+            assignedToOrganizationalUnit = data.newUsage.usedByOrganizationalUnit;
+        } else {
+            usageLogs.push(data);
+            assignedToUser = data.usedByUser;
+            assignedToOrganizationalUnit = data.usedByOrganizationalUnit;
+        }
         let usageLogsData = usageLogs
         await this.setState({
             usageLogs: usageLogsData,
-            assignedToUser: data.usedByUser,
-            assignedToOrganizationalUnit: data.usedByOrganizationalUnit,
+            assignedToUser: assignedToUser,
+            assignedToOrganizationalUnit: assignedToOrganizationalUnit,
             status: "in_use",
         })
 
         let createUsage = {
             usageLogs: usageLogs,
             status: "in_use",
-            assignedToUser: data.usedByUser,
-            assignedToOrganizationalUnit: data.usedByOrganizationalUnit,
+            assignedToUser: assignedToUser,
+            assignedToOrganizationalUnit: assignedToOrganizationalUnit,
         }
-        if (this.props.assetId) {
+        if (this.props.assetId && !data.calendar) {
             await this.props.createUsage(this.props.assetId, createUsage)
         }
-        await this.props.handleAddUsage(usageLogsData);
+
+        if (this.props.id == `edit_usage${this.props.assetId}`) {
+            await this.props.handleAddUsage({
+                usageLogs: usageLogsData,
+                assignedToUser: assignedToUser,
+                assignedToOrganizationalUnit: assignedToOrganizationalUnit
+            });
+        } else {
+            await this.props.handleAddUsage(usageLogsData);
+        }
     }
+
 
     // Function chỉnh sửa thông tin phiếu
     handleEditUsage = async (data) => {
@@ -194,7 +213,7 @@ class UsageLogTab extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id || nextProps.usageLogs !== prevState.usageLogs || nextProps.typeRegisterForUse !== prevState.typeRegisterForUse) {
+        if (nextProps.id !== prevState.id || nextProps.typeRegisterForUse !== prevState.typeRegisterForUse) {
             return {
                 ...prevState,
                 id: nextProps.id,
@@ -293,6 +312,7 @@ class UsageLogTab extends Component {
                             assignedToOrganizationalUnit={assignedToOrganizationalUnit}
                             typeRegisterForUse={typeRegisterForUse}
                             managedBy={managedBy}
+                            handleChange={this.handleAddUsage}
                         />
                     }
                     {typeRegisterForUse !== 2 &&

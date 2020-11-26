@@ -479,6 +479,13 @@ class GoodReturnCreateForm extends Component {
 
     }
 
+    isGoodsValidated = () => {
+        if(this.state.good.good && this.state.good.quantity && this.state.good.quantity !== 0) {
+            return true;
+        }
+        return false;
+    }
+
     shouldComponentUpdate(nextProps, nextState) {
         
         if (nextProps.bills.billDetail !== this.state.billDetail) {
@@ -681,7 +688,7 @@ class GoodReturnCreateForm extends Component {
                                                     {this.state.editInfo &&
                                                         <React.Fragment>
                                                             <button className="btn btn-success" onClick={this.handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
-                                                            <button className="btn btn-success" onClick={this.handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
+                                                            <button className="btn btn-success" disabled={!this.isGoodsValidated()} onClick={this.handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
                                                         </React.Fragment>
                                                     }
                                                 </div>

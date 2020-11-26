@@ -58,7 +58,8 @@ class GeneralTab extends Component {
                 status: nextProps.employee.status,
                 startingDate: nextProps.employee.startingDate,
                 leavingDate: nextProps.employee.leavingDate,
-                roles: nextProps.roles
+                roles: nextProps.roles,
+                totalAnnualLeaves: nextProps.totalAnnualLeaves,
             }
         } else {
             return null;
@@ -69,7 +70,7 @@ class GeneralTab extends Component {
         const { translate } = this.props;
 
         const { id, avatar, employeeNumber, employeeTimesheetId, fullName, gender, birthdate, birthplace, status, roles, startingDate, leavingDate,
-            emailInCompany, maritalStatus, identityCardNumber, identityCardDate, identityCardAddress, nationality, ethnic, religion } = this.state;
+            emailInCompany, maritalStatus, identityCardNumber, identityCardDate, identityCardAddress, nationality, ethnic, religion, totalAnnualLeaves } = this.state;
 
         return (
             <div id={id} className="tab-pane active">
@@ -191,7 +192,15 @@ class GeneralTab extends Component {
                                 {nationality}
                             </div>
                         </div>
-
+                        {totalAnnualLeaves !== undefined &&
+                            <div className="row">
+                                {/* Tôn giáo */}
+                                <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
+                                    <strong>{translate('human_resource.profile.hours_off_remaining')}&emsp; </strong>
+                                    {totalAnnualLeaves}
+                                </div>
+                            </div>
+                        }
                     </div>
                 </div>
             </div >

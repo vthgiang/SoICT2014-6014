@@ -77,7 +77,7 @@ class IncidentAndMaintenance extends Component {
                             </div>
                         </div>
 
-                        {/* Biểu đồ thanh lý tài sản */}
+                        {/* Biểu đồ bảo trì-sửa chữa tài sản */}
                         <div className="col-xs-12">
                             <div className="box box-solid">
                                 <div className="box-header">

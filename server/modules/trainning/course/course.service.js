@@ -60,13 +60,16 @@ exports.getAllCourses = async (portal, company, organizationalUnits, positions) 
 exports.searchCourses = async (portal, params, company) => {
     let keySearch = {
         company: company
-    }
+    };
+
+    // Bắt sựu kiện tên chương trình khoá đào tạo khác ""
     if (params.educationProgram !== undefined) {
         keySearch = {
             ...keySearch,
             educationProgram: params.educationProgram
         }
     }
+
     // Bắt sựu kiện mã khoá đào tạo khác ""
     if (params.courseId !== undefined && params.courseId.length !== 0) {
         keySearch = {
@@ -77,6 +80,19 @@ exports.searchCourses = async (portal, params, company) => {
             }
         }
     }
+
+    // Bắt sựu kiện tên khoá đào tạo khác ""
+    if (params.name !== undefined && params.name.length !== 0) {
+        console.log(params.name);
+        keySearch = {
+            ...keySearch,
+            name: {
+                $regex: params.name,
+                $options: "i"
+            }
+        }
+    }
+
     // Bắt sựu kiện loại đào tạo khác null
     if (params.type !== undefined) {
         keySearch = {

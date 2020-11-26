@@ -4,3 +4,5 @@ export * from './tabIntegratedStatistics';
 export * from './viewAllEmployee';
 export * from './viewAllCommendation';
 export * from './viewAllDiscipline';
+export * from './tabTask';
+export * from './taskOrganizationalUnitsChart';

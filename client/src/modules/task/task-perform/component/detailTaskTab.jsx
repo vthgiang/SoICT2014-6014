@@ -251,6 +251,7 @@ class DetailTaskTab extends Component {
         }
     }
 
+    /** Kiểm tra nhân viên chưa xác nhận công việc */
     checkConfirmTask = (task) => {
         const { currentUser } = this.state;
 
@@ -300,6 +301,7 @@ class DetailTaskTab extends Component {
         }
     }
 
+    /** Kiểm tra hoạt động chưa có đánh giá */
     checkEvaluationTaskAction = (task) => {
         if (task) {
             let { taskActions } = task;
@@ -316,6 +318,7 @@ class DetailTaskTab extends Component {
         }
     }
 
+    /** Kiểm tra nhân viên chưa liên kết KPI */
     checkEvaluationTaskAndKpiLink = (task) => {
         const { currentMonth, nextMonth } = this.state;
 
@@ -395,6 +398,7 @@ class DetailTaskTab extends Component {
         }
     }
 
+    /** Kiểm tra thời hạn đánh giá */
     checkDeadlineForEvaluation = (task) => {
         const { dueForEvaluationOfTask, currentMonth } = this.state;
 
@@ -428,6 +432,26 @@ class DetailTaskTab extends Component {
         return {
             checkDeadlineForEvaluation: checkDeadlineForEvaluation,
             deadlineForEvaluation: deadlineForEvaluation
+        }
+    }
+
+    /** Kiểm tra đơn vị chưa xác nhận phân công công việc */
+    checkConfirmAssginOfOrganizationalUnit = (task) => {
+        let unitHasNotConfirm = [];
+
+        if (task && task.collaboratedWithOrganizationalUnits) {
+            if (task.collaboratedWithOrganizationalUnits.length !== 0) {
+                task.collaboratedWithOrganizationalUnits.map(item => {
+                    if (!item.isAssigned) {
+                        unitHasNotConfirm.push(item.organizationalUnit && item.organizationalUnit.name);
+                    }
+                })
+            }
+        }
+
+        return {
+            checkConfirm: unitHasNotConfirm.length !== 0,
+            unitHasNotConfirm: unitHasNotConfirm
         }
     }
 
@@ -560,7 +584,7 @@ class DetailTaskTab extends Component {
         let task;
         let codeInProcess, typeOfTask, statusTask, checkInactive = true, evaluations, evalList = [];
         // Các biến dùng trong phần Nhắc Nhở
-        let warning = false, checkConfirmTask, checkEvaluationTaskAction, checkEvaluationTaskAndKpiLink, checkDeadlineForEvaluation;
+        let warning = false, checkConfirmTask, checkEvaluationTaskAction, checkEvaluationTaskAndKpiLink, checkDeadlineForEvaluation, checkConfirmAssginOfOrganizationalUnit;
         // Các biến dùng cho biểu đồ đóng góp thời gian
         let hoursSpentOfEmployeeInTask, hoursSpentOfEmployeeInEvaluation = {};
         // Các biến check trưởng đơn vị phối hợp
@@ -628,13 +652,15 @@ class DetailTaskTab extends Component {
         checkConfirmTask = this.checkConfirmTask(task);
         checkEvaluationTaskAction = this.checkEvaluationTaskAction(task);
         checkEvaluationTaskAndKpiLink = this.checkEvaluationTaskAndKpiLink(task);
-        checkDeadlineForEvaluation = this.checkDeadlineForEvaluation(task)
+        checkDeadlineForEvaluation = this.checkDeadlineForEvaluation(task);
+        checkConfirmAssginOfOrganizationalUnit = this.checkConfirmAssginOfOrganizationalUnit(task);
         warning = (statusTask === "inprocess") && ((checkConfirmTask && checkConfirmTask.checkConfirm)
             || (checkEvaluationTaskAction && checkEvaluationTaskAction.checkEvaluationTaskAction)
             || (checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask)
             || (checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkKpiLink)
             || (checkDeadlineForEvaluation && checkDeadlineForEvaluation.checkDeadlineForEvaluation)
-            || (checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false))));
+            || (checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false))))
+            || (checkConfirmAssginOfOrganizationalUnit.checkConfirm);
 
         // Xử lý dữ liệu biểu đồ đóng góp thời gian công việc
         if (task && task.hoursSpentOnTask) {
@@ -743,7 +769,7 @@ class DetailTaskTab extends Component {
                 <div>
                     <div id="info" className="collapse in">
                         {/* Thông tin chung */}
-                        {/** Nhắc nhở */}
+                        {/* Nhắc nhở */}
                         {
                             task && warning &&
                             <div className="description-box warning">
@@ -768,7 +794,7 @@ class DetailTaskTab extends Component {
                                     </div>
                                 }
 
-                                {/** Xác nhận công việc */}
+                                {/* Xác nhận công việc */}
                                 {
                                     checkConfirmTask && checkConfirmTask.checkConfirmCurrentUser
                                     && <div><strong>{translate('task.task_management.you_need')} <a style={{ cursor: "pointer" }} onClick={() => this.confirmTask(task)}>{translate('task.task_management.confirm_task')}</a></strong></div>
@@ -787,13 +813,13 @@ class DetailTaskTab extends Component {
                                     </div>
                                 }
 
-                                {/** Chưa có đánh giá */}
+                                {/* Chưa có đánh giá */}
                                 {
                                     task.status === "inprocess" && checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask
                                     && <div><strong>{translate('task.task_management.not_have_evaluation')}</strong></div>
                                 }
 
-                                {/** Chưa liên kết KPI */}
+                                {/* Chưa liên kết KPI */}
                                 {
                                     task.status === "inprocess" && checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkKpiLink
                                     && <div>
@@ -808,7 +834,7 @@ class DetailTaskTab extends Component {
                                     </div>
                                 }
 
-                                {/** Chưa đánh giá hoạt động */}
+                                {/* Chưa đánh giá hoạt động */}
                                 {
                                     checkEvaluationTaskAction && checkEvaluationTaskAction.checkEvaluationTaskAction
                                     && <div>
@@ -816,7 +842,22 @@ class DetailTaskTab extends Component {
                                     </div>
                                 }
 
-                                {/** Thời hạn chỉnh sửa thông tin */}
+                                {/* Chưa xác nhận phân công công việc */}
+                                {
+                                    checkConfirmAssginOfOrganizationalUnit && checkConfirmAssginOfOrganizationalUnit.checkConfirm
+                                    && <div>
+                                        <strong>{translate('task.task_management.unit_not_confirm_assigned_task')}:</strong>
+                                        {
+                                            checkConfirmAssginOfOrganizationalUnit.unitHasNotConfirm && checkConfirmAssginOfOrganizationalUnit.unitHasNotConfirm.length !== 0
+                                            && checkConfirmAssginOfOrganizationalUnit.unitHasNotConfirm.map((item, index) => {
+                                                let seperator = index !== 0 ? ", " : "";
+                                                return <span key={index}>{seperator}{item}</span>
+                                            })
+                                        }
+                                    </div>
+                                }
+
+                                {/* Thời hạn chỉnh sửa thông tin */}
                                 {
                                     checkDeadlineForEvaluation && checkDeadlineForEvaluation.checkDeadlineForEvaluation
                                     && <div>

@@ -18,10 +18,10 @@ const EmployeeSchema = new Schema({
         type: String,
         required: true
     },
-    status: { // active - Đang làm việc, leave - Đã nghỉ làm
+    status: { // active - Làm chính thức, leave - Đã nghỉ làm, maternity_leave: Nghỉ thai sản, unpaid_leave: Nghỉ không lương, probationary: Đang thử việc, sick_leave: Nghỉ ốm đau
         type: String,
         default: 'active',
-        enum: ['active', 'leave']
+        enum: ['active', 'leave','maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave']
     },
     startingDate: { // Ngày bắt đầu làm việc
         type: Date,

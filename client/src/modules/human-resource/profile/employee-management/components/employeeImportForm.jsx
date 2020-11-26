@@ -70,10 +70,30 @@ class EmployeeImportForm extends Component {
             let taxDateOfIssue = (!x.taxDateOfIssue || typeof x.taxDateOfIssue === 'string') ? x.taxDateOfIssue : this.convertExcelDateToJSDate(x.taxDateOfIssue);
             let healthInsuranceStartDate = (!x.healthInsuranceStartDate || typeof x.healthInsuranceStartDate === 'string') ? x.healthInsuranceStartDate : this.convertExcelDateToJSDate(x.healthInsuranceStartDate);
             let healthInsuranceEndDate = (!x.healthInsuranceEndDate || typeof x.healthInsuranceEndDate === 'string') ? x.healthInsuranceEndDate : this.convertExcelDateToJSDate(x.healthInsuranceEndDate);
-            let gender = translate('human_resource.profile.male') ? "male" : "female";
-            let maritalStatus = translate('human_resource.profile.single') ? "single" : "married";
-            let professionalSkill, educationalLevel;
-            let status = translate('human_resource.profile.active') ? "active" : "leave";
+
+            let gender = x.gender === translate('human_resource.profile.male') ? "male" : "female";
+            let maritalStatus = x.maritalStatus === translate('human_resource.profile.single') ? "single" : "married";
+            let professionalSkill, educationalLevel, status;
+            switch (x.status) {
+                case translate('human_resource.profile.leave'):
+                    status = "leave";
+                    break;
+                case translate('human_resource.profile.maternity_leave'):
+                    status = "maternity_leave";
+                    break;
+                case translate('human_resource.profile.unpaid_leave'):
+                    status = "unpaid_leave";
+                    break;
+                case translate('human_resource.profile.probationary'):
+                    status = "probationary";
+                    break;
+                case translate('human_resource.profile.sick_leave'):
+                    status = "sick_leave";
+                    break;
+
+                default:
+                    status = "active";
+            };
             switch (x.professionalSkill) {
                 case translate('human_resource.profile.intermediate_degree'):
                     professionalSkill = "intermediate_degree";

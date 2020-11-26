@@ -211,8 +211,8 @@ class IssueManagement extends Component {
                                             <td>{x.customer ? x.customer.name : 'Partner is deleted'}</td>
                                             <td>{x.description}</td>
                                             <td style={{textAlign: 'center'}}>
-                                                <a className="text-green" onClick={() => this.props.handleShowDetailInfo(x._id)}><i className="material-icons">visibility</i></a>
-                                                { x.status !== '2' ? <a onClick={() => this.handleEdit(x)} className="text-yellow" ><i className="material-icons">edit</i></a> : ''}
+                                                <a onClick={() => this.props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>
+                                                <a onClick={() => this.handleEdit(x)} className="text-yellow" ><i className="material-icons">edit</i></a>
                                                 <a className="text-black" onClick={() => this.props.handleShow()}><i className="material-icons">print</i></a>
                                             </td>
                                         </tr>

@@ -390,6 +390,13 @@ class GoodReceiptCreateForm extends Component {
         })
     }
 
+    isGoodsValidated = () => {
+        if(this.state.good.good && this.state.good.quantity && this.state.good.quantity !== 0) {
+            return true;
+        }
+        return false;
+    }
+
     static getDerivedStateFromProps(nextProps, prevState){
         if(nextProps.group !== prevState.group){
             return {
@@ -601,9 +608,9 @@ class GoodReceiptCreateForm extends Component {
                                         {this.state.editInfo ?
                                             <React.Fragment>
                                                 <button className="btn btn-success" onClick={this.handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
-                                                <button className="btn btn-success" onClick={this.handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
+                                                <button className="btn btn-success" disabled={!this.isGoodsValidated()} onClick={this.handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
                                             </React.Fragment>:
-                                            <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={this.handleAddGood}>{translate('task_template.add')}</button>
+                                            <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isGoodsValidated()} onClick={this.handleAddGood}>{translate('task_template.add')}</button>
                                         }
                                         <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearGood}>{translate('task_template.delete')}</button>
                                     </div>

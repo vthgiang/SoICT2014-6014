@@ -39,6 +39,7 @@ class AnnualLeaveManagement extends Component {
         this.state = {
             organizationalUnits: organizationalUnits,
             employeeNumber: "",
+            employeeName: "",
             month: month,
             status: null,
             page: 0,
@@ -105,7 +106,7 @@ class AnnualLeaveManagement extends Component {
     }
 
     /** Function lưu giá trị mã nhân viên vào state khi thay đổi */
-    handleMSNVChange = (e) => {
+    handleChange = (e) => {
         const { name, value } = e.target;
         this.setState({
             [name]: value
@@ -268,14 +269,6 @@ class AnnualLeaveManagement extends Component {
                                 items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
                         </div>
-                        {/* Mã số nhân viên */}
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('human_resource.staff_number')}</label>
-                            <input type="text" className="form-control" name="employeeNumber" onChange={this.handleMSNVChange} placeholder={translate('human_resource.staff_number')} autoComplete="off" />
-                        </div>
-                    </div>
-
-                    <div className="form-inline" style={{ marginBottom: 10 }}>
                         {/* Tháng */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.month')}</label>
@@ -286,6 +279,23 @@ class AnnualLeaveManagement extends Component {
                                 onChange={this.handleMonthChange}
                             />
                         </div>
+
+                    </div>
+
+                    <div className="form-inline">
+                        {/* Mã số nhân viên */}
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('human_resource.staff_number')}</label>
+                            <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('human_resource.staff_number')} autoComplete="off" />
+                        </div>
+                        {/* Tên nhân viên  */}
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('human_resource.staff_name')}</label>
+                            <input type="text" className="form-control" name="employeeName" onChange={this.handleChange} placeholder={translate('human_resource.staff_name')} autoComplete="off" />
+                        </div>
+                    </div>
+
+                    <div className="form-inline" style={{ marginBottom: 10 }}>
                         {/* Trạng thái */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.status')}</label>
@@ -300,8 +310,11 @@ class AnnualLeaveManagement extends Component {
                             >
                             </SelectMulti>
                         </div>
-                        {/* Button tìm kiếm */}
-                        <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} >{translate('general.search')}</button>
+                        {/* Nút tìm kiếm */}
+                        <div className="form-group">
+                            <label></label>
+                            <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} >{translate('general.search')}</button>
+                        </div>
                     </div>
 
                     <table id="sabbatical-table" className="table table-striped table-bordered table-hover">
@@ -341,8 +354,8 @@ class AnnualLeaveManagement extends Component {
                                         <tr key={index}>
                                             <td><a style={{ cursor: 'pointer' }} onClick={() => this.handleView(x.employee)}>{x.employee.employeeNumber}</a></td>
                                             <td>{x.employee.fullName}</td>
-                                            <td>{this.formatDate(x.startDate)}</td>
-                                            <td>{this.formatDate(x.endDate)}</td>
+                                            <td><p>{this.formatDate(x.startDate)}</p>{x.startTime ? x.startTime : null}</td>
+                                            <td><p>{this.formatDate(x.endDate)}</p>{x.endTime ? x.endTime : null}</td>
                                             <td>{organizationalUnit ? organizationalUnit.name : null}</td>
                                             <td>{x.reason}</td>
                                             <td style={{ color: x.status === "approved" ? "#00a65a" : (x.status === "waiting_for_approval" ? '#ff7f0e' : '#dd4b39') }}>{translate(`human_resource.annual_leave.status.${x.status}`)}</td>
@@ -377,6 +390,10 @@ class AnnualLeaveManagement extends Component {
                         endDate={this.formatDate(currentRow.endDate)}
                         startDate={this.formatDate(currentRow.startDate)}
                         reason={currentRow.reason}
+                        endTime={currentRow.endTime}
+                        startTime={currentRow.startTime}
+                        totalHours={currentRow.totalHours}
+                        type={currentRow.type}
                         status={currentRow.status}
                     />
                 }

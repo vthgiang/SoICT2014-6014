@@ -29,6 +29,7 @@ function getListDiscipline(data) {
         params: {
             organizationalUnits: data.organizationalUnits,
             type: data.type,
+            employeeName: data.employeeName,
             employeeNumber: data.employeeNumber,
             decisionNumber: data.decisionNumber,
             month: data.month,
@@ -98,6 +99,7 @@ function getListPraise(data) {
         params: {
             organizationalUnits: data.organizationalUnits,
             type: data.type,
+            employeeName: data.employeeName,
             employeeNumber: data.employeeNumber,
             decisionNumber: data.decisionNumber,
             month: data.month,

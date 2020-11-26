@@ -499,6 +499,13 @@ class GoodReturnEditForm extends Component {
         return statusArr;
     }
 
+    isGoodsValidated = () => {
+        if(this.state.good.good && this.state.good.quantity && this.state.good.quantity !== 0) {
+            return true;
+        }
+        return false;
+    }
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.billId !== prevState.billId) {
             return {
@@ -522,6 +529,7 @@ class GoodReturnEditForm extends Component {
                 address: nextProps.address,
                 listGood: nextProps.listGood,
                 oldGoods: nextProps.listGood,
+                editInfo: false,
                 errorStock: undefined,
                 errorType: undefined,
                 errorApprover: undefined,
@@ -725,7 +733,7 @@ class GoodReturnEditForm extends Component {
                                                 {this.state.editInfo &&
                                                     <React.Fragment>
                                                         <button className="btn btn-success" onClick={this.handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
-                                                        <button className="btn btn-success" onClick={this.handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
+                                                        <button className="btn btn-success" disabled={!this.isGoodsValidated()} onClick={this.handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
                                                     </React.Fragment>
                                                 }
                                             </div>

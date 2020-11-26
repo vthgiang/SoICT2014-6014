@@ -17,6 +17,7 @@ class InventoryManagement extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            currentRole: localStorage.getItem("currentRole"),
             page: 1,
             limit: 5,
             oldType: 'product',
@@ -28,18 +29,18 @@ class InventoryManagement extends Component {
     }
 
     componentDidMount(){
-        const { page, limit, type } = this.state;
-        this.props.getAllStocks();
-        this.props.getAllLots({ type });
-        this.props.getAllLots({ page, limit, type });
+        const { page, limit, type, currentRole } = this.state;
+        this.props.getAllStocks({ managementLocation: currentRole });
+        this.props.getAllLots({ type, managementLocation: currentRole });
+        this.props.getAllLots({ page, limit, type, managementLocation: currentRole });
         this.props.getAllGoodsByType({ type });
     };
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if(prevState.oldType !== prevState.type) {
             nextProps.getGoodsByType({ page: prevState.page, limit: prevState.limit, type: prevState.type });
-            nextProps.getAllLots({ type: prevState.type });
-            nextProps.getAllLots({ page: prevState.page, limit: prevState.limit, type: prevState.type });
+            nextProps.getAllLots({ type: prevState.type, managementLocation: prevState.currentRole });
+            nextProps.getAllLots({ page: prevState.page, limit: prevState.limit, type: prevState.type, managementLocation: prevState.currentRole });
             nextProps.getAllGoodsByType({ type: prevState.type });
             return { 
                 oldType: prevState.type,
@@ -149,19 +150,29 @@ class InventoryManagement extends Component {
         const data = {
             limit: number,
             page: this.state.page,
+            managementLocation: this.state.currentRole,
             type: this.state.type,
             name: this.state.name,
             good: this.state.good,
             expirationDate: this.state.expirationDate,
             stock: this.state.stock,
         };
+        const data1 = {
+            type: this.state.type,
+            managementLocation: this.state.currentRole,
+            good: this.state.good,
+            stock: this.state.stock,
+        };
+        
         this.props.getAllLots(data);
+        this.props.getAllLots(data1);
     }
 
     setPage = (page) => {
         this.setState({ page });
         const data = {
             limit: this.state.limit,
+            managementLocation: this.state.currentRole,
             page: page,
             type: this.state.type,
             name: this.state.name,
@@ -169,7 +180,15 @@ class InventoryManagement extends Component {
             expirationDate: this.state.expirationDate,
             stock: this.state.stock,
         };
+        const data1 = {
+            type: this.state.type,
+            managementLocation: this.state.currentRole,
+            good: this.state.good,
+            stock: this.state.stock,
+        };
+        
         this.props.getAllLots(data);
+        this.props.getAllLots(data1);
     }
 
     handleStockChange = (value) => {
@@ -198,11 +217,19 @@ class InventoryManagement extends Component {
             type: this.state.type,
             page: this.state.page,
             limit: this.state.limit,
+            managementLocation: this.state.currentRole,
             name: this.state.name,
             good: this.state.good,
             expirationDate: this.state.expirationDate,
             stock: this.state.stock,
         }
+        const data1 = {
+            type: this.state.type,
+            managementLocation: this.state.currentRole,
+            good: this.state.good,
+            stock: this.state.stock,
+        };
+        await this.props.getAllLots(data1);
 
         await this.props.getAllLots(data);
 
@@ -229,16 +256,28 @@ class InventoryManagement extends Component {
     }
 
     totaQuantity = (stocks) => {
-        const { stock } = this.state; 
+        const { stock } = this.state;
         let result = 0;
-        for(let i = 0; i < stock.length; i++) {
-            let quantity = 0;
-            for(let j = 0; j < stocks.length; j++) {
-                if(stocks[j].stock.toString() === stock[i].toString()) {
-                    quantity += stocks[j].quantity;
+        if(stock && stock.length > 0) {
+            for(let i = 0; i < stock.length; i++) {
+                let quantity = 0;
+                for(let j = 0; j < stocks.length; j++) {
+                    if(stocks[j].stock.toString() === stock[i].toString()) {
+                        quantity += stocks[j].quantity;
+                    }
                 }
+                result += quantity;
             }
-            result += quantity;
+        } else {
+            for(let i = 0; i < this.props.stocks.listStocks.length; i++) {
+                let quantity = 0;
+                for(let j = 0; j < stocks.length; j++) {
+                    if(stocks[j].stock.toString() === this.props.stocks.listStocks[i]._id.toString()) {
+                        quantity += stocks[j].quantity;
+                    }
+                }
+                result += quantity;
+            }
         }
         return result;
     }
@@ -253,18 +292,24 @@ class InventoryManagement extends Component {
         const totalLot = listLots ? listLots.length : 0;
         const dataGoodsByType = this.getAllGoodsByType();
 
-        // let lotOfGood = listLots ? listLots.filter(x => x.good ? x.good._id === good : x ) : [];
-        // let quantityTotal = lotOfGood ? lotOfGood.reduce(function (accumulator, currentValue){
-        //     return accumulator + currentValue.quantity;
-        // }, 0) : 0;
-
         let goodName = dataGoodsByType.find(x => x.value === good);
 
         let inventoryQuantity = [];
         if(listLots && listLots.length > 0){
             if(stock.length === 0){
+                // for(let i = 0; i < listLots.length; i++) {
+                //     inventoryQuantity.push({quantity: listLots[i].quantity, good: listLots[i].good, name: listLots[i].name})
+                // }
                 for(let i = 0; i < listLots.length; i++) {
-                    inventoryQuantity.push({quantity: listLots[i].quantity, good: listLots[i].good, name: listLots[i].name})
+                    let quantity = 0;
+                    for(let j = 0; j < stocks.listStocks.length; j++) {
+                        for(let k = 0; k <listLots[i].stocks.length; k++) {
+                            if(stocks.listStocks[j]._id === listLots[i].stocks[k].stock) {
+                                quantity += listLots[i].stocks[k].quantity;
+                            }
+                        }
+                    }
+                    inventoryQuantity.push({quantity: quantity, good: listLots[i].good, name: listLots[i].name});
                 }
             }
             else{
@@ -284,9 +329,10 @@ class InventoryManagement extends Component {
         let quantityTotal = 0;
         if(inventoryQuantity.length > 0) {
             for(let i = 0; i < inventoryQuantity.length; i++) {
-                if(inventoryQuantity[i].good._id === good) {
-                    quantityTotal += inventoryQuantity[i].quantity
-                }
+                // if(inventoryQuantity[i].good._id === good) {
+                //     quantityTotal += inventoryQuantity[i].quantity
+                // }
+                quantityTotal += inventoryQuantity[i].quantity
             }
         }
 
@@ -413,7 +459,7 @@ class InventoryManagement extends Component {
                                             <td>{index + 1}</td>
                                             <td>{x.good.name}</td>
                                             <td>{x.good.baseUnit}</td>
-                                            <td>{(stock && stock.length > 0) ? this.totaQuantity(x.stocks) : x. quantity}</td>
+                                            <td>{((stock && stock.length > 0) || stocks.listStocks.length > 0) ? this.totaQuantity(x.stocks) : x. quantity}</td>
                                             <td>{x.name}</td>
                                             <td>{this.formatDate(x.expirationDate)}</td>
                                             <td style={{textAlign: 'center'}}>

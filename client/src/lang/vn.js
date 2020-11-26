@@ -1010,8 +1010,8 @@ export default {
             manage_department: "Quản lý cơ cấu tổ chức",
             manage_user: "Quản lý người dùng",
 
-            manage_document: "Quản lý tài liệu",
-            documents_og: "Quản lý tài liệu đơn vị",
+            manage_document: "Quản lý tài liệu văn bản",
+            documents_og: "Quản lý tài liệu văn bản đơn vị",
             documents: "Tài liệu văn bản",
 
             customer_Management: "Quản lý khách hàng",
@@ -1109,7 +1109,7 @@ export default {
             dashboard_asset: "DashBoard quản lý tài sản",
             manage_type_asset: "Quản lý loại tài sản",
             manage_info_asset: "Quản lý thông tin tài sản",
-            manage_maintainance_asset: "Quản lý bảo trì tài sản",
+            manage_maintainance_asset: "Quản lý bảo trì-sửa chữa",
             manage_depreciation_asset: "Quản lý khấu hao tài sản",
             manage_incident_asset: "Quản lý sự cố tài sản",
             manage_recommend_procure: "Quản lý đề nghị mua sắm",
@@ -1288,6 +1288,7 @@ export default {
 
         // Modules cấu hình các chức năng
         module_configuration: {
+            timekeeping: 'Chấm công',
             timekeeping_type: "Kiểu chấm công",
             contract_notice_time: "Báo hết hạn hợp đồng (ngày)",
             contract_notice_time_title: "Báo trước hết hạn hợp đồng",
@@ -1405,11 +1406,13 @@ export default {
             // Quản lý nghỉ phép
             annual_leave: {
                 file_export_name: "Bảng thống kê nghỉ phép",
+                type: "Xin nghỉ theo giờ",
+                totalHours: "Tổng số giờ nghỉ",
 
                 // Nhóm dành cho table
                 table: {
-                    start_date: "Ngày bắt đầu",
-                    end_date: "Ngày kết thúc",
+                    start_date: "Thời gian bắt đầu",
+                    end_date: "Thời gian kết thúc",
                     reason: "Lý do",
                     action: "Hành động",
                 },
@@ -1620,7 +1623,12 @@ export default {
                 religion: "Tôn giáo",
                 active: "Đang làm việc",
                 leave: "Đã nghỉ làm",
+                maternity_leave: 'Nghỉ thai sản',
+                unpaid_leave: 'Nghỉ không lương',
+                probationary: 'Đang thử việc',
+                sick_leave: 'Nghỉ ốm đau',
                 status_work: "Tình trạng lao động",
+                hours_off_remaining: "Số giờ nghỉ phép còn lại",
 
                 mobile_phone: "Điện thoại di động",
                 mobile_phone_1: "Điện thoại di động 1",
@@ -2244,7 +2252,7 @@ export default {
 
                 general_information: "Thông tin chung",
                 usage_information: "Thông tin sử dụng",
-                maintainance_information: "Thông tin bảo trì",
+                maintainance_information: "Thông tin bảo trì-sửa chữa",
                 depreciation_information: "Thông tin khấu hao",
                 incident_information: "Thông tin sự cố",
                 disposal_information: "Thông tin thanh lý",
@@ -2261,7 +2269,7 @@ export default {
                 form_code: "Mã phiếu",
                 create_date: "Ngày lập",
                 type: "Phân loại",
-                start_date: "Ngày bắt đầu sửa chữa",
+                start_date: "Ngày bắt đầu",
                 end_date: "Ngày hoàn thành",
                 expense: "Chi phí",
                 original_price: "Nguyên giá",
@@ -2313,20 +2321,20 @@ export default {
                 amount: "Số lượng",
                 time: "Số lần",
                 value: "Giá trị",
+                maintainance_cost: "Chi phí bảo trì-sửa chữa",
                 lost_value: "Giá trị hao mòn (Triệu)",
                 sum_value: "Tổng giá trị (Triệu)",
                 building: "Mặt bằng",
-                vehicle: "Phương tiện",
                 machine: "Máy móc",
                 other: "Khác",
                 asset_by_group: "Thống kê theo nhóm",
                 asset_by_type: "Thống kê theo loại",
-                asset_purchase_and_dispose: "Mua - bán tài sản",
+                asset_purchase_and_dispose: "Mua - thanh lý tài sản",
                 purchase_asset: "Thống kê mua sắm tài sản",
                 disposal_asset: "Thống kê thanh lý tài sản",
                 asset_incident_and_maintenance: "Sự cố - bảo trì",
                 incident_asset: "Thống kê sự cố tài sản",
-                maintenance_asset: "Thống kê bảo trì tài sản",
+                maintenance_asset: "Thống kê bảo trì-sửa chữa tài sản",
                 statistic_by: "Thống kê theo",
                 expired: "Đã hết hạn",
                 remaining_time: "Thời gian còn lại",
@@ -2359,16 +2367,16 @@ export default {
                 value: "Giá trị",
 
                 usage_logs: "Lịch sử sử dụng",
-                maintainance_logs: "Lịch sử bảo trì",
+                maintainance_logs: "Lịch sử bảo trì-sửa chữa",
                 incident_list: "Danh sách sự cố tài sản",
                 file_list: "Danh sách tài liệu đính kèm",
                 edit_document: "Chỉnh sửa tài liệu đính kèm",
                 add_usage_info: "Thêm mới thông tin sử dụng tài sản",
                 edit_usage_info: "Chỉnh sửa phiếu đăng kí sử dụng",
                 delete_usage_info: "Xóa thông tin cấp phát sử dụng",
-                add_maintenance_card: "Thêm mới phiếu bảo trì",
-                edit_maintenance_card: "Chỉnh sửa phiếu bảo trì",
-                delete_maintenance_card: "Xóa phiếu bảo trì",
+                add_maintenance_card: "Thêm mới phiếu bảo trì-sửa chữa",
+                edit_maintenance_card: "Chỉnh sửa phiếu bảo trì-sửa chữa",
+                delete_maintenance_card: "Xóa phiếu bảo trì.sửa chữa",
                 add_incident_info: "Thêm mới thông tin sự cố",
                 edit_incident_info: "Chỉnh sửa thông tin sự cố",
                 delete_incident_info: "Xóa thông tin sự cố",
@@ -2410,17 +2418,17 @@ export default {
                 total_cost: "Tổng chi phí",
 
                 //Thông điệp trả về từ server
-                get_maintainance_success: "Lấy thông tin bảo trì thành công",
+                get_maintainance_success: "Lấy thông tin bảo trì-sửa chữa thành công",
                 get_maintainance_faile:
-                    "Lấy thông tin thông tin bảo trì thất bại",
-                create_maintainance_success: "Thêm phiếu bảo trì thành công",
-                create_maintainance_faile: "Thêm phiếu bảo trì thất bại",
-                delete_maintainance_success: "Xoá phiếu bảo trì thành công",
-                delete_maintainance_faile: "Xoá phiếu bảo trì thất bại",
+                    "Lấy thông tin thông tin bảo trì-sửa chữa thất bại",
+                create_maintainance_success: "Thêm phiếu bảo trì-sửa chữa thành công",
+                create_maintainance_faile: "Thêm phiếu bảo trì-sửa chữa thất bại",
+                delete_maintainance_success: "Xoá phiếu bảo trì-sửa chữa thành công",
+                delete_maintainance_faile: "Xoá phiếu bảo trì-sửa chữa thất bại",
                 edit_maintainance_success:
-                    "Chỉnh sửa thông tin phiếu bảo trì thành công",
+                    "Chỉnh sửa thông tin phiếu bảo trì-sửa chữa thành công",
                 edit_maintainance_faile:
-                    "Chỉnh sửa thông tin phiếu bảo trì thất bại",
+                    "Chỉnh sửa thông tin phiếu bảo trì-sửa chữa thất bại",
             },
 
             // Quản lý sử dụng
@@ -2748,8 +2756,8 @@ export default {
                 role_in_collaborated_unit: "Vai trò của nhân viên thuộc",
                 confirm_assigned: "Xác nhận đã phân công công việc",
                 confirm_assigned_success: "Bạn đã xác nhận phân công công việc",
-                confirm_assigned_failure:
-                    "Bạn chưa xác nhận phân công công việc",
+                confirm_assigned_failure: "Bạn chưa xác nhận phân công công việc",
+                unit_not_confirm_assigned_task: "Đơn vị chưa xác nhận phân công công việc",
 
                 name: "Tên công việc",
                 search_by_name: "Tìm kiếm theo tên",
@@ -4639,6 +4647,10 @@ export default {
                     content: "Đã hoàn thành",
                 },
                 5: {
+                    color: "orange",
+                    content: "Đã kiểm định chất lượng"
+                },
+                6: {
                     color: "red",
                     content: "Đã hủy",
                 },
@@ -4694,6 +4706,10 @@ export default {
                     content: "Đã hoàn thành",
                 },
                 5: {
+                    color: "orange",
+                    content: "Đã kiểm định chất lượng"
+                },
+                6: {
                     color: "red",
                     content: "Đã hủy",
                 },
@@ -4735,6 +4751,10 @@ export default {
                     color: "green",
                     content: "Đã hoàn thành",
                 },
+                5: {
+                    color: "orange",
+                    content: "Đã kiểm định chất lượng"
+                },
                 choose_status: "Chọn trạng thái",
                 choose_all: "Chọn tất cả",
                 command_detail: "Chi tiết lệnh sản xuất",
@@ -4759,8 +4779,65 @@ export default {
                 start_command: "Thực hiện lệnh",
                 end_command: "Hoàn thành lệnh",
                 edit_successfully: "Sửa lệnh sản xuất thành công",
-                edit_failed: "Sửa lện sản xuất thất bại",
+                edit_failed: "Sửa lệnh sản xuất thất bại",
+                qualityControlStaffs: "Người kiểm định chất lượng",
+                time: "Thời gian kiểm định",
+                quality_control_command: "Kiếm định chất lượng lệnh"
             },
-        },
-    },
-};
+            lot: {
+                index: "STT",
+                code: "Mã lô",
+                command_code: "Mã lệnh sản xuất",
+                good: "Sản phẩm",
+                status: "Trạng thái",
+                created_at: "Ngày tạo",
+                expiration_date: "Ngày hết hạn",
+                1: {
+                    color: "#ffbf00",
+                    content: "Chưa xử lý"
+                },
+                2: {
+                    color: "#00bfff",
+                    content: "Đã xử lý"
+                },
+                3: {
+                    color: "green",
+                    content: "Đã nhập kho"
+                },
+                choose_status: "Chọn trạng thái",
+                choose_all: "Chọn tất cả",
+                original_quantity: "Số lượng",
+                product_type: "Loại sản phẩm",
+                creator: "Người tạo",
+                created_at: "Ngày tạo",
+                expiration_date: "Ngày hết hạn",
+                status: "Trạng thái",
+                product_type_obect: {
+                    "1": "Thành phẩm",
+                    "2": "Phế phẩm"
+                },
+                choose_good: "Chọn hàng hóa",
+                add: "Tạo lô",
+                add_lot: "Tạo lô sản xuất",
+                base_unit: "Đơn vị tính",
+                packing_rule: "Quy cách đóng gói",
+                conversion_rate: "Trọng số chuyển đổi",
+                quantity_packing_rule: "Số lượng theo quy cách đóng gói",
+                quantity_base_unit: "Số lượng cần sản xuất theo đơn vị tính",
+                product_lot_code: "Mã lô thành phẩm",
+                code1: "Mã lô thành phẩm",
+                code2: "Mã lô phế phẩm",
+                finished_product: "Thành phẩm",
+                substandard_product: "Phế phẩm",
+                quantity: "Số lượng theo đơn vị tính",
+                error_quantity_1: "Số lượng nhập vào không hợp lệ",
+                error_quantity_1_input: "Số lượng nhập vào phải lớn hơn 0",
+                description: "Mô tả",
+                create_manufacturing_lot_successfully: "Tạo lô sản xuất thành công",
+                create_manufacturing_lot_failed: "Tạo lô sản xuất thất bại"
+
+
+            }
+        }
+    }
+}

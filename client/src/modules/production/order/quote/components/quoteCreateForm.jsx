@@ -148,7 +148,6 @@ class QuoteCreateForm extends Component {
             expirationDate,
             dateError,
         } = this.state;
-        console.log("CRM", this.props.customers.list);
 
         return (
             <React.Fragment>
@@ -167,7 +166,7 @@ class QuoteCreateForm extends Component {
                     msg_faile={"Thêm đơn không thành công"}
                     // disableSubmit={!this.isFormValidated()}
                     func={this.save}
-                    size="75"
+                    size="100"
                     style={{ backgroundColor: "green" }}
                 >
                     <DialogModal
@@ -233,7 +232,7 @@ class QuoteCreateForm extends Component {
                                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                         <div className="form-group">
                                             <label>
-                                                Địa chỉ
+                                                Địa chỉ nhận hàng
                                                 <span className="attention">* </span>
                                             </label>
                                             <input

@@ -1,6 +1,6 @@
 const {
     ManufacturingCommand, ManufacturingPlan, ManufacturingWorks, OrganizationalUnit,
-    ManufacturingOrder, SalesOrder, Lot
+    ManufacturingOrder, SalesOrder, Lot, ManufacturingMill
 } = require(`${SERVER_MODELS_DIR}`);
 const {
     connect
@@ -40,6 +40,12 @@ exports.createManufacturingCommand = async (data, portal) => {
         //         approvedTime: null
         //     }
         // }),
+        qualityControlStaffs: data.qualityControlStaffs.map(x => {
+            return {
+                staff: x.staff,
+                time: null
+            }
+        }),
         responsibles: data.responsibles.map(x => {
             return x
         }),
@@ -70,7 +76,7 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
     }
 
 
-    // Xử các quyền trước để tìm ra các kế hoạch trong các nhà máy được phân quyền
+    // Xử  lý các quyền trước để tìm ra các kế hoạch trong các nhà máy được phân quyền
     let role = [currentRole];
     const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'deans': { $in: role } });
     let organizationalUnitId = departments.map(department => department._id);
@@ -89,16 +95,72 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
 
     let listWorksId = listManufacturingWorks.map(x => x._id);
 
-    // Lấy ra các kế hoạch mà nằm trong các nhà máy này
-    console.log(listWorksId);
-    let listManufacturingPlans = await ManufacturingPlan(connect(DB_CONNECTION, portal))
+
+    // Kiểm tra userId hiện tại có giám sát hay kiểm định chất lượng lệnh nào không
+    let userId = [user._id];
+    let manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal))
         .find({
+            $or: [
+                {
+                    qualityControlStaffs: {
+                        $elemMatch: {
+                            staff: {
+                                $in: userId
+                            }
+                        }
+                    }
+                }, {
+                    accountables: {
+                        $in: userId
+                    }
+                }
+            ]
+        });
+    let manufacturingCommandIds = manufacturingCommand.map(x => x._id);
+
+    let options = {};
+
+    if (manufacturingCommandIds.length == 0) { // Nếu userId không có giám sát, kiểm định chất lượng lệnh nào thì role kiểm soát nhà máy được xét đến
+        // Lấy ra tất cả các xưởng mà quyền này được xem
+        let listManufacturingMills = await ManufacturingMill(connect(DB_CONNECTION, portal)).find({
             manufacturingWorks: {
                 $in: listWorksId
             }
         });
 
-    // Nếu trong query có truyền theo mã kế hoạch, mã đơn sản xuất, đơn kinh doanh, thì lọc luôn ở bước này
+        let listMillIds = listManufacturingMills.map(x => x._id);
+
+        options.manufacturingMill = {
+            $in: listMillIds
+        }
+    } else if (manufacturingCommandIds.length != 0 && listWorksId.length != 0) {// Trường hợp cả kiểm soát nhà máy cả kiểm soát lệnh
+        options.$or = [
+            {
+                _id: {
+                    $in: manufacturingCommandIds
+                },
+            }, {
+                manufacturingMill: {
+                    $in: listWorksId
+                }
+            }
+        ]
+    }
+    else { // Trường hợp kiểm soát lệnh không kiểm soát nhà máy
+        options._id = {
+            $in: manufacturingCommandIds
+        }
+    }
+
+
+
+
+
+    // Nếu trong query có truyền theo mã kế hoạch, mã đơn sản xuất, đơn kinh doanh
+    // Lấy ra các kế hoạch
+    let listManufacturingPlans = await ManufacturingPlan(connect(DB_CONNECTION, portal))
+        .find();
+
     if (planCode) {
         listManufacturingPlans = listManufacturingPlans.filter(plan => plan.code.includes(planCode))
     }
@@ -108,6 +170,7 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
         });
         let manufacturingOrderIds = manufacturingOrders.map(x => x._id);
         listManufacturingPlans = listManufacturingPlans.filter(x => manufacturingOrderIds.includes(x.manufacturingOrder));
+
     }
 
     if (salesOrderCode) {
@@ -119,8 +182,6 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
     }
 
     let listManufacturingPlanIds = listManufacturingPlans.map(x => x._id);
-
-    let options = {};
 
     options.manufacturingPlan = {
         $in: listManufacturingPlanIds
@@ -198,6 +259,11 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
                     path: "accountables"
                 }, {
                     path: "creator"
+                }, {
+                    path: "good.good",
+                    select: "code name baseUnit"
+                }, {
+                    path: "qualityControlStaffs.staff"
                 }]
             });
         return { manufacturingCommands }
@@ -235,6 +301,8 @@ exports.getManufacturingCommandById = async (id, portal) => {
         }, {
             path: "good.good",
             select: "code name baseUnit"
+        }, {
+            path: "qualityControlStaffs.staff"
         }]);
     if (!manufacturingCommand) {
         throw Error("ManufacturingCommand is not existing");
@@ -250,6 +318,15 @@ exports.getManufacturingCommandById = async (id, portal) => {
     return { manufacturingCommand }
 }
 
+function findIndexOfStaff(array, id) {
+    let result = -1;
+    array.forEach((element, index) => {
+        if (element.staff == id) {
+            result = index;
+        }
+    });
+    return result;
+}
 
 exports.editManufaturingCommand = async (id, data, portal) => {
     console.log(id, data);
@@ -276,7 +353,27 @@ exports.editManufaturingCommand = async (id, data, portal) => {
             return x
         }) : oldManufacturingCommand.accountables;
     oldManufacturingCommand.description = data.description ? data.description : oldManufacturingCommand.description
-    oldManufacturingCommand.status = data.status ? data.status : oldManufacturingCommand.status;
+
+    //Xử lý trường hợp kiểm định chất lượng lệnh sản xuất
+    if (data.qualityControlStaffId) {
+        let index = findIndexOfStaff(oldManufacturingCommand.qualityControlStaffs, data.qualityControlStaffId);
+        if (index !== -1) {
+            oldManufacturingCommand.qualityControlStaffs[index].time = new Date(Date.now());
+        }
+
+        let quantityControlled = 1;
+        oldManufacturingCommand.qualityControlStaffs.forEach((element, index1) => {
+            if (index1 !== index && element.time == null) {
+                quantityControlled = 0;
+            }
+        });
+        if (quantityControlled) {
+            oldManufacturingCommand.status = 5;
+        }
+    } else { // Nếu không kiểm định chất lượng sẽ là cập nhật trạng thái lệnh bắt đầu hoặc hoàn thành
+        oldManufacturingCommand.status = data.status ? data.status : oldManufacturingCommand.status;
+    }
+
 
     await oldManufacturingCommand.save();
 
@@ -294,6 +391,11 @@ exports.editManufaturingCommand = async (id, data, portal) => {
             path: "accountables"
         }, {
             path: "creator"
+        }, {
+            path: "qualityControlStaffs.staff"
+        }, {
+            path: "good.good",
+            select: "code name baseUnit"
         }]);
 
     return { manufacturingCommand }

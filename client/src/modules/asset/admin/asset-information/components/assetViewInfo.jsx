@@ -53,6 +53,7 @@ class AssetViewInfo extends Component {
                 disposalDesc: nextProps.disposalDesc,
                 archivedRecordNumber: nextProps.archivedRecordNumber,
                 files: nextProps.files,
+                readByRoles: nextProps.readByRoles
             }
         } else {
             return null;
@@ -64,7 +65,7 @@ class AssetViewInfo extends Component {
             managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location, description, status, typeRegisterForUse,
             detailInfo, cost, residualValue, startDepreciation, usefulLife, depreciationType, estimatedTotalProduction,
             unitsProducedDuringTheYears, maintainanceLogs, usageLogs, incidentLogs, disposalDate, disposalType, disposalCost,
-            disposalDesc, archivedRecordNumber, files
+            disposalDesc, archivedRecordNumber, files, readByRoles
         } = this.state;
 
         return (
@@ -105,6 +106,7 @@ class AssetViewInfo extends Component {
                                 typeRegisterForUse={typeRegisterForUse}
                                 detailInfo={detailInfo}
                                 usageLogs={usageLogs}
+                                readByRoles={readByRoles}
                             />
 
                             {/* Thông tin khấu hao */}

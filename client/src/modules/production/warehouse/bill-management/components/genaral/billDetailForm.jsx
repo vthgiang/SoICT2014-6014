@@ -64,10 +64,10 @@ class BillDetailForm extends Component {
                     <form id={`form-detail-bill`} >
                     {
                         quantityDetail &&
-                        <QuantityLotDetailForm quantityDetail={quantityDetail} />
+                        <QuantityLotDetailForm quantityDetail={quantityDetail} group={billDetail.group} />
                     }
                         <div className="row">
-                        <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+                        <div className={`${billDetail.group === '4' ? 'col-xs-12 col-sm-12 col-md-12 col-lg-12' : 'col-xs-12 col-sm-8 col-md-8 col-lg-8'}`}>
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{translate('manage_warehouse.bill_management.infor')}</legend>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -128,27 +128,29 @@ class BillDetailForm extends Component {
                             </div>
                             </fieldset>
                         </div>
-                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{translate('manage_warehouse.bill_management.receiver')}</legend>
-                            <div className={`form-group`}>
-                                <strong>{translate('manage_warehouse.bill_management.name')}:&emsp;</strong>
-                                {billDetail.receiver ? billDetail.receiver.name : ''}
+                        { billDetail.group !== '4' && 
+                            <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                <fieldset className="scheduler-border">
+                                    <legend className="scheduler-border">{translate('manage_warehouse.bill_management.receiver')}</legend>
+                                    <div className={`form-group`}>
+                                        <strong>{translate('manage_warehouse.bill_management.name')}:&emsp;</strong>
+                                        {billDetail.receiver ? billDetail.receiver.name : ''}
+                                    </div>
+                                    <div className={`form-group`}>
+                                        <strong>{translate('manage_warehouse.bill_management.phone')}:&emsp;</strong>
+                                        {billDetail.receiver ? billDetail.receiver.phone : ''}
+                                    </div>
+                                    <div className={`form-group`}>
+                                        <strong>{translate('manage_warehouse.bill_management.email')}:&emsp;</strong>
+                                        {billDetail.receiver ? billDetail.receiver.email : ''}
+                                    </div>
+                                    <div className={`form-group`}>
+                                        <strong>{translate('manage_warehouse.bill_management.address')}:&emsp;</strong>
+                                        {billDetail.receiver ? billDetail.receiver.address : ''}
+                                    </div>
+                                </fieldset>
                             </div>
-                            <div className={`form-group`}>
-                                <strong>{translate('manage_warehouse.bill_management.phone')}:&emsp;</strong>
-                                {billDetail.receiver ? billDetail.receiver.phone : ''}
-                            </div>
-                            <div className={`form-group`}>
-                                <strong>{translate('manage_warehouse.bill_management.email')}:&emsp;</strong>
-                                {billDetail.receiver ? billDetail.receiver.email : ''}
-                            </div>
-                            <div className={`form-group`}>
-                                <strong>{translate('manage_warehouse.bill_management.address')}:&emsp;</strong>
-                                {billDetail.receiver ? billDetail.receiver.address : ''}
-                            </div>
-                        </fieldset>
-                        </div>
+                        }
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manage_warehouse.bill_management.goods')}</legend>
@@ -160,7 +162,11 @@ class BillDetailForm extends Component {
                                                 <th title={translate('manage_warehouse.bill_management.code')}>{translate('manage_warehouse.bill_management.code')}</th>
                                                 <th title={translate('manage_warehouse.bill_management.good_name')}>{translate('manage_warehouse.bill_management.good_name')}</th>
                                                 <th title={translate('manage_warehouse.bill_management.unit')}>{translate('manage_warehouse.bill_management.unit')}</th>
-                                                <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
+                                                { billDetail.group !== '3' && <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>}
+                                                { billDetail.group === '3' && <th title={translate('manage_warehouse.bill_management.quantity_issue')}>{translate('manage_warehouse.bill_management.quantity_issue')}</th>}
+                                                { billDetail.group === '3' && <th title={translate('manage_warehouse.bill_management.quantity_return')}>{translate('manage_warehouse.bill_management.quantity_return')}</th>}
+                                                { billDetail.group === '4' && <th title={translate('manage_warehouse.bill_management.real_quantity')}>{translate('manage_warehouse.bill_management.real_quantity')}</th>}
+                                                { billDetail.group === '4' && <th title={translate('manage_warehouse.bill_management.difference')}>{translate('manage_warehouse.bill_management.difference')}</th>}
                                                 <th title={translate('manage_warehouse.bill_management.note')}>{translate('manage_warehouse.bill_management.note')}</th>
                                             </tr>
                                         </thead>
@@ -172,7 +178,11 @@ class BillDetailForm extends Component {
                                                         <td>{x.good.code}</td>
                                                         <td>{x.good.name}</td>
                                                         <td>{x.good.baseUnit}</td>
-                                                        <td>{x.quantity} <a href="#" onClick={() => this.handleShowDetailQuantity(x)}> (Chi tiết)</a></td>
+                                                        {billDetail.group !== '3' && <td>{x.quantity} <a href="#" onClick={() => this.handleShowDetailQuantity(x)}> (Chi tiết)</a></td>}
+                                                        {billDetail.group === '3' && <td>{x.quantity}</td>}
+                                                        {billDetail.group === '3' && <td>{x.returnQuantity} <a href="#" onClick={() => this.handleShowDetailQuantity(x)}> (Chi tiết)</a></td>}
+                                                        {billDetail.group === '4' && <td>{x.realQuantity}</td>}
+                                                        {billDetail.group === '4' && <td>{x.damagedQuantity}</td>}
                                                         <td>{x.description}</td>
                                                     </tr>
                                                 )

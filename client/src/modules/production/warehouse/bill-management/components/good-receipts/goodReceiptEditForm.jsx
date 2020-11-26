@@ -449,7 +449,8 @@ class GoodReceiptEditForm extends Component {
                 editInfo: true,
                 indexInfo: index,
                 good: Object.assign({}, good),
-                lots: lots
+                lots: lots,
+                quantity: good.quantity
             }
         })
 
@@ -534,15 +535,26 @@ class GoodReceiptEditForm extends Component {
         return statusArr;
     }
 
+    isGoodsValidated = () => {
+        if(this.state.good.good && this.state.good.quantity && this.state.good.quantity !== 0) {
+            return true;
+        }
+        return false;
+    }
+
     static getDerivedStateFromProps(nextProps, prevState){
-        if(nextProps.billId !== prevState.billId){
+        if(nextProps.billId !== prevState.billId || nextProps.oldStatus !== prevState.oldStatus){
+            prevState.good.quantity = 0;
+            prevState.good.good = '';
+            prevState.good.description = '';
+            prevState.good.lots = [];
             return {
                 ...prevState,
                 billId: nextProps.billId,
                 code: nextProps.code,
                 fromStock: nextProps.fromStock,
                 status: nextProps.status,
-                oldStatus: nextProps.status,
+                oldStatus: nextProps.oldStatus,
                 group: nextProps.group,
                 type: nextProps.type,
                 users: nextProps.users,
@@ -555,6 +567,7 @@ class GoodReceiptEditForm extends Component {
                 address: nextProps.address,
                 listGood: nextProps.listGood,
                 oldGoods: nextProps.listGood,
+                editInfo: false,
                 errorStock: undefined, 
                 errorType: undefined, 
                 errorApprover: undefined, 
@@ -768,9 +781,9 @@ class GoodReceiptEditForm extends Component {
                                         {this.state.editInfo ?
                                             <React.Fragment>
                                                 <button className="btn btn-success" onClick={this.handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
-                                                <button className="btn btn-success" onClick={this.handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
+                                                <button className="btn btn-success" disabled={!this.isGoodsValidated()} onClick={this.handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
                                             </React.Fragment>:
-                                            <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={this.handleAddGood}>{translate('task_template.add')}</button>
+                                            <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isGoodsValidated()} onClick={this.handleAddGood}>{translate('task_template.add')}</button>
                                         }
                                         <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearGood}>{translate('task_template.delete')}</button>
                                     </div>
@@ -808,11 +821,11 @@ class GoodReceiptEditForm extends Component {
                                             }
                                         </tbody>
                                         </table>
-                                        { status === '2' &&
+                                        {/* { status === '2' &&
                                             <div className="pull-right" style={{marginBottom: "10px"}}>
                                                 <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={this.handleAddLots}>{translate('manage_warehouse.bill_management.add_lot')}</button>
                                             </div>
-                                        }
+                                        } */}
                                     </div>
                                 </fieldset>
                             </div>

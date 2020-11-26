@@ -13,6 +13,7 @@ class TrainingPlan extends Component {
         super(props);
         this.state = {
             courseId: "",
+            name: '',
             type: null,
             page: 0,
             limit: 5,
@@ -87,8 +88,8 @@ class TrainingPlan extends Component {
         })
     }
 
-    /** Bắt sự kiện thay đổi mã khoá đào tạo */
-    handleChange(e) {
+    /** Bắt sự kiện thay đổi mã khoá đào tạo, tên khoá đào tạo */
+    handleChange = (e) => {
         const { name, value } = e.target;
         this.setState({
             [name]: value
@@ -138,17 +139,24 @@ class TrainingPlan extends Component {
             <div className="box">
                 <div className="box-body qlcv">
                     <CourseCreateForm />
-                    {/* Mã khoá đào tạo*/}
+
                     <div className="form-inline">
+                        {/* Mã khoá đào tạo*/}
                         <div className="form-group">
-                            <label style={{ width: 110 }} className="form-control-static">{translate('training.course.table.course_code')}</label>
-                            <input type="text" className="form-control" name="courseId" onChange={this.handleChange} autoComplete="off" />
+                            <label className="form-control-static">{translate('training.course.table.course_code')}</label>
+                            <input type="text" className="form-control" name="courseId" onChange={this.handleChange} placeholder={translate('training.course.table.course_code')} autoComplete="off" />
+                        </div>
+                        {/* Tên khoá đào tạo  */}
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('training.course.table.course_name')}</label>
+                            <input type="text" className="form-control" name="name" onChange={this.handleChange} placeholder={translate('training.course.table.course_name')} autoComplete="off" />
                         </div>
                     </div>
-                    {/* Loại đào tạo */}
+
                     <div className="form-inline" style={{ marginBottom: 10 }}>
+                        {/* Loại đào tạo */}
                         <div className="form-group">
-                            <label style={{ width: 110 }} className="form-control-static">{translate('training.course.table.course_type')}</label>
+                            <label className="form-control-static">{translate('training.course.table.course_type')}</label>
                             <SelectMulti id={`multiSelectTypeCourse`} multiple="multiple"
                                 options={{ nonSelectedText: translate('training.course.no_course_type'), allSelectedText: translate('training.course.all_course_type') }}
                                 onChange={this.handleTypeChange}
@@ -158,6 +166,9 @@ class TrainingPlan extends Component {
                                 ]}
                             >
                             </SelectMulti>
+                        </div>
+                        <div className="form-group">
+                            <label></label>
                             <button type="submit" className="btn btn-success" onClick={() => this.handleSunmitSearch()}>{translate('general.search')}</button>
                         </div>
                     </div>
