@@ -115,7 +115,7 @@ class ExampleManagementTable extends Component {
                     <table id="example-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th>{translate('manage_example.index')}</th>
+                                <th className="col-fixed" style={{ width: 60 }}>{translate('manage_example.index')}</th>
                                 <th>{translate('manage_example.exampleName')}</th>
                                 <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                                     <DataTableSetting
