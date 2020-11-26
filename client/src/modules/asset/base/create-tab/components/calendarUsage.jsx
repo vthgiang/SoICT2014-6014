@@ -290,19 +290,25 @@ class CalendarUsage extends Component {
   }
 
   handleDeleteEvent = async (clickInfo) => {
-    let count, data;
-    var { usageLogs } = this.state;
-    count = usageLogs.findIndex(item => item._id == clickInfo.event.id)
-    data = usageLogs[count]
-    usageLogs.splice(count, 1);
-    await this.setState({
-      ...this.state,
-      usageLogs: [...usageLogs],
-      updateUsageLogs: 2,
-      currentEvent: undefined,
-    })
-    clickInfo.event.remove()
-    await this.props.deleteUsage(this.props.assetId, clickInfo.event.id)
+    if (clickInfo.event.backgroundColor == "#337ab7") {
+      let count, data;
+      var { usageLogs } = this.state;
+      count = usageLogs.findIndex(item => item._id == clickInfo.event.id)
+      data = usageLogs[count]
+      usageLogs.splice(count, 1);
+      await this.setState({
+        ...this.state,
+        usageLogs: [...usageLogs],
+        updateUsageLogs: 2,
+        currentEvent: undefined,
+      })
+      clickInfo.event.remove()
+      await this.props.deleteUsage(this.props.assetId, clickInfo.event.id)
+    } else {
+      let id = clickInfo.event.id
+      await this.props.deleteRecommendDistribute(id)
+      clickInfo.event.remove()
+    }
   }
 
   handleAddUsage = async (data) => {
@@ -469,6 +475,7 @@ class CalendarUsage extends Component {
 
 
   renderEventContent = (eventInfo) => {
+    // console.log("eventInfor", eventInfo.event._def.publicId)
     return (
       <>
         <div className="form-inline">
@@ -505,7 +512,27 @@ class CalendarUsage extends Component {
             </div>
 
           }
-          {eventInfo.event.borderColor == "#337ab7" &&
+          {(this.props.managedBy == this.state.userId)
+            //   || ((eventInfo.event.borderColor == "#aaa" && (() => {
+            //   let id = eventInfo.event._def.publicId;
+            //   let userId = localStorage.getItem('userId');
+            //   let list, dataRecommendDistribute = [];
+            //   const { recommendDistribute } = this.props;
+            //   if (recommendDistribute && recommendDistribute.listRecommendDistributesByAsset) {
+            //     list = recommendDistribute.listRecommendDistributesByAsset;
+            //     dataRecommendDistribute = list.filter(item => item._id == id);
+            //     if (dataRecommendDistribute.length != 0) {
+            //       if (dataRecommendDistribute[0].proponent == userId) {
+            //         console.log(dataRecommendDistribute[0].proponent)
+            //         return true;
+
+            //       }
+            //     }
+            //   }
+
+            //   return false;
+            // }))) 
+            &&
             <div className="form-group">
               <a className="delete" title="Delete" style={{}} data-toggle="tooltip" onClick={async () => {
                 await this.setState({
@@ -538,12 +565,20 @@ class CalendarUsage extends Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
+    console.log("Dòng 568", nextProps.id)
     if (nextProps.id !== prevState.id ||
       ((nextProps.usageLogs !== prevState.usageLogs) && (prevState.updateUsageLogs == 1 || prevState.updateUsageLogs == 2))) {
+      console.log("Chạy đến dòng 571", nextProps)
       let usageLogs = [];
       let userlist = nextProps.user.list
       let departmentlist = nextProps.department.list
-      let data = prevState.data
+
+      let data;
+      if (nextProps.id !== prevState.id) {
+        data = []
+      } else {
+        data = prevState.data
+      }
       for (let i in nextProps.usageLogs) {
         let check = data.filter(item => item.id == nextProps.usageLogs[i]._id)
         if (!check.length) {
@@ -567,6 +602,8 @@ class CalendarUsage extends Component {
           })
         }
       }
+
+      console.log("data")
       return {
         ...prevState,
         id: nextProps.id,
@@ -574,7 +611,7 @@ class CalendarUsage extends Component {
         assignedToUser: nextProps.assignedToUser,
         assignedToOrganizationalUnit: nextProps.assignedToOrganizationalUnit,
         typeRegisterForUse: nextProps.typeRegisterForUse,
-        data: [...prevState.data, ...usageLogs],
+        data: [...data, ...usageLogs],
         updateUsageLogs: 3,
       }
     } else {
@@ -585,6 +622,7 @@ class CalendarUsage extends Component {
   render() {
     const { assetId } = this.props;
     var { currentRow, typeRegisterForUse, usageLogs, currentRowAdd, usageLogDetailInfor, recommendDistributeDetail } = this.state;
+    console.log("thisss dòng 625", this.state.data)
     return (
       <div className='demo-app'>
         <div className='demo-app-main'>
@@ -693,6 +731,7 @@ function mapState(state) {
 const actionCreators = {
   getRecommendDistributeByAsset: RecommendDistributeActions.getRecommendDistributeByAsset,
   updateRecommendDistribute: RecommendDistributeActions.updateRecommendDistribute,
+  deleteRecommendDistribute: RecommendDistributeActions.deleteRecommendDistribute,
   createUsage: UseRequestActions.createUsage,
   deleteUsage: UseRequestActions.deleteUsage,
 };
