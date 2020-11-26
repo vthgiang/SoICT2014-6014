@@ -38,3 +38,26 @@ exports.searchMajor = async (req, res) => {
         });
     }
 }
+
+/** Tạo mới chuyên ngành */
+exports.crateNewMajor = async (req, res) => {
+    // try {
+        data = await MajorService.crateNewMajor(req.portal, req.body);
+        // await Log.info(req.user.email, 'GET_MAJOR', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["create_major_success"],
+            content: data
+        });
+    // } catch (error) {
+    //     // await Log.error(req.user.email, 'GET_MAJOR', req.portal);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ["create_major_faile"],
+    //         content: {
+    //             error: error
+    //         }
+    //     });
+    // }
+}
+
