@@ -175,7 +175,7 @@ exports.createNotification = async (
         }
     }
 
-    // Gửi thông báo cho các user
+    // Gửi thông báo cho các user - bằng socket trên web
     for (let i = 0; i < usersArr.length; i++) {
         const notify = await Notification(
             connect(DB_CONNECTION, portal)
@@ -189,36 +189,37 @@ exports.createNotification = async (
             user: usersArr[i],
             manualNotification,
         });
-
-        const listUsers = await User(connect(DB_CONNECTION, portal)).find({
-            _id: { $in: usersArr },
-        });
-        const listUsersPushNotification = listUsers.flatMap(
-            (user) => user.pushNotificationTokens
-        );
-
         const arr = CONNECTED_CLIENTS.filter(
             (client) => client.userId === usersArr[i]
         );
-        const pushNotificons = await FIREBASE_ADMIN.messaging().sendMulticast({
-            tokens: listUsersPushNotification,
-            data: {
-                _id: notify._id.toString(),
-                level: notify.level.toString(),
-                title: notify.title.toString(),
-                content: notify.content.toString(),
-                sender: notify.sender.toString(),
-                createdAt: notify.createdAt.toString(),
-            },
-            notification: {
-                title: data.title,
-            },
-        });
-        console.log("pushNotificons", pushNotificons);
-
         if (arr.length === 1)
             SOCKET_IO.to(arr[0].socketId).emit("new notifications", notify);
     }
+
+    // Gửi thông báo cho các user - bằng firebase trên thiết bị di động
+    const listUsers = await User(connect(DB_CONNECTION, portal)).find({
+        _id: { $in: usersArr },
+    });
+    const listUsersPushNotification = listUsers.flatMap(
+        (user) => user.pushNotificationTokens
+    );
+    const listPush = listUsersPushNotification.filter(
+        (token, i) => listUsersPushNotification.indexOf(token) === i
+    );
+    const pushNotifications = await FIREBASE_ADMIN.messaging().sendMulticast({
+        tokens: listPush,
+        data: {
+            level: data.level.toString(),
+            title: data.title.toString(),
+            content: data.content.toString(),
+            sender: data.sender.toString(),
+            createdAt: new Date().toString(),
+        },
+        notification: {
+            title: data.title,
+        },
+    });
+
     return true;
 };
 
