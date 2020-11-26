@@ -8,6 +8,8 @@ import { EmployeeCreateForm, EmployeeDetailForm, EmployeeEditFrom, EmployeeImpor
 
 import { EmployeeManagerActions } from '../redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
+import { CareerReduxAction } from "../../../career/redux/actions";
+import { MajorActions } from "../../../major/redux/actions";
 
 class EmployeeManagement extends Component {
     constructor(props) {
@@ -40,6 +42,10 @@ class EmployeeManagement extends Component {
     componentDidMount() {
         this.props.getAllEmployee(this.state);
         this.props.getDepartment();
+        this.props.getListMajor({ name: '', page: 1, limit: 1000 });
+        this.props.getListCareerAction({ name: '', page: 1, limit: 1000 });
+        this.props.getListCareerField({ name: '', page: 1, limit: 1000 });
+        this.props.getListCareerPosition({ name: '', page: 1, limit: 1000 });
     }
 
     /**
@@ -1010,6 +1016,10 @@ const actionCreators = {
     getDepartment: DepartmentActions.get,
     getAllEmployee: EmployeeManagerActions.getAllEmployee,
     deleteEmployee: EmployeeManagerActions.deleteEmployee,
+    getListMajor: MajorActions.getListMajor,
+    getListCareerAction: CareerReduxAction.getListCareerAction,
+    getListCareerField: CareerReduxAction.getListCareerField,
+    getListCareerPosition: CareerReduxAction.getListCareerPosition,
 };
 
 const employeeManagement = connect(mapState, actionCreators)(withTranslate(EmployeeManagement));

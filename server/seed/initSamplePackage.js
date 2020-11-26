@@ -276,36 +276,37 @@ const initSampleCompanyDB = async () => {
         }, {
             name: "IT Phần cứng/mạng",
             code: "it_phan_cung_mang",
-            position: [{
-                name: "IT Support - Kỹ Sư Máy Tính/ Mạng",
-                code: ["it_phan_cung_mang", "it_support_ky_su_mang"],
-                type: 1,
-            },
-            {
-                name: "Chuyên viên IT Mạng",
-                code: ["it_phan_cung_mang", "chuyen_vien_it_mang"],
-                type: 1,
-            },
-            {
-                name: "5G/ Lte System Engineer",
-                code: ["it_phan_cung_mang", "5G", "lte", "system_engineer"],
-                type: 1,
-            },
-            {
-                name: "Chuyên Viên Bảo Mật Ứng Dụng",
-                code: ["it_phan_cung_mang", "chuyen_vien_bao_mat"],
-                type: 1,
-            },
-            {
-                name: "Chuyên Viên Phân Tích Sự Kiện Bảo Mật",
-                code: ["it_phan_cung_mang", "chuyen_vien_phan_tich_su_kien_bao_mat"],
-                type: 1,
-            },
-            {
-                name: "Kỹ Sư Bảo Mật",
-                code: ["it_phan_cung_mang", "ky_su_bao_mat"],
-                type: 1,
-            },
+            position: [
+                // {
+                //     name: "IT Support - Kỹ Sư Máy Tính/ Mạng",
+                //     code: ["it_phan_cung_mang", "it_support_ky_su_mang"],
+                //     type: 1,
+                // },
+                {
+                    name: "Chuyên viên IT Mạng",
+                    code: ["it_phan_cung_mang", "chuyen_vien_it_mang"],
+                    type: 1,
+                },
+                {
+                    name: "5G/ Lte System Engineer",
+                    code: ["it_phan_cung_mang", "5G", "lte", "system_engineer"],
+                    type: 1,
+                },
+                {
+                    name: "Chuyên Viên Bảo Mật Ứng Dụng",
+                    code: ["it_phan_cung_mang", "chuyen_vien_bao_mat"],
+                    type: 1,
+                },
+                {
+                    name: "Chuyên Viên Phân Tích Sự Kiện Bảo Mật",
+                    code: ["it_phan_cung_mang", "chuyen_vien_phan_tich_su_kien_bao_mat"],
+                    type: 1,
+                },
+                {
+                    name: "Kỹ Sư Bảo Mật",
+                    code: ["it_phan_cung_mang", "ky_su_bao_mat"],
+                    type: 1,
+                },
             ]
         }
     ]);
@@ -658,24 +659,24 @@ const initSampleCompanyDB = async () => {
 
     console.log('3. Khởi tạo hoạt động công việc');
     //END
-    var careerField = await CareerAction(vnistDB).insertMany([
+    var careerAction = await CareerAction(vnistDB).insertMany([
         {
             name: "Quản trị, bảo hành, bảo trì hoạt động của phần mềm và hệ thống thông tin",
             code: "itpm_01",
             detail: [
                 {
                     name: "Quản trị",
-                    code: ["quan_tri"],
+                    code: "quan_tri",
                     type: 1,
                 },
                 {
                     name: "Bảo hành",
-                    code: ["bao_hanh"],
+                    code: "bao_hanh",
                     type: 1,
                 },
                 {
                     name: "Bao trì",
-                    code: ["bao_tri"],
+                    code: "bao_tri",
                     type: 1,
                 },
             ]
@@ -686,17 +687,17 @@ const initSampleCompanyDB = async () => {
             detail: [
                 {
                     name: "Tư vấn",
-                    code: ["tu_van"],
+                    code: "tu_van",
                     type: 1,
                 },
                 {
                     name: "Đánh giá",
-                    code: ["danh_gia"],
+                    code: "danh_gia",
                     type: 1,
                 },
                 {
                     name: "thẩm định",
-                    code: ["tham_dinh"],
+                    code: "tham_dinh",
                     type: 1,
                 },
             ]
@@ -707,12 +708,12 @@ const initSampleCompanyDB = async () => {
             detail: [
                 {
                     name: "Tư vấn",
-                    code: ["tu_van"],
+                    code: "tu_van",
                     type: 1,
                 },
                 {
                     name: "Xây dựng",
-                    code: ["xay_dung"],
+                    code: "xay_dung",
                     type: 1,
                 }
             ]
@@ -723,7 +724,7 @@ const initSampleCompanyDB = async () => {
             detail: [
                 {
                     name: "Bảo đảm",
-                    code: ["bao_dam"],
+                    code: "bao_dam",
                     type: 1,
                 }
             ]
@@ -734,17 +735,17 @@ const initSampleCompanyDB = async () => {
             detail: [
                 {
                     name: "Phân phối",
-                    code: ["phan_phoi"],
+                    code: "phan_phoi",
                     type: 1,
                 },
                 {
                     name: "Cung ứng",
-                    code: ["cung_ung"],
+                    code: "cung_ung",
                     type: 1,
                 },
                 {
                     name: "Cung cấp",
-                    code: ["cung_cap"],
+                    code: "cung_cap",
                     type: 1,
                 },
             ]
@@ -755,17 +756,17 @@ const initSampleCompanyDB = async () => {
             detail: [
                 {
                     name: "Lập trình",
-                    code: ["lap_trinh"],
+                    code: "lap_trinh",
                     type: 1,
                 },
                 {
                     name: "Phát triển",
-                    code: ["phat_trien"],
+                    code: "phat_trien",
                     type: 1,
                 },
                 {
                     name: "Xây dựng",
-                    code: ["xay_dung"],
+                    code: "xay_dung",
                     type: 1,
                 }
             ]
@@ -776,12 +777,12 @@ const initSampleCompanyDB = async () => {
             detail: [
                 {
                     name: "Thiết kế",
-                    code: ["thiet_ke"],
+                    code: "thiet_ke",
                     type: 1,
                 },
                 {
                     name: "Phân tích",
-                    code: ["phan_tich"],
+                    code: "phan_tich",
                     type: 1,
                 }
             ]
@@ -792,12 +793,12 @@ const initSampleCompanyDB = async () => {
             detail: [
                 {
                     name: "Kiểm thử",
-                    code: ["kiem_thu"],
+                    code: "kiem_thu",
                     type: 1,
                 },
                 {
                     name: "Kiểm định",
-                    code: ["kiem_dinh"],
+                    code: "kiem_dinh",
                     type: 1,
                 }
             ]
@@ -808,17 +809,17 @@ const initSampleCompanyDB = async () => {
             detail: [
                 {
                     name: "Kiểm tra",
-                    code: ["kiem_tra"],
+                    code: "kiem_tra",
                     type: 1,
                 },
                 {
                     name: "Đánh giá",
-                    code: ["danh_gia"],
+                    code: "danh_gia",
                     type: 1,
                 },
                 {
                     name: "Giám sát",
-                    code: ["giam_sat"],
+                    code: "giam_sat",
                     type: 1,
                 }
             ]
@@ -829,17 +830,17 @@ const initSampleCompanyDB = async () => {
             detail: [
                 {
                     name: "giang_day",
-                    code: ["giang_day"],
+                    code: "giang_day",
                     type: 1,
                 },
                 {
                     name: "Nghiên cứu",
-                    code: ["nghien_cuu"],
+                    code: "nghien_cuu",
                     type: 1,
                 },
                 {
                     name: "Đào tạo",
-                    code: ["dao_tao"],
+                    code: "dao_tao",
                     type: 1,
                 }
             ]

@@ -8,7 +8,7 @@ import { EmployeeCreateForm, EmployeeDetailForm, EmployeeEditFrom, EmployeeImpor
 
 import { EmployeeManagerActions } from '../redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
-import { CareerPositionAction } from '../../../career-position/redux/actions';
+import { CareerReduxAction } from '../../../career/redux/actions';
 import { MajorActions } from '../../../major/redux/actions';
 
 
@@ -30,9 +30,6 @@ class SearchEmployeeForPackage extends Component {
         }
 
         this.state = {
-            position: null,
-            gender: null,
-            employeeNumber: null,
             organizationalUnits: organizationalUnits,
             status: 'active',
             page: 0,
@@ -45,6 +42,8 @@ class SearchEmployeeForPackage extends Component {
         this.props.getDepartment();
         this.props.getListMajor({ name: '', page: 1, limit: 1000 });
         this.props.getListCareerPosition({ name: '', page: 1, limit: 1000 });
+        this.props.getListCareerAction({ name: '', page: 1, limit: 1000 });
+        this.props.getListCareerField({ name: '', page: 1, limit: 1000 });
     }
 
     /**
@@ -142,9 +141,34 @@ class SearchEmployeeForPackage extends Component {
      * @param {*} value : Array id Vị trí công việc
      */
 
-    handleCareer = (value) => {
-        this.setState({ careerInfo: value[0] });
-    }
+    handleAction = (value) => {
+        let { career } = this.props;
+        let listAction = career?.listAction.map(elm => { return { ...elm, id: elm._id } });
+        let action = listAction?.find(e => e._id === value[0]);
+
+        this.setState({ action: action });
+    };
+
+    handleField = (value) => {
+        let { career } = this.props;
+        let listField = career?.listField.map(elm => { return { ...elm, id: elm._id } });
+        let listPosition = career?.listPosition.map(elm => { return { ...elm, id: elm._id } });
+        let field = listField?.find(e => e._id === value[0]);
+
+        this.setState({ field: field, position: {} });
+    };
+
+    handlePosition = (value) => {
+        let { career } = this.props;
+        let listPosition = career?.listPosition.map(elm => { return { ...elm, id: elm._id } });
+        let position = listPosition?.find(e => e._id === value[0]);
+
+        this.setState({ position: position });
+    };
+
+    // handleCareer = (value) => {
+    //     this.setState({ careerInfo: value[0] });
+    // }
 
     /**
      * Function lưu giá trị chức vụ vào state khi thay đổi
@@ -258,7 +282,7 @@ class SearchEmployeeForPackage extends Component {
     render() {
         const { employeesManager, translate, department, career, major } = this.props;
 
-        let { importEmployee, limit, page, organizationalUnits, professionalSkill, majorInfo, careerInfo, currentRow, currentRowView } = this.state;
+        const { importEmployee, limit, page, organizationalUnits, professionalSkill, majorInfo, field, position, action, currentRow, currentRowView } = this.state; // filterField, filterPosition, filterAction, 
 
         let listEmployees = [];
         if (employeesManager.listEmployees) {
@@ -270,19 +294,44 @@ class SearchEmployeeForPackage extends Component {
             parseInt((employeesManager.totalList / limit) + 1);
         let currentPage = parseInt((page / limit) + 1);
 
-        let listPosition = career.listPosition;
-        let dataTreeCareer = []
-        let position = listPosition.map(elm => {
+        let listField = career.listField;
+        let dataTreeField = []
+        let lField = listField.map(elm => {
             return {
                 ...elm,
                 id: elm._id,
                 text: elm.name,
                 state: { "opened": true },
-                // parent: listPosition[i]._id.toString(),
                 parent: "#",
             }
         });
-        dataTreeCareer = [...dataTreeCareer, ...position];
+        dataTreeField = [...dataTreeField, ...lField];
+        for (let i in listField) {
+            let posMap = listField[i].position;
+            let position = posMap.map(elm => {
+                return {
+                    ...elm,
+                    id: elm._id,
+                    text: elm.name,
+                    state: { "opened": true },
+                    parent: listField[i]._id.toString(),
+                }
+            });
+            dataTreeField = [...dataTreeField, ...position];
+        }
+
+        let listPosition = career.listPosition;
+        let dataTreePosition = []
+        let pos = listPosition.map(elm => {
+            return {
+                ...elm,
+                id: elm._id,
+                text: elm.name,
+                state: { "opened": true },
+                parent: "#",
+            }
+        });
+        dataTreePosition = [...dataTreePosition, ...pos];
         for (let i in listPosition) {
             let desMap = listPosition[i].description;
             let description = desMap.map(elm => {
@@ -294,8 +343,33 @@ class SearchEmployeeForPackage extends Component {
                     parent: listPosition[i]._id.toString(),
                 }
             });
-            dataTreeCareer = [...dataTreeCareer, ...description];
+            dataTreePosition = [...dataTreePosition, ...description];
 
+        }
+        let listAction = career.listAction;
+        let dataTreeAction = []
+        let act = listAction.map(elm => {
+            return {
+                ...elm,
+                id: elm._id,
+                text: elm.name,
+                state: { "opened": true },
+                parent: "#",
+            }
+        });
+        dataTreeAction = [...dataTreeAction, ...act];
+        for (let i in listAction) {
+            let detailMap = listAction[i].detail;
+            let detail = detailMap.map(elm => {
+                return {
+                    ...elm,
+                    id: elm._id,
+                    text: elm.name,
+                    state: { "opened": true },
+                    parent: listAction[i]._id.toString(),
+                }
+            });
+            dataTreeAction = [...dataTreeAction, ...detail];
         }
 
         const listMajor = major.listMajor;
@@ -308,7 +382,6 @@ class SearchEmployeeForPackage extends Component {
                     id: elm._id,
                     text: elm.name,
                     state: { "opened": true },
-                    // parent: listMajor[i]._id.toString(),
                     parent: "#",
                 }
             });
@@ -340,7 +413,44 @@ class SearchEmployeeForPackage extends Component {
             { value: "unavailable", text: "Không có" },
         ];
 
-        console.log('ppppppppppppppp', dataTreeCareer, dataTreeMajor);
+        // Filter danh sách
+        let filterField = dataTreeField;
+        let filterPosition = dataTreePosition;
+        let filterAction = dataTreeAction;
+
+        let posCodeArr = [];
+        if (field?.id) {
+            for (let x in field.position) {
+                posCodeArr = [...posCodeArr, ...field.position[x].code];
+            }
+            filterPosition = listPosition.filter((item) => posCodeArr.find(e => e === item.code));
+            dataTreePosition = [];
+            let pos = filterPosition.map(elm => {
+                return {
+                    ...elm,
+                    id: elm._id,
+                    text: elm.name,
+                    state: { "opened": true },
+                    parent: "#",
+                }
+            });
+            dataTreePosition = [...dataTreePosition, ...pos];
+            for (let i in filterPosition) {
+                let desMap = filterPosition[i].description;
+                let description = desMap.map(elm => {
+                    return {
+                        ...elm,
+                        id: elm._id,
+                        text: elm.name,
+                        state: { "opened": true },
+                        parent: filterPosition[i]._id.toString(),
+                    }
+                });
+                dataTreePosition = [...dataTreePosition, ...description];
+            }console.log('possss', posCodeArr, filterPosition,dataTreePosition);
+        }
+
+        
         return (
             <div className="box">
                 <div className="box-body qlcv">
@@ -385,24 +495,6 @@ class SearchEmployeeForPackage extends Component {
                     </div>
 
                     <div className="form-inline">
-                        {/* Vị trí công việc  */}
-                        <div className="form-group">
-                            <label className="form-control-static">Vị trí công việc</label>
-                            <TreeSelect data={dataTreeCareer} value={careerInfo} handleChange={this.handleCareer} mode="radioSelect" />
-                        </div>
-                        {/* Số năm kinh nghiệm */}
-                        <div className="form-group">
-                            <label className="form-control-static">Số năm KN</label>
-                            <input type="number" className="form-control" name="numOfExp" onChange={this.handleChange} placeholder={"Số năm kinh nghiệm"} />
-                        </div>
-                        {/* Số năm kinh nghiệm công việc tương đương */}
-                        <div className="form-group">
-                            <label className="form-control-static">Số năm KN công việc tương đương</label>
-                            <input type="number" className="form-control" name="numOfSameCareer" onChange={this.handleChange} placeholder={"Kinh nghiệm công việc tương tự"} />
-                        </div>
-                    </div>
-
-                    <div className="form-inline">
                         {/* Loại chứng chỉ */}
                         <div className="form-group">
                             <label className="form-control-static">Loại chứng chỉ</label>
@@ -424,6 +516,37 @@ class SearchEmployeeForPackage extends Component {
                             />
                         </div>
                     </div>
+
+                    <div className="form-inline">
+                        {/* Vị trí công việc  */}
+                        <div className="form-group">
+                            <label className="form-control-static">Lĩnh vực công việc</label>
+                            <TreeSelect data={dataTreeField} value={field?.id} handleChange={this.handleField} mode="radioSelect" />
+                        </div>
+                        {/* Vị trí công việc  */}
+                        <div className="form-group">
+                            <label className="form-control-static">Vị trí công việc</label>
+                            <TreeSelect data={dataTreePosition} value={position?.id} handleChange={this.handlePosition} mode="radioSelect" />
+                        </div>
+                        {/* Vị trí công việc  */}
+                        <div className="form-group">
+                            <label className="form-control-static">Hoạt động công việc</label>
+                            <TreeSelect data={dataTreeAction} value={action?.id} handleChange={this.handleAction} mode="radioSelect" />
+                        </div>
+                    </div>
+                    <div className="form-inline">
+                        {/* Số năm kinh nghiệm */}
+                        <div className="form-group">
+                            <label className="form-control-static">Số năm KN</label>
+                            <input type="number" className="form-control" name="numOfExp" onChange={this.handleChange} placeholder={"Số năm kinh nghiệm"} />
+                        </div>
+                        {/* Số năm kinh nghiệm công việc tương đương */}
+                        <div className="form-group">
+                            <label className="form-control-static">Số năm KN công việc tương đương</label>
+                            <input type="number" className="form-control" name="numOfSameCareer" onChange={this.handleChange} placeholder={"Kinh nghiệm công việc tương tự"} />
+                        </div>
+                    </div>
+
 
                     <div className="form-inline" style={{ marginBottom: 15 }}>
                         {/* Button tìm kiếm */}
@@ -527,7 +650,9 @@ function mapState(state) {
 
 const actionCreators = {
     getDepartment: DepartmentActions.get,
-    getListCareerPosition: CareerPositionAction.getListCareerPosition,
+    getListCareerPosition: CareerReduxAction.getListCareerPosition,
+    getListCareerAction: CareerReduxAction.getListCareerAction,
+    getListCareerField: CareerReduxAction.getListCareerField,
     getListMajor: MajorActions.getListMajor,
     getAllEmployee: EmployeeManagerActions.getAllEmployee,
     deleteEmployee: EmployeeManagerActions.deleteEmployee,

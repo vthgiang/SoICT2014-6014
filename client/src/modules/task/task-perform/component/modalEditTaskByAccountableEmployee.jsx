@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { DialogModal, ErrorLabel, SelectBox, DatePicker } from '../../../../common-components/';
+import { DialogModal, ErrorLabel, SelectBox, DatePicker, ContentMaker } from '../../../../common-components/';
 import { getStorage } from "../../../../config";
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { TaskInformationForm } from './taskInformationForm';
@@ -11,6 +11,7 @@ import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import Swal from 'sweetalert2'
 import { TaskTemplateFormValidator } from '../../task-template/component/taskTemplateFormValidator';
 import { taskManagementActions } from '../../task-management/redux/actions';
+import TextareaAutosize from 'react-textarea-autosize';
 
 class ModalEditTaskByAccountableEmployee extends Component {
 
@@ -1057,10 +1058,19 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                     <div
                                         className={`form-group ${errorTaskDescription === undefined ? "" : "has-error"}`}>
                                         <label>{translate('task.task_management.detail_description')}<span className="text-red">*</span></label>
-                                        <textarea
+                                        {/* <textarea
                                             rows="4"
                                             value={taskDescription}
-                                            className="form-control" onChange={this.handleTaskDescriptionChange} />
+                                            className="form-control" onChange={this.handleTaskDescriptionChange} /> */}
+
+                                        <TextareaAutosize
+                                            className={"form-control"}
+                                            placeholder={"Mô tả công việc"}
+                                            minRows={2}
+                                            maxRows={4}
+                                            value={taskDescription}
+                                            onChange={this.handleTaskDescriptionChange}
+                                        />
                                         <ErrorLabel content={errorTaskDescription} />
                                     </div>
                                     <div className="form-group">
@@ -1082,28 +1092,29 @@ class ModalEditTaskByAccountableEmployee extends Component {
                             {/*Thông tin chi tiết*/}
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('task.task_management.edit_detail_info')}</legend>
-                                <div>
+                                {/* <div> */}
 
-                                    {/* Đơn vị phối hợp thực hiện công việc */}
-                                    {listDepartment &&
-                                        <div className="form-group">
-                                            <label>{translate('task.task_management.collaborated_with_organizational_units')}</label>
-                                            <SelectBox
-                                                id={`editMultiSelectUnitThatHaveCollaborated-${perform}-${role}`}
-                                                lassName="form-control select2"
-                                                style={{ width: "100%" }}
-                                                items={listDepartment.filter(item => item._id !== organizationalUnit).map(x => {
-                                                    return { text: x.name, value: x._id }
-                                                })}
-                                                options={{ placeholder: translate('kpi.evaluation.dashboard.select_units') }}
-                                                onChange={this.handleChangeCollaboratedWithOrganizationalUnits}
-                                                value={collaboratedWithOrganizationalUnits}
-                                                multiple={true}
-                                            />
-                                        </div>
-                                    }
-
+                                {/* Đơn vị phối hợp thực hiện công việc */}
+                                {listDepartment &&
                                     <div className="form-group">
+                                        <label>{translate('task.task_management.collaborated_with_organizational_units')}</label>
+                                        <SelectBox
+                                            id={`editMultiSelectUnitThatHaveCollaborated-${perform}-${role}`}
+                                            lassName="form-control select2"
+                                            style={{ width: "100%" }}
+                                            items={listDepartment.filter(item => item._id !== organizationalUnit).map(x => {
+                                                return { text: x.name, value: x._id }
+                                            })}
+                                            options={{ placeholder: translate('kpi.evaluation.dashboard.select_units') }}
+                                            onChange={this.handleChangeCollaboratedWithOrganizationalUnits}
+                                            value={collaboratedWithOrganizationalUnits}
+                                            multiple={true}
+                                        />
+                                    </div>
+                                }
+
+                                <div className="row form-group">
+                                    <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12">
                                         <label>{translate('task.task_management.detail_status')}</label>
                                         {
                                             <SelectBox
@@ -1119,7 +1130,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                     </div>
 
                                     {/*Mức ưu tiên*/}
-                                    <div className="form-group">
+                                    <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12">
                                         <label>{translate('task.task_management.detail_priority')}</label>
                                         {
                                             <SelectBox
@@ -1134,6 +1145,9 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                         }
                                     </div>
                                 </div>
+
+
+                                {/* </div> */}
                                 <div className="row form-group">
                                     <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
                                         <label className="control-label">{translate('task.task_management.start_date')}*</label>
@@ -1337,7 +1351,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                         </form>
                     </DialogModal>
                 </React.Fragment>
-            </div>
+            </div >
         );
     }
 }
