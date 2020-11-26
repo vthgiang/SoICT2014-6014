@@ -1010,8 +1010,8 @@ export default {
             manage_department: "Quản lý cơ cấu tổ chức",
             manage_user: "Quản lý người dùng",
 
-            manage_document: "Quản lý tài liệu",
-            documents_og: "Quản lý tài liệu đơn vị",
+            manage_document: "Quản lý tài liệu văn bản",
+            documents_og: "Quản lý tài liệu văn bản đơn vị",
             documents: "Tài liệu văn bản",
 
             customer_Management: "Quản lý khách hàng",
@@ -1624,9 +1624,9 @@ export default {
                 active: "Đang làm việc",
                 leave: "Đã nghỉ làm",
                 maternity_leave: 'Nghỉ thai sản',
-                unpaid_leave:'Nghỉ không lương',
-                probationary:'Đang thử việc',
-                sick_leave:'Nghỉ ốm đau',
+                unpaid_leave: 'Nghỉ không lương',
+                probationary: 'Đang thử việc',
+                sick_leave: 'Nghỉ ốm đau',
                 status_work: "Tình trạng lao động",
                 hours_off_remaining: "Số giờ nghỉ phép còn lại",
 
