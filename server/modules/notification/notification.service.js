@@ -206,6 +206,7 @@ exports.createNotification = async (
             notification: {
                 title: data.title,
                 // body: data.content,
+                data,
             },
         });
 
