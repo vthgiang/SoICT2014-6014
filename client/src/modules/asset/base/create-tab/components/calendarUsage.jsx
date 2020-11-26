@@ -7,6 +7,7 @@ import { UsageLogAddModal, UsageLogDetailModal } from './combinedContent';
 import { Scheduler, formatDate } from '../../../../../common-components';
 import { UseRequestCreateForm } from './../../../user/use-request/components/UseRequestCreateForm';
 import { UseRequestDetailForm } from './../../../user/use-request/components/UseRequestDetailForm';
+import Swal from 'sweetalert2';
 import './calendarUsage.css';
 
 
@@ -155,20 +156,28 @@ class CalendarUsage extends Component {
 
       window.$(`#modal-create-usage-calendar-${this.props.assetId}`).modal('show');
     } else {
-      await this.setState(state => {
-        return {
-          ...state,
-          currentRowAdd: {
-            ...selectInfo,
-            startTime: startTime,
-            stopTime: stopTime,
+      if (selectInfo.start < this.state.nowDate) {
+        Swal.fire({
+          title: 'Ngày đã qua không thể tạo đăng ký sử dụng',
+          type: 'warning',
+          confirmButtonColor: '#dd4b39',
+          confirmButtonText: "Đóng",
+        })
+      } else {
+        await this.setState(state => {
+          return {
+            ...state,
+            currentRowAdd: {
+              ...selectInfo,
+              startTime: startTime,
+              stopTime: stopTime,
+            }
           }
-        }
-      });
+        });
 
-      window.$(`#modal-create-recommenddistribute-calendar-${this.props.assetId}`).modal('show');
+        window.$(`#modal-create-recommenddistribute-calendar-${this.props.assetId}`).modal('show');
+      }
     }
-
   }
 
   handleEventClick = async (clickInfo) => {

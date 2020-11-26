@@ -153,6 +153,7 @@ class CreateDiscountsForGood extends Component {
     getDiscountOptions = (item) => {
         let { quantity, goodId } = this.props;
         let { discountsChecked } = this.props;
+        console.log("goodId", goodId);
         const { discounts, formality } = item;
         return (
             <div style={{ paddingLeft: "2rem" }}>

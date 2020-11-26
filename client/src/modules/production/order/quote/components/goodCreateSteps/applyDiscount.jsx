@@ -49,7 +49,7 @@ class ApplyDiscount extends Component {
             handleSlasOfGoodChange,
             setSlasOfGoodChecked,
         } = this.props;
-        const { handleDiscountsChange, handleServiceLevelAgreementChange, setDiscountsChecked } = this.props;
+        const { handleDiscountsChange, setDiscountsChecked } = this.props;
         return (
             <React.Fragment>
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: "10px 10px 20px 10px" }}>
@@ -107,16 +107,6 @@ class ApplyDiscount extends Component {
                             slasOfGoodChecked={slasOfGoodChecked}
                             setSlasOfGoodChecked={(checked) => setSlasOfGoodChecked(checked)}
                         />
-                        {/* <a>Chọn cam kết chất lượng</a> */}
-                        {/* <SelectBox
-                            id={`select-create-quote-sla-${good}`}
-                            className="form-control select2"
-                            style={{ width: "100%" }}
-                            value={slas}
-                            items={this.getServiceLevelAgreementOptionsForGood()}
-                            onChange={handleServiceLevelAgreementChange}
-                            multiple={true}
-                        /> */}
                     </div>
                 </div>
             </React.Fragment>
