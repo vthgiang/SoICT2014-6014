@@ -196,19 +196,25 @@ exports.createNotification = async (
         const listUsersPushNotification = listUsers.flatMap(
             (user) => user.pushNotificationTokens
         );
-        console.log("tokens ", listUsersPushNotification);
 
         const arr = CONNECTED_CLIENTS.filter(
             (client) => client.userId === usersArr[i]
         );
-        await FIREBASE_ADMIN.messaging().sendMulticast({
+        const pushNotificons = await FIREBASE_ADMIN.messaging().sendMulticast({
             tokens: listUsersPushNotification,
+            data: {
+                _id: notify._id.toString(),
+                level: notify.level.toString(),
+                title: notify.title.toString(),
+                content: notify.content.toString(),
+                sender: notify.sender.toString(),
+                createdAt: notify.createdAt.toString(),
+            },
             notification: {
                 title: data.title,
-                // body: data.content,
-                data,
             },
         });
+        console.log("pushNotificons", pushNotificons);
 
         if (arr.length === 1)
             SOCKET_IO.to(arr[0].socketId).emit("new notifications", notify);
