@@ -278,6 +278,17 @@ class IncidentManagement extends Component {
         }
     }
 
+    convertIncidentStatus = (status) => {
+        const { translate } = this.props;
+        if (status == 1) {
+            return translate('asset.general_information.waiting');
+        } else if (status == 2) {
+            return translate('asset.general_information.processed')
+        } else {
+            return 'Status is deleted'
+        }
+    }
+
     render() {
         const { translate, assetsManager, assetType, user, isActive, incidentManager } = this.props;
         const { page, limit, currentRow, currentRowEditAsset, managedBy } = this.state;
@@ -295,7 +306,6 @@ class IncidentManagement extends Component {
         if (lists && userlist) {
             exportData = this.convertDataToExportData(lists, userlist);
         }
-
         return (
             <div className={isActive ? isActive : "box"}>
                 <div className="box-body qlcv">
@@ -368,6 +378,7 @@ class IncidentManagement extends Component {
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.asset_name')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.incident_code')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.incident_type')}</th>
+                                <th style={{ width: "10%" }}>{translate('general.status')}</th>
                                 <th style={{ width: "8%" }}>{translate('asset.general_information.reported_by')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.date_incident')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.content')}</th>
@@ -379,6 +390,7 @@ class IncidentManagement extends Component {
                                             translate('asset.general_information.asset_name'),
                                             translate('asset.general_information.incident_code'),
                                             translate('asset.general_information.incident_type'),
+                                            translate('general.status'),
                                             translate('asset.general_information.reported_by'),
                                             translate('asset.general_information.date_incident'),
                                             translate('asset.general_information.content'),
@@ -399,6 +411,7 @@ class IncidentManagement extends Component {
                                             <td>{x.asset.assetName}</td>
                                             <td>{x.incidentCode}</td>
                                             <td>{this.convertIncidentType(x.type)}</td>
+                                            <td>{this.convertIncidentStatus(x.statusIncident)}</td>
                                             <td>{x.reportedBy && userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : 'User is deleted'}</td>
                                             <td>{x.dateOfIncident ? this.formatDate2(x.dateOfIncident) : ''}</td>
                                             <td>{x.description}</td>
