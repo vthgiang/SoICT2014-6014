@@ -340,8 +340,8 @@ class IncidentManagement extends Component {
                                 options={{ nonSelectedText: translate('asset.general_information.select_incident_type'), allSelectedText: translate('asset.general_information.select_all_incident_type') }}
                                 onChange={this.handleIncidentTypeChange}
                                 items={[
-                                    { value: "broken", text: translate('asset.general_information.damaged') },
-                                    { value: "lost", text: translate('asset.general_information.lost') },
+                                    { value: 1, text: translate('asset.general_information.damaged') },
+                                    { value: 2, text: translate('asset.general_information.lost') },
                                 ]}
                             >
                             </SelectMulti>
@@ -356,8 +356,8 @@ class IncidentManagement extends Component {
                                 options={{ nonSelectedText: translate('task.task_management.select_status'), allSelectedText: translate('task.task_management.select_all_status') }}
                                 onChange={this.handleIncidentStatusChange}
                                 items={[
-                                    { value: "wait_for_approving", text: translate('asset.general_information.waiting') },
-                                    { value: "approved", text: translate('asset.general_information.processed') },
+                                    { value: 1, text: translate('asset.general_information.waiting') },
+                                    { value: 2, text: translate('asset.general_information.processed') },
                                 ]}
                             >
                             </SelectMulti>
@@ -411,8 +411,7 @@ class IncidentManagement extends Component {
                                             <td>{x.asset.assetName}</td>
                                             <td>{x.incidentCode}</td>
                                             <td>{this.convertIncidentType(x.type)}</td>
-                                            <td>{this.convertIncidentStatus(x.statusIncident)}</td>
-                                            <td>{x.reportedBy && userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : 'User is deleted'}</td>
+                                            <td>{x.reportedBy && userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : ''}</td>
                                             <td>{x.dateOfIncident ? this.formatDate2(x.dateOfIncident) : ''}</td>
                                             <td>{x.description}</td>
                                             <td style={{ textAlign: "center" }}>

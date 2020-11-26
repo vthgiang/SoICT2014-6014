@@ -337,5 +337,5 @@ to {transform:scale(1)}
 .sort-action {
     display: flex;
     flex-direction: column;
-    margin-top: -15px;
+    margin-top: -8px;
 }

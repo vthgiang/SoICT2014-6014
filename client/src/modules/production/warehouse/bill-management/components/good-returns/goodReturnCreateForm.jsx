@@ -479,11 +479,15 @@ class GoodReturnCreateForm extends Component {
 
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.bills.billDetail) {
-            this.state.listGood = nextProps.bills.billDetail.goods;
+    isGoodsValidated = () => {
+        if(this.state.good.good && this.state.good.quantity && this.state.good.quantity !== 0) {
+            return true;
         }
+        return false;
+    }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        
         if (nextProps.bills.billDetail !== this.state.billDetail) {
             this.state.listGood = nextProps.bills.billDetail.goods;
             this.state.billDetail = nextProps.bills.billDetail;
@@ -534,7 +538,7 @@ class GoodReturnCreateForm extends Component {
                 <DialogModal
                     modalID={`modal-create-bill-return`}
                     formID={`form-create-bill-return`}
-                    title={translate(`manage_warehouse.bill_management.edit_title.${group}`)}
+                    title={translate(`manage_warehouse.bill_management.add_title.${group}`)}
                     msg_success={translate('manage_warehouse.bill_management.add_success')}
                     msg_faile={translate('manage_warehouse.bill_management.add_faile')}
                     disableSubmit={!this.isFormValidated()}
@@ -684,7 +688,7 @@ class GoodReturnCreateForm extends Component {
                                                     {this.state.editInfo &&
                                                         <React.Fragment>
                                                             <button className="btn btn-success" onClick={this.handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
-                                                            <button className="btn btn-success" onClick={this.handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
+                                                            <button className="btn btn-success" disabled={!this.isGoodsValidated()} onClick={this.handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
                                                         </React.Fragment>
                                                     }
                                                 </div>

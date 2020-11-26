@@ -15,7 +15,7 @@ export const formatDate = (date) => {
 
 export const formatFullDate = (date) => {
     let d = new Date(date);
-    let hour = d.getHours() + 7;
+    let hour = d.getHours();
     let minute = d.getMinutes();
     let second = d.getSeconds();
 

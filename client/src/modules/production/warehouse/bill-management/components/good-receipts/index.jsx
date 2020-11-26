@@ -11,6 +11,7 @@ class ReceiptManagement extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            currentRole: localStorage.getItem("currentRole"),
             limit: 5,
             page: 1,
             group: '1'
@@ -150,6 +151,7 @@ class ReceiptManagement extends Component {
                             group={currentRow.group}
                             type={currentRow.type}
                             status={currentRow.status}
+                            oldStatus={currentRow.status}
                             users={currentRow.users}
                             approver={currentRow.approver ? currentRow.approver._id : null}
                             supplier={currentRow.supplier ? currentRow.supplier._id : null}
@@ -212,7 +214,7 @@ class ReceiptManagement extends Component {
                                             <td>{x.supplier ? x.supplier.name : 'Supplier is deleted'}</td>
                                             <td>{x.description}</td>
                                             <td style={{textAlign: 'center'}}>
-                                                <a className="text-green" onClick={() => this.props.handleShowDetailInfo(x._id)}><i className="material-icons">visibility</i></a>
+                                                <a onClick={() => this.props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>
                                                 <a onClick={() => this.handleEdit(x)} className="text-yellow" ><i className="material-icons">edit</i></a>
                                                 <a className="text-black" onClick={() => this.props.handleShow()}><i className="material-icons">print</i></a>
                                             </td>

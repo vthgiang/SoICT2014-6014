@@ -8,7 +8,10 @@ export const GoodServices = {
     createGoodByType,
     editGood,
     getGoodDetail,
-    deleteGood
+    deleteGood,
+    getTaxByGoodsId,
+    getSlaByGoodsId,
+    getDiscountByGoodsId
 }
 
 function getGoodsByType(params) {
@@ -70,4 +73,43 @@ function deleteGood(id) {
         url: `${process.env.REACT_APP_SERVER}/goods/${id}`,
         method: 'DELETE',
     }, true, true, 'manage_warehouse.good_management');
+}
+
+function getTaxByGoodsId(goodId) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/tax/get-by-good-id`,
+            method: "GET",
+            params: { goodId }
+        },
+        false,
+        true,
+        "manage_order.tax"
+    )
+}
+
+
+function getSlaByGoodsId(goodId) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/sla/get-by-good-id`,
+            method: "GET",
+            params: { goodId }
+        },
+        false,
+        true,
+        "manage_order.sla"
+    )
+}
+
+function getDiscountByGoodsId(goodId) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/discount/get-by-good-id`,
+            method: "GET",
+            params: { goodId }
+        },
+        false,
+        true,
+        "manage_order.discount")
 }

@@ -12,6 +12,7 @@ exports.searchCommendations = async (req, res) => {
                 organizationalUnits: req.query.organizationalUnits,
                 type: req.query.type,
                 employeeNumber: req.query.employeeNumber,
+                employeeName: req.query.employeeName,
                 decisionNumber: req.query.decisionNumber,
                 page: Number(req.query.page),
                 limit: Number(req.query.limit),

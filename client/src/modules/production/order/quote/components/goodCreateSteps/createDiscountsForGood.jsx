@@ -1,30 +1,28 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { ButtonModal, DialogModal, formatDate } from "../../../../../common-components";
-import { formatCurrency } from "../../../../../helpers/formatCurrency";
-import { capitalize } from "../../../../../helpers/stringMethod";
+import { ButtonModal, DialogModal, formatDate } from "../../../../../../common-components";
+import { formatCurrency } from "../../../../../../helpers/formatCurrency";
+import { capitalize } from "../../../../../../helpers/stringMethod";
 
 class CreateDiscountsForGood extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            discountsChecked: {},
+            goodId: "",
         };
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.goodId !== prevState.goodId) {
-            nextProps.handleDiscountsChange([]); // xóa sạch discounts ở component cha
-            return {
-                discountsChecked: {},
-                goodId: nextProps.goodId,
-            };
-        }
-    }
+    // static getDerivedStateFromProps(nextProps, prevState) {
+    //     if (nextProps.goodId !== prevState.goodId) {
+    //         return {
+    //             goodId: nextProps.goodId,
+    //         };
+    //     }
+    // }
 
     getDiscountValue = (idCheckBox) => {
-        let { listDiscountsByGoodId } = this.props.discounts;
+        let { listDiscountsByGoodId } = this.props.goods.goodItems;
         let { goodId } = this.props;
 
         let hash = idCheckBox.split("-");
@@ -67,7 +65,7 @@ class CreateDiscountsForGood extends Component {
     };
 
     handleDiscountChange = (e) => {
-        let { discountsChecked } = this.state;
+        let { discountsChecked } = this.props;
         const { handleDiscountsChange } = this.props;
         let { discountsProps } = this.props;
         let { id, checked } = e.target;
@@ -78,16 +76,17 @@ class CreateDiscountsForGood extends Component {
             handleDiscountsChange(discountsProps);
         } else {
             let filterDiscountsProps = discountsProps.filter((element) => element._id !== id.split("-")[0]); //lọc phần tử có id ra khỏi state
+            for (let key in discountsChecked) {
+                //Lọc những discount cùng mức do bất đồng bộ chưa lọc được khi nhận discount props
+                if (discountsChecked[`${key}`] === false) {
+                    filterDiscountsProps = filterDiscountsProps.filter((element) => element._id !== key.split("-")[0]);
+                }
+            }
             handleDiscountsChange(filterDiscountsProps);
         }
 
         discountsChecked[`${id}`] = checked;
-        this.setState((state) => {
-            return {
-                ...state,
-                discountsChecked,
-            };
-        });
+        this.props.setDiscountsChecked(discountsChecked);
     };
 
     getThresholdToBeAppliedTitle = (discount) => {
@@ -153,7 +152,8 @@ class CreateDiscountsForGood extends Component {
 
     getDiscountOptions = (item) => {
         let { quantity, goodId } = this.props;
-        let { discountsChecked } = this.state;
+        let { discountsChecked } = this.props;
+        console.log("goodId", goodId);
         const { discounts, formality } = item;
         return (
             <div style={{ paddingLeft: "2rem" }}>
@@ -187,7 +187,7 @@ class CreateDiscountsForGood extends Component {
                         }
 
                         return (
-                            <div class="form-check" style={{ display: "flex" }}>
+                            <div class="form-check" style={{ display: "flex", paddingTop: "10px" }}>
                                 <input
                                     type="checkbox"
                                     className={`form-check-input`}
@@ -196,6 +196,7 @@ class CreateDiscountsForGood extends Component {
                                     checked={discountsChecked[`${item._id}-${index}`]}
                                     onChange={this.handleDiscountChange}
                                     style={{ minWidth: "20px" }}
+                                    key={index}
                                 />
                                 <label
                                     className={`form-check-label ${disabled ? "text-muted" : "text-success"}`}
@@ -213,15 +214,19 @@ class CreateDiscountsForGood extends Component {
     };
 
     render() {
-        let { listDiscountsByGoodId } = this.props.discounts;
+        let { listDiscountsByGoodId } = this.props.goods.goodItems;
         return (
             <React.Fragment>
-                <ButtonModal
-                    modalID={`modal-add-quote-discount-for-good`}
-                    button_name={"Chọn khuyến mãi"}
-                    title={"Chọn khuyến mãi"}
-                    className="form-control text-muted"
-                />
+                <a
+                    style={{
+                        cursor: "pointer",
+                    }}
+                    data-toggle="modal"
+                    data-backdrop="static"
+                    href={"#modal-add-quote-discount-for-good"}
+                >
+                    Chọn khuyến mãi
+                </a>
                 <DialogModal
                     modalID={`modal-add-quote-discount-for-good`}
                     isLoading={false}
@@ -233,7 +238,8 @@ class CreateDiscountsForGood extends Component {
                 >
                     {!listDiscountsByGoodId.length ? (
                         <div style={{ display: "flex", alignItems: "center" }}>
-                            <i className="fa fa-frown-o text-warning"></i> &ensp; <span>Chưa có khuyến mãi nào</span>
+                            <i className="fa fa-frown-o text-warning" style={{ fontSize: "20px" }}></i> &ensp;{" "}
+                            <span>Không có khuyến mãi nào cho sản phẩm này</span>
                         </div>
                     ) : (
                         listDiscountsByGoodId.map((item) => {
@@ -254,8 +260,8 @@ class CreateDiscountsForGood extends Component {
 }
 
 function mapStateToProps(state) {
-    const { discounts } = state;
-    return { discounts };
+    const { goods } = state;
+    return { goods };
 }
 
 const mapDispatchToProps = {};

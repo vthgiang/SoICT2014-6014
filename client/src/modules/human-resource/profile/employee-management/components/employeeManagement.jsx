@@ -29,6 +29,7 @@ class EmployeeManagement extends Component {
         this.state = {
             position: null,
             gender: null,
+            employeeName: null,
             employeeNumber: null,
             organizationalUnits: organizationalUnits,
             status: 'active',
@@ -833,6 +834,29 @@ class EmployeeManagement extends Component {
                             <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')} autoComplete="off" />
                         </div>
                     </div>
+                    <div className="form-inline">
+                        {/* Tên nhân viên  */}
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('human_resource.staff_name')}</label>
+                            <input type="text" className="form-control" name="employeeName" onChange={this.handleChange} placeholder={translate('human_resource.staff_name')} autoComplete="off" />
+                        </div>
+                        {/* Trạng thái */}
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('page.status')}</label>
+                            <SelectMulti id={`multiSelectStatus`} multiple="multiple"
+                                options={{ nonSelectedText: translate('human_resource.non_status'), allSelectedText: translate('human_resource.all_status') }}
+                                items={[
+                                    { value: 'active', text: translate('human_resource.profile.active') },
+                                    { value: 'leave', text: translate('human_resource.profile.leave') },
+                                    { value: 'maternity_leave', text: translate('human_resource.profile.maternity_leave') },
+                                    { value: 'unpaid_leave', text: translate('human_resource.profile.unpaid_leave') },
+                                    { value: 'probationary', text: translate('human_resource.profile.probationary') },
+                                    { value: 'sick_leave', text: translate('human_resource.profile.sick_leave') },
+                                ]}
+                                onChange={this.handleStatusChange}>
+                            </SelectMulti>
+                        </div>
+                    </div>
 
                     <div className="form-inline">
                         {/* Giới tính */}
@@ -855,7 +879,7 @@ class EmployeeManagement extends Component {
                         </div>
                     </div>
 
-                    <div className="form-inline">
+                    <div className="form-inline" style={{ marginBottom: 15 }}>
                         {/* Loại hợp đồng lao động */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.profile.type_contract')}</label>
@@ -871,20 +895,8 @@ class EmployeeManagement extends Component {
                                 onChange={this.handleEndDateOfContractChange}
                             />
                         </div>
-                    </div>
-
-                    <div className="form-inline" style={{ marginBottom: 15 }}>
-                        {/* Trạng thái */}
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('page.status')}</label>
-                            <SelectMulti id={`multiSelectStatus`} multiple="multiple"
-                                options={{ nonSelectedText: translate('human_resource.non_status'), allSelectedText: translate('human_resource.all_status') }}
-                                items={[{ value: "active", text: translate('human_resource.profile.active') }, { value: "leave", text: translate('human_resource.profile.leave') }]} onChange={this.handleStatusChange}>
-                            </SelectMulti>
-                        </div>
                         {/* Button tìm kiếm */}
                         <div className="form-group">
-                            <label></label>
                             <button type="button" className="btn btn-success" title={translate('general.search')} onClick={this.handleSunmitSearch} >{translate('general.search')}</button>
                         </div>
                     </div>
@@ -953,7 +965,7 @@ class EmployeeManagement extends Component {
                                         <td>{this.formatDate(x.birthdate)}</td>
                                         <td>{this.formatDate(x.contractEndDate)}</td>
                                         <td>{x.contractType}</td>
-                                        <td style={{ color: x.status === "active" ? "#00a65a" : '#dd4b39' }}>{translate(`human_resource.profile.${x.status}`)}</td>
+                                        <td style={{ color: x.status === "active" ? "#00a65a" : (x.status === "active" ? '#dd4b39' : null) }}>{translate(`human_resource.profile.${x.status}`)}</td>
                                         <td>
                                             <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('human_resource.profile.employee_management.view_employee')}><i className="material-icons">view_list</i></a>
                                             <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.employee_management.edit_employee')}><i className="material-icons">edit</i></a>
@@ -996,7 +1008,7 @@ class EmployeeManagement extends Component {
                         _id={currentRow ? currentRow._id : ""}
                     />
                 }
-            </div>
+            </div >
         );
     };
 }

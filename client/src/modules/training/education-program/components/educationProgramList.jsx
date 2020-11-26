@@ -13,6 +13,8 @@ class ListEducation extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            name: null,
+            programId: null,
             position: null,
             organizationalUnit: null,
             page: 0,
@@ -49,6 +51,13 @@ class ListEducation extends Component {
         window.$(`#modal-view-education${value._id}`).modal('show');
     }
 
+    /** Function lưu giá trị mã chương trình và tên chương trình đào tạo vào state khi thay đổi */
+    handleChange = (event) => {
+        const { name, value } = event.target;
+        this.setState({
+            [name]: value
+        });
+    }
 
     /**
      * Function lưu giá trị đơn vị vào state khi thay đổi
@@ -152,8 +161,6 @@ class ListEducation extends Component {
                                 items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
                         </div>
-                    </div>
-                    <div className="form-inline" style={{ marginBottom: 10 }}>
                         {/* Chức vụ */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.position')}</label>
@@ -162,8 +169,27 @@ class ListEducation extends Component {
                                 items={organizationalUnit === null ? listPosition : listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
                             </SelectMulti>
                         </div>
+                    </div>
+
+                    <div className="form-inline">
+                        {/* Mã chương trình đào tạo */}
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('training.education_program.table.program_code')}</label>
+                            <input type="text" className="form-control" name="programId" onChange={this.handleChange} placeholder={translate('training.education_program.table.program_code')} autoComplete="off" />
+                        </div>
+                        {/* Tên chương trình đào tạo  */}
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('training.education_program.table.program_name')}</label>
+                            <input type="text" className="form-control" name="name" onChange={this.handleChange} placeholder={translate('training.education_program.table.program_name')} autoComplete="off" />
+                        </div>
+                    </div>
+
+                    <div className="form-inline" style={{ marginBottom: 10 }}>
                         {/* button tìm kiếm */}
-                        <button type="button" className="btn btn-success" onClick={this.handleSunmitSearch} >{translate('general.search')}</button>
+                        <div className="form-group">
+                            <label></label>
+                            <button type="button" className="btn btn-success" onClick={this.handleSunmitSearch} >{translate('general.search')}</button>
+                        </div>
                     </div>
 
                     <table id="education-table" className="table table-striped table-bordered table-hover">

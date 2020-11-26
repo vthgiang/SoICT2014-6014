@@ -2,17 +2,29 @@ const { Stock } = require(`${SERVER_MODELS_DIR}`);
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 exports.getAllStocks = async (company, query, portal) => {
-    var { page, limit } = query;
+    var { page, limit, managementLocation } = query;
+    
     if(!company) throw['company_invalid'];
-    if(!page && !limit){
-        return await Stock(connect(DB_CONNECTION, portal))
+    if(!page || !limit){
+        if(managementLocation) {
+            return await Stock(connect(DB_CONNECTION, portal))
+            .find({ company, managementLocation: { $in: managementLocation } })
+            .populate([
+                { path: 'goods.good', select: 'id name'}
+            ])
+        } else {
+            return await Stock(connect(DB_CONNECTION, portal))
             .find({ company })
             .populate([
                 { path: 'goods.good', select: 'id name'}
             ])
+        }
     }
     else{
-        let option = { company: company }
+        if (!managementLocation) {
+            throw Error("Role is not defined")
+        }
+        let option = { company: company, managementLocation: managementLocation }
 
         if(query.code){
             option.code = new RegExp(query.code, "i")

@@ -444,8 +444,20 @@ class StockRotateEditForm extends Component {
         return statusArr;
     }
 
+    isGoodsValidated = () => {
+        if(this.state.good.good && this.state.good.quantity && this.state.good.quantity !== 0) {
+            return true;
+        }
+        return false;
+    }
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.billId !== prevState.billId) {
+            prevState.good.quantity = 0;
+            prevState.good.good = '';
+            prevState.good.description = '';
+            prevState.good.returnQuantity = 0;
+            prevState.good.lots = [];
             return {
                 ...prevState,
                 billId: nextProps.billId,
@@ -465,6 +477,8 @@ class StockRotateEditForm extends Component {
                 email: nextProps.email,
                 address: nextProps.address,
                 listGood: nextProps.listGood,
+                oldGoods: nextProps.listGood,
+                editInfo: false,
                 errorStock: undefined,
                 errorType: undefined,
                 errorApprover: undefined,
@@ -480,7 +494,7 @@ class StockRotateEditForm extends Component {
     save = async () => {
 
         const { billId, fromStock, code, toStock, type, status, oldStatus, users, approver,
-            name, phone, email, address, description, listGood } = this.state;
+            name, phone, email, address, description, listGood, oldGoods } = this.state;
         const { group } = this.props;
         await this.props.editBill(billId, {
             fromStock: fromStock,
@@ -497,7 +511,8 @@ class StockRotateEditForm extends Component {
             email: email,
             address: address,
             description: description,
-            goods: listGood
+            goods: listGood,
+            oldGoods: oldGoods
         })
     }
 
@@ -673,9 +688,9 @@ class StockRotateEditForm extends Component {
                                     {this.state.editInfo ?
                                         <React.Fragment>
                                             <button className="btn btn-success" onClick={this.handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
-                                            <button className="btn btn-success" onClick={this.handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
+                                            <button className="btn btn-success" disabled={!this.isGoodsValidated()} onClick={this.handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
                                         </React.Fragment> :
-                                        <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={this.handleAddGood}>{translate('task_template.add')}</button>
+                                        <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isGoodsValidated()} onClick={this.handleAddGood}>{translate('task_template.add')}</button>
                                     }
                                     <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearGood}>{translate('task_template.delete')}</button>
                                 </div>

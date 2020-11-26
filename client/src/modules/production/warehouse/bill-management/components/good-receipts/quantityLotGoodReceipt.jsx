@@ -158,7 +158,7 @@ class QuantityLotGoodReceipt extends Component {
             }
         })
         this.state.lot.name = generateCode("LOT");
-        this.props.onDataChange(this.state.lots);
+        // this.props.onDataChange(this.state.lots);
     }
 
     handleClearLot = (e) => {
@@ -190,7 +190,7 @@ class QuantityLotGoodReceipt extends Component {
                 editInfo: false,
             }
         })
-        this.props.onDataChange(this.state.lots);
+        // this.props.onDataChange(this.state.lots);
     }
 
     handleCancelEditLot = (e) => {
@@ -230,7 +230,7 @@ class QuantityLotGoodReceipt extends Component {
             }
         })
 
-        this.props.onDataChange(this.state.lots);
+        // this.props.onDataChange(this.state.lots);
     }
 
     save = async() => {
@@ -245,13 +245,13 @@ class QuantityLotGoodReceipt extends Component {
             data.good = good.good._id;
             data.type = good.good.type;
         }
-        if(arrayId && arrayId.length > 0) {
-            await this.props.deleteLot(arrayId);
-        }
+        // if(arrayId && arrayId.length > 0) {
+        //     await this.props.deleteLot(arrayId);
+        // }
 
         await this.props.createOrUpdateLots(data);
 
-        await this.props.onDataChange(this.state.lots);
+        await this.props.onDataChange(this.state.lots, data, arrayId);
     }
 
     formatDate(date, monthYear = false) {
@@ -296,8 +296,9 @@ class QuantityLotGoodReceipt extends Component {
     }
 
     render() {
-        const { translate, group, good } = this.props;
+        const { translate, group, good, quantity } = this.props;
         const { lot, errorQuantity, lots, errorExpirationDate } = this.state;
+        console.log(quantity);
 
         return (
             <React.Fragment>

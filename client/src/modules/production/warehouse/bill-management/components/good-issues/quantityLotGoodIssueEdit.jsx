@@ -140,7 +140,7 @@ class QuantityLotGoodIssueEdit extends Component {
                 lot: Object.assign({}, this.EMPTY_LOT),
             }
         })
-        this.props.onDataChange(this.state.lots);
+        // this.props.onDataChange(this.state.lots);
     }
 
     handleClearLot = (e) => {
@@ -170,7 +170,7 @@ class QuantityLotGoodIssueEdit extends Component {
                 lot: Object.assign({}, this.EMPTY_LOT),
             }
         })
-        this.props.onDataChange(this.state.lots);
+        // this.props.onDataChange(this.state.lots);
     }
 
     handleCancelEditLot = (e) => {
@@ -208,7 +208,7 @@ class QuantityLotGoodIssueEdit extends Component {
             }
         })
 
-        this.props.onDataChange(this.state.lots);
+        // this.props.onDataChange(this.state.lots);
     }
 
     save = () => {

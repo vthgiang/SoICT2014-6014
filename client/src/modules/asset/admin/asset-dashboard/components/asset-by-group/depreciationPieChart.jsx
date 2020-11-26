@@ -121,7 +121,7 @@ class DepreciationPieChart extends Component {
 
         dataPieChart = [
             [translate('asset.dashboard.building'), depreciationExpenseOfBuilding > 0 ? depreciationExpenseOfBuilding : 0],
-            [translate('asset.dashboard.vehicle'), depreciationExpenseOfVehicle],
+            [translate('asset.asset_info.vehicle'), depreciationExpenseOfVehicle],
             [translate('asset.dashboard.machine'), depreciationExpenseOfMachine],
             [translate('asset.dashboard.other'), depreciationExpenseOfOther],
         ];

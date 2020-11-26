@@ -16,8 +16,8 @@ class TabSalary extends Component {
                 monthShow: nextProps.monthShow,
                 organizationalUnits: nextProps.organizationalUnits
             };
-            return null
         };
+        return null
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -29,7 +29,6 @@ class TabSalary extends Component {
 
     render() {
         const { organizationalUnits, monthShow, childOrganizationalUnit } = this.props;
-        console.log("render");
         return (
             <React.Fragment>
                 {/* Lương thưởng các đơn vị */}

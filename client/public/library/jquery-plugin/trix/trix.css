@@ -36,7 +36,7 @@ trix-toolbar .trix-button-group-spacer {
       display: none; } }
 trix-toolbar .trix-button {
   position: relative;
-  float: left;
+  float: center;
   color: rgba(0, 0, 0, 0.6);
   font-size: 0.75em;
   font-weight: 600;

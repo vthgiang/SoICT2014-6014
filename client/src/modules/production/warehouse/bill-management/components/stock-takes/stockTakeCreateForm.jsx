@@ -279,7 +279,7 @@ class StockTakeCreateForm extends Component {
 
     handleAddGood = async (e) => {
         e.preventDefault();
-        this.state.good.realQuantity = this.state.good.quantity;
+        this.state.good.realQuantity = this.state.good.realQuantity;
         await this.setState(state => {
             let listGood = [...(this.state.listGood), state.good];
             return {
@@ -371,6 +371,13 @@ class StockTakeCreateForm extends Component {
                 ...state,
             }
         })
+    }
+
+    isGoodsValidated = () => {
+        if(this.state.good.good && this.state.good.quantity && this.state.good.quantity !== 0) {
+            return true;
+        }
+        return false;
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -580,9 +587,9 @@ class StockTakeCreateForm extends Component {
                                     {this.state.editInfo ?
                                         <React.Fragment>
                                             <button className="btn btn-success" onClick={this.handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
-                                            <button className="btn btn-success" onClick={this.handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
+                                            <button className="btn btn-success" disabled={!this.isGoodsValidated()} onClick={this.handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
                                         </React.Fragment> :
-                                        <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={this.handleAddGood}>{translate('task_template.add')}</button>
+                                        <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isGoodsValidated()} onClick={this.handleAddGood}>{translate('task_template.add')}</button>
                                     }
                                     <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearGood}>{translate('task_template.delete')}</button>
                                 </div>

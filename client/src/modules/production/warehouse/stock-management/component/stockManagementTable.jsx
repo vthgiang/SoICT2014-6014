@@ -14,6 +14,7 @@ class StockManagementTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            currentRole: localStorage.getItem("currentRole"),
             page: 1,
             limit: 5,
             code: '',
@@ -23,12 +24,12 @@ class StockManagementTable extends Component {
     }
 
     componentDidMount(){
-        let { page, limit } = this.state;
+        let { page, limit, currentRole } = this.state;
         this.props.getAllDepartments();
         this.props.getAllRoles();
         this.props.getAllGoods();
-        this.props.getAllStocks();
-        this.props.getAllStocks({ page, limit });
+        this.props.getAllStocks({ managementLocation: currentRole });
+        this.props.getAllStocks({ page, limit, managementLocation: currentRole });
     }
     
     setPage = (page) => {
@@ -36,6 +37,7 @@ class StockManagementTable extends Component {
         const data = {
             limit: this.state.limit,
             page: page,
+            managementLocation: this.state.currentRole
         };
         this.props.getAllStocks(data);
     }
@@ -45,6 +47,7 @@ class StockManagementTable extends Component {
         const data = {
             limit: number,
             page: this.state.page,
+            managementLocation: this.state.currentRole
         };
         this.props.getAllStocks(data);
     }
@@ -99,6 +102,7 @@ class StockManagementTable extends Component {
         let data = {
             page: this.state.page,
             limit: this.state.limit,
+            managementLocation: this.state.currentRole,
             code: this.state.code,
             name: this.state.name,
             status: this.state.status

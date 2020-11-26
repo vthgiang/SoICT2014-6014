@@ -394,8 +394,20 @@ class StockTakeEditForm extends Component {
         })
     }
 
+    isGoodsValidated = () => {
+        if(this.state.good.good && this.state.good.quantity && this.state.good.quantity !== 0) {
+            return true;
+        }
+        return false;
+    }
+
     static getDerivedStateFromProps(nextProps, prevState){
         if(nextProps.billId !== prevState.billId){
+            prevState.good.quantity = 0;
+            prevState.good.good = '';
+            prevState.good.description = '';
+            prevState.good.realQuantity = 0;
+            prevState.good.lots = [];
             return {
                 ...prevState,
                 billId: nextProps.billId,
@@ -409,6 +421,8 @@ class StockTakeEditForm extends Component {
                 approver: nextProps.approver,
                 description: nextProps.description,
                 listGood: nextProps.listGood,
+                oldGoods: nextProps.listGood,
+                editInfo: false,
                 errorStock: undefined, 
                 errorType: undefined, 
                 errorApprover: undefined, 
@@ -423,7 +437,7 @@ class StockTakeEditForm extends Component {
     }
 
     save = async () => {
-        const { billId, fromStock, code, type, status, oldStatus, approver, users, description, listGood } = this.state;
+        const { billId, fromStock, code, type, status, oldStatus, approver, users, description, listGood, oldGoods } = this.state;
         const { group } = this.props;
         await this.props.editBill(billId, {
             fromStock: fromStock,
@@ -435,7 +449,8 @@ class StockTakeEditForm extends Component {
             users: users,
             approver: approver,
             description: description,
-            goods: listGood
+            goods: listGood,
+            oldGoods: oldGoods
         })
     }
 
@@ -569,7 +584,7 @@ class StockTakeEditForm extends Component {
                                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                         <div className="form-group">
                                             <label>{translate('manage_warehouse.bill_management.real_quantity')}</label>
-                                            <div style={{display: "flex"}}><input className="form-control" value={good.realQuantity} onChange={this.handleQuantityChange} type="number" /><i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: '5px', marginTop: '9px', cursor:'pointer' }} onClick={() => this.addQuantity()}></i></div>
+                                            <div style={{display: "flex"}}><input className="form-control" value={good.realQuantity} onChange={this.handleQuantityChange} type="number" />{status === '2' && good.good && <i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: '5px', marginTop: '9px', cursor:'pointer' }} onClick={() => this.addQuantity()}></i>}</div>
                                         </div>
                                     </div>
                                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -582,9 +597,9 @@ class StockTakeEditForm extends Component {
                                         {this.state.editInfo ?
                                             <React.Fragment>
                                                 <button className="btn btn-success" onClick={this.handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
-                                                <button className="btn btn-success" onClick={this.handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
+                                                <button className="btn btn-success" disabled={!this.isGoodsValidated()} onClick={this.handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
                                             </React.Fragment>:
-                                            <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={this.handleAddGood}>{translate('task_template.add')}</button>
+                                            <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isGoodsValidated()} onClick={this.handleAddGood}>{translate('task_template.add')}</button>
                                         }
                                         <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearGood}>{translate('task_template.delete')}</button>
                                     </div>
