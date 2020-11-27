@@ -185,13 +185,12 @@ class TaskAddModal extends Component {
         await this.setState(state => {
             return {
                 ...state,
-                newTask: { // update lại name,description và reset các selection phía sau
+                newTask: {
                     ...this.state.newTask,
-                    collaboratedWithOrganizationalUnits: value.map(item => { return { "organizationalUnit": item } })
+                    collaboratedWithOrganizationalUnits: value.map(item => { return { organizationalUnit: item, isAssigned: false } })
                 }
             };
         });
-        console.log('new Task', this.state.newTask);
     }
 
     handleChangeTaskTemplate = async (event) => {
@@ -228,14 +227,14 @@ class TaskAddModal extends Component {
                     ...state,
                     newTask: { // update lại name,description và reset các selection phía sau
                         ...this.state.newTask,
-                        collaboratedWithOrganizationalUnits: taskTemplate.collaboratedWithOrganizationalUnits.map(item => { return { "organizationalUnit": item._id } }),
+                        collaboratedWithOrganizationalUnits: taskTemplate.collaboratedWithOrganizationalUnits.map(item => { return { organizationalUnit: item._id, isAssigned: false } }),
                         name: taskTemplate.name,
                         description: taskTemplate.description,
                         priority: taskTemplate.priority,
-                        responsibleEmployees: taskTemplate.responsibleEmployees.map( item => item.id),
-                        accountableEmployees: taskTemplate.accountableEmployees.map( item => item.id),
-                        consultedEmployees: taskTemplate.consultedEmployees.map( item => item.id),
-                        informedEmployees: taskTemplate.informedEmployees.map( item => item.id),
+                        responsibleEmployees: taskTemplate.responsibleEmployees.map(item => item.id),
+                        accountableEmployees: taskTemplate.accountableEmployees.map(item => item.id),
+                        consultedEmployees: taskTemplate.consultedEmployees.map(item => item.id),
+                        informedEmployees: taskTemplate.informedEmployees.map(item => item.id),
                         taskTemplate: taskTemplate._id,
                     }
                 };
@@ -341,7 +340,6 @@ class TaskAddModal extends Component {
 
         if (nextProps.parentTask !== this.props.parentTask) { // Khi đổi nhấn add new task sang nhấn add subtask hoặc ngược lại
             this.setState(state => {
-                
                 return {
                     ...state,
                     newTask: {
@@ -350,7 +348,6 @@ class TaskAddModal extends Component {
                     }
                 };
             });
-            console.log('ddddd', newTask.parent);
             return false;
         }
 
@@ -387,7 +384,7 @@ class TaskAddModal extends Component {
 
 
     render() {
-        const { newTask, collaboratedWithOrganizationalUnits } = this.state;
+        const { newTask } = this.state;
         const { tasktemplates, user, KPIPersonalManager, translate, tasks, department } = this.props;
 
         let units, userdepartments, listTaskTemplate, listKPIPersonal, usercompanys;
@@ -425,18 +422,15 @@ class TaskAddModal extends Component {
 
         let listParentTask = [{ value: "", text: `--${translate('task.task_management.add_parent_task')}--` }];
 
-        if(this.props.parentTask && this.props.parentTask !== "" && this.props.currentTasks) {
-            let taskItem = this.props.currentTasks.find(e => e._id === this.props.parentTask );
-            listParentTask.push({value: taskItem._id, text: taskItem.name })
-        } 
+        if (this.props.parentTask && this.props.parentTask !== "" && this.props.currentTasks) {
+            let taskItem = this.props.currentTasks.find(e => e._id === this.props.parentTask);
+            listParentTask.push({ value: taskItem._id, text: taskItem.name })
+        }
 
         if (tasks.listSearchTasks) {
             let arr = tasks.listSearchTasks.map(x => { return { value: x._id, text: x.name } });
             listParentTask = [...listParentTask, ...arr];
         }
-
-        console.log('abccccc', this.props, newTask.parent);
-        console.log(newTask);
 
         return (
             <React.Fragment>
@@ -479,7 +473,7 @@ class TaskAddModal extends Component {
                             }
 
                             {/* Đơn vị phối hợp thực hiện công việc */}
-                            {listDepartment && 
+                            {listDepartment &&
                                 <div className="form-group">
                                     <label>{translate('task.task_management.collaborated_with_organizational_units')}</label>
                                     <SelectBox
@@ -496,7 +490,7 @@ class TaskAddModal extends Component {
                                     />
                                 </div>
                             }
-                            
+
 
 
                             <div className={`form-group ${newTask.errorOnName === undefined ? "" : "has-error"}`}>
