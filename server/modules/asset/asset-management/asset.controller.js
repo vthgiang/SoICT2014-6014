@@ -87,13 +87,13 @@ exports.createAsset = async (req, res) => {
             content: data
         });
     } catch (error) {
-        let messages = error[0] === 'asset_code_exist' ? ["asset_code_exist"] : ["create_asset_faile"];
-
+        let messages = error && error.messages === 'asset_code_exist' ? ['asset_code_exist'] : ['create_asset_faile'];
+        
         await Logger.error(req.user.email, 'CREATE_ASSET', req.portal);
         res.status(400).json({
             success: false,
             messages: messages,
-            content: { error: error }
+            content: error && error.assetCodeError
         });
     }
 }

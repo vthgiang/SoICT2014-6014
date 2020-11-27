@@ -87,7 +87,8 @@ function addNewAsset(asset) {
             .catch(err => {
                 dispatch({
                     type: AssetConstants.ADDASSET_FAILURE,
-                    error: err
+                    error: err,
+                    payload: err.response.data.content
                 });
             })
     };
