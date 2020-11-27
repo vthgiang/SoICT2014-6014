@@ -58,10 +58,10 @@ class ActionTab extends Component {
                 files: []
             },
             newCommentOfAction: {
-                creator: idUser,
-                description: "",
-                files: [],
-                taskActionId: null
+                // creator: idUser,
+                // description: "",
+                // files: [],
+                // taskActionId: null
             },
             newCommentOfActionEdited: {
                 creator: idUser,
@@ -79,16 +79,12 @@ class ActionTab extends Component {
                 files: []
             },
             newCommentOfTaskComment: {
-                creator: idUser,
-                description: "",
-                files: []
             },
             newCommentOfTaskCommentEdited: {
                 creator: idUser,
                 description: "",
                 files: []
             },
-
             showEdit: false,
             timer: {
                 startTimer: "",
@@ -258,22 +254,21 @@ class ActionTab extends Component {
     submitComment = async (actionId, taskId) => {
         let { newCommentOfAction } = this.state;
         const data = new FormData();
-        data.append("creator", newCommentOfAction.creator);
-        data.append("description", newCommentOfAction.description);
-        newCommentOfAction && newCommentOfAction.files.forEach(x => {
+        data.append("creator", newCommentOfAction[`${actionId}`].creator);
+        data.append("description", newCommentOfAction[`${actionId}`].description);
+        newCommentOfAction && newCommentOfAction[`${actionId}`] && newCommentOfAction[`${actionId}`] && newCommentOfAction[`${actionId}`].files.forEach(x => {
             data.append("files", x);
         })
-        if (newCommentOfAction.description && newCommentOfAction.creator) {
+        if (newCommentOfAction[`${actionId}`].description && newCommentOfAction[`${actionId}`].creator) {
             this.props.createActionComment(taskId, actionId, data);
         }
-        await this.setState(state => {
+        this.setState(state => {
+            state.newCommentOfAction[`${actionId}`] = {
+                description: "",
+                files: [],
+            }
             return {
                 ...state,
-                newCommentOfAction: {
-                    ...state.newCommentOfAction,
-                    description: "",
-                    files: [],
-                },
             }
         })
     }
@@ -334,23 +329,22 @@ class ActionTab extends Component {
         let { newCommentOfTaskComment } = this.state;
         const data = new FormData();
 
-        data.append("creator", newCommentOfTaskComment.creator);
-        data.append("description", newCommentOfTaskComment.description);
-        newCommentOfTaskComment.files.forEach(x => {
+        data.append("creator", newCommentOfTaskComment[`${commentId}`].creator);
+        data.append("description", newCommentOfTaskComment[`${commentId}`].description);
+        newCommentOfTaskComment && newCommentOfTaskComment[`${commentId}`] && newCommentOfTaskComment[`${commentId}`].files && newCommentOfTaskComment[`${commentId}`].files.forEach(x => {
             data.append("files", x);
         })
-        if (newCommentOfTaskComment.description && newCommentOfTaskComment.creator) {
+        if (newCommentOfTaskComment[`${commentId}`].description && newCommentOfTaskComment[`${commentId}`].creator) {
             this.props.createCommentOfTaskComment(commentId, taskId, data);
         }
         // Reset state cho việc thêm mới bình luận
-        await this.setState(state => {
+        this.setState(state => {
+            state.newCommentOfTaskComment[`${commentId}`] = {
+                description: "",
+                files: [],
+            }
             return {
                 ...state,
-                newCommentOfTaskComment: {
-                    ...state.newCommentOfTaskComment,
-                    description: "",
-                    files: [],
-                },
             }
         })
     }
@@ -650,26 +644,24 @@ class ActionTab extends Component {
             }
         })
     }
-    onCommentFilesChange = (files) => {
+    onCommentFilesChange = (files, actionId) => {
         this.setState(state => {
+            state.newCommentOfAction[`${actionId}`] = {
+                ...state.newCommentOfAction[`${actionId}`],
+                files: files,
+            }
             return {
-                ...state,
-                newCommentOfAction: {
-                    ...state.newCommentOfAction,
-                    files: files,
-                }
+                ...state
             }
         })
     }
-    onCommentOfTaskCommentFilesChange = (files) => {
+    onCommentOfTaskCommentFilesChange = (commentId, files) => {
         this.setState(state => {
-            return {
-                ...state,
-                newCommentOfTaskComment: {
-                    ...state.newCommentOfTaskComment,
-                    files: files,
-                }
+            state.newCommentOfTaskComment[`${commentId}`] = {
+                ...state.newCommentOfTaskComment[`${commentId}`],
+                files: files
             }
+            return { ...state, }
         })
     }
 
@@ -848,6 +840,7 @@ class ActionTab extends Component {
     }
     render() {
         let task, informations, statusTask, documents, actionComments, taskComments, logTimer, logs;
+        let idUser = getStorage("userId");
         const { tasks, performtasks, user, auth, translate, role } = this.props;
         const subtasks = tasks.subtasks;
         const {
@@ -918,36 +911,27 @@ class ActionTab extends Component {
                                                             );
                                                         })
                                                         }
-                                                       
-                                                            <div className="btn-group pull-right">
+
+                                                        <div className="btn-group pull-right">
                                                             {(role === 'responsible' && item.creator && showSort === false) &&
                                                                 <React.Fragment>
-                                                                <span data-toggle="dropdown">
-                                                                    <i className="fa fa-ellipsis-h"></i>
-                                                                </span>
-                                                                <ul className="dropdown-menu">
-                                                                    <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditAction(item._id)} >{translate("task.task_perform.edit_action")}</a></li>
-                                                                    <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteTaskAction(item._id, task._id)} >{translate("task.task_perform.delete_action")}</a></li>
-                                                                </ul>
+                                                                    <span data-toggle="dropdown">
+                                                                        <i className="fa fa-ellipsis-h"></i>
+                                                                    </span>
+                                                                    <ul className="dropdown-menu">
+                                                                        <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditAction(item._id)} >{translate("task.task_perform.edit_action")}</a></li>
+                                                                        <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteTaskAction(item._id, task._id)} >{translate("task.task_perform.delete_action")}</a></li>
+                                                                    </ul>
                                                                 </React.Fragment>
                                                             }
-                                                            { showSort === true && (role === 'responsible' || role === 'accountable') &&
+                                                            {showSort === true && (role === 'responsible' || role === 'accountable') &&
                                                                 <div className="sort-action">
-                                                                {index !== 0 && <a style={{ marginTop: index === taskActions.length - 1 ? "10px" : "0px" }} onClick={() => this.sort(index, "up")}><i className="fa fa-caret-up fa-2x"></i> </a>}
-                                                                {index !== taskActions.length - 1 && <a style={{ marginTop: index === 0 ? "13px" : "-10px" }} onClick={() => this.sort(index, "down")}><i className="fa fa-caret-down fa-2x"></i> </a>}
+                                                                    {index !== 0 && <a style={{ marginTop: index === taskActions.length - 1 ? "10px" : "0px" }} onClick={() => this.sort(index, "up")}><i className="fa fa-arrow-up"></i> </a>}
+                                                                    {index !== taskActions.length - 1 && <a style={{ marginTop: index === 0 ? "13px" : "0px" }} onClick={() => this.sort(index, "down")}><i className="fa fa-arrow-down "></i> </a>}
                                                                 </div>
                                                             }
-                                                                {/* {showSort === true ?
-                                                                    <div className="sort-action">
-                                                                        {index !== 0 && <a style={{ marginTop: index === taskActions.length - 1 ? "10px" : "0px" }} onClick={() => this.sort(index, "up")}><i className="fa fa-caret-up fa-2x"></i> </a>}
-                                                                        {index !== taskActions.length - 1 && <a style={{ marginTop: index === 0 ? "13px" : "-10px" }} onClick={() => this.sort(index, "down")}><i className="fa fa-caret-down fa-2x"></i> </a>}
-                                                                    </div>
-                                                                    :
-                                                                    <React.Fragment>
-                                                                        
-                                                                    </React.Fragment>
-                                                                } */}
-                                                            </div>
+
+                                                        </div>
                                                     </div>
 
                                                     {/* Các file đính kèm */}
@@ -1099,7 +1083,7 @@ class ActionTab extends Component {
                                             }
 
                                             {/* Hiển thị bình luận cho hoạt động */}
-                                            {showChildComment.some(obj => obj === item._id) &&
+                                            {!showSort && showChildComment.some(obj => obj === item._id) &&
                                                 <div>
                                                     {item.comments.map(child => {
                                                         return <div key={child._id}>
@@ -1202,16 +1186,23 @@ class ActionTab extends Component {
                                                         />
                                                         <ContentMaker
                                                             inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
-                                                            onFilesChange={this.onCommentFilesChange}
+                                                            onFilesChange={(files) => this.onCommentFilesChange(files, item._id)}
                                                             onFilesError={this.onFilesError}
-                                                            files={newCommentOfAction.files}
-                                                            text={newCommentOfAction.description}
+                                                            files={newCommentOfAction[`${item._id}`]?.files}
+                                                            text={newCommentOfAction[`${item._id}`]?.description}
                                                             placeholder={translate("task.task_perform.enter_comment_action")}
                                                             submitButtonText={translate("task.task_perform.create_comment_action")}
                                                             onTextChange={(e) => {
                                                                 let value = e.target.value;
                                                                 this.setState(state => {
-                                                                    return { ...state, newCommentOfAction: { ...state.newCommentOfAction, description: `${value}` } }
+                                                                    state.newCommentOfAction[`${item._id}`] = {
+                                                                        ...state.newCommentOfAction[`${item._id}`],
+                                                                        creator: idUser,
+                                                                        description: value,
+                                                                    }
+                                                                    return {
+                                                                        ...state,
+                                                                    }
                                                                 })
                                                             }}
                                                             onSubmit={(e) => { this.submitComment(item._id, task._id) }}
@@ -1224,9 +1215,9 @@ class ActionTab extends Component {
                             }
                             {/* Thêm hoạt động cho công việc*/}
                             {showSort ?
-                                <div className="pull-right" style={{ marginRight: "10px" }}>
-                                    <a className="link-black text-sm" style={{ cursor: "pointer", marginRight: "5px" }} onClick={() => this.saveSort(task._id)}>Lưu</a>
-                                    <a className="link-black text-sm" style={{ cursor: "pointer" }} onClick={() => this.cancelSort()}>Hủy</a>
+                                <div className="" style={{ display: "flex", justifyContent: "center" }}>
+                                    <button className="link-black text-sm btn btn-primary" style={{ cursor: "pointer", marginRight: "5px", color: "white", width: "48%", height: "40px", fontSize: "16px" }} onClick={() => this.saveSort(task._id)}>Lưu</button>
+                                    <button className="link-black text-sm btn btn-warning" style={{ cursor: "pointer", width: "48%", color: "white", fontSize: "16px" }} onClick={() => this.cancelSort()}>Hủy</button>
                                 </div>
                                 :
                                 <React.Fragment>
@@ -1452,16 +1443,21 @@ class ActionTab extends Component {
                                                         <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
                                                         <ContentMaker
                                                             inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
-                                                            onFilesChange={this.onCommentOfTaskCommentFilesChange}
+                                                            onFilesChange={(files) => this.onCommentOfTaskCommentFilesChange(item._id, files)}
                                                             onFilesError={this.onFilesError}
-                                                            files={newCommentOfTaskComment.files}
-                                                            text={newCommentOfTaskComment.description}
+                                                            files={newCommentOfTaskComment[`${item._id}`]?.files}
+                                                            text={newCommentOfTaskComment[`${item._id}`]?.description}
                                                             placeholder={translate("task.task_perform.enter_comment")}
                                                             submitButtonText={translate("task.task_perform.create_comment")}
                                                             onTextChange={(e) => {
                                                                 let value = e.target.value;
                                                                 this.setState(state => {
-                                                                    return { ...state, newCommentOfTaskComment: { ...state.newCommentOfTaskComment, description: value } }
+                                                                    state.newCommentOfTaskComment[`${item._id}`] = {
+                                                                        ...state.newCommentOfTaskComment[`${item._id}`],
+                                                                        description: value,
+                                                                        creator: currentUser
+                                                                    }
+                                                                    return { ...state }
                                                                 })
                                                             }}
                                                             onSubmit={(e) => { this.submitCommentOfTaskComment(item._id, task._id) }}

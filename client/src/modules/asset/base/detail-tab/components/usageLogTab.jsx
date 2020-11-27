@@ -89,13 +89,14 @@ class UsageLogTab extends Component {
                     {
                         typeRegisterForUse == 2 &&
                         <CalendarUsage
+                            id={id}
                             assetId={assetId}
                             usageLogs={usageLogs}
                             managedBy={managedBy}
                             typeRegisterForUse={typeRegisterForUse}
                         />
                     }
-                    {   typeRegisterForUse !== 2 &&
+                    {typeRegisterForUse !== 2 &&
                         (!usageLogs || usageLogs.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
                     {/* </fieldset> */}

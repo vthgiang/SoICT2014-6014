@@ -60,6 +60,27 @@ export function career(state = initState, action) {
                 listAction: action.payload.listAction !== undefined ? action.payload.listAction : [],
                 totalListAction: action.payload.totalList,
             };
+
+        case CareerConstant.CREATE_CAREER_FIELD_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                listField: action.payload,
+            };
+
+        case CareerConstant.CREATE_CAREER_POSITION_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                listPosition: action.payload,
+            };
+
+        case CareerConstant.CREATE_CAREER_ACTION_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                listAction: action.payload,
+            };
         // case CareerConstant.CREATE_CAREER_POSITION_SUCCESS:
         //     return {
         //         ...state,

@@ -98,6 +98,7 @@ class Major extends Component {
         const { major } = this.props;
         const list = major.listMajor;
 
+        let dataTreeSelect = [];
         let dataTree = list.map(elm => {
             return {
                 ...elm,
@@ -107,6 +108,7 @@ class Major extends Component {
                 parent: "#",
             }
         });
+        dataTreeSelect = dataTree;
         for (let i in list) {
             let groupMap = list[i].group;
             let group = list[i].group.map(elm => {
@@ -119,6 +121,8 @@ class Major extends Component {
                 }
             });
             dataTree = [...dataTree, ...group];
+            dataTreeSelect = [...dataTreeSelect, ...group];
+
             for (let x in groupMap) {
                 let specializedMap = groupMap[x].specialized;
                 let specialized = groupMap[x].specialized.map(elm => {
@@ -134,28 +138,22 @@ class Major extends Component {
             }
         }
         let unChooseNode = currentNode ? this.findChildrenNode(list, currentNode) : [];
-        console.log('dataTree', dataTree);
+        console.log('dataTree', dataTree, dataTreeSelect);
         return (
             <React.Fragment>
                 <div className="box box-body">
 
                     <div className="form-inline">
-                        {/* <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
-                            <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('document.administration.domains.add')}>{translate('general.add')}</button>
-                            <ul className="dropdown-menu pull-right">
-                                <li><a href="#modal-create-major" title="Add archive" onClick={(event) => { this.handleAddMajor(event) }}>{translate('document.add')}</a></li>
-                                <li><a href="#modal_import_file_archive" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>{translate('document.import')}</a></li>
-                            </ul>
-                        </div> */}
                         <a className="btn btn-success pull-right" href="#modal-create-major" title="Add major" onClick={(event) => { this.handleAddMajor(event) }}>Thêm</a>
                     </div>
 
                     {
                         majorParent.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteMajor}>{translate('general.delete')}</button>
                     }
-                    {/* <ExportExcel id="export-major" exportData={exportData} style={{ marginRight: 5 }} buttonName={translate('document.export')} /> */}
-                    <CreateForm list={dataTree}/>
-                    {/* <ArchiveImportForm /> */}
+                    <CreateForm
+                        list={dataTreeSelect}
+                    // majorParent={currentNode.parent}
+                    />
                     <div className="row"
                     >
                         <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">
@@ -179,7 +177,7 @@ class Major extends Component {
                                     majorCode={currentNode.original.code}
                                     majorParent={currentNode.parent}
 
-                                    listData={dataTree}
+                                    listData={dataTreeSelect}
                                     unChooseNode={unChooseNode}
                                 />
                             }
@@ -195,8 +193,6 @@ const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
     getListMajor: MajorActions.getListMajor,
-    // editDocumentArchive: MajorActions.editDocumentArchive,
-    // deleteDocumentArchive: MajorActions.deleteDocumentArchive,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(Major));

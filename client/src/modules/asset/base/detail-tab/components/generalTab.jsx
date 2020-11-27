@@ -74,7 +74,8 @@ class GeneralTab extends Component {
                 status: nextProps.status,
                 typeRegisterForUse: nextProps.typeRegisterForUse,
                 detailInfo: nextProps.detailInfo,
-                usageLogs: nextProps.usageLogs
+                usageLogs: nextProps.usageLogs,
+                readByRoles: nextProps.readByRoles
             }
         } else {
             return null;
@@ -104,7 +105,7 @@ class GeneralTab extends Component {
     }
 
     render() {
-        const { id, translate, user, assetType, assetsManager, department } = this.props;
+        const { id, translate, user, assetType, assetsManager, department, role } = this.props;
         var userlist = user.list, departmentlist = department.list;
         var assettype = assetType && assetType.administration;
         let assettypelist = assettype && assettype.types.list;
@@ -114,8 +115,9 @@ class GeneralTab extends Component {
         const {
             img, avatar, defaultAvatar, code, assetName, serial, assetTypes, group, purchaseDate, warrantyExpirationDate,
             managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location,
-            description, status, typeRegisterForUse, detailInfo, usageLogs
+            description, status, typeRegisterForUse, detailInfo, usageLogs, readByRoles
         } = this.state;
+
         return (
             <div id={id} className="tab-pane active">
                 <div className="box-body" >
@@ -183,6 +185,12 @@ class GeneralTab extends Component {
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.manager')}&emsp; </strong>
                                         {managedBy && userlist.length && userlist.filter(item => item._id === managedBy).pop() ? userlist.filter(item => item._id === managedBy).pop().name : ''}
+                                    </div>
+
+                                    {/* Quyền được xem*/}
+                                    <div className="form-group">
+                                        <strong>{translate('system_admin.system_link.table.roles')}&emsp; </strong>
+                                        {readByRoles ? readByRoles.map((x, index) => (role.list.length && role.list.filter(item => item._id === x).pop() ? (role.list.filter(item => item._id === x).pop().name + ((index < readByRoles.length - 1) ? ", " : '')) : '')) : ''}
                                     </div>
                                 </div>
 
@@ -273,8 +281,8 @@ class GeneralTab extends Component {
 };
 
 function mapState(state) {
-    const { user, assetType, assetsManager, department } = state;
-    return { user, assetType, assetsManager, department };
+    const { user, assetType, assetsManager, department, role } = state;
+    return { user, assetType, assetsManager, department, role };
 };
 const actions = {
     getAssetTypes: AssetTypeActions.getAssetTypes,

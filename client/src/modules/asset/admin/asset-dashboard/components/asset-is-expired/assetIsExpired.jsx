@@ -81,29 +81,31 @@ class AssetIsExpired extends Component {
         let nowDate = new Date();
         if (listAssets && !ExpiryDateAssets.length && !willExpiryDateAssets.length) {
             for (let i in listAssets) {
-                let date = listAssets[i].purchaseDate.split("-")
-                date[0] = String(Math.floor((Number(date[1]) + listAssets[i].usefulLife) / 12) + Number(date[0]));
-                let month = String((Number(date[1]) + listAssets[i].usefulLife) % 12 - 1);
-                date[1] = month ? month : '12';
-                date[2] = date[2].slice(0, 2)
-                let ExpiryDate = new Date(date[0], date[1], date[2])
-                let expiry;
-                let day = ExpiryDate - nowDate;
-                if (day < 0) {
-                    day = nowDate - ExpiryDateAssets;
-                    let data = {
-                        asset: listAssets[i],
-                        day: translate('asset.dashboard.expired')
-                    }
-                    ExpiryDateAssets.push(data);
-                } else {
-                    expiry = Math.round(day / 1000 / 60 / 60 / 24);
-                    if (expiry < 16) {
+                if (listAssets[i].purchaseDate) {
+                    let date = listAssets[i].purchaseDate.split("-")
+                    date[0] = String(Math.floor((Number(date[1]) + listAssets[i].usefulLife) / 12) + Number(date[0]));
+                    let month = String((Number(date[1]) + listAssets[i].usefulLife) % 12 - 1);
+                    date[1] = month ? month : '12';
+                    date[2] = date[2].slice(0, 2)
+                    let ExpiryDate = new Date(date[0], date[1], date[2])
+                    let expiry;
+                    let day = ExpiryDate - nowDate;
+                    if (day < 0) {
+                        day = nowDate - ExpiryDateAssets;
                         let data = {
                             asset: listAssets[i],
-                            day: expiry
+                            day: translate('asset.dashboard.expired')
                         }
-                        willExpiryDateAssets.push(data);
+                        ExpiryDateAssets.push(data);
+                    } else {
+                        expiry = Math.round(day / 1000 / 60 / 60 / 24);
+                        if (expiry < 16) {
+                            let data = {
+                                asset: listAssets[i],
+                                day: expiry
+                            }
+                            willExpiryDateAssets.push(data);
+                        }
                     }
                 }
             }

@@ -178,6 +178,17 @@ class AssetCrashManager extends Component {
         }
     }
 
+    convertIncidentStatus = (stt) => {
+        const { translate } = this.props;
+        if (stt == 1) {
+            return translate('asset.general_information.waiting');
+        } else if (stt == 2) {
+            return translate('asset.general_information.processed')
+        } else {
+            return 'Type is deleted'
+        }
+    }
+
     render() {
         const { translate, assetsManager, assetType, user, auth } = this.props;
         const { page, limit, currentRow } = this.state;
@@ -256,6 +267,7 @@ class AssetCrashManager extends Component {
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.asset_name')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.incident_code')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.incident_type')}</th>
+                                <th style={{ width: "10%" }}>{translate('general.status')}</th>
                                 <th style={{ width: "8%" }}>{translate('asset.general_information.reported_by')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.date_incident')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.content')}</th>
@@ -267,6 +279,7 @@ class AssetCrashManager extends Component {
                                             translate('asset.general_information.asset_name'),
                                             translate('asset.general_information.incident_code'),
                                             translate('asset.general_information.incident_type'),
+                                            translate('general.status'),
                                             translate('asset.general_information.reported_by'),
                                             translate('asset.general_information.date_incident'),
                                             translate('asset.general_information.content'),
@@ -287,6 +300,7 @@ class AssetCrashManager extends Component {
                                             <td>{asset.assetName}</td>
                                             <td>{x.incidentCode}</td>
                                             <td>{this.convertIncidentType(x.type)}</td>
+                                            <td>{this.convertIncidentStatus(x.statusIncident)}</td>
                                             <td>{x.reportedBy && userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : 'User is deleted'}</td>
                                             <td>{this.formatDate2(x.dateOfIncident)}</td>
                                             <td>{x.description}</td>

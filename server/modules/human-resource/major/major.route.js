@@ -8,7 +8,7 @@ const { auth } = require(`${SERVER_MIDDLEWARE_DIR}`);
 router.get('/major', auth, MajorController.searchMajor);
 
 
-// router.post('/major', auth, MajorController.createAnnualLeave);
+router.post('/major', auth, MajorController.crateNewMajor);
 
 // router.patch('/major/:id', auth, MajorController.updateAnnualLeave);
 // router.delete('/major/:id', auth, MajorController.deleteAnnualLeave);
