@@ -455,8 +455,8 @@ class AssetManagement extends Component {
     }
 
     render() {
-        var { assetsManager, assetType, translate, user, isActive, department } = this.props;
-        var { page, limit, currentRowView, currentRow, purchaseDate, disposalDate, managedBy, location, typeRegisterForUse, handoverUnit, handoverUser } = this.state;
+        const { assetsManager, assetType, translate, user, isActive, department } = this.props;
+        const { page, limit, currentRowView, currentRow, purchaseDate, disposalDate, managedBy, location, typeRegisterForUse, handoverUnit, handoverUser } = this.state;
         var lists = "", exportData;
         var userlist = user.list, departmentlist = department.list;
         var assettypelist = assetType.listAssetTypes;
@@ -646,7 +646,20 @@ class AssetManagement extends Component {
                         </div>
                         {exportData && <ExportExcel id="export-asset-info-management" exportData={exportData} style={{ marginRight: 10 }} />}
                     </div>
-
+                    
+                    {/* Báo lỗi khi thêm mới tài sản */}
+                    {assetsManager && assetsManager.assetCodeError && assetsManager.assetCodeError.length !== 0
+                        && <div style={{ color: 'red' }}>
+                            <strong style={{ 'font-weight': 600, 'padding-right': 10 }}>{translate('asset.asset_info.asset_code_exist')}:</strong>
+                            {
+                                assetsManager.assetCodeError.map((item, index) => {
+                                    let seperator = index !== 0 ? ", " : "";
+                                    return <span key={index}>{seperator}{item}</span>
+                                })
+                            }
+                        </div>
+                    }
+                    
                     {/* Bảng các tài sản */}
                     <table id="asset-table" className="table table-striped table-bordered table-hover">
                         <thead>
