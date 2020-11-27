@@ -890,3 +890,27 @@ exports.editBill = async (id, userId, data, portal) => {
         ])
 
 }
+
+exports.getBillsByCommand = async (query, portal) => {
+    const { manufacturingCommandId } = query;
+    return await Bill(connect(DB_CONNECTION, portal))
+        .find({ manufacturingCommand: manufacturingCommandId })
+        .populate([
+            { path: 'creator' },
+            { path: 'approvers.approver' },
+            { path: 'approvers.role' },
+            { path: 'qualityControlStaffs.staff' },
+            { path: 'responsibles' },
+            { path: 'accountables' },
+            { path: 'manufacturingMill' },
+            { path: 'manufacturingCommand'},
+            { path: 'fromStock' },
+            { path: 'toStock' },
+            { path: 'customer' },
+            { path: 'supplier' },
+            { path: 'bill' },
+            { path: 'goods.lots.lot' },
+            { path: 'goods.good' },
+            { path: 'logs.creator' }
+        ])
+}
