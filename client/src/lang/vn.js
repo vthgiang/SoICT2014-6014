@@ -1010,8 +1010,8 @@ export default {
             manage_department: "Quản lý cơ cấu tổ chức",
             manage_user: "Quản lý người dùng",
 
-            manage_document: "Quản lý tài liệu",
-            documents_og: "Quản lý tài liệu đơn vị",
+            manage_document: "Quản lý tài liệu văn bản",
+            documents_og: "Quản lý tài liệu văn bản đơn vị",
             documents: "Tài liệu văn bản",
 
             customer_Management: "Quản lý khách hàng",
@@ -2594,7 +2594,7 @@ export default {
             approver: "Người phê duyệt",
             observer: "Người quan sát",
             consultant: "Người tư vấn",
-            formula: "Công thức tính điểm",
+            formula: "Công thức tính điểm tự động",
             activity_list: "Danh sách hoạt động",
             information_list: "Danh sách thông tin",
             no_data: "Không có dữ liệu",

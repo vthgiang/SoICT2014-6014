@@ -129,7 +129,7 @@ exports.createUseRequest = async (portal, company, data) => {
  * Xoá thông tin phiếu đề nghị cap phat thiết bị
  * @id: id phiếu đề nghị cap phat thiết bị muốn xoá
  */
-exports.deleteUseRequest = async (id) => {
+exports.deleteUseRequest = async (portal, id) => {
     return await RecommendDistribute(connect(DB_CONNECTION, portal)).findOneAndDelete({
         _id: id
     });

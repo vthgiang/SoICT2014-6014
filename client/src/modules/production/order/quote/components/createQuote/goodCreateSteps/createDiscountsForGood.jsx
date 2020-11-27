@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { ButtonModal, DialogModal, formatDate } from "../../../../../../common-components";
-import { formatCurrency } from "../../../../../../helpers/formatCurrency";
-import { capitalize } from "../../../../../../helpers/stringMethod";
+import { DialogModal, formatDate } from "../../../../../../../common-components";
+import { formatCurrency } from "../../../../../../../helpers/formatCurrency";
+import { capitalize } from "../../../../../../../helpers/stringMethod";
 
 class CreateDiscountsForGood extends Component {
     constructor(props) {

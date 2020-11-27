@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { ErrorLabel, TreeSelect } from '../../../../../common-components';
-import { CareerPositionAction } from '../../redux/actions';
+import { CareerReduxAction } from '../../redux/actions';
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
 class EditForm extends Component {
@@ -155,8 +155,8 @@ class EditForm extends Component {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
-    // editDocumentArchive: CareerPositionAction.editDocumentArchive,
-    // getDocumentArchives: CareerPositionAction.getDocumentArchive,
+    // editDocumentArchive: CareerReduxAction.editDocumentArchive,
+    // getDocumentArchives: CareerReduxAction.getDocumentArchive,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(EditForm));

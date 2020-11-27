@@ -206,19 +206,27 @@ exports.createNotification = async (
     const listPush = listUsersPushNotification.filter(
         (token, i) => listUsersPushNotification.indexOf(token) === i
     );
-    const pushNotifications = await FIREBASE_ADMIN.messaging().sendMulticast({
-        tokens: listPush,
-        data: {
-            level: data.level.toString(),
-            title: data.title.toString(),
-            content: data.content.toString(),
-            sender: data.sender.toString(),
-            createdAt: new Date().toString(),
-        },
-        notification: {
-            title: data.title,
-        },
-    });
+
+    try {
+        // Đặt trong try catch, phòng khi firebase bị lỗi/đổi token
+        if (listPush.length > 0) {
+            const pushNotifications = FIREBASE_ADMIN.messaging().sendMulticast({
+                tokens: listPush,
+                data: {
+                    level: data.level.toString(),
+                    title: data.title.toString(),
+                    content: data.content.toString(),
+                    sender: data.sender.toString(),
+                    createdAt: new Date().toString(),
+                },
+                notification: {
+                    title: data.title,
+                },
+            });
+        }
+    } catch (error) {
+        // Todo: thêm vào log
+    }
 
     return true;
 };

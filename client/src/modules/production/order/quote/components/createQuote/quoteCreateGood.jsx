@@ -1,18 +1,17 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { GoodActions } from "../../../common-production/good-management/redux/actions";
-import { DiscountActions } from "../../discount/redux/actions";
-import { formatCurrency } from "../../../../../helpers/formatCurrency";
+import { GoodActions } from "../../../../common-production/good-management/redux/actions";
+import { DiscountActions } from "../../../discount/redux/actions";
+import { formatCurrency } from "../../../../../../helpers/formatCurrency";
 import GoodSelected from "./goodCreateSteps/goodSelected";
 import ApplyDiscount from "./goodCreateSteps/applyDiscount";
 import Payment from "./goodCreateSteps/payment";
-import "./quote.css";
+import "../quote.css";
 class QuoteCreateGood extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            goods: [],
             discountsOfGood: [],
             discountsOfGoodChecked: {},
             slasOfGood: [],
@@ -61,6 +60,26 @@ class QuoteCreateGood extends Component {
         e.preventDefault();
         let { step, steps } = this.state;
         step--;
+        steps.map((item, index) => {
+            if (index <= step) {
+                item.active = true;
+            } else {
+                item.active = false;
+            }
+            return item;
+        });
+        this.setState((state) => {
+            return {
+                ...state,
+                steps: steps,
+                step: step,
+            };
+        });
+    };
+
+    setCurrentStep = (e, step) => {
+        e.preventDefault();
+        let { steps } = this.state;
         steps.map((item, index) => {
             if (index <= step) {
                 item.active = true;
@@ -302,7 +321,8 @@ class QuoteCreateGood extends Component {
             steps,
             salesPriceVariance,
         } = this.state;
-        let { goods } = this.state;
+
+        let { listGoods } = this.props;
 
         let amount = this.getOriginAmountOfGood();
         let amountAfterDiscount = this.getAmountAfterApplyDiscount();
@@ -346,15 +366,15 @@ class QuoteCreateGood extends Component {
             salesPriceVariance,
         };
 
-        goods.push(additionGood);
+        listGoods.push(additionGood);
         steps = steps.map((step, index) => {
             step.active = !index ? true : false;
             return step;
         });
+        this.props.setGoods(listGoods);
         this.setState((state) => {
             return {
                 ...state,
-                goods,
                 discountsOfGood: [],
                 discountsOfGoodChecked: {},
                 taxs: [],
@@ -378,15 +398,16 @@ class QuoteCreateGood extends Component {
     };
 
     deleteGood = (goodId) => {
-        let { goods } = this.state;
-        let goodsSlice = goods.filter((item) => item._id !== goodId);
+        let { listGoods } = this.props;
+        let goodsFilter = listGoods.filter((item) => item._id !== goodId);
+        this.props.setGoods(goodsFilter);
 
-        this.setState((state) => {
-            return {
-                ...state,
-                goods: goodsSlice,
-            };
-        });
+        // this.setState((state) => {
+        //     return {
+        //         ...state,
+        //         goods: goodsSlice,
+        //     };
+        // });
     };
 
     handleEditGood = (item, index) => {
@@ -451,7 +472,6 @@ class QuoteCreateGood extends Component {
     render() {
         let {
             good,
-            goods,
             goodName,
             code,
             pricePerBaseUnit,
@@ -468,11 +488,13 @@ class QuoteCreateGood extends Component {
             steps,
             step,
         } = this.state;
+
+        let { listGoods } = this.props;
+
         console.log("DISCOUNT", this.state.discountsOfGood);
         let originAmount = this.getOriginAmountOfGood();
         let amountAfterApplyDiscount = this.getAmountAfterApplyDiscount();
         let amountAfterApplyTax = this.getAmountAfterApplyTax();
-        console.log("GOOD", goods);
         console.log("DIS", this.props.goods.goodItems.listDiscountsByGoodId);
         return (
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -484,7 +506,13 @@ class QuoteCreateGood extends Component {
                             <div className="timeline-progress" style={{ width: `${(step * 100) / (steps.length - 1)}%` }}></div>
                             <div className="timeline-items">
                                 {steps.map((item, index) => (
-                                    <div className={`timeline-item ${item.active ? "active" : ""}`} key={index}>
+                                    <div
+                                        className={`timeline-item ${item.active ? "active" : ""}`}
+                                        key={index}
+                                        onClick={(e) => {
+                                            this.setCurrentStep(e, index);
+                                        }}
+                                    >
                                         <div className="timeline-contain">{item.label}</div>
                                     </div>
                                 ))}
@@ -580,16 +608,27 @@ class QuoteCreateGood extends Component {
 
                                 <div className="form-group" style={{ borderTop: "solid 0.3px #c5c5c5", padding: "10px 0px" }}>
                                     <strong>Tổng tiền sau thuế: </strong>
-                                    <span style={{ float: "right" }} className="text-red">
+                                    <span style={{ float: "right", fontSize: "18px" }} className="text-red">
                                         {amountAfterApplyTax ? formatCurrency(amountAfterApplyTax) + " (vnđ)" : "0 (vnđ)"}
                                     </span>
                                 </div>
+
+                                {/* BUTTON ADD GOOD */}
+                                {step === steps.length - 1 ? (
+                                    <div className="quote-add-good-button">
+                                        <button className="btn btn-success" onClick={this.addGood}>
+                                            Thêm sản phẩm
+                                        </button>
+                                    </div>
+                                ) : (
+                                    ""
+                                )}
                             </div>
                         </div>
 
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <div className={"pull-right"} style={{ padding: 10 }}>
-                                <div>
+                                {/* <div>
                                     <div>
                                         {step + 1} / {steps.length}
                                     </div>
@@ -616,7 +655,7 @@ class QuoteCreateGood extends Component {
                                             ""
                                         )}
                                     </div>
-                                </div>
+                                </div> */}
                                 {/* <button
                                 className="btn btn-success"
                                 style={{ marginLeft: "10px" }}
@@ -652,10 +691,10 @@ class QuoteCreateGood extends Component {
                                 <th title={"Hành động"}>Hành động</th>
                             </tr>
                         </thead>
-                        <tbody id={`good-edit-manage-by-stock`}>
-                            {goods &&
-                                goods.length !== 0 &&
-                                goods.map((item, index) => (
+                        <tbody id={`quote-goods-table`}>
+                            {listGoods &&
+                                listGoods.length !== 0 &&
+                                listGoods.map((item, index) => (
                                     <tr key={index}>
                                         <td>{index + 1}</td>
                                         <td>{item.good ? item.good.code : ""}</td>
@@ -711,35 +750,35 @@ class QuoteCreateGood extends Component {
                                         </td>
                                     </tr>
                                 ))}
-                            {goods.length !== 0 && (
+                            {listGoods.length !== 0 && (
                                 <tr>
                                     <td colSpan={7} style={{ fontWeight: 600 }}>
                                         <center>Tổng</center>
                                     </td>
                                     <td style={{ fontWeight: 600 }}>
                                         {formatCurrency(
-                                            goods.reduce((accumulator, currentValue) => {
+                                            listGoods.reduce((accumulator, currentValue) => {
                                                 return accumulator + (currentValue.amount - currentValue.amountAfterDiscount);
                                             }, 0)
                                         ) + " (vnđ)"}
                                     </td>
                                     <td style={{ fontWeight: 600 }}>
                                         {formatCurrency(
-                                            goods.reduce((accumulator, currentValue) => {
+                                            listGoods.reduce((accumulator, currentValue) => {
                                                 return accumulator + currentValue.amountAfterDiscount;
                                             }, 0)
                                         ) + " (vnđ)"}
                                     </td>
                                     <td style={{ fontWeight: 600 }}>
                                         {formatCurrency(
-                                            goods.reduce((accumulator, currentValue) => {
+                                            listGoods.reduce((accumulator, currentValue) => {
                                                 return accumulator + (currentValue.amountAfterTax - currentValue.amountAfterDiscount);
                                             }, 0)
                                         ) + " (vnđ)"}
                                     </td>
                                     <td style={{ fontWeight: 600 }}>
                                         {formatCurrency(
-                                            goods.reduce((accumulator, currentValue) => {
+                                            listGoods.reduce((accumulator, currentValue) => {
                                                 return accumulator + currentValue.amountAfterTax;
                                             }, 0)
                                         ) + " (vnđ)"}
