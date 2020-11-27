@@ -27,6 +27,7 @@ exports.searchAssetProfiles = async (req, res) => {
                 page: Number(req.query.page),
                 limit: Number(req.query.limit),
                 managedBy: req.query.managedBy,
+                location: req.query.location,
                 currentRole: req.query.currentRole,
 
                 startDepreciation: req.query.startDepreciation,

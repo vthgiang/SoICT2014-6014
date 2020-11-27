@@ -7,7 +7,8 @@ export const LotServices = {
     createOrUpdateLots,
     deleteManyLots,
     getAllManufacturingLots,
-    createManufacturingLot
+    createManufacturingLot,
+    getDetailManufacturingLot
 }
 
 function getAllLots(params) {
@@ -81,4 +82,14 @@ function createManufacturingLot(data) {
         true,
         "manufacturing.lot"
     );
+}
+
+function getDetailManufacturingLot(id) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/lot/get-manufacturing-lot/${id}`,
+        method: 'GET'
+    },
+        false,
+        true,
+        'manufacturing.lot')
 }

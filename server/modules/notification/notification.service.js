@@ -175,7 +175,7 @@ exports.createNotification = async (
         }
     }
 
-    // Gửi thông báo cho các user
+    // Gửi thông báo cho các user - bằng socket trên web
     for (let i = 0; i < usersArr.length; i++) {
         const notify = await Notification(
             connect(DB_CONNECTION, portal)
@@ -189,29 +189,45 @@ exports.createNotification = async (
             user: usersArr[i],
             manualNotification,
         });
-
-        const listUsers = await User(connect(DB_CONNECTION, portal)).find({
-            _id: { $in: usersArr },
-        });
-        const listUsersPushNotification = listUsers.flatMap(
-            (user) => user.pushNotificationTokens
-        );
-        console.log("tokens ", listUsersPushNotification);
-
         const arr = CONNECTED_CLIENTS.filter(
             (client) => client.userId === usersArr[i]
         );
-        await FIREBASE_ADMIN.messaging().sendMulticast({
-            tokens: listUsersPushNotification,
-            notification: {
-                title: data.title,
-                // body: data.content,
-            },
-        });
-
         if (arr.length === 1)
             SOCKET_IO.to(arr[0].socketId).emit("new notifications", notify);
     }
+
+    // Gửi thông báo cho các user - bằng firebase trên thiết bị di động
+    const listUsers = await User(connect(DB_CONNECTION, portal)).find({
+        _id: { $in: usersArr },
+    });
+    const listUsersPushNotification = listUsers.flatMap(
+        (user) => user.pushNotificationTokens
+    );
+    const listPush = listUsersPushNotification.filter(
+        (token, i) => listUsersPushNotification.indexOf(token) === i
+    );
+
+    try {
+        // Đặt trong try catch, phòng khi firebase bị lỗi/đổi token
+        if (listPush.length > 0) {
+            const pushNotifications = FIREBASE_ADMIN.messaging().sendMulticast({
+                tokens: listPush,
+                data: {
+                    level: data.level.toString(),
+                    title: data.title.toString(),
+                    content: data.content.toString(),
+                    sender: data.sender.toString(),
+                    createdAt: new Date().toString(),
+                },
+                notification: {
+                    title: data.title,
+                },
+            });
+        }
+    } catch (error) {
+        // Todo: thêm vào log
+    }
+
     return true;
 };
 

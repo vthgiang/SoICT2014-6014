@@ -524,3 +524,28 @@ exports.getAllManufacturingLot = async (query, user, portal) => {
     }
 
 }
+
+exports.getDetailManufacturingLot = async (id, portal) => {
+    let lot = await Lot(connect(DB_CONNECTION, portal)).findById(id)
+        .populate([{
+            path: "good"
+        }, {
+            path: "manufacturingCommand",
+            populate: [{
+                path: "manufacturingMill",
+                select: "code name",
+                populate: [{
+                    path: "teamLeader"
+                }]
+            }, {
+                path: "responsibles"
+            }, {
+                path: "accountables"
+            }, {
+                path: "qualityControlStaffs.staff"
+            }]
+        }, {
+            path: "creator"
+        }]);
+    return { lot }
+}

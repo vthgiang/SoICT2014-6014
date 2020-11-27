@@ -254,10 +254,10 @@ class DashBoardAssets extends Component {
                         STT: index + 1,
                         code: asset.code,
                         name: asset.assetName,
-                        type: assetTypeList.find(item => item._id === asset.assetType) ? assetTypeList.find(item => item._id === asset.assetType).typeName : 'Asset is deleted',
+                        type: assetTypeList.find(item => item._id === asset.assetType) ? assetTypeList.find(item => item._id === asset.assetType).typeName : 'Asset type is deleted',
                         purchaseDate: this.formatDate(asset.purchaseDate),
-                        manager: userList.find(item => item._id === asset.managedBy) ? userList.find(item => item._id === asset.managedBy).name : 'User is deleted',
-                        user: asset.assignedToUser ? (userList.length !== 0 && userList.find(item => item._id === asset.assignedToUser) ? userList.find(item => item._id === asset.assignedToUser).name : 'User is deleted') : '',
+                        manager: userList.find(item => item._id === asset.managedBy) ? userList.find(item => item._id === asset.managedBy).name : '',
+                        user: asset.assignedToUser ? (userList.length !== 0 && userList.find(item => item._id === asset.assignedToUser) ? userList.find(item => item._id === asset.assignedToUser).name : '') : '',
                         organizationalUnit: asset.assignedToOrganizationalUnit ? asset.assignedToOrganizationalUnit : '',
                         status: asset.status,
                         dayAvailable: item.day + (dayAvailable ? " ngày" : "")
@@ -523,7 +523,7 @@ class DashBoardAssets extends Component {
                         <li><a href="#administration-asset-statistics" data-toggle="tab" onClick={() => this.handleNavTabs("assetStatistics")}>Thống kê theo trạng thái và giá trị</a></li>
                         <li><a href="#administration-purchase-disposal" data-toggle="tab" onClick={() => this.handleNavTabs("purchaseDisposal")}>{translate('asset.dashboard.asset_purchase_and_dispose')}</a></li>
                         <li><a href="#administration-incident-maintenance" data-toggle="tab" onClick={() => this.handleNavTabs("incidentMaintenance")}>{translate('asset.dashboard.asset_incident_and_maintenance')}</a></li>
-                        <li><a href="#administration-asset-is-expired" data-toggle="tab" onClick={() => this.handleNavTabs("assetIsExpired")}>Hạn sử dụng tài sản</a> </li>
+                        {/* <li><a href="#administration-asset-is-expired" data-toggle="tab" onClick={() => this.handleNavTabs("assetIsExpired")}>Hạn sử dụng tài sản</a> </li> */}
                         {exportData && currentTab && exportData[currentTab] && <ExportExcel type="link" style={{ padding: "15px" }} id="export-asset-dashboard" exportData={exportData[currentTab]} />}
                     </ul>
                     <div className="tab-content">

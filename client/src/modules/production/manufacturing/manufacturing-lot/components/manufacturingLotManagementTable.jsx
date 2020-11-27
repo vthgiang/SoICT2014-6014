@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { translate } from 'react-redux-multilingual/lib/utils';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti } from '../../../../../common-components';
 import { formatDate } from '../../../../../helpers/formatDate';
 import { GoodActions } from '../../../common-production/good-management/redux/actions';
 import { LotActions } from '../../../warehouse/inventory-management/redux/actions';
+import ManufacturingLotDetailForm from './manufacturingLotDetailForm';
 
 class ManufacturingLotManagementTable extends Component {
     constructor(props) {
@@ -125,6 +125,14 @@ class ManufacturingLotManagementTable extends Component {
         this.props.getAllManufacturingLots(data);
     }
 
+    handleShowDetailLot = async (lot) => {
+        await this.setState({
+            lotDetail: lot
+        });
+
+        window.$('#modal-detail-info-manufacturing-lot').modal('show');
+    }
+
     render() {
         const { translate, lots } = this.props;
         const { totalPages, page } = lots;
@@ -136,6 +144,9 @@ class ManufacturingLotManagementTable extends Component {
         }
         return (
             <React.Fragment>
+                {
+                    <ManufacturingLotDetailForm lotDetail={this.state.lotDetail} />
+                }
                 <div className="box-body qlcv">
                     <div className="form-inline">
                         <div className="form-group">
@@ -249,13 +260,13 @@ class ManufacturingLotManagementTable extends Component {
                                         <td>{lot.good && lot.good.name}</td>
                                         <td>{lot.good && lot.good.baseUnit}</td>
                                         <td>{lot.originalQuantity}</td>
-                                        <td>{translate(`manufacturing.lot.product_type_obect.${lot.productType}`)}</td>
+                                        <td>{translate(`manufacturing.lot.product_type_object.${lot.productType}`)}</td>
                                         <td>{lot.creator && lot.creator.name}</td>
                                         <td>{formatDate(lot.createdAt)}</td>
                                         <td>{formatDate(lot.expirationDate)}</td>
                                         <td style={{ color: translate(`manufacturing.lot.${lot.status}.color`) }}>{translate(`manufacturing.lot.${lot.status}.content`)}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a style={{ width: '5px' }} title={translate('manufacturing.lot.purchasing_request_detail')} onClick={() => { this.handleShowDetailPurchasingRequest(lot) }}><i className="material-icons">view_list</i></a>
+                                            <a style={{ width: '5px' }} title={translate('manufacturing.lot.lot_detail')} onClick={() => { this.handleShowDetailLot(lot) }}><i className="material-icons">view_list</i></a>
                                             <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manufacturing.lot.purchasing_request_edit')} onClick={() => this.handleEditPurchasingRequest(lot)}><i className="material-icons">edit</i></a>
                                         </td>
                                     </tr>

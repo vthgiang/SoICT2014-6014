@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { SelectBox, ErrorLabel } from "../../../../../../common-components";
+import { SelectBox, ErrorLabel } from "../../../../../../../common-components";
 
 class GoodSelected extends Component {
     constructor(props) {
