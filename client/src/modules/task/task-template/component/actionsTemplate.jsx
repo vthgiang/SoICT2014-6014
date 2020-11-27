@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import Sortable from 'sortablejs';
-import { ErrorLabel, TrixEditor } from '../../../../common-components';
+import { ErrorLabel, QuillEditor } from '../../../../common-components';
 import { TaskTemplateFormValidator} from './taskTemplateFormValidator';
 import parse from 'html-react-parser';
 
@@ -98,7 +98,7 @@ class ActionForm extends Component{
         return msg == undefined;
     }
 
-    handleChangeActionDesc = (value) => {
+    handleChangeActionDesc = (value, imgs) => {
         const { action } = this.state;
             this.setState({
                 action: {
@@ -237,8 +237,8 @@ class ActionForm extends Component{
                         <textarea type="text" className="form-control" name="description" placeholder={translate('task_template.description')} value={action.description} onChange={this.handleChangeActionDesc} />
                         <ErrorLabel content={this.state.action.errorOnDescription}/>
                     </div> */}
-                    <TrixEditor
-                        handleChange={this.handleChangeActionDesc}
+                    <QuillEditor
+                        getTextData={this.handleChangeActionDesc}
                         value={action.description}
                     />
                 </div>

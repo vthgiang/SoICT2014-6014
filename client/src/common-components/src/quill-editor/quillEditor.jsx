@@ -20,10 +20,13 @@ class QuillEditor extends Component {
         const { edit = true, value } = this.props;
 
         if (edit) {
+            // Thêm các module tiện ích
             Quill.register({
                 'modules/imageDropAndPaste': QuillImageDropAndPaste,
                 // 'modules/tableUI': QuillTableUI.default,
             }, true)
+
+            // Khởi tạo Quill Editor trong thẻ có id='editor-container'
             const quill = new Quill('#editor-container', {
                 modules: {
                     toolbar: [
@@ -44,6 +47,14 @@ class QuillEditor extends Component {
                 value: value  
             });
 
+            // Insert value ban đầu
+            if (value) {
+                if (quill && quill.container && quill.container.firstChild) {
+                    quill.container.firstChild.innerHTML = value;
+                } 
+            }
+
+            // Bắt sự kiện text-change
             quill.on('text-change', (delta, oldDelta, source) => {
                 console.log("change", quill.root.innerHTML, delta, oldDelta, source);
                 const imgs = Array.from(
@@ -56,11 +67,15 @@ class QuillEditor extends Component {
         
     }
 
-    // Chuyển đổi dữ liệu ảnh base64 sang FIle để upload lên server
-    static convertImageBase64ToFile = (imgs) => {
+    /** 
+     * Chuyển đổi dữ liệu ảnh base64 sang FIle để upload lên server
+     * @imgs mảng hình ảnh dạng base64
+     * @names mảng tên các ảnh tương ứng
+     * */ 
+    static convertImageBase64ToFile = (imgs, names) => {
         let imageFile;
         if (imgs && imgs.length !== 0) {
-            imageFile = imgs.map(item => {
+            imageFile = imgs.map((item, index) => {
                  // Split the base64 string in data and contentType
                 let block = item.getAttribute("src").split(";");
                 let contentType = block[0].split(":")[1];
@@ -85,7 +100,7 @@ class QuillEditor extends Component {
                 }
             
                 let blob = new Blob(byteArrays, { type: contentType });
-                return new File([blob], "name");
+                return new File([blob], names[index]);
             })
         }
         return imageFile;
