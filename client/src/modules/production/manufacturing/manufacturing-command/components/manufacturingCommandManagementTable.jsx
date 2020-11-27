@@ -7,6 +7,7 @@ import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { formatDate } from '../../../../../helpers/formatDate';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import ManufacturingLotCreateForm from '../../manufacturing-lot/components/manufacturingLotCreateForm';
+import QualityControlForm from './qualityControlForm';
 class ManufacturingCommandManagementTable extends Component {
     constructor(props) {
         super(props);
@@ -201,18 +202,35 @@ class ManufacturingCommandManagementTable extends Component {
         const userId = localStorage.getItem("userId");
         let qcIds = qualityControlStaffs.map(x => x.staff._id);
 
-        if (qcIds.includes(userId) && qualityControlStaffs[qcIds.indexOf(userId)].time === null) {
+        if (qcIds.includes(userId)) {
             return true;
         }
         return false;
     }
 
-    handleQualityControlCommand = (command) => {
+
+    findIndexOfStaff = (array, id) => {
+        let result = -1;
+        array.forEach((element, index) => {
+            if (element.staff._id === id) {
+                result = index;
+            }
+        });
+        return result;
+    }
+
+    handleQualityControlCommand = async (command) => {
         const userId = localStorage.getItem("userId");
-        const data = {
-            qualityControlStaffId: userId
-        }
-        this.props.handleEditCommand(command._id, data);
+        let index = this.findIndexOfStaff(command.qualityControlStaffs, userId);
+        let qcStatus = command.qualityControlStaffs[index].status;
+        let qcContent = command.qualityControlStaffs[index].content ? command.qualityControlStaffs[index].content : "";
+        console.log(qcContent);
+        await this.setState({
+            currentQCCommand: command,
+            qcStatus: qcStatus,
+            qcContent: qcContent
+        })
+        window.$('#modal-quality-control').modal('show');
     }
 
 
@@ -232,6 +250,15 @@ class ManufacturingCommandManagementTable extends Component {
                 }
                 {
                     <ManufacturingLotCreateForm command={this.state.command} />
+                }
+                {
+                    this.state.currentQCCommand &&
+                    <QualityControlForm
+                        commandId={this.state.currentQCCommand._id}
+                        code={this.state.currentQCCommand.code}
+                        status={this.state.qcStatus}
+                        content={this.state.qcContent}
+                    />
                 }
                 <div className="box-body qlcv">
                     <div className="form-inline">
@@ -316,8 +343,8 @@ class ManufacturingCommandManagementTable extends Component {
                                     { value: '1', text: translate('manufacturing.command.1.content') },
                                     { value: '2', text: translate('manufacturing.command.2.content') },
                                     { value: '3', text: translate('manufacturing.command.3.content') },
+                                    { value: '4', text: translate('manufacturing.command.4.content') },
                                     { value: '5', text: translate('manufacturing.command.5.content') },
-                                    { value: '4', text: translate('manufacturing.command.4.content') }
                                 ]}
                                 onChange={this.handleStatusChange}
                             />
@@ -398,7 +425,11 @@ class ManufacturingCommandManagementTable extends Component {
                                                 />
                                             }
                                             {
-                                                this.checkRoleAccountables(command) && command.status === 5 &&
+                                                this.checkRoleQualityControl(command) && (command.status === 3 || command.status === 4 || command.status === 5) &&
+                                                <a style={{ width: '5px', color: "green" }} title={translate('manufacturing.command.quality_control_command')} onClick={() => { this.handleQualityControlCommand(command) }}><i className="material-icons">thumb_up</i></a>
+                                            }
+                                            {
+                                                this.checkRoleAccountables(command) && command.status === 3 &&
                                                 <ConfirmNotification
                                                     icon="question"
                                                     title={translate('manufacturing.command.end_command')}
@@ -406,17 +437,6 @@ class ManufacturingCommandManagementTable extends Component {
                                                     name="check_circle"
                                                     className="text-green"
                                                     func={() => this.handleEndCommand(command)}
-                                                />
-                                            }
-                                            {
-                                                this.checkRoleQualityControl(command) && command.status === 3 &&
-                                                <ConfirmNotification
-                                                    icon="question"
-                                                    title={translate('manufacturing.command.quality_control_command')}
-                                                    content={translate('manufacturing.command.quality_control_command') + " " + command.code}
-                                                    name="thumb_up"
-                                                    className="text-green"
-                                                    func={() => this.handleQualityControlCommand(command)}
                                                 />
                                             }
                                         </td>

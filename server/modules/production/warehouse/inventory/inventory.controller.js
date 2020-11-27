@@ -173,3 +173,27 @@ exports.getAllManufacturingLot = async (req, res) => {
         })
     }
 }
+
+exports.getDetailManufacturingLot = async (req, res) => {
+    try {
+        let id = req.params.id;
+
+        let lot = await LotService.getDetailManufacturingLot(id, req.portal);
+
+        await Logger.info(req.user.email, 'GET_DETAIL_MANUFACTURING_LOT', req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ['get_detail_successfully'],
+            content: lot
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, 'GET_DETAIL_MANUFACTURING_LOT', req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ['get_detail_failed'],
+            error: error.message
+        })
+    }
+}

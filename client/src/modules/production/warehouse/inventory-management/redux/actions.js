@@ -9,7 +9,8 @@ export const LotActions = {
     createOrUpdateLots,
     deleteManyLots,
     getAllManufacturingLots,
-    createManufacturingLot
+    createManufacturingLot,
+    getDetailManufacturingLot,
 
 }
 
@@ -193,6 +194,26 @@ function createManufacturingLot(data) {
             }).catch((error) => {
                 dispatch({
                     type: LotConstants.CREATE_MANUFACTURING_LOT_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function getDetailManufacturingLot(id) {
+    return dispatch => {
+        dispatch({
+            type: LotConstants.GET_DETAIL_MANUFACTURING_LOT_REQUEST
+        });
+        LotServices.getDetailManufacturingLot(id)
+            .then((res) => {
+                dispatch({
+                    type: LotConstants.GET_DETAIL_MANUFACTURING_LOT_SUCCESS,
+                    payload: res.data.content
+                });
+            }).catch((error) => {
+                dispatch({
+                    type: LotConstants.GET_DETAIL_MANUFACTURING_LOT_FAILURE,
                     error
                 });
             });

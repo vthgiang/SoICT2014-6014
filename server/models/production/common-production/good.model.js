@@ -76,8 +76,12 @@ const GoodSchema = new Schema({
         ref: 'User'
     },
 
-    packingRule: {
-        type: String
+    // packingRule: {
+    //     type: String
+    // },
+
+    numberExpirationDate: {
+        type: Number
     },
 
     manufacturingMills: [{
