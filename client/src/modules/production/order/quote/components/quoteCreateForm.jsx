@@ -149,6 +149,13 @@ class QuoteCreateForm extends Component {
         });
     };
 
+    setCurrentStep = (e, step) => {
+        e.preventDefault();
+        this.setState({
+            step,
+        });
+    };
+
     setGoods = (goods) => {
         this.setState((state) => {
             return {
@@ -227,6 +234,25 @@ class QuoteCreateForm extends Component {
                             </div>
                         </form>
                     </DialogModal>
+                    <div className="nav-tabs-custom">
+                        <ul className="nav nav-tabs">
+                            <li className="active">
+                                <a data-toggle="tab" onClick={(e) => this.setCurrentStep(e, 0)} style={{ cursor: "pointer" }}>
+                                    Thông tin chung
+                                </a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" onClick={(e) => this.setCurrentStep(e, 1)} style={{ cursor: "pointer" }}>
+                                    Chọn sản phẩm
+                                </a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" onClick={(e) => this.setCurrentStep(e, 2)} style={{ cursor: "pointer" }}>
+                                    Chốt báo giá
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                     <form id={`form-add-quote`}>
                         <div className="row row-equal-height" style={{ marginTop: 0 }}>
                             {step === 0 && (
@@ -267,7 +293,7 @@ class QuoteCreateForm extends Component {
                                 />
                             )}
                         </div>
-                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        {/* <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <div className={"pull-right"} style={{ padding: 10 }}>
                                 <div>
                                     <div>
@@ -292,7 +318,7 @@ class QuoteCreateForm extends Component {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                     </form>
                 </DialogModal>
             </React.Fragment>

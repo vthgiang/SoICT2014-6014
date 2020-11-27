@@ -257,6 +257,9 @@ class QuoteCreatePayment extends Component {
                                 </div>
                             </div>
                         </div>
+                        <div className="shopping-payment-button">
+                            <button>Lưu báo giá</button>
+                        </div>
                     </div>
                 </fieldset>
             </div>

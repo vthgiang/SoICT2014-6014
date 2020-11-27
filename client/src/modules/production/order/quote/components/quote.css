@@ -79,7 +79,34 @@
     right: 20px;
 }
 
-/* PAYMENT */
+/* SUBMIT GOOD BUTTON */
+
+.quote-add-good-button {
+    width: 100%;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: flex-end;
+    border-top: 0.0625rem dashed rgba(0, 0, 0, 0.09);
+}
+
+.quote-add-good-button > button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px !important;
+    border: none;
+    background-color: #1a9cb7;
+    color: #fff;
+    width: 200px;
+    height: 40px;
+    outline: none;
+}
+
+.quote-add-good-button > button:hover {
+    background-color: #21b7d1;
+}
+
+/* PAYMENT QUOTE*/
 
 .quote-address {
     background: white !important;
@@ -318,7 +345,7 @@
     display: flex;
     align-items: center;
     border-style: solid;
-    border-width: 0.0625rem;
+    border-width: 1px;
     margin-left: 20px;
     padding: 4px 10px;
     font-size: 13px;
@@ -329,7 +356,7 @@
     display: flex;
     align-items: center;
     border-style: solid;
-    border-width: 0.0625rem;
+    border-width: 1px;
     margin-left: 20px;
     padding: 4px 10px;
     font-size: 13px;
@@ -340,7 +367,7 @@
     display: flex;
     align-items: center;
     border-style: solid;
-    border-width: 0.0625rem;
+    border-width: 1px;
     margin-left: 20px;
     padding: 4px 10px;
     font-size: 13px;
@@ -371,7 +398,7 @@
     display: flex;
     position: relative;
     align-items: center;
-    padding-top: 35px;
+    padding: 20px 0px;
 }
 
 .shopping-payment-element-title {
@@ -382,6 +409,31 @@
 .shopping-payment-element-value {
     position: absolute;
     right: 0px;
+}
+
+.shopping-payment-button {
+    width: 100%;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: flex-end;
+    border-top: 0.0625rem dashed rgba(0, 0, 0, 0.09);
+}
+
+.shopping-payment-button > button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px !important;
+    border: none;
+    background-color: #1a9cb7;
+    color: #fff;
+    width: 200px;
+    height: 40px;
+    outline: none;
+}
+
+.shopping-payment-button > button:hover {
+    background-color: #21b7d1;
 }
 
 @media only screen and (max-width: 1100px) {
