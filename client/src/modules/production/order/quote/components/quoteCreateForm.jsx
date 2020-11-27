@@ -5,7 +5,9 @@ import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
 import { generateCode } from "../../../../../helpers/generateCode";
 import { formatToTimeZoneDate } from "../../../../../helpers/formatDate";
 import { DatePicker, DialogModal, SelectBox, ButtonModal, ErrorLabel } from "../../../../../common-components";
-import QuoteCreateGood from "./quoteCreateGood";
+import QuoteCreateGood from "./createQuote/quoteCreateGood";
+import QuoteCreateInfo from "./createQuote/quoteCreateInfo";
+import QuoteCreatePayment from "./createQuote/quoteCreatePayment";
 class QuoteCreateForm extends Component {
     constructor(props) {
         super(props);
@@ -20,6 +22,9 @@ class QuoteCreateForm extends Component {
             customerRepresent: "",
             effectiveDate: "",
             expirationDate: "",
+            shippingFee: "",
+            deliveryTime: "",
+            step: 0,
         };
     }
 
@@ -33,17 +38,8 @@ class QuoteCreateForm extends Component {
         });
     };
 
-    getCustomerOptions = () => {
-        let options = this.props.customers.list.map((item) => {
-            return {
-                value: item._id,
-                text: item.code + " - " + item.name,
-            };
-        });
-        return options;
-    };
-
     handleCustomerChange = (value) => {
+        console.log("VALUE", value);
         let customerInfo = this.props.customers.list.filter((item) => item._id === value[0]);
         this.setState({
             customer: customerInfo[0]._id,
@@ -135,6 +131,33 @@ class QuoteCreateForm extends Component {
         this.validateDateStage(effectiveDate, value, true);
     };
 
+    nextStep = (e) => {
+        e.preventDefault();
+        let { step } = this.state;
+        step++;
+        this.setState({
+            step,
+        });
+    };
+
+    preStep = (e) => {
+        e.preventDefault();
+        let { step } = this.state;
+        step--;
+        this.setState({
+            step,
+        });
+    };
+
+    setGoods = (goods) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                goods,
+            };
+        });
+    };
+
     render() {
         let {
             code,
@@ -147,6 +170,10 @@ class QuoteCreateForm extends Component {
             effectiveDate,
             expirationDate,
             dateError,
+            step,
+            goods,
+            shippingFee,
+            deliveryTime,
         } = this.state;
 
         return (
@@ -168,6 +195,7 @@ class QuoteCreateForm extends Component {
                     func={this.save}
                     size="100"
                     style={{ backgroundColor: "green" }}
+                    hasSaveButton={false}
                 >
                     <DialogModal
                         modalID="modal-create-quote-sla"
@@ -200,131 +228,70 @@ class QuoteCreateForm extends Component {
                         </form>
                     </DialogModal>
                     <form id={`form-add-quote`}>
-                        <div className="row row-equal-height" style={{ marginTop: -25 }}>
-                            <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8" style={{ padding: 10, height: "100%" }}>
-                                <fieldset className="scheduler-border">
-                                    <legend className="scheduler-border">Thông tin chung</legend>
-                                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                        <div className="form-group">
-                                            <label>
-                                                Khách hàng
-                                                <span className="attention"> * </span>
-                                            </label>
-                                            <SelectBox
-                                                id={`select-quote-customer`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                value={customer}
-                                                items={this.getCustomerOptions()}
-                                                onChange={this.handleCustomerChange}
-                                                multiple={false}
-                                            />
-                                        </div>
+                        <div className="row row-equal-height" style={{ marginTop: 0 }}>
+                            {step === 0 && (
+                                <QuoteCreateInfo
+                                    code={code}
+                                    note={note}
+                                    customer={customer}
+                                    customerName={customerName}
+                                    customerAddress={customerAddress}
+                                    customerPhone={customerPhone}
+                                    customerRepresent={customerRepresent}
+                                    effectiveDate={effectiveDate}
+                                    expirationDate={expirationDate}
+                                    dateError={dateError}
+                                    handleCustomerChange={this.handleCustomerChange}
+                                    handleCustomerAddressChange={this.handleCustomerAddressChange}
+                                    handleCustomerPhoneChange={this.handleCustomerPhoneChange}
+                                    handleCustomerRepresentChange={this.handleCustomerRepresentChange}
+                                    handleNoteChange={this.handleNoteChange}
+                                    handleChangeEffectiveDate={this.handleChangeEffectiveDate}
+                                    handleChangeExpirationDate={this.handleChangeExpirationDate}
+                                />
+                            )}
+                            {step === 1 && <QuoteCreateGood listGoods={goods} setGoods={this.setGoods} />}
+                            {step === 2 && (
+                                <QuoteCreatePayment
+                                    listGoods={goods}
+                                    customerPhone={customerPhone}
+                                    customerAddress={customerAddress}
+                                    customerName={customerName}
+                                    customerRepresent={customerRepresent}
+                                    effectiveDate={effectiveDate}
+                                    expirationDate={expirationDate}
+                                    code={code}
+                                    shippingFee={shippingFee}
+                                    deliveryTime={deliveryTime}
+                                    note={note}
+                                />
+                            )}
+                        </div>
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <div className={"pull-right"} style={{ padding: 10 }}>
+                                <div>
+                                    <div>
+                                        {step + 1} / {3}
                                     </div>
-                                    <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-                                        <div className="form-group">
-                                            <label>
-                                                Tên khách hàng <span className="attention"> </span>
-                                            </label>
-                                            <input type="text" className="form-control" value={customerName} disabled={true} />
-                                        </div>
+                                    <div>
+                                        {step !== 0 ? (
+                                            <button className="btn" onClick={this.preStep}>
+                                                Quay lại
+                                            </button>
+                                        ) : (
+                                            ""
+                                        )}
+                                        {step === 2 ? (
+                                            ""
+                                        ) : (
+                                            <button className="btn btn-success" onClick={this.nextStep}>
+                                                Tiếp
+                                            </button>
+                                        )}
+                                        {step === 2 ? <button className="btn btn-success">Lưu</button> : ""}
                                     </div>
-                                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <div className="form-group">
-                                            <label>
-                                                Địa chỉ nhận hàng
-                                                <span className="attention">* </span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={customerAddress}
-                                                onChange={this.handleCustomerAddressChange}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                        <div className="form-group">
-                                            <label>
-                                                Số điện thoại
-                                                <span className="attention"> * </span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={customerPhone}
-                                                onChange={this.handleCustomerPhoneChange}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-                                        <div className="form-group">
-                                            <label>
-                                                Người liên hệ <span className="attention"> </span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={customerRepresent}
-                                                onChange={this.handleCustomerRepresentChange}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <div className="form-group">
-                                            <label>
-                                                Ghi chú
-                                                <span className="attention"> </span>
-                                            </label>
-                                            <input type="text" className="form-control" value={note} onChange={this.handleNoteChange} />
-                                        </div>
-                                    </div>
-                                </fieldset>
+                                </div>
                             </div>
-                            <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4" style={{ padding: 10, height: "100%" }}>
-                                <fieldset className="scheduler-border">
-                                    <legend className="scheduler-border">Báo giá</legend>
-                                    <div className="form-group">
-                                        <label>
-                                            Mã báo giá
-                                            <span className="attention"> * </span>
-                                        </label>
-                                        <input type="text" className="form-control" value={code} disabled="true" />
-                                    </div>
-                                    <div className={`form-group ${!dateError ? "" : "has-error"}`}>
-                                        <label>Ngày báo giá</label>
-                                        <DatePicker
-                                            id="date_picker_create_discount_effectiveDate"
-                                            value={effectiveDate}
-                                            onChange={this.handleChangeEffectiveDate}
-                                            disabled={false}
-                                        />
-                                        <ErrorLabel content={dateError} />
-                                    </div>
-
-                                    <div className={`form-group ${!dateError ? "" : "has-error"}`}>
-                                        <label>Hiệu lực đến</label>
-                                        <DatePicker
-                                            id="date_picker_create_discount_expirationDate"
-                                            value={expirationDate}
-                                            onChange={this.handleChangeExpirationDate}
-                                            disabled={false}
-                                        />
-                                        <ErrorLabel content={dateError} />
-                                    </div>
-
-                                    {/* <div className="form-group">
-                                        <label>
-                                            Nhân viên bán hàng
-                                            <span className="attention"> * </span>
-                                        </label>
-                                        <input type="text" className="form-control" value={"Phạm Đại Tài"} disabled={true} />
-                                    </div> */}
-                                </fieldset>
-                            </div>
-
-                            <QuoteCreateGood />
                         </div>
                     </form>
                 </DialogModal>

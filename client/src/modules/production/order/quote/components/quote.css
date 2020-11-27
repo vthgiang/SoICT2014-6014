@@ -51,3 +51,258 @@
     border-top: 1px solid rgba(0, 0, 0, 0.09);
     border-bottom: 1px solid rgba(0, 0, 0, 0.09);
 }
+
+/* APPLY DISCOUNT FOR GOOD */
+.apply-discount-for-good-element {
+    position: relative;
+    display: flex;
+    width: 100%;
+}
+
+.apply-discounts-for-good-tag {
+    border-color: rgb(0, 191, 165);
+    color: rgb(0, 191, 165);
+    display: flex;
+    align-items: center;
+    border-top-style: solid;
+    border-bottom-style: solid;
+    border-left-style: dotted;
+    border-right-style: dotted;
+    border-width: 0.0625rem;
+    margin-left: 0.5rem;
+    padding: 2px 9px;
+    font-size: 12px;
+}
+
+.apply-discount-for-good-element > a {
+    position: absolute;
+    right: 20px;
+}
+
+/* PAYMENT */
+
+.quote-address {
+    background: white !important;
+    padding: 0px 0px 30px 0px !important;
+    margin-bottom: 10px !important;
+}
+
+.shopping-border-delivery {
+    height: 0.1875rem;
+    width: 100%;
+    background-position-x: -1.875rem;
+    background-size: 7.25rem 0.1875rem;
+    background-image: repeating-linear-gradient(
+        45deg,
+        #6fa6d6,
+        #6fa6d6 33px,
+        transparent 0,
+        transparent 41px,
+        #f18d9b 0,
+        #f18d9b 74px,
+        transparent 0,
+        transparent 82px
+    );
+}
+
+.shopping-address-title {
+    color: #ee4d2d;
+    text-transform: capitalize;
+    font-size: 16px;
+    margin: 15px 0px;
+    padding: 0px 15px;
+}
+
+.shopping-address-info {
+    display: flex;
+    padding: 0px 20px;
+    font-size: 15px;
+}
+
+.shopping-address-represent {
+    padding: 20px 20px;
+    font-style: italic;
+}
+
+.shopping-products {
+    background: white !important;
+    padding: 0px 20px 20px 20px !important;
+    margin-bottom: 10px !important;
+}
+
+.shopping-products-title {
+    width: 100%;
+    padding: 20px 0px;
+    font-size: 16px;
+    color: #ee4d2d;
+}
+
+.shopping-quote-info {
+    background: white !important;
+    padding: 0px 20px 20px 20px !important;
+    margin-bottom: 10px !important;
+}
+
+.shopping-quote-info-title {
+    width: 100%;
+    padding: 20px 0px;
+    font-size: 16px;
+    color: #ee4d2d;
+}
+
+.shopping-quote-info-element {
+    display: flex;
+    padding: 0px 0px 10px 0px;
+    font-size: 15px;
+    align-items: flex-end;
+}
+
+.shopping-shipping {
+    background: white !important;
+    padding: 0px 20px 20px 20px !important;
+    margin-bottom: 10px !important;
+}
+
+.shopping-shipping-title {
+    width: 100%;
+    padding: 20px 0px;
+    font-size: 16px;
+    color: #ee4d2d;
+}
+
+.shopping-shipping-fee {
+    background-color: #fafdff;
+    border: 0.0625rem dashed rgba(0, 0, 0, 0.09);
+    display: flex;
+    align-items: center;
+    width: 40%;
+    height: 69px;
+}
+
+.shopping-shipping-fee > div {
+    font-weight: 600;
+    width: 30%;
+    padding-left: 20px;
+    line-height: 0px;
+}
+
+.shopping-shipping-fee > input {
+    height: 34px;
+    border: solid 0.3px grey;
+    border-radius: 2px;
+    margin-left: 20px;
+    margin-right: 20px;
+    padding-left: 5px;
+    background-color: #fff;
+    width: 70%;
+}
+
+.shopping-shipping-time {
+    background-color: #fafdff;
+    border: 0.0625rem dashed rgba(0, 0, 0, 0.09);
+    border-left: 0px;
+    width: 60%;
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+    height: 69px;
+}
+
+.shopping-shipping-time-title {
+    font-weight: 600;
+    width: 35%;
+    line-height: 0px;
+}
+
+#date_picker_create_quote_delivery-time {
+    width: 65%;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.shoppe-shipping-content {
+    display: flex;
+}
+
+.shopping-discount {
+    background: white !important;
+    margin-bottom: 10px !important;
+}
+
+.shopping-discount-title {
+    width: 100%;
+    padding: 20px;
+    font-size: 16px;
+    color: #ee4d2d;
+}
+
+.shopping-apply-discounts {
+    width: 100%;
+    padding: 15px 20px;
+    border-top: solid 0.3px #c5c5c5;
+    display: flex;
+    position: relative;
+}
+
+.shopping-apply-discounts > a {
+    position: absolute;
+    right: 20px;
+}
+
+.shopping-apply-discounts-tag {
+    border-color: rgb(0, 191, 165);
+    color: rgb(0, 191, 165);
+    display: flex;
+    align-items: center;
+    border-top-style: solid;
+    border-bottom-style: solid;
+    border-left-style: dotted;
+    border-right-style: dotted;
+    border-width: 0.0625rem;
+    margin-left: 0.5rem;
+    padding: 2px 9px;
+    font-size: 12px;
+}
+
+.shopping-apply-loyalty-coin {
+    width: 100%;
+    padding: 15px 20px 30px 15px;
+    border-top: solid 0.3px #c5c5c5;
+    position: relative;
+    display: flex;
+}
+
+.shopping-apply-loyalty-coin-tag {
+    border-color: rgb(0, 191, 165);
+    color: rgb(0, 191, 165);
+    display: flex;
+    align-items: center;
+    border-top-style: solid;
+    border-bottom-style: solid;
+    border-left-style: dotted;
+    border-right-style: dotted;
+    border-width: 0.0625rem;
+    margin-left: 0.5rem;
+    padding: 2px 9px;
+    font-size: 12px;
+}
+
+.shopping-apply-loyalty-coin-checkbox {
+    display: flex;
+    position: absolute;
+    right: 20px;
+}
+
+@media only screen and (max-width: 1100px) {
+    .shoppe-shipping-content {
+        flex-direction: column;
+    }
+
+    .shopping-shipping-fee {
+        width: 100%;
+    }
+
+    .shopping-shipping-time {
+        width: 100%;
+    }
+}
