@@ -218,6 +218,46 @@ class QuoteCreatePayment extends Component {
                             </div>
                         </div>
                     </div>
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 shopping-bonus-good">
+                        <div className="shopping-bonus-good-title">Các sản phẩm được tặng kèm</div>
+                        <div className="shopping-bonus-good-element">
+                            <div className="shopping-bonus-good-element-info">HAABCD - Bánh mì </div>
+                            <div className="shopping-bonus-good-element-quantity">10 cái</div>
+                            <div className="shopping-bonus-good-element-date">Hạn sử dụng:&ensp; 10-11-2021</div>
+                        </div>
+                        <div className="shopping-bonus-good-element">
+                            <div className="shopping-bonus-good-element-info">HAB - Bún chả </div>
+                            <div className="shopping-bonus-good-element-quantity">5 tô</div>
+                            <div className="shopping-bonus-good-element-date">Hạn sử dụng:&ensp; 10-11-2021</div>
+                        </div>
+                    </div>
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 shopping-payment">
+                        <div className="shopping-payment-title">Tổng thanh toán</div>
+                        <div className="shopping-payment-content">
+                            <div className="shopping-payment-element">
+                                <div className="shopping-payment-element-title">Tổng tiền hàng (sau thuế)</div>
+                                <div className="shopping-payment-element-value">1,000,000</div>
+                            </div>
+                            <div className="shopping-payment-element">
+                                <div className="shopping-payment-element-title">Phí vận chuyển</div>
+                                <div className="shopping-payment-element-value">100,000</div>
+                            </div>
+                            <div className="shopping-payment-element">
+                                <div className="shopping-payment-element-title">Miễn phí vận chuyển</div>
+                                <div className="shopping-payment-element-value">-100,000</div>
+                            </div>
+                            <div className="shopping-payment-element">
+                                <div className="shopping-payment-element-title">Khuyến mãi cho toàn đơn</div>
+                                <div className="shopping-payment-element-value">-45,000</div>
+                            </div>
+                            <div className="shopping-payment-element">
+                                <div className="shopping-payment-element-title"> Tổng tiền thanh toán:</div>
+                                <div className="shopping-payment-element-value" style={{ color: "#ee4d2d", fontSize: "20px" }}>
+                                    1,055,000
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </fieldset>
             </div>
         );

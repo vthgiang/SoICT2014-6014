@@ -231,7 +231,7 @@
 
 .shopping-discount-title {
     width: 100%;
-    padding: 20px;
+    padding: 20px 10px;
     font-size: 16px;
     color: #ee4d2d;
 }
@@ -290,7 +290,98 @@
 .shopping-apply-loyalty-coin-checkbox {
     display: flex;
     position: absolute;
-    right: 20px;
+    right: 10px;
+}
+
+.shopping-bonus-good {
+    background: white !important;
+    margin-bottom: 10px !important;
+    padding: 0px 20px 35px 20px !important;
+}
+
+.shopping-bonus-good-title {
+    width: 100%;
+    padding: 20px 0px;
+    font-size: 16px;
+    color: #ee4d2d;
+    border-bottom: solid 0.3px #c5c5c5;
+}
+
+.shopping-bonus-good-element {
+    display: flex;
+    align-items: center;
+    padding-top: 20px;
+}
+
+.shopping-bonus-good-element-info {
+    border-color: rgb(239, 191, 191);
+    display: flex;
+    align-items: center;
+    border-style: solid;
+    border-width: 0.0625rem;
+    margin-left: 20px;
+    padding: 4px 10px;
+    font-size: 13px;
+}
+
+.shopping-bonus-good-element-quantity {
+    border-color: rgb(239, 191, 191);
+    display: flex;
+    align-items: center;
+    border-style: solid;
+    border-width: 0.0625rem;
+    margin-left: 20px;
+    padding: 4px 10px;
+    font-size: 13px;
+}
+
+.shopping-bonus-good-element-date {
+    border-color: rgb(239, 191, 191);
+    display: flex;
+    align-items: center;
+    border-style: solid;
+    border-width: 0.0625rem;
+    margin-left: 20px;
+    padding: 4px 10px;
+    font-size: 13px;
+}
+
+.shopping-payment {
+    background: white !important;
+    margin-bottom: 10px !important;
+    padding: 0px 20px 35px 20px !important;
+}
+
+.shopping-payment-title {
+    width: 100%;
+    padding: 20px 0px;
+    font-size: 16px;
+    color: #ee4d2d;
+    border-bottom: solid 0.3px #c5c5c5;
+}
+
+.shopping-payment-content {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    float: right;
+}
+
+.shopping-payment-element {
+    display: flex;
+    position: relative;
+    align-items: center;
+    padding-top: 35px;
+}
+
+.shopping-payment-element-title {
+    position: absolute;
+    left: 0px;
+}
+
+.shopping-payment-element-value {
+    position: absolute;
+    right: 0px;
 }
 
 @media only screen and (max-width: 1100px) {
