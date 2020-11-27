@@ -3893,7 +3893,6 @@ const initSampleCompanyDB = async () => {
     console.log("Tạo mẫu dữ liệu lô hàng");
     const listLot = await Lot(vnistDB).insertMany([
         {
-            name: "LOT001",
             code: "LOT001",
             lotType: 2,
             good: listProduct[0]._id,
@@ -3970,7 +3969,6 @@ const initSampleCompanyDB = async () => {
             ]
         },
         {
-            name: "LOT002",
             code: "LOT002",
             lotType: 2,
             good: listProduct[1]._id,
@@ -4047,7 +4045,6 @@ const initSampleCompanyDB = async () => {
             ]
         },
         {
-            name: "LOT003",
             code: "LOT003",
             lotType: 2,
             good: listProduct[0]._id,
@@ -4124,7 +4121,6 @@ const initSampleCompanyDB = async () => {
             ]
         },
         {
-            name: "LOT004",
             code: "LOT004",
             lotType: 2,
             good: listGood[0]._id,
@@ -4201,7 +4197,6 @@ const initSampleCompanyDB = async () => {
             ]
         },
         {
-            name: "LOT005",
             code: "LOT005",
             lotType: 2,
             good: listGood[0]._id,
@@ -4278,7 +4273,6 @@ const initSampleCompanyDB = async () => {
             ]
         },
         {
-            name: "LOT006",
             code: "LOT006",
             lotType: 2,
             good: listGood[0]._id,

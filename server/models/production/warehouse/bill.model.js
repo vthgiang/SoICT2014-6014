@@ -68,6 +68,26 @@ const BillSchema = new Schema({
         }
     }],
 
+    qualityControlStaffs: [{ // Danh sách người kiểm định chất lượng 
+        staff: { // Người kiểm định
+            type: Schema.Types.ObjectId,
+            ref: "User"
+        },
+        time: { // Thời gian kiểm định
+            type: Date
+        }
+    }],
+
+    responsibles: [{ // Danh sách người thực hiện
+        type: Schema.Types.ObjectId,
+        ref: "User"
+    }],
+    
+    accountables: [{ // Người giám sát
+        type: Schema.Types.ObjectId,
+        ref: "User"
+    }],
+
     customer: {
         type: Schema.Types.ObjectId,
         ref: 'Customer'
@@ -173,7 +193,26 @@ const BillSchema = new Schema({
     manufacturingCommand: {
         type: Schema.Types.ObjectId,
         ref: "ManufacturingCommand"
-    }
+    },
+
+    logs: [{
+        createAt: {
+            type: Date
+        },
+
+        creator: {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+        },
+
+        title: {
+            type: String
+        },
+
+        versions: {
+            type: String
+        }
+    }]
 }, {
     timestamps: true
 });

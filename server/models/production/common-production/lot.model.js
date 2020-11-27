@@ -7,10 +7,6 @@ const LotSchema = new Schema({
         type: String
     },
 
-    name: {
-        type: String
-    },
-
     good: {
         type: Schema.Types.ObjectId,
         ref: 'Good'

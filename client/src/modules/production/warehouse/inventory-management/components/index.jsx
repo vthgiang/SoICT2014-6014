@@ -152,7 +152,7 @@ class InventoryManagement extends Component {
             page: this.state.page,
             managementLocation: this.state.currentRole,
             type: this.state.type,
-            name: this.state.name,
+            code: this.state.code,
             good: this.state.good,
             expirationDate: this.state.expirationDate,
             stock: this.state.stock,
@@ -175,7 +175,7 @@ class InventoryManagement extends Component {
             managementLocation: this.state.currentRole,
             page: page,
             type: this.state.type,
-            name: this.state.name,
+            code: this.state.code,
             good: this.state.good,
             expirationDate: this.state.expirationDate,
             stock: this.state.stock,
@@ -209,7 +209,7 @@ class InventoryManagement extends Component {
 
     handleLotChange = (e) => {
         let value = e.target.value;
-        this.state.name = value;
+        this.state.code = value;
     }
 
     handleSubmitSearch = async () => {
@@ -218,7 +218,7 @@ class InventoryManagement extends Component {
             page: this.state.page,
             limit: this.state.limit,
             managementLocation: this.state.currentRole,
-            name: this.state.name,
+            code: this.state.code,
             good: this.state.good,
             expirationDate: this.state.expirationDate,
             stock: this.state.stock,
@@ -309,7 +309,7 @@ class InventoryManagement extends Component {
                             }
                         }
                     }
-                    inventoryQuantity.push({quantity: quantity, good: listLots[i].good, name: listLots[i].name});
+                    inventoryQuantity.push({quantity: quantity, good: listLots[i].good, code: listLots[i].code});
                 }
             }
             else{
@@ -322,7 +322,7 @@ class InventoryManagement extends Component {
                             }
                         }
                     }
-                    inventoryQuantity.push({quantity: quantity, good: listLots[i].good, name: listLots[i].name});
+                    inventoryQuantity.push({quantity: quantity, good: listLots[i].good, code: listLots[i].code});
                 }
             }
         }
@@ -460,7 +460,7 @@ class InventoryManagement extends Component {
                                             <td>{x.good.name}</td>
                                             <td>{x.good.baseUnit}</td>
                                             <td>{((stock && stock.length > 0) || stocks.listStocks.length > 0) ? this.totaQuantity(x.stocks) : x. quantity}</td>
-                                            <td>{x.name}</td>
+                                            <td>{x.code}</td>
                                             <td>{this.formatDate(x.expirationDate)}</td>
                                             <td style={{textAlign: 'center'}}>
                                                 <a className="text-green" onClick={() => this.handleShowDetailLot(x._id)}><i className="material-icons">visibility</i></a>
