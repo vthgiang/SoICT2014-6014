@@ -222,7 +222,7 @@ class SelectBox extends Component {
             return true;
         }
         // Chỉ render lại khi id thay đổi, hoặc khi tập items thay đổi, value thay đổi, hoặc disabled thay đổi
-        if (nextProps.id !== this.state.id || !SelectBox.isEqual(nextProps.items, this.state.items) || (nextProps.value && nextProps.value !== this.state.value) || (nextProps.disabled !== undefined ? nextProps.disabled : false) !== this.state.disabled)
+        if (nextProps.id !== this.state.id || !SelectBox.isEqual(nextProps.items, this.state.items) || (nextProps.value && !SelectBox.isEqual(nextProps.value, this.state.value)) || (nextProps.disabled !== undefined ? nextProps.disabled : false) !== this.state.disabled)
             return true;
         return false;;
     }
