@@ -30,10 +30,11 @@ exports.getExamples = async (params, portal) => {
     }
     let totalList = await Example(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     let ExampleCollection = await Example(connect(DB_CONNECTION, portal)).find(keySearch)
-        .skip(params.page * params.limit)
+        .skip((params.page - 1) * params.limit)
         .limit(params.limit);
     return { data: ExampleCollection, totalList }
 }
+
 // Lấy ra một phần thông tin Ví dụ (lấy ra exampleName) theo mô hình dữ liệu số  2
 exports.getOnlyExampleName = async (params, portal) => {
     let keySearch;
@@ -78,7 +79,8 @@ exports.editExample = async (id, data, portal) => {
     // Cach 2 de update
     await Example(connect(DB_CONNECTION, portal)).update({ _id: id }, { $set: data });
     let example = await Example(connect(DB_CONNECTION, portal)).findById({ _id: oldExample._id });
-    return { example };
+
+    return example;
 }
 
 // Xóa một Ví dụ

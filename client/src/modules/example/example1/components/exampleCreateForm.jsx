@@ -10,14 +10,17 @@ class ExampleCreateForm extends Component {
         super(props);
         this.state = {
             exampleName: "",
-            description: ""
+            description: "",
+            exampleNameError: {
+                message: undefined,
+                status: true
+            }
         }
     }
 
     isFormValidated = () => {
-        const { exampleName } = this.state;
-        let { translate } = this.props;
-        if (!ValidationHelper.validateName(translate, exampleName, 6, 255).status) {
+        const { exampleNameError } = this.state;
+        if (!exampleNameError.status) {
             return false;
         }
         return true;
@@ -25,19 +28,30 @@ class ExampleCreateForm extends Component {
 
     save = () => {
         if (this.isFormValidated()) {
+            const { page, limit } = this.props;
             const { exampleName, description } = this.state;
+            
             this.props.createExample({ exampleName, description });
+            this.props.getExamples({
+                exampleName: "",
+                page: page,
+                limit: limit
+            })
         }
     }
 
     handleExampleName = (e) => {
         const { value } = e.target;
-        this.setState({
-            exampleName: value
-        });
         let { translate } = this.props;
-        let { message } = ValidationHelper.validateName(translate, value, 6, 255);
-        this.setState({ exampleNameError: message })
+
+        let result = ValidationHelper.validateName(translate, value, 6, 255);
+        this.setState(state => {
+            return {
+                ...state,
+                exampleName: value,
+                exampleNameError: result
+            }
+        })
     }
 
     handleExampleDescription = (e) => {
@@ -65,10 +79,10 @@ class ExampleCreateForm extends Component {
                     maxWidth={500}
                 >
                     <form id="form-create-example" onSubmit={() => this.save(translate('manage_example.add_success'))}>
-                        <div className={`form-group ${!exampleNameError ? "" : "has-error"}`}>
+                        <div className={`form-group ${exampleNameError.status ? "" : "has-error"}`}>
                             <label>{translate('manage_example.exampleName')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" value={exampleName} onChange={this.handleExampleName}></input>
-                            <ErrorLabel content={exampleNameError} />
+                            <ErrorLabel content={exampleNameError.message} />
                         </div>
                         <div className={`form-group`}>
                             <label>{translate('manage_example.example_description')}</label>
@@ -87,6 +101,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    createExample: exampleActions.createExample
+    createExample: exampleActions.createExample,
+    getExamples: exampleActions.getExamples,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ExampleCreateForm)); 

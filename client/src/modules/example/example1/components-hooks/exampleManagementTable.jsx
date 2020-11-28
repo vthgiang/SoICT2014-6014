@@ -14,10 +14,8 @@ function ExampleManagementTable(props) {
     // Khởi tạo state
     const [state, setState] = useState({
         exampleName: "",
-        description: "",
-        page: 0,
+        page: 1,
         limit: 5,
-        currentRow: undefined
     })
 
     const { example, translate } = props;
@@ -36,26 +34,27 @@ function ExampleManagementTable(props) {
     }
 
     const handleSubmitSearch = () => {
+        props.getExamples({
+            exampleName,
+            limit,
+            page: 1
+        });
         setState({
             ...state,
-            page: 0
-        });
-        props.getExamples({
-            ...state,
-            page: 0
+            page: 1
         });
     }
 
     const setPage = (pageNumber) => {
-        let currentPage = pageNumber - 1;
         setState({
             ...state,
-            page: parseInt(currentPage)
+            page: parseInt(pageNumber)
         });
 
         props.getExamples({
-            ...state,
-            page: parseInt(currentPage)
+            exampleName,
+            limit,
+            page: parseInt(pageNumber)
         });
     }
 
@@ -63,17 +62,22 @@ function ExampleManagementTable(props) {
         setState({
             ...state,
             limit: parseInt(number),
-            page: 0
+            page: 1
         });
         props.getExamples({
-            ...state,
+            exampleName,
             limit: parseInt(number),
-            page: 0
+            page: 1
         });
     }
 
     const handleDelete = (id) => {
         props.deleteExample(id);
+        props.getExamples({
+            exampleName,
+            limit,
+            page: example && example.lists && example.lists.length === 1 ? page - 1 : page
+        });
     }
 
     const handleEdit = (example) => {
@@ -81,7 +85,8 @@ function ExampleManagementTable(props) {
             ...state,
             currentRow: example
         });
-        window.$('#modal-edit-example').modal('show');
+        console.log(111)
+        window.$('#modal-edit-example-hooks').modal('show');
     }
 
     let lists = [];
@@ -94,15 +99,17 @@ function ExampleManagementTable(props) {
     return (
         <React.Fragment>
             {
-                currentRow &&
                 <ExampleEditForm
-                    exampleID={currentRow._id}
-                    exampleName={currentRow.exampleName}
-                    description={currentRow.description}
+                    exampleID={currentRow && currentRow._id}
+                    exampleName={currentRow && currentRow.exampleName}
+                    description={currentRow && currentRow.description}
                 />
             }
             <div className="box-body qlcv">
-                <ExampleCreateForm />
+                <ExampleCreateForm
+                    page={page}
+                    limit={limit}
+                />
                 <div className="form-inline">
                     <div className="form-group">
                         <label className="form-control-static">{translate('manage_example.exampleName')}</label>
@@ -137,7 +144,7 @@ function ExampleManagementTable(props) {
                         {(lists && lists.length !== 0) &&
                             lists.map((example, index) => (
                                 <tr key={index}>
-                                    <td>{index + 1 + page * limit}</td>
+                                    <td>{index + 1 + (page-1) * limit}</td>
                                     <td>{example.exampleName}</td>
                                     <td>{example.description}</td>
                                     <td style={{ textAlign: "center" }}>
@@ -160,7 +167,13 @@ function ExampleManagementTable(props) {
                     <div className="table-info-panel">{translate('confirm.loading')}</div> :
                     (typeof lists === 'undefined' || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                 }
-                <PaginateBar pageTotal={totalPage ? totalPage : 0} currentPage={page + 1} func={setPage} />
+                <PaginateBar
+                    pageTotal={totalPage ? totalPage : 0}
+                    currentPage={page}
+                    display={lists && lists.length !== 0 && lists.length}
+                    total={example && example.totalList}
+                    func={setPage}
+                />
             </div>
         </React.Fragment>
     )

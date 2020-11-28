@@ -11,8 +11,7 @@ class ExampleManagementTable extends Component {
         super(props);
         this.state = {
             exampleName: "",
-            description: "",
-            page: 0,
+            page: 1,
             limit: 5
         };
     }
@@ -29,35 +28,57 @@ class ExampleManagementTable extends Component {
         });
     }
 
-    handleSubmitSearch = async () => {
-        await this.setState({
-            page: 0
+    handleSubmitSearch = () => {
+        const { exampleName, limit } = this.state;
+
+        this.setState(state => {
+            return {
+                ...state,
+                page: 1
+            }
         });
-        this.props.getExamples(this.state);
+        this.props.getExamples({ exampleName, limit, page: 1 });
     }
 
-    setPage = async (pageNumber) => {
-        var currentPage = pageNumber - 1;
-        await this.setState({
-            page: parseInt(currentPage)
+    setPage = (pageNumber) => {
+        const { exampleName, limit } = this.state;
+
+        this.setState(state => {
+            return {
+                ...state,
+                page: parseInt(pageNumber)
+            }
         });
 
-        this.props.getExamples(this.state);
+        this.props.getExamples({ exampleName, limit, page: parseInt(pageNumber) });
     }
 
-    setLimit = async (number) => {
-        await this.setState({
-            limit: parseInt(number)
+    setLimit = (number) => {
+        const { exampleName, page } = this.state;
+
+        this.setState(state => {
+            return {
+                ...state,
+                limit: parseInt(number)
+            }
         });
-        this.props.getExamples(this.state);
+        this.props.getExamples({ exampleName, limit: parseInt(number), page });
     }
 
     handleDelete = (id) => {
+        const { example } = this.props;
+        const { exampleName, limit, page } = this.state;
+
         this.props.deleteExample(id);
+        this.props.getExamples({
+            exampleName,
+            limit,
+            page: example && example.lists && example.lists.length === 1 ? page - 1 : page
+        });
     }
 
-    handleEdit = async (example) => {
-        await this.setState((state) => {
+    handleEdit = (example) => {
+        this.setState((state) => {
             return {
                 ...state,
                 currentRow: example
@@ -68,25 +89,28 @@ class ExampleManagementTable extends Component {
 
     render() {
         const { example, translate } = this.props;
+        const { page, limit, currentRow,  } = this.state;
+
         let lists = [];
-        if (example.isLoading === false) {
+        if (example && example.isLoading === false) {
             lists = example.lists
         }
 
-        const totalPage = Math.ceil(example.totalList / this.state.limit);
-        const page = this.state.page;
+        const totalPage = Math.ceil(example.totalList / limit);
         return (
             <React.Fragment>
                 {
-                    this.state.currentRow &&
                     <ExampleEditForm
-                        exampleID={this.state.currentRow._id}
-                        exampleName={this.state.currentRow.exampleName}
-                        description={this.state.currentRow.description}
+                        exampleID={currentRow && currentRow._id}
+                        exampleName={currentRow && currentRow.exampleName}
+                        description={currentRow && currentRow.description}
                     />
                 }
                 <div className="box-body qlcv">
-                    <ExampleCreateForm />
+                    <ExampleCreateForm
+                        page={page}
+                        limit={limit}
+                    />
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('manage_example.exampleName')}</label>
@@ -110,7 +134,7 @@ class ExampleManagementTable extends Component {
                                             translate('manage_example.exampleName'),
                                             translate('manage_example.description'),
                                         ]}
-                                        limit={this.state.limit}
+                                        limit={limit}
                                         hideColumnOption={true}
                                         setLimit={this.setLimit}
                                     />
@@ -121,7 +145,7 @@ class ExampleManagementTable extends Component {
                             {(lists && lists.length !== 0) &&
                                 lists.map((example, index) => (
                                     <tr key={index}>
-                                        <td>{index + 1 + page * this.state.limit}</td>
+                                        <td>{index + 1 + (page - 1) * limit}</td>
                                         <td>{example.exampleName}</td>
                                         <td>{example.description}</td>
                                         <td style={{ textAlign: "center" }}>
@@ -144,7 +168,13 @@ class ExampleManagementTable extends Component {
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
                         (typeof lists === 'undefined' || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
-                    <PaginateBar pageTotal={totalPage ? totalPage : 0} currentPage={page + 1} func={this.setPage} />
+                    <PaginateBar
+                        pageTotal={totalPage ? totalPage : 0}
+                        currentPage={page}
+                        display={lists && lists.length !== 0 && lists.length}
+                        total={example && example.totalList}
+                        func={this.setPage}
+                    />
                 </div>
             </React.Fragment>
         )

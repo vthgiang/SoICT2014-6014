@@ -40,8 +40,8 @@ export function example1(state = initialState, action) {
         case exampleConstants.GET_ALL_EXAMPLES_SUCCESS:
             return {
                 ...state,
-                lists: action.payload.content.data,
-                totalList: action.payload.content.totalList,
+                lists: action.payload.data,
+                totalList: action.payload.totalList,
                 isLoading: false
             }
         case exampleConstants.DELETE_EXAMPLE_SUCCESS:
@@ -55,14 +55,14 @@ export function example1(state = initialState, action) {
                 ...state,
                 lists: [
                     ...state.lists,
-                    action.payload.content.example
+                    action.payload.example
                 ],
                 isLoading: false
             }
         case exampleConstants.EDIT_EXAMPLE_SUCCESS:
-            index = findIndex(state.lists, action.payload.content.example._id);
+            index = findIndex(state.lists, action.payload._id);
             if (index !== -1) {
-                state.lists[index] = action.payload.content.example
+                state.lists[index] = action.payload
             }
             return {
                 ...state,
