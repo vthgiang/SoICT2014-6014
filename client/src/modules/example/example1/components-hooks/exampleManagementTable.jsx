@@ -6,6 +6,7 @@ import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../c
 
 import { ExampleCreateForm } from "./exampleCreateForm";
 import { ExampleEditForm } from "./exampleEditForm";
+import { ExampleDetailInfo } from "./exampleDetailInfo";
 
 import { exampleActions } from "../redux/actions";
 
@@ -89,6 +90,15 @@ function ExampleManagementTable(props) {
         window.$('#modal-edit-example-hooks').modal('show');
     }
 
+    const handleShowDetailInfo = (id) => {
+        setState({
+            ...state,
+            exampleId: id
+        });
+
+        window.$(`#modal-detail-info-example-hooks`).modal('show');
+    }
+
     let lists = [];
     if (example) {
         lists = example.lists
@@ -98,13 +108,15 @@ function ExampleManagementTable(props) {
 
     return (
         <React.Fragment>
-            {
-                <ExampleEditForm
-                    exampleID={currentRow && currentRow._id}
-                    exampleName={currentRow && currentRow.exampleName}
-                    description={currentRow && currentRow.description}
-                />
-            }
+            <ExampleEditForm
+                exampleID={currentRow && currentRow._id}
+                exampleName={currentRow && currentRow.exampleName}
+                description={currentRow && currentRow.description}
+            />
+            <ExampleDetailInfo
+                exampleId={state.exampleId}
+            />
+            
             <div className="box-body qlcv">
                 <ExampleCreateForm
                     page={page}
@@ -148,6 +160,7 @@ function ExampleManagementTable(props) {
                                     <td>{example.exampleName}</td>
                                     <td>{example.description}</td>
                                     <td style={{ textAlign: "center" }}>
+                                        <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} onClick={() => handleShowDetailInfo(example._id)}><i className="material-icons">visibility</i></a>
                                         <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_example.edit')} onClick={() => handleEdit(example)}><i className="material-icons">edit</i></a>
                                         <DeleteNotification
                                             content={translate('manage_example.delete')}

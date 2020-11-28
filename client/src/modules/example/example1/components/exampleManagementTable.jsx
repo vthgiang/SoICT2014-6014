@@ -1,11 +1,14 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
+
 import { exampleActions } from "../redux/actions";
+
 import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../common-components";
+
 import ExampleCreateForm from "./exampleCreateForm";
 import ExampleEditForm from "./exampleEditForm";
-
+import ExampleDetailInfo from "./exampleDetailInfo";
 class ExampleManagementTable extends Component {
     constructor(props) {
         super(props);
@@ -87,6 +90,16 @@ class ExampleManagementTable extends Component {
         window.$('#modal-edit-example').modal('show');
     }
 
+    handleShowDetailInfo = (id) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                exampleId: id
+            }
+        });
+        window.$(`#modal-detail-info-example`).modal('show');
+    }
+
     render() {
         const { example, translate } = this.props;
         const { page, limit, currentRow,  } = this.state;
@@ -99,13 +112,16 @@ class ExampleManagementTable extends Component {
         const totalPage = Math.ceil(example.totalList / limit);
         return (
             <React.Fragment>
-                {
-                    <ExampleEditForm
-                        exampleID={currentRow && currentRow._id}
-                        exampleName={currentRow && currentRow.exampleName}
-                        description={currentRow && currentRow.description}
-                    />
-                }
+                <ExampleEditForm
+                    exampleID={currentRow && currentRow._id}
+                    exampleName={currentRow && currentRow.exampleName}
+                    description={currentRow && currentRow.description}
+                />
+                    
+                <ExampleDetailInfo
+                    exampleId={this.state.exampleId}
+                />
+
                 <div className="box-body qlcv">
                     <ExampleCreateForm
                         page={page}
@@ -149,6 +165,7 @@ class ExampleManagementTable extends Component {
                                         <td>{example.exampleName}</td>
                                         <td>{example.description}</td>
                                         <td style={{ textAlign: "center" }}>
+                                            <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} onClick={() => this.handleShowDetailInfo(example._id)}><i className="material-icons">visibility</i></a>
                                             <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_example.edit')} onClick={() => this.handleEdit(example)}><i className="material-icons">edit</i></a>
                                             <DeleteNotification
                                                 content={translate('manage_example.delete')}
