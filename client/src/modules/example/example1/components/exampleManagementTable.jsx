@@ -9,6 +9,8 @@ import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../c
 import ExampleCreateForm from "./exampleCreateForm";
 import ExampleEditForm from "./exampleEditForm";
 import ExampleDetailInfo from "./exampleDetailInfo";
+import ExampleImportForm from "./exampleImortForm";
+
 class ExampleManagementTable extends Component {
     constructor(props) {
         super(props);
@@ -117,17 +119,29 @@ class ExampleManagementTable extends Component {
                     exampleName={currentRow && currentRow.exampleName}
                     description={currentRow && currentRow.description}
                 />
-                    
                 <ExampleDetailInfo
                     exampleId={this.state.exampleId}
                 />
+                <ExampleCreateForm
+                    page={page}
+                    limit={limit}
+                />
+                <ExampleImportForm
+                    page={page}
+                    limit={limit}
+                />
 
                 <div className="box-body qlcv">
-                    <ExampleCreateForm
-                        page={page}
-                        limit={limit}
-                    />
                     <div className="form-inline">
+                        <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
+                            <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_example.add_title')} >{translate('manage_example.add')}</button>
+                            <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
+                                <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal_import_file_example').modal('show')} title={translate('human_resource.salary.add_import_title')}>
+                                    {translate('human_resource.salary.add_import')}</a></li>
+                                <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-create-example').modal('show')} title={translate('human_resource.salary.add_by_hand_title')}>
+                                    {translate('human_resource.salary.add_by_hand')}</a></li>
+                            </ul>
+                        </div>
                         <div className="form-group">
                             <label className="form-control-static">{translate('manage_example.exampleName')}</label>
                             <input type="text" className="form-control" name="exampleName" onChange={this.handleChangeExampleName} placeholder={translate('manage_example.exampleName')} autoComplete="off" />

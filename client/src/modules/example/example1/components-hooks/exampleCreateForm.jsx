@@ -11,8 +11,8 @@ function ExampleCreateForm(props) {
 
     // Khởi tạo state
     const [state, setState] = useState({
-        exampleName: "",
-        description: "",
+        exampleName: undefined,
+        description: undefined,
         exampleNameError: {
             message: undefined,
             status: true
@@ -31,8 +31,8 @@ function ExampleCreateForm(props) {
     }
 
     const save = () => {
-        if (isFormValidated()) {
-            props.createExample({ exampleName, description });
+        if (isFormValidated() && exampleName) {
+            props.createExample([{ exampleName, description }]);
             props.getExamples({
                 exampleName: "",
                 page: page,
