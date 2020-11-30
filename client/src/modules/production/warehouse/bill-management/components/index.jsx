@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { SelectMulti, DatePicker, DataTableSetting, PaginateBar } from '../../../../../common-components';
-
-// import BillDetailForm from './billDetailForm';
-// import BillCreateForm from './billCreateForm';
-// import BillEditForm from './billEditForm';
 
 import BookManagement from '../components/stock-book';
 import ReceiptManagement from '../components/good-receipts';
@@ -351,6 +346,65 @@ class BillManagement extends Component {
         return partnerArr;
     }
 
+    checkRoleApprovers = (bill) => {
+        const { approvers } = bill;
+        const userId = localStorage.getItem("userId");
+        let approverIds = approvers.map(x => x.approver._id);
+        if (approverIds.includes(userId) && approvers[approverIds.indexOf(userId)].approvedTime === null) {
+            return true;
+        }
+        return false
+    }
+
+    handleFinishedApproval = (bill) => {
+        const userId = localStorage.getItem("userId");
+        const data = {
+            approverId: userId
+        }
+        this.props.editBill(bill._id, data);
+    }
+
+    checkRoleQualityControlStaffs = (bill) => {
+        const { qualityControlStaffs } = bill;
+        const userId = localStorage.getItem("userId");
+        let qualityControlStaffId = qualityControlStaffs.map(x => x.staff._id);
+        if (qualityControlStaffId.includes(userId) && qualityControlStaffs[qualityControlStaffId.indexOf(userId)].time === null) {
+            return true;
+        }
+        return false
+    }
+
+    handleFinishedQualityControlStaff = (bill) => {
+        const userId = localStorage.getItem("userId");
+        const data = {
+            qualityControlStaffId: userId
+        }
+        this.props.editBill(bill._id, data);
+    }
+
+    checkRoleCanEdit = (bill) => {
+        const { responsibles, accountables, creator } = bill;
+        const userId = localStorage.getItem("userId");
+        let staffId = [];
+        if(responsibles.length > 0) {
+            responsibles.map(x => {
+                staffId.push(x._id)
+            })
+        }
+        if(accountables.length > 0) {
+            accountables.map(x => {
+                staffId.push(x._id)
+            })
+        }
+        if(creator) {
+                staffId.push(creator._id)
+        }
+        if (staffId.includes(userId)) {
+            return true;
+        }
+        return false
+    }
+
     render() {
 
         const { translate, bills, stocks} = this.props;
@@ -406,6 +460,12 @@ class BillManagement extends Component {
                         handleChangeEndDate={this.handleChangeEndDate}
                         getPartner={this.getPartner}
                         handleShowDetailInfo={this.handleShowDetailInfo}
+                        checkRoleApprovers={this.checkRoleApprovers}
+                        handleFinishedApproval={this.handleFinishedApproval}
+                        checkRoleQualityControlStaffs={this.checkRoleQualityControlStaffs}
+                        handleFinishedQualityControlStaff={this.handleFinishedQualityControlStaff}
+                        checkRoleCanEdit={this.checkRoleCanEdit}
+
                     />
                 }
 
@@ -426,6 +486,11 @@ class BillManagement extends Component {
                         handleChangeEndDate={this.handleChangeEndDate}
                         getPartner={this.getPartner}
                         handleShowDetailInfo={this.handleShowDetailInfo}
+                        checkRoleApprovers={this.checkRoleApprovers}
+                        handleFinishedApproval={this.handleFinishedApproval}
+                        checkRoleQualityControlStaffs={this.checkRoleQualityControlStaffs}
+                        handleFinishedQualityControlStaff={this.handleFinishedQualityControlStaff}
+                        checkRoleCanEdit={this.checkRoleCanEdit}
                     />
                 }
 
@@ -446,6 +511,11 @@ class BillManagement extends Component {
                         handleChangeEndDate={this.handleChangeEndDate}
                         getPartner={this.getPartner}
                         handleShowDetailInfo={this.handleShowDetailInfo}
+                        checkRoleApprovers={this.checkRoleApprovers}
+                        handleFinishedApproval={this.handleFinishedApproval}
+                        checkRoleQualityControlStaffs={this.checkRoleQualityControlStaffs}
+                        handleFinishedQualityControlStaff={this.handleFinishedQualityControlStaff}
+                        checkRoleCanEdit={this.checkRoleCanEdit}
                     />
                 }
 
@@ -466,6 +536,11 @@ class BillManagement extends Component {
                         handleChangeEndDate={this.handleChangeEndDate}
                         getPartner={this.getPartner}
                         handleShowDetailInfo={this.handleShowDetailInfo}
+                        checkRoleApprovers={this.checkRoleApprovers}
+                        handleFinishedApproval={this.handleFinishedApproval}
+                        checkRoleQualityControlStaffs={this.checkRoleQualityControlStaffs}
+                        handleFinishedQualityControlStaff={this.handleFinishedQualityControlStaff}
+                        checkRoleCanEdit={this.checkRoleCanEdit}
                     />
                 }
 
@@ -486,6 +561,11 @@ class BillManagement extends Component {
                         handleChangeEndDate={this.handleChangeEndDate}
                         getPartner={this.getPartner}
                         handleShowDetailInfo={this.handleShowDetailInfo}
+                        checkRoleApprovers={this.checkRoleApprovers}
+                        handleFinishedApproval={this.handleFinishedApproval}
+                        checkRoleQualityControlStaffs={this.checkRoleQualityControlStaffs}
+                        handleFinishedQualityControlStaff={this.handleFinishedQualityControlStaff}
+                        checkRoleCanEdit={this.checkRoleCanEdit}
                     />
                 }
                 </div>
@@ -503,7 +583,8 @@ const mapDispatchToProps = {
     getAllStocks: StockActions.getAllStocks,
     getUser: UserActions.get,
     getAllGoods: GoodActions.getAllGoods,
-    getCustomers: CrmCustomerActions.getCustomers
+    getCustomers: CrmCustomerActions.getCustomers,
+    editBill: BillActions.editBill
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(BillManagement));

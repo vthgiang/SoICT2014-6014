@@ -400,7 +400,12 @@ class TaskTemplate extends Component {
                         infomationName[i] = x.taskInformations[i].name;
                         infomationDescription[i] = x.taskInformations[i].description;
                         type[i] = x.taskInformations[i].type;
-                        filledByAccountableEmployeesOnly[i] = x.taskInformations[i].filledByAccountableEmployeesOnly;
+                        if (x.taskInformations[i].filledByAccountableEmployeesOnly) {
+                            filledByAccountableEmployeesOnly[i] = "true";
+                        } else {
+                            filledByAccountableEmployeesOnly[i] = "false";
+                        }
+                        
                     }
                     for (let i in x.taskInformations) {
                         if (x.taskInformations[i].description) {
@@ -450,16 +455,16 @@ class TaskTemplate extends Component {
                     }
                 }
                 if (x.responsibleEmployees && x.responsibleEmployees[0]) {
-                    responsibleEmployees = x.responsibleEmployees.map(item => item.name);
+                    responsibleEmployees = x.responsibleEmployees.map(item => item.email);
                 }
                 if (x.accountableEmployees && x.accountableEmployees[0]) {
-                    accountableEmployees = x.accountableEmployees.map(item => item.name);
+                    accountableEmployees = x.accountableEmployees.map(item => item.email);
                 }
                 if (x.consultedEmployees && x.consultedEmployees[0]) {
-                    consultedEmployees = x.consultedEmployees.map(item => item.name);
+                    consultedEmployees = x.consultedEmployees.map(item => item.email);
                 }
                 if (x.informedEmployees && x.informedEmployees[0]) {
-                    informedEmployees = x.informedEmployees.map(item => item.name);
+                    informedEmployees = x.informedEmployees.map(item => item.email);
                 }
 
                 let out = {
@@ -474,7 +479,7 @@ class TaskTemplate extends Component {
                     informedEmployees: informedEmployees.join(', '),
                     organizationalUnits: x.organizationalUnit.name,
                     collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits[0],
-                    creator: x.creator.name,
+                    creator: x.creator.email,
                     annunciator: annunciator,
                     priority: x.priority,
                     formula: x.formula,

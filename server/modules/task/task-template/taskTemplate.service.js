@@ -112,6 +112,62 @@ exports.createTaskTemplate = async (portal, body) => {
         }
     }
     readByEmployee = readByEmployee.map(x => String(x));
+    for (let i in body.taskActions) {
+        if (body.taskActions[i].description) {
+            let str = body.taskActions[i].description;
+            let vt = str.indexOf("&nbsp;");
+            let st;
+            while (vt >= 0) {
+                if (vt == 0) {
+                    st = str.slice(vt + 6);
+                } else {
+                    st = str.slice(0, vt - 1) + str.slice(vt + 6);
+                }
+                str = st;
+                vt = str.indexOf("&nbsp;");
+            }
+            vt = str.indexOf("<");
+            while (vt >= 0) {
+                let vt2 = str.indexOf(">");
+                if (vt == 0) {
+                    st = str.slice(vt2 + 1);
+                } else {
+                    st = str.slice(0, vt - 1) + str.slice(vt2 + 1);
+                }
+                str = st;
+                vt = str.indexOf("<");
+            }
+            body.taskActions[i].description = str;
+        }
+    }
+    for (let i in body.taskInformations) {
+        if (body.taskInformations[i].description) {
+            let str = body.taskInformations[i].description;
+            let vt = str.indexOf("&nbsp;");
+            let st;
+            while (vt >= 0) {
+                if (vt == 0) {
+                    st = str.slice(vt + 6);
+                } else {
+                    st = str.slice(0, vt - 1) + str.slice(vt + 6);
+                }
+                str = st;
+                vt = str.indexOf("&nbsp;");
+            }
+            vt = str.indexOf("<");
+            while (vt >= 0) {
+                let vt2 = str.indexOf(">");
+                if (vt == 0) {
+                    st = str.slice(vt2 + 1);
+                } else {
+                    st = str.slice(0, vt - 1) + str.slice(vt2 + 1);
+                }
+                str = st;
+                vt = str.indexOf("<");
+            }
+            body.taskInformations[i].description = str;
+        }
+    }
     //Tạo dữ liệu mẫu công việc
     var tasktemplate = await TaskTemplate(connect(DB_CONNECTION, portal)).create({
         organizationalUnit: body.organizationalUnit,

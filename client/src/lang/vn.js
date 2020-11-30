@@ -4060,6 +4060,11 @@ export default {
                 error_person_number: "Giá trị nhập vào phải > 0",
                 mill_code: "Mã xưởng",
                 mill_name: "Tên xưởng",
+                numberExpirationDate: "Hạn sử dụng (tính theo ngày)",
+                day: "Ngày",
+                expirationDate: "Hạn sử dụng",
+                validate_number_expiration_date: "Ngày hết hạn không được để trống",
+                validate_number_expiration_date_input: "Ngày hết hạn phải lớn hơn 0"
             },
 
             stock_management: {
@@ -4231,6 +4236,7 @@ export default {
                 date: "Ngày tạo",
                 description: "Mô tả",
                 stock: "Kho",
+                rotate_stock: "Kho nhập",
                 from_date: "Từ ngày",
                 to_date: "Đến ngày",
                 search: "Tìm kiếm",
@@ -4244,9 +4250,20 @@ export default {
                 issued: "Đơn đã xuất",
                 partner: "Đối tác",
                 bill_detail: "Chi tiết đơn hàng",
-                approved: "Người duyệt",
+                approved: "Người phê duyệt",
+                updateror: "Người sửa",
+                createAt: "Thời gian sửa",
+                title: "Tiêu đề",
+                view_version: "Log bill",
+                accountables: "Người giám sát",
+                qualityControlStaffs: "Người kiểm định chất lượng",
+                list_saffs: "Danh sách người tham gia",
+                approved_time: "Thời gian phê duyệt",
+                time: "Thời gian kiểm định",
                 goods: "Danh sách hàng hóa",
                 good_name: "Tên hàng hóa",
+                approved_true: "Phê duyệt phiếu",
+                staff_true: "Kiểm định chất lượng hàng hóa",
                 good_code: "Mã hàng hóa",
                 number: "Số lượng",
                 unit: "Đơn vị tính",
@@ -4284,6 +4301,13 @@ export default {
                     3: "Xem chi tiết phiếu trả hàng",
                     4: "Xem chi tiết phiếu kiểm kê kho",
                     5: "Xem chi tiết phiếu luân chuyển kho",
+                },
+                detail_version: {
+                    1: "Xem chi tiết thay đổi phiếu nhập kho",
+                    2: "Xem chi tiết thay đổi phiếu xuất kho",
+                    3: "Xem chi tiết thay đổi phiếu trả hàng",
+                    4: "Xem chi tiết thay đổi phiếu kiểm kê kho",
+                    5: "Xem chi tiết thay đổi phiếu luân chuyển kho",
                 },
                 infor: "Thông tin chung",
                 name: "Tên",
@@ -4647,10 +4671,6 @@ export default {
                     content: "Đã hoàn thành",
                 },
                 5: {
-                    color: "orange",
-                    content: "Đã kiểm định chất lượng"
-                },
-                6: {
                     color: "red",
                     content: "Đã hủy",
                 },
@@ -4706,10 +4726,6 @@ export default {
                     content: "Đã hoàn thành",
                 },
                 5: {
-                    color: "orange",
-                    content: "Đã kiểm định chất lượng"
-                },
-                6: {
                     color: "red",
                     content: "Đã hủy",
                 },
@@ -4752,8 +4768,8 @@ export default {
                     content: "Đã hoàn thành",
                 },
                 5: {
-                    color: "orange",
-                    content: "Đã kiểm định chất lượng"
+                    color: "red",
+                    content: "Đã hủy"
                 },
                 choose_status: "Chọn trạng thái",
                 choose_all: "Chọn tất cả",
@@ -4764,13 +4780,13 @@ export default {
                 good_name: "Tên mặt hàng",
                 quantity: "Số lượng",
                 description: "Mô tả",
-                approvers: "Người phê duyệt",
+                approvers: "Người phê duyệt lệnh sản xuất",
                 good_info: "Thông tin sản phẩm",
                 good_code: "Mã sản phẩm",
                 good_name: "Tên sản phẩm",
-                good_base_unit: "Đơn vị sản phẩm",
+                good_base_unit: "Đơn vị tính tiêu chuẩn",
                 packing_rule: "Quy cách đóng gói",
-                good_base_unit_quantity: "Số lượng đơn vị sản phẩm",
+                good_base_unit_quantity: "Số lượng sản phẩm theo đơn vị tính tiêu chuẩn",
                 packing_rule_quantity: "Số lượng theo quy cách đóng gói",
                 approved: "Đã phê duyệt",
                 approvedTime: "Thời gian phê duyệt",
@@ -4782,7 +4798,36 @@ export default {
                 edit_failed: "Sửa lệnh sản xuất thất bại",
                 qualityControlStaffs: "Người kiểm định chất lượng",
                 time: "Thời gian kiểm định",
-                quality_control_command: "Kiếm định chất lượng lệnh"
+                quality_control_command: "Kiếm định chất lượng lệnh sản xuất",
+                result: "Kết quả thực hiện",
+                no_data: "Không có dữ liệu",
+                finishedProductQuantity: "Số lượng thành phẩm",
+                substandardProductQuantity: "Số lượng phế phẩm",
+                finishedTime: "Thời gian hoàn thành thực tế",
+                material: "Thông tin nguyên vật liệu",
+                comment: "Bình luận",
+                quality_control_status: "Trạng thái kiểm định",
+                qc_status: {
+                    "1": {
+                        color: "orange",
+                        content: "Chưa kiểm định"
+                    },
+                    "2": {
+                        color: "green",
+                        content: "Đạt kiểm định"
+                    },
+                    "3": {
+                        color: "red",
+                        content: "Không đạt kiểm định"
+                    }
+                },
+                qc_name: "Tên người kiểm định",
+                qc_email: "email",
+                qc_status_command: "Trạng thái kiểm định",
+                quality_control_content: "Nội dung kiểm định",
+                rateFinishedProductQuantity: "Tỷ lệ thành phẩm",
+                rateSubstandardProductQuantity: "Tỷ lệ phế phẩm"
+
             },
             lot: {
                 index: "STT",
@@ -4812,30 +4857,36 @@ export default {
                 created_at: "Ngày tạo",
                 expiration_date: "Ngày hết hạn",
                 status: "Trạng thái",
-                product_type_obect: {
+                product_type_object: {
                     "1": "Thành phẩm",
                     "2": "Phế phẩm"
                 },
                 choose_good: "Chọn hàng hóa",
                 add: "Tạo lô",
                 add_lot: "Tạo lô sản xuất",
-                base_unit: "Đơn vị tính",
+                base_unit: "Đơn vị tính tiêu chuẩn",
                 packing_rule: "Quy cách đóng gói",
                 conversion_rate: "Trọng số chuyển đổi",
                 quantity_packing_rule: "Số lượng theo quy cách đóng gói",
-                quantity_base_unit: "Số lượng cần sản xuất theo đơn vị tính",
+                quantity_base_unit: "Số lượng cần sản xuất theo đơn vị tính tiêu chuẩn",
                 product_lot_code: "Mã lô thành phẩm",
                 code1: "Mã lô thành phẩm",
                 code2: "Mã lô phế phẩm",
                 finished_product: "Thành phẩm",
                 substandard_product: "Phế phẩm",
-                quantity: "Số lượng theo đơn vị tính",
+                quantity: "Số lượng theo đơn vị tính tiêu chuẩn",
                 error_quantity_1: "Số lượng nhập vào không hợp lệ",
                 error_quantity_1_input: "Số lượng nhập vào phải lớn hơn 0",
                 description: "Mô tả",
                 create_manufacturing_lot_successfully: "Tạo lô sản xuất thành công",
-                create_manufacturing_lot_failed: "Tạo lô sản xuất thất bại"
-
+                create_manufacturing_lot_failed: "Tạo lô sản xuất thất bại",
+                lot_detail: "Xem chi tiết lô sản xuất",
+                lot_type: "Loại lô",
+                bill_import_code: "Mã phiếu đề nghị nhập",
+                lot_diary: "Nhật ký hoạt động của lô",
+                manufacturing_mill: "Xưởng sản xuất",
+                team_leader: "Đội trưởng xưởng sản xuất",
+                material: "Thông tin nguyên vật liệu"
 
             }
         }

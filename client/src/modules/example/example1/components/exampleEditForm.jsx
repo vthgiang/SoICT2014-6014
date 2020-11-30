@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { exampleActions } from '../redux/actions';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
+
+import { exampleActions } from '../redux/actions';
+
 import { DialogModal, ErrorLabel } from '../../../../common-components';
 import ValidationHelper from '../../../../helpers/validationHelper';
 
@@ -10,13 +12,18 @@ class ExampleEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            exampleName: "",
+            description: "",
+            exampleNameError: {
+                message: undefined,
+                status: true
+            }
         }
     }
 
     isFormValidated = () => {
-        const { exampleName } = this.state;
-        let { translate } = this.props;
-        if (!ValidationHelper.validateName(translate, exampleName, 6, 255).status) {
+        const { exampleNameError } = this.state;
+        if (!exampleNameError.status) {
             return false;
         }
         return true;
@@ -31,13 +38,16 @@ class ExampleEditForm extends Component {
 
     handleExampleName = (e) => {
         const { value } = e.target;
-        this.setState({
-            exampleName: value
-        });
+        
         let { translate } = this.props;
-        let { message } = ValidationHelper.validateName(translate, value, 6, 255);
-        this.setState({
-            exampleNameError: message
+        let result = ValidationHelper.validateName(translate, value, 6, 255);
+
+        this.setState(state => {
+            return {
+                ...state,
+                exampleName: value,
+                exampleNameError: result,
+            }
         });
     }
 
@@ -55,7 +65,10 @@ class ExampleEditForm extends Component {
                 exampleID: nextProps.exampleID,
                 exampleName: nextProps.exampleName,
                 description: nextProps.description,
-                exampleNameError: undefined
+                exampleNameError: {
+                    message: undefined,
+                    status: true
+                }
             }
         } else {
             return null;
@@ -77,10 +90,10 @@ class ExampleEditForm extends Component {
                     maxWidth={500}
                 >
                     <form id={`form-edit-example`}>
-                        <div className={`form-group ${!exampleNameError ? "" : "has-error"}`}>
+                        <div className={`form-group ${exampleNameError.status ? "" : "has-error"}`}>
                             <label>{translate('manage_example.exampleName')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" value={exampleName} onChange={this.handleExampleName} />
-                            <ErrorLabel content={exampleNameError} />
+                            <ErrorLabel content={exampleNameError.message} />
                         </div>
                         <div className={`form-group`}>
                             <label>{translate('manage_example.description')}</label>

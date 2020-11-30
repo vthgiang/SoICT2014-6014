@@ -13,6 +13,7 @@ class LotEditForm extends Component {
             quantity: ''
         }
         this.state = {
+            currentRole: localStorage.getItem("currentRole"),
             stocks: [],
             binLocations: [],
             binLocation: Object.assign({}, this.EMPTY_BIN),
@@ -257,12 +258,11 @@ class LotEditForm extends Component {
                 errorBin: undefined
             }
         })
-        await this.props.getChildBinLocations({ stock: stock });
+        await this.props.getChildBinLocations({ stock: stock, managementLocation: this.state.currentRole });
     }
 
     save = async () => {
         const { id, stocks } = this.state;
-        console.log(stocks);
         await this.props.editLot(id, {
             stocks: stocks,
         });
@@ -372,7 +372,7 @@ class LotEditForm extends Component {
                     <form id={`form-edit-lot`} >
                         <div className="row">
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <strong>Những kho đang chứa lô hàng {lots.lotDetail.name }</strong>
+                                <strong>Những kho đang chứa lô hàng {lots.lotDetail.code }</strong>
                                 <div className="box-body">
                                     {
                                         lots.lotDetail.stocks !== undefined && lots.lotDetail.stocks.length > 0 ? lots.lotDetail.stocks.map((x, index) => 
