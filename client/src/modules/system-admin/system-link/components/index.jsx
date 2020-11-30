@@ -156,7 +156,7 @@ class ManageLinkSystem extends Component {
                         </table>
 
                         {/* PaginateBar */}
-                        <PaginateBar pageTotal={systemLinks.totalPages} currentPage={systemLinks.page} func={this.setPage} />
+                        <PaginateBar display={systemLinks.listPaginate.length} total={systemLinks.totalDocs} pageTotal={systemLinks.totalPages} currentPage={systemLinks.page} func={this.setPage} />
                     </React.Fragment>
                 </div>
             </div>

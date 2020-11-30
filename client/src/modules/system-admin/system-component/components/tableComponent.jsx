@@ -149,7 +149,7 @@ class TableComponent extends Component {
                 </table>
 
                 {/* PaginateBar */}
-                <PaginateBar pageTotal={systemComponents.totalPages} currentPage={systemComponents.page} func={this.setPage}/>
+                <PaginateBar display={systemComponents.listPaginate.length} total={systemComponents.totalDocs} pageTotal={systemComponents.totalPages} currentPage={systemComponents.page} func={this.setPage}/>
             </React.Fragment>
          );
     }

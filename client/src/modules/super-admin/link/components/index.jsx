@@ -26,11 +26,11 @@ class ManageLink extends Component {
     }
 
     searchWithOption = () => {
-        let {page, option, value, limit} = this.state;
+        let {option, value, limit} = this.state;
         const params = {
             type: "active",
             limit,
-            page,
+            page: 1,
             key: option,
             value
         };
@@ -151,7 +151,7 @@ class ManageLink extends Component {
                         </table>
 
                         {/* PaginateBar */}
-                        <PaginateBar display={link.listPaginate.length} total={link.list.length}  pageTotal={link.totalPages} currentPage={link.page} func={this.setPage} />
+                        <PaginateBar display={link.listPaginate.length} total={link.totalDocs}  pageTotal={link.totalPages} currentPage={link.page} func={this.setPage} />
                     </React.Fragment>
                 </div>
             </div>

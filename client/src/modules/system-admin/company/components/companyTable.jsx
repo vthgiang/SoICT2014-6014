@@ -209,7 +209,7 @@ class CompanyTable extends Component {
                 </table>
                 
                 {/* Paginate Bar */}
-                <PaginateBar pageTotal={company.totalPages} currentPage={company.page} func={this.setPage}/>
+                <PaginateBar display={company.listPaginate.length} total={company.totalPages} pageTotal={company.totalPages} currentPage={company.page} func={this.setPage}/>
             </React.Fragment>
          );
     }

@@ -164,7 +164,7 @@ class RoleTable extends Component {
                 </table>
 
                 {/* PaginateBar */}
-                <PaginateBar display={role.listPaginate.length} total={role.list.length} pageTotal={role.totalPages} currentPage={role.page} func={this.setPage} />
+                <PaginateBar display={role.listPaginate.length} total={role.totalDocs} pageTotal={role.totalPages} currentPage={role.page} func={this.setPage} />
             </React.Fragment>
         );
     }

@@ -154,7 +154,7 @@ class TableComponent extends Component {
                 </table>
 
                 {/* PaginateBar */}
-                <PaginateBar display={component.listPaginate.length} total={component.list.length}  pageTotal={component.totalPages} currentPage={component.page} func={this.setPage} />
+                <PaginateBar display={component.listPaginate.length} total={component.totalDocs}  pageTotal={component.totalPages} currentPage={component.page} func={this.setPage} />
 
             </React.Fragment>
         );
