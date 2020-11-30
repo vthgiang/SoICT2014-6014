@@ -23,7 +23,8 @@ class QuantityLotGoodReceipt extends Component {
             editInfo: false,
             good: '',
             code: this.props.lotName,
-            arrayId: []
+            arrayId: [],
+            oldQuantity: 0,
         }
     }
 
@@ -99,7 +100,7 @@ class QuantityLotGoodReceipt extends Component {
     }
 
     validateQuantity = (value, willUpdateState = true) => {
-        const { lotQuantity } = this.state;
+        const { oldQuantity } = this.state;
         let msg = undefined;
         const { translate } = this.props;
         let difference = this.difference();
@@ -108,12 +109,8 @@ class QuantityLotGoodReceipt extends Component {
             msg = translate('manage_warehouse.bill_management.validate_quantity');
         }
 
-        if(value > difference) {
-            msg = translate('manage_warehouse.bill_management.validate_quantity');
-        }
-
-        if(Number(value) > Number(lotQuantity)) {
-            msg = ` ${translate('manage_warehouse.bill_management.validate_norm')} (${lotQuantity}) `
+        if((Number(value) - Number(oldQuantity)) > difference) {
+            msg = translate('manage_warehouse.bill_management.validate_norm');
         }
 
         if (willUpdateState) {
@@ -164,12 +161,14 @@ class QuantityLotGoodReceipt extends Component {
             }
         })
         this.state.lot.code = generateCode("LOT");
+        this.state.oldQuantity = 0;
         // this.props.onDataChange(this.state.lots);
     }
 
     handleClearLot = (e) => {
         e.preventDefault();
         this.state.lot = Object.assign({}, this.EMPTY_LOT);
+        this.state.oldQuantity = 0;
         this.state.lot.code = generateCode("LOT");
         this.setState(state => {
             return {
@@ -188,6 +187,7 @@ class QuantityLotGoodReceipt extends Component {
             })
         }
         this.state.lot = Object.assign({}, this.EMPTY_LOT);
+        this.state.oldQuantity = 0;
         this.state.lot.code = generateCode("LOT");
         await this.setState(state => {
             return {
@@ -202,6 +202,7 @@ class QuantityLotGoodReceipt extends Component {
     handleCancelEditLot = (e) => {
         e.preventDefault();
         this.state.lot = Object.assign({}, this.EMPTY_LOT);
+        this.state.oldQuantity = 0;
         this.state.lot.code = generateCode("LOT");
         this.setState(state => {
             return {
@@ -212,12 +213,14 @@ class QuantityLotGoodReceipt extends Component {
     }
 
     handleEditLot = (lot, index) => {
+        this.state.oldQuantity = lot.quantity;
+        this.state.lot.oldQuantity = lot.quantity;
         this.setState(state => {
             return {
                 ...state,
                 editInfo: true,
                 indexInfo: index,
-                lot: Object.assign({}, lot)
+                lot: Object.assign({}, lot),
             }
         })
     }

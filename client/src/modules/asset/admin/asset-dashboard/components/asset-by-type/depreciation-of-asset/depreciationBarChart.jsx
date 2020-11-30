@@ -1,12 +1,7 @@
-
 import React, { Component } from 'react';
-
 import c3 from 'c3';
 import 'c3/c3.css';
-
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { translate } from 'react-redux-multilingual/lib/utils';
-
 class DepreciationBarChart extends Component {
     constructor(props) {
         super(props);
@@ -132,7 +127,7 @@ class DepreciationBarChart extends Component {
 
     // Khởi tạo BarChart bằng C3
     barChart = () => {
-        let { translate, setDepreciationOfAsset } = this.props;
+        let { translate } = this.props;
         let dataPieChart = this.setDataBarChart();
         let count = dataPieChart.count;
         let heightCalc = dataPieChart.type.length * 24.8;

@@ -566,7 +566,7 @@ class CreateEmployeeKpiSet extends Component {
                                             items={deans}
                                             multiple={false}
                                             onChange={this.handleApproverChange}
-                                            value={this.state.employeeKpiSet.approver}
+                                            value={employeeKpiSet.approver}
                                         />
                                     </div>
                                     : <div className="form-group">

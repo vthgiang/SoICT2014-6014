@@ -175,7 +175,6 @@ class ManageUserTable extends Component {
                         }
                     </tbody>
                 </table>
-
                 {
                     user.isLoading ?
                     <div className="table-info-panel">{translate('confirm.loading')}</div> :
@@ -183,7 +182,7 @@ class ManageUserTable extends Component {
                 }
 
                 {/* PaginateBar */}
-                <PaginateBar display={user.listPaginate.length} total={user.list.length} pageTotal={user.totalPages} currentPage={user.page} func={this.setPage} />
+                <PaginateBar display={user.listPaginate.length} total={user.totalDocs} pageTotal={user.totalPages} currentPage={user.page} func={this.setPage} />
             </React.Fragment>
         );
     }

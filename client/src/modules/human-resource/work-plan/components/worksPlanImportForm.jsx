@@ -89,7 +89,7 @@ class WorkPlanImportForm extends Component {
             let rowError = [];
             value = value.map((x, index) => {
                 let errorAlert = [];
-                if (x.startDate === null || x.endDate === null || x.reason === null, x.type === null) {
+                if (x.startDate === null || x.endDate === null || x.reason === null || x.type === null) {
                     rowError = [...rowError, index + 1]
                     x = { ...x, error: true }
                 };

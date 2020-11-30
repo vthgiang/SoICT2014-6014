@@ -1,13 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
 import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
-
 import { AssetCreateValidator } from './combinedContent';
-
-import { UserActions } from '../../../../super-admin/user/redux/actions';
-
 class UsageLogEditModal extends Component {
     constructor(props) {
         super(props);
@@ -24,11 +19,11 @@ class UsageLogEditModal extends Component {
         if (month.length < 2) {
             month = '0' + month;
         }
-            
+
         if (day.length < 2) {
             day = '0' + day;
         }
-            
+
         if (monthYear === true) {
             return [month, year].join('-');
         } else {
@@ -65,7 +60,7 @@ class UsageLogEditModal extends Component {
     validateStartDate = (value, willUpdateState = true) => {
         let msg = AssetCreateValidator.validateStartDate(value, this.props.translate)
         let partStart = value.split("-");
-        let startDate = new Date ( partStart[2], partStart[1] - 1, partStart[0]);
+        let startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -86,7 +81,7 @@ class UsageLogEditModal extends Component {
     validateEndDate = (value, willUpdateState = true) => {
         let msg = AssetCreateValidator.validateEndDate(value, this.props.translate)
         let partEnd = value.split("-");
-        let endDate = new Date ( partEnd[2], partEnd[1] - 1, partEnd[0]);
+        let endDate = new Date(partEnd[2], partEnd[1] - 1, partEnd[0]);
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -121,22 +116,22 @@ class UsageLogEditModal extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let checkUsed ;
+        let checkUsed;
         let checkUsedByUser = true, checkUsedByOrganizationalUnit = true;
-        if(this.state.usedByUser == "" || !this.state.usedByUser){
+        if (this.state.usedByUser === "" || !this.state.usedByUser) {
             checkUsedByUser = false
         }
-        if(this.state.usedByOrganizationalUnit == "" || !this.state.usedByOrganizationalUnit){
+        if (this.state.usedByOrganizationalUnit === "" || !this.state.usedByOrganizationalUnit) {
             checkUsedByOrganizationalUnit = false
         }
-        
-        if(!checkUsedByUser && !checkUsedByOrganizationalUnit){
+
+        if (!checkUsedByUser && !checkUsedByOrganizationalUnit) {
             checkUsed = false;
         } else {
             checkUsed = true;
         }
 
-        let result = checkUsed && this.validateStartDate(this.state.startDate, false) 
+        let result = checkUsed && this.validateStartDate(this.state.startDate, false)
 
         return result;
     }
@@ -151,12 +146,12 @@ class UsageLogEditModal extends Component {
         let usedByOrganizationalUnit = this.state.usedByOrganizationalUnit;
 
         if (this.isFormValidated()) {
-            return this.props.handleChange({ 
-                ...this.state, 
-                assignedToUser: usedByUser, 
+            return this.props.handleChange({
+                ...this.state,
+                assignedToUser: usedByUser,
                 assignedToOrganizationalUnit: usedByOrganizationalUnit,
-                startDate: startDate, 
-                endDate: endDate 
+                startDate: startDate,
+                endDate: endDate
             });
         }
     }
@@ -209,7 +204,7 @@ class UsageLogEditModal extends Component {
                                             id={`usedByUser${id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={[{value: 'null', text: 'Chọn người sử dụng'}, ...userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })]}
+                                            items={[{ value: 'null', text: 'Chọn người sử dụng' }, ...userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })]}
                                             onChange={this.handleUsedByUserChange}
                                             value={usedByUser}
                                             multiple={false}
@@ -227,7 +222,7 @@ class UsageLogEditModal extends Component {
                                             id={`usedByOrganizationalUnit${id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={[{value: 'null', text: 'Chọn đơn vị sử dụng'}, ...departmentlist.map(x => { return { value: x._id, text: x.name} })]}
+                                            items={[{ value: 'null', text: 'Chọn đơn vị sử dụng' }, ...departmentlist.map(x => { return { value: x._id, text: x.name } })]}
                                             onChange={this.handleUsedByOrganizationalUnitChange}
                                             value={usedByOrganizationalUnit}
                                             multiple={false}
@@ -279,3 +274,4 @@ function mapState(state) {
 const editModal = connect(mapState, null)(withTranslate(UsageLogEditModal));
 
 export { editModal as UsageLogEditModal };
+
