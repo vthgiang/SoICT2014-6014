@@ -79,9 +79,6 @@ class ActionTab extends Component {
                 files: []
             },
             newCommentOfTaskComment: {
-                creator: idUser,
-                description: "",
-                files: []
             },
             newCommentOfTaskCommentEdited: {
                 creator: idUser,
@@ -259,7 +256,7 @@ class ActionTab extends Component {
         const data = new FormData();
         data.append("creator", newCommentOfAction[`${actionId}`].creator);
         data.append("description", newCommentOfAction[`${actionId}`].description);
-        newCommentOfAction && newCommentOfAction[`${actionId}`].files.forEach(x => {
+        newCommentOfAction && newCommentOfAction[`${actionId}`] && newCommentOfAction[`${actionId}`] && newCommentOfAction[`${actionId}`].files.forEach(x => {
             data.append("files", x);
         })
         if (newCommentOfAction[`${actionId}`].description && newCommentOfAction[`${actionId}`].creator) {
@@ -332,23 +329,22 @@ class ActionTab extends Component {
         let { newCommentOfTaskComment } = this.state;
         const data = new FormData();
 
-        data.append("creator", newCommentOfTaskComment.creator);
-        data.append("description", newCommentOfTaskComment.description);
-        newCommentOfTaskComment.files.forEach(x => {
+        data.append("creator", newCommentOfTaskComment[`${commentId}`].creator);
+        data.append("description", newCommentOfTaskComment[`${commentId}`].description);
+        newCommentOfTaskComment && newCommentOfTaskComment[`${commentId}`] && newCommentOfTaskComment[`${commentId}`].files && newCommentOfTaskComment[`${commentId}`].files.forEach(x => {
             data.append("files", x);
         })
-        if (newCommentOfTaskComment.description && newCommentOfTaskComment.creator) {
+        if (newCommentOfTaskComment[`${commentId}`].description && newCommentOfTaskComment[`${commentId}`].creator) {
             this.props.createCommentOfTaskComment(commentId, taskId, data);
         }
         // Reset state cho việc thêm mới bình luận
-        await this.setState(state => {
+        this.setState(state => {
+            state.newCommentOfTaskComment[`${commentId}`] = {
+                description: "",
+                files: [],
+            }
             return {
                 ...state,
-                newCommentOfTaskComment: {
-                    ...state.newCommentOfTaskComment,
-                    description: "",
-                    files: [],
-                },
             }
         })
     }
@@ -659,15 +655,13 @@ class ActionTab extends Component {
             }
         })
     }
-    onCommentOfTaskCommentFilesChange = (files) => {
+    onCommentOfTaskCommentFilesChange = (commentId, files) => {
         this.setState(state => {
-            return {
-                ...state,
-                newCommentOfTaskComment: {
-                    ...state.newCommentOfTaskComment,
-                    files: files,
-                }
+            state.newCommentOfTaskComment[`${commentId}`] = {
+                ...state.newCommentOfTaskComment[`${commentId}`],
+                files: files
             }
+            return { ...state, }
         })
     }
 
@@ -1221,9 +1215,9 @@ class ActionTab extends Component {
                             }
                             {/* Thêm hoạt động cho công việc*/}
                             {showSort ?
-                                <div className="" style={{ display:"flex", justifyContent:"center" }}>
-                                    <button className="link-black text-sm btn btn-primary" style={{ cursor: "pointer", marginRight: "5px", color: "white", width: "48%", height: "40px", fontSize:"16px" }} onClick={() => this.saveSort(task._id)}>Lưu</button>
-                                    <button className="link-black text-sm btn btn-warning" style={{ cursor: "pointer", width: "48%", color: "white", fontSize:"16px" }} onClick={() => this.cancelSort()}>Hủy</button>
+                                <div className="" style={{ display: "flex", justifyContent: "center" }}>
+                                    <button className="link-black text-sm btn btn-primary" style={{ cursor: "pointer", marginRight: "5px", color: "white", width: "48%", height: "40px", fontSize: "16px" }} onClick={() => this.saveSort(task._id)}>Lưu</button>
+                                    <button className="link-black text-sm btn btn-warning" style={{ cursor: "pointer", width: "48%", color: "white", fontSize: "16px" }} onClick={() => this.cancelSort()}>Hủy</button>
                                 </div>
                                 :
                                 <React.Fragment>
@@ -1449,16 +1443,21 @@ class ActionTab extends Component {
                                                         <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
                                                         <ContentMaker
                                                             inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
-                                                            onFilesChange={this.onCommentOfTaskCommentFilesChange}
+                                                            onFilesChange={(files) => this.onCommentOfTaskCommentFilesChange(item._id, files)}
                                                             onFilesError={this.onFilesError}
-                                                            files={newCommentOfTaskComment.files}
-                                                            text={newCommentOfTaskComment.description}
+                                                            files={newCommentOfTaskComment[`${item._id}`]?.files}
+                                                            text={newCommentOfTaskComment[`${item._id}`]?.description}
                                                             placeholder={translate("task.task_perform.enter_comment")}
                                                             submitButtonText={translate("task.task_perform.create_comment")}
                                                             onTextChange={(e) => {
                                                                 let value = e.target.value;
                                                                 this.setState(state => {
-                                                                    return { ...state, newCommentOfTaskComment: { ...state.newCommentOfTaskComment, description: value } }
+                                                                    state.newCommentOfTaskComment[`${item._id}`] = {
+                                                                        ...state.newCommentOfTaskComment[`${item._id}`],
+                                                                        description: value,
+                                                                        creator: currentUser
+                                                                    }
+                                                                    return { ...state }
                                                                 })
                                                             }}
                                                             onSubmit={(e) => { this.submitCommentOfTaskComment(item._id, task._id) }}

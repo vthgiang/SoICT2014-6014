@@ -13,6 +13,7 @@ class LotEditForm extends Component {
             quantity: ''
         }
         this.state = {
+            currentRole: localStorage.getItem("currentRole"),
             stocks: [],
             binLocations: [],
             binLocation: Object.assign({}, this.EMPTY_BIN),
@@ -231,38 +232,52 @@ class LotEditForm extends Component {
     }
 
     handleStockChange = async (value) => {
-        const { stocks } = this.state;
-        const array = this.getAllStocks();
-        
-        let stock = value[0];
-        let indexStock;
-        for(let i = 0; i < stocks.length; i++) {
-            if(stock === stocks[i].stock._id) {
-                indexStock = i;
+        if(value[0]) {
+            const { stocks } = this.state;
+            const array = this.getAllStocks();
+            
+            let stock = value[0];
+            let indexStock;
+            for(let i = 0; i < stocks.length; i++) {
+                if(stock === stocks[i].stock._id) {
+                    indexStock = i;
+                }
             }
+            let data = array.filter(x => x.value === stock);
+            let quantity = data[0].quantity;
+            let binLocations = data[0].binLocations;
+            this.setState(state => {
+                return {
+                    ...state,
+                    indexStock,
+                    stockOne: stocks[indexStock],
+                    stock: value[0],
+                    quantity: quantity,
+                    binLocations: binLocations,
+                    binLocation: Object.assign({}, this.EMPTY_BIN),
+                    errorQuantity: undefined,
+                    errorBin: undefined
+                }
+            })
+            await this.props.getChildBinLocations({ stock: stock, managementLocation: this.state.currentRole });
         }
-        let data = array.filter(x => x.value === stock);
-        let quantity = data[0].quantity;
-        let binLocations = data[0].binLocations;
-        this.setState(state => {
-            return {
-                ...state,
-                indexStock,
-                stockOne: stocks[indexStock],
-                stock: value[0],
-                quantity: quantity,
-                binLocations: binLocations,
-                binLocation: Object.assign({}, this.EMPTY_BIN),
-                errorQuantity: undefined,
-                errorBin: undefined
-            }
-        })
-        await this.props.getChildBinLocations({ stock: stock });
+        else {
+            this.setState(state => {
+                return {
+                    ...state,
+                    stock: value[0],
+                    quantity: 0,
+                    binLocations: [],
+                    binLocation: Object.assign({}, this.EMPTY_BIN),
+                    errorQuantity: undefined,
+                    errorBin: undefined
+                }
+            })
+        }
     }
 
     save = async () => {
         const { id, stocks } = this.state;
-        console.log(stocks);
         await this.props.editLot(id, {
             stocks: stocks,
         });
@@ -270,7 +285,7 @@ class LotEditForm extends Component {
     }
 
     getAllStocks = () => {
-        const { lot, translate } = this.props;
+        const { lot, translate, stocks } = this.props;
         if(lot){
             this.state.stocks = lot.stocks;
         }
@@ -278,12 +293,18 @@ class LotEditForm extends Component {
 
         if(lot){
             lot.stocks.map(x => {
-                stockArr.push({
-                    value: x.stock._id,
-                    text: x.stock.name,
-                    quantity: x.quantity,
-                    binLocations: x.binLocations,
-                })
+                if(stocks.listStocks.length > 0) {
+                    for (let i = 0; i < stocks.listStocks.length; i++) {
+                        if(x.stock._id === stocks.listStocks[i]._id) {
+                            stockArr.push({
+                                value: x.stock._id,
+                                text: x.stock.name,
+                                quantity: x.quantity,
+                                binLocations: x.binLocations,
+                            })
+                        }
+                    }
+                }
             })
         }
         return stockArr;
@@ -372,7 +393,7 @@ class LotEditForm extends Component {
                     <form id={`form-edit-lot`} >
                         <div className="row">
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <strong>Những kho đang chứa lô hàng {lots.lotDetail.name }</strong>
+                                <strong>Những kho đang chứa lô hàng {lots.lotDetail.code }</strong>
                                 <div className="box-body">
                                     {
                                         lots.lotDetail.stocks !== undefined && lots.lotDetail.stocks.length > 0 ? lots.lotDetail.stocks.map((x, index) => 

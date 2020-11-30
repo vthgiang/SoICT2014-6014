@@ -570,7 +570,7 @@ export default {
             downloads: "Số lần tải xuống",
             add: "Thêm mới",
             export: "Xuất báo cáo",
-            import: "Nhập từ file",
+            import: "Thêm dữ liệu từ file",
             edit: "Chỉnh sửa",
             watch: "Xem chi tiết",
             delete: "Xóa",
@@ -686,38 +686,30 @@ export default {
             show_document_faile: "Lấy dữ liệu tài liệu thất bại",
             edit_document_success: "Cập nhật dữ liệu tài liệu thành công",
             edit_document_faile: "Cập nhật dữ liệu tài liệu thất bại",
-            add_document_logs_success:
-                "Thêm lịch sử chỉnh sửa tài liệu thành công",
+            add_document_logs_success: "Thêm lịch sử chỉnh sửa tài liệu thành công",
             add_document_logs_faile: "Thêm lịch sử chỉnh sửa tài liệu thất bại",
             delete_document_success: "Xóa tài liệu thành công",
             delete_document_faile: "Xóa tài liệu thất bại",
             download_document_file_faile: "Lấy dữ liệu file tài liệu thất bại",
             download_document_file_scan_faile:
                 "Lấy dữ liệu file scan tài liệu thất bại",
-            get_document_categories_success:
-                "Lấy danh sách loại tài liệu thành công",
-            get_document_categories_faile:
-                "Lấy danh sách loại tài liệu thất bại",
-            create_document_category_success:
-                "Thêm mới loại tài liệu thành công",
+            get_document_categories_success: "Lấy danh sách loại tài liệu thành công",
+            get_document_categories_faile: "Lấy danh sách loại tài liệu thất bại",
+            create_document_category_success: "Thêm mới loại tài liệu thành công",
             create_document_category_faile: "Thêm mới loại tài liệu thất bại",
             edit_document_category_success:
                 "Cập nhật thông tin loại tài liệu thành công",
-            edit_document_category_faile:
-                "Cập nhật thông tin loại tài liệu thất bại",
+            edit_document_category_faile: "Cập nhật thông tin loại tài liệu thất bại",
             delete_document_category_success: "Xóa loại tài liệu thành công",
             delete_document_category_faile: "Xóa loại tài liệu thất bại",
             import_document_category_success: "Tải dữ liệu từ file thành công",
             import_document_category_faile: "Tải dữ liệu từ file thất bại",
             get_document_domains_success:
                 "Lấy danh sách lĩnh vực tài liệu thành công",
-            get_document_domains_faile:
-                "Lấy danh sách lĩnh vực tài liệu thất bại",
-            create_document_domain_success:
-                "Thêm mới lĩnh vực tài liệu thành công",
+            get_document_domains_faile: "Lấy danh sách lĩnh vực tài liệu thất bại",
+            create_document_domain_success: "Thêm mới lĩnh vực tài liệu thành công",
             create_document_domain_faile: "Thêm mới lĩnh vực tài liệu thất bại",
-            edit_document_domain_success:
-                "Cập nhật lĩnh vực tài liệu thành công",
+            edit_document_domain_success: "Cập nhật lĩnh vực tài liệu thành công",
             edit_document_domain_faile: "Cập nhật lĩnh vực tài liệu thất bại",
             delete_document_domain_success: "Xóa lĩnh vực tài liệu thành công",
             delete_document_domain_faile: "Xóa lĩnh vực tài liệu thất bại",
@@ -747,23 +739,19 @@ export default {
                 "Cập nhật thông tin lưu trữ tài liệu thất bại",
             delete_document_archive_success:
                 "Xóa thông tin lưu trữ tài liệu thành công",
-            delete_document_archive_faile:
-                "Xóa thông tin lưu trữ tài liệu thất bại",
+            delete_document_archive_faile: "Xóa thông tin lưu trữ tài liệu thất bại",
             import_document_archive_success:
                 "Nhập dữ liệu thông tin lưu trữ từ file thành công",
             import_document_archive_faile:
                 "Nhập dữ liệu thông tin lưu trữ từ file thất bại",
             cannot_download_doc_file: "Không thể tải file tài liệu",
-            version_not_found:
-                "Không tìm thấy thông tin về phiên bản của tài liệu",
+            version_not_found: "Không tìm thấy thông tin về phiên bản của tài liệu",
             cannot_download_doc_file_scan: "Không thể tải file scan tài liệu",
             version_scan_not_found:
                 "Không tìm thấy thông tin về phiên bản scan tài liệu",
-            category_used_to_document:
-                "Thông tin về loại tài liệu đang được sử dụng",
+            category_used_to_document: "Thông tin về loại tài liệu đang được sử dụng",
             cannot_delete_category: "Không thể xóa loại tài liệu",
-            document_domain_not_found:
-                "Không tìm thấy dữ liệu về lĩnh vực tài liệu",
+            document_domain_not_found: "Không tìm thấy dữ liệu về lĩnh vực tài liệu",
             document_archive_not_found:
                 "Không tìm thấy dữ liệu về thông tin lưu trữ tài liệu",
             domain_name_exist: "Tên lĩnh vực đã được sử dụng",
@@ -840,6 +828,7 @@ export default {
                 },
 
                 add: "Thêm mới khách hàng",
+                add_import: "Thêm dữ liệu từ file",
                 see: "Xem thông tin khách hàng",
                 edit: "Chỉnh sửa thông tin khách hàng",
                 delete: "Xóa thông tin khách hàng",
@@ -885,16 +874,14 @@ export default {
 
         not_found: {
             title: "Không tìm thấy địa chỉ này!",
-            content:
-                "Chúng tôi không thể tìm thấy địa chỉ mà bạn đang tìm kiếm",
+            content: "Chúng tôi không thể tìm thấy địa chỉ mà bạn đang tìm kiếm",
             back_to_home: "Quay lại trang chủ",
         },
         language: "Thiết lập ngôn ngữ",
         alert: {
             title: "Thông báo từ hệ thống",
             log_again: "Đã xảy ra lỗi. Vui lòng đăng nhập lại!",
-            access_denied:
-                "ACCESS DENIED! Truy cập trái phép! Vui lòng đăng nhập!",
+            access_denied: "ACCESS DENIED! Truy cập trái phép! Vui lòng đăng nhập!",
             role_invalid:
                 "ROLE INVALID! Quyền truy cập không hợp lệ! Vui lòng thử lại sau!",
             page_access_denied:
@@ -935,6 +922,7 @@ export default {
             close: "Đóng",
             email: "Email",
             password: "Mật khẩu",
+            portal: "Portal",
             new_password: "Mật khẩu mới",
             confirm: "Xác thực mật khẩu",
             description: "Mô tả",
@@ -1089,8 +1077,7 @@ export default {
             task_management: "Danh sách công việc",
             task_management_of_unit: "Danh sách công việc đơn vị",
             task_management_dashboard: "Dashboard công việc",
-            task_organization_management_dashboard:
-                "Dashboard công việc đơn vị",
+            task_organization_management_dashboard: "Dashboard công việc đơn vị",
             task_management_process: "Danh sách quy trình",
             task_process_template: "Mẫu quy trình",
 
@@ -1154,8 +1141,7 @@ export default {
             manage_manufacturing_plan: "Quản lý kế hoạch sản xuất",
             manage_manufacturing_command: "Quản lý lệnh sản xuất",
             manage_work_schedule: "Quản lý lịch sản xuất",
-            manage_purchasing_request:
-                "Quản lý phiếu đề nghị mua nguyên vật liệu",
+            manage_purchasing_request: "Quản lý phiếu đề nghị mua nguyên vật liệu",
             manufacturing_dashboard: "Dashboard Quản lý sản xuất",
             analysis_manufacturing_performance: "Phân tích hiệu suất sản xuất",
             manage_manufacturing_works: "Quản lý nhà máy sản xuất",
@@ -1196,6 +1182,7 @@ export default {
             zoom_out: "Thu nhỏ",
             zoom_in: "Phóng to",
             add: "Thêm",
+            import: 'Thêm dữ liệu từ file',
             edit_title: "Chỉnh sửa đơn vị",
             add_title: "Thêm đơn vị mới",
             info: "Thông tin về đơn vị",
@@ -1288,7 +1275,7 @@ export default {
 
         // Modules cấu hình các chức năng
         module_configuration: {
-            timekeeping: 'Chấm công',
+            timekeeping: "Chấm công",
             timekeeping_type: "Kiểu chấm công",
             contract_notice_time: "Báo hết hạn hợp đồng (ngày)",
             contract_notice_time_title: "Báo trước hết hạn hợp đồng",
@@ -1303,8 +1290,7 @@ export default {
             // Thông điệp trả về từ server
             get_configuration_success: "Lấy thông tin cấu hình thành công",
             get_configuration_faile: "Lấy thông tin cấu hình thất bại",
-            edit_configuration_success:
-                "Chỉnh sửa thông tin cấu hình thành công",
+            edit_configuration_success: "Chỉnh sửa thông tin cấu hình thành công",
             edit_configuration_faile: "Chỉnh sửa thông tin cấu hình thất bại",
         },
 
@@ -1341,8 +1327,7 @@ export default {
 
             // Validator dung chung cho module quản lý nhân sự
             employee_number_required: "Mã nhân viên không được để trống",
-            staff_code_not_special:
-                "Mã nhân viên không được chứ ký tự đặc biệt",
+            staff_code_not_special: "Mã nhân viên không được chứ ký tự đặc biệt",
             staff_code_not_find: "Mã nhân viên không tồn tại",
             start_date_before_end_date: "Ngày bắt đầu phải trước ngày kết thúc",
             end_date_after_start_date: "Ngày kết thúc phải sau ngày bắt đầu",
@@ -1372,7 +1357,7 @@ export default {
                 add_salary_title: "Thêm bảng lương nhân viên",
                 add_by_hand: "Thêm bằng tay",
                 add_by_hand_title: "Thêm một bảng lương",
-                add_import: "Import file excel",
+                add_import: "Thêm dữ liệu từ file",
                 add_import_title: "Thêm nhiều bảng lương",
                 add_more_salary: "Thêm lương thưởng khác",
                 add_new_salary: "Thêm mới bảng lương",
@@ -1384,8 +1369,7 @@ export default {
                 staff_code_not_special:
                     "Mã nhân viên không được chứ ký tự đặc biệt",
                 staff_code_not_find: "Mã nhân viên không tồn tại",
-                name_other_salary_required:
-                    "Tên lương thưởng khác không được để trống",
+                name_other_salary_required: "Tên lương thưởng khác không được để trống",
                 money_other_salary_required:
                     "Tiền lương thưởng khác không được để trống",
                 month_salary_required: "Tháng lương không được để trống",
@@ -1434,24 +1418,19 @@ export default {
                 employee_code_duplicated: "Mã số nhân viên bị trùng lặp",
                 employee_name_required: "Tên nhân viên không được để trống",
                 employee_number_required: "Mã nhân viên không được để trống",
-                staff_code_not_special:
-                    "Mã nhân viên không được chứ ký tự đặc biệt",
+                staff_code_not_special: "Mã nhân viên không được chứ ký tự đặc biệt",
                 staff_code_not_find: "Mã nhân viên không tồn tại",
-                start_date_annual_leave_required:
-                    "Ngày bắt đầu không được để trống",
-                end_date_annual_leave_required:
-                    "Ngày kết thúc không được để trống",
+                start_date_annual_leave_required: "Ngày bắt đầu không được để trống",
+                end_date_annual_leave_required: "Ngày kết thúc không được để trống",
                 reason_annual_leave_required: "Lý do không được để trống",
                 status_annual_leave_required: "Trạng thái không được để trống",
                 get_annual_leave_success: "Lấy thông tin nghỉ phép thành công",
                 get_annual_leave_faile: "Lấy thông tin nghỉ phép thất bại",
-                create_annual_leave_success:
-                    "Thêm đơn xin nghỉ phép thành công",
+                create_annual_leave_success: "Thêm đơn xin nghỉ phép thành công",
                 create_annual_leave_faile: "Thêm đơn xin nghỉ phép thất bại",
                 delete_annual_leave_success: "Xoá đơn xin nghỉ phép thành công",
                 delete_annual_leave_faile: "Xoá đơn xin nghỉ phép thất bại",
-                edit_annual_leave_success:
-                    "Chỉnh sửa đơn xin nghỉ phép thành công",
+                edit_annual_leave_success: "Chỉnh sửa đơn xin nghỉ phép thành công",
                 edit_annual_leave_faile: "Chỉnh sửa đơn xin nghỉ phép thất bại",
                 aplication_annual_leave_success: "Thêm đơn xin nghỉ thành công",
             },
@@ -1461,8 +1440,7 @@ export default {
                 // Quản lý khen thưởng
                 commendation: {
                     list_commendation: "Danh sách khen thưởng",
-                    list_commendation_title:
-                        "Danh sách nhân viên được khen thưởng",
+                    list_commendation_title: "Danh sách nhân viên được khen thưởng",
                     file_name_export: "Bảng thống kê khen thưởng",
 
                     // Nhóm dành cho table
@@ -1482,33 +1460,24 @@ export default {
                     delete_commendation: "Xoá thông tin khen thưởng",
 
                     // Thông điệp trả về từ server
-                    employee_number_required:
-                        "Mã nhân viên không được để trống",
-                    staff_code_not_special:
-                        "Mã nhân viên không được chứ ký tự đặc biệt",
+                    employee_number_required: "Mã nhân viên không được để trống",
+                    staff_code_not_special: "Mã nhân viên không được chứ ký tự đặc biệt",
                     staff_code_not_find: "Mã nhân viên không tồn tại",
-                    number_decisions_required:
-                        "Số ra quyết định không được để trống",
+                    number_decisions_required: "Số ra quyết định không được để trống",
                     number_decisions_have_exist: "Số ra quyết định đã tồn tại",
-                    unit_decisions_required:
-                        "Cấp ra quyết định không được để trống",
+                    unit_decisions_required: "Cấp ra quyết định không được để trống",
                     type_commendations_required:
                         "Hình thức khen thưởng không được để trống",
                     reason_commendations_required:
                         "Thành tích (lý do) khen thưởng không được để trống",
-                    decisions_date_required:
-                        "Ngày ra quyết định không được để trống",
-                    get_commendations_success:
-                        "Lấy danh sách khen thưởng thành công",
-                    get_commendations_faile:
-                        "Lấy danh sách khen thưởng thất bại",
-                    create_commendations_success:
-                        "Thêm mới khen thưởng thành công",
+                    decisions_date_required: "Ngày ra quyết định không được để trống",
+                    get_commendations_success: "Lấy danh sách khen thưởng thành công",
+                    get_commendations_faile: "Lấy danh sách khen thưởng thất bại",
+                    create_commendations_success: "Thêm mới khen thưởng thành công",
                     create_commendations_faile: "Thêm mới khen thưởng thất bại",
                     delete_commendations_success: "Xoá khen thưởng thành công",
                     delete_commendations_faile: "Xoá khen thưởng thất bại",
-                    edit_commendations_success:
-                        "Chỉnh sửa khen thưởng thành công",
+                    edit_commendations_success: "Chỉnh sửa khen thưởng thành công",
                     edit_commendations_faile: "Chỉnh sửa khen thưởng thất bại",
                 },
 
@@ -1623,10 +1592,10 @@ export default {
                 religion: "Tôn giáo",
                 active: "Đang làm việc",
                 leave: "Đã nghỉ làm",
-                maternity_leave: 'Nghỉ thai sản',
-                unpaid_leave: 'Nghỉ không lương',
-                probationary: 'Đang thử việc',
-                sick_leave: 'Nghỉ ốm đau',
+                maternity_leave: "Nghỉ thai sản",
+                unpaid_leave: "Nghỉ không lương",
+                probationary: "Đang thử việc",
+                sick_leave: "Nghỉ ốm đau",
                 status_work: "Tình trạng lao động",
                 hours_off_remaining: "Số giờ nghỉ phép còn lại",
 
@@ -1876,7 +1845,7 @@ export default {
                     add_employee: "Thêm nhân viên",
                     add_employee_title: "Thêm mới nhân viên",
                     add_by_hand: "Thêm một nhân viên",
-                    add_import: "Import file excel",
+                    add_import: "Thêm dữ liệu từ file",
 
                     // Thông điệp trả về từ server
                     get_list_employee_success:
@@ -1960,7 +1929,7 @@ export default {
                 add_work_plan: "Thêm mới",
                 add_work_plan_title: "Thêm mới kế hoạch làm việc",
                 add_by_hand: "Thêm một kế hoạch làm việc",
-                add_import: "Import file excel",
+                add_import: "Thêm dữ liệu từ file",
                 accept_application: "Chấp nhận đơn xin nghỉ",
                 refuse_application: "Từ chối đơn xin nghỉ",
 
@@ -2010,7 +1979,7 @@ export default {
                 add_timesheets: "Thêm mới",
                 add_timesheets_title: "Thêm mới thông tin chấm công",
                 add_by_hand: "Thêm một bảng công",
-                add_import: "Import file excel",
+                add_import: "Thêm dữ liệu từ file",
 
                 // Thông điệp trả về từ server
                 employee_code_duplicated: "Mã số nhân viên bị trùng lặp",
@@ -2353,10 +2322,8 @@ export default {
                 create_asset_type_faile: "Thêm loại tài sản thất bại",
                 delete_asset_type_success: "Xoá loại tài sản thành công",
                 delete_asset_type_faile: "Xoá loại tài sản thất bại",
-                edit_asset_type_success:
-                    "Chỉnh sửa thông tin loại tài sản thành công",
-                edit_asset_type_faile:
-                    "Chỉnh sửa thông tin loại tài sản thất bại",
+                edit_asset_type_success: "Chỉnh sửa thông tin loại tài sản thành công",
+                edit_asset_type_faile: "Chỉnh sửa thông tin loại tài sản thất bại",
                 asset_type_name_exist: "Tên loại tài sản đã tồn tại",
             },
 
@@ -2418,13 +2385,18 @@ export default {
                 total_cost: "Tổng chi phí",
 
                 //Thông điệp trả về từ server
-                get_maintainance_success: "Lấy thông tin bảo trì-sửa chữa thành công",
+                get_maintainance_success:
+                    "Lấy thông tin bảo trì-sửa chữa thành công",
                 get_maintainance_faile:
                     "Lấy thông tin thông tin bảo trì-sửa chữa thất bại",
-                create_maintainance_success: "Thêm phiếu bảo trì-sửa chữa thành công",
-                create_maintainance_faile: "Thêm phiếu bảo trì-sửa chữa thất bại",
-                delete_maintainance_success: "Xoá phiếu bảo trì-sửa chữa thành công",
-                delete_maintainance_faile: "Xoá phiếu bảo trì-sửa chữa thất bại",
+                create_maintainance_success:
+                    "Thêm phiếu bảo trì-sửa chữa thành công",
+                create_maintainance_faile:
+                    "Thêm phiếu bảo trì-sửa chữa thất bại",
+                delete_maintainance_success:
+                    "Xoá phiếu bảo trì-sửa chữa thành công",
+                delete_maintainance_faile:
+                    "Xoá phiếu bảo trì-sửa chữa thất bại",
                 edit_maintainance_success:
                     "Chỉnh sửa thông tin phiếu bảo trì-sửa chữa thành công",
                 edit_maintainance_faile:
@@ -2443,11 +2415,9 @@ export default {
                 //Thông điệp trả về từ server
                 get_usage_success: "Lấy thông tin sử dụng thành công",
                 get_usage_faile: "Lấy thông tin sử dụng thất bại",
-                create_usage_success:
-                    "Thêm hoạt động sử dụng tài sản thành công",
+                create_usage_success: "Thêm hoạt động sử dụng tài sản thành công",
                 create_usage_faile: "Thêm hoạt động sử dụng tài sản thất bại",
-                delete_usage_success:
-                    "Xoá hoạt động sử dụng tài sản thành công",
+                delete_usage_success: "Xoá hoạt động sử dụng tài sản thành công",
                 delete_usage_faile: "Xoá hoạt động sử dụng tài sản thất bại",
                 edit_usage_success:
                     "Chỉnh sửa thông tin hoạt động sử dụng tài sản thành công",
@@ -2462,8 +2432,7 @@ export default {
                 remaining_value: "Giá trị còn lại",
                 edit_depreciation: "Chỉnh sửa thông tin kháu hao tài sản",
 
-                estimated_production:
-                    "Sản lượng theo công suất thiết kế (trong 1 năm)",
+                estimated_production: "Sản lượng theo công suất thiết kế (trong 1 năm)",
                 months_production: "Sản lượng sản phẩm trong các tháng",
                 production: "Sản lượng",
                 select_depreciation_type: "Chọn phương pháp khấu hao",
@@ -2477,12 +2446,10 @@ export default {
                 get_depreciation_faile: "Lấy thông tin khấu hao thất bại",
                 create_depreciation_success:
                     "Thêm thông tin khấu hao tài sản thành công",
-                create_depreciation_faile:
-                    "Thêm thông tin khấu hao tài sản thất bại",
+                create_depreciation_faile: "Thêm thông tin khấu hao tài sản thất bại",
                 delete_depreciation_success:
                     "Xoá thông tin khấu hao tài sản thành công",
-                delete_depreciation_faile:
-                    "Xoá thông tin khấu hao tài sản thất bại",
+                delete_depreciation_faile: "Xoá thông tin khấu hao tài sản thất bại",
                 edit_depreciation_success:
                     "Chỉnh sửa thông tin khấu hao tài sản thành công",
                 edit_depreciation_faile:
@@ -2499,13 +2466,10 @@ export default {
                 get_incident_faile: "Lấy thông tin sự cố tài sản thất bại",
                 create_incident_success: "Thêm sự cố tài sản thành công",
                 create_incident_faile: "Thêm sự cố tài sản thất bại",
-                delete_incident_success:
-                    "Xoá thông tin sự cố tài sản thành công",
+                delete_incident_success: "Xoá thông tin sự cố tài sản thành công",
                 delete_incident_faile: "Xoá thông tin sự cố tài sản thất bại",
-                edit_incident_success:
-                    "Chỉnh sửa thông tin sự cố tài sản thành công",
-                edit_incident_faile:
-                    "Chỉnh sửa thông tin sự cố tài sản thất bại",
+                edit_incident_success: "Chỉnh sửa thông tin sự cố tài sản thành công",
+                edit_incident_faile: "Chỉnh sửa thông tin sự cố tài sản thất bại",
             },
 
             // Quản lý đề nghị mua sắm thiết bị
@@ -2513,8 +2477,7 @@ export default {
                 asset_recommend: "Thiết bị đề nghị mua sắm",
                 equipment_description: "Mô tả thiết bị",
                 add_recommend_card: "Thêm mới phiếu đề nghị mua sắm tài sản",
-                view_recommend_card:
-                    "Xem thông tin phiếu đề nghị mua sắm tài sản",
+                view_recommend_card: "Xem thông tin phiếu đề nghị mua sắm tài sản",
                 edit_recommend_card: "Chỉnh sửa phiếu đề nghị mua sắm tài sản",
                 delete_recommend_card: "Xóa phiếu đề nghị mua sắm tài sản",
                 supplier: "Nhà cung cấp",
@@ -2537,8 +2500,7 @@ export default {
                     "Xoá phiếu đề nghị cấp phát thiết bị thành công",
                 delete_use_request_faile:
                     "Xoá phiếu đề nghị cấp phát thiết bị thất bại",
-                edit_use_request_success:
-                    "Chỉnh sửa thông tin phiếu thành công",
+                edit_use_request_success: "Chỉnh sửa thông tin phiếu thành công",
                 edit_use_request_faile: "Chỉnh sửa thông tin phiếu thất bại",
             },
 
@@ -2557,10 +2519,8 @@ export default {
                     "Xoá phiếu đề nghị mua sắm thiết bị thành công",
                 delete_purchase_request_faile:
                     "Xoá phiếu đề nghị mua sắm thiết bị thất bại",
-                edit_purchase_request_success:
-                    "Chỉnh sửa thông tin phiếu thành công",
-                edit_purchase_request_faile:
-                    "Chỉnh sửa thông tin phiếu thất bại",
+                edit_purchase_request_success: "Chỉnh sửa thông tin phiếu thành công",
+                edit_purchase_request_faile: "Chỉnh sửa thông tin phiếu thất bại",
             },
 
             // Đăng ký sử dụng thiết bị
@@ -2578,8 +2538,7 @@ export default {
                     "Xoá phiếu đề nghị cấp phát thiết bị thành công",
                 delete_use_request_faile:
                     "Xoá phiếu đề nghị cấp phát thiết bị thất bại",
-                edit_use_request_success:
-                    "Chỉnh sửa thông tin phiếu thành công",
+                edit_use_request_success: "Chỉnh sửa thông tin phiếu thành công",
                 edit_use_request_faile: "Chỉnh sửa thông tin phiếu thất bại",
             },
         },
@@ -2594,7 +2553,7 @@ export default {
             approver: "Người phê duyệt",
             observer: "Người quan sát",
             consultant: "Người tư vấn",
-            formula: "Công thức tính điểm",
+            formula: "Công thức tính điểm tự động",
             activity_list: "Danh sách hoạt động",
             information_list: "Danh sách thông tin",
             no_data: "Không có dữ liệu",
@@ -2602,6 +2561,7 @@ export default {
             save: "Lưu",
             close: "Đóng",
             add: "Thêm mới",
+            import: "Thêm dữ liệu từ file",
             confirm: "Xác nhận",
             confirm_title: "Bạn chắc chắn muốn xóa mẫu công việc này?",
             error_title: "Không thể xóa mẫu công việc này do đã được sử dụng.",
@@ -2679,13 +2639,11 @@ export default {
                     "Lấy công việc theo vai trò người thực hiện thất bại",
                 get_tasks_by_role_fail: "Lấy công việc tạo bởi người ",
                 get_task_by_id_fail: "Lấy công việc theo id thất bại",
-                get_task_evaluation_fail:
-                    "Lấy thông tin đánh giá công việc thất bại",
+                get_task_evaluation_fail: "Lấy thông tin đánh giá công việc thất bại",
                 get_all_task_fail: "Lấy tất cả công việc thất bại",
                 create_task_fail: "không thể tạo công việc mới",
                 delete_fail: "Không thể xóa công việc này",
-                edit_status_of_task_fail:
-                    "Không thể thay đổi trạng thái công việc",
+                edit_status_of_task_fail: "Không thể thay đổi trạng thái công việc",
                 edit_status_archived_of_task_fail:
                     "Chỉnh sửa trạng thái lưu kho của công việc thất bại",
                 confirm_delete:
@@ -2708,8 +2666,7 @@ export default {
                     "Công việc chưa được liên kết KPI tháng",
                 no_task_is_not_linked: "Không có công việc nào ",
                 loading_data: "Đang tải dữ liệu",
-                task_has_action_not_evaluated:
-                    "Công việc có hoạt động chưa đánh giá",
+                task_has_action_not_evaluated: "Công việc có hoạt động chưa đánh giá",
                 no_task_has_action_not_evaluated: "Không có công việc nào",
                 performer: "Người thực hiện",
                 approver: "Người phê duyệt",
@@ -2756,8 +2713,10 @@ export default {
                 role_in_collaborated_unit: "Vai trò của nhân viên thuộc",
                 confirm_assigned: "Xác nhận đã phân công công việc",
                 confirm_assigned_success: "Bạn đã xác nhận phân công công việc",
-                confirm_assigned_failure: "Bạn chưa xác nhận phân công công việc",
-                unit_not_confirm_assigned_task: "Đơn vị chưa xác nhận phân công công việc",
+                confirm_assigned_failure:
+                    "Bạn chưa xác nhận phân công công việc",
+                unit_not_confirm_assigned_task:
+                    "Đơn vị chưa xác nhận phân công công việc",
 
                 name: "Tên công việc",
                 search_by_name: "Tìm kiếm theo tên",
@@ -2844,19 +2803,13 @@ export default {
                 detail_all_not_kpi: "Chưa ai liên kết công việc với KPI",
                 detailt_none_eval: "Chưa được đánh giá lần nào",
 
-                detail_resp_edit:
-                    "Chỉnh sửa công việc với vai trò người thực hiện",
-                detail_acc_edit:
-                    "Chỉnh sửa công việc với vai trò người phê duyệt",
-                detail_resp_eval:
-                    "Đánh giá công việc với vai trò người thực hiện",
-                detail_acc_eval:
-                    "Đánh giá công việc với vai trò người phê duyệt",
+                detail_resp_edit: "Chỉnh sửa công việc với vai trò người thực hiện",
+                detail_acc_edit: "Chỉnh sửa công việc với vai trò người phê duyệt",
+                detail_resp_eval: "Đánh giá công việc với vai trò người thực hiện",
+                detail_acc_eval: "Đánh giá công việc với vai trò người phê duyệt",
                 detail_cons_eval: "Đánh giá công việc với vai trò người tư vấn",
-                detail_resp_stop:
-                    "Kết thúc công việc với vai trò người thực hiện",
-                detail_acc_stop:
-                    "Kết thúc công việc với vai trò người phê duyệt",
+                detail_resp_stop: "Kết thúc công việc với vai trò người thực hiện",
+                detail_acc_stop: "Kết thúc công việc với vai trò người phê duyệt",
                 detail_cons_stop: "Kết thúc công việc với vai trò người tư vấn",
                 detail_task_permission:
                     "Công việc không tồn tại hoặc bạn không có quyền truy cập",
@@ -2900,15 +2853,12 @@ export default {
                 calc_formula: "Công thức tính",
                 calc_overdue_date: "Thời gian quá hạn",
                 calc_day_used: "Thời gian làm việc tính đến ngày đánh giá",
-                calc_average_action_rating:
-                    "Trung bình cộng điểm đánh giá hoạt động",
-                calc_failed_action_rating:
-                    "Số hoạt động không đạt (rating < 5)",
+                calc_average_action_rating: "Trung bình cộng điểm đánh giá hoạt động",
+                calc_failed_action_rating: "Số hoạt động không đạt (rating < 5)",
                 calc_passed_action_rating: "Số công việc đạt (rating >= 5)",
                 calc_progress: "Tiến độ công việc",
                 calc_new_formula: "Công thức hiện tại",
-                calc_total_day:
-                    "Thời gian từ ngày bắt đầu đến ngày kết thúc công việc",
+                calc_total_day: "Thời gian từ ngày bắt đầu đến ngày kết thúc công việc",
                 calc_days: "ngày",
                 calc_where: "Trong đó",
                 calc_no_value: "Chưa có giá trị",
@@ -2927,8 +2877,7 @@ export default {
                 eval_of: "Đánh giá tháng",
                 eval_from: "Đánh giá từ ngày",
                 eval_to: "Đến ngày",
-                store_info:
-                    "Lưu các giá trị trên vào thông tin công việc hiện tại",
+                store_info: "Lưu các giá trị trên vào thông tin công việc hiện tại",
                 bool_yes: "Đúng",
                 bool_no: "Sai",
 
@@ -2944,8 +2893,7 @@ export default {
                     " - (Do chưa có hành động nào được đánh giá qua hay không qua, nên số lượng hành động qua và không qua sẽ được coi bằng nhau và bằng 1)",
 
                 auto_point_field: "Điểm công việc tự động trong đánh giá này",
-                get_outside_info:
-                    "Nhập tự động từ thông tin công việc hiện tại",
+                get_outside_info: "Nhập tự động từ thông tin công việc hiện tại",
 
                 dashboard_created: "Số CV bạn đã tạo",
                 dashboard_need_perform: "Số CV bạn thực hiện",
@@ -2979,8 +2927,7 @@ export default {
                 // add_err:
                 add_err_empty_unit: "Đơn vị không được để trống",
                 add_err_empty_name: "Tên không được để trống",
-                add_err_empty_description:
-                    "Mô tả công việc không được để trống",
+                add_err_empty_description: "Mô tả công việc không được để trống",
                 add_err_empty_start_date: "Hãy chọn ngày bắt đầu",
                 add_err_empty_end_date: "Hãy chọn ngày kết thúc",
                 add_err_empty_responsible: "Cần chọn người thực hiện",
@@ -2994,8 +2941,7 @@ export default {
                 unit_manage_task: "Đơn vị quản lý công việc",
                 collaborated_with_organizational_units:
                     "Đơn vị phối hợp thực hiện công việc",
-                not_collaborated_with_organizational_units:
-                    "Không có đơn vị phối hợp",
+                not_collaborated_with_organizational_units: "Không có đơn vị phối hợp",
                 task_empty_employee: "Đơn vị bạn chưa có người tham gia",
                 delete_eval: "Xóa đánh giá tháng này",
                 delete_eval_title: "Bạn có chắc chắn muốn xóa đánh giá này?",
@@ -3077,52 +3023,40 @@ export default {
 
                 is_task_process: "Đây là công việc theo quy trình",
                 activated_task: "Kích hoạt",
-                following_task:
-                    "Nhấn chuột để kích hoạt các công việc phía sau",
+                following_task: "Nhấn chuột để kích hoạt các công việc phía sau",
 
                 // TODO: code_mesage_task_perform
-                create_result_task_success:
-                    "Đánh giá xong kết quả thực hiện công việc",
-                edit_redult_task_success:
-                    "Chỉnh sửa thành công kết quả đánh giá",
+                create_result_task_success: "Đánh giá xong kết quả thực hiện công việc",
+                edit_redult_task_success: "Chỉnh sửa thành công kết quả đánh giá",
                 get_task_actions_success: "Lấy tất cả hoạt động thành công",
                 create_task_action_success: "Tạo hoạt động thành công",
                 edit_task_action_success: "Sửa hoạt đông thành công",
                 delete_task_action_success: "Xóa hoạt động thành công",
                 get_action_comments_success:
                     "Lấy tất cả bình luận của hoạt động thành công",
-                create_action_comment_success:
-                    "Tạo bình luận hoạt động thành công",
-                edit_action_comment_success:
-                    "Sửa bình luận hoạt động thành công",
-                delete_action_comment_success:
-                    "Xóa bình luận hoạt động thành công",
+                create_action_comment_success: "Tạo bình luận hoạt động thành công",
+                edit_action_comment_success: "Sửa bình luận hoạt động thành công",
+                delete_action_comment_success: "Xóa bình luận hoạt động thành công",
                 get_log_timer_success:
                     "Lấy tất cả lịch sử bấm giờ theo công việc thành công",
-                get_timer_status_success:
-                    "Lấy trạng thái bấm giờ hiện tại thành công",
+                get_timer_status_success: "Lấy trạng thái bấm giờ hiện tại thành công",
                 start_timer_success: "Bắt đầu bấm giờ thành công",
                 pause_timer_success: "Tạm dừng bấm giờ thành công",
                 continue_timer_success: "Tiếp tục bấm giờ thành công",
                 stop_timer_success: "Kết thúc bấm giờ thành công",
-                create_result_info_task_success:
-                    "Tạo result info task thành công",
+                create_result_info_task_success: "Tạo result info task thành công",
                 create_result_infomation_task_success:
                     "Tạo result infomation task thành công",
                 edit_result_infomation_task_success:
                     "Sửa result infomation task thành công",
-                create_task_comment_success:
-                    "Tạo thành công bình luận công việc",
+                create_task_comment_success: "Tạo thành công bình luận công việc",
                 get_task_comments_success:
                     "Lấy tất cả bình luận của công việc thành công",
                 edit_task_comment_success: "Sửa bình luận thành công",
                 delete_task_comment_success: "Xóa bình luận thành công",
-                create_comment_of_task_comment_success:
-                    "Tạo bình luận thành công",
-                edit_comment_of_task_comment_success:
-                    "Sửa bình luận thành công",
-                delete_comment_of_task_comment_success:
-                    "Xóa bình luận thành công",
+                create_comment_of_task_comment_success: "Tạo bình luận thành công",
+                edit_comment_of_task_comment_success: "Sửa bình luận thành công",
+                delete_comment_of_task_comment_success: "Xóa bình luận thành công",
                 evaluation_action_success: "Đánh giá hoạt động thành công",
                 confirm_action_success: "Xác nhận hoạt động thành công",
                 delete_file_child_task_comment_success:
@@ -3131,31 +3065,26 @@ export default {
                 delete_file_success: "Xóa file của hoạt động thành công",
                 delete_file_comment_of_action_success:
                     "Xóa file của bình luận thành công",
-                delete_file_task_comment_success:
-                    "Xóa file của bình luận thành công",
+                delete_file_task_comment_success: "Xóa file của bình luận thành công",
                 create_task_log_success: " Tạo task log thành công",
                 get_task_log_success: "Lấy lịch sử chỉnh sửa thành công",
                 edit_task_information_success: "Chỉnh sửa thông tin thành công",
-                edit_document_task_comment_success:
-                    "Chỉnh sửa tài liệu thành công",
+                edit_document_task_comment_success: "Chỉnh sửa tài liệu thành công",
 
                 create_result_task_fail:
                     "Không đánh giá được kết quả thực hiện công việc",
                 edit_redult_task_fail: "Chỉnh sửa thất bại kết quả đánh giá",
-                get_task_actions_fail:
-                    "Lấy tất cả thông tin hoạt động thất bại",
+                get_task_actions_fail: "Lấy tất cả thông tin hoạt động thất bại",
                 create_task_action_fail: "Tạo hoạt động thất bại",
                 edit_task_action_fail: "Sửa hoạt đông thất bại",
                 delete_task_action_fail: "Xóa hoạt động thất bại",
-                get_action_comments_fail:
-                    "Lấy tất cả bình luận hoạt động thất bại",
+                get_action_comments_fail: "Lấy tất cả bình luận hoạt động thất bại",
                 create_action_comment_fail: "Tạo bình luận hoạt động thất bại",
                 edit_action_comment_fail: "Sửa bình luận hoạt động thất bại",
                 delete_action_comment_fail: "Xóa bình luận hoạt động thất bại",
                 get_log_timer_fail:
                     "Lấy tất cả lịch sử bấm giờ theo công việc thất bại",
-                get_timer_status_fail:
-                    "Lấy trạng thái bấm giờ hiện tại thất bại",
+                get_timer_status_fail: "Lấy trạng thái bấm giờ hiện tại thất bại",
                 start_timer_fail: "Bắt đầu bấm giờ thất bại",
                 pause_timer_fail: "Tạm dừng bấm giờ thất bại",
                 continue_timer_fail: "Tiếp tục bấm giờ thất bại",
@@ -3163,11 +3092,9 @@ export default {
                 create_result_info_task_fail: "Tạo result info task thất bại",
                 create_result_infomation_task_fail:
                     "Tạo result infomation task thất bại",
-                edit_result_infomation_task_fail:
-                    "Sửa result infomation task thất bại",
+                edit_result_infomation_task_fail: "Sửa result infomation task thất bại",
                 create_task_comment_fail: "Tạo bình luận công việc thất bại",
-                get_task_comments_fail:
-                    "Lấy tất cả bình luận công việc thất bại",
+                get_task_comments_fail: "Lấy tất cả bình luận công việc thất bại",
                 edit_task_comment_fail: "Sửa bình luận thất bại",
                 delete_task_comment_success: "Xóa bình luận thất bại",
                 create_comment_of_task_comment_fail: "Tạo bình luận thất bại",
@@ -3175,20 +3102,15 @@ export default {
                 delete_comment_of_task_comment_fail: "Xóa bình luận thất bại",
                 evaluation_action_fail: "Đánh giá công việc thất bại",
                 confirm_action_fail: "Xác nhận hoạt động thất bại",
-                delete_file_child_task_comment_fail:
-                    "Xóa file của bình luận thất bại",
+                delete_file_child_task_comment_fail: "Xóa file của bình luận thất bại",
                 upload_file_fail: "Upload file thất bại",
                 delete_file_fail: "Xóa file của hoạt động thất bại",
-                delete_file_comment_of_action_fail:
-                    "Xóa file của bình luận thất bại",
-                delete_file_task_comment_fail:
-                    "Xóa file của bình luận thất bại",
+                delete_file_comment_of_action_fail: "Xóa file của bình luận thất bại",
+                delete_file_task_comment_fail: "Xóa file của bình luận thất bại",
                 create_task_log_fail: "Tạo lịch sử chỉnh sử cộng việc thất bại",
-                get_task_log_fail:
-                    "Lấy tất cả lịch sử chỉnh sửa công việc thất bại",
+                get_task_log_fail: "Lấy tất cả lịch sử chỉnh sửa công việc thất bại",
                 edit_task_information_failure: "Chỉnh sửa thông tin thất bại",
-                edit_document_task_comment_failure:
-                    "Chỉnh sửa tài liệu thất bại",
+                edit_document_task_comment_failure: "Chỉnh sửa tài liệu thất bại",
 
                 // error label
                 err_require: "Trường này phải có giá trị",
@@ -3229,8 +3151,7 @@ export default {
 
                     err_range: "Giá trị không được vượt quá khoảng 0-100",
                     err_contribute: "Tổng phần trăm đóng góp phải là 100",
-                    err_not_enough_contribute:
-                        "Tổng phần trăm đóng góp phải là 100",
+                    err_not_enough_contribute: "Tổng phần trăm đóng góp phải là 100",
                     err_empty: "Giá trị không được để trống",
                 },
             },
@@ -3273,8 +3194,7 @@ export default {
                 view_process_template_modal: "Xem mẫu quy trình công việc",
                 view_task_process_modal: "Xem quy trình công việc",
                 edit_modal: "Chỉnh sửa mẫu quy trình công việc",
-                add_task_process_modal:
-                    "Thêm mới chuỗi công việc theo quy trình",
+                add_task_process_modal: "Thêm mới chuỗi công việc theo quy trình",
 
                 save: "Lưu",
 
@@ -3291,24 +3211,18 @@ export default {
                 delete_fail: "Xóa mẫu quy trình thất bại",
                 create_task_by_process_success:
                     "Tạo công việc theo quy trình thành công",
-                create_task_by_process_fail:
-                    "Tạo công việc theo quy trình thất bại",
+                create_task_by_process_fail: "Tạo công việc theo quy trình thất bại",
                 get_all_task_process_success:
                     "Lấy danh sach quy trình công việc thành công",
-                get_all_task_process_fail:
-                    "Lấy danh sach quy trình công việc thất bại",
-                update_task_process_success:
-                    "Cập nhật quy trình công việc thành công",
-                update_task_process_fail:
-                    "Cập nhật quy trình công việc thất bại",
+                get_all_task_process_fail: "Lấy danh sach quy trình công việc thất bại",
+                update_task_process_success: "Cập nhật quy trình công việc thành công",
+                update_task_process_fail: "Cập nhật quy trình công việc thất bại",
                 edit_info_process_success:
                     "Chỉnh sửa thông tin quy trình công việc thành công",
                 edit_info_process_fail:
                     "Chỉnh sửa thông tin quy trình công việc thất bại",
-                import_process_success:
-                    "Thêm mẫu quy trình từ file excel thành công",
-                import_process_fail:
-                    "Thêm mẫu quy trình từ file excel thất bại",
+                import_process_success: "Thêm mẫu quy trình từ file excel thành công",
+                import_process_fail: "Thêm mẫu quy trình từ file excel thất bại",
 
                 error: {
                     empty_name: "Tên quy trình không được bỏ trống",
@@ -3316,10 +3230,8 @@ export default {
 
                     empty_description: "Mô tả quy trình không được bỏ trống",
 
-                    empty_viewer:
-                        "Cần chỉ rõ những người có quyền xem mẫu quy trình",
-                    empty_manager:
-                        "Cần chỉ rõ những người quản lý mẫu quy trình",
+                    empty_viewer: "Cần chỉ rõ những người có quyền xem mẫu quy trình",
+                    empty_manager: "Cần chỉ rõ những người quản lý mẫu quy trình",
                 },
             },
             task_template: {
@@ -3343,8 +3255,7 @@ export default {
             employee: {
                 get_kpi_by_member_success:
                     "Lấy KPI thành viên theo người thiết lập thành công",
-                get_kpi_by_member_fail:
-                    "Lấy KPI thành theo người thiết lập viên lỗi",
+                get_kpi_by_member_fail: "Lấy KPI thành theo người thiết lập viên lỗi",
                 get_kpi_responsible_success:
                     "Lấy tất cả KPI cá nhân của người thực hiện trong công việc thành công",
                 get_kpi_responsible_fail:
@@ -3416,17 +3327,14 @@ export default {
                                 "KPI đang được phê duyệt, bạn không thể chỉnh sửa. Nếu muốn sửa đổi hãy liên hệ với quản lý của bạn!",
                             activated:
                                 "KPI đã được kích hoạt, bạn không thể chỉnh sửa. Nếu muốn sửa đổi hãy liên hệ với quản lý của bạn!",
-                            finished:
-                                "KPI đã kết thúc, bạn không thể chỉnh sửa!",
+                            finished: "KPI đã kết thúc, bạn không thể chỉnh sửa!",
                         },
                         request_approval_kpi: {
-                            approve:
-                                "Bạn chắc chắn muốn quản lý phê quyệt KPI này?",
+                            approve: "Bạn chắc chắn muốn quản lý phê quyệt KPI này?",
                             not_enough_weight: "Tổng trọng số phải bằng 100",
                         },
                         cancel_approve: {
-                            cancel:
-                                "Bạn chắc chắn muốn hủy yêu cầu phê duyệt KPI này?",
+                            cancel: "Bạn chắc chắn muốn hủy yêu cầu phê duyệt KPI này?",
                             activated:
                                 "KPI đã được kích hoạt bạn không thể hủy bỏ yêu cầu phê duyệt, nếu muốn sửa đổi hãy liên hệ với quản lý của bạn!",
                         },
@@ -3437,25 +3345,18 @@ export default {
                             delete: "Xóa",
                         },
                         edit_target: {
-                            approving:
-                                "KPI đang được phê duyệt, Bạn không thể chỉnh sửa!",
-                            activated:
-                                "KPI đã được kích hoạt, Bạn không thể chỉnh sửa!",
+                            approving: "KPI đang được phê duyệt, Bạn không thể chỉnh sửa!",
+                            activated: "KPI đã được kích hoạt, Bạn không thể chỉnh sửa!",
                         },
                         delete_kpi: {
                             kpi: "Bạn chắc chắn muốn xóa KPI này?",
-                            kpi_target:
-                                "Bạn chắc chắn muốn xóa mục tiêu KPI này?",
-                            approving:
-                                "KPI đang được phê duyệt, bạn không thể xóa!",
-                            activated:
-                                "KPI đã được kích hoạt, bạn không thể xóa!",
+                            kpi_target: "Bạn chắc chắn muốn xóa mục tiêu KPI này?",
+                            approving: "KPI đang được phê duyệt, bạn không thể xóa!",
+                            activated: "KPI đã được kích hoạt, bạn không thể xóa!",
                         },
                         add_new_target: {
-                            approving:
-                                "KPI đang được phê duyệt, bạn không thể thêm mới!",
-                            activated:
-                                "KPI đã được kích hoạt, bạn không thể thêm mới!",
+                            approving: "KPI đang được phê duyệt, bạn không thể thêm mới!",
+                            activated: "KPI đã được kích hoạt, bạn không thể thêm mới!",
                         },
                         handle_populate_info_null: {
                             error_kpi_approver_null:
@@ -3524,10 +3425,8 @@ export default {
                         initialize_employee_kpi_set_failure:
                             "Khởi tạo tập KPI nhân viên thất bại",
 
-                        create_employee_kpi_success:
-                            "Thêm mục tiêu KPI thành công",
-                        create_employee_kpi_failure:
-                            "Thêm mục tiêu KPI thất bại",
+                        create_employee_kpi_success: "Thêm mục tiêu KPI thành công",
+                        create_employee_kpi_failure: "Thêm mục tiêu KPI thất bại",
 
                         edit_employee_kpi_set_success:
                             "Chỉnh sửa tập KPI nhân viên thành công",
@@ -3538,19 +3437,14 @@ export default {
                         delete_employee_kpi_set_failure:
                             "Xóa KPI tập KPI nhân viên thất bại",
 
-                        approve_success:
-                            "Xác nhận yêu cầu phê duyệt thành công",
+                        approve_success: "Xác nhận yêu cầu phê duyệt thành công",
                         approve_failure: "Xác nhận yêu cầu phê duyệt thất bại",
 
-                        delete_employee_kpi_success:
-                            "Xóa mục tiêu KPI thành công",
-                        delete_employee_kpi_failure:
-                            "Xóa mục tiêu KPI thất bại",
+                        delete_employee_kpi_success: "Xóa mục tiêu KPI thành công",
+                        delete_employee_kpi_failure: "Xóa mục tiêu KPI thất bại",
 
-                        edit_employee_kpi_success:
-                            "Chỉnh sửa mục tiêu KPI thành công",
-                        edit_employee_kpi_failure:
-                            "Chỉnh sửa mục tiêu KPI thất bại",
+                        edit_employee_kpi_success: "Chỉnh sửa mục tiêu KPI thành công",
+                        edit_employee_kpi_failure: "Chỉnh sửa mục tiêu KPI thất bại",
                     },
                 },
             },
@@ -3572,8 +3466,7 @@ export default {
                     approve_point: "Điểm người phê duyệt đánh giá",
                     option: "Tùy chọn",
                     analyze: "Phân tích",
-                    statistics_chart_title:
-                        "Thống kê kết quả KPI của nhân viên",
+                    statistics_chart_title: "Thống kê kết quả KPI của nhân viên",
                     result_kpi_titile: "Kết quả KPI tất cả nhân viên",
                     auto_eva: "Hệ thống đánh giá",
                     employee_eva: "Cá nhân tự đánh giá",
@@ -3683,19 +3576,16 @@ export default {
                  */
                 get_all_kpi_member_success: "Lấy tất cả KPI member thành công",
                 get_all_kpi_member_fail: "Lấy tất cả KPI nhân viên lỗi",
-                get_kpi_targets_success:
-                    "Lấy mục tiêu KPI nhân viên thành công",
+                get_kpi_targets_success: "Lấy mục tiêu KPI nhân viên thành công",
                 get_kpi_targets_fail: "Lấy mục tiêu KPI nhân viên lỗi",
                 get_all_kpi_member_by_id_success:
                     "Lấy tất cả KPI nhân viên theo Id thành công",
-                get_all_kpi_member_by_id_fail:
-                    "Lấy tất cả KPI nhân viên theo Id lỗi",
+                get_all_kpi_member_by_id_fail: "Lấy tất cả KPI nhân viên theo Id lỗi",
                 get_all_kpi_member_by_month_success:
                     "Lấy tất cả KPI nhân viên theo tháng thành công",
                 get_all_kpi_member_by_month_fail:
                     "Lấy tất cả KPI nhân viên theo tháng lỗi",
-                approve_all_kpi_target_success:
-                    "Phê duyệt KPI nhân viên thành công",
+                approve_all_kpi_target_success: "Phê duyệt KPI nhân viên thành công",
                 approve_all_kpi_target_fail: "Phê duyệt KPI nhân viên lỗi",
                 edit_kpi_target_member_success:
                     "Chỉnh sửa mục tiêu KPI nhân viên thành công",
@@ -3727,8 +3617,7 @@ export default {
                     approve: "Kích hoạt",
                     cancel_approve: "Bỏ kích hoạt",
                     target: "mục tiêu",
-                    confirm_delete_success:
-                        "Bạn chắc chắn muốn xóa toàn bộ KPI này?",
+                    confirm_delete_success: "Bạn chắc chắn muốn xóa toàn bộ KPI này?",
                     time: "Thời gian",
                     initialize_kpi_newmonth: "Khởi tạo KPI tháng mới",
                     edit_kpi_success: "Chỉnh sửa KPI thành công",
@@ -4060,6 +3949,13 @@ export default {
                 error_person_number: "Giá trị nhập vào phải > 0",
                 mill_code: "Mã xưởng",
                 mill_name: "Tên xưởng",
+                numberExpirationDate: "Hạn sử dụng (tính theo ngày)",
+                day: "Ngày",
+                expirationDate: "Hạn sử dụng",
+                validate_number_expiration_date:
+                    "Ngày hết hạn không được để trống",
+                validate_number_expiration_date_input:
+                    "Ngày hết hạn phải lớn hơn 0",
             },
 
             stock_management: {
@@ -4231,6 +4127,7 @@ export default {
                 date: "Ngày tạo",
                 description: "Mô tả",
                 stock: "Kho",
+                rotate_stock: "Kho nhập",
                 from_date: "Từ ngày",
                 to_date: "Đến ngày",
                 search: "Tìm kiếm",
@@ -4244,9 +4141,20 @@ export default {
                 issued: "Đơn đã xuất",
                 partner: "Đối tác",
                 bill_detail: "Chi tiết đơn hàng",
-                approved: "Người duyệt",
+                approved: "Người phê duyệt",
+                updateror: "Người sửa",
+                createAt: "Thời gian sửa",
+                title: "Tiêu đề",
+                view_version: "Log bill",
+                accountables: "Người giám sát",
+                qualityControlStaffs: "Người kiểm định chất lượng",
+                list_saffs: "Danh sách người tham gia",
+                approved_time: "Thời gian phê duyệt",
+                time: "Thời gian kiểm định",
                 goods: "Danh sách hàng hóa",
                 good_name: "Tên hàng hóa",
+                approved_true: "Phê duyệt phiếu",
+                staff_true: "Kiểm định chất lượng hàng hóa",
                 good_code: "Mã hàng hóa",
                 number: "Số lượng",
                 unit: "Đơn vị tính",
@@ -4285,6 +4193,13 @@ export default {
                     4: "Xem chi tiết phiếu kiểm kê kho",
                     5: "Xem chi tiết phiếu luân chuyển kho",
                 },
+                detail_version: {
+                    1: "Xem chi tiết thay đổi phiếu nhập kho",
+                    2: "Xem chi tiết thay đổi phiếu xuất kho",
+                    3: "Xem chi tiết thay đổi phiếu trả hàng",
+                    4: "Xem chi tiết thay đổi phiếu kiểm kê kho",
+                    5: "Xem chi tiết thay đổi phiếu luân chuyển kho",
+                },
                 infor: "Thông tin chung",
                 name: "Tên",
                 phone: "Số điện thoại",
@@ -4305,6 +4220,10 @@ export default {
                 bill_issued: "Đơn đã xuất",
                 choose_bill: "Chọn đơn hàng",
                 users: "Những người thực hiện",
+
+
+                // Phần liên quan lô sản xuất
+                add_issue_product: "Thêm phiếu nhập sản phẩm"
             },
             inventory_management: {
                 product: "Sản phẩm",
@@ -4354,6 +4273,7 @@ export default {
                 edit_success: "Chỉnh sửa lô hàng thành công",
                 edit_faile: "Chỉnh sửa lô hàng thất bại",
                 get_lot_failed: "Lấy lô hàng thất bại",
+                push_lot: "Lô chưa được xếp vào kho"
             },
         },
 
@@ -4647,10 +4567,6 @@ export default {
                     content: "Đã hoàn thành",
                 },
                 5: {
-                    color: "orange",
-                    content: "Đã kiểm định chất lượng"
-                },
-                6: {
                     color: "red",
                     content: "Đã hủy",
                 },
@@ -4706,10 +4622,6 @@ export default {
                     content: "Đã hoàn thành",
                 },
                 5: {
-                    color: "orange",
-                    content: "Đã kiểm định chất lượng"
-                },
-                6: {
                     color: "red",
                     content: "Đã hủy",
                 },
@@ -4752,8 +4664,8 @@ export default {
                     content: "Đã hoàn thành",
                 },
                 5: {
-                    color: "orange",
-                    content: "Đã kiểm định chất lượng"
+                    color: "red",
+                    content: "Đã hủy",
                 },
                 choose_status: "Chọn trạng thái",
                 choose_all: "Chọn tất cả",
@@ -4764,13 +4676,14 @@ export default {
                 good_name: "Tên mặt hàng",
                 quantity: "Số lượng",
                 description: "Mô tả",
-                approvers: "Người phê duyệt",
+                approvers: "Người phê duyệt lệnh sản xuất",
                 good_info: "Thông tin sản phẩm",
                 good_code: "Mã sản phẩm",
                 good_name: "Tên sản phẩm",
-                good_base_unit: "Đơn vị sản phẩm",
+                good_base_unit: "Đơn vị tính tiêu chuẩn",
                 packing_rule: "Quy cách đóng gói",
-                good_base_unit_quantity: "Số lượng đơn vị sản phẩm",
+                good_base_unit_quantity:
+                    "Số lượng sản phẩm theo đơn vị tính tiêu chuẩn",
                 packing_rule_quantity: "Số lượng theo quy cách đóng gói",
                 approved: "Đã phê duyệt",
                 approvedTime: "Thời gian phê duyệt",
@@ -4782,7 +4695,62 @@ export default {
                 edit_failed: "Sửa lệnh sản xuất thất bại",
                 qualityControlStaffs: "Người kiểm định chất lượng",
                 time: "Thời gian kiểm định",
-                quality_control_command: "Kiếm định chất lượng lệnh"
+                quality_control_command: "Kiếm định chất lượng lệnh sản xuất",
+                result: "Kết quả thực hiện",
+                no_data: "Không có dữ liệu",
+                finishedProductQuantity: "Số lượng thành phẩm",
+                substandardProductQuantity: "Số lượng phế phẩm",
+                finishedTime: "Thời gian hoàn thành thực tế",
+                material: "Thông tin nguyên vật liệu",
+                comment: "Bình luận",
+                quality_control_status: "Trạng thái kiểm định",
+                qc_status: {
+                    1: {
+                        color: "orange",
+                        content: "Chưa kiểm định",
+                    },
+                    2: {
+                        color: "green",
+                        content: "Đạt kiểm định",
+                    },
+                    3: {
+                        color: "red",
+                        content: "Không đạt kiểm định",
+                    },
+                },
+                qc_name: "Tên người kiểm định",
+                qc_email: "email",
+                qc_status_command: "Trạng thái kiểm định",
+                quality_control_content: "Nội dung kiểm định",
+                rateFinishedProductQuantity: "Tỷ lệ thành phẩm",
+                rateSubstandardProductQuantity: "Tỷ lệ phế phẩm",
+                from_stock: "Kho",
+                material_code: "Mã nguyên vật liệu",
+                material_name: "Tên nguyên vật liệu",
+                bill: {
+                    "1": {
+                        color: "#ffbf00",
+                        content: "Đang chờ duyệt",
+                    },
+                    "2": {
+                        color: "green",
+                        content: "Đã hoàn thành",
+                    },
+                    "3": {
+                        color: "#ff00bf",
+                        content: "Đã phê duyệt",
+                    },
+                    "4": {
+                        color: "red",
+                        content: "Đã hủy",
+                    },
+                    "5": {
+                        color: "00bfff",
+                        content: "Đang thực hiện"
+                    },
+                },
+                status_bill: "Trạng thái phiếu xuất"
+
             },
             lot: {
                 index: "STT",
@@ -4794,14 +4762,14 @@ export default {
                 expiration_date: "Ngày hết hạn",
                 1: {
                     color: "#ffbf00",
-                    content: "Chưa xử lý"
+                    content: "Chưa lên đơn nhập kho"
                 },
                 2: {
                     color: "#00bfff",
-                    content: "Đã xử lý"
+                    content: "Đã lên đơn nhập kho"
                 },
                 3: {
-                    color: "green",
+                    color: "#00bfff",
                     content: "Đã nhập kho"
                 },
                 choose_status: "Chọn trạng thái",
@@ -4812,30 +4780,40 @@ export default {
                 created_at: "Ngày tạo",
                 expiration_date: "Ngày hết hạn",
                 status: "Trạng thái",
-                product_type_obect: {
-                    "1": "Thành phẩm",
-                    "2": "Phế phẩm"
+                product_type_object: {
+                    1: "Thành phẩm",
+                    2: "Phế phẩm",
                 },
                 choose_good: "Chọn hàng hóa",
                 add: "Tạo lô",
                 add_lot: "Tạo lô sản xuất",
-                base_unit: "Đơn vị tính",
+                base_unit: "Đơn vị tính tiêu chuẩn",
                 packing_rule: "Quy cách đóng gói",
                 conversion_rate: "Trọng số chuyển đổi",
                 quantity_packing_rule: "Số lượng theo quy cách đóng gói",
-                quantity_base_unit: "Số lượng cần sản xuất theo đơn vị tính",
+                quantity_base_unit:
+                    "Số lượng cần sản xuất theo đơn vị tính tiêu chuẩn",
                 product_lot_code: "Mã lô thành phẩm",
                 code1: "Mã lô thành phẩm",
                 code2: "Mã lô phế phẩm",
                 finished_product: "Thành phẩm",
                 substandard_product: "Phế phẩm",
-                quantity: "Số lượng theo đơn vị tính",
+                quantity: "Số lượng theo đơn vị tính tiêu chuẩn",
                 error_quantity_1: "Số lượng nhập vào không hợp lệ",
                 error_quantity_1_input: "Số lượng nhập vào phải lớn hơn 0",
                 description: "Mô tả",
-                create_manufacturing_lot_successfully: "Tạo lô sản xuất thành công",
-                create_manufacturing_lot_failed: "Tạo lô sản xuất thất bại"
-
+                create_manufacturing_lot_successfully:
+                    "Tạo lô sản xuất thành công",
+                create_manufacturing_lot_failed: "Tạo lô sản xuất thất bại",
+                lot_detail: "Xem chi tiết lô sản xuất",
+                lot_type: "Loại lô",
+                bill_import_code: "Mã phiếu đề nghị nhập",
+                lot_diary: "Nhật ký hoạt động của lô",
+                manufacturing_mill: "Xưởng sản xuất",
+                team_leader: "Đội trưởng xưởng sản xuất",
+                material: "Thông tin nguyên vật liệu",
+                lot_edit: "Chỉnh sửa lô sản xuất",
+                create_bill: "Lên phiếu nhập kho"
 
             }
         }

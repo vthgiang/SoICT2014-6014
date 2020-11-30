@@ -248,12 +248,13 @@ class GoodManagement extends Component {
                             category={this.state.currentRow.category}
                             baseUnit={this.state.currentRow.baseUnit}
                             units={this.state.currentRow.units}
-                            packingRule={this.state.currentRow.packingRule}
+                            // packingRule={this.state.currentRow.packingRule}
                             materials={this.state.currentRow.materials}
                             description={this.state.currentRow.description}
                             manufacturingMills={this.state.currentRow.manufacturingMills}
                             pricePerBaseUnit={this.state.currentRow.pricePerBaseUnit}
                             salesPriceVariance={this.state.currentRow.salesPriceVariance}
+                            numberExpirationDate={this.state.currentRow.numberExpirationDate}
                         />
                     )}
 
@@ -268,10 +269,11 @@ class GoodManagement extends Component {
                             units={this.state.currentRow.units}
                             materials={this.state.currentRow.materials}
                             description={this.state.currentRow.description}
-                            packingRule={this.state.currentRow.packingRule}
+                            // packingRule={this.state.currentRow.packingRule}
                             manufacturingMills={this.state.currentRow.manufacturingMills}
                             pricePerBaseUnit={this.state.currentRow.pricePerBaseUnit}
                             salesPriceVariance={this.state.currentRow.salesPriceVariance}
+                            numberExpirationDate={this.state.currentRow.numberExpirationDate}
                         />
                     )}
                     <div className="form-inline">
@@ -324,7 +326,7 @@ class GoodManagement extends Component {
                                 <th>{translate("manage_warehouse.good_management.name")}</th>
                                 <th>{translate("manage_warehouse.good_management.category")}</th>
                                 <th>{translate("manage_warehouse.good_management.unit")}</th>
-                                <th>{translate("manage_warehouse.good_management.packing_rule")}</th>
+                                {/* <th>{translate("manage_warehouse.good_management.packing_rule")}</th> */}
                                 {type === "product" ? <th>{translate("manage_warehouse.good_management.materials")}</th> : []}
                                 <th>{translate("manage_warehouse.good_management.description")}</th>
                                 <th style={{ width: "120px", textAlign: "center" }}>
@@ -337,7 +339,7 @@ class GoodManagement extends Component {
                                             translate("manage_warehouse.good_management.name"),
                                             translate("manage_warehouse.good_management.category"),
                                             translate("manage_warehouse.good_management.unit"),
-                                            translate("manage_warehouse.good_management.packing_rule"),
+                                            // translate("manage_warehouse.good_management.packing_rule"),
                                             type === "product" ? translate("manage_warehouse.good_management.materials") : [],
                                             translate("manage_warehouse.good_management.description"),
                                         ]}
@@ -358,13 +360,13 @@ class GoodManagement extends Component {
                                         <td>{x.name}</td>
                                         <td>
                                             {x.category &&
-                                            categoryToTree.list.length &&
-                                            categoryToTree.list.filter((item) => item._id === x.category).pop()
+                                                categoryToTree.list.length &&
+                                                categoryToTree.list.filter((item) => item._id === x.category).pop()
                                                 ? categoryToTree.list.filter((item) => item._id === x.category).pop().name
                                                 : ""}
                                         </td>
                                         <td>{x.baseUnit}</td>
-                                        <td>{x.packingRule}</td>
+                                        {/* <td>{x.packingRule}</td> */}
                                         {type === "product" ? (
                                             <td>
                                                 {x.materials.map((y, i) => (
@@ -372,8 +374,8 @@ class GoodManagement extends Component {
                                                 ))}
                                             </td>
                                         ) : (
-                                            []
-                                        )}
+                                                []
+                                            )}
                                         <td>{x.description}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a className="text-green" onClick={() => this.handleShowDetailInfo(x)}>
@@ -398,10 +400,10 @@ class GoodManagement extends Component {
                     {goods.isLoading ? (
                         <div className="table-info-panel">{translate("confirm.loading")}</div>
                     ) : (
-                        (typeof listPaginate === "undefined" || listPaginate.length === 0) && (
-                            <div className="table-info-panel">{translate("confirm.no_data")}</div>
-                        )
-                    )}
+                            (typeof listPaginate === "undefined" || listPaginate.length === 0) && (
+                                <div className="table-info-panel">{translate("confirm.no_data")}</div>
+                            )
+                        )}
                     <PaginateBar pageTotal={totalPages} currentPage={page} func={this.setPage} />
                 </div>
             </div>

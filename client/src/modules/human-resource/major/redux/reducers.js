@@ -26,12 +26,12 @@ export function major(state = initState, action) {
                 listMajor: action.payload.listMajor !== undefined ? action.payload.listMajor : [],
                 totalList: action.payload.totalList,
             };
-        // case MajorConstant.CREATE_MAJOR_SUCCESS:
-        //     return {
-        //         ...state,
-        //         isLoading: false,
-        //             listDisciplines: [...state.listDisciplines, action.payload]
-        //     };
+        case MajorConstant.CREATE_MAJOR_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                listMajor: action.payload,
+            };
         // case MajorConstant.DELETE_MAJOR_SUCCESS:
         //     return {
         //         ...state,

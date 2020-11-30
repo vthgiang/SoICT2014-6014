@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ErrorLabel, TreeSelect } from '../../../../../common-components';
-import { CareerPositionAction } from '../../redux/actions';
+import { CareerReduxAction } from '../../redux/actions';
 import ValidationHelper from '../../../../../helpers/validationHelper';
 class CreateForm extends Component {
     constructor(props) {
@@ -50,7 +50,7 @@ class CreateForm extends Component {
             parent: this.state.parent,
         }
         console.log('data', data);
-        // this.props.createDocumentArchive(data);
+        this.props.createCareerAction(data);
     }
 
     render() {
@@ -91,7 +91,7 @@ class CreateForm extends Component {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
-    createCareerPosition: CareerPositionAction.createCareerPosition,
+    createCareerAction: CareerReduxAction.createCareerAction,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CreateForm));

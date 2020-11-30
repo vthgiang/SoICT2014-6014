@@ -1,23 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti, TreeTable } from '../../../../common-components';
+import { getStorage } from '../../../../config';
 
-import { ModalPerform } from '../../task-perform/component/modalPerform';
-
+import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskManagementActions } from '../redux/actions';
-import { performTaskAction } from "../../task-perform/redux/actions";
-import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 
-import { SelectMulti, DataTableSetting, PaginateBar, TreeTable, SelectBox, DatePicker } from '../../../../common-components';
-import { getStorage } from '../../../../config';
-import Swal from 'sweetalert2';
-
+import { ModalPerform } from '../../task-perform/component/modalPerform';
 class TaskManagementOfUnit extends Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
             roleId: getStorage("currentRole"),
             perPage: 20,
@@ -44,14 +39,14 @@ class TaskManagementOfUnit extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         let { currentTab, organizationalUnit, status, priority, special, name, startDate, endDate } = this.state;
 
-        if (currentTab != nextState.currentTab ||
-            organizationalUnit != nextState.organizationalUnit ||
-            status != nextState.status ||
-            priority != nextState.priority ||
-            special != nextState.special ||
-            name != nextState.name ||
-            startDate != nextState.startDate ||
-            endDate != nextState.endDate
+        if (currentTab !== nextState.currentTab ||
+            organizationalUnit !== nextState.organizationalUnit ||
+            status !== nextState.status ||
+            priority !== nextState.priority ||
+            special !== nextState.special ||
+            name !== nextState.name ||
+            startDate !== nextState.startDate ||
+            endDate !== nextState.endDate
         ) {
             return false;
         }
@@ -180,7 +175,7 @@ class TaskManagementOfUnit extends Component {
 
     handleGetDataPerPage = (perPage) => {
         let { roleId, status, priority, special, name, startDate, endDate, isAssigned } = this.state;
-        
+
         this.props.getPaginatedTasksByOrganizationalUnit(roleId, 1, perPage, status, priority, special, name, startDate, endDate, isAssigned);
 
         this.setState(state => {
@@ -203,7 +198,7 @@ class TaskManagementOfUnit extends Component {
             }
         })
     }
-    
+
     convertTime = (duration) => {
         let seconds = Math.floor((duration / 1000) % 60),
             minutes = Math.floor((duration / (1000 * 60)) % 60),
@@ -340,13 +335,9 @@ class TaskManagementOfUnit extends Component {
         const { tasks, user, translate } = this.props;
         const { currentTaskId, currentPage, startDate, endDate, perPage, status, isAssigned } = this.state;
         let currentTasks, units = [];
-        let pageTotals;
-
-        if (tasks.tasks) {
+        if (tasks) {
             currentTasks = tasks.tasks;
-            pageTotals = tasks.pages
         }
-
         if (user) units = user.organizationalUnitsOfUser;
 
         // khởi tạo dữ liệu TreeTable
@@ -361,7 +352,7 @@ class TaskManagementOfUnit extends Component {
             { name: translate('task.task_management.col_logged_time'), key: "totalLoggedTime" }
         ];
         let data = [];
-        if (typeof currentTasks !== 'undefined' && currentTasks.length !== 0) {
+        if (currentTasks && currentTasks.length !== 0) {
             let dataTemp = currentTasks;
 
             for (let n in dataTemp) {
@@ -373,7 +364,7 @@ class TaskManagementOfUnit extends Component {
                     startDate: this.formatDate(dataTemp[n].startDate),
                     endDate: this.formatDate(dataTemp[n].endDate),
                     status: this.formatStatus(dataTemp[n].status),
-                    progress: dataTemp[n].progress ? dataTemp[n].progress + "%": "0%",
+                    progress: dataTemp[n].progress ? dataTemp[n].progress + "%" : "0%",
                     totalLoggedTime: this.convertTime(dataTemp[n].hoursSpentOnTask.totalHoursSpent),
                     parent: dataTemp[n].parent ? dataTemp[n].parent._id : null
                 }
@@ -446,7 +437,7 @@ class TaskManagementOfUnit extends Component {
                             <input className="form-control" type="text" placeholder={translate('task.task_management.search_by_name')} name="name" onChange={(e) => this.handleChangeName(e)} />
                         </div>
 
-                
+
                         {/* Ngày bắt đầu */}
                         <div className="form-group">
                             <label>{translate('task.task_management.start_date')}</label>
@@ -471,7 +462,7 @@ class TaskManagementOfUnit extends Component {
                             />
                         </div>
 
-                        
+
                         {/* Công việc chưa phân công nhân viên */}
                         <div className="form-group">
                             <label>{translate('task.task_management.assigned_collaborate')}</label>
@@ -484,7 +475,7 @@ class TaskManagementOfUnit extends Component {
                                         { value: -1, text: translate('task.task_management.none_select_assigned') },
                                         { value: 1, text: translate('task.task_management.assigned') },
                                         { value: 0, text: translate('task.task_management.not_assigned') }
-                                        
+
                                     ]
                                 }
                                 onChange={this.handleChangeIsAssigned}
@@ -534,7 +525,7 @@ class TaskManagementOfUnit extends Component {
 
                     </div>
                     {
-                        currentTaskId !== undefined &&
+                        currentTaskId &&
                         <ModalPerform
                             units={units}
                             id={currentTaskId}
@@ -564,3 +555,4 @@ const actionCreators = {
 };
 const translateTaskManagementOfUnit = connect(mapState, actionCreators)(withTranslate(TaskManagementOfUnit));
 export { translateTaskManagementOfUnit as TaskManagementOfUnit };
+

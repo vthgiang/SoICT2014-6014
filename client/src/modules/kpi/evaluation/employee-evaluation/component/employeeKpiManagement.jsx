@@ -228,7 +228,7 @@ class EmployeeKpiManagement extends Component {
         {
             kpimember = kpimembers.kpimembers
         }
-        let data = kpimember.map(item=>{
+        let data = kpimember && kpimember.map(item=>{
             return item._id;
         })
         this.props.getTaskByListKpis(data);

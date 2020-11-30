@@ -522,6 +522,7 @@ exports.data = [
     { path: '/bills', method: 'GET', roles: ['Super Admin', 'Admin']},
     { path: '/bills/get-bill-by-good', method: 'GET', roles: ['Super Admin', 'Admin']},
     { path: '/bills/get-bill-by-status', method: 'GET', roles: ['Super Admin', 'Admin']},
+    { path: '/bills/bill-by-command', method: 'GET', roles: ['Super Admin', 'Admin']},
     { path: '/bills', method: 'POST', roles: ['Super Admin', 'Admin']},
     { path: '/bills/:id', method: 'PATCH', roles: ['Super Admin', 'Admin']},
     { path: '/bills/get-detail-bill/:id', method: 'GET', roles: ['Super Admin', 'Admin']},

@@ -50,13 +50,14 @@ class CreateForm extends Component {
             parent: this.state.parent,
         }
         console.log('data', data);
-        // this.props.createDocumentArchive(data);
+        this.props.createMajor(data);
     }
 
     render() {
         const { translate, documents } = this.props;
         const { list } = this.props;
         let { parent, nameError, codeError } = this.state;
+
         return (
             <React.Fragment>
                 <DialogModal

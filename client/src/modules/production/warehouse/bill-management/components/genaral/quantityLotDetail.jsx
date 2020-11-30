@@ -40,7 +40,7 @@ class QuantityLotDetailForm extends Component {
                     modalID={`modal-detail-lot-quantity`}
                     formID={`form-detail-lot-quantity`}
                     title="Chi tiết số lượng"
-                    size={50}
+                    size={75}
                     hasSaveButton={false}
                     hasNote={false}
                 >
@@ -66,7 +66,7 @@ class QuantityLotDetailForm extends Component {
                                     (typeof quantityDetail.lots !== 'undefined' && quantityDetail.lots.length > 0) ?
                                         quantityDetail.lots.map((x, index) =>
                                             <tr key={index}>
-                                                <td>{x.lot.name}</td>
+                                                <td>{x.lot ? x.lot.code : ''}</td>
                                                 <td>{this.formatDate(x.lot.expirationDate)}</td>
                                                 <td>{x.quantity}</td>
                                                 {group === '3' && <td>{x.returnQuantity}</td>}

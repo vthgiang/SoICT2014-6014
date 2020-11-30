@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { ModalPerform } from '../../task-perform/component/modalPerform';
-import { TaskAddModal } from './taskAddModal';
-import { UserActions } from '../../../super-admin/user/redux/actions';
-import { taskManagementActions } from '../redux/actions';
-import { performTaskAction } from "../../task-perform/redux/actions";
-import { SelectMulti, DataTableSetting, PaginateBar, TreeTable, SelectBox, DatePicker } from '../../../../common-components';
-import { getStorage } from '../../../../config';
 import Swal from 'sweetalert2';
+import { DataTableSetting, DatePicker, PaginateBar, SelectMulti, TreeTable } from '../../../../common-components';
+import { getStorage } from '../../../../config';
+
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
+import { UserActions } from '../../../super-admin/user/redux/actions';
+import { performTaskAction } from "../../task-perform/redux/actions";
+import { taskManagementActions } from '../redux/actions';
+
+import { TaskAddModal } from './taskAddModal';
+import { ModalPerform } from '../../task-perform/component/modalPerform';
 
 class TaskManagement extends Component {
     constructor(props) {
@@ -49,14 +51,14 @@ class TaskManagement extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         let { currentTab, organizationalUnit, status, priority, special, name, startDate, endDate } = this.state;
 
-        if (currentTab != nextState.currentTab ||
-            organizationalUnit != nextState.organizationalUnit ||
-            status != nextState.status ||
-            priority != nextState.priority ||
-            special != nextState.special ||
-            name != nextState.name ||
-            startDate != nextState.startDate ||
-            endDate != nextState.endDate
+        if (currentTab !== nextState.currentTab ||
+            organizationalUnit !== nextState.organizationalUnit ||
+            status !== nextState.status ||
+            priority !== nextState.priority ||
+            special !== nextState.special ||
+            name !== nextState.name ||
+            startDate !== nextState.startDate ||
+            endDate !== nextState.endDate
         ) {
             return false;
         }
@@ -183,7 +185,7 @@ class TaskManagement extends Component {
     }
 
     handleGetDataPagination = async (index) => {
-        let { organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = this.state;
+        let { organizationalUnit, status, priority, special, name, startDate, endDate } = this.state;
 
         let oldCurrentPage = this.state.currentPage;
         let perPage = this.state.perPage;
@@ -216,7 +218,7 @@ class TaskManagement extends Component {
     }
 
     nextPage = async (pageTotal) => {
-        let { organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = this.state;
+        let { organizationalUnit, status, priority, special, name, startDate, endDate } = this.state;
 
         let oldCurrentPage = this.state.currentPage;
         await this.setState(state => {
@@ -247,7 +249,7 @@ class TaskManagement extends Component {
     }
 
     backPage = async () => {
-        let { organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = this.state;
+        let { organizationalUnit, status, priority, special, name, startDate, endDate } = this.state;
 
         let oldCurrentPage = this.state.currentPage;
         await this.setState(state => {
@@ -305,7 +307,7 @@ class TaskManagement extends Component {
     }
 
     handleUpdateData = () => {
-        let { organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = this.state;
+        let { organizationalUnit, status, priority, special, name, startDate, endDate } = this.state;
 
         let content = this.state.currentTab;
         let { perPage } = this.state;
@@ -368,21 +370,6 @@ class TaskManagement extends Component {
         window.$(`#addNewTask`).modal('show')
     }
 
-    getResponsibleOfItem = (data, id) => {
-        data.map(item => {
-            if (id === item._id) {
-                return item.responsibleEmployees
-            }
-        })
-    }
-
-    getUnitIdOfItem = (data, id) => {
-        data.map(item => {
-            if (id === item._id) {
-                return item.organizationalUnit._id
-            }
-        })
-    }
 
     formatPriority = (data) => {
         const { translate } = this.props;
@@ -507,18 +494,13 @@ class TaskManagement extends Component {
         const { tasks, user, translate } = this.props;
         const { currentTaskId, currentPage, currentTab, parentTask, startDate, endDate, perPage, status } = this.state;
         let currentTasks, units = [];
-        let pageTotals;
-
-        if (tasks.tasks) {
+        if (tasks) {
             currentTasks = tasks.tasks;
-            pageTotals = tasks.pages
         }
-
         // kiểm tra vai trò của người dùng
         let userId = getStorage("userId");
 
         if (user) units = user.organizationalUnitsOfUser;
-        const items = [];
 
         // khởi tạo dữ liệu TreeTable
         let column = [
@@ -532,7 +514,7 @@ class TaskManagement extends Component {
             { name: translate('task.task_management.col_logged_time'), key: "totalLoggedTime" }
         ];
         let data = [];
-        if (typeof currentTasks !== 'undefined' && currentTasks.length !== 0) {
+        if (currentTasks && currentTasks.length !== 0) {
             let dataTemp = currentTasks;
 
             for (let n in dataTemp) {
@@ -576,7 +558,7 @@ class TaskManagement extends Component {
                         {currentTab !== "informed" &&
                             <button type="button" onClick={() => { this.handleAddTask("") }} className="btn btn-success pull-right" title={translate('task.task_management.add_title')}>{translate('task.task_management.add_task')}</button>
                         }
-                        <TaskAddModal currentTasks={(currentTasks !== undefined && currentTasks.length !== 0) && this.list_to_tree(currentTasks)} parentTask={parentTask} />
+                        <TaskAddModal currentTasks={(currentTasks && currentTasks.length !== 0) && this.list_to_tree(currentTasks)} parentTask={parentTask} />
                     </div>
 
                     <div className="form-inline">
@@ -644,7 +626,7 @@ class TaskManagement extends Component {
 
                         <div className="form-group">
                             <label>{translate('task.task_management.role')}</label>
-                            <SelectMulti id="select-task-role" 
+                            <SelectMulti id="select-task-role"
                                 items={[
                                     { value: "responsible", text: translate('task.task_management.responsible') },
                                     { value: "accountable", text: translate('task.task_management.accountable') },
@@ -770,3 +752,4 @@ const actionCreators = {
 };
 const translateTaskManagement = connect(mapState, actionCreators)(withTranslate(TaskManagement));
 export { translateTaskManagement as TaskManagement };
+

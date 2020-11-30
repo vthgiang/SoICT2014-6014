@@ -32,7 +32,7 @@ class ManageUserTable extends Component {
         var result = false;
         if (roles !== undefined) {
             roles.map(role => {
-                if (role.roleId.name === 'Super Admin') {
+                if (role.roleId && role.roleId.name === 'Super Admin') {
                     result = true;
                 }
                 return true;
@@ -87,7 +87,6 @@ class ManageUserTable extends Component {
     }
 
     componentDidMount() {
-        this.props.getUser();
         this.props.getUser({ limit: this.state.limit, page: this.state.page });
     }
 
@@ -176,7 +175,6 @@ class ManageUserTable extends Component {
                         }
                     </tbody>
                 </table>
-
                 {
                     user.isLoading ?
                     <div className="table-info-panel">{translate('confirm.loading')}</div> :
@@ -184,7 +182,7 @@ class ManageUserTable extends Component {
                 }
 
                 {/* PaginateBar */}
-                <PaginateBar display={user.listPaginate.length} total={user.list.length} pageTotal={user.totalPages} currentPage={user.page} func={this.setPage} />
+                <PaginateBar display={user.listPaginate.length} total={user.totalDocs} pageTotal={user.totalPages} currentPage={user.page} func={this.setPage} />
             </React.Fragment>
         );
     }

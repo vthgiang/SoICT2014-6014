@@ -6,12 +6,19 @@ const {
     connect
 } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
-// Tạo mới một Ví dụ
+// Tạo mới mảng Ví dụ
 exports.createExample = async (data, portal) => {
-    let newExample = await Example(connect(DB_CONNECTION, portal)).create({
-        exampleName: data.exampleName,
-        description: data.description
-    });
+    let newExample;
+    if (data && data.length !== 0) {
+        for (let i = 0; i < data.length; i++) {
+            newExample = await Example(connect(DB_CONNECTION, portal)).create({
+                exampleName: data[i].exampleName,
+                description: data[i].description
+            });
+        }
+        
+    }
+
     let example = await Example(connect(DB_CONNECTION, portal)).findById({ _id: newExample._id });;
     return { example }
 }
@@ -30,10 +37,11 @@ exports.getExamples = async (params, portal) => {
     }
     let totalList = await Example(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     let ExampleCollection = await Example(connect(DB_CONNECTION, portal)).find(keySearch)
-        .skip(params.page * params.limit)
+        .skip((params.page - 1) * params.limit)
         .limit(params.limit);
     return { data: ExampleCollection, totalList }
 }
+
 // Lấy ra một phần thông tin Ví dụ (lấy ra exampleName) theo mô hình dữ liệu số  2
 exports.getOnlyExampleName = async (params, portal) => {
     let keySearch;
@@ -78,7 +86,8 @@ exports.editExample = async (id, data, portal) => {
     // Cach 2 de update
     await Example(connect(DB_CONNECTION, portal)).update({ _id: id }, { $set: data });
     let example = await Example(connect(DB_CONNECTION, portal)).findById({ _id: oldExample._id });
-    return { example };
+
+    return example;
 }
 
 // Xóa một Ví dụ

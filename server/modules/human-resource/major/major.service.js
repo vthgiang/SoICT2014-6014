@@ -44,29 +44,72 @@ exports.searchMajor = async (portal, params) => {
 }
 
 /**
- * Thêm mới thông tin nghỉ phép
+ * Thêm mới chuyên ngành
  * @data : dữ liệu chuyên ngành tương đương mới
  * 
  */
-exports.createNewAdditionalMajor = async (portal, data) => {
-    // Tạo mới thông tin nghỉ phép vào database
-    let AdditionalMajor = await Major(connect(DB_CONNECTION, portal)).find(
-        {
-            _id: data.majorID,
-            "group._id": data.groupId,
-        },
-        {
-            $push: {
-                "group.$.specialized": {
-                    name: data.name,
-                    type: 0,
+exports.crateNewMajor = async (portal, data) => {
+    let major, groupMajor, specialized;
+    if (!data.parent) {
+        console.log('is parent ');
+        major = await Major(connect(DB_CONNECTION, portal)).create({
+            name: data.name,
+            code: data.code,
+            group: [],
+        })
+    }
+    else {
+        let majorFounded = await Major(connect(DB_CONNECTION, portal)).findOne({ _id: data.parent })
+        let groupFounded = await Major(connect(DB_CONNECTION, portal)).findOne({ "group._id": data.parent })
+        
+        console.log('majorFounded', majorFounded);
+        console.log('groupFounded', groupFounded);
+
+        if (majorFounded) {
+            console.log('is major');
+            groupMajor = await Major(connect(DB_CONNECTION, portal)).findOneAndUpdate(
+                {
+                    _id: data.parent,
+                },
+                {
+                    $push: {
+                        "group": {
+                            name: data.name,
+                            code: data.code,
+                            specialized: [],
+                        }
+                    }
                 }
-            }
+            )
+        } else if (groupFounded) {
+            console.log('is group');
+            specialized = await Major(connect(DB_CONNECTION, portal)).findOneAndUpdate(
+                {
+                    "group._id": data.parent,
+                },
+                {
+                    $push: {
+                        "group.$.specialized": {
+                            name: data.name,
+                            code: data.code,
+                            type: 0,
+                        }
+                    }
+                }
+            )
         }
-    );
+
+    }
 
     return await Major(connect(DB_CONNECTION, portal)).find({})
 }
+
+
+
+
+
+
+
 
 /**
  * Xoá thông tin nghỉ phép

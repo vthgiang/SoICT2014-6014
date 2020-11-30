@@ -12,7 +12,7 @@ class QuantityLotGoodReceipt extends Component {
         super(props);
         this.EMPTY_LOT = {
             lot: null,
-            name: generateCode("LOT"),
+            code: generateCode("LOT"),
             quantity: 0,
             note: '',
             expirationDate: ''
@@ -22,13 +22,14 @@ class QuantityLotGoodReceipt extends Component {
             lots: this.props.initialData,
             editInfo: false,
             good: '',
-            name: this.props.lotName,
-            arrayId: []
+            code: this.props.lotName,
+            arrayId: [],
+            oldQuantity: 0,
         }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        prevState.name = nextProps.lotName;
+        prevState.code = nextProps.lotName;
         if (nextProps.good !== prevState.good) {
             return {
                 ...prevState,
@@ -59,7 +60,7 @@ class QuantityLotGoodReceipt extends Component {
                 let quantity = stock[0] ? stock[0].quantity : 0;
                 lotArr.push({ 
                     value: item._id, 
-                    text: item.name,
+                    text: item.code,
                     quantity: quantity,
                 });
             })
@@ -81,7 +82,7 @@ class QuantityLotGoodReceipt extends Component {
         }
         if(willUpdateState) {
             let lotName = dataLots.find(x => x.value === value);
-            this.state.lot.lot = { _id: value, name: lotName.text, quantity: lotName.quantity };
+            this.state.lot.lot = { _id: value, code: lotName.text, quantity: lotName.quantity };
             await this.setState(state => {
                 return {
                     ...state,
@@ -99,16 +100,17 @@ class QuantityLotGoodReceipt extends Component {
     }
 
     validateQuantity = (value, willUpdateState = true) => {
-        const { lotQuantity, lot } = this.state;
+        const { oldQuantity } = this.state;
         let msg = undefined;
         const { translate } = this.props;
+        let difference = this.difference();
         
         if (!value) {
             msg = translate('manage_warehouse.bill_management.validate_quantity');
         }
 
-        if(Number(value) > Number(lotQuantity)) {
-            msg = ` ${translate('manage_warehouse.bill_management.validate_norm')} (${lotQuantity}) `
+        if((Number(value) - Number(oldQuantity)) > difference) {
+            msg = translate('manage_warehouse.bill_management.validate_norm');
         }
 
         if (willUpdateState) {
@@ -133,12 +135,13 @@ class QuantityLotGoodReceipt extends Component {
         })
     }
 
-    // isFormValidated = () => {
-    //     if(this.state.lots.length > 0) {
-    //         return true;
-    //     }
-    //     return false
-    // }
+    isFormValidated = () => {
+        let difference = this.difference();
+        if(difference === 0) {
+            return true;
+        }
+        return false
+    }
 
     isLotsValidated = () => {
         let result =
@@ -157,14 +160,16 @@ class QuantityLotGoodReceipt extends Component {
                 lot: Object.assign({}, this.EMPTY_LOT),
             }
         })
-        this.state.lot.name = generateCode("LOT");
+        this.state.lot.code = generateCode("LOT");
+        this.state.oldQuantity = 0;
         // this.props.onDataChange(this.state.lots);
     }
 
     handleClearLot = (e) => {
         e.preventDefault();
         this.state.lot = Object.assign({}, this.EMPTY_LOT);
-        this.state.lot.name = generateCode("LOT");
+        this.state.oldQuantity = 0;
+        this.state.lot.code = generateCode("LOT");
         this.setState(state => {
             return {
                 ...state
@@ -182,7 +187,8 @@ class QuantityLotGoodReceipt extends Component {
             })
         }
         this.state.lot = Object.assign({}, this.EMPTY_LOT);
-        this.state.lot.name = generateCode("LOT");
+        this.state.oldQuantity = 0;
+        this.state.lot.code = generateCode("LOT");
         await this.setState(state => {
             return {
                 ...state,
@@ -190,13 +196,14 @@ class QuantityLotGoodReceipt extends Component {
                 editInfo: false,
             }
         })
-        // this.props.onDataChange(this.state.lots);
+        this.props.onDataChange(this.state.lots);
     }
 
     handleCancelEditLot = (e) => {
         e.preventDefault();
         this.state.lot = Object.assign({}, this.EMPTY_LOT);
-        this.state.lot.name = generateCode("LOT");
+        this.state.oldQuantity = 0;
+        this.state.lot.code = generateCode("LOT");
         this.setState(state => {
             return {
                 ...state,
@@ -206,12 +213,14 @@ class QuantityLotGoodReceipt extends Component {
     }
 
     handleEditLot = (lot, index) => {
+        this.state.oldQuantity = lot.quantity;
+        this.state.lot.oldQuantity = lot.quantity;
         this.setState(state => {
             return {
                 ...state,
                 editInfo: true,
                 indexInfo: index,
-                lot: Object.assign({}, lot)
+                lot: Object.assign({}, lot),
             }
         })
     }
@@ -295,10 +304,25 @@ class QuantityLotGoodReceipt extends Component {
         return msg === undefined;
     }
 
+    difference = () => {
+        const { lots } = this.state;
+        const { quantity } = this.props;
+        let number = 0;
+        if(lots && lots.length > 0) {
+            for (let i = 0; i < lots.length; i++) {
+                number += Number(lots[i].quantity);
+            }
+        }
+
+        let difference = Number(quantity) - Number(number);
+        return difference;
+    }
+
     render() {
         const { translate, group, good, quantity } = this.props;
         const { lot, errorQuantity, lots, errorExpirationDate } = this.state;
-        console.log(quantity);
+
+        let difference = this.difference();
 
         return (
             <React.Fragment>
@@ -308,17 +332,18 @@ class QuantityLotGoodReceipt extends Component {
                     title="Thêm mới lô hàng"
                     msg_success={translate('manage_warehouse.bill_management.add_success')}
                     msg_faile={translate('manage_warehouse.bill_management.add_faile')}
-                    // disableSubmit={!this.isFormValidated()}
+                    disableSubmit={!this.isFormValidated()}
                     func={this.save}
                     size="75"
                 >
                 <form id={`form-edit-quantity-receipt`}>
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border">{translate('manage_warehouse.bill_management.lot')}</legend>
-
+                        { quantity ? (difference !== 0 ? <div className="form-group" style={{ color: 'red', textAlign: 'center'}}>{`Bạn cần đánh lô cho ${difference} số lượng hàng nhập`}</div> :
+                                <div className="form-group" style={{ color: 'green', textAlign: 'center'}}>Bạn đã đánh xong lô cho {quantity} số lượng hàng nhập</div>) : []}
                         <div className={`form-group`}>
                             <label>{translate('manage_warehouse.bill_management.lot_number')}</label>
-                            <input type="text" className="form-control" value={lot.name} disabled/>
+                            <input type="text" className="form-control" value={lot.code} disabled/>
                         </div>
 
                         <div className={`form-group ${!errorQuantity ? "" : "has-error"}`}>
@@ -372,7 +397,7 @@ class QuantityLotGoodReceipt extends Component {
                                     (typeof lots !== 'undefined' && lots.length > 0) ?
                                         lots.map((x, index) =>
                                             <tr key={index}>
-                                                <td>{x.name}</td>
+                                                <td>{x.code}</td>
                                                 <td>{x.quantity}</td>
                                                 <td>{x.note}</td>
                                                 <td>{x.expirationDate}</td>
