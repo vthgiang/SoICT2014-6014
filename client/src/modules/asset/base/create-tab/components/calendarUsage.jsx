@@ -23,6 +23,7 @@ class CalendarUsage extends Component {
       data: [],
       dataStatus: 1,
       updateUsageLogs: 1,
+      checkRefresh: false,
     }
   }
 
@@ -31,6 +32,12 @@ class CalendarUsage extends Component {
   }
 
   shouldComponentUpdate = async (nextProps, nextState) => {
+    if (nextProps.id !== this.state.id) {
+      await this.setState({
+        checkRefresh: true,
+      });
+      this.forceUpdate()
+    }
     if (nextState.clickInfo !== this.state.clickInfo || nextState.currentEvent !== this.state.currentEvent) {
       // bắt sự kiện bấm nút phê duyệt, không phê duyệt, xóa
       await this.setState({
@@ -473,9 +480,28 @@ class CalendarUsage extends Component {
     })
   }
 
+  checkEvent = (color, id) => {
+    if (color == "#aaa") {
+      let userId = this.state.userId;
+      let list, dataRecommendDistribute = [];
+      const { recommendDistribute } = this.props;
+      if (recommendDistribute && recommendDistribute.listRecommendDistributesByAsset) {
+        list = recommendDistribute.listRecommendDistributesByAsset;
+        dataRecommendDistribute = list.filter(item => item._id == id);
+        if (dataRecommendDistribute.length != 0) {
+          if (dataRecommendDistribute[0].proponent._id == userId) {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    } else {
+      return false;
+    }
+  }
 
   renderEventContent = (eventInfo) => {
-    // console.log("eventInfor", eventInfo.event._def.publicId)
     return (
       <>
         <div className="form-inline">
@@ -512,26 +538,8 @@ class CalendarUsage extends Component {
             </div>
 
           }
-          {(this.props.managedBy == this.state.userId)
-            //   || ((eventInfo.event.borderColor == "#aaa" && (() => {
-            //   let id = eventInfo.event._def.publicId;
-            //   let userId = localStorage.getItem('userId');
-            //   let list, dataRecommendDistribute = [];
-            //   const { recommendDistribute } = this.props;
-            //   if (recommendDistribute && recommendDistribute.listRecommendDistributesByAsset) {
-            //     list = recommendDistribute.listRecommendDistributesByAsset;
-            //     dataRecommendDistribute = list.filter(item => item._id == id);
-            //     if (dataRecommendDistribute.length != 0) {
-            //       if (dataRecommendDistribute[0].proponent == userId) {
-            //         console.log(dataRecommendDistribute[0].proponent)
-            //         return true;
-
-            //       }
-            //     }
-            //   }
-
-            //   return false;
-            // }))) 
+          {(this.props.managedBy == this.state.userId) ||
+            (this.checkEvent(eventInfo.event.borderColor, eventInfo.event._def.publicId))
             &&
             <div className="form-group">
               <a className="delete" title="Delete" style={{}} data-toggle="tooltip" onClick={async () => {
@@ -565,17 +573,15 @@ class CalendarUsage extends Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    console.log("Dòng 568", nextProps.id)
     if (nextProps.id !== prevState.id ||
       ((nextProps.usageLogs !== prevState.usageLogs) && (prevState.updateUsageLogs == 1 || prevState.updateUsageLogs == 2))) {
-      console.log("Chạy đến dòng 571", nextProps)
       let usageLogs = [];
       let userlist = nextProps.user.list
       let departmentlist = nextProps.department.list
 
       let data;
       if (nextProps.id !== prevState.id) {
-        data = []
+        data = [];
       } else {
         data = prevState.data
       }
@@ -603,7 +609,6 @@ class CalendarUsage extends Component {
         }
       }
 
-      console.log("data")
       return {
         ...prevState,
         id: nextProps.id,
@@ -622,7 +627,6 @@ class CalendarUsage extends Component {
   render() {
     const { assetId } = this.props;
     var { currentRow, typeRegisterForUse, usageLogs, currentRowAdd, usageLogDetailInfor, recommendDistributeDetail } = this.state;
-    console.log("thisss dòng 625", this.state.data)
     return (
       <div className='demo-app'>
         <div className='demo-app-main'>
@@ -651,6 +655,7 @@ class CalendarUsage extends Component {
               // eventsSet={this.handleEvents} // called after events are initialized/added/changed/removed
               eventContent={this.renderEventContent}
               eventClick={this.handleEventClick}
+              checkRefresh={this.state.checkRefresh}
             />
           }
         </div>
