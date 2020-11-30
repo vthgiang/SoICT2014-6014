@@ -78,11 +78,13 @@ const BillSchema = new Schema({
         }
     }],
 
+    // LSX
     responsibles: [{ // Danh sách người thực hiện
         type: Schema.Types.ObjectId,
         ref: "User"
     }],
-    
+
+    // LSX
     accountables: [{ // Người giám sát
         type: Schema.Types.ObjectId,
         ref: "User"
@@ -98,6 +100,7 @@ const BillSchema = new Schema({
         ref: 'Customer'
     },
 
+    // LSX
     receiver: {
         name: {
             type: String
@@ -149,12 +152,12 @@ const BillSchema = new Schema({
         },
 
         lots: [{
-
+            // LSX
             lot: {
                 type: Schema.Types.ObjectId,
                 ref: 'Lot'
             },
-
+            // LSX
             quantity: {
                 type: Number,
                 default: 0
@@ -195,6 +198,7 @@ const BillSchema = new Schema({
         ref: "ManufacturingCommand"
     },
 
+    // Tạo log khi create
     logs: [{
         createAt: {
             type: Date

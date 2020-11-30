@@ -39,6 +39,25 @@ class QuoteCreateGood extends Component {
         this.props.getAllGoodsByType({ type: "product" });
     }
 
+    // shouldComponentUpdate = (nextProps, nextState) => {
+    //     console.log("next", nextProps.currency, this.props.currency);
+    //     if (nextProps.currency.type !== this.props.currency.type) {
+    //         const { isUseForeignCurrency, foreignCurrency, standardCurrency, currency } = nextProps;
+    //         console.log("SAO LAI VAO DAY");
+    //         if (currency.type === "standard" && isUseForeignCurrency) {
+    //             this.setState({
+    //                 pricePerBaseUnit: this.state.pricePerBaseUnit * currency.ratio,
+    //             });
+    //         } else {
+    //             this.setState({
+    //                 pricePerBaseUnit: this.state.pricePerBaseUnit / currency.ratio,
+    //             });
+    //         }
+    //         return false;
+    //     }
+    //     return true;
+    // };
+
     nextStep = (e) => {
         e.preventDefault();
         let { step, steps } = this.state;
@@ -489,13 +508,16 @@ class QuoteCreateGood extends Component {
             step,
         } = this.state;
 
+        const { setCurrentSlasOfGood, setCurrentDiscountsOfGood } = this.props;
         let { listGoods } = this.props;
+        console.log("GOOD", listGoods);
+
+        const { isUseForeignCurrency, foreignCurrency, standardCurrency, currency } = this.props;
 
         console.log("DISCOUNT", this.state.discountsOfGood);
         let originAmount = this.getOriginAmountOfGood();
         let amountAfterApplyDiscount = this.getAmountAfterApplyDiscount();
         let amountAfterApplyTax = this.getAmountAfterApplyTax();
-        console.log("DIS", this.props.goods.goodItems.listDiscountsByGoodId);
         return (
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <fieldset className="scheduler-border" style={{ padding: 10 }}>
@@ -581,35 +603,43 @@ class QuoteCreateGood extends Component {
                             <div style={{ padding: 10, backgroundColor: "white" }}>
                                 <div className="form-group">
                                     <strong>Thành tiền: </strong>
-                                    <span style={{ float: "right" }}>{originAmount ? formatCurrency(originAmount) + " (vnđ)" : "0 (vnđ)"}</span>
+                                    <span style={{ float: "right" }}>
+                                        {originAmount ? formatCurrency(originAmount) + ` (${currency.symbol})` : `0 (${currency.symbol})`}
+                                    </span>
                                 </div>
                                 <div className="form-group">
                                     <strong>Khuyến mãi: </strong>
                                     <span style={{ float: "right" }} className="text-red">
                                         {amountAfterApplyDiscount
-                                            ? formatCurrency(Math.round((amountAfterApplyDiscount - originAmount) * 100) / 100) + " (vnđ)"
-                                            : "0 (vnđ)"}
+                                            ? formatCurrency(Math.round((amountAfterApplyDiscount - originAmount) * 100) / 100) +
+                                              ` (${currency.symbol})`
+                                            : `0 (${currency.symbol})`}
                                     </span>
                                 </div>
                                 <div className="form-group">
                                     <strong>Tổng tiền trước thuế: </strong>
                                     <span style={{ float: "right" }}>
-                                        {amountAfterApplyDiscount ? formatCurrency(amountAfterApplyDiscount) + " (vnđ)" : "0 (vnđ)"}
+                                        {amountAfterApplyDiscount
+                                            ? formatCurrency(amountAfterApplyDiscount) + ` (${currency.symbol})`
+                                            : `0 (${currency.symbol})`}
                                     </span>
                                 </div>
                                 <div className="form-group">
                                     <strong>Thuế: </strong>
                                     <span style={{ float: "right" }}>
                                         {amountAfterApplyTax
-                                            ? formatCurrency(Math.round((amountAfterApplyTax - amountAfterApplyDiscount) * 100) / 100) + " (vnđ)"
-                                            : "0 (vnđ)"}
+                                            ? formatCurrency(Math.round((amountAfterApplyTax - amountAfterApplyDiscount) * 100) / 100) +
+                                              ` (${currency.symbol})`
+                                            : `0 (${currency.symbol})`}
                                     </span>
                                 </div>
 
                                 <div className="form-group" style={{ borderTop: "solid 0.3px #c5c5c5", padding: "10px 0px" }}>
                                     <strong>Tổng tiền sau thuế: </strong>
                                     <span style={{ float: "right", fontSize: "18px" }} className="text-red">
-                                        {amountAfterApplyTax ? formatCurrency(amountAfterApplyTax) + " (vnđ)" : "0 (vnđ)"}
+                                        {amountAfterApplyTax
+                                            ? formatCurrency(amountAfterApplyTax) + ` (${currency.symbol})`
+                                            : `0 (${currency.symbol})`}
                                     </span>
                                 </div>
 
@@ -700,22 +730,45 @@ class QuoteCreateGood extends Component {
                                         <td>{item.good ? item.good.code : ""}</td>
                                         <td>{item.good ? item.good.name : ""}</td>
                                         <td>{item.good ? item.good.baseUnit : ""}</td>
-                                        <td>{item.pricePerBaseUnitOrigin ? formatCurrency(item.pricePerBaseUnitOrigin) + " (vnđ)" : " 0 (vnđ)"}</td>
-                                        <td>{item.pricePerBaseUnit ? formatCurrency(item.pricePerBaseUnit) + "(vnđ)" : " 0 (vnđ)"}</td>
+                                        <td>
+                                            {item.pricePerBaseUnitOrigin
+                                                ? formatCurrency(item.pricePerBaseUnitOrigin) + ` (${currency.symbol})`
+                                                : `0 (${currency.symbol})`}
+                                        </td>
+                                        <td>
+                                            {item.pricePerBaseUnit
+                                                ? formatCurrency(item.pricePerBaseUnit) + ` (${currency.symbol})`
+                                                : `0 (${currency.symbol})`}
+                                        </td>
                                         <td>{item.quantity}</td>
                                         <td>
-                                            {item.amount && item.amountAfterDiscount
-                                                ? formatCurrency(item.amount - item.amountAfterDiscount) + " (vnđ)"
-                                                : " 0 (vnđ)"}
+                                            <a
+                                                onClick={() => setCurrentDiscountsOfGood(item.discountsOfGood)}
+                                                style={{
+                                                    cursor: "pointer",
+                                                }}
+                                                data-toggle="modal"
+                                                data-backdrop="static"
+                                                href={"#modal-create-quote-discounts-of-good-detail"}
+                                                title="Click để xem chi tiết"
+                                            >
+                                                {item.amount && item.amountAfterDiscount
+                                                    ? formatCurrency(item.amount - item.amountAfterDiscount) + ` (${currency.symbol})`
+                                                    : `0 (${currency.symbol})`}
+                                            </a>
                                         </td>
                                         <td>{item.amountAfterDiscount ? formatCurrency(item.amountAfterDiscount) : ""}</td>
                                         <td>
                                             {item.amountAfterDiscount && item.amountAfterTax
-                                                ? formatCurrency(item.amountAfterTax - item.amountAfterDiscount) + " (vnđ)"
-                                                : " 0 (vnđ)"}
+                                                ? formatCurrency(item.amountAfterTax - item.amountAfterDiscount) + ` (${currency.symbol})`
+                                                : `0 (${currency.symbol})`}
                                             ({item.taxs.length ? item.taxs[0].percent : "0"}%)
                                         </td>
-                                        <td>{item.amountAfterTax ? formatCurrency(item.amountAfterTax) + " (vnđ)" : "0 (vnđ)"}</td>
+                                        <td>
+                                            {item.amountAfterTax
+                                                ? formatCurrency(item.amountAfterTax) + ` (${currency.symbol})`
+                                                : `0 (${currency.symbol})`}
+                                        </td>
                                         <td>
                                             <div
                                                 style={{
@@ -728,9 +781,10 @@ class QuoteCreateGood extends Component {
                                                     }}
                                                     data-toggle="modal"
                                                     data-backdrop="static"
-                                                    href={"#modal-create-quote-sla"}
+                                                    href={"#modal-create-quote-slas-of-good-detail"}
+                                                    onClick={() => setCurrentSlasOfGood(item.slasOfGood)}
                                                 >
-                                                    Chi tiết
+                                                    Chi tiết &ensp;
                                                     <i className="fa fa-arrow-circle-right"></i>
                                                 </a>
                                             </div>
@@ -760,28 +814,28 @@ class QuoteCreateGood extends Component {
                                             listGoods.reduce((accumulator, currentValue) => {
                                                 return accumulator + (currentValue.amount - currentValue.amountAfterDiscount);
                                             }, 0)
-                                        ) + " (vnđ)"}
+                                        ) + ` (${currency.symbol})`}
                                     </td>
                                     <td style={{ fontWeight: 600 }}>
                                         {formatCurrency(
                                             listGoods.reduce((accumulator, currentValue) => {
                                                 return accumulator + currentValue.amountAfterDiscount;
                                             }, 0)
-                                        ) + " (vnđ)"}
+                                        ) + ` (${currency.symbol})`}
                                     </td>
                                     <td style={{ fontWeight: 600 }}>
                                         {formatCurrency(
                                             listGoods.reduce((accumulator, currentValue) => {
                                                 return accumulator + (currentValue.amountAfterTax - currentValue.amountAfterDiscount);
                                             }, 0)
-                                        ) + " (vnđ)"}
+                                        ) + ` (${currency.symbol})`}
                                     </td>
                                     <td style={{ fontWeight: 600 }}>
                                         {formatCurrency(
                                             listGoods.reduce((accumulator, currentValue) => {
                                                 return accumulator + currentValue.amountAfterTax;
                                             }, 0)
-                                        ) + " (vnđ)"}
+                                        ) + ` (${currency.symbol})`}
                                     </td>
                                     <td colSpan={3}></td>
                                 </tr>

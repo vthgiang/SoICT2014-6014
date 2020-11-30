@@ -8,11 +8,17 @@ import { DatePicker, DialogModal, SelectBox, ButtonModal, ErrorLabel } from "../
 import QuoteCreateGood from "./createQuote/quoteCreateGood";
 import QuoteCreateInfo from "./createQuote/quoteCreateInfo";
 import QuoteCreatePayment from "./createQuote/quoteCreatePayment";
+import SlasOfGoodDetail from "./createQuote/viewDetailOnCreate/slasOfGoodDetail";
+import DiscountOfGoodDetail from "./createQuote/viewDetailOnCreate/discountOfGoodDetail";
 class QuoteCreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
             goods: [],
+            discountsOfOrderValue: [],
+            discountsOfOrderValueChecked: {},
+            currentSlasOfGood: [],
+            currentDiscountsOfGood: [],
             code: "",
             note: "",
             customer: "",
@@ -25,6 +31,20 @@ class QuoteCreateForm extends Component {
             shippingFee: "",
             deliveryTime: "",
             step: 0,
+            isUseForeignCurrency: false,
+            foreignCurrency: {
+                symbol: "", // ký hiệu viết tắt
+                ratio: "", // tỷ lệ chuyển đổi
+            },
+            standardCurrency: {
+                symbol: "vnđ", // ký hiệu viết tắt
+                ratio: "1", // tỷ lệ chuyển đổi
+            },
+            currency: {
+                type: "standard",
+                symbol: "vnđ",
+                ratio: "1",
+            },
         };
     }
 
@@ -131,24 +151,6 @@ class QuoteCreateForm extends Component {
         this.validateDateStage(effectiveDate, value, true);
     };
 
-    nextStep = (e) => {
-        e.preventDefault();
-        let { step } = this.state;
-        step++;
-        this.setState({
-            step,
-        });
-    };
-
-    preStep = (e) => {
-        e.preventDefault();
-        let { step } = this.state;
-        step--;
-        this.setState({
-            step,
-        });
-    };
-
     setCurrentStep = (e, step) => {
         e.preventDefault();
         this.setState({
@@ -161,6 +163,129 @@ class QuoteCreateForm extends Component {
             return {
                 ...state,
                 goods,
+            };
+        });
+    };
+
+    handleUseForeignCurrencyChange = (e) => {
+        const { checked } = e.target;
+        this.setState((state) => {
+            return {
+                ...state,
+                isUseForeignCurrency: checked,
+            };
+        });
+        if (!checked) {
+            this.setState((state) => {
+                return {
+                    ...state,
+                    foreignCurrency: {
+                        ratio: "",
+                        symbol: "",
+                    },
+                    currency: {
+                        type: "standard",
+                        symbol: "vnđ",
+                        ratio: "1",
+                    },
+                };
+            });
+        }
+    };
+
+    handleRatioOfCurrencyChange = (e) => {
+        let { foreignCurrency } = this.state;
+        let { value } = e.target;
+        this.setState((state) => {
+            return {
+                ...state,
+                foreignCurrency: {
+                    ratio: value,
+                    symbol: foreignCurrency.symbol,
+                },
+            };
+        });
+    };
+
+    handleSymbolOfForreignCurrencyChange = (e) => {
+        let { foreignCurrency } = this.state;
+        let { value } = e.target;
+        this.setState((state) => {
+            return {
+                ...state,
+                foreignCurrency: {
+                    ratio: foreignCurrency.ratio,
+                    symbol: value,
+                },
+            };
+        });
+    };
+
+    handleChangeCurrency = (value) => {
+        let { foreignCurrency, standardCurrency } = this.state;
+        this.setState((state) => {
+            return {
+                ...state,
+                currency: {
+                    type: value[0],
+                    symbol: value[0] === "standard" ? standardCurrency.symbol : foreignCurrency.symbol,
+                    ratio: foreignCurrency.ratio,
+                },
+            };
+        });
+    };
+
+    handleDiscountsOfOrderValueChange = (data) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                discountsOfOrderValue: data,
+            };
+        });
+    };
+
+    setDiscountsOfOrderValueChecked = (discountsOfOrderValueChecked) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                discountsOfOrderValueChecked,
+            };
+        });
+    };
+
+    handleShippingFeeChange = (e) => {
+        const { value } = e.target;
+        this.setState((state) => {
+            return {
+                ...state,
+                shippingFee: value,
+            };
+        });
+    };
+
+    handleDeliveryTimeChange = (value) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                deliveryTime: value,
+            };
+        });
+    };
+
+    setCurrentSlasOfGood = (data) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                currentSlasOfGood: data,
+            };
+        });
+    };
+
+    setCurrentDiscountsOfGood = (data) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                currentDiscountsOfGood: data,
             };
         });
     };
@@ -181,7 +306,17 @@ class QuoteCreateForm extends Component {
             goods,
             shippingFee,
             deliveryTime,
+            isUseForeignCurrency,
+            foreignCurrency,
+            currency,
+            standardCurrency,
+            discountsOfOrderValue,
+            discountsOfOrderValueChecked,
+            currentSlasOfGood,
+            currentDiscountsOfGood,
         } = this.state;
+
+        console.log("STATE", discountsOfOrderValue, discountsOfOrderValueChecked);
 
         return (
             <React.Fragment>
@@ -204,55 +339,45 @@ class QuoteCreateForm extends Component {
                     style={{ backgroundColor: "green" }}
                     hasSaveButton={false}
                 >
-                    <DialogModal
-                        modalID="modal-create-quote-sla"
-                        isLoading={false}
-                        formID="form-create-quote-sla"
-                        title={"Chi tiết cam kết chất lượng"}
-                        size="50"
-                        hasSaveButton={false}
-                        hasNote={false}
-                    >
-                        <form id="form-create-quote-sla">
-                            <div
-                                style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                }}
-                            >
-                                <i className="fa fa-check-square-o text-success"></i>
-                                <div>Sản phẩm được sản xuất 100% đảm bảo tiêu chuẩn an toàn</div>
-                            </div>
-                            <div
-                                style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                }}
-                            >
-                                <i className="fa fa-check-square-o text-success"></i>
-                                <div>Sản phẩm đúng với cam kết trên bao bì</div>
-                            </div>
-                        </form>
-                    </DialogModal>
                     <div className="nav-tabs-custom">
                         <ul className="nav nav-tabs">
-                            <li className="active">
+                            <li className="active" key="1">
                                 <a data-toggle="tab" onClick={(e) => this.setCurrentStep(e, 0)} style={{ cursor: "pointer" }}>
                                     Thông tin chung
                                 </a>
                             </li>
-                            <li>
+                            <li key="2">
                                 <a data-toggle="tab" onClick={(e) => this.setCurrentStep(e, 1)} style={{ cursor: "pointer" }}>
                                     Chọn sản phẩm
                                 </a>
                             </li>
-                            <li>
+                            <li key="3">
                                 <a data-toggle="tab" onClick={(e) => this.setCurrentStep(e, 2)} style={{ cursor: "pointer" }}>
                                     Chốt báo giá
                                 </a>
                             </li>
                         </ul>
+                        {foreignCurrency.ratio && foreignCurrency.symbol ? (
+                            <div className="form-group select-currency">
+                                <SelectBox
+                                    id={`select-quote-currency-${foreignCurrency.symbol.replace(" ")}`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={currency.type}
+                                    items={[
+                                        { text: "vnđ", value: "standard" },
+                                        { text: `${foreignCurrency.symbol}`, value: "foreign" },
+                                    ]}
+                                    onChange={this.handleChangeCurrency}
+                                    multiple={false}
+                                />
+                            </div>
+                        ) : (
+                            ""
+                        )}
                     </div>
+                    <SlasOfGoodDetail currentSlasOfGood={currentSlasOfGood} />
+                    <DiscountOfGoodDetail currentDiscounts={currentDiscountsOfGood} />
                     <form id={`form-add-quote`}>
                         <div className="row row-equal-height" style={{ marginTop: 0 }}>
                             {step === 0 && (
@@ -267,6 +392,8 @@ class QuoteCreateForm extends Component {
                                     effectiveDate={effectiveDate}
                                     expirationDate={expirationDate}
                                     dateError={dateError}
+                                    isUseForeignCurrency={isUseForeignCurrency}
+                                    foreignCurrency={foreignCurrency}
                                     handleCustomerChange={this.handleCustomerChange}
                                     handleCustomerAddressChange={this.handleCustomerAddressChange}
                                     handleCustomerPhoneChange={this.handleCustomerPhoneChange}
@@ -274,9 +401,27 @@ class QuoteCreateForm extends Component {
                                     handleNoteChange={this.handleNoteChange}
                                     handleChangeEffectiveDate={this.handleChangeEffectiveDate}
                                     handleChangeExpirationDate={this.handleChangeExpirationDate}
+                                    handleUseForeignCurrencyChange={this.handleUseForeignCurrencyChange}
+                                    handleRatioOfCurrencyChange={this.handleRatioOfCurrencyChange}
+                                    handleSymbolOfForreignCurrencyChange={this.handleSymbolOfForreignCurrencyChange}
                                 />
                             )}
-                            {step === 1 && <QuoteCreateGood listGoods={goods} setGoods={this.setGoods} />}
+                            {step === 1 && (
+                                <QuoteCreateGood
+                                    listGoods={goods}
+                                    setGoods={this.setGoods}
+                                    isUseForeignCurrency={isUseForeignCurrency}
+                                    foreignCurrency={foreignCurrency}
+                                    standardCurrency={standardCurrency}
+                                    currency={currency}
+                                    setCurrentSlasOfGood={(data) => {
+                                        this.setCurrentSlasOfGood(data);
+                                    }}
+                                    setCurrentDiscountsOfGood={(data) => {
+                                        this.setCurrentDiscountsOfGood(data);
+                                    }}
+                                />
+                            )}
                             {step === 2 && (
                                 <QuoteCreatePayment
                                     listGoods={goods}
@@ -290,6 +435,12 @@ class QuoteCreateForm extends Component {
                                     shippingFee={shippingFee}
                                     deliveryTime={deliveryTime}
                                     note={note}
+                                    discountsOfOrderValue={discountsOfOrderValue}
+                                    discountsOfOrderValueChecked={discountsOfOrderValueChecked}
+                                    handleDiscountsOfOrderValueChange={(data) => this.handleDiscountsOfOrderValueChange(data)}
+                                    setDiscountsOfOrderValueChecked={(checked) => this.setDiscountsOfOrderValueChecked(checked)}
+                                    handleShippingFeeChange={this.handleShippingFeeChange}
+                                    handleDeliveryTimeChange={this.handleDeliveryTimeChange}
                                 />
                             )}
                         </div>

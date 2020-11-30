@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { ButtonModal, DatePicker, DialogModal, SelectBox, TrixEditor } from '../../../../common-components';
+import { ButtonModal, DatePicker, DialogModal, SelectBox, QuillEditor } from '../../../../common-components';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { CrmCareTypeActions } from '../../careType/redux/action';
 import { CrmCareActions } from '../redux/action';
@@ -66,7 +66,7 @@ class CreateCareForm extends Component {
      * Hàm xử lý khi mô tả công việc chăm sóc khách  hàng thay đổi
      * @param {*} data
      */
-    handleChangeDescription = (data) => {
+    handleChangeDescription = (data, imgs) => {
         const { newCare } = this.state;
         this.setState({
             newCare: {
@@ -240,8 +240,9 @@ class CreateCareForm extends Component {
                         {/* Mô tả công việc chăm sóc */}
                         <div className="form-group">
                             <label>{translate('crm.care.description')}</label>
-                            <TrixEditor
-                                handleChange={this.handleChangeDescription}
+                            <QuillEditor
+                                id={'createCare'}
+                                getTextData={this.handleChangeDescription}
                                 value={newCare.description ? newCare.description : ""}
                             />
                         </div>

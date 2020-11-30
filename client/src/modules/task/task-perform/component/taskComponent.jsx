@@ -5,7 +5,6 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DetailTaskTab } from './detailTaskTab';
 import { ActionTab } from './actionTab';
 
-import { taskManagementActions } from "../../task-management/redux/actions";
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { performTaskAction } from '../redux/actions';
 
@@ -23,7 +22,7 @@ class TaskComponent extends Component {
          * Dùng khi mở task từ URL. Ban đầu flag là 1, chạy vào render trước, taskID=null
          * Sau đó chạy vào shouldComponentUpdate, flag có giá trị là 2, taskID sẽ là tham số từ URL 
          */
-        this.flag= 1;
+        this.flag = 1;
 
         this.props.getAllUserOfCompany();
         this.props.getAllDepartment();
@@ -32,7 +31,7 @@ class TaskComponent extends Component {
     shouldComponentUpdate = (nextProps, nextState) => {
         if (this.props.location) {
             const { taskId } = qs.parse(this.props.location.search, { ignoreQueryPrefix: true });
-            if (taskId && this.flag == 1) {
+            if (taskId && this.flag === 1) {
                 this.flag = 2;
                 this.props.getTaskById(taskId);
                 this.props.getDepartment();
@@ -42,7 +41,7 @@ class TaskComponent extends Component {
         if (nextProps.id !== this.state.id) {
             this.props.getTaskById(nextProps.id); // this.props.id // đổi thành nextProps.id để lấy dữ liệu về sớm hơn
             this.props.getDepartment();
-            this.setState( state => {
+            this.setState(state => {
                 return {
                     ...state,
                     id: nextProps.id,
@@ -64,25 +63,21 @@ class TaskComponent extends Component {
 
     render = () => {
         const { translate } = this.props;
-        const { user, tasks, performtasks } = this.props;
+        const { user, performtasks } = this.props;
 
         let taskId = this.props.id;
-        let task, units;
+        let task;
 
-        if (this.props.location){
-            if (this.flag !== 1){
+        if (this.props.location) {
+            if (this.flag !== 1) {
                 taskId = qs.parse(this.props.location.search, { ignoreQueryPrefix: true }).taskId;
             }
-        }
-        
-        if( user.organizationalUnitsOfUser) {
-            units = user.organizationalUnitsOfUser;
         }
 
         if (performtasks.task) {
             task = performtasks.task;
         }
-        if (performtasks.task && performtasks.task.info){
+        if (performtasks.task && performtasks.task.info) {
             return (
                 <div>
                     <h2>{translate('task.task_management.detail_task_permission')}</h2>
@@ -94,8 +89,8 @@ class TaskComponent extends Component {
                 <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ paddingTop: "10px" }}>
 
                     <DetailTaskTab
-                        id={taskId} 
-                        onChangeTaskRole={this.onChangeTaskRole} 
+                        id={taskId}
+                        onChangeTaskRole={this.onChangeTaskRole}
                         task={task && task}
                         showToolbar={true}
                     />

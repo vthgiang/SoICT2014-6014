@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { DialogModal } from '../../../../../common-components';
 import { formatDate, formatFullDate } from '../../../../../helpers/formatDate';
+import { BillActions } from '../../../warehouse/bill-management/redux/actions';
 import { commandActions } from '../redux/actions';
 import qualityControlForm from './qualityControlForm';
 class ManufacturingCommandDetailInfo extends Component {
@@ -14,16 +15,21 @@ class ManufacturingCommandDetailInfo extends Component {
     shouldComponentUpdate = (nextProps) => {
         if (this.props.commandDetail !== nextProps.commandDetail) {
             this.props.getDetailManufacturingCommand(nextProps.commandDetail._id);
+            this.props.getBillsByCommand({ manufacturingCommandId: nextProps.commandDetail._id });
             return false
         }
         return true;
     }
 
     render() {
-        const { translate, manufacturingCommand, idModal } = this.props;
+        const { translate, manufacturingCommand, idModal, bills } = this.props;
         let currentCommand = {};
         if (manufacturingCommand.currentCommand && manufacturingCommand.isLoading === false) {
             currentCommand = manufacturingCommand.currentCommand;
+        }
+        let listBillByCommand = [];
+        if (bills.listBillByCommand && bills.isLoading === false) {
+            listBillByCommand = bills.listBillByCommand;
         }
         return (
             <React.Fragment>
@@ -156,7 +162,50 @@ class ManufacturingCommandDetailInfo extends Component {
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manufacturing.command.material')}</legend>
                                     <div className={`form-group`}>
-                                        Thông tin về nguyên vật liệu được nhập từ đâu
+                                        <table className="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>{translate('manufacturing.command.material_code')}</th>
+                                                    <th>{translate('manufacturing.command.material_name')}</th>
+                                                    <th>{translate('manufacturing.command.good_base_unit')}</th>
+                                                    <th>{translate('manufacturing.command.quantity')}</th>
+                                                    <th>{translate('manufacturing.command.from_stock')}</th>
+                                                    <th style={{ textAlign: "left" }}>{translate('manufacturing.command.status_bill')}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    listBillByCommand && listBillByCommand.length &&
+                                                    listBillByCommand.map((bill, index) => (
+                                                        bill.goods.map((good, index1) => (
+                                                            index1 === 0
+                                                                ?
+                                                                <tr key={index1}>
+                                                                    <td>{good.good.code}</td>
+                                                                    <td>{good.good.name}</td>
+                                                                    <td>{good.good.baseUnit}</td>
+                                                                    <td style={{ textAlign: "left" }}>{good.quantity}</td>
+                                                                    <td rowSpan={bill.goods.length}>{bill.fromStock.code + " - " + bill.fromStock.name}</td>
+                                                                    <td
+                                                                        style={{ textAlign: "left", color: translate(`manufacturing.command.bill.${bill.status}.color`) }}
+                                                                        rowSpan={bill.goods.length}
+                                                                    >
+                                                                        {translate(`manufacturing.command.bill.${bill.status}.content`)}
+                                                                    </td>
+                                                                </tr>
+                                                                :
+                                                                <tr key={index1}>
+                                                                    <td>{good.good.code}</td>
+                                                                    <td>{good.good.name}</td>
+                                                                    <td>{good.good.baseUnit}</td>
+                                                                    <td style={{ textAlign: "left" }}>{good.quantity}</td>
+                                                                </tr>
+                                                        ))
+                                                    ))
+
+                                                }
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </fieldset>
                             </div>
@@ -175,14 +224,14 @@ class ManufacturingCommandDetailInfo extends Component {
                                                     {currentCommand.finishedProductQuantity}
                                                     &emsp;&emsp;&emsp;
                                                     {translate('manufacturing.command.rateFinishedProductQuantity')}: &emsp;
-                                                    {parseFloat(currentCommand.finishedProductQuantity * 100 / (currentCommand.finishedProductQuantity + (currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity : 0)).toFixed(2))}%
+                                                    {Math.round(currentCommand.finishedProductQuantity * 100 / (currentCommand.finishedProductQuantity + (currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity : 0)) * 100) / 100}%
                                                 </p>
                                                 <p>
                                                     {translate('manufacturing.command.substandardProductQuantity')}: &emsp;
                                                     {currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity : 0}
                                                     &emsp;&emsp;&emsp;
                                                     {translate('manufacturing.command.rateSubstandardProductQuantity')}: &emsp;
-                                                    {parseFloat(currentCommand.substandardProductQuantity * 100 / (currentCommand.finishedProductQuantity + (currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity : 0)).toFixed(2))}%
+                                                    {Math.round((currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity : 0) * 100 / (currentCommand.finishedProductQuantity + (currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity : 0)) * 100) / 100}%
 
                                                 </p>
                                                 <p>
@@ -315,12 +364,13 @@ class ManufacturingCommandDetailInfo extends Component {
 }
 
 function mapStateToProps(state) {
-    const { manufacturingCommand } = state;
-    return { manufacturingCommand }
+    const { manufacturingCommand, bills } = state;
+    return { manufacturingCommand, bills }
 }
 
 const mapDispatchToProps = {
-    getDetailManufacturingCommand: commandActions.getDetailManufacturingCommand
+    getDetailManufacturingCommand: commandActions.getDetailManufacturingCommand,
+    getBillsByCommand: BillActions.getBillsByCommand,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManufacturingCommandDetailInfo));
