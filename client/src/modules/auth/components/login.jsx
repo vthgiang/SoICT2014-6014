@@ -50,8 +50,7 @@ class Login extends Component {
                     </a>
                     {
                         auth.error &&
-                        <div className="alert alert-danger alert-dismissible">
-                            <button type="button" className="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <div className="alert alert-danger alert-dismissible text-left">
                             <i className="icon fa fa-ban" /> {translate(`auth.${auth.error}`)}
                         </div>
                     }
