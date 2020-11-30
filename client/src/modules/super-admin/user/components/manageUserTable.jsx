@@ -87,7 +87,6 @@ class ManageUserTable extends Component {
     }
 
     componentDidMount() {
-        this.props.getUser();
         this.props.getUser({ limit: this.state.limit, page: this.state.page });
     }
 
