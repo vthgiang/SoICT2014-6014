@@ -32,6 +32,17 @@ class ApplyDiscount extends Component {
         this.props.handleQuantityChange(data);
     };
 
+    countSlasChecked = () => {
+        const { slasOfGoodChecked } = this.props;
+        let count = 0;
+        for (let key in slasOfGoodChecked) {
+            if (slasOfGoodChecked[key] === true) {
+                count++;
+            }
+        }
+        return count;
+    };
+
     render() {
         let {
             quantity,
@@ -49,6 +60,8 @@ class ApplyDiscount extends Component {
             setSlasOfGoodChecked,
         } = this.props;
         const { handleDiscountsChange, setDiscountsChecked } = this.props;
+
+        let countOfSlasChecked = this.countSlasChecked();
         return (
             <React.Fragment>
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: "10px 10px 20px 10px" }}>
@@ -103,7 +116,9 @@ class ApplyDiscount extends Component {
                             <i className="fa  fa-registered text-info"></i> Cam kết chất lượng &ensp;
                         </span>
                         <div className="apply-discounts-for-good-tag">
-                            <div>{slasOfGoodChecked ? `Đã chọn cam kết chất lượng` : "Hãy kiểm tra và chọn cam kết chất lượng"}</div>
+                            <div>
+                                {countOfSlasChecked ? `Đã chọn ${countOfSlasChecked} cam kết chất lượng` : "Hãy kiểm tra và chọn cam kết chất lượng"}
+                            </div>
                         </div>
                         <CreateSlaForGood
                             goodId={good}
