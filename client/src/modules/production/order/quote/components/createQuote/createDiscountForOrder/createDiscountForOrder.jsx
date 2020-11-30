@@ -1,36 +1,25 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { DialogModal } from "../../../../../../../common-components";
+import { DialogModal, formatDate } from "../../../../../../../common-components";
 import { formatCurrency } from "../../../../../../../helpers/formatCurrency";
-import { formatDate } from "../../../../../../../helpers/formatDate";
 import { capitalize } from "../../../../../../../helpers/stringMethod";
 
-class CreateDiscountsForGood extends Component {
+class CreateDiscountsForOrder extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            goodId: "",
-        };
     }
 
-    // static getDerivedStateFromProps(nextProps, prevState) {
-    //     if (nextProps.goodId !== prevState.goodId) {
-    //         return {
-    //             goodId: nextProps.goodId,
-    //         };
-    //     }
-    // }
-
     getDiscountValue = (idCheckBox) => {
-        let { listDiscountsByGoodId } = this.props.goods.goodItems;
+        const { listDiscountsByOrderValue } = this.props.discounts;
+        // let { listDiscountsByGoodId } = this.props.goods.goodItems;
         let { goodId } = this.props;
 
         let hash = idCheckBox.split("-");
         let discountId = hash[0];
         let indexOfDiscounts = hash[1];
 
-        let discount = listDiscountsByGoodId.find((element) => element._id === discountId);
+        let discount = listDiscountsByOrderValue.find((element) => element._id === discountId);
         let thresholdToBeApplied = discount.discounts[indexOfDiscounts];
         let discountChange = {
             _id: discount._id,
@@ -39,7 +28,6 @@ class CreateDiscountsForGood extends Component {
             type: discount.type,
             effectiveDate: discount.effectiveDate,
             expirationDate: discount.expirationDate,
-            name: discount.name,
         };
         switch (parseInt(discount.formality)) {
             case 0:
@@ -92,13 +80,15 @@ class CreateDiscountsForGood extends Component {
     };
 
     getThresholdToBeAppliedTitle = (discount) => {
-        let title = `mua từ ${discount.minimumThresholdToBeApplied >= 0 ? discount.minimumThresholdToBeApplied : ""}`;
+        let title = `Đơn hàng có giá trị từ ${
+            discount.minimumThresholdToBeApplied >= 0 ? formatCurrency(discount.minimumThresholdToBeApplied) : " 0 "
+        }`;
         if (discount.maximumThresholdToBeApplied) {
-            title = title + " đến " + discount.maximumThresholdToBeApplied;
+            title = title + " đến " + formatCurrency(discount.maximumThresholdToBeApplied);
         }
-        if (discount.minimumThresholdToBeApplied >= 0) {
-            title = title + " sản phẩm";
-        }
+        // if (discount.minimumThresholdToBeApplied >= 0) {
+        //     title = title + " sản phẩm";
+        // }
         return title;
     };
 
@@ -153,70 +143,67 @@ class CreateDiscountsForGood extends Component {
     };
 
     getDiscountOptions = (item) => {
-        let { quantity, goodId } = this.props;
+        let { paymentAmount } = this.props;
         let { discountsChecked } = this.props;
-        console.log("goodId", goodId);
+
         const { discounts, formality } = item;
         return (
             <div style={{ paddingLeft: "2rem" }}>
                 {discounts.map((discount, index) => {
-                    let checkGoodInDiscount = discount.discountOnGoods.find((element) => goodId === element.good._id); //Kiểm tra mặt hàng này có được trong danh mục khuyến mãi
-                    if (checkGoodInDiscount) {
-                        let disabled = false;
-                        if (discount.minimumThresholdToBeApplied) {
-                            if (parseInt(quantity) < discount.minimumThresholdToBeApplied) {
-                                disabled = true;
-                            }
-                        }
-                        if (discount.maximumThresholdToBeApplied) {
-                            if (parseInt(quantity) > discount.maximumThresholdToBeApplied) {
-                                disabled = true;
-                            }
-                        }
-
-                        if (!quantity) {
+                    let disabled = false;
+                    if (discount.minimumThresholdToBeApplied) {
+                        if (parseInt(paymentAmount) < discount.minimumThresholdToBeApplied) {
                             disabled = true;
                         }
-
-                        if (disabled && discountsChecked[`${item._id}-${index}`]) {
-                            let e = {
-                                target: {
-                                    id: `${item._id}-${index}`,
-                                    checked: false,
-                                },
-                            };
-                            this.handleDiscountChange(e); // unchecked các phần tử bị disable
-                        }
-
-                        return (
-                            <div className="form-check" style={{ display: "flex", paddingTop: "10px" }}>
-                                <input
-                                    type="checkbox"
-                                    className={`form-check-input`}
-                                    id={`${item._id}-${index}`}
-                                    disabled={disabled}
-                                    checked={discountsChecked[`${item._id}-${index}`]}
-                                    onChange={this.handleDiscountChange}
-                                    style={{ minWidth: "20px" }}
-                                    key={index}
-                                />
-                                <label
-                                    className={`form-check-label ${disabled ? "text-muted" : "text-success"}`}
-                                    for={`${item._id}-${index}`}
-                                    style={{ fontWeight: `${disabled ? 500 : 600}` }}
-                                >
-                                    {this.getNameDiscountForGood(formality, discount)}
-                                </label>
-                            </div>
-                        );
                     }
+                    if (discount.maximumThresholdToBeApplied) {
+                        if (parseInt(paymentAmount) > discount.maximumThresholdToBeApplied) {
+                            disabled = true;
+                        }
+                    }
+
+                    if (!paymentAmount) {
+                        disabled = true;
+                    }
+
+                    if (disabled && discountsChecked[`${item._id}-${index}`]) {
+                        let e = {
+                            target: {
+                                id: `${item._id}-${index}`,
+                                checked: false,
+                            },
+                        };
+                        this.handleDiscountChange(e); // unchecked các phần tử bị disable
+                    }
+
+                    return (
+                        <div className="form-check" style={{ display: "flex", paddingTop: "10px" }}>
+                            <input
+                                type="checkbox"
+                                className={`form-check-input`}
+                                id={`${item._id}-${index}`}
+                                disabled={disabled}
+                                checked={discountsChecked[`${item._id}-${index}`]}
+                                onChange={this.handleDiscountChange}
+                                style={{ minWidth: "20px" }}
+                                key={index}
+                            />
+                            <label
+                                className={`form-check-label ${disabled ? "text-muted" : "text-success"}`}
+                                for={`${item._id}-${index}`}
+                                style={{ fontWeight: `${disabled ? 500 : 600}` }}
+                            >
+                                {this.getNameDiscountForGood(formality, discount)}
+                            </label>
+                        </div>
+                    );
                 })}
             </div>
         );
     };
 
     render() {
-        let { listDiscountsByGoodId } = this.props.goods.goodItems;
+        const { listDiscountsByOrderValue } = this.props.discounts;
         return (
             <React.Fragment>
                 <a
@@ -225,12 +212,12 @@ class CreateDiscountsForGood extends Component {
                     }}
                     data-toggle="modal"
                     data-backdrop="static"
-                    href={"#modal-add-quote-discount-for-good"}
+                    href={"#modal-add-quote-discount-for-order"}
                 >
                     Chọn khuyến mãi
                 </a>
                 <DialogModal
-                    modalID={`modal-add-quote-discount-for-good`}
+                    modalID={`modal-add-quote-discount-for-order`}
                     isLoading={false}
                     title={"Chọn khuyến mãi"}
                     hasSaveButton={false}
@@ -238,13 +225,12 @@ class CreateDiscountsForGood extends Component {
                     size="50"
                     style={{ backgroundColor: "green" }}
                 >
-                    {!listDiscountsByGoodId.length ? (
+                    {!listDiscountsByOrderValue.length ? (
                         <div style={{ display: "flex", alignItems: "center" }}>
-                            <i className="fa fa-frown-o text-warning" style={{ fontSize: "20px" }}></i> &ensp;{" "}
-                            <span>Không có khuyến mãi nào cho sản phẩm này</span>
+                            <i className="fa fa-frown-o text-warning" style={{ fontSize: "20px" }}></i> &ensp; <span>Không có khuyến mãi nào</span>
                         </div>
                     ) : (
-                        listDiscountsByGoodId.map((item) => {
+                        listDiscountsByOrderValue.map((item) => {
                             return (
                                 <div>
                                     <div style={{ display: "flex", alignItems: "center" }}>
@@ -262,10 +248,10 @@ class CreateDiscountsForGood extends Component {
 }
 
 function mapStateToProps(state) {
-    const { goods } = state;
-    return { goods };
+    const { discounts } = state;
+    return { discounts };
 }
 
 const mapDispatchToProps = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CreateDiscountsForGood));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CreateDiscountsForOrder));

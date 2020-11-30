@@ -94,9 +94,6 @@ class StautsChart extends Component {
         });
     }
     render() {
-        const { translate } = this.props;
-        const { listAssets } = this.props;
-
         this.pieChart();
 
         return (
@@ -109,12 +106,6 @@ class StautsChart extends Component {
     }
 }
 
-function mapState(state) {
-}
-
-const actions = {
-}
-
-const StautsChartConnected = connect(mapState, actions)(withTranslate(StautsChart));
+const StautsChartConnected = connect(null, null)(withTranslate(StautsChart));
 
 export { StautsChartConnected as StautsChart }

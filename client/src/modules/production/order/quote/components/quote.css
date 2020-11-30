@@ -1,3 +1,7 @@
+.padding-0px {
+    padding: 0px;
+}
+
 .quote-detail-info-left {
     font-weight: 600;
     width: 35%;
@@ -25,6 +29,13 @@
 
 .print-quote:hover {
     background-color: aqua;
+}
+
+.select-currency {
+    position: absolute;
+    top: 15px;
+    right: 30px;
+    min-width: 69px;
 }
 
 .button-add-quantity-for-quote {

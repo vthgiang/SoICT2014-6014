@@ -6,14 +6,14 @@ import { NotificationActions } from '../redux/actions';
 class NotificationMenu extends Component {
     constructor(props) {
         super(props);
-        this.state = { 
-            showReceived: false, 
+        this.state = {
+            showReceived: false,
             showSent: false,
             showUnRead: true,
         }
     }
-    
-    getManualNotifications = async() => {
+
+    getManualNotifications = async () => {
         await this.props.setLevelNotificationSent();
         await this.props.paginateManualNotifications({
             limit: 10,
@@ -21,7 +21,7 @@ class NotificationMenu extends Component {
         })
     }
 
-    getNotifications = async(unRead) => {
+    getNotifications = async (unRead) => {
         console.log(unRead);
         if (unRead) {
             await this.props.setLevelNotificationReceivered();
@@ -39,7 +39,7 @@ class NotificationMenu extends Component {
         }
     }
 
-    showTabReceivered = async() => {
+    showTabReceivered = async () => {
         window.$('#tab-notification-sent').hide();
         window.$('#tab-notification-un-read').hide();
         window.$('#tab-notification-receivered').show();
@@ -51,7 +51,7 @@ class NotificationMenu extends Component {
         await this.getNotifications(false);
     }
 
-    showTabSent = async() => {
+    showTabSent = async () => {
         window.$('#tab-notification-receivered').hide();
         window.$('#tab-notification-un-read').hide();
         window.$('#tab-notification-sent').show();
@@ -63,25 +63,25 @@ class NotificationMenu extends Component {
         await this.getManualNotifications();
     }
 
-    setLevel = async(level) => {
-        const {showReceived, showUnRead} = this.state;
-        if(showReceived){
-            const {limit} = this.props.notifications.receivered;
+    setLevel = async (level) => {
+        const { showReceived, showUnRead } = this.state;
+        if (showReceived) {
+            const { limit } = this.props.notifications.receivered;
             await this.props.setLevelNotificationReceivered(level);
-            await this.props.paginateNotifications({ limit, page:1, content: {level} })
-        }else{
+            await this.props.paginateNotifications({ limit, page: 1, content: { level } })
+        } else {
             if (showUnRead) {
-                const {limit} = this.props.notifications.receivered;
+                const { limit } = this.props.notifications.receivered;
                 await this.props.setLevelNotificationReceivered(level);
-                await this.props.paginateNotifications({ limit, page:1, content: {level}, readed: false })
+                await this.props.paginateNotifications({ limit, page: 1, content: { level }, readed: false })
             } else {
-                const {limit} = this.props.notifications.sent;
+                const { limit } = this.props.notifications.sent;
                 await this.props.setLevelNotificationSent(level);
-                await this.props.paginateManualNotifications({ limit, page:1, content: {level} })
+                await this.props.paginateManualNotifications({ limit, page: 1, content: { level } })
             }
         }
     }
-    showTabUnRead = async() => {
+    showTabUnRead = async () => {
         window.$('#tab-notification-receivered').hide();
         window.$('#tab-notification-sent').hide();
         window.$('#tab-notification-un-read').show();
@@ -93,83 +93,83 @@ class NotificationMenu extends Component {
         await this.getNotifications(true);
     }
 
-    render() { 
-        const { translate, notifications } = this.props;
-        const { showReceived, showSent, showUnRead } = this.state;
+    render() {
+        const { translate } = this.props;
+        const { showSent } = this.state;
         const sentLevel = this.props.notifications.sent.level;
         const receiveredLevel = this.props.notifications.receivered.level;
 
-        return ( 
+        return (
             <React.Fragment>
                 <div className="box box-solid"><div className="box-body no-padding">
-                        <ul className="nav nav-pills nav-stacked">
-                            <li onClick={this.showTabUnRead} className={this.state.showUnRead ? "active-notification-button" : null} ><a href="#abc"><i className="material-icons" style={{marginRight: 3, fontSize: 17, paddingRight: 2}}>notifications_active</i>{translate('notification.unread')}</a></li>
-                            <li onClick={this.showTabReceivered} className={this.state.showReceived ? "active-notification-button" : null}><a href="#abc"><i className="fa fa-fw fa-inbox"/>{translate('notification.receivered')}</a></li>
-                            {this.checkHasComponent('create-notification') &&
-                            <li onClick={this.showTabSent} className={this.state.showSent ? "active-notification-button" : null}><a href="#abc"><i className="fa fa-fw fa-envelope-o"/>{translate('notification.sent')}</a></li> }
-                        </ul>
-                    </div>
-                </div> 
+                    <ul className="nav nav-pills nav-stacked">
+                        <li onClick={this.showTabUnRead} className={this.state.showUnRead ? "active-notification-button" : null} ><a href="#abc"><i className="material-icons" style={{ marginRight: 3, fontSize: 17, paddingRight: 2 }}>notifications_active</i>{translate('notification.unread')}</a></li>
+                        <li onClick={this.showTabReceivered} className={this.state.showReceived ? "active-notification-button" : null}><a href="#abc"><i className="fa fa-fw fa-inbox" />{translate('notification.receivered')}</a></li>
+                        {this.checkHasComponent('create-notification') &&
+                            <li onClick={this.showTabSent} className={this.state.showSent ? "active-notification-button" : null}><a href="#abc"><i className="fa fa-fw fa-envelope-o" />{translate('notification.sent')}</a></li>}
+                    </ul>
+                </div>
+                </div>
                 <div className="box box-solid">
                     <ul className="nav nav-pills nav-stacked">
-                        <li onClick={()=>this.setLevel("info")} className={
+                        <li onClick={() => this.setLevel("info")} className={
                             showSent ?
-                            (sentLevel === 'info' ? "active-notification-button" : null ):
-                            (receiveredLevel === 'info' ? "active-notification-button" : null )
+                                (sentLevel === 'info' ? "active-notification-button" : null) :
+                                (receiveredLevel === 'info' ? "active-notification-button" : null)
                         }>
                             <a href="#abc" className="text-blue">
-                                <i className="fa fa-fw fa-info-circle text-blue" /> 
+                                <i className="fa fa-fw fa-info-circle text-blue" />
                                 {translate('notification.type.info')}
                             </a>
                         </li>
-                        <li onClick={()=>this.setLevel("general")} className={
+                        <li onClick={() => this.setLevel("general")} className={
                             showSent ?
-                            (sentLevel === 'general' ? "active-notification-button" : null ):
-                            (receiveredLevel === 'general' ? "active-notification-button" : null )
+                                (sentLevel === 'general' ? "active-notification-button" : null) :
+                                (receiveredLevel === 'general' ? "active-notification-button" : null)
                         }>
                             <a href="#abc" className="text-green">
-                                <i className="fa fa-fw fa-bell" /> 
+                                <i className="fa fa-fw fa-bell" />
                                 {translate('notification.type.general')}
                             </a>
                         </li>
-                        <li onClick={()=>this.setLevel("important")} className={
+                        <li onClick={() => this.setLevel("important")} className={
                             showSent ?
-                            (sentLevel === 'important' ? "active-notification-button" : null ):
-                            (receiveredLevel === 'important' ? "active-notification-button" : null )
+                                (sentLevel === 'important' ? "active-notification-button" : null) :
+                                (receiveredLevel === 'important' ? "active-notification-button" : null)
                         }>
                             <a href="#abc" className="text-orange">
-                                <i className="fa fa-fw fa-warning" /> 
+                                <i className="fa fa-fw fa-warning" />
                                 {translate('notification.type.important')}
                             </a>
                         </li>
-                        <li onClick={()=>this.setLevel("emergency")} className={
+                        <li onClick={() => this.setLevel("emergency")} className={
                             showSent ?
-                            (sentLevel === 'emergency' ? "active-notification-button" : null ):
-                            (receiveredLevel === 'emergency' ? "active-notification-button" : null )
+                                (sentLevel === 'emergency' ? "active-notification-button" : null) :
+                                (receiveredLevel === 'emergency' ? "active-notification-button" : null)
                         }>
                             <a href="#abc" className="text-red">
-                                <i className="fa fa-fw fa-bomb" /> 
+                                <i className="fa fa-fw fa-bomb" />
                                 {translate('notification.type.emergency')}
                             </a>
                         </li>
                     </ul>
                 </div>
             </React.Fragment>
-         );
+        );
     }
 
     checkHasComponent = (name) => {
         let { auth } = this.props;
         let result = false;
         auth.components.forEach(component => {
-            if(component.name === name) result=true;
+            if (component.name === name) result = true;
         });
 
         return result;
     }
 }
- 
-function mapState(state){
+
+function mapState(state) {
     const { notifications, auth } = state;
     return { notifications, auth };
 }

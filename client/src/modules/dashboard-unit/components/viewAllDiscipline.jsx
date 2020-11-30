@@ -10,7 +10,6 @@ class ViewAllDiscipline extends Component {
     };
 
     render() {
-        const { translate } = this.props;
         const { dataDiscipline, title } = this.props;
 
         return (
