@@ -494,7 +494,9 @@ class TaskManagement extends Component {
         const { tasks, user, translate } = this.props;
         const { currentTaskId, currentPage, currentTab, parentTask, startDate, endDate, perPage, status } = this.state;
         let currentTasks, units = [];
-
+        if (tasks) {
+            currentTasks = tasks.tasks;
+        }
         // kiểm tra vai trò của người dùng
         let userId = getStorage("userId");
 
@@ -512,7 +514,7 @@ class TaskManagement extends Component {
             { name: translate('task.task_management.col_logged_time'), key: "totalLoggedTime" }
         ];
         let data = [];
-        if (typeof currentTasks !== 'undefined' && currentTasks.length !== 0) {
+        if (currentTasks && currentTasks.length !== 0) {
             let dataTemp = currentTasks;
 
             for (let n in dataTemp) {
@@ -556,7 +558,7 @@ class TaskManagement extends Component {
                         {currentTab !== "informed" &&
                             <button type="button" onClick={() => { this.handleAddTask("") }} className="btn btn-success pull-right" title={translate('task.task_management.add_title')}>{translate('task.task_management.add_task')}</button>
                         }
-                        <TaskAddModal currentTasks={(currentTasks !== undefined && currentTasks.length !== 0) && this.list_to_tree(currentTasks)} parentTask={parentTask} />
+                        <TaskAddModal currentTasks={(currentTasks && currentTasks.length !== 0) && this.list_to_tree(currentTasks)} parentTask={parentTask} />
                     </div>
 
                     <div className="form-inline">

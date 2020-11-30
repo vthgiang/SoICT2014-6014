@@ -335,7 +335,9 @@ class TaskManagementOfUnit extends Component {
         const { tasks, user, translate } = this.props;
         const { currentTaskId, currentPage, startDate, endDate, perPage, status, isAssigned } = this.state;
         let currentTasks, units = [];
-
+        if (tasks) {
+            currentTasks = tasks.tasks;
+        }
         if (user) units = user.organizationalUnitsOfUser;
 
         // khởi tạo dữ liệu TreeTable
@@ -350,7 +352,7 @@ class TaskManagementOfUnit extends Component {
             { name: translate('task.task_management.col_logged_time'), key: "totalLoggedTime" }
         ];
         let data = [];
-        if (typeof currentTasks !== 'undefined' && currentTasks.length !== 0) {
+        if (currentTasks && currentTasks.length !== 0) {
             let dataTemp = currentTasks;
 
             for (let n in dataTemp) {
@@ -523,7 +525,7 @@ class TaskManagementOfUnit extends Component {
 
                     </div>
                     {
-                        currentTaskId !== undefined &&
+                        currentTaskId &&
                         <ModalPerform
                             units={units}
                             id={currentTaskId}
