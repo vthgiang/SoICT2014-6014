@@ -798,6 +798,7 @@ export default {
             close: "Close",
             email: "Email",
             password: "Password",
+            portal: "Portal",
             new_password: "New password",
             confirm: "Confirm password",
             description: "Description",
@@ -1452,13 +1453,13 @@ export default {
                 religion: "Religion",
                 active: "Official staff",
                 leave: "Quit job",
-                maternity_leave: 'Maternity leave',
-                unpaid_leave:'Unpaid leave',
-                probationary:'Probationary',
-                sick_leave:'Sick leave',
+                maternity_leave: "Maternity leave",
+                unpaid_leave: "Unpaid leave",
+                probationary: "Probationary",
+                sick_leave: "Sick leave",
 
                 status_work: "Labor status",
-                hours_off_remaining: 'Total hours annual leave remaining',
+                hours_off_remaining: "Total hours annual leave remaining",
 
                 mobile_phone: "Mobile phone",
                 mobile_phone_1: "Mobile phone 1",
@@ -2548,8 +2549,10 @@ export default {
                 role_in_collaborated_unit: "The role of the employee in",
                 confirm_assigned: "Confirm the assignment",
                 confirm_assigned_success: "You have confirmed the assignment",
-                confirm_assigned_failure: "You have not confirmed the assignment",
-                unit_not_confirm_assigned_task: "Organizational unit has not confirmed the assignment",
+                confirm_assigned_failure:
+                    "You have not confirmed the assignment",
+                unit_not_confirm_assigned_task:
+                    "Organizational unit has not confirmed the assignment",
 
                 name: "Name of task",
                 search_by_name: "Search by name",

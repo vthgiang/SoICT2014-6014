@@ -935,6 +935,7 @@ export default {
             close: "Đóng",
             email: "Email",
             password: "Mật khẩu",
+            portal: "Portal",
             new_password: "Mật khẩu mới",
             confirm: "Xác thực mật khẩu",
             description: "Mô tả",
@@ -1288,7 +1289,7 @@ export default {
 
         // Modules cấu hình các chức năng
         module_configuration: {
-            timekeeping: 'Chấm công',
+            timekeeping: "Chấm công",
             timekeeping_type: "Kiểu chấm công",
             contract_notice_time: "Báo hết hạn hợp đồng (ngày)",
             contract_notice_time_title: "Báo trước hết hạn hợp đồng",
@@ -1623,10 +1624,10 @@ export default {
                 religion: "Tôn giáo",
                 active: "Đang làm việc",
                 leave: "Đã nghỉ làm",
-                maternity_leave: 'Nghỉ thai sản',
-                unpaid_leave: 'Nghỉ không lương',
-                probationary: 'Đang thử việc',
-                sick_leave: 'Nghỉ ốm đau',
+                maternity_leave: "Nghỉ thai sản",
+                unpaid_leave: "Nghỉ không lương",
+                probationary: "Đang thử việc",
+                sick_leave: "Nghỉ ốm đau",
                 status_work: "Tình trạng lao động",
                 hours_off_remaining: "Số giờ nghỉ phép còn lại",
 
@@ -2418,13 +2419,18 @@ export default {
                 total_cost: "Tổng chi phí",
 
                 //Thông điệp trả về từ server
-                get_maintainance_success: "Lấy thông tin bảo trì-sửa chữa thành công",
+                get_maintainance_success:
+                    "Lấy thông tin bảo trì-sửa chữa thành công",
                 get_maintainance_faile:
                     "Lấy thông tin thông tin bảo trì-sửa chữa thất bại",
-                create_maintainance_success: "Thêm phiếu bảo trì-sửa chữa thành công",
-                create_maintainance_faile: "Thêm phiếu bảo trì-sửa chữa thất bại",
-                delete_maintainance_success: "Xoá phiếu bảo trì-sửa chữa thành công",
-                delete_maintainance_faile: "Xoá phiếu bảo trì-sửa chữa thất bại",
+                create_maintainance_success:
+                    "Thêm phiếu bảo trì-sửa chữa thành công",
+                create_maintainance_faile:
+                    "Thêm phiếu bảo trì-sửa chữa thất bại",
+                delete_maintainance_success:
+                    "Xoá phiếu bảo trì-sửa chữa thành công",
+                delete_maintainance_faile:
+                    "Xoá phiếu bảo trì-sửa chữa thất bại",
                 edit_maintainance_success:
                     "Chỉnh sửa thông tin phiếu bảo trì-sửa chữa thành công",
                 edit_maintainance_faile:
@@ -2756,8 +2762,10 @@ export default {
                 role_in_collaborated_unit: "Vai trò của nhân viên thuộc",
                 confirm_assigned: "Xác nhận đã phân công công việc",
                 confirm_assigned_success: "Bạn đã xác nhận phân công công việc",
-                confirm_assigned_failure: "Bạn chưa xác nhận phân công công việc",
-                unit_not_confirm_assigned_task: "Đơn vị chưa xác nhận phân công công việc",
+                confirm_assigned_failure:
+                    "Bạn chưa xác nhận phân công công việc",
+                unit_not_confirm_assigned_task:
+                    "Đơn vị chưa xác nhận phân công công việc",
 
                 name: "Tên công việc",
                 search_by_name: "Tìm kiếm theo tên",
@@ -4063,8 +4071,10 @@ export default {
                 numberExpirationDate: "Hạn sử dụng (tính theo ngày)",
                 day: "Ngày",
                 expirationDate: "Hạn sử dụng",
-                validate_number_expiration_date: "Ngày hết hạn không được để trống",
-                validate_number_expiration_date_input: "Ngày hết hạn phải lớn hơn 0"
+                validate_number_expiration_date:
+                    "Ngày hết hạn không được để trống",
+                validate_number_expiration_date_input:
+                    "Ngày hết hạn phải lớn hơn 0",
             },
 
             stock_management: {
@@ -4769,7 +4779,7 @@ export default {
                 },
                 5: {
                     color: "red",
-                    content: "Đã hủy"
+                    content: "Đã hủy",
                 },
                 choose_status: "Chọn trạng thái",
                 choose_all: "Chọn tất cả",
@@ -4786,7 +4796,8 @@ export default {
                 good_name: "Tên sản phẩm",
                 good_base_unit: "Đơn vị tính tiêu chuẩn",
                 packing_rule: "Quy cách đóng gói",
-                good_base_unit_quantity: "Số lượng sản phẩm theo đơn vị tính tiêu chuẩn",
+                good_base_unit_quantity:
+                    "Số lượng sản phẩm theo đơn vị tính tiêu chuẩn",
                 packing_rule_quantity: "Số lượng theo quy cách đóng gói",
                 approved: "Đã phê duyệt",
                 approvedTime: "Thời gian phê duyệt",
@@ -4808,26 +4819,25 @@ export default {
                 comment: "Bình luận",
                 quality_control_status: "Trạng thái kiểm định",
                 qc_status: {
-                    "1": {
+                    1: {
                         color: "orange",
-                        content: "Chưa kiểm định"
+                        content: "Chưa kiểm định",
                     },
-                    "2": {
+                    2: {
                         color: "green",
-                        content: "Đạt kiểm định"
+                        content: "Đạt kiểm định",
                     },
-                    "3": {
+                    3: {
                         color: "red",
-                        content: "Không đạt kiểm định"
-                    }
+                        content: "Không đạt kiểm định",
+                    },
                 },
                 qc_name: "Tên người kiểm định",
                 qc_email: "email",
                 qc_status_command: "Trạng thái kiểm định",
                 quality_control_content: "Nội dung kiểm định",
                 rateFinishedProductQuantity: "Tỷ lệ thành phẩm",
-                rateSubstandardProductQuantity: "Tỷ lệ phế phẩm"
-
+                rateSubstandardProductQuantity: "Tỷ lệ phế phẩm",
             },
             lot: {
                 index: "STT",
@@ -4839,15 +4849,15 @@ export default {
                 expiration_date: "Ngày hết hạn",
                 1: {
                     color: "#ffbf00",
-                    content: "Chưa xử lý"
+                    content: "Chưa xử lý",
                 },
                 2: {
                     color: "#00bfff",
-                    content: "Đã xử lý"
+                    content: "Đã xử lý",
                 },
                 3: {
                     color: "green",
-                    content: "Đã nhập kho"
+                    content: "Đã nhập kho",
                 },
                 choose_status: "Chọn trạng thái",
                 choose_all: "Chọn tất cả",
@@ -4858,8 +4868,8 @@ export default {
                 expiration_date: "Ngày hết hạn",
                 status: "Trạng thái",
                 product_type_object: {
-                    "1": "Thành phẩm",
-                    "2": "Phế phẩm"
+                    1: "Thành phẩm",
+                    2: "Phế phẩm",
                 },
                 choose_good: "Chọn hàng hóa",
                 add: "Tạo lô",
@@ -4868,7 +4878,8 @@ export default {
                 packing_rule: "Quy cách đóng gói",
                 conversion_rate: "Trọng số chuyển đổi",
                 quantity_packing_rule: "Số lượng theo quy cách đóng gói",
-                quantity_base_unit: "Số lượng cần sản xuất theo đơn vị tính tiêu chuẩn",
+                quantity_base_unit:
+                    "Số lượng cần sản xuất theo đơn vị tính tiêu chuẩn",
                 product_lot_code: "Mã lô thành phẩm",
                 code1: "Mã lô thành phẩm",
                 code2: "Mã lô phế phẩm",
@@ -4878,7 +4889,8 @@ export default {
                 error_quantity_1: "Số lượng nhập vào không hợp lệ",
                 error_quantity_1_input: "Số lượng nhập vào phải lớn hơn 0",
                 description: "Mô tả",
-                create_manufacturing_lot_successfully: "Tạo lô sản xuất thành công",
+                create_manufacturing_lot_successfully:
+                    "Tạo lô sản xuất thành công",
                 create_manufacturing_lot_failed: "Tạo lô sản xuất thất bại",
                 lot_detail: "Xem chi tiết lô sản xuất",
                 lot_type: "Loại lô",
@@ -4886,9 +4898,8 @@ export default {
                 lot_diary: "Nhật ký hoạt động của lô",
                 manufacturing_mill: "Xưởng sản xuất",
                 team_leader: "Đội trưởng xưởng sản xuất",
-                material: "Thông tin nguyên vật liệu"
-
-            }
-        }
-    }
-}
+                material: "Thông tin nguyên vật liệu",
+            },
+        },
+    },
+};
