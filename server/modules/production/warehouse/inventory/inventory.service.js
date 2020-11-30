@@ -236,10 +236,11 @@ exports.deleteManyLots = async (arrayId, portal) => {
 }
 
 exports.editLot = async (id, data, portal) => {
+    console.log(data);
     let lot = await Lot(connect(DB_CONNECTION, portal)).findById(id);
     const oldLot = lot;
 
-    if (oldLot.stocks.length > 0) {
+    if (oldLot.stocks && oldLot.stocks.length > 0) {
         for (let i = 0; i < oldLot.stocks.length; i++) {
             if (oldLot.stocks[i].binLocations.length > 0) {
                 for (let j = 0; j < oldLot.stocks[i].binLocations.length; j++) {
@@ -273,11 +274,10 @@ exports.editLot = async (id, data, portal) => {
             binLocations: item.binLocations.map(x => { return { binLocation: x.binLocation, quantity: x.quantity } }),
         }
     }) : lot.stocks;
-    lot.originalQuantity = lot.originalQuantity;
-    lot.quantity = lot.quantity;
-    lot.lotType = lot.lotType;
-    lot.expirationDate = lot.expirationDate;
-    lot.description = lot.description;
+    lot.originalQuantity = data.originalQuantity ? data.originalQuantity : lot.originalQuantity;
+    lot.quantity = data.originalQuantity ? data.originalQuantity : lot.quantity;
+    lot.expirationDate = data.expirationDate ? data.expirationDate : lot.expirationDate;
+    lot.description = data.description ? data.description : lot.description;
     lot.lotLogs = data.lotLogs ? data.lotLogs.map(item => {
         return {
             bill: item.bill,
@@ -290,9 +290,15 @@ exports.editLot = async (id, data, portal) => {
         }
     }) : lot.lotLogs;
 
+    // Phần lô sản xuất
+    lot.manufacturingCommand = data.manufacturingCommand ? data.manufacturingCommand : lot.manufacturingCommand;
+    lot.productType = data.productType ? data.productType : lot.productType;
+    lot.status = data.status ? data.status : lot.status;
+    lot.creator = data.creator ? data.creator : lot.creator;
+
     await lot.save();
 
-    if (data.stocks.length > 0) {
+    if (data.stocks && data.stocks.length > 0) {
         for (let i = 0; i < data.stocks.length; i++) {
             if (data.stocks[i].binLocations.length > 0) {
                 for (let j = 0; j < data.stocks[i].binLocations.length; j++) {
@@ -326,7 +332,9 @@ exports.editLot = async (id, data, portal) => {
             { path: 'stocks.stock' },
             { path: 'lotLogs.bill', select: 'id code type' },
             { path: 'lotLogs.binLocations.binLocation' },
-            { path: 'lotLogs.stock', select: 'id name' }
+            { path: 'lotLogs.stock', select: 'id name' },
+            { path: 'manufacturingCommand' },
+            { path: 'creator' }
         ])
 }
 
@@ -387,8 +395,7 @@ exports.getAllManufacturingLot = async (query, user, portal) => {
     }
 
     let option = {};
-    option.lotType = 1;
-
+    option.type = "product";
     // Xử  lý các quyền trước để tìm ra các kế hoạch trong các nhà máy được phân quyền
     let role = [currentRole];
     const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'deans': { $in: role } });
@@ -546,6 +553,12 @@ exports.getDetailManufacturingLot = async (id, portal) => {
             }]
         }, {
             path: "creator"
+        }, {
+            path: 'lotLogs.bill', select: 'id code type'
+        }, {
+            path: 'lotLogs.binLocations.binLocation'
+        }, {
+            path: 'lotLogs.stock', select: 'id name'
         }]);
     return { lot }
 }

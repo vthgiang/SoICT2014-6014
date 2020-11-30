@@ -26,7 +26,7 @@ exports.getBillsByType = async (query, portal) => {
                     { path: 'responsibles' },
                     { path: 'accountables' },
                     { path: 'manufacturingMill' },
-                    { path: 'manufacturingCommand'},
+                    { path: 'manufacturingCommand' },
                     { path: 'fromStock' },
                     { path: 'toStock' },
                     { path: 'customer' },
@@ -47,7 +47,7 @@ exports.getBillsByType = async (query, portal) => {
                     { path: 'responsibles' },
                     { path: 'accountables' },
                     { path: 'manufacturingMill' },
-                    { path: 'manufacturingCommand'},
+                    { path: 'manufacturingCommand' },
                     { path: 'fromStock' },
                     { path: 'toStock' },
                     { path: 'customer' },
@@ -71,7 +71,7 @@ exports.getBillsByType = async (query, portal) => {
                 option.toStock = query.toStock
             }
 
-            if(query.supplier) {
+            if (query.supplier) {
                 option.supplier = query.supplier
             }
 
@@ -137,7 +137,7 @@ exports.getBillsByType = async (query, portal) => {
                 option.toStock = query.toStock
             }
 
-            if(query.supplier) {
+            if (query.supplier) {
                 option.supplier = query.supplier
             }
 
@@ -153,7 +153,7 @@ exports.getBillsByType = async (query, portal) => {
                         { path: 'responsibles' },
                         { path: 'accountables' },
                         { path: 'manufacturingMill' },
-                        { path: 'manufacturingCommand'},
+                        { path: 'manufacturingCommand' },
                         { path: 'fromStock' },
                         { path: 'toStock' },
                         { path: 'customer' },
@@ -176,7 +176,7 @@ exports.getBillsByType = async (query, portal) => {
                 option.toStock = query.toStock
             }
 
-            if(query.supplier) {
+            if (query.supplier) {
                 option.supplier = query.supplier
             }
 
@@ -242,7 +242,7 @@ exports.getBillsByType = async (query, portal) => {
                 option.toStock = query.toStock
             }
 
-            if(query.supplier) {
+            if (query.supplier) {
                 option.supplier = query.supplier
             }
 
@@ -258,7 +258,7 @@ exports.getBillsByType = async (query, portal) => {
                         { path: 'responsibles' },
                         { path: 'accountables' },
                         { path: 'manufacturingMill' },
-                        { path: 'manufacturingCommand'},
+                        { path: 'manufacturingCommand' },
                         { path: 'fromStock' },
                         { path: 'toStock' },
                         { path: 'customer' },
@@ -338,7 +338,7 @@ exports.getDetailBill = async (id, portal) => {
             { path: 'responsibles' },
             { path: 'accountables' },
             { path: 'manufacturingMill' },
-            { path: 'manufacturingCommand'},
+            { path: 'manufacturingCommand' },
             { path: 'fromStock' },
             { path: 'toStock' },
             { path: 'customer' },
@@ -359,7 +359,7 @@ exports.getBillsByStatus = async (query, portal) => {
             { path: 'approvers.approver' },
             { path: 'approvers.role' },
             { path: 'manufacturingMill' },
-            { path: 'manufacturingCommand'},
+            { path: 'manufacturingCommand' },
             { path: 'fromStock' },
             { path: 'toStock' },
             { path: 'customer' },
@@ -368,7 +368,7 @@ exports.getBillsByStatus = async (query, portal) => {
             { path: 'goods.lots.lot' },
             { path: 'goods.good' },
             { path: 'logs.creator' }
-])
+        ])
 }
 
 exports.createBill = async (userId, data, portal) => {
@@ -376,9 +376,9 @@ exports.createBill = async (userId, data, portal) => {
     let log = {};
     log.creator = userId;
     log.createAt = new Date(Date.now());
-    log.title = data.type;
+    log.title = "Tạo phiếu";
     log.versions = "versions 1";
-    logs = [ ...logs, log ];
+    logs = [...logs, log];
     let query = {
         fromStock: data.fromStock,
         group: data.group,
@@ -449,7 +449,7 @@ exports.createBill = async (userId, data, portal) => {
             { path: 'responsibles' },
             { path: 'accountables' },
             { path: 'manufacturingMill' },
-            { path: 'manufacturingCommand'},
+            { path: 'manufacturingCommand' },
             { path: 'fromStock' },
             { path: 'toStock' },
             { path: 'customer' },
@@ -497,9 +497,9 @@ exports.editBill = async (id, userId, data, portal) => {
             role: item.role,
             approvedTime: item.approvedTime
         }
-    } ) : bill.approvers;
-    bill.accountables = data.accountables ? data.accountables :bill.accountables;
-    bill.responsibles = data.responsibles ? data.responsibles :bill.responsibles;
+    }) : bill.approvers;
+    bill.accountables = data.accountables ? data.accountables : bill.accountables;
+    bill.responsibles = data.responsibles ? data.responsibles : bill.responsibles;
     bill.qualityControlStaffs = data.qualityControlStaffs ? data.qualityControlStaffs.map(item => {
         return {
             staff: item.staff,
@@ -538,10 +538,10 @@ exports.editBill = async (id, userId, data, portal) => {
         }
     }) : bill.goods;
 
-    if(data.approverId) {
+    if (data.approverId) {
         let index = findIndexOfApprover(bill.approvers, data.approverId);
 
-        if(index !== -1) {
+        if (index !== -1) {
             bill.approvers[index].approvedTime = new Date(Date.now());
         }
 
@@ -554,15 +554,15 @@ exports.editBill = async (id, userId, data, portal) => {
         if (quantityApproved) {
             bill.status = 3;
         }
-    } 
+    }
     else {
         bill.status = data.status ? data.status : bill.status;
     }
 
-    if(data.qualityControlStaffId) {
+    if (data.qualityControlStaffId) {
         let index = findIndexOfQuatityStaff(bill.qualityControlStaffs, data.qualityControlStaffId);
 
-        if(index !== -1) {
+        if (index !== -1) {
             bill.qualityControlStaffs[index].time = new Date(Date.now());
         }
 
@@ -575,7 +575,7 @@ exports.editBill = async (id, userId, data, portal) => {
         if (quantityqualityControlStaff) {
             bill.status = 5;
         }
-    } 
+    }
     else {
         bill.status = data.status ? data.status : bill.status;
     }
@@ -585,8 +585,8 @@ exports.editBill = async (id, userId, data, portal) => {
     log.createAt = new Date(Date.now());
     log.title = data.type;
     log.versions = "versions " + (bill.logs.length + 1);
-    bill.logs = [ ...bill.logs, log ];
-    
+    bill.logs = [...bill.logs, log];
+
     await bill.save();
     // Nếu trạng thái chuyển từ đang thực hiện sang trạng thái đã hoàn thành thì
     if (data.oldStatus === '5' && data.status === '2') {
@@ -878,7 +878,7 @@ exports.editBill = async (id, userId, data, portal) => {
             { path: 'responsibles' },
             { path: 'accountables' },
             { path: 'manufacturingMill' },
-            { path: 'manufacturingCommand'},
+            { path: 'manufacturingCommand' },
             { path: 'fromStock' },
             { path: 'toStock' },
             { path: 'customer' },
@@ -894,7 +894,10 @@ exports.editBill = async (id, userId, data, portal) => {
 exports.getBillsByCommand = async (query, portal) => {
     const { manufacturingCommandId } = query;
     return await Bill(connect(DB_CONNECTION, portal))
-        .find({ manufacturingCommand: manufacturingCommandId })
+        .find({
+            manufacturingCommand: manufacturingCommandId,
+            type: "4"
+        })
         .populate([
             { path: 'creator' },
             { path: 'approvers.approver' },
@@ -902,8 +905,6 @@ exports.getBillsByCommand = async (query, portal) => {
             { path: 'qualityControlStaffs.staff' },
             { path: 'responsibles' },
             { path: 'accountables' },
-            { path: 'manufacturingMill' },
-            { path: 'manufacturingCommand'},
             { path: 'fromStock' },
             { path: 'toStock' },
             { path: 'customer' },

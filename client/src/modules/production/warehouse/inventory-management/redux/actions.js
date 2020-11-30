@@ -1,3 +1,5 @@
+import { BillConstants } from '../../bill-management/redux/constants';
+
 const { LotServices } = require('./services');
 const { LotConstants } = require('./constants');
 
@@ -11,6 +13,7 @@ export const LotActions = {
     getAllManufacturingLots,
     createManufacturingLot,
     getDetailManufacturingLot,
+    handleEditManufacturingLot
 
 }
 
@@ -214,6 +217,26 @@ function getDetailManufacturingLot(id) {
             }).catch((error) => {
                 dispatch({
                     type: LotConstants.GET_DETAIL_MANUFACTURING_LOT_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function handleEditManufacturingLot(id, data) {
+    return dispatch => {
+        dispatch({
+            type: LotConstants.EDIT_MANUFACTURING_LOT_REQUEST
+        });
+        LotServices.handleEditManufacturingLot(id, data)
+            .then((res) => {
+                dispatch({
+                    type: LotConstants.EDIT_MANUFACTURING_LOT_SUCCESS,
+                    payload: res.data.content
+                });
+            }).catch((error) => {
+                dispatch({
+                    type: LotConstants.EDIT_MANUFACTURING_LOT_FAILURE,
                     error
                 });
             });

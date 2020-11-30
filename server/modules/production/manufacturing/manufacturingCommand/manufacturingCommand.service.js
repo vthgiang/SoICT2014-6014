@@ -394,7 +394,7 @@ exports.editManufaturingCommand = async (id, data, portal) => {
             path: "qualityControlStaffs.staff"
         }, {
             path: "good.good",
-            select: "code name baseUnit"
+            select: "code name baseUnit numberExpirationDate"
         }]);
 
     return { manufacturingCommand }

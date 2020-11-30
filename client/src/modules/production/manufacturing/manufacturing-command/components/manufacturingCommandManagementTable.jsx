@@ -8,6 +8,7 @@ import { formatDate } from '../../../../../helpers/formatDate';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import ManufacturingLotCreateForm from '../../manufacturing-lot/components/manufacturingLotCreateForm';
 import QualityControlForm from './qualityControlForm';
+import { generateCode } from '../../../../../helpers/generateCode';
 class ManufacturingCommandManagementTable extends Component {
     constructor(props) {
         super(props);
@@ -189,7 +190,9 @@ class ManufacturingCommandManagementTable extends Component {
         // }
         // this.props.handleEditCommand(command._id, data);
         await this.setState(({
-            command: command
+            command: command,
+            code1: generateCode('LTP'),
+            code2: generateCode('LPP')
         }));
 
         window.$('#modal-create-manufacturing-lot').modal('show');
@@ -249,7 +252,12 @@ class ManufacturingCommandManagementTable extends Component {
                     <ManufacturingCommandDetailInfo idModal={1} commandDetail={this.state.commandDetail} />
                 }
                 {
-                    <ManufacturingLotCreateForm command={this.state.command} />
+                    <ManufacturingLotCreateForm
+                        command={this.state.command}
+                        code1={this.state.code1}
+                        code2={this.state.code2}
+
+                    />
                 }
                 {
                     this.state.currentQCCommand &&

@@ -5145,6 +5145,110 @@ const initSampleCompanyDB = async () => {
                 },
             ],
         },
+        {
+            code: "BI003",
+            type: "4",
+            group: "2",
+            fromStock: listStock[0]._id,
+            users: [],
+            creator: users[0]._id,
+            partner: {
+                customer: null,
+                supplier: null,
+            },
+            approver: users[2]._id,
+            receiver: {
+                name: "Nguyễn Văn Thắng",
+                phone: 0344213030,
+                email: "thangbao2698@gmail.com",
+                address: "Thuần Thiện - Can Lộc - Hà Tĩnh",
+            },
+            status: "1",
+            timestamp: "10-12-2020",
+            description: "Xuất kho nguyên vật liệu",
+            goods: [
+                {
+                    good: listProduct[0]._id,
+                    quantity: 275,
+                    lots: [
+                        {
+                            lot: listLot[0]._id,
+                            quantity: 135,
+                        },
+                        {
+                            lot: listLot[2]._id,
+                            quantity: 140,
+                        },
+                    ],
+                    description: "Xuất xuất nguyên vật liệu",
+                },
+                {
+                    good: listProduct[1]._id,
+                    quantity: 345,
+                    lots: [
+                        {
+                            lot: listLot[1]._id,
+                            quantity: 345,
+                        },
+                    ],
+                    description: "Xuất nguyên vật liệu theo đúng tiêu chuẩn",
+                },
+            ],
+            manufacturingCommand: manufacturingCommands[0]._id,
+            manufacturingMill: manufacturingMills[0]._id
+        },
+        {
+            code: "BI004",
+            type: "4",
+            group: "2",
+            fromStock: listStock[1]._id,
+            users: [],
+            creator: users[0]._id,
+            partner: {
+                customer: null,
+                supplier: null,
+            },
+            approver: users[2]._id,
+            receiver: {
+                name: "Nguyễn Văn Thắng",
+                phone: 0344213030,
+                email: "thangbao2698@gmail.com",
+                address: "Thuần Thiện - Can Lộc - Hà Tĩnh",
+            },
+            status: "1",
+            timestamp: "10-12-2020",
+            description: "Xuất kho nguyên vật liệu",
+            goods: [
+                {
+                    good: listProduct[0]._id,
+                    quantity: 275,
+                    lots: [
+                        {
+                            lot: listLot[0]._id,
+                            quantity: 135,
+                        },
+                        {
+                            lot: listLot[2]._id,
+                            quantity: 140,
+                        },
+                    ],
+                    description: "Xuất xuất nguyên vật liệu",
+                },
+                {
+                    good: listProduct[1]._id,
+                    quantity: 345,
+                    lots: [
+                        {
+                            lot: listLot[1]._id,
+                            quantity: 345,
+                        },
+                    ],
+                    description: "Xuất nguyên vật liệu theo đúng tiêu chuẩn",
+                },
+            ],
+            manufacturingCommand: manufacturingCommands[0]._id,
+            manufacturingMill: manufacturingMills[0]._id
+        },
     ]);
     console.log("Tạo xong dữ liệu mẫu các loại phiếu");
 

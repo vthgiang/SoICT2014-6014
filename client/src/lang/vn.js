@@ -4329,6 +4329,10 @@ export default {
                 bill_issued: "Đơn đã xuất",
                 choose_bill: "Chọn đơn hàng",
                 users: "Những người thực hiện",
+
+
+                // Phần liên quan lô sản xuất
+                add_issue_product: "Thêm phiếu nhập sản phẩm"
             },
             inventory_management: {
                 product: "Sản phẩm",
@@ -4826,7 +4830,33 @@ export default {
                 qc_status_command: "Trạng thái kiểm định",
                 quality_control_content: "Nội dung kiểm định",
                 rateFinishedProductQuantity: "Tỷ lệ thành phẩm",
-                rateSubstandardProductQuantity: "Tỷ lệ phế phẩm"
+                rateSubstandardProductQuantity: "Tỷ lệ phế phẩm",
+                from_stock: "Kho",
+                material_code: "Mã nguyên vật liệu",
+                material_name: "Tên nguyên vật liệu",
+                bill: {
+                    "1": {
+                        color: "#ffbf00",
+                        content: "Đang chờ duyệt",
+                    },
+                    "2": {
+                        color: "green",
+                        content: "Đã hoàn thành",
+                    },
+                    "3": {
+                        color: "#ff00bf",
+                        content: "Đã phê duyệt",
+                    },
+                    "4": {
+                        color: "red",
+                        content: "Đã hủy",
+                    },
+                    "5": {
+                        color: "00bfff",
+                        content: "Đang thực hiện"
+                    },
+                },
+                status_bill: "Trạng thái phiếu xuất"
 
             },
             lot: {
@@ -4839,14 +4869,14 @@ export default {
                 expiration_date: "Ngày hết hạn",
                 1: {
                     color: "#ffbf00",
-                    content: "Chưa xử lý"
+                    content: "Chưa lên đơn nhập kho"
                 },
                 2: {
                     color: "#00bfff",
-                    content: "Đã xử lý"
+                    content: "Đã lên đơn nhập kho"
                 },
                 3: {
-                    color: "green",
+                    color: "#00bfff",
                     content: "Đã nhập kho"
                 },
                 choose_status: "Chọn trạng thái",
@@ -4886,7 +4916,9 @@ export default {
                 lot_diary: "Nhật ký hoạt động của lô",
                 manufacturing_mill: "Xưởng sản xuất",
                 team_leader: "Đội trưởng xưởng sản xuất",
-                material: "Thông tin nguyên vật liệu"
+                material: "Thông tin nguyên vật liệu",
+                lot_edit: "Chỉnh sửa lô sản xuất",
+                create_bill: "Lên phiếu nhập kho"
 
             }
         }
