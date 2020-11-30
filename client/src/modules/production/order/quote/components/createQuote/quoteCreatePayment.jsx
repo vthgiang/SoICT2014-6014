@@ -1,11 +1,26 @@
 import React, { Component } from "react";
 import { formatCurrency } from "../../../../../../helpers/formatCurrency";
 import { DatePicker } from "../../../../../../common-components";
+import { connect } from "react-redux";
+import { withTranslate } from "react-redux-multilingual";
+import { DiscountActions } from "../../../discount/redux/actions";
 import "../quote.css";
+import CreateDiscountForOrder from "./createDiscountForOrder/createDiscountForOrder";
 
 class QuoteCreatePayment extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
+
+    componentWillMount = () => {
+        this.props.getDiscountForOrderValue();
+    };
+
     render() {
-        let { listGoods } = this.props;
+        let { listGoods, discountsOfOrderValue, discountsOfOrderValueChecked } = this.props;
+        const { listDiscountsByOrderValue } = this.props.discounts;
+        const { handleDiscountsOfOrderValueChange, setDiscountsOfOrderValueChecked, handleShippingFeeChange, handleDeliveryTimeChange } = this.props;
         const {
             customerPhone,
             customerAddress,
@@ -18,6 +33,7 @@ class QuoteCreatePayment extends Component {
             deliveryTime,
             note,
         } = this.props;
+
         return (
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <fieldset className="scheduler-border" style={{ background: "#f5f5f5" }}>
@@ -118,7 +134,7 @@ class QuoteCreatePayment extends Component {
                                                         data-backdrop="static"
                                                         href={"#modal-create-quote-sla"}
                                                     >
-                                                        Chi tiết
+                                                        Chi tiết &ensp;
                                                         <i className="fa fa-arrow-circle-right"></i>
                                                     </a>
                                                 </div>
@@ -173,14 +189,14 @@ class QuoteCreatePayment extends Component {
                         <div className="shoppe-shipping-content">
                             <div className="shopping-shipping-fee">
                                 <div> Phí giao hàng &ensp;</div>
-                                <input type="number" value={shippingFee} placeholder="Phí giao hàng... (vnđ)" />
+                                <input type="number" value={shippingFee} placeholder="Phí giao hàng... (vnđ)" onChange={handleShippingFeeChange} />
                             </div>
                             <div className="shopping-shipping-time">
                                 <div className="shopping-shipping-time-title">Thời gian giao hàng dự kiến &ensp;</div>
                                 <DatePicker
                                     id="date_picker_create_quote_delivery-time"
                                     value={deliveryTime}
-                                    // onChange={handleChangeDeliveryTime}
+                                    onChange={handleDeliveryTimeChange}
                                     disabled={false}
                                 />
                             </div>
@@ -193,9 +209,20 @@ class QuoteCreatePayment extends Component {
                         <div className="shopping-apply-discounts">
                             <span>Khuyến mãi của đơn hàng &ensp;</span>
                             <div className="shopping-apply-discounts-tag">
-                                <div>{`Đã chọn ${2} mã giảm giá`}</div>
+                                <div>
+                                    {discountsOfOrderValue.length
+                                        ? `Đã chọn ${discountsOfOrderValue.length} mã giảm giá`
+                                        : "Hãy kiểm tra và chọn mã giảm giá"}
+                                </div>
                             </div>
-                            <a>Chọn khuyến mãi</a>
+                            {/* <a>Chọn khuyến mãi</a> */}
+                            <CreateDiscountForOrder
+                                discountsProps={discountsOfOrderValue}
+                                discountsChecked={discountsOfOrderValueChecked}
+                                handleDiscountsChange={(data) => handleDiscountsOfOrderValueChange(data)}
+                                setDiscountsChecked={(checked) => setDiscountsOfOrderValueChecked(checked)}
+                                paymentAmount={100000}
+                            />
                         </div>
                         <div className="shopping-apply-loyalty-coin">
                             <div>
@@ -267,4 +294,13 @@ class QuoteCreatePayment extends Component {
     }
 }
 
-export default QuoteCreatePayment;
+function mapStateToProps(state) {
+    const { discounts } = state;
+    return { discounts };
+}
+
+const mapDispatchToProps = {
+    getDiscountForOrderValue: DiscountActions.getDiscountForOrderValue,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuoteCreatePayment));
