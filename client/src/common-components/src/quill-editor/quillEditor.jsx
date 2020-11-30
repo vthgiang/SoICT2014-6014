@@ -17,7 +17,7 @@ class QuillEditor extends Component {
     }
 
     componentDidMount() {
-        const { edit = true, value } = this.props;
+        const { id, edit = true, value } = this.props;
 
         if (edit) {
             // Thêm các module tiện ích
@@ -27,7 +27,7 @@ class QuillEditor extends Component {
             }, true)
 
             // Khởi tạo Quill Editor trong thẻ có id='editor-container'
-            const quill = new Quill('#editor-container', {
+            const quill = new Quill(`#editor-container${id}`, {
                 modules: {
                     toolbar: [
                         [{ 'font': [] }],
@@ -41,10 +41,8 @@ class QuillEditor extends Component {
                     // table: true,
                     // tableUI: true,
                 },
-                scrollingContainer: true,
                 placeholder: 'Start typing here...',
-                theme: 'snow',
-                value: value  
+                theme: 'snow'
             });
 
             // Insert value ban đầu
@@ -54,13 +52,14 @@ class QuillEditor extends Component {
                 } 
             }
 
+
             // Bắt sự kiện text-change
             quill.on('text-change', (delta, oldDelta, source) => {
                 console.log("change", quill.root.innerHTML, delta, oldDelta, source);
                 const imgs = Array.from(
                     quill.container.querySelectorAll('img[src^="data:"]:not(.loading)')
                 );
-                
+
                 this.props.getTextData(quill.root.innerHTML, imgs);
             });
         }
@@ -107,13 +106,13 @@ class QuillEditor extends Component {
     }
 
     render() {
-        const { edit = true, value, height = 200 } = this.props;
+        const { id, edit = true, value, height = 200 } = this.props;
 
         return (
             <React.Fragment>
                 {
                     edit
-                        ? <div id="editor-container" style={{ height: height }}/>
+                        ? <div id={`editor-container${id}`} style={{ height: height }}/>
                         : parse(value)
                 }
             </React.Fragment>

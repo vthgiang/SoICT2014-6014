@@ -29,6 +29,8 @@ class QuoteCreateInfo extends Component {
             effectiveDate,
             expirationDate,
             dateError,
+            isUseForeignCurrency,
+            foreignCurrency,
         } = this.props;
 
         const {
@@ -39,7 +41,11 @@ class QuoteCreateInfo extends Component {
             handleNoteChange,
             handleChangeEffectiveDate,
             handleChangeExpirationDate,
+            handleUseForeignCurrencyChange,
+            handleRatioOfCurrencyChange,
+            handleSymbolOfForreignCurrencyChange,
         } = this.props;
+        console.log("foreignCurrency", foreignCurrency);
         return (
             <React.Fragment>
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -71,15 +77,7 @@ class QuoteCreateInfo extends Component {
                                     <input type="text" className="form-control" value={customerName} disabled={true} />
                                 </div>
                             </div>
-                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <div className="form-group">
-                                    <label>
-                                        Địa chỉ nhận hàng
-                                        <span className="attention">* </span>
-                                    </label>
-                                    <input type="text" className="form-control" value={customerAddress} onChange={handleCustomerAddressChange} />
-                                </div>
-                            </div>
+
                             <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                                 <div className="form-group">
                                     <label>
@@ -97,6 +95,15 @@ class QuoteCreateInfo extends Component {
                                     <input type="text" className="form-control" value={customerRepresent} onChange={handleCustomerRepresentChange} />
                                 </div>
                             </div>
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <div className="form-group">
+                                    <label>
+                                        Địa chỉ nhận hàng
+                                        <span className="attention">* </span>
+                                    </label>
+                                    <textarea type="text" className="form-control" value={customerAddress} onChange={handleCustomerAddressChange} />
+                                </div>
+                            </div>
 
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <div className="form-group">
@@ -104,7 +111,7 @@ class QuoteCreateInfo extends Component {
                                         Ghi chú
                                         <span className="attention"> </span>
                                     </label>
-                                    <input type="text" className="form-control" value={note} onChange={handleNoteChange} />
+                                    <textarea type="text" className="form-control" value={note} onChange={handleNoteChange} />
                                 </div>
                             </div>
                         </fieldset>
@@ -140,6 +147,69 @@ class QuoteCreateInfo extends Component {
                                 />
                                 <ErrorLabel content={dateError} />
                             </div>
+
+                            <div className="form-group ">
+                                <input
+                                    type="checkbox"
+                                    className={`form-check-input`}
+                                    id={`checkbox-use-foreign-currency`}
+                                    value={isUseForeignCurrency}
+                                    checked={isUseForeignCurrency}
+                                    onChange={handleUseForeignCurrencyChange}
+                                    style={{ minWidth: "20px" }}
+                                />
+                                <label className={`form-check-label`} for={`checkbox-use-foreign-currency`} style={{ fontWeight: 500 }}>
+                                    Sử dụng ngoại tệ
+                                </label>
+                            </div>
+                            {isUseForeignCurrency ? (
+                                <>
+                                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6 " style={{ paddingLeft: "0px" }}>
+                                        <div className="form-group">
+                                            <label>
+                                                Tên viết tắt ngoại tệ
+                                                <span className="attention"> * </span>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                placeholder="Nhập tên viết tắt..."
+                                                value={foreignCurrency.symbol}
+                                                onChange={handleSymbolOfForreignCurrencyChange}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ paddingRight: "0px" }}>
+                                        <div className="form-group">
+                                            <label>
+                                                Tỷ giá hối đoái
+                                                <span className="attention"> * </span>
+                                            </label>
+                                            <input
+                                                type="number"
+                                                className="form-control"
+                                                placeholder="Vd: 99,99"
+                                                value={foreignCurrency.ratio}
+                                                onChange={handleRatioOfCurrencyChange}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className={`form-group`}>
+                                        {foreignCurrency.ratio && foreignCurrency.symbol ? (
+                                            <div>
+                                                {" "}
+                                                <span className="text-red">1</span> ({foreignCurrency.symbol}) ={" "}
+                                                <span className="text-red">{foreignCurrency.ratio}</span> (vnđ){" "}
+                                            </div>
+                                        ) : (
+                                            ""
+                                        )}
+                                    </div>
+                                </>
+                            ) : (
+                                ""
+                            )}
 
                             {/* <div className="form-group">
                                         <label>

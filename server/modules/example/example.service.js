@@ -6,12 +6,19 @@ const {
     connect
 } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
-// Tạo mới một Ví dụ
+// Tạo mới mảng Ví dụ
 exports.createExample = async (data, portal) => {
-    let newExample = await Example(connect(DB_CONNECTION, portal)).create({
-        exampleName: data.exampleName,
-        description: data.description
-    });
+    let newExample;
+    if (data && data.length !== 0) {
+        for (let i = 0; i < data.length; i++) {
+            newExample = await Example(connect(DB_CONNECTION, portal)).create({
+                exampleName: data[i].exampleName,
+                description: data[i].description
+            });
+        }
+        
+    }
+
     let example = await Example(connect(DB_CONNECTION, portal)).findById({ _id: newExample._id });;
     return { example }
 }

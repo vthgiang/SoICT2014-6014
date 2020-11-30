@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { ButtonModal, DialogModal, ErrorLabel } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
+
+import { ButtonModal, DialogModal, ErrorLabel } from '../../../../common-components';
 import ValidationHelper from '../../../../helpers/validationHelper';
+
 import { exampleActions } from '../redux/actions';
 
 class ExampleCreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            exampleName: "",
-            description: "",
+            exampleName: undefined,
+            description: undefined,
             exampleNameError: {
                 message: undefined,
                 status: true
@@ -31,12 +33,14 @@ class ExampleCreateForm extends Component {
             const { page, limit } = this.props;
             const { exampleName, description } = this.state;
             
-            this.props.createExample({ exampleName, description });
-            this.props.getExamples({
-                exampleName: "",
-                page: page,
-                limit: limit
-            })
+            if (exampleName) {
+                this.props.createExample([{ exampleName, description }]);
+                this.props.getExamples({
+                    exampleName: "",
+                    page: page,
+                    limit: limit
+                })
+            }
         }
     }
 
@@ -66,7 +70,6 @@ class ExampleCreateForm extends Component {
         const { exampleName, description, exampleNameError } = this.state;
         return (
             <React.Fragment>
-                <ButtonModal modalID="modal-create-example" button_name={translate('manage_example.add')} title={translate('manage_example.add_title')} />
                 <DialogModal
                     modalID="modal-create-example" isLoading={example.isLoading}
                     formID="form-create-example"

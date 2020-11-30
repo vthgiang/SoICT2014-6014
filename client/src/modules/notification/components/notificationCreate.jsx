@@ -172,6 +172,7 @@ class NotificationCreate extends Component {
                         <div className="form-group">
                             <label>{translate('notification.content')}<span className="text-red">*</span></label>
                             <QuillEditor
+                                id={'notificationCreate'}
                                 getTextData={this.handleContent}
                             />
                         </div>
