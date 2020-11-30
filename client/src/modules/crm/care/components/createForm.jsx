@@ -241,6 +241,7 @@ class CreateCareForm extends Component {
                         <div className="form-group">
                             <label>{translate('crm.care.description')}</label>
                             <QuillEditor
+                                id={'createCare'}
                                 getTextData={this.handleChangeDescription}
                                 value={newCare.description ? newCare.description : ""}
                             />
