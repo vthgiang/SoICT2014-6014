@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DataTableSetting, DatePicker, PaginateBar, SelectMulti, SlimScroll } from '../../../../../../common-components';
 import { formatToTimeZoneDate, formatYearMonth } from '../../../../../../helpers/formatDate';
-import { millActions } from '../../../manufacturing-mill/redux/actions';
+import ManufacturingCommandDetailInfo from '../../../manufacturing-command/components/manufacturingCommandDetailInfo';
 import { worksActions } from '../../../manufacturing-works/redux/actions';
 import { workScheduleActions } from '../../redux/actions';
 import WorkerScheduleCreateForm from './workerScheduleCreateForm';
@@ -138,6 +138,14 @@ class WorkerScheduleManagementTable extends Component {
         }
         this.props.getAllWorkSchedulesWorker(data)
         this.props.setCurrentMonth(month);
+    }
+
+    handleShowDetailManufacturingCommand = async (command) => {
+        await this.setState((state) => ({
+            ...state,
+            commandDetail: command
+        }));
+        window.$('#modal-detail-info-manufacturing-command-2').modal('show');
     }
 
     render() {
@@ -277,15 +285,25 @@ class WorkerScheduleManagementTable extends Component {
                                             schedule.turns.map((turn, index2) => (
                                                 <tr key={index2}>
                                                     {
-                                                        turn.map((mill, index3) => {
-                                                            if (mill === null)
+                                                        turn.map((command, index3) => {
+                                                            if (command !== null)
                                                                 return (
-                                                                    <td key={index3}>
-                                                                        <input type="checkbox" disabled={true} />
+                                                                    <td key={index3} className="tooltip-checkbox">
+                                                                        {/* <input type="checkbox" disabled={true} style={{ backgroundColor: translate(`manufacturing.work_schedule.${command.status}.color`) }}>
+                                                                        </input> */}
+                                                                        <span className="icon" title={translate(`manufacturing.work_schedule.${command.status}.content`)} style={{ backgroundColor: translate(`manufacturing.work_schedule.${command.status}.color`) }}></span>
+                                                                        <span className="tooltiptext">
+                                                                            <a style={{ color: "white" }} onClick={() => this.handleShowDetailManufacturingCommand(command)}>{command.code}</a>
+                                                                        </span>
                                                                     </td>
                                                                 )
 
-                                                            return null;
+                                                            return (
+                                                                <td key={index3}>
+                                                                    {/* <input type="checkbox" disabled={true} /> */}
+                                                                    <span className="icon" style={{ backgroundColor: "white" }}></span>
+                                                                </td>
+                                                            );
                                                         })
                                                     }
                                                 </tr>
@@ -301,7 +319,9 @@ class WorkerScheduleManagementTable extends Component {
 
                 <SlimScroll outerComponentId='croll-table-worker' innerComponentId='work-schedule-table-worker' innerComponentWidth={1000} activate={true} />
                 <PaginateBar pageTotal={totalPages ? totalPages : 0} currentPage={page} func={this.setPage} />
-
+                {
+                    <ManufacturingCommandDetailInfo idModal={2} commandDetail={this.state.commandDetail} />
+                }
             </React.Fragment>
         );
     }

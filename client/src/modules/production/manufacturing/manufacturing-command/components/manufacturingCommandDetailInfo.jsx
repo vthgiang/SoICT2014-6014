@@ -4,6 +4,7 @@ import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { DialogModal } from '../../../../../common-components';
 import { formatDate, formatFullDate } from '../../../../../helpers/formatDate';
 import { commandActions } from '../redux/actions';
+import qualityControlForm from './qualityControlForm';
 class ManufacturingCommandDetailInfo extends Component {
     constructor(props) {
         super(props);
@@ -19,16 +20,15 @@ class ManufacturingCommandDetailInfo extends Component {
     }
 
     render() {
-        const { translate, manufacturingCommand } = this.props;
+        const { translate, manufacturingCommand, idModal } = this.props;
         let currentCommand = {};
         if (manufacturingCommand.currentCommand && manufacturingCommand.isLoading === false) {
             currentCommand = manufacturingCommand.currentCommand;
         }
-        console.log(currentCommand);
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID={`modal-detail-info-manufacturing-command`} isLoading={manufacturingCommand.isLoading}
+                    modalID={`modal-detail-info-manufacturing-command-${idModal}`} isLoading={manufacturingCommand.isLoading}
                     title={translate('manufacturing.command.command_detail')}
                     formID={`form-detail-manufacturing-command`}
                     size={75}
@@ -66,7 +66,10 @@ class ManufacturingCommandDetailInfo extends Component {
                                 <div className="form-group">
                                     <strong>{translate('manufacturing.command.lot_code')}:&emsp;</strong>
                                     {
-                                        currentCommand.lot && currentCommand.lot.code
+                                        currentCommand.lot && currentCommand.lot[0] && currentCommand.lot[0].code
+                                    }
+                                    {
+                                        currentCommand.lot && currentCommand.lot[1] && ", " + currentCommand.lot[1].code
                                     }
                                 </div>
                                 <div className="form-group">
@@ -151,6 +154,51 @@ class ManufacturingCommandDetailInfo extends Component {
                         <div className="row">
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <fieldset className="scheduler-border">
+                                    <legend className="scheduler-border">{translate('manufacturing.command.material')}</legend>
+                                    <div className={`form-group`}>
+                                        Thông tin về nguyên vật liệu được nhập từ đâu
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <fieldset className="scheduler-border">
+                                    <legend className="scheduler-border">{translate('manufacturing.command.result')}</legend>
+                                    {
+                                        (currentCommand.finishedProductQuantity
+                                            && currentCommand.finishedTime)
+                                            ?
+                                            <React.Fragment>
+                                                <p>
+                                                    {translate('manufacturing.command.finishedProductQuantity')}: &emsp;
+                                                    {currentCommand.finishedProductQuantity}
+                                                    &emsp;&emsp;&emsp;
+                                                    {translate('manufacturing.command.rateFinishedProductQuantity')}: &emsp;
+                                                    {parseFloat(currentCommand.finishedProductQuantity * 100 / (currentCommand.finishedProductQuantity + (currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity : 0)).toFixed(2))}%
+                                                </p>
+                                                <p>
+                                                    {translate('manufacturing.command.substandardProductQuantity')}: &emsp;
+                                                    {currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity : 0}
+                                                    &emsp;&emsp;&emsp;
+                                                    {translate('manufacturing.command.rateSubstandardProductQuantity')}: &emsp;
+                                                    {parseFloat(currentCommand.substandardProductQuantity * 100 / (currentCommand.finishedProductQuantity + (currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity : 0)).toFixed(2))}%
+
+                                                </p>
+                                                <p>
+                                                    {translate('manufacturing.command.finishedTime')}: &emsp;
+                                                    {formatFullDate(currentCommand.finishedTime)}
+                                                </p>
+                                            </React.Fragment>
+                                            :
+                                            translate("manufacturing.command.no_data")
+                                    }
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manufacturing.command.responsibles')}</legend>
                                     {
                                         currentCommand.responsibles && currentCommand.responsibles.length &&
@@ -185,6 +233,42 @@ class ManufacturingCommandDetailInfo extends Component {
                         <div className="row">
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <fieldset className="scheduler-border">
+                                    <legend className="scheduler-border">{translate('manufacturing.command.qualityControlStaffs')}</legend>
+                                    <table className="table">
+                                        <thead>
+                                            <tr>
+                                                <th>{translate('manufacturing.command.index')}</th>
+                                                <th>{translate('manufacturing.command.qc_name')}</th>
+                                                <th>{translate('manufacturing.command.qc_email')}</th>
+                                                <th>{translate('manufacturing.command.qc_status_command')}</th>
+                                                <th>{translate('manufacturing.command.quality_control_content')}</th>
+                                                <th>{translate('manufacturing.command.time')}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {currentCommand.qualityControlStaffs && currentCommand.qualityControlStaffs.length &&
+                                                currentCommand.qualityControlStaffs.map((qualityControlStaff, index) => (
+                                                    <tr key={index}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{qualityControlStaff.staff.name}</td>
+                                                        <td>{qualityControlStaff.staff.email}</td>
+                                                        <td style={{ color: translate(`manufacturing.command.qc_status.${qualityControlStaff.status}.color`) }}>
+                                                            {translate(`manufacturing.command.qc_status.${qualityControlStaff.status}.content`)}
+                                                        </td>
+                                                        <td>{qualityControlStaff.content}</td>
+                                                        <td>{qualityControlStaff.time && formatFullDate(qualityControlStaff.time)}</td>
+                                                    </tr>
+                                                ))
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manufacturing.command.approvers')}</legend>
                                     {
                                         currentCommand.manufacturingPlan && currentCommand.manufacturingPlan.approvers &&
@@ -210,6 +294,16 @@ class ManufacturingCommandDetailInfo extends Component {
                                             )
                                         })
                                     }
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <fieldset className="scheduler-border">
+                                    <legend className="scheduler-border">{translate('manufacturing.command.comment')}</legend>
+                                    <div className={`form-group`}>
+                                        Bình luận
+                                    </div>
                                 </fieldset>
                             </div>
                         </div>

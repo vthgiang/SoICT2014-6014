@@ -215,7 +215,6 @@ class HumanResourceChartBySalary extends Component {
         });
 
         this.renderChart(this.convertData(result));
-        console.log('dagdjaw');
 
         return (
             <React.Fragment>

@@ -8,27 +8,31 @@ export const LotActions = {
     getLotsByGood,
     createOrUpdateLots,
     deleteManyLots,
+    getAllManufacturingLots,
+    createManufacturingLot,
+    getDetailManufacturingLot,
+
 }
 
-function getAllLots(data){
-    if(data !== undefined && data.limit !== undefined && data.page !== undefined) {
+function getAllLots(data) {
+    if (data !== undefined && data.limit !== undefined && data.page !== undefined) {
         return dispatch => {
             dispatch({
                 type: LotConstants.GET_LOT_PAGINATE_REQUEST
             })
             LotServices.getAllLots(data)
-            .then(res => {
-                dispatch({
-                    type: LotConstants.GET_LOT_PAGINATE_SUCCESS,
-                    payload: res.data.content
+                .then(res => {
+                    dispatch({
+                        type: LotConstants.GET_LOT_PAGINATE_SUCCESS,
+                        payload: res.data.content
+                    })
                 })
-            })
-            .catch(error => {
-                dispatch({
-                    type: LotConstants.GET_LOT_PAGINATE_FAILURE,
-                    error: error
+                .catch(error => {
+                    dispatch({
+                        type: LotConstants.GET_LOT_PAGINATE_FAILURE,
+                        error: error
+                    })
                 })
-            })
         }
     }
     return dispatch => {
@@ -36,18 +40,18 @@ function getAllLots(data){
             type: LotConstants.GET_LOT_REQUEST
         })
         LotServices.getAllLots(data)
-        .then(res => {
-            dispatch({
-                type: LotConstants.GET_LOT_SUCCESS,
-                payload: res.data.content
+            .then(res => {
+                dispatch({
+                    type: LotConstants.GET_LOT_SUCCESS,
+                    payload: res.data.content
+                })
             })
-        })
-        .catch(err => {
-            dispatch({
-                type: LotConstants.GET_LOT_FAILURE,
-                error: err
+            .catch(err => {
+                dispatch({
+                    type: LotConstants.GET_LOT_FAILURE,
+                    error: err
+                })
             })
-        })
     }
 }
 
@@ -57,18 +61,18 @@ function getDetailLot(id) {
             type: LotConstants.GET_LOT_DETAIL_REQUEST
         })
         LotServices.getDetailLot(id)
-        .then(res => {
-            dispatch({
-                type: LotConstants.GET_LOT_DETAIL_SUCCESS,
-                payload: res.data.content
+            .then(res => {
+                dispatch({
+                    type: LotConstants.GET_LOT_DETAIL_SUCCESS,
+                    payload: res.data.content
+                })
             })
-        })
-        .catch(err => {
-            dispatch({
-                type: LotConstants.GET_LOT_DETAIL_FAILURE,
-                error: err
+            .catch(err => {
+                dispatch({
+                    type: LotConstants.GET_LOT_DETAIL_FAILURE,
+                    error: err
+                })
             })
-        })
     }
 }
 
@@ -78,18 +82,18 @@ function editLot(id, data) {
             type: LotConstants.EDIT_LOT_REQUEST
         })
         LotServices.editLot(id, data)
-        .then(res => {
-            dispatch({
-                type: LotConstants.EDIT_LOT_SUCCESS,
-                payload: res.data.content
+            .then(res => {
+                dispatch({
+                    type: LotConstants.EDIT_LOT_SUCCESS,
+                    payload: res.data.content
+                })
             })
-        })
-        .catch(err => {
-            dispatch({
-                type: LotConstants.EDIT_LOT_FAILURE,
-                error: err
+            .catch(err => {
+                dispatch({
+                    type: LotConstants.EDIT_LOT_FAILURE,
+                    error: err
+                })
             })
-        })
     }
 }
 
@@ -99,18 +103,18 @@ function getLotsByGood(data) {
             type: LotConstants.GET_LOT_BY_GOOD_REQUEST
         })
         LotServices.getLotsByGood(data)
-        .then(res => {
-            dispatch({
-                type: LotConstants.GET_LOT_BY_GOOD_SUCCESS,
-                payload: res.data.content
+            .then(res => {
+                dispatch({
+                    type: LotConstants.GET_LOT_BY_GOOD_SUCCESS,
+                    payload: res.data.content
+                })
             })
-        })
-        .catch(err => {
-            dispatch({
-                type: LotConstants.GET_LOT_BY_GOOD_FAILURE,
-                error: err
+            .catch(err => {
+                dispatch({
+                    type: LotConstants.GET_LOT_BY_GOOD_FAILURE,
+                    error: err
+                })
             })
-        })
     }
 }
 
@@ -120,18 +124,18 @@ function createOrUpdateLots(data) {
             type: LotConstants.CREATE_OR_EDIT_LOT_REQUEST
         })
         LotServices.createOrUpdateLots(data)
-        .then(res => {
-            dispatch({
-                type: LotConstants.CREATE_OR_EDIT_LOT_SUCCESS,
-                payload: res.data.content
+            .then(res => {
+                dispatch({
+                    type: LotConstants.CREATE_OR_EDIT_LOT_SUCCESS,
+                    payload: res.data.content
+                })
             })
-        })
-        .catch( err => {
-            dispatch({
-                type: LotConstants.CREATE_OR_EDIT_LOT_FAILURE,
-                error:err
+            .catch(err => {
+                dispatch({
+                    type: LotConstants.CREATE_OR_EDIT_LOT_FAILURE,
+                    error: err
+                })
             })
-        })
     }
 }
 
@@ -141,17 +145,77 @@ function deleteManyLots(data) {
             type: LotConstants.DELETE_LOT_REQUEST
         })
         LotServices.deleteManyLots(data)
-        .then(res => {
-            dispatch({
-                type: LotConstants.DELETE_LOT_SUCCESS,
-                payload:res.data.content
+            .then(res => {
+                dispatch({
+                    type: LotConstants.DELETE_LOT_SUCCESS,
+                    payload: res.data.content
+                })
             })
-        })
-        .catch(err => {
-            dispatch({
-                type: LotConstants.DELETE_LOT_FAILURE,
-                error: err
+            .catch(err => {
+                dispatch({
+                    type: LotConstants.DELETE_LOT_FAILURE,
+                    error: err
+                })
             })
-        })
+    }
+}
+
+function getAllManufacturingLots(query) {
+    return dispatch => {
+        dispatch({
+            type: LotConstants.GET_ALL_MANUFACTURING_LOT_REQUEST
+        });
+        LotServices.getAllManufacturingLots(query)
+            .then((res) => {
+                dispatch({
+                    type: LotConstants.GET_ALL_MANUFACTURING_LOT_SUCCESS,
+                    payload: res.data.content
+                });
+            }).catch((error) => {
+                dispatch({
+                    type: LotConstants.GET_ALL_MANUFACTURING_LOT_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function createManufacturingLot(data) {
+    return dispatch => {
+        dispatch({
+            type: LotConstants.CREATE_MANUFACTURING_LOT_REQUEST
+        });
+        LotServices.createManufacturingLot(data)
+            .then((res) => {
+                dispatch({
+                    type: LotConstants.CREATE_MANUFACTURING_LOT_SUCCESS,
+                    payload: res.data.content
+                });
+            }).catch((error) => {
+                dispatch({
+                    type: LotConstants.CREATE_MANUFACTURING_LOT_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function getDetailManufacturingLot(id) {
+    return dispatch => {
+        dispatch({
+            type: LotConstants.GET_DETAIL_MANUFACTURING_LOT_REQUEST
+        });
+        LotServices.getDetailManufacturingLot(id)
+            .then((res) => {
+                dispatch({
+                    type: LotConstants.GET_DETAIL_MANUFACTURING_LOT_SUCCESS,
+                    payload: res.data.content
+                });
+            }).catch((error) => {
+                dispatch({
+                    type: LotConstants.GET_DETAIL_MANUFACTURING_LOT_FAILURE,
+                    error
+                });
+            });
     }
 }

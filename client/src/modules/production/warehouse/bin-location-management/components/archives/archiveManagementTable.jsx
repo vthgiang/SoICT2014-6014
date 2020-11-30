@@ -13,6 +13,7 @@ class ArchiveManagementTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            currentRole: localStorage.getItem("currentRole"),
             page: 1,
             limit: 5,
             path: '',
@@ -22,10 +23,10 @@ class ArchiveManagementTable extends Component {
     }
 
     componentDidMount(){
-        let { page, limit } = this.state;
-        this.props.getChildBinLocations({ page, limit });
+        let { page, limit, currentRole } = this.state;
+        this.props.getChildBinLocations({ page, limit, managementLocation: currentRole });
         this.props.getAllGoods();
-        this.props.getAllStocks();
+        this.props.getAllStocks({ managementLocation: currentRole });
     }
 
     handleEdit = async (binLocation) => {
@@ -49,6 +50,7 @@ class ArchiveManagementTable extends Component {
         this.setState({ page });
         const data = {
             limit: this.state.limit,
+            managementLocation: this.state.currentRole,
             page: page,
         };
         this.props.getChildBinLocations(data);
@@ -59,6 +61,7 @@ class ArchiveManagementTable extends Component {
         const data = {
             limit: number,
             page: this.state.page,
+            managementLocation: this.state.currentRole
         };
         this.props.getChildBinLocations(data);
     }
@@ -95,6 +98,7 @@ class ArchiveManagementTable extends Component {
         let data = {
             page: this.state.page,
             limit: this.state.limit,
+            managementLocation: this.state.currentRole,
             path: this.state.path,
             stock: this.state.stock,
             status: this.state.status

@@ -11,12 +11,12 @@ exports.getAllLots = async (req, res) => {
             content: lots
         })
     }
-    catch(error) {
+    catch (error) {
         await Logger.error(req.user.email, 'GET_LOT_FAILED', req.portal);
         res.status(400).json({
             success: false,
             messages: ['get_lot_failed'],
-            content: error
+            content: error.message
         })
     }
 }
@@ -118,11 +118,82 @@ exports.deleteManyLots = async (req, res) => {
         })
     }
     catch (error) {
-        await Log.error(req.user.email, 'DELETE_LOTS_FAILED', req.portal);
+        await Logger.error(req.user.email, 'DELETE_LOTS_FAILED', req.portal);
         res.status(400).json({
             success: false,
             messages: ['delete_failed'],
             error: error
+        })
+    }
+}
+
+exports.createManufacturingLot = async (req, res) => {
+    try {
+        let data = req.body;
+        let lots = await LotService.createManufacturingLot(data, req.portal);
+
+        await Logger.info(req.user.email, 'CREATE_MANUFACTUIRNG_LOT', req.portal);
+
+        res.status(201).json({
+            success: true,
+            messages: ['create_manufacturing_lot_successfully'],
+            content: lots
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, 'CREATE_MANUFACTURING_LOT', req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ['create_manufacturing_lot_failed'],
+            error: error.message
+        });
+    }
+}
+
+exports.getAllManufacturingLot = async (req, res) => {
+    try {
+        let query = req.query;
+
+        let lots = await LotService.getAllManufacturingLot(query, req.user, req.portal);
+
+        await Logger.info(req.user.email, 'GET_ALL_MANUFACTURING_LOT', req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ['get_all_successfully'],
+            content: lots
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, 'GET_ALL_MANUFACTURING_LOT', req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ['get_all_failed'],
+            error: error.message
+        })
+    }
+}
+
+exports.getDetailManufacturingLot = async (req, res) => {
+    try {
+        let id = req.params.id;
+
+        let lot = await LotService.getDetailManufacturingLot(id, req.portal);
+
+        await Logger.info(req.user.email, 'GET_DETAIL_MANUFACTURING_LOT', req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ['get_detail_successfully'],
+            content: lot
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, 'GET_DETAIL_MANUFACTURING_LOT', req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ['get_detail_failed'],
+            error: error.message
         })
     }
 }

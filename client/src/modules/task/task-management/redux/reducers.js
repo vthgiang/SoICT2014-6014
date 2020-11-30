@@ -464,12 +464,26 @@ export function tasks(state = {}, action) {
             }
 
         case taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_REQUEST:
+            if(action.typeApi){
+                return {
+                    ...state,
+                    organizationUnitTasksInMonth: null,
+                    isLoading: true
+                };
+            }
             return {
                 ...state,
                 organizationUnitTasks: null,
                 isLoading: true
             };
         case taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_SUCCESS:
+            if(action.typeApi){
+                return {
+                    ...state,
+                    organizationUnitTasksInMonth: action.payload,
+                    isLoading: false,
+                };
+            }
             return {
                 ...state,
                 organizationUnitTasks: action.payload,

@@ -1260,7 +1260,7 @@ export default {
             annual_leave: {
                 file_export_name: "Annual leave statistics table",
                 type: "Annual leave by hours",
-                totalHours:"Total hours",
+                totalHours: "Total hours",
 
                 // Nhóm dành cho table
                 table: {
@@ -1451,8 +1451,13 @@ export default {
                 ethnic: "Ethnic group",
                 nationality: "Nationality",
                 religion: "Religion",
-                active: "Working",
+                active: "Official staff",
                 leave: "Quit job",
+                maternity_leave: 'Maternity leave',
+                unpaid_leave:'Unpaid leave',
+                probationary:'Probationary',
+                sick_leave:'Sick leave',
+
                 status_work: "Labor status",
                 hours_off_remaining: 'Total hours annual leave remaining',
 
@@ -2118,10 +2123,10 @@ export default {
                 amount: "Amount",
                 time: "Times",
                 value: "Value",
+                maintainance_cost: "Maintainance Cost",
                 lost_value: "Lost value (Million)",
                 sum_value: "Total value (Million)",
                 building: "Building",
-                vehicle: "Vehicle",
                 machine: "Machine",
                 other: "Other",
                 asset_by_group: " Asset by group",
@@ -2545,8 +2550,8 @@ export default {
                 role_in_collaborated_unit: "The role of the employee in",
                 confirm_assigned: "Confirm the assignment",
                 confirm_assigned_success: "You have confirmed the assignment",
-                confirm_assigned_failure:
-                    "You have not confirmed the assignment",
+                confirm_assigned_failure: "You have not confirmed the assignment",
+                unit_not_confirm_assigned_task: "Organizational unit has not confirmed the assignment",
 
                 name: "Name of task",
                 search_by_name: "Search by name",

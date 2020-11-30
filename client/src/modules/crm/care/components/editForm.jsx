@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, SelectBox, DatePicker, ErrorLabel } from '../../../../common-components';
+import { DialogModal, SelectBox, DatePicker, ErrorLabel, QuillEditor } from '../../../../common-components';
 import { CrmCareActions } from '../redux/action';
 import { formatFunction } from '../../common/index';
 import ValidationHelper from '../../../../helpers/validationHelper';
-import CKEditor from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-
 class EditCareForm extends Component {
     constructor(props) {
         super(props);
@@ -158,10 +155,9 @@ class EditCareForm extends Component {
      * @param {*} e
      * @param {*} editor
      */
-    handleChangeDescription = (e, editor) => {
+    handleChangeDescription = (value, imgs) => {
         const { translate } = this.props;
         const { careEditting } = this.state;
-        const value = editor.getData();
 
         this.setState({
             careEditting: {
@@ -347,10 +343,9 @@ class EditCareForm extends Component {
                         {/* Mô tả công việc chăm sóc */}
                         <div className="form-group">
                             <label>{translate('crm.care.description')}<span className="text-red">*</span></label>
-                            <CKEditor
-                                editor={ClassicEditor}
-                                onChange={this.handleChangeDescription}
-                                data={careEditting.description}
+                            <QuillEditor
+                                getTextData={this.handleChangeDescription}
+                                value={careEditting.description}
                             />
                             <ErrorLabel content={descriptionError} />
                         </div>

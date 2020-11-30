@@ -2,11 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import {ErrorLabel} from '../../../../common-components';
+import { ErrorLabel, QuillEditor } from '../../../../common-components';
 import Sortable from 'sortablejs';
 import { TaskTemplateFormValidator} from './taskTemplateFormValidator';
-import CKEditor from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import parse from 'html-react-parser';
 
 class InformationForm extends Component{
@@ -177,13 +175,12 @@ class InformationForm extends Component{
         return msg == undefined;
     }
 
-    handleChangeInfoDesc = (event, editor) => {
-        const description = editor.getData();
+    handleChangeInfoDesc = (value, imgs) => {
         const { information } = this.state;
         this.setState({
             information: {
                 ...information,
-                description
+                description: value
             }
         })
     }
@@ -263,10 +260,9 @@ class InformationForm extends Component{
                 {/**Mô tả của trường thông tin */}
                 <div className={`form-group ${this.state.information.errorOnDescription===undefined?"":"has-error"}`} >
                     <label className="control-label" htmlFor="inputDescriptionInfo">{translate('task_template.description')}</label>
-                    <CKEditor
-                        editor={ ClassicEditor }
-                        onChange={this.handleChangeInfoDesc}
-                        data={information.description}
+                    <QuillEditor
+                        getTextData={this.handleChangeInfoDesc}
+                        value={information.description}
                     />
                 </div>
                 <div className="form-group" >

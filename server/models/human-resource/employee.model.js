@@ -18,10 +18,10 @@ const EmployeeSchema = new Schema({
         type: String,
         required: true
     },
-    status: { // active - Đang làm việc, leave - Đã nghỉ làm
+    status: { // active - Làm chính thức, leave - Đã nghỉ làm, maternity_leave: Nghỉ thai sản, unpaid_leave: Nghỉ không lương, probationary: Đang thử việc, sick_leave: Nghỉ ốm đau
         type: String,
         default: 'active',
-        enum: ['active', 'leave']
+        enum: ['active', 'leave','maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave']
     },
     startingDate: { // Ngày bắt đầu làm việc
         type: Date,
@@ -251,28 +251,39 @@ const EmployeeSchema = new Schema({
         urlFile: String
     }],
     major: [{
-        // type: Schema.Types.ObjectId,
-        // ref: 'Major',
-        name: String,
-        code: String,
+        group: {
+            name: String,
+            id: String,
+            code: String
+        },
+        specialized: {
+            name: String,
+            id: String,
+            code: String
+        },
+        file: String,
+        urlFile: String
     }],
-    // careerPosition: [{
-    //     // type: Schema.Types.ObjectId,
-    //     // ref: 'CareerPosition',
-    //     name: String,
-    //     code: String,
-    //     startDate: Date,
-    //     endDate: Date,
-    // }],
     career: [{
-        careerFieldName: String,
-        careerFieldCode: String,
-        careerPositionName: String,
-        careerPositionCode: String,
-        careerActionName: String,
-        careerActionCode: String,
+        field: {
+            name: String,
+            id: String,
+            code: String
+        },
+        position: {
+            name: String,
+            id: String,
+            code: String
+        },
+        action: {
+            name: String,
+            id: String,
+            code: String
+        },
         startDate: Date,
         endDate: Date,
+        file: String,
+        urlFile: String
     }],
 }, {
     timestamps: true,

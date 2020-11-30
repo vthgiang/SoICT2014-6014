@@ -240,14 +240,16 @@ exports.getEmployeeInforByEmailInCompany = async (portal, emailInCompany, compan
  * @positions : Array id chức vụ
  * @allInfor : 'true' lấy hết thông tin của mỗi nhân viên, false lấy 1 số thông tin của mỗi nhân viên
  */
-exports.getEmployees = async (portal, company, organizationalUnits, positions, allInfor = true, status = 'active') => {
+exports.getEmployees = async (portal, company, organizationalUnits, positions, allInfor = true, status = ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave']) => {
     let keySearch = {
         company: company
     };
     if (status) {
         keySearch = {
             ...keySearch,
-            status: status
+            status: {
+                $in: status
+            }
         }
     }
     if (allInfor === true) {
@@ -292,6 +294,7 @@ exports.getEmployees = async (portal, company, organizationalUnits, positions, a
                 startingDate: 1,
                 leavingDate: 1,
                 professionalSkill: 1,
+                status:1
 
             });
             let totalEmployee = listEmployeesOfOrganizationalUnits.length;
@@ -310,7 +313,8 @@ exports.getEmployees = async (portal, company, organizationalUnits, positions, a
             birthdate: 1,
             startingDate: 1,
             leavingDate: 1,
-            professionalSkill: 1
+            professionalSkill: 1,
+            status:1
         });
         return {
             totalAllEmployee,
@@ -328,7 +332,9 @@ exports.getEmployeeNumberExpiresContractInCurrentMonth = async (portal, company,
     let lastDay = new Date(month.getFullYear(), month.getMonth() + 1, 1);
     let results = await Employee(connect(DB_CONNECTION, portal)).countDocuments({
         company: company,
-        status: "active",
+        status: {
+            $in: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave']
+        },
         contractEndDate: {
             "$gt": firstDay,
             "$lte": lastDay
@@ -345,7 +351,9 @@ exports.getEmployeeNumberExpiresContractInCurrentMonth = async (portal, company,
 exports.getEmployeeNumberHaveBirthdateInCurrentMonth = async (portal, company, month = new Date()) => {
     return await Employee(connect(DB_CONNECTION, portal)).countDocuments({
         company: company,
-        status: "active",
+        status: {
+            $in: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave']
+        },
         "$expr": {
             "$eq": [{
                 "$month": "$birthdate"
@@ -425,7 +433,9 @@ exports.getEmployeesByStartingAndLeaving = async (portal, organizationalUnits, s
                     }
                 }];
             let total = await Employee(connect(DB_CONNECTION, portal)).countDocuments({
-                status: "active",
+                status: {
+                    $in: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave']
+                },
                 startingDate: {
                     "$lt": lastDay,
                 }
@@ -656,18 +666,25 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
         fileDegree = fileInfor.fileDegree,
         fileCertificate = fileInfor.fileCertificate,
         fileContract = fileInfor.fileContract,
+        fileMajor = fileInfor.fileMajor,
+        fileCareer = fileInfor.fileCareer,
         file = fileInfor.file;
     let {
         degrees,
         certificates,
+        career,
+        major,
         contracts,
         files
     } = data;
+    career = this.mergeUrlFileToObject(fileCareer, career);
+    major = this.mergeUrlFileToObject(fileMajor, major);
     degrees = this.mergeUrlFileToObject(fileDegree, degrees);
     certificates = this.mergeUrlFileToObject(fileCertificate, certificates);
     contracts = this.mergeUrlFileToObject(fileContract, contracts);
     files = this.mergeUrlFileToObject(file, files);
 
+    console.log('mcmcmcmcmcmcm\n\n', major);
     let createEmployee = await Employee(connect(DB_CONNECTION, portal)).create({
         avatar: avatar,
         fullName: data.fullName,
@@ -706,6 +723,8 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
         experiences: data.experiences,
         certificates: certificates,
         degrees: degrees,
+        major: major,
+        career: career,
         contractEndDate: data.contractEndDate ? data.contractEndDate : null,
         contractType: data.contractType,
         contracts: contracts,
@@ -764,20 +783,6 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
             });
         }
     }
-    if (data.salaries !== undefined) {
-        let salaries = data.salaries;
-        for (let x in salaries) {
-            await Salary(connect(DB_CONNECTION, portal)).create({
-                employee: createEmployee._id,
-                company: company,
-                organizationalUnit: salaries[x].organizationalUnit,
-                month: salaries[x].month,
-                mainSalary: salaries[x].mainSalary,
-                unit: salaries[x].unit,
-                bonus: salaries[x].bonus
-            });
-        }
-    }
     if (data.annualLeaves !== undefined) {
         let annualLeaves = data.annualLeaves;
         for (let x in annualLeaves) {
@@ -824,6 +829,7 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
  * Cập nhât thông tin nhân viên theo id
  */
 exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company) => {
+    console.log('quququq\n\n\n', data);
     let {
         employee,
         createExperiences,
@@ -832,6 +838,12 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
         createDegrees,
         editDegrees,
         deleteDegrees,
+        createMajor,
+        editMajor,
+        deleteMajor,
+        createCareer,
+        editCareer,
+        deleteCareer,
         createCertificates,
         editCertificates,
         deleteCertificates,
@@ -844,9 +856,6 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
         createCommendations,
         editConmmendations,
         deleteConmmendations,
-        createSalaries,
-        editSalaries,
-        deleteSalaries,
         createAnnualLeaves,
         editAnnualLeaves,
         deleteAnnualLeaves,
@@ -863,6 +872,8 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
     let avatar = employee.avatar,
         fileDegree = fileInfor.fileDegree,
         fileCertificate = fileInfor.fileCertificate,
+        fileMajor = fileInfor.fileMajor,
+        fileCareer = fileInfor.fileCareer,
         fileContract = fileInfor.fileContract,
         file = fileInfor.file;
     if (fileInfor.avatar) {
@@ -919,6 +930,8 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
     oldEmployee.experiences = deleteEditCreateObjectInArrayObject(oldEmployee.experiences, deleteExperiences, editExperiences, createExperiences);
     oldEmployee.socialInsuranceDetails = deleteEditCreateObjectInArrayObject(oldEmployee.socialInsuranceDetails, deleteSocialInsuranceDetails, editSocialInsuranceDetails, createSocialInsuranceDetails);
 
+    oldEmployee.career = deleteEditCreateObjectInArrayObject(oldEmployee.career, deleteCareer, editCareer, createCareer, fileCareer);
+    oldEmployee.major = deleteEditCreateObjectInArrayObject(oldEmployee.major, deleteMajor, editMajor, createMajor, fileMajor);
     oldEmployee.degrees = deleteEditCreateObjectInArrayObject(oldEmployee.degrees, deleteDegrees, editDegrees, createDegrees, fileDegree);
     oldEmployee.certificates = deleteEditCreateObjectInArrayObject(oldEmployee.certificates, deleteCertificates, editCertificates, createCertificates, fileCertificate);
     oldEmployee.contracts = deleteEditCreateObjectInArrayObject(oldEmployee.contracts, deleteContracts, editContracts, createContracts, fileContract);
@@ -1026,7 +1039,6 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
     };
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, Discipline, deleteDisciplines, editDisciplines, createDisciplines);
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, Commendation, deleteConmmendations, editConmmendations, createCommendations);
-    queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, Salary, deleteSalaries, editSalaries, createSalaries);
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, AnnualLeave, deleteAnnualLeaves, editAnnualLeaves, createAnnualLeaves);
     queryEditCreateDeleteDocumentInCollection(oldEmployee._id, company, EmployeeCourse, deleteCourses, editCourses, createCourses);
 

@@ -8,6 +8,8 @@ import { EmployeeCreateForm, EmployeeDetailForm, EmployeeEditFrom, EmployeeImpor
 
 import { EmployeeManagerActions } from '../redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
+import { CareerReduxAction } from "../../../career/redux/actions";
+import { MajorActions } from "../../../major/redux/actions";
 
 class EmployeeManagement extends Component {
     constructor(props) {
@@ -41,6 +43,10 @@ class EmployeeManagement extends Component {
     componentDidMount() {
         this.props.getAllEmployee(this.state);
         this.props.getDepartment();
+        this.props.getListMajor({ name: '', page: 1, limit: 1000 });
+        this.props.getListCareerAction({ name: '', page: 1, limit: 1000 });
+        this.props.getListCareerField({ name: '', page: 1, limit: 1000 });
+        this.props.getListCareerPosition({ name: '', page: 1, limit: 1000 });
     }
 
     /**
@@ -845,7 +851,15 @@ class EmployeeManagement extends Component {
                             <label className="form-control-static">{translate('page.status')}</label>
                             <SelectMulti id={`multiSelectStatus`} multiple="multiple"
                                 options={{ nonSelectedText: translate('human_resource.non_status'), allSelectedText: translate('human_resource.all_status') }}
-                                items={[{ value: "active", text: translate('human_resource.profile.active') }, { value: "leave", text: translate('human_resource.profile.leave') }]} onChange={this.handleStatusChange}>
+                                items={[
+                                    { value: 'active', text: translate('human_resource.profile.active') },
+                                    { value: 'leave', text: translate('human_resource.profile.leave') },
+                                    { value: 'maternity_leave', text: translate('human_resource.profile.maternity_leave') },
+                                    { value: 'unpaid_leave', text: translate('human_resource.profile.unpaid_leave') },
+                                    { value: 'probationary', text: translate('human_resource.profile.probationary') },
+                                    { value: 'sick_leave', text: translate('human_resource.profile.sick_leave') },
+                                ]}
+                                onChange={this.handleStatusChange}>
                             </SelectMulti>
                         </div>
                     </div>
@@ -892,22 +906,6 @@ class EmployeeManagement extends Component {
                             <button type="button" className="btn btn-success" title={translate('general.search')} onClick={this.handleSunmitSearch} >{translate('general.search')}</button>
                         </div>
                     </div>
-
-                    {/* <div className="form-inline" style={{ marginBottom: 15 }}>
-                        {/* Trạng thái */}
-                    {/* <div className="form-group">
-                        <label className="form-control-static">{translate('page.status')}</label>
-                        <SelectMulti id={`multiSelectStatus`} multiple="multiple"
-                            options={{ nonSelectedText: translate('human_resource.non_status'), allSelectedText: translate('human_resource.all_status') }}
-                            items={[{ value: "active", text: translate('human_resource.profile.active') }, { value: "leave", text: translate('human_resource.profile.leave') }]} onChange={this.handleStatusChange}>
-                        </SelectMulti>
-                    </div>
-                    {/* Button tìm kiếm */}
-                    {/* <div className="form-group">
-                        <label></label>
-                        <button type="button" className="btn btn-success" title={translate('general.search')} onClick={this.handleSunmitSearch} >{translate('general.search')}</button>
-                    </div> */}
-                    {/* </div> */}
 
                     <div className="form-group col-md-12 row" >
                         {(Number(employeesManager.expiresContract) > 0 || Number(employeesManager.employeesHaveBirthdateInCurrentMonth) > 0) &&
@@ -973,7 +971,7 @@ class EmployeeManagement extends Component {
                                         <td>{this.formatDate(x.birthdate)}</td>
                                         <td>{this.formatDate(x.contractEndDate)}</td>
                                         <td>{x.contractType}</td>
-                                        <td style={{ color: x.status === "active" ? "#00a65a" : '#dd4b39' }}>{translate(`human_resource.profile.${x.status}`)}</td>
+                                        <td style={{ color: x.status === "active" ? "#00a65a" : (x.status === "active" ? '#dd4b39' : null) }}>{translate(`human_resource.profile.${x.status}`)}</td>
                                         <td>
                                             <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('human_resource.profile.employee_management.view_employee')}><i className="material-icons">view_list</i></a>
                                             <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.employee_management.edit_employee')}><i className="material-icons">edit</i></a>
@@ -1030,6 +1028,10 @@ const actionCreators = {
     getDepartment: DepartmentActions.get,
     getAllEmployee: EmployeeManagerActions.getAllEmployee,
     deleteEmployee: EmployeeManagerActions.deleteEmployee,
+    getListMajor: MajorActions.getListMajor,
+    getListCareerAction: CareerReduxAction.getListCareerAction,
+    getListCareerField: CareerReduxAction.getListCareerField,
+    getListCareerPosition: CareerReduxAction.getListCareerPosition,
 };
 
 const employeeManagement = connect(mapState, actionCreators)(withTranslate(EmployeeManagement));

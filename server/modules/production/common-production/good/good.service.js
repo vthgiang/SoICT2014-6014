@@ -67,7 +67,8 @@ exports.createGoodByType = async (company, data, portal) => {
         name: data.name,
         type: data.type,
         baseUnit: data.baseUnit,
-        packingRule: data.packingRule,
+        // packingRule: data.packingRule,
+        numberExpirationDate: data.numberExpirationDate,
         units: data.units.map(item => {
             return {
                 name: item.name,
@@ -117,7 +118,8 @@ exports.editGood = async (id, data, portal) => {
         good.name = data.name,
         good.type = data.type,
         good.baseUnit = data.baseUnit,
-        good.packingRule = data.packingRule,
+        // good.packingRule = data.packingRule,
+        good.numberExpirationDate = data.numberExpirationDate,
         good.manufacturingMills = data.manufacturingMills.map(item => {
             return {
                 manufacturingMill: item.manufacturingMill,
@@ -140,7 +142,7 @@ exports.editGood = async (id, data, portal) => {
         }),
         good.description = data.description,
         good.quantity = data.quantity
-        good.pricePerBaseUnit = data.pricePerBaseUnit,
+    good.pricePerBaseUnit = data.pricePerBaseUnit,
         good.salesPriceVariance = data.salesPriceVariance
     await good.save();
 

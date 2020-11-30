@@ -203,7 +203,7 @@ class InventoryDetailForm extends Component {
                                                 listBillByGood.map((x, index) => (
                                                     <tr key={index}>
                                                         <td>{index + 1}</td>
-                                                        <td>{this.formatDate(x.timestamp)}</td>
+                                                        <td>{this.formatDate(x.createdAt)}</td>
                                                         <td>{ x.group === '1' ? goodQuantity[index] : 0 }</td>
                                                         <td>{ (x.group === '2' || x.group === '3')? goodQuantity[index] : 0 }</td>
                                                         <td>{x.fromStock.name}</td>

@@ -13,7 +13,7 @@ const ExampleManagementTable = (props) => {
     const [state, setState] = useState({
         exampleName: "",
         description: "",
-        page: 0,
+        page: 1,
         limit: 5
     })
 
@@ -33,16 +33,15 @@ const ExampleManagementTable = (props) => {
     const handleSubmitSearch = () => {
         setState({
             ...state,
-            page: 0
+            page: 1
         });
         props.getOnlyExampleName(state);
     }
 
     const setPage = (pageNumber) => {
-        let currentPage = pageNumber - 1;
         setState({
             ...state,
-            page: parseInt(currentPage)
+            page: parseInt(pageNumber)
         });
 
         props.getOnlyExampleName(state);
@@ -116,7 +115,7 @@ const ExampleManagementTable = (props) => {
                 <table id="example-table" className="table table-striped table-bordered table-hover">
                     <thead>
                         <tr>
-                            <th>{translate('manage_example.index')}</th>
+                            <th className="col-fixed" style={{ width: 60 }}>{translate('manage_example.index')}</th>
                             <th>{translate('manage_example.exampleName')}</th>
                             <th>{translate('manage_example.description')}</th>
                             <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
@@ -139,7 +138,7 @@ const ExampleManagementTable = (props) => {
                         {(lists && lists.length !== 0) &&
                             lists.map((example, index) => (
                                 <tr key={index}>
-                                    <td>{index + 1 + page * state.limit}</td>
+                                    <td>{index + 1 + (page-1) * state.limit}</td>
                                     <td>{example.exampleName}</td>
                                     <td>{example.description}</td>
                                     <td style={{ textAlign: "center" }}>
@@ -163,7 +162,7 @@ const ExampleManagementTable = (props) => {
                     <div className="table-info-panel">{translate('confirm.loading')}</div> :
                     (typeof lists === 'undefined' || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                 }
-                <PaginateBar pageTotal={totalPage ? totalPage : 0} currentPage={page + 1} func={setPage} />
+                <PaginateBar pageTotal={totalPage ? totalPage : 0} currentPage={page} func={setPage} />
             </div>
         </React.Fragment>
     )

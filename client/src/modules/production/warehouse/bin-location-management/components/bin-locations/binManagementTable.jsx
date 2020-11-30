@@ -16,6 +16,7 @@ class BinManagementTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            currentRole: localStorage.getItem("currentRole"),
             binParent: [],
             dataStock: [],
             deleteNode: []
@@ -27,7 +28,7 @@ class BinManagementTable extends Component {
         this.props.getAllDepartments();
         this.props.getUser();
         this.props.getAllGoods();
-        this.props.getAllStocks();
+        this.props.getAllStocks({ managementLocation: this.state.currentRole });
     }
 
     onChanged = async (e, data) => {
@@ -177,9 +178,8 @@ class BinManagementTable extends Component {
                     deleteNode.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteBins}>{translate('general.delete')}</button>
                 }
                 <BinCreateForm />
-                <div className="row"
-                >
-                    <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                <div className="row">
+                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                         <div className="bin-location-tree" id="bin-location-tree">
                             <Tree
                                 id="tree-qlcv-bin-location"
@@ -191,7 +191,7 @@ class BinManagementTable extends Component {
                         </div>
                         <SlimScroll outerComponentId="bin-location-tree" innerComponentId="tree-qlcv-bin-location" innerComponentWidth={"100%"} activate={true} />
                     </div>
-                    <div className="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                    <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
                         { currentBin && 
                             <BinEditForm 
                                 binId = {currentBin.id}

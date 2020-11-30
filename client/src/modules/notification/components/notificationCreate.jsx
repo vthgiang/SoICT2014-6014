@@ -2,15 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, SelectBox } from '../../../common-components';
+import { DialogModal, SelectBox, QuillEditor } from '../../../common-components';
 
 import { DepartmentActions } from '../../super-admin/organizational-unit/redux/actions';
 import { UserActions } from '../../super-admin/user/redux/actions';
 import { NotificationActions } from '../redux/actions';
 import { NotificationValidator } from './notificationValidator';
-
-import CKEditor from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 class NotificationCreate extends Component {
     constructor(props) {
@@ -66,8 +63,7 @@ class NotificationCreate extends Component {
         return msg === undefined;
     }
 
-    handleContent = (data) => {
-        // let value = e.target.value;
+    handleContent = (data, imgs) => {
         this.validateContent(data, true);
     }
     validateContent = (value, willUpdateState=true) => {
@@ -175,12 +171,8 @@ class NotificationCreate extends Component {
                         {/* Nội dung */}
                         <div className="form-group">
                             <label>{translate('notification.content')}<span className="text-red">*</span></label>
-                            <CKEditor
-                                editor={ ClassicEditor }
-                                onChange={ ( event, editor ) => {
-                                    const data = editor.getData();
-                                    this.handleContent(data);
-                                } }
+                            <QuillEditor
+                                getTextData={this.handleContent}
                             />
                         </div>
 

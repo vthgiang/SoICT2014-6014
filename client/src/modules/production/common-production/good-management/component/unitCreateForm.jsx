@@ -79,7 +79,8 @@ class UnitCreateForm extends Component {
                 }))
             }
 
-            this.props.onDataChange(this.state.listUnit, this.state.packingRule);
+            this.props.onDataChange(this.state.listUnit);
+            // this.props.onDataChange(this.state.listUnit, this.state.packingRule);
 
         }
 
@@ -230,7 +231,8 @@ class UnitCreateForm extends Component {
                 unit: Object.assign({}, this.EMPTY_UNIT),
             }
         })
-        this.props.onDataChange(this.state.listUnit, this.state.packingRule);
+        this.props.onDataChange(this.state.listUnit);
+        // this.props.onDataChange(this.state.listUnit, this.state.packingRule);
     }
 
     handleEditUnit = async (unit, index) => {
@@ -261,7 +263,8 @@ class UnitCreateForm extends Component {
                 unit: Object.assign({}, this.EMPTY_UNIT),
             }
         })
-        this.props.onDataChange(this.state.listUnit, this.state.packingRule);
+        // this.props.onDataChange(this.state.listUnit, this.state.packingRule);
+        this.props.onDataChange(this.state.listUnit);
     }
 
     handleCancelEditUnit = async (e) => {
@@ -298,7 +301,8 @@ class UnitCreateForm extends Component {
             }
         })
 
-        this.props.onDataChange(this.state.listUnit, this.state.packingRule);
+        // this.props.onDataChange(this.state.listUnit, this.state.packingRule);
+        this.props.onDataChange(this.state.listUnit);
     }
 
     render() {
@@ -369,7 +373,7 @@ class UnitCreateForm extends Component {
                         }
                     </tbody>
                 </table>
-                <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                {/* <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                     <div className={`form-group ${!errorOnBaseUnit ? "" : "has-error"}`}>
                         <label style={{ width: 'auto' }}>{translate('manage_warehouse.good_management.packing_rule')} <span className="attention"> * </span></label>
                         <SelectMulti
@@ -389,7 +393,7 @@ class UnitCreateForm extends Component {
                             packingRule || !errorOnBaseUnit && listUnitSelected.length > 0 && packingRule
                         }
                     </div>
-                </div>
+                </div> */}
 
             </fieldset >
         )

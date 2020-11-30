@@ -1,44 +1,78 @@
-const { Bill, Lot } = require(`${SERVER_MODELS_DIR}`);
+const { Bill, Lot, Stock } = require(`${SERVER_MODELS_DIR}`);
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 exports.getBillsByType = async (query, portal) => {
-    var { page, limit, group } = query;
+    var { page, limit, group, managementLocation } = query;
+
+    if (!managementLocation) throw new Error("roles not avaiable");
+
+    //lấy id các kho của role hiện tại
+    const stocks = await Stock(connect(DB_CONNECTION, portal)).find({ managementLocation: { $in: managementLocation } })
+    var arrayStock = [];
+    if (stocks && stocks.length > 0) {
+        for (let i = 0; i < stocks.length; i++) {
+            arrayStock = [...arrayStock, stocks[i]._id];
+        }
+    }
+
     if (!page && !limit) {
         if (group) {
-            return await Bill(connect(DB_CONNECTION, portal)).find({ group: group })
+            return await Bill(connect(DB_CONNECTION, portal)).find({ group: group, fromStock: { $in: arrayStock } })
                 .populate([
                     { path: 'creator' },
-                    { path: 'approver' },
+                    { path: 'approvers.approver' },
+                    { path: 'approvers.role' },
+                    { path: 'qualityControlStaffs.staff' },
+                    { path: 'responsibles' },
+                    { path: 'accountables' },
+                    { path: 'manufacturingMill' },
+                    { path: 'manufacturingCommand'},
                     { path: 'fromStock' },
                     { path: 'toStock' },
                     { path: 'customer' },
                     { path: 'supplier' },
                     { path: 'bill' },
                     { path: 'goods.lots.lot' },
-                    { path: 'goods.good' }
+                    { path: 'goods.good' },
+                    { path: 'logs.creator' }
                 ])
-                .sort({ 'timestamp': 'desc' })
+                .sort({ 'updatedAt': 'desc' })
         } else {
-            return await Bill(connect(DB_CONNECTION, portal)).find()
+            return await Bill(connect(DB_CONNECTION, portal)).find({ fromStock: { $in: arrayStock } })
                 .populate([
                     { path: 'creator' },
-                    { path: 'approver' },
+                    { path: 'approvers.approver' },
+                    { path: 'approvers.role' },
+                    { path: 'qualityControlStaffs.staff' },
+                    { path: 'responsibles' },
+                    { path: 'accountables' },
+                    { path: 'manufacturingMill' },
+                    { path: 'manufacturingCommand'},
                     { path: 'fromStock' },
                     { path: 'toStock' },
                     { path: 'customer' },
                     { path: 'supplier' },
                     { path: 'bill' },
                     { path: 'goods.lots.lot' },
-                    { path: 'goods.good' }
+                    { path: 'goods.good' },
+                    { path: 'logs.creator' }
                 ])
-                .sort({ 'timestamp': 'desc' })
+                .sort({ 'updatedAt': 'desc' })
         }
     } else {
         if (group) {
-            let option = { group: group }
+            let option = { group: group, fromStock: arrayStock }
 
             if (query.stock) {
                 option.fromStock = query.stock
+            }
+
+            if (query.toStock) {
+                option.toStock = query.toStock
+            }
+
+            if(query.supplier) {
+                option.supplier = query.supplier
             }
 
             if (query.creator) {
@@ -99,28 +133,51 @@ exports.getBillsByType = async (query, portal) => {
                 option.customer = query.customer
             }
 
+            if (query.toStock) {
+                option.toStock = query.toStock
+            }
+
+            if(query.supplier) {
+                option.supplier = query.supplier
+            }
+
             return await Bill(connect(DB_CONNECTION, portal))
                 .paginate(option, {
                     page,
                     limit,
                     populate: [
                         { path: 'creator' },
-                        { path: 'approver' },
+                        { path: 'approvers.approver' },
+                        { path: 'approvers.role' },
+                        { path: 'qualityControlStaffs.staff' },
+                        { path: 'responsibles' },
+                        { path: 'accountables' },
+                        { path: 'manufacturingMill' },
+                        { path: 'manufacturingCommand'},
                         { path: 'fromStock' },
                         { path: 'toStock' },
                         { path: 'customer' },
                         { path: 'supplier' },
                         { path: 'bill' },
                         { path: 'goods.lots.lot' },
-                        { path: 'goods.good' }
+                        { path: 'goods.good' },
+                        { path: 'logs.creator' }
                     ],
-                    sort: { 'timestamp': 'desc' }
+                    sort: { 'updatedAt': 'desc' }
                 })
         } else {
-            let option = {};
+            let option = { fromStock: arrayStock };
 
             if (query.stock) {
                 option.fromStock = query.stock
+            }
+
+            if (query.toStock) {
+                option.toStock = query.toStock
+            }
+
+            if(query.supplier) {
+                option.supplier = query.supplier
             }
 
             if (query.creator) {
@@ -181,22 +238,37 @@ exports.getBillsByType = async (query, portal) => {
                 option.customer = query.customer
             }
 
+            if (query.toStock) {
+                option.toStock = query.toStock
+            }
+
+            if(query.supplier) {
+                option.supplier = query.supplier
+            }
+
             return await Bill(connect(DB_CONNECTION, portal))
                 .paginate(option, {
                     page,
                     limit,
                     populate: [
                         { path: 'creator' },
-                        { path: 'approver' },
+                        { path: 'approvers.approver' },
+                        { path: 'approvers.role' },
+                        { path: 'qualityControlStaffs.staff' },
+                        { path: 'responsibles' },
+                        { path: 'accountables' },
+                        { path: 'manufacturingMill' },
+                        { path: 'manufacturingCommand'},
                         { path: 'fromStock' },
                         { path: 'toStock' },
                         { path: 'customer' },
                         { path: 'supplier' },
                         { path: 'bill' },
                         { path: 'goods.lots.lot' },
-                        { path: 'goods.good' }
+                        { path: 'goods.good' },
+                        { path: 'logs.creator' }
                     ],
-                    sort: { 'timestamp': 'desc' }
+                    sort: { 'updatedAt': 'desc' }
                 })
         }
     }
@@ -252,7 +324,7 @@ exports.getBillByGood = async (query, portal) => {
             populate: [
                 { path: 'fromStock' }
             ],
-            sort: { 'timestamp': 'desc' }
+            sort: { 'updatedAt': 'desc' }
         })
 }
 
@@ -260,14 +332,21 @@ exports.getDetailBill = async (id, portal) => {
     return await Bill(connect(DB_CONNECTION, portal)).findById(id)
         .populate([
             { path: 'creator' },
-            { path: 'approver' },
+            { path: 'approvers.approver' },
+            { path: 'approvers.role' },
+            { path: 'qualityControlStaffs.staff' },
+            { path: 'responsibles' },
+            { path: 'accountables' },
+            { path: 'manufacturingMill' },
+            { path: 'manufacturingCommand'},
             { path: 'fromStock' },
             { path: 'toStock' },
             { path: 'customer' },
             { path: 'supplier' },
             { path: 'bill' },
             { path: 'goods.lots.lot' },
-            { path: 'goods.good' }
+            { path: 'goods.good' },
+            { path: 'logs.creator' }
         ])
 }
 
@@ -277,18 +356,29 @@ exports.getBillsByStatus = async (query, portal) => {
     return await Bill(connect(DB_CONNECTION, portal)).find({ group, status, fromStock })
         .populate([
             { path: 'creator' },
-            { path: 'approver' },
+            { path: 'approvers.approver' },
+            { path: 'approvers.role' },
+            { path: 'manufacturingMill' },
+            { path: 'manufacturingCommand'},
             { path: 'fromStock' },
             { path: 'toStock' },
             { path: 'customer' },
             { path: 'supplier' },
             { path: 'bill' },
             { path: 'goods.lots.lot' },
-            { path: 'goods.good' }
-        ])
+            { path: 'goods.good' },
+            { path: 'logs.creator' }
+])
 }
 
 exports.createBill = async (userId, data, portal) => {
+    var logs = [];
+    let log = {};
+    log.creator = userId;
+    log.createAt = new Date(Date.now());
+    log.title = data.type;
+    log.versions = "versions 1";
+    logs = [ ...logs, log ];
     let query = {
         fromStock: data.fromStock,
         group: data.group,
@@ -299,7 +389,21 @@ exports.createBill = async (userId, data, portal) => {
         status: data.status,
         users: data.users,
         creator: userId,
-        approver: data.approver,
+        approvers: data.approvers ? data.approvers.map((item) => {
+            return {
+                approver: item.approver,
+                role: item.role,
+                approvedTime: item.approvedTime
+            }
+        }) : [],
+        accountables: data.accountables,
+        responsibles: data.responsibles,
+        qualityControlStaffs: data.qualityControlStaffs ? data.qualityControlStaffs.map(item => {
+            return {
+                staff: item.staff,
+                time: item.time
+            }
+        }) : [],
         customer: data.customer ? data.customer : null,
         supplier: data.supplier ? data.supplier : null,
         receiver: {
@@ -308,7 +412,6 @@ exports.createBill = async (userId, data, portal) => {
             email: data.email,
             address: data.address,
         },
-        // timestamp: new Date.now,
         description: data.description,
         goods: data.goods.map(item => {
             return {
@@ -329,7 +432,10 @@ exports.createBill = async (userId, data, portal) => {
                     }
                 })
             }
-        })
+        }),
+        manufacturingMill: data.manufacturingMill,
+        manufacturingCommand: data.manufacturingCommand,
+        logs: logs
     }
 
     const bill = await Bill(connect(DB_CONNECTION, portal)).create(query);
@@ -337,36 +443,78 @@ exports.createBill = async (userId, data, portal) => {
         .findById(bill._id)
         .populate([
             { path: 'creator' },
-            { path: 'approver' },
+            { path: 'approvers.approver' },
+            { path: 'approvers.role' },
+            { path: 'qualityControlStaffs.staff' },
+            { path: 'responsibles' },
+            { path: 'accountables' },
+            { path: 'manufacturingMill' },
+            { path: 'manufacturingCommand'},
             { path: 'fromStock' },
             { path: 'toStock' },
             { path: 'customer' },
             { path: 'supplier' },
             { path: 'bill' },
             { path: 'goods.lots.lot' },
-            { path: 'goods.good' }
+            { path: 'goods.good' },
+            { path: 'logs.creator' }
         ])
 }
 
-exports.editBill = async (id, data, portal) => {
+function findIndexOfApprover(array, id) {
+    let result = -1;
+    array.forEach((element, index) => {
+        if (element.approver == id) {
+            result = index;
+        }
+    });
+    return result;
+}
+
+function findIndexOfQuatityStaff(array, id) {
+    let result = -1;
+    array.forEach((element, index) => {
+        if (element.staff == id) {
+            result = index;
+        }
+    });
+    return result;
+}
+
+exports.editBill = async (id, userId, data, portal) => {
     let bill = await Bill(connect(DB_CONNECTION, portal)).findById(id);
     bill.fromStock = bill.fromStock;
     bill.toStock = data.toStock ? data.toStock : bill.toStock;
     bill.group = bill.group;
     bill.bill = bill.bill;
-        bill.code = bill.code;
+    bill.code = bill.code;
     bill.type = bill.type;
-    bill.status = data.status ? data.status : bill.status;
     bill.users = data.users ? data.users : bill.users;
     bill.creator = data.creator ? data.creator : bill.creator;
-    bill.approver = data.approver ? data.approver : bill.approver;
+    bill.approvers = data.approvers ? data.approvers.map(item => {
+        return {
+            approver: item.approver,
+            role: item.role,
+            approvedTime: item.approvedTime
+        }
+    } ) : bill.approvers;
+    bill.accountables = data.accountables ? data.accountables :bill.accountables;
+    bill.responsibles = data.responsibles ? data.responsibles :bill.responsibles;
+    bill.qualityControlStaffs = data.qualityControlStaffs ? data.qualityControlStaffs.map(item => {
+        return {
+            staff: item.staff,
+            time: item.time
+        }
+    }) : bill.qualityControlStaffs;
     bill.customer = data.customer ? data.customer : bill.customer;
     bill.supplier = data.supplier ? data.supplier : bill.supplier;
+    bill.manufacturingMill = data.manufacturingMill ? data.manufacturingMill : bill.manufacturingMill;
+    bill.manufacturingCommand = data.manufacturingCommand ? data.manufacturingCommand : bill.manufacturingCommand;
     bill.receiver = {
-        name: data.name,
-        phone: data.phone,
-        email: data.email,
-        address: data.address
+        name: data.name ? data.name : bill.receiver.name,
+        phone: data.phone ? data.phone : bill.receiver.phone,
+        email: data.email ? data.email : bill.receiver.email,
+        address: data.address ? data.address : bill.receiver.address
     };
     bill.description = data.description ? data.description : bill.description;
     bill.goods = data.goods ? data.goods.map(item => {
@@ -389,6 +537,56 @@ exports.editBill = async (id, data, portal) => {
             })
         }
     }) : bill.goods;
+
+    if(data.approverId) {
+        let index = findIndexOfApprover(bill.approvers, data.approverId);
+
+        if(index !== -1) {
+            bill.approvers[index].approvedTime = new Date(Date.now());
+        }
+
+        let quantityApproved = 1;
+        bill.approvers.forEach((element, index1) => {
+            if (index1 !== index && element.approvedTime == null) {
+                quantityApproved = 0;
+            }
+        });
+        if (quantityApproved) {
+            bill.status = 3;
+        }
+    } 
+    else {
+        bill.status = data.status ? data.status : bill.status;
+    }
+
+    if(data.qualityControlStaffId) {
+        let index = findIndexOfQuatityStaff(bill.qualityControlStaffs, data.qualityControlStaffId);
+
+        if(index !== -1) {
+            bill.qualityControlStaffs[index].time = new Date(Date.now());
+        }
+
+        let quantityqualityControlStaff = 1;
+        bill.qualityControlStaffs.forEach((element, index1) => {
+            if (index1 !== index && element.time == null) {
+                quantityqualityControlStaff = 0;
+            }
+        });
+        if (quantityqualityControlStaff) {
+            bill.status = 5;
+        }
+    } 
+    else {
+        bill.status = data.status ? data.status : bill.status;
+    }
+
+    var log = {};
+    log.creator = userId;
+    log.createAt = new Date(Date.now());
+    log.title = data.type;
+    log.versions = "versions " + (bill.logs.length + 1);
+    bill.logs = [ ...bill.logs, log ];
+    
     await bill.save();
     // Nếu trạng thái chuyển từ đang thực hiện sang trạng thái đã hoàn thành thì
     if (data.oldStatus === '5' && data.status === '2') {
@@ -459,7 +657,7 @@ exports.editBill = async (id, data, portal) => {
             }
         }
 
-        if(data.group === '4') {
+        if (data.group === '4') {
             if (data.goods && data.goods.length > 0) {
                 for (let i = 0; i < data.goods.length; i++) {
                     if (data.goods[i].lots && data.goods[i].lots.length > 0) {
@@ -495,7 +693,7 @@ exports.editBill = async (id, data, portal) => {
     }
 
     // Nếu trạng thái đơn chuyển từ đã hoàn thành sang đã hủy
-    if(data.oldStatus === '2' && data.status === '4') {
+    if (data.oldStatus === '2' && data.status === '4') {
         //Phiếu xuất kho
         if (data.group === '2') {
             if (data.oldGoods && data.oldGoods.length > 0) {
@@ -549,7 +747,7 @@ exports.editBill = async (id, data, portal) => {
             }
         }
 
-        if(data.group === '4') {
+        if (data.group === '4') {
             if (data.oldGoods && data.oldGoods.length > 0) {
                 for (let i = 0; i < data.oldGoods.length; i++) {
                     if (data.oldGoods[i].lots && data.oldGoods[i].lots.length > 0) {
@@ -669,19 +867,50 @@ exports.editBill = async (id, data, portal) => {
             }
         }
     }
-    
+
     return await Bill(connect(DB_CONNECTION, portal))
         .findById(bill._id)
         .populate([
             { path: 'creator' },
-            { path: 'approver' },
+            { path: 'approvers.approver' },
+            { path: 'approvers.role' },
+            { path: 'qualityControlStaffs.staff' },
+            { path: 'responsibles' },
+            { path: 'accountables' },
+            { path: 'manufacturingMill' },
+            { path: 'manufacturingCommand'},
             { path: 'fromStock' },
             { path: 'toStock' },
             { path: 'customer' },
             { path: 'supplier' },
             { path: 'bill' },
             { path: 'goods.lots.lot' },
-            { path: 'goods.good' }
+            { path: 'goods.good' },
+            { path: 'logs.creator' }
         ])
 
+}
+
+exports.getBillsByCommand = async (query, portal) => {
+    const { manufacturingCommandId } = query;
+    return await Bill(connect(DB_CONNECTION, portal))
+        .find({ manufacturingCommand: manufacturingCommandId })
+        .populate([
+            { path: 'creator' },
+            { path: 'approvers.approver' },
+            { path: 'approvers.role' },
+            { path: 'qualityControlStaffs.staff' },
+            { path: 'responsibles' },
+            { path: 'accountables' },
+            { path: 'manufacturingMill' },
+            { path: 'manufacturingCommand'},
+            { path: 'fromStock' },
+            { path: 'toStock' },
+            { path: 'customer' },
+            { path: 'supplier' },
+            { path: 'bill' },
+            { path: 'goods.lots.lot' },
+            { path: 'goods.good' },
+            { path: 'logs.creator' }
+        ])
 }

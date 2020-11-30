@@ -3,12 +3,12 @@ const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
 const BillSchema = new Schema({
-
+    // LSX
     fromStock: {
         type: Schema.Types.ObjectId,
         ref: 'Stock'
     },
-
+    // LSX 1. Nhập kho 2. Xuất kho 
     group: {
         type: String,
         enum: ["1", "2", "3", "4", "5"]
@@ -24,16 +24,19 @@ const BillSchema = new Schema({
         replies: this
     },
 
+    // LSX 
     code: {
         type: String,
         required: true
     },
 
+    // LSX 2, 4
     type: { //1: Nhập nguyên vật liệu, 2: Nhập thành phẩm, 3:Xuất sản phẩm, 4: Xuất nguyên vật liệu, 5: Kiểm kê định kỳ, 6: Kiểm kê thường xuyên, 7: Trả hàng, 8: Luân chuyển
         type: String,
         enum: ["1", "2", "3", "4", "5", "6", "7", "8"]
     },
 
+    // LSX 1
     status: { //1: Chờ phê duyệt, 2: Đã hoàn thành, 3: Đã phê duyệt, 4: Đã hủy, 5: Đang thực hiện
         type: String,
         enum: ["1", "2", "3", "4", "5"]
@@ -44,15 +47,46 @@ const BillSchema = new Schema({
         ref: 'User'
     }],
 
+    // LSX
     creator: {
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
 
-    approver: {
+    // LSX
+    approvers: [{
+        approver: {
+            type: Schema.Types.ObjectId,
+            ref: 'User'
+        },
+        role: {
+            type: Schema.Types.ObjectId,
+            ref: "Role"
+        },
+        approvedTime: {
+            type: Date
+        }
+    }],
+
+    qualityControlStaffs: [{ // Danh sách người kiểm định chất lượng 
+        staff: { // Người kiểm định
+            type: Schema.Types.ObjectId,
+            ref: "User"
+        },
+        time: { // Thời gian kiểm định
+            type: Date
+        }
+    }],
+
+    responsibles: [{ // Danh sách người thực hiện
         type: Schema.Types.ObjectId,
-        ref: 'User'
-    },
+        ref: "User"
+    }],
+    
+    accountables: [{ // Người giám sát
+        type: Schema.Types.ObjectId,
+        ref: "User"
+    }],
 
     customer: {
         type: Schema.Types.ObjectId,
@@ -82,22 +116,19 @@ const BillSchema = new Schema({
         }
     },
 
-    timestamp: {
-        type: Date,
-        default: Date.now
-    },
-
+    // LSX
     description: {
         type: String
     },
 
+    // LSX
     goods: [{
-
+        //LSX
         good: {
             type: Schema.Types.ObjectId,
             ref: 'Good'
         },
-
+        //LSX
         quantity: {
             type: Number,
             default: 0
@@ -153,10 +184,37 @@ const BillSchema = new Schema({
         }
     }],
 
+    // LSX
     manufacturingMill: {
         type: Schema.Types.ObjectId,
         ref: "ManufacturingMill"
-    }
+    },
+    // LSX
+    manufacturingCommand: {
+        type: Schema.Types.ObjectId,
+        ref: "ManufacturingCommand"
+    },
+
+    logs: [{
+        createAt: {
+            type: Date
+        },
+
+        creator: {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+        },
+
+        title: {
+            type: String
+        },
+
+        versions: {
+            type: String
+        }
+    }]
+}, {
+    timestamps: true
 });
 
 BillSchema.plugin(mongoosePaginate);

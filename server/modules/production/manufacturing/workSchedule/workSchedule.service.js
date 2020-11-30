@@ -272,7 +272,11 @@ exports.getWorkSchedules = async (query, portal) => {
                 for (let j = 0; j < workSchedules.docs[i].turns.length; j++) {
                     for (k = 0; k < workSchedules.docs[i].turns[j].length; k++) {
                         if (workSchedules.docs[i].turns[j][k] != null) {
-                            let manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal)).findById(workSchedules.docs[i].turns[j][k]);
+                            let manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal)).findById(workSchedules.docs[i].turns[j][k])
+                                .populate([{
+                                    path: "good.good",
+                                    select: "code name"
+                                }]);
                             workSchedules.docs[i].turns[j][k] = manufacturingCommand;
                         }
                     }
@@ -321,6 +325,21 @@ exports.getWorkSchedules = async (query, portal) => {
                         path: 'user', select: 'name email'
                     }]
                 });
+            for (let i = 0; i < workSchedules.docs.length; i++) {
+                for (let j = 0; j < workSchedules.docs[i].turns.length; j++) {
+                    for (k = 0; k < workSchedules.docs[i].turns[j].length; k++) {
+                        if (workSchedules.docs[i].turns[j][k] != null) {
+                            let manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal)).findById(workSchedules.docs[i].turns[j][k])
+                                .populate([{
+                                    path: "good.good",
+                                    select: "code name"
+                                }]);
+                            workSchedules.docs[i].turns[j][k] = manufacturingCommand;
+                        }
+                    }
+                }
+            }
+
             return { workSchedules }
         }
     }

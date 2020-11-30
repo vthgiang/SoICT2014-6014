@@ -5,7 +5,7 @@ import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectTo
 
 import { DialogModal } from '../../../../../common-components';
 
-import { GeneralTab, ContactTab, TaxTab, InsurranceTab, DisciplineTab, ExperienceTab, CertificateTab, ContractTab, SalaryTab, FileTab } from '../../employee-create/components/combinedContent';
+import { GeneralTab, ContactTab, TaxTab, InsurranceTab, DisciplineTab, ExperienceTab, CertificateTab, ContractTab, SalaryTab, FileTab, CareerMajorTab } from '../../employee-create/components/combinedContent';
 
 import { EmployeeManagerActions } from '../redux/actions';
 
@@ -34,8 +34,9 @@ class EmployeeCreateForm extends Component {
             files: [],
             disciplines: [],
             commendations: [],
-            salaries: [],
             annualLeaves: [],
+            major: [],
+            career: [],
         };
         this.handleChangeCourse = this.handleChangeCourse.bind(this);
     }
@@ -135,6 +136,29 @@ class EmployeeCreateForm extends Component {
     }
 
     /**
+     * Function thêm, chỉnh sửa thông tin chuyên ngành tương đương
+     * @param {*} data : Dữ liệu thông tin chuyên ngành tương đương
+     * @param {*} addData : Chuyên ngành tương đương muốn thêm
+     */
+    handleChangeMajor = (data, addData) => {
+        this.setState({
+            major: data
+        })
+    }
+
+    /**
+     * Function thêm, chỉnh sửa thông tin công việc tương đương
+     * @param {*} data : Dữ liệu thông tin công việc tương đương
+     * @param {*} addData : Công việc tương đương muốn thêm
+     */
+    handleChangeCareer = (data, addData) => {
+        console.log('handleChangeCareer = (data, addData)', data, addData);
+        this.setState({
+            career: data
+        })
+    }
+
+    /**
      * Function thêm, chỉnh sửa thông tin quá trình đóng BHXH
      * @param {*} data : Dữ liệu thông tin quá trình đóng BHXH
      * @param {*} addData : Quá trình đóng BHXH muốn thêm
@@ -179,17 +203,6 @@ class EmployeeCreateForm extends Component {
     handleChangeDiscipline = (data, addData) => {
         this.setState({
             disciplines: data
-        })
-    }
-
-    /**
-     * Function thêm thông tin lịch sử lương
-     * @param {*} data : Dữ liệu thông tin lịch sử lương
-     * @param {*} addData : Lịch sử lương muốn thêm
-     */
-    handleChangeSalary = (data, addData) => {
-        this.setState({
-            salaries: data
         })
     }
 
@@ -266,7 +279,7 @@ class EmployeeCreateForm extends Component {
     /** Function thêm mới thông tin nhân viên */
     save = async () => {
         let { employee, degrees, certificates, contracts, files, avatar,
-            disciplines, commendations, salaries, annualLeaves, courses } = this.state;
+            disciplines, commendations, annualLeaves, courses, major, career } = this.state;
 
         await this.setState({
             employee: {
@@ -277,9 +290,10 @@ class EmployeeCreateForm extends Component {
                 files,
                 disciplines,
                 commendations,
-                salaries,
                 annualLeaves,
-                courses
+                courses,
+                career, 
+                major
             }
         })
 
@@ -289,6 +303,12 @@ class EmployeeCreateForm extends Component {
         })
         certificates.forEach(x => {
             formData.append("fileCertificate", x.fileUpload);
+        })
+        major.forEach(x => {
+            formData.append("fileMajor", x.fileUpload);
+        })
+        career.forEach(x => {
+            formData.append("fileCareer", x.fileUpload);
         })
         contracts.forEach(x => {
             formData.append("fileContract", x.fileUpload);
@@ -303,7 +323,7 @@ class EmployeeCreateForm extends Component {
     render() {
         const { translate, employeesManager } = this.props;
 
-        const { img, employee, degrees, certificates, contracts, courses, commendations, disciplines, salaries, annualLeaves, files } = this.state;
+        const { img, employee, degrees, certificates, contracts, courses, commendations, disciplines, annualLeaves, files, major, career } = this.state;
 
         return (
             <React.Fragment>
@@ -325,8 +345,9 @@ class EmployeeCreateForm extends Component {
                             <li><a title={translate('human_resource.profile.tab_name.menu_insurrance_infor_title')} data-toggle="tab" href="#insurrance">{translate('human_resource.profile.tab_name.menu_insurrance_infor')}</a></li>
                             <li><a title={translate('human_resource.profile.tab_name.menu_contract_training_title')} data-toggle="tab" href="#contract">{translate('human_resource.profile.tab_name.menu_contract_training')}</a></li>
                             <li><a title={translate('human_resource.profile.tab_name.menu_reward_discipline_title')} data-toggle="tab" href="#reward">{translate('human_resource.profile.tab_name.menu_reward_discipline')}</a></li>
-                            <li><a title={translate('human_resource.profile.tab_name.menu_salary_sabbatical_title')} data-toggle="tab" href="#salary">{translate('human_resource.profile.tab_name.menu_salary_sabbatical')}</a></li>
+                            <li><a title={translate('menu.annual_leave_personal')} data-toggle="tab" href="#salary">{translate('menu.annual_leave_personal')}</a></li>
                             <li><a title={translate('human_resource.profile.tab_name.menu_attachments_title')} data-toggle="tab" href="#attachments">{translate('human_resource.profile.tab_name.menu_attachments')}</a></li>
+                            <li><a title={"Công việc - chuyên ngành tương đương"} data-toggle="tab" href={`#major_career`}>Công việc - chuyên ngành tương đương</a></li>
                         </ul>
                         < div className="tab-content">
                             {/* Tab thông tin chung */}
@@ -419,12 +440,7 @@ class EmployeeCreateForm extends Component {
                             <SalaryTab
                                 id="salary"
                                 pageCreate={true}
-                                salaries={salaries}
                                 annualLeaves={annualLeaves}
-
-                                handleAddSalary={this.handleChangeSalary}
-                                handleEditSalary={this.handleChangeSalary}
-                                handleDeleteSalary={this.handleChangeSalary}
 
                                 handleAddAnnualLeave={this.handleChangeAnnualLeave}
                                 handleEditAnnualLeave={this.handleChangeAnnualLeave}
@@ -440,6 +456,22 @@ class EmployeeCreateForm extends Component {
                                 handleAddFile={this.handleChangeFile}
                                 handleEditFile={this.handleChangeFile}
                                 handleDeleteFile={this.handleChangeFile}
+                            />
+                            {/* Tab công việc - chuyên ngành tương đương */}
+                            <CareerMajorTab
+                                id={`major_career`}
+                                files={files}
+                                major={major}
+                                career={career}
+                                handleChange={this.handleChange}
+
+                                handleAddMajor={this.handleChangeMajor}
+                                handleEditMajor={this.handleChangeMajor}
+                                handleDeleteMajor={this.handleChangeMajor}
+
+                                handleAddCareer={this.handleChangeCareer}
+                                handleEditCareer={this.handleChangeCareer}
+                                handleDeleteCareer={this.handleChangeCareer}
                             />
                         </div>
                     </div>

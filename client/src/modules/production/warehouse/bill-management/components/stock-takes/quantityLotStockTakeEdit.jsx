@@ -53,7 +53,7 @@ class QuantityLotStockTakeEdit extends Component {
                 let quantity = stock[0] ? stock[0].quantity : 0;
                 lotArr.push({ 
                     value: item._id, 
-                    text: item.name,
+                    text: item.code,
                     quantity: quantity,
                 });
             })
@@ -75,7 +75,7 @@ class QuantityLotStockTakeEdit extends Component {
         }
         if(willUpdateState) {
             let lotName = dataLots.find(x => x.value === value);
-            this.state.lot.lot = { _id: value, name: lotName.text, quantity: lotName.quantity };
+            this.state.lot.lot = { _id: value, code: lotName.text, quantity: lotName.quantity };
             await this.setState(state => {
                 return {
                     ...state,
@@ -145,7 +145,7 @@ class QuantityLotStockTakeEdit extends Component {
                 lot: Object.assign({}, this.EMPTY_LOT),
             }
         })
-        this.props.onDataChange(this.state.lots);
+        // this.props.onDataChange(this.state.lots);
     }
 
     handleCancelEditLot = (e) => {
@@ -183,7 +183,7 @@ class QuantityLotStockTakeEdit extends Component {
             }
         })
 
-        this.props.onDataChange(this.state.lots);
+        // this.props.onDataChange(this.state.lots);
     }
 
     handleLotNoteChange = (e) => {
@@ -239,9 +239,9 @@ class QuantityLotStockTakeEdit extends Component {
                             </div>
 
                             <div className={`form-group`}>
-                                <label className="control-label">{translate('manage_warehouse.bill_management.quantity_issue')}</label>
+                                <label className="control-label">{translate('manage_warehouse.bill_management.number')}</label>
                                 <div>
-                                    <input type="number" className="form-control" placeholder={translate('manage_warehouse.bill_management.quantity_issue')} value={lot.quantity} disabled />
+                                    <input type="number" className="form-control" placeholder={translate('manage_warehouse.bill_management.number')} value={lot.quantity} disabled />
                                 </div>
                             </div>
 
@@ -273,7 +273,7 @@ class QuantityLotStockTakeEdit extends Component {
                             <thead>
                                 <tr>
                                     <th title={translate('manage_warehouse.bill_management.lot_number')}>{translate('manage_warehouse.bill_management.lot_number')}</th>
-                                    <th title={translate('manage_warehouse.bill_management.quantity_issue')}>{translate('manage_warehouse.bill_management.quantity_issue')}</th>
+                                    <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
                                     <th title={translate('manage_warehouse.bill_management.real_quantity')}>{translate('manage_warehouse.bill_management.real_quantity')}</th>
                                     <th title={translate('manage_warehouse.bill_management.difference')}>{translate('manage_warehouse.bill_management.difference')}</th>
                                     <th title={translate('manage_warehouse.bill_management.description')}>{translate('manage_warehouse.bill_management.description')}</th>
@@ -285,7 +285,7 @@ class QuantityLotStockTakeEdit extends Component {
                                     (typeof lots !== 'undefined' && lots.length > 0) ?
                                         lots.map((x, index) =>
                                             <tr key={index}>
-                                                <td>{x.lot.name}</td>
+                                                <td>{x.lot ? x.lot.code : "Lot is deleted"}</td>
                                                 <td>{x.quantity}</td>
                                                 <td>{x.realQuantity}</td>
                                                 <td>{x.damagedQuantity}</td>

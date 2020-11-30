@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect  } from 'react-redux';
-
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
+
 import { DialogModal, ErrorLabel } from '../../../../common-components';
 import ValidationHelper from '../../../../helpers/validationHelper';
 
@@ -13,7 +13,10 @@ function ExampleEditForm(props) {
         exampleID: undefined,
         exampleName: "",
         description: "",
-        exampleNameError: undefined
+        exampleNameError: {
+            message: undefined,
+            status: true
+        }
     })
 
     const { translate, example } = props;
@@ -26,12 +29,15 @@ function ExampleEditForm(props) {
             exampleID: props.exampleID,
             exampleName: props.exampleName,
             description: props.description,
-            exampleNameError: undefined
+            exampleNameError: {
+                message: undefined,
+                status: true
+            }
         })
     }
         
     const isFormValidated = () => {
-        if (!ValidationHelper.validateName(translate, exampleName, 6, 255).status) {
+        if (!exampleNameError.status) {
             return false;
         }
         return true;
@@ -45,12 +51,12 @@ function ExampleEditForm(props) {
 
     const handleExampleName = (e) => {
         const { value } = e.target;
-        let { message } = ValidationHelper.validateName(translate, value, 6, 255);
+        let result = ValidationHelper.validateName(translate, value, 6, 255);
 
         setState({
             ...state,
             exampleName: value,
-            exampleNameError: message
+            exampleNameError: result
         });
     }
 
@@ -65,19 +71,19 @@ function ExampleEditForm(props) {
     return (
         <React.Fragment>
             <DialogModal
-                modalID={`modal-edit-example`} isLoading={example.isLoading}
-                formID={`form-edit-example`}
+                modalID={`modal-edit-example-hooks`} isLoading={example.isLoading}
+                formID={`form-edit-example-hooks`}
                 title={translate('manage_example.edit_title')}
                 disableSubmit={!isFormValidated}
                 func={save}
                 size={50}
                 maxWidth={500}
             >
-                <form id={`form-edit-example`}>
-                    <div className={`form-group ${!exampleNameError ? "" : "has-error"}`}>
+                <form id={`form-edit-example-hooks`}>
+                    <div className={`form-group ${exampleNameError ? "" : "has-error"}`}>
                         <label>{translate('manage_example.exampleName')}<span className="text-red">*</span></label>
                         <input type="text" className="form-control" value={exampleName} onChange={handleExampleName} />
-                        <ErrorLabel content={exampleNameError} />
+                        <ErrorLabel content={exampleNameError.message} />
                     </div>
                     <div className={`form-group`}>
                         <label>{translate('manage_example.description')}</label>

@@ -32,7 +32,7 @@ class ManageUserTable extends Component {
         var result = false;
         if (roles !== undefined) {
             roles.map(role => {
-                if (role.roleId.name === 'Super Admin') {
+                if (role.roleId && role.roleId.name === 'Super Admin') {
                     result = true;
                 }
                 return true;
@@ -87,7 +87,6 @@ class ManageUserTable extends Component {
     }
 
     componentDidMount() {
-        this.props.getUser();
         this.props.getUser({ limit: this.state.limit, page: this.state.page });
     }
 

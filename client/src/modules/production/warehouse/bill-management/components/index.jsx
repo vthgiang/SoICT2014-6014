@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { SelectMulti, DatePicker, DataTableSetting, PaginateBar } from '../../../../../common-components';
-
-// import BillDetailForm from './billDetailForm';
-// import BillCreateForm from './billCreateForm';
-// import BillEditForm from './billEditForm';
 
 import BookManagement from '../components/stock-book';
 import ReceiptManagement from '../components/good-receipts';
@@ -25,6 +20,7 @@ class BillManagement extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            currentRole: localStorage.getItem("currentRole"),
             limit: 5,
             page: 1,
             group: '',
@@ -32,10 +28,10 @@ class BillManagement extends Component {
     }
 
     componentDidMount() {
-        const { limit, page } = this.state;
-        this.props.getBillsByType({ page, limit });
-        this.props.getBillsByType();
-        this.props.getAllStocks();
+        const { limit, page, currentRole } = this.state;
+        this.props.getBillsByType({ page, limit, managementLocation: currentRole });
+        this.props.getBillsByType({ managementLocation: currentRole });
+        this.props.getAllStocks({ managementLocation: currentRole });
         this.props.getUser();
         this.props.getAllGoods();
         this.props.getCustomers();
@@ -81,6 +77,7 @@ class BillManagement extends Component {
         this.setState({ page });
         const data = {
             limit: this.state.limit,
+            managementLocation: this.state.currentRole,
             page: page,
             code: this.state.code,
             status: this.state.status,
@@ -89,6 +86,8 @@ class BillManagement extends Component {
             startDate: this.state.startDate,
             endDate: this.state.endDate,
             customer: this.state.customer,
+            supplier: this.state.supplier,
+            toStock: this.state.toStock,
             creator: this.state.creator
         };
         const { group } = this.state;
@@ -103,6 +102,7 @@ class BillManagement extends Component {
         const data = {
             limit: number,
             page: this.state.page,
+            managementLocation: this.state.currentRole,
             code: this.state.code,
             status: this.state.status,
             stock: this.state.stock,
@@ -110,6 +110,8 @@ class BillManagement extends Component {
             startDate: this.state.startDate,
             endDate: this.state.endDate,
             customer: this.state.customer,
+            supplier: this.state.supplier,
+            toStock: this.state.toStock,
             creator: this.state.creator
         };
         const { group } = this.state;
@@ -124,6 +126,15 @@ class BillManagement extends Component {
             return {
                 ...state,
                 stock: value
+            }
+        })
+    }
+
+    handleToStockChange = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                toStock: value
             }
         })
     }
@@ -174,10 +185,20 @@ class BillManagement extends Component {
         })
     }
 
+    handleSupplierChange = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                supplier: value
+            }
+        })
+    }
+
     handleSubmitSearch = () => {
         let data = {
             page: this.state.page,
             limit: this.state.limit,
+            managementLocation: this.state.currentRole,
             code: this.state.code,
             status: this.state.status,
             stock: this.state.stock,
@@ -185,6 +206,8 @@ class BillManagement extends Component {
             startDate: this.state.startDate,
             endDate: this.state.endDate,
             customer: this.state.customer,
+            supplier: this.state.supplier,
+            toStock: this.state.toStock,
             creator: this.state.creator
         }
         const { group } = this.state;
@@ -231,7 +254,7 @@ class BillManagement extends Component {
             }
         })
         const { limit } = this.state;
-        await this.props.getBillsByType({ page, limit})
+        await this.props.getBillsByType({ page, limit, managementLocation: this.state.currentRole })
     }
 
     handleGoodReceipt = async () => {
@@ -246,7 +269,7 @@ class BillManagement extends Component {
             }
         })
 
-        await this.props.getBillsByType({ page, limit, group })
+        await this.props.getBillsByType({ page, limit, group, managementLocation: this.state.currentRole })
     }
 
     handleGoodIssue = async () => {
@@ -261,7 +284,7 @@ class BillManagement extends Component {
             }
         })
 
-        await this.props.getBillsByType({ page, limit, group })
+        await this.props.getBillsByType({ page, limit, group, managementLocation: this.state.currentRole })
     }
 
     handleGoodReturn = async () => {
@@ -276,7 +299,7 @@ class BillManagement extends Component {
             }
         })
 
-        await this.props.getBillsByType({ page, limit, group })
+        await this.props.getBillsByType({ page, limit, group, managementLocation: this.state.currentRole })
     }
 
     handleStockTake = async () => {
@@ -291,7 +314,7 @@ class BillManagement extends Component {
             }
         })
 
-        await this.props.getBillsByType({ page, limit, group })
+        await this.props.getBillsByType({ page, limit, group, managementLocation: this.state.currentRole })
     }
 
     handleStockRotate = async () => {
@@ -306,7 +329,7 @@ class BillManagement extends Component {
             }
         })
 
-        await this.props.getBillsByType({ page, limit, group })
+        await this.props.getBillsByType({ page, limit, group, managementLocation: this.state.currentRole })
     }
 
     getPartner = () => {
@@ -323,13 +346,69 @@ class BillManagement extends Component {
         return partnerArr;
     }
 
+    checkRoleApprovers = (bill) => {
+        const { approvers } = bill;
+        const userId = localStorage.getItem("userId");
+        let approverIds = approvers.map(x => x.approver._id);
+        if (approverIds.includes(userId) && approvers[approverIds.indexOf(userId)].approvedTime === null) {
+            return true;
+        }
+        return false
+    }
+
+    handleFinishedApproval = (bill) => {
+        const userId = localStorage.getItem("userId");
+        const data = {
+            approverId: userId
+        }
+        this.props.editBill(bill._id, data);
+    }
+
+    checkRoleQualityControlStaffs = (bill) => {
+        const { qualityControlStaffs } = bill;
+        const userId = localStorage.getItem("userId");
+        let qualityControlStaffId = qualityControlStaffs.map(x => x.staff._id);
+        if (qualityControlStaffId.includes(userId) && qualityControlStaffs[qualityControlStaffId.indexOf(userId)].time === null) {
+            return true;
+        }
+        return false
+    }
+
+    handleFinishedQualityControlStaff = (bill) => {
+        const userId = localStorage.getItem("userId");
+        const data = {
+            qualityControlStaffId: userId
+        }
+        this.props.editBill(bill._id, data);
+    }
+
+    checkRoleCanEdit = (bill) => {
+        const { responsibles, accountables, creator } = bill;
+        const userId = localStorage.getItem("userId");
+        let staffId = [];
+        if(responsibles.length > 0) {
+            responsibles.map(x => {
+                staffId.push(x._id)
+            })
+        }
+        if(accountables.length > 0) {
+            accountables.map(x => {
+                staffId.push(x._id)
+            })
+        }
+        if(creator) {
+                staffId.push(creator._id)
+        }
+        if (staffId.includes(userId)) {
+            return true;
+        }
+        return false
+    }
+
     render() {
 
-        const { translate, bills, stocks, user} = this.props;
-        const { listPaginate, totalPages, page } = bills;
-        const { listStocks } = stocks;
-        const { startDate, endDate, group, currentRow } = this.state;
-        const dataPartner = this.getPartner();
+        const { translate, bills, stocks} = this.props;
+        const { group } = this.state;
 
         return (
             <div className="nav-tabs-custom">
@@ -375,12 +454,18 @@ class BillManagement extends Component {
                         handleTypeChange={this.handleTypeChange}
                         handleStatusChange={this.handleStatusChange}
                         handleCodeChange={this.handleCodeChange}
-                        handlePartnerChange={this.handlePartnerChange}
+                        handlePartnerChange={this.handleSupplierChange}
                         handleSubmitSearch={this.handleSubmitSearch}
                         handleChangeStartDate={this.handleChangeStartDate}
                         handleChangeEndDate={this.handleChangeEndDate}
                         getPartner={this.getPartner}
                         handleShowDetailInfo={this.handleShowDetailInfo}
+                        checkRoleApprovers={this.checkRoleApprovers}
+                        handleFinishedApproval={this.handleFinishedApproval}
+                        checkRoleQualityControlStaffs={this.checkRoleQualityControlStaffs}
+                        handleFinishedQualityControlStaff={this.handleFinishedQualityControlStaff}
+                        checkRoleCanEdit={this.checkRoleCanEdit}
+
                     />
                 }
 
@@ -401,6 +486,11 @@ class BillManagement extends Component {
                         handleChangeEndDate={this.handleChangeEndDate}
                         getPartner={this.getPartner}
                         handleShowDetailInfo={this.handleShowDetailInfo}
+                        checkRoleApprovers={this.checkRoleApprovers}
+                        handleFinishedApproval={this.handleFinishedApproval}
+                        checkRoleQualityControlStaffs={this.checkRoleQualityControlStaffs}
+                        handleFinishedQualityControlStaff={this.handleFinishedQualityControlStaff}
+                        checkRoleCanEdit={this.checkRoleCanEdit}
                     />
                 }
 
@@ -421,6 +511,11 @@ class BillManagement extends Component {
                         handleChangeEndDate={this.handleChangeEndDate}
                         getPartner={this.getPartner}
                         handleShowDetailInfo={this.handleShowDetailInfo}
+                        checkRoleApprovers={this.checkRoleApprovers}
+                        handleFinishedApproval={this.handleFinishedApproval}
+                        checkRoleQualityControlStaffs={this.checkRoleQualityControlStaffs}
+                        handleFinishedQualityControlStaff={this.handleFinishedQualityControlStaff}
+                        checkRoleCanEdit={this.checkRoleCanEdit}
                     />
                 }
 
@@ -441,6 +536,11 @@ class BillManagement extends Component {
                         handleChangeEndDate={this.handleChangeEndDate}
                         getPartner={this.getPartner}
                         handleShowDetailInfo={this.handleShowDetailInfo}
+                        checkRoleApprovers={this.checkRoleApprovers}
+                        handleFinishedApproval={this.handleFinishedApproval}
+                        checkRoleQualityControlStaffs={this.checkRoleQualityControlStaffs}
+                        handleFinishedQualityControlStaff={this.handleFinishedQualityControlStaff}
+                        checkRoleCanEdit={this.checkRoleCanEdit}
                     />
                 }
 
@@ -455,12 +555,17 @@ class BillManagement extends Component {
                         handleTypeChange={this.handleTypeChange}
                         handleStatusChange={this.handleStatusChange}
                         handleCodeChange={this.handleCodeChange}
-                        handlePartnerChange={this.handlePartnerChange}
+                        handlePartnerChange={this.handleToStockChange}
                         handleSubmitSearch={this.handleSubmitSearch}
                         handleChangeStartDate={this.handleChangeStartDate}
                         handleChangeEndDate={this.handleChangeEndDate}
                         getPartner={this.getPartner}
                         handleShowDetailInfo={this.handleShowDetailInfo}
+                        checkRoleApprovers={this.checkRoleApprovers}
+                        handleFinishedApproval={this.handleFinishedApproval}
+                        checkRoleQualityControlStaffs={this.checkRoleQualityControlStaffs}
+                        handleFinishedQualityControlStaff={this.handleFinishedQualityControlStaff}
+                        checkRoleCanEdit={this.checkRoleCanEdit}
                     />
                 }
                 </div>
@@ -478,7 +583,8 @@ const mapDispatchToProps = {
     getAllStocks: StockActions.getAllStocks,
     getUser: UserActions.get,
     getAllGoods: GoodActions.getAllGoods,
-    getCustomers: CrmCustomerActions.getCustomers
+    getCustomers: CrmCustomerActions.getCustomers,
+    editBill: BillActions.editBill
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(BillManagement));

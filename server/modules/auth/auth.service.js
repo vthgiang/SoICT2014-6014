@@ -48,6 +48,7 @@ exports.login = async (fingerprint, data) => {
         if (!user.active) throw ["acc_blocked"];
         if (!company.active) throw ["service_off"];
     }
+
     const token = await jwt.sign(
         {
             _id: user._id,
@@ -68,6 +69,16 @@ exports.login = async (fingerprint, data) => {
 
     user.status = 0;
     user.numberDevice += 1;
+
+    if (data.pushNotificationToken) {
+        var existTokens = user.pushNotificationTokens.filter(
+            (token) => token === data.pushNotificationToken
+        );
+        if (existTokens.length === 0) {
+            user.pushNotificationTokens.push(data.pushNotificationToken);
+        }
+    }
+
     user.save();
 
     return {
