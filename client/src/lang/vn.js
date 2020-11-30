@@ -4378,6 +4378,7 @@ export default {
                 edit_success: "Chỉnh sửa lô hàng thành công",
                 edit_faile: "Chỉnh sửa lô hàng thất bại",
                 get_lot_failed: "Lấy lô hàng thất bại",
+                push_lot: "Lô chưa được xếp vào kho"
             },
         },
 
