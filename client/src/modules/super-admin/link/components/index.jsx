@@ -133,7 +133,7 @@ class ManageLink extends Component {
                             </thead>
                             <tbody>
                                 {
-                                    link.listPaginate && link.listPaginate.length > 0 ? link.listPaginate.map(link =>
+                                    link.listPaginate && link.listPaginate.length > 0 && link.listPaginate.map(link =>
                                         <tr key={link._id}>
                                             <td>{link.url}</td>
                                             <td>{link.category}</td>
@@ -143,13 +143,15 @@ class ManageLink extends Component {
                                                 <a className="edit" onClick={() => this.handleEdit(link)}><i className="material-icons">edit</i></a>
                                             </td>
                                         </tr>
-                                    ) : link.isLoading ?
-                                            <tr><td colSpan={5}>{translate('confirm.loading')}</td></tr> :
-                                            <tr><td colSpan={5}>{translate('confirm.no_data')}</td></tr>
+                                    )
                                 }
                             </tbody>
                         </table>
-
+                        {
+                            link.isLoading ?
+                            <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                            link.listPaginate && link.listPaginate.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        }
                         {/* PaginateBar */}
                         <PaginateBar display={link.listPaginate.length} total={link.totalDocs}  pageTotal={link.totalPages} currentPage={link.page} func={this.setPage} />
                     </React.Fragment>

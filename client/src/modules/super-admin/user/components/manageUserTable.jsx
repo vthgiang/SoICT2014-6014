@@ -175,7 +175,6 @@ class ManageUserTable extends Component {
                         }
                     </tbody>
                 </table>
-
                 {
                     user.isLoading ?
                     <div className="table-info-panel">{translate('confirm.loading')}</div> :

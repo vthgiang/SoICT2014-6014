@@ -124,7 +124,7 @@ class ManageLinkSystem extends Component {
                             </thead>
                             <tbody>
                                 {
-                                    systemLinks.listPaginate.length > 0 ? systemLinks.listPaginate.map(link =>
+                                    systemLinks.listPaginate.length > 0 && systemLinks.listPaginate.map(link =>
                                         <tr key={link._id}>
                                             <td>{link.url}</td>
                                             <td>{link.category}</td>
@@ -148,13 +148,15 @@ class ManageLinkSystem extends Component {
                                                 />
                                             </td>
                                         </tr>
-                                    ) : systemLinks.isLoading ?
-                                            <tr><td colSpan={5}>{translate('general.loading')}</td></tr> :
-                                            <tr><td colSpan={5}>{translate('general.no_data')}</td></tr>
+                                    )
                                 }
                             </tbody>
                         </table>
-
+                        {
+                            systemLinks.isLoading ?
+                            <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                            systemLinks.listPaginate && systemLinks.listPaginate.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        }
                         {/* PaginateBar */}
                         <PaginateBar display={systemLinks.listPaginate.length} total={systemLinks.totalDocs} pageTotal={systemLinks.totalPages} currentPage={systemLinks.page} func={this.setPage} />
                     </React.Fragment>
