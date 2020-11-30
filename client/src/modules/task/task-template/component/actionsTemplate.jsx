@@ -15,7 +15,6 @@ class ActionForm extends Component {
             description: '',
             mandatory: true,
         };
-        console.log('thisporps', this.props.initialData);
         this.state = {
             EMPTY_ACTION: Object.assign({}, EMPTY_ACTION),
             editAction: false,
@@ -234,8 +233,9 @@ class ActionForm extends Component {
                         <ErrorLabel content={this.state.action.errorOnDescription}/>
                     </div> */}
                     <QuillEditor
+                        id={'actionsTemplate'}
                         getTextData={this.handleChangeActionDesc}
-                        value={action.description}
+                        value={action && action.description}
                     />
                 </div>
 
