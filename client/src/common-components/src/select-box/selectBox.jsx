@@ -108,10 +108,13 @@ class SelectBox extends Component {
             return false;
         }
         for (let i = 0; i < items1.length; ++i) {
-            if (!(items1[i].value instanceof Array) && items1[i].value !== items2[i].value) { // Kiểu bình thường
-                return false;
-            } else if (items1[i].value instanceof Array && JSON.stringify(items1[i].value) !== JSON.stringify(items2[i].value)) { // Kiểu group
-                return false;
+            if(!items1[i] || !items2[i]) return false;
+            else {
+                if (!(items1[i].value instanceof Array) && items1[i].value !== items2[i].value) { // Kiểu bình thường
+                    return false;
+                } else if (items1[i].value instanceof Array && JSON.stringify(items1[i].value) !== JSON.stringify(items2[i].value)) { // Kiểu group
+                    return false;
+                }
             }
         }
         return true;
