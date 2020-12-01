@@ -29,7 +29,7 @@ exports.getAllLots = async (query, portal) => {
                         { path: 'lotLogs.bill', select: 'id code type' },
                         { path: 'lotLogs.binLocations.binLocation', select: 'id code name' }
                     ])
-                    .sort({ 'expirationDate': 'asc' })
+                    .sort({ 'updatedAt': 'desc' })
             }
             else {
                 lots = await Lot(connect(DB_CONNECTION, portal))
@@ -40,7 +40,7 @@ exports.getAllLots = async (query, portal) => {
                         { path: 'lotLogs.bill', select: 'id code type' },
                         { path: 'lotLogs.binLocations.binLocation', select: 'id code name' }
                     ])
-                    .sort({ 'expirationDate': 'asc' })
+                    .sort({ 'updatedAt': 'desc' })
             }
         }
         else {
@@ -53,7 +53,7 @@ exports.getAllLots = async (query, portal) => {
                         { path: 'lotLogs.bill', select: 'id code type' },
                         { path: 'lotLogs.binLocations.binLocation', select: 'id code name' }
                     ])
-                    .sort({ 'expirationDate': 'asc' })
+                    .sort({ 'updatedAt': 'desc' })
             }
             else {
                 lots = await Lot(connect(DB_CONNECTION, portal))
@@ -64,7 +64,7 @@ exports.getAllLots = async (query, portal) => {
                         { path: 'lotLogs.bill', select: 'id code type' },
                         { path: 'lotLogs.binLocations.binLocation', select: 'id code name' }
                     ])
-                    .sort({ 'expirationDate': 'asc' })
+                    .sort({ 'updatedAt': 'desc' })
             }
         }
     }
@@ -102,7 +102,7 @@ exports.getAllLots = async (query, portal) => {
                         { path: 'lotLogs.bill', select: 'id code type' },
                         { path: 'lotLogs.binLocations.binLocation', select: 'id code name' }
                     ],
-                    sort: { 'expirationDate': 'asc' }
+                    sort: { 'updatedAt': 'desc' }
                 })
         }
         else {
@@ -138,7 +138,7 @@ exports.getAllLots = async (query, portal) => {
                         { path: 'lotLogs.bill', select: 'id code type' },
                         { path: 'lotLogs.binLocations.binLocation', select: 'id code name' }
                     ],
-                    sort: { 'expirationDate': 'asc' }
+                    sort: { 'updatedAt': 'desc' }
                 })
         }
     }
@@ -329,7 +329,7 @@ exports.editLot = async (id, data, portal) => {
         .populate([
             { path: 'good' },
             { path: 'stocks.binLocations.binLocation' },
-            { path: 'stocks.stock' },
+            // { path: 'stocks.stock' },
             { path: 'lotLogs.bill', select: 'id code type' },
             { path: 'lotLogs.binLocations.binLocation' },
             { path: 'lotLogs.stock', select: 'id name' },

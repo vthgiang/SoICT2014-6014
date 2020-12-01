@@ -441,6 +441,13 @@ class QuoteCreateForm extends Component {
                                     setDiscountsOfOrderValueChecked={(checked) => this.setDiscountsOfOrderValueChecked(checked)}
                                     handleShippingFeeChange={this.handleShippingFeeChange}
                                     handleDeliveryTimeChange={this.handleDeliveryTimeChange}
+                                    setCurrentSlasOfGood={(data) => {
+                                        this.setCurrentSlasOfGood(data);
+                                    }}
+                                    setCurrentDiscountsOfGood={(data) => {
+                                        this.setCurrentDiscountsOfGood(data);
+                                    }}
+                                    customer={customer}
                                 />
                             )}
                         </div>

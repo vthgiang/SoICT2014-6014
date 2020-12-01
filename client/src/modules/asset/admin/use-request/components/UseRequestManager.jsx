@@ -88,7 +88,7 @@ class UseRequestManager extends Component {
         if (day.length < 2) {
             day = '0' + day;
         }
-        if (typeRegisterForUse == 2) {
+        if (typeRegisterForUse === 2) {
             let hour = d.getHours(),
                 minutes = d.getMinutes();
             if (hour < 10) {
