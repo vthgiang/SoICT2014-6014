@@ -129,6 +129,7 @@ class SelectBox extends Component {
                 value: prevState.innerChange ? prevState.value : nextProps.value, // Lưu value ban đầu vào state
                 innerChange: false,
                 id: nextProps.id,
+                idChange: nextProps.idChange,
                 items: nextProps.items,
                 disabled: nextProps.disabled !== undefined ? nextProps.disabled : false
             }
@@ -139,7 +140,8 @@ class SelectBox extends Component {
 
 
     componentDidMount = () => {
-        const { id, onChange, options = { minimumResultsForSearch: 1 }, multiple } = this.props;
+        const { id, onChange, options = { minimumResultsForSearch: 1 }, multiple, getValueAndIdChange } = this.props;
+
         window.$("#" + id).select2(options);
 
         window.$("#" + id).on("change", () => {
@@ -151,6 +153,9 @@ class SelectBox extends Component {
                     value: multiple ? value : value[0],
                 }
             });
+            if (this.state.idChange && getValueAndIdChange) {
+                getValueAndIdChange(value, this.state.idChange)
+            };
             if (onChange) {
                 onChange(value); // Thông báo lại cho parent component về giá trị mới (để parent component lưu vào state của nó)
             }

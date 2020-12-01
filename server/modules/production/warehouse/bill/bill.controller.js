@@ -146,3 +146,27 @@ exports.getBillsByCommand = async (req, res) => {
         })
     }
 }
+
+
+exports.createManyProductBills = async (req, res) => {
+    try {
+        const data = req.body;
+        const bills = await BillService.createManyProductBills(data, req.portal);
+
+        await Logger.info(req.user.email, 'CREATE_MANY_PRODUCT_BILL', req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ['create_product_bill_successfully'],
+            content: bills
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, 'CREATE_MANY_PRODUCT_BILL', req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ['create_product_bill_failed'],
+            content: error.message
+        })
+    }
+}
