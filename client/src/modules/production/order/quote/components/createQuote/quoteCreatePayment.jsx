@@ -303,25 +303,29 @@ class QuoteCreatePayment extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 shopping-bonus-good">
-                        <div className="shopping-bonus-good-title">Các sản phẩm được tặng kèm</div>
-                        {allOfBonusGood.map((goodOfBonus) => (
-                            <div className="shopping-bonus-good-element">
-                                <div className="shopping-bonus-good-element-info">{`${goodOfBonus.good.code} - ${goodOfBonus.good.name}`} </div>
-                                <div className="shopping-bonus-good-element-quantity">{`${goodOfBonus.quantityOfBonusGood} ${goodOfBonus.good.baseUnit}`}</div>
-                                {goodOfBonus.expirationDate ? (
-                                    <div className="shopping-bonus-good-element-date">Hạn sử dụng:&ensp; {goodOfBonus.expirationDate}</div>
-                                ) : (
-                                    ""
-                                )}
-                            </div>
-                        ))}
-                        {/* <div className="shopping-bonus-good-element">
+                    {allOfBonusGood.length ? (
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 shopping-bonus-good">
+                            <div className="shopping-bonus-good-title">Các sản phẩm được tặng kèm</div>
+                            {allOfBonusGood.map((goodOfBonus) => (
+                                <div className="shopping-bonus-good-element">
+                                    <div className="shopping-bonus-good-element-info">{`${goodOfBonus.good.code} - ${goodOfBonus.good.name}`} </div>
+                                    <div className="shopping-bonus-good-element-quantity">{`${goodOfBonus.quantityOfBonusGood} ${goodOfBonus.good.baseUnit}`}</div>
+                                    {goodOfBonus.expirationDate ? (
+                                        <div className="shopping-bonus-good-element-date">Hạn sử dụng:&ensp; {goodOfBonus.expirationDate}</div>
+                                    ) : (
+                                        ""
+                                    )}
+                                </div>
+                            ))}
+                            {/* <div className="shopping-bonus-good-element">
                             <div className="shopping-bonus-good-element-info">HAB - Bún chả </div>
                             <div className="shopping-bonus-good-element-quantity">5 tô</div>
                             <div className="shopping-bonus-good-element-date">Hạn sử dụng:&ensp; 10-11-2021</div>
                         </div> */}
-                    </div>
+                        </div>
+                    ) : (
+                        ""
+                    )}
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 shopping-payment">
                         <div className="shopping-payment-title">Tổng thanh toán</div>
                         <div className="shopping-payment-content">
