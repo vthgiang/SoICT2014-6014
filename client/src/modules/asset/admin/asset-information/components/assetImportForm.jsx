@@ -130,6 +130,8 @@ class AssetImportForm extends Component {
      * @param {*} serial :số serial của ngày
      */
     convertExcelDateToJSDate = (serial, type) => {
+        if(!serial) return undefined;
+
         let utc_days = Math.floor(serial - 25569);
         let utc_value = utc_days * 86400;
         let date_info = new Date(utc_value * 1000);
