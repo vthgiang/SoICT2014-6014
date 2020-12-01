@@ -3843,6 +3843,8 @@ export default {
             delete_fail: "Delete example fail!",
             add: "Add example",
             add_title: "Add a new example",
+            add_multi_example: "Add many new examples",
+            add_one_example: "Add 1 new example",
             add_success: "Add example successfully!",
             add_fail: "Add example fail!",
             example_description: "Example Description",

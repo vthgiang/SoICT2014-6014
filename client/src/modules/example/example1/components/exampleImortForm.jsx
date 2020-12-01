@@ -98,14 +98,14 @@ class ExampleImportForm extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID={`modal_import_file_example`} isLoading={false}
-                    formID={`form_import_file_example`}
+                    modalID={`modal-import-file-example`} isLoading={false}
+                    formID={`form-import-file-example`}
                     title={translate('human_resource.add_data_by_excel')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                     size={50}
                 >
-                    <form className="form-group" id={`form_import_file_example`}>
+                    <form className="form-group" id={`form-import-file-example`}>
                         <div className="col-md-12 col-xs-12">
                             <ConFigImportFile
                                 id={`import_asset_config${id}`}
@@ -148,14 +148,8 @@ class ExampleImportForm extends Component {
     }
 }
 
-
-function mapStateToProps(state) {
-    const example = state.example1;
-    return { example }
-}
-
 const mapDispatchToProps = {
     createExample: exampleActions.createExample,
     getExamples: exampleActions.getExamples,
 }
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ExampleImportForm)); 
+export default connect(null, mapDispatchToProps)(withTranslate(ExampleImportForm)); 

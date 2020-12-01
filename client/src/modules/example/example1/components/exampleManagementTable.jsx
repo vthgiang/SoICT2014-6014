@@ -136,10 +136,10 @@ class ExampleManagementTable extends Component {
                         <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
                             <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_example.add_title')} >{translate('manage_example.add')}</button>
                             <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
-                                <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal_import_file_example').modal('show')} title={translate('human_resource.salary.add_import_title')}>
+                                <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-file-example').modal('show')} title={translate('human_resource.salary.add_multi_example')}>
                                     {translate('human_resource.salary.add_import')}</a></li>
-                                <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-create-example').modal('show')} title={translate('human_resource.salary.add_by_hand_title')}>
-                                    {translate('human_resource.salary.add_by_hand')}</a></li>
+                                <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-create-example').modal('show')} title={translate('manage_example.add_one_example')}>
+                                    {translate('manage_example.add_example')}</a></li>
                             </ul>
                         </div>
                         <div className="form-group">
