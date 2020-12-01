@@ -4512,6 +4512,8 @@ export default {
             delete_fail: "Xóa ví dụ thất bại!",
             add: "Thêm ví dụ",
             add_title: "Thêm mới ví dụ",
+            add_multi_example: "Thêm nhiều ví dụ",
+            add_one_example: "Thêm một ví dụ",
             add_success: "Thêm ví dụ thành công!",
             add_fail: "Thêm ví dụ thất bại!",
             example_description: "Mô tả ví dụ",
