@@ -8,6 +8,10 @@ import { LotActions } from '../../../warehouse/inventory-management/redux/action
 import GoodReceiptCreateForm from './ goodReceiptCreateForm';
 import ManufacturingLotDetailForm from './manufacturingLotDetailForm';
 import ManufacturingLotEditFrom from './manufacturingLotEditForm';
+import { StockActions } from '../../../warehouse/stock-management/redux/actions';
+import { UserActions } from '../../../../super-admin/user/redux/actions';
+import { generateCode } from '../../../../../helpers/generateCode';
+
 class ManufacturingLotManagementTable extends Component {
     constructor(props) {
         super(props);
@@ -28,7 +32,9 @@ class ManufacturingLotManagementTable extends Component {
             page: this.state.page,
             limit: this.state.limit
         });
-        this.props.getAllGoodsByType({ type: "product" })
+        this.props.getAllGoodsByType({ type: "product" });
+        this.props.getAllStocks();
+        this.props.getAllUserOfCompany();
     }
 
     setLimit = async (limit) => {
@@ -142,6 +148,13 @@ class ManufacturingLotManagementTable extends Component {
     }
 
     handleCreateGoodReceipt = async (lot) => {
+        await this.setState({
+            lotId: lot._id,
+            currentLot: lot,
+            billCode: generateCode("BILL")
+        });
+
+
         window.$('#modal-create-bill-issue-product').modal('show');
 
     }
@@ -161,7 +174,11 @@ class ManufacturingLotManagementTable extends Component {
                     <ManufacturingLotDetailForm lotDetail={this.state.lotDetail} />
                 }
                 {
-                    <GoodReceiptCreateForm />
+                    <GoodReceiptCreateForm
+                        lotId={this.state.lotId}
+                        lot={this.state.currentLot}
+                        billCode={this.state.billCode}
+                    />
                 }
                 {
                     this.state.currentRow &&
@@ -326,7 +343,9 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     getAllManufacturingLots: LotActions.getAllManufacturingLots,
-    getAllGoodsByType: GoodActions.getAllGoodsByType
+    getAllGoodsByType: GoodActions.getAllGoodsByType,
+    getAllStocks: StockActions.getAllStocks,
+    getAllUserOfCompany: UserActions.getAllUserOfCompany
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManufacturingLotManagementTable));

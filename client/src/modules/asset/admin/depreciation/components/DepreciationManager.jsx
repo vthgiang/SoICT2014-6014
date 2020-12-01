@@ -521,7 +521,7 @@ class DepreciationManager extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {lists &&
+                            {lists ?
                                 lists.map((x, index) => {
                                     let result = this.calculateDepreciation(x.depreciationType, x.cost, x.usefulLife, x.estimatedTotalProduction, x.unitsProducedDuringTheYears, x.startDepreciation);
                                     return (
@@ -543,7 +543,7 @@ class DepreciationManager extends Component {
                                             </td>
                                         </tr>
                                     )
-                                })
+                                }) : null
                             }
                         </tbody>
                     </table>

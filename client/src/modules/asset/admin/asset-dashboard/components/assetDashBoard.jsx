@@ -523,7 +523,7 @@ class DashBoardAssets extends Component {
                         <li><a href="#administration-asset-statistics" data-toggle="tab" onClick={() => this.handleNavTabs("assetStatistics")}>Thống kê theo trạng thái và giá trị</a></li>
                         <li><a href="#administration-purchase-disposal" data-toggle="tab" onClick={() => this.handleNavTabs("purchaseDisposal")}>{translate('asset.dashboard.asset_purchase_and_dispose')}</a></li>
                         <li><a href="#administration-incident-maintenance" data-toggle="tab" onClick={() => this.handleNavTabs("incidentMaintenance")}>{translate('asset.dashboard.asset_incident_and_maintenance')}</a></li>
-                        {/* <li><a href="#administration-asset-is-expired" data-toggle="tab" onClick={() => this.handleNavTabs("assetIsExpired")}>Hạn sử dụng tài sản</a> </li> */}
+                        <li><a href="#administration-asset-is-expired" data-toggle="tab" onClick={() => this.handleNavTabs("assetIsExpired")}>Hạn sử dụng tài sản</a> </li>
                         {exportData && currentTab && exportData[currentTab] && <ExportExcel type="link" style={{ padding: "15px" }} id="export-asset-dashboard" exportData={exportData[currentTab]} />}
                     </ul>
                     <div className="tab-content">
@@ -584,7 +584,7 @@ class DashBoardAssets extends Component {
                         </div>
 
                         {/* Danh sách các tài sản sắp hết hạn */}
-                        {/* <div className="tab-pane" id="administration-asset-is-expired">
+                        <div className="tab-pane" id="administration-asset-is-expired">
                             <LazyLoadComponent
                                 key="AdministrationAssetExpired"
                             >
@@ -592,7 +592,7 @@ class DashBoardAssets extends Component {
                                     setAssetIsExpiredExportData={this.setAssetIsExpiredExportData}
                                 />
                             </LazyLoadComponent>
-                        </div> */}
+                        </div>
                     </div>
                 </div>
             </div>

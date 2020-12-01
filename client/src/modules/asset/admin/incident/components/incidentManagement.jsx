@@ -403,7 +403,7 @@ class IncidentManagement extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(lists && lists.length !== 0) &&
+                            {(lists && lists.length !== 0) ?
                                 lists.map((x, index) => {
                                     return (
                                         <tr key={index}>
@@ -428,7 +428,7 @@ class IncidentManagement extends Component {
                                             </td>
                                         </tr>
                                     )
-                                })
+                                }) : null
                             }
                         </tbody>
                     </table>

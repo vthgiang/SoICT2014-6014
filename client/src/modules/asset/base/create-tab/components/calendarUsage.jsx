@@ -21,10 +21,9 @@ class CalendarUsage extends Component {
             currentEvents: [],
             nowDate: new Date(),
             data: [],
-            dataStatus: 1,
             updateUsageLogs: 1,
-            checkRefresh: false,
         }
+        this.dataStatus = 1;
     }
 
     componentDidMount() {
@@ -33,9 +32,9 @@ class CalendarUsage extends Component {
 
     shouldComponentUpdate = async (nextProps, nextState) => {
         if (nextProps.id !== this.state.id) {
-            await this.setState({
-                checkRefresh: true,
-            });
+            this.props.getRecommendDistributeByAsset(nextProps.assetId);
+            this.dataStatus = 1;
+            return true;
         }
         if (nextState.clickInfo !== this.state.clickInfo || nextState.currentEvent !== this.state.currentEvent) {
             // bắt sự kiện bấm nút phê duyệt, không phê duyệt, xóa
@@ -46,8 +45,8 @@ class CalendarUsage extends Component {
             this.handleClick();
             return false;
         }
-        if (nextProps.recommendDistribute && nextProps.recommendDistribute.listRecommendDistributesByAsset && this.state.dataStatus == 1) {
-            if (this.state.dataStatus === 1) {
+        if (nextProps.recommendDistribute && nextProps.recommendDistribute.listRecommendDistributesByAsset && this.dataStatus == 1) {
+            if (this.dataStatus === 1) {
                 let listRecommendDistributes = nextProps.recommendDistribute.listRecommendDistributesByAsset
                 let data = this.state.data
                 let RecommendDistributesByAsset = [];
@@ -65,13 +64,16 @@ class CalendarUsage extends Component {
                         RecommendDistributesByAsset.push(recommendDistribute);
                     }
                 }
+
+                this.dataStatus = 2;
                 await this.setState(state => {
                     return {
                         ...state,
                         data: [...state.data, ...RecommendDistributesByAsset],
-                        dataStatus: 2,
                     }
                 })
+
+                return true;
             }
 
             return false;
@@ -83,19 +85,6 @@ class CalendarUsage extends Component {
             let userlist = this.props.user.list, departmentlist = this.props.department.list;
             let newUsage = nextProps.assetsManager.currentAsset.usageLogs[length - 1];
             let title;
-            await this.setState({
-                ...this.state,
-                usageLogs: nextProps.assetsManager.currentAsset.usageLogs,
-                updateUsageLogs: 2,
-                createUsage: false
-            })
-            if (this.props.id == 'edit') {
-                this.props.handleChange({
-                    newUsage: newUsage,
-                    calendar: "CalendarUsage"
-                })
-            }
-
             let calendarApi = this.state.currentRow.view.calendar;
             if (newUsage.usedByUser && newUsage.usedByOrganizationalUnit) {
                 let usedByUser = userlist.filter(item => item._id === newUsage.usedByUser).pop() ? userlist.filter(item => item._id === newUsage.usedByUser).pop().name : "Chưa có đối tượng sử dụng"
@@ -115,6 +104,29 @@ class CalendarUsage extends Component {
                 start: newUsage.startDate,
                 end: newUsage.endDate,
             })
+
+            let data = this.state.data
+            data.push({
+                id: newUsage._id,
+                title: title,
+                color: '#337ab7',
+                start: newUsage.startDate,
+                end: newUsage.endDate,
+            })
+            this.setState({
+                data: data,
+                usageLogs: nextProps.assetsManager.currentAsset.usageLogs,
+                createUsage: false
+            })
+
+            if (this.props.id == `edit-calendar-create-tab-${this.props.assetId}`) {
+                this.props.handleChange({
+                    newUsage: newUsage,
+                    calendar: "CalendarUsage"
+                })
+            }
+
+            return true;
         }
 
         // thay đổi id của event khi bấm phê duyệt từ id của phiếu đăng ký sử dụng sang id của usage mới được thêm
@@ -300,15 +312,18 @@ class CalendarUsage extends Component {
 
     handleDeleteEvent = async (clickInfo) => {
         if (clickInfo.event.backgroundColor == "#337ab7") {
-            let count, data;
+            let count, usage, data, countData;
             var { usageLogs } = this.state;
             count = usageLogs.findIndex(item => item._id == clickInfo.event.id)
-            data = usageLogs[count]
+            data = this.state.data;
+            countData = data.findIndex(item => item.id == clickInfo.event.id)
+            usage = usageLogs[count]
             usageLogs.splice(count, 1);
+            data.splice(countData, 1);
             await this.setState({
                 ...this.state,
+                data: data,
                 usageLogs: [...usageLogs],
-                updateUsageLogs: 2,
                 currentEvent: undefined,
             })
             clickInfo.event.remove()
@@ -321,8 +336,8 @@ class CalendarUsage extends Component {
     }
 
     handleAddUsage = async (data) => {
-        const { assignedToUser, usageLogs, assignedToOrganizationalUnit, currentRow } = this.state
-        const { user, assetsManager } = this.props;
+        const { usageLogs } = this.state
+        const { user } = this.props;
         let userlist = user.list;
         let newUsage = {
             ...data,
@@ -540,8 +555,8 @@ class CalendarUsage extends Component {
                         </div>
 
                     }
-                    {(this.props.managedBy == this.state.userId) ||
-                        (this.checkEvent(eventInfo.event.borderColor, eventInfo.event._def.publicId))
+                    {((this.props.managedBy == this.state.userId) ||
+                        (this.checkEvent(eventInfo.event.borderColor, eventInfo.event._def.publicId)))
                         &&
                         <div className="form-group">
                             <a className="delete" title="Delete" style={{}} data-toggle="tooltip" onClick={async () => {
@@ -632,34 +647,31 @@ class CalendarUsage extends Component {
         return (
             <div className='demo-app'>
                 <div className='demo-app-main'>
-                    {((this.state.dataStatus == 2) || !this.props.assetId)
-                        &&
-                        <Scheduler
-                            className="asset-usage-scheduler"
-                            headerToolbar={{
-                                left: 'prev,next today',
-                                center: 'title',
-                                right: 'timeGridWeek'
-                            }}
-                            updateSizeEventRegistrations={[ // Áp dụng khi mở lại modal (trước đó modal đã mở và tab usage được chọn)
-                                { selector: "#modal-view-asset", eventName: "shown.bs.modal" },
-                                { selector: "#modal-edit-asset", eventName: "shown.bs.modal" },
-                            ]}
-                            initialView='timeGridWeek'
-                            // editable={true}
-                            selectable={true}
-                            selectMirror={true}
-                            dayMaxEvents={true}
-                            now={this.state.nowDate}
-                            weekends={this.state.weekendsVisible}
-                            initialEvents={this.state.data} // alternatively, use the `events` setting to fetch from a feed
-                            select={this.handleDateSelect}
-                            // eventsSet={this.handleEvents} // called after events are initialized/added/changed/removed
-                            eventContent={this.renderEventContent}
-                            eventClick={this.handleEventClick}
-                            checkRefresh={this.state.checkRefresh}
-                        />
-                    }
+                    <Scheduler
+                        className="asset-usage-scheduler"
+                        headerToolbar={{
+                            left: 'prev,next today',
+                            center: 'title',
+                            right: 'timeGridWeek'
+                        }}
+                        updateSizeEventRegistrations={[ // Áp dụng khi mở lại modal (trước đó modal đã mở và tab usage được chọn)
+                            { selector: "#modal-view-asset", eventName: "shown.bs.modal" },
+                            { selector: "#modal-edit-asset", eventName: "shown.bs.modal" },
+                        ]}
+                        initialView='timeGridWeek'
+                        // editable={true}
+                        selectable={true}
+                        selectMirror={true}
+                        dayMaxEvents={true}
+                        now={this.state.nowDate}
+                        weekends={this.state.weekendsVisible}
+                        events={this.state.data} // alternatively, use the `events` setting to fetch from a feed
+                        select={this.handleDateSelect}
+                        // eventsSet={this.handleEvents} // called after events are initialized/added/changed/removed
+                        eventContent={this.renderEventContent}
+                        eventClick={this.handleEventClick}
+                        checkRefresh={this.state.checkRefresh}
+                    />
                 </div>
 
                 {currentRow &&

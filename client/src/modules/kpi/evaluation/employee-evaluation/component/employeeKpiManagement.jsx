@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
-import { kpiMemberActions } from '../redux/actions';
-import { managerActions } from '../../../organizational-unit/management/redux/actions';
 import { DataTableSetting, ExportExcel } from '../../../../../common-components';
 import { DatePicker, SelectBox } from '../../../../../common-components/index';
 import { UserActions } from "../../../../super-admin/user/redux/actions";
+import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
+import { managerActions } from '../../../organizational-unit/management/redux/actions';
+import { kpiMemberActions } from '../redux/actions';
 import { EmployeeKpiApproveModal } from './employeeKpiApproveModal';
 import { EmployeeKpiEvaluateModal } from './employeeKpiEvaluateModal';
-import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
-import { withTranslate } from 'react-redux-multilingual';
 
 class EmployeeKpiManagement extends Component {
 
@@ -112,7 +112,7 @@ class EmployeeKpiManagement extends Component {
                 return translate('task.task_management.finished');
             case "delayed":
                 return translate('task.task_management.delayed');
-            case "canceled":
+            default: //cancel
                 return translate('task.task_management.canceled');
         }
     }
@@ -669,7 +669,7 @@ class EmployeeKpiManagement extends Component {
     render() {
         const { user, kpimembers } = this.props;
         const { translate } = this.props;
-        const { status, startDate, endDate, kpiId, employeeKpiSet, perPage, userId } = this.state;
+        const { status, kpiId, employeeKpiSet, perPage, userId } = this.state;
         let userdepartments, kpimember, unitMembers, exportData;
         if (user.userdepartments) userdepartments = user.userdepartments;
         if (kpimembers.kpimembers) {

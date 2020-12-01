@@ -663,11 +663,9 @@ class QuoteCreateGood extends Component {
 
         const { setCurrentSlasOfGood, setCurrentDiscountsOfGood } = this.props;
         let { listGoods } = this.props;
-        console.log("GOOD", listGoods);
 
         const { isUseForeignCurrency, foreignCurrency, standardCurrency, currency } = this.props;
 
-        console.log("DISCOUNT", this.state.discountsOfGood);
         let originAmount = this.getOriginAmountOfGood();
         let amountAfterApplyDiscount = this.getAmountAfterApplyDiscount();
         let amountAfterApplyTax = this.getAmountAfterApplyTax();
