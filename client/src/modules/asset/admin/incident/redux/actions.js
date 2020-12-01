@@ -94,7 +94,7 @@ function updateIncident(id, data,managedBy ='') {
                     type: IncidentConstants.UPDATE_INCIDENT_SUCCESS,
                     payload: res.data.content
                 })
-                if(managedBy='')
+                if(managedBy==='')
                 {
                     dispatch(AssetManagerActions.getAllAsset({
                         code: "",

@@ -107,7 +107,7 @@ function templateImportByShift(translate) {
         }
     ]
     let dataExport = [];
-    data.map((x, index) => {
+    data.forEach((x, index) => {
         let shifts1 = x.shift1s;
         let shifts2 = x.shift2s;
         let shifts3 = x.shift3s;

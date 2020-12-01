@@ -63,7 +63,6 @@ function ExampleCreateForm(props) {
     
     return (
         <React.Fragment>
-            <ButtonModal modalID="modal-create-example-hooks" button_name={translate('manage_example.add')} title={translate('manage_example.add_title')} />
             <DialogModal
                 modalID="modal-create-example-hooks" isLoading={example.isLoading}
                 formID="form-create-example-hooks"

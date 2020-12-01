@@ -5449,6 +5449,7 @@ const initSampleCompanyDB = async () => {
                 status[2]._id,
                 status[3]._id,
             ],
+            point: parseInt("129"),
             statusHistories: [
                 {
                     oldValue: status[1]._id,
@@ -5497,6 +5498,7 @@ const initSampleCompanyDB = async () => {
                 status[3]._id,
                 status[4]._id,
             ],
+            point: parseInt("10001"),
             statusHistories: [
                 {
                     oldValue: status[1]._id,
