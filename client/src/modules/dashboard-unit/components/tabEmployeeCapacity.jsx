@@ -111,7 +111,7 @@ class TabEmployeeCapacity extends Component {
 
         if (dashboardEvaluationEmployeeKpiSet) {
             employeeKpiSets = dashboardEvaluationEmployeeKpiSet.employeeKpiSets;
-            lastMonthEmployeeKpiSets = employeeKpiSets && employeeKpiSets.filter(item => this.formatDate(item.date) == month);
+            lastMonthEmployeeKpiSets = employeeKpiSets && employeeKpiSets.filter(item => this.formatDate(item.date) === month);
             lastMonthEmployeeKpiSets && lastMonthEmployeeKpiSets.sort((a, b) => b.approvedPoint - a.approvedPoint);
             lastMonthEmployeeKpiSets = lastMonthEmployeeKpiSets && lastMonthEmployeeKpiSets.slice(0, numberOfExcellentEmployees);
         }
@@ -165,7 +165,7 @@ class TabEmployeeCapacity extends Component {
                                     (lastMonthEmployeeKpiSets && lastMonthEmployeeKpiSets.length !== 0) ?
                                         lastMonthEmployeeKpiSets.map((item, index) =>
                                             <li key={index} style={{ maxWidth: 200 }}>
-                                                <img src={(process.env.REACT_APP_SERVER + item.creator.avatar)} />
+                                                <img alt="avatar" src={(process.env.REACT_APP_SERVER + item.creator.avatar)} />
                                                 <a className="users-list-name" href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2">{item.creator.name}</a>
                                                 <span className="users-list-date">{item.approvedPoint}</span>
                                             </li>

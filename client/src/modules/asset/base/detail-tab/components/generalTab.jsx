@@ -105,16 +105,14 @@ class GeneralTab extends Component {
     }
 
     render() {
-        const { id, translate, user, assetType, assetsManager, department, role } = this.props;
+        const { id, translate, user, assetsManager, department, role } = this.props;
         var userlist = user.list, departmentlist = department.list;
-        var assettype = assetType && assetType.administration;
-        let assettypelist = assettype && assettype.types.list;
         let assetbuilding = assetsManager && assetsManager.buildingAssets;
         let assetbuildinglist = assetbuilding && assetbuilding.list;
 
         const {
-            img, avatar, defaultAvatar, code, assetName, serial, assetTypes, group, purchaseDate, warrantyExpirationDate,
-            managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location,
+            avatar, defaultAvatar, code, assetName, serial, assetTypes, group, purchaseDate, warrantyExpirationDate,
+            managedBy, assignedToUser, assignedToOrganizationalUnit, location,
             description, status, typeRegisterForUse, detailInfo, usageLogs, readByRoles
         } = this.state;
 
@@ -210,13 +208,13 @@ class GeneralTab extends Component {
                                     {/* Thời gian bắt đầu sử dụng */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.handover_from_date')}&emsp; </strong>
-                                        {status == "in_use" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1] && usageLogs[usageLogs.length - 1].startDate) : ''}
+                                        {status === "in_use" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1] && usageLogs[usageLogs.length - 1].startDate) : ''}
                                     </div>
 
                                     {/* Thời gian kết thúc sử dụng */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.handover_to_date')}&emsp; </strong>
-                                        {status == "in_use" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1] && usageLogs[usageLogs.length - 1].endDate) : ''}
+                                        {status === "in_use" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1] && usageLogs[usageLogs.length - 1].endDate) : ''}
                                     </div>
 
                                     {/* Vị trí */}
@@ -240,14 +238,14 @@ class GeneralTab extends Component {
                                     {/* Quyền đăng ký sử dụng */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.can_register_for_use')}&emsp; </strong>
-                                        {typeRegisterForUse == 1 ? 'Không được đăng ký sử dụng' : (typeRegisterForUse == 2 ? "Đăng ký sử dụng theo giờ" : "Đăng ký sử dụng lâu dài")}
+                                        {typeRegisterForUse === 1 ? 'Không được đăng ký sử dụng' : (typeRegisterForUse === 2 ? "Đăng ký sử dụng theo giờ" : "Đăng ký sử dụng lâu dài")}
                                     </div>
                                 </div>
                             </div>
 
                             {/* Thông tin chi tiết */}
                             <div className="col-md-12">
-                                <label>{translate('asset.general_information.asset_properties')}:<a title={translate('asset.general_information.asset_properties')}></a></label>
+                                <label>{translate('asset.general_information.asset_properties')}:<a style={{ cursor: "pointer" }} title={translate('asset.general_information.asset_properties')}></a></label>
                                 <div className="form-group">
                                     <table className="table">
                                         <thead>

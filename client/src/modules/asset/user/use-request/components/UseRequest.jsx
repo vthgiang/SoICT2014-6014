@@ -90,7 +90,7 @@ class UseRequest extends Component {
         if (day.length < 2) {
             day = '0' + day;
         }
-        if (typeRegisterForUse == 2) {
+        if (typeRegisterForUse === 2) {
             let hour = d.getHours(),
                 minutes = d.getMinutes();
             if (hour < 10) {
@@ -177,13 +177,10 @@ class UseRequest extends Component {
     }
 
     render() {
-        const { translate, recommendDistribute, assetsManager, assetType, user, auth } = this.props;
+        const { translate, recommendDistribute, auth } = this.props;
         const { page, limit, currentRowEdit } = this.state;
 
         var listRecommendDistributes = "";
-        var lists = "";
-        var userlist = user.list;
-        var assettypelist = assetType.listAssetTypes;
 
         if (recommendDistribute.isLoading === false) {
             listRecommendDistributes = recommendDistribute.listRecommendDistributes;

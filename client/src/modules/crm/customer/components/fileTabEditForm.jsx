@@ -109,10 +109,10 @@ class FileTabEditForm extends Component {
                                             <tr className={`item-${index}`} key={index}>
                                                 <td>{o.name}</td>
                                                 <td>{o.description}</td>
-                                                <td><a href={`${o.url}`} target="_blank">{o.fileName}</a></td>
+                                                <td><a href={`${o.url}`} target="_blank" rel="noopener noreferrer">{o.fileName}</a></td>
                                                 <td style={{ textAlign: 'center' }}>
-                                                    <a className="text-yellow" onClick={() => this.handleEdit(o, index)}><i className="material-icons">edit</i></a>
-                                                    <a className="text-danger" onClick={() => this.handleDelete(index)}><i className="material-icons">delete</i></a>
+                                                    <a className="text-yellow" style={{ cursor: "pointer" }} onClick={() => this.handleEdit(o, index)}><i className="material-icons">edit</i></a>
+                                                    <a className="text-danger" style={{ cursor: "pointer" }} onClick={() => this.handleDelete(index)}><i className="material-icons">delete</i></a>
                                                 </td>
                                             </tr>
                                         )) : null
