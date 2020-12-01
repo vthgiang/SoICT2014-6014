@@ -521,7 +521,7 @@ exports.getAllManufacturingLot = async (query, user, portal) => {
                     path: "good"
                 }, {
                     path: "manufacturingCommand",
-                    select: "code"
+                    select: "code manufacturingMill",
                 }, {
                     path: "creator"
                 }]

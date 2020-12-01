@@ -122,7 +122,7 @@ class ManufacturingLotDetailForm extends Component {
                                                     <td>{currentLot.good && currentLot.good.code}</td>
                                                     <td>{currentLot.good && currentLot.good.name}</td>
                                                     <td>{currentLot.good && currentLot.good.baseUnit}</td>
-                                                    <td>{currentLot.quantity}</td>
+                                                    <td>{currentLot.originalQuantity}</td>
                                                 </tr>
                                             </tbody>
                                         </table>

@@ -4223,7 +4223,31 @@ export default {
 
 
                 // Phần liên quan lô sản xuất
-                add_issue_product: "Thêm phiếu nhập sản phẩm"
+                add_issue_product: "Thêm phiếu nhập sản phẩm",
+                lot_information: "Thông tin lô hàng",
+                base_unit: "Đơn vị tính tiêu chuẩn",
+                bill_info: "Thông tin phiếu nhập kho sản phẩm",
+                quantity_billed: "Số lượng chưa tạo phiếu",
+                bill_information: "Các phiếu nhập kho",
+                quantity_error: "Vui lòng nhập số lượng",
+                quantity_error_input: "Số lượng nhập vào phải lớn hơn 0",
+                quantity_error_input_1: "Số lượng nhập vào không được lớn hơn số lượng còn lại trong lô",
+                name_receiver: "Tên người giao hàng",
+                email_receiver: "Email người giao hàng",
+                phone_receiver: "Số điện thoại người giao hàng",
+                address_receiver: "Địa chỉ người giao hàng",
+                choose_stock_error: "Vui lòng chọn kho",
+                choose_user: "Chọn người",
+                error_name_receiver: "Tên người giao hàng không được để trống",
+                error_phone_receiver: "Số điện thoại người giao hàng không được để trống",
+                error_phone_receiver_input: "Số điện thoại không hợp lệ",
+                choose_approvers: "Vui lòng chọn người phê duyệt",
+                choose_accountables: "Vui lòng chọn người giám sát",
+                chooos_reponsibles: "Vui lòng chọn người thực hiện",
+                choose_all_lot: "Vui lòng nhập hết số lượng sản phẩm trong lô để tạo phiếu nhập kho",
+                create_product_bill_successfully: "Thêm phiếu nhập sản phẩm thành công",
+                create_product_bill_failed: "Thêm phiếu nhập sản phẩm thất bại",
+                add_product_bill: "Thêm phiếu nhập sản phẩm"
             },
             inventory_management: {
                 product: "Sản phẩm",
