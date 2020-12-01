@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ButtonModal, ErrorLabel, DatePicker, TimePicker, SelectBox } from '../../../../common-components';
+import { DialogModal, ErrorLabel, DatePicker, TimePicker, SelectBox } from '../../../../common-components';
 
 import { AnnualLeaveFormValidator } from './annualLeaveFormValidator';
 

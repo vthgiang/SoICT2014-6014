@@ -307,6 +307,15 @@ const LINKS = [{
     components: getComponentsInLink('/hr-manage-work-plan')
 },
 {
+    url: '/hr-manage-field',
+    description: 'Quản lý ngành nghề/ lĩnh vực',
+    category: LINK_CATEGORY.HUMAN_RESOURCE.name,
+    roles: [
+        ROOT_ROLES.ADMIN.name,
+    ],
+    components: getComponentsInLink('/hr-manage-field')
+},
+{
     url: '/hr-add-employee',
     description: 'Thêm mới nhân viên',
     category: LINK_CATEGORY.HUMAN_RESOURCE.name,

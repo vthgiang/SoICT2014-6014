@@ -45,6 +45,7 @@ import {
 import EmpoyeeManager from "../modules/human-resource/profile/employee-management/components";
 import EmployeeCreate from "../modules/human-resource/profile/employee-create/components";
 import SalaryManager from "../modules/human-resource/salary/components";
+import FieldManager from "../modules/human-resource/field/components";
 import TimesheetsManager from "../modules/human-resource/timesheets/components";
 import { AnnualLeave } from "../modules/human-resource/annual-leave/components/combinedContent";
 import { ManageLeaveApplication } from "../modules/human-resource/annual-leave/components/combinedContent";
@@ -820,6 +821,26 @@ class Routes extends Component {
                         pageName={"salary_employee"}
                         layout={Layout}
                         component={SalaryManager}
+                    />
+
+                    <PrivateRoute
+                        isLoading={this.props.field.isLoading}
+                        key={"fields"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/hr-manage-field",
+                                name: "manage_field",
+                                icon: "fa fa-line-chart",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/hr-manage-field"}
+                        path={"/hr-manage-field"}
+                        pageName={"manage_field"}
+                        layout={Layout}
+                        component={FieldManager}
                     />
                     <PrivateRoute
                         isLoading={false}
