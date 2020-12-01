@@ -1467,6 +1467,8 @@ export default {
                     "Chỉnh sửa đơn xin nghỉ phép thành công",
                 edit_annual_leave_faile: "Chỉnh sửa đơn xin nghỉ phép thất bại",
                 aplication_annual_leave_success: "Thêm đơn xin nghỉ thành công",
+                import_annual_leave_success:'Thêm dữ liệu từ file thành công',
+                import_annual_leave_faile:'Thêm dữ liệu từ file thất bại',
             },
 
             // Quản lý khen thưởng kỷ luật

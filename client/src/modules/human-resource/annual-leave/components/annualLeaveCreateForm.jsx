@@ -313,7 +313,7 @@ class AnnualLeaveCreateForm extends Component {
 
         return (
             <React.Fragment>
-                <ButtonModal modalID="modal-create-annual-leave" button_name={translate('human_resource.annual_leave.add_annual_leave')} title={translate('human_resource.annual_leave.add_annual_leave_title')} />
+                {/* <ButtonModal modalID="modal-create-annual-leave" button_name={translate('human_resource.annual_leave.add_annual_leave')} title={translate('human_resource.annual_leave.add_annual_leave_title')} /> */}
                 <DialogModal
                     size='50' modalID="modal-create-annual-leave" isLoading={annualLeave.isLoading}
                     formID="form-create-annual-leave"

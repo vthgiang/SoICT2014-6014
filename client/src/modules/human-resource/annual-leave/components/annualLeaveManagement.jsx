@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti, ExportExcel } from '../../../../common-components';
 
-import { AnnualLeaveCreateForm, AnnualLeaveEditForm } from './combinedContent';
+import { AnnualLeaveCreateForm, AnnualLeaveEditForm, AnnualLeaveImportForm } from './combinedContent';
 import { EmployeeViewForm } from '../../profile/employee-management/components/combinedContent';
 
 import { AnnualLeaveActions } from '../redux/actions';
@@ -78,6 +78,19 @@ class AnnualLeaveManagement extends Component {
             }
         });
         window.$(`#modal-view-employee${value._id}`).modal('show');
+    }
+
+    /** Bắt sự kiện click tạo mới thông tin nghỉ phép */
+    createAnnualLeave = async () => {
+        window.$(`#modal-create-annual-leave`).modal('show');
+    }
+
+    /** Bắt sự kiện click import thông tin nghỉ phép */
+    importAnnualLeave = async () => {
+        await this.setState({
+            importAnnualLeave: true
+        })
+        window.$(`#modal_import_file`).modal('show');
     }
 
     /**
@@ -244,7 +257,7 @@ class AnnualLeaveManagement extends Component {
     render() {
         const { translate, annualLeave, department } = this.props;
 
-        const { month, limit, page, organizationalUnits, currentRow, currentRowView } = this.state;
+        const { month, limit, page, organizationalUnits, currentRow, currentRowView, importAnnualLeave } = this.state;
 
         const { list } = department;
         let listAnnualLeaves = [], exportData = [];
@@ -262,8 +275,18 @@ class AnnualLeaveManagement extends Component {
         return (
             <div className="box" >
                 <div className="box-body qlcv">
+
+                    <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
+                        <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.annual_leave.add_annual_leave_title')} >{translate('human_resource.annual_leave.add_annual_leave')}</button>
+                        <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
+                            <li><a style={{ cursor: 'pointer' }} onClick={this.createAnnualLeave}>{translate('human_resource.salary.add_by_hand')}</a></li>
+                            <li><a style={{ cursor: 'pointer' }} onClick={this.importAnnualLeave}>{translate('human_resource.salary.add_import')}</a></li>
+                        </ul>
+                    </div>
+
                     <AnnualLeaveCreateForm />
-                    <ExportExcel id="export-annual_leave" buttonName={translate('human_resource.name_button_export')} exportData={exportData} style={{ marginRight: 15, marginTop: 2 }} />
+                    {importAnnualLeave && <AnnualLeaveImportForm />}
+                    <ExportExcel id="export-annual_leave" buttonName={translate('human_resource.name_button_export')} exportData={exportData} style={{ marginRight: 15, marginTop: 0 }} />
 
                     <div className="form-inline">
                         {/* Đơn vị */}
