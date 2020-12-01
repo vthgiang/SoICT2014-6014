@@ -66,7 +66,6 @@ class DiscountOfGoodDetail extends Component {
 
     render() {
         const { currentDiscounts } = this.props;
-        console.log("currentDiscounts", currentDiscounts);
         return (
             <DialogModal
                 modalID="modal-create-quote-discounts-of-good-detail"

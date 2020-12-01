@@ -11,17 +11,81 @@ import CreateDiscountForOrder from "./createDiscountForOrder/createDiscountForOr
 class QuoteCreatePayment extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            amountAfterApplyTax: 0,
+        };
     }
-
-    // componentWillMount = () => {};
 
     componentDidMount() {
         this.props.getDiscountForOrderValue();
         this.props.getCustomerPoint(this.props.customer);
-        this.props.editCustomerPoint(this.props.customer, { point: 500 });
+        this.getAmountAfterApplyTax();
+        // this.props.editCustomerPoint(this.props.customer, { point: 500 });
         //Lấy xu dựa vào customer Id
     }
+
+    getAmountAfterApplyTax = () => {
+        let { listGoods } = this.props;
+        let amountAfterApplyTax = listGoods.reduce((accumulator, currentValue) => {
+            return accumulator + currentValue.amountAfterTax;
+        }, 0);
+
+        this.setState({ amountAfterApplyTax });
+    };
+
+    applyDiscountForOrder = (amount, freeShipCost) => {
+        let { discountsOfOrderValue, coin } = this.props;
+
+        let discountForFormality = {
+            0: [],
+            1: [],
+            2: [],
+            3: [],
+            4: [],
+            5: [],
+        };
+        discountsOfOrderValue.forEach((element) => {
+            discountForFormality[element.formality].push(element);
+        });
+
+        if (discountForFormality[0].length) {
+            amount = amount - discountForFormality[0][0].discountedCash;
+        }
+        if (discountForFormality[1].length) {
+            amount = (amount * (100 - discountForFormality[1][0].discountedPercentage)) / 100;
+        }
+
+        if (freeShipCost) {
+            amount = amount - freeShipCost;
+        }
+
+        if (coin) {
+            amount = amount - coin;
+        }
+
+        amount = Math.round(amount * 100) / 100;
+
+        return amount;
+    };
+
+    getFreeShipCost = () => {
+        let maxFreeShip = 0;
+        let { discountsOfOrderValue, shippingFee } = this.props;
+        discountsOfOrderValue.forEach((item) => {
+            if (item.formality == 3) {
+                maxFreeShip += item.maximumFreeShippingCost;
+            }
+        });
+
+        let freeShipCost = 0;
+        if (shippingFee >= maxFreeShip) {
+            //Phí giao hàng lớn hơn tiền miễn phí giao hàng tối đa
+            freeShipCost = maxFreeShip;
+        } else {
+            freeShipCost = shippingFee;
+        }
+        return freeShipCost;
+    };
 
     getBonusGoodOfAll = () => {
         //Lấy tất cả các mặt hàng được tặng theo sản phẩm và toàn đơn
@@ -70,6 +134,7 @@ class QuoteCreatePayment extends Component {
             handleDeliveryTimeChange,
             setCurrentSlasOfGood,
             setCurrentDiscountsOfGood,
+            handleCoinChange,
         } = this.props;
         const {
             customerPhone,
@@ -82,11 +147,19 @@ class QuoteCreatePayment extends Component {
             shippingFee,
             deliveryTime,
             note,
+            coin,
         } = this.props;
 
         let allOfBonusGood = this.getBonusGoodOfAll();
+        let freeShipCost = this.getFreeShipCost();
 
-        console.log("CUSTOMER", this.props.customers);
+        let customerCoin = 0;
+        if (this.props.customers.customerPoint) {
+            customerCoin = this.props.customers.customerPoint.point;
+        }
+
+        const { amountAfterApplyTax } = this.state;
+        let amountAfterApplyDiscountOfOrder = this.applyDiscountForOrder(amountAfterApplyTax, freeShipCost);
 
         return (
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -287,7 +360,7 @@ class QuoteCreatePayment extends Component {
                                 discountsChecked={discountsOfOrderValueChecked}
                                 handleDiscountsChange={(data) => handleDiscountsOfOrderValueChange(data)}
                                 setDiscountsChecked={(checked) => setDiscountsOfOrderValueChecked(checked)}
-                                paymentAmount={100000}
+                                paymentAmount={amountAfterApplyTax}
                             />
                         </div>
                         <div className="shopping-apply-loyalty-coin">
@@ -296,7 +369,12 @@ class QuoteCreatePayment extends Component {
                                 <span> Sử dụng xu &ensp;</span>
                             </div>
                             <div className="shopping-apply-loyalty-coin-tag">
-                                <div>{`Bạn đang có ${200} xu tương ứng với ${200} tiền`}</div>
+                                <div>
+                                    Bạn đang có&ensp;
+                                    <span className="text-red">{customerCoin ? formatCurrency(customerCoin) : 0}</span>
+                                    &ensp;xu tương ứng với&ensp;
+                                    <span className="text-red">{customerCoin ? formatCurrency(customerCoin) : 0}</span> &ensp;tiền
+                                </div>
                             </div>
                             <div className="shopping-apply-loyalty-coin-checkbox">
                                 <span>Sử dụng ngay &ensp;</span>
@@ -304,8 +382,9 @@ class QuoteCreatePayment extends Component {
                                     type="checkbox"
                                     className={`form-check-input`}
                                     id={`check-box-use-loyalty-coin`}
-                                    // checked={}
-                                    // onChange={this.handleDiscountChange}
+                                    disabled={!customerCoin}
+                                    checked={coin}
+                                    onChange={() => handleCoinChange(customerCoin)}
                                     style={{ minWidth: "20px" }}
                                 />
                             </div>
@@ -314,8 +393,8 @@ class QuoteCreatePayment extends Component {
                     {allOfBonusGood.length ? (
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 shopping-bonus-good">
                             <div className="shopping-bonus-good-title">Các sản phẩm được tặng kèm</div>
-                            {allOfBonusGood.map((goodOfBonus) => (
-                                <div className="shopping-bonus-good-element">
+                            {allOfBonusGood.map((goodOfBonus, index) => (
+                                <div key={index} className="shopping-bonus-good-element">
                                     <div className="shopping-bonus-good-element-info">{`${goodOfBonus.good.code} - ${goodOfBonus.good.name}`} </div>
                                     <div className="shopping-bonus-good-element-quantity">{`${goodOfBonus.quantityOfBonusGood} ${goodOfBonus.good.baseUnit}`}</div>
                                     {goodOfBonus.expirationDate ? (
@@ -339,24 +418,49 @@ class QuoteCreatePayment extends Component {
                         <div className="shopping-payment-content">
                             <div className="shopping-payment-element">
                                 <div className="shopping-payment-element-title">Tổng tiền hàng (sau thuế)</div>
-                                <div className="shopping-payment-element-value">1,000,000</div>
+                                <div className="shopping-payment-element-value">
+                                    {amountAfterApplyTax ? formatCurrency(amountAfterApplyTax) : "0"}
+                                </div>
                             </div>
+
+                            {amountAfterApplyTax && amountAfterApplyDiscountOfOrder && amountAfterApplyTax > amountAfterApplyDiscountOfOrder ? (
+                                <div className="shopping-payment-element">
+                                    <div className="shopping-payment-element-title">Khuyến mãi cho toàn đơn</div>
+                                    <div className="shopping-payment-element-value">
+                                        -{formatCurrency(amountAfterApplyTax - amountAfterApplyDiscountOfOrder - coin)}
+                                    </div>
+                                </div>
+                            ) : (
+                                ""
+                            )}
+
                             <div className="shopping-payment-element">
                                 <div className="shopping-payment-element-title">Phí vận chuyển</div>
-                                <div className="shopping-payment-element-value">100,000</div>
+                                <div className="shopping-payment-element-value">{shippingFee ? formatCurrency(shippingFee) : "0"}</div>
                             </div>
-                            <div className="shopping-payment-element">
-                                <div className="shopping-payment-element-title">Miễn phí vận chuyển</div>
-                                <div className="shopping-payment-element-value">-100,000</div>
-                            </div>
-                            <div className="shopping-payment-element">
-                                <div className="shopping-payment-element-title">Khuyến mãi cho toàn đơn</div>
-                                <div className="shopping-payment-element-value">-45,000</div>
-                            </div>
+
+                            {freeShipCost ? (
+                                <div className="shopping-payment-element">
+                                    <div className="shopping-payment-element-title">Miễn phí vận chuyển</div>
+                                    <div className="shopping-payment-element-value">-{formatCurrency(freeShipCost)}</div>
+                                </div>
+                            ) : (
+                                ""
+                            )}
+
+                            {coin ? (
+                                <div className="shopping-payment-element">
+                                    <div className="shopping-payment-element-title">Sử dụng xu</div>
+                                    <div className="shopping-payment-element-value">-{formatCurrency(coin)}</div>
+                                </div>
+                            ) : (
+                                ""
+                            )}
+
                             <div className="shopping-payment-element">
                                 <div className="shopping-payment-element-title"> Tổng tiền thanh toán:</div>
                                 <div className="shopping-payment-element-value" style={{ color: "#ee4d2d", fontSize: "20px" }}>
-                                    1,055,000
+                                    {amountAfterApplyDiscountOfOrder ? formatCurrency(amountAfterApplyDiscountOfOrder) : "0"}
                                 </div>
                             </div>
                         </div>

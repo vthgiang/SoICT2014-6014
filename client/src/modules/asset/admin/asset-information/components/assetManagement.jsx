@@ -646,7 +646,7 @@ class AssetManagement extends Component {
                         </div>
                         {exportData && <ExportExcel id="export-asset-info-management" exportData={exportData} style={{ marginRight: 10 }} />}
                     </div>
-                    
+
                     {/* Báo lỗi khi thêm mới tài sản */}
                     {assetsManager && assetsManager.assetCodeError && assetsManager.assetCodeError.length !== 0
                         && <div style={{ color: 'red' }}>
@@ -659,7 +659,7 @@ class AssetManagement extends Component {
                             }
                         </div>
                     }
-                    
+
                     {/* Bảng các tài sản */}
                     <table id="asset-table" className="table table-striped table-bordered table-hover">
                         <thead>
@@ -697,7 +697,7 @@ class AssetManagement extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(lists && lists.length !== 0) &&
+                            {(lists && lists.length !== 0) ?
                                 lists.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.code}</td>
@@ -722,7 +722,7 @@ class AssetManagement extends Component {
                                                 func={this.props.deleteAsset}
                                             />
                                         </td>
-                                    </tr>))
+                                    </tr>)) : null
                             }
                         </tbody>
                     </table>

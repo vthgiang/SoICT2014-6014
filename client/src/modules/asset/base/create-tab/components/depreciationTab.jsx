@@ -326,7 +326,6 @@ class DepreciationTab extends Component {
             cost, residualValue, usefulLife, startDepreciation, depreciationType, errorOnStartDepreciation,
             errorOnDepreciationType, errorOnMonth, errorOnValue, unitsProducedDuringTheYears, errorOnEstimatedTotalProduction,
             estimatedTotalProduction, errorOnMonthPosition, errorOnValuePosition } = this.state;
-
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
@@ -337,21 +336,21 @@ class DepreciationTab extends Component {
                         {/* Nguyên giá */}
                         <div className="form-group">
                             <label htmlFor="cost">{translate('asset.general_information.original_price')} (VNĐ)</label><br />
-                            <input type="number" className="form-control" name="cost" value={cost} onChange={this.handleCostChange}
+                            <input type="number" className="form-control" name="cost" value={cost ? cost : ''} onChange={this.handleCostChange}
                                 placeholder={translate('asset.general_information.original_price')} autoComplete="off" />
                         </div>
 
                         {/* Giá trị thu hồi ước tính */}
                         <div className={`form-group`}>
                             <label htmlFor="residualValue">{translate('asset.general_information.residual_price')} (VNĐ)</label><br />
-                            <input type="number" className="form-control" name="residualValue" value={residualValue} onChange={this.handleResidualValueChange}
+                            <input type="number" className="form-control" name="residualValue" value={residualValue ? residualValue : ''} onChange={this.handleResidualValueChange}
                                 placeholder="Giá trị thu hồi ước tính" autoComplete="off" />
                         </div>
 
                         {/* Thời gian sử dụng */}
                         <div className="form-group">
                             <label htmlFor="usefulLife">{translate('asset.asset_info.usage_time')} (Tháng)</label>
-                            <input type="number" className="form-control" name="usefulLife" value={usefulLife} onChange={this.handleUsefulLifeChange}
+                            <input type="number" className="form-control" name="usefulLife" value={usefulLife ? usefulLife : ''} onChange={this.handleUsefulLifeChange}
                                 placeholder="Thời gian trích khấu hao" autoComplete="off" />
                         </div>
 
@@ -390,7 +389,7 @@ class DepreciationTab extends Component {
                             depreciationType == 'units_of_production' &&
                             <div className={`form-group ${!errorOnEstimatedTotalProduction ? "" : "has-error"} `}>
                                 <label htmlFor="estimatedTotalProduction">{translate('asset.depreciation.estimated_production')}</label>
-                                <input type="number" className="form-control" name="estimatedTotalProduction" value={estimatedTotalProduction} onChange={this.handleEstimatedTotalProductionChange}
+                                <input type="number" className="form-control" name="estimatedTotalProduction" value={estimatedTotalProduction ? estimatedTotalProduction : ''} onChange={this.handleEstimatedTotalProductionChange}
                                     placeholder='Sản lượng theo công suất thiết kế' autoComplete="off" />
                                 <ErrorLabel content={errorOnEstimatedTotalProduction} />
                             </div>

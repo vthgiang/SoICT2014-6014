@@ -305,7 +305,7 @@ class UsageLogTab extends Component {
                         typeRegisterForUse == 2 &&
 
                         <CalendarUsage
-                            id={`edit`}
+                            id={`edit-calendar${id}`}
                             assetId={assetId}
                             usageLogs={usageLogs}
                             assignedToUser={assignedToUser}

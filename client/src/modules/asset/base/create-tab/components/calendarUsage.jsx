@@ -650,7 +650,7 @@ class CalendarUsage extends Component {
               dayMaxEvents={true}
               now={this.state.nowDate}
               weekends={this.state.weekendsVisible}
-              initialEvents={this.state.data} // alternatively, use the `events` setting to fetch from a feed
+              events={this.state.data} // alternatively, use the `events` setting to fetch from a feed
               select={this.handleDateSelect}
               // eventsSet={this.handleEvents} // called after events are initialized/added/changed/removed
               eventContent={this.renderEventContent}
