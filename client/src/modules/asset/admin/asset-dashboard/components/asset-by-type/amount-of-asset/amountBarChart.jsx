@@ -9,6 +9,7 @@ import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 class AmountBarChart extends Component {
     constructor(props) {
         super(props);
+        this.state = {}
     }
 
     componentDidMount() {
@@ -25,7 +26,7 @@ class AmountBarChart extends Component {
         }
 
         if (listAssets) {
-            listAssets.map(asset => {
+            listAssets.forEach(asset => {
                 for (let k in asset.assetType) {
                     let idx = idAssetType.indexOf(asset.assetType[k]._id);
                     countAssetType[idx]++;
@@ -61,7 +62,7 @@ class AmountBarChart extends Component {
         let count = dataBarChart.count;
         let heightCalc = dataBarChart.type.length * 24.8;
         let height = heightCalc < 320 ? 320 : heightCalc;
-        let chart = c3.generate({
+        c3.generate({
             bindto: this.refs.amountBarChart,
 
             data: {

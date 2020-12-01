@@ -861,6 +861,17 @@ export default {
             non_status: "Select status",
         },
 
+        common_component: {
+            import_excel: {
+                config: 'Import file configuration',
+                user_config: 'User configuration',
+                file: 'File import read data sheet',
+                properties: 'Properties',
+                title: 'Title',
+                
+            }
+        },
+
         menu: {
             home: "Home Page",
             system_administration: "System Administration",

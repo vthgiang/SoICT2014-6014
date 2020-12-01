@@ -9,13 +9,12 @@ class CostChart extends Component {
 
     constructor(props) {
         super(props);
+        this.state = {}
     }
 
     // Thiết lập dữ liệu biểu đồ
     setDataPieChart = () => {
         const { listAssets, getAssetCostData } = this.props;
-
-        const { translate } = this.props;
         let dataPieChart, lessThanOneHundred = 0, oneHundred = 0, twoHundred = 0, fiveHundred = 0, oneBillion = 0, twoBillion = 0, fiveBillion = 0, tenBillion = 0;
 
         if (listAssets) {
@@ -101,9 +100,6 @@ class CostChart extends Component {
     }
 
     render() {
-        const { translate } = this.props;
-        const { listAssets } = this.props;
-
         this.pieChart();
 
         return (
@@ -116,12 +112,6 @@ class CostChart extends Component {
     }
 }
 
-function mapState(state) {
-}
-
-const actions = {
-}
-
-const AmountOfAssetChartConnected = connect(mapState, actions)(withTranslate(CostChart));
+const AmountOfAssetChartConnected = connect(null, null)(withTranslate(CostChart));
 
 export { AmountOfAssetChartConnected as CostChart }
