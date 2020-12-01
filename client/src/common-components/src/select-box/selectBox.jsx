@@ -108,7 +108,7 @@ class SelectBox extends Component {
             return false;
         }
         for (let i = 0; i < items1.length; ++i) {
-            if(!items1[i] || !items2[i]) return false;
+            if (!items1[i] || !items2[i]) return false;
             else {
                 if (!(items1[i].value instanceof Array) && items1[i].value !== items2[i].value) { // Kiểu bình thường
                     return false;
@@ -129,7 +129,6 @@ class SelectBox extends Component {
                 value: prevState.innerChange ? prevState.value : nextProps.value, // Lưu value ban đầu vào state
                 innerChange: false,
                 id: nextProps.id,
-                idChange: nextProps.idChange,
                 items: nextProps.items,
                 disabled: nextProps.disabled !== undefined ? nextProps.disabled : false
             }
@@ -140,8 +139,7 @@ class SelectBox extends Component {
 
 
     componentDidMount = () => {
-        const { id, onChange, options = { minimumResultsForSearch: 1 }, multiple, getValueAndIdChange } = this.props;
-
+        const { id, onChange, options = { minimumResultsForSearch: 1 }, multiple } = this.props;
         window.$("#" + id).select2(options);
 
         window.$("#" + id).on("change", () => {
@@ -153,9 +151,6 @@ class SelectBox extends Component {
                     value: multiple ? value : value[0],
                 }
             });
-            if (this.state.idChange && getValueAndIdChange) {
-                getValueAndIdChange(value, this.state.idChange)
-            };
             if (onChange) {
                 onChange(value); // Thông báo lại cho parent component về giá trị mới (để parent component lưu vào state của nó)
             }
@@ -235,6 +230,14 @@ class SelectBox extends Component {
         return false;;
     }
 
+    checkValue = (value, multiple) => {
+        if (!multiple && !value) {
+            return "";
+        } else if (multiple && !value) {
+            return [];
+        } else return value;
+    }
+
     render() {
         const { id, items, className, style, multiple = false, options = {}, disabled = false } = this.props;
 
@@ -243,7 +246,7 @@ class SelectBox extends Component {
         return (
             <React.Fragment>
                 <div className="select2">
-                    <select className={className} style={style} ref="select" value={value ? value : ''} id={id} multiple={multiple} onChange={() => { }} disabled={disabled}>
+                    <select className={className} style={style} ref="select" value={this.checkValue(value, multiple)} id={id} multiple={multiple} onChange={() => { }} disabled={disabled}>
                         {!searching &&
                             <React.Fragment>
                                 {options.placeholder !== undefined && multiple === false && <option></option>} {/*Ở chế độ single selection, nếu muốn mặc định không chọn gì*/}
