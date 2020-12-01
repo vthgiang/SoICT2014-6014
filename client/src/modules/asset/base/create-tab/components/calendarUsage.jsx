@@ -36,7 +36,6 @@ class CalendarUsage extends Component {
       await this.setState({
         checkRefresh: true,
       });
-      this.forceUpdate()
     }
     if (nextState.clickInfo !== this.state.clickInfo || nextState.currentEvent !== this.state.currentEvent) {
       // bắt sự kiện bấm nút phê duyệt, không phê duyệt, xóa
@@ -90,10 +89,13 @@ class CalendarUsage extends Component {
         updateUsageLogs: 2,
         createUsage: false
       })
-      this.props.handleChange({
-        newUsage: newUsage,
-        calendar: "CalendarUsage"
-      })
+      if (this.props.id == 'edit') {
+        this.props.handleChange({
+          newUsage: newUsage,
+          calendar: "CalendarUsage"
+        })
+      }
+
       let calendarApi = this.state.currentRow.view.calendar;
       if (newUsage.usedByUser && newUsage.usedByOrganizationalUnit) {
         let usedByUser = userlist.filter(item => item._id === newUsage.usedByUser).pop() ? userlist.filter(item => item._id === newUsage.usedByUser).pop().name : "Chưa có đối tượng sử dụng"
