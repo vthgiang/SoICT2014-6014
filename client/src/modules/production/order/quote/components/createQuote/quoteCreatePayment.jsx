@@ -4,6 +4,7 @@ import { DatePicker } from "../../../../../../common-components";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { DiscountActions } from "../../../discount/redux/actions";
+import { CrmCustomerActions } from "../../../../../crm/customer/redux/actions";
 import "../quote.css";
 import CreateDiscountForOrder from "./createDiscountForOrder/createDiscountForOrder";
 
@@ -13,9 +14,14 @@ class QuoteCreatePayment extends Component {
         this.state = {};
     }
 
-    componentWillMount = () => {
+    // componentWillMount = () => {};
+
+    componentDidMount() {
         this.props.getDiscountForOrderValue();
-    };
+        this.props.getCustomerPoint(this.props.customer);
+        this.props.editCustomerPoint(this.props.customer, { point: 500 });
+        //Lấy xu dựa vào customer Id
+    }
 
     getBonusGoodOfAll = () => {
         //Lấy tất cả các mặt hàng được tặng theo sản phẩm và toàn đơn
@@ -79,6 +85,8 @@ class QuoteCreatePayment extends Component {
         } = this.props;
 
         let allOfBonusGood = this.getBonusGoodOfAll();
+
+        console.log("CUSTOMER", this.props.customers);
 
         return (
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -363,12 +371,15 @@ class QuoteCreatePayment extends Component {
 }
 
 function mapStateToProps(state) {
+    const { customers } = state.crm;
     const { discounts } = state;
-    return { discounts };
+    return { discounts, customers };
 }
 
 const mapDispatchToProps = {
     getDiscountForOrderValue: DiscountActions.getDiscountForOrderValue,
+    getCustomerPoint: CrmCustomerActions.getCustomerPoint,
+    editCustomerPoint: CrmCustomerActions.editCustomerPoint,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuoteCreatePayment));

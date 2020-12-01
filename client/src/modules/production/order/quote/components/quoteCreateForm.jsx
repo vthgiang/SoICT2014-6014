@@ -447,6 +447,7 @@ class QuoteCreateForm extends Component {
                                     setCurrentDiscountsOfGood={(data) => {
                                         this.setCurrentDiscountsOfGood(data);
                                     }}
+                                    customer={customer}
                                 />
                             )}
                         </div>
