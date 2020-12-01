@@ -156,6 +156,22 @@ exports.getCustomerById = async (portal, companyId, id) => {
 }
 
 /**
+ * Lấy tổng số point của một khách hàng
+ * @param {*} portal 
+ * @param {*} companyId 
+ * @param {*} id 
+ * @param {*} data 
+ * @param {*} userId 
+ * @param {*} fileInfo 
+ */
+exports.getCustomerPoint = async (portal, companyId, customerId) => {
+    const getCustomerPoint = await Customer(connect(DB_CONNECTION, portal)).findById(customerId);
+    return {
+        _id: getCustomerPoint._id,
+        point: getCustomerPoint.point,
+    }
+}
+/**
  * Hàm chỉnh sửa khách hàng
  * @param {*} portal 
  * @param {*} companyId 
@@ -223,6 +239,12 @@ exports.editCustomer = async (portal, companyId, id, data, userId,fileInfo) => {
         .populate({ path: 'owner', select: '_id name email' })
         .populate({ path: 'creator', select: '_id name email' })
         .populate({path: 'statusHistories.oldValue statusHistories.newValue statusHistories.createdBy', select: '_id name'})
+}
+
+exports.editCustomerPoint = async (portal, companyId, id, data, userId) => {
+    return await Customer(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
+        $set: data
+    }, { new: true });
 }
 
 
