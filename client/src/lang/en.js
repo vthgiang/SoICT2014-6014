@@ -922,6 +922,7 @@ export default {
             discipline: "Manage Commendation And Discipline",
             annual_leave: "Manage Annual Leave",
             salary_employee: "Manage Salary",
+            manage_field:'Manage career/fields',
             time_keeping: "Attendance Staff",
             list_education: "Training Programs",
             training_plan: "Manage Training Courses",
@@ -1819,6 +1820,31 @@ export default {
                 import_work_plan_success: "Import work schedule success",
                 import_work_plan_faile: "Import work schedule faile",
             },
+
+            // Quản lý ngành nghề lĩnh vực
+            field:{
+                // Nhóm dành cho table
+                table: {
+                   name: "Name career/fields",
+                   description: "Description",
+               },
+
+               // Nhóm dành cho action
+               edit_fields: "Edit career/fields",
+               delete_fields: "Delete career/fields",
+               add_fields: "Add new",
+               add_fields_title: "Add career/fields",
+
+               // Thông điệp trả về từ server
+               get_fields_success:"Get career/fields success",
+               get_fields_faile: "Get career/fields faile",
+               create_fields_success:"Add career/fields success",
+               create_fields_faile: "Add career/fields faile",
+               delete_fields_success: "Delete career/fields success",
+               delete_fields_faile: "Delete career/fields faile",
+               edit_fields_success:"Edit career/fields success",
+               edit_fields_faile: "Edit career/fields faile",
+           },
 
             // Quản lý chấm công nhân viên
             timesheets: {
