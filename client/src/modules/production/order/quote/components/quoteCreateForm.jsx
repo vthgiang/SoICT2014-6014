@@ -30,6 +30,7 @@ class QuoteCreateForm extends Component {
             expirationDate: "",
             shippingFee: "",
             deliveryTime: "",
+            coin: "",
             step: 0,
             isUseForeignCurrency: false,
             foreignCurrency: {
@@ -59,7 +60,6 @@ class QuoteCreateForm extends Component {
     };
 
     handleCustomerChange = (value) => {
-        console.log("VALUE", value);
         let customerInfo = this.props.customers.list.filter((item) => item._id === value[0]);
         this.setState({
             customer: customerInfo[0]._id,
@@ -290,6 +290,15 @@ class QuoteCreateForm extends Component {
         });
     };
 
+    handleCoinChange = (coin) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                coin: this.state.coin ? "" : coin, //Nếu đang checked thì bỏ checked
+            };
+        });
+    };
+
     render() {
         let {
             code,
@@ -305,6 +314,7 @@ class QuoteCreateForm extends Component {
             step,
             goods,
             shippingFee,
+            coin,
             deliveryTime,
             isUseForeignCurrency,
             foreignCurrency,
@@ -315,8 +325,6 @@ class QuoteCreateForm extends Component {
             currentSlasOfGood,
             currentDiscountsOfGood,
         } = this.state;
-
-        console.log("STATE", discountsOfOrderValue, discountsOfOrderValueChecked);
 
         return (
             <React.Fragment>
@@ -434,6 +442,7 @@ class QuoteCreateForm extends Component {
                                     code={code}
                                     shippingFee={shippingFee}
                                     deliveryTime={deliveryTime}
+                                    coin={coin}
                                     note={note}
                                     discountsOfOrderValue={discountsOfOrderValue}
                                     discountsOfOrderValueChecked={discountsOfOrderValueChecked}
@@ -441,6 +450,7 @@ class QuoteCreateForm extends Component {
                                     setDiscountsOfOrderValueChecked={(checked) => this.setDiscountsOfOrderValueChecked(checked)}
                                     handleShippingFeeChange={this.handleShippingFeeChange}
                                     handleDeliveryTimeChange={this.handleDeliveryTimeChange}
+                                    handleCoinChange={this.handleCoinChange}
                                     setCurrentSlasOfGood={(data) => {
                                         this.setCurrentSlasOfGood(data);
                                     }}
