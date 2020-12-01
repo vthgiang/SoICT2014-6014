@@ -915,3 +915,77 @@ exports.getBillsByCommand = async (query, portal) => {
             { path: 'logs.creator' }
         ])
 }
+
+
+exports.createManyProductBills = async (data, portal) => {
+    var logs = [];
+    let log = {};
+    log.creator = data.creator;
+    log.createAt = new Date(Date.now());
+    log.title = "Tạo phiếu";
+    log.versions = "versions 1";
+    logs = [...logs, log];
+    let query = data.map(x => {
+        return {
+            fromStock: x.fromStock,
+            group: x.group,
+            bill: x.bill,
+            toStock: x.toStock ? x.toStock : null,
+            code: x.code,
+            type: x.type,
+            status: x.status,
+            users: x.users,
+            creator: x.creator,
+            approvers: x.approvers ? x.approvers.map((item) => {
+                return {
+                    approver: item.approver,
+                    role: item.role,
+                    approvedTime: item.approvedTime
+                }
+            }) : [],
+            accountables: x.accountables,
+            responsibles: x.responsibles,
+            qualityControlStaffs: x.qualityControlStaffs ? x.qualityControlStaffs.map(item => {
+                return {
+                    staff: item.staff,
+                    time: item.time
+                }
+            }) : [],
+            customer: x.customer ? x.customer : null,
+            supplier: x.supplier ? x.supplier : null,
+            receiver: {
+                name: x.receiver.name,
+                phone: x.receiver.phone,
+                email: x.receiver.email,
+                address: x.receiver.address,
+            },
+            description: x.description,
+            goods: x.goods.map(item => {
+                return {
+                    good: item.good,
+                    quantity: item.quantity,
+                    returnQuantity: item.returnQuantity,
+                    realQuantity: item.realQuantity,
+                    damagedQuantity: item.damagedQuantity,
+                    description: item.description,
+                    lots: item.lots.map(x => {
+                        return {
+                            lot: x.lot,
+                            quantity: x.quantity,
+                            returnQuantity: x.returnQuantity,
+                            damagedQuantity: x.damagedQuantity,
+                            realQuantity: x.realQuantity,
+                            note: x.note
+                        }
+                    })
+                }
+            }),
+            manufacturingMill: x.manufacturingMill,
+            manufacturingCommand: x.manufacturingCommand,
+            logs: logs
+        }
+    })
+
+    const bills = await Bill(connect(DB_CONNECTION, portal)).insertMany(query);
+    return { bills }
+}
