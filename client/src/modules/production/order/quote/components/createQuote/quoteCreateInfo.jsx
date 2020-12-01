@@ -45,7 +45,6 @@ class QuoteCreateInfo extends Component {
             handleRatioOfCurrencyChange,
             handleSymbolOfForreignCurrencyChange,
         } = this.props;
-        console.log("foreignCurrency", foreignCurrency);
         return (
             <React.Fragment>
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">

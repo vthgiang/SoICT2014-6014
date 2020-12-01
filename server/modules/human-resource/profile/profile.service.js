@@ -276,7 +276,15 @@ exports.getEmployees = async (portal, company, organizationalUnits, positions, a
         }
     } else {
         if (organizationalUnits !== undefined) {
-            let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(portal, organizationalUnits, positions);
+            let emailInCompany=[];
+            if(organizationalUnits==='allUnist'){
+                let units = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find();
+                units =units.map(x=>x._id);
+                emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(portal, units, undefined);
+            } else {
+                emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(portal, organizationalUnits, positions);
+            }
+            
             keySearch = {
                 ...keySearch,
                 emailInCompany: {

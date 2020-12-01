@@ -82,7 +82,8 @@ const CustomerSchema = new Schema({
         ref: 'Status'
     }],
     point: {
-        type: Number
+        type: Number,
+        default: 0
     },
     isDeleted: { // Trạng thái kích hoạt khách hàng
         type: Boolean,

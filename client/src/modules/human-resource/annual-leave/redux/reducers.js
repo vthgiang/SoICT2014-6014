@@ -12,6 +12,8 @@ const initState = {
     totalListAnnualLeavesOfYear: 0,
     arrMonth: [],
     listAnnualLeaveOfNumberMonth: [],
+    importStatus: false,
+    importAnnualLeave:[],
     error: "",
 }
 export function annualLeave(state = initState, action) {
@@ -20,6 +22,7 @@ export function annualLeave(state = initState, action) {
         case AnnualLeaveConstants.CREATE_ANNUAL_LEAVE_REQUEST:
         case AnnualLeaveConstants.DELETE_ANNUAL_LEAVE_REQUEST:
         case AnnualLeaveConstants.UPDATE_ANNUAL_LEAVE_REQUEST:
+        case AnnualLeaveConstants.IMPORT_ANNUAL_LEAVE_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -54,28 +57,36 @@ export function annualLeave(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                    listAnnualLeaves: [...state.listAnnualLeaves, action.payload],
+                listAnnualLeaves: [...state.listAnnualLeaves, action.payload],
             };
         case AnnualLeaveConstants.DELETE_ANNUAL_LEAVE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                    listAnnualLeaves: state.listAnnualLeaves.filter(sabbatical => (sabbatical._id !== action.payload._id)),
+                listAnnualLeaves: state.listAnnualLeaves.filter(sabbatical => (sabbatical._id !== action.payload._id)),
             };
         case AnnualLeaveConstants.UPDATE_ANNUAL_LEAVE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                    listAnnualLeaves: state.listAnnualLeaves.map(sabbatical => sabbatical._id === action.payload._id ? action.payload : sabbatical),
+                listAnnualLeaves: state.listAnnualLeaves.map(sabbatical => sabbatical._id === action.payload._id ? action.payload : sabbatical),
+            };
+        case AnnualLeaveConstants.IMPORT_ANNUAL_LEAVE_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                importStatus: true,
+                importAnnualLeave: action.payload.content,
             };
         case AnnualLeaveConstants.GET_ANNUAL_LEAVE_FAILURE:
         case AnnualLeaveConstants.CREATE_ANNUAL_LEAVE_FAILURE:
         case AnnualLeaveConstants.DELETE_ANNUAL_LEAVE_FAILURE:
         case AnnualLeaveConstants.UPDATE_ANNUAL_LEAVE_FAILURE:
+        case AnnualLeaveConstants.IMPORT_ANNUAL_LEAVE_FAILURE:
             return {
                 ...state,
                 isLoading: false,
-                    error: action.error
+                error: action.error
             };
         default:
             return state
