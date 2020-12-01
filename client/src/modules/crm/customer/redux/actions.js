@@ -8,6 +8,8 @@ export const CrmCustomerActions = {
     getCustomer,
     editCustomer,
     deleteCustomer,
+    getCustomerPoint,
+    editCustomerPoint
 };
 
 function getCustomers(data) {
@@ -92,5 +94,33 @@ function deleteCustomer(id) {
                 })
             })
             .catch(err => { dispatch({ type: CrmCustomerConstants.DELETE_CRM_CUSTOMER_FAILE }) })
+    }
+}
+
+function getCustomerPoint(id) {
+    return dispatch => {
+        dispatch({ type: CrmCustomerConstants.GET_CRM_CUSTOMER_POINT_REQUEST });
+        CrmCustomerServices.getCustomerPoint(id)
+            .then(res => {
+                dispatch({
+                    type: CrmCustomerConstants.GET_CRM_CUSTOMER_POINT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => { dispatch({ type: CrmCustomerConstants.GET_CRM_CUSTOMER_POINT_FAILE }) })
+    }
+}
+
+function editCustomerPoint(id, data) {
+    return dispatch => {
+        dispatch({ type: CrmCustomerConstants.EDIT_CRM_CUSTOMER_POINT_REQUEST });
+        CrmCustomerServices.editCustomerPoint(id, data)
+            .then(res => {
+                dispatch({
+                    type: CrmCustomerConstants.EDIT_CRM_CUSTOMER_POINT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => { dispatch({ type: CrmCustomerConstants.EDIT_CRM_CUSTOMER_POINT_FAILE }) })
     }
 }

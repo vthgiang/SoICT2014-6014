@@ -131,11 +131,15 @@ exports.createEmployee = async (req, res) => {
         let fileDegree = req.files ? req.files.fileDegree : undefined,
             fileCertificate = req.files ? req.files.fileCertificate : undefined,
             fileContract = req.files ? req.files.fileContract : undefined,
+            fileMajor = req.files ? req.files.fileMajor : undefined,
+            fileCareer = req.files ? req.files.fileCareer : undefined,
             file = req.files ? req.files.file : undefined;
         let fileInfor = {
             fileDegree,
             fileCertificate,
             fileContract,
+            fileMajor, 
+            fileCareer,
             file,
             avatar
         };
@@ -305,10 +309,14 @@ exports.updateEmployeeInformation = async (req, res) => {
         let fileDegree = req.files ? req.files.fileDegree : undefined,
             fileCertificate = req.files ? req.files.fileCertificate : undefined,
             fileContract = req.files ? req.files.fileContract : undefined,
+            fileMajor = req.files ? req.files.fileMajor : undefined,
+            fileCareer = req.files ? req.files.fileCareer : undefined,
             file = req.files ? req.files.file : undefined;
         let fileInfor = {
             fileDegree,
             fileCertificate,
+            fileMajor,
+            fileCareer,
             fileContract,
             file,
             avatar

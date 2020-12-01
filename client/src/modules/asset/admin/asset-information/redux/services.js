@@ -32,6 +32,7 @@ function getAll(data) {
             page: data !== undefined ? data.page : data,
             limit: data !== undefined ? data.limit : data,
             managedBy: data !== undefined ? data.managedBy : data,
+            location: data !== undefined ? data.location : data,
             currentRole: data !== undefined ? data.currentRole : data,
 
             startDepreciation: data !== undefined ? data.startDepreciation : data,

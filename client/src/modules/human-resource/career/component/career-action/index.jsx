@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { Tree, SlimScroll, ExportExcel } from '../../../../../common-components';
 import Swal from 'sweetalert2';
-import { CareerPositionAction } from '../../redux/actions';
+import { CareerReduxAction } from '../../redux/actions';
 import EditForm from './editForm';
 import CreateForm from './createForm';
 import "./careerAction.css";
@@ -180,7 +180,7 @@ class CareerAction extends Component {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
-    getListCareerAction: CareerPositionAction.getListCareerAction,
+    getListCareerAction: CareerReduxAction.getListCareerAction,
     // editDocumentArchive: DocumentActions.editDocumentArchive,
     // deleteDocumentArchive: DocumentActions.deleteDocumentArchive,
 }

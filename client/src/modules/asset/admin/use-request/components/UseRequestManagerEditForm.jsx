@@ -296,19 +296,42 @@ class UseRequestManagerEditForm extends Component {
     static getDerivedStateFromProps(nextProps, prevState) {
 
         if (nextProps._id !== prevState._id) {
-            let startDate, endDate, startTime, stopTime, month, day, year;
+            let startDate, endDate, startTime, stopTime;
             let partStart = new Date(nextProps.dateStartUse);
-            if (nextProps.asset.typeRegisterForUse == 2) {
-                startTime = [partStart.getHours(), partStart.getMinutes()].join(':');
-                startDate = [partStart.getDate(), (partStart.getMonth() + 1), partStart.getFullYear()].join('-');
-            } else {
-                startDate = [partStart.getDate(), (partStart.getMonth() + 1), partStart.getFullYear()].join('-');
-            }
             let partStop = new Date(nextProps.dateEndUse);
+
             if (nextProps.asset.typeRegisterForUse == 2) {
-                stopTime = [partStop.getHours(), partStop.getMinutes()].join(':');
+                let hourStart, hourEnd, minutesStart, minutesEnd;
+                if (partStart.getHours() < 10) {
+                    hourStart = "0" + partStart.getHours()
+                } else {
+                    hourStart = partStart.getHours()
+                }
+
+                if (partStart.getMinutes() < 10) {
+                    minutesStart = "0" + partStart.getMinutes()
+                } else {
+                    minutesStart = partStart.getMinutes()
+                }
+
+                if (partStop.getHours() < 10) {
+                    hourEnd = "0" + partStop.getHours()
+                } else {
+                    hourEnd = partStop.getHours()
+                }
+
+                if (partStop.getMinutes() < 10) {
+                    minutesEnd = "0" + partStop.getMinutes()
+                } else {
+                    minutesEnd = partStop.getMinutes()
+                }
+
+                startTime = [hourStart, minutesStart].join(':');
+                startDate = [partStart.getDate(), (partStart.getMonth() + 1), partStart.getFullYear()].join('-');
+                stopTime = [hourEnd, minutesEnd].join(':');
                 endDate = [partStop.getDate(), (partStop.getMonth() + 1), partStop.getFullYear()].join('-');
             } else {
+                startDate = [partStart.getDate(), (partStart.getMonth() + 1), partStart.getFullYear()].join('-');
                 endDate = [partStop.getDate(), (partStop.getMonth() + 1), partStop.getFullYear()].join('-');
             }
             return {

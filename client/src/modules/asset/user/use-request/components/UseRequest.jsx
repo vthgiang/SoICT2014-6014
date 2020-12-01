@@ -77,6 +77,37 @@ class UseRequest extends Component {
         return [month, year].join('-');
     }
 
+    formatDateTime(date, typeRegisterForUse) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2) {
+            month = '0' + month;
+        }
+
+        if (day.length < 2) {
+            day = '0' + day;
+        }
+        if (typeRegisterForUse === 2) {
+            let hour = d.getHours(),
+                minutes = d.getMinutes();
+            if (hour < 10) {
+                hour = '0' + hour;
+            }
+
+            if (minutes < 10) {
+                minutes = '0' + minutes;
+            }
+
+            let formatDate = [hour, minutes].join(":") + " " + [day, month, year].join("-")
+            return formatDate;
+        } else {
+            let formatDate = [day, month, year].join("-")
+            return formatDate;
+        }
+    }
     // Function lưu giá trị mã nhân viên vào state khi thay đổi
     handleRecommendNumberChange = (event) => {
         const { name, value } = event.target;
@@ -146,13 +177,10 @@ class UseRequest extends Component {
     }
 
     render() {
-        const { translate, recommendDistribute, assetsManager, assetType, user, auth } = this.props;
+        const { translate, recommendDistribute, auth } = this.props;
         const { page, limit, currentRowEdit } = this.state;
 
         var listRecommendDistributes = "";
-        var lists = "";
-        var userlist = user.list;
-        var assettypelist = assetType.listAssetTypes;
 
         if (recommendDistribute.isLoading === false) {
             listRecommendDistributes = recommendDistribute.listRecommendDistributes;
@@ -251,12 +279,12 @@ class UseRequest extends Component {
                                     return (
                                         <tr key={index}>
                                             <td>{x.recommendNumber}</td>
-                                            <td>{x.dateCreate}</td>
+                                            <td>{this.formatDateTime(x.dateCreate)}</td>
                                             <td>{x.proponent ? x.proponent.name : 'User is deleted'}</td>
                                             <td>{x.asset ? x.asset.code : 'Asset is deleted'}</td>
                                             <td>{x.asset ? x.asset.assetName : 'Asset is deleted'}</td>
-                                            <td>{x.dateStartUse}</td>
-                                            <td>{x.dateEndUse}</td>
+                                            <td>{this.formatDateTime(x.dateStartUse, x.asset.typeRegisterForUse)}</td>
+                                            <td>{this.formatDateTime(x.dateEndUse, x.asset.typeRegisterForUse)}</td>
                                             <td>{x.approver ? x.approver.name : 'User is deleted'}</td>
                                             <td>{this.formatStatus(x.status)}</td>
                                             <td style={{ textAlign: "center" }}>

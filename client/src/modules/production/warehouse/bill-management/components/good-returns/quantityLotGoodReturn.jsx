@@ -53,7 +53,7 @@ class QuantityLotGoodReturn extends Component {
                 let quantity = stock[0] ? stock[0].quantity : 0;
                 lotArr.push({ 
                     value: item._id, 
-                    text: item.name,
+                    text: item.code,
                     quantity: quantity,
                 });
             })
@@ -75,7 +75,7 @@ class QuantityLotGoodReturn extends Component {
         }
         if(willUpdateState) {
             let lotName = dataLots.find(x => x.value === value);
-            this.state.lot.lot = { _id: value, name: lotName.text, quantity: lotName.quantity };
+            this.state.lot.lot = { _id: value, code: lotName.text, quantity: lotName.quantity };
             await this.setState(state => {
                 return {
                     ...state,
@@ -218,7 +218,7 @@ class QuantityLotGoodReturn extends Component {
                     msg_faile={translate('manage_warehouse.bill_management.add_faile')}
                     disableSubmit={!this.isFormValidated()}
                     func={this.save}
-                    size="50"
+                    size="75"
                 >
                 <form id={`form-add-quantity-return`}>
                     <fieldset className="scheduler-border">
@@ -287,7 +287,7 @@ class QuantityLotGoodReturn extends Component {
                                     (typeof lots !== 'undefined' && lots.length > 0) ?
                                         lots.map((x, index) =>
                                             <tr key={index}>
-                                                <td>{x.lot.name}</td>
+                                                <td>{x.lot.code}</td>
                                                 <td>{x.quantity}</td>
                                                 <td>{x.returnQuantity}</td>
                                                 <td>{x.note}</td>

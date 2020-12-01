@@ -13,6 +13,7 @@ class ArchiveEditForm extends Component {
             contained: ''
         }
         this.state = {
+            currentRole: localStorage.getItem("currentRole"),
             binEnableGoods: [],
             good: Object.assign({}, this.EMPTY_GOOD),
             editInfo: false,
@@ -235,7 +236,7 @@ class ArchiveEditForm extends Component {
     }
 
     save = async () => {
-        const { binId, binContained, binEnableGoods, binStatus, binParent, page, limit} = this.state;
+        const { binId, binContained, binEnableGoods, binStatus, binParent, page, limit, currentRole } = this.state;
 
         let array = [];
 
@@ -247,7 +248,7 @@ class ArchiveEditForm extends Component {
             array: array
         });
 
-        await this.props.getChildBinLocations({page, limit})
+        await this.props.getChildBinLocations({ page, limit, managementLocation: currentRole })
     }
 
     render() {

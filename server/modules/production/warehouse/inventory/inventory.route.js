@@ -14,6 +14,6 @@ router.patch('/:id', auth, LotController.editLot);
 router.post('/create-manufacturing-lot', auth, LotController.createManufacturingLot);
 //Lấy ra tất cả các lô sản xuất
 router.get('/get-manufacturing-lot', auth, LotController.getAllManufacturingLot);
-
+router.get('/get-manufacturing-lot/:id', auth, LotController.getDetailManufacturingLot);
 
 module.exports = router

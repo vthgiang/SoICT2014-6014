@@ -44,27 +44,27 @@ class UserEditForm extends Component {
     }
 
     isFormValidated = () => {
-        let {userName, userEmail} = this.state;
-        let {translate} = this.props;
-        if(!ValidationHelper.validateName(translate, userName).status || !ValidationHelper.validateEmail(translate, userEmail).status) return false;
+        let { userName, userEmail } = this.state;
+        let { translate } = this.props;
+        if (!ValidationHelper.validateName(translate, userName, 6, 255).status || !ValidationHelper.validateEmail(translate, userEmail).status) return false;
         return true;
     }
 
     handleUserName = (e) => {
-        let {value} = e.target;
-        let {translate} = this.props;
-        let {message} = ValidationHelper.validateName(translate, value, 6, 255);
-        this.setState({ 
+        let { value } = e.target;
+        let { translate } = this.props;
+        let { message } = ValidationHelper.validateName(translate, value, 6, 255);
+        this.setState({
             userName: value,
             userNameError: message
         });
     }
 
     handleUserEmail = (e) => {
-        let {value} = e.target;
-        let {translate} = this.props;
-        let {message} = ValidationHelper.validateEmail(translate, value);
-        this.setState({ 
+        let { value } = e.target;
+        let { translate } = this.props;
+        let { message } = ValidationHelper.validateEmail(translate, value);
+        this.setState({
             userEmail: value,
             userEmailError: message
         });
@@ -117,8 +117,8 @@ class UserEditForm extends Component {
                     {/* Form chỉnh sửa thông tin tài khoản người dùng */}
                     <form id={`form-edit-user`}>
                         <div className="row">
-                            <div className="form-group col-sm-3" style={{paddingTop: '25px'}}>
-                                <img className="user-avatar" src={process.env.REACT_APP_SERVER+userAvatar}/>
+                            <div className="form-group col-sm-3" style={{ paddingTop: '25px' }}>
+                                <img className="user-avatar" src={process.env.REACT_APP_SERVER + userAvatar} />
                             </div>
                             <div className="form-group col-sm-9">
                                 <div className={`form-group ${!userNameError ? "" : "has-error"}`}>
@@ -153,18 +153,18 @@ class UserEditForm extends Component {
                                         </div>
                                     </React.Fragment> :
                                     <React.Fragment>
-                                    <div className="form-group col-sm-3">
-                                        <label>{translate('table.status')}<span className="text-red">*</span></label>
-                                        <select
-                                            className="form-control"
-                                            style={{ width: '100%' }}
-                                            value={userActive}
-                                            onChange={this.handleUserActiveChange}>
-                                            {
-                                                status.map(result => <option key={result.id} value={result.value}>{translate(`manage_user.${result.name}`)}</option>)
-                                            }
-                                        </select>
-                                    </div>
+                                        <div className="form-group col-sm-3">
+                                            <label>{translate('table.status')}<span className="text-red">*</span></label>
+                                            <select
+                                                className="form-control"
+                                                style={{ width: '100%' }}
+                                                value={userActive}
+                                                onChange={this.handleUserActiveChange}>
+                                                {
+                                                    status.map(result => <option key={result.id} value={result.value}>{translate(`manage_user.${result.name}`)}</option>)
+                                                }
+                                            </select>
+                                        </div>
                                         <div className={`form-group col-sm-6 ${!userEmailError ? "" : "has-error"}`}>
                                             <label>{translate('table.email')}<span className="text-red">*</span></label>
                                             <input type="text" className="form-control" value={userEmail} onChange={this.handleUserEmail} />

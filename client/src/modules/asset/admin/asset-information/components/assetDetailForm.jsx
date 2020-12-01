@@ -54,6 +54,7 @@ class AssetDetailForm extends Component {
                 disposalDesc: nextProps.disposalDesc,
                 archivedRecordNumber: nextProps.archivedRecordNumber,
                 files: nextProps.files,
+                readByRoles: nextProps.readByRoles
             }
         } else {
             return null;
@@ -67,6 +68,7 @@ class AssetDetailForm extends Component {
             unitsProducedDuringTheYears, maintainanceLogs, usageLogs, incidentLogs, disposalDate, disposalType, disposalCost,
             disposalDesc, archivedRecordNumber, files, readByRoles
         } = this.state;
+
         return (
             <React.Fragment>
                 <DialogModal

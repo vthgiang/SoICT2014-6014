@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { forceCheckOrVisible, LazyLoadComponent } from '../../../../common-components';
-import CareerAction from "./career-action";
+import CareerReduxAction from "./career-action";
 import CareerField from "./career-field";
 import CareerPosition from "./career-position";
 
@@ -45,9 +45,9 @@ class CareerManagement extends Component {
                     {/** hoat động */}
                     <div className="tab-pane" id="career-action-tab">
                         <LazyLoadComponent
-                            key="CareerAction"
+                            key="CareerReduxAction"
                         >
-                            <CareerAction />
+                            <CareerReduxAction />
                         </LazyLoadComponent>
                     </div>
                 </div>

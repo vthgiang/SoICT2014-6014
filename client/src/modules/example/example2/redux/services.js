@@ -42,10 +42,7 @@ function createExample(data) {
         {
             url: `${process.env.REACT_APP_SERVER}/examples`,
             method: "POST",
-            data: {
-                exampleName: data.exampleName,
-                description: data.description
-            }
+            data: data
         },
         true,
         true,

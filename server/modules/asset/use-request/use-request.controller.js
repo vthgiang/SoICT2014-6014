@@ -81,7 +81,7 @@ exports.createUseRequest = async (req, res) => {
  */
 exports.deleteUseRequest = async (req, res) => {
     try {
-        var recommenddistributeDelete = await RecommendDistributeService.deleteUseRequest(req.params.id);
+        var recommenddistributeDelete = await RecommendDistributeService.deleteUseRequest(req.portal, req.params.id);
         await Logger.info(req.user.email, 'DELETE_USE_REQUEST', req.portal);
         res.status(200).json({
             success: true,

@@ -75,6 +75,37 @@ class UseRequestManager extends Component {
         }
     }
 
+    formatDateTime(date, typeRegisterForUse) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2) {
+            month = '0' + month;
+        }
+
+        if (day.length < 2) {
+            day = '0' + day;
+        }
+        if (typeRegisterForUse === 2) {
+            let hour = d.getHours(),
+                minutes = d.getMinutes();
+            if (hour < 10) {
+                hour = '0' + hour;
+            }
+
+            if (minutes < 10) {
+                minutes = '0' + minutes;
+            }
+
+            let formatDate = [hour, minutes].join(":") + " " + [day, month, year].join("-")
+            return formatDate;
+        } else {
+            let formatDate = [day, month, year].join("-")
+            return formatDate;
+        }
+    }
     // Function format ngày hiện tại thành dạnh mm-yyyy
     formatDate(date) {
         var d = new Date(date),
@@ -388,11 +419,11 @@ class UseRequestManager extends Component {
                                     return (<tr key={index}>
                                         <td><a onClick={() => this.handleEditAsset(x.asset)}>{x.asset ? x.asset.code : 'Asset is deleted'}</a></td>
                                         <td>{x.recommendNumber}</td>
-                                        <td>{this.formatDate2(x.dateCreate)}</td>
+                                        <td>{this.formatDateTime(x.dateCreate)}</td>
                                         <td>{x.proponent ? x.proponent.name : 'User is deleted'}</td>
                                         <td>{x.asset ? x.asset.assetName : 'Asset is deleted'}</td>
-                                        <td>{this.formatDate2(x.dateStartUse)}</td>
-                                        <td>{this.formatDate2(x.dateEndUse)}</td>
+                                        <td>{this.formatDateTime(x.dateStartUse, x.asset.typeRegisterForUse)}</td>
+                                        <td>{this.formatDateTime(x.dateEndUse, x.asset.typeRegisterForUse)}</td>
                                         <td>{x.approver ? x.approver.name : ''}</td>
                                         <td>{this.formatStatus(x.status)}</td>
                                         <td style={{ textAlign: "center" }}>

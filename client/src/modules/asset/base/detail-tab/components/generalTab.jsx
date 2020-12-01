@@ -74,7 +74,8 @@ class GeneralTab extends Component {
                 status: nextProps.status,
                 typeRegisterForUse: nextProps.typeRegisterForUse,
                 detailInfo: nextProps.detailInfo,
-                usageLogs: nextProps.usageLogs
+                usageLogs: nextProps.usageLogs,
+                readByRoles: nextProps.readByRoles
             }
         } else {
             return null;
@@ -104,18 +105,17 @@ class GeneralTab extends Component {
     }
 
     render() {
-        const { id, translate, user, assetType, assetsManager, department } = this.props;
+        const { id, translate, user, assetsManager, department, role } = this.props;
         var userlist = user.list, departmentlist = department.list;
-        var assettype = assetType && assetType.administration;
-        let assettypelist = assettype && assettype.types.list;
         let assetbuilding = assetsManager && assetsManager.buildingAssets;
         let assetbuildinglist = assetbuilding && assetbuilding.list;
 
         const {
-            img, avatar, defaultAvatar, code, assetName, serial, assetTypes, group, purchaseDate, warrantyExpirationDate,
-            managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location,
-            description, status, typeRegisterForUse, detailInfo, usageLogs
+            avatar, defaultAvatar, code, assetName, serial, assetTypes, group, purchaseDate, warrantyExpirationDate,
+            managedBy, assignedToUser, assignedToOrganizationalUnit, location,
+            description, status, typeRegisterForUse, detailInfo, usageLogs, readByRoles
         } = this.state;
+
         return (
             <div id={id} className="tab-pane active">
                 <div className="box-body" >
@@ -182,7 +182,13 @@ class GeneralTab extends Component {
                                     {/* Người quản lý */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.manager')}&emsp; </strong>
-                                        {managedBy && userlist.length && userlist.filter(item => item._id === managedBy).pop() ? userlist.filter(item => item._id === managedBy).pop().name : 'User is deleted'}
+                                        {managedBy && userlist.length && userlist.filter(item => item._id === managedBy).pop() ? userlist.filter(item => item._id === managedBy).pop().name : ''}
+                                    </div>
+
+                                    {/* Quyền được xem*/}
+                                    <div className="form-group">
+                                        <strong>{translate('system_admin.system_link.table.roles')}&emsp; </strong>
+                                        {readByRoles ? readByRoles.map((x, index) => (role.list.length && role.list.filter(item => item._id === x).pop() ? (role.list.filter(item => item._id === x).pop().name + ((index < readByRoles.length - 1) ? ", " : '')) : '')) : ''}
                                     </div>
                                 </div>
 
@@ -191,24 +197,24 @@ class GeneralTab extends Component {
                                     {/* Người sử dụng */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.user')}&emsp; </strong>
-                                        {assignedToUser ? (userlist.length && userlist.filter(item => item._id === assignedToUser).pop() ? userlist.filter(item => item._id === assignedToUser).pop().name : 'User is deleted') : ''}
+                                        {assignedToUser ? (userlist.length && userlist.filter(item => item._id === assignedToUser).pop() ? userlist.filter(item => item._id === assignedToUser).pop().name : '') : ''}
                                     </div>
 
                                     {/* Đơn vị sử dụng */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.organization_unit')}&emsp; </strong>
-                                        {assignedToOrganizationalUnit ? (departmentlist.length && departmentlist.filter(item => item._id === assignedToOrganizationalUnit).pop() ? departmentlist.filter(item => item._id === assignedToOrganizationalUnit).pop().name : 'User is deleted') : ''}
+                                        {assignedToOrganizationalUnit ? (departmentlist.length && departmentlist.filter(item => item._id === assignedToOrganizationalUnit).pop() ? departmentlist.filter(item => item._id === assignedToOrganizationalUnit).pop().name : '') : ''}
                                     </div>
                                     {/* Thời gian bắt đầu sử dụng */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.handover_from_date')}&emsp; </strong>
-                                        {status == "in_use" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1] && usageLogs[usageLogs.length - 1].startDate) : ''}
+                                        {status === "in_use" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1] && usageLogs[usageLogs.length - 1].startDate) : ''}
                                     </div>
 
                                     {/* Thời gian kết thúc sử dụng */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.handover_to_date')}&emsp; </strong>
-                                        {status == "in_use" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1] && usageLogs[usageLogs.length - 1].endDate) : ''}
+                                        {status === "in_use" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1] && usageLogs[usageLogs.length - 1].endDate) : ''}
                                     </div>
 
                                     {/* Vị trí */}
@@ -232,14 +238,14 @@ class GeneralTab extends Component {
                                     {/* Quyền đăng ký sử dụng */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.can_register_for_use')}&emsp; </strong>
-                                        {typeRegisterForUse == 1 ? 'Không được đăng ký sử dụng' : (typeRegisterForUse == 2 ? "Đăng ký sử dụng theo giờ" : "Đăng ký sử dụng lâu dài")}
+                                        {typeRegisterForUse === 1 ? 'Không được đăng ký sử dụng' : (typeRegisterForUse === 2 ? "Đăng ký sử dụng theo giờ" : "Đăng ký sử dụng lâu dài")}
                                     </div>
                                 </div>
                             </div>
 
                             {/* Thông tin chi tiết */}
                             <div className="col-md-12">
-                                <label>{translate('asset.general_information.asset_properties')}:<a title={translate('asset.general_information.asset_properties')}></a></label>
+                                <label>{translate('asset.general_information.asset_properties')}:<a style={{ cursor: "pointer" }} title={translate('asset.general_information.asset_properties')}></a></label>
                                 <div className="form-group">
                                     <table className="table">
                                         <thead>
@@ -273,8 +279,8 @@ class GeneralTab extends Component {
 };
 
 function mapState(state) {
-    const { user, assetType, assetsManager, department } = state;
-    return { user, assetType, assetsManager, department };
+    const { user, assetType, assetsManager, department, role } = state;
+    return { user, assetType, assetsManager, department, role };
 };
 const actions = {
     getAssetTypes: AssetTypeActions.getAssetTypes,

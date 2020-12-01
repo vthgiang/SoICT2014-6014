@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, SelectBox, TrixEditor } from '../../../common-components';
+import { DialogModal, SelectBox, QuillEditor } from '../../../common-components';
 
 import { DepartmentActions } from '../../super-admin/organizational-unit/redux/actions';
 import { UserActions } from '../../super-admin/user/redux/actions';
@@ -63,7 +63,7 @@ class NotificationCreate extends Component {
         return msg === undefined;
     }
 
-    handleContent = (data) => {
+    handleContent = (data, imgs) => {
         this.validateContent(data, true);
     }
     validateContent = (value, willUpdateState=true) => {
@@ -171,8 +171,9 @@ class NotificationCreate extends Component {
                         {/* Nội dung */}
                         <div className="form-group">
                             <label>{translate('notification.content')}<span className="text-red">*</span></label>
-                            <TrixEditor
-                                handleChange={this.handleContent}
+                            <QuillEditor
+                                id={'notificationCreate'}
+                                getTextData={this.handleContent}
                             />
                         </div>
 

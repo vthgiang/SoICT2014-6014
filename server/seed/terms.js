@@ -267,8 +267,15 @@ const LINKS = [{
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name
-    ],
-    components: getComponentsInLink('/documents-management')
+    ]
+},
+{
+    url: '/documents/organizational-unit',
+    description: 'Quản lý tài liệu biểu mẫu của đơn vị',
+    category: LINK_CATEGORY.DOCUMENT.name,
+    roles: [
+        ROOT_ROLES.DEAN.name,
+    ]
 },
 {
     url: '/documents',
@@ -278,8 +285,7 @@ const LINKS = [{
         ROOT_ROLES.DEAN.name,
         ROOT_ROLES.VICE_DEAN.name,
         ROOT_ROLES.EMPLOYEE.name,
-    ],
-    components: getComponentsInLink('/documents')
+    ]
 },
 
 {

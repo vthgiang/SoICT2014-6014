@@ -409,8 +409,8 @@ class TimesheetsManagement extends Component {
                         <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
                             <button type="button" className="btn btn-success pull-right dropdown-toggle" data-toggle="dropdown" aria-expanded="true" >{translate('human_resource.timesheets.add_timesheets')}</button>
                             <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }} >
-                                <li><a style={{ cursor: 'pointer' }} title={translate('human_resource.add_data_by_excel')} onClick={this.handleImport}>{translate('human_resource.timesheets.add_import')}</a></li>
                                 <li><a style={{ cursor: 'pointer' }} title={translate('human_resource.timesheets.add_timesheets_title')} onClick={this.createTimesheets}>{translate('human_resource.timesheets.add_by_hand')}</a></li>
+                                <li><a style={{ cursor: 'pointer' }} title={translate('human_resource.add_data_by_excel')} onClick={this.handleImport}>{translate('human_resource.timesheets.add_import')}</a></li>
                             </ul>
                         </div>
                         <ExportExcel id="export-timesheets" buttonName={translate('human_resource.name_button_export')} exportData={exportData} style={{ marginRight: 15, marginTop: 0 }} />

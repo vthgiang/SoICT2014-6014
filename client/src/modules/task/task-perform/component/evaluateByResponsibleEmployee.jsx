@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { ErrorLabel, DatePicker, SelectBox, TrixEditor } from '../../../../common-components/index';
+import { ErrorLabel, DatePicker, SelectBox, QuillEditor } from '../../../../common-components/index';
 import { performTaskAction } from '../redux/actions';
 import { managerKpiActions } from '../../../kpi/employee/management/redux/actions';
 import { TaskInformationForm } from './taskInformationForm';
@@ -1063,7 +1063,11 @@ class EvaluateByResponsibleEmployee extends Component {
                                                 <div>
                                                     <span key={index}>
                                                         ({index + 1})&nbsp;&nbsp;
-                                                        <TrixEditor value={item.description} edit={false}/>
+                                                        <QuillEditor
+                                                            id={'evaluateByRes'}
+                                                            value={item.description}
+                                                            edit={false}
+                                                        />
                                                     </span>
                                                 </div>
                                             ))

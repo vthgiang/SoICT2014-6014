@@ -158,7 +158,7 @@ class WorkerScheduleManagementTable extends Component {
 
         const { month, allDaysOfMonth, name } = this.state;
 
-        const arrayStatus = [0, 1, 2, 3, 4, 5, 6];
+        const arrayStatus = [0, 1, 2, 3, 4, 5];
         return (
             <React.Fragment>
                 {

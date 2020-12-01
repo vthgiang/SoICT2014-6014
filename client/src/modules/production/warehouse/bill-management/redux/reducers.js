@@ -16,6 +16,7 @@ const initState = {
     billDetail: '',
     listBillByGood: [],
     listBillByStatus: [],
+    listBillByCommand: [],
     listPaginate: [],
     totalDocs: 0,
     limit: 0,
@@ -43,6 +44,7 @@ export function bills(state = initState, action) {
         case BillConstants.CREATE_BILL_REQUEST:
         case BillConstants.UPDATE_BILL_REQUEST:
         case BillConstants.GET_BILL_BY_STATUS_REQUEST:
+        case BillConstants.GET_BILL_BY_COMMAND_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -126,6 +128,13 @@ export function bills(state = initState, action) {
                 isLoading: false
             }
 
+        case BillConstants.GET_BILL_BY_COMMAND_SUCCESS:
+            return {
+                ...state,
+                listBillByCommand: action.payload,
+                isLoading: false
+            }
+
         case BillConstants.GET_BILL_BY_TYPE_FAILURE:
         case BillConstants.GET_PAGINATE_FAILURE:
         case BillConstants.GET_BILL_BY_GOOD_FAILURE:
@@ -133,6 +142,7 @@ export function bills(state = initState, action) {
         case BillConstants.CREATE_BILL_FAILURE:
         case BillConstants.UPDATE_BILL_FAILURE:
         case BillConstants.GET_BILL_BY_STATUS_FAILURE:
+        case BillConstants.GET_BILL_BY_COMMAND_FAILURE:
             return {
                 ...state,
                 isLoading: false

@@ -251,28 +251,39 @@ const EmployeeSchema = new Schema({
         urlFile: String
     }],
     major: [{
-        // type: Schema.Types.ObjectId,
-        // ref: 'Major',
-        name: String,
-        code: String,
+        group: {
+            name: String,
+            id: String,
+            code: String
+        },
+        specialized: {
+            name: String,
+            id: String,
+            code: String
+        },
+        file: String,
+        urlFile: String
     }],
-    // careerPosition: [{
-    //     // type: Schema.Types.ObjectId,
-    //     // ref: 'CareerPosition',
-    //     name: String,
-    //     code: String,
-    //     startDate: Date,
-    //     endDate: Date,
-    // }],
     career: [{
-        careerFieldName: String,
-        careerFieldCode: String,
-        careerPositionName: String,
-        careerPositionCode: String,
-        careerActionName: String,
-        careerActionCode: String,
+        field: {
+            name: String,
+            id: String,
+            code: String
+        },
+        position: {
+            name: String,
+            id: String,
+            code: String
+        },
+        action: {
+            name: String,
+            id: String,
+            code: String
+        },
         startDate: Date,
         endDate: Date,
+        file: String,
+        urlFile: String
     }],
 }, {
     timestamps: true,

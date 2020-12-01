@@ -534,7 +534,6 @@ class GeneralTab extends Component {
             errorOnWarrantyExpirationDate, errorOnManagedBy, errorOnNameField, errorOnValue, usageLogs, readByRoles, errorOnNameFieldPosition, errorOnValuePosition
         } = this.state;
 
-        console.log('avarrrrrrrrrrrrr', avatar);
         var userlist = user.list, departmentlist = department.list;
         let startDate = status == "in_use" && usageLogs && usageLogs.length ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : '';
         let endDate = status == "in_use" && usageLogs && usageLogs.length ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : '';

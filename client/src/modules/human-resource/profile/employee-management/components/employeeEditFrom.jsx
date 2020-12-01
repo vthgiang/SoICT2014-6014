@@ -7,7 +7,7 @@ import { DialogModal } from '../../../../../common-components';
 
 import {
     GeneralTab, ContactTab, TaxTab, InsurranceTab, DisciplineTab,
-    ExperienceTab, CertificateTab, ContractTab, SalaryTab, FileTab
+    ExperienceTab, CertificateTab, ContractTab, SalaryTab, FileTab, CareerMajorTab, 
 } from '../../employee-create/components/combinedContent';
 
 import { EmployeeManagerActions } from '../redux/actions';
@@ -149,6 +149,102 @@ class EmployeeEditFrom extends Component {
         } else {
             this.setState({
                 degrees: data
+            })
+        }
+    }
+
+    /**
+     * Function thêm thông tin chuyên ngành tuowg đương
+     * @param {*} data : Dữ liệu thông tin chuyên ngành tuowg đương
+     * @param {*} addData : Chuyên ngành tuowg đương muốn thêm 
+     */
+    handleAddMajor = (data, addData) => {
+        this.setState({
+            major: data
+        })
+    }
+
+    /**
+     * Function chỉnh sửa thông tin chuyên ngành tuowg đương
+     * @param {*} data : Dữ liệu thông tin chuyên ngành tuowg đương
+     * @param {*} editData : chuyên ngành tuowg đương muốn chỉnh sửa
+     */
+    handleEditMajor = (data, editData) => {
+        const { editMajor } = this.state;
+        if (editData._id) {
+            this.setState({
+                editMajor: [...editMajor, editData]
+            })
+        } else {
+            this.setState({
+                major: data
+            })
+        }
+    }
+
+    /**
+     * Function xoá thông tin chuyên ngành tuowg đương
+     * @param {*} data : Dữ liệu thông tin chuyên ngành tuowg đương
+     * @param {*} deleteData : chuyên ngành tuowg đương muốn xoá
+     */
+    handleDeleteMajor = (data, deleteData) => {
+        const { deleteMajor, editMajor } = this.state;
+        if (deleteData._id) {
+            this.setState({
+                deleteMajor: [...deleteMajor, deleteData],
+                editMajor: editMajor.filter(x => x._id !== deleteData._id)
+            })
+        } else {
+            this.setState({
+                major: data
+            })
+        }
+    }
+
+    /**
+     * Function thêm thông tin Công việc đương tương
+     * @param {*} data : Dữ liệu thông tin Công việc đương tương
+     * @param {*} addData : Công việc đương tương muốn thêm 
+     */
+    handleAddCareer = (data, addData) => {
+        this.setState({
+            career: data
+        })
+    }
+
+    /**
+     * Function chỉnh sửa thông tin bằng cấp
+     * @param {*} data : Dữ liệu thông tin bằng cấp
+     * @param {*} editData : bằng cấp muốn chỉnh sửa
+     */
+    handleEditCareer = (data, editData) => {
+        const { editCareer } = this.state;
+        if (editData._id) {
+            this.setState({
+                editCareer: [...editCareer, editData]
+            })
+        } else {
+            this.setState({
+                career: data
+            })
+        }
+    }
+
+    /**
+     * Function xoá thông tin Công việc đương tương
+     * @param {*} data : Dữ liệu thông tin Công việc đương tương
+     * @param {*} deleteData : Công việc đương tương muốn xoá
+     */
+    handleDeleteCareer = (data, deleteData) => {
+        const { deleteCareer, editCareer } = this.state;
+        if (deleteData._id) {
+            this.setState({
+                deleteCareer: [...deleteCareer, deleteData],
+                editCareer: editCareer.filter(x => x._id !== deleteData._id)
+            })
+        } else {
+            this.setState({
+                career: data
             })
         }
     }
@@ -590,12 +686,14 @@ class EmployeeEditFrom extends Component {
 
     save = async () => {
         let { _id, experiences, degrees, certificates, contracts, files, avatar,
-            disciplines, commendations, annualLeaves, socialInsuranceDetails, courses } = this.state;
+            disciplines, commendations, annualLeaves, socialInsuranceDetails, courses, career, major } = this.state;
 
         await this.setState({
             createExperiences: experiences.filter(x => x._id === undefined),
             createDegrees: degrees.filter(x => x._id === undefined),
             createCertificates: certificates.filter(x => x._id === undefined),
+            createCareer: career.filter(x => x._id === undefined),
+            createMajor: major.filter(x => x._id === undefined),
             createContracts: contracts.filter(x => x._id === undefined),
             createDisciplines: disciplines.filter(x => x._id === undefined),
             createCommendations: commendations.filter(x => x._id === undefined),
@@ -605,12 +703,19 @@ class EmployeeEditFrom extends Component {
             createFiles: files.filter(x => x._id === undefined),
         });
 
+        console.log('qydsd', this.state);
         let formData = convertJsonObjectToFormData(this.state);
         degrees.forEach(x => {
             formData.append("fileDegree", x.fileUpload);
         })
         certificates.forEach(x => {
             formData.append("fileCertificate", x.fileUpload);
+        })
+        career.forEach(x => {
+            formData.append("fileCareer", x.fileUpload);
+        })
+        major.forEach(x => {
+            formData.append("fileMajor", x.fileUpload);
         })
         contracts.forEach(x => {
             formData.append("fileContract", x.fileUpload);
@@ -659,6 +764,10 @@ class EmployeeEditFrom extends Component {
                 deleteExperiences: [],
                 editDegrees: [],
                 deleteDegrees: [],
+                editMajor: [],
+                deleteMajor: [],
+                editCareer: [],
+                deleteCareer: [],
                 editCertificates: [],
                 deleteCertificates: [],
                 editSocialInsuranceDetails: [],
@@ -692,6 +801,8 @@ class EmployeeEditFrom extends Component {
                 experiences: [],
                 degrees: [],
                 certificates: [],
+                career: [],
+                major: [],
                 contracts: [],
                 files: [],
                 socialInsuranceDetails: [],
@@ -713,6 +824,8 @@ class EmployeeEditFrom extends Component {
                 experiences: nextProps.employeesInfo.employees[0].experiences,
                 degrees: nextProps.employeesInfo.employees[0].degrees,
                 certificates: nextProps.employeesInfo.employees[0].certificates,
+                career: nextProps.employeesInfo.employees[0].career,
+                major: nextProps.employeesInfo.employees[0].major,
                 contracts: nextProps.employeesInfo.employees[0].contracts,
                 files: nextProps.employeesInfo.employees[0].files,
                 socialInsuranceDetails: nextProps.employeesInfo.employees[0].socialInsuranceDetails,
@@ -732,7 +845,7 @@ class EmployeeEditFrom extends Component {
         const { translate, employeesInfo } = this.props;
 
         let { _id, img, employee, degrees, certificates, socialInsuranceDetails, contracts, courses,
-            organizationalUnits, roles, commendations, disciplines, annualLeaves, files } = this.state;
+            organizationalUnits, roles, commendations, disciplines, annualLeaves, files, major, career } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
@@ -756,6 +869,7 @@ class EmployeeEditFrom extends Component {
                                 <li><a title={translate('human_resource.profile.tab_name.menu_reward_discipline_title')} data-toggle="tab" href={`#edit_reward${_id}`}>{translate('human_resource.profile.tab_name.menu_reward_discipline')}</a></li>
                                 <li><a title={translate('menu.annual_leave_personal')} data-toggle="tab" href={`#edit_salary${_id}`}>{translate('menu.annual_leave_personal')}</a></li>
                                 <li><a title={translate('human_resource.profile.tab_name.menu_attachments_title')} data-toggle="tab" href={`#edit_attachments${_id}`}>{translate('human_resource.profile.tab_name.menu_attachments')}</a></li>
+                                <li><a title={"Công việc - chuyên ngành tương đương"} data-toggle="tab" href={`#edit_major_career${_id}`}>Công việc - chuyên ngành tương đương</a></li>
                             </ul>
                             <div className="tab-content">
                                 {/* Tab thông tin chung */
@@ -864,6 +978,23 @@ class EmployeeEditFrom extends Component {
                                     handleEditFile={this.handleEditFile}
                                     handleDeleteFile={this.handleDeleteFile}
                                 />
+                                {/* Tab công việc - chuyên ngành tương đương */}
+                                <CareerMajorTab
+                                    id={`edit_major_career${_id}`}
+                                    files={files}
+                                    major={major}
+                                    career={career}
+                                    handleChange={this.handleChange}
+
+                                    handleAddMajor={this.handleAddMajor}
+                                    handleEditMajor={this.handleEditMajor}
+                                    handleDeleteMajor={this.handleDeleteMajor}
+
+                                    handleAddCareer={this.handleAddCareer}
+                                    handleEditCareer={this.handleEditCareer}
+                                    handleDeleteCareer={this.handleDeleteCareer}
+                                />
+                               
                             </div>
                         </div>}
                     {/* </form> */}

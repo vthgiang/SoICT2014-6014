@@ -522,6 +522,7 @@ exports.data = [
     { path: '/bills', method: 'GET', roles: ['Super Admin', 'Admin']},
     { path: '/bills/get-bill-by-good', method: 'GET', roles: ['Super Admin', 'Admin']},
     { path: '/bills/get-bill-by-status', method: 'GET', roles: ['Super Admin', 'Admin']},
+    { path: '/bills/bill-by-command', method: 'GET', roles: ['Super Admin', 'Admin']},
     { path: '/bills', method: 'POST', roles: ['Super Admin', 'Admin']},
     { path: '/bills/:id', method: 'PATCH', roles: ['Super Admin', 'Admin']},
     { path: '/bills/get-detail-bill/:id', method: 'GET', roles: ['Super Admin', 'Admin']},
@@ -540,6 +541,9 @@ exports.data = [
     { path: '/crm/customers/:id', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/crm/customers/:id', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/crm/customers/:id', method: 'DELETE', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/crm/customers/:id/point', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/crm/customers/:id/point', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+
 
     { path: '/crm/groups', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/crm/groups', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },

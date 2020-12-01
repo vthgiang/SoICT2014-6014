@@ -50,6 +50,32 @@ exports.getCustomerById = async (req, res) => {
 }
 
 /**
+ * Lấy tổng số point của khách hàng
+ * @param {*} req 
+ * @param {*} res 
+ */
+exports.getCustomerPoint = async (req, res) => {
+    try {
+        console.log("ashjdhsjhdkj")
+        const customerPoint = await CustomerService.getCustomerPoint(req.portal, req.user.company._id, req.params.id);
+        await Logger.info(req.user.email, ' get_customer_point_success ', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['get_customer_point_success'],
+            content: customerPoint
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ' get_customer_point_faile ', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['get_customer_point_faile'],
+            content: error
+        })
+    }
+}
+
+
+/**
  * Tạo mới một khách hàng
  * @param {*} req 
  * @param {*} res 
@@ -133,6 +159,29 @@ exports.editCustomer = async (req, res) => {
     }
 }
 
+/**
+ * Cập nhật số point của khách hàng
+ * @param {*} req 
+ * @param {*} res 
+ */
+exports.editCustomerPoint = async (req, res)=> {
+    try {
+        const newCustomerPoint = await CustomerService.editCustomerPoint(req.portal, req.user.company._id,req.params.id, req.body, req.user._id);
+        await Logger.info(req.user.email, 'edit_customer_point_success');
+        res.status(200).json({
+            success: true,
+            messages: ['edit_customer_point_success'],
+            content: newCustomerPoint
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ' edit_customer_point_faile ', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['edit_customer_point_faile'],
+            content: error
+        })
+    }
+}
 /**
  * Xóa một khách hàng
  * @param {*} req 

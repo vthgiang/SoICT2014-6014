@@ -85,9 +85,9 @@ class AssetImportForm extends Component {
         }
         
         if (assets && assets.length !== 0) {
-            assets.map(item => {
-                this.props.addNewAsset(item)
-            })
+            // assets.map(item => {
+                this.props.addNewAsset(assets)
+            // })
         }
     }
 
@@ -130,6 +130,8 @@ class AssetImportForm extends Component {
      * @param {*} serial :số serial của ngày
      */
     convertExcelDateToJSDate = (serial, type) => {
+        if(!serial) return undefined;
+
         let utc_days = Math.floor(serial - 25569);
         let utc_value = utc_days * 86400;
         let date_info = new Date(utc_value * 1000);
@@ -608,43 +610,53 @@ class AssetImportForm extends Component {
 
                     value[i] = valueTemporary;
                 } else {
-                    let errorAlert = [];
+                    if (importGeneralInformationData.length !== 0) {
+                        let errorAlert = [];
 
-                    // Check lỗi dữ liệu import
-                    if ((valueTemporary.assetType && !assetTypes[valueTemporary.assetType])
-                        || (valueTemporary.readByRoles && !roles[valueTemporary.readByRoles])
-                    ) {
-                        rowError = [...rowError, i+1];
-                        valueTemporary = { ...valueTemporary, error: true };
-                    }
+                        // Check lỗi dữ liệu import
+                        if ((valueTemporary.assetType && !assetTypes[valueTemporary.assetType])
+                            || (valueTemporary.readByRoles && !roles[valueTemporary.readByRoles])
+                        ) {
+                            rowError = [...rowError, i+1];
+                            valueTemporary = { ...valueTemporary, error: true };
+                        }
 
-                    if (valueTemporary.assetType && !assetTypes[valueTemporary.assetType]) {
-                        errorAlert = [...errorAlert, 'Loại tài sản không chính xác'];
-                    }
-                    if (valueTemporary.readByRoles && !roles[valueTemporary.readByRoles]) {
-                        errorAlert = [...errorAlert, 'Những roles có quyèn không chính xác'];
-                    }
+                        if (valueTemporary.assetType && !assetTypes[valueTemporary.assetType]) {
+                            errorAlert = [...errorAlert, 'Loại tài sản không chính xác'];
+                        }
+                        if (valueTemporary.readByRoles && !roles[valueTemporary.readByRoles]) {
+                            errorAlert = [...errorAlert, 'Những roles có quyèn không chính xác'];
+                        }
 
-                    valueTemporary = {
-                        ...valueTemporary,
-                        errorAlert: errorAlert
-                    };
-                    value[i] = valueTemporary;
+                        valueTemporary = {
+                            ...valueTemporary,
+                            errorAlert: errorAlert
+                        };
+                        value[i] = valueTemporary;
 
-                    importGeneralInformationData[importGeneralInformationData.length - 1 ] = {
-                        ...importGeneralInformationData[importGeneralInformationData.length - 1],
-                        assetType: valueTemporary.assetType
-                            ? [
-                                ...importGeneralInformationData[importGeneralInformationData.length - 1].assetType,
-                                valueTemporary.assetType && assetTypes[valueTemporary.assetType]
-                            ]
-                            : importGeneralInformationData[importGeneralInformationData.length - 1].assetType,
-                        readByRoles: valueTemporary.readByRoles
-                            ? [
-                                ...importGeneralInformationData[importGeneralInformationData.length - 1].readByRoles,
-                                valueTemporary.readByRoles && roles[valueTemporary.readByRoles]
-                            ]
-                            : importGeneralInformationData[importGeneralInformationData.length - 1].readByRoles
+                        importGeneralInformationData[importGeneralInformationData.length - 1] = {
+                            ...importGeneralInformationData[importGeneralInformationData.length - 1],
+                            assetType: valueTemporary && valueTemporary.assetType
+                                ? [
+                                    ...importGeneralInformationData[importGeneralInformationData.length - 1].assetType,
+                                    valueTemporary.assetType && assetTypes[valueTemporary.assetType]
+                                ]
+                                : importGeneralInformationData[importGeneralInformationData.length - 1].assetType,
+                            readByRoles: valueTemporary.readByRoles
+                                ? [
+                                    ...importGeneralInformationData[importGeneralInformationData.length - 1].readByRoles,
+                                    valueTemporary.readByRoles && roles[valueTemporary.readByRoles]
+                                ]
+                                : importGeneralInformationData[importGeneralInformationData.length - 1].readByRoles
+                        }
+                    } else {
+                        let errorAlert = ['Mã tài sản không được để trống'];
+                        rowError = [...rowError, i + 1];
+                        value[i] = {
+                            ...value[i],
+                            errorAlert: errorAlert,
+                            error: true
+                        }
                     }
                 }
             }

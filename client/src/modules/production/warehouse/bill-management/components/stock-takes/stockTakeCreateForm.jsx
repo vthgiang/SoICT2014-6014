@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
 import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from '../../../../../../common-components';
-// import QuantityCreateForm from './quantityCreateForm';
-// import QuantityCreateReceipt from './quantityCreateReceipt';
 import { generateCode } from '../../../../../../helpers/generateCode';
 import { LotActions } from '../../../inventory-management/redux/actions';
 import { BillActions } from '../../redux/actions';
@@ -165,22 +163,107 @@ class StockTakeCreateForm extends Component {
     }
 
     handleApproverChange = (value) => {
-        let approver = value[0];
+        let approver = value;
         this.validateApprover(approver, true);
     }
 
     validateApprover = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
-        if (!value) {
+        if(!value) {
             msg = translate('manage_warehouse.bill_management.validate_approver')
         }
-        if (willUpdateState) {
+        if(willUpdateState) {
+            let approvers = [];
+            value.map(item => {
+                approvers.push({
+                    approver: item,
+                    approvedTime: null
+                });
+            })
             this.setState(state => {
                 return {
                     ...state,
                     approver: value,
+                    approvers: approvers,
                     errorApprover: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+
+    handleAccountablesChange = (value) => {
+        let accountables = value;
+        this.validateAccountables(accountables, true);
+    }
+
+    validateAccountables = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = this.props;
+        if(!value) {
+            msg = translate('manage_warehouse.bill_management.validate_approver')
+        }
+        if(willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    accountables: value,
+                    errorAccountables: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+
+    handleResponsiblesChange = (value) => {
+        let responsibles = value;
+        this.validateResponsibles(responsibles, true);
+    }
+
+    validateResponsibles = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = this.props;
+        if(!value) {
+            msg = translate('manage_warehouse.bill_management.validate_approver')
+        }
+        if(willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    responsibles: value,
+                    errorResponsibles: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+
+    handleQualityControlStaffsChange = (value) => {
+        let qualityControlStaffs = value;
+        this.validateQualityControlStaffs(qualityControlStaffs, true);
+    }
+
+    validateQualityControlStaffs = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = this.props;
+        if(!value) {
+            msg = translate('manage_warehouse.bill_management.validate_approver')
+        }
+        if(willUpdateState) {
+            let listQualityControlStaffs = [];
+            value.map(item => {
+                listQualityControlStaffs.push({
+                    staff: item,
+                    time: null
+                });
+            })
+            this.setState(state => {
+                return {
+                    ...state,
+                    qualityControlStaffs: value,
+                    listQualityControlStaffs: listQualityControlStaffs,
+                    errorQualityControlStaffs: msg,
                 }
             })
         }
@@ -234,7 +317,10 @@ class StockTakeCreateForm extends Component {
             this.validateType(this.state.type, false) &&
             this.validateStock(this.state.fromStock, false) &&
             this.validateApprover(this.state.approver, false) &&
-            this.validateUsers(this.state.users, false)
+            this.validateUsers(this.state.users, false) &&
+            this.validateAccountables(this.state.accountables, false) &&
+            this.validateQualityControlStaffs(this.state.qualityControlStaffs, false) &&
+            this.validateResponsibles(this.state.responsibles, false)
         return result;
     }
 
@@ -405,7 +491,8 @@ class StockTakeCreateForm extends Component {
 
     save = async () => {
 
-        const { fromStock, code, toStock, type, status, users, approver, customer, supplier, description, listGood, phone, email, address, name } = this.state;
+        const { fromStock, code, toStock, type, status, users, approvers, customer, supplier, description, listGood, 
+            phone, email, address, name, listQualityControlStaffs, responsibles, accountables } = this.state;
         const { group } = this.props;
         await this.props.createBill({
             fromStock: fromStock,
@@ -415,7 +502,10 @@ class StockTakeCreateForm extends Component {
             group: group,
             status: status,
             users: users,
-            approver: approver,
+            approvers: approvers,
+            qualityControlStaffs: listQualityControlStaffs,
+            responsibles: responsibles,
+            accountables: accountables,
             customer: customer,
             supplier: supplier,
             name: name,
@@ -429,7 +519,8 @@ class StockTakeCreateForm extends Component {
 
     render() {
         const { translate, group } = this.props;
-        const { lots, listLot, listGood, good, code, approver, users, status, fromStock, type, errorStock, errorType, errorApprover, errorUsers } = this.state;
+        const { lots, listLot, listGood, good, code, approver, accountables, responsibles, qualityControlStaffs, users, status, fromStock, type, 
+            errorStock, errorType, errorApprover, errorUsers, errorQualityControlStaffs, errorAccountables, errorResponsibles } = this.state;
         const listGoods = this.getAllGoods();
         const dataApprover = this.getApprover();
 
@@ -459,7 +550,7 @@ class StockTakeCreateForm extends Component {
                     msg_faile={translate('manage_warehouse.bill_management.add_faile')}
                     disableSubmit={!this.isFormValidated()}
                     func={this.save}
-                    size={100}
+                    size={75}
                 >
                     {/* <QuantityCreateForm group={group} good={good} stock={fromStock} initialData={lots} onDataChange={this.handleLotsChange} /> */}
                     <form id={`form-create-bill-take`}>
@@ -484,7 +575,7 @@ class StockTakeCreateForm extends Component {
                                         />
                                         <ErrorLabel content={errorType} />
                                     </div>
-                                    <div className={`form-group`}>
+                                    {/* <div className={`form-group`}>
                                         <label>{translate('manage_warehouse.bill_management.status')}</label>
                                         <SelectBox
                                             id={`select-status-take-create`}
@@ -502,7 +593,7 @@ class StockTakeCreateForm extends Component {
                                             multiple={false}
                                             disabled={true}
                                         />
-                                    </div>
+                                    </div> */}
                                 </div>
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
@@ -518,32 +609,6 @@ class StockTakeCreateForm extends Component {
                                         />
                                         <ErrorLabel content={errorStock} />
                                     </div>
-                                    <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.approved')}<span className="attention"> * </span></label>
-                                        <SelectBox
-                                            id={`select-approver-bill-take-create`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            value={approver}
-                                            items={dataApprover}
-                                            onChange={this.handleApproverChange}
-                                            multiple={false}
-                                        />
-                                        <ErrorLabel content={errorApprover} />
-                                    </div>
-                                    <div className={`form-group ${!errorUsers ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.users')}<span className="attention"> * </span></label>
-                                        <SelectBox
-                                            id={`select-management-location-take-stock`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            value={users}
-                                            items={dataApprover}
-                                            onChange={this.handleUsersChange}
-                                            multiple={true}
-                                        />
-                                        <ErrorLabel content={errorUsers} />
-                                    </div>
                                 </div>
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     <div className="form-group">
@@ -553,7 +618,67 @@ class StockTakeCreateForm extends Component {
                                 </div>
                             </fieldset>
                         </div>
-
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">{translate('manage_warehouse.bill_management.list_saffs')}</legend>
+                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
+                                    <label>{translate('manage_warehouse.bill_management.approved')}<span className="attention"> * </span></label>
+                                    <SelectBox
+                                        id={`select-approver-bill-take-create`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        value={approver}
+                                        items={dataApprover}
+                                        onChange={this.handleApproverChange}    
+                                        multiple={true}
+                                    />
+                                    <ErrorLabel content = { errorApprover } />
+                                </div>
+                                <div className={`form-group ${!errorResponsibles ? "" : "has-error"}`}>
+                                    <label>{translate('manage_warehouse.bill_management.users')}<span className="attention"> * </span></label>
+                                    <SelectBox
+                                        id={`select-accountables-bill-take-create`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        value={responsibles}
+                                        items={dataApprover}
+                                        onChange={this.handleResponsiblesChange}    
+                                        multiple={true}
+                                    />
+                                    <ErrorLabel content = { errorResponsibles } />
+                                </div>
+                            </div>
+                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div className={`form-group ${!errorQualityControlStaffs ? "" : "has-error"}`}>
+                                        <label>{translate('manage_warehouse.bill_management.qualityControlStaffs')}<span className="attention"> * </span></label>
+                                        <SelectBox
+                                            id={`select-qualityControlStaffs-bill-take-create`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={qualityControlStaffs}
+                                            items={dataApprover}
+                                            onChange={this.handleQualityControlStaffsChange}    
+                                            multiple={true}
+                                        />
+                                        <ErrorLabel content = { errorQualityControlStaffs } />
+                                    </div>
+                                    <div className={`form-group ${!errorAccountables ? "" : "has-error"}`}>
+                                        <label>{translate('manage_warehouse.bill_management.accountables')}<span className="attention"> * </span></label>
+                                        <SelectBox
+                                            id={`select-responsibles-bill-take-create`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={accountables}
+                                            items={dataApprover}
+                                            onChange={this.handleAccountablesChange}    
+                                            multiple={true}
+                                        />
+                                        <ErrorLabel content = { errorAccountables } />
+                                    </div>
+                            </div>
+                        </fieldset>
+                        </div>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('manage_warehouse.bill_management.goods')}</legend>

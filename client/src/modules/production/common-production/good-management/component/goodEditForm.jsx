@@ -21,7 +21,7 @@ class GoodEditForm extends Component {
                 goodId: nextProps.goodId,
                 type: nextProps.type,
                 baseUnit: nextProps.baseUnit,
-                packingRule: nextProps.packingRule,
+                // packingRule: nextProps.packingRule,
                 units: nextProps.units,
                 materials: nextProps.materials,
                 manufacturingMills: nextProps.manufacturingMills,
@@ -31,12 +31,14 @@ class GoodEditForm extends Component {
                 category: nextProps.category,
                 pricePerBaseUnit: nextProps.pricePerBaseUnit ? nextProps.pricePerBaseUnit : "",
                 salesPriceVariance: nextProps.salesPriceVariance ? nextProps.salesPriceVariance : "",
+                numberExpirationDate: nextProps.numberExpirationDate ? nextProps.numberExpirationDate : "",
                 errorOnName: undefined,
                 errorOnCode: undefined,
                 errorOnBaseUnit: undefined,
                 errorOnCategory: undefined,
                 pricePerBaseUnitError: undefined,
                 salesPriceVarianceError: undefined,
+                errorOnNumberExpirationDate: undefined
             };
         } else {
             return null;
@@ -187,12 +189,11 @@ class GoodEditForm extends Component {
         });
     };
 
-    handleListUnitChange = (data, packingRule) => {
+    handleListUnitChange = (data) => {
         this.setState((state) => {
             return {
                 ...state,
-                units: data,
-                packingRule: packingRule,
+                units: data
             };
         });
     };
@@ -216,6 +217,35 @@ class GoodEditForm extends Component {
         console.log(this.state.manufacturingMills);
     };
 
+
+    handleNumberExpirationDateChange = (e) => {
+        const { value } = e.target;
+        this.validateNumberExpirationDate(value, true);
+    }
+
+    validateNumberExpirationDate = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = this.props;
+        console.log(value);
+        if (value === "") {
+            msg = translate("manage_warehouse.good_management.validate_number_expiration_date");
+        }
+        if (value < 1) {
+            msg = translate("manage_warehouse.good_management.validate_number_expiration_date_input");
+        }
+        if (willUpdateState) {
+            console.log(msg)
+            this.setState((state) => {
+                return {
+                    ...state,
+                    errorOnNumberExpirationDate: msg,
+                    numberExpirationDate: value,
+                };
+            });
+        }
+        return msg === undefined;
+    }
+
     isFormValidated = () => {
         let result =
             this.validateName(this.state.name, false) &&
@@ -223,7 +253,7 @@ class GoodEditForm extends Component {
             this.validateBaseUnit(this.state.baseUnit, false) &&
             this.validateCategory(this.state.category, false) &&
             this.state.materials.length > 0 &&
-            this.state.packingRule;
+            this.validateNumberExpirationDate(this.state.numberExpirationDate, false)
         return result;
     };
 
@@ -252,11 +282,13 @@ class GoodEditForm extends Component {
             materials,
             manufacturingMills,
             goodId,
-            packingRule,
+            // packingRule,
             pricePerBaseUnit,
             pricePerBaseUnitError,
             salesPriceVariance,
             salesPriceVarianceError,
+            numberExpirationDate,
+            errorOnNumberExpirationDate
         } = this.state;
         const dataSelectBox = this.getAllCategory();
 
@@ -330,6 +362,14 @@ class GoodEditForm extends Component {
                                     />
                                     <ErrorLabel content={pricePerBaseUnitError} />
                                 </div>
+                                <div className={`form-group ${!errorOnNumberExpirationDate ? "" : "has-error"}`}>
+                                    <label>
+                                        {translate("manage_warehouse.good_management.numberExpirationDate")}
+                                        <span className="attention"> * </span>
+                                    </label>
+                                    <input type="number" className="form-control" value={numberExpirationDate} onChange={this.handleNumberExpirationDateChange} />
+                                    <ErrorLabel content={errorOnNumberExpirationDate} />
+                                </div>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group ${!salesPriceVarianceError ? "" : "has-error"}`}>
@@ -353,7 +393,7 @@ class GoodEditForm extends Component {
                                     <textarea type="text" className="form-control" value={description} onChange={this.handleDescriptionChange} />
                                 </div>
                                 <UnitCreateForm
-                                    packingRule={packingRule}
+                                    // packingRule={packingRule}
                                     id={goodId}
                                     baseUnit={baseUnit}
                                     onValidate={this.validateUnitCreateForm}
@@ -370,8 +410,8 @@ class GoodEditForm extends Component {
                                         />
                                     </React.Fragment>
                                 ) : (
-                                    ""
-                                )}
+                                        ""
+                                    )}
                             </div>
                         </div>
                     </form>

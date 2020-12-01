@@ -104,7 +104,7 @@ class ConFigImportFile extends Component {
 
         let config = [];
         for (let key in configData) {
-            if (key !== "file" && key != "rowHeader" && key !== "sheets") {
+            if (key !== "file" && key !== "rowHeader" && key !== "sheets") {
                 config = [...config, configData[key]];
             }
         }
@@ -113,11 +113,11 @@ class ConFigImportFile extends Component {
             <React.Fragment>
                 <button type="button" data-toggle="collapse" data-target={`#confic_import_file-${id}`} className="pull-right"
                     style={{ border: "none", background: "none", paddingLeft: "5px" }}><i className="fa fa-gear" style={{ fontSize: "19px" }}></i></button>
-                <label className="pull-right">Cấu hình file import</label>
+                <label className="pull-right">{translate('common_component.import_excel.config')}</label>
 
                 <div id={`confic_import_file-${id}`} className="box box-solid box-default collapse col-sm-12 col-xs-12" style={{ padding: 0 }}>
                     <div className="box-header with-border">
-                        <h3 className="box-title">Cấu hình file import</h3>
+                        <h3 className="box-title">{translate('common_component.import_excel.config')}</h3>
                         <div className="box-tools pull-right">
                             <button type="button" className="btn btn-box-tool" data-toggle="collapse"
                                 data-target={`#confic_import_file-${id}`} ><i className="fa fa-times"></i></button>
@@ -130,15 +130,15 @@ class ConFigImportFile extends Component {
                         </div>
 
                         <div className="form-group col-sm-12 col-xs-12">
-                            <label>Cấu hình file import của bạn như sau:</label><br />
-                            <span>File import đọc dữ liệu các sheet: </span>
+                            <label>{translate('common_component.import_excel.user_config')}</label><br />
+                            <span>{translate('common_component.import_excel.config')}</span>
                             <span className="text-success" style={{ fontWeight: "bold" }}>&nbsp;{configData.sheets.value.length > 1 ? configData.sheets.value.join(', ') : configData.sheets.value}</span>
 
                             <div id={`croll-table-${id}`} style={{ marginTop: 5 }}>
                                 <table id={`importConfig-${id}`} className="table table-striped table-bordered table-hover">
                                     <thead>
                                         <tr>
-                                            <th>Tên các thuộc tính</th>
+                                            <th>{translate('common_component.import_excel.properties')}</th>
                                             {config.map((x, key) => {
                                                 return <th key={key}>{x.columnName}</th>
                                             })}
@@ -146,7 +146,7 @@ class ConFigImportFile extends Component {
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <th>Tiêu đề tương ứng</th>
+                                            <th>{translate('common_component.import_excel.title')}</th>
                                             {config.map((x, key) => {
                                                 if (!Array.isArray(x.value)) {
                                                     return <td key={key}>{x.value}</td>

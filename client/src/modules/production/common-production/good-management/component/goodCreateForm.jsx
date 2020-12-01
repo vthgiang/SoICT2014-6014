@@ -24,6 +24,7 @@ class GoodCreateForm extends Component {
             category: "",
             pricePerBaseUnit: "",
             salesPriceVariance: "",
+            numberExpirationDate: ""
         };
     }
 
@@ -40,6 +41,7 @@ class GoodCreateForm extends Component {
                 name: nextProps.name ? nextProps.name : "",
                 pricePerBaseUnit: nextProps.pricePerBaseUnit ? nextProps.pricePerBaseUnit : "",
                 salesPriceVariance: nextProps.salesPriceVariance ? nextProps.salesPriceVariance : "",
+                numberExpirationDate: nextProps.numberExpirationDate ? nextProps.numberExpirationDate : ""
             };
         } else {
             return null;
@@ -190,12 +192,11 @@ class GoodCreateForm extends Component {
         });
     };
 
-    handleListUnitChange = (data, packingRule) => {
+    handleListUnitChange = (data) => {
         this.setState((state) => {
             return {
                 ...state,
-                units: data,
-                packingRule: packingRule,
+                units: data
             };
         });
     };
@@ -219,6 +220,34 @@ class GoodCreateForm extends Component {
         console.log(this.state.manufacturingMills);
     };
 
+    handleNumberExpirationDateChange = (e) => {
+        const { value } = e.target;
+        this.validateNumberExpirationDate(value, true);
+    }
+
+    validateNumberExpirationDate = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = this.props;
+        console.log(value);
+        if (value === "") {
+            msg = translate("manage_warehouse.good_management.validate_number_expiration_date");
+        }
+        if (value < 1) {
+            msg = translate("manage_warehouse.good_management.validate_number_expiration_date_input");
+        }
+        if (willUpdateState) {
+            console.log(msg)
+            this.setState((state) => {
+                return {
+                    ...state,
+                    errorOnNumberExpirationDate: msg,
+                    numberExpirationDate: value,
+                };
+            });
+        }
+        return msg === undefined;
+    }
+
     isFormValidated = () => {
         let result =
             this.validateName(this.state.name, false) &&
@@ -226,7 +255,7 @@ class GoodCreateForm extends Component {
             this.validateBaseUnit(this.state.baseUnit, false) &&
             this.validateCategory(this.state.category, false) &&
             this.state.materials.length > 0 &&
-            this.state.packingRule;
+            this.validateNumberExpirationDate(this.state.numberExpirationDate, false)
         return result;
     };
 
@@ -264,6 +293,8 @@ class GoodCreateForm extends Component {
             pricePerBaseUnitError,
             salesPriceVariance,
             salesPriceVarianceError,
+            numberExpirationDate,
+            errorOnNumberExpirationDate
         } = this.state;
         const dataSelectBox = this.getAllCategory();
 
@@ -342,6 +373,14 @@ class GoodCreateForm extends Component {
                                     />
                                     <ErrorLabel content={pricePerBaseUnitError} />
                                 </div>
+                                <div className={`form-group ${!errorOnNumberExpirationDate ? "" : "has-error"}`}>
+                                    <label>
+                                        {translate("manage_warehouse.good_management.numberExpirationDate")}
+                                        <span className="attention"> * </span>
+                                    </label>
+                                    <input type="number" className="form-control" value={numberExpirationDate} onChange={this.handleNumberExpirationDateChange} />
+                                    <ErrorLabel content={errorOnNumberExpirationDate} />
+                                </div>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group ${!salesPriceVarianceError ? "" : "has-error"}`}>
@@ -371,8 +410,8 @@ class GoodCreateForm extends Component {
                                         <InfoMillCreateForm onDataChange={this.handleListMillsChange} />
                                     </React.Fragment>
                                 ) : (
-                                    ""
-                                )}
+                                        ""
+                                    )}
                             </div>
                         </div>
                     </form>

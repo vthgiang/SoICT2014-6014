@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, SelectBox, DatePicker, ErrorLabel, TrixEditor } from '../../../../common-components';
+import { DialogModal, SelectBox, DatePicker, ErrorLabel, QuillEditor } from '../../../../common-components';
 import { CrmCareActions } from '../redux/action';
 import { formatFunction } from '../../common/index';
 import ValidationHelper from '../../../../helpers/validationHelper';
@@ -155,7 +155,7 @@ class EditCareForm extends Component {
      * @param {*} e
      * @param {*} editor
      */
-    handleChangeDescription = (value) => {
+    handleChangeDescription = (value, imgs) => {
         const { translate } = this.props;
         const { careEditting } = this.state;
 
@@ -343,8 +343,9 @@ class EditCareForm extends Component {
                         {/* Mô tả công việc chăm sóc */}
                         <div className="form-group">
                             <label>{translate('crm.care.description')}<span className="text-red">*</span></label>
-                            <TrixEditor
-                                handleChange={this.handleChangeDescription}
+                            <QuillEditor
+                                id={'editCare'}
+                                getTextData={this.handleChangeDescription}
                                 value={careEditting.description}
                             />
                             <ErrorLabel content={descriptionError} />

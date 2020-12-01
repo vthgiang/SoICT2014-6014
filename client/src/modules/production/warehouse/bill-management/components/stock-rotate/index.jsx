@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { SelectMulti, DatePicker, DataTableSetting, PaginateBar } from '../../../../../../common-components';
+import { SelectMulti, DatePicker, DataTableSetting, PaginateBar, ConfirmNotification } from '../../../../../../common-components';
 
 import BillDetailForm from '../genaral/billDetailForm';
 import StockRotateEditForm from './stockRotateEditForm';
@@ -150,8 +150,12 @@ class RotateManagement extends Component {
                             group={currentRow.group}
                             type={currentRow.type}
                             status={currentRow.status}
+                            oldStatus={currentRow.status}
                             users={currentRow.users}
-                            approver={currentRow.approver ? currentRow.approver._id : null}
+                            approvers={currentRow.approvers ? currentRow.approvers : []}
+                            listQualityControlStaffs={currentRow.qualityControlStaffs ? currentRow.qualityControlStaffs : []}
+                            responsibles={currentRow.responsibles ? currentRow.responsibles : []}
+                            accountables={currentRow.accountables ? currentRow.accountables : []}
                             name={currentRow.receiver ? currentRow.receiver.name : ''}
                             phone={currentRow.receiver ? currentRow.receiver.phone : ''}
                             email={currentRow.receiver ? currentRow.receiver.email : ''}
@@ -205,15 +209,36 @@ class RotateManagement extends Component {
                                             <td>{translate(`manage_warehouse.bill_management.billType.${x.type}`)}</td>
                                             <td style={{ color: translate(`manage_warehouse.bill_management.bill_color.${x.status}`)}}>{translate(`manage_warehouse.bill_management.bill_status.${x.status}`)}</td>
                                             <td>{x.creator ? x.creator.name : "Creator is deleted"}</td>
-                                            <td>{x.approver ? x.approver.name : "approver is deleted"}</td>
-                                            <td>{this.props.formatDate(x.timestamp)}</td>
+                                            <td>{x.approvers ? x.approvers.map((a, key) => { return <p key={key}>{a.approver.name}</p>}) : "approver is deleted"}</td>
+                                            <td>{this.props.formatDate(x.updatedAt)}</td>
                                             <td>{x.fromStock ? x.fromStock.name : "Stock is deleted"}</td>
                                             <td>{x.toStock ? x.toStock.name : 'Stock is deleted'}</td>
                                             <td>{x.description}</td>
                                             <td style={{textAlign: 'center'}}>
                                                 <a onClick={() => this.props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>
                                                 <a onClick={() => this.handleEdit(x)} className="text-yellow" ><i className="material-icons">edit</i></a>
-                                                <a className="text-black" onClick={() => this.props.handleShow()}><i className="material-icons">print</i></a>
+                                                {
+                                                this.props.checkRoleApprovers(x) && x.status === '1' &&
+                                                    <ConfirmNotification
+                                                        icon="question"
+                                                        title={translate('manage_warehouse.bill_management.approved_true')}
+                                                        content={translate('manage_warehouse.bill_management.approved_true') + " " + x.code}
+                                                        name="check_circle_outline"
+                                                        className="text-green"
+                                                        func={() => this.props.handleFinishedApproval(x)}
+                                                    />
+                                                }
+                                                {
+                                                this.props.checkRoleQualityControlStaffs(x) && x.status === '5' &&
+                                                    <ConfirmNotification
+                                                        icon="question"
+                                                        title={translate('manage_warehouse.bill_management.staff_true')}
+                                                        content={translate('manage_warehouse.bill_management.staff_true') + " " + x.code}
+                                                        name="check_circle"
+                                                        className="text-green"
+                                                        func={() => this.props.handleFinishedQualityControlStaff(x)}
+                                                    />
+                                                }
                                             </td>
                                         </tr>
                                     ))

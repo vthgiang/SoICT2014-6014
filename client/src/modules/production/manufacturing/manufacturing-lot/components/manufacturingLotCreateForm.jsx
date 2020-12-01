@@ -5,14 +5,14 @@ import { DatePicker, DialogModal, ErrorLabel } from '../../../../../common-compo
 import { formatToTimeZoneDate } from '../../../../../helpers/formatDate';
 import { generateCode } from '../../../../../helpers/generateCode';
 import { LotActions } from '../../../warehouse/inventory-management/redux/actions';
+import { commandActions } from '../../manufacturing-command/redux/actions';
+import moment from 'moment';
 
 class ManufacturingLotCreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
             // 1 thành phẩm, 2 phế phẩm
-            code1: generateCode('LTP'),
-            code2: generateCode('LPP'),
             quantity1: '',
             quantity2: '',
             expirationDate1: '',
@@ -26,15 +26,21 @@ class ManufacturingLotCreateForm extends Component {
         if (state.command !== props.command) {
             return {
                 ...state,
+                code1: props.code1,
+                code2: props.code2,
                 manufacturingCommandId: props.command._id,
                 manufacturingCommandCode: props.command.code,
-                good: props.command.good
+                good: props.command.good,
+                expirationDate1: moment().add(props.command.good.good.numberExpirationDate, 'days').format('DD-MM-YYYY'),
+                expirationDate2: moment().add(props.command.good.good.numberExpirationDate, 'days').format('DD-MM-YYYY'),
             }
         }
         return null;
     }
 
+
     handleQuantity1Change = (e) => {
+        console.log();
         let { value } = e.target;
         this.validateQuantity1Change(value, true);
     }
@@ -129,7 +135,6 @@ class ManufacturingLotCreateForm extends Component {
                 code: this.state.code1,
                 type: "product",
                 originalQuantity: this.state.quantity1,
-                lotType: 1,
                 productType: 1,
                 manufacturingCommand: this.state.manufacturingCommandId,
                 good: this.state.good.good._id,
@@ -145,7 +150,6 @@ class ManufacturingLotCreateForm extends Component {
                     code: this.state.code2,
                     type: "product",
                     originalQuantity: this.state.quantity2,
-                    lotType: 1,
                     productType: 2,
                     manufacturingCommand: this.state.manufacturingCommandId,
                     good: this.state.good.good._id,
@@ -158,6 +162,13 @@ class ManufacturingLotCreateForm extends Component {
                 data.push(data2);
             }
             this.props.createManufacturingLot(data);
+            const dataCommandEdit = {
+                finishedProductQuantity: this.state.quantity1 ? this.state.quantity1 : 0,
+                substandardProductQuantity: this.state.quantity2 ? this.state.quantity2 : 0,
+                finishedTime: new Date(Date.now()),
+                status: 4
+            }
+            this.props.handleEditCommand(this.state.manufacturingCommandId, dataCommandEdit);
         }
     }
 
@@ -193,7 +204,7 @@ class ManufacturingLotCreateForm extends Component {
                         </div>
                         <div className="form-group">
                             <label>{translate('manufacturing.lot.quantity_packing_rule')}:&emsp;</label>
-                            {good && good.quantity}
+                            {good && good.quantity + " " + good.packingRule}
                         </div>
                         <div className="form-group">
                             <label>{translate('manufacturing.lot.base_unit')}:&emsp;</label>
@@ -201,7 +212,7 @@ class ManufacturingLotCreateForm extends Component {
                         </div>
                         <div className="form-group">
                             <label>{translate('manufacturing.lot.quantity_base_unit')}:&emsp;</label>
-                            {good && good.quantity * good.conversionRate}
+                            {good && good.quantity * good.conversionRate + " " + good.good.baseUnit}
                         </div>
 
                         <fieldset className="scheduler-border">
@@ -211,7 +222,7 @@ class ManufacturingLotCreateForm extends Component {
                                 <input type="text" disabled={true} value={code1} className="form-control"></input>
                             </div>
                             <div className={`form-group ${!errorQuantity1 ? "" : "has-error"}`}>
-                                <label>{translate('manufacturing.lot.quantity')}<span className="text-red">*</span></label>
+                                <label>{translate('manufacturing.lot.quantity')} ({good && good.good.baseUnit})<span className="text-red">*</span></label>
                                 <input type="number" value={quantity1} onChange={this.handleQuantity1Change} className="form-control"></input>
                                 <ErrorLabel content={errorQuantity1} />
                             </div>
@@ -237,7 +248,7 @@ class ManufacturingLotCreateForm extends Component {
                                 <input type="text" disabled={true} value={code2} className="form-control"></input>
                             </div>
                             <div className={`form-group ${!errorQuantity2 ? '' : 'has-error'}`}>
-                                <label>{translate('manufacturing.lot.quantity')}</label>
+                                <label>{translate('manufacturing.lot.quantity')} ({good && good.good.baseUnit})</label>
                                 <input type="number" value={quantity2} onChange={this.handleQuantity2Change} className="form-control"></input>
                                 <ErrorLabel content={errorQuantity2} />
                             </div>
@@ -268,7 +279,8 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    createManufacturingLot: LotActions.createManufacturingLot
+    createManufacturingLot: LotActions.createManufacturingLot,
+    handleEditCommand: commandActions.handleEditCommand
 }
 
 

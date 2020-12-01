@@ -31,9 +31,9 @@ class EditForm extends Component {
         });
     }
 
-    // handleParent = (value) => {
-    //     this.setState({ archiveParent: value[0] });
-    // };
+    handleParent = (value) => {
+        this.setState({ parent: value[0] });
+    };
 
     isValidateForm = () => {
         let { name, description } = this.state;
@@ -115,7 +115,7 @@ class EditForm extends Component {
     render() {
         const { translate, documents } = this.props;
         const { listData, unChooseNode } = this.props;
-        const { name, code, codeError, nameError } = this.state;
+        const { name, code, parent, codeError, nameError } = this.state;
         const { list } = listData;
             let listCareer = [];
         for (let i in list) {
@@ -136,10 +136,10 @@ class EditForm extends Component {
                     <input type="text" className="form-control" onChange={this.handleCode} value={code} />
                     <ErrorLabel content={codeError} />
                 </div>
-                {/* <div className="form-group">
+                <div className="form-group">
                     <label>{translate('document.administration.archives.parent')}</label>
-                    <TreeSelect data={listArchive} value={[archiveParent]} handleChange={this.handleParent} mode="radioSelect" />
-                </div> */}
+                    <TreeSelect data={listData} value={parent} handleChange={this.handleParent} mode="radioSelect" />
+                </div>
                 <div className="form-group">
                     <button className="btn btn-success pull-right" style={{ marginLeft: '5px' }} disabled={disabled} onClick={this.save}>{translate('form.save')}</button>
                     <button className="btn btn-danger" onClick={() => {
@@ -155,8 +155,8 @@ class EditForm extends Component {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
-    // editDocumentArchive: CareerPositionAction.editDocumentArchive,
-    // getDocumentArchives: CareerPositionAction.getDocumentArchive,
+    // editDocumentArchive: CareerReduxAction.editDocumentArchive,
+    // getDocumentArchives: CareerReduxAction.getDocumentArchive,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(EditForm));

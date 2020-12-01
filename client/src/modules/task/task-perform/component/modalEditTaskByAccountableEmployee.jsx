@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { DialogModal, ErrorLabel, SelectBox, DatePicker } from '../../../../common-components/';
+import { DialogModal, ErrorLabel, SelectBox, DatePicker, ContentMaker } from '../../../../common-components/';
 import { getStorage } from "../../../../config";
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { TaskInformationForm } from './taskInformationForm';
@@ -11,6 +11,7 @@ import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import Swal from 'sweetalert2'
 import { TaskTemplateFormValidator } from '../../task-template/component/taskTemplateFormValidator';
 import { taskManagementActions } from '../../task-management/redux/actions';
+import TextareaAutosize from 'react-textarea-autosize';
 
 class ModalEditTaskByAccountableEmployee extends Component {
 
@@ -612,14 +613,18 @@ class ModalEditTaskByAccountableEmployee extends Component {
         this.validateTaskStartDate(value, true);
     }
     validateTaskStartDate = (value, willUpdateState = true) => {
+        let { translate } = this.props;
         let msg = TaskFormValidator.validateTaskStartDate(value, this.state.endDate, this.props.translate);
 
+        if (value === "") {
+            msg = translate('task.task_perform.modal_approve_task.err_empty');
+        }
         if (willUpdateState) {
-            this.state.startDate = value;
-            this.state.errorOnStartDate = msg;
             this.setState(state => {
                 return {
                     ...state,
+                    startDate : value,
+                    errorOnStartDate : msg,
                 };
             });
         }
@@ -630,8 +635,12 @@ class ModalEditTaskByAccountableEmployee extends Component {
         this.validateTaskEndDate(value, true);
     }
     validateTaskEndDate = (value, willUpdateState = true) => {
+        let { translate } = this.props;
         let msg = TaskFormValidator.validateTaskEndDate(this.state.startDate, value, this.props.translate);
 
+        if (value === "") {
+            msg = translate('task.task_perform.modal_approve_task.err_empty');
+        }
         if (willUpdateState) {
             this.state.endDate = value;
             this.state.errorOnEndDate = msg;
@@ -650,14 +659,18 @@ class ModalEditTaskByAccountableEmployee extends Component {
     }
 
     validateFormula = (value, willUpdateState = true) => {
+        let { translate } = this.props;
         let msg = TaskTemplateFormValidator.validateTaskTemplateFormula(value);
 
+        if (value === "") {
+            msg = translate('task.task_perform.modal_approve_task.err_empty');
+        }
         if (willUpdateState) {
-            this.state.formula = value;
-            this.state.errorOnFormula = msg;
             this.setState(state => {
                 return {
                     ...state,
+                    formula: value,
+                    errorOnFormula: msg,
                 };
             });
         }
@@ -798,7 +811,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
     handleAddTaskLog = (inactiveEmployees) => {
         let currentTask = this.state.task;
-        let { taskName, organizationalUnit, collaboratedWithOrganizationalUnits, taskDescription, statusOptions, priorityOptions, progress, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees } = this.state;
+        let { taskName, organizationalUnit, collaboratedWithOrganizationalUnits, taskDescription, statusOptions, priorityOptions, startDate, endDate, formula, progress, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees } = this.state;
 
         let title = '';
         let description = '';
@@ -819,6 +832,9 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
         if (statusOptions[0] !== currentTask.status ||
             priorityOptions[0] !== currentTask.priority ||
+            startDate !== currentTask.startDate ||
+            endDate !== currentTask.endDate ||
+            formula !== currentTask.formula ||
             JSON.stringify(previousCollaboratedUnit.map(e => { if (e) return e.organizationalUnit._id })) !== JSON.stringify(collaboratedWithOrganizationalUnits) ||
             JSON.stringify(responsibleEmployees) !== JSON.stringify(currentTask.responsibleEmployees.map(employee => { return employee._id })) ||
             JSON.stringify(accountableEmployees) !== JSON.stringify(currentTask.accountableEmployees.map(employee => { return employee._id })) ||
@@ -837,7 +853,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 for (const element of previousCollaboratedUnit) {
                     collabUnitNameArr.push(element.organizationalUnit.name)
                 }
-                description = description === '' ? description + 'Những đơn vị phối hợp thực hiện công việc mới: ' + JSON.stringify(collabUnitNameArr) : description + '. ' + 'Những đơn vị phối hợp thực hiện công việc mới: ' + JSON.stringify(collabUnitNameArr);
+                description = description === '' ? description + 'Những đơn vị phối hợp thực hiện công việc mới: ' + JSON.stringify(collabUnitNameArr) : description + '. ' + 'Những đơn vị phối hợp thực hiện công việc mới: ' + JSON.stringify(collabUnitNameArr) ;
             }
 
             if (statusOptions[0] !== currentTask.status) {
@@ -846,6 +862,18 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
             if (priorityOptions[0] !== currentTask.priority) {
                 description = description === '' ? description + 'Mức độ ưu tiên mới: ' + this.formatPriority(parseInt(priorityOptions[0])) : description + '. ' + 'Mức độ ưu tiên mới: ' + this.formatPriority(parseInt(priorityOptions[0]));
+            }
+
+            if (startDate !== currentTask.startDate) {
+                description = description === '' ? description + 'Ngày bắt đầu mới: ' + startDate : description + '.' +  'Ngày bắt đầu mới: ' + startDate;
+            }
+
+            if (endDate !== currentTask.endDate) {
+                description = description === '' ? description + 'Ngày kết thúc mới: ' + endDate : description + '.' +  'Ngày kết thúc mới: ' + endDate;
+            }
+
+            if (formula !== currentTask.formula) {
+                description = description === '' ? description + 'Công thức tính điểm mới: ' + formula : description + '.' + 'Công thức tính điểm mới: ' + formula;
             }
 
             if (JSON.stringify(responsibleEmployees) !== JSON.stringify(currentTask.responsibleEmployees.map(employee => { return employee._id }))) {
@@ -1057,10 +1085,19 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                     <div
                                         className={`form-group ${errorTaskDescription === undefined ? "" : "has-error"}`}>
                                         <label>{translate('task.task_management.detail_description')}<span className="text-red">*</span></label>
-                                        <textarea
+                                        {/* <textarea
                                             rows="4"
                                             value={taskDescription}
-                                            className="form-control" onChange={this.handleTaskDescriptionChange} />
+                                            className="form-control" onChange={this.handleTaskDescriptionChange} /> */}
+
+                                        <TextareaAutosize
+                                            className={"form-control"}
+                                            placeholder={"Mô tả công việc"}
+                                            minRows={2}
+                                            maxRows={4}
+                                            value={taskDescription}
+                                            onChange={this.handleTaskDescriptionChange}
+                                        />
                                         <ErrorLabel content={errorTaskDescription} />
                                     </div>
                                     <div className="form-group">
@@ -1082,28 +1119,29 @@ class ModalEditTaskByAccountableEmployee extends Component {
                             {/*Thông tin chi tiết*/}
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('task.task_management.edit_detail_info')}</legend>
-                                <div>
+                                {/* <div> */}
 
-                                    {/* Đơn vị phối hợp thực hiện công việc */}
-                                    {listDepartment &&
-                                        <div className="form-group">
-                                            <label>{translate('task.task_management.collaborated_with_organizational_units')}</label>
-                                            <SelectBox
-                                                id={`editMultiSelectUnitThatHaveCollaborated-${perform}-${role}`}
-                                                lassName="form-control select2"
-                                                style={{ width: "100%" }}
-                                                items={listDepartment.filter(item => item._id !== organizationalUnit).map(x => {
-                                                    return { text: x.name, value: x._id }
-                                                })}
-                                                options={{ placeholder: translate('kpi.evaluation.dashboard.select_units') }}
-                                                onChange={this.handleChangeCollaboratedWithOrganizationalUnits}
-                                                value={collaboratedWithOrganizationalUnits}
-                                                multiple={true}
-                                            />
-                                        </div>
-                                    }
-
+                                {/* Đơn vị phối hợp thực hiện công việc */}
+                                {listDepartment &&
                                     <div className="form-group">
+                                        <label>{translate('task.task_management.collaborated_with_organizational_units')}</label>
+                                        <SelectBox
+                                            id={`editMultiSelectUnitThatHaveCollaborated-${perform}-${role}`}
+                                            lassName="form-control select2"
+                                            style={{ width: "100%" }}
+                                            items={listDepartment.filter(item => item._id !== organizationalUnit).map(x => {
+                                                return { text: x.name, value: x._id }
+                                            })}
+                                            options={{ placeholder: translate('kpi.evaluation.dashboard.select_units') }}
+                                            onChange={this.handleChangeCollaboratedWithOrganizationalUnits}
+                                            value={collaboratedWithOrganizationalUnits}
+                                            multiple={true}
+                                        />
+                                    </div>
+                                }
+
+                                <div className="row form-group">
+                                    <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12">
                                         <label>{translate('task.task_management.detail_status')}</label>
                                         {
                                             <SelectBox
@@ -1119,7 +1157,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                     </div>
 
                                     {/*Mức ưu tiên*/}
-                                    <div className="form-group">
+                                    <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12">
                                         <label>{translate('task.task_management.detail_priority')}</label>
                                         {
                                             <SelectBox
@@ -1134,6 +1172,9 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                         }
                                     </div>
                                 </div>
+
+
+                                {/* </div> */}
                                 <div className="row form-group">
                                     <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
                                         <label className="control-label">{translate('task.task_management.start_date')}*</label>
@@ -1337,7 +1378,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                         </form>
                     </DialogModal>
                 </React.Fragment>
-            </div>
+            </div >
         );
     }
 }

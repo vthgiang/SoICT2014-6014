@@ -135,7 +135,7 @@ class TableComponent extends Component {
                     </thead>
                     <tbody>
                         {
-                            component.listPaginate && component.listPaginate.length > 0 ?
+                            component.listPaginate && component.listPaginate.length > 0 &&
                                 component.listPaginate.map(component =>
                                     <tr key={component._id}>
                                         <td>{component.name}</td>
@@ -146,15 +146,17 @@ class TableComponent extends Component {
                                             <a className="edit" onClick={() => this.handleEdit(component)}><i className="material-icons">edit</i></a>
                                         </td>
                                     </tr>
-                                ) : component.isLoading ?
-                                    <tr><td colSpan={"5"}>{translate('confirm.loading')}</td></tr> :
-                                    <tr><td colSpan={"5"}>{translate('confirm.no_data')}</td></tr>
+                                )
                         }
                     </tbody>
                 </table>
-
+                {
+                    component.isLoading ?
+                    <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                    component.listPaginate && component.listPaginate.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                }
                 {/* PaginateBar */}
-                <PaginateBar display={component.listPaginate.length} total={component.list.length}  pageTotal={component.totalPages} currentPage={component.page} func={this.setPage} />
+                <PaginateBar display={component.listPaginate.length} total={component.totalDocs}  pageTotal={component.totalPages} currentPage={component.page} func={this.setPage} />
 
             </React.Fragment>
         );

@@ -23,27 +23,27 @@ class UserCreateForm extends Component {
     }
 
     isFormValidated = () => {
-        let {userName, userEmail} = this.state;
-        let {translate} = this.props;
-        if(!ValidationHelper.validateName(translate, userName).status || !ValidationHelper.validateEmail(translate, userEmail).status) return false;
+        let { userName, userEmail } = this.state;
+        let { translate } = this.props;
+        if (!ValidationHelper.validateName(translate, userName, 6, 255).status || !ValidationHelper.validateEmail(translate, userEmail).status) return false;
         return true;
     }
 
     handleUserName = (e) => {
-        let {value} = e.target;
-        let {translate} = this.props;
-        let {message} = ValidationHelper.validateName(translate, value, 6, 255);
-        this.setState({ 
+        let { value } = e.target;
+        let { translate } = this.props;
+        let { message } = ValidationHelper.validateName(translate, value, 6, 255);
+        this.setState({
             userName: value,
             userNameError: message
         });
     }
 
     handleUserEmail = (e) => {
-        let {value} = e.target;
-        let {translate} = this.props;
-        let {message} = ValidationHelper.validateEmail(translate, value);
-        this.setState({ 
+        let { value } = e.target;
+        let { translate } = this.props;
+        let { message } = ValidationHelper.validateEmail(translate, value);
+        this.setState({
             userEmail: value,
             userEmailError: message
         });

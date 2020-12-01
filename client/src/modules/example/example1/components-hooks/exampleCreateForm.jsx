@@ -11,36 +11,44 @@ function ExampleCreateForm(props) {
 
     // Khởi tạo state
     const [state, setState] = useState({
-        exampleName: "",
-        description: "",
-        exampleNameError: undefined
+        exampleName: undefined,
+        description: undefined,
+        exampleNameError: {
+            message: undefined,
+            status: true
+        }
     })
 
-    const { translate, example } = props;
+    const { translate, example, page, limit } = props;
     const { exampleName, description, exampleNameError } = state;
 
 
     const isFormValidated = () => {
-        if (!ValidationHelper.validateName(translate, exampleName, 6, 255).status) {
+        if (!exampleNameError.status) {
             return false;
         }
         return true;
     }
 
     const save = () => {
-        if (isFormValidated()) {
-            props.createExample({ exampleName, description });
+        if (isFormValidated() && exampleName) {
+            props.createExample([{ exampleName, description }]);
+            props.getExamples({
+                exampleName: "",
+                page: page,
+                limit: limit
+            });
         }
     }
 
     const handleExampleName = (e) => {
         const { value } = e.target;
-        let { message } = ValidationHelper.validateName(translate, value, 6, 255);
+        let result = ValidationHelper.validateName(translate, value, 6, 255);
 
         setState({
             ...state,
             exampleName: value,
-            exampleNameError: message
+            exampleNameError: result
         })
     }
 
@@ -55,10 +63,9 @@ function ExampleCreateForm(props) {
     
     return (
         <React.Fragment>
-            <ButtonModal modalID="modal-create-example" button_name={translate('manage_example.add')} title={translate('manage_example.add_title')} />
             <DialogModal
-                modalID="modal-create-example" isLoading={example.isLoading}
-                formID="form-create-example"
+                modalID="modal-create-example-hooks" isLoading={example.isLoading}
+                formID="form-create-example-hooks"
                 title={translate('manage_example.add_title')}
                 msg_success={translate('manage_example.add_success')}
                 msg_faile={translate('manage_example.add_fail')}
@@ -67,11 +74,11 @@ function ExampleCreateForm(props) {
                 size={50}
                 maxWidth={500}
             >
-                <form id="form-create-example" onSubmit={() => save(translate('manage_example.add_success'))}>
-                    <div className={`form-group ${!exampleNameError ? "" : "has-error"}`}>
+                <form id="form-create-example-hooks" onSubmit={() => save(translate('manage_example.add_success'))}>
+                    <div className={`form-group ${exampleNameError.status ? "" : "has-error"}`}>
                         <label>{translate('manage_example.exampleName')}<span className="text-red">*</span></label>
                         <input type="text" className="form-control" value={exampleName} onChange={handleExampleName}></input>
-                        <ErrorLabel content={exampleNameError} />
+                        <ErrorLabel content={exampleNameError.message} />
                     </div>
                     <div className={`form-group`}>
                         <label>{translate('manage_example.example_description')}</label>
@@ -88,7 +95,8 @@ function mapState(state) {
     return { example }
 }
 const actions = {
-    createExample: exampleActions.createExample
+    createExample: exampleActions.createExample,
+    getExamples: exampleActions.getExamples,
 }
 
 const connectedExampleCreateForm = connect(mapState, actions)(withTranslate(ExampleCreateForm));

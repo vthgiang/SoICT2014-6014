@@ -68,6 +68,28 @@ const BillSchema = new Schema({
         }
     }],
 
+    qualityControlStaffs: [{ // Danh sách người kiểm định chất lượng 
+        staff: { // Người kiểm định
+            type: Schema.Types.ObjectId,
+            ref: "User"
+        },
+        time: { // Thời gian kiểm định
+            type: Date
+        }
+    }],
+
+    // LSX
+    responsibles: [{ // Danh sách người thực hiện
+        type: Schema.Types.ObjectId,
+        ref: "User"
+    }],
+
+    // LSX
+    accountables: [{ // Người giám sát
+        type: Schema.Types.ObjectId,
+        ref: "User"
+    }],
+
     customer: {
         type: Schema.Types.ObjectId,
         ref: 'Customer'
@@ -78,6 +100,7 @@ const BillSchema = new Schema({
         ref: 'Customer'
     },
 
+    // LSX
     receiver: {
         name: {
             type: String
@@ -129,12 +152,12 @@ const BillSchema = new Schema({
         },
 
         lots: [{
-
+            // LSX
             lot: {
                 type: Schema.Types.ObjectId,
                 ref: 'Lot'
             },
-
+            // LSX
             quantity: {
                 type: Number,
                 default: 0
@@ -173,7 +196,27 @@ const BillSchema = new Schema({
     manufacturingCommand: {
         type: Schema.Types.ObjectId,
         ref: "ManufacturingCommand"
-    }
+    },
+
+    // Tạo log khi create
+    logs: [{
+        createAt: {
+            type: Date
+        },
+
+        creator: {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+        },
+
+        title: {
+            type: String
+        },
+
+        versions: {
+            type: String
+        }
+    }]
 }, {
     timestamps: true
 });

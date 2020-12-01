@@ -7,6 +7,7 @@ import { UsageLogAddModal, UsageLogDetailModal } from './combinedContent';
 import { Scheduler, formatDate } from '../../../../../common-components';
 import { UseRequestCreateForm } from './../../../user/use-request/components/UseRequestCreateForm';
 import { UseRequestDetailForm } from './../../../user/use-request/components/UseRequestDetailForm';
+import Swal from 'sweetalert2';
 import './calendarUsage.css';
 
 
@@ -22,6 +23,7 @@ class CalendarUsage extends Component {
       data: [],
       dataStatus: 1,
       updateUsageLogs: 1,
+      checkRefresh: false,
     }
   }
 
@@ -30,6 +32,12 @@ class CalendarUsage extends Component {
   }
 
   shouldComponentUpdate = async (nextProps, nextState) => {
+    if (nextProps.id !== this.state.id) {
+      await this.setState({
+        checkRefresh: true,
+      });
+      this.forceUpdate()
+    }
     if (nextState.clickInfo !== this.state.clickInfo || nextState.currentEvent !== this.state.currentEvent) {
       // bắt sự kiện bấm nút phê duyệt, không phê duyệt, xóa
       await this.setState({
@@ -155,20 +163,28 @@ class CalendarUsage extends Component {
 
       window.$(`#modal-create-usage-calendar-${this.props.assetId}`).modal('show');
     } else {
-      await this.setState(state => {
-        return {
-          ...state,
-          currentRowAdd: {
-            ...selectInfo,
-            startTime: startTime,
-            stopTime: stopTime,
+      if (selectInfo.start < this.state.nowDate) {
+        Swal.fire({
+          title: 'Ngày đã qua không thể tạo đăng ký sử dụng',
+          type: 'warning',
+          confirmButtonColor: '#dd4b39',
+          confirmButtonText: "Đóng",
+        })
+      } else {
+        await this.setState(state => {
+          return {
+            ...state,
+            currentRowAdd: {
+              ...selectInfo,
+              startTime: startTime,
+              stopTime: stopTime,
+            }
           }
-        }
-      });
+        });
 
-      window.$(`#modal-create-recommenddistribute-calendar-${this.props.assetId}`).modal('show');
+        window.$(`#modal-create-recommenddistribute-calendar-${this.props.assetId}`).modal('show');
+      }
     }
-
   }
 
   handleEventClick = async (clickInfo) => {
@@ -281,19 +297,25 @@ class CalendarUsage extends Component {
   }
 
   handleDeleteEvent = async (clickInfo) => {
-    let count, data;
-    var { usageLogs } = this.state;
-    count = usageLogs.findIndex(item => item._id == clickInfo.event.id)
-    data = usageLogs[count]
-    usageLogs.splice(count, 1);
-    await this.setState({
-      ...this.state,
-      usageLogs: [...usageLogs],
-      updateUsageLogs: 2,
-      currentEvent: undefined,
-    })
-    clickInfo.event.remove()
-    await this.props.deleteUsage(this.props.assetId, clickInfo.event.id)
+    if (clickInfo.event.backgroundColor == "#337ab7") {
+      let count, data;
+      var { usageLogs } = this.state;
+      count = usageLogs.findIndex(item => item._id == clickInfo.event.id)
+      data = usageLogs[count]
+      usageLogs.splice(count, 1);
+      await this.setState({
+        ...this.state,
+        usageLogs: [...usageLogs],
+        updateUsageLogs: 2,
+        currentEvent: undefined,
+      })
+      clickInfo.event.remove()
+      await this.props.deleteUsage(this.props.assetId, clickInfo.event.id)
+    } else {
+      let id = clickInfo.event.id
+      await this.props.deleteRecommendDistribute(id)
+      clickInfo.event.remove()
+    }
   }
 
   handleAddUsage = async (data) => {
@@ -458,6 +480,26 @@ class CalendarUsage extends Component {
     })
   }
 
+  checkEvent = (color, id) => {
+    if (color == "#aaa") {
+      let userId = this.state.userId;
+      let list, dataRecommendDistribute = [];
+      const { recommendDistribute } = this.props;
+      if (recommendDistribute && recommendDistribute.listRecommendDistributesByAsset) {
+        list = recommendDistribute.listRecommendDistributesByAsset;
+        dataRecommendDistribute = list.filter(item => item._id == id);
+        if (dataRecommendDistribute.length != 0) {
+          if (dataRecommendDistribute[0].proponent._id == userId) {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    } else {
+      return false;
+    }
+  }
 
   renderEventContent = (eventInfo) => {
     return (
@@ -496,7 +538,9 @@ class CalendarUsage extends Component {
             </div>
 
           }
-          {eventInfo.event.borderColor == "#337ab7" &&
+          {(this.props.managedBy == this.state.userId) ||
+            (this.checkEvent(eventInfo.event.borderColor, eventInfo.event._def.publicId))
+            &&
             <div className="form-group">
               <a className="delete" title="Delete" style={{}} data-toggle="tooltip" onClick={async () => {
                 await this.setState({
@@ -534,7 +578,13 @@ class CalendarUsage extends Component {
       let usageLogs = [];
       let userlist = nextProps.user.list
       let departmentlist = nextProps.department.list
-      let data = prevState.data
+
+      let data;
+      if (nextProps.id !== prevState.id) {
+        data = [];
+      } else {
+        data = prevState.data
+      }
       for (let i in nextProps.usageLogs) {
         let check = data.filter(item => item.id == nextProps.usageLogs[i]._id)
         if (!check.length) {
@@ -558,6 +608,7 @@ class CalendarUsage extends Component {
           })
         }
       }
+
       return {
         ...prevState,
         id: nextProps.id,
@@ -565,7 +616,7 @@ class CalendarUsage extends Component {
         assignedToUser: nextProps.assignedToUser,
         assignedToOrganizationalUnit: nextProps.assignedToOrganizationalUnit,
         typeRegisterForUse: nextProps.typeRegisterForUse,
-        data: [...prevState.data, ...usageLogs],
+        data: [...data, ...usageLogs],
         updateUsageLogs: 3,
       }
     } else {
@@ -604,6 +655,7 @@ class CalendarUsage extends Component {
               // eventsSet={this.handleEvents} // called after events are initialized/added/changed/removed
               eventContent={this.renderEventContent}
               eventClick={this.handleEventClick}
+              checkRefresh={this.state.checkRefresh}
             />
           }
         </div>
@@ -684,6 +736,7 @@ function mapState(state) {
 const actionCreators = {
   getRecommendDistributeByAsset: RecommendDistributeActions.getRecommendDistributeByAsset,
   updateRecommendDistribute: RecommendDistributeActions.updateRecommendDistribute,
+  deleteRecommendDistribute: RecommendDistributeActions.deleteRecommendDistribute,
   createUsage: UseRequestActions.createUsage,
   deleteUsage: UseRequestActions.deleteUsage,
 };

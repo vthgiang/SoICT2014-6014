@@ -559,7 +559,7 @@ export default {
             downloads: "Downloads",
             add: "Add new",
             export: "Export data",
-            import: "Import from file",
+            import: "Add data from file",
             edit: "Edit",
             view: "View",
             time: "Time",
@@ -798,6 +798,7 @@ export default {
             close: "Close",
             email: "Email",
             password: "Password",
+            portal: "Portal",
             new_password: "New password",
             confirm: "Confirm password",
             description: "Description",
@@ -858,6 +859,17 @@ export default {
             non_position: "Select position",
             all_status: "Select all status",
             non_status: "Select status",
+        },
+
+        common_component: {
+            import_excel: {
+                config: 'Import file configuration',
+                user_config: 'User configuration',
+                file: 'File import read data sheet',
+                properties: 'Properties',
+                title: 'Title',
+                
+            }
         },
 
         menu: {
@@ -1047,6 +1059,7 @@ export default {
             zoom_out: "Zoom Out",
             zoom_in: "Zoom In",
             add: "Add",
+            import: "Add data from file",
             edit_title: "Edit organizational unit",
             add_title: "Add new department",
             info: "Department Information",
@@ -1226,8 +1239,8 @@ export default {
                 add_salary_title: "Add salary",
                 add_by_hand: "Add by hand",
                 add_by_hand_title: "Add by hand",
-                add_import: "Import file excel",
-                add_import_title: "Import file excel",
+                add_import: "Add data from file",
+                add_import_title: "Add data from file",
                 add_more_salary: "Add other salary",
                 add_new_salary: "Add new salary",
 
@@ -1452,13 +1465,13 @@ export default {
                 religion: "Religion",
                 active: "Official staff",
                 leave: "Quit job",
-                maternity_leave: 'Maternity leave',
-                unpaid_leave:'Unpaid leave',
-                probationary:'Probationary',
-                sick_leave:'Sick leave',
+                maternity_leave: "Maternity leave",
+                unpaid_leave: "Unpaid leave",
+                probationary: "Probationary",
+                sick_leave: "Sick leave",
 
                 status_work: "Labor status",
-                hours_off_remaining: 'Total hours annual leave remaining',
+                hours_off_remaining: "Total hours annual leave remaining",
 
                 mobile_phone: "Mobile phone",
                 mobile_phone_1: "Mobile phone 1",
@@ -1712,7 +1725,7 @@ export default {
                     add_employee: "Add staff",
                     add_employee_title: "Add new staff",
                     add_by_hand: "Add a staff",
-                    add_import: "Import file excel",
+                    add_import: "Add data from file",
                     // Thông điệp trả về từ server
                     get_list_employee_success: "Get list employee success",
                     get_list_employee_faile: "Get list employee faile",
@@ -1780,7 +1793,7 @@ export default {
                 add_work_plan: "Add work schedule",
                 add_work_plan_title: "Add new work schedule",
                 add_by_hand: "Add one work schedule",
-                add_import: "Import file excel",
+                add_import: "Add data from file",
                 accept_application: "Accept leave application",
                 refuse_application: "Refuse leave application",
 
@@ -1826,7 +1839,7 @@ export default {
                 add_timesheets: "Add timesheets",
                 add_timesheets_title: "Add new timesheets",
                 add_by_hand: "Add one timesheets",
-                add_import: "Import file excel",
+                add_import: "Add data from file",
 
                 // Thông điệp trả về từ server
                 employee_code_duplicated: "Staff code is duplicated",
@@ -2397,6 +2410,7 @@ export default {
             save: "Save",
             close: "Close",
             add: "Add new",
+            import: "Add data from file",
             confirm: "Confirm",
             confirm_title:
                 "Are you sure you want to delete this task template?",
@@ -2548,8 +2562,10 @@ export default {
                 role_in_collaborated_unit: "The role of the employee in",
                 confirm_assigned: "Confirm the assignment",
                 confirm_assigned_success: "You have confirmed the assignment",
-                confirm_assigned_failure: "You have not confirmed the assignment",
-                unit_not_confirm_assigned_task: "Organizational unit has not confirmed the assignment",
+                confirm_assigned_failure:
+                    "You have not confirmed the assignment",
+                unit_not_confirm_assigned_task:
+                    "Organizational unit has not confirmed the assignment",
 
                 name: "Name of task",
                 search_by_name: "Search by name",
@@ -3827,6 +3843,8 @@ export default {
             delete_fail: "Delete example fail!",
             add: "Add example",
             add_title: "Add a new example",
+            add_multi_example: "Add many new examples",
+            add_one_example: "Add 1 new example",
             add_success: "Add example successfully!",
             add_fail: "Add example fail!",
             example_description: "Example Description",

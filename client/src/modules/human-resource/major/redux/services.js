@@ -4,6 +4,7 @@ import {
 
 export const MajorService = {
     getListMajor,
+    createMajor,
 }
 /**
  * Lấy danh sách kỷ luật
@@ -21,17 +22,17 @@ function getListMajor(data) {
     }, false, true, 'human_resource.commendation_discipline.discipline');
 }
 
-// /**
-//  * Thêm mới kỷ luật của nhân viên
-//  * @data : Dữ liệu kỷ luật cần thêm 
-//  */
-// function createNewDiscipline(data) {
-//     return sendRequest({
-//         url: `${ process.env.REACT_APP_SERVER }/discipline/disciplines`,
-//         method: 'POST',
-//         data: data
-//     }, true, true, 'human_resource.commendation_discipline.discipline');
-// }
+/**
+ * Thêm mới chuyên ngành
+ * @data : Dữ liệu kỷ luật cần thêm 
+ */
+function createMajor(data) {
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/majors/major`,
+        method: 'POST',
+        data: data
+    }, true, true, 'human_resource.commendation_discipline.discipline');
+}
 
 // /**
 //  * Xoá thông tin kỷ luật của nhân viên

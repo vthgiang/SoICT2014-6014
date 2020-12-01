@@ -125,6 +125,8 @@ const LotSchema = new Schema ({
             type: String
         }
     }]
+}, {
+    timestamps: true
 });
 
 LotSchema.plugin(mongoosePaginate);

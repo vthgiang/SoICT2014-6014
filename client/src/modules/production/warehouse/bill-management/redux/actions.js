@@ -7,7 +7,8 @@ export const BillActions = {
     getDetailBill,
     createBill,
     editBill,
-    getBillsByStatus
+    getBillsByStatus,
+    getBillsByCommand
 }
 
 function getBillsByType(data) {
@@ -150,6 +151,27 @@ function getBillsByStatus(data) {
         .catch(err => {
             dispatch({
                 type: BillConstants.GET_BILL_BY_STATUS_FAILURE,
+                error: err
+            })
+        })
+    }
+}
+
+function getBillsByCommand(data) {
+    return dispatch => {
+        dispatch({
+            type: BillConstants.GET_BILL_BY_COMMAND_REQUEST
+        })
+        BillServices.getBillsByCommand(data)
+        .then(res => {
+            dispatch({
+                type: BillConstants.GET_BILL_BY_COMMAND_SUCCESS,
+                payload: res.data.content
+            })
+        })
+        .catch(err => {
+            dispatch({
+                type: BillConstants.GET_BILL_BY_COMMAND_FAILURE,
                 error: err
             })
         })

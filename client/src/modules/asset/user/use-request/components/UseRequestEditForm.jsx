@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components';
+import { DialogModal, TimePicker, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components';
 
 import { UseRequestFromValidator } from './UseRequestFromValidator';
 
@@ -13,9 +13,28 @@ import { UserActions } from '../../../../super-admin/user/redux/actions';
 class UseRequestEditForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            startTime: null,
+            stopTime: null,
+        };
     }
 
+    formatDate = (date) => {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2) {
+            month = '0' + month;
+        }
+
+        if (day.length < 2) {
+            day = '0' + day;
+        }
+
+        return [day, month, year].join('-');
+    }
     // Bắt sự kiện thay đổi mã phiếu
     handleRecommendNumberChange = (e) => {
         let value = e.target.value;
@@ -127,6 +146,25 @@ class UseRequestEditForm extends Component {
         return msg === undefined;
     }
 
+    handleStartTimeChange = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                startTime: value
+            }
+        });
+
+    }
+
+    handleStopTimeChange = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                stopTime: value
+            }
+        });
+
+    }
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
         let result = this.validateDateCreate(this.state.dateCreate, false) &&
@@ -144,6 +182,26 @@ class UseRequestEditForm extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps._id !== prevState._id) {
+            let startTime, stopTime;
+            if (nextProps.asset.typeRegisterForUse == 2) {
+                let dateStartUse = new Date(nextProps.dateStartUse),
+                    dateEndUse = new Date(nextProps.dateEndUse)
+                let hourStart = dateStartUse.getHours(),
+                    minutesStart = dateStartUse.getMinutes(),
+                    hourEnd = dateEndUse.getHours(),
+                    minutesEnd = dateEndUse.getMinutes();
+                if (hourStart < 10) {
+                    hourStart = '0' + hourStart;
+                }
+
+                if (hourEnd < 10) {
+                    hourEnd = '0' + hourEnd;
+                }
+
+
+                startTime = [hourStart, minutesStart].join(":")
+                stopTime = [hourEnd, minutesEnd].join(":")
+            }
             return {
                 ...prevState,
                 _id: nextProps._id,
@@ -154,6 +212,8 @@ class UseRequestEditForm extends Component {
                 asset: nextProps.asset,
                 dateStartUse: nextProps.dateStartUse,
                 dateEndUse: nextProps.dateEndUse,
+                startTime: nextProps.asset.typeRegisterForUse == 2 ? startTime : null,
+                stopTime: nextProps.asset.typeRegisterForUse == 2 ? stopTime : null,
                 approver: nextProps.approver,
                 status: nextProps.status,
                 note: nextProps.note,
@@ -173,7 +233,7 @@ class UseRequestEditForm extends Component {
         const { translate, recommendDistribute, user, assetsManager, auth } = this.props;
         const {
             recommendNumber, dateCreate, proponent, asset, reqContent, dateStartUse, dateEndUse,
-            errorOnRecommendNumber, errorOnDateCreate, errorOnReqContent, errorOnDateStartUse, errorOnDateEndUse
+            errorOnRecommendNumber, errorOnDateCreate, errorOnReqContent, errorOnDateStartUse, errorOnDateEndUse, startTime, stopTime
         } = this.state;
 
         var assetlist = assetsManager.listAssets;
@@ -205,7 +265,7 @@ class UseRequestEditForm extends Component {
                                     <label>{translate('asset.general_information.create_date')}<span className="text-red">*</span></label>
                                     <DatePicker
                                         id={`edit_start_date${_id}`}
-                                        value={dateCreate}
+                                        value={this.formatDate(dateCreate)}
                                         onChange={this.handleDateCreateChange}
                                     />
                                     <ErrorLabel content={errorOnDateCreate} />
@@ -267,9 +327,17 @@ class UseRequestEditForm extends Component {
                                     <label>{translate('asset.general_information.handover_from_date')}<span className="text-red">*</span></label>
                                     <DatePicker
                                         id={`edit_start_use${_id}`}
-                                        value={dateStartUse}
+                                        value={this.formatDate(dateStartUse)}
                                         onChange={this.handleDateStartUseChange}
                                     />
+                                    {this.props.asset.typeRegisterForUse == 2 &&
+                                        <TimePicker
+                                            id={`time-picker-start`}
+                                            onChange={this.handleStartTimeChange}
+                                            value={startTime}
+                                        // getDefaultValue = {this.getDefaultStartValue}
+                                        />
+                                    }
                                     <ErrorLabel content={errorOnDateStartUse} />
                                 </div>
 
@@ -278,9 +346,17 @@ class UseRequestEditForm extends Component {
                                     <label>{translate('asset.general_information.handover_to_date')}</label>
                                     <DatePicker
                                         id={`edit_end_use${_id}`}
-                                        value={dateEndUse}
+                                        value={this.formatDate(dateEndUse)}
                                         onChange={this.handleDateEndUseChange}
                                     />
+                                    {this.props.asset.typeRegisterForUse == 2 &&
+                                        <TimePicker
+                                            id={`time-picker-end`}
+                                            onChange={this.handleStopTimeChange}
+                                            value={stopTime}
+                                        // getDefaultValue = {this.getDefaultEndValue}
+                                        />
+                                    }
                                     <ErrorLabel content={errorOnDateEndUse} />
                                 </div>
                             </div>

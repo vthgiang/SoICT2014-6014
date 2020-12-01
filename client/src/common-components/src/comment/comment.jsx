@@ -14,7 +14,7 @@ class Comment extends Component {
         this.state = {
             editComment: '',
             currentUser: idUser,
-            showChildComment: '',
+            showChildComment: [],
             editChildComment: '',
             showfile: [],
             deleteFile: '',
@@ -27,9 +27,6 @@ class Comment extends Component {
                 description: ''
             },
             childComment: {
-                creator: idUser,
-                description: '',
-                files: [],
             },
             newCommentEdited: {
                 creator: idUser,
@@ -57,22 +54,39 @@ class Comment extends Component {
     }
 
     handleShowChildComment = async (id) => {
-        var showChildComment = this.state.showChildComment;
-        if (showChildComment === id) {
-            await this.setState(state => {
+        let a;
+        if (this.state.showChildComment.some(obj => obj === id)) {
+            a = this.state.showChildComment.filter(x => x !== id);
+            this.setState(state => {
                 return {
                     ...state,
-                    showChildComment: ""
+                    showChildComment: a
                 }
             })
         } else {
-            await this.setState(state => {
+            this.setState(state => {
                 return {
                     ...state,
-                    showChildComment: id
+                    showChildComment: [...this.state.showChildComment, id]
                 }
             })
         }
+        // var showChildComment = this.state.showChildComment;
+        // if (showChildComment === id) {
+        //     await this.setState(state => {
+        //         return {
+        //             ...state,
+        //             showChildComment: ""
+        //         }
+        //     })
+        // } else {
+        //     await this.setState(state => {
+        //         return {
+        //             ...state,
+        //             showChildComment: id
+        //         }
+        //     })
+        // }
 
     }
 
@@ -125,14 +139,14 @@ class Comment extends Component {
             }
         })
     }
-    onCommentFilesChange = (files) => {
+    onCommentFilesChange = (files, commentId) => {
         this.setState((state) => {
+            state.childComment[`${commentId}`] = {
+                ...state.childComment[`${commentId}`],
+                files: files
+            }
             return {
                 ...state,
-                childComment: {
-                    ...state.childComment,
-                    files: files,
-                }
             }
         })
     }
@@ -227,23 +241,22 @@ class Comment extends Component {
     submitChildComment = async (dataId, commentId) => {
         var { childComment } = this.state;
         const data = new FormData();
-        data.append("creator", childComment.creator);
-        data.append("description", childComment.description);
-        childComment.files && childComment.files.forEach(x => {
+        data.append("creator", childComment[`${commentId}`].creator);
+        data.append("description", childComment[`${commentId}`].description);
+        childComment[`${commentId}`].files && childComment[`${commentId}`].files.forEach(x => {
             data.append("files", x);
         })
-        if (childComment.creator && childComment.description) {
+        if (childComment[`${commentId}`].creator && childComment[`${commentId}`].description) {
             this.props.createChildComment(dataId, commentId, data, this.props.type);
         }
         // Reset state cho việc thêm mới comment
-        await this.setState(state => {
+        this.setState(state => {
+            state.childComment[`${commentId}`] = {
+                description: "",
+                files: [],
+            }
             return {
                 ...state,
-                childComment: {
-                    ...state.childComment,
-                    description: "",
-                    files: [],
-                },
             }
         })
     }
@@ -422,7 +435,7 @@ class Comment extends Component {
                                     </React.Fragment>
                                 }
                                 {/* Hiển thị bình luận cho bình luận */}
-                                {showChildComment === item._id &&
+                                {showChildComment.some(obj => obj === item._id) &&
                                     <div className="comment-content-child">
                                         {item.comments.map(child => {
                                             return <div key={child._id}>
@@ -526,16 +539,23 @@ class Comment extends Component {
                                             <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
                                             <ContentMaker
                                                 inputCssClass="text-input-level2" controlCssClass="tool-level2"
-                                                onFilesChange={this.onCommentFilesChange}
+                                                onFilesChange={(files) => this.onCommentFilesChange(files, item._id)}
                                                 onFilesError={this.onFilesError}
-                                                files={childComment.files}
-                                                text={childComment.description}
+                                                files={childComment[`${item._id}`]?.files}
+                                                text={childComment[`${item._id}`]?.description}
                                                 placeholder={translate('task.task_perform.enter_comment')}
                                                 submitButtonText={translate('task.task_perform.create_comment')}
                                                 onTextChange={(e) => {
                                                     let value = e.target.value;
                                                     this.setState(state => {
-                                                        return { ...state, childComment: { ...state.childComment, description: value } }
+                                                        state.childComment[`${item._id}`] = {
+                                                            ...state.childComment[`${item._id}`],
+                                                            description: value,
+                                                            creator: currentUser
+                                                        }
+                                                        return {
+                                                            ...state
+                                                        }
                                                     })
                                                 }}
                                                 onSubmit={() => this.submitChildComment(data._id, item._id)}
@@ -562,7 +582,7 @@ class Comment extends Component {
                             return { ...state, comment: { ...state.comment, description: value } }
                         })
                     }}
-                    onSubmit={(e) => this.submitComment(data._id)}
+                    onSubmit={(e) => this.submitComment(data?._id)}
                 />
             </React.Fragment>
         );

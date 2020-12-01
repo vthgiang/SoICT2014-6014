@@ -36,7 +36,7 @@ class ForgotPassword extends Component {
         
         return ( 
             <div className="modal fade" id="modal-reset-password">
-                <div className="modal-dialog">
+                <div className="modal-dialog" style={{textAlign: 'left'}}>
                     <div className="modal-content">
                     <div className="modal-header">
                         <button type="button" className="close" data-dismiss="modal" aria-hidden="true">×</button>

@@ -7,7 +7,6 @@ import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMu
 import { MaintainanceCreateForm } from './maintainanceCreateForm';
 import { MaintainanceEditForm } from './maintainanceEditForm';
 
-import { AssetManagerActions } from '../../asset-information/redux/actions';
 import { MaintainanceActions } from '../redux/actions';
 import { AssetEditForm } from '../../asset-information/components/assetEditForm';
 
@@ -183,17 +182,16 @@ class MaintainanceManagement extends Component {
 
                 let item = {
                     index: index + 1,
-                    code: code,
-                    createDate: createDate,
-                    type: type,
-                    assetName: assetName,
-                    assetCode: assetCode,
+                    code,
+                    type,
+                    assetName,
+                    assetCode,
                     des: description,
-                    createDate: createDate,
-                    startDate: startDate,
-                    endDate: endDate,
-                    cost: cost,
-                    status: status
+                    createDate,
+                    startDate,
+                    endDate,
+                    cost,
+                    status
 
                 }
 
@@ -269,13 +267,13 @@ class MaintainanceManagement extends Component {
     convertMaintainType = (type) => {
         const { translate } = this.props;
 
-        if (type == "1") {
+        if (type === "1") {
             return translate('asset.asset_info.repair')
         }
-        else if (type == "2") {
+        else if (type === "2") {
             return translate('asset.asset_info.replace')
         }
-        else if (type == "3") {
+        else if (type === "3") {
             return translate('asset.asset_info.upgrade')
         }
         else {
@@ -410,7 +408,7 @@ class MaintainanceManagement extends Component {
                             {(lists && lists.length !== 0) &&
                                 lists.map((x, index) => (
                                     <tr key={index}>
-                                        <td><a onClick={() => this.handleEditAsset(x.asset)}>{x.asset.code}</a></td>
+                                        <td><span onClick={() => this.handleEditAsset(x.asset)} style={{color: '#367FA9', cursor: 'pointer'}}>{x.asset.code}</span></td>
                                         <td>{x.maintainanceCode}</td>
                                         <td>{x.createDate ? this.formatDate2(x.createDate) : ''}</td>
                                         <td>{this.convertMaintainType(x.type)}</td>
@@ -421,7 +419,7 @@ class MaintainanceManagement extends Component {
                                         <td>{x.expense ? formater.format(parseInt(x.expense)) : ''} VNĐ</td>
                                         <td>{this.convertMaintainStatus(x.status)}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a onClick={() => this.handleEdit(x, x.asset)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_maintenance_card')}><i
+                                            <a onClick={() => this.handleEdit(x, x.asset)} className="edit text-yellow" style={{ width: '5px', cursor: 'pointer' }} title={translate('asset.asset_info.edit_maintenance_card')}><i
                                                 className="material-icons">edit</i></a>
                                             <DeleteNotification
                                                 content={translate('asset.asset_info.delete_maintenance_card')}

@@ -15,7 +15,7 @@ class IncidentCreateForm extends Component {
         super(props);
         this.state = {
             incidentCode: "",
-            type: "broken", // Phân loại: 1. broken, 2.  lost
+            type: "1", // Phân loại: 1. broken, 2.  lost
             reportedBy: "", // Người báo cáo
             dateOfIncident: this.formatDate(Date.now()), // Ngày phát hiện
             description: "",

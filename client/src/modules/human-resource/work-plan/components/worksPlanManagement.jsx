@@ -187,8 +187,8 @@ class ManageWorkPlan extends Component {
                             <button type="button" className="btn btn-success pull-right dropdown-toggle" data-toggle="dropdown" aria-expanded="true"
                                 title={translate('human_resource.work_plan.add_work_plan_title')} >{translate('human_resource.work_plan.add_work_plan')}</button>
                             <ul className="dropdown-menu pull-right" >
-                                <li><a style={{ cursor: 'pointer' }} title={translate('human_resource.work_plan.add_data_by_excel')} onClick={this.handleImport}>{translate('human_resource.work_plan.add_import')}</a></li>
                                 <li><a style={{ cursor: 'pointer' }} title={translate('human_resource.work_plan.add_work_plan_title')} onClick={this.createWorkPlan}>{translate('human_resource.work_plan.add_by_hand')}</a></li>
+                                <li><a style={{ cursor: 'pointer' }} title={translate('human_resource.work_plan.add_data_by_excel')} onClick={this.handleImport}>{translate('human_resource.work_plan.add_import')}</a></li>
                             </ul>
                         </div>
                         <ExportExcel id="export-work-plan" buttonName={translate('human_resource.name_button_export')} exportData={exportData} style={{ marginRight: 15, marginTop: 0 }} />
