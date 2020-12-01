@@ -27,7 +27,7 @@ class AnnualLeaveCreateForm extends Component {
     }
 
     componentDidMount() {
-        this.props.getAllEmployee();
+        this.props.getAllEmployee({ organizationalUnits: 'allUnist' });
     }
 
     /**

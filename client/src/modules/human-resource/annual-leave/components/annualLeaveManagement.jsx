@@ -202,6 +202,9 @@ class AnnualLeaveManagement extends Component {
                     organizationalUnit: organizationalUnit ? organizationalUnit.name : "Deleted",
                     startDate: new Date(x.startDate),
                     endDate: new Date(x.endDate),
+                    totalHours: x.totalHours,
+                    startTime: x.startTime,
+                    endTime: x.endTime,
                     reason: x.reason,
                     status: x.status === "approved" ? translate('human_resource.annual_leave.status.approved') : (x.status === "waiting_for_approval" ? translate('human_resource.annual_leave.status.waiting_for_approval') : translate('human_resource.annual_leave.status.disapproved'))
                 };
@@ -221,8 +224,11 @@ class AnnualLeaveManagement extends Component {
                                 { key: "employeeNumber", value: translate('human_resource.staff_number') },
                                 { key: "fullName", value: translate('human_resource.staff_name'), width: 20 },
                                 { key: "organizationalUnit", value: translate('human_resource.unit'), width: 25 },
-                                { key: "startDate", value: translate('human_resource.annual_leave.table.start_date') },
-                                { key: "endDate", value: translate('human_resource.annual_leave.table.end_date') },
+                                { key: "startDate", value: translate('human_resource.profile.start_day') },
+                                { key: "startTime", value: translate('human_resource.annual_leave.table.start_date') },
+                                { key: "endDate", value: translate('human_resource.profile.end_date') },
+                                { key: "endTime", value: translate('human_resource.annual_leave.table.end_date') },
+                                { key: "totalHours", value: translate('human_resource.annual_leave.totalHours') },
                                 { key: "reason", value: translate('human_resource.annual_leave.table.reason') },
                                 { key: "status", value: translate('human_resource.status'), width: 25 },
                             ],
