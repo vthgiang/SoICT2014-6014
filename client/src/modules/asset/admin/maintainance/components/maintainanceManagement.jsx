@@ -171,14 +171,14 @@ class MaintainanceManagement extends Component {
             data = data.forEach((x, index) => {
                 let code = x.maintainanceCode;
                 let assetName = x.asset.assetName;
-                let type = x.type;
+                let type = this.convertMaintainType(x.type);
                 let description = x.description;
                 let createDate = this.formatDate2(x.createDate)
                 let startDate = this.formatDate2(x.startDate);
                 let endDate = this.formatDate2(x.endDate);
                 let cost = parseInt(x.expense);
                 let assetCode = x.asset.code;
-                let status = x.status;
+                let status = this.convertMaintainStatus(x.status);
 
                 let item = {
                     index: index + 1,
