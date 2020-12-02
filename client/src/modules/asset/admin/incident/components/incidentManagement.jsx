@@ -269,31 +269,29 @@ class IncidentManagement extends Component {
 
     convertIncidentType = (type) => {
         const { translate } = this.props;
-        if (type == 1) {
+        if (Number(type) === 1) {
             return translate('asset.general_information.damaged');
-        } else if (type == 2) {
+        } else if (Number(type) === 2) {
             return translate('asset.general_information.lost')
         } else {
-            return 'Type is deleted'
+            return null;
         }
     }
 
     convertIncidentStatus = (status) => {
         const { translate } = this.props;
-        if (status == 1) {
+        if (Number(status) === 1) {
             return translate('asset.general_information.waiting');
-        } else if (status == 2) {
+        } else if (Number(status) === 2) {
             return translate('asset.general_information.processed')
-        } else {
-            return 'Status is deleted'
-        }
+        } else return null;
     }
 
     render() {
         const { translate, assetsManager, assetType, user, isActive, incidentManager } = this.props;
         const { page, limit, currentRow, currentRowEditAsset, managedBy } = this.state;
 
-        var lists = "", exportData;
+        var lists = [], exportData;
         var userlist = user.list;
         if (incidentManager.isLoading === false) {
             lists = incidentManager.incidentList;
@@ -403,7 +401,7 @@ class IncidentManagement extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(lists && lists.length !== 0) &&
+                            {(lists && lists.length !== 0) ?
                                 lists.map((x, index) => {
                                     return (
                                         <tr key={index}>
@@ -429,7 +427,7 @@ class IncidentManagement extends Component {
                                             </td>
                                         </tr>
                                     )
-                                })
+                                }) : null
                             }
                         </tbody>
                     </table>

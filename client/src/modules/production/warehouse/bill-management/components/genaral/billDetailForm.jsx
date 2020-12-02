@@ -1,36 +1,18 @@
 import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
+import { formatDate, formatFullDate } from '../../../../../../helpers/formatDate';
 import { DialogModal, SelectBox, Errorstrong, ButtonModal } from '../../../../../../common-components';
 import { translate } from 'react-redux-multilingual/lib/utils';
 
 import QuantityLotDetailForm from './quantityLotDetail';
+import BillLogs from './billLogs';
 
 class BillDetailForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
 
-        }
-    }
-
-    formatDate(date, monthYear = false) {
-        if (date) {
-            let d = new Date(date),
-                day = '' + d.getDate(),
-                month = '' + (d.getMonth() + 1),
-                year = d.getFullYear();
-
-            if (month.length < 2)
-                month = '0' + month;
-            if (day.length < 2)
-                day = '0' + day;
-
-            if (monthYear === true) {
-                return [month, year].join('-');
-            } else return [day, month, year].join('-');
-        } else {
-            return date
         }
     }
 
@@ -45,6 +27,11 @@ class BillDetailForm extends Component {
         window.$('#modal-detail-lot-quantity').modal('show');
     }
 
+    handleViewVersion = (e) => {
+        e.preventDefault();
+        window.$('#modal-detail-logs-version-bill').modal('show');
+    }
+
     render() {
         const { translate, bills } = this.props;
         const { billDetail } = bills;
@@ -57,19 +44,18 @@ class BillDetailForm extends Component {
                     title={translate(`manage_warehouse.bill_management.detail_title.${billDetail.group}`)}
                     msg_success={translate('manage_warehouse.bin_location_management.add_success')}
                     msg_faile={translate('manage_warehouse.bin_location_management.add_faile')}
-                    size={100}
+                    size={75}
                     hasSaveButton={false}
                     hasNote={false}
                 >
-                    <form id={`form-detail-bill`} >
+                    <BillLogs logs={billDetail ? billDetail.logs : []} group={billDetail.group} />
                     {
                         quantityDetail &&
                         <QuantityLotDetailForm quantityDetail={quantityDetail} group={billDetail.group} />
                     }
+                    <form id={`form-detail-bill`} >
                         <div className="row">
-                        <div className={`${billDetail.group === '4' ? 'col-xs-12 col-sm-12 col-md-12 col-lg-12' : 'col-xs-12 col-sm-8 col-md-8 col-lg-8'}`}>
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{translate('manage_warehouse.bill_management.infor')}</legend>
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.bill_management.code')}:&emsp;</strong>
@@ -94,12 +80,8 @@ class BillDetailForm extends Component {
                                     {billDetail.creator ? billDetail.creator.name : "Creator is deleted"}
                                 </div>
                                 <div className="form-group">
-                                    <strong>{translate('manage_warehouse.bill_management.approved')}:&emsp;</strong>
-                                    {billDetail.approver ? billDetail.approver.name : "Approver is deleted"}
-                                </div>
-                                <div className="form-group">
                                     <strong>{translate('manage_warehouse.bill_management.date')}:&emsp;</strong>
-                                    {this.formatDate(billDetail.timestamp)}
+                                    {formatDate(billDetail.createdAt)}
                                 </div>
                                 { billDetail.group === '1' &&
                                     <div className="form-group">
@@ -126,10 +108,100 @@ class BillDetailForm extends Component {
                                     {billDetail.description}
                                 </div>
                             </div>
+                        </div>
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <fieldset className="scheduler-border">
+                                <legend className="scheduler-border">{translate('manage_warehouse.bill_management.approved')}</legend>
+                                {
+                                    billDetail.approvers && billDetail.approvers.length &&
+                                    billDetail.approvers.map((x, index) => {
+                                        return (
+                                            <div className="form-group" key={index}>
+                                                <p>{x.approver.name}{" - "}{x.approver.email}
+                                                {
+                                                    x.approvedTime &&
+                                                    <React.Fragment>
+                                                        &emsp; &emsp; &emsp;
+                                                        {translate('manage_warehouse.bill_management.approved_time')}
+                                                        : &emsp;
+                                                        {formatFullDate(x.approvedTime)}
+                                                    </React.Fragment>
+                                                }
+                                                </p>
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </fieldset>
+                        </div>
+                        { billDetail &&
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <fieldset className="scheduler-border">
+                                    <legend className="scheduler-border">{translate('manage_warehouse.bill_management.qualityControlStaffs')}</legend>
+                                    <table className="table">
+                                        <thead>
+                                            <tr>
+                                                <th>{translate('manage_warehouse.bill_management.index')}</th>
+                                                <th>{translate('manage_warehouse.bill_management.qc_name')}</th>
+                                                <th>{translate('manage_warehouse.bill_management.qc_email')}</th>
+                                                <th>{translate('manage_warehouse.bill_management.qc_status_bill')}</th>
+                                                <th>{translate('manage_warehouse.bill_management.quality_control_content')}</th>
+                                                <th>{translate('manage_warehouse.bill_management.time')}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {billDetail.qualityControlStaffs && billDetail.qualityControlStaffs.length &&
+                                                billDetail.qualityControlStaffs.map((x, index) => (
+                                                    <tr key={index}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{x.staff.name}</td>
+                                                        <td>{x.staff.email}</td>
+                                                        {x.status ? <td style={{ color: translate(`manage_warehouse.bill_management.qc_status.${x.status}.color`) }}>
+                                                            {translate(`manage_warehouse.bill_management.qc_status.${x.status}.content`)}
+                                                        </td> : <td></td>}
+                                                        <td>{x.content}</td>
+                                                        <td>{x.time && formatFullDate(x.time)}</td>
+                                                    </tr>
+                                                ))
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                </fieldset>
+                            </div>
+                        }
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <fieldset className="scheduler-border">
+                                <legend className="scheduler-border">{translate('manage_warehouse.bill_management.accountables')}</legend>
+                                {
+                                    billDetail.accountables && billDetail.accountables.length &&
+                                    billDetail.accountables.map((x, index) => {
+                                        return (
+                                            <div className="form-group" key={index}>
+                                                <p>{x.name}{" - "}{x.email}</p>
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </fieldset>
+                        </div>
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <fieldset className="scheduler-border">
+                                <legend className="scheduler-border">{translate('manage_warehouse.bill_management.users')}</legend>
+                                {
+                                    billDetail.responsibles && billDetail.responsibles.length &&
+                                    billDetail.responsibles.map((x, index) => {
+                                        return (
+                                            <div className="form-group" key={index}>
+                                                <p>{x.name}{" - "}{x.email}</p>
+                                            </div>
+                                        )
+                                    })
+                                }
                             </fieldset>
                         </div>
                         { billDetail.group !== '4' && 
-                            <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manage_warehouse.bill_management.receiver')}</legend>
                                     <div className={`form-group`}>
@@ -190,6 +262,9 @@ class BillDetailForm extends Component {
                                         </tbody>
                                     </table>
                                 </fieldset>
+                                <div className="pull-right" style={{marginBottom: "10px"}}>
+                                    <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={this.handleViewVersion}>{translate('manage_warehouse.bill_management.view_version')}</button>
+                                </div>
                             </div>
                         </div>
                     </form>

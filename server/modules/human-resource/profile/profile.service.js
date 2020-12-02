@@ -276,7 +276,15 @@ exports.getEmployees = async (portal, company, organizationalUnits, positions, a
         }
     } else {
         if (organizationalUnits !== undefined) {
-            let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(portal, organizationalUnits, positions);
+            let emailInCompany=[];
+            if(organizationalUnits==='allUnist'){
+                let units = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find();
+                units =units.map(x=>x._id);
+                emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(portal, units, undefined);
+            } else {
+                emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(portal, organizationalUnits, positions);
+            }
+            
             keySearch = {
                 ...keySearch,
                 emailInCompany: {
@@ -666,18 +674,25 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
         fileDegree = fileInfor.fileDegree,
         fileCertificate = fileInfor.fileCertificate,
         fileContract = fileInfor.fileContract,
+        fileMajor = fileInfor.fileMajor,
+        fileCareer = fileInfor.fileCareer,
         file = fileInfor.file;
     let {
         degrees,
         certificates,
+        career,
+        major,
         contracts,
         files
     } = data;
+    career = this.mergeUrlFileToObject(fileCareer, career);
+    major = this.mergeUrlFileToObject(fileMajor, major);
     degrees = this.mergeUrlFileToObject(fileDegree, degrees);
     certificates = this.mergeUrlFileToObject(fileCertificate, certificates);
     contracts = this.mergeUrlFileToObject(fileContract, contracts);
     files = this.mergeUrlFileToObject(file, files);
 
+    console.log('mcmcmcmcmcmcm\n\n', major);
     let createEmployee = await Employee(connect(DB_CONNECTION, portal)).create({
         avatar: avatar,
         fullName: data.fullName,
@@ -716,6 +731,8 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
         experiences: data.experiences,
         certificates: certificates,
         degrees: degrees,
+        major: major,
+        career: career,
         contractEndDate: data.contractEndDate ? data.contractEndDate : null,
         contractType: data.contractType,
         contracts: contracts,
@@ -820,6 +837,7 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
  * Cập nhât thông tin nhân viên theo id
  */
 exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company) => {
+    console.log('quququq\n\n\n', data);
     let {
         employee,
         createExperiences,
@@ -828,6 +846,12 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
         createDegrees,
         editDegrees,
         deleteDegrees,
+        createMajor,
+        editMajor,
+        deleteMajor,
+        createCareer,
+        editCareer,
+        deleteCareer,
         createCertificates,
         editCertificates,
         deleteCertificates,
@@ -856,6 +880,8 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
     let avatar = employee.avatar,
         fileDegree = fileInfor.fileDegree,
         fileCertificate = fileInfor.fileCertificate,
+        fileMajor = fileInfor.fileMajor,
+        fileCareer = fileInfor.fileCareer,
         fileContract = fileInfor.fileContract,
         file = fileInfor.file;
     if (fileInfor.avatar) {
@@ -912,6 +938,8 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
     oldEmployee.experiences = deleteEditCreateObjectInArrayObject(oldEmployee.experiences, deleteExperiences, editExperiences, createExperiences);
     oldEmployee.socialInsuranceDetails = deleteEditCreateObjectInArrayObject(oldEmployee.socialInsuranceDetails, deleteSocialInsuranceDetails, editSocialInsuranceDetails, createSocialInsuranceDetails);
 
+    oldEmployee.career = deleteEditCreateObjectInArrayObject(oldEmployee.career, deleteCareer, editCareer, createCareer, fileCareer);
+    oldEmployee.major = deleteEditCreateObjectInArrayObject(oldEmployee.major, deleteMajor, editMajor, createMajor, fileMajor);
     oldEmployee.degrees = deleteEditCreateObjectInArrayObject(oldEmployee.degrees, deleteDegrees, editDegrees, createDegrees, fileDegree);
     oldEmployee.certificates = deleteEditCreateObjectInArrayObject(oldEmployee.certificates, deleteCertificates, editCertificates, createCertificates, fileCertificate);
     oldEmployee.contracts = deleteEditCreateObjectInArrayObject(oldEmployee.contracts, deleteContracts, editContracts, createContracts, fileContract);

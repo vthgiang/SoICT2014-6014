@@ -1,3 +1,5 @@
+import { BillConstants } from '../../bill-management/redux/constants';
+
 const { LotServices } = require('./services');
 const { LotConstants } = require('./constants');
 
@@ -9,7 +11,9 @@ export const LotActions = {
     createOrUpdateLots,
     deleteManyLots,
     getAllManufacturingLots,
-    createManufacturingLot
+    createManufacturingLot,
+    getDetailManufacturingLot,
+    handleEditManufacturingLot
 
 }
 
@@ -193,6 +197,46 @@ function createManufacturingLot(data) {
             }).catch((error) => {
                 dispatch({
                     type: LotConstants.CREATE_MANUFACTURING_LOT_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function getDetailManufacturingLot(id) {
+    return dispatch => {
+        dispatch({
+            type: LotConstants.GET_DETAIL_MANUFACTURING_LOT_REQUEST
+        });
+        LotServices.getDetailManufacturingLot(id)
+            .then((res) => {
+                dispatch({
+                    type: LotConstants.GET_DETAIL_MANUFACTURING_LOT_SUCCESS,
+                    payload: res.data.content
+                });
+            }).catch((error) => {
+                dispatch({
+                    type: LotConstants.GET_DETAIL_MANUFACTURING_LOT_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function handleEditManufacturingLot(id, data) {
+    return dispatch => {
+        dispatch({
+            type: LotConstants.EDIT_MANUFACTURING_LOT_REQUEST
+        });
+        LotServices.handleEditManufacturingLot(id, data)
+            .then((res) => {
+                dispatch({
+                    type: LotConstants.EDIT_MANUFACTURING_LOT_SUCCESS,
+                    payload: res.data.content
+                });
+            }).catch((error) => {
+                dispatch({
+                    type: LotConstants.EDIT_MANUFACTURING_LOT_FAILURE,
                     error
                 });
             });

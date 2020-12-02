@@ -50,6 +50,8 @@ class LotDetailForm extends Component {
                     hasSaveButton={false}
                     hasNote={false}
                 >
+                    
+                    <BillDetailForm />
                     <form id={`form-detail-lot`} >
                         {
                             lotDetail ?
@@ -57,7 +59,7 @@ class LotDetailForm extends Component {
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.inventory_management.lot_code')}:&emsp;</strong>
-                                    {lotDetail.name}
+                                    {lotDetail.code}
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.inventory_management.unit')}:&emsp;</strong>
@@ -95,7 +97,6 @@ class LotDetailForm extends Component {
                                     <legend className="scheduler-border">{translate('manage_warehouse.inventory_management.bin')}</legend>
                                     {lotDetail.stocks.map((x, index) => <p key={index}><b>Kho {x.stock.name} có {x.quantity} {lotDetail.good.baseUnit}: </b>{x.binLocations.map(item => item.binLocation.path + "(" + item.quantity + lotDetail.good.baseUnit +"), " )}</p>)}
                                 </fieldset>
-                                <BillDetailForm />
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manage_warehouse.inventory_management.history')}</legend>
 

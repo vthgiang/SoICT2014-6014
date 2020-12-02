@@ -20,6 +20,7 @@ import { employeesManager } from '../modules/human-resource/profile/employee-man
 import { education } from '../modules/training/education-program/redux/reducers';
 import { course } from '../modules/training/course/redux/reducers';
 import { salary } from '../modules/human-resource/salary/redux/reducers';
+import { field } from '../modules/human-resource/field/redux/reducers';
 import { discipline } from '../modules/human-resource/commendation-discipline/redux/reducers';
 import { annualLeave } from '../modules/human-resource/annual-leave/redux/reducers';
 import { workPlan } from '../modules/human-resource/work-plan/redux/reducers';
@@ -133,6 +134,7 @@ const appReducer = combineReducers({
     annualLeave,
     workPlan,
     timesheets,
+    field,
 
     // gói thầu
     career,

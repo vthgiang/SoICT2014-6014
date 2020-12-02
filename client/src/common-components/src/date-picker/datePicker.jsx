@@ -102,15 +102,15 @@ class DatePicker extends Component {
 
     render() {
         const { id, disabled = false, defaultValue, style = {} } = this.props;
-
         const { value } = this.state;
+        
         return (
             <React.Fragment>
                 <div className={'input-group date has-feedback'} id={id}>
                     <div className="input-group-addon">
                         <i style={{ width: 16, height: 16 }} className="fa fa-calendar" />
                     </div>
-                    <input type="text" style={style} className="form-control" value={value !== undefined ? value : defaultValue} ref="datePicker" onChange={() => { }} disabled={disabled} />
+                    <input type="text" style={style} className="form-control" value={value ? value : (defaultValue ? defaultValue : '')} ref="datePicker" onChange={() => { }} disabled={disabled} />
                 </div>
             </React.Fragment>
         );

@@ -9,6 +9,7 @@ export const AnnualLeaveActions = {
     createAnnualLeave,
     deleteAnnualLeave,
     updateAnnualLeave,
+    importAnnualLeave
 };
 
 /**
@@ -110,4 +111,29 @@ function updateAnnualLeave(id, infoSabbatical) {
                 });
             })
     }
+}
+
+/**
+ * Import dữ liệu nghỉ phép
+ * @param {*} data : Array thông tin nghỉ phép
+ */
+function importAnnualLeave(data) {
+    return dispatch => {
+        dispatch({
+            type: AnnualLeaveConstants.IMPORT_ANNUAL_LEAVE_REQUEST
+        });
+        AnnualLeaveService.importAnnualLeave(data)
+            .then(res => {
+                dispatch({
+                    type: AnnualLeaveConstants.IMPORT_ANNUAL_LEAVE_SUCCESS,
+                    payload: res.data
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: AnnualLeaveConstants.IMPORT_ANNUAL_LEAVE_FAILURE,
+                    error: err.response.data.content
+                });
+            })
+    };
 }

@@ -16,6 +16,7 @@ const initState = {
     billDetail: '',
     listBillByGood: [],
     listBillByStatus: [],
+    listBillByCommand: [],
     listPaginate: [],
     totalDocs: 0,
     limit: 0,
@@ -34,7 +35,7 @@ export function bills(state = initState, action) {
     var index = -1;
     var indexPaginate = -1;
 
-    switch(action.type){
+    switch (action.type) {
 
         case BillConstants.GET_BILL_BY_TYPE_REQUEST:
         case BillConstants.GET_PAGINATE_REQUEST:
@@ -43,6 +44,8 @@ export function bills(state = initState, action) {
         case BillConstants.CREATE_BILL_REQUEST:
         case BillConstants.UPDATE_BILL_REQUEST:
         case BillConstants.GET_BILL_BY_STATUS_REQUEST:
+        case BillConstants.GET_BILL_BY_COMMAND_REQUEST:
+        case BillConstants.CREATE_MANY_PRODUCT_BILL_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -98,7 +101,7 @@ export function bills(state = initState, action) {
             return {
                 ...state,
                 listBills: [...state.listBills, action.payload],
-                listPaginate: [ ...state.listPaginate, action.payload],
+                listPaginate: [...state.listPaginate, action.payload],
                 isLoading: false
             }
 
@@ -106,11 +109,11 @@ export function bills(state = initState, action) {
             index = findIndex(state.listBills, action.payload._id);
             indexPaginate = findIndex(state.listPaginate, action.payload._id);
 
-            if(index !== -1) {
+            if (index !== -1) {
                 state.listBills[index] = action.payload;
             }
 
-            if(indexPaginate !== -1) {
+            if (indexPaginate !== -1) {
                 state.listPaginate[indexPaginate] = action.payload;
             }
 
@@ -126,6 +129,17 @@ export function bills(state = initState, action) {
                 isLoading: false
             }
 
+        case BillConstants.GET_BILL_BY_COMMAND_SUCCESS:
+            return {
+                ...state,
+                listBillByCommand: action.payload,
+                isLoading: false
+            }
+        case BillConstants.CREATE_MANY_PRODUCT_BILL_SUCCESS:
+            return {
+                ...state,
+                isLoading: false
+            }
         case BillConstants.GET_BILL_BY_TYPE_FAILURE:
         case BillConstants.GET_PAGINATE_FAILURE:
         case BillConstants.GET_BILL_BY_GOOD_FAILURE:
@@ -133,6 +147,8 @@ export function bills(state = initState, action) {
         case BillConstants.CREATE_BILL_FAILURE:
         case BillConstants.UPDATE_BILL_FAILURE:
         case BillConstants.GET_BILL_BY_STATUS_FAILURE:
+        case BillConstants.GET_BILL_BY_COMMAND_FAILURE:
+        case BillConstants.CREATE_MANY_PRODUCT_BILL_FAILURE:
             return {
                 ...state,
                 isLoading: false

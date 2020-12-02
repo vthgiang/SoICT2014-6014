@@ -13,7 +13,7 @@ exports.getAssetTypes = async (portal, company, query) => {
     const { typeNumber, typeName, page, limit } = query;
 
     if (typeNumber || typeName || page || limit) {
-        var keySearch = { company: company };
+        var keySearch = { };
 
         // Bắt sựu kiện mã loại tài sản tìm kiếm khác ""
         if (typeNumber !== "") {
@@ -30,7 +30,7 @@ exports.getAssetTypes = async (portal, company, query) => {
 
         return { totalList, listAssetTypes };
     } else {
-        const list = await AssetType(connect(DB_CONNECTION, portal)).find({ company: company });
+        const list = await AssetType(connect(DB_CONNECTION, portal)).find();
         const dataConverted = list.map(type => {
             return {
                 id: type._id.toString(),
@@ -48,13 +48,11 @@ exports.getAssetTypes = async (portal, company, query) => {
 }
 
 exports.createAssetTypes = async (portal, company, data) => {
-    let checkName = await AssetType(connect(DB_CONNECTION, portal)).findOne({
-        typeName: data.typeName
-    });
+    let checkName = await AssetType(connect(DB_CONNECTION, portal)).findOne({typeName: data.typeName});
+    if (checkName) throw ['asset_type_name_exist'];
 
-    if (checkName) {
-        throw ['asset_type_name_exist'];
-    }
+    let checkNumber = await AssetType(connect(DB_CONNECTION, portal)).findOne({typeNumber: data.typeNumber});
+    if (checkNumber) throw ['asset_type_number_exist'];
 
     let dataArray;
     if (!Array.isArray(data)) {
@@ -69,7 +67,7 @@ exports.createAssetTypes = async (portal, company, data) => {
             typeNumber: dataArray[i].typeNumber,
             typeName: dataArray[i].typeName,
             description: dataArray[i].description,
-            defaultInformation: dataArray[i].defaultInformation,
+            defaultInformation: dataArray[i].defaultInformation.filter(info => Boolean(info)),
         }
 
         if (dataArray[i].parent && dataArray[i].parent.length) {

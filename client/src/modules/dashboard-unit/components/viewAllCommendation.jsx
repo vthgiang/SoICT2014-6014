@@ -10,7 +10,6 @@ class ViewAllCommendation extends Component {
     };
 
     render() {
-        const { translate } = this.props;
         const { dataCommendation, title } = this.props;
 
         return (

@@ -6,6 +6,7 @@ export const AnnualLeaveService = {
     createAnnualLeave,
     deleteAnnualLeave,
     updateAnnualLeave,
+    importAnnualLeave,
 }
 
 /**
@@ -66,4 +67,16 @@ function updateAnnualLeave(id, data) {
         method: 'PATCH',
         data: data
     }, true, true, 'human_resource.annual_leave');
+}
+
+/**
+ * Import dữ liệu nghỉ phép
+ * @param {*} data : Array thông tin nghỉ phép
+ */
+function importAnnualLeave(data) {
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/annualLeave/annualLeaves/import`,
+        method: 'POST',
+        data: data,
+    }, true, false, 'human_resource.annual_leave');
 }

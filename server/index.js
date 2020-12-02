@@ -46,6 +46,7 @@ router.use(
     require("./modules/human-resource/profile/profile.route")
 );
 router.use("/salary", require("./modules/human-resource/salary/salary.route"));
+router.use("/field", require("./modules/human-resource/field/field.route"));
 router.use(
     "/timesheet",
     require("./modules/human-resource/timesheets/timesheets.route")

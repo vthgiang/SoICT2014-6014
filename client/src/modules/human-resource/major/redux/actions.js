@@ -8,6 +8,7 @@ import {
 
 export const MajorActions = {
     getListMajor,
+    createMajor,
 };
 
 /**
@@ -29,6 +30,31 @@ function getListMajor(data) {
             .catch(err => {
                 dispatch({
                     type: MajorConstant.GET_MAJOR_FAILURE,
+                    error: err
+                });
+            })
+    }
+}
+
+/**
+ * Lấy danh sách kỷ luật
+ * @data : Dữ liệu key tìm kiếm 
+ */
+function createMajor(data) {
+    return dispatch => {
+        dispatch({
+            type: MajorConstant.CREATE_MAJOR_REQUEST
+        });
+        MajorService.createMajor(data)
+            .then(res => {
+                dispatch({
+                    type: MajorConstant.CREATE_MAJOR_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: MajorConstant.CREATE_MAJOR_FAILURE,
                     error: err
                 });
             })

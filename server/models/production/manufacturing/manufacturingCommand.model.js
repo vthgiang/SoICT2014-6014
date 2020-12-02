@@ -52,6 +52,12 @@ const ManufacturingCommandSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: "User"
         },
+        status: { // Trạng thái kiểm định 1. Chưa kiểm định, 2. Kiểm định Ok, 3. Kiểm định có vấn đề
+            type: Number
+        },
+        content: { // Nội dung kiểm định
+            type: String
+        },
         time: { // Thời gian phê duyệt
             type: Date
         }
@@ -64,7 +70,7 @@ const ManufacturingCommandSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User"
     }],
-    status: { //  Trạng thái lệnh sản xuất: 1. Chờ phê duyệt || 2. Lệnh đã duyệt || 3. Lệnh đang được thực thi || 4. Đã hoàn thành || 5. Đã kiểm định chất lượng
+    status: { //  Trạng thái lệnh sản xuất: 1. Chờ phê duyệt || 2. Lệnh đã duyệt || 3. Lệnh đang được thực thi || 4. Đã hoàn thành
         type: Number,
         default: 1
     },
@@ -78,7 +84,7 @@ const ManufacturingCommandSchema = new Schema({
     substandardProductQuantity: { // Số lượng phế phẩm
         type: Number
     },
-    fishedTime: { // Thời gian chính xác hoàn thành lệnh sản xuất
+    finishedTime: { // Thời gian chính xác hoàn thành lệnh sản xuất
         type: Date
     }
 }, {

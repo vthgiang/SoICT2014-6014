@@ -3,7 +3,10 @@ import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { DialogModal } from '../../../../../common-components';
 import { formatDate, formatFullDate } from '../../../../../helpers/formatDate';
+import { BillActions } from '../../../warehouse/bill-management/redux/actions';
+import ManufacturingLotDetailForm from '../../manufacturing-lot/components/manufacturingLotDetailForm';
 import { commandActions } from '../redux/actions';
+import qualityControlForm from './qualityControlForm';
 class ManufacturingCommandDetailInfo extends Component {
     constructor(props) {
         super(props);
@@ -13,16 +16,29 @@ class ManufacturingCommandDetailInfo extends Component {
     shouldComponentUpdate = (nextProps) => {
         if (this.props.commandDetail !== nextProps.commandDetail) {
             this.props.getDetailManufacturingCommand(nextProps.commandDetail._id);
+            this.props.getBillsByCommand({ manufacturingCommandId: nextProps.commandDetail._id });
             return false
         }
         return true;
     }
 
+    showDetailManufacturingLot = async (lot) => {
+        await this.setState({
+            lotDetail: lot
+        });
+
+        window.$('#modal-detail-info-manufacturing-lot').modal('show');
+    }
+
     render() {
-        const { translate, manufacturingCommand, idModal } = this.props;
+        const { translate, manufacturingCommand, idModal, bills } = this.props;
         let currentCommand = {};
         if (manufacturingCommand.currentCommand && manufacturingCommand.isLoading === false) {
             currentCommand = manufacturingCommand.currentCommand;
+        }
+        let listBillByCommand = [];
+        if (bills.listBillByCommand && bills.isLoading === false) {
+            listBillByCommand = bills.listBillByCommand;
         }
         return (
             <React.Fragment>
@@ -35,6 +51,7 @@ class ManufacturingCommandDetailInfo extends Component {
                     hasSaveButton={false}
                     hasNote={false}
                 >
+                    <ManufacturingLotDetailForm lotDetail={this.state.lotDetail} />
                     <form id={`form-detail-manufacturing-command`}>
                         <div className="row">
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -65,7 +82,10 @@ class ManufacturingCommandDetailInfo extends Component {
                                 <div className="form-group">
                                     <strong>{translate('manufacturing.command.lot_code')}:&emsp;</strong>
                                     {
-                                        currentCommand.lot && currentCommand.lot.code
+                                        currentCommand.lot && currentCommand.lot[0] && <a href="#" onClick={() => this.showDetailManufacturingLot(currentCommand.lot[0])}>{currentCommand.lot[0].code}</a>
+                                    }
+                                    {
+                                        currentCommand.lot && currentCommand.lot[1] && <a href="#" onClick={() => this.showDetailManufacturingLot(currentCommand.lot[1])}>{", " + currentCommand.lot[1].code}</a>
                                     }
                                 </div>
                                 <div className="form-group">
@@ -150,6 +170,94 @@ class ManufacturingCommandDetailInfo extends Component {
                         <div className="row">
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <fieldset className="scheduler-border">
+                                    <legend className="scheduler-border">{translate('manufacturing.command.material')}</legend>
+                                    <div className={`form-group`}>
+                                        <table className="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>{translate('manufacturing.command.material_code')}</th>
+                                                    <th>{translate('manufacturing.command.material_name')}</th>
+                                                    <th>{translate('manufacturing.command.good_base_unit')}</th>
+                                                    <th>{translate('manufacturing.command.quantity')}</th>
+                                                    <th>{translate('manufacturing.command.from_stock')}</th>
+                                                    <th style={{ textAlign: "left" }}>{translate('manufacturing.command.status_bill')}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    listBillByCommand && listBillByCommand.length &&
+                                                    listBillByCommand.map((bill, index) => (
+                                                        bill.goods.map((good, index1) => (
+                                                            index1 === 0
+                                                                ?
+                                                                <tr key={index1}>
+                                                                    <td>{good.good.code}</td>
+                                                                    <td>{good.good.name}</td>
+                                                                    <td>{good.good.baseUnit}</td>
+                                                                    <td style={{ textAlign: "left" }}>{good.quantity}</td>
+                                                                    <td rowSpan={bill.goods.length}>{bill.fromStock.code + " - " + bill.fromStock.name}</td>
+                                                                    <td
+                                                                        style={{ textAlign: "left", color: translate(`manufacturing.command.bill.${bill.status}.color`) }}
+                                                                        rowSpan={bill.goods.length}
+                                                                    >
+                                                                        {translate(`manufacturing.command.bill.${bill.status}.content`)}
+                                                                    </td>
+                                                                </tr>
+                                                                :
+                                                                <tr key={index1}>
+                                                                    <td>{good.good.code}</td>
+                                                                    <td>{good.good.name}</td>
+                                                                    <td>{good.good.baseUnit}</td>
+                                                                    <td style={{ textAlign: "left" }}>{good.quantity}</td>
+                                                                </tr>
+                                                        ))
+                                                    ))
+
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <fieldset className="scheduler-border">
+                                    <legend className="scheduler-border">{translate('manufacturing.command.result')}</legend>
+                                    {
+                                        (currentCommand.finishedProductQuantity
+                                            && currentCommand.finishedTime)
+                                            ?
+                                            <React.Fragment>
+                                                <p>
+                                                    {translate('manufacturing.command.finishedProductQuantity')}: &emsp;
+                                                    {currentCommand.finishedProductQuantity}
+                                                    &emsp;&emsp;&emsp;
+                                                    {translate('manufacturing.command.rateFinishedProductQuantity')}: &emsp;
+                                                    {Math.round(currentCommand.finishedProductQuantity * 100 / (currentCommand.finishedProductQuantity + (currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity : 0)) * 100) / 100}%
+                                                </p>
+                                                <p>
+                                                    {translate('manufacturing.command.substandardProductQuantity')}: &emsp;
+                                                    {currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity : 0}
+                                                    &emsp;&emsp;&emsp;
+                                                    {translate('manufacturing.command.rateSubstandardProductQuantity')}: &emsp;
+                                                    {Math.round((currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity : 0) * 100 / (currentCommand.finishedProductQuantity + (currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity : 0)) * 100) / 100}%
+
+                                                </p>
+                                                <p>
+                                                    {translate('manufacturing.command.finishedTime')}: &emsp;
+                                                    {formatFullDate(currentCommand.finishedTime)}
+                                                </p>
+                                            </React.Fragment>
+                                            :
+                                            translate("manufacturing.command.no_data")
+                                    }
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manufacturing.command.responsibles')}</legend>
                                     {
                                         currentCommand.responsibles && currentCommand.responsibles.length &&
@@ -185,30 +293,35 @@ class ManufacturingCommandDetailInfo extends Component {
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manufacturing.command.qualityControlStaffs')}</legend>
-                                    {
-                                        currentCommand.qualityControlStaffs && currentCommand.qualityControlStaffs.length &&
-                                        currentCommand.qualityControlStaffs.map((x, index) => {
-                                            return (
-                                                <div className="form-group" key={index}>
-                                                    <p>
-                                                        {x.staff.name}
-                                                        {" - "}
-                                                        {x.staff.email}
-                                                        {
-                                                            x.time &&
-                                                            <React.Fragment>
-                                                                &emsp; &emsp; &emsp;
-                                                                {translate('manufacturing.command.time')}
-                                                                : &emsp;
-                                                                {formatFullDate(x.time)}
-                                                            </React.Fragment>
+                                    <table className="table">
+                                        <thead>
+                                            <tr>
+                                                <th>{translate('manufacturing.command.index')}</th>
+                                                <th>{translate('manufacturing.command.qc_name')}</th>
+                                                <th>{translate('manufacturing.command.qc_email')}</th>
+                                                <th>{translate('manufacturing.command.qc_status_command')}</th>
+                                                <th>{translate('manufacturing.command.quality_control_content')}</th>
+                                                <th>{translate('manufacturing.command.time')}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {currentCommand.qualityControlStaffs && currentCommand.qualityControlStaffs.length &&
+                                                currentCommand.qualityControlStaffs.map((qualityControlStaff, index) => (
+                                                    <tr key={index}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{qualityControlStaff.staff.name}</td>
+                                                        <td>{qualityControlStaff.staff.email}</td>
+                                                        <td style={{ color: translate(`manufacturing.command.qc_status.${qualityControlStaff.status}.color`) }}>
+                                                            {translate(`manufacturing.command.qc_status.${qualityControlStaff.status}.content`)}
+                                                        </td>
+                                                        <td>{qualityControlStaff.content}</td>
+                                                        <td>{qualityControlStaff.time && formatFullDate(qualityControlStaff.time)}</td>
+                                                    </tr>
+                                                ))
+                                            }
 
-                                                        }
-                                                    </p>
-                                                </div>
-                                            )
-                                        })
-                                    }
+                                        </tbody>
+                                    </table>
                                 </fieldset>
                             </div>
                         </div>
@@ -243,6 +356,16 @@ class ManufacturingCommandDetailInfo extends Component {
                                 </fieldset>
                             </div>
                         </div>
+                        <div className="row">
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <fieldset className="scheduler-border">
+                                    <legend className="scheduler-border">{translate('manufacturing.command.comment')}</legend>
+                                    <div className={`form-group`}>
+                                        Bình luận
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
                     </form>
                 </DialogModal>
             </React.Fragment >
@@ -251,12 +374,13 @@ class ManufacturingCommandDetailInfo extends Component {
 }
 
 function mapStateToProps(state) {
-    const { manufacturingCommand } = state;
-    return { manufacturingCommand }
+    const { manufacturingCommand, bills } = state;
+    return { manufacturingCommand, bills }
 }
 
 const mapDispatchToProps = {
-    getDetailManufacturingCommand: commandActions.getDetailManufacturingCommand
+    getDetailManufacturingCommand: commandActions.getDetailManufacturingCommand,
+    getBillsByCommand: BillActions.getBillsByCommand,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManufacturingCommandDetailInfo));

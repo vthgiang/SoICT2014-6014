@@ -106,7 +106,7 @@ class DepreciationTree extends Component {
 
         let chart = [];
         if (listAssets) {
-            listAssets.map(asset => {
+            listAssets.forEach(asset => {
                 for (let k in asset.assetType) {
                     let idx = idAssetType.indexOf(asset.assetType[k]._id);
                     countAssetDepreciation[idx] += this.calculateDepreciation(asset.depreciationType, asset.cost, asset.usefulLife, asset.estimatedTotalProduction, asset.unitsProducedDuringTheYears, asset.startDepreciation);

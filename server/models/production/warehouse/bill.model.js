@@ -59,13 +59,41 @@ const BillSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'User'
         },
-        role: {
-            type: Schema.Types.ObjectId,
-            ref: "Role"
-        },
+        
         approvedTime: {
             type: Date
         }
+    }],
+
+    qualityControlStaffs: [{ // Danh sách người kiểm định chất lượng 
+        staff: { // Người kiểm định
+            type: Schema.Types.ObjectId,
+            ref: "User"
+        },
+
+        status: { // Trạng thái kiểm định 1. Chưa kiểm định, 2. Kiểm định Ok, 3. Kiểm định có vấn đề
+            type: Number
+        },
+
+        content: { // Nội dung kiểm định
+            type: String
+        },
+
+        time: { // Thời gian kiểm định
+            type: Date
+        }
+    }],
+
+    // LSX
+    responsibles: [{ // Danh sách người thực hiện
+        type: Schema.Types.ObjectId,
+        ref: "User"
+    }],
+
+    // LSX
+    accountables: [{ // Người giám sát
+        type: Schema.Types.ObjectId,
+        ref: "User"
     }],
 
     customer: {
@@ -78,6 +106,7 @@ const BillSchema = new Schema({
         ref: 'Customer'
     },
 
+    // LSX
     receiver: {
         name: {
             type: String
@@ -129,12 +158,12 @@ const BillSchema = new Schema({
         },
 
         lots: [{
-
+            // LSX
             lot: {
                 type: Schema.Types.ObjectId,
                 ref: 'Lot'
             },
-
+            // LSX
             quantity: {
                 type: Number,
                 default: 0
@@ -173,7 +202,27 @@ const BillSchema = new Schema({
     manufacturingCommand: {
         type: Schema.Types.ObjectId,
         ref: "ManufacturingCommand"
-    }
+    },
+
+    // Tạo log khi create
+    logs: [{
+        createAt: {
+            type: Date
+        },
+
+        creator: {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+        },
+
+        title: {
+            type: String
+        },
+
+        versions: {
+            type: String
+        }
+    }]
 }, {
     timestamps: true
 });

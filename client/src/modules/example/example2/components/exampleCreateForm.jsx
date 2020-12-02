@@ -26,7 +26,7 @@ class ExampleCreateForm extends Component {
     save = () => {
         if (this.isFormValidated()) {
             const { exampleName, description } = this.state;
-            this.props.createExample({ exampleName, description });
+            this.props.createExample([{ exampleName, description }]);
         }
     }
 

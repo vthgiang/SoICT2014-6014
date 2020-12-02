@@ -7,10 +7,6 @@ const LotSchema = new Schema({
         type: String
     },
 
-    name: {
-        type: String
-    },
-
     good: {
         type: Schema.Types.ObjectId,
         ref: 'Good'
@@ -131,22 +127,22 @@ const LotSchema = new Schema({
         ref: 'ManufacturingCommand'
     },
 
-    lotType: { // Loại lô 1. Lô sản xuất 2. Lô nhập kho
-        type: Number
-    },
-
     productType: {// Loại sản phẩm. 1. Phế phẩm 2. Thành phẩm
         type: Number
     },
 
-    status: { // 1. Chưa được xử lý 2. Đã được xử lý 3. Đã nhập kho
+    status: { // 1. Chưa lên đơn nhập kho 2. Đã lên đơn nhập kho 3. Đã nhập kho
         type: Number
     },
 
     creator: {// Người tạo ra lô sản xuất
         type: Schema.Types.ObjectId,
         ref: "User"
-    }
+    },
+    bills: [{
+        type: Schema.Types.ObjectId,
+        ref: "Bill"
+    }]
 
 }, {
     timestamps: true

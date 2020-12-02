@@ -178,15 +178,18 @@ const initSampleCompanyDB = async () => {
             code: "giao_duc",
             position: [{
                 name: "Giảng viên",
-                code: ["giao_duc", "giang_vien"],
+                // code: ["giao_duc", "giang_vien"],
+                code: "giang_vien",
                 type: 1,
             }, {
                 name: "Trợ giảng",
-                code: ["giao_duc", "tro_giang"],
+                // code: ["giao_duc", "tro_giang"],
+                code: "tro_giang",
                 type: 1,
             }, {
                 name: "IT Teacher",
-                code: ["giao_duc", "it_phan_mem", "it_teacher"],
+                // code: ["giao_duc", "it_phan_mem", "it_teacher"],
+                code: "it_phan_mem",
                 type: 1,
             }]
         }, {
@@ -194,77 +197,92 @@ const initSampleCompanyDB = async () => {
             code: "it_phan_mem",
             position: [{
                 name: "Kỹ thuật viên",
-                code: ["it_phan_mem", "it_phan_cung_mang", "ky_thuat_vien"],
+                // code: ["it_phan_mem", "it_phan_cung_mang", "ky_thuat_vien"],
+                code: "ky_thuat_vien",
                 type: 1,
             },
             {
                 name: "Chuyên viên hỗ trợ người dùng",
-                code: ["it_phan_mem", "it_phan_cung_mang", "chuyen_vien_ho_tro_nguoi_dung"],
+                // code: ["it_phan_mem", "it_phan_cung_mang", "chuyen_vien_ho_tro_nguoi_dung"],
+                code: "chuyen_vien_ho_tro_nguoi_dung",
                 type: 1,
             },
             {
                 name: "Chuyên Viên Quản Trị và Bảo Trì Ứng Dụng",
-                code: ["it_phan_mem", "it_phan_cung_mang", "chuyen_vien_quan_tri_bao_tri"],
+                // code: ["it_phan_mem", "it_phan_cung_mang", "chuyen_vien_quan_tri_bao_tri"],
+                code: "chuyen_vien_quan_tri_bao_tri",
                 type: 1,
             },
             {
                 name: "Web Developer",
-                code: ["it_phan_mem", "web_developer"],
+                // code: ["it_phan_mem", "web_developer"],
+                code: "web_developer",
                 type: 1,
             },
             {
                 name: "Data Analyst",
-                code: ["it_phan_mem", "it_phan_cung_mang", "data_analyst"],
+                // code: ["it_phan_mem", "it_phan_cung_mang", "data_analyst"],
+                code: "data_analyst",
                 type: 1,
             },
             {
                 name: "UX Designer",
-                code: ["it_phan_mem", "ux_designer"],
+                // code: ["it_phan_mem", "ux_designer"],
+                code: "ux_designer",
                 type: 1,
             },
             {
                 name: "System Admin Engineer",
-                code: ["it_phan_mem", "it_phan_cung_mang", "system_admin_engineer"],
+                // code: ["it_phan_mem", "it_phan_cung_mang", "system_admin_engineer"],
+                code: "system_admin_engineer",
                 type: 1,
             },
             {
                 name: "Business Analyst",
-                code: ["it_phan_mem", "business_analyst"],
+                // code: ["it_phan_mem", "business_analyst"],
+                code: "business_analyst",
                 type: 1,
             },
             {
                 name: "Chuyên Viên công nghệ thông tin",
-                code: ["it_phan_mem", "chuyen_vien_cong_nghe_thong_tin"],
+                // code: ["it_phan_mem", "chuyen_vien_cong_nghe_thong_tin"],
+                code: "chuyen_vien_cong_nghe_thong_tin",
                 type: 1,
             },
             {
                 name: "Unity Programmer",
-                code: ["it_phan_mem", "unity_programer"],
+                // code: ["it_phan_mem", "unity_programer"],
+                code: "unity_programer",
                 type: 1,
             },
             {
                 name: "Android Engineer",
-                code: ["it_phan_mem", "android_engineer"],
+                // code: ["it_phan_mem", "android_engineer"],
+                code: "android_engineer",
                 type: 1,
             },
             {
                 name: "iOS Engineer",
-                code: ["it_phan_mem", "ios_engineer"],
+                // code: ["it_phan_mem", "ios_engineer"],
+                code: "ios_engineer",
                 type: 1,
             },
             {
                 name: "Front-End Engineer",
-                code: ["it_phan_mem", "fe_engineer"],
+                // code: ["it_phan_mem", "fe_engineer"],
+                code: "fe_engineer",
                 type: 1,
             },
             {
                 name: "Back-End Engineer",
-                code: ["it_phan_mem", "be_engineer"],
+                // code: ["it_phan_mem", "be_engineer"],
+                code: "be_engineer",
                 type: 1,
             },
             {
                 name: "Software Engineer",
-                code: ["it_phan_mem", "software_engineer"],
+                // code: ["it_phan_mem", "software_engineer"],
+                code: "software_engineer",
                 type: 1,
             },
                 // {
@@ -276,36 +294,42 @@ const initSampleCompanyDB = async () => {
         }, {
             name: "IT Phần cứng/mạng",
             code: "it_phan_cung_mang",
-            position: [{
-                name: "IT Support - Kỹ Sư Máy Tính/ Mạng",
-                code: ["it_phan_cung_mang", "it_support_ky_su_mang"],
-                type: 1,
-            },
-            {
-                name: "Chuyên viên IT Mạng",
-                code: ["it_phan_cung_mang", "chuyen_vien_it_mang"],
-                type: 1,
-            },
-            {
-                name: "5G/ Lte System Engineer",
-                code: ["it_phan_cung_mang", "5G", "lte", "system_engineer"],
-                type: 1,
-            },
-            {
-                name: "Chuyên Viên Bảo Mật Ứng Dụng",
-                code: ["it_phan_cung_mang", "chuyen_vien_bao_mat"],
-                type: 1,
-            },
-            {
-                name: "Chuyên Viên Phân Tích Sự Kiện Bảo Mật",
-                code: ["it_phan_cung_mang", "chuyen_vien_phan_tich_su_kien_bao_mat"],
-                type: 1,
-            },
-            {
-                name: "Kỹ Sư Bảo Mật",
-                code: ["it_phan_cung_mang", "ky_su_bao_mat"],
-                type: 1,
-            },
+            position: [
+                // {
+                //     name: "IT Support - Kỹ Sư Máy Tính/ Mạng",
+                //     code: ["it_phan_cung_mang", "it_support_ky_su_mang"],
+                //     type: 1,
+                // },
+                {
+                    name: "Chuyên viên IT Mạng",
+                    // code: ["it_phan_cung_mang", "chuyen_vien_it_mang"],
+                    code: "chuyen_vien_it_mang",
+                    type: 1,
+                },
+                {
+                    name: "5G/ Lte System Engineer",
+                    // code: ["it_phan_cung_mang", "5G", "lte", "system_engineer"],
+                    code: "lte_system_engineer",
+                    type: 1,
+                },
+                {
+                    name: "Chuyên Viên Bảo Mật Ứng Dụng",
+                    // code: ["it_phan_cung_mang", "chuyen_vien_bao_mat"],
+                    code: "chuyen_vien_bao_mat",
+                    type: 1,
+                },
+                {
+                    name: "Chuyên Viên Phân Tích Sự Kiện Bảo Mật",
+                    // code: ["it_phan_cung_mang", "chuyen_vien_phan_tich_su_kien_bao_mat"],
+                    code: "chuyen_vien_phan_tich_su_kien_bao_mat",
+                    type: 1,
+                },
+                {
+                    name: "Kỹ Sư Bảo Mật",
+                    // code: ["it_phan_cung_mang", "ky_su_bao_mat"],
+                    code: "ky_su_bao_mat",
+                    type: 1,
+                },
             ]
         }
     ]);
@@ -658,24 +682,24 @@ const initSampleCompanyDB = async () => {
 
     console.log('3. Khởi tạo hoạt động công việc');
     //END
-    var careerField = await CareerAction(vnistDB).insertMany([
+    var careerAction = await CareerAction(vnistDB).insertMany([
         {
             name: "Quản trị, bảo hành, bảo trì hoạt động của phần mềm và hệ thống thông tin",
             code: "itpm_01",
             detail: [
                 {
                     name: "Quản trị",
-                    code: ["quan_tri"],
+                    code: "quan_tri",
                     type: 1,
                 },
                 {
                     name: "Bảo hành",
-                    code: ["bao_hanh"],
+                    code: "bao_hanh",
                     type: 1,
                 },
                 {
                     name: "Bao trì",
-                    code: ["bao_tri"],
+                    code: "bao_tri",
                     type: 1,
                 },
             ]
@@ -686,17 +710,17 @@ const initSampleCompanyDB = async () => {
             detail: [
                 {
                     name: "Tư vấn",
-                    code: ["tu_van"],
+                    code: "tu_van",
                     type: 1,
                 },
                 {
                     name: "Đánh giá",
-                    code: ["danh_gia"],
+                    code: "danh_gia",
                     type: 1,
                 },
                 {
                     name: "thẩm định",
-                    code: ["tham_dinh"],
+                    code: "tham_dinh",
                     type: 1,
                 },
             ]
@@ -707,12 +731,12 @@ const initSampleCompanyDB = async () => {
             detail: [
                 {
                     name: "Tư vấn",
-                    code: ["tu_van"],
+                    code: "tu_van",
                     type: 1,
                 },
                 {
                     name: "Xây dựng",
-                    code: ["xay_dung"],
+                    code: "xay_dung",
                     type: 1,
                 }
             ]
@@ -723,7 +747,7 @@ const initSampleCompanyDB = async () => {
             detail: [
                 {
                     name: "Bảo đảm",
-                    code: ["bao_dam"],
+                    code: "bao_dam",
                     type: 1,
                 }
             ]
@@ -734,17 +758,17 @@ const initSampleCompanyDB = async () => {
             detail: [
                 {
                     name: "Phân phối",
-                    code: ["phan_phoi"],
+                    code: "phan_phoi",
                     type: 1,
                 },
                 {
                     name: "Cung ứng",
-                    code: ["cung_ung"],
+                    code: "cung_ung",
                     type: 1,
                 },
                 {
                     name: "Cung cấp",
-                    code: ["cung_cap"],
+                    code: "cung_cap",
                     type: 1,
                 },
             ]
@@ -755,17 +779,17 @@ const initSampleCompanyDB = async () => {
             detail: [
                 {
                     name: "Lập trình",
-                    code: ["lap_trinh"],
+                    code: "lap_trinh",
                     type: 1,
                 },
                 {
                     name: "Phát triển",
-                    code: ["phat_trien"],
+                    code: "phat_trien",
                     type: 1,
                 },
                 {
                     name: "Xây dựng",
-                    code: ["xay_dung"],
+                    code: "xay_dung",
                     type: 1,
                 }
             ]
@@ -776,12 +800,12 @@ const initSampleCompanyDB = async () => {
             detail: [
                 {
                     name: "Thiết kế",
-                    code: ["thiet_ke"],
+                    code: "thiet_ke",
                     type: 1,
                 },
                 {
                     name: "Phân tích",
-                    code: ["phan_tich"],
+                    code: "phan_tich",
                     type: 1,
                 }
             ]
@@ -792,12 +816,12 @@ const initSampleCompanyDB = async () => {
             detail: [
                 {
                     name: "Kiểm thử",
-                    code: ["kiem_thu"],
+                    code: "kiem_thu",
                     type: 1,
                 },
                 {
                     name: "Kiểm định",
-                    code: ["kiem_dinh"],
+                    code: "kiem_dinh",
                     type: 1,
                 }
             ]
@@ -808,17 +832,17 @@ const initSampleCompanyDB = async () => {
             detail: [
                 {
                     name: "Kiểm tra",
-                    code: ["kiem_tra"],
+                    code: "kiem_tra",
                     type: 1,
                 },
                 {
                     name: "Đánh giá",
-                    code: ["danh_gia"],
+                    code: "danh_gia",
                     type: 1,
                 },
                 {
                     name: "Giám sát",
-                    code: ["giam_sat"],
+                    code: "giam_sat",
                     type: 1,
                 }
             ]
@@ -829,17 +853,17 @@ const initSampleCompanyDB = async () => {
             detail: [
                 {
                     name: "giang_day",
-                    code: ["giang_day"],
+                    code: "giang_day",
                     type: 1,
                 },
                 {
                     name: "Nghiên cứu",
-                    code: ["nghien_cuu"],
+                    code: "nghien_cuu",
                     type: 1,
                 },
                 {
                     name: "Đào tạo",
-                    code: ["dao_tao"],
+                    code: "dao_tao",
                     type: 1,
                 }
             ]

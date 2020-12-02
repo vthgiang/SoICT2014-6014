@@ -168,22 +168,107 @@ class StockRotateEditForm extends Component {
     }
 
     handleApproverChange = (value) => {
-        let approver = value[0];
+        let approver = value;
         this.validateApprover(approver, true);
     }
 
     validateApprover = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
-        if (!value) {
+        if(!value) {
             msg = translate('manage_warehouse.bill_management.validate_approver')
         }
-        if (willUpdateState) {
+        if(willUpdateState) {
+            let approvers = [];
+            value.map(item => {
+                approvers.push({
+                    approver: item,
+                    approvedTime: null
+                });
+            })
             this.setState(state => {
                 return {
                     ...state,
                     approver: value,
+                    approvers: approvers,
                     errorApprover: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+
+    handleAccountablesChange = (value) => {
+        let accountables = value;
+        this.validateAccountables(accountables, true);
+    }
+
+    validateAccountables = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = this.props;
+        if(!value) {
+            msg = translate('manage_warehouse.bill_management.validate_approver')
+        }
+        if(willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    accountables: value,
+                    errorAccountables: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+
+    handleResponsiblesChange = (value) => {
+        let responsibles = value;
+        this.validateResponsibles(responsibles, true);
+    }
+
+    validateResponsibles = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = this.props;
+        if(!value) {
+            msg = translate('manage_warehouse.bill_management.validate_approver')
+        }
+        if(willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    responsibles: value,
+                    errorResponsibles: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+
+    handleQualityControlStaffsChange = (value) => {
+        let qualityControlStaffs = value;
+        this.validateQualityControlStaffs(qualityControlStaffs, true);
+    }
+
+    validateQualityControlStaffs = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = this.props;
+        if(!value) {
+            msg = translate('manage_warehouse.bill_management.validate_approver')
+        }
+        if(willUpdateState) {
+            let listQualityControlStaffs = [];
+            value.map(item => {
+                listQualityControlStaffs.push({
+                    staff: item,
+                    time: null
+                });
+            })
+            this.setState(state => {
+                return {
+                    ...state,
+                    qualityControlStaffs: value,
+                    listQualityControlStaffs: listQualityControlStaffs,
+                    errorQualityControlStaffs: msg,
                 }
             })
         }
@@ -277,7 +362,10 @@ class StockRotateEditForm extends Component {
             this.validateType(this.state.type, false) &&
             this.validateStock(this.state.fromStock, false) &&
             this.validateApprover(this.state.approver, false) &&
-            this.validateToStock(this.state.toStock, false)
+            this.validateToStock(this.state.toStock, false) &&
+            this.validateAccountables(this.state.accountables, false) &&
+            this.validateQualityControlStaffs(this.state.qualityControlStaffs, false) &&
+            this.validateResponsibles(this.state.responsibles, false)
         return result;
     }
 
@@ -452,7 +540,38 @@ class StockRotateEditForm extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.billId !== prevState.billId) {
+        if (nextProps.billId !== prevState.billId || nextProps.oldStatus !== prevState.oldStatus) {
+            let approver = []; 
+            let qualityControlStaffs = [];
+            let responsibles = [];
+            let accountables = [];
+            if(nextProps.approvers && nextProps.approvers.length >  0) {
+                for(let i = 0; i < nextProps.approvers.length; i++) {
+                   approver = [ ...approver, nextProps.approvers[i].approver._id ]; 
+                }
+                
+            }
+
+            if(nextProps.listQualityControlStaffs && nextProps.listQualityControlStaffs.length >  0) {
+                for(let i = 0; i < nextProps.listQualityControlStaffs.length; i++) {
+                    qualityControlStaffs = [ ...qualityControlStaffs, nextProps.listQualityControlStaffs[i].staff._id ]; 
+                }
+                
+            }
+
+            if(nextProps.responsibles && nextProps.responsibles.length >  0) {
+                for(let i = 0; i < nextProps.responsibles.length; i++) {
+                    responsibles = [ ...responsibles, nextProps.responsibles[i]._id ]; 
+                }
+                
+            }
+
+            if(nextProps.accountables && nextProps.accountables.length >  0) {
+                for(let i = 0; i < nextProps.accountables.length; i++) {
+                    accountables = [ ...accountables, nextProps.accountables[i]._id ]; 
+                }
+                
+            }
             prevState.good.quantity = 0;
             prevState.good.good = '';
             prevState.good.description = '';
@@ -465,11 +584,16 @@ class StockRotateEditForm extends Component {
                 fromStock: nextProps.fromStock,
                 toStock: nextProps.toStock,
                 status: nextProps.status,
-                oldStatus: nextProps.status,
+                oldStatus: nextProps.oldStatus,
                 group: nextProps.group,
                 type: nextProps.type,
                 users: nextProps.users,
-                approver: nextProps.approver,
+                approvers: nextProps.approvers,
+                approver: approver,
+                qualityControlStaffs: qualityControlStaffs,
+                listQualityControlStaffs: nextProps.listQualityControlStaffs,
+                responsibles: responsibles,
+                accountables: accountables,
                 description: nextProps.description,
                 customer: nextProps.customer,
                 name: nextProps.name,
@@ -493,8 +617,8 @@ class StockRotateEditForm extends Component {
 
     save = async () => {
 
-        const { billId, fromStock, code, toStock, type, status, oldStatus, users, approver,
-            name, phone, email, address, description, listGood, oldGoods } = this.state;
+        const { billId, fromStock, code, toStock, type, status, oldStatus, users, approvers,
+            name, phone, email, address, description, listGood, oldGoods, listQualityControlStaffs, responsibles, accountables } = this.state;
         const { group } = this.props;
         await this.props.editBill(billId, {
             fromStock: fromStock,
@@ -505,7 +629,10 @@ class StockRotateEditForm extends Component {
             status: status,
             oldStatus: oldStatus,
             users: users,
-            approver: approver,
+            approvers: approvers,
+            qualityControlStaffs: listQualityControlStaffs,
+            responsibles: responsibles,
+            accountables: accountables,
             name: name,
             phone: phone,
             email: email,
@@ -516,15 +643,31 @@ class StockRotateEditForm extends Component {
         })
     }
 
+    checkApproved = (approvers, listQualityControlStaffs) => {
+        let quantityApproved = 1;
+        approvers.forEach((element) => {
+            if (element.approvedTime == null) {
+                quantityApproved = 0;
+            }
+        });
+        if(quantityApproved === 0) {
+            return true;
+        }
+        return false;
+    }
+
     render() {
         const { translate, group } = this.props;
-        const { lots, listGood, good, code, approver, status, toStock, fromStock, type, name, phone, email, address, description, errorStock, errorType, errorApprover, errorToStock, quantity } = this.state;
+        const { lots, listGood, good, code, approvers, approver, listQualityControlStaffs, accountables, responsibles, 
+            qualityControlStaffs, status, toStock, fromStock, type, name, phone, email, address, description, 
+            errorStock, errorType, errorApprover, errorToStock, quantity, errorQualityControlStaffs, errorAccountables, errorResponsibles } = this.state;
         const listGoods = this.getAllGoods();
         const dataApprover = this.getApprover();
         const dataToStock = this.getToStock();
         const dataStock = this.getStock();
         const dataType = this.getType();
         const dataStatus = this.getStatus();
+        const checkApproved = this.checkApproved(approvers, listQualityControlStaffs)
 
         return (
             <React.Fragment>
@@ -537,11 +680,11 @@ class StockRotateEditForm extends Component {
                     msg_faile={translate('manage_warehouse.bill_management.add_faile')}
                     disableSubmit={!this.isFormValidated()}
                     func={this.save}
-                    size={100}
+                    size={75}
                 >
-                    <form id={`form-edit-bill-rotate`}>
                         <QuantityLotStockRotateEdit group={group} good={good} stock={fromStock} initialData={lots} onDataChange={this.handleLotsChange} />
-                        <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+                    <form id={`form-edit-bill-rotate`}>
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('manage_warehouse.bill_management.infor')}</legend>
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -598,21 +741,8 @@ class StockRotateEditForm extends Component {
                                         />
                                         <ErrorLabel content={errorStock} />
                                     </div>
-                                    <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.approved')}<span className="attention"> * </span></label>
-                                        <SelectBox
-                                            id={`select-approver-bill-rotate-edit`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            value={approver}
-                                            items={dataApprover}
-                                            onChange={this.handleApproverChange}
-                                            multiple={false}
-                                        />
-                                        <ErrorLabel content={errorApprover} />
-                                    </div>
                                     <div className={`form-group ${!errorToStock ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.receipt_stock')}<span className="attention"> * </span></label>
+                                        <label>{translate('manage_warehouse.bill_management.rotate_stock')}<span className="attention"> * </span></label>
                                         <SelectBox
                                             id={`select-customer-rotate-edit`}
                                             className="form-control select2"
@@ -633,24 +763,89 @@ class StockRotateEditForm extends Component {
                                 </div>
                             </fieldset>
                         </div>
-                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">{translate('manage_warehouse.bill_management.list_saffs')}</legend>
+                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
+                                    <label>{translate('manage_warehouse.bill_management.approved')}<span className="attention"> * </span></label>
+                                    <SelectBox
+                                        id={`select-approver-bill-rotate-edit`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        value={approver}
+                                        items={dataApprover}
+                                        onChange={this.handleApproverChange}    
+                                        multiple={true}
+                                    />
+                                    <ErrorLabel content = { errorApprover } />
+                                </div>
+                                <div className={`form-group ${!errorResponsibles ? "" : "has-error"}`}>
+                                    <label>{translate('manage_warehouse.bill_management.users')}<span className="attention"> * </span></label>
+                                    <SelectBox
+                                        id={`select-accountables-bill-rotate-edit`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        value={responsibles}
+                                        items={dataApprover}
+                                        onChange={this.handleResponsiblesChange}    
+                                        multiple={true}
+                                    />
+                                    <ErrorLabel content = { errorResponsibles } />
+                                </div>
+                            </div>
+                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div className={`form-group ${!errorQualityControlStaffs ? "" : "has-error"}`}>
+                                        <label>{translate('manage_warehouse.bill_management.qualityControlStaffs')}<span className="attention"> * </span></label>
+                                        <SelectBox
+                                            id={`select-qualityControlStaffs-bill-rotate-edit`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={qualityControlStaffs}
+                                            items={dataApprover}
+                                            onChange={this.handleQualityControlStaffsChange}    
+                                            multiple={true}
+                                        />
+                                        <ErrorLabel content = { errorQualityControlStaffs } />
+                                    </div>
+                                    <div className={`form-group ${!errorAccountables ? "" : "has-error"}`}>
+                                        <label>{translate('manage_warehouse.bill_management.accountables')}<span className="attention"> * </span></label>
+                                        <SelectBox
+                                            id={`select-responsibles-bill-rotate-edit`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={accountables}
+                                            items={dataApprover}
+                                            onChange={this.handleAccountablesChange}    
+                                            multiple={true}
+                                        />
+                                        <ErrorLabel content = { errorAccountables } />
+                                    </div>
+                            </div>
+                        </fieldset>
+                        </div>
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('manage_warehouse.bill_management.receiver')}</legend>
-                                <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.name')}<span className="attention"> * </span></label>
-                                    <input type="text" className="form-control" value={name} onChange={this.handleNameChange} />
+                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div className={`form-group`}>
+                                        <label>{translate('manage_warehouse.bill_management.name')}<span className="attention"> * </span></label>
+                                        <input type="text" className="form-control" value={name ? name : ''} onChange={this.handleNameChange} />
+                                    </div>
+                                    <div className={`form-group`}>
+                                        <label>{translate('manage_warehouse.bill_management.phone')}<span className="attention"> * </span></label>
+                                        <input type="number" className="form-control" value={phone ? phone : ''} onChange={this.handlePhoneChange} />
+                                    </div>
                                 </div>
-                                <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.phone')}<span className="attention"> * </span></label>
-                                    <input type="number" className="form-control" value={phone ? phone : ""} onChange={this.handlePhoneChange} />
-                                </div>
-                                <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.email')}<span className="attention"> * </span></label>
-                                    <input type="text" className="form-control" value={email} onChange={this.handleEmailChange} />
-                                </div>
-                                <div className={`form-group`}>
-                                    <label>{translate('manage_warehouse.bill_management.address')}<span className="attention"> * </span></label>
-                                    <input type="text" className="form-control" value={address} onChange={this.handleAddressChange} />
+                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div className={`form-group`}>
+                                        <label>{translate('manage_warehouse.bill_management.email')}<span className="attention"> * </span></label>
+                                        <input type="text" className="form-control" value={email ? email : ''} onChange={this.handleEmailChange} />
+                                    </div>
+                                    <div className={`form-group`}>
+                                        <label>{translate('manage_warehouse.bill_management.address')}<span className="attention"> * </span></label>
+                                        <input type="text" className="form-control" value={address ? address : ''} onChange={this.handleAddressChange} />
+                                    </div>
                                 </div>
                             </fieldset>
                         </div>

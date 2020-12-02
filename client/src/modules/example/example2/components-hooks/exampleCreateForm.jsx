@@ -25,7 +25,7 @@ const ExampleCreateForm = (props) => {
     const save = () => {
         if (isFormValidated()) {
             const { exampleName, description } = state;
-            props.createExample({ exampleName, description });
+            props.createExample([{ exampleName, description }]);
         }
     }
 

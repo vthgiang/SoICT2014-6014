@@ -25,55 +25,55 @@ class DepartmentTreeView extends Component {
         }
     }
 
-     // Cac ham xu ly du lieu voi modal
-     convertDataToExportData = (data) => {
+    // Cac ham xu ly du lieu voi modal
+    convertDataToExportData = (data) => {
         // chuyen du lieu cay ve du lieu bang
         let listData = [];
         if (data) {
             for (let i = 0; i < data.length; i++) {
                 listData = [...listData, data[i]];
-                if (data[i].children){
+                if (data[i].children) {
                     let da = data[i].children;
-                    for ( let j in da){
+                    for (let j in da) {
                         da[j]["parentName"] = data[i].name;
                         listData = [...listData, da[j]];
-                        if (da[j].children){
+                        if (da[j].children) {
                             let datas = da[j].children;
-                            for ( let k in datas) {
+                            for (let k in datas) {
                                 datas[k]["parentName"] = da[j].name;
                                 listData = [...listData, datas[k]];
                             }
                         }
                     }
                 }
-                
+
             }
         }
-        let datas= [];
-        if (listData.length !== 0){
+        let datas = [];
+        if (listData.length !== 0) {
             for (let k = 0; k < listData.length; k++) {
                 let x = listData[k];
                 let length = 1;
                 let name = x.name;
                 let description = x.description;
-                let deans = x.deans.map( item => item.name);
+                let deans = x.deans.map(item => item.name);
                 console.log(deans);
                 if (deans.length > length) {
                     length = deans.length;
                 }
-                let viceDeans = x.viceDeans.map( item => item.name);
+                let viceDeans = x.viceDeans.map(item => item.name);
                 if (viceDeans.length > length) {
                     length = viceDeans.length;
                 }
-                let employees = x.employees.map( item => item.name);
+                let employees = x.employees.map(item => item.name);
                 if (employees.length > length) {
                     length = employees.length;
                 }
                 let parent = "";
-                if (x.parentName){
+                if (x.parentName) {
                     parent = x.parentName;
                 }
-                let out =  {
+                let out = {
                     STT: k + 1,
                     name: name,
                     description: description,
@@ -111,10 +111,10 @@ class DepartmentTreeView extends Component {
                             { key: "STT", value: "STT" },
                             { key: "name", value: "Tên đơn vị" },
                             { key: "description", value: "Mô tả đơn vị" },
-                            { key: "parent", value: "Đơn vị cha"},
+                            { key: "parent", value: "Đơn vị cha" },
                             { key: "deans", value: "Tên các chức danh trưởng đơn vị" },
-                            { key: "viceDeans", value: "Tên các chức danh phó đơn vị"},
-                            { key: "employees", value: "Tên các chức danh nhân viên đơn vị"}
+                            { key: "viceDeans", value: "Tên các chức danh phó đơn vị" },
+                            { key: "employees", value: "Tên các chức danh nhân viên đơn vị" }
                         ],
                         data: datas
                     }]
@@ -169,21 +169,21 @@ class DepartmentTreeView extends Component {
     showNodeContent = (data, translate) => {
         return (
             <div className="tf-nc bg bg-primary" style={{
-                    minWidth: '120px',
-                    border: 'none',
-                    padding: '0px', 
-                    textAlign: 'center', 
-                    fontWeight: '900', 
-                    boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'
-                }}>
-                <div style={{padding: '8px'}}>
-                    <span id={`department-${data.id}`} title={data.name} className="pull-right" style={{paddingLeft: '5px'}}>
-                        <a href="#abc" style={{color: 'white'}} title="Ẩn/hiện điều khiển" onClick={() => this.toggleSetting(`department-setting-${data.id}`)}><i className="fa fa-gears"></i></a>
+                minWidth: '120px',
+                border: 'none',
+                padding: '0px',
+                textAlign: 'center',
+                fontWeight: '900',
+                boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'
+            }}>
+                <div style={{ padding: '8px' }}>
+                    <span id={`department-${data.id}`} title={data.name} className="pull-right" style={{ paddingLeft: '5px' }}>
+                        <a href="#abc" style={{ color: 'white' }} title="Ẩn/hiện điều khiển" onClick={() => this.toggleSetting(`department-setting-${data.id}`)}><i className="fa fa-gears"></i></a>
                     </span>
                     {`${data.name}`}
                 </div>
-                
-                <div style={{backgroundColor: '#fff', paddingTop: '2px', display: 'none', borderTop: '0.5px solid #c1c1c1'}} id={`department-setting-${data.id}`}>
+
+                <div style={{ backgroundColor: '#fff', paddingTop: '2px', display: 'none', borderTop: '0.5px solid #c1c1c1' }} id={`department-setting-${data.id}`}>
                     <a href="#setting-organizationalUnit" className="edit text-green" onClick={() => this.handleCreateWithParent(data)} title={translate('manage_department.add_title')}><i className="material-icons">library_add</i></a>
                     <a href="#setting-organizationalUnit" className="edit text-yellow" onClick={() => this.handleEdit(data)} title={translate('manage_department.edit_title')}><i className="material-icons">ballot</i></a>
                     <DeleteNotification
@@ -229,15 +229,15 @@ class DepartmentTreeView extends Component {
         const { tree } = this.props.department;
         const { currentRow } = this.state;
         let data = [];
-        if (tree){
+        if (tree) {
             data = tree;
         }
-        
+
         let exportData = this.convertDataToExportData(data);
 
         return (
             <React.Fragment>
-                {<ExportExcel id="export-organizationalUnit" exportData={exportData} style={{ marginLeft: 5 }}/>}
+                {<ExportExcel id="export-organizationalUnit" exportData={exportData} style={{ marginLeft: 5 }} />}
                 {/* Button thêm mới một phòng ban */}
                 <DepartmentCreateForm />
                 <DepartmentImportForm />
@@ -246,7 +246,7 @@ class DepartmentTreeView extends Component {
                         <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('manage_department.add_title')}</button>
                         <ul className="dropdown-menu pull-right">
                             <li><a href="#modal-create-department" title={translate('manage_department.add_title')} onClick={(event) => { this.handleCreate(event) }}>{translate('manage_department.add_title')}</a></li>
-                            <li><a href="#modal_import_file" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>ImportFile</a></li>
+                            <li><a href="#modal_import_file" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>{translate('manage_department.import')}</a></li>
                         </ul>
                     </div>
                 </div>

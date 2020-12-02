@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { SelectMulti, DatePicker, DataTableSetting, PaginateBar } from '../../../../../../common-components';
+import { SelectMulti, DatePicker, DataTableSetting, PaginateBar, ConfirmNotification } from '../../../../../../common-components';
 
 import BillDetailForm from '../genaral/billDetailForm';
 import GoodReturnEditForm from './goodReturnEditForm';
 import GoodReturnCreateForm from './goodReturnCreateForm';
+import QualityControlForm from '../genaral/quatityControlForm';
 
 import { BillActions } from '../../redux/actions';
 
@@ -33,6 +34,29 @@ class ReturnManagement extends Component {
         window.$('#modal-edit-bill-return').modal('show');
         
     }
+
+    findIndexOfStaff = (array, id) => {
+        let result = -1;
+        array.forEach((element, index) => {
+            if (element.staff._id === id) {
+                result = index;
+            }
+        });
+        return result;
+    }
+
+    handleFinishedQualityControlStaff = async (bill) => {
+        const userId = localStorage.getItem("userId");
+        let index = this.findIndexOfStaff(bill.qualityControlStaffs, userId);
+        let qcStatus = bill.qualityControlStaffs[index].status ? bill.qualityControlStaffs.status : "";
+        let qcContent = bill.qualityControlStaffs[index].content ? bill.qualityControlStaffs[index].content : "";
+        await this.setState({
+            currentControl: bill,
+            qcStatus: qcStatus,
+            qcContent: qcContent
+        })
+        window.$('#modal-quality-control-bill').modal('show');
+    }
     
     render() {
         const { translate, bills, stocks, user} = this.props;
@@ -44,6 +68,15 @@ class ReturnManagement extends Component {
             <div id="bill-good-returns">
                 <div className="box-body qlcv">
                     <GoodReturnCreateForm group={group} />
+                    {
+                        this.state.currentControl &&
+                        <QualityControlForm
+                            billId={this.state.currentControl._id}
+                            code={this.state.currentControl.code}
+                            status={this.state.qcStatus}
+                            content={this.state.qcContent}
+                        />
+                    }
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('manage_warehouse.bill_management.stock')}</label>
@@ -156,8 +189,12 @@ class ReturnManagement extends Component {
                             group={currentRow.group}
                             type={currentRow.type}
                             status={currentRow.status}
+                            oldStatus={currentRow.status}
                             users={currentRow.users}
-                            approver={currentRow.approver ? currentRow.approver._id : null}
+                            approvers={currentRow.approvers ? currentRow.approvers : []}
+                            listQualityControlStaffs={currentRow.qualityControlStaffs ? currentRow.qualityControlStaffs : []}
+                            responsibles={currentRow.responsibles ? currentRow.responsibles : []}
+                            accountables={currentRow.accountables ? currentRow.accountables : []}
                             customer={currentRow.customer ? currentRow.customer._id : null}
                             supplier={currentRow.supplier ? currentRow.supplier._id : null}
                             name={currentRow.receiver ? currentRow.receiver.name : ''}
@@ -216,15 +253,36 @@ class ReturnManagement extends Component {
                                             <td>{translate(`manage_warehouse.bill_management.billType.${x.type}`)}</td>
                                             <td style={{ color: translate(`manage_warehouse.bill_management.bill_color.${x.status}`)}}>{translate(`manage_warehouse.bill_management.bill_status.${x.status}`)}</td>
                                             <td>{x.creator ? x.creator.name : "Creator is deleted"}</td>
-                                            <td>{x.approver ? x.approver.name : "approver is deleted"}</td>
-                                            <td>{this.props.formatDate(x.timestamp)}</td>
+                                            <td>{x.approvers ? x.approvers.map((a, key) => { return <p key={key}>{a.approver.name}</p>}) : "approver is deleted"}</td>
+                                            <td>{this.props.formatDate(x.updatedAt)}</td>
                                             <td>{x.fromStock ? x.fromStock.name : "Stock is deleted"}</td>
                                             <td>{x.customer ? x.customer.name : 'Customer is deleted'}</td>
                                             <td>{x.description}</td>
                                             <td style={{textAlign: 'center'}}>
                                                 <a onClick={() => this.props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>
-                                                <a onClick={() => this.handleEdit(x)} className="text-yellow" ><i className="material-icons">edit</i></a>
-                                                <a className="text-black" onClick={() => this.props.handleShow()}><i className="material-icons">print</i></a>
+                                                { this.props.checkRoleCanEdit(x) && <a onClick={() => this.handleEdit(x)} className="text-yellow" ><i className="material-icons">edit</i></a>}
+                                                {
+                                                this.props.checkRoleApprovers(x) && x.status === '1' &&
+                                                    <ConfirmNotification
+                                                        icon="question"
+                                                        title={translate('manage_warehouse.bill_management.approved_true')}
+                                                        content={translate('manage_warehouse.bill_management.approved_true') + " " + x.code}
+                                                        name="check_circle_outline"
+                                                        className="text-green"
+                                                        func={() => this.props.handleFinishedApproval(x)}
+                                                    />
+                                                }
+                                                {
+                                                this.props.checkRoleQualityControlStaffs(x) && x.status === '5' &&
+                                                    <ConfirmNotification
+                                                        icon="question"
+                                                        title={translate('manage_warehouse.bill_management.staff_true')}
+                                                        content={translate('manage_warehouse.bill_management.staff_true') + " " + x.code}
+                                                        name="check_circle"
+                                                        className="text-green"
+                                                        func={() => this.handleFinishedQualityControlStaff(x)}
+                                                    />
+                                                }
                                             </td>
                                         </tr>
                                     ))

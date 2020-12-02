@@ -3,21 +3,20 @@ const Schema = mongoose.Schema;
 
 // Tạo bảng vị trí công việc
 const CareerPositionSchema = new Schema({
-    // name: { // tên lĩnh vực
-    //     type: String,
-    // },
-    // code: {
-    //     type: String,
-    // },
-    // position:
-    //     [{
     name: String,
     code: String, // lưu lại trong db của employees
+    // package: {
+    //     type: Schema.Types.ObjectId,
+    //     ref: "Package",
+    // },
+    package: String,
     description: [{
         name: {
             type: String,
         },
-        // code: String,
+        // fieldCode: [{
+        //     type: String,
+        // }],
         code: [{
             type: String,
         }],
@@ -26,7 +25,6 @@ const CareerPositionSchema = new Schema({
             default: 0, // 1 - default, 0 - additional
         },
     }]
-    // }]
 }, {
     timestamps: true,
 });

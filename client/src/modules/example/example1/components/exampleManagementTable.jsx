@@ -1,18 +1,22 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
+
 import { exampleActions } from "../redux/actions";
+
 import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../common-components";
+
 import ExampleCreateForm from "./exampleCreateForm";
 import ExampleEditForm from "./exampleEditForm";
+import ExampleDetailInfo from "./exampleDetailInfo";
+import ExampleImportForm from "./exampleImortForm";
 
 class ExampleManagementTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
             exampleName: "",
-            description: "",
-            page: 0,
+            page: 1,
             limit: 5
         };
     }
@@ -29,35 +33,57 @@ class ExampleManagementTable extends Component {
         });
     }
 
-    handleSubmitSearch = async () => {
-        await this.setState({
-            page: 0
+    handleSubmitSearch = () => {
+        const { exampleName, limit } = this.state;
+
+        this.setState(state => {
+            return {
+                ...state,
+                page: 1
+            }
         });
-        this.props.getExamples(this.state);
+        this.props.getExamples({ exampleName, limit, page: 1 });
     }
 
-    setPage = async (pageNumber) => {
-        var currentPage = pageNumber - 1;
-        await this.setState({
-            page: parseInt(currentPage)
+    setPage = (pageNumber) => {
+        const { exampleName, limit } = this.state;
+
+        this.setState(state => {
+            return {
+                ...state,
+                page: parseInt(pageNumber)
+            }
         });
 
-        this.props.getExamples(this.state);
+        this.props.getExamples({ exampleName, limit, page: parseInt(pageNumber) });
     }
 
-    setLimit = async (number) => {
-        await this.setState({
-            limit: parseInt(number)
+    setLimit = (number) => {
+        const { exampleName, page } = this.state;
+
+        this.setState(state => {
+            return {
+                ...state,
+                limit: parseInt(number)
+            }
         });
-        this.props.getExamples(this.state);
+        this.props.getExamples({ exampleName, limit: parseInt(number), page });
     }
 
     handleDelete = (id) => {
+        const { example } = this.props;
+        const { exampleName, limit, page } = this.state;
+
         this.props.deleteExample(id);
+        this.props.getExamples({
+            exampleName,
+            limit,
+            page: example && example.lists && example.lists.length === 1 ? page - 1 : page
+        });
     }
 
-    handleEdit = async (example) => {
-        await this.setState((state) => {
+    handleEdit = (example) => {
+        this.setState((state) => {
             return {
                 ...state,
                 currentRow: example
@@ -66,28 +92,56 @@ class ExampleManagementTable extends Component {
         window.$('#modal-edit-example').modal('show');
     }
 
+    handleShowDetailInfo = (id) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                exampleId: id
+            }
+        });
+        window.$(`#modal-detail-info-example`).modal('show');
+    }
+
     render() {
         const { example, translate } = this.props;
+        const { page, limit, currentRow,  } = this.state;
+
         let lists = [];
-        if (example.isLoading === false) {
+        if (example && example.isLoading === false) {
             lists = example.lists
         }
 
-        const totalPage = Math.ceil(example.totalList / this.state.limit);
-        const page = this.state.page;
+        const totalPage = Math.ceil(example.totalList / limit);
         return (
             <React.Fragment>
-                {
-                    this.state.currentRow &&
-                    <ExampleEditForm
-                        exampleID={this.state.currentRow._id}
-                        exampleName={this.state.currentRow.exampleName}
-                        description={this.state.currentRow.description}
-                    />
-                }
+                <ExampleEditForm
+                    exampleID={currentRow && currentRow._id}
+                    exampleName={currentRow && currentRow.exampleName}
+                    description={currentRow && currentRow.description}
+                />
+                <ExampleDetailInfo
+                    exampleId={this.state.exampleId}
+                />
+                <ExampleCreateForm
+                    page={page}
+                    limit={limit}
+                />
+                <ExampleImportForm
+                    page={page}
+                    limit={limit}
+                />
+
                 <div className="box-body qlcv">
-                    <ExampleCreateForm />
                     <div className="form-inline">
+                        <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
+                            <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_example.add_title')} >{translate('manage_example.add')}</button>
+                            <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
+                                <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-file-example').modal('show')} title={translate('human_resource.salary.add_multi_example')}>
+                                    {translate('human_resource.salary.add_import')}</a></li>
+                                <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-create-example').modal('show')} title={translate('manage_example.add_one_example')}>
+                                    {translate('manage_example.add_example')}</a></li>
+                            </ul>
+                        </div>
                         <div className="form-group">
                             <label className="form-control-static">{translate('manage_example.exampleName')}</label>
                             <input type="text" className="form-control" name="exampleName" onChange={this.handleChangeExampleName} placeholder={translate('manage_example.exampleName')} autoComplete="off" />
@@ -110,7 +164,7 @@ class ExampleManagementTable extends Component {
                                             translate('manage_example.exampleName'),
                                             translate('manage_example.description'),
                                         ]}
-                                        limit={this.state.limit}
+                                        limit={limit}
                                         hideColumnOption={true}
                                         setLimit={this.setLimit}
                                     />
@@ -121,10 +175,11 @@ class ExampleManagementTable extends Component {
                             {(lists && lists.length !== 0) &&
                                 lists.map((example, index) => (
                                     <tr key={index}>
-                                        <td>{index + 1 + page * this.state.limit}</td>
+                                        <td>{index + 1 + (page - 1) * limit}</td>
                                         <td>{example.exampleName}</td>
                                         <td>{example.description}</td>
                                         <td style={{ textAlign: "center" }}>
+                                            <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} onClick={() => this.handleShowDetailInfo(example._id)}><i className="material-icons">visibility</i></a>
                                             <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_example.edit')} onClick={() => this.handleEdit(example)}><i className="material-icons">edit</i></a>
                                             <DeleteNotification
                                                 content={translate('manage_example.delete')}
@@ -144,7 +199,13 @@ class ExampleManagementTable extends Component {
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
                         (typeof lists === 'undefined' || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
-                    <PaginateBar pageTotal={totalPage ? totalPage : 0} currentPage={page + 1} func={this.setPage} />
+                    <PaginateBar
+                        pageTotal={totalPage ? totalPage : 0}
+                        currentPage={page}
+                        display={lists && lists.length !== 0 && lists.length}
+                        total={example && example.totalList}
+                        func={this.setPage}
+                    />
                 </div>
             </React.Fragment>
         )

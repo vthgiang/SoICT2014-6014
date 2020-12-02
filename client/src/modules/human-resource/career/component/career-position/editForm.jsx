@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { ErrorLabel, TreeSelect } from '../../../../../common-components';
-import { CareerPositionAction } from '../../redux/actions';
+import { CareerReduxAction } from '../../redux/actions';
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
 class EditForm extends Component {
@@ -22,6 +22,16 @@ class EditForm extends Component {
         });
     }
 
+    handlePackage = (e) => {
+        const { value } = e.target;
+        const { translate } = this.props;
+        const { message } = ValidationHelper.validateName(translate, value, 1, 255);
+        this.setState({
+            package: value,
+            // nameError: message
+        });
+    }
+
     handleCode = (e) => {
         const { value } = e.target;
         let msg;
@@ -31,9 +41,9 @@ class EditForm extends Component {
         });
     }
 
-    // handleParent = (value) => {
-    //     this.setState({ archiveParent: value[0] });
-    // };
+    handleParent = (value) => {
+        this.setState({ parent: value[0] });
+    };
 
     isValidateForm = () => {
         let { name, description } = this.state;
@@ -86,7 +96,7 @@ class EditForm extends Component {
         // }
 
         console.log('state data', this.state);
-
+        this.props.editCareerPosition(this.state);
         // this.props.editDocumentArchive(archiveId, {
         //     name,
         //     description,
@@ -99,8 +109,16 @@ class EditForm extends Component {
         if (nextProps.careerId !== prevState.careerId) {
             return {
                 ...prevState,
+                oldData: {
+                    careerId: nextProps.careerId,
+                    name: nextProps.careerName,
+                    package: nextProps.careerPackage,
+                    code: nextProps.careerCode,
+                    parent: nextProps.careerParent,
+                },
                 careerId: nextProps.careerId,
                 name: nextProps.careerName,
+                package: nextProps.careerPackage,
                 code: nextProps.careerCode,
                 parent: nextProps.careerParent,
 
@@ -113,19 +131,27 @@ class EditForm extends Component {
     }
 
     render() {
-        const { translate, documents } = this.props;
+        console.log('state', this.state);
+
+        const { translate, documents, career } = this.props;
         const { listData, unChooseNode } = this.props;
-        const { name, code, codeError, nameError } = this.state;
-        const { list } = listData;
-            let listCareer = [];
-        for (let i in list) {
-            if (!unChooseNode.includes(list[i].id)) {
-                listCareer.push(list[i]);
-            }
-        }
+        const { name, code, parent, codeError, nameError } = this.state;
+        // const { list } = listData;
+        // let listCareer = [];
+        // for (let i in list) {
+        //     if (!unChooseNode.includes(list[i].id)) {
+        //         listCareer.push(list[i]);
+        //     }
+        // }
+        let listPosition = career?.listPosition;
         const disabled = !this.isValidateForm();
         return (
             <div id="edit-career-position">
+                <div className={`form-group ${nameError === undefined ? "" : "has-error"}`}>
+                    <label>Gói thầu<span className="text-red">*</span></label>
+                    <input type="text" className="form-control" onChange={this.handlePackage} value={this.state.package} />
+                    <ErrorLabel content={nameError} />
+                </div>
                 <div className={`form-group ${nameError === undefined ? "" : "has-error"}`}>
                     <label>Tên<span className="text-red">*</span></label>
                     <input type="text" className="form-control" onChange={this.handleName} value={name} />
@@ -136,10 +162,10 @@ class EditForm extends Component {
                     <input type="text" className="form-control" onChange={this.handleCode} value={code} />
                     <ErrorLabel content={codeError} />
                 </div>
-                {/* <div className="form-group">
+                <div className="form-group">
                     <label>{translate('document.administration.archives.parent')}</label>
-                    <TreeSelect data={listArchive} value={[archiveParent]} handleChange={this.handleParent} mode="radioSelect" />
-                </div> */}
+                    <TreeSelect data={listPosition} value={[parent]} handleChange={this.handleParent} mode="radioSelect" />
+                </div>
                 <div className="form-group">
                     <button className="btn btn-success pull-right" style={{ marginLeft: '5px' }} disabled={disabled} onClick={this.save}>{translate('form.save')}</button>
                     <button className="btn btn-danger" onClick={() => {
@@ -155,8 +181,9 @@ class EditForm extends Component {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
-    // editDocumentArchive: CareerPositionAction.editDocumentArchive,
-    // getDocumentArchives: CareerPositionAction.getDocumentArchive,
+    editCareerPosition: CareerReduxAction.editCareerPosition
+    // editDocumentArchive: CareerReduxAction.editDocumentArchive,
+    // getDocumentArchives: CareerReduxAction.getDocumentArchive,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(EditForm));

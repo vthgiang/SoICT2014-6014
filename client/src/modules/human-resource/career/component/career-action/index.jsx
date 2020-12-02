@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { Tree, SlimScroll, ExportExcel } from '../../../../../common-components';
 import Swal from 'sweetalert2';
-import { CareerPositionAction } from '../../redux/actions';
+import { CareerReduxAction } from '../../redux/actions';
 import EditForm from './editForm';
 import CreateForm from './createForm';
 import "./careerAction.css";
@@ -163,7 +163,8 @@ class CareerAction extends Component {
                                     careerId={currentNode.id}
                                     careerName={currentNode.text}
                                     careerCode={currentNode.original.code}
-                                    careerParent={currentNode.parent}
+                                    careerParent={currentNode.parent ? currentNode.parent : undefined}
+                                    careerPackage={currentNode.original.package ? currentNode.original.package : ""}
 
                                     listData={dataTree}
                                     unChooseNode={unChooseNode}
@@ -180,7 +181,7 @@ class CareerAction extends Component {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
-    getListCareerAction: CareerPositionAction.getListCareerAction,
+    getListCareerAction: CareerReduxAction.getListCareerAction,
     // editDocumentArchive: DocumentActions.editDocumentArchive,
     // deleteDocumentArchive: DocumentActions.deleteDocumentArchive,
 }

@@ -132,7 +132,6 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
         const { _id, roleEmployees, roleDeans, roleViceDeans, textSearch } = this.state;
 
         let userlist = user.list;
-        console.log(roleDeans);
 
         return (
             <React.Fragment>
@@ -147,8 +146,8 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                         {/* Trưởng đơn vị */}
                         <fieldset className="scheduler-border" style={{ marginBottom: 10, paddingBottom: 10 }}>
                             <legend className="scheduler-border" style={{ marginBottom: 0 }}><h4 className="box-title">{translate('human_resource.manage_department.dean_unit')}</h4></legend>
-                            {roleDeans && roleDeans.map((x, index) => (
-                                < div className="form-group" key={index} style={{ marginBottom: 0 }}>
+                            {roleDeans && roleDeans.map((x) => (
+                                < div className="form-group" key={x.id} style={{ marginBottom: 0 }}>
                                     <label>{x.name}</label>
                                     <SelectBox
                                         id={`dean-unit-${x.id}`}
@@ -165,8 +164,8 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                         {/* Phó đơn vị */}
                         <fieldset className="scheduler-border" style={{ marginBottom: 10, paddingBottom: 10 }}>
                             <legend className="scheduler-border" style={{ marginBottom: 0 }}><h4 className="box-title">{translate('human_resource.manage_department.vice_dean_unit')}</h4></legend>
-                            {roleViceDeans && roleViceDeans.map((x, index) => (
-                                < div className="form-group" key={index} style={{ marginBottom: 0 }}>
+                            {roleViceDeans && roleViceDeans.map((x) => (
+                                < div className="form-group" key={x.id} style={{ marginBottom: 0 }}>
                                     <label>{x.name}</label>
                                     <SelectBox
                                         id={`vice_dean-unit-${x.id}`}

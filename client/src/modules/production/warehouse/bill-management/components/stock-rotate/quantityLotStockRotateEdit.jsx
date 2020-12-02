@@ -52,7 +52,7 @@ class QuantityLotStockRotateEdit extends Component {
                 let quantity = stock[0] ? stock[0].quantity : 0;
                 lotArr.push({ 
                     value: item._id, 
-                    text: item.name,
+                    text: item.code,
                     quantity: quantity,
                 });
             })
@@ -74,7 +74,7 @@ class QuantityLotStockRotateEdit extends Component {
         }
         if(willUpdateState) {
             let lotName = dataLots.find(x => x.value === value);
-            this.state.lot.lot = { _id: value, name: lotName.text, quantity: lotName.quantity };
+            this.state.lot.lot = { _id: value, code: lotName.text, quantity: lotName.quantity };
             await this.setState(state => {
                 return {
                     ...state,
@@ -282,7 +282,7 @@ class QuantityLotStockRotateEdit extends Component {
                                     (typeof lots !== 'undefined' && lots.length > 0) ?
                                         lots.map((x, index) =>
                                             <tr key={index}>
-                                                <td>{x.lot.name}</td>
+                                                <td>{x.lot.code}</td>
                                                 <td>{x.quantity}</td>
                                                 <td>
                                                     <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => this.handleEditLot(x, index)}><i className="material-icons"></i></a>

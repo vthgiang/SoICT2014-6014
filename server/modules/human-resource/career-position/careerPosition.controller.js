@@ -98,3 +98,99 @@ exports.searchCareerField = async (req, res) => {
     //     });
     // }
 }
+
+
+
+
+
+/** Tạo mới Lĩnh vực */
+exports.crateNewCareerField = async (req, res) => {
+    // try {
+        data = await careerPositionService.crateNewCareerField(req.portal, req.body);
+        // await Log.info(req.user.email, 'GET_MAJOR', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["create_career_field_success"],
+            content: data
+        });
+    // } catch (error) {
+    //     // await Log.error(req.user.email, 'GET_MAJOR', req.portal);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ["create_career_field_faile"],
+    //         content: {
+    //             error: error
+    //         }
+    //     });
+    // }
+}
+
+
+/** Tạo mới vị trí công việc */
+exports.crateNewCareerPosition = async (req, res) => {
+    // try {
+        data = await careerPositionService.crateNewCareerPosition(req.portal, req.body);
+        // await Log.info(req.user.email, 'GET_MAJOR', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["create_career_position_success"],
+            content: data
+        });
+    // } catch (error) {
+    //     // await Log.error(req.user.email, 'GET_MAJOR', req.portal);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ["create_career_position_faile"],
+    //         content: {
+    //             error: error
+    //         }
+    //     });
+    // }
+}
+
+
+/** Tạo mới hoạt động công việc */
+exports.crateNewCareerAction = async (req, res) => {
+    // try {
+        data = await careerPositionService.crateNewCareerAction(req.portal, req.body);
+        // await Log.info(req.user.email, 'GET_MAJOR', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["create_career_action_success"],
+            content: data
+        });
+    // } catch (error) {
+    //     // await Log.error(req.user.email, 'GET_MAJOR', req.portal);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ["create_career_action_faile"],
+    //         content: {
+    //             error: error
+    //         }
+    //     });
+    // }
+}
+
+
+/** Tạo mới hoạt động công việc */
+exports.editCareerPosition = async (req, res) => {
+    // try {
+        data = await careerPositionService.editCareerPosition(req.portal, req.body, req.params);
+        // await Log.info(req.user.email, 'GET_MAJOR', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["edit_career_position_success"],
+            content: data
+        });
+    // } catch (error) {
+    //     // await Log.error(req.user.email, 'GET_MAJOR', req.portal);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ["edit_career_position_faile"],
+    //         content: {
+    //             error: error
+    //         }
+    //     });
+    // }
+}
+

@@ -107,7 +107,7 @@ class FileTab extends Component {
         let aProps = Object.getOwnPropertyNames(objA);
         let bProps = Object.getOwnPropertyNames(objB);
 
-        if (aProps.length != bProps.length) {
+        if (aProps.length !== bProps.length) {
             return false;
         }
         for (let i = 0; i < aProps.length; i++) {
@@ -229,8 +229,8 @@ class FileTab extends Component {
                                                 </a>
                                             }</td>
                                             <td >
-                                                <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.edit_file')}><i className="material-icons">edit</i></a>
-                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteFile(index)}><i className="material-icons"></i></a>
+                                                <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px', cursor: 'pointer' }} title={translate('human_resource.profile.edit_file')}><i className="material-icons">edit</i></a>
+                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteFile(index)} style={{ cursor: 'pointer' }}><i className="material-icons"></i></a>
                                             </td>
                                         </tr>
                                     }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { DialogModal, ErrorLabel, SelectBox, DatePicker } from '../../../../common-components/';
+import { DialogModal, ErrorLabel, SelectBox, DatePicker, ContentMaker } from '../../../../common-components/';
 import { getStorage } from "../../../../config";
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { TaskInformationForm } from './taskInformationForm';
@@ -11,6 +11,7 @@ import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import Swal from 'sweetalert2'
 import { TaskTemplateFormValidator } from '../../task-template/component/taskTemplateFormValidator';
 import { taskManagementActions } from '../../task-management/redux/actions';
+import TextareaAutosize from 'react-textarea-autosize';
 
 class ModalEditTaskByAccountableEmployee extends Component {
 
@@ -622,8 +623,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
             this.setState(state => {
                 return {
                     ...state,
-                    startDate : value,
-                    errorOnStartDate : msg,
+                    startDate: value,
+                    errorOnStartDate: msg,
                 };
             });
         }
@@ -852,7 +853,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 for (const element of previousCollaboratedUnit) {
                     collabUnitNameArr.push(element.organizationalUnit.name)
                 }
-                description = description === '' ? description + 'Những đơn vị phối hợp thực hiện công việc mới: ' + JSON.stringify(collabUnitNameArr) : description + '. ' + 'Những đơn vị phối hợp thực hiện công việc mới: ' + JSON.stringify(collabUnitNameArr) ;
+                description = description === '' ? description + 'Những đơn vị phối hợp thực hiện công việc mới: ' + JSON.stringify(collabUnitNameArr) : description + '. ' + 'Những đơn vị phối hợp thực hiện công việc mới: ' + JSON.stringify(collabUnitNameArr);
             }
 
             if (statusOptions[0] !== currentTask.status) {
@@ -864,11 +865,11 @@ class ModalEditTaskByAccountableEmployee extends Component {
             }
 
             if (startDate !== currentTask.startDate) {
-                description = description === '' ? description + 'Ngày bắt đầu mới: ' + startDate : description + '.' +  'Ngày bắt đầu mới: ' + startDate;
+                description = description === '' ? description + 'Ngày bắt đầu mới: ' + startDate : description + '.' + 'Ngày bắt đầu mới: ' + startDate;
             }
 
             if (endDate !== currentTask.endDate) {
-                description = description === '' ? description + 'Ngày kết thúc mới: ' + endDate : description + '.' +  'Ngày kết thúc mới: ' + endDate;
+                description = description === '' ? description + 'Ngày kết thúc mới: ' + endDate : description + '.' + 'Ngày kết thúc mới: ' + endDate;
             }
 
             if (formula !== currentTask.formula) {
@@ -1084,10 +1085,19 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                     <div
                                         className={`form-group ${errorTaskDescription === undefined ? "" : "has-error"}`}>
                                         <label>{translate('task.task_management.detail_description')}<span className="text-red">*</span></label>
-                                        <textarea
+                                        {/* <textarea
                                             rows="4"
                                             value={taskDescription}
-                                            className="form-control" onChange={this.handleTaskDescriptionChange} />
+                                            className="form-control" onChange={this.handleTaskDescriptionChange} /> */}
+
+                                        <TextareaAutosize
+                                            className={"form-control"}
+                                            placeholder={"Mô tả công việc"}
+                                            minRows={2}
+                                            maxRows={4}
+                                            value={taskDescription}
+                                            onChange={this.handleTaskDescriptionChange}
+                                        />
                                         <ErrorLabel content={errorTaskDescription} />
                                     </div>
                                     <div className="form-group">
@@ -1109,28 +1119,29 @@ class ModalEditTaskByAccountableEmployee extends Component {
                             {/*Thông tin chi tiết*/}
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('task.task_management.edit_detail_info')}</legend>
-                                <div>
+                                {/* <div> */}
 
-                                    {/* Đơn vị phối hợp thực hiện công việc */}
-                                    {listDepartment &&
-                                        <div className="form-group">
-                                            <label>{translate('task.task_management.collaborated_with_organizational_units')}</label>
-                                            <SelectBox
-                                                id={`editMultiSelectUnitThatHaveCollaborated-${perform}-${role}`}
-                                                lassName="form-control select2"
-                                                style={{ width: "100%" }}
-                                                items={listDepartment.filter(item => item._id !== organizationalUnit).map(x => {
-                                                    return { text: x.name, value: x._id }
-                                                })}
-                                                options={{ placeholder: translate('kpi.evaluation.dashboard.select_units') }}
-                                                onChange={this.handleChangeCollaboratedWithOrganizationalUnits}
-                                                value={collaboratedWithOrganizationalUnits}
-                                                multiple={true}
-                                            />
-                                        </div>
-                                    }
-
+                                {/* Đơn vị phối hợp thực hiện công việc */}
+                                {listDepartment &&
                                     <div className="form-group">
+                                        <label>{translate('task.task_management.collaborated_with_organizational_units')}</label>
+                                        <SelectBox
+                                            id={`editMultiSelectUnitThatHaveCollaborated-${perform}-${role}`}
+                                            lassName="form-control select2"
+                                            style={{ width: "100%" }}
+                                            items={listDepartment.filter(item => item._id !== organizationalUnit).map(x => {
+                                                return { text: x.name, value: x._id }
+                                            })}
+                                            options={{ placeholder: translate('kpi.evaluation.dashboard.select_units') }}
+                                            onChange={this.handleChangeCollaboratedWithOrganizationalUnits}
+                                            value={collaboratedWithOrganizationalUnits}
+                                            multiple={true}
+                                        />
+                                    </div>
+                                }
+
+                                <div className="row form-group">
+                                    <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12">
                                         <label>{translate('task.task_management.detail_status')}</label>
                                         {
                                             <SelectBox
@@ -1146,7 +1157,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                     </div>
 
                                     {/*Mức ưu tiên*/}
-                                    <div className="form-group">
+                                    <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12">
                                         <label>{translate('task.task_management.detail_priority')}</label>
                                         {
                                             <SelectBox
@@ -1161,6 +1172,9 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                         }
                                     </div>
                                 </div>
+
+
+                                {/* </div> */}
                                 <div className="row form-group">
                                     <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
                                         <label className="control-label">{translate('task.task_management.start_date')}*</label>
@@ -1184,20 +1198,21 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                 {/**Công thức tính của mẫu công việc */}
                                 <div className={` form-group ${errorOnFormula === undefined ? "" : "has-error"}`} >
                                     <label className="control-label" htmlFor="inputFormula">{translate('task_template.formula')}*</label>
-                                    <input type="text" className="form-control" id="inputFormula" placeholder="progress/(dayUsed/totalDay) - (10-averageActionRating)*10 - 100*(1-p1/p2)"
+                                    <input type="text" className="form-control" id="inputFormula" placeholder="progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100"
                                         value={formula} onChange={this.handleChangeTaskFormula}
                                     />
                                     <ErrorLabel content={errorOnFormula} />
 
                                     <br />
-                                    <div><span style={{ fontWeight: 800 }}>Ví dụ: </span>progress / (dayUsed / totalDay) - (numberOfFailedAction / (numberOfFailedAction + numberOfPassedAction)) * 100</div>
+                                    <div><span style={{ fontWeight: 800 }}>Ví dụ: </span>progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100</div>
                                     <br />
                                     <div><span style={{ fontWeight: 800 }}>{translate('task_template.parameters')}:</span></div>
-                                    <div><span style={{ fontWeight: 600 }}>overdueDate</span> - Thời gian quá hạn (ngày)</div>
-                                    <div><span style={{ fontWeight: 600 }}>dayUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
-                                    <div><span style={{ fontWeight: 600 }}>totalDay</span> - Thời gian từ ngày bắt đầu đến ngày kết thúc công việc (ngày)</div>
-                                    <div><span style={{ fontWeight: 600 }}>numberOfFailedAction</span> - Số hoạt động không đạt (rating &lt; 5)</div>
-                                    <div><span style={{ fontWeight: 600 }}>numberOfPassedAction</span> - Số hoạt động đạt (rating &ge; 5)</div>
+                                    <div><span style={{ fontWeight: 600 }}>daysOverdue</span> - Thời gian quá hạn (ngày)</div>
+                                    <div><span style={{ fontWeight: 600 }}>daysUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
+                                    <div><span style={{ fontWeight: 600 }}>totalDays</span> - Thời gian từ ngày bắt đầu đến ngày kết thúc công việc (ngày)</div>
+                                    <div><span style={{ fontWeight: 600 }}>averageActionRating</span> - Trung bình điểm đánh giá (rating) hoạt động của công việc</div>
+                                    <div><span style={{ fontWeight: 600 }}>numberOfFailedActions</span> - Số hoạt động không đạt (rating &lt; 5)</div>
+                                    <div><span style={{ fontWeight: 600 }}>numberOfPassedActions</span> - Số hoạt động đạt (rating &ge; 5)</div>
                                     <div><span style={{ fontWeight: 600 }}>progress</span> - % Tiến độ công việc (0-100)</div>
                                     <div><span style={{ fontWeight: 600 }}>p1, p2,...</span> - Thông tin công việc kiểu số (Chỉ có với các công việc theo mẫu)</div>
                                 </div>
@@ -1364,7 +1379,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                         </form>
                     </DialogModal>
                 </React.Fragment>
-            </div>
+            </div >
         );
     }
 }

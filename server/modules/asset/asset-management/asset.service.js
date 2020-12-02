@@ -126,10 +126,9 @@ exports.getAssetInforById = async (portal, id) => {
  * @params : dữ liệu key tìm kiếm
  */
 exports.searchAssetProfiles = async (portal, company, params) => {
+    let {getType} = params;
     let keySearch = {};
-    if (company) {
-        keySearch = { ...keySearch, company: company };
-    }
+
     // Bắt sựu kiện MSTS tìm kiếm khác ""
     if (params.code) {
         keySearch = { ...keySearch, code: { $regex: params.code, $options: "i" } }
@@ -293,10 +292,30 @@ exports.searchAssetProfiles = async (portal, company, params) => {
         keySearch = { ...keySearch, "incidentLogs.statusIncident": { $in: params.incidentStatus } };
     }
 
+    let totalList = 0, listAssets = [];
     // Lấy danh sách tài sản
-    let totalList = await Asset(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
-    let listAssets = await Asset(connect(DB_CONNECTION, portal)).find(keySearch).populate({ path: 'assetType' })
-        .sort({ 'createdAt': 'desc' }).skip(params.page).limit(params.limit);
+    if(getType === 'depreciation') {
+        keySearch = {
+            ...keySearch,
+            $or: [
+                { depreciationType: {$ne: 'none'} },
+                { cost: {$gt: 0} },
+                { usefulLife: {$gt: 0} },
+                { residualValue: {$gt: 0} },
+                { rate: {$gt: 0} },
+                { estimatedTotalProduction: {$gt: 0} },
+                { startDepreciation: {$ne: null} },
+            ]
+        }
+        totalList = await Asset(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+        listAssets = await Asset(connect(DB_CONNECTION, portal)).find(keySearch).populate({ path: 'assetType' })
+            .sort({ 'createdAt': 'desc' }).skip(params.page).limit(params.limit);
+
+    }else{
+        totalList = await Asset(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+        listAssets = await Asset(connect(DB_CONNECTION, portal)).find(keySearch).populate({ path: 'assetType' })
+            .sort({ 'createdAt': 'desc' }).skip(params.page).limit(params.limit);
+    }
     return { data: listAssets, totalList }
 }
 
@@ -355,104 +374,119 @@ exports.mergeUrlFileToObject = (arrayFile, arrayObject) => {
  * @fileInfo : Thông tin file đính kèm
  */
 exports.createAsset = async (portal, company, data, fileInfo) => {
-    // kiểm tra trùng mã tài sản
-    let checkCodeAsset = await Asset(connect(DB_CONNECTION, portal)).findOne({
-        code: data.code
-    });
-
-    if (checkCodeAsset) {
-        throw ['asset_code_exist'];
+    let checkAsset = [];
+    if (!Array.isArray(data)) {
+        data = [data];
     }
 
-    let avatar = fileInfo && fileInfo.avatar === "" ? data.avatar : fileInfo.avatar,
-        file = fileInfo && fileInfo.file;
-    let { maintainanceLogs, usageLogs, incidentLogs, locationLogs, files } = data;
-
-    files = files && this.mergeUrlFileToObject(file, files);
-
-    data.purchaseDate = data.purchaseDate && new Date(data.purchaseDate);
-
-    data.warrantyExpirationDate = data.warrantyExpirationDate && new Date(data.warrantyExpirationDate);
-
-    data.startDepreciation = data.startDepreciation && new Date(data.startDepreciation);
-
-    data.disposalDate = data.disposalDate && new Date(data.disposalDate);
-
-    usageLogs = usageLogs && usageLogs.map(item => {
-        return {
-            usedByUser: item.assignedToUser ? item.assignedToUser : null,
-            usedByOrganizationalUnit: item.assignedToOrganizationalUnit ? item.assignedToOrganizationalUnit : null,
-            description: item.description,
-            startDate: item.startDate && new Date(item.startDate),
-            endDate: item.endDate && new Date(item.endDate)
+    // kiểm tra trùng mã tài sản
+    for (let i = 0; i < data.length; i++) {
+        let checkCodeAsset = await Asset(connect(DB_CONNECTION, portal)).findOne({
+            code: data[i].code
+        });
+        if (checkCodeAsset) {
+            checkAsset.push(data[i].code)
         }
-    })
+    }
 
-    incidentLogs = incidentLogs && incidentLogs.map(item => {
-        return {
-            ...item,
-            dateOfIncident: item.dateOfIncident && new Date(item.dateOfIncident)
+    if (checkAsset.length === 0) {
+        for (let i = 0; i < data.length; i++) {
+            let avatar = fileInfo && fileInfo.avatar === "" ? data[i].avatar : fileInfo.avatar,
+            file = fileInfo && fileInfo.file;
+            let { maintainanceLogs, usageLogs, incidentLogs, locationLogs, files } = data[i];
+
+            files = files && this.mergeUrlFileToObject(file, files);
+
+            data[i].purchaseDate = data[i].purchaseDate && new Date(data[i].purchaseDate);
+
+            data[i].warrantyExpirationDate = data[i].warrantyExpirationDate && new Date(data[i].warrantyExpirationDate);
+
+            data[i].startDepreciation = data[i].startDepreciation && new Date(data[i].startDepreciation);
+
+            data[i].disposalDate = data[i].disposalDate && new Date(data[i].disposalDate);
+
+            usageLogs = usageLogs && usageLogs.map(item => {
+                return {
+                    usedByUser: item.assignedToUser ? item.assignedToUser : null,
+                    usedByOrganizationalUnit: item.assignedToOrganizationalUnit ? item.assignedToOrganizationalUnit : null,
+                    description: item.description,
+                    startDate: item.startDate && new Date(item.startDate),
+                    endDate: item.endDate && new Date(item.endDate)
+                }
+            })
+
+            incidentLogs = incidentLogs && incidentLogs.map(item => {
+                return {
+                    ...item,
+                    dateOfIncident: item.dateOfIncident && new Date(item.dateOfIncident)
+                }
+            })
+
+            maintainanceLogs = maintainanceLogs && maintainanceLogs.map(item => {
+                return {
+                    ...item,
+                    createDate: item.createDate && new Date(item.createDate),
+                    startDate: item.startDate && new Date(item.startDate),
+                    endDate: item.endDate && new Date(item.endDate)
+                }
+            })
+            var createAsset = await Asset(connect(DB_CONNECTION, portal)).create({
+                company: company,
+                avatar: avatar,
+                assetName: data[i].assetName,
+                code: data[i].code,
+                serial: data[i].serial,
+                group: data[i].group ? data[i].group : undefined,
+                assetType: data[i].assetType,
+                readByRoles: data[i].readByRoles,
+                purchaseDate: data[i].purchaseDate ? data[i].purchaseDate : undefined,
+                warrantyExpirationDate: data[i].warrantyExpirationDate ? data[i].warrantyExpirationDate : undefined,
+                managedBy: data[i].managedBy,
+                assignedToUser: data[i].assignedToUser ? data[i].assignedToUser : null,
+                assignedToOrganizationalUnit: data[i].assignedToOrganizationalUnit ? data[i].assignedToOrganizationalUnit : null,
+
+                location: data[i].location ? data[i].location : null,
+                status: data[i].status,
+                typeRegisterForUse: data[i].typeRegisterForUse,
+                description: data[i].description,
+                detailInfo: data[i].detailInfo,
+
+                // Khấu hao
+                cost: data[i].cost ? data[i].cost : 0,
+                usefulLife: data[i].usefulLife ? data[i].usefulLife : 0,
+                residualValue: data[i].residualValue,
+                startDepreciation: data[i].startDepreciation,
+                depreciationType: data[i].depreciationType ? data[i].depreciationType : 'none',
+
+                // Sửa chữa - bảo trì
+                maintainanceLogs: maintainanceLogs,
+
+                // Cấp phát - sử dụng
+                usageLogs: usageLogs,
+
+                // Sự cố tài sản
+                incidentLogs: incidentLogs,
+
+                // Lịch sử vị trí tài sản
+                locationLogs: locationLogs,
+
+                // Thông tin thanh lý
+                disposalDate: data[i].disposalDate,
+                disposalType: data[i].disposalType,
+                disposalCost: data[i].disposalCost,
+                disposalDesc: data[i].disposalDesc,
+
+                // Tài liệu đính kèm
+                files: files,
+            });
         }
-    })
-
-    maintainanceLogs = maintainanceLogs && maintainanceLogs.map(item => {
-        return {
-            ...item,
-            createDate: item.createDate && new Date(item.createDate),
-            startDate: item.startDate && new Date(item.startDate),
-            endDate: item.endDate && new Date(item.endDate)
-        }
-    })
-    let createAsset = await Asset(connect(DB_CONNECTION, portal)).create({
-        company: company,
-        avatar: avatar,
-        assetName: data.assetName,
-        code: data.code,
-        serial: data.serial,
-        group: data.group,
-        assetType: data.assetType,
-        readByRoles: data.readByRoles,
-        purchaseDate: data.purchaseDate,
-        warrantyExpirationDate: data.warrantyExpirationDate,
-        managedBy: data.managedBy,
-        assignedToUser: data.assignedToUser ? data.assignedToUser : null,
-        assignedToOrganizationalUnit: data.assignedToOrganizationalUnit ? data.assignedToOrganizationalUnit : null,
-
-        location: data.location ? data.location : null,
-        status: data.status,
-        typeRegisterForUse: data.typeRegisterForUse,
-        description: data.description,
-        detailInfo: data.detailInfo,
-
-        // Khấu hao
-        cost: data.cost ? data.cost : 0,
-        usefulLife: data.usefulLife ? data.usefulLife : 0,
-        residualValue: data.residualValue,
-        startDepreciation: data.startDepreciation,
-        depreciationType: data.depreciationType ? data.depreciationType : 'none',
-
-        // Sửa chữa - bảo trì
-        maintainanceLogs: maintainanceLogs,
-
-        // Cấp phát - sử dụng
-        usageLogs: usageLogs,
-
-        // Sự cố tài sản
-        incidentLogs: incidentLogs,
-
-        // Lịch sử vị trí tài sản
-        locationLogs: locationLogs,
-
-        // Thông tin thanh lý
-        disposalDate: data.disposalDate,
-        disposalType: data.disposalType,
-        disposalCost: data.disposalCost,
-        disposalDesc: data.disposalDesc,
-
-        // Tài liệu đính kèm
-        files: files,
-    });
-
+    } else {
+        throw {
+            messages: 'asset_code_exist',
+            assetCodeError: checkAsset
+        };
+    }
+    
     // Lấy thông tin tài sản vừa thêm vào
     let assets = await Asset(connect(DB_CONNECTION, portal)).find({ _id: createAsset._id });
 
@@ -557,7 +591,7 @@ exports.updateAssetInformation = async (portal, company, id, data, fileInfo) => 
     oldAsset.group = data.group;
     oldAsset.purchaseDate = data.purchaseDate;
     oldAsset.warrantyExpirationDate = data.warrantyExpirationDate;
-    oldAsset.managedBy = data.managedBy;
+    oldAsset.managedBy = (!data.managedBy || data.managedBy === 'undefined') ? null : data.managedBy;
     oldAsset.assignedToUser = data.assignedToUser !== '' ? data.assignedToUser : null;
     oldAsset.assignedToOrganizationalUnit = data.assignedToOrganizationalUnit !== '' ? data.assignedToOrganizationalUnit : null;
     oldAsset.readByRoles = data.readByRoles

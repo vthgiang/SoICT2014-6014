@@ -3,14 +3,12 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ErrorLabel, TreeSelect } from '../../../../../common-components';
-import { CareerPositionAction } from '../../redux/actions';
+import { CareerReduxAction } from '../../redux/actions';
 import ValidationHelper from '../../../../../helpers/validationHelper';
 class CreateForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            archiveParent: ''
-        }
+        this.state = {}
     }
 
     handleName = (e) => {
@@ -20,6 +18,16 @@ class CreateForm extends Component {
         this.setState({
             name: value,
             nameError: message
+        });
+    }
+
+    handlePackage = (e) => {
+        const { value } = e.target;
+        const { translate } = this.props;
+        const { message } = ValidationHelper.validateName(translate, value, 1, 255);
+        this.setState({
+            package: value,
+            // nameError: message
         });
     }
 
@@ -50,7 +58,7 @@ class CreateForm extends Component {
             parent: this.state.parent,
         }
         console.log('data', data);
-        // this.props.createDocumentArchive(data);
+        this.props.createCareerAction(data);
     }
 
     render() {
@@ -67,6 +75,11 @@ class CreateForm extends Component {
                     func={this.save}
                 >
                     <form id="form-create-career-action">
+                        <div className={`form-group `}>
+                            <label>Gói thầu<span className="text-red">*</span></label>
+                            <input type="text" className="form-control" onChange={this.handlePackage} />
+                            {/* <ErrorLabel content={nameError} /> */}
+                        </div>
                         <div className={`form-group ${!nameError ? "" : "has-error"}`}>
                             <label>Tên<span className="text-red">*</span></label>
                             <input type="text" className="form-control" onChange={this.handleName} />
@@ -91,7 +104,7 @@ class CreateForm extends Component {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
-    createCareerPosition: CareerPositionAction.createCareerPosition,
+    createCareerAction: CareerReduxAction.createCareerAction,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CreateForm));

@@ -3,26 +3,25 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import Sortable from 'sortablejs';
-import { ErrorLabel, TrixEditor } from '../../../../common-components';
-import { TaskTemplateFormValidator} from './taskTemplateFormValidator';
+import { ErrorLabel, QuillEditor } from '../../../../common-components';
+import { TaskTemplateFormValidator } from './taskTemplateFormValidator';
 import parse from 'html-react-parser';
 
-class ActionForm extends Component{
-    constructor(props){
+class ActionForm extends Component {
+    constructor(props) {
         super(props);
         let EMPTY_ACTION = {
             name: '',
             description: '',
             mandatory: true,
         };
-        console.log('thisporps',this.props.initialData);
-        this.state={
+        this.state = {
             EMPTY_ACTION: Object.assign({}, EMPTY_ACTION),
             editAction: false,
-            action:  Object.assign({}, EMPTY_ACTION),
-            taskActions:this.props.initialData
+            action: Object.assign({}, EMPTY_ACTION),
+            taskActions: this.props.initialData
         }
-    }    
+    }
 
     /**Gửi truy vấn tạo 1 template mới */
     handleSubmit = async (event) => {
@@ -30,7 +29,7 @@ class ActionForm extends Component{
         this.props.addNewTemplate(newTemplate);
     }
 
-    componentDidMount(){
+    componentDidMount() {
         // Load library for sort action table
         this.handleSortable();
     }
@@ -46,18 +45,18 @@ class ActionForm extends Component{
                     window.$(this).find('td:nth-child(1)').html(index + 1);
                 });
             },
-            onEnd: async(evt) => {
+            onEnd: async (evt) => {
                 let taskActions = this.state.taskActions;
                 const item = taskActions[evt.oldIndex];
                 taskActions.splice(evt.oldIndex, 1);
                 taskActions.splice(evt.newIndex, 0, item);
-            }, store:{
+            }, store: {
                 /**
                  * Khắc phục lỗi với thư viện Sortable. Chi tiết lỗi như sau:
                  * Khi lưu thứ tự sắp xếp mới vào state, do state thay đổi, react render lại.
                  * Sortable phát hiện cấu trúc DOM thay đổi nên tự động thay đổi trở lại thứ tự các phần tử
                  * Kết quả: thứ tự trong State lưu một đằng, giao diện hiển thị thể hiện một nẻo
-                 **/ 
+                 **/
                 set: (sortable) => {
                     let state = this.state;
                     state.keyPrefix = Math.random(); // force react to destroy children
@@ -65,7 +64,7 @@ class ActionForm extends Component{
                     this.setState({
                         ...state
                     })
-                } 
+                }
             }
         });
     }
@@ -74,8 +73,8 @@ class ActionForm extends Component{
      * Bộ xử lý cho Action Form 
     **/
     isActionFormValidated = () => {
-        let result = 
-        this.validateActionName(this.state.action.name, false)
+        let result =
+            this.validateActionName(this.state.action.name, false)
         return result;
     }
 
@@ -83,41 +82,41 @@ class ActionForm extends Component{
         let value = event.target.value;
         this.validateActionName(value, true);
     }
-    validateActionName = (value, willUpdateState=true) => {
+    validateActionName = (value, willUpdateState = true) => {
         let msg = TaskTemplateFormValidator.validateActionName(value);
 
-        if (willUpdateState){
+        if (willUpdateState) {
             this.state.action.name = value;
             this.state.action.errorOnName = msg;
-            this.setState(state =>{
-                return{
+            this.setState(state => {
+                return {
                     ...state,
                 };
             });
         }
-        return msg == undefined;
+        return msg === undefined;
     }
 
-    handleChangeActionDesc = (value) => {
+    handleChangeActionDesc = (value, imgs) => {
         const { action } = this.state;
-            this.setState({
-                action: {
-                    ...action,
-                    description: value
-                }
-            })
+        this.setState({
+            action: {
+                ...action,
+                description: value
+            }
+        })
     }
 
-    handleChangeActionMandatory= (event) => {
+    handleChangeActionMandatory = (event) => {
         let value = event.target.checked;
         this.state.action.mandatory = value;
-        this.setState(state =>{
-            return{
+        this.setState(state => {
+            return {
                 ...state
             };
         });
     }
-    /** cancel editing an action*/ 
+    /** cancel editing an action*/
     handleCancelEditAction = (event) => {
         event.preventDefault(); // Ngăn không submit     
         this.setState(state => {
@@ -129,7 +128,7 @@ class ActionForm extends Component{
         });
     }
 
-    /**reset all data fields of action table */ 
+    /**reset all data fields of action table */
     handleClearAction = (event) => {
         event.preventDefault(); // Ngăn không submit
         this.setState(state => {
@@ -140,21 +139,17 @@ class ActionForm extends Component{
         });
     }
 
-    /**Thêm 1 hoạt động */ 
+    /**Thêm 1 hoạt động */
     handleAddAction = async (event) => {
         event.preventDefault(); // Ngăn không submit
-        var EMPTY_ACTION = {
-            name: '',
-            description: '',
-            mandatory: true,
-        };
+
         await this.setState(state => {
-            const taskActions = [...this.state.taskActions,state.action];
+            const taskActions = [...this.state.taskActions, state.action];
             return {
                 ...state,
-                taskActions:taskActions,             
-                action: Object.assign({}, state.EMPTY_ACTION),                 
-            }           
+                taskActions: taskActions,
+                action: Object.assign({}, state.EMPTY_ACTION),
+            }
         });
         this.props.onDataChange(this.state.taskActions);
     }
@@ -166,7 +161,7 @@ class ActionForm extends Component{
                 ...state,
                 editAction: true,
                 indexAction: index,
-                action: {...action},
+                action: { ...action },
             }
         });
     }
@@ -175,7 +170,7 @@ class ActionForm extends Component{
     handleSaveEditedAction = async (event) => {
         event.preventDefault(); // Ngăn không submit
         const { indexAction } = this.state;
-        let  taskActions  = this.state.taskActions;
+        let taskActions = this.state.taskActions;
         var newTaskActions;
         if (taskActions) {
             newTaskActions = taskActions.map((item, index) => {
@@ -185,17 +180,17 @@ class ActionForm extends Component{
         await this.setState(state => {
             return {
                 ...state,
-                taskActions:newTaskActions,            
+                taskActions: newTaskActions,
                 editAction: false,
-                action: {...state.EMPTY_ACTION},
+                action: { ...state.EMPTY_ACTION },
             }
         })
         this.props.onDataChange(this.state.taskActions);
     }
 
-   /**Xóa 1 hành động */
+    /**Xóa 1 hành động */
     handleDeleteAction = async (index) => {
-        let taskActions  = this.state.taskActions;
+        let taskActions = this.state.taskActions;
         let newTaskActionsArray;
         if (taskActions) {
             newTaskActionsArray = taskActions.filter((item, x) => index !== x);
@@ -203,61 +198,62 @@ class ActionForm extends Component{
         await this.setState(state => {
             return {
                 ...state,
-                taskActions:newTaskActionsArray
+                taskActions: newTaskActionsArray
             }
         })
         this.props.onDataChange(this.state.taskActions);
     }
 
-    render(){
+    render() {
         const { translate } = this.props;
-        var { action, taskActions } =this.state;
-        const {initialData} = this.props;
+        var { action, taskActions } = this.state;
+        const { initialData } = this.props;
 
         taskActions = initialData;
 
-        return(
+        return (
             /**Form chứa các thông tin của phần hoạt động của 1 task-template*/
             <fieldset className="scheduler-border">
                 <legend className="scheduler-border">{translate('task_template.activity_list')}*</legend>
-                
+
                 {/**Tên hoạt động  */}
-                <div className={`form-group ${this.state.action.errorOnName===undefined?"":"has-error"}`} >
+                <div className={`form-group ${this.state.action.errorOnName === undefined ? "" : "has-error"}`} >
                     <label className="control-label">{translate('task_template.action_name')}*</label>
                     <div>
                         <input type="text" className="form-control" placeholder={translate('task_template.action_name')} value={action.name} onChange={this.handleChangeActionName} />
-                        <ErrorLabel content={this.state.action.errorOnName}/>
+                        <ErrorLabel content={this.state.action.errorOnName} />
                     </div>
                 </div>
 
                 {/**Mô tả hoạt động*/}
-                <div className={`form-group ${this.state.action.errorOnDescription===undefined?"":"has-error"}`} >
+                <div className={`form-group ${this.state.action.errorOnDescription === undefined ? "" : "has-error"}`} >
                     <label className="control-label">{translate('task_template.description')}*</label>
                     {/* <div>
                         <textarea type="text" className="form-control" name="description" placeholder={translate('task_template.description')} value={action.description} onChange={this.handleChangeActionDesc} />
                         <ErrorLabel content={this.state.action.errorOnDescription}/>
                     </div> */}
-                    <TrixEditor
-                        handleChange={this.handleChangeActionDesc}
-                        value={action.description}
+                    <QuillEditor
+                        id={'actionsTemplate'}
+                        getTextData={this.handleChangeActionDesc}
+                        value={action && action.description}
                     />
                 </div>
 
                 {/**Hoạt động này có bắt buộc không?*/}
                 <div className="form-group" >
                     <label className="control-label">
-                    {translate('task_template.mandatory')} &nbsp;
+                        {translate('task_template.mandatory')} &nbsp;
                         <input type="checkbox" className="" checked={action.mandatory} onChange={this.handleChangeActionMandatory} />
                     </label>
                 </div>
-                
+
                 {/**Các button thêm 1 hoạt động, xóa trắng các trường thông tin đã nhập*/}
                 <div className="pull-right" style={{ marginBottom: '10px' }}>
                     {this.state.editAction ?
                         <React.Fragment>
                             <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={this.handleCancelEditAction}>{translate('task_template.cancel_editing')}</button>
                             <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isActionFormValidated()} onClick={this.handleSaveEditedAction}>{translate('task_template.save')}</button>
-                        </React.Fragment>:
+                        </React.Fragment> :
                         <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isActionFormValidated()} onClick={this.handleAddAction}>{translate('task_template.add')}</button>
                     }
                     <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearAction}>{translate('task_template.delete')}</button>
@@ -293,7 +289,7 @@ class ActionForm extends Component{
                         }
                     </tbody>
                 </table>
-            </fieldset>        
+            </fieldset>
         )
     }
 }
