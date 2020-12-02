@@ -16,7 +16,6 @@ const { Asset, User } = Models;
 exports.sendEmailToManager = async (portal, assetIncident, oldAsset) => {
     // let user = await User.find()
     let user = await User(connect(DB_CONNECTION, portal)).find();
-    console.log("=====", user);
 
     // task = await task.populate("organizationalUnit creator parent").execPopulate();
 
@@ -515,37 +514,41 @@ exports.updateAssetInformation = async (portal, company, id, data, fileInfo) => 
             if (fileInfor) {
                 arrCreate = this.mergeUrlFileToObject(fileInfor, arrCreate);
             }
-            arrCreate.forEach(x => arrObject.push(x));
+            arrCreate.forEach(x => {
+
+                arrObject.push(x)
+            });
         }
 
         return arrObject;
     }
 
-    let newIncident = deleteEditCreateObjectInArrayObject(oldAsset.incidentLogs, deleteIncidentLogs, editIncidentLogs, createIncidentLogs)
+    // GUI EMAIL
 
-    let check = false;
-    if (oldAsset.incidentLogs.length !== newIncident.length) {
-        check = true;
-    }
-    for (let i in newIncident) {
-        let elm = newIncident[i];
-        let checkList = oldAsset.incidentLogs.filter(x => JSON.stringify(x) !== JSON.stringify(elm));
+    // let newIncident = deleteEditCreateObjectInArrayObject(oldAsset.incidentLogs, deleteIncidentLogs, editIncidentLogs, createIncidentLogs)
 
-        if (checkList.length !== 0) {
-            check = true;
-        }
-    }
+    // let check = false;
+    // if (oldAsset.incidentLogs.length !== newIncident.length) {
+    //     check = true;
+    // }
+    // for (let i in newIncident) {
+    //     let elm = newIncident[i];
+    //     let checkList = oldAsset.incidentLogs.filter(x => JSON.stringify(x) !== JSON.stringify(elm));
+
+    //     if (checkList.length !== 0) {
+    //         check = true;
+    //     }
+    // }
 
 
-    if (check === true) {
-        let mail = await this.sendEmailToManager(portal, newIncident, oldAsset)
-    } // gui email
+    // if (check === true) {
+    //     let mail = await this.sendEmailToManager(portal, newIncident, oldAsset)
+    // } 
 
     oldAsset.usageLogs = deleteEditCreateObjectInArrayObject(oldAsset.usageLogs, deleteUsageLogs, editUsageLogs, createUsageLogs);
     oldAsset.maintainanceLogs = deleteEditCreateObjectInArrayObject(oldAsset.maintainanceLogs, deleteMaintainanceLogs, editMaintainanceLogs, createMaintainanceLogs);
     oldAsset.incidentLogs = deleteEditCreateObjectInArrayObject(oldAsset.incidentLogs, deleteIncidentLogs, editIncidentLogs, createIncidentLogs);
     oldAsset.documents = deleteEditCreateObjectInArrayObject(oldAsset.documents, deleteFiles, editFiles, createFiles, file);
-
     oldAsset.avatar = avatar;
     oldAsset.assetName = data.assetName;
     oldAsset.code = data.code;
@@ -904,7 +907,7 @@ exports.getIncidents = async (portal, params) => {
     let incidentLength = 0;
     let aggregateLengthQuery = [...aggregateQuery, { $count: "incident_length" }]
     let count = await Asset(connect(DB_CONNECTION, portal)).aggregate(aggregateLengthQuery);
-    if(count.length){
+    if (count.length) {
         incidentLength = count[0].incident_length;
 
         // Tìm kiếm câc danh sách sự cố
@@ -921,7 +924,7 @@ exports.getIncidents = async (portal, params) => {
             incidents[i].asset = asset;
         }
     }
-    
+
     return {
         incidentList: incidents,
         incidentLength: incidentLength,
@@ -932,6 +935,7 @@ exports.getIncidents = async (portal, params) => {
  * Thêm mới thông tin sự cố tài sản
  */
 exports.createIncident = async (portal, id, data) => {
+
     let assetIncident = await Asset(connect(DB_CONNECTION, portal)).update({ _id: id }, {
         status: data.status,
         $addToSet: { incidentLogs: data }

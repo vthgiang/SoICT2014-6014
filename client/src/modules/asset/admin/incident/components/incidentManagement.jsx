@@ -411,6 +411,7 @@ class IncidentManagement extends Component {
                                             <td>{x.asset.assetName}</td>
                                             <td>{x.incidentCode}</td>
                                             <td>{this.convertIncidentType(x.type)}</td>
+                                            <td>{this.convertIncidentStatus(x.statusIncident)}</td>
                                             <td>{x.reportedBy && userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : ''}</td>
                                             <td>{x.dateOfIncident ? this.formatDate2(x.dateOfIncident) : ''}</td>
                                             <td>{x.description}</td>

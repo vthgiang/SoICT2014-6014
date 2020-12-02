@@ -65,7 +65,6 @@ class AssetEditForm extends Component {
                 maintainanceLogs: data
             })
         }
-        console.log('maintain', this.state);
     }
 
     // Function xoá sửa chữa, thay thế, nâng cấp
@@ -258,7 +257,8 @@ class AssetEditForm extends Component {
     }
 
     save = async () => {
-        let { img, maintainanceLogs, usageLogs, incidentLogs, files, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, employeeId } = this.state;
+        let { img, maintainanceLogs, usageLogs, incidentLogs, files, assignedToUser,
+            assignedToOrganizationalUnit, handoverFromDate, handoverToDate, employeeId, page } = this.state;
 
         await this.setState({
             img: img,
@@ -267,7 +267,6 @@ class AssetEditForm extends Component {
             createIncidentLogs: incidentLogs.filter(x => !x._id),
             createFiles: files.filter(x => !x._id),
         })
-        console.log('formdata', this.state);
         let formData = convertJsonObjectToFormData(this.state);
         files.forEach(x => {
             x.files.forEach(item => {
@@ -275,7 +274,7 @@ class AssetEditForm extends Component {
             })
         })
         formData.append("fileAvatar", this.state.avatar);
-        this.props.updateInformationAsset(this.state._id, formData, employeeId);
+        this.props.updateInformationAsset(this.state._id, formData, employeeId, page);
 
         // Thêm vào thông tin sử dụng
         if (assignedToUser !== this.props.assignedToUser || assignedToOrganizationalUnit !== this.props.assignedToOrganizationalUnit || handoverFromDate !== this.props.handoverFromDate || handoverToDate !== this.props.handoverToDate) {
@@ -378,6 +377,7 @@ class AssetEditForm extends Component {
                 deleteIncidentLogs: [],
                 editFiles: [],
                 deleteFiles: [],
+                page: nextProps.page,
 
                 errorOnCode: undefined,
                 errorOnAssetName: undefined,
@@ -391,6 +391,7 @@ class AssetEditForm extends Component {
                 errorOnAssignedToOrganizationalUnit: undefined,
                 errorOnNameField: undefined,
                 errorOnValue: undefined,
+
             }
         } else {
             return null;

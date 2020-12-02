@@ -99,13 +99,13 @@ function addNewAsset(asset) {
  * @param {*} data 
  * @param {*} managedBy khi manageBy !="", role gọi service này không phải là admin
  */
-function updateInformationAsset(id, data, managedBy = "") {
+function updateInformationAsset(id, data, managedBy = "", page) {
     return dispatch => {
         dispatch({
             type: AssetConstants.UPDATE_INFOR_ASSET_REQUEST
         });
 
-        AssetService.updateInformationAsset(id, data)
+        AssetService.updateInformationAsset(id, data, page)
             .then(res => {
                 if (managedBy === "") {
                     dispatch(getAllAsset({
@@ -114,7 +114,7 @@ function updateInformationAsset(id, data, managedBy = "") {
                         assetType: null,
                         month: null,
                         status: "",
-                        page: 0,
+                        page: page,
                         limit: 5,
                     }));
                 }
@@ -125,7 +125,7 @@ function updateInformationAsset(id, data, managedBy = "") {
                         assetType: null,
                         month: null,
                         status: "",
-                        page: 0,
+                        page: page,
                         limit: 5,
                         managedBy: managedBy
                     }));
@@ -150,7 +150,7 @@ function updateInformationAsset(id, data, managedBy = "") {
  * @param {*} id 
  * @param {*} managedBy khi manageBy !="", role gọi service này không phải là admin
  */
-function deleteAsset(id, managedBy = "") {
+function deleteAsset(id, managedBy = "", page) {
     return dispatch => {
         dispatch({
             type: AssetConstants.DELETE_ASSET_REQUEST
