@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ButtonModal, ErrorLabel, DatePicker, UploadFile, TreeSelect } from '../../../../../common-components';
+import { DialogModal, ButtonModal, ErrorLabel, DatePicker, UploadFile, TreeSelect, SelectBox } from '../../../../../common-components';
 
 import { EmployeeCreateValidator } from './combinedContent';
 class CareerEditModal extends Component {
@@ -34,15 +34,17 @@ class CareerEditModal extends Component {
 
     handleAction = (value) => {
         let { career } = this.props;
-        let listAction = career?.listAction.map(elm => {return { ...elm, id: elm._id } });
-        let action = listAction?.find(e => e._id === value[0]);
+        let listAction = career?.listAction.map(elm => { return { ...elm, id: elm._id } });
 
+        let action = listAction?.filter(e => value.indexOf(e._id) !== -1);
+
+        console.log('action', action);
         this.setState({ action: action });
     };
 
     handleField = (value) => {
         let { career } = this.props;
-        let listField = career?.listField.map(elm => {return { ...elm, id: elm._id } });
+        let listField = career?.listField.map(elm => { return { ...elm, id: elm._id } });
         let field = listField?.find(e => e._id === value[0]);
 
         console.log('valueeeee', value, field);
@@ -51,10 +53,11 @@ class CareerEditModal extends Component {
 
     handlePosition = (value) => {
         let { career } = this.props;
-        let listPosition = career?.listPosition.map(elm => {return { ...elm, id: elm._id } });
+        let listPosition = career?.listPosition.map(elm => { return { ...elm, id: elm._id } });
         let position = listPosition?.find(e => e._id === value[0]);
 
-        this.setState({ position: position });
+        let pkg = position.package;
+        this.setState({ position: position, package: pkg });
     };
 
     /** Bắt sự kiện thay đổi file đính kèm */
@@ -155,7 +158,7 @@ class CareerEditModal extends Component {
         let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
         let endDateNew = null;
         if (endDate) {
-            let partEnd = endDate.split('-');   
+            let partEnd = endDate.split('-');
             endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
         };
 
@@ -185,6 +188,7 @@ class CareerEditModal extends Component {
                 id: nextProps.id,
                 _id: nextProps._id,
                 index: nextProps.index,
+                package: nextProps.package,
                 position: nextProps.position,
                 action: nextProps.action,
                 field: nextProps.field,
@@ -211,10 +215,10 @@ class CareerEditModal extends Component {
         const { field, position, action, endDate, startDate, errorOnName, errorOnUnit, errorOnEndDate, errorOnStartDate } = this.state;
 
         let listAction = [], listPosition = [], listField = [];
-        listAction = career?.listAction.map(elm => {return { ...elm, id: elm._id } });
-        listPosition = career?.listPosition.map(elm => {return { ...elm, id: elm._id } });
-        listField = career?.listField.map(elm => {return { ...elm, id: elm._id } });
-        
+        listAction = career?.listAction.map(elm => { return { ...elm, id: elm._id } });
+        listPosition = career?.listPosition.map(elm => { return { ...elm, id: elm._id } });
+        listField = career?.listField.map(elm => { return { ...elm, id: elm._id } });
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -230,19 +234,34 @@ class CareerEditModal extends Component {
                             <TreeSelect data={listField} value={field?.id} handleChange={this.handleField} mode="radioSelect" />
                         </div>
                         <div className="form-group">
+                            <label>Gói thầu: </label> {this.state.package ? this.state.package : "Chưa có"}
+                        </div>
+                        <div className="form-group">
                             <label>Vị trí công việc</label>
                             <TreeSelect data={listPosition} value={position?.id} handleChange={this.handlePosition} mode="radioSelect" />
                         </div>
                         <div className="form-group">
                             <label>Hoạt động công việc</label>
-                            <TreeSelect data={listAction} value={action?.id} handleChange={this.handleAction} mode="radioSelect" />
+                            {/* <TreeSelect data={listAction} value={action?.id} handleChange={this.handleAction} mode="radioSelect" /> */}
+                            <SelectBox
+                                id={`edit-career-action-select-${id}`}
+                                lassName="form-control select2"
+                                style={{ width: "100%" }}
+                                items={listAction.map(x => {
+                                    return { text: x.name, value: x._id }
+                                })}
+                                options={{ placeholder: "Chọn hoạt động công việc" }}
+                                onChange={this.handleAction}
+                                value={action?.map(e => e?.id)}
+                                multiple={true}
+                            />
                         </div>
                         <div className="row">
                             {/* Ngày cấp */}
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate && "has-error"}`}>
                                 <label>{translate('human_resource.profile.date_issued')}<span className="text-red">*</span></label>
                                 <DatePicker
-                                    id={`add-start-date-${id}`}
+                                    id={`edit-start-date-${id}`}
                                     deleteValue={false}
                                     value={startDate}
                                     onChange={this.handleStartDateChange}
@@ -253,7 +272,7 @@ class CareerEditModal extends Component {
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate && "has-error"}`}>
                                 <label>{translate('human_resource.profile.end_date_certificate')}</label>
                                 <DatePicker
-                                    id={`add-end-date-${id}`}
+                                    id={`edit-end-date-${id}`}
                                     deleteValue={true}
                                     value={endDate}
                                     onChange={this.handleEndDateChange}
