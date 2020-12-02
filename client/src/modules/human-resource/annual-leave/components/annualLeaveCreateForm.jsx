@@ -273,7 +273,7 @@ class AnnualLeaveCreateForm extends Component {
                 organizationalUnit = department._id;
             }
         }
-        let employeeID = employeesManager.listAllEmployees.find(x => x.emailInCompany === employee);
+        let employeeID = employeesManager.listEmployeesOfOrganizationalUnits.find(x => x.emailInCompany === employee);
         employeeID = employeeID._id;
 
         let partStart = startDate.split('-');
@@ -301,7 +301,7 @@ class AnnualLeaveCreateForm extends Component {
         let { employee, organizationalUnit, startDate, endDate, reason, status, errorOnOrganizationalUnit,
             errorOnEmployee, errorOnReason, errorOnStartDate, errorOnEndDate, totalHours, errorOnTotalHours, type } = this.state;
 
-        let listAllEmployees = employeesManager.listAllEmployees;
+        let listAllEmployees = employeesManager.listEmployeesOfOrganizationalUnits;
         let listDepartments = [{ _id: "", name: translate('human_resource.non_unit') }];
         if (user.organizationalUnitsOfUserByEmail) {
             listDepartments = user.organizationalUnitsOfUserByEmail;
