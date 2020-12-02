@@ -293,3 +293,34 @@ exports.updateAnnualLeave = async (req, res) => {
         });
     }
 }
+
+/** Import dữ liệu nghỉ phép */
+exports.importAnnualLeave = async (req, res) => {
+    try {
+        let data = await AnnualLeaveService.importAnnualLeave(req.portal, req.body, req.user.company._id);
+        if (data.rowError !== undefined) {
+            await Log.error(req.user.email, 'IMPORT_ANNUAL_LEAVE', req.portal);
+            res.status(400).json({
+                success: false,
+                messages: ["import_annual_leave_faile"],
+                content: data
+            });
+        } else {
+            await Log.info(req.user.email, 'IMPORT_ANNUAL_LEAVE', req.portal);
+            res.status(200).json({
+                success: true,
+                messages: ["import_annual_leave_success"],
+                content: data
+            });
+        }
+    } catch (error) {
+        await Log.error(req.user.email, 'IMPORT_ANNUAL_LEAVE', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["import_annual_leave_faile"],
+            content: {
+                error: error
+            }
+        });
+    }
+}

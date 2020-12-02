@@ -91,7 +91,7 @@ class TaskTimesheetLog extends Component {
         });
     }
     stopTimer = async () => {
-        const { performtasks, auth } = this.props;
+        const { performtasks } = this.props;
         if (this.state.showEndDate) {
             if (this.state.dateStop && this.state.timeStop) {
                 var stoppedAt = this.state.dateStop + " " + this.state.timeStop
@@ -216,7 +216,7 @@ class TaskTimesheetLog extends Component {
     render() {
 
         const { translate, performtasks, auth } = this.props;
-        const { showEndDate, disabled, errorOnEndDate, endDate } = this.state
+        const { showEndDate, disabled, errorOnEndDate } = this.state
         const currentTimer = performtasks.currentTimer;
         const a = (this.state.time - currentTimer?.timesheetLogs[0].startedAt > 0) ? this.state.time - currentTimer?.timesheetLogs[0].startedAt : 0
         return (
@@ -253,7 +253,7 @@ class TaskTimesheetLog extends Component {
                                                 <TimePicker
                                                     id={`time-picker-${currentTimer._id}`}
                                                     onChange={this.handleTimeChange}
-                                                    getDefaultValue = {this.getDefaultValue}
+                                                    getDefaultValue={this.getDefaultValue}
                                                 />
                                             </div>
                                         </React.Fragment>

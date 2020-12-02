@@ -180,36 +180,37 @@ class CompanyTable extends Component {
                     </thead>
                     <tbody>
                         {
-                            company.listPaginate.length > 0 ?
-                                <React.Fragment>
-                                    {
-                                        company.listPaginate.map(com => 
-                                            <tr 
-                                                key={ com._id } 
-                                                className={com.active ? "bg bg-white" : "bg bg-gray"}
-                                            >
-                                                <td>{ com.name }</td>
-                                                <td>{ com.shortName }</td>
-                                                <td>{ com.description }</td>
-                                                <td>{ com.log ? <p><i className="fa fa-circle text-success" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('system_admin.company.on')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('system_admin.company.off')} </p>}</td>
-                                                <td>{ com.active ? <p><i className="fa fa-circle text-success" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('system_admin.company.on')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('system_admin.company.off')} </p>}</td>
-                                                <td style={{ textAlign: 'center'}}>
-                                                <a onClick={() => this.handleEdit(com)} className="text-yellow" style={{width: '5px'}} title={translate('system_admin.company.edit')}><i className="material-icons">edit</i></a>
-                                                <a onClick={() => this.handleService(com)} className="text-green" style={{width: '5px'}} title={translate('system_admin.company.service')}><i className="material-icons">dvr</i></a>
-                                                </td>
-                                            </tr>    
-                                        )
-                                    }
-                                </React.Fragment> 
-                                : company.isLoading ?
-                                    <tr><td colSpan='6'>{translate('general.loading')}</td></tr>
-                                    : <tr><td colSpan='6'>{translate('general.no_data')}</td></tr>
+                            company.listPaginate.length > 0 &&
+                            <React.Fragment>
+                                {
+                                    company.listPaginate.map(com => 
+                                        <tr 
+                                            key={ com._id } 
+                                            className={com.active ? "bg bg-white" : "bg bg-gray"}
+                                        >
+                                            <td>{ com.name }</td>
+                                            <td>{ com.shortName }</td>
+                                            <td>{ com.description }</td>
+                                            <td>{ com.log ? <p><i className="fa fa-circle text-success" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('system_admin.company.on')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('system_admin.company.off')} </p>}</td>
+                                            <td>{ com.active ? <p><i className="fa fa-circle text-success" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('system_admin.company.on')} </p> : <p><i className="fa fa-circle text-danger" /> {translate('system_admin.company.off')} </p>}</td>
+                                            <td style={{ textAlign: 'center'}}>
+                                            <a onClick={() => this.handleEdit(com)} className="text-yellow" style={{width: '5px'}} title={translate('system_admin.company.edit')}><i className="material-icons">edit</i></a>
+                                            <a onClick={() => this.handleService(com)} className="text-green" style={{width: '5px'}} title={translate('system_admin.company.service')}><i className="material-icons">dvr</i></a>
+                                            </td>
+                                        </tr>    
+                                    )
+                                }
+                            </React.Fragment> 
                         }
                     </tbody>
                 </table>
-                
+                {
+                    company.isLoading ?
+                    <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                    company.listPaginate && company.listPaginate.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                }
                 {/* Paginate Bar */}
-                <PaginateBar pageTotal={company.totalPages} currentPage={company.page} func={this.setPage}/>
+                <PaginateBar display={company.listPaginate.length} total={company.totalPages} pageTotal={company.totalPages} currentPage={company.page} func={this.setPage}/>
             </React.Fragment>
          );
     }

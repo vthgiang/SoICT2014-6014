@@ -178,14 +178,16 @@ class BookManagement extends Component {
                                             <td>{translate(`manage_warehouse.bill_management.billType.${x.type}`)}</td>
                                             <td style={{ color: translate(`manage_warehouse.bill_management.bill_color.${x.status}`)}}>{translate(`manage_warehouse.bill_management.bill_status.${x.status}`)}</td>
                                             <td>{x.creator ? x.creator.name : "Creator is deleted"}</td>
-                                            <td>{x.approver ? x.approver.name : "approver is deleted"}</td>
-                                            <td>{this.props.formatDate(x.timestamp)}</td>
+                                            <td>{x.approvers ? x.approvers.map((a, key) => { return <p key={key}>{a.approver.name}</p>}) : "approver is deleted"}</td>
+                                            <td>{this.props.formatDate(x.updatedAt)}</td>
                                             <td>{x.fromStock ? x.fromStock.name : "Stock is deleted"}</td>
-                                            <td>{x.customer ? x.customer.name : 'Partner is deleted'}</td>
+                                            { x.group === '1' && <td>{x.supplier ? x.supplier.name : 'Supplier is deleted'}</td>}
+                                            { (x.group === '2' || x.group === '3') && <td>{x.customer ? x.customer.name : 'Customer is deleted'}</td>}
+                                            { (x.group === '4') && <td></td>}
+                                            { (x.group === '5') && <td>{x.toStock ? x.toStock.name : 'Stock is deleted'}</td>}
                                             <td>{x.description}</td>
                                             <td style={{textAlign: 'center'}}>
                                                 <a onClick={() => this.props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>
-                                                <a className="text-black" onClick={() => this.props.handleShow()}><i className="material-icons">print</i></a>
                                             </td>
                                         </tr>
                                     ))

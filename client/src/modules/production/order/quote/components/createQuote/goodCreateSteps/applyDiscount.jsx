@@ -1,10 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { SelectBox } from "../../../../../../common-components";
 import CreateDiscountsForGood from "./createDiscountsForGood";
-import { formatCurrency } from "../../../../../../helpers/formatCurrency";
-import "../quote.css";
+import { formatCurrency } from "../../../../../../../helpers/formatCurrency";
+import "../../quote.css";
 import CreateSlaForGood from "./createSlaForGood";
 
 class ApplyDiscount extends Component {
@@ -33,6 +32,17 @@ class ApplyDiscount extends Component {
         this.props.handleQuantityChange(data);
     };
 
+    countSlasChecked = () => {
+        const { slasOfGoodChecked } = this.props;
+        let count = 0;
+        for (let key in slasOfGoodChecked) {
+            if (slasOfGoodChecked[key] === true) {
+                count++;
+            }
+        }
+        return count;
+    };
+
     render() {
         let {
             quantity,
@@ -50,6 +60,8 @@ class ApplyDiscount extends Component {
             setSlasOfGoodChecked,
         } = this.props;
         const { handleDiscountsChange, setDiscountsChecked } = this.props;
+
+        let countOfSlasChecked = this.countSlasChecked();
         return (
             <React.Fragment>
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: "10px 10px 20px 10px" }}>
@@ -81,10 +93,13 @@ class ApplyDiscount extends Component {
                     </div>
                 </div>
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 10, height: "100%", borderTop: "solid 0.3px #c5c5c5" }}>
-                    <div className="form-group">
+                    <div className="form-group apply-discount-for-good-element">
                         <span className="text-red">
                             <i className="fa  fa-shirtsinbulk"></i> Khuyến mãi &ensp;
                         </span>
+                        <div className="apply-discounts-for-good-tag">
+                            <div>{discountsOfGood.length ? `Đã chọn ${discountsOfGood.length} mã giảm giá` : "Hãy kiểm tra và chọn khuyến mãi"}</div>
+                        </div>
                         <CreateDiscountsForGood
                             quantity={quantity}
                             goodId={good}
@@ -96,10 +111,15 @@ class ApplyDiscount extends Component {
                     </div>
                 </div>
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 10, height: "100%", borderTop: "solid 0.3px #c5c5c5" }}>
-                    <div className="form-group">
+                    <div className="form-group apply-discount-for-good-element">
                         <span>
                             <i className="fa  fa-registered text-info"></i> Cam kết chất lượng &ensp;
                         </span>
+                        <div className="apply-discounts-for-good-tag">
+                            <div>
+                                {countOfSlasChecked ? `Đã chọn ${countOfSlasChecked} cam kết chất lượng` : "Hãy kiểm tra và chọn cam kết chất lượng"}
+                            </div>
+                        </div>
                         <CreateSlaForGood
                             goodId={good}
                             slasOfGood={slasOfGood}

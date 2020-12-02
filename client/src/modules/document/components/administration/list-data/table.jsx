@@ -432,7 +432,7 @@ class Table extends Component {
     }
 
     render() {
-        const { translate } = this.props;
+        const { translate, documents } = this.props;
         const { domains, categories, archives } = this.props.documents.administration;
         const { isLoading } = this.props.documents;
         const docs = this.props.documents.administration.data;
@@ -568,7 +568,7 @@ class Table extends Component {
                             translate('kpi.organizational_unit.management.over_view.search')}</button>
                     </div>
                 </div>
-                <table className="table table-hover table-striped table-bordered" id="table-manage-document-list">
+                <table className="table table-hover table-striped table-bordered" id="table-manage-document-list" style={{marginBottom: 0}}>
                     <thead>
                         <tr>
                             <th>{translate('document.name')}</th>
@@ -604,7 +604,7 @@ class Table extends Component {
                     </thead>
                     <tbody>
                         {
-                            paginate && paginate.length > 0 ?
+                            paginate && paginate.length > 0 &&
                                 paginate.map(doc =>
 
                                     <tr key={doc._id}>
@@ -640,15 +640,17 @@ class Table extends Component {
                                                 <i className="material-icons">delete</i>
                                             </a>
                                         </td>
-                                    </tr>) :
-                                isLoading ?
-                                    <tr><td colSpan={10}>{translate('general.loading')}</td></tr> : <tr><td colSpan={10}>{translate('general.no_data')}</td></tr>
+                                    </tr>)
                         }
 
                     </tbody>
                 </table>
+                {
+                    isLoading ?
+                    <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                    paginate && paginate.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                }
                 <PaginateBar pageTotal={docs.totalPages} currentPage={docs.page} func={this.setPage} />
-
             </div>
         );
     }

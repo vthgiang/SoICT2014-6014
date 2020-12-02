@@ -34,10 +34,11 @@ class GoodDetailForm extends Component {
                 code: nextProps.code,
                 name: nextProps.name,
                 category: nextProps.category,
-                packingRule: nextProps.packingRule,
+                // packingRule: nextProps.packingRule,
                 manufacturingMills: nextProps.manufacturingMills,
                 pricePerBaseUnit: nextProps.pricePerBaseUnit,
                 salesPriceVariance: nextProps.salesPriceVariance,
+                numberExpirationDate: nextProps.numberExpirationDate
             };
         } else {
             return null;
@@ -55,10 +56,11 @@ class GoodDetailForm extends Component {
             materials,
             baseUnit,
             description,
-            packingRule,
+            // packingRule,
             manufacturingMills,
             pricePerBaseUnit,
             salesPriceVariance,
+            numberExpirationDate
         } = this.state;
 
         return (
@@ -90,16 +92,16 @@ class GoodDetailForm extends Component {
                                     {baseUnit}
                                 </div>
                                 <div className="form-group">
-                                    <strong>{translate("manage_warehouse.good_management.packing_rule")}:&emsp;</strong>
-                                    {packingRule}
+                                    <strong>{translate("manage_warehouse.good_management.expirationDate")}:&emsp;</strong>
+                                    {numberExpirationDate}{" " + translate("manage_warehouse.good_management.day")}
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className="form-group">
                                     <strong>{translate("manage_warehouse.good_management.category")}:&emsp;</strong>
                                     {category &&
-                                    categories.listCategoriesByType.length &&
-                                    categories.listCategoriesByType.filter((item) => item._id === category).pop()
+                                        categories.listCategoriesByType.length &&
+                                        categories.listCategoriesByType.filter((item) => item._id === category).pop()
                                         ? categories.listCategoriesByType.filter((item) => item._id === category).pop().name
                                         : "aaa"}
                                 </div>
@@ -141,14 +143,14 @@ class GoodDetailForm extends Component {
                                                     </td>
                                                 </tr>
                                             ) : (
-                                                units.map((item, index) => (
-                                                    <tr key={index}>
-                                                        <td>{item.name}</td>
-                                                        <td>{item.conversionRate}</td>
-                                                        <td>{item.description}</td>
-                                                    </tr>
-                                                ))
-                                            )}
+                                                    units.map((item, index) => (
+                                                        <tr key={index}>
+                                                            <td>{item.name}</td>
+                                                            <td>{item.conversionRate}</td>
+                                                            <td>{item.description}</td>
+                                                        </tr>
+                                                    ))
+                                                )}
                                         </tbody>
                                     </table>
                                 </fieldset>
@@ -175,13 +177,13 @@ class GoodDetailForm extends Component {
                                                             </td>
                                                         </tr>
                                                     ) : (
-                                                        materials.map((x, index) => (
-                                                            <tr key={index}>
-                                                                <td>{x.good.name}</td>
-                                                                <td>{x.quantity}</td>
-                                                            </tr>
-                                                        ))
-                                                    )}
+                                                            materials.map((x, index) => (
+                                                                <tr key={index}>
+                                                                    <td>{x.good.name}</td>
+                                                                    <td>{x.quantity}</td>
+                                                                </tr>
+                                                            ))
+                                                        )}
                                                 </tbody>
                                             </table>
                                         </fieldset>
@@ -205,23 +207,23 @@ class GoodDetailForm extends Component {
                                                             </td>
                                                         </tr>
                                                     ) : (
-                                                        manufacturingMills.map((x, index) => (
-                                                            <tr key={index}>
-                                                                <td>{index + 1}</td>
-                                                                <td>{x.manufacturingMill.code}</td>
-                                                                <td>{x.manufacturingMill.name}</td>
-                                                                <td>{x.productivity}</td>
-                                                                <td>{x.personNumber}</td>
-                                                            </tr>
-                                                        ))
-                                                    )}
+                                                            manufacturingMills.map((x, index) => (
+                                                                <tr key={index}>
+                                                                    <td>{index + 1}</td>
+                                                                    <td>{x.manufacturingMill.code}</td>
+                                                                    <td>{x.manufacturingMill.name}</td>
+                                                                    <td>{x.productivity}</td>
+                                                                    <td>{x.personNumber}</td>
+                                                                </tr>
+                                                            ))
+                                                        )}
                                                 </tbody>
                                             </table>
                                         </fieldset>
                                     </React.Fragment>
                                 ) : (
-                                    ""
-                                )}
+                                        ""
+                                    )}
                             </div>
                         </div>
                     </form>

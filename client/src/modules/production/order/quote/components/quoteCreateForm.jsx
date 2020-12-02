@@ -2,15 +2,24 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
+import { QuoteActions, quoteActions } from "../redux/actions";
 import { generateCode } from "../../../../../helpers/generateCode";
 import { formatToTimeZoneDate } from "../../../../../helpers/formatDate";
 import { DatePicker, DialogModal, SelectBox, ButtonModal, ErrorLabel } from "../../../../../common-components";
-import QuoteCreateGood from "./quoteCreateGood";
+import QuoteCreateGood from "./createQuote/quoteCreateGood";
+import QuoteCreateInfo from "./createQuote/quoteCreateInfo";
+import QuoteCreatePayment from "./createQuote/quoteCreatePayment";
+import SlasOfGoodDetail from "./createQuote/viewDetailOnCreate/slasOfGoodDetail";
+import DiscountOfGoodDetail from "./createQuote/viewDetailOnCreate/discountOfGoodDetail";
 class QuoteCreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
             goods: [],
+            discountsOfOrderValue: [],
+            discountsOfOrderValueChecked: {},
+            currentSlasOfGood: [],
+            currentDiscountsOfGood: [],
             code: "",
             note: "",
             customer: "",
@@ -20,6 +29,24 @@ class QuoteCreateForm extends Component {
             customerRepresent: "",
             effectiveDate: "",
             expirationDate: "",
+            shippingFee: "",
+            deliveryTime: "",
+            coin: "",
+            step: 0,
+            isUseForeignCurrency: false,
+            foreignCurrency: {
+                symbol: "", // ký hiệu viết tắt
+                ratio: "", // tỷ lệ chuyển đổi
+            },
+            standardCurrency: {
+                symbol: "vnđ", // ký hiệu viết tắt
+                ratio: "1", // tỷ lệ chuyển đổi
+            },
+            currency: {
+                type: "standard",
+                symbol: "vnđ",
+                ratio: "1",
+            },
         };
     }
 
@@ -33,25 +60,30 @@ class QuoteCreateForm extends Component {
         });
     };
 
-    getCustomerOptions = () => {
-        let options = this.props.customers.list.map((item) => {
-            return {
-                value: item._id,
-                text: item.code + " - " + item.name,
-            };
-        });
-        return options;
-    };
-
     handleCustomerChange = (value) => {
-        let customerInfo = this.props.customers.list.filter((item) => item._id === value[0]);
-        this.setState({
-            customer: customerInfo[0]._id,
-            customerName: customerInfo[0].name,
-            customerAddress: customerInfo[0].address,
-            customerPhone: customerInfo[0].mobilephoneNumber,
-            customerRepresent: customerInfo[0].represent,
-        });
+        if (value[0] !== "title") {
+            let customerInfo = this.props.customers.list.filter((item) => item._id === value[0]);
+            if (customerInfo.length) {
+                this.setState({
+                    customer: customerInfo[0]._id,
+                    customerName: customerInfo[0].name,
+                    customerAddress: customerInfo[0].address,
+                    customerPhone: customerInfo[0].mobilephoneNumber,
+                    customerRepresent: customerInfo[0].represent,
+                });
+            }
+        } else {
+            this.setState((state) => {
+                return {
+                    ...state,
+                    customer: value[0],
+                    customerName: "",
+                    customerAddress: "",
+                    customerPhone: "",
+                    customerRepresent: "",
+                };
+            });
+        }
     };
 
     handleCustomerPhoneChange = (e) => {
@@ -135,6 +167,244 @@ class QuoteCreateForm extends Component {
         this.validateDateStage(effectiveDate, value, true);
     };
 
+    setCurrentStep = (e, step) => {
+        e.preventDefault();
+        this.setState({
+            step,
+        });
+    };
+
+    setGoods = (goods) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                goods,
+            };
+        });
+    };
+
+    handleUseForeignCurrencyChange = (e) => {
+        const { checked } = e.target;
+        this.setState((state) => {
+            return {
+                ...state,
+                isUseForeignCurrency: checked,
+            };
+        });
+        if (!checked) {
+            this.setState((state) => {
+                return {
+                    ...state,
+                    foreignCurrency: {
+                        ratio: "",
+                        symbol: "",
+                    },
+                    currency: {
+                        type: "standard",
+                        symbol: "vnđ",
+                        ratio: "1",
+                    },
+                };
+            });
+        }
+    };
+
+    handleRatioOfCurrencyChange = (e) => {
+        let { foreignCurrency } = this.state;
+        let { value } = e.target;
+        this.setState((state) => {
+            return {
+                ...state,
+                foreignCurrency: {
+                    ratio: value,
+                    symbol: foreignCurrency.symbol,
+                },
+            };
+        });
+    };
+
+    handleSymbolOfForreignCurrencyChange = (e) => {
+        let { foreignCurrency } = this.state;
+        let { value } = e.target;
+        this.setState((state) => {
+            return {
+                ...state,
+                foreignCurrency: {
+                    ratio: foreignCurrency.ratio,
+                    symbol: value,
+                },
+            };
+        });
+    };
+
+    handleChangeCurrency = (value) => {
+        let { foreignCurrency, standardCurrency } = this.state;
+        this.setState((state) => {
+            return {
+                ...state,
+                currency: {
+                    type: value[0],
+                    symbol: value[0] === "standard" ? standardCurrency.symbol : foreignCurrency.symbol,
+                    ratio: foreignCurrency.ratio,
+                },
+            };
+        });
+    };
+
+    handleDiscountsOfOrderValueChange = (data) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                discountsOfOrderValue: data,
+            };
+        });
+    };
+
+    setDiscountsOfOrderValueChecked = (discountsOfOrderValueChecked) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                discountsOfOrderValueChecked,
+            };
+        });
+    };
+
+    handleShippingFeeChange = (e) => {
+        const { value } = e.target;
+        this.setState((state) => {
+            return {
+                ...state,
+                shippingFee: value,
+            };
+        });
+    };
+
+    handleDeliveryTimeChange = (value) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                deliveryTime: value,
+            };
+        });
+    };
+
+    setCurrentSlasOfGood = (data) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                currentSlasOfGood: data,
+            };
+        });
+    };
+
+    setCurrentDiscountsOfGood = (data) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                currentDiscountsOfGood: data,
+            };
+        });
+    };
+
+    handleCoinChange = (coin) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                coin: this.state.coin ? "" : coin, //Nếu đang checked thì bỏ checked
+            };
+        });
+    };
+
+    formatDiscountForSubmit = (discounts) => {
+        let discountsMap = discounts.map((dis) => {
+            console.log("dis.discountOnGoods", dis.discountOnGoods);
+            return {
+                _id: dis._id,
+                code: dis.code,
+                type: dis.type,
+                formality: dis.formality,
+                name: dis.name,
+                effectiveDate: dis.effectiveDate,
+                expirationDate: dis.expirationDate,
+                discountedCash: dis.discountedCash,
+                discountedPercentage: dis.discountedPercentage,
+                loyaltyCoin: dis.loyaltyCoin,
+                bonusGoods: dis.bonusGoods
+                    ? dis.bonusGoods.map((bonus) => {
+                          return {
+                              good: bonus.good._id,
+                              expirationDateOfGoodBonus: bonus.expirationDateOfGoodBonus,
+                              baseUnit: bonus.baseUnit,
+                              quantityOfBonusGood: bonus.quantityOfBonusGood,
+                          };
+                      })
+                    : undefined,
+                discountOnGoods: dis.discountOnGoods
+                    ? {
+                          good: dis.discountOnGoods.good._id,
+                          expirationDate: dis.discountOnGoods.expirationDate,
+                          discountedPrice: dis.discountOnGoods.discountedPrice,
+                      }
+                    : undefined,
+            };
+        });
+        return discountsMap;
+    };
+
+    formatGoodForSubmit = () => {
+        let { goods } = this.state;
+        let goodMap = goods.map((item) => {
+            return {
+                good: item.good._id,
+                pricePerBaseUnit: item.pricePerBaseUnit,
+                pricePerBaseUnitOrigin: item.pricePerBaseUnitOrigin,
+                salesPriceVariance: item.salesPriceVariance,
+                quantity: item.quantity,
+                serviceLevelAgreements: item.slasOfGood,
+                taxs: item.taxs,
+                discounts: item.discountsOfGood.length ? this.formatDiscountForSubmit(item.discountsOfGood) : [],
+                note: item.note,
+                amount: item.amount,
+                amountAfterDiscount: item.amountAfterDiscount,
+                amountAfterTax: item.amountAfterTax,
+            };
+        });
+        return goodMap;
+    };
+
+    save = async (e) => {
+        e.preventDefault();
+        let {
+            customer,
+            customerAddress,
+            customerPhone,
+            customerRepresent,
+            code,
+            effectiveDate,
+            expirationDate,
+            shippingFee,
+            deliveryTime,
+            coin,
+            discountsOfOrderValue,
+        } = this.state;
+        let data = {
+            code,
+            effectiveDate: effectiveDate ? new Date(formatToTimeZoneDate(effectiveDate)) : undefined,
+            expirationDate: expirationDate ? new Date(formatToTimeZoneDate(expirationDate)) : undefined,
+            customer,
+            customerPhone,
+            customerAddress,
+            customerRepresent,
+            goods: this.formatGoodForSubmit(),
+            discounts: discountsOfOrderValue.length ? this.formatDiscountForSubmit(discountsOfOrderValue) : [],
+            shippingFee,
+            deliveryTime: deliveryTime ? new Date(formatToTimeZoneDate(deliveryTime)) : undefined,
+            coin,
+        };
+        console.log("DATA", data);
+        await this.props.createNewQuote(data);
+    };
+
     render() {
         let {
             code,
@@ -147,6 +417,19 @@ class QuoteCreateForm extends Component {
             effectiveDate,
             expirationDate,
             dateError,
+            step,
+            goods,
+            shippingFee,
+            coin,
+            deliveryTime,
+            isUseForeignCurrency,
+            foreignCurrency,
+            currency,
+            standardCurrency,
+            discountsOfOrderValue,
+            discountsOfOrderValueChecked,
+            currentSlasOfGood,
+            currentDiscountsOfGood,
         } = this.state;
 
         return (
@@ -168,164 +451,149 @@ class QuoteCreateForm extends Component {
                     func={this.save}
                     size="100"
                     style={{ backgroundColor: "green" }}
+                    hasSaveButton={false}
                 >
-                    <DialogModal
-                        modalID="modal-create-quote-sla"
-                        isLoading={false}
-                        formID="form-create-quote-sla"
-                        title={"Chi tiết cam kết chất lượng"}
-                        size="50"
-                        hasSaveButton={false}
-                        hasNote={false}
-                    >
-                        <form id="form-create-quote-sla">
-                            <div
-                                style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                }}
-                            >
-                                <i className="fa fa-check-square-o text-success"></i>
-                                <div>Sản phẩm được sản xuất 100% đảm bảo tiêu chuẩn an toàn</div>
+                    <div className="nav-tabs-custom">
+                        <ul className="nav nav-tabs">
+                            <li className="active" key="1">
+                                <a data-toggle="tab" onClick={(e) => this.setCurrentStep(e, 0)} style={{ cursor: "pointer" }}>
+                                    Thông tin chung
+                                </a>
+                            </li>
+                            <li key="2">
+                                <a data-toggle="tab" onClick={(e) => this.setCurrentStep(e, 1)} style={{ cursor: "pointer" }}>
+                                    Chọn sản phẩm
+                                </a>
+                            </li>
+                            <li key="3">
+                                <a data-toggle="tab" onClick={(e) => this.setCurrentStep(e, 2)} style={{ cursor: "pointer" }}>
+                                    Chốt báo giá
+                                </a>
+                            </li>
+                        </ul>
+                        {foreignCurrency.ratio && foreignCurrency.symbol ? (
+                            <div className="form-group select-currency">
+                                <SelectBox
+                                    id={`select-quote-currency-${foreignCurrency.symbol.replace(" ")}`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={currency.type}
+                                    items={[
+                                        { text: "vnđ", value: "standard" },
+                                        { text: `${foreignCurrency.symbol}`, value: "foreign" },
+                                    ]}
+                                    onChange={this.handleChangeCurrency}
+                                    multiple={false}
+                                />
                             </div>
-                            <div
-                                style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                }}
-                            >
-                                <i className="fa fa-check-square-o text-success"></i>
-                                <div>Sản phẩm đúng với cam kết trên bao bì</div>
-                            </div>
-                        </form>
-                    </DialogModal>
+                        ) : (
+                            ""
+                        )}
+                    </div>
+                    <SlasOfGoodDetail currentSlasOfGood={currentSlasOfGood} />
+                    <DiscountOfGoodDetail currentDiscounts={currentDiscountsOfGood} />
                     <form id={`form-add-quote`}>
-                        <div className="row row-equal-height" style={{ marginTop: -25 }}>
-                            <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8" style={{ padding: 10, height: "100%" }}>
-                                <fieldset className="scheduler-border">
-                                    <legend className="scheduler-border">Thông tin chung</legend>
-                                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                        <div className="form-group">
-                                            <label>
-                                                Khách hàng
-                                                <span className="attention"> * </span>
-                                            </label>
-                                            <SelectBox
-                                                id={`select-quote-customer`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                value={customer}
-                                                items={this.getCustomerOptions()}
-                                                onChange={this.handleCustomerChange}
-                                                multiple={false}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-                                        <div className="form-group">
-                                            <label>
-                                                Tên khách hàng <span className="attention"> </span>
-                                            </label>
-                                            <input type="text" className="form-control" value={customerName} disabled={true} />
-                                        </div>
-                                    </div>
-                                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <div className="form-group">
-                                            <label>
-                                                Địa chỉ nhận hàng
-                                                <span className="attention">* </span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={customerAddress}
-                                                onChange={this.handleCustomerAddressChange}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                        <div className="form-group">
-                                            <label>
-                                                Số điện thoại
-                                                <span className="attention"> * </span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={customerPhone}
-                                                onChange={this.handleCustomerPhoneChange}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-                                        <div className="form-group">
-                                            <label>
-                                                Người liên hệ <span className="attention"> </span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={customerRepresent}
-                                                onChange={this.handleCustomerRepresentChange}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <div className="form-group">
-                                            <label>
-                                                Ghi chú
-                                                <span className="attention"> </span>
-                                            </label>
-                                            <input type="text" className="form-control" value={note} onChange={this.handleNoteChange} />
-                                        </div>
-                                    </div>
-                                </fieldset>
-                            </div>
-                            <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4" style={{ padding: 10, height: "100%" }}>
-                                <fieldset className="scheduler-border">
-                                    <legend className="scheduler-border">Báo giá</legend>
-                                    <div className="form-group">
-                                        <label>
-                                            Mã báo giá
-                                            <span className="attention"> * </span>
-                                        </label>
-                                        <input type="text" className="form-control" value={code} disabled="true" />
-                                    </div>
-                                    <div className={`form-group ${!dateError ? "" : "has-error"}`}>
-                                        <label>Ngày báo giá</label>
-                                        <DatePicker
-                                            id="date_picker_create_discount_effectiveDate"
-                                            value={effectiveDate}
-                                            onChange={this.handleChangeEffectiveDate}
-                                            disabled={false}
-                                        />
-                                        <ErrorLabel content={dateError} />
-                                    </div>
-
-                                    <div className={`form-group ${!dateError ? "" : "has-error"}`}>
-                                        <label>Hiệu lực đến</label>
-                                        <DatePicker
-                                            id="date_picker_create_discount_expirationDate"
-                                            value={expirationDate}
-                                            onChange={this.handleChangeExpirationDate}
-                                            disabled={false}
-                                        />
-                                        <ErrorLabel content={dateError} />
-                                    </div>
-
-                                    {/* <div className="form-group">
-                                        <label>
-                                            Nhân viên bán hàng
-                                            <span className="attention"> * </span>
-                                        </label>
-                                        <input type="text" className="form-control" value={"Phạm Đại Tài"} disabled={true} />
-                                    </div> */}
-                                </fieldset>
-                            </div>
-
-                            <QuoteCreateGood />
+                        <div className="row row-equal-height" style={{ marginTop: 0 }}>
+                            {step === 0 && (
+                                <QuoteCreateInfo
+                                    code={code}
+                                    note={note}
+                                    customer={customer}
+                                    customerName={customerName}
+                                    customerAddress={customerAddress}
+                                    customerPhone={customerPhone}
+                                    customerRepresent={customerRepresent}
+                                    effectiveDate={effectiveDate}
+                                    expirationDate={expirationDate}
+                                    dateError={dateError}
+                                    isUseForeignCurrency={isUseForeignCurrency}
+                                    foreignCurrency={foreignCurrency}
+                                    handleCustomerChange={this.handleCustomerChange}
+                                    handleCustomerAddressChange={this.handleCustomerAddressChange}
+                                    handleCustomerPhoneChange={this.handleCustomerPhoneChange}
+                                    handleCustomerRepresentChange={this.handleCustomerRepresentChange}
+                                    handleNoteChange={this.handleNoteChange}
+                                    handleChangeEffectiveDate={this.handleChangeEffectiveDate}
+                                    handleChangeExpirationDate={this.handleChangeExpirationDate}
+                                    handleUseForeignCurrencyChange={this.handleUseForeignCurrencyChange}
+                                    handleRatioOfCurrencyChange={this.handleRatioOfCurrencyChange}
+                                    handleSymbolOfForreignCurrencyChange={this.handleSymbolOfForreignCurrencyChange}
+                                />
+                            )}
+                            {step === 1 && (
+                                <QuoteCreateGood
+                                    listGoods={goods}
+                                    setGoods={this.setGoods}
+                                    isUseForeignCurrency={isUseForeignCurrency}
+                                    foreignCurrency={foreignCurrency}
+                                    standardCurrency={standardCurrency}
+                                    currency={currency}
+                                    setCurrentSlasOfGood={(data) => {
+                                        this.setCurrentSlasOfGood(data);
+                                    }}
+                                    setCurrentDiscountsOfGood={(data) => {
+                                        this.setCurrentDiscountsOfGood(data);
+                                    }}
+                                />
+                            )}
+                            {step === 2 && (
+                                <QuoteCreatePayment
+                                    listGoods={goods}
+                                    customer={customer}
+                                    customerPhone={customerPhone}
+                                    customerAddress={customerAddress}
+                                    customerName={customerName}
+                                    customerRepresent={customerRepresent}
+                                    effectiveDate={effectiveDate}
+                                    expirationDate={expirationDate}
+                                    code={code}
+                                    shippingFee={shippingFee}
+                                    deliveryTime={deliveryTime}
+                                    coin={coin}
+                                    note={note}
+                                    discountsOfOrderValue={discountsOfOrderValue}
+                                    discountsOfOrderValueChecked={discountsOfOrderValueChecked}
+                                    handleDiscountsOfOrderValueChange={(data) => this.handleDiscountsOfOrderValueChange(data)}
+                                    setDiscountsOfOrderValueChecked={(checked) => this.setDiscountsOfOrderValueChecked(checked)}
+                                    handleShippingFeeChange={this.handleShippingFeeChange}
+                                    handleDeliveryTimeChange={this.handleDeliveryTimeChange}
+                                    handleCoinChange={this.handleCoinChange}
+                                    setCurrentSlasOfGood={(data) => {
+                                        this.setCurrentSlasOfGood(data);
+                                    }}
+                                    setCurrentDiscountsOfGood={(data) => {
+                                        this.setCurrentDiscountsOfGood(data);
+                                    }}
+                                    saveQuote={this.save}
+                                />
+                            )}
                         </div>
+                        {/* <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <div className={"pull-right"} style={{ padding: 10 }}>
+                                <div>
+                                    <div>
+                                        {step + 1} / {3}
+                                    </div>
+                                    <div>
+                                        {step !== 0 ? (
+                                            <button className="btn" onClick={this.preStep}>
+                                                Quay lại
+                                            </button>
+                                        ) : (
+                                            ""
+                                        )}
+                                        {step === 2 ? (
+                                            ""
+                                        ) : (
+                                            <button className="btn btn-success" onClick={this.nextStep}>
+                                                Tiếp
+                                            </button>
+                                        )}
+                                        {step === 2 ? <button className="btn btn-success">Lưu</button> : ""}
+                                    </div>
+                                </div>
+                            </div>
+                        </div> */}
                     </form>
                 </DialogModal>
             </React.Fragment>
@@ -340,6 +608,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     getCustomers: CrmCustomerActions.getCustomers,
+    createNewQuote: QuoteActions.createNewQuote,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuoteCreateForm));

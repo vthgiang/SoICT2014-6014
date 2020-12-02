@@ -22,7 +22,8 @@ export function assetsManager(state = initState, action) {
         case AssetConstants.CREATE_USAGE_REQUEST:
             return {
                 ...state,
-                isLoading: true
+                isLoading: true,
+                assetCodeError: []
             };
 
         case AssetConstants.GETALL_SUCCESS:
@@ -99,15 +100,21 @@ export function assetsManager(state = initState, action) {
 
         case AssetConstants.GETALL_FAILURE:
         case AssetConstants.GET_LIST_BUILDING_AS_TREE_FAILURE:
-        case AssetConstants.ADDASSET_FAILURE:
         case AssetConstants.UPDATE_INFOR_ASSET_FAILURE:
         case AssetConstants.DELETE_ASSET_FAILURE:
         case AssetConstants.CREATE_USAGE_FAILURE:
             return {
                 ...state,
                 isLoading: false,
-                error: action.error
+                error: action.error,
             };
+        case AssetConstants.ADDASSET_FAILURE:
+            return {
+                ...state,
+                isLoading: false,
+                error: action.error,
+                assetCodeError: action.payload
+            }
         default:
             return state
     }

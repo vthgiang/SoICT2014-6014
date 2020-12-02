@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { ErrorLabel, TrixEditor } from '../../../../common-components';
+import { ErrorLabel, QuillEditor } from '../../../../common-components';
 import Sortable from 'sortablejs';
 import { TaskTemplateFormValidator} from './taskTemplateFormValidator';
 import parse from 'html-react-parser';
@@ -175,7 +175,7 @@ class InformationForm extends Component{
         return msg == undefined;
     }
 
-    handleChangeInfoDesc = (value) => {
+    handleChangeInfoDesc = (value, imgs) => {
         const { information } = this.state;
         this.setState({
             information: {
@@ -260,8 +260,9 @@ class InformationForm extends Component{
                 {/**Mô tả của trường thông tin */}
                 <div className={`form-group ${this.state.information.errorOnDescription===undefined?"":"has-error"}`} >
                     <label className="control-label" htmlFor="inputDescriptionInfo">{translate('task_template.description')}</label>
-                    <TrixEditor
-                        hanldeChange={this.handleChangeInfoDesc}
+                    <QuillEditor
+                        id={'informationsTemplate'}
+                        getTextData={this.handleChangeInfoDesc}
                         value={information.description}
                     />
                 </div>

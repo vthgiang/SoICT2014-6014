@@ -69,8 +69,7 @@ const initSampleCompanyDB = async () => {
      * 1. Tạo kết nối đến csdl của hệ thống và công ty VNIST
      */
     const systemDB = mongoose.createConnection(
-        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/${
-            process.env.DB_NAME
+        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/${process.env.DB_NAME
         }`,
         {
             useNewUrlParser: true,
@@ -107,24 +106,23 @@ const initSampleCompanyDB = async () => {
     ]);
 
     const vnistDB = mongoose.createConnection(
-        `mongodb://${process.env.DB_HOST}:${
-            process.env.DB_PORT || "27017"
+        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"
         }/vnist`,
         process.env.DB_AUTHENTICATION === "true"
             ? {
-                  useNewUrlParser: true,
-                  useUnifiedTopology: true,
-                  useCreateIndex: true,
-                  useFindAndModify: false,
-                  user: process.env.DB_USERNAME,
-                  pass: process.env.DB_PASSWORD,
-              }
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+                useCreateIndex: true,
+                useFindAndModify: false,
+                user: process.env.DB_USERNAME,
+                pass: process.env.DB_PASSWORD,
+            }
             : {
-                  useNewUrlParser: true,
-                  useUnifiedTopology: true,
-                  useCreateIndex: true,
-                  useFindAndModify: false,
-              }
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+                useCreateIndex: true,
+                useFindAndModify: false,
+            }
     );
     if (!systemDB) throw "DB vnist cannot connect";
     console.log("DB vnist connected");
@@ -3016,8 +3014,8 @@ const initSampleCompanyDB = async () => {
                     dateOfIncident: new Date("2020-08-20"),
                     description: "cháy",
                     incidentCode: "icd01",
-                    statusIncident: "Chờ xử lý",
-                    type: "broken",
+                    statusIncident: "2",
+                    type: "1",
                     updatedAt: new Date("2020-08-20"),
                 },
             ],
@@ -3093,8 +3091,8 @@ const initSampleCompanyDB = async () => {
                     dateOfIncident: new Date("2000-08-20"),
                     description: "cháy",
                     incidentCode: "icd01",
-                    statusIncident: "Chờ xử lý",
-                    type: "broken",
+                    statusIncident: "1",
+                    type: "1",
                     updatedAt: new Date("2000-08-20"),
                 },
             ],
@@ -3169,8 +3167,8 @@ const initSampleCompanyDB = async () => {
                     dateOfIncident: new Date("2020-08-20"),
                     description: "cháy",
                     incidentCode: "icd01",
-                    statusIncident: "Chờ xử lý",
-                    type: "broken",
+                    statusIncident: "2",
+                    type: "1",
                     updatedAt: new Date("2020-08-20"),
                 },
             ],
@@ -3466,6 +3464,7 @@ const initSampleCompanyDB = async () => {
                     quantity: 3,
                 },
             ],
+            numberExpirationDate: 800,
             description: "Sản phẩm thuốc thú y",
         },
         {
@@ -3487,7 +3486,30 @@ const initSampleCompanyDB = async () => {
                     quantity: 3,
                 },
             ],
+            numberExpirationDate: 900,
             description: "Sản phẩm thuốc thú y",
+        },
+        {
+            company: vnist._id,
+            category: listCategory[0]._id,
+            name: "TIFFY",
+            code: "PR003",
+            type: "product",
+            baseUnit: "Gói",
+            unit: [],
+            quantity: 100,
+            materials: [
+                {
+                    good: listGood[0]._id,
+                    quantity: 10,
+                },
+                {
+                    good: listGood[1]._id,
+                    quantity: 12,
+                },
+            ],
+            numberExpirationDate: 1000,
+            description: "Sản phẩm trị cảm cúm",
         },
     ]);
     console.log("Khởi tạo xong danh sách hàng hóa");
@@ -4201,10 +4223,14 @@ const initSampleCompanyDB = async () => {
                 {
                     staff: users[11]._id,
                     time: null,
+                    status: 1,
+                    content: null
                 },
                 {
                     staff: users[0]._id,
                     time: null,
+                    status: 1,
+                    content: null
                 },
             ],
             status: 2,
@@ -4232,10 +4258,14 @@ const initSampleCompanyDB = async () => {
                 {
                     staff: users[5]._id,
                     time: new Date("2020-12-01 6:00:00"),
+                    status: 2,
+                    content: "Đat đầy đủ tiêu chuẩn chất lượng"
                 },
                 {
                     staff: users[0]._id,
                     time: null,
+                    status: 1,
+                    content: null
                 },
             ],
             creator: users[13]._id,
@@ -4261,10 +4291,14 @@ const initSampleCompanyDB = async () => {
                 {
                     staff: users[8]._id,
                     time: null,
+                    status: 1,
+                    content: null
                 },
                 {
                     staff: users[0]._id,
                     time: new Date("2020-12-02 6:00:00"),
+                    status: 2,
+                    content: "Lệnh sản xuất chưa đạt chuẩn chất lượng"
                 },
             ],
             status: 1,
@@ -4291,10 +4325,14 @@ const initSampleCompanyDB = async () => {
                 {
                     staff: users[11]._id,
                     time: null,
+                    status: 1,
+                    content: null
                 },
                 {
                     staff: users[0]._id,
                     time: new Date("2020-11-03 6:00:00"),
+                    status: 2,
+                    content: "Lệnh sản xuất đạt tiêu chuẩn chất lượng hạng A"
                 },
             ],
             status: 2,
@@ -4310,6 +4348,13 @@ const initSampleCompanyDB = async () => {
     ).insertMany(manufacturingCommandData);
 
     console.log("Tạo lệnh sản xuất");
+
+    // Gán lệnh SX vào trong kế hoạch sản xuất
+
+    const manufacturingPlansNumber0 = await ManufacturingPlan(vnistDB).findById(manufacturingPlans[0]._id);
+    manufacturingPlansNumber0.manufacturingCommands.push(manufacturingCommands[0]._id);
+    await manufacturingPlansNumber0.save();
+
 
     // ****************** Tạo mẫu dữ liệu mẫu lịch làm việc cho xưởng và công nhân********************
     let array30days = [];
@@ -4483,7 +4528,6 @@ const initSampleCompanyDB = async () => {
     console.log("Tạo mẫu dữ liệu lô hàng");
     const listLot = await Lot(vnistDB).insertMany([
         {
-            name: "LOT001",
             code: "LOT001",
             lotType: 2,
             good: listProduct[0]._id,
@@ -4560,7 +4604,6 @@ const initSampleCompanyDB = async () => {
             ],
         },
         {
-            name: "LOT002",
             code: "LOT002",
             lotType: 2,
             good: listProduct[1]._id,
@@ -4637,7 +4680,6 @@ const initSampleCompanyDB = async () => {
             ],
         },
         {
-            name: "LOT003",
             code: "LOT003",
             lotType: 2,
             good: listProduct[0]._id,
@@ -4714,7 +4756,6 @@ const initSampleCompanyDB = async () => {
             ],
         },
         {
-            name: "LOT004",
             code: "LOT004",
             lotType: 2,
             good: listGood[0]._id,
@@ -4791,7 +4832,6 @@ const initSampleCompanyDB = async () => {
             ],
         },
         {
-            name: "LOT005",
             code: "LOT005",
             lotType: 2,
             good: listGood[0]._id,
@@ -4868,7 +4908,6 @@ const initSampleCompanyDB = async () => {
             ],
         },
         {
-            name: "LOT006",
             code: "LOT006",
             lotType: 2,
             good: listGood[0]._id,
@@ -5106,6 +5145,110 @@ const initSampleCompanyDB = async () => {
                 },
             ],
         },
+        {
+            code: "BI003",
+            type: "4",
+            group: "2",
+            fromStock: listStock[0]._id,
+            users: [],
+            creator: users[0]._id,
+            partner: {
+                customer: null,
+                supplier: null,
+            },
+            approver: users[2]._id,
+            receiver: {
+                name: "Nguyễn Văn Thắng",
+                phone: 0344213030,
+                email: "thangbao2698@gmail.com",
+                address: "Thuần Thiện - Can Lộc - Hà Tĩnh",
+            },
+            status: "1",
+            timestamp: "10-12-2020",
+            description: "Xuất kho nguyên vật liệu",
+            goods: [
+                {
+                    good: listProduct[0]._id,
+                    quantity: 275,
+                    lots: [
+                        {
+                            lot: listLot[0]._id,
+                            quantity: 135,
+                        },
+                        {
+                            lot: listLot[2]._id,
+                            quantity: 140,
+                        },
+                    ],
+                    description: "Xuất xuất nguyên vật liệu",
+                },
+                {
+                    good: listProduct[1]._id,
+                    quantity: 345,
+                    lots: [
+                        {
+                            lot: listLot[1]._id,
+                            quantity: 345,
+                        },
+                    ],
+                    description: "Xuất nguyên vật liệu theo đúng tiêu chuẩn",
+                },
+            ],
+            manufacturingCommand: manufacturingCommands[0]._id,
+            manufacturingMill: manufacturingMills[0]._id
+        },
+        {
+            code: "BI004",
+            type: "4",
+            group: "2",
+            fromStock: listStock[1]._id,
+            users: [],
+            creator: users[0]._id,
+            partner: {
+                customer: null,
+                supplier: null,
+            },
+            approver: users[2]._id,
+            receiver: {
+                name: "Nguyễn Văn Thắng",
+                phone: 0344213030,
+                email: "thangbao2698@gmail.com",
+                address: "Thuần Thiện - Can Lộc - Hà Tĩnh",
+            },
+            status: "1",
+            timestamp: "10-12-2020",
+            description: "Xuất kho nguyên vật liệu",
+            goods: [
+                {
+                    good: listProduct[0]._id,
+                    quantity: 275,
+                    lots: [
+                        {
+                            lot: listLot[0]._id,
+                            quantity: 135,
+                        },
+                        {
+                            lot: listLot[2]._id,
+                            quantity: 140,
+                        },
+                    ],
+                    description: "Xuất xuất nguyên vật liệu",
+                },
+                {
+                    good: listProduct[1]._id,
+                    quantity: 345,
+                    lots: [
+                        {
+                            lot: listLot[1]._id,
+                            quantity: 345,
+                        },
+                    ],
+                    description: "Xuất nguyên vật liệu theo đúng tiêu chuẩn",
+                },
+            ],
+            manufacturingCommand: manufacturingCommands[0]._id,
+            manufacturingMill: manufacturingMills[0]._id
+        },
     ]);
     console.log("Tạo xong dữ liệu mẫu các loại phiếu");
 
@@ -5306,6 +5449,7 @@ const initSampleCompanyDB = async () => {
                 status[2]._id,
                 status[3]._id,
             ],
+            point: parseInt("129"),
             statusHistories: [
                 {
                     oldValue: status[1]._id,
@@ -5354,6 +5498,7 @@ const initSampleCompanyDB = async () => {
                 status[3]._id,
                 status[4]._id,
             ],
+            point: parseInt("10001"),
             statusHistories: [
                 {
                     oldValue: status[1]._id,

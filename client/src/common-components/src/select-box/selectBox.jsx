@@ -108,10 +108,13 @@ class SelectBox extends Component {
             return false;
         }
         for (let i = 0; i < items1.length; ++i) {
-            if (!(items1[i].value instanceof Array) && items1[i].value !== items2[i].value) { // Kiểu bình thường
-                return false;
-            } else if (items1[i].value instanceof Array && JSON.stringify(items1[i].value) !== JSON.stringify(items2[i].value)) { // Kiểu group
-                return false;
+            if (!items1[i] || !items2[i]) return false;
+            else {
+                if (!(items1[i].value instanceof Array) && items1[i].value !== items2[i].value) { // Kiểu bình thường
+                    return false;
+                } else if (items1[i].value instanceof Array && JSON.stringify(items1[i].value) !== JSON.stringify(items2[i].value)) { // Kiểu group
+                    return false;
+                }
             }
         }
         return true;
@@ -222,20 +225,28 @@ class SelectBox extends Component {
             return true;
         }
         // Chỉ render lại khi id thay đổi, hoặc khi tập items thay đổi, value thay đổi, hoặc disabled thay đổi
-        if (nextProps.id !== this.state.id || !SelectBox.isEqual(nextProps.items, this.state.items) || (nextProps.value && nextProps.value !== this.state.value) || (nextProps.disabled !== undefined ? nextProps.disabled : false) !== this.state.disabled)
+        if (nextProps.id !== this.state.id || !SelectBox.isEqual(nextProps.items, this.state.items) || (nextProps.value && !SelectBox.isEqual(nextProps.value, this.state.value)) || (nextProps.disabled !== undefined ? nextProps.disabled : false) !== this.state.disabled)
             return true;
         return false;;
+    }
+
+    checkValue = (value, multiple) => {
+        if (!multiple && !value) {
+            return "";
+        } else if (multiple && !value) {
+            return [];
+        } else return value;
     }
 
     render() {
         const { id, items, className, style, multiple = false, options = {}, disabled = false } = this.props;
 
-        const { searching } = this.state;
+        const { searching, value } = this.state;
 
         return (
             <React.Fragment>
                 <div className="select2">
-                    <select className={className} style={style} ref="select" value={this.state.value} id={id} multiple={multiple} onChange={() => { }} disabled={disabled}>
+                    <select className={className} style={style} ref="select" value={this.checkValue(value, multiple)} id={id} multiple={multiple} onChange={() => { }} disabled={disabled}>
                         {!searching &&
                             <React.Fragment>
                                 {options.placeholder !== undefined && multiple === false && <option></option>} {/*Ở chế độ single selection, nếu muốn mặc định không chọn gì*/}

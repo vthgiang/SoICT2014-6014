@@ -1,3 +1,4 @@
+const UserService = require(`${SERVER_MODULES_DIR}/super-admin/user/user.service`);
 const {
     Employee,
     AnnualLeave
@@ -432,4 +433,52 @@ exports.updateAnnualLeave = async (portal, id, data) => {
         path: 'employee',
         select: 'emailInCompany fullName employeeNumber'
     }]);
+}
+
+/**
+ * import dữ liệu nghỉ phép
+ * @param {*} data : Dữ liệu import
+ * @param {*} company : Id công ty
+ */
+exports.importAnnualLeave = async (portal, data, company) => {
+    let users = await UserService.getAllEmployeeOfUnitByIds(portal, [data[0].organizationalUnit]);
+    users = users.map(x => x.userId.email);
+    let employeeInfo = await Employee(connect(DB_CONNECTION, portal)).find({
+        company: company,
+        emailInCompany: {
+            $in: users
+        }
+    }, {
+        employeeNumber: 1,
+        _id: 1
+    });
+
+    let rowError = [];
+    data = data.map((x, index) => {
+        let employee = employeeInfo.filter(y => y.employeeNumber === x.employeeNumber);
+        if (employee.length === 0) {
+            x = {
+                ...x,
+                errorAlert: [...x.errorAlert, "staff_code_not_find"],
+                error: true
+            };
+            rowError = [...rowError, index + 1];
+        } else {
+            x = {
+                ...x,
+                employee: employee[0]._id,
+                company: company
+            };
+        }
+        return x;
+    })
+
+    if (rowError.length !== 0) {
+        return {
+            data,
+            rowError
+        }
+    } else {
+        return await AnnualLeave(connect(DB_CONNECTION, portal)).insertMany(data);
+    }
 }

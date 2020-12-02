@@ -13,7 +13,7 @@ class ExampleManagementTable extends Component {
         this.state = {
             exampleName: "",
             description: "",
-            page: 0,
+            page: 1,
             limit: 5
         };
     }
@@ -32,15 +32,14 @@ class ExampleManagementTable extends Component {
 
     handleSubmitSearch = async () => {
         await this.setState({
-            page: 0
+            page: 1
         });
         this.props.getOnlyExampleName(this.state);
     }
 
     setPage = async (pageNumber) => {
-        var currentPage = pageNumber - 1;
         await this.setState({
-            page: parseInt(currentPage)
+            page: parseInt(pageNumber)
         });
 
         this.props.getOnlyExampleName(this.state);
@@ -135,7 +134,7 @@ class ExampleManagementTable extends Component {
                             {(lists && lists.length !== 0) &&
                                 lists.map((example, index) => (
                                     <tr key={index}>
-                                        <td>{index + 1 + page * this.state.limit}</td>
+                                        <td>{index + 1 + (page-1) * this.state.limit}</td>
                                         <td>{example.exampleName}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} onClick={() => this.handleShowDetailInfo(example._id)}><i className="material-icons">visibility</i></a>
@@ -158,7 +157,7 @@ class ExampleManagementTable extends Component {
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
                         (typeof lists === 'undefined' || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
-                    <PaginateBar pageTotal={totalPage ? totalPage : 0} currentPage={page + 1} func={this.setPage} />
+                    <PaginateBar pageTotal={totalPage ? totalPage : 0} currentPage={page} func={this.setPage} />
                 </div>
             </React.Fragment>
         )

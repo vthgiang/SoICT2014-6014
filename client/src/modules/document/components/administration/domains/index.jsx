@@ -169,7 +169,7 @@ class AdministrationDocumentDomains extends Component {
         return array;
     }
     render() {
-        const { domainParent, deleteNode, currentDomain } = this.state;
+        const { deleteNode, currentDomain } = this.state;
         const { translate } = this.props;
         const { list } = this.props.documents.administration.domains;
         const { documents } = this.props;
@@ -185,9 +185,9 @@ class AdministrationDocumentDomains extends Component {
         if (documents.isLoading === false) {
             dataExport = list;
         }
-        console.log('propsss', this.props.department);
         let exportData = this.convertDataToExportData(dataExport);
         let unChooseNode = currentDomain ? this.findChildrenNode(list, currentDomain) : [];
+
         return (
             <React.Fragment>
                 <div className="form-inline">

@@ -11,9 +11,7 @@ import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { RoleActions } from '../../../../super-admin/role/redux/actions';
 
 import { AssetCreateForm, AssetDetailForm, AssetEditForm, AssetImportForm } from './combinedContent';
-import { configTaskTempalte } from '../../../../task/task-template/component/fileConfigurationImportTaskTemplate';
-import { translate } from 'react-redux-multilingual/lib/utils';
-
+import qs from 'qs';
 class AssetManagement extends Component {
     constructor(props) {
         super(props);
@@ -23,7 +21,7 @@ class AssetManagement extends Component {
             assetType: "",
             purchaseDate: null,
             disposalDate: null,
-            status: "",
+            status: window.location.search ? [qs.parse(window.location.search, { ignoreQueryPrefix: true }).status] : '',
             group: "",
             handoverUnit: "",
             handoverUser: "",
@@ -62,6 +60,7 @@ class AssetManagement extends Component {
 
     // Function format dữ liệu Date thành string
     formatDate(date, monthYear = false) {
+        if (!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -447,7 +446,7 @@ class AssetManagement extends Component {
         const { translate } = this.props;
         if (status === 'disposed') {
             if (disposalDate) return this.formatDate(disposalDate);
-            else return 'Deleted';
+            else return translate('asset.general_information.not_disposal_date');
         }
         else {
             return translate('asset.general_information.not_disposal');
@@ -455,8 +454,8 @@ class AssetManagement extends Component {
     }
 
     render() {
-        var { assetsManager, assetType, translate, user, isActive, department } = this.props;
-        var { page, limit, currentRowView, currentRow, purchaseDate, disposalDate, managedBy, location, typeRegisterForUse, handoverUnit, handoverUser } = this.state;
+        const { assetsManager, assetType, translate, user, isActive, department } = this.props;
+        const { page, limit, currentRowView, status, currentRow, purchaseDate, disposalDate, managedBy, location, typeRegisterForUse, handoverUnit, handoverUser } = this.state;
         var lists = "", exportData;
         var userlist = user.list, departmentlist = department.list;
         var assettypelist = assetType.listAssetTypes;
@@ -495,8 +494,8 @@ class AssetManagement extends Component {
                     <div className="dropdown pull-right">
                         <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.profile.employee_management.add_employee_title')} >{translate('menu.add_asset')}</button>
                         <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
-                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-asset').modal('show')}>{translate('human_resource.profile.employee_management.add_import')}</a></li>
                             <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-add-asset').modal('show')}>{translate('menu.add_asset')}</a></li>
+                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-asset').modal('show')}>{translate('human_resource.profile.employee_management.add_import')}</a></li>
                         </ul>
                     </div>
                     <AssetCreateForm />
@@ -556,6 +555,7 @@ class AssetManagement extends Component {
                             <SelectMulti id={`multiSelectStatus1`} multiple="multiple"
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('asset.general_information.select_all_status') }}
                                 onChange={this.handleStatusChange}
+                                value={status}
                                 items={[
                                     { value: "ready_to_use", text: translate('asset.general_information.ready_use') },
                                     { value: "in_use", text: translate('asset.general_information.using') },
@@ -647,6 +647,19 @@ class AssetManagement extends Component {
                         {exportData && <ExportExcel id="export-asset-info-management" exportData={exportData} style={{ marginRight: 10 }} />}
                     </div>
 
+                    {/* Báo lỗi khi thêm mới tài sản */}
+                    {assetsManager && assetsManager.assetCodeError && assetsManager.assetCodeError.length !== 0
+                        && <div style={{ color: 'red' }}>
+                            <strong style={{ 'font-weight': 600, 'padding-right': 10 }}>{translate('asset.asset_info.asset_code_exist')}:</strong>
+                            {
+                                assetsManager.assetCodeError.map((item, index) => {
+                                    let seperator = index !== 0 ? ", " : "";
+                                    return <span key={index}>{seperator}{item}</span>
+                                })
+                            }
+                        </div>
+                    }
+
                     {/* Bảng các tài sản */}
                     <table id="asset-table" className="table table-striped table-bordered table-hover">
                         <thead>
@@ -684,7 +697,7 @@ class AssetManagement extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(lists && lists.length !== 0) &&
+                            {(lists && lists.length !== 0) ?
                                 lists.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.code}</td>
@@ -709,7 +722,7 @@ class AssetManagement extends Component {
                                                 func={this.props.deleteAsset}
                                             />
                                         </td>
-                                    </tr>))
+                                    </tr>)) : null
                             }
                         </tbody>
                     </table>

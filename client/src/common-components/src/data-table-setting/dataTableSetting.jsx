@@ -25,19 +25,19 @@ class DataTableSetting extends Component {
         window.removeEventListener("resize", this.adjustSize);
     }
 
-    componentDidUpdate(){
+    componentDidUpdate() {
         window.$(`#${this.props.tableId} td`).show();
         window.$(`#${this.props.tableId} th`).show();
 
         // Xóa các thuộc tính width, nếu không khi thêm cột, bảng sẽ tràn chiều rộng (lớn hơn width trình duyệt)
         let headings = window.$(`#${this.props.tableId} th`);
-        for (let i = 0; i<headings.length; ++i){
+        for (let i = 0; i < headings.length; ++i) {
             if (!window.$(headings[i]).hasClass("col-fixed")) { // Riêng cột có class col-fixed sẽ không xóa thuộc tính width
                 window.$(headings[i]).width("");
             }
         }
 
-        const {hiddenColumns} = this.state;
+        const { hiddenColumns } = this.state;
         for (var j = 0, len = hiddenColumns.length; j < len; j++) {
             window.$(`#${this.props.tableId} td:nth-child(` + hiddenColumns[j] + `)`).hide();
             window.$(`#${this.props.tableId} thead th:nth-child(` + hiddenColumns[j] + `)`).hide();
@@ -75,7 +75,7 @@ class DataTableSetting extends Component {
     setLimit = async () => {
         await window.$(`#setting-${this.props.tableId}`).collapse("hide");
 
-        if(this.props.setLimit && Number(this.props.limit) !== Number(this.record.current.value)){
+        if (this.props.setLimit && Number(this.props.limit) !== Number(this.record.current.value)) {
             await this.props.setLimit(this.record.current.value);
         }
     }
@@ -92,17 +92,17 @@ class DataTableSetting extends Component {
     }
 
     render() {
-        const { columnName, translate, columnArr = [], hideColumnOption = true, tableContainerId, tableId, tableWidth, limit = 5 } = this.props;
+        const { translate, columnArr = [], hideColumnOption = true, tableContainerId, tableId, tableWidth, limit = 5 } = this.props;
 
         return (
             <React.Fragment>
                 <button type="button" data-toggle="collapse" data-target={`#setting-${tableId}`} className="pull-right" style={{ border: "none", background: "none", padding: "0px" }}><i className="fa fa-gear" style={{ fontSize: "19px" }}></i></button>
-                
+
                 <div className="collapse setting-table" id={`setting-${tableId}`}>
                     <button type="button" className="btn-close" data-toggle="collapse" data-target={`#setting-${tableId}`} ><i className="fa fa-times"></i></button>
 
                     <h4 className="box-title">{translate('general.action')}</h4>
-                    
+
                     {
                         hideColumnOption && columnArr.length > 0 &&
                         <div className="form-group">
@@ -126,7 +126,7 @@ class DataTableSetting extends Component {
                         </div>
                     }
                     <button type="button" className="btn btn-primary pull-right" onClick={this.setLimit}>{translate('table.update')}</button>
-                    
+
                 </div>
             </React.Fragment>
         );

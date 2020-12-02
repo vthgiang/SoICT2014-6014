@@ -142,7 +142,7 @@ class AdministrationAssetTypes extends Component {
                     <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('task_template.add')}</button>
                     <ul className="dropdown-menu pull-right">
                         <li><a style={{ cursor: "pointer" }} onClick={() => { window.$('#modal-create-asset-type').modal('show') }}>{translate('task_template.add')}</a></li>
-                        <li><a style={{ cursor: "pointer" }} onClick={() => { window.$('#import_asset_type').modal('show') }}>Thêm file</a></li>
+                        <li><a style={{ cursor: "pointer" }} onClick={() => { window.$('#import_asset_type').modal('show') }}>{translate('human_resource.profile.employee_management.add_import')}</a></li>
                     </ul>
                     <ImportAssetTypeModal />
                     <CreateAssetTypeModal domainParent={domainParent} />

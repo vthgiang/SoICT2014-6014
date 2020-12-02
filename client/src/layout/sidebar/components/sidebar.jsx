@@ -439,6 +439,7 @@ class SideBar extends Component {
                                     { name: 'menu.discipline', icon: 'fa fa-balance-scale', path: '/hr-discipline' },
                                     { name: 'menu.annual_leave', icon: 'fa fa-calendar-times-o', path: '/hr-annual-leave' },
                                     { name: 'menu.manage_work_plan', icon: 'fa fa-calendar', path: '/hr-manage-work-plan' },
+                                    { name: 'menu.manage_field', icon: 'fa fa-list-ul', path: '/hr-manage-field' },
                                     // nhân sự gói thầu
                                     { name: 'menu.list_search_for_package', icon: 'fa fa-calendar', path: '/hr-search-for-package' },
                                     { name: 'menu.list_major', icon: 'fa fa-calendar', path: '/hr-list-major' },

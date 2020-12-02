@@ -43,6 +43,8 @@ exports.createManufacturingCommand = async (data, portal) => {
         qualityControlStaffs: data.qualityControlStaffs.map(x => {
             return {
                 staff: x.staff,
+                status: 1,
+                content: null,
                 time: null
             }
         }),
@@ -261,7 +263,7 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
                     path: "creator"
                 }, {
                     path: "good.good",
-                    select: "code name baseUnit"
+                    select: "code name baseUnit numberExpirationDate"
                 }, {
                     path: "qualityControlStaffs.staff"
                 }]
@@ -307,9 +309,9 @@ exports.getManufacturingCommandById = async (id, portal) => {
     if (!manufacturingCommand) {
         throw Error("ManufacturingCommand is not existing");
     }
-    let lot = await Lot(connect(DB_CONNECTION, portal)).findOne({
+    let lot = await Lot(connect(DB_CONNECTION, portal)).find({
         manufacturingCommand: manufacturingCommand._id
-    }).select('code _id');
+    }).select('code _id manufacturingCommand');
     if (lot) {
         // await manufacturingCommand.markModified('attribute');
         manufacturingCommand.lot = lot;
@@ -354,25 +356,22 @@ exports.editManufaturingCommand = async (id, data, portal) => {
         }) : oldManufacturingCommand.accountables;
     oldManufacturingCommand.description = data.description ? data.description : oldManufacturingCommand.description
 
-    //Xử lý trường hợp kiểm định chất lượng lệnh sản xuất
-    if (data.qualityControlStaffId) {
-        let index = findIndexOfStaff(oldManufacturingCommand.qualityControlStaffs, data.qualityControlStaffId);
+    // Xử lý trường hợp kiểm định chất lượng lệnh sản xuất
+    if (data.qualityControlStaff) {
+        let index = findIndexOfStaff(oldManufacturingCommand.qualityControlStaffs, data.qualityControlStaff.staff);
         if (index !== -1) {
             oldManufacturingCommand.qualityControlStaffs[index].time = new Date(Date.now());
+            oldManufacturingCommand.qualityControlStaffs[index].status = data.qualityControlStaff.status;
+            oldManufacturingCommand.qualityControlStaffs[index].content = data.qualityControlStaff.content;
         }
-
-        let quantityControlled = 1;
-        oldManufacturingCommand.qualityControlStaffs.forEach((element, index1) => {
-            if (index1 !== index && element.time == null) {
-                quantityControlled = 0;
-            }
-        });
-        if (quantityControlled) {
-            oldManufacturingCommand.status = 5;
-        }
-    } else { // Nếu không kiểm định chất lượng sẽ là cập nhật trạng thái lệnh bắt đầu hoặc hoàn thành
-        oldManufacturingCommand.status = data.status ? data.status : oldManufacturingCommand.status;
+    } else {
+        oldManufacturingCommand.qualityControlStaffs = oldManufacturingCommand.qualityControlStaffs;
     }
+
+    oldManufacturingCommand.status = data.status ? data.status : oldManufacturingCommand.status;
+    oldManufacturingCommand.finishedProductQuantity = data.finishedProductQuantity ? data.finishedProductQuantity : oldManufacturingCommand.finishedProductQuantity;
+    oldManufacturingCommand.substandardProductQuantity = data.substandardProductQuantity ? data.substandardProductQuantity : oldManufacturingCommand.substandardProductQuantity;
+    oldManufacturingCommand.finishedTime = data.finishedTime ? data.finishedTime : oldManufacturingCommand.finishedTime;
 
 
     await oldManufacturingCommand.save();
@@ -395,7 +394,7 @@ exports.editManufaturingCommand = async (id, data, portal) => {
             path: "qualityControlStaffs.staff"
         }, {
             path: "good.good",
-            select: "code name baseUnit"
+            select: "code name baseUnit numberExpirationDate"
         }]);
 
     return { manufacturingCommand }

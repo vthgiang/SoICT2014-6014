@@ -138,7 +138,7 @@ class RoleTable extends Component {
                     </thead>
                     <tbody>
                         {
-                            role.listPaginate && role.listPaginate.length > 0 ?
+                            role.listPaginate && role.listPaginate.length > 0 &&
                                 role.listPaginate.map(role =>
                                     <tr key={`roleList${role._id}`}>
                                         <td> {role.name} </td>
@@ -156,15 +156,17 @@ class RoleTable extends Component {
                                             }
                                         </td>
                                     </tr>
-                                ) : role.isLoading ?
-                                    <tr><td colSpan={'4'}>{translate('confirm.loading')}</td></tr> :
-                                    <tr><td colSpan={'4'}>{translate('confirm.no_data')}</td></tr>
+                                )
                         }
                     </tbody>
                 </table>
-
+                {
+                    role.isLoading ?
+                    <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                    role.listPaginate && role.listPaginate.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                }
                 {/* PaginateBar */}
-                <PaginateBar display={role.listPaginate.length} total={role.list.length} pageTotal={role.totalPages} currentPage={role.page} func={this.setPage} />
+                <PaginateBar display={role.listPaginate.length} total={role.totalDocs} pageTotal={role.totalPages} currentPage={role.page} func={this.setPage} />
             </React.Fragment>
         );
     }

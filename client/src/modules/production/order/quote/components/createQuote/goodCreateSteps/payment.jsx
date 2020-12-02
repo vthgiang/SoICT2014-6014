@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { SelectBox } from "../../../../../../common-components";
-import { formatCurrency } from "../../../../../../helpers/formatCurrency";
+import { SelectBox } from "../../../../../../../common-components";
+import { formatCurrency } from "../../../../../../../helpers/formatCurrency";
 
 class Payment extends Component {
     constructor(props) {

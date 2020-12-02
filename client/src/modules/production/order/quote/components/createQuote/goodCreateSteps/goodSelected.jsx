@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { SelectBox, ErrorLabel } from "../../../../../../common-components";
+import { SelectBox, ErrorLabel } from "../../../../../../../common-components";
 
 class GoodSelected extends Component {
     constructor(props) {
@@ -13,12 +13,16 @@ class GoodSelected extends Component {
         let options = [];
         let { listGoodsByType } = this.props.goods;
         if (listGoodsByType) {
-            options = listGoodsByType.map((item) => {
+            options = [{ value: "title", text: "---Chọn mặt hàng---" }];
+
+            let mapOptions = listGoodsByType.map((item) => {
                 return {
                     value: item._id,
                     text: item.code + " - " + item.name,
                 };
             });
+
+            options = options.concat(mapOptions);
         }
         return options;
     };
