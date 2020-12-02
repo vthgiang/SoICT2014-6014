@@ -5,7 +5,7 @@ exports.createNewQuote = async (req, res) => {
     try {
         let data = req.body;
         // console.log("DATA:", data);
-        let quote = await QuoteService.createNewQuote(data, req.portal)
+        let quote = await QuoteService.createNewQuote(req.user._id, data, req.portal)
 
         await Log.info(req.user.email, "CREATED_NEW_QUOTE", req.portal);
 

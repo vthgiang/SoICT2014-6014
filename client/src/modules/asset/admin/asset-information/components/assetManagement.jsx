@@ -446,7 +446,7 @@ class AssetManagement extends Component {
         const { translate } = this.props;
         if (status === 'disposed') {
             if (disposalDate) return this.formatDate(disposalDate);
-            else return 'Deleted';
+            else return translate('asset.general_information.not_disposal_date');
         }
         else {
             return translate('asset.general_information.not_disposal');

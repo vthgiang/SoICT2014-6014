@@ -136,16 +136,19 @@ const AssetSchema = new Schema({
     cost: {
         //8. Nguyên giá
         type: Number,
+        default: 0
     },
 
     usefulLife: {
         //9. Thời gian sử dụng
         type: Number,
+        default: 0
     },
 
     startDepreciation: {
         // thời gian bắt đầu trích khấu hao
         type: Date,
+        default: null
     },
 
     residualValue: {
@@ -155,6 +158,7 @@ const AssetSchema = new Schema({
         thời gian sử dụng hữu dụng hoặc thời gian thuê của một tài sản càng dài 
         thì giá trị còn lại của nó càng thấp */
         type: Number,
+        default: 0
     },
 
     rate: {
@@ -300,7 +304,6 @@ const AssetSchema = new Schema({
             statusIncident: {
                 // 1: cho xu ly || 2: da xu ly
                 type: String,
-                // required: true
             },
             createdAt: {
                 type: Date,

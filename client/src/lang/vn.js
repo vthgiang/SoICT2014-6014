@@ -2290,6 +2290,7 @@ export default {
                 asset_value: "Giá trị tài sản",
                 disposal_date: "Ngày thanh lý",
                 not_disposal: "Chưa thanh lý",
+                not_disposal_date:"Chưa nhập thời gian thanh lý",
 
                 general_information: "Thông tin chung",
                 usage_information: "Thông tin sử dụng",
@@ -2480,6 +2481,7 @@ export default {
 
             // Quản lý sử dụng
             usage: {
+                choose_status: "Chọn loại trạng thái",
                 approved: "Đã phê duyệt",
                 waiting_approval: "Chờ phê duyệt",
                 not_approved: "Không phê duyệt",
