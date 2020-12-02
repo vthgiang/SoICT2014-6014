@@ -196,17 +196,7 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    getTaskTemplate: taskTemplateActions.getTaskTemplateById,
     editTaskTemplate: taskTemplateActions.editTaskTemplate,
-    addNewTemplate: taskTemplateActions.addTaskTemplate,
-    getDepartment: UserActions.getDepartmentOfUser,
-    getAllUserOfCompany: UserActions.getAllUserOfCompany,
-    getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
-    getRoleSameDepartment: UserActions.getRoleSameDepartment,
-    getDepartmentsThatUserIsDean: DepartmentActions.getDepartmentsThatUserIsDean,
-    getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
-    getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany
-
 };
 const connectedModalEditTaskTemplate = connect(mapState, actionCreators)(withTranslate(ModalEditTaskTemplate));
 export { connectedModalEditTaskTemplate as ModalEditTaskTemplate };
