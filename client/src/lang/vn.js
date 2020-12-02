@@ -1639,6 +1639,7 @@ export default {
                 religion: "Tôn giáo",
                 active: "Đang làm việc",
                 leave: "Đã nghỉ làm",
+                career_fields:'Ngành nghề/lĩnh vực',
                 maternity_leave: "Nghỉ thai sản",
                 unpaid_leave: "Nghỉ không lương",
                 probationary: "Đang thử việc",

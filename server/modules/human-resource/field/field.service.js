@@ -26,8 +26,8 @@ exports.getAllFields = async (portal, params, company) => {
     if(params.limit===undefined&&params.page===undefined){
         let data = await Field(connect(DB_CONNECTION, portal)).find(keySearch);
         return {
-            listField:data,
-            totalList:data.length
+            listField: data,
+            totalList: data.length
         }
     } else {
         let data = await Field(connect(DB_CONNECTION, portal)).find(keySearch);

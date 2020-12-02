@@ -1468,6 +1468,7 @@ export default {
                 religion: "Religion",
                 active: "Official staff",
                 leave: "Quit job",
+                career_fields: 'Career/fields',
                 maternity_leave: "Maternity leave",
                 unpaid_leave: "Unpaid leave",
                 probationary: "Probationary",
