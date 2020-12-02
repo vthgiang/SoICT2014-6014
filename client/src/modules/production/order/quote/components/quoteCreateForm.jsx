@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
+import { QuoteActions, quoteActions } from "../redux/actions";
 import { generateCode } from "../../../../../helpers/generateCode";
 import { formatToTimeZoneDate } from "../../../../../helpers/formatDate";
 import { DatePicker, DialogModal, SelectBox, ButtonModal, ErrorLabel } from "../../../../../common-components";
@@ -60,14 +61,29 @@ class QuoteCreateForm extends Component {
     };
 
     handleCustomerChange = (value) => {
-        let customerInfo = this.props.customers.list.filter((item) => item._id === value[0]);
-        this.setState({
-            customer: customerInfo[0]._id,
-            customerName: customerInfo[0].name,
-            customerAddress: customerInfo[0].address,
-            customerPhone: customerInfo[0].mobilephoneNumber,
-            customerRepresent: customerInfo[0].represent,
-        });
+        if (value[0] !== "title") {
+            let customerInfo = this.props.customers.list.filter((item) => item._id === value[0]);
+            if (customerInfo.length) {
+                this.setState({
+                    customer: customerInfo[0]._id,
+                    customerName: customerInfo[0].name,
+                    customerAddress: customerInfo[0].address,
+                    customerPhone: customerInfo[0].mobilephoneNumber,
+                    customerRepresent: customerInfo[0].represent,
+                });
+            }
+        } else {
+            this.setState((state) => {
+                return {
+                    ...state,
+                    customer: value[0],
+                    customerName: "",
+                    customerAddress: "",
+                    customerPhone: "",
+                    customerRepresent: "",
+                };
+            });
+        }
     };
 
     handleCustomerPhoneChange = (e) => {
@@ -299,6 +315,96 @@ class QuoteCreateForm extends Component {
         });
     };
 
+    formatDiscountForSubmit = (discounts) => {
+        let discountsMap = discounts.map((dis) => {
+            console.log("dis.discountOnGoods", dis.discountOnGoods);
+            return {
+                _id: dis._id,
+                code: dis.code,
+                type: dis.type,
+                formality: dis.formality,
+                name: dis.name,
+                effectiveDate: dis.effectiveDate,
+                expirationDate: dis.expirationDate,
+                discountedCash: dis.discountedCash,
+                discountedPercentage: dis.discountedPercentage,
+                loyaltyCoin: dis.loyaltyCoin,
+                bonusGoods: dis.bonusGoods
+                    ? dis.bonusGoods.map((bonus) => {
+                          return {
+                              good: bonus.good._id,
+                              expirationDateOfGoodBonus: bonus.expirationDateOfGoodBonus,
+                              baseUnit: bonus.baseUnit,
+                              quantityOfBonusGood: bonus.quantityOfBonusGood,
+                          };
+                      })
+                    : undefined,
+                discountOnGoods: dis.discountOnGoods
+                    ? {
+                          good: dis.discountOnGoods.good._id,
+                          expirationDate: dis.discountOnGoods.expirationDate,
+                          discountedPrice: dis.discountOnGoods.discountedPrice,
+                      }
+                    : undefined,
+            };
+        });
+        return discountsMap;
+    };
+
+    formatGoodForSubmit = () => {
+        let { goods } = this.state;
+        let goodMap = goods.map((item) => {
+            return {
+                good: item.good._id,
+                pricePerBaseUnit: item.pricePerBaseUnit,
+                pricePerBaseUnitOrigin: item.pricePerBaseUnitOrigin,
+                salesPriceVariance: item.salesPriceVariance,
+                quantity: item.quantity,
+                serviceLevelAgreements: item.slasOfGood,
+                taxs: item.taxs,
+                discounts: item.discountsOfGood.length ? this.formatDiscountForSubmit(item.discountsOfGood) : [],
+                note: item.note,
+                amount: item.amount,
+                amountAfterDiscount: item.amountAfterDiscount,
+                amountAfterTax: item.amountAfterTax,
+            };
+        });
+        return goodMap;
+    };
+
+    save = async (e) => {
+        e.preventDefault();
+        let {
+            customer,
+            customerAddress,
+            customerPhone,
+            customerRepresent,
+            code,
+            effectiveDate,
+            expirationDate,
+            shippingFee,
+            deliveryTime,
+            coin,
+            discountsOfOrderValue,
+        } = this.state;
+        let data = {
+            code,
+            effectiveDate: effectiveDate ? new Date(formatToTimeZoneDate(effectiveDate)) : undefined,
+            expirationDate: expirationDate ? new Date(formatToTimeZoneDate(expirationDate)) : undefined,
+            customer,
+            customerPhone,
+            customerAddress,
+            customerRepresent,
+            goods: this.formatGoodForSubmit(),
+            discounts: discountsOfOrderValue.length ? this.formatDiscountForSubmit(discountsOfOrderValue) : [],
+            shippingFee,
+            deliveryTime: deliveryTime ? new Date(formatToTimeZoneDate(deliveryTime)) : undefined,
+            coin,
+        };
+        console.log("DATA", data);
+        await this.props.createNewQuote(data);
+    };
+
     render() {
         let {
             code,
@@ -433,6 +539,7 @@ class QuoteCreateForm extends Component {
                             {step === 2 && (
                                 <QuoteCreatePayment
                                     listGoods={goods}
+                                    customer={customer}
                                     customerPhone={customerPhone}
                                     customerAddress={customerAddress}
                                     customerName={customerName}
@@ -457,7 +564,7 @@ class QuoteCreateForm extends Component {
                                     setCurrentDiscountsOfGood={(data) => {
                                         this.setCurrentDiscountsOfGood(data);
                                     }}
-                                    customer={customer}
+                                    saveQuote={this.save}
                                 />
                             )}
                         </div>
@@ -501,6 +608,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     getCustomers: CrmCustomerActions.getCustomers,
+    createNewQuote: QuoteActions.createNewQuote,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuoteCreateForm));

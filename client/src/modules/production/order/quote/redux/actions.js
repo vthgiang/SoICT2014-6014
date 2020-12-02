@@ -1,7 +1,7 @@
 import { QuoteConstants } from './constants';
 import { QuoteServices } from  './services';
 
-export const quoteActions = {
+export const QuoteActions = {
     createNewQuote,
     getAllQuotes
 }
