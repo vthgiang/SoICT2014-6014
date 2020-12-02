@@ -14,6 +14,8 @@ export const CareerReduxAction = {
     createCareerField,
     createCareerPosition,
     createCareerAction,
+    
+    editCareerPosition,
 };
 
 /**
@@ -164,6 +166,31 @@ function createCareerAction(data) {
             .catch(err => {
                 dispatch({
                     type: CareerConstant.CREATE_CAREER_ACTION_FAILURE,
+                    error: err
+                });
+            })
+    }
+}
+
+/**
+ * Lấy danh sách kỷ luật
+ * @data : Dữ liệu key tìm kiếm 
+ */
+function editCareerPosition(data) {
+    return dispatch => {
+        dispatch({
+            type: CareerConstant.UPDATE_CAREER_POSITION_REQUEST
+        });
+        CareerService.editCareerPosition(data)
+            .then(res => {
+                dispatch({
+                    type: CareerConstant.UPDATE_CAREER_POSITION_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: CareerConstant.UPDATE_CAREER_POSITION_FAILURE,
                     error: err
                 });
             })

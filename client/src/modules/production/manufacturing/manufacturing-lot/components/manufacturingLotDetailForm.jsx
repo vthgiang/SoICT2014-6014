@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { DialogModal } from '../../../../../common-components';
 import { formatDate, formatFullDate } from '../../../../../helpers/formatDate';
+import BillDetailForm from '../../../warehouse/bill-management/components/genaral/billDetailForm';
 import { BillActions } from '../../../warehouse/bill-management/redux/actions';
 import { LotActions } from '../../../warehouse/inventory-management/redux/actions';
 
@@ -19,6 +20,11 @@ class ManufacturingLotDetailForm extends Component {
             return false;
         }
         return true;
+    }
+
+    showDetailBill = async (id) => {
+        await this.props.getDetailBill(id);
+        window.$('#modal-detail-bill').modal('show');
     }
 
     render() {
@@ -43,6 +49,7 @@ class ManufacturingLotDetailForm extends Component {
                     hasSaveButton={false}
                     hasNote={false}
                 >
+                    <BillDetailForm />
                     <form id={`form-detail-manufacturing-lot`}>
                         <div className="row">
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -60,7 +67,12 @@ class ManufacturingLotDetailForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manufacturing.lot.bill_import_code')}:&emsp;</strong>
-                                    { }
+                                    {currentLot.bills && currentLot.bills.map((bill, index) => {
+                                        if (index === currentLot.bills.length - 1) {
+                                            return <a href="#" onClick={() => this.showDetailBill(bill._id)}>{bill.code}</a>
+                                        }
+                                        return <a href="#" onClick={() => this.showDetailBill(bill._id)}>{bill.code}, </a>
+                                    })}
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manufacturing.lot.manufacturing_mill')}:&emsp;</strong>
@@ -122,7 +134,7 @@ class ManufacturingLotDetailForm extends Component {
                                                     <td>{currentLot.good && currentLot.good.code}</td>
                                                     <td>{currentLot.good && currentLot.good.name}</td>
                                                     <td>{currentLot.good && currentLot.good.baseUnit}</td>
-                                                    <td>{currentLot.quantity}</td>
+                                                    <td>{currentLot.originalQuantity}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -309,7 +321,8 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     getDetailManufacturingLot: LotActions.getDetailManufacturingLot,
-    getBillsByCommand: BillActions.getBillsByCommand
+    getBillsByCommand: BillActions.getBillsByCommand,
+    getDetailBill: BillActions.getDetailBill,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManufacturingLotDetailForm));

@@ -16,6 +16,7 @@ module.exports = {
     WorkPlan: require('./human-resource/workPlan.model'),
     Salary: require('./human-resource/salary.model'),
     Timesheet: require('./human-resource/timesheet.model'),
+    Field: require('./human-resource/field.model'),
 
     Major: require('./human-resource/major.model'),
     CareerPosition: require('./human-resource/careerPosition.model'),

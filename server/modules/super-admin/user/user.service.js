@@ -1,4 +1,10 @@
-const { OrganizationalUnit, User, UserRole, Role, Company } = require(`${SERVER_MODELS_DIR}`);
+const {
+    OrganizationalUnit,
+    User,
+    UserRole,
+    Role,
+    Company,
+} = require(`${SERVER_MODELS_DIR}`);
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const generator = require("generate-password");
@@ -17,143 +23,146 @@ exports.getUsers = async (portal, company, query) => {
     var departmentIds = query.departmentIds;
     var unitId = query.unitId;
 
-    var keySearch = {company};
+    var keySearch = {};
     if (!page && !limit && !userRole && !departmentIds && !unitId) {
         if (name) {
             keySearch = {
                 ...keySearch,
                 name: {
                     $regex: name,
-                    $options: "i"
-                }
+                    $options: "i",
+                },
             };
 
             let searchUses = await User(connect(DB_CONNECTION, portal))
                 .find(keySearch)
-                .select('-password -status -deleteSoft -tokens')
-                .populate([{
-                    path: 'roles',
-                    populate: {
-                        path: 'roleId'
-                    }
-                },
-                {
-                    path: 'company', model: Company(connect(DB_CONNECTION, process.env.DB_NAME))
-                }
+                .select("-password -status -deleteSoft -tokens")
+                .populate([
+                    {
+                        path: "roles",
+                        populate: {
+                            path: "roleId",
+                        },
+                    },
                 ]);
 
             return {
-                searchUses
-            }
+                searchUses,
+            };
         } else {
             return await User(connect(DB_CONNECTION, portal))
-                .find({
-                    company
-                })
-                .select('-password -status -deleteSoft -tokens')
-                .populate([{
-                    path: 'roles',
-                    populate: {
-                        path: 'roleId'
-                    }
-                },
-                {
-                    path: 'company', model: Company(connect(DB_CONNECTION, process.env.DB_NAME))
-                }
+                .find()
+                .select("-password -status -deleteSoft -tokens")
+                .populate([
+                    {
+                        path: "roles",
+                        populate: {
+                            path: "roleId",
+                        },
+                    },
                 ]);
         }
     } else if (page && limit && !userRole && !departmentIds && !unitId) {
-        const option = (query.key && query.value) ?
-            Object.assign({ company }, {
-                [`${query.key}`]: new RegExp(query.value, "i")
-            }) : {
-                company
-            };
+        const option =
+            query.key && query.value
+                ? Object.assign(
+                      {},
+                      {
+                          [`${query.key}`]: new RegExp(query.value, "i"),
+                      }
+                  )
+                : {};
 
-        return await User(connect(DB_CONNECTION, portal))
-            .paginate(option, {
-                page,
-                limit,
-                select: '-tokens -status -password -deleteSoft',
-                populate: [{
-                    path: 'roles',
-                    populate: {
-                        path: 'roleId'
-                    }
-                },
+        return await User(connect(DB_CONNECTION, portal)).paginate(option, {
+            page,
+            limit,
+            select: "-tokens -status -password -deleteSoft",
+            populate: [
                 {
-                    path: 'company', model: Company(connect(DB_CONNECTION, process.env.DB_NAME))
-                }
-                ]
-            });
+                    path: "roles",
+                    populate: {
+                        path: "roleId",
+                    },
+                },
+            ],
+        });
     } else if (!page && !limit && (userRole || departmentIds) && !unitId) {
         if (userRole) {
-            let department = await OrganizationalUnit(connect(DB_CONNECTION, portal))
-                .findOne({
-                    $or: [{
-                        'deans': userRole
+            let department = await OrganizationalUnit(
+                connect(DB_CONNECTION, portal)
+            ).findOne({
+                $or: [
+                    {
+                        deans: userRole,
                     },
                     {
-                        'viceDeans': userRole
+                        viceDeans: userRole,
                     },
                     {
-                        'employees': userRole
-                    }
-                    ]
-                });
+                        employees: userRole,
+                    },
+                ],
+            });
             if (department) {
                 return _getAllUsersInOrganizationalUnit(portal, department);
             }
         } else {
-            let departments = await OrganizationalUnit(connect(DB_CONNECTION, portal))
-                .find({
-                    _id: {
-                        $in: departmentIds
-                    }
-                });
+            let departments = await OrganizationalUnit(
+                connect(DB_CONNECTION, portal)
+            ).find({
+                _id: {
+                    $in: departmentIds,
+                },
+            });
 
-            let users = await _getAllUsersInOrganizationalUnits(portal, departments);
+            let users = await _getAllUsersInOrganizationalUnits(
+                portal,
+                departments
+            );
 
             return users;
         }
     } else if (unitId) {
         return getAllUserInUnitAndItsSubUnits(portal, company, unitId);
     }
-}
+};
 
 exports.getAllEmployeeOfUnitByRole = async (portal, role) => {
-    let organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal))
-        .findOne({
-            $or: [{
-                'deans': {
-                    $in: role
-                }
+    let organizationalUnit = await OrganizationalUnit(
+        connect(DB_CONNECTION, portal)
+    ).findOne({
+        $or: [
+            {
+                deans: {
+                    $in: role,
+                },
             },
             {
-                'viceDeans': {
-                    $in: role
-                }
+                viceDeans: {
+                    $in: role,
+                },
             },
             {
-                'employees': {
-                    $in: role
-                }
-            }
-            ]
-        });
+                employees: {
+                    $in: role,
+                },
+            },
+        ],
+    });
 
     let employees;
     if (organizationalUnit) {
         employees = await UserRole(connect(DB_CONNECTION, portal))
             .find({
                 roleId: {
-                    $in: organizationalUnit.employees
-                }
-            }).populate('userId roleId');
+                    $in: organizationalUnit.employees,
+                },
+            })
+            .populate("userId roleId");
     }
 
     return employees;
-}
+};
 
 /**
  * Lấy tất cả nhân viên theo mảng id đơn vị
@@ -162,34 +171,46 @@ exports.getAllEmployeeOfUnitByRole = async (portal, role) => {
 exports.getAllEmployeeOfUnitByIds = async (portal, id) => {
     let data = [];
     for (let i = 0; i < id.length; i++) {
-        let organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal))
-            .findById(id[i]);
-        let allRoles = [...organizationalUnit.employees, ...organizationalUnit.deans, ...organizationalUnit.viceDeans];
+        let organizationalUnit = await OrganizationalUnit(
+            connect(DB_CONNECTION, portal)
+        ).findById(id[i]);
+        let allRoles = [
+            ...organizationalUnit.employees,
+            ...organizationalUnit.deans,
+            ...organizationalUnit.viceDeans,
+        ];
         let employees = await UserRole(connect(DB_CONNECTION, portal))
             .find({
                 roleId: {
-                    $in: allRoles
-                }
-            }).populate('userId roleId');
+                    $in: allRoles,
+                },
+            })
+            .populate("userId roleId");
 
         for (let j in employees) {
-
             let check = 0;
             for (let k in data) {
-                if (String(employees[j].userId._id) == String(data[k].userId._id)) {
+                if (
+                    String(employees[j].userId._id) ==
+                    String(data[k].userId._id)
+                ) {
                     check = 1;
                     break;
                 }
-
             }
             if (check == 0) {
-                let employee = {_id: employees[j]._id, idUnit:id[i], userId: employees[j].userId, roleId: employees[j].roleId };
+                let employee = {
+                    _id: employees[j]._id,
+                    idUnit: id[i],
+                    userId: employees[j].userId,
+                    roleId: employees[j].roleId,
+                };
                 data.push(employee);
             }
         }
-    };
+    }
     return data;
-}
+};
 
 /**
  * Lấy tất cả các người dùng trong  đơn vị và trong các đơn vị con của nó
@@ -201,11 +222,17 @@ getAllUserInUnitAndItsSubUnits = async (portal, id, unitId) => {
     //Lấy tất cả các đơn vị con của 1 đơn vị
     var data;
 
-    if (unitId !== '-1') {
-        var organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findById(unitId);
+    if (unitId !== "-1") {
+        var organizationalUnit = await OrganizationalUnit(
+            connect(DB_CONNECTION, portal)
+        ).findById(unitId);
         // TODO: tối ưu hóa OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree
 
-        data = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(portal, id, organizationalUnit.deans[0]);
+        data = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(
+            portal,
+            id,
+            organizationalUnit.deans[0]
+        );
 
         var queue = [];
         var departments = [];
@@ -220,33 +247,40 @@ getAllUserInUnitAndItsSubUnits = async (portal, id, unitId) => {
                     var u = v.children[i];
                     queue.push(u);
                     departments.push(u);
-
                 }
             }
         }
         //Lấy tất cả user của từng đơn vị
         var userArray = [];
-        userArray = await _getAllUsersInOrganizationalUnits(portal, departments);
+        userArray = await _getAllUsersInOrganizationalUnits(
+            portal,
+            departments
+        );
         return userArray;
-
-    } else { //Lấy tất nhan vien trong moi đơn vị trong công ty
-        const allUnits = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find(); // { company: id }
-        const newData = allUnits.map(department => {
+    } else {
+        //Lấy tất nhan vien trong moi đơn vị trong công ty
+        const allUnits = await OrganizationalUnit(
+            connect(DB_CONNECTION, portal)
+        ).find(); // { company: id }
+        const newData = allUnits.map((department) => {
             return {
                 id: department._id.toString(),
                 name: department.name,
                 description: department.description,
-                deans: department.deans.map(item => item.toString()),
-                viceDeans: department.viceDeans.map(item => item.toString()),
-                employees: department.employees.map(item => item.toString()),
-                parent_id: department.parent !== null ? department.parent.toString() : null
-            }
+                deans: department.deans.map((item) => item.toString()),
+                viceDeans: department.viceDeans.map((item) => item.toString()),
+                employees: department.employees.map((item) => item.toString()),
+                parent_id:
+                    department.parent !== null
+                        ? department.parent.toString()
+                        : null,
+            };
         });
 
         let tmp = await _getAllUsersInOrganizationalUnits(portal, newData);
         return tmp;
     }
-}
+};
 
 /**
  * Lấy thông tin user theo id
@@ -255,24 +289,25 @@ getAllUserInUnitAndItsSubUnits = async (portal, id, unitId) => {
 exports.getUser = async (portal, id) => {
     var user = await User(connect(DB_CONNECTION, portal))
         .findById(id)
-        .select('-password -status -deleteSoft -tokens')
-        .populate([{
-            path: 'roles',
-            populate: {
-                path: 'roleId'
-            }
-        },
-        {
-            path: 'company'
-        }
+        .select("-password -status -deleteSoft -tokens")
+        .populate([
+            {
+                path: "roles",
+                populate: {
+                    path: "roleId",
+                },
+            },
+            {
+                path: "company",
+            },
         ]);
 
     if (!user) {
-        throw ['user_not_found'];
+        throw ["user_not_found"];
     }
 
     return user;
-}
+};
 
 /**
  * Lấy tất cả các đơn vị tổ chức một user thuộc về
@@ -280,30 +315,33 @@ exports.getUser = async (portal, id) => {
  */
 exports.getOrganizationalUnitsOfUser = async (portal, userId) => {
     const roles = await UserRole(connect(DB_CONNECTION, portal)).find({
-        userId
+        userId,
     });
-    const newRoles = roles.map(role => role.roleId.toString());
-    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({
-        $or: [{
-            'deans': {
-                $in: newRoles
-            }
-        },
-        {
-            'viceDeans': {
-                $in: newRoles
-            }
-        },
-        {
-            'employees': {
-                $in: newRoles
-            }
-        }
-        ]
+    const newRoles = roles.map((role) => role.roleId.toString());
+    const departments = await OrganizationalUnit(
+        connect(DB_CONNECTION, portal)
+    ).find({
+        $or: [
+            {
+                deans: {
+                    $in: newRoles,
+                },
+            },
+            {
+                viceDeans: {
+                    $in: newRoles,
+                },
+            },
+            {
+                employees: {
+                    $in: newRoles,
+                },
+            },
+        ],
     });
 
     return departments;
-}
+};
 
 /**
  * Tạo tài khoản cho user
@@ -315,30 +353,29 @@ exports.createUser = async (portal, data, company) => {
     var salt = bcrypt.genSaltSync(10);
     var password = generator.generate({
         length: 10,
-        numbers: true
+        numbers: true,
     });
     var hash = bcrypt.hashSync(password, salt);
 
     var checkUser = await User(connect(DB_CONNECTION, portal)).findOne({
-        email: data.email
+        email: data.email,
     });
 
     if (checkUser) {
-        throw ['email_exist'];
+        throw ["email_exist"];
     }
 
-    var user = await User(connect(DB_CONNECTION, portal))
-        .create({
-            name: data.name,
-            email: data.email,
-            password: hash,
-            company: company
-        });
+    var user = await User(connect(DB_CONNECTION, portal)).create({
+        name: data.name,
+        email: data.email,
+        password: hash,
+        company: company,
+    });
 
-    await this.sendMailAboutCreatedAccount(data.email, password, portal)
+    await this.sendMailAboutCreatedAccount(data.email, password, portal);
 
     return user;
-}
+};
 
 /**
  * Gửi email thông báo đã tạo tài khoản thành công
@@ -347,20 +384,21 @@ exports.createUser = async (portal, data, company) => {
  */
 exports.sendMailAboutCreatedAccount = async (email, password, portal) => {
     var transporter = nodemailer.createTransport({
-        service: 'Gmail',
+        service: "Gmail",
         auth: {
-            user: 'vnist.qlcv@gmail.com',
-            pass: 'qlcv123@'
-        }
+            user: "vnist.qlcv@gmail.com",
+            pass: "qlcv123@",
+        },
     });
 
     var mainOptions = {
-        from: 'vnist.qlcv@gmail.com',
+        from: "vnist.qlcv@gmail.com",
         to: email,
-        subject: 'Xác thực tạo tài khoản trên hệ thống quản lý công việc',
-        text: 'Yêu cầu xác thực tài khoản đã đăng kí trên hệ thống với email là : ' + email,
-        html:
-            `<html>
+        subject: "Xác thực tạo tài khoản trên hệ thống quản lý công việc",
+        text:
+            "Yêu cầu xác thực tài khoản đã đăng kí trên hệ thống với email là : " +
+            email,
+        html: `<html>
                 <head>
                     <style>
                         .wrapper {
@@ -435,11 +473,11 @@ exports.sendMailAboutCreatedAccount = async (email, password, portal) => {
                         </div>
                     </div>
                 </body>
-        </html>`
-    }
+        </html>`,
+    };
 
     return await transporter.sendMail(mainOptions);
-}
+};
 
 /**
  * Gửi email thông báo thay đổi email tài khoản hiện tại
@@ -448,49 +486,61 @@ exports.sendMailAboutCreatedAccount = async (email, password, portal) => {
  */
 exports.sendMailAboutChangeEmailOfUserAccount = async (oldEmail, newEmail) => {
     var transporter = nodemailer.createTransport({
-        service: 'Gmail',
+        service: "Gmail",
         auth: {
-            user: 'vnist.qlcv@gmail.com',
-            pass: 'qlcv123@'
-        }
+            user: "vnist.qlcv@gmail.com",
+            pass: "qlcv123@",
+        },
     });
 
     var mainOptions = {
-        from: 'vnist.qlcv@gmail.com',
+        from: "vnist.qlcv@gmail.com",
         to: newEmail,
-        subject: 'Xác thực thay đổi email',
+        subject: "Xác thực thay đổi email",
         text: `Chuyển đổi email từ [${oldEmail}] => [${newEmail}] `,
-        html: '<p>Tài khoản dùng để đăng nhập của bạn là : </p>' +
-            '<ul>' +
-            '<li>Email cũ :' + oldEmail + '</li>' +
-            '<li>Email mới :' + newEmail + '</li>' +
-            '</ul>' +
-            '<p>Your account use to login in system : </p>' +
-            '<ul>' +
-            '<li>Old email :' + oldEmail + '</li>' +
-            '<li>New email :' + newEmail + '</li>' +
-            '</ul>'
-    }
+        html:
+            "<p>Tài khoản dùng để đăng nhập của bạn là : </p>" +
+            "<ul>" +
+            "<li>Email cũ :" +
+            oldEmail +
+            "</li>" +
+            "<li>Email mới :" +
+            newEmail +
+            "</li>" +
+            "</ul>" +
+            "<p>Your account use to login in system : </p>" +
+            "<ul>" +
+            "<li>Old email :" +
+            oldEmail +
+            "</li>" +
+            "<li>New email :" +
+            newEmail +
+            "</li>" +
+            "</ul>",
+    };
 
     return await transporter.sendMail(mainOptions);
-}
+};
 
 /**
  * Kiểm tra sự tồn tại của tài khoản
  * @email : email người dung
  */
 exports.checkUserExited = async (portal, email) => {
-    var user = await User(connect(DB_CONNECTION, portal)).findOne({
-        email: email
-    }, {
-        field1: 1
-    });
+    var user = await User(connect(DB_CONNECTION, portal)).findOne(
+        {
+            email: email,
+        },
+        {
+            field1: 1,
+        }
+    );
     var checkUser = false;
     if (user) {
-        checkUser = true
+        checkUser = true;
     }
     return checkUser;
-}
+};
 
 /**
  * Chỉnh sửa thông tin tài khoản người dùng
@@ -500,29 +550,32 @@ exports.checkUserExited = async (portal, email) => {
 exports.editUser = async (portal, id, data) => {
     var user = await User(connect(DB_CONNECTION, portal))
         .findById(id)
-        .select('-password -status -deleteSoft')
-        .populate([{
-            path: 'roles',
-            populate: {
-                path: 'roleId'
-            }
-        },
-        {
-            path: 'company'
-        }
+        .select("-password -status -deleteSoft")
+        .populate([
+            {
+                path: "roles",
+                populate: {
+                    path: "roleId",
+                },
+            },
+            {
+                path: "company",
+            },
         ]);
 
     if (!user) {
-        throw ['user_not_found']
-    };
+        throw ["user_not_found"];
+    }
 
     if (user.email !== data.email) {
-        const checkEmail = await User(connect(DB_CONNECTION, portal))
-            .findOne({
-                email: data.email
-            });
-        if (checkEmail !== null) throw ['email_exist'];
-        await this.sendMailAboutChangeEmailOfUserAccount(user.email, data.email);
+        const checkEmail = await User(connect(DB_CONNECTION, portal)).findOne({
+            email: data.email,
+        });
+        if (checkEmail !== null) throw ["email_exist"];
+        await this.sendMailAboutChangeEmailOfUserAccount(
+            user.email,
+            data.email
+        );
     }
     user.name = data.name;
 
@@ -544,7 +597,7 @@ exports.editUser = async (portal, id, data) => {
     await user.save();
 
     return user;
-}
+};
 
 /**
  * Chỉnh sửa các role - phân quyền cho 1 user
@@ -552,38 +605,36 @@ exports.editUser = async (portal, id, data) => {
  * @roleIdArr mảng id các role
  */
 exports.editRolesForUser = async (portal, userId, roleIdArr) => {
-    await UserRole(connect(DB_CONNECTION, portal))
-        .deleteMany({
-            userId
-        });
-    var data = await roleIdArr.map(roleId => {
+    await UserRole(connect(DB_CONNECTION, portal)).deleteMany({
+        userId,
+    });
+    var data = await roleIdArr.map((roleId) => {
         return {
             userId,
-            roleId
-        }
+            roleId,
+        };
     });
-    var relationship = await UserRole(connect(DB_CONNECTION, portal))
-        .insertMany(data);
+    var relationship = await UserRole(
+        connect(DB_CONNECTION, portal)
+    ).insertMany(data);
 
     return relationship;
-}
+};
 
 /**
  * Xóa tài khoản người dùng
  * @id id tài khoản người dùng
  */
 exports.deleteUser = async (portal, id) => {
-    var deleteUser = await User(connect(DB_CONNECTION, portal))
-        .deleteOne({
-            _id: id
-        });
-    await UserRole(connect(DB_CONNECTION, portal))
-        .deleteOne({
-            userId: id
-        });
+    var deleteUser = await User(connect(DB_CONNECTION, portal)).deleteOne({
+        _id: id,
+    });
+    await UserRole(connect(DB_CONNECTION, portal)).deleteOne({
+        userId: id,
+    });
 
     return deleteUser;
-}
+};
 
 /**
  * Thêm 1 hoặc nhiều role - phân quyền cho user
@@ -592,18 +643,19 @@ exports.deleteUser = async (portal, id) => {
  */
 exports.addRolesForUser = async (portal, userId, roleIdArr) => {
     if (roleIdArr && roleIdArr.length > 0) {
-        var data = await roleIdArr.map(roleId => {
+        var data = await roleIdArr.map((roleId) => {
             return {
                 userId,
-                roleId
-            }
+                roleId,
+            };
         });
-        var relationship = await UserRole(connect(DB_CONNECTION, portal))
-            .insertMany(data);
+        var relationship = await UserRole(
+            connect(DB_CONNECTION, portal)
+        ).insertMany(data);
     }
 
     return relationship;
-}
+};
 
 /**
  * Hàm tiện ích dùng trong 2 service ở trên
@@ -612,30 +664,40 @@ _getAllUsersInOrganizationalUnit = async (portal, department) => {
     var userRoles = await UserRole(connect(DB_CONNECTION, portal))
         .find({
             roleId: {
-                $in: [...department.deans, ...department.viceDeans, ...department.employees]
-            }
+                $in: [
+                    ...department.deans,
+                    ...department.viceDeans,
+                    ...department.employees,
+                ],
+            },
         })
         .populate({
-            path: 'userId',
-            select: 'name'
-        })
-
-    var tmp = await Role(connect(DB_CONNECTION, portal))
-        .find({
-            _id: {
-                $in: [...department.deans, ...department.viceDeans, ...department.employees]
-            }
-        }, {
-            name: 1
+            path: "userId",
+            select: "name",
         });
+
+    var tmp = await Role(connect(DB_CONNECTION, portal)).find(
+        {
+            _id: {
+                $in: [
+                    ...department.deans,
+                    ...department.viceDeans,
+                    ...department.employees,
+                ],
+            },
+        },
+        {
+            name: 1,
+        }
+    );
     var users = {
         deans: {},
         viceDeans: {},
         employees: {},
-        department: department.name
+        department: department.name,
     };
 
-    tmp.forEach(item => {
+    tmp.forEach((item) => {
         let obj = {};
         obj._id = item.id;
         obj.name = item.name;
@@ -648,7 +710,7 @@ _getAllUsersInOrganizationalUnit = async (portal, department) => {
         } else if (department.employees.includes(item._id.toString())) {
             users.employees[item._id.toString()] = obj;
         }
-    })
+    });
 
     userRoles.forEach((item) => {
         if (users.deans[item.roleId.toString()] && item.userId) {
@@ -661,10 +723,10 @@ _getAllUsersInOrganizationalUnit = async (portal, department) => {
     });
 
     return users;
-}
+};
 
 /**
- * Hàm tiện ích dùng trong service ở trên 
+ * Hàm tiện ích dùng trong service ở trên
  * Khác với hàm bên module User: nhận vào 1 mảng các department và trả về 1 mảng với mỗi ptu là tất cả các nhân viên trong từng 1 phòng ban
  */
 _getAllUsersInOrganizationalUnits = async (portal, data) => {
@@ -674,22 +736,32 @@ _getAllUsersInOrganizationalUnits = async (portal, data) => {
         var userRoles = await UserRole(connect(DB_CONNECTION, portal))
             .find({
                 roleId: {
-                    $in: [...department.deans, ...department.viceDeans, ...department.employees]
-                }
+                    $in: [
+                        ...department.deans,
+                        ...department.viceDeans,
+                        ...department.employees,
+                    ],
+                },
             })
             .populate({
-                path: 'userId',
-                select: 'name'
-            })
-
-        var tmp = await Role(connect(DB_CONNECTION, portal))
-            .find({
-                _id: {
-                    $in: [...department.deans, ...department.viceDeans, ...department.employees]
-                }
-            }, {
-                name: 1
+                path: "userId",
+                select: "name",
             });
+
+        var tmp = await Role(connect(DB_CONNECTION, portal)).find(
+            {
+                _id: {
+                    $in: [
+                        ...department.deans,
+                        ...department.viceDeans,
+                        ...department.employees,
+                    ],
+                },
+            },
+            {
+                name: 1,
+            }
+        );
         var users = {
             deans: {},
             viceDeans: {},
@@ -697,7 +769,7 @@ _getAllUsersInOrganizationalUnits = async (portal, data) => {
             department: department.name,
             id: department.id,
         };
-        tmp.forEach(item => {
+        tmp.forEach((item) => {
             let obj = {};
             obj._id = item.id;
             obj.name = item.name;
@@ -710,33 +782,35 @@ _getAllUsersInOrganizationalUnits = async (portal, data) => {
             } else if (department.employees.includes(item._id.toString())) {
                 users.employees[item._id.toString()] = obj;
             }
-        })
+        });
 
         userRoles.forEach((item) => {
             if (users.deans[item.roleId.toString()] && item.userId) {
                 users.deans[item.roleId.toString()].members.push(item.userId);
             } else if (users.viceDeans[item.roleId.toString()] && item.userId) {
-                users.viceDeans[item.roleId.toString()].members.push(item.userId);
+                users.viceDeans[item.roleId.toString()].members.push(
+                    item.userId
+                );
             } else if (users.employees[item.roleId.toString()] && item.userId) {
-                users.employees[item.roleId.toString()].members.push(item.userId);
+                users.employees[item.roleId.toString()].members.push(
+                    item.userId
+                );
             }
         });
 
         userArray.push(users);
     }
     return userArray;
-}
+};
 
 exports.getAllUsersWithRole = async (portal) => {
-    let users = await UserRole(connect(DB_CONNECTION, portal))
-        .find()
-        .populate({
-            path: "userId",
-            select: 'name email avatar'
-        })
+    let users = await UserRole(connect(DB_CONNECTION, portal)).find().populate({
+        path: "userId",
+        select: "name email avatar",
+    });
 
-    return users
-}
+    return users;
+};
 
 /**
  * Lấy thông tin user theo email
@@ -744,35 +818,38 @@ exports.getAllUsersWithRole = async (portal) => {
  * @param {*} email : email user
  */
 exports.getUserInformByEmail = async (portal, email, company) => {
-    let user = await User(connect(DB_CONNECTION, portal))
-        .findOne({
+    let user = await User(connect(DB_CONNECTION, portal)).findOne(
+        {
             email: email,
             company: company,
-        }, {
+        },
+        {
             email: 1,
-            _id: 1
-        });
-    return user
-}
+            _id: 1,
+        }
+    );
+    return user;
+};
 
 /**
  * Lấy danh sách người dùng là trưởng phòng của đơn vị theo id đơn vị
  * @id : Id đơn vị
  */
 exports.getUserIsDeanOfOrganizationalUnit = async (portal, id) => {
-    let organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal))
-        .findById(id);
+    let organizationalUnit = await OrganizationalUnit(
+        connect(DB_CONNECTION, portal)
+    ).findById(id);
     let deans = organizationalUnit.deans;
     let userIsDean = await UserRole(connect(DB_CONNECTION, portal))
         .find({
             roleId: {
-                $in: deans
-            }
+                $in: deans,
+            },
         })
         .populate({
-            path: 'userId',
-            select: 'email _id'
+            path: "userId",
+            select: "email _id",
         });
-    userIsDean = userIsDean.map(x => x.userId);
+    userIsDean = userIsDean.map((x) => x.userId);
     return userIsDean;
-}
+};

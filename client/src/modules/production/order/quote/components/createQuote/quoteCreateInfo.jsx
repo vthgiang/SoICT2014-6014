@@ -9,12 +9,27 @@ class QuoteCreateInfo extends Component {
     }
 
     getCustomerOptions = () => {
-        let options = this.props.customers.list.map((item) => {
-            return {
-                value: item._id,
-                text: item.code + " - " + item.name,
-            };
-        });
+        let options = [];
+
+        const { list } = this.props.customers;
+        if (list) {
+            options = [
+                {
+                    value: "title", //Title không được chọn
+                    text: "---Chọn khách hàng---",
+                },
+            ];
+
+            let mapOptions = this.props.customers.list.map((item) => {
+                return {
+                    value: item._id,
+                    text: item.code + " - " + item.name,
+                };
+            });
+
+            options = options.concat(mapOptions);
+        }
+
         return options;
     };
     render() {
@@ -45,7 +60,6 @@ class QuoteCreateInfo extends Component {
             handleRatioOfCurrencyChange,
             handleSymbolOfForreignCurrencyChange,
         } = this.props;
-        console.log("foreignCurrency", foreignCurrency);
         return (
             <React.Fragment>
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">

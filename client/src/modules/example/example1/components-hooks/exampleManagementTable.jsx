@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-
 import { withTranslate } from "react-redux-multilingual";
+
 import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../common-components";
 
 import { ExampleCreateForm } from "./exampleCreateForm";
 import { ExampleEditForm } from "./exampleEditForm";
 import { ExampleDetailInfo } from "./exampleDetailInfo";
+import { ExampleImportForm } from "./exampleImortForm";
 
 import { exampleActions } from "../redux/actions";
 
@@ -116,13 +117,29 @@ function ExampleManagementTable(props) {
             <ExampleDetailInfo
                 exampleId={state.exampleId}
             />
+            <ExampleCreateForm
+                page={page}
+                limit={limit}
+            />
+            <ExampleImportForm
+                page={page}
+                limit={limit}
+            />
             
             <div className="box-body qlcv">
-                <ExampleCreateForm
-                    page={page}
-                    limit={limit}
-                />
                 <div className="form-inline">
+                    {/* Button thêm mới */}
+                    <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
+                        <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_example.add_title')} >{translate('manage_example.add')}</button>
+                        <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
+                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-file-example-hooks').modal('show')} title={translate('manage_example.add_multi_example')}>
+                                {translate('human_resource.salary.add_import')}</a></li>
+                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-create-example-hooks').modal('show')} title={translate('manage_example.add_one_example')}>
+                                {translate('manage_example.add_example')}</a></li>
+                        </ul>
+                    </div>
+                    
+                    {/* Tìm kiếm */}
                     <div className="form-group">
                         <label className="form-control-static">{translate('manage_example.exampleName')}</label>
                         <input type="text" className="form-control" name="exampleName" onChange={handleChangeExampleName} placeholder={translate('manage_example.exampleName')} autoComplete="off" />
@@ -131,6 +148,8 @@ function ExampleManagementTable(props) {
                         <button type="button" className="btn btn-success" title={translate('manage_example.search')} onClick={() => handleSubmitSearch()}>{translate('manage_example.search')}</button>
                     </div>
                 </div>
+                
+                {/* Danh sách các ví dụ */}
                 <table id="example-table" className="table table-striped table-bordered table-hover">
                     <thead>
                         <tr>
@@ -176,6 +195,8 @@ function ExampleManagementTable(props) {
                         }
                     </tbody>
                 </table>
+
+                {/* PaginateBar */}
                 {example && example.isLoading ?
                     <div className="table-info-panel">{translate('confirm.loading')}</div> :
                     (typeof lists === 'undefined' || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>

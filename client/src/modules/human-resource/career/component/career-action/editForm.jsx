@@ -31,6 +31,16 @@ class EditForm extends Component {
         });
     }
 
+    handlePackage = (e) => {
+        const { value } = e.target;
+        const { translate } = this.props;
+        const { message } = ValidationHelper.validateName(translate, value, 1, 255);
+        this.setState({
+            package: value,
+            // nameError: message
+        });
+    }
+
     // handleParent = (value) => {
     //     this.setState({ archiveParent: value[0] });
     // };
@@ -101,6 +111,7 @@ class EditForm extends Component {
                 ...prevState,
                 careerId: nextProps.careerId,
                 name: nextProps.careerName,
+                package: nextProps.careerPackage,
                 code: nextProps.careerCode,
                 parent: nextProps.careerParent,
 
@@ -126,12 +137,17 @@ class EditForm extends Component {
         const disabled = !this.isValidateForm();
         return (
             <div id="edit-career-action">
+                <div className={`form-group`}>
+                    <label>Tên<span className="text-red">*</span></label>
+                    <input type="text" className="form-control" onChange={this.handlePackage} value={this.state.package} />
+                    {/* <ErrorLabel content={nameError} /> */}
+                </div>
                 <div className={`form-group ${nameError === undefined ? "" : "has-error"}`}>
                     <label>Tên<span className="text-red">*</span></label>
                     <input type="text" className="form-control" onChange={this.handleName} value={name} />
                     <ErrorLabel content={nameError} />
                 </div>
-                <div className={`form-group ${nameError === undefined ? "" : "has-error"}`}>
+                <div className={`form-group `}>
                     <label>Nhãn dán<span className="text-red">*</span></label>
                     <input type="text" className="form-control" onChange={this.handleCode} value={code} />
                     <ErrorLabel content={codeError} />

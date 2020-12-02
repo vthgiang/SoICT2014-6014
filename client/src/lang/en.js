@@ -861,6 +861,17 @@ export default {
             non_status: "Select status",
         },
 
+        common_component: {
+            import_excel: {
+                config: 'Import file configuration',
+                user_config: 'User configuration',
+                file: 'File import read data sheet',
+                properties: 'Properties',
+                title: 'Title',
+                
+            }
+        },
+
         menu: {
             home: "Home Page",
             system_administration: "System Administration",
@@ -911,6 +922,7 @@ export default {
             discipline: "Manage Commendation And Discipline",
             annual_leave: "Manage Annual Leave",
             salary_employee: "Manage Salary",
+            manage_field:'Manage career/fields',
             time_keeping: "Attendance Staff",
             list_education: "Training Programs",
             training_plan: "Manage Training Courses",
@@ -1307,6 +1319,8 @@ export default {
                 edit_annual_leave_faile: "Edit annual leave faile",
                 aplication_annual_leave_success:
                     "Send application annual leave success",
+                import_annual_leave_success: 'Add data from file success',
+                import_annual_leave_faile: 'Add data from file faile',
             },
 
             // Quản lý khen thưởng kỷ luật
@@ -1807,6 +1821,31 @@ export default {
                 import_work_plan_faile: "Import work schedule faile",
             },
 
+            // Quản lý ngành nghề lĩnh vực
+            field:{
+                // Nhóm dành cho table
+                table: {
+                   name: "Name career/fields",
+                   description: "Description",
+               },
+
+               // Nhóm dành cho action
+               edit_fields: "Edit career/fields",
+               delete_fields: "Delete career/fields",
+               add_fields: "Add new",
+               add_fields_title: "Add career/fields",
+
+               // Thông điệp trả về từ server
+               get_fields_success:"Get career/fields success",
+               get_fields_faile: "Get career/fields faile",
+               create_fields_success:"Add career/fields success",
+               create_fields_faile: "Add career/fields faile",
+               delete_fields_success: "Delete career/fields success",
+               delete_fields_faile: "Delete career/fields faile",
+               edit_fields_success:"Edit career/fields success",
+               edit_fields_faile: "Edit career/fields faile",
+           },
+
             // Quản lý chấm công nhân viên
             timesheets: {
                 file_name_export: "Timesheets",
@@ -2159,6 +2198,7 @@ export default {
                 edit_asset_type_success: "Edit asset type successfully",
                 edit_asset_type_faile: "Edit asset type fail",
                 asset_type_name_exist: "Asset type name exist",
+                asset_type_number_exist: "Asset type number exist",
             },
 
             // Quản lý thông tin tài sản
@@ -2726,10 +2766,9 @@ export default {
                 err_eval_end:
                     "Evaluate date should be less than equal end date",
                 err_eval_on_month: "Evaluate date should be day of month",
-                explain_avg_rating:
-                    "Since no activity has been evaluated, the activity rating default is 10",
-                explain_not_has_failed_and_passed_action:
-                    " - (Since no failed or passed activity, so the number of passed action and failed action will be considered equal and equal to 1)",
+                explain_avg_rating: "Since no activity has been evaluated, the activity rating default is 10",
+                explain_not_has_failed_and_passed_action: " - (Since no actions or no failed or passed activity, so the number of passed action will be considered equal to 1)",
+                    // " - (Since no failed or passed activity, so the number of passed action and failed action will be considered equal and equal to 1)",
 
                 info_eval_month: "Task infomation in evaluation",
 
@@ -3832,6 +3871,8 @@ export default {
             delete_fail: "Delete example fail!",
             add: "Add example",
             add_title: "Add a new example",
+            add_multi_example: "Add many new examples",
+            add_one_example: "Add 1 new example",
             add_success: "Add example successfully!",
             add_fail: "Add example fail!",
             example_description: "Example Description",

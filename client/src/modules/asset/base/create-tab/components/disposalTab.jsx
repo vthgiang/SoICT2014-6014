@@ -149,14 +149,14 @@ class DisposalTab extends Component {
                         {/* Giá trị thanh lý */}
                         <div className={`form-group`}>
                             <label htmlFor="disposalCost">{translate('asset.general_information.disposal_price')} (VNĐ)</label><br />
-                            <input type="number" className="form-control" name="disposalCost" value={disposalCost} onChange={this.handleDisposalCostChange}
+                            <input type="number" className="form-control" name="disposalCost" value={disposalCost ? disposalCost : ''} onChange={this.handleDisposalCostChange}
                                 placeholder={translate('asset.general_information.disposal_price')} autoComplete="off" />
                         </div>
 
                         {/* Nội dung thanh */}
                         <div className={`form-group`}>
                             <label htmlFor="disposalDesc">{translate('asset.general_information.disposal_content')}</label><br />
-                            <input type="text" className="form-control" name="disposalDesc" value={disposalDesc} onChange={this.handleDisposalDescriptionChange}
+                            <input type="text" className="form-control" name="disposalDesc" value={disposalDesc ? disposalDesc : ''} onChange={this.handleDisposalDescriptionChange}
                                 placeholder={translate('asset.general_information.disposal_content')} autoComplete="off" />
                         </div>
                     </fieldset>

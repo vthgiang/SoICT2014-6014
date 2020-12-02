@@ -109,7 +109,7 @@ class SalaryTab extends Component {
 
         const { id } = this.props;
 
-        let { annualLeaves, pageCreate, currentRow, currentRowSabbatical } = this.state;
+        let { annualLeaves, pageCreate, currentRowSabbatical } = this.state;
 
         return (
             <div id={id} className="tab-pane">
@@ -118,7 +118,7 @@ class SalaryTab extends Component {
                         {/* Table thông tin nghỉ phép */}
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border" ><h4 className="box-title">{translate('human_resource.profile.sabbatical')}</h4></legend>
-                            {(pageCreate || employeesInfo.organizationalUnits.length === 0) && <a style={{ marginBottom: '10px', marginTop: '2px' }} className="btn btn-success pull-right" title={translate('human_resource.profile.employee_management.staff_no_unit_title')} disabled >{translate('modal.create')}</a>}
+                            {(pageCreate || employeesInfo.organizationalUnits.length === 0) && <a style={{ marginBottom: '10px', marginTop: '2px', cursor: "pointer" }} className="btn btn-success pull-right" title={translate('human_resource.profile.employee_management.staff_no_unit_title')} disabled >{translate('modal.create')}</a>}
                             {!pageCreate && employeesInfo.organizationalUnits.length !== 0 && <AnnualLeaveAddModal handleChange={this.handleAddAnnualLeave} id={`addSabbatical${id}`} />}
                             <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                                 <thead>
@@ -143,8 +143,8 @@ class SalaryTab extends Component {
                                                     <td>{translate(`human_resource.annual_leave.status.${x.status}`)}</td>
                                                     <td>{organizationalUnit.name}</td>
                                                     <td >
-                                                        <a onClick={() => this.handleViewEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.annual_leave.edit_annual_leave')}><i className="material-icons">edit</i></a>
-                                                        <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteAnnualLeave(index)}><i className="material-icons"></i></a>
+                                                        <a onClick={() => this.handleViewEdit(x, index)} className="edit text-yellow" style={{ width: '5px', cursor: "pointer" }} title={translate('human_resource.annual_leave.edit_annual_leave')}><i className="material-icons">edit</i></a>
+                                                        <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteAnnualLeave(index)} style={{ cursor: "pointer" }}><i className="material-icons"></i></a>
                                                     </td>
                                                 </tr>
                                             )

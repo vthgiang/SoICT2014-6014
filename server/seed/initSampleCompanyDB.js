@@ -3014,8 +3014,8 @@ const initSampleCompanyDB = async () => {
                     dateOfIncident: new Date("2020-08-20"),
                     description: "cháy",
                     incidentCode: "icd01",
-                    statusIncident: "Chờ xử lý",
-                    type: "broken",
+                    statusIncident: "2",
+                    type: "1",
                     updatedAt: new Date("2020-08-20"),
                 },
             ],
@@ -3091,8 +3091,8 @@ const initSampleCompanyDB = async () => {
                     dateOfIncident: new Date("2000-08-20"),
                     description: "cháy",
                     incidentCode: "icd01",
-                    statusIncident: "Chờ xử lý",
-                    type: "broken",
+                    statusIncident: "1",
+                    type: "1",
                     updatedAt: new Date("2000-08-20"),
                 },
             ],
@@ -3167,8 +3167,8 @@ const initSampleCompanyDB = async () => {
                     dateOfIncident: new Date("2020-08-20"),
                     description: "cháy",
                     incidentCode: "icd01",
-                    statusIncident: "Chờ xử lý",
-                    type: "broken",
+                    statusIncident: "2",
+                    type: "1",
                     updatedAt: new Date("2020-08-20"),
                 },
             ],
@@ -5449,6 +5449,7 @@ const initSampleCompanyDB = async () => {
                 status[2]._id,
                 status[3]._id,
             ],
+            point: parseInt("129"),
             statusHistories: [
                 {
                     oldValue: status[1]._id,
@@ -5497,6 +5498,7 @@ const initSampleCompanyDB = async () => {
                 status[3]._id,
                 status[4]._id,
             ],
+            point: parseInt("10001"),
             statusHistories: [
                 {
                     oldValue: status[1]._id,

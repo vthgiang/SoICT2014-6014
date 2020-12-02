@@ -165,19 +165,9 @@ class AssetCreateForm extends Component {
         let result =
             this.validatorInput(asset.code) &&
             this.validatorInput(asset.assetName) &&
-            // this.validatorInput(asset.serial) &&
-            // this.validatorInput(asset.purchaseDate) &&
-            // && this.validatorInput(asset.warrantyExpirationDate) &&
-            // //this.validatorInput(asset.location) &&
             this.validatorInput(asset.assetType) &&
-            // this.validatorInput(asset.managedBy) &&
             this.validatorInput(asset.status) &&
-            this.validatorInput(asset.typeRegisterForUse) &&
-            this.validatorInput(asset.group)
-        // this.validatorInput(asset.cost) &&
-        // this.validatorInput(asset.usefulLife) &&
-        // this.validatorInput(asset.startDepreciation) &&
-        // this.validatorInput(asset.depreciationType);
+            this.validatorInput(asset.typeRegisterForUse)
 
         return result;
     }

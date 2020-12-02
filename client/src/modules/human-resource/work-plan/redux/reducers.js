@@ -67,18 +67,18 @@ export function workPlan(state = initState, action) {
                 isLoading: false,
                     importStatus: true,
                     listWorkPlan: action.payload.content,
-            }
-            case WorkPlanConstants.GET_WORK_PLAN_FAILURE:
-            case WorkPlanConstants.CREATE_WORK_PLAN_FAILURE:
-            case WorkPlanConstants.DELETE_WORK_PLAN_FAILURE:
-            case WorkPlanConstants.UPDATE_WORK_PLAN_FAILURE:
-            case WorkPlanConstants.IMPORT_WORK_PLAN_FAILURE:
-                return {
-                    ...state,
-                    isLoading: false,
-                        error: action.error
-                };
-            default:
-                return state
+            };
+        case WorkPlanConstants.GET_WORK_PLAN_FAILURE:
+        case WorkPlanConstants.CREATE_WORK_PLAN_FAILURE:
+        case WorkPlanConstants.DELETE_WORK_PLAN_FAILURE:
+        case WorkPlanConstants.UPDATE_WORK_PLAN_FAILURE:
+        case WorkPlanConstants.IMPORT_WORK_PLAN_FAILURE:
+            return {
+                ...state,
+                isLoading: false,
+                    error: action.error
+            };
+        default:
+            return state
     }
 }

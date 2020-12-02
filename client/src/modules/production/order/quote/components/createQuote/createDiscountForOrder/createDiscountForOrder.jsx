@@ -30,22 +30,22 @@ class CreateDiscountsForOrder extends Component {
             expirationDate: discount.expirationDate,
         };
         switch (parseInt(discount.formality)) {
-            case 0:
+            case 0: //Khuyến mãi tiền mặt
                 discountChange.discountedCash = thresholdToBeApplied.discountedCash;
                 break;
-            case 1:
+            case 1: //Khuyến mãi %
                 discountChange.discountedPercentage = thresholdToBeApplied.discountedPercentage;
                 break;
-            case 2:
+            case 2: //Tặng xu tích điểm
                 discountChange.loyaltyCoin = thresholdToBeApplied.loyaltyCoin;
                 break;
-            case 3:
+            case 3: //Free ship
                 discountChange.maximumFreeShippingCost = thresholdToBeApplied.maximumFreeShippingCost;
                 break;
-            case 4:
+            case 4: //Tặng hàng
                 discountChange.bonusGoods = thresholdToBeApplied.bonusGoods;
                 break;
-            case 5:
+            case 5: //Áp dụng hàng tồn kho
                 discountChange.discountOnGoods = thresholdToBeApplied.discountOnGoods.find((element) => goodId === element.good._id);
                 break;
             default:
@@ -127,7 +127,7 @@ class CreateDiscountsForOrder extends Component {
                 title =
                     title +
                     ` được miễn phí vận chuyển ${
-                        discount.maximumFreeShippingCost ? ", tối đa" + formatCurrency(discount.maximumFreeShippingCost) : ""
+                        discount.maximumFreeShippingCost ? ", tối đa " + formatCurrency(discount.maximumFreeShippingCost) : ""
                     } (vnđ)`;
                 break;
             case 4:
@@ -162,7 +162,7 @@ class CreateDiscountsForOrder extends Component {
                         }
                     }
 
-                    if (!paymentAmount) {
+                    if (paymentAmount === undefined || paymentAmount === "" || paymentAmount === null) {
                         disabled = true;
                     }
 

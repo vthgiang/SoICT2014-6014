@@ -135,30 +135,55 @@ class QuoteCreateGood extends Component {
     };
 
     handleGoodChange = async (value) => {
-        let { listGoodsByType } = this.props.goods;
-        const goodInfo = listGoodsByType.filter((item) => item._id === value[0]);
-        await this.setState((state) => {
-            return {
-                ...state,
-                good: goodInfo[0]._id,
-                code: goodInfo[0].code,
-                goodName: goodInfo[0].name,
-                baseUnit: goodInfo[0].baseUnit,
-                pricePerBaseUnit: goodInfo[0].pricePerBaseUnit,
-                pricePerBaseUnitOrigin: goodInfo[0].pricePerBaseUnit, //giá gốc
-                inventory: goodInfo[0].quantity,
-                salesPriceVariance: goodInfo[0].salesPriceVariance ? goodInfo[0].salesPriceVariance : 0,
-                pricePerBaseUnitError: undefined,
-                taxs: [],
-                slasOfGood: [],
-                slasOfGoodChecked: {},
-                discountsOfGood: [],
-                discountsOfGoodChecked: {},
-                quantity: "",
-            };
-        });
+        if (value[0] !== "title") {
+            let { listGoodsByType } = this.props.goods;
+            const goodInfo = listGoodsByType.filter((item) => item._id === value[0]);
+            if (goodInfo.length) {
+                await this.setState((state) => {
+                    return {
+                        ...state,
+                        good: goodInfo[0]._id,
+                        code: goodInfo[0].code,
+                        goodName: goodInfo[0].name,
+                        baseUnit: goodInfo[0].baseUnit,
+                        pricePerBaseUnit: goodInfo[0].pricePerBaseUnit,
+                        pricePerBaseUnitOrigin: goodInfo[0].pricePerBaseUnit, //giá gốc
+                        inventory: goodInfo[0].quantity,
+                        salesPriceVariance: goodInfo[0].salesPriceVariance ? goodInfo[0].salesPriceVariance : 0,
+                        pricePerBaseUnitError: undefined,
+                        taxs: [],
+                        slasOfGood: [],
+                        slasOfGoodChecked: {},
+                        discountsOfGood: [],
+                        discountsOfGoodChecked: {},
+                        quantity: "",
+                    };
+                });
+            }
 
-        await this.props.getItemsForGood(value[0]);
+            await this.props.getItemsForGood(value[0]);
+        } else {
+            this.setState((state) => {
+                return {
+                    ...state,
+                    good: value[0],
+                    code: "",
+                    goodName: "",
+                    baseUnit: "",
+                    pricePerBaseUnit: "",
+                    pricePerBaseUnitOrigin: "", //giá gốc
+                    inventory: "",
+                    salesPriceVariance: "",
+                    pricePerBaseUnitError: undefined,
+                    taxs: [],
+                    slasOfGood: [],
+                    slasOfGoodChecked: {},
+                    discountsOfGood: [],
+                    discountsOfGoodChecked: {},
+                    quantity: "",
+                };
+            });
+        }
     };
 
     validatePrice = (value, willUpdateState = true) => {
@@ -323,7 +348,6 @@ class QuoteCreateGood extends Component {
 
     addGood = (e) => {
         e.preventDefault();
-        console.log("STATE", this.state);
         const { listTaxsByGoodId } = this.props.goods.goodItems;
         let {
             taxs,
@@ -420,24 +444,72 @@ class QuoteCreateGood extends Component {
         let { listGoods } = this.props;
         let goodsFilter = listGoods.filter((item) => item._id !== goodId);
         this.props.setGoods(goodsFilter);
+    };
 
-        // this.setState((state) => {
-        //     return {
-        //         ...state,
-        //         goods: goodsSlice,
-        //     };
-        // });
+    getDiscountsCheckedForEditGood = (item, quantity, goodId) => {
+        let checked = { id: "", status: false };
+        item.discounts.forEach((discount, index) => {
+            let checkGoodInDiscount = discount.discountOnGoods.find((element) => goodId === element.good._id); //Kiểm tra mặt hàng này có được trong danh mục khuyến mãi
+            if (checkGoodInDiscount) {
+                let disabled = false;
+                if (discount.minimumThresholdToBeApplied) {
+                    if (parseInt(quantity) < discount.minimumThresholdToBeApplied) {
+                        disabled = true;
+                    }
+                }
+                if (discount.maximumThresholdToBeApplied) {
+                    if (parseInt(quantity) > discount.maximumThresholdToBeApplied) {
+                        disabled = true;
+                    }
+                }
+                if (!disabled) {
+                    checked = { id: `${item._id}-${index}`, status: true };
+                }
+            }
+        });
+
+        return checked;
+    };
+
+    getSlasCheckedForEditGood = (slasOfGoodChecked, slaChecked) => {
+        let { listSlasByGoodId } = this.props.goods.goodItems;
+        let slaInfo = listSlasByGoodId.find((element) => element._id === slaChecked._id);
+
+        slaChecked.descriptions.forEach((desOfSlaChecked) => {
+            slaInfo.descriptions.forEach((desOfSlaInfo, index) => {
+                if (desOfSlaInfo === desOfSlaChecked) {
+                    slasOfGoodChecked[`${slaChecked._id}-${index}`] = true;
+                }
+            });
+        });
+
+        return slasOfGoodChecked;
     };
 
     handleEditGood = (item, index) => {
         let { listDiscountsByGoodId } = this.props.goods.goodItems;
+
+        let { listGoodsByType } = this.props.goods;
+        const goodInfo = listGoodsByType.filter((good) => good._id === item.good._id);
+
         let { discountsOfGoodChecked, slasOfGoodChecked } = this.state;
 
         item.discountsOfGood.forEach((element) => {
+            //checked các khuyến mãi đã có trong danh mục
             let discount = listDiscountsByGoodId.find((dis) => dis._id === element._id);
             if (discount) {
-                console.log("discount", discount);
+                let checked = this.getDiscountsCheckedForEditGood(discount, item.quantity, item.good._id);
+                discountsOfGoodChecked[`${checked.id}`] = checked.status;
             }
+        });
+
+        item.slasOfGood.forEach((element) => {
+            slasOfGoodChecked = this.getSlasCheckedForEditGood(slasOfGoodChecked, element);
+        });
+
+        let slasForEdit = {};
+        item.slasOfGood.forEach((element) => {
+            slasForEdit[element._id] = element.descriptions;
         });
 
         this.setState({
@@ -450,42 +522,147 @@ class QuoteCreateGood extends Component {
             pricePerBaseUnitOrigin: item.pricePerBaseUnitOrigin,
             salesPriceVariance: item.salesPriceVariance,
             note: item.note,
-            inventory: item.good.inventory,
+            inventory: goodInfo[0].quantity,
             goodName: item.good.name,
             good: item.good._id,
             baseUnit: item.good.baseUnit,
             code: item.good.code,
             discountsOfGood: item.discountsOfGood,
-            slasOfGood: item.slasOfGood,
+            discountsOfGoodChecked,
+            slasOfGoodChecked,
+            slasOfGood: slasForEdit,
         });
     };
 
     handleCancelEditGood = (e) => {
-        // e.preventDefault();
-        // let { goodOptionsState, allGoodsSelected, indexEditting } = this.state;
-        // goodOptionsState = this.filterOption(allGoodsSelected[indexEditting]);
-        // this.setState({
-        //     editGoodsTaxCollection: false,
-        //     goodsSelected: Object.assign({}, this.EMPTY_GOOD),
-        //     goodOptionsState,
-        //     isSelectAll: true,
-        //     goodsError: undefined,
-        //     percentError: undefined,
-        // });
+        e.preventDefault();
+        let { steps } = this.state;
+        steps = steps.map((step, index) => {
+            step.active = !index ? true : false;
+            return step;
+        });
+        this.setState((state) => {
+            return {
+                ...state,
+                indexEditting: "",
+                editGood: false,
+                discountsOfGood: [],
+                discountsOfGoodChecked: {},
+                taxs: [],
+                slasOfGood: [],
+                slasOfGoodChecked: {},
+                quantity: "",
+                pricePerBaseUnit: "",
+                pricePerBaseUnitError: undefined,
+                pricePerBaseUnitOrigin: "",
+                salesPriceVariance: "",
+                note: "",
+                inventory: "",
+                baseUnit: "",
+                good: "",
+                code: "",
+                goodName: "",
+                step: 0,
+                steps,
+            };
+        });
     };
 
-    handleSaveEditGood = () => {
-        // let { goodsSelected, indexEditting, goodOptionsState, allGoodsSelected } = this.state;
-        // goodOptionsState = this.filterOption(goodsSelected); //Lọc bỏ những options đã được chọn
-        // allGoodsSelected[indexEditting] = goodsSelected;
-        // this.setState({
-        //     ...this.state,
-        //     allGoodsSelected,
-        //     goodsSelected: Object.assign({}, this.EMPTY_GOOD),
-        //     goodOptionsState,
-        //     isSelectAll: true,
-        //     editGoodsTaxCollection: false,
-        // });
+    handleSaveEditGood = (e) => {
+        e.preventDefault();
+        const { listTaxsByGoodId } = this.props.goods.goodItems;
+        let {
+            taxs,
+            slasOfGood,
+            pricePerBaseUnit,
+            discountsOfGood,
+            good,
+            goodName,
+            baseUnit,
+            quantity,
+            code,
+            pricePerBaseUnitOrigin,
+            note,
+            steps,
+            salesPriceVariance,
+            indexEditting,
+        } = this.state;
+
+        let { listGoods } = this.props;
+
+        let amount = this.getOriginAmountOfGood();
+        let amountAfterDiscount = this.getAmountAfterApplyDiscount();
+        let amountAfterTax = this.getAmountAfterApplyTax();
+
+        let listTaxs = taxs.map((item) => {
+            let tax = listTaxsByGoodId.find((element) => element._id == item);
+            if (tax) {
+                return tax;
+            }
+        });
+
+        let listSlas = [];
+        let { listSlasByGoodId } = this.props.goods.goodItems;
+        for (const key in slasOfGood) {
+            let slaInfo = listSlasByGoodId.find((element) => element._id === key);
+            listSlas.push({
+                _id: key,
+                title: slaInfo.title,
+                descriptions: slasOfGood[key],
+            });
+        }
+
+        let additionGood = {
+            good: {
+                _id: good,
+                name: goodName,
+                baseUnit: baseUnit,
+                code: code,
+            },
+            pricePerBaseUnit: pricePerBaseUnit,
+            pricePerBaseUnitOrigin: pricePerBaseUnitOrigin,
+            quantity: quantity,
+            taxs: listTaxs,
+            slasOfGood: listSlas,
+            discountsOfGood: discountsOfGood,
+            note: note,
+            amount,
+            amountAfterDiscount,
+            amountAfterTax,
+            salesPriceVariance,
+        };
+
+        listGoods[indexEditting] = additionGood;
+        steps = steps.map((step, index) => {
+            step.active = !index ? true : false;
+            return step;
+        });
+        this.props.setGoods(listGoods);
+        this.setState((state) => {
+            return {
+                ...state,
+                indexEditting: "",
+                editGood: false,
+                discountsOfGood: [],
+                discountsOfGoodChecked: {},
+                taxs: [],
+                slasOfGood: [],
+                slasOfGoodChecked: {},
+                quantity: "",
+                pricePerBaseUnit: "",
+                pricePerBaseUnitError: undefined,
+                pricePerBaseUnitOrigin: "",
+                salesPriceVariance: "",
+                note: "",
+                inventory: "",
+                baseUnit: "",
+                good: "",
+                code: "",
+                goodName: "",
+                step: 0,
+                steps,
+            };
+        });
     };
 
     render() {
@@ -506,15 +683,14 @@ class QuoteCreateGood extends Component {
             note,
             steps,
             step,
+            editGood,
         } = this.state;
 
         const { setCurrentSlasOfGood, setCurrentDiscountsOfGood } = this.props;
         let { listGoods } = this.props;
-        console.log("GOOD", listGoods);
 
         const { isUseForeignCurrency, foreignCurrency, standardCurrency, currency } = this.props;
 
-        console.log("DISCOUNT", this.state.discountsOfGood);
         let originAmount = this.getOriginAmountOfGood();
         let amountAfterApplyDiscount = this.getAmountAfterApplyDiscount();
         let amountAfterApplyTax = this.getAmountAfterApplyTax();
@@ -643,16 +819,40 @@ class QuoteCreateGood extends Component {
                                     </span>
                                 </div>
 
-                                {/* BUTTON ADD GOOD */}
-                                {step === steps.length - 1 ? (
-                                    <div className="quote-add-good-button">
-                                        <button className="btn btn-success" onClick={this.addGood}>
-                                            Thêm sản phẩm
-                                        </button>
-                                    </div>
-                                ) : (
-                                    ""
-                                )}
+                                <div style={{ display: "flex", alignItems: "center" }}>
+                                    {/* Thêm sản phẩm mới */}
+                                    {step === steps.length - 1 && !editGood ? (
+                                        <div className="quote-add-good-button">
+                                            <button className="btn btn-success" onClick={this.addGood}>
+                                                Thêm sản phẩm
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        ""
+                                    )}
+
+                                    {/* Lưu chỉnh sửa */}
+                                    {step === steps.length - 1 && editGood ? (
+                                        <div className="quote-save-edit-good-button">
+                                            <button className="btn btn-success" onClick={this.handleSaveEditGood}>
+                                                Lưu
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        ""
+                                    )}
+
+                                    {/* Hủy chỉnh sửa */}
+                                    {editGood ? (
+                                        <div className="quote-cancel-edit-good-button">
+                                            <button className="btn btn-success" onClick={this.handleCancelEditGood}>
+                                                Hủy chỉnh sửa
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        ""
+                                    )}
+                                </div>
                             </div>
                         </div>
 
