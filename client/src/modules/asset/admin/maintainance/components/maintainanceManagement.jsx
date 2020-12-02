@@ -176,7 +176,7 @@ class MaintainanceManagement extends Component {
                 let createDate = this.formatDate2(x.createDate)
                 let startDate = this.formatDate2(x.startDate);
                 let endDate = this.formatDate2(x.endDate);
-                let cost = parseInt(x.expense);
+                let cost = new Intl.NumberFormat().format(parseInt(x.expense));
                 let assetCode = x.asset.code;
                 let status = this.convertMaintainStatus(x.status);
 
