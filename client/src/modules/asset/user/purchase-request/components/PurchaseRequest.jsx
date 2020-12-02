@@ -146,7 +146,7 @@ class PurchaseRequest extends Component {
 
         switch (status) {
             case 'approved': return translate('asset.usage.approved');
-            case 'waiting_approval': return translate('asset.usage.waiting_approval');
+            case 'waiting_for_approval': return translate('asset.usage.waiting_approval');
             case 'disapproved': return translate('asset.usage.not_approved');
             default: return 'Deleted';
         }
@@ -252,7 +252,7 @@ class PurchaseRequest extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(listRecommendProcures && listRecommendProcures.length !== 0) &&
+                            {(listRecommendProcures && listRecommendProcures.length !== 0) ?
                                 listRecommendProcures.filter(item => item.proponent && item.proponent._id === auth.user._id).map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.recommendNumber}</td>
@@ -276,7 +276,7 @@ class PurchaseRequest extends Component {
                                             />
                                         </td>
                                     </tr>
-                                ))
+                                )) : null
                             }
                         </tbody>
                     </table>

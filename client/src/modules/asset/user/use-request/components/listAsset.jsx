@@ -384,7 +384,7 @@ class ListAsset extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(lists && lists.length !== 0) &&
+                            {(lists && lists.length !== 0) ?
                                 lists.filter(item => item.typeRegisterForUse !== 1).map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.code}</td>
@@ -400,7 +400,7 @@ class ListAsset extends Component {
                                             <a onClick={() => this.handleCreateRecommend(x)} className="post_add" style={{ width: '5px' }} title={translate('menu.recommend_distribute_asset')}><i className="material-icons">post_add</i></a>
                                         </td>
                                     </tr>
-                                ))
+                                )) : null
                             }
                         </tbody>
                     </table>
