@@ -138,7 +138,11 @@ const LotSchema = new Schema({
     creator: {// Người tạo ra lô sản xuất
         type: Schema.Types.ObjectId,
         ref: "User"
-    }
+    },
+    bills: [{
+        type: Schema.Types.ObjectId,
+        ref: "Bill"
+    }]
 
 }, {
     timestamps: true

@@ -245,7 +245,7 @@ class PurchaseRequestManager extends Component {
 
         switch (status) {
             case 'approved': return translate('asset.usage.approved');
-            case 'waiting_approval': return translate('asset.usage.waiting_approval');
+            case 'waiting_for_approval': return translate('asset.usage.waiting_approval');
             case 'disapproved': return translate('asset.usage.not_approved');
             default: return 'Deleted';
         }
@@ -315,8 +315,8 @@ class PurchaseRequestManager extends Component {
                                 onChange={this.handleStatusChange}
                                 items={[
                                     { value: "approved", text: translate('asset.usage.approved') },
-                                    { value: "waiting_approval", text: translate('asset.usage.waiting_approval') },
-                                    { value: "not_approved", text: translate('asset.usage.not_approved') }
+                                    { value: "waiting_for_approval", text: translate('asset.usage.waiting_approval') },
+                                    { value: "disapproved", text: translate('asset.usage.not_approved') }
                                 ]}
                             >
                             </SelectMulti>
@@ -363,7 +363,7 @@ class PurchaseRequestManager extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(listRecommendProcures && listRecommendProcures.length !== 0) &&
+                            {(listRecommendProcures && listRecommendProcures.length !== 0) ?
                                 listRecommendProcures.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.recommendNumber}</td>
@@ -387,7 +387,7 @@ class PurchaseRequestManager extends Component {
                                             />
                                         </td>
                                     </tr>
-                                ))
+                                )) : null
                             }
                         </tbody>
                     </table>

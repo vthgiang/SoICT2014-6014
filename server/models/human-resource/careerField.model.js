@@ -9,9 +9,9 @@ const CareerFieldSchema = new Schema({
         name: {
             type: String,
         },
-        code: [{
+        code: {
             type: String,
-        }],
+        },
         type: {
             type: Number,
             default: 0, // 1 - default, 0 - additional

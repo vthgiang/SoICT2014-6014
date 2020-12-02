@@ -7,12 +7,10 @@ import { RecommendProcureService } from "../../../user/purchase-request/redux/se
 import { RecommendDistributeService } from "../../use-request/redux/services";
 
 import { LazyLoadComponent, forceCheckOrVisible, ExportExcel } from '../../../../../common-components';
-
 import { AssetByGroup } from './asset-by-group/assetByGroup';
 import { AssetStatistics } from './asset-statistics-chart/index';
 import { AssetIsExpired } from './asset-is-expired/assetIsExpired';
 import { AssetByType } from './asset-by-type/assetByType';
-import { translate } from 'react-redux-multilingual/lib/utils';
 import { PurchaseAndDisposal } from './asset-purchase-disposal/purchaseAndDisposal';
 import { IncidentAndMaintenance } from './asset-incident-maintenance/incidentAndMaintenance';
 
@@ -461,7 +459,7 @@ class DashBoardAssets extends Component {
 
     render() {
         const { translate } = this.props;
-        const { listAssets, recommendProcure, recommendDistribute, exportData, currentTab } = this.state;
+        const { listAssets, exportData, currentTab } = this.state;
 
         return (
             <div className="qlcv">
@@ -474,7 +472,7 @@ class DashBoardAssets extends Component {
                             <div className="info-box-content">
                                 <span className="info-box-text">{translate('asset.general_information.ready_use')}</span>
                                 <span className="info-box-number">{listAssets.length ? this.returnCountNumber(listAssets, 'ready_to_use') : 0}</span>
-                                <a href="/manage-info-asset">{translate('asset.general_information.view_more')} <i className="fa fa-arrow-circle-right"></i></a>
+                                <a href="/manage-info-asset?status=ready_to_use">{translate('asset.general_information.view_more')} <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
                     </div>
@@ -486,7 +484,7 @@ class DashBoardAssets extends Component {
                             <div className="info-box-content" style={{ paddingBottom: 0 }}>
                                 <span className="info-box-text">{translate('asset.general_information.using')}</span>
                                 <span className="info-box-number">{listAssets.length ? this.returnCountNumber(listAssets, 'in_use') : 0}</span>
-                                <a href="/manage-info-asset">{translate('asset.general_information.view_more')} <i className="fa fa-arrow-circle-right"></i></a>
+                                <a href="/manage-info-asset?status=in_use">{translate('asset.general_information.view_more')} <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
                     </div>
@@ -498,7 +496,7 @@ class DashBoardAssets extends Component {
                             <div className="info-box-content" style={{ paddingBottom: 0 }}>
                                 <span className="info-box-text">{translate('asset.general_information.damaged')}</span>
                                 <span className="info-box-number">{listAssets.length ? this.returnCountNumber(listAssets, 'broken') : 0}</span>
-                                <a href="/manage-info-asset">{translate('asset.general_information.view_more')} <i className="fa  fa-arrow-circle-o-right"></i></a>
+                                <a href="/manage-info-asset?status=broken">{translate('asset.general_information.view_more')} <i className="fa  fa-arrow-circle-o-right"></i></a>
                             </div>
                         </div>
                     </div>
@@ -510,7 +508,7 @@ class DashBoardAssets extends Component {
                             <div className="info-box-content" style={{ paddingBottom: 0 }}>
                                 <span className="info-box-text">{translate('asset.general_information.disposal')}</span>
                                 <span className="info-box-number">{listAssets.length ? this.returnCountNumber(listAssets, 'disposed') : 0}</span>
-                                <a href="/manage-info-asset">{translate('asset.general_information.view_more')} <i className="fa  fa-arrow-circle-o-right"></i></a>
+                                <a href="/manage-info-asset?status=disposed">{translate('asset.general_information.view_more')} <i className="fa  fa-arrow-circle-o-right"></i></a>
                             </div>
                         </div>
                     </div>
@@ -523,7 +521,7 @@ class DashBoardAssets extends Component {
                         <li><a href="#administration-asset-statistics" data-toggle="tab" onClick={() => this.handleNavTabs("assetStatistics")}>Thống kê theo trạng thái và giá trị</a></li>
                         <li><a href="#administration-purchase-disposal" data-toggle="tab" onClick={() => this.handleNavTabs("purchaseDisposal")}>{translate('asset.dashboard.asset_purchase_and_dispose')}</a></li>
                         <li><a href="#administration-incident-maintenance" data-toggle="tab" onClick={() => this.handleNavTabs("incidentMaintenance")}>{translate('asset.dashboard.asset_incident_and_maintenance')}</a></li>
-                        {/* <li><a href="#administration-asset-is-expired" data-toggle="tab" onClick={() => this.handleNavTabs("assetIsExpired")}>Hạn sử dụng tài sản</a> </li> */}
+                        <li><a href="#administration-asset-is-expired" data-toggle="tab" onClick={() => this.handleNavTabs("assetIsExpired")}>Hạn sử dụng tài sản</a> </li>
                         {exportData && currentTab && exportData[currentTab] && <ExportExcel type="link" style={{ padding: "15px" }} id="export-asset-dashboard" exportData={exportData[currentTab]} />}
                     </ul>
                     <div className="tab-content">
@@ -584,7 +582,7 @@ class DashBoardAssets extends Component {
                         </div>
 
                         {/* Danh sách các tài sản sắp hết hạn */}
-                        {/* <div className="tab-pane" id="administration-asset-is-expired">
+                        <div className="tab-pane" id="administration-asset-is-expired">
                             <LazyLoadComponent
                                 key="AdministrationAssetExpired"
                             >
@@ -592,94 +590,11 @@ class DashBoardAssets extends Component {
                                     setAssetIsExpiredExportData={this.setAssetIsExpiredExportData}
                                 />
                             </LazyLoadComponent>
-                        </div> */}
+                        </div>
                     </div>
                 </div>
             </div>
         );
-
-        // return (
-        //     <div className="qlcv">
-        //         <section className="form-inline" style={{ textAlign: "right" }}>
-        //             <div className="form-group">
-        //                 <label>Phan loai theo</label>
-
-        //                 <SelectBox
-        //                     id={`select-type-display-in-asset-dashboard`}
-        //                     className="form-control select2"
-        //                     style={{ width: "100%" }}
-        //                     items={[{ text: "Group", value: "Group" }, { text: "Type", value: "Type" }]}
-        //                     multiple={false}
-        //                     onChange={this.handleSelectTypeOfDisplay}
-        //                     value={"Group"}
-        //                 />
-        //             </div>
-        //         </section>
-
-
-        //             {/* Biểu đồ yêu cầu mua sắm tài sản */}
-        //             {/* <div className="col-md-6 col-sm-6 col-xs-6">
-        //                 <CanvasJSChart options={options} />
-        //             </div> */}
-
-        //             {/* Biểu đồ yêu cầu sử dụng tài sản */}
-        //             {/* <div className="col-md-6 col-sm-6 col-xs-6">
-        //                 <CanvasJSChart options={options2} />
-        //             </div> */}
-
-        //         </div>
-        //         <div className="row">
-        //             {/* Biểu đồ số lượng tài sản */}
-        //             <div className="col-xs-6">
-        //                 <div className="box box-primary">
-        //                     <div className="box-header with-border">
-        //                         <div className="box-title">Biểu đồ số lượng tài sản</div>
-        //                     </div>
-        //                     <div className="box-body qlcv">
-        //                         <AmountOfAssetChart
-        //                             listAssets={listAssets}
-        //                             displayBy={displayBy}
-        //                             assetType={assetType}
-        //                         />
-        //                     </div>
-        //                 </div>
-        //             </div>
-
-        //             {/* Biểu đồ giá trị tài sản */}
-        //             <div className="col-xs-6">
-        //                 <div className="box box-primary">
-        //                     <div className="box-header with-border">
-        //                         <div className="box-title">Biểu đồ giá trị tài sản</div>
-        //                     </div>
-        //                     <div className="box-body qlcv">
-        //                         <ValueOfAssetChart
-        //                             listAssets={listAssets}
-        //                             displayBy={displayBy}
-        //                             assetType={assetType}
-        //                         />
-        //                     </div>
-        //                 </div>
-        //             </div>
-        //         </div>
-        //         <div className="row">
-        //             {/* Biểu đồ khấu hao tài sản */}
-        //             <div className="col-xs-6">
-        //                 <div className="box box-primary">
-        //                     <div className="box-header with-border">
-        //                         <div className="box-title">Biểu đồ khấu hao tài sản</div>
-        //                     </div>
-        //                     <div className="box-body qlcv">
-        //                         <DepreciationOfAssetChart
-        //                             listAssets={listAssets}
-        //                             displayBy={displayBy}
-        //                             assetType={assetType}
-        //                         />
-        //                     </div>
-        //                 </div>
-        //             </div>
-        //         </div>
-        //     </div>
-        // );
     }
 };
 

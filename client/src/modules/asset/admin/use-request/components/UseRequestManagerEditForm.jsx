@@ -237,7 +237,7 @@ class UseRequestManagerEditForm extends Component {
                 dateCreate: dataToSubmit.dateCreate,
                 proponent: dataToSubmit.proponent._id, // Người đề nghị
                 reqContent: dataToSubmit.reqContent, // Người đề nghị
-                asset: dataToSubmit.asset._id,
+                asset: dataToSubmit.asset ? dataToSubmit.asset._id : undefined,
                 dateStartUse: dataToSubmit.dateStartUse,
                 dateEndUse: dataToSubmit.dateEndUse,
                 approver: dataToSubmit.approver, // Người phê duyệt
@@ -245,7 +245,7 @@ class UseRequestManagerEditForm extends Component {
                 stopTime: dataToSubmit.stopTime,
                 startTime: dataToSubmit.startTime
             }
-            if (createUsage == true) {
+            if (createUsage == true && dataToSubmit.asset) {
                 let checkCreateUsage = false;
                 for (let i in dataToSubmit.asset.usageLogs) {
                     if (dataToSubmit.asset.usageLogs[i].assetUseRequest && dataToSubmit.asset.usageLogs[i].assetUseRequest == this.state._id) {
@@ -300,7 +300,7 @@ class UseRequestManagerEditForm extends Component {
             let partStart = new Date(nextProps.dateStartUse);
             let partStop = new Date(nextProps.dateEndUse);
 
-            if (nextProps.asset.typeRegisterForUse == 2) {
+            if (nextProps.asset && nextProps.asset.typeRegisterForUse == 2) {
                 let hourStart, hourEnd, minutesStart, minutesEnd;
                 if (partStart.getHours() < 10) {
                     hourStart = "0" + partStart.getHours()
@@ -344,8 +344,8 @@ class UseRequestManagerEditForm extends Component {
                 asset: nextProps.asset,
                 dateStartUse: startDate,
                 dateEndUse: endDate,
-                startTime: nextProps.asset.typeRegisterForUse == 2 ? startTime : null,
-                stopTime: nextProps.asset.typeRegisterForUse == 2 ? stopTime : null,
+                startTime: nextProps.asset && nextProps.asset.typeRegisterForUse == 2 ? startTime : null,
+                stopTime: nextProps.asset && nextProps.asset.typeRegisterForUse == 2 ? stopTime : null,
                 approver: nextProps.approver,
                 status: nextProps.status,
                 note: nextProps.note,
@@ -462,7 +462,7 @@ class UseRequestManagerEditForm extends Component {
                                         value={dateStartUse}
                                         onChange={this.handleDateStartUseChange}
                                     />
-                                    {asset.typeRegisterForUse == 2 &&
+                                    {asset && asset.typeRegisterForUse == 2 &&
                                         < TimePicker
                                             id={`edit_start_time_use${_id}`}
                                             value={startTime}
@@ -482,7 +482,7 @@ class UseRequestManagerEditForm extends Component {
                                         onChange={this.handleDateEndUseChange}
                                     />
                                     {
-                                        asset.typeRegisterForUse == 2 &&
+                                        asset && asset.typeRegisterForUse == 2 &&
                                         < TimePicker
                                             id={`edit_stop_time_use${_id}`}
                                             value={stopTime}

@@ -269,6 +269,7 @@ const EmployeeSchema = new Schema({
         urlFile: String
     }],
     career: [{
+        package: String,
         field: {
             name: String,
             id: String,
@@ -279,11 +280,11 @@ const EmployeeSchema = new Schema({
             id: String,
             code: String
         },
-        action: {
+        action: [{
             name: String,
             id: String,
             code: String
-        },
+        }],
         startDate: Date,
         endDate: Date,
         file: String,

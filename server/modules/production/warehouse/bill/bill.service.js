@@ -984,8 +984,12 @@ exports.createManyProductBills = async (data, portal) => {
             manufacturingCommand: x.manufacturingCommand,
             logs: logs
         }
-    })
+    });
 
     const bills = await Bill(connect(DB_CONNECTION, portal)).insertMany(query);
+    const lotId = data[0].goods[0].lots[0].lot;
+    const lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
+    lot.bills = bills.map(bill => bill._id);
+    await lot.save();
     return { bills }
 }

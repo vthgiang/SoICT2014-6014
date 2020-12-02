@@ -11,9 +11,7 @@ import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { RoleActions } from '../../../../super-admin/role/redux/actions';
 
 import { AssetCreateForm, AssetDetailForm, AssetEditForm, AssetImportForm } from './combinedContent';
-import { configTaskTempalte } from '../../../../task/task-template/component/fileConfigurationImportTaskTemplate';
-import { translate } from 'react-redux-multilingual/lib/utils';
-
+import qs from 'qs';
 class AssetManagement extends Component {
     constructor(props) {
         super(props);
@@ -23,7 +21,7 @@ class AssetManagement extends Component {
             assetType: "",
             purchaseDate: null,
             disposalDate: null,
-            status: "",
+            status: window.location.search ? [qs.parse(window.location.search, { ignoreQueryPrefix: true }).status] : '',
             group: "",
             handoverUnit: "",
             handoverUser: "",
@@ -62,6 +60,7 @@ class AssetManagement extends Component {
 
     // Function format dữ liệu Date thành string
     formatDate(date, monthYear = false) {
+        if (!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -447,7 +446,7 @@ class AssetManagement extends Component {
         const { translate } = this.props;
         if (status === 'disposed') {
             if (disposalDate) return this.formatDate(disposalDate);
-            else return 'Deleted';
+            else return translate('asset.general_information.not_disposal_date');
         }
         else {
             return translate('asset.general_information.not_disposal');
@@ -456,7 +455,7 @@ class AssetManagement extends Component {
 
     render() {
         const { assetsManager, assetType, translate, user, isActive, department } = this.props;
-        const { page, limit, currentRowView, currentRow, purchaseDate, disposalDate, managedBy, location, typeRegisterForUse, handoverUnit, handoverUser } = this.state;
+        const { page, limit, currentRowView, status, currentRow, purchaseDate, disposalDate, managedBy, location, typeRegisterForUse, handoverUnit, handoverUser } = this.state;
         var lists = "", exportData;
         var userlist = user.list, departmentlist = department.list;
         var assettypelist = assetType.listAssetTypes;
@@ -556,6 +555,7 @@ class AssetManagement extends Component {
                             <SelectMulti id={`multiSelectStatus1`} multiple="multiple"
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('asset.general_information.select_all_status') }}
                                 onChange={this.handleStatusChange}
+                                value={status}
                                 items={[
                                     { value: "ready_to_use", text: translate('asset.general_information.ready_use') },
                                     { value: "in_use", text: translate('asset.general_information.using') },
