@@ -67,7 +67,7 @@ exports.createAssetTypes = async (portal, company, data) => {
             typeNumber: dataArray[i].typeNumber,
             typeName: dataArray[i].typeName,
             description: dataArray[i].description,
-            defaultInformation: dataArray[i].defaultInformation,
+            defaultInformation: dataArray[i].defaultInformation.filter(info => Boolean(info)),
         }
 
         if (dataArray[i].parent && dataArray[i].parent.length) {
