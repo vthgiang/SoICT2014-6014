@@ -163,7 +163,8 @@ class CareerAction extends Component {
                                     careerId={currentNode.id}
                                     careerName={currentNode.text}
                                     careerCode={currentNode.original.code}
-                                    careerParent={currentNode.parent}
+                                    careerParent={currentNode.parent ? currentNode.parent : undefined}
+                                    careerPackage={currentNode.original.package ? currentNode.original.package : ""}
 
                                     listData={dataTree}
                                     unChooseNode={unChooseNode}

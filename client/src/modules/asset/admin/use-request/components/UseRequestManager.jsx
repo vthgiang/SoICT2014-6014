@@ -414,7 +414,7 @@ class UseRequestManager extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(listRecommendDistributes && listRecommendDistributes.length !== 0) &&
+                            {(listRecommendDistributes && listRecommendDistributes.length !== 0) ?
                                 listRecommendDistributes.map((x, index) => {
                                     return (<tr key={index}>
                                         <td><a onClick={() => this.handleEditAsset(x.asset)}>{x.asset ? x.asset.code : 'Asset is deleted'}</a></td>
@@ -438,7 +438,7 @@ class UseRequestManager extends Component {
                                             />
                                         </td>
                                     </tr>)
-                                })
+                                }) : null
                             }
                         </tbody>
                     </table>

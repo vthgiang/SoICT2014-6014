@@ -21,6 +21,7 @@ class CareerPosition extends Component {
         this.props.getListCareerPosition({ name: '', page: 1, limit: 1000 });
     }
     onChanged = async (e, data) => {
+        console.log('data', data);
         await this.setState({
             currentNode: data.node,
         })
@@ -140,7 +141,7 @@ class CareerPosition extends Component {
                         careerParent.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteCareer}>{translate('general.delete')}</button>
                     }
                     {/* <ExportExcel id="export-career-position" exportData={exportData} style={{ marginRight: 5 }} buttonName={translate('document.export')} /> */}
-                    <CreateForm list={dataTree}/>
+                    <CreateForm list={dataTree} />
                     {/* <ArchiveImportForm /> */}
                     <div className="row"
                     >
@@ -163,7 +164,8 @@ class CareerPosition extends Component {
                                     careerId={currentNode.id}
                                     careerName={currentNode.text}
                                     careerCode={currentNode.original.code}
-                                    careerParent={currentNode.parent}
+                                    careerPackage={currentNode.original.package ? currentNode.original.package : ""}
+                                    careerParent={(currentNode.parent !== "#")? currentNode.parent : undefined}
 
                                     listData={dataTree}
                                     unChooseNode={unChooseNode}
