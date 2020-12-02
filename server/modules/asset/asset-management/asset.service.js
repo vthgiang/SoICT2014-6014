@@ -129,9 +129,7 @@ exports.getAssetInforById = async (portal, id) => {
 exports.searchAssetProfiles = async (portal, company, params) => {
     let {getType} = params;
     let keySearch = {};
-    if (company) {
-        keySearch = { ...keySearch, company: company };
-    }
+
     // Bắt sựu kiện MSTS tìm kiếm khác ""
     if (params.code) {
         keySearch = { ...keySearch, code: { $regex: params.code, $options: "i" } }
@@ -313,7 +311,7 @@ exports.searchAssetProfiles = async (portal, company, params) => {
         totalList = await Asset(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
         listAssets = await Asset(connect(DB_CONNECTION, portal)).find(keySearch).populate({ path: 'assetType' })
             .sort({ 'createdAt': 'desc' }).skip(params.page).limit(params.limit);
-        console.log('list depreciation', listAssets)
+
     }else{
         totalList = await Asset(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
         listAssets = await Asset(connect(DB_CONNECTION, portal)).find(keySearch).populate({ path: 'assetType' })
