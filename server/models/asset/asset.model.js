@@ -304,7 +304,6 @@ const AssetSchema = new Schema({
             statusIncident: {
                 // 1: cho xu ly || 2: da xu ly
                 type: String,
-                // required: true
             },
             createdAt: {
                 type: Date,

@@ -274,7 +274,7 @@ class IncidentManagement extends Component {
         } else if (Number(type) === 2) {
             return translate('asset.general_information.lost')
         } else {
-            return 'Type is deleted'
+            return null;
         }
     }
 
@@ -282,16 +282,16 @@ class IncidentManagement extends Component {
         const { translate } = this.props;
         if (Number(status) === 1) {
             return translate('asset.general_information.waiting');
-        } else {
+        } else if (Number(status) === 2) {
             return translate('asset.general_information.processed')
-        }
+        } else return null;
     }
 
     render() {
         const { translate, assetsManager, assetType, user, isActive, incidentManager } = this.props;
         const { page, limit, currentRow, currentRowEditAsset, managedBy } = this.state;
 
-        var lists = "", exportData;
+        var lists = [], exportData;
         var userlist = user.list;
         if (incidentManager.isLoading === false) {
             lists = incidentManager.incidentList;
