@@ -269,9 +269,9 @@ class IncidentManagement extends Component {
 
     convertIncidentType = (type) => {
         const { translate } = this.props;
-        if (type == 1) {
+        if (Number(type) === 1) {
             return translate('asset.general_information.damaged');
-        } else if (type == 2) {
+        } else if (Number(type) === 2) {
             return translate('asset.general_information.lost')
         } else {
             return 'Type is deleted'
@@ -280,7 +280,7 @@ class IncidentManagement extends Component {
 
     convertIncidentStatus = (status) => {
         const { translate } = this.props;
-        if (status == 1) {
+        if (Number(status) === 1) {
             return translate('asset.general_information.waiting');
         } else {
             return translate('asset.general_information.processed')
