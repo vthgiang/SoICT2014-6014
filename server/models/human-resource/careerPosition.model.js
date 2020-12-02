@@ -5,6 +5,11 @@ const Schema = mongoose.Schema;
 const CareerPositionSchema = new Schema({
     name: String,
     code: String, // lưu lại trong db của employees
+    // package: {
+    //     type: Schema.Types.ObjectId,
+    //     ref: "Package",
+    // },
+    package: String,
     description: [{
         name: {
             type: String,

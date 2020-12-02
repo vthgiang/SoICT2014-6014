@@ -142,10 +142,17 @@ class SearchEmployeeForPackage extends Component {
      */
 
     handleAction = (value) => {
+        // let { career } = this.props;
+        // let listAction = career?.listAction.map(elm => { return { ...elm, id: elm._id } });
+        // let action = listAction?.find(e => e._id === value[0]);
+
+        // this.setState({ action: action });
         let { career } = this.props;
         let listAction = career?.listAction.map(elm => { return { ...elm, id: elm._id } });
-        let action = listAction?.find(e => e._id === value[0]);
 
+        let action = listAction?.filter(e => value.indexOf(e._id) !== -1);
+
+        console.log('action', action);
         this.setState({ action: action });
     };
 
@@ -447,10 +454,10 @@ class SearchEmployeeForPackage extends Component {
                     }
                 });
                 dataTreePosition = [...dataTreePosition, ...description];
-            }console.log('possss', posCodeArr, filterPosition,dataTreePosition);
+            } console.log('possss', posCodeArr, filterPosition, dataTreePosition);
         }
 
-        
+
         return (
             <div className="box">
                 <div className="box-body qlcv">
@@ -523,18 +530,40 @@ class SearchEmployeeForPackage extends Component {
                             <label className="form-control-static">Lĩnh vực công việc</label>
                             <TreeSelect data={dataTreeField} value={field?.id} handleChange={this.handleField} mode="radioSelect" />
                         </div>
+                        {/* Tên gói thầu */}
+                        <div className="form-group">
+                            <label className="form-control-static">Tên gói thầu</label>
+                            <input type="text" className="form-control" name="packageName" onChange={this.handleChange} />
+                        </div>
                         {/* Vị trí công việc  */}
                         <div className="form-group">
                             <label className="form-control-static">Vị trí công việc</label>
                             <TreeSelect data={dataTreePosition} value={position?.id} handleChange={this.handlePosition} mode="radioSelect" />
                         </div>
                         {/* Vị trí công việc  */}
-                        <div className="form-group">
+                        {/* <div className="form-group">
                             <label className="form-control-static">Hoạt động công việc</label>
                             <TreeSelect data={dataTreeAction} value={action?.id} handleChange={this.handleAction} mode="radioSelect" />
-                        </div>
+                        </div> */}
                     </div>
                     <div className="form-inline">
+                        {/* Vị trí công việc  */}
+                        <div className="form-group">
+                            <label className="form-control-static">Hoạt động công việc</label>
+                            {/* <TreeSelect data={dataTreeAction} value={action?.id} handleChange={this.handleAction} mode="radioSelect" /> */}
+                            <SelectBox
+                                id={`select-career-action-select`}
+                                lassName="form-control select2"
+                                style={{ width: "100%" }}
+                                items={listAction.map(x => {
+                                    return { text: x.name, value: x._id }
+                                })}
+                                options={{ placeholder: "Chọn hoạt động công việc" }}
+                                onChange={this.handleAction}
+                                value={action?.map(e => e?.id)}
+                                multiple={true}
+                            />
+                        </div>
                         {/* Số năm kinh nghiệm */}
                         <div className="form-group">
                             <label className="form-control-static">Số năm KN</label>

@@ -127,6 +127,7 @@ exports.getAssetInforById = async (portal, id) => {
  * @params : dữ liệu key tìm kiếm
  */
 exports.searchAssetProfiles = async (portal, company, params) => {
+    let {getType} = params;
     let keySearch = {};
     if (company) {
         keySearch = { ...keySearch, company: company };
@@ -294,10 +295,30 @@ exports.searchAssetProfiles = async (portal, company, params) => {
         keySearch = { ...keySearch, "incidentLogs.statusIncident": { $in: params.incidentStatus } };
     }
 
+    let totalList = 0, listAssets = [];
     // Lấy danh sách tài sản
-    let totalList = await Asset(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
-    let listAssets = await Asset(connect(DB_CONNECTION, portal)).find(keySearch).populate({ path: 'assetType' })
-        .sort({ 'createdAt': 'desc' }).skip(params.page).limit(params.limit);
+    if(getType === 'depreciation') {
+        keySearch = {
+            ...keySearch,
+            $or: [
+                { depreciationType: {$ne: 'none'} },
+                { cost: {$gt: 0} },
+                { usefulLife: {$gt: 0} },
+                { residualValue: {$gt: 0} },
+                { rate: {$gt: 0} },
+                { estimatedTotalProduction: {$gt: 0} },
+                { startDepreciation: {$ne: null} },
+            ]
+        }
+        totalList = await Asset(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+        listAssets = await Asset(connect(DB_CONNECTION, portal)).find(keySearch).populate({ path: 'assetType' })
+            .sort({ 'createdAt': 'desc' }).skip(params.page).limit(params.limit);
+        console.log('list depreciation', listAssets)
+    }else{
+        totalList = await Asset(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+        listAssets = await Asset(connect(DB_CONNECTION, portal)).find(keySearch).populate({ path: 'assetType' })
+            .sort({ 'createdAt': 'desc' }).skip(params.page).limit(params.limit);
+    }
     return { data: listAssets, totalList }
 }
 
@@ -418,11 +439,11 @@ exports.createAsset = async (portal, company, data, fileInfo) => {
                 assetName: data[i].assetName,
                 code: data[i].code,
                 serial: data[i].serial,
-                group: data[i].group,
+                group: data[i].group ? data[i].group : undefined,
                 assetType: data[i].assetType,
                 readByRoles: data[i].readByRoles,
-                purchaseDate: data[i].purchaseDate,
-                warrantyExpirationDate: data[i].warrantyExpirationDate,
+                purchaseDate: data[i].purchaseDate ? data[i].purchaseDate : undefined,
+                warrantyExpirationDate: data[i].warrantyExpirationDate ? data[i].warrantyExpirationDate : undefined,
                 managedBy: data[i].managedBy,
                 assignedToUser: data[i].assignedToUser ? data[i].assignedToUser : null,
                 assignedToOrganizationalUnit: data[i].assignedToOrganizationalUnit ? data[i].assignedToOrganizationalUnit : null,
@@ -569,7 +590,7 @@ exports.updateAssetInformation = async (portal, company, id, data, fileInfo) => 
     oldAsset.group = data.group;
     oldAsset.purchaseDate = data.purchaseDate;
     oldAsset.warrantyExpirationDate = data.warrantyExpirationDate;
-    oldAsset.managedBy = data.managedBy;
+    oldAsset.managedBy = (!data.managedBy || data.managedBy === 'undefined') ? null : data.managedBy;
     oldAsset.assignedToUser = data.assignedToUser !== '' ? data.assignedToUser : null;
     oldAsset.assignedToOrganizationalUnit = data.assignedToOrganizationalUnit !== '' ? data.assignedToOrganizationalUnit : null;
     oldAsset.readByRoles = data.readByRoles

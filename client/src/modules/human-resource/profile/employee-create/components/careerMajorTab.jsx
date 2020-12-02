@@ -253,7 +253,10 @@ class CareerMajorTab extends Component {
                                         <tr key={index}>
                                             <td>{x.field?.name}</td>
                                             <td>{x.position?.name}</td>
-                                            <td>{x.action?.name}</td>
+                                            <td>{x.action?.map((e, key) => { 
+                                                    return <li key={key}> {e?.name} </li> 
+                                                })}
+                                            </td>
                                             <td>{this.formatDate(x.startDate)}</td>
                                             <td>{this.formatDate(x.endDate)}</td>
                                             <td>{!x.urlFile ? translate('human_resource.profile.no_files') :
@@ -296,6 +299,7 @@ class CareerMajorTab extends Component {
                         id={`editCareer${currentRowCareer.index}`}
                         _id={currentRowCareer._id}
                         index={currentRowCareer.index}
+                        package={currentRowCareer.package}
                         position={currentRowCareer.position}
                         field={currentRowCareer.field}
                         action={currentRowCareer.action}

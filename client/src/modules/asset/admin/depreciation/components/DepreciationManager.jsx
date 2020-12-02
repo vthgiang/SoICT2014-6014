@@ -21,7 +21,8 @@ class DepreciationManager extends Component {
             month: "",
             page: 0,
             limit: 5,
-            managedBy: this.props.managedBy ? this.props.managedBy : ''
+            managedBy: this.props.managedBy ? this.props.managedBy : '',
+            getType: 'depreciation'
         }
     }
 
@@ -42,6 +43,7 @@ class DepreciationManager extends Component {
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
     formatDate2(date) {
+        if (!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -60,6 +62,7 @@ class DepreciationManager extends Component {
 
     // Function format dữ liệu Date thành string
     formatDate(date, monthYear = false) {
+        if (!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -521,7 +524,7 @@ class DepreciationManager extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {lists &&
+                            {lists ?
                                 lists.map((x, index) => {
                                     let result = this.calculateDepreciation(x.depreciationType, x.cost, x.usefulLife, x.estimatedTotalProduction, x.unitsProducedDuringTheYears, x.startDepreciation);
                                     return (
@@ -543,7 +546,7 @@ class DepreciationManager extends Component {
                                             </td>
                                         </tr>
                                     )
-                                })
+                                }) : null
                             }
                         </tbody>
                     </table>

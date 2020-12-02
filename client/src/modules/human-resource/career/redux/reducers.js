@@ -81,6 +81,12 @@ export function career(state = initState, action) {
                 isLoading: false,
                 listAction: action.payload,
             };
+        case CareerConstant.UPDATE_CAREER_POSITION_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                listPosition: action.payload,
+            };
         // case CareerConstant.CREATE_CAREER_POSITION_SUCCESS:
         //     return {
         //         ...state,
