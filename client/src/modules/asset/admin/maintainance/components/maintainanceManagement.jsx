@@ -405,10 +405,10 @@ class MaintainanceManagement extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(lists && lists.length !== 0) &&
+                            {(lists && lists.length !== 0) ?
                                 lists.map((x, index) => (
                                     <tr key={index}>
-                                        <td><span onClick={() => this.handleEditAsset(x.asset)} style={{color: '#367FA9', cursor: 'pointer'}}>{x.asset.code}</span></td>
+                                        <td><span onClick={() => this.handleEditAsset(x.asset)} style={{ color: '#367FA9', cursor: 'pointer' }}>{x.asset.code}</span></td>
                                         <td>{x.maintainanceCode}</td>
                                         <td>{x.createDate ? this.formatDate2(x.createDate) : ''}</td>
                                         <td>{this.convertMaintainType(x.type)}</td>
@@ -431,7 +431,7 @@ class MaintainanceManagement extends Component {
                                             />
                                         </td>
                                     </tr>
-                                ))
+                                )) : null
                             }
                         </tbody>
                     </table>

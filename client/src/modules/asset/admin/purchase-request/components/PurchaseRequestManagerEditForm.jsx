@@ -242,7 +242,7 @@ class PurchaseRequestEditForm extends Component {
                                 {/* Mã phiếu */}
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.form_code')}</label>
-                                    <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={this.handleRecommendNumberChange} />
+                                    <input type="text" className="form-control" name="recommendNumber" value={recommendNumber ? recommendNumber : ''} onChange={this.handleRecommendNumberChange} />
                                 </div>
 
                                 {/* Ngày lập */}
@@ -279,20 +279,20 @@ class PurchaseRequestEditForm extends Component {
                                 {/* Thiết bị đề nghị mua */}
                                 <div className={`form-group ${!errorOnEquipment ? "" : "has-error"}`}>
                                     <label>{translate('asset.manage_recommend_procure.asset_recommend')}<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="equipmentName" value={equipmentName} onChange={this.handleEquipmentChange} autoComplete="off" placeholder="Thiết bị đề nghị mua" />
+                                    <input type="text" className="form-control" name="equipmentName" value={equipmentName ? equipmentName : ''} onChange={this.handleEquipmentChange} autoComplete="off" placeholder="Thiết bị đề nghị mua" />
                                     <ErrorLabel content={errorOnEquipment} />
                                 </div>
 
                                 {/* Nhà cung cấp */}
                                 <div className="form-group">
                                     <label>{translate('asset.manage_recommend_procure.supplier')}</label>
-                                    <input type="text" className="form-control" name="supplier" value={supplier} onChange={this.handleSupplierChange} />
+                                    <input type="text" className="form-control" name="supplier" value={supplier ? supplier : ""} onChange={this.handleSupplierChange} />
                                 </div>
 
                                 {/* Mô tả thiết bị đề nghị mua */}
                                 <div className={`form-group ${errorOnEquipmentDescription === undefined ? "" : "has-error"}`}>
                                     <label>{translate('asset.manage_recommend_procure.equipment_description')}</label>
-                                    <textarea className="form-control" rows="3" name="equipmentDescription" value={equipmentDescription} onChange={this.handleEquipmentDescriptionChange} autoComplete="off"
+                                    <textarea className="form-control" rows="3" name="equipmentDescription" value={equipmentDescription ? equipmentDescription : ''} onChange={this.handleEquipmentDescriptionChange} autoComplete="off"
                                         placeholder="Thiết bị đề nghị mua"></textarea>
                                     <ErrorLabel content={errorOnEquipmentDescription} />
                                 </div>
@@ -302,14 +302,14 @@ class PurchaseRequestEditForm extends Component {
                                 {/* Số lượng */}
                                 <div className={`form-group ${errorOnTotal === undefined ? "" : "has-error"}`}>
                                     <label>{translate('asset.general_information.number')}<span className="text-red">*</span></label>
-                                    <input type="number" className="form-control" name="total" value={total} onChange={this.handleTotalChange} />
+                                    <input type="number" className="form-control" name="total" value={total ? total : ''} onChange={this.handleTotalChange} />
                                     <ErrorLabel content={errorOnTotal} />
                                 </div>
 
                                 {/* Đơn vị tính */}
                                 <div className={`form-group ${!errorOnUnit ? "" : "has-error"}`}>
                                     <label>{translate('asset.manage_recommend_procure.unit')}<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="unit" value={unit} onChange={this.handleUnitChange} autoComplete="off" placeholder="Đơn vị tính" />
+                                    <input type="text" className="form-control" name="unit" value={unit ? unit : ""} onChange={this.handleUnitChange} autoComplete="off" placeholder="Đơn vị tính" />
                                     <ErrorLabel content={errorOnUnit} />
                                 </div>
 
@@ -350,8 +350,8 @@ class PurchaseRequestEditForm extends Component {
                                         value={status}
                                         items={[
                                             { value: 'approved', text: translate('asset.usage.approved') },
-                                            { value: 'waiting_approval', text: translate('asset.usage.waiting_approval') },
-                                            { value: 'not_approved', text: translate('asset.usage.not_approved') },
+                                            { value: 'waiting_for_approval', text: translate('asset.usage.waiting_approval') },
+                                            { value: 'disapproved', text: translate('asset.usage.not_approved') },
                                         ]}
                                         onChange={this.handleStatusChange}
                                     />

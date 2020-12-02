@@ -10,6 +10,8 @@ export const CareerService = {
     createCareerField,
     createCareerPosition,
     createCareerAction,
+
+    editCareerPosition,
 }
 
 /**
@@ -97,6 +99,18 @@ function createCareerAction(data) {
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/career-positions/career-actions`,
         method: 'POST',
+        data: data
+    }, true, true, 'human_resource.commendation_discipline.discipline');
+}
+
+/**
+ * Chỉnh sửa vị trí cv
+ * @data : Dữ liệu kỷ luật cần thêm 
+ */
+function editCareerPosition(data) {
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/career-positions/career-positions/${data.careerId}`,
+        method: 'PATCH',
         data: data
     }, true, true, 'human_resource.commendation_discipline.discipline');
 }

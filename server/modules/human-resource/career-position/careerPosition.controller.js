@@ -171,3 +171,26 @@ exports.crateNewCareerAction = async (req, res) => {
     // }
 }
 
+
+/** Tạo mới hoạt động công việc */
+exports.editCareerPosition = async (req, res) => {
+    // try {
+        data = await careerPositionService.editCareerPosition(req.portal, req.body, req.params);
+        // await Log.info(req.user.email, 'GET_MAJOR', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["edit_career_position_success"],
+            content: data
+        });
+    // } catch (error) {
+    //     // await Log.error(req.user.email, 'GET_MAJOR', req.portal);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ["edit_career_position_faile"],
+    //         content: {
+    //             error: error
+    //         }
+    //     });
+    // }
+}
+

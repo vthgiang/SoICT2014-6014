@@ -15,7 +15,7 @@ router.post('/career-positions', auth, careerPositionController.crateNewCareerPo
 router.post('/career-actions', auth, careerPositionController.crateNewCareerAction);
 // router.post('/career-positions', auth, careerPositionController.createAnnualLeave);
 
-// router.patch('/career-positions/:id', auth, careerPositionController.updateAnnualLeave);
+router.patch('/career-positions/:id', auth, careerPositionController.editCareerPosition);
 // router.delete('/career-positions/:id', auth, careerPositionController.deleteAnnualLeave);
 
 module.exports = router;

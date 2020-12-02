@@ -1059,6 +1059,7 @@ export default {
             employee_capacity: "Năng lực nhân viên",
             discipline: "Quản lý khen thưởng - kỷ luật",
             annual_leave: "Quản lý nghỉ phép",
+            manage_field:'Quản lý ngành nghề/lĩnh vực',
             salary_employee: "Quản lý lương nhân viên",
             time_keeping: "Chấm công nhân viên",
             list_education: "Chương trình đào tạo bắt buộc",
@@ -1467,6 +1468,8 @@ export default {
                     "Chỉnh sửa đơn xin nghỉ phép thành công",
                 edit_annual_leave_faile: "Chỉnh sửa đơn xin nghỉ phép thất bại",
                 aplication_annual_leave_success: "Thêm đơn xin nghỉ thành công",
+                import_annual_leave_success:'Thêm dữ liệu từ file thành công',
+                import_annual_leave_faile:'Thêm dữ liệu từ file thất bại',
             },
 
             // Quản lý khen thưởng kỷ luật
@@ -2002,6 +2005,31 @@ export default {
                 import_work_plan_faile: "Import thông tin nghỉ lễ tết thất bại",
             },
 
+            field:{
+
+                 // Nhóm dành cho table
+                 table: {
+                    name: "Tên ngành nghề/lĩnh vực",
+                    description: "Mô tả",
+                },
+
+                // Nhóm dành cho action
+                edit_fields: "Chỉnh sửa ngành nghề/lĩnh vực",
+                delete_fields: "Xoá ngành nghề/lĩnh vực",
+                add_fields: "Thêm mới",
+                add_fields_title: "Thêm mới ngành nghề/lĩnh vực",
+
+                // Thông điệp trả về từ server
+                get_fields_success:"Lấy danh sách ngành nghề/lĩnh vực thành công",
+                get_fields_faile: "Lấy danh sách ngành nghề/lĩnh vực thất bại",
+                create_fields_success:"Thêm mới ngành nghề/lĩnh vực thành công",
+                create_fields_faile: "Thêm mới ngành nghề/lĩnh vực thất bại",
+                delete_fields_success: "Xoá ngành nghề/lĩnh vực thành công",
+                delete_fields_faile: "Xoá ngành nghề/lĩnh vực thất bại",
+                edit_fields_success:"Chỉnh sửa ngành nghề/lĩnh vực thành công",
+                edit_fields_faile: "Chỉnh sửa ngành nghề/lĩnh vực thất bại",
+            },
+
             // Quản lý chấm công nhân viên
             timesheets: {
                 file_name_export: "Bảng chấm công",
@@ -2262,6 +2290,7 @@ export default {
                 asset_value: "Giá trị tài sản",
                 disposal_date: "Ngày thanh lý",
                 not_disposal: "Chưa thanh lý",
+                not_disposal_date:"Chưa nhập thời gian thanh lý",
 
                 general_information: "Thông tin chung",
                 usage_information: "Thông tin sử dụng",
@@ -2371,6 +2400,7 @@ export default {
                 edit_asset_type_faile:
                     "Chỉnh sửa thông tin loại tài sản thất bại",
                 asset_type_name_exist: "Tên loại tài sản đã tồn tại",
+                asset_type_number_exist: "Mã loại tài sản đã tồn tại",
             },
 
             // Quản lý thông tin tài sản
@@ -2451,6 +2481,7 @@ export default {
 
             // Quản lý sử dụng
             usage: {
+                choose_status: "Chọn loại trạng thái",
                 approved: "Đã phê duyệt",
                 waiting_approval: "Chờ phê duyệt",
                 not_approved: "Không phê duyệt",

@@ -20,7 +20,7 @@ class PurchaseRequestCreateForm extends Component {
             total: "",
             unit: "",
             estimatePrice: "",
-            status: "waiting_approval",
+            status: "waiting_for_approval",
             approver: null,
             note: "",
         };
