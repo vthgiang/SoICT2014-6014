@@ -1,11 +1,11 @@
 import { sendRequest } from '../../../../../helpers/requestHelper';
 
 export const QuoteServices = {
-    createQuote,
+    createNewQuote,
     getAllQuotes
 }
 
-function createQuote(data) {
+function createNewQuote(data) {
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/quote`,

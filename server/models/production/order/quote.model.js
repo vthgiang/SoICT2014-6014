@@ -9,9 +9,9 @@ const QuoteSchema = Schema({
     },
     status: {
         type: Number,
-        enum: [ 0 , 1 , 2 , 3 ], //0. Gửi yêu cầu, 1: chờ phản hồi, 2: Đã chốt đơn, 3: Đã hủy
+        enum: [0, 1, 2, 3], //0. Gửi yêu cầu, 1: chờ phản hồi, 2: Đã chốt đơn, 3: Đã hủy
         required: true,
-        default: 1
+        default: 0
     }, 
     creator: {
         type: Schema.Types.ObjectId,
@@ -26,8 +26,7 @@ const QuoteSchema = Schema({
         type: Date,
         required: true
     },
-
-    //ĐỂ Ý PHẦN NÀY, SAU ANH TUẤN THÊM CUSTOMER VÀO
+    //Khách hàng
     customer: {
         type: Schema.Types.ObjectId,
         ref: 'Customer',
@@ -50,83 +49,202 @@ const QuoteSchema = Schema({
             ref: 'Good',
             required: true
         },
-        //PHẦN QUY TẮC ĐỔI TRẢ ANH TUẤN LÀM
         returnRule: [{
             type: Schema.Types.ObjectId,
             ref: 'returnRule'
         }],
-        //service level agreement
-        serviceLevelAgreements: [{
-            type: Schema.Types.ObjectId,
-            ref: 'ServiceLevelAgreement'
-        }],
-        price: {
+        pricePerBaseUnit: {
             type: Number,
             required: true
+        },
+        pricePerBaseUnitOrigin: {
+            type: Number,
+        },
+        salesPriceVariance: {
+            type: Number
         },
         quantity: {
             type: Number,
             required: true
         },
-        baseUnit: {
-            type: String,
-            required: true
-        },
+        //service level agreement
+        serviceLevelAgreements: [{
+            _id: {
+                type: Schema.Types.ObjectId,
+                ref: 'ServiceLevelAgreement'
+            },
+            title: {
+                type: String
+            },
+            descriptions: [{
+                type: String
+            }]
+        }],
         taxs: [{
-            type: Schema.Types.ObjectId,
-            ref: 'Tax'
+            _id: {
+                type: Schema.Types.ObjectId,
+                ref: 'Tax'
+            },
+            code: {
+                type: String
+            },
+            name: {
+                type: String
+            },
+            description: {
+                type: String
+            },
+            percent: {
+                type: Number
+            }
         }],
-        discounts: [{
-            type: Schema.Types.ObjectId,
-            ref: 'Discount'
-        }],
+        discounts: [
+            {
+                _id: {
+                    type: Schema.Types.ObjectId,
+                    ref: 'Discount'
+                },
+                code: {
+                    type: String
+                },
+                type: {
+                    type: String
+                },
+                formality: {
+                    type: String
+                },
+                name: {
+                    type: String
+                },
+                effectiveDate: {
+                    type: Date
+                },
+                expirationDate: {
+                    type: Date
+                },
+                discountedCash: {
+                    type: Number
+                },
+                discountedPercentage: {
+                    type: Number
+                },
+                loyaltyCoin: {
+                    type: Number
+                },
+                bonusGoods: [{
+                    good: {
+                        type: Schema.Types.ObjectId,
+                        ref: 'Good'
+                    },
+                    expirationDateOfGoodBonus: {
+                        type: Date
+                    },
+                    baseUnit: {
+                        type: String
+                    },
+                    quantityOfBonusGood: {
+                        type: Number
+                    }
+                }],
+                discountOnGoods: [{
+                    good: {
+                        type: Schema.Types.ObjectId,
+                        ref: 'Good'
+                    },
+                    expirationDate: {
+                        type: Date
+                    }, 
+                    discountedPrice: {
+                        type: Number
+                    }
+                }]
+            },
+        ],
         note: {
             type: String,
             required: true
-        }
-    }],
-    discounts: [{
-        type: Schema.Types.ObjectId,
-        required: true
-    }],
-    totalDiscounts: {
-        money: {
+        }, 
+        amount: { //Tổng tiền hàng nguyên bản
             type: Number
         },
-        goods: [{
-            good: {
-                type: Schema.Types.ObjectId,
-                ref: 'Good',
-                required: true
-            },
-            quantity: {
-                type: Number,
-                required: true
-            },
-            percent: {
-                type: Number,
-                required: true
-            },
-            price: {
-                type: Number,
-                required: true
-            }
-        }],
-        coin: {
+        amountAfterDiscount: {// Tổng tiền hàng sau khi áp dụng khuyến mãi
+            type: Number
+        },
+        amountAfterTax: {// Tổng tiền hàng sau khi áp dụng thuế
             type: Number
         }
+    }],
+    discounts: [
+        {
+            _id: {
+                type: Schema.Types.ObjectId,
+                ref: 'Discount'
+            },
+            code: {
+                type: String
+            },
+            type: {
+                type: String
+            },
+            formality: {
+                type: String
+            },
+            name: {
+                type: String
+            },
+            effectiveDate: {
+                type: Date
+            },
+            expirationDate: {
+                type: Date
+            },
+            discountedCash: {
+                type: Number
+            },
+            discountedPercentage: {
+                type: Number
+            },
+            loyaltyCoin: {
+                type: Number
+            },
+            maximumFreeShippingCost: {
+                type: Number
+            },
+            bonusGoods: [{
+                good: {
+                    type: Schema.Types.ObjectId,
+                    ref: 'Good'
+                },
+                expirationDateOfGoodBonus: {
+                    type: Date
+                },
+                baseUnit: {
+                    type: String
+                },
+                quantityOfBonusGood: {
+                    type: Number
+                }
+            }],
+        },
+    ],
+    //Phí giao hàng
+    shippingFee: {
+        type: Number
     },
-    amount: {
-        type: Number,
-        required: true
+    //Thời gian giao hàng dự kiến
+    deliveryTime: {
+        type: Date
     },
+     //Số coin trừ vào đơn hàng, lúc thanh toán sẽ check, nếu đủ thì trừ, không thì thôi
+    coin: {
+        type: Number
+    },
+    //Tổng thuế cho toàn đơn
     totalTax: {
         type: Number,
-        required: true
     },
-    paymentAmount: {
+    paymentAmount: { //Tổng tiền thanh toán cho toàn đơn
         type: Number,
-        required: true
     },
     note: {
         type: String
