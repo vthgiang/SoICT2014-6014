@@ -48,13 +48,11 @@ exports.getAssetTypes = async (portal, company, query) => {
 }
 
 exports.createAssetTypes = async (portal, company, data) => {
-    let checkName = await AssetType(connect(DB_CONNECTION, portal)).findOne({
-        typeName: data.typeName
-    });
+    let checkName = await AssetType(connect(DB_CONNECTION, portal)).findOne({typeName: data.typeName});
+    if (checkName) throw ['asset_type_name_exist'];
 
-    if (checkName) {
-        throw ['asset_type_name_exist'];
-    }
+    let checkNumber = await AssetType(connect(DB_CONNECTION, portal)).findOne({typeNumber: data.typeNumber});
+    if (checkNumber) throw ['asset_type_number_exist'];
 
     let dataArray;
     if (!Array.isArray(data)) {

@@ -2399,6 +2399,7 @@ export default {
                 edit_asset_type_faile:
                     "Chỉnh sửa thông tin loại tài sản thất bại",
                 asset_type_name_exist: "Tên loại tài sản đã tồn tại",
+                asset_type_number_exist: "Mã loại tài sản đã tồn tại",
             },
 
             // Quản lý thông tin tài sản

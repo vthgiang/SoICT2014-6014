@@ -2198,6 +2198,7 @@ export default {
                 edit_asset_type_success: "Edit asset type successfully",
                 edit_asset_type_faile: "Edit asset type fail",
                 asset_type_name_exist: "Asset type name exist",
+                asset_type_number_exist: "Asset type number exist",
             },
 
             // Quản lý thông tin tài sản
