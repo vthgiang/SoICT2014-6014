@@ -282,10 +282,8 @@ class IncidentManagement extends Component {
         const { translate } = this.props;
         if (status == 1) {
             return translate('asset.general_information.waiting');
-        } else if (status == 2) {
-            return translate('asset.general_information.processed')
         } else {
-            return 'Status is deleted'
+            return translate('asset.general_information.processed')
         }
     }
 
@@ -411,6 +409,7 @@ class IncidentManagement extends Component {
                                             <td>{x.asset.assetName}</td>
                                             <td>{x.incidentCode}</td>
                                             <td>{this.convertIncidentType(x.type)}</td>
+                                            <td>{this.convertIncidentStatus(x.statusIncident)}</td>
                                             <td>{x.reportedBy && userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : ''}</td>
                                             <td>{x.dateOfIncident ? this.formatDate2(x.dateOfIncident) : ''}</td>
                                             <td>{x.description}</td>
