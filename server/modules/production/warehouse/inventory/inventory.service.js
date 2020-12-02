@@ -559,6 +559,9 @@ exports.getDetailManufacturingLot = async (id, portal) => {
             path: 'lotLogs.binLocations.binLocation'
         }, {
             path: 'lotLogs.stock', select: 'id name'
+        }, {
+            path: 'bills',
+            select: 'code'
         }]);
     return { lot }
 }
