@@ -138,7 +138,7 @@ function createActionComment(taskId, actionId, newComment) {
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-actions/${actionId}/comments`,
         method: 'POST',
         data: newComment
-    }, true, true, 'task.task_perform');
+    }, false, true, 'task.task_perform');
 }
 
 /**

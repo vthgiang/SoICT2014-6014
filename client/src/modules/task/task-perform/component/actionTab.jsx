@@ -256,7 +256,7 @@ class ActionTab extends Component {
         const data = new FormData();
         data.append("creator", newCommentOfAction[`${actionId}`].creator);
         data.append("description", newCommentOfAction[`${actionId}`].description);
-        newCommentOfAction && newCommentOfAction[`${actionId}`] && newCommentOfAction[`${actionId}`] && newCommentOfAction[`${actionId}`].files.forEach(x => {
+        newCommentOfAction[`${actionId}`].files && newCommentOfAction[`${actionId}`].files.forEach(x => {
             data.append("files", x);
         })
         if (newCommentOfAction[`${actionId}`].description && newCommentOfAction[`${actionId}`].creator) {
@@ -331,7 +331,7 @@ class ActionTab extends Component {
 
         data.append("creator", newCommentOfTaskComment[`${commentId}`].creator);
         data.append("description", newCommentOfTaskComment[`${commentId}`].description);
-        newCommentOfTaskComment && newCommentOfTaskComment[`${commentId}`] && newCommentOfTaskComment[`${commentId}`].files && newCommentOfTaskComment[`${commentId}`].files.forEach(x => {
+        newCommentOfTaskComment[`${commentId}`].files && newCommentOfTaskComment[`${commentId}`].files.forEach(x => {
             data.append("files", x);
         })
         if (newCommentOfTaskComment[`${commentId}`].description && newCommentOfTaskComment[`${commentId}`].creator) {
