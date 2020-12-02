@@ -642,18 +642,6 @@ class StockTakeEditForm extends Component {
                                             />
                                             <ErrorLabel content = { errorType } />
                                         </div>
-                                        {/* <div className={`form-group`}>
-                                            <label>{translate('manage_warehouse.bill_management.status')}</label>
-                                            <SelectBox
-                                                id={`select-status-take-edit`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                value={status}
-                                                items={dataStatus}
-                                                onChange={this.handleStatusChange}    
-                                                multiple={false}
-                                            />
-                                        </div> */}
                                     </div>
                                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                         <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
@@ -669,6 +657,19 @@ class StockTakeEditForm extends Component {
                                                 disabled={true}
                                             />
                                             <ErrorLabel content = { errorStock } />
+                                        </div>
+                                        
+                                        <div className={`form-group`}>
+                                            <label>{translate('manage_warehouse.bill_management.status')}</label>
+                                            <SelectBox
+                                                id={`select-status-take-edit`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                value={status}
+                                                items={dataStatus}
+                                                onChange={this.handleStatusChange}    
+                                                multiple={false}
+                                            />
                                         </div>
                                     </div>
                                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">

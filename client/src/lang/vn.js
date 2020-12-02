@@ -4200,6 +4200,24 @@ export default {
                     4: "Xem chi tiết thay đổi phiếu kiểm kê kho",
                     5: "Xem chi tiết thay đổi phiếu luân chuyển kho",
                 },
+                qc_status: {
+                    1: {
+                        color: "orange",
+                        content: "Chưa kiểm định",
+                    },
+                    2: {
+                        color: "green",
+                        content: "Đạt kiểm định",
+                    },
+                    3: {
+                        color: "red",
+                        content: "Không đạt kiểm định",
+                    },
+                },
+                qc_name: "Tên người kiểm định",
+                qc_email: "email",
+                qc_status_bill: "Trạng thái",
+                quality_control_content: "Nội dung",
                 infor: "Thông tin chung",
                 name: "Tên",
                 phone: "Số điện thoại",
