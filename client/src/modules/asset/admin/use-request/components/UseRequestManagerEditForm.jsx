@@ -462,7 +462,7 @@ class UseRequestManagerEditForm extends Component {
                                         value={dateStartUse}
                                         onChange={this.handleDateStartUseChange}
                                     />
-                                    {asset.typeRegisterForUse == 2 &&
+                                    {asset && asset.typeRegisterForUse == 2 &&
                                         < TimePicker
                                             id={`edit_start_time_use${_id}`}
                                             value={startTime}
@@ -482,7 +482,7 @@ class UseRequestManagerEditForm extends Component {
                                         onChange={this.handleDateEndUseChange}
                                     />
                                     {
-                                        asset.typeRegisterForUse == 2 &&
+                                        asset && asset.typeRegisterForUse == 2 &&
                                         < TimePicker
                                             id={`edit_stop_time_use${_id}`}
                                             value={stopTime}
