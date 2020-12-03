@@ -65,7 +65,6 @@ class AssetEditForm extends Component {
                 maintainanceLogs: data
             })
         }
-        console.log('maintain', this.state);
     }
 
     // Function xoá sửa chữa, thay thế, nâng cấp
@@ -220,8 +219,7 @@ class AssetEditForm extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let { code, assetName, serial, assetType, managedBy, purchaseDate, warrantyExpirationDate, location, status, group,
-            typeRegisterForUse, cost, usefulLife, startDepreciation, depreciationType, unitsProducedDuringTheYears, estimatedTotalProduction } = this.state;
+        let { code, assetName, assetType, purchaseDate, status, typeRegisterForUse, depreciationType, estimatedTotalProduction } = this.state;
 
         if (this.state !== {}) {
             let unitProductionValidate = true;
@@ -230,27 +228,10 @@ class AssetEditForm extends Component {
             }
 
             let result = this.validatorInput(code) && this.validatorInput(assetName) &&
-                // this.validatorInput(serial) && 
-                this.validatorInput(assetType) && this.validatorInput(group) &&
-                // this.validatorInput(managedBy) && 
-                // this.validatorInput(purchaseDate) &&
-                // this.validatorInput(warrantyExpirationDate) && //this.validatorInput(location) &&
-                this.validatorInput(status) && this.validatorInput(typeRegisterForUse)
-
-                // this.validatorInput(cost) && this.validatorInput(usefulLife) &&
-                // this.validatorInput(startDepreciation) && this.validatorInput(depreciationType)
-                && unitProductionValidate;
-
-            // console.log('\n\n\n ***', this.validatorInput(code) , this.validatorInput(assetName) ,
-            //     // this.validatorInput(serial) , 
-            //     this.validatorInput(assetType) , this.validatorInput(group) ,
-            //     // this.validatorInput(managedBy) , 
-            //     this.validatorInput(purchaseDate) ,
-            //     // this.validatorInput(warrantyExpirationDate) , //this.validatorInput(location) ,
-            //     this.validatorInput(status) , this.validatorInput(typeRegisterForUse) ,
-            //     this.validatorInput(cost) , this.validatorInput(usefulLife) ,
-            //     this.validatorInput(startDepreciation) , this.validatorInput(depreciationType)
-            //     , unitProductionValidate);
+                this.validatorInput(assetType) &&
+                this.validatorInput(status) &&
+                this.validatorInput(typeRegisterForUse) &&
+                unitProductionValidate;
             return result;
         }
 
@@ -258,7 +239,8 @@ class AssetEditForm extends Component {
     }
 
     save = async () => {
-        let { img, maintainanceLogs, usageLogs, incidentLogs, files, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, employeeId } = this.state;
+        let { img, maintainanceLogs, usageLogs, incidentLogs, files, assignedToUser,
+            assignedToOrganizationalUnit, handoverFromDate, handoverToDate, employeeId, page } = this.state;
 
         await this.setState({
             img: img,
@@ -267,7 +249,6 @@ class AssetEditForm extends Component {
             createIncidentLogs: incidentLogs.filter(x => !x._id),
             createFiles: files.filter(x => !x._id),
         })
-        console.log('formdata', this.state);
         let formData = convertJsonObjectToFormData(this.state);
         files.forEach(x => {
             x.files.forEach(item => {
@@ -275,7 +256,7 @@ class AssetEditForm extends Component {
             })
         })
         formData.append("fileAvatar", this.state.avatar);
-        this.props.updateInformationAsset(this.state._id, formData, employeeId);
+        this.props.updateInformationAsset(this.state._id, formData, employeeId, page);
 
         // Thêm vào thông tin sử dụng
         if (assignedToUser !== this.props.assignedToUser || assignedToOrganizationalUnit !== this.props.assignedToOrganizationalUnit || handoverFromDate !== this.props.handoverFromDate || handoverToDate !== this.props.handoverToDate) {
@@ -378,6 +359,7 @@ class AssetEditForm extends Component {
                 deleteIncidentLogs: [],
                 editFiles: [],
                 deleteFiles: [],
+                page: nextProps.page,
 
                 errorOnCode: undefined,
                 errorOnAssetName: undefined,
@@ -391,6 +373,7 @@ class AssetEditForm extends Component {
                 errorOnAssignedToOrganizationalUnit: undefined,
                 errorOnNameField: undefined,
                 errorOnValue: undefined,
+
             }
         } else {
             return null;

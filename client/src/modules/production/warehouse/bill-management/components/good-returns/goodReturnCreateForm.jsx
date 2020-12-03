@@ -28,7 +28,11 @@ class GoodReturnCreateForm extends Component {
             customer: '',
             users: [],
             status: '1',
-            fromStock: ''
+            fromStock: '',
+            qualityControlStaffs: [],
+            accountables: [], 
+            responsibles: [],
+            approver: []
         }
     }
 

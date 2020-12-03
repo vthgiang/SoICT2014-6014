@@ -59,10 +59,7 @@ const BillSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'User'
         },
-        role: {
-            type: Schema.Types.ObjectId,
-            ref: "Role"
-        },
+        
         approvedTime: {
             type: Date
         }
@@ -73,6 +70,15 @@ const BillSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: "User"
         },
+
+        status: { // Trạng thái kiểm định 1. Chưa kiểm định, 2. Kiểm định Ok, 3. Kiểm định có vấn đề
+            type: Number
+        },
+
+        content: { // Nội dung kiểm định
+            type: String
+        },
+
         time: { // Thời gian kiểm định
             type: Date
         }

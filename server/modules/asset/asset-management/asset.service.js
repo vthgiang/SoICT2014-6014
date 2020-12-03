@@ -4,6 +4,7 @@ const nodemailer = require("nodemailer");
 const Models = require(`${SERVER_MODELS_DIR}`);
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 const arrayToTree = require('array-to-tree');
+const { freshObject } = require(`${SERVER_HELPERS_DIR}/functionHelper`);
 const { sendEmail } = require(`${SERVER_HELPERS_DIR}/emailHelper`);
 
 const { Asset, User } = Models;
@@ -16,7 +17,6 @@ const { Asset, User } = Models;
 exports.sendEmailToManager = async (portal, assetIncident, oldAsset) => {
     // let user = await User.find()
     let user = await User(connect(DB_CONNECTION, portal)).find();
-    console.log("=====", user);
 
     // task = await task.populate("organizationalUnit creator parent").execPopulate();
 
@@ -129,9 +129,7 @@ exports.getAssetInforById = async (portal, id) => {
 exports.searchAssetProfiles = async (portal, company, params) => {
     let {getType} = params;
     let keySearch = {};
-    if (company) {
-        keySearch = { ...keySearch, company: company };
-    }
+
     // Bắt sựu kiện MSTS tìm kiếm khác ""
     if (params.code) {
         keySearch = { ...keySearch, code: { $regex: params.code, $options: "i" } }
@@ -174,7 +172,8 @@ exports.searchAssetProfiles = async (portal, company, params) => {
 
     // Thêm key tìm kiếm tài sản theo id người quản lý
     if (params.managedBy) {
-        keySearch = { ...keySearch, managedBy: { $in: params.managedBy } };
+        let arr = Array.isArray(params.managedBy) ? params.managedBy : [params.managedBy];
+        keySearch = { ...keySearch, managedBy: { $in: arr } };
     }
 
     // Thêm key tìm kiếm tài sản theo vị trí
@@ -199,7 +198,8 @@ exports.searchAssetProfiles = async (portal, company, params) => {
 
     // Thêm key tìm kiếm tài sản theo vai trò
     if (params.currentRole) {
-        keySearch = { ...keySearch, readByRoles: { $in: params.currentRole } };
+        let arr = Array.isArray(params.currentRole) ? params.currentRole : [params.currentRole];
+        keySearch = { ...keySearch, readByRoles: { $in: arr } };
     }
 
     // Thêm key tìm kiếm tài sản theo ngày bắt đầu khấu hao
@@ -313,7 +313,7 @@ exports.searchAssetProfiles = async (portal, company, params) => {
         totalList = await Asset(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
         listAssets = await Asset(connect(DB_CONNECTION, portal)).find(keySearch).populate({ path: 'assetType' })
             .sort({ 'createdAt': 'desc' }).skip(params.page).limit(params.limit);
-        console.log('list depreciation', listAssets)
+
     }else{
         totalList = await Asset(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
         listAssets = await Asset(connect(DB_CONNECTION, portal)).find(keySearch).populate({ path: 'assetType' })
@@ -501,7 +501,8 @@ exports.createAsset = async (portal, company, data, fileInfo) => {
  * Cập nhât thông tin tài sản theo id
  */
 exports.updateAssetInformation = async (portal, company, id, data, fileInfo) => {
-
+    //Lọc lại những giá trị lỗi ('undefined') từ FormData gửi từ bên client
+    data = freshObject(data);
     let {
         createMaintainanceLogs,
         deleteMaintainanceLogs,
@@ -529,7 +530,6 @@ exports.updateAssetInformation = async (portal, company, id, data, fileInfo) => 
             throw ['asset_code_exist'];
         }
     }
-
 
     deleteEditCreateObjectInArrayObject = (arrObject, arrDelete, arrEdit, arrCreate, fileInfor = undefined) => {
         if (arrDelete) {
@@ -590,18 +590,18 @@ exports.updateAssetInformation = async (portal, company, id, data, fileInfo) => 
     oldAsset.group = data.group;
     oldAsset.purchaseDate = data.purchaseDate;
     oldAsset.warrantyExpirationDate = data.warrantyExpirationDate;
-    oldAsset.managedBy = (!data.managedBy || data.managedBy === 'undefined') ? null : data.managedBy;
-    oldAsset.assignedToUser = data.assignedToUser !== '' ? data.assignedToUser : null;
-    oldAsset.assignedToOrganizationalUnit = data.assignedToOrganizationalUnit !== '' ? data.assignedToOrganizationalUnit : null;
+    oldAsset.managedBy = data.managedBy;
+    oldAsset.assignedToUser = data.assignedToUser;
+    oldAsset.assignedToOrganizationalUnit = data.assignedToOrganizationalUnit;
     oldAsset.readByRoles = data.readByRoles
-    oldAsset.location = data.location ? data.location : null;
+    oldAsset.location = data.location;
     oldAsset.status = data.status;
     oldAsset.typeRegisterForUse = data.typeRegisterForUse;
     oldAsset.description = data.description;
     oldAsset.detailInfo = data.detailInfo;
     // Khấu hao
-    oldAsset.cost = data.cost ? data.cost : 0;
-    oldAsset.usefulLife = data.usefulLife ? data.usefulLife : 0;
+    oldAsset.cost = data.cost;
+    oldAsset.usefulLife = data.usefulLife;
     oldAsset.residualValue = data.residualValue;
     oldAsset.startDepreciation = data.startDepreciation;
     oldAsset.depreciationType = data.depreciationType ? data.depreciationType : 'none';
@@ -623,7 +623,7 @@ exports.updateAssetInformation = async (portal, company, id, data, fileInfo) => 
     oldAsset.disposalDesc = data.disposalDesc;
 
     // Edit  thông tin tài sản
-    oldAsset.save();
+    await oldAsset.save();
 
 
     // Function edit, create, Delete Document of collection
@@ -647,8 +647,7 @@ exports.updateAssetInformation = async (portal, company, id, data, fileInfo) => 
     let assets = await Asset(connect(DB_CONNECTION, portal)).find({ _id: oldAsset._id });
 
     return {
-        assets: assets,
-
+        assets: assets
     };
 }
 

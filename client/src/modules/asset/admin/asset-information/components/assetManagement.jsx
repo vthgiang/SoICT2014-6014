@@ -828,6 +828,8 @@ class AssetManagement extends Component {
                         incidentLogs={currentRow.incidentLogs}
                         archivedRecordNumber={currentRow.archivedRecordNumber}
                         files={currentRow.documents}
+
+                        page={page}
                     />
                 }
             </div>
