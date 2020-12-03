@@ -19,7 +19,7 @@ class QuoteCreatePayment extends Component {
     componentDidMount() {
         this.props.getDiscountForOrderValue();
         this.props.getCustomerPoint(this.props.customer);
-        this.getAmountAfterApplyTax();
+        // this.getAmountAfterApplyTax();
         // this.props.editCustomerPoint(this.props.customer, { point: 500 });
         //Lấy xu dựa vào customer Id
     }
@@ -30,11 +30,13 @@ class QuoteCreatePayment extends Component {
             return accumulator + currentValue.amountAfterTax;
         }, 0);
 
-        this.setState({ amountAfterApplyTax });
+        // this.setState({ amountAfterApplyTax });
+        return amountAfterApplyTax;
     };
 
     applyDiscountForOrder = (amount, freeShipCost) => {
-        let { discountsOfOrderValue, coin } = this.props;
+        const { setPaymentAmount } = this.props;
+        let { discountsOfOrderValue, coin, paymentAmount } = this.props;
 
         let discountForFormality = {
             0: [],
@@ -65,7 +67,10 @@ class QuoteCreatePayment extends Component {
 
         amount = Math.round(amount * 100) / 100;
 
-        return amount;
+        //SET STATE paymentAmout để tính tổng tiền lưu vào DB
+        if (amount !== paymentAmount) {
+            setPaymentAmount(amount);
+        }
     };
 
     getFreeShipCost = () => {
@@ -105,7 +110,6 @@ class QuoteCreatePayment extends Component {
                 coinOfAll += discount.loyaltyCoin;
             }
         });
-        console.log("coinOfAll", coinOfAll);
         return coinOfAll;
     };
 
@@ -173,6 +177,7 @@ class QuoteCreatePayment extends Component {
             deliveryTime,
             note,
             coin,
+            paymentAmount,
         } = this.props;
 
         let allOfBonusGood = this.getBonusGoodOfAll();
@@ -184,8 +189,8 @@ class QuoteCreatePayment extends Component {
             customerCoin = this.props.customers.customerPoint.point;
         }
 
-        const { amountAfterApplyTax } = this.state;
-        let amountAfterApplyDiscountOfOrder = this.applyDiscountForOrder(amountAfterApplyTax, freeShipCost);
+        const amountAfterApplyTax = this.getAmountAfterApplyTax();
+        this.applyDiscountForOrder(amountAfterApplyTax, freeShipCost);
 
         return (
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -460,11 +465,11 @@ class QuoteCreatePayment extends Component {
                                 </div>
                             </div>
 
-                            {amountAfterApplyTax && amountAfterApplyDiscountOfOrder && amountAfterApplyTax > amountAfterApplyDiscountOfOrder ? (
+                            {amountAfterApplyTax && paymentAmount && amountAfterApplyTax > paymentAmount + coin + freeShipCost ? ( //Tiền khuyến mãi toàn đơn là chưa tính freeship và trừ
                                 <div className="shopping-payment-element">
                                     <div className="shopping-payment-element-title">Khuyến mãi cho toàn đơn</div>
                                     <div className="shopping-payment-element-value">
-                                        -{formatCurrency(amountAfterApplyTax - amountAfterApplyDiscountOfOrder - coin)}
+                                        -{formatCurrency(amountAfterApplyTax - paymentAmount - coin - freeShipCost)}
                                     </div>
                                 </div>
                             ) : (
@@ -497,7 +502,7 @@ class QuoteCreatePayment extends Component {
                             <div className="shopping-payment-element">
                                 <div className="shopping-payment-element-title"> Tổng tiền thanh toán:</div>
                                 <div className="shopping-payment-element-value" style={{ color: "#ee4d2d", fontSize: "20px" }}>
-                                    {amountAfterApplyDiscountOfOrder ? formatCurrency(amountAfterApplyDiscountOfOrder) : "0"}
+                                    {paymentAmount ? formatCurrency(paymentAmount) : "0"}
                                 </div>
                             </div>
                         </div>
