@@ -59,7 +59,8 @@ class IncidentLogTab extends Component {
     handleEditIncident = async (data) => {
         const { incidentLogs } = this.state;
         incidentLogs[data.index] = data;
-        console.log('update', data);
+        data.reportedBy = data.reportedBy ? data.reportedBy : localStorage.getItem("userId");
+
         await this.setState({
             incidentLogs: incidentLogs,
         })

@@ -13,12 +13,16 @@ class GoodSelected extends Component {
         let options = [];
         let { listGoodsByType } = this.props.goods;
         if (listGoodsByType) {
-            options = listGoodsByType.map((item) => {
+            options = [{ value: "title", text: "---Chọn mặt hàng---" }];
+
+            let mapOptions = listGoodsByType.map((item) => {
                 return {
                     value: item._id,
                     text: item.code + " - " + item.name,
                 };
             });
+
+            options = options.concat(mapOptions);
         }
         return options;
     };

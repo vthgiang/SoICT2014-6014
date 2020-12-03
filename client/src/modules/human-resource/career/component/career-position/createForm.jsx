@@ -2,15 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ErrorLabel, TreeSelect } from '../../../../../common-components';
+import { DialogModal, ErrorLabel, SelectBox, TreeSelect } from '../../../../../common-components';
 import { CareerReduxAction } from '../../redux/actions';
 import ValidationHelper from '../../../../../helpers/validationHelper';
 class CreateForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            archiveParent: ''
-        }
+        this.state = { }
     }
 
     handleName = (e) => {
@@ -23,8 +21,18 @@ class CreateForm extends Component {
         });
     }
 
+    handlePackage = (e) => {
+        const { value } = e.target;
+        const { translate } = this.props;
+        const { message } = ValidationHelper.validateName(translate, value, 1, 255);
+        this.setState({
+            package: value,
+            // nameError: message
+        });
+    }
+
     handleCode = (e) => {
-        const {value} = e.target;
+        const { value } = e.target;
         let msg;
         this.setState({
             code: value,
@@ -36,10 +44,15 @@ class CreateForm extends Component {
         this.setState({ parent: value[0] });
     };
 
+    handleField = (value) => {
+        this.setState({ field: value });
+        console.log('field...', this.state);
+    };
+
     isValidateForm = () => {
-        let {name} = this.state;
-        let {translate} = this.props;
-        if(!ValidationHelper.validateName(translate, name, 1, 255).status) return false;
+        let { name } = this.state;
+        let { translate } = this.props;
+        if (!ValidationHelper.validateName(translate, name, 1, 255).status) return false;
         return true;
     }
 
@@ -47,16 +60,18 @@ class CreateForm extends Component {
         const data = {
             name: this.state.name,
             code: this.state.code,
+            package: this.state.package,
             parent: this.state.parent,
+            field: this.state.field,
         }
         console.log('data', data);
         this.props.createCareerPosition(data);
     }
 
     render() {
-        const { translate, documents } = this.props;
+        const { translate, career } = this.props;
         const { list } = this.props;
-        let { parent, nameError, codeError } = this.state;
+        let { parent, field, nameError, codeError } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
@@ -68,6 +83,11 @@ class CreateForm extends Component {
                 >
                     <form id="form-create-career-position">
                         <div className={`form-group ${!nameError ? "" : "has-error"}`}>
+                            <label>Gói thầu<span className="text-red">*</span></label>
+                            <input type="text" className="form-control" onChange={this.handlePackage} />
+                            <ErrorLabel content={nameError} />
+                        </div>
+                        <div className={`form-group ${!nameError ? "" : "has-error"}`}>
                             <label>Tên<span className="text-red">*</span></label>
                             <input type="text" className="form-control" onChange={this.handleName} />
                             <ErrorLabel content={nameError} />
@@ -76,6 +96,24 @@ class CreateForm extends Component {
                             <label>Chọn thông tin cha</label>
                             <TreeSelect data={list} value={parent} handleChange={this.handleParent} mode="radioSelect" />
                         </div>
+                        { !parent &&
+                            <div className="form-group">
+                                <label>Lĩnh vực</label>
+                                <SelectBox
+                                    id={`field-career-add`}
+                                    lassName="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={career?.listField.map(x => {
+                                        return { text: x.name, value: x._id }
+                                    })}
+                                    options={{ placeholder: "Chọn lĩnh vực" }}
+                                    onChange={this.handleField}
+                                    value={field}
+                                    multiple={true}
+                                />
+                            </div>
+                        }
+
                         <div className={`form-group ${!codeError ? "" : "has-error"}`}>
                             <label>Nhãn<span className="text-red">*</span></label>
                             <input type="text" className="form-control" onChange={this.handleCode} />

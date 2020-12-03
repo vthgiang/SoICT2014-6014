@@ -40,7 +40,8 @@ class GoodReceiptCreateFrom extends Component {
                 lot: props.lot,
                 lotId: props.lotId,
                 bill: { ...state.bill, quantity: props.lot.originalQuantity, code: props.billCode },
-                remainingQuantityOfLot: props.lot.originalQuantity
+                remainingQuantityOfLot: props.lot.originalQuantity,
+                listBills: []
 
             }
         }
@@ -407,7 +408,7 @@ class GoodReceiptCreateFrom extends Component {
                     approvers: bill.approvers.map(approver => {
                         return {
                             approver: approver,
-                            approvedTime: new Date(Date.now())
+                            approvedTime: null
                         }
                     }),
                     responsibles: bill.responsibles,
@@ -416,7 +417,7 @@ class GoodReceiptCreateFrom extends Component {
                         name: bill.name,
                         phone: bill.phone,
                         email: bill.email ? bill.email : "",
-                        address: bill.adress ? bill.address : "",
+                        address: bill.address ? bill.address : "",
                     },
                     description: bill.description,
                     goods: [{

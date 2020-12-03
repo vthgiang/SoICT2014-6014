@@ -377,7 +377,7 @@ class EvaluateByConsultedEmployee extends Component {
                             </div>
                         }
                     </div>
-                    <form id="form-evaluate-task-by-consulted">
+                    <form id="form-evaluate-task-by-consulted" className="body-evaluation" style={{height:"calc(100vh - 186px)", overflow: "auto"}}>
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{translate('task.task_management.detail_general_info')}</legend>
 

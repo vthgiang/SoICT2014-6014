@@ -9,6 +9,7 @@ import { AutomaticTaskPointCalculator } from './automaticTaskPointCalculator';
 import { ModalShowAutoPointInfo } from './modalShowAutoPointInfo';
 import { getStorage } from '../../../../config';
 import moment from 'moment'
+import "./scrollBar.css";
 
 var currentTask;
 // var indexReRender = 0;
@@ -929,7 +930,7 @@ class EvaluateByResponsibleEmployee extends Component {
                     </div>
 
 
-                    <div>
+                    <div className="body-evaluation" style={{height:"calc(100vh - 186px)", overflow: "auto"}}>
                         {/* Đánh giá từ ngày ... đến ngày ... */}
                         <form id={`form-evaluate-task-by-${role}`}>
                             <fieldset className="scheduler-border">

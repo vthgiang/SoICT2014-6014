@@ -4,6 +4,7 @@ import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { DialogModal } from '../../../../../common-components';
 import { formatDate, formatFullDate } from '../../../../../helpers/formatDate';
 import { BillActions } from '../../../warehouse/bill-management/redux/actions';
+import ManufacturingLotDetailForm from '../../manufacturing-lot/components/manufacturingLotDetailForm';
 import { commandActions } from '../redux/actions';
 import qualityControlForm from './qualityControlForm';
 class ManufacturingCommandDetailInfo extends Component {
@@ -19,6 +20,14 @@ class ManufacturingCommandDetailInfo extends Component {
             return false
         }
         return true;
+    }
+
+    showDetailManufacturingLot = async (lot) => {
+        await this.setState({
+            lotDetail: lot
+        });
+
+        window.$('#modal-detail-info-manufacturing-lot').modal('show');
     }
 
     render() {
@@ -42,6 +51,7 @@ class ManufacturingCommandDetailInfo extends Component {
                     hasSaveButton={false}
                     hasNote={false}
                 >
+                    <ManufacturingLotDetailForm lotDetail={this.state.lotDetail} />
                     <form id={`form-detail-manufacturing-command`}>
                         <div className="row">
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -72,10 +82,10 @@ class ManufacturingCommandDetailInfo extends Component {
                                 <div className="form-group">
                                     <strong>{translate('manufacturing.command.lot_code')}:&emsp;</strong>
                                     {
-                                        currentCommand.lot && currentCommand.lot[0] && currentCommand.lot[0].code
+                                        currentCommand.lot && currentCommand.lot[0] && <a href="#" onClick={() => this.showDetailManufacturingLot(currentCommand.lot[0])}>{currentCommand.lot[0].code}</a>
                                     }
                                     {
-                                        currentCommand.lot && currentCommand.lot[1] && ", " + currentCommand.lot[1].code
+                                        currentCommand.lot && currentCommand.lot[1] && <a href="#" onClick={() => this.showDetailManufacturingLot(currentCommand.lot[1])}>{", " + currentCommand.lot[1].code}</a>
                                     }
                                 </div>
                                 <div className="form-group">

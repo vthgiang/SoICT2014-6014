@@ -319,6 +319,7 @@ class InventoryManagement extends Component {
         const totalGoodsByType = listGoodsByType ? listGoodsByType.length : 0;
         const totalLot = listLots ? listLots.length : 0;
         const dataGoodsByType = this.getAllGoodsByType();
+        console.log(lots.listLots);
 
         let goodName = dataGoodsByType.find(x => x.value === good);
 

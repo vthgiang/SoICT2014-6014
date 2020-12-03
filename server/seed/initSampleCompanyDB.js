@@ -3014,8 +3014,8 @@ const initSampleCompanyDB = async () => {
                     dateOfIncident: new Date("2020-08-20"),
                     description: "cháy",
                     incidentCode: "icd01",
-                    statusIncident: "Chờ xử lý",
-                    type: "broken",
+                    statusIncident: "2",
+                    type: "1",
                     updatedAt: new Date("2020-08-20"),
                 },
             ],
@@ -3091,8 +3091,8 @@ const initSampleCompanyDB = async () => {
                     dateOfIncident: new Date("2000-08-20"),
                     description: "cháy",
                     incidentCode: "icd01",
-                    statusIncident: "Chờ xử lý",
-                    type: "broken",
+                    statusIncident: "1",
+                    type: "1",
                     updatedAt: new Date("2000-08-20"),
                 },
             ],
@@ -3167,8 +3167,8 @@ const initSampleCompanyDB = async () => {
                     dateOfIncident: new Date("2020-08-20"),
                     description: "cháy",
                     incidentCode: "icd01",
-                    statusIncident: "Chờ xử lý",
-                    type: "broken",
+                    statusIncident: "2",
+                    type: "1",
                     updatedAt: new Date("2020-08-20"),
                 },
             ],
@@ -5156,7 +5156,10 @@ const initSampleCompanyDB = async () => {
                 customer: null,
                 supplier: null,
             },
-            approver: users[2]._id,
+            approvers: [{
+                approver: users[2]._id,
+                approvedTime: null
+            }],
             receiver: {
                 name: "Nguyễn Văn Thắng",
                 phone: 0344213030,
@@ -5208,7 +5211,10 @@ const initSampleCompanyDB = async () => {
                 customer: null,
                 supplier: null,
             },
-            approver: users[2]._id,
+            approvers: [{
+                approver: users[2]._id,
+                approvedTime: null
+            }],
             receiver: {
                 name: "Nguyễn Văn Thắng",
                 phone: 0344213030,

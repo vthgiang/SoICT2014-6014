@@ -11,9 +11,7 @@ import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { RoleActions } from '../../../../super-admin/role/redux/actions';
 
 import { AssetCreateForm, AssetDetailForm, AssetEditForm, AssetImportForm } from './combinedContent';
-import { configTaskTempalte } from '../../../../task/task-template/component/fileConfigurationImportTaskTemplate';
-import { translate } from 'react-redux-multilingual/lib/utils';
-
+import qs from 'qs';
 class AssetManagement extends Component {
     constructor(props) {
         super(props);
@@ -23,7 +21,7 @@ class AssetManagement extends Component {
             assetType: "",
             purchaseDate: null,
             disposalDate: null,
-            status: "",
+            status: window.location.search ? [qs.parse(window.location.search, { ignoreQueryPrefix: true }).status] : '',
             group: "",
             handoverUnit: "",
             handoverUser: "",
@@ -62,6 +60,7 @@ class AssetManagement extends Component {
 
     // Function format dữ liệu Date thành string
     formatDate(date, monthYear = false) {
+        if (!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -94,11 +93,8 @@ class AssetManagement extends Component {
 
     // Bắt sự kiện click chỉnh sửa thông tin tài sản
     handleEdit = async (value) => {
-        await this.setState(state => {
-            return {
-                // ...state,
-                currentRow: value
-            }
+        await this.setState({
+            currentRow: value
         });
         window.$('#modal-edit-asset').modal('show');
     }
@@ -262,14 +258,14 @@ class AssetManagement extends Component {
                 let code = x.code;
                 let name = x.assetName;
                 let description = x.description;
-                let type = x.assetType && assettypelist.length && assettypelist.find(item => item._id === x.assetType) ? assettypelist.find(item => item._id === x.assetType).typeName : 'Asset Type is deleted';
+                let type = this.formatAssetTypes(x.assetType);
                 let purchaseDate = this.formatDate(x.purchaseDate);
                 let disposalDate = this.formatDate(x.disposalDate);
                 let manager = x.managedBy && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).email : '';
                 let assigner = x.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.assignedToUser) ? userlist.find(item => item._id === x.assignedToUser).email : '') : ''
                 // let handoverFromDate = x.handoverFromDate ? this.formatDate(x.handoverFromDate) : '';
                 // let handoverToDate = x.handoverToDate ? this.formatDate(x.handoverToDate) : '';
-                let status = x.status;
+                let status = this.formatStatus(x.status);
                 length = x.detailInfo && x.detailInfo.length;
                 let info = (length) ? (x.detailInfo.map((item, index) => {
                     return {
@@ -415,9 +411,10 @@ class AssetManagement extends Component {
         else if (group === 'machine') {
             return translate('asset.dashboard.machine')
         }
-        else {
+        else if (group === 'other') {
             return translate('asset.dashboard.other')
         }
+        else return null;
     }
 
     formatStatus = (status) => {
@@ -443,11 +440,22 @@ class AssetManagement extends Component {
         }
     }
 
+    formatAssetTypes = (types) => {
+        let list = !types ? '' : types.reduce((value, cur) => {
+            if (!value) {
+                if (!cur) return value;
+                else return cur.typeName ? value + cur.typeName : value;
+            }
+            else return value + ', ' + cur.typeName
+        }, '');
+        return list;
+    }
+
     formatDisposalDate(disposalDate, status) {
         const { translate } = this.props;
         if (status === 'disposed') {
             if (disposalDate) return this.formatDate(disposalDate);
-            else return 'Deleted';
+            else return translate('asset.general_information.not_disposal_date');
         }
         else {
             return translate('asset.general_information.not_disposal');
@@ -456,7 +464,7 @@ class AssetManagement extends Component {
 
     render() {
         const { assetsManager, assetType, translate, user, isActive, department } = this.props;
-        const { page, limit, currentRowView, currentRow, purchaseDate, disposalDate, managedBy, location, typeRegisterForUse, handoverUnit, handoverUser } = this.state;
+        const { page, limit, currentRowView, status, currentRow, purchaseDate, disposalDate, managedBy, location, typeRegisterForUse, handoverUnit, handoverUser } = this.state;
         var lists = "", exportData;
         var userlist = user.list, departmentlist = department.list;
         var assettypelist = assetType.listAssetTypes;
@@ -556,6 +564,7 @@ class AssetManagement extends Component {
                             <SelectMulti id={`multiSelectStatus1`} multiple="multiple"
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('asset.general_information.select_all_status') }}
                                 onChange={this.handleStatusChange}
+                                value={status}
                                 items={[
                                     { value: "ready_to_use", text: translate('asset.general_information.ready_use') },
                                     { value: "in_use", text: translate('asset.general_information.using') },
@@ -685,7 +694,7 @@ class AssetManagement extends Component {
                                             translate('asset.general_information.purchase_date'),
                                             translate('asset.general_information.manager'),
                                             translate('asset.general_information.user'),
-                                            translate('asset.general_information.organizaiton_unit'),
+                                            translate('asset.general_information.organization_unit'),
                                             translate('asset.general_information.status'),
                                             translate('asset.general_information.disposal_date')
                                         ]}
@@ -703,7 +712,7 @@ class AssetManagement extends Component {
                                         <td>{x.code}</td>
                                         <td>{x.assetName}</td>
                                         <td>{this.convertGroupAsset(x.group)}</td>
-                                        <td>{x.assetType && x.assetType.length ? x.assetType.map((item, index) => { let suffix = index < x.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : 'Asset is deleted'}</td>
+                                        <td>{this.formatAssetTypes(x.assetType)}</td>
                                         <td>{this.formatDate(x.purchaseDate)}</td>
                                         <td>{x.managedBy && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).name : ''}</td>
                                         <td>{x.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.assignedToUser) ? userlist.find(item => item._id === x.assignedToUser).name : '') : ''}</td>
@@ -828,6 +837,8 @@ class AssetManagement extends Component {
                         incidentLogs={currentRow.incidentLogs}
                         archivedRecordNumber={currentRow.archivedRecordNumber}
                         files={currentRow.documents}
+
+                        page={page}
                     />
                 }
             </div>

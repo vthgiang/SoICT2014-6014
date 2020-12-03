@@ -134,31 +134,39 @@ class BillDetailForm extends Component {
                                 }
                             </fieldset>
                         </div>
-                        { billDetail.type === '1' &&
+                        { billDetail &&
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manage_warehouse.bill_management.qualityControlStaffs')}</legend>
-                                    {
-                                        billDetail.qualityControlStaffs && billDetail.qualityControlStaffs.length &&
-                                        billDetail.qualityControlStaffs.map((x, index) => {
-                                            return (
-                                                <div className="form-group" key={index}>
-                                                    <p>{x.staff.name}{" - "}{x.staff.email}
-                                                    {
-                                                        x.time &&
-                                                        <React.Fragment>
-                                                            &emsp; &emsp; &emsp;
-                                                            {translate('manage_warehouse.bill_management.time')}
-                                                            : &emsp;
-                                                            {formatFullDate(x.time)}
-                                                        </React.Fragment>
+                                    <table className="table">
+                                        <thead>
+                                            <tr>
+                                                <th>{translate('manage_warehouse.bill_management.index')}</th>
+                                                <th>{translate('manage_warehouse.bill_management.qc_name')}</th>
+                                                <th>{translate('manage_warehouse.bill_management.qc_email')}</th>
+                                                <th>{translate('manage_warehouse.bill_management.qc_status_bill')}</th>
+                                                <th>{translate('manage_warehouse.bill_management.quality_control_content')}</th>
+                                                <th>{translate('manage_warehouse.bill_management.time')}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {billDetail.qualityControlStaffs && billDetail.qualityControlStaffs.length &&
+                                                billDetail.qualityControlStaffs.map((x, index) => (
+                                                    <tr key={index}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{x.staff.name}</td>
+                                                        <td>{x.staff.email}</td>
+                                                        {x.status ? <td style={{ color: translate(`manage_warehouse.bill_management.qc_status.${x.status}.color`) }}>
+                                                            {translate(`manage_warehouse.bill_management.qc_status.${x.status}.content`)}
+                                                        </td> : <td></td>}
+                                                        <td>{x.content}</td>
+                                                        <td>{x.time && formatFullDate(x.time)}</td>
+                                                    </tr>
+                                                ))
+                                            }
 
-                                                    }
-                                                    </p>
-                                                </div>
-                                            )
-                                        })
-                                    }
+                                        </tbody>
+                                    </table>
                                 </fieldset>
                             </div>
                         }

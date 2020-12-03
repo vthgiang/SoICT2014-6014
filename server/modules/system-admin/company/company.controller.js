@@ -190,3 +190,52 @@ exports.editImportConfiguraion =  async (req, res) => {
         });
     }
 };
+
+exports.editCompanyOrgInformation =  async (req, res) => {
+    try {
+        let organizationalUnitImage;
+        //upload organizationalUnitImage cho form xem chi tiết
+        if (req.files && req.files.organizationalUnitImage) {
+            let path = `${req.files.organizationalUnitImage[0].destination}/${req.files.organizationalUnitImage[0].filename}`;
+            organizationalUnitImage = path.substr(1, path.length)
+        }
+        const data = await CompanyServices.editCompanyOrgInformation(req.user.company.shortName, organizationalUnitImage);
+
+        Logger.info(req.user.email, 'edit_organizationalUnitImage_success', req.user.company);
+        res.status(200).json({ 
+            success: true, 
+            messages: ['edit_organizationalUnitImage_success'], 
+            content: data
+        });
+    } catch (error) {
+        
+        Logger.error(req.user.email, 'edit_organizationalUnitImage_faile', req.user.company);
+        res.status(400).json({
+            success: false, 
+            messages: ['edit_organizationalUnitImage_faile'], 
+            content: error
+        });
+    }
+};
+
+exports.getCompanyInformation = async (req, res) => {
+    try {
+        const data = await CompanyServices.getCompanyInformation(req.user.company.shortName);
+
+        Logger.info(req.user.email, 'get_organizationalUnitImage_success', req.user.company);
+        res.status(200).json({ 
+            success: true, 
+            messages: ['get_organizationalUnitImage_success'], 
+            content: data
+        });
+    } catch (error) {
+        
+        Logger.error(req.user.email, 'get_organizationalUnitImage_faile', req.user.company);
+        res.status(400).json({
+            success: false, 
+            messages: ['get_organizationalUnitImage_faile'], 
+            content: error
+        });
+    }
+}
+

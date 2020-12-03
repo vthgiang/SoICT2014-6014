@@ -60,14 +60,12 @@ const AssetSchema = new Schema({
         //11.Người quản lý
         type: Schema.Types.ObjectId,
         ref: "User",
-        // required: true
     },
 
     assignedToUser: {
         //12.Người đang được giao sử dụng
         type: Schema.Types.ObjectId,
         ref: "User",
-        // required: true
     },
 
     assignedToOrganizationalUnit: {
@@ -80,21 +78,17 @@ const AssetSchema = new Schema({
         // 16.vị trí tài sản
         type: Schema.Types.ObjectId,
         replies: this,
-        // required: true
     },
 
     status: {
         //17.tình trạng: sẵn sàng sử dụng || đang sử dụng || hỏng hóc || mất || Thanh lý
         type: String,
-        // enum: ["Sẵn sàng sử dụng", "Đang sử dụng", "Hỏng hóc", "Mất", "Thanh lý"]
         enum: ["ready_to_use", "in_use", "broken", "lost", "disposed"],
     },
 
     typeRegisterForUse: {
         //Đăng ký sử dụng: 1.Không được đăng ký, 2.Đăng ký sử dụng theo giờ, 3.Đăng ký sử dụng lâu dài
         type: Number,
-        //     type: String,
-        //    enum: ["Được phép đăng ký sử dụng", "Không được phép đăng ký sử dụng"]
     },
 
     description: {
@@ -114,7 +108,7 @@ const AssetSchema = new Schema({
         {
             // quyền xem theo Role
             type: Schema.Types.ObjectId,
-            ref: "RootRole",
+            ref: "Role", // ? lúc trước để là RootRole -> tại sao -> phân quyền phải phân cho Role ?
         },
     ],
     /***********************************************************************************************
@@ -136,16 +130,19 @@ const AssetSchema = new Schema({
     cost: {
         //8. Nguyên giá
         type: Number,
+        default: 0
     },
 
     usefulLife: {
         //9. Thời gian sử dụng
         type: Number,
+        default: 0
     },
 
     startDepreciation: {
         // thời gian bắt đầu trích khấu hao
         type: Date,
+        default: null
     },
 
     residualValue: {
@@ -155,6 +152,7 @@ const AssetSchema = new Schema({
         thời gian sử dụng hữu dụng hoặc thời gian thuê của một tài sản càng dài 
         thì giá trị còn lại của nó càng thấp */
         type: Number,
+        default: 0
     },
 
     rate: {
@@ -300,7 +298,6 @@ const AssetSchema = new Schema({
             statusIncident: {
                 // 1: cho xu ly || 2: da xu ly
                 type: String,
-                // required: true
             },
             createdAt: {
                 type: Date,

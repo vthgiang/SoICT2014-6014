@@ -414,7 +414,7 @@ class UseRequestManager extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(listRecommendDistributes && listRecommendDistributes.length !== 0) &&
+                            {(listRecommendDistributes && listRecommendDistributes.length !== 0) ?
                                 listRecommendDistributes.map((x, index) => {
                                     return (<tr key={index}>
                                         <td><a onClick={() => this.handleEditAsset(x.asset)}>{x.asset ? x.asset.code : 'Asset is deleted'}</a></td>
@@ -422,8 +422,8 @@ class UseRequestManager extends Component {
                                         <td>{this.formatDateTime(x.dateCreate)}</td>
                                         <td>{x.proponent ? x.proponent.name : 'User is deleted'}</td>
                                         <td>{x.asset ? x.asset.assetName : 'Asset is deleted'}</td>
-                                        <td>{this.formatDateTime(x.dateStartUse, x.asset.typeRegisterForUse)}</td>
-                                        <td>{this.formatDateTime(x.dateEndUse, x.asset.typeRegisterForUse)}</td>
+                                        <td>{this.formatDateTime(x.dateStartUse, x.asset ? x.asset.typeRegisterForUse : undefined)}</td>
+                                        <td>{this.formatDateTime(x.dateEndUse, x.asset ? x.asset.typeRegisterForUse : undefined)}</td>
                                         <td>{x.approver ? x.approver.name : ''}</td>
                                         <td>{this.formatStatus(x.status)}</td>
                                         <td style={{ textAlign: "center" }}>
@@ -438,7 +438,7 @@ class UseRequestManager extends Component {
                                             />
                                         </td>
                                     </tr>)
-                                })
+                                }) : null
                             }
                         </tbody>
                     </table>
