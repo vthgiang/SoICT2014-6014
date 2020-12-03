@@ -4,9 +4,10 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import './organizationalUnit.css';
 
-import { DeleteNotification, ExportExcel } from '../../../../common-components';
+import { DeleteNotification, ExportExcel, ApiImage } from '../../../../common-components';
 
 import { DepartmentActions } from '../redux/actions';
+import { CompanyActions } from '../../../system-admin/company/redux/actions';
 
 import DepartmentCreateForm from './organizationalUnitCreateForm';
 import DepartmentEditForm from './organizationalUnitEditForm';
@@ -224,13 +225,58 @@ class DepartmentTreeView extends Component {
         }
     }
 
+    handleUploadImage = () => {
+        let formData = new FormData();
+        const { organizationalUnitImage } = this.state;
+        if (this.state.organizationalUnitImage) {
+            formData.append('organizationalUnitImage', organizationalUnitImage);
+        }
+        this.props.uploadOrganizationalUnitImage(formData);
+    }
+
+    handleUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            let fileLoad = new FileReader();
+            fileLoad.readAsDataURL(file);
+            fileLoad.onload = () => {
+                this.setState({
+                    organizationalUnitImagePreview: fileLoad.result,
+                    organizationalUnitImage: file,
+                });
+            };
+        }
+
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        const { item } = props.company;
+        if (item.image != state.image) {
+            return {
+                organizationalUnitImagePreview: item.image ? `.${item.image}` : null,
+                image: item.image
+            }
+        } else {
+            return null
+        }
+    }
+
+    componentDidMount() {
+        this.props.getCompanyInformation();
+    }
+
     render() {
-        const { translate, department } = this.props;
+        const { translate, department, company } = this.props;
         const { tree } = this.props.department;
-        const { currentRow } = this.state;
+        const { currentRow, organizationalUnitImagePreview } = this.state;
         let data = [];
         if (tree) {
             data = tree;
+        }
+        const organizationalUnitImageStyle = {
+            objectFit: "cover",
+            maxWidth: "100%",
+            maxHeight: "100%"
         }
 
         let exportData = this.convertDataToExportData(data);
@@ -283,6 +329,35 @@ class DepartmentTreeView extends Component {
                     </div>
                 </div>
 
+                {
+                    company && company.isLoading === false &&
+                    <div className="row">
+                        <div className="col-md-12">
+                            <div className="organizationalUnitImageWrapper">
+                                <div className="organizationalUnitImageButton">
+                                    {/* <input className="custom-file-input" type="file" id="file" onChange={this.handleUpload} /> */}
+                                    <input type="file" id="files" onChange={this.handleUpload} style={{ display: 'none' }} />
+                                    {organizationalUnitImagePreview &&
+                                        <label style={{ marginBottom: 0 }} className="custom-file-input" htmlFor="files"></label>
+                                    }
+                                    <button style={{ marginLeft: '10px' }} type="button" className="btn btn-success pull-right" title='Thêm' onClick={this.handleUploadImage}>Lưu</button>
+                                </div>
+                                <div style={{ height: '500px', textAlign: "center" }}>
+                                    {
+                                        organizationalUnitImagePreview ?
+                                            <ApiImage style={organizationalUnitImageStyle} src={organizationalUnitImagePreview} alt={""} />
+                                            :
+                                            <>
+                                                <h4 style={{ fontWeight: 'bold' }}>Chưa có ảnh cơ cấu tổ chức</h4>
+                                                <label class="upload_now" style={{ cursor: 'pointer' }} htmlFor="files">Cập nhật ngay</label>
+                                            </>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
                 {/* Các form edit và thêm mới một phòng ban mới với phòng ban cha được chọn */}
                 {
                     currentRow &&
@@ -308,12 +383,14 @@ class DepartmentTreeView extends Component {
 }
 
 function mapState(state) {
-    const { department } = state;
-    return { department };
+    const { department, company } = state;
+    return { department, company };
 }
 
 const getState = {
-    destroy: DepartmentActions.destroy
+    destroy: DepartmentActions.destroy,
+    uploadOrganizationalUnitImage: CompanyActions.uploadOrganizationalUnitImage,
+    getCompanyInformation: CompanyActions.getCompanyInformation
 }
 
 export default connect(mapState, getState)(withTranslate(DepartmentTreeView)); 

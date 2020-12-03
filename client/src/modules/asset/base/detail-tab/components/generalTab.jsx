@@ -40,16 +40,20 @@ class GeneralTab extends Component {
     }
 
     convertGroupAsset = (group) => {
+        const { translate } = this.props;
         if (group === 'building') {
-            return 'Mặt bằng';
-        } else if (group === 'vehicle') {
-            return 'Xe cộ'
-        } else if (group === 'machine') {
-            return 'Máy móc'
-        } else {
-            return 'Khác'
+            return translate('asset.dashboard.building')
         }
-
+        else if (group === 'vehicle') {
+            return translate('asset.asset_info.vehicle')
+        }
+        else if (group === 'machine') {
+            return translate('asset.dashboard.machine')
+        }
+        else if (group === 'other') {
+            return translate('asset.dashboard.other')
+        }
+        else return null;
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {

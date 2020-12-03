@@ -2180,6 +2180,7 @@ export default {
                 statistic_by: "Statistic by",
                 expired: "Exprired",
                 remaining_time: "Remaining time",
+                day: "days"
             },
 
             //  Quản lý loại tài sản
