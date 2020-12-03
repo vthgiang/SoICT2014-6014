@@ -50,6 +50,7 @@ class PurchaseRequestManager extends Component {
 
     // Function format dữ liệu Date thành string
     formatDate2(date, monthYear = false) {
+        if (!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -167,15 +168,15 @@ class PurchaseRequestManager extends Component {
             data = data.map((x, index) => {
 
                 let code = x.recommendNumber;
-                let equipment = x.equipment;
-                let assigner = (x.proponent) ? x.proponent.email : 'Không tìm thấy người đề nghị'
-                let createDate = x.dateCreate;
+                let equipment = x.equipmentName;
+                let assigner = x.proponent ? x.proponent.name : null;
+                let createDate = this.formatDate2(x.dateCreate);
                 let note = x.note;
                 let supplier = x.supplier;
                 let amount = x.total;
-                let cost = parseInt(x.estimatePrice);
-                let status = x.status;
-                let approver = (x.approver) ? x.approver.email : "";
+                let cost = Intl.NumberFormat().format(parseInt(x.estimatePrice));
+                let status = this.formatStatus(x.status);
+                let approver = (x.approver) ? x.approver.name : null;
 
                 return {
                     index: index + 1,
@@ -190,7 +191,6 @@ class PurchaseRequestManager extends Component {
                     equipment: equipment,
                     approver: approver
                 }
-
             })
         }
 
