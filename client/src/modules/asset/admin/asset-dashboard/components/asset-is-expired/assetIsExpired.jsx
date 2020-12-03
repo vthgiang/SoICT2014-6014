@@ -81,15 +81,24 @@ class AssetIsExpired extends Component {
         let nowDate = new Date();
         if (listAssets && !ExpiryDateAssets.length && !willExpiryDateAssets.length) {
             for (let i in listAssets) {
-                if (listAssets[i].purchaseDate) {
+                if (listAssets[i].purchaseDate && listAssets[i].usefulLife) {
                     let date = listAssets[i].purchaseDate.split("-")
-                    date[0] = String(Math.floor((Number(date[1]) + listAssets[i].usefulLife) / 12) + Number(date[0]));
-                    let month = String((Number(date[1]) + listAssets[i].usefulLife) % 12 - 1);
-                    date[1] = month ? month : '12';
+                    if ((Number(date[1]) + listAssets[i].usefulLife) % 12 == 0) {
+                        date[0] = String(Math.floor((Number(date[1]) + listAssets[i].usefulLife) / 12 - 1) + Number(date[0]));
+                    } else {
+                        date[0] = String(Math.floor((Number(date[1]) + listAssets[i].usefulLife) / 12) + Number(date[0]));
+                    }
+                    let month = String((Number(date[1]) + listAssets[i].usefulLife) % 12);
+
+
+                    date[1] = month != '0' ? month : '12';
                     date[2] = date[2].slice(0, 2)
-                    let ExpiryDate = new Date(date[0], date[1], date[2])
+                    let Expirydate = [date[0], date[1], date[2]].join("-")
+                    let ExpiryDate = new Date(Expirydate)
+
                     let expiry;
                     let day = ExpiryDate - nowDate;
+
                     if (day < 0) {
                         day = nowDate - ExpiryDateAssets;
                         let data = {
@@ -123,7 +132,6 @@ class AssetIsExpired extends Component {
                 setAssetIsExpiredExportData(willExpiryDateAssets, assettypelist, userlist, true);
             }
         }
-
         return (
             <React.Fragment>
                 <div className="qlcv">
@@ -156,7 +164,7 @@ class AssetIsExpired extends Component {
                                             <td>{x.asset.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.asset.assignedToUser) ? userlist.find(item => item._id === x.asset.assignedToUser).name : '') : ''}</td>
                                             <td>{x.asset.assignedToOrganizationalUnit ? x.asset.assignedToOrganizationalUnit : ''}</td>
                                             <td>{this.formatStatus(x.asset.status)}</td>
-                                            <td>{x.day} {translate('annual_leave_personal.day')}</td>
+                                            <td>{x.day} {translate('asset.dashboard.day')}</td>
                                         </tr>))
                                 }
                                 {(ExpiryDateAssets && ExpiryDateAssets.length !== 0) &&
