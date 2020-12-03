@@ -11,9 +11,7 @@ import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { RoleActions } from '../../../../super-admin/role/redux/actions';
 
 import { AssetCreateForm, AssetDetailForm, AssetEditForm, AssetImportForm } from './combinedContent';
-import { configTaskTempalte } from '../../../../task/task-template/component/fileConfigurationImportTaskTemplate';
-import { translate } from 'react-redux-multilingual/lib/utils';
-
+import qs from 'qs';
 class AssetManagement extends Component {
     constructor(props) {
         super(props);
@@ -23,7 +21,7 @@ class AssetManagement extends Component {
             assetType: "",
             purchaseDate: null,
             disposalDate: null,
-            status: "",
+            status: window.location.search ? [qs.parse(window.location.search, { ignoreQueryPrefix: true }).status] : '',
             group: "",
             handoverUnit: "",
             handoverUser: "",
@@ -62,6 +60,7 @@ class AssetManagement extends Component {
 
     // Function format dữ liệu Date thành string
     formatDate(date, monthYear = false) {
+        if (!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -94,11 +93,8 @@ class AssetManagement extends Component {
 
     // Bắt sự kiện click chỉnh sửa thông tin tài sản
     handleEdit = async (value) => {
-        await this.setState(state => {
-            return {
-                // ...state,
-                currentRow: value
-            }
+        await this.setState({
+            currentRow: value
         });
         window.$('#modal-edit-asset').modal('show');
     }
@@ -262,14 +258,14 @@ class AssetManagement extends Component {
                 let code = x.code;
                 let name = x.assetName;
                 let description = x.description;
-                let type = x.assetType && assettypelist.length && assettypelist.find(item => item._id === x.assetType) ? assettypelist.find(item => item._id === x.assetType).typeName : 'Asset Type is deleted';
+                let type = this.formatAssetTypes(x.assetType);
                 let purchaseDate = this.formatDate(x.purchaseDate);
                 let disposalDate = this.formatDate(x.disposalDate);
-                let manager = x.managedBy && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).email : '';
-                let assigner = x.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.assignedToUser) ? userlist.find(item => item._id === x.assignedToUser).email : '') : ''
+                let manager = x.managedBy && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).name : '';
+                let assigner = x.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.assignedToUser) ? userlist.find(item => item._id === x.assignedToUser).name : '') : ''
                 // let handoverFromDate = x.handoverFromDate ? this.formatDate(x.handoverFromDate) : '';
                 // let handoverToDate = x.handoverToDate ? this.formatDate(x.handoverToDate) : '';
-                let status = x.status;
+                let status = this.formatStatus(x.status);
                 length = x.detailInfo && x.detailInfo.length;
                 let info = (length) ? (x.detailInfo.map((item, index) => {
                     return {
@@ -415,9 +411,10 @@ class AssetManagement extends Component {
         else if (group === 'machine') {
             return translate('asset.dashboard.machine')
         }
-        else {
+        else if (group === 'other') {
             return translate('asset.dashboard.other')
         }
+        else return null;
     }
 
     formatStatus = (status) => {
@@ -443,11 +440,22 @@ class AssetManagement extends Component {
         }
     }
 
+    formatAssetTypes = (types) => {
+        let list = !types ? '' : types.reduce((value, cur) => {
+            if (!value) {
+                if (!cur) return value;
+                else return cur.typeName ? value + cur.typeName : value;
+            }
+            else return value + ', ' + cur.typeName
+        }, '');
+        return list;
+    }
+
     formatDisposalDate(disposalDate, status) {
         const { translate } = this.props;
         if (status === 'disposed') {
             if (disposalDate) return this.formatDate(disposalDate);
-            else return 'Deleted';
+            else return translate('asset.general_information.not_disposal_date');
         }
         else {
             return translate('asset.general_information.not_disposal');
@@ -456,14 +464,13 @@ class AssetManagement extends Component {
 
     render() {
         const { assetsManager, assetType, translate, user, isActive, department } = this.props;
-        const { page, limit, currentRowView, currentRow, purchaseDate, disposalDate, managedBy, location, typeRegisterForUse, handoverUnit, handoverUser } = this.state;
+        const { page, limit, currentRowView, status, currentRow, purchaseDate, disposalDate, managedBy, location, typeRegisterForUse, handoverUnit, handoverUser } = this.state;
         var lists = "", exportData;
         var userlist = user.list, departmentlist = department.list;
         var assettypelist = assetType.listAssetTypes;
         let typeArr = this.getAssetTypes();
         let dataSelectBox = this.getDepartment();
         let assetTypeName = this.state.assetType ? this.state.assetType : [];
-
         if (assetsManager.isLoading === false) {
             lists = assetsManager.listAssets;
         }
@@ -495,8 +502,8 @@ class AssetManagement extends Component {
                     <div className="dropdown pull-right">
                         <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.profile.employee_management.add_employee_title')} >{translate('menu.add_asset')}</button>
                         <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
-                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-asset').modal('show')}>{translate('human_resource.profile.employee_management.add_import')}</a></li>
                             <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-add-asset').modal('show')}>{translate('menu.add_asset')}</a></li>
+                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-asset').modal('show')}>{translate('human_resource.profile.employee_management.add_import')}</a></li>
                         </ul>
                     </div>
                     <AssetCreateForm />
@@ -556,6 +563,7 @@ class AssetManagement extends Component {
                             <SelectMulti id={`multiSelectStatus1`} multiple="multiple"
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('asset.general_information.select_all_status') }}
                                 onChange={this.handleStatusChange}
+                                value={status}
                                 items={[
                                     { value: "ready_to_use", text: translate('asset.general_information.ready_use') },
                                     { value: "in_use", text: translate('asset.general_information.using') },
@@ -646,7 +654,7 @@ class AssetManagement extends Component {
                         </div>
                         {exportData && <ExportExcel id="export-asset-info-management" exportData={exportData} style={{ marginRight: 10 }} />}
                     </div>
-                    
+
                     {/* Báo lỗi khi thêm mới tài sản */}
                     {assetsManager && assetsManager.assetCodeError && assetsManager.assetCodeError.length !== 0
                         && <div style={{ color: 'red' }}>
@@ -659,7 +667,7 @@ class AssetManagement extends Component {
                             }
                         </div>
                     }
-                    
+
                     {/* Bảng các tài sản */}
                     <table id="asset-table" className="table table-striped table-bordered table-hover">
                         <thead>
@@ -685,7 +693,7 @@ class AssetManagement extends Component {
                                             translate('asset.general_information.purchase_date'),
                                             translate('asset.general_information.manager'),
                                             translate('asset.general_information.user'),
-                                            translate('asset.general_information.organizaiton_unit'),
+                                            translate('asset.general_information.organization_unit'),
                                             translate('asset.general_information.status'),
                                             translate('asset.general_information.disposal_date')
                                         ]}
@@ -697,16 +705,16 @@ class AssetManagement extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(lists && lists.length !== 0) &&
+                            {(lists && lists.length !== 0) ?
                                 lists.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.code}</td>
                                         <td>{x.assetName}</td>
                                         <td>{this.convertGroupAsset(x.group)}</td>
-                                        <td>{x.assetType && x.assetType.length ? x.assetType.map((item, index) => { let suffix = index < x.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : 'Asset is deleted'}</td>
+                                        <td>{this.formatAssetTypes(x.assetType)}</td>
                                         <td>{this.formatDate(x.purchaseDate)}</td>
-                                        <td>{x.managedBy && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).name : ''}</td>
-                                        <td>{x.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.assignedToUser) ? userlist.find(item => item._id === x.assignedToUser).name : '') : ''}</td>
+                                        <td>{x.managedBy && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).email : ''}</td>
+                                        <td>{x.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.assignedToUser) ? userlist.find(item => item._id === x.assignedToUser).email : '') : ''}</td>
                                         <td>{x.assignedToOrganizationalUnit ? (departmentlist.length && departmentlist.find(item => item._id === x.assignedToOrganizationalUnit) ? departmentlist.find(item => item._id === x.assignedToOrganizationalUnit).name : 'Organizational Unit is deleted') : ''}</td>
                                         <td>{this.formatStatus(x.status)}</td>
                                         <td>{this.formatDisposalDate(x.disposalDate, x.status)}</td>
@@ -722,7 +730,7 @@ class AssetManagement extends Component {
                                                 func={this.props.deleteAsset}
                                             />
                                         </td>
-                                    </tr>))
+                                    </tr>)) : null
                             }
                         </tbody>
                     </table>
@@ -828,6 +836,8 @@ class AssetManagement extends Component {
                         incidentLogs={currentRow.incidentLogs}
                         archivedRecordNumber={currentRow.archivedRecordNumber}
                         files={currentRow.documents}
+
+                        page={page}
                     />
                 }
             </div>

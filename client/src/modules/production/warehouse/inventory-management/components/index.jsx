@@ -282,6 +282,34 @@ class InventoryManagement extends Component {
         return result;
     }
 
+    checkQuantity = (stock) => {
+        const { stocks } = this.props;
+        var check = 1;
+        stock.map(x => {
+            if(stocks.listStocks.length > 0) {
+                for (let i = 0; i < stocks.listStocks.length; i++) {
+                    if(x.stock === stocks.listStocks[i]._id) {
+                        if(x.binLocations.length === 0) {
+                            check = 0;
+                        } else {
+                            let totalQuantity = x.binLocations.reduce(function (accumulator, currentValue) {
+                                return Number(accumulator) + Number(currentValue.quantity);
+                              }, 0);
+                              if(x.quantity !== totalQuantity) {
+                                  check = 0;
+                              }
+                        }
+                    }
+                }
+            }
+        })
+
+        if(check === 1) {
+            return false
+        }
+        return true
+    }
+
     render() {
 
         const { translate, lots, goods, stocks } = this.props;
@@ -291,6 +319,7 @@ class InventoryManagement extends Component {
         const totalGoodsByType = listGoodsByType ? listGoodsByType.length : 0;
         const totalLot = listLots ? listLots.length : 0;
         const dataGoodsByType = this.getAllGoodsByType();
+        console.log(lots.listLots);
 
         let goodName = dataGoodsByType.find(x => x.value === good);
 
@@ -459,7 +488,8 @@ class InventoryManagement extends Component {
                                             <td>{index + 1}</td>
                                             <td>{x.good.name}</td>
                                             <td>{x.good.baseUnit}</td>
-                                            <td>{((stock && stock.length > 0) || stocks.listStocks.length > 0) ? this.totaQuantity(x.stocks) : x. quantity}</td>
+                                            { this.checkQuantity(x.stocks) ? <td style={{ color: 'red' }} title={translate('manage_warehouse.inventory_management.push_lot')}>{((stock && stock.length > 0) || stocks.listStocks.length > 0) ? this.totaQuantity(x.stocks) : x. quantity}</td> :
+                                            <td>{((stock && stock.length > 0) || stocks.listStocks.length > 0) ? this.totaQuantity(x.stocks) : x. quantity}</td> }
                                             <td>{x.code}</td>
                                             <td>{this.formatDate(x.expirationDate)}</td>
                                             <td style={{textAlign: 'center'}}>

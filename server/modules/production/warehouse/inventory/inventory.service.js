@@ -3,9 +3,7 @@ const { Lot, BinLocation, Stock, ManufacturingCommand, OrganizationalUnit, Manuf
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 exports.getAllLots = async (query, portal) => {
-    const lotType = '2';
-    let { stock, good, page, limit, type, managementLocation } = query;
-    let lots;
+    let { page, limit, type, managementLocation } = query;
 
     if (!managementLocation) throw new Error("roles not avaiable");
 
@@ -18,131 +16,74 @@ exports.getAllLots = async (query, portal) => {
         }
     }
 
-    if (!limit && !page) {
-        if (stock) {
-            if (good) {
-                lots = await Lot(connect(DB_CONNECTION, portal))
-                    .find({ stocks: { $elemMatch: { stock: stock } }, quantity: { $ne: 0 }, good, type, lotType: lotType })
-                    .populate([
-                        { path: 'good', select: 'id name baseUnit type' },
-                        { path: 'stocks.binLocations.binlocation', select: 'id code name' },
-                        { path: 'lotLogs.bill', select: 'id code type' },
-                        { path: 'lotLogs.binLocations.binLocation', select: 'id code name' }
-                    ])
-                    .sort({ 'expirationDate': 'asc' })
-            }
-            else {
-                lots = await Lot(connect(DB_CONNECTION, portal))
-                    .find({ stocks: { $elemMatch: { stock: stock } }, quantity: { $ne: 0 }, type, lotType: lotType })
-                    .populate([
-                        { path: 'good', select: 'id name baseUnit type' },
-                        { path: 'stocks.binLocations.binlocation', select: 'id code name' },
-                        { path: 'lotLogs.bill', select: 'id code type' },
-                        { path: 'lotLogs.binLocations.binLocation', select: 'id code name' }
-                    ])
-                    .sort({ 'expirationDate': 'asc' })
-            }
+    if (!limit || !page) {
+
+        let options = {type: type, quantity: { $ne: 0 }};
+
+        if(query.stock) {
+            options.stocks = { $elemMatch: { stock: query.stock }};
+        } else {
+            options.stocks = { $elemMatch: { stock: arrayStock }};
         }
-        else {
-            if (good) {
-                lots = await Lot(connect(DB_CONNECTION, portal))
-                    .find({ stocks: { $elemMatch: { stock: arrayStock } }, quantity: { $ne: 0 }, good, type, lotType: lotType })
-                    .populate([
-                        { path: 'good', select: 'id name baseUnit type' },
-                        { path: 'stocks.binLocations.binlocation', select: 'id code name' },
-                        { path: 'lotLogs.bill', select: 'id code type' },
-                        { path: 'lotLogs.binLocations.binLocation', select: 'id code name' }
-                    ])
-                    .sort({ 'expirationDate': 'asc' })
-            }
-            else {
-                lots = await Lot(connect(DB_CONNECTION, portal))
-                    .find({ stocks: { $elemMatch: { stock: arrayStock } }, quantity: { $ne: 0 }, type, lotType: lotType })
-                    .populate([
-                        { path: 'good', select: 'id name baseUnit type' },
-                        { path: 'stocks.binLocations.binlocation', select: 'id code name' },
-                        { path: 'lotLogs.bill', select: 'id code type' },
-                        { path: 'lotLogs.binLocations.binLocation', select: 'id code name' }
-                    ])
-                    .sort({ 'expirationDate': 'asc' })
-            }
+
+        if(query.good) {
+            options.good = query.good;
         }
+
+        let lots = await Lot(connect(DB_CONNECTION, portal))
+            .find(options)
+            .populate([
+                { path: 'good', select: 'id name baseUnit type' },
+                { path: 'stocks.binLocations.binlocation', select: 'id code name' },
+                { path: 'lotLogs.bill', select: 'id code type' },
+                { path: 'lotLogs.binLocations.binLocation', select: 'id code name' }
+            ])
+            .sort({ 'updatedAt': 'desc' })
+        return lots
     }
     else {
-        if (stock) {
-            let option = { stocks: { $elemMatch: { stock: stock } }, quantity: { $ne: 0 }, type: type, lotType: lotType };
+        let option = { quantity: { $ne: 0 }, type: type };
 
-            if (query.code) {
-                option.code = new RegExp(query.code, "i");
-            }
+        if(query.stock) {
+            option.stocks = { $elemMatch: { stock: query.stock }};
+        } else {
+            option.stocks = { $elemMatch: { stock: arrayStock }};
+        }
 
-            if (query.expirationDate) {
-                let date = query.expirationDate.split("-");
-                let end = new Date(date[2], date[1] - 1, date[0]);
+        if (query.code) {
+            option.code = new RegExp(query.code, "i");
+        }
 
-                option = {
-                    ...option,
-                    expirationDate: {
-                        $lte: end
-                    }
+        if (query.expirationDate) {
+            let date = query.expirationDate.split("-");
+            let end = new Date(date[2], date[1] - 1, date[0]);
+
+            option = {
+                ...option,
+                expirationDate: {
+                    $lte: end
                 }
             }
-
-            if (query.good) {
-                option.good = query.good;
-            }
-
-            lots = await Lot(connect(DB_CONNECTION, portal))
-                .paginate(option, {
-                    limit,
-                    page,
-                    populate: [
-                        { path: 'good', select: 'id name baseUnit type' },
-                        { path: 'stocks.binLocations.binlocation', select: 'id code name' },
-                        { path: 'lotLogs.bill', select: 'id code type' },
-                        { path: 'lotLogs.binLocations.binLocation', select: 'id code name' }
-                    ],
-                    sort: { 'expirationDate': 'asc' }
-                })
         }
-        else {
-            let option = { stocks: { $elemMatch: { stock: arrayStock } }, quantity: { $ne: 0 }, type: type, lotType: lotType };
 
-            if (query.code) {
-                option.code = new RegExp(query.code, "i");
-            }
-
-            if (query.expirationDate) {
-                let date = query.expirationDate.split("-");
-                let end = new Date(date[2], date[1] - 1, date[0]);
-
-                option = {
-                    ...option,
-                    expirationDate: {
-                        $lte: end
-                    }
-                }
-            }
-
-            if (query.good) {
-                option.good = query.good;
-            }
-
-            lots = await Lot(connect(DB_CONNECTION, portal))
-                .paginate(option, {
-                    limit,
-                    page,
-                    populate: [
-                        { path: 'good', select: 'id name baseUnit type' },
-                        { path: 'stocks.binLocations.binlocation', select: 'id code name' },
-                        { path: 'lotLogs.bill', select: 'id code type' },
-                        { path: 'lotLogs.binLocations.binLocation', select: 'id code name' }
-                    ],
-                    sort: { 'expirationDate': 'asc' }
-                })
+        if (query.good) {
+            option.good = query.good;
         }
+
+        let lots = await Lot(connect(DB_CONNECTION, portal))
+            .paginate(option, {
+                limit,
+                page,
+                populate: [
+                    { path: 'good', select: 'id name baseUnit type' },
+                    { path: 'stocks.binLocations.binlocation', select: 'id code name' },
+                    { path: 'lotLogs.bill', select: 'id code type' },
+                    { path: 'lotLogs.binLocations.binLocation', select: 'id code name' }
+                ],
+                sort: { 'updatedAt': 'desc' }
+            })
+        return lots;
     }
-    return lots;
 }
 
 exports.getDetailLot = async (id, portal) => {
@@ -174,7 +115,6 @@ exports.createOrUpdateLots = async (data, portal) => {
                 lot[0].expirationDate = expirationDate;
                 lot[0].code = lot[0].code;
                 lot[0].good = lot[0].good;
-                lot[0].lotType = lot[0].lotType;
                 lot[0].type = data.type;
                 lot[0].description = data.lots[i].note;
                 lot[0].lotLogs[0].bill = data.bill;
@@ -187,7 +127,6 @@ exports.createOrUpdateLots = async (data, portal) => {
                 lots.push(lot[0]);
             }
             else {
-                const lotType = '2';
                 let stock = {
                     stock: data.stock,
                     quantity: data.lots[i].quantity
@@ -209,7 +148,6 @@ exports.createOrUpdateLots = async (data, portal) => {
                     code: data.lots[i].code,
                     good: data.good,
                     type: data.type,
-                    lotType: lotType,
                     stocks: stocks,
                     originalQuantity: data.lots[i].quantity,
                     quantity: data.lots[i].quantity,
@@ -236,10 +174,11 @@ exports.deleteManyLots = async (arrayId, portal) => {
 }
 
 exports.editLot = async (id, data, portal) => {
+    console.log(data);
     let lot = await Lot(connect(DB_CONNECTION, portal)).findById(id);
     const oldLot = lot;
 
-    if (oldLot.stocks.length > 0) {
+    if (oldLot.stocks && oldLot.stocks.length > 0) {
         for (let i = 0; i < oldLot.stocks.length; i++) {
             if (oldLot.stocks[i].binLocations.length > 0) {
                 for (let j = 0; j < oldLot.stocks[i].binLocations.length; j++) {
@@ -273,11 +212,10 @@ exports.editLot = async (id, data, portal) => {
             binLocations: item.binLocations.map(x => { return { binLocation: x.binLocation, quantity: x.quantity } }),
         }
     }) : lot.stocks;
-    lot.originalQuantity = lot.originalQuantity;
-    lot.quantity = lot.quantity;
-    lot.lotType = lot.lotType;
-    lot.expirationDate = lot.expirationDate;
-    lot.description = lot.description;
+    lot.originalQuantity = data.originalQuantity ? data.originalQuantity : lot.originalQuantity;
+    lot.quantity = data.originalQuantity ? data.originalQuantity : lot.quantity;
+    lot.expirationDate = data.expirationDate ? data.expirationDate : lot.expirationDate;
+    lot.description = data.description ? data.description : lot.description;
     lot.lotLogs = data.lotLogs ? data.lotLogs.map(item => {
         return {
             bill: item.bill,
@@ -290,9 +228,15 @@ exports.editLot = async (id, data, portal) => {
         }
     }) : lot.lotLogs;
 
+    // Phần lô sản xuất
+    lot.manufacturingCommand = data.manufacturingCommand ? data.manufacturingCommand : lot.manufacturingCommand;
+    lot.productType = data.productType ? data.productType : lot.productType;
+    lot.status = data.status ? data.status : lot.status;
+    lot.creator = data.creator ? data.creator : lot.creator;
+
     await lot.save();
 
-    if (data.stocks.length > 0) {
+    if (data.stocks && data.stocks.length > 0) {
         for (let i = 0; i < data.stocks.length; i++) {
             if (data.stocks[i].binLocations.length > 0) {
                 for (let j = 0; j < data.stocks[i].binLocations.length; j++) {
@@ -323,21 +267,22 @@ exports.editLot = async (id, data, portal) => {
         .populate([
             { path: 'good' },
             { path: 'stocks.binLocations.binLocation' },
-            { path: 'stocks.stock' },
+            // { path: 'stocks.stock' },
             { path: 'lotLogs.bill', select: 'id code type' },
             { path: 'lotLogs.binLocations.binLocation' },
-            { path: 'lotLogs.stock', select: 'id name' }
+            { path: 'lotLogs.stock', select: 'id name' },
+            { path: 'manufacturingCommand' },
+            { path: 'creator' }
         ])
 }
 
 exports.getLotsByGood = async (query, portal) => {
     const { good, stock } = query;
-    const lotType = '2';
     if (!stock) {
         return [];
     }
     const lots = await Lot(connect(DB_CONNECTION, portal))
-        .find({ good: good, lotType: lotType, stocks: { $elemMatch: { stock: stock } } })
+        .find({ good: good, stocks: { $elemMatch: { stock: stock } } })
         .populate([
             { path: 'good' },
             { path: 'stocks.binLocations.binLocation', select: 'id path' },
@@ -387,8 +332,7 @@ exports.getAllManufacturingLot = async (query, user, portal) => {
     }
 
     let option = {};
-    option.lotType = 1;
-
+    option.type = "product";
     // Xử  lý các quyền trước để tìm ra các kế hoạch trong các nhà máy được phân quyền
     let role = [currentRole];
     const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'deans': { $in: role } });
@@ -514,7 +458,7 @@ exports.getAllManufacturingLot = async (query, user, portal) => {
                     path: "good"
                 }, {
                     path: "manufacturingCommand",
-                    select: "code"
+                    select: "code manufacturingMill",
                 }, {
                     path: "creator"
                 }]
@@ -546,6 +490,15 @@ exports.getDetailManufacturingLot = async (id, portal) => {
             }]
         }, {
             path: "creator"
+        }, {
+            path: 'lotLogs.bill', select: 'id code type'
+        }, {
+            path: 'lotLogs.binLocations.binLocation'
+        }, {
+            path: 'lotLogs.stock', select: 'id name'
+        }, {
+            path: 'bills',
+            select: 'code'
         }]);
     return { lot }
 }

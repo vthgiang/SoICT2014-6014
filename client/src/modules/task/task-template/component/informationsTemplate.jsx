@@ -261,6 +261,7 @@ class InformationForm extends Component{
                 <div className={`form-group ${this.state.information.errorOnDescription===undefined?"":"has-error"}`} >
                     <label className="control-label" htmlFor="inputDescriptionInfo">{translate('task_template.description')}</label>
                     <QuillEditor
+                        id={'informationsTemplate'}
                         getTextData={this.handleChangeInfoDesc}
                         value={information.description}
                     />

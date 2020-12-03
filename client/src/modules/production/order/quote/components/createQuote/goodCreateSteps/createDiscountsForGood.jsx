@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { DialogModal, formatDate } from "../../../../../../../common-components";
+import { DialogModal } from "../../../../../../../common-components";
 import { formatCurrency } from "../../../../../../../helpers/formatCurrency";
+import { formatDate } from "../../../../../../../helpers/formatDate";
 import { capitalize } from "../../../../../../../helpers/stringMethod";
 
 class CreateDiscountsForGood extends Component {
@@ -38,6 +39,7 @@ class CreateDiscountsForGood extends Component {
             type: discount.type,
             effectiveDate: discount.effectiveDate,
             expirationDate: discount.expirationDate,
+            name: discount.name,
         };
         switch (parseInt(discount.formality)) {
             case 0:
@@ -153,7 +155,6 @@ class CreateDiscountsForGood extends Component {
     getDiscountOptions = (item) => {
         let { quantity, goodId } = this.props;
         let { discountsChecked } = this.props;
-        console.log("goodId", goodId);
         const { discounts, formality } = item;
         return (
             <div style={{ paddingLeft: "2rem" }}>
@@ -172,7 +173,7 @@ class CreateDiscountsForGood extends Component {
                             }
                         }
 
-                        if (!quantity) {
+                        if (quantity === undefined || quantity === "" || quantity === null) {
                             disabled = true;
                         }
 
@@ -187,7 +188,7 @@ class CreateDiscountsForGood extends Component {
                         }
 
                         return (
-                            <div class="form-check" style={{ display: "flex", paddingTop: "10px" }}>
+                            <div className="form-check" style={{ display: "flex", paddingTop: "10px" }}>
                                 <input
                                     type="checkbox"
                                     className={`form-check-input`}

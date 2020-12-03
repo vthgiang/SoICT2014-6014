@@ -8,9 +8,7 @@ import ValidationHelper from '../../../../../helpers/validationHelper';
 class CreateForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            archiveParent: ''
-        }
+        this.state = { }
     }
 
     handleName = (e) => {

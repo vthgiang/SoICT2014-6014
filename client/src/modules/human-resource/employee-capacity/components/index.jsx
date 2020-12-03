@@ -87,7 +87,7 @@ class EmployeeCapacity extends Component {
 
     render() {
         const { translate, department } = this.props;
-        const { month, organizationalUnits, newMonth, newOrganizationalUnits } = this.state;
+        const { newMonth, newOrganizationalUnits } = this.state;
         let allOrganizationalUnits = department.list.map(x => x._id);
 
         return (

@@ -1,6 +1,7 @@
 const AssetService = require('./asset.service');
 const Logger = require(`${SERVER_LOGS_DIR}`);
-
+const NotificationServices = require(`${SERVER_MODULES_DIR}/notification/notification.service`);
+const { sendEmail } = require(`${SERVER_HELPERS_DIR}/emailHelper`);
 
 /**
  * Lấy danh sách tài sản
@@ -41,12 +42,11 @@ exports.searchAssetProfiles = async (req, res) => {
                 incidentCode: req.query.incidentCode,
                 incidentStatus: req.query.incidentStatus,
                 incidentType: req.query.incidentType,
+                getType: req.query.getType
             }
             data = await AssetService.searchAssetProfiles(req.portal, req.user.company._id, params);
 
         }
-
-        // data = await AssetService.searchAssetProfiles(params, req.portal);
 
         await Logger.info(req.user.email, 'GET_ASSETS', req.portal);
         res.status(200).json({
@@ -88,7 +88,7 @@ exports.createAsset = async (req, res) => {
         });
     } catch (error) {
         let messages = error && error.messages === 'asset_code_exist' ? ['asset_code_exist'] : ['create_asset_faile'];
-        
+
         await Logger.error(req.user.email, 'CREATE_ASSET', req.portal);
         res.status(400).json({
             success: false,
@@ -103,7 +103,7 @@ exports.createAsset = async (req, res) => {
  * Cập nhật thông tin tài sản
  */
 exports.updateAssetInformation = async (req, res) => {
-    try {
+    try { 
         let avatar = "";
         if (req.files.fileAvatar) {
             avatar = `/${req.files.fileAvatar[0].path}`;
@@ -111,7 +111,23 @@ exports.updateAssetInformation = async (req, res) => {
         let file = req.files.file;
         let fileInfo = { file, avatar };
 
-        let data = await AssetService.updateAssetInformation(req.portal, req.user.company._id, req.params.id, req.body, fileInfo);
+        let data = await AssetService.updateAssetInformation(req.portal, req.user.company._id, req.user._id, req.params.id, req.body, fileInfo);
+
+        // Gửi mail cho người quản lý tài sản
+        if (data.email) {
+            var email = data.email;
+            var html = data.html;
+            var noti = {
+                organizationalUnits: [],
+                title: "Cập nhật thông tin sự cố tài sản",
+                level: "general",
+                content: html,
+                sender: data.user.name,
+                users: [data.manager]
+            };
+            await NotificationServices.createNotification(req.portal, req.user.company._id, noti);
+            await sendEmail(email, "Bạn có thông báo mới", '', html);
+        }
 
         await Logger.info(req.user.email, 'EDIT_ASSET', req.portal);
         res.status(200).json({

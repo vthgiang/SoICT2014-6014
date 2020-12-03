@@ -25,6 +25,7 @@ class GeneralTab extends Component {
 
     // Function format dữ liệu Date thành string
     formatDate(date, monthYear = false) {
+        if (!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -556,6 +557,7 @@ class GeneralTab extends Component {
             }
         })
         let typeArr = this.getAssetTypes();
+
         return (
             <div id={id} className="tab-pane active">
                 <div className="row">
@@ -601,14 +603,14 @@ class GeneralTab extends Component {
 
                                 {/* Nhóm tài sản */}
                                 <div className="form-group">
-                                    <label>{translate('asset.general_information.asset_group')}<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.asset_group')}</label>
                                     <SelectBox
                                         id={`group${id}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         value={group}
                                         items={[
-                                            { value: null, text: `---${translate('asset.asset_info.select_group')}---` },
+                                            { value: '', text: `---${translate('asset.asset_info.select_group')}---` },
                                             { value: 'building', text: translate('asset.asset_info.building') },
                                             { value: 'vehicle', text: translate('asset.asset_info.vehicle') },
                                             { value: 'machine', text: translate('asset.asset_info.machine') },

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ButtonModal, ErrorLabel, DatePicker, TimePicker, SelectBox } from '../../../../common-components';
+import { DialogModal, ErrorLabel, DatePicker, TimePicker, SelectBox } from '../../../../common-components';
 
 import { AnnualLeaveFormValidator } from './annualLeaveFormValidator';
 
@@ -27,7 +27,7 @@ class AnnualLeaveCreateForm extends Component {
     }
 
     componentDidMount() {
-        this.props.getAllEmployee();
+        this.props.getAllEmployee({ organizationalUnits: 'allUnist' });
     }
 
     /**
@@ -273,7 +273,7 @@ class AnnualLeaveCreateForm extends Component {
                 organizationalUnit = department._id;
             }
         }
-        let employeeID = employeesManager.listAllEmployees.find(x => x.emailInCompany === employee);
+        let employeeID = employeesManager.listEmployeesOfOrganizationalUnits.find(x => x.emailInCompany === employee);
         employeeID = employeeID._id;
 
         let partStart = startDate.split('-');
@@ -301,7 +301,7 @@ class AnnualLeaveCreateForm extends Component {
         let { employee, organizationalUnit, startDate, endDate, reason, status, errorOnOrganizationalUnit,
             errorOnEmployee, errorOnReason, errorOnStartDate, errorOnEndDate, totalHours, errorOnTotalHours, type } = this.state;
 
-        let listAllEmployees = employeesManager.listAllEmployees;
+        let listAllEmployees = employeesManager.listEmployeesOfOrganizationalUnits;
         let listDepartments = [{ _id: "", name: translate('human_resource.non_unit') }];
         if (user.organizationalUnitsOfUserByEmail) {
             listDepartments = user.organizationalUnitsOfUserByEmail;
@@ -313,7 +313,7 @@ class AnnualLeaveCreateForm extends Component {
 
         return (
             <React.Fragment>
-                <ButtonModal modalID="modal-create-annual-leave" button_name={translate('human_resource.annual_leave.add_annual_leave')} title={translate('human_resource.annual_leave.add_annual_leave_title')} />
+                {/* <ButtonModal modalID="modal-create-annual-leave" button_name={translate('human_resource.annual_leave.add_annual_leave')} title={translate('human_resource.annual_leave.add_annual_leave_title')} /> */}
                 <DialogModal
                     size='50' modalID="modal-create-annual-leave" isLoading={annualLeave.isLoading}
                     formID="form-create-annual-leave"

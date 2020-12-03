@@ -1,11 +1,170 @@
 import React, { Component } from "react";
 import { formatCurrency } from "../../../../../../helpers/formatCurrency";
 import { DatePicker } from "../../../../../../common-components";
+import { connect } from "react-redux";
+import { withTranslate } from "react-redux-multilingual";
+import { DiscountActions } from "../../../discount/redux/actions";
+import { CrmCustomerActions } from "../../../../../crm/customer/redux/actions";
 import "../quote.css";
+import CreateDiscountForOrder from "./createDiscountForOrder/createDiscountForOrder";
 
 class QuoteCreatePayment extends Component {
-    render() {
+    constructor(props) {
+        super(props);
+        this.state = {
+            amountAfterApplyTax: 0,
+        };
+    }
+
+    componentDidMount() {
+        this.props.getDiscountForOrderValue();
+        this.props.getCustomerPoint(this.props.customer);
+        // this.getAmountAfterApplyTax();
+        // this.props.editCustomerPoint(this.props.customer, { point: 500 });
+        //Lấy xu dựa vào customer Id
+    }
+
+    getAmountAfterApplyTax = () => {
         let { listGoods } = this.props;
+        let amountAfterApplyTax = listGoods.reduce((accumulator, currentValue) => {
+            return accumulator + currentValue.amountAfterTax;
+        }, 0);
+
+        // this.setState({ amountAfterApplyTax });
+        return amountAfterApplyTax;
+    };
+
+    applyDiscountForOrder = (amount, freeShipCost) => {
+        const { setPaymentAmount } = this.props;
+        let { discountsOfOrderValue, coin, paymentAmount } = this.props;
+
+        let discountForFormality = {
+            0: [],
+            1: [],
+            2: [],
+            3: [],
+            4: [],
+            5: [],
+        };
+        discountsOfOrderValue.forEach((element) => {
+            discountForFormality[element.formality].push(element);
+        });
+
+        if (discountForFormality[0].length) {
+            amount = amount - discountForFormality[0][0].discountedCash;
+        }
+        if (discountForFormality[1].length) {
+            amount = (amount * (100 - discountForFormality[1][0].discountedPercentage)) / 100;
+        }
+
+        if (freeShipCost) {
+            amount = amount - freeShipCost;
+        }
+
+        if (coin) {
+            amount = amount - coin;
+        }
+
+        amount = Math.round(amount * 100) / 100;
+
+        //SET STATE paymentAmout để tính tổng tiền lưu vào DB
+        if (amount !== paymentAmount) {
+            setPaymentAmount(amount);
+        }
+    };
+
+    getFreeShipCost = () => {
+        let maxFreeShip = 0;
+        let { discountsOfOrderValue, shippingFee } = this.props;
+        discountsOfOrderValue.forEach((item) => {
+            if (item.formality == 3) {
+                maxFreeShip += item.maximumFreeShippingCost;
+            }
+        });
+
+        let freeShipCost = 0;
+        if (shippingFee >= maxFreeShip) {
+            //Phí giao hàng lớn hơn tiền miễn phí giao hàng tối đa
+            freeShipCost = maxFreeShip;
+        } else {
+            freeShipCost = shippingFee;
+        }
+        return freeShipCost;
+    };
+
+    getCoinOfAll = () => {
+        let coinOfAll = 0;
+        let { listGoods } = this.props;
+        let { discountsOfOrderValue } = this.props;
+
+        listGoods.forEach((good) => {
+            good.discountsOfGood.forEach((discount) => {
+                if (discount.formality == "2") {
+                    coinOfAll += discount.loyaltyCoin;
+                }
+            });
+        });
+
+        discountsOfOrderValue.forEach((discount) => {
+            if (discount.formality == "2") {
+                coinOfAll += discount.loyaltyCoin;
+            }
+        });
+        return coinOfAll;
+    };
+
+    getBonusGoodOfAll = () => {
+        //Lấy tất cả các mặt hàng được tặng theo sản phẩm và toàn đơn
+        let bonusGoods = [];
+        let { listGoods } = this.props;
+        let { discountsOfOrderValue } = this.props;
+
+        listGoods.forEach((good) => {
+            good.discountsOfGood.forEach((discount) => {
+                if (discount.formality == "4") {
+                    //Hình thức tặng hàng
+                    discount.bonusGoods.forEach((goodOfBonus) => {
+                        let indexOfGood = bonusGoods.findIndex((element) => element.good._id === goodOfBonus.good._id); //Kiểm tra xem mặt hàng này đã tồn tại trong bonusGood hay chưa, nếu có rồi thì chỉ cộng thêm số lượng, còn nếu chưa thì thêm vào
+                        if (indexOfGood >= 0 && bonusGoods[indexOfGood].good.expirationDate === goodOfBonus.good.expirationDate) {
+                            bonusGoods[indexOfGood].quantityOfBonusGood =
+                                bonusGoods[indexOfGood].quantityOfBonusGood + goodOfBonus.quantityOfBonusGood;
+                        } else {
+                            bonusGoods.push(Object.assign({}, goodOfBonus));
+                        }
+                    });
+                }
+            });
+        });
+
+        discountsOfOrderValue.forEach((discount) => {
+            if (discount.formality == "4") {
+                //Hình thức tặng hàng
+                discount.bonusGoods.forEach((goodOfBonus) => {
+                    let indexOfGood = bonusGoods.findIndex((element) => element.good._id === goodOfBonus.good._id); //Kiểm tra xem mặt hàng này đã tồn tại trong bonusGood hay chưa, nếu có rồi thì chỉ cộng thêm số lượng, còn nếu chưa thì thêm vào
+                    if (indexOfGood >= 0 && bonusGoods[indexOfGood].good.expirationDate === goodOfBonus.good.expirationDate) {
+                        bonusGoods[indexOfGood].quantityOfBonusGood = bonusGoods[indexOfGood].quantityOfBonusGood + goodOfBonus.quantityOfBonusGood;
+                    } else {
+                        bonusGoods.push(Object.assign({}, goodOfBonus));
+                    }
+                });
+            }
+        });
+        return bonusGoods;
+    };
+
+    render() {
+        let { listGoods, discountsOfOrderValue, discountsOfOrderValueChecked } = this.props;
+        const { listDiscountsByOrderValue } = this.props.discounts;
+        const {
+            handleDiscountsOfOrderValueChange,
+            setDiscountsOfOrderValueChecked,
+            handleShippingFeeChange,
+            handleDeliveryTimeChange,
+            setCurrentSlasOfGood,
+            setCurrentDiscountsOfGood,
+            handleCoinChange,
+            saveQuote,
+        } = this.props;
         const {
             customerPhone,
             customerAddress,
@@ -17,7 +176,22 @@ class QuoteCreatePayment extends Component {
             shippingFee,
             deliveryTime,
             note,
+            coin,
+            paymentAmount,
         } = this.props;
+
+        let allOfBonusGood = this.getBonusGoodOfAll();
+        let freeShipCost = this.getFreeShipCost();
+        let coinOfAll = this.getCoinOfAll();
+
+        let customerCoin = 0;
+        if (this.props.customers.customerPoint) {
+            customerCoin = this.props.customers.customerPoint.point;
+        }
+
+        const amountAfterApplyTax = this.getAmountAfterApplyTax();
+        this.applyDiscountForOrder(amountAfterApplyTax, freeShipCost);
+
         return (
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <fieldset className="scheduler-border" style={{ background: "#f5f5f5" }}>
@@ -92,9 +266,20 @@ class QuoteCreatePayment extends Component {
                                             <td>{item.pricePerBaseUnit ? formatCurrency(item.pricePerBaseUnit) + "(vnđ)" : " 0 (vnđ)"}</td>
                                             <td>{item.quantity}</td>
                                             <td>
-                                                {item.amount && item.amountAfterDiscount
-                                                    ? formatCurrency(item.amount - item.amountAfterDiscount) + " (vnđ)"
-                                                    : " 0 (vnđ)"}
+                                                <a
+                                                    onClick={() => setCurrentDiscountsOfGood(item.discountsOfGood)}
+                                                    style={{
+                                                        cursor: "pointer",
+                                                    }}
+                                                    data-toggle="modal"
+                                                    data-backdrop="static"
+                                                    href={"#modal-create-quote-discounts-of-good-detail"}
+                                                    title="Click để xem chi tiết"
+                                                >
+                                                    {item.amount && item.amountAfterDiscount
+                                                        ? formatCurrency(item.amount - item.amountAfterDiscount) + " (vnđ)"
+                                                        : " 0 (vnđ)"}
+                                                </a>
                                             </td>
                                             <td>{item.amountAfterDiscount ? formatCurrency(item.amountAfterDiscount) : ""}</td>
                                             <td>
@@ -116,9 +301,10 @@ class QuoteCreatePayment extends Component {
                                                         }}
                                                         data-toggle="modal"
                                                         data-backdrop="static"
-                                                        href={"#modal-create-quote-sla"}
+                                                        href={"#modal-create-quote-slas-of-good-detail"}
+                                                        onClick={() => setCurrentSlasOfGood(item.slasOfGood)}
                                                     >
-                                                        Chi tiết
+                                                        Chi tiết &ensp;
                                                         <i className="fa fa-arrow-circle-right"></i>
                                                     </a>
                                                 </div>
@@ -173,14 +359,14 @@ class QuoteCreatePayment extends Component {
                         <div className="shoppe-shipping-content">
                             <div className="shopping-shipping-fee">
                                 <div> Phí giao hàng &ensp;</div>
-                                <input type="number" value={shippingFee} placeholder="Phí giao hàng... (vnđ)" />
+                                <input type="number" value={shippingFee} placeholder="Phí giao hàng... (vnđ)" onChange={handleShippingFeeChange} />
                             </div>
                             <div className="shopping-shipping-time">
                                 <div className="shopping-shipping-time-title">Thời gian giao hàng dự kiến &ensp;</div>
                                 <DatePicker
                                     id="date_picker_create_quote_delivery-time"
                                     value={deliveryTime}
-                                    // onChange={handleChangeDeliveryTime}
+                                    onChange={handleDeliveryTimeChange}
                                     disabled={false}
                                 />
                             </div>
@@ -193,9 +379,20 @@ class QuoteCreatePayment extends Component {
                         <div className="shopping-apply-discounts">
                             <span>Khuyến mãi của đơn hàng &ensp;</span>
                             <div className="shopping-apply-discounts-tag">
-                                <div>{`Đã chọn ${2} mã giảm giá`}</div>
+                                <div>
+                                    {discountsOfOrderValue.length
+                                        ? `Đã chọn ${discountsOfOrderValue.length} mã giảm giá`
+                                        : "Hãy kiểm tra và chọn mã giảm giá"}
+                                </div>
                             </div>
-                            <a>Chọn khuyến mãi</a>
+                            {/* <a>Chọn khuyến mãi</a> */}
+                            <CreateDiscountForOrder
+                                discountsProps={discountsOfOrderValue}
+                                discountsChecked={discountsOfOrderValueChecked}
+                                handleDiscountsChange={(data) => handleDiscountsOfOrderValueChange(data)}
+                                setDiscountsChecked={(checked) => setDiscountsOfOrderValueChecked(checked)}
+                                paymentAmount={amountAfterApplyTax}
+                            />
                         </div>
                         <div className="shopping-apply-loyalty-coin">
                             <div>
@@ -203,7 +400,12 @@ class QuoteCreatePayment extends Component {
                                 <span> Sử dụng xu &ensp;</span>
                             </div>
                             <div className="shopping-apply-loyalty-coin-tag">
-                                <div>{`Bạn đang có ${200} xu tương ứng với ${200} tiền`}</div>
+                                <div>
+                                    Bạn đang có&ensp;
+                                    <span className="text-red">{customerCoin ? formatCurrency(customerCoin) : 0}</span>
+                                    &ensp;xu tương ứng với&ensp;
+                                    <span className="text-red">{customerCoin ? formatCurrency(customerCoin) : 0}</span> &ensp;tiền
+                                </div>
                             </div>
                             <div className="shopping-apply-loyalty-coin-checkbox">
                                 <span>Sử dụng ngay &ensp;</span>
@@ -211,54 +413,101 @@ class QuoteCreatePayment extends Component {
                                     type="checkbox"
                                     className={`form-check-input`}
                                     id={`check-box-use-loyalty-coin`}
-                                    // checked={}
-                                    // onChange={this.handleDiscountChange}
+                                    disabled={!customerCoin}
+                                    checked={coin}
+                                    onChange={() => handleCoinChange(customerCoin)}
                                     style={{ minWidth: "20px" }}
                                 />
                             </div>
                         </div>
                     </div>
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 shopping-bonus-good">
-                        <div className="shopping-bonus-good-title">Các sản phẩm được tặng kèm</div>
-                        <div className="shopping-bonus-good-element">
-                            <div className="shopping-bonus-good-element-info">HAABCD - Bánh mì </div>
-                            <div className="shopping-bonus-good-element-quantity">10 cái</div>
-                            <div className="shopping-bonus-good-element-date">Hạn sử dụng:&ensp; 10-11-2021</div>
-                        </div>
-                        <div className="shopping-bonus-good-element">
+                    {allOfBonusGood.length ? (
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 shopping-bonus-good">
+                            <div className="shopping-bonus-good-title">Các sản phẩm được tặng kèm</div>
+                            {allOfBonusGood.map((goodOfBonus, index) => (
+                                <div key={index} className="shopping-bonus-good-element">
+                                    <div className="shopping-bonus-good-element-info">{`${goodOfBonus.good.code} - ${goodOfBonus.good.name}`} </div>
+                                    <div className="shopping-bonus-good-element-quantity">{`${goodOfBonus.quantityOfBonusGood} ${goodOfBonus.good.baseUnit}`}</div>
+                                    {goodOfBonus.expirationDate ? (
+                                        <div className="shopping-bonus-good-element-date">Hạn sử dụng:&ensp; {goodOfBonus.expirationDate}</div>
+                                    ) : (
+                                        ""
+                                    )}
+                                </div>
+                            ))}
+                            {/* <div className="shopping-bonus-good-element">
                             <div className="shopping-bonus-good-element-info">HAB - Bún chả </div>
                             <div className="shopping-bonus-good-element-quantity">5 tô</div>
                             <div className="shopping-bonus-good-element-date">Hạn sử dụng:&ensp; 10-11-2021</div>
+                        </div> */}
                         </div>
-                    </div>
+                    ) : (
+                        ""
+                    )}
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 shopping-payment">
-                        <div className="shopping-payment-title">Tổng thanh toán</div>
+                        <div className="shopping-payment-header">
+                            <div className="shopping-payment-title">Tổng thanh toán</div>
+                            {coinOfAll ? (
+                                <div className="shopping-payment-all-coin">
+                                    <div>
+                                        <span className="text-yellow">+{formatCurrency(coinOfAll)} xu</span>
+                                    </div>
+                                </div>
+                            ) : (
+                                ""
+                            )}
+                        </div>
                         <div className="shopping-payment-content">
                             <div className="shopping-payment-element">
                                 <div className="shopping-payment-element-title">Tổng tiền hàng (sau thuế)</div>
-                                <div className="shopping-payment-element-value">1,000,000</div>
+                                <div className="shopping-payment-element-value">
+                                    {amountAfterApplyTax ? formatCurrency(amountAfterApplyTax) : "0"}
+                                </div>
                             </div>
+
+                            {amountAfterApplyTax && paymentAmount && amountAfterApplyTax > paymentAmount + coin + freeShipCost ? ( //Tiền khuyến mãi toàn đơn là chưa tính freeship và trừ
+                                <div className="shopping-payment-element">
+                                    <div className="shopping-payment-element-title">Khuyến mãi cho toàn đơn</div>
+                                    <div className="shopping-payment-element-value">
+                                        -{formatCurrency(amountAfterApplyTax - paymentAmount - coin - freeShipCost)}
+                                    </div>
+                                </div>
+                            ) : (
+                                ""
+                            )}
+
                             <div className="shopping-payment-element">
                                 <div className="shopping-payment-element-title">Phí vận chuyển</div>
-                                <div className="shopping-payment-element-value">100,000</div>
+                                <div className="shopping-payment-element-value">{shippingFee ? formatCurrency(shippingFee) : "0"}</div>
                             </div>
-                            <div className="shopping-payment-element">
-                                <div className="shopping-payment-element-title">Miễn phí vận chuyển</div>
-                                <div className="shopping-payment-element-value">-100,000</div>
-                            </div>
-                            <div className="shopping-payment-element">
-                                <div className="shopping-payment-element-title">Khuyến mãi cho toàn đơn</div>
-                                <div className="shopping-payment-element-value">-45,000</div>
-                            </div>
+
+                            {freeShipCost ? (
+                                <div className="shopping-payment-element">
+                                    <div className="shopping-payment-element-title">Miễn phí vận chuyển</div>
+                                    <div className="shopping-payment-element-value">-{formatCurrency(freeShipCost)}</div>
+                                </div>
+                            ) : (
+                                ""
+                            )}
+
+                            {coin ? (
+                                <div className="shopping-payment-element">
+                                    <div className="shopping-payment-element-title">Sử dụng xu</div>
+                                    <div className="shopping-payment-element-value">-{formatCurrency(coin)}</div>
+                                </div>
+                            ) : (
+                                ""
+                            )}
+
                             <div className="shopping-payment-element">
                                 <div className="shopping-payment-element-title"> Tổng tiền thanh toán:</div>
                                 <div className="shopping-payment-element-value" style={{ color: "#ee4d2d", fontSize: "20px" }}>
-                                    1,055,000
+                                    {paymentAmount ? formatCurrency(paymentAmount) : "0"}
                                 </div>
                             </div>
                         </div>
                         <div className="shopping-payment-button">
-                            <button>Lưu báo giá</button>
+                            <button onClick={saveQuote}>Lưu báo giá</button>
                         </div>
                     </div>
                 </fieldset>
@@ -267,4 +516,16 @@ class QuoteCreatePayment extends Component {
     }
 }
 
-export default QuoteCreatePayment;
+function mapStateToProps(state) {
+    const { customers } = state.crm;
+    const { discounts } = state;
+    return { discounts, customers };
+}
+
+const mapDispatchToProps = {
+    getDiscountForOrderValue: DiscountActions.getDiscountForOrderValue,
+    getCustomerPoint: CrmCustomerActions.getCustomerPoint,
+    editCustomerPoint: CrmCustomerActions.editCustomerPoint,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuoteCreatePayment));

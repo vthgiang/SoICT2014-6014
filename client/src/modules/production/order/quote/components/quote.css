@@ -1,3 +1,7 @@
+.padding-0px {
+    padding: 0px;
+}
+
 .quote-detail-info-left {
     font-weight: 600;
     width: 35%;
@@ -25,6 +29,13 @@
 
 .print-quote:hover {
     background-color: aqua;
+}
+
+.select-currency {
+    position: absolute;
+    top: 15px;
+    right: 30px;
+    min-width: 69px;
 }
 
 .button-add-quantity-for-quote {
@@ -104,6 +115,56 @@
 
 .quote-add-good-button > button:hover {
     background-color: #21b7d1;
+}
+
+.quote-save-edit-good-button {
+    width: 100%;
+    padding: 20px 10px;
+    display: flex;
+    justify-content: flex-end;
+    border-top: 0.0625rem dashed rgba(0, 0, 0, 0.09);
+}
+
+.quote-save-edit-good-button > button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px !important;
+    border: none;
+    background-color: #1a9cb7;
+    color: #fff;
+    width: 100px;
+    height: 40px;
+    outline: none;
+}
+
+.quote-save-edit-good-button > button:hover {
+    background-color: #21b7d1;
+}
+
+.quote-cancel-edit-good-button {
+    width: 100%;
+    padding: 20px 10px;
+    display: flex;
+    justify-content: flex-end;
+    border-top: 0.0625rem dashed rgba(0, 0, 0, 0.09);
+}
+
+.quote-cancel-edit-good-button > button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px !important;
+    border: none;
+    background-color: #ff1515;
+    color: #fff;
+    width: 150px;
+    height: 40px;
+    outline: none;
+}
+
+.quote-cancel-edit-good-button > button:hover {
+    background-color: #fd6464;
 }
 
 /* PAYMENT QUOTE*/
@@ -379,12 +440,23 @@
     padding: 0px 20px 35px 20px !important;
 }
 
-.shopping-payment-title {
+.shopping-payment-header {
     width: 100%;
     padding: 20px 0px;
+    display: flex;
+    border-bottom: solid 0.3px #c5c5c5;
+}
+
+.shopping-payment-title {
+    /* width: 100%;
+    padding: 20px 0px; */
     font-size: 16px;
     color: #ee4d2d;
-    border-bottom: solid 0.3px #c5c5c5;
+}
+
+.shopping-payment-all-coin {
+    position: absolute;
+    right: 20px;
 }
 
 .shopping-payment-content {

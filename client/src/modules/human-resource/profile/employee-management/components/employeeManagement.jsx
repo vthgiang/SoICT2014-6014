@@ -817,8 +817,8 @@ class EmployeeManagement extends Component {
                         <div className="dropdown pull-right">
                             <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.profile.employee_management.add_employee_title')} >{translate('human_resource.profile.employee_management.add_employee')}</button>
                             <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
-                                <li><a style={{ cursor: 'pointer' }} onClick={this.importEmployee}>{translate('human_resource.profile.employee_management.add_import')}</a></li>
                                 <li><a style={{ cursor: 'pointer' }} onClick={this.createEmployee}>{translate('human_resource.profile.employee_management.add_by_hand')}</a></li>
+                                <li><a style={{ cursor: 'pointer' }} onClick={this.importEmployee}>{translate('human_resource.profile.employee_management.add_import')}</a></li>
                             </ul>
                         </div>
                         <button type="button" style={{ marginRight: 15, marginTop: 0 }} className="btn btn-primary pull-right" onClick={this.handleExportExcel} >{translate('human_resource.name_button_export')}<i className="fa fa-fw fa-file-excel-o"> </i></button>

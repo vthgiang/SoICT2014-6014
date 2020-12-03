@@ -1,0 +1,80 @@
+.body-evaluation 
+{
+    margin-top: 5px;
+    padding-right: 5px;
+}
+
+/* Lưu ý: Một số trình duyệt có thể không hỗ trợ đổi style scroll bar */
+
+.body-evaluation:hover::-webkit-scrollbar-track
+{
+	border-radius: 8px;
+	background-color: #eeeeee;
+	bottom: 0px;
+	z-index: 1;
+}
+
+.body-evaluation:hover::-webkit-scrollbar
+{
+	width: 8px;
+	height: 8px;
+	background-color: #ffffff;
+	z-index: 1;
+}
+
+.body-evaluation:hover::-webkit-scrollbar-thumb
+{
+	border-radius: 8px;
+	background-color: #acacac;
+	z-index: 1;
+}
+
+
+/*
+Di chuột ra ngoài thì ẩn scroll bar
+*/
+.body-evaluation::-webkit-scrollbar-track
+{
+	border-radius: 8px;
+	background-color: #ffffff;
+	bottom: 0px;
+}
+
+.body-evaluation::-webkit-scrollbar
+{
+	width: 8px;
+	height: 8px;
+	background-color: #ffffff;
+}
+
+.body-evaluation::-webkit-scrollbar-thumb
+{
+	border-radius: 8px;
+	background-color: #ffffff;
+}
+
+
+
+
+/* width */
+/* .body-evaluation::-webkit-scrollbar {
+    width: 20px;
+} */
+  
+ /* Track */
+/* .body-evaluation::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey; 
+    border-radius: 10px;
+} */
+   
+/* Handle */
+/* .body-evaluation::-webkit-scrollbar-thumb {
+    background: red; 
+    border-radius: 10px;
+} */
+  
+/* Handle on hover */
+/* .body-evaluation::-webkit-scrollbar-thumb:hover {
+    background: #b30000; 
+} */
+

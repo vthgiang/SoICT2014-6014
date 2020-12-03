@@ -276,7 +276,15 @@ exports.getEmployees = async (portal, company, organizationalUnits, positions, a
         }
     } else {
         if (organizationalUnits !== undefined) {
-            let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(portal, organizationalUnits, positions);
+            let emailInCompany=[];
+            if(organizationalUnits==='allUnist'){
+                let units = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find();
+                units =units.map(x=>x._id);
+                emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(portal, units, undefined);
+            } else {
+                emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(portal, organizationalUnits, positions);
+            }
+            
             keySearch = {
                 ...keySearch,
                 emailInCompany: {
@@ -294,7 +302,8 @@ exports.getEmployees = async (portal, company, organizationalUnits, positions, a
                 startingDate: 1,
                 leavingDate: 1,
                 professionalSkill: 1,
-                status:1
+                status:1,
+                degrees:1
 
             });
             let totalEmployee = listEmployeesOfOrganizationalUnits.length;
@@ -314,7 +323,8 @@ exports.getEmployees = async (portal, company, organizationalUnits, positions, a
             startingDate: 1,
             leavingDate: 1,
             professionalSkill: 1,
-            status:1
+            status:1,
+            degrees:1
         });
         return {
             totalAllEmployee,
@@ -615,6 +625,7 @@ exports.searchEmployeeProfiles = async (portal, params, company) => {
             contractEndDate: 1,
             contractType: 1,
             status: 1,
+            degrees:1
         })
         .sort({
             'createdAt': 'desc'

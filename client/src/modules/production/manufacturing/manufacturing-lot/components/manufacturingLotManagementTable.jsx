@@ -5,7 +5,12 @@ import { DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti } fro
 import { formatDate } from '../../../../../helpers/formatDate';
 import { GoodActions } from '../../../common-production/good-management/redux/actions';
 import { LotActions } from '../../../warehouse/inventory-management/redux/actions';
+import GoodReceiptCreateForm from './ goodReceiptCreateForm';
 import ManufacturingLotDetailForm from './manufacturingLotDetailForm';
+import ManufacturingLotEditFrom from './manufacturingLotEditForm';
+import { StockActions } from '../../../warehouse/stock-management/redux/actions';
+import { UserActions } from '../../../../super-admin/user/redux/actions';
+import { generateCode } from '../../../../../helpers/generateCode';
 
 class ManufacturingLotManagementTable extends Component {
     constructor(props) {
@@ -27,7 +32,9 @@ class ManufacturingLotManagementTable extends Component {
             page: this.state.page,
             limit: this.state.limit
         });
-        this.props.getAllGoodsByType({ type: "product" })
+        this.props.getAllGoodsByType({ type: "product" });
+        this.props.getAllStocks();
+        this.props.getAllUserOfCompany();
     }
 
     setLimit = async (limit) => {
@@ -133,6 +140,25 @@ class ManufacturingLotManagementTable extends Component {
         window.$('#modal-detail-info-manufacturing-lot').modal('show');
     }
 
+    handleEditLot = async (lot) => {
+        await this.setState({
+            currentRow: lot
+        });
+        window.$('#modal-edit-manufacturing-lot').modal('show');
+    }
+
+    handleCreateGoodReceipt = async (lot) => {
+        await this.setState({
+            lotId: lot._id,
+            currentLot: lot,
+            billCode: generateCode("BILL")
+        });
+
+
+        window.$('#modal-create-bill-issue-product').modal('show');
+
+    }
+
     render() {
         const { translate, lots } = this.props;
         const { totalPages, page } = lots;
@@ -146,6 +172,26 @@ class ManufacturingLotManagementTable extends Component {
             <React.Fragment>
                 {
                     <ManufacturingLotDetailForm lotDetail={this.state.lotDetail} />
+                }
+                {
+                    <GoodReceiptCreateForm
+                        lotId={this.state.lotId}
+                        lot={this.state.currentLot}
+                        billCode={this.state.billCode}
+                    />
+                }
+                {
+                    this.state.currentRow &&
+                    <ManufacturingLotEditFrom
+                        lotId={this.state.currentRow._id}
+                        code={this.state.currentRow.code}
+                        manufacturingCommandCode={this.state.currentRow.manufacturingCommand.code}
+                        good={this.state.currentRow.good}
+                        quantity={this.state.currentRow.originalQuantity}
+                        expirationDate={this.state.currentRow.expirationDate}
+                        description={this.state.currentRow.description}
+                        status={this.state.currentRow.status}
+                    />
                 }
                 <div className="box-body qlcv">
                     <div className="form-inline">
@@ -218,7 +264,7 @@ class ManufacturingLotManagementTable extends Component {
                             <tr>
                                 <th>{translate('manufacturing.lot.index')}</th>
                                 <th>{translate('manufacturing.lot.code')}</th>
-                                <th>{translate('manufacturing.lot.command_code')}</th>
+                                {/* <th>{translate('manufacturing.lot.command_code')}</th> */}
                                 <th>{translate('manufacturing.lot.good')}</th>
                                 <th>{translate('manufacturing.lot.base_unit')}</th>
                                 <th>{translate('manufacturing.lot.original_quantity')}</th>
@@ -233,7 +279,7 @@ class ManufacturingLotManagementTable extends Component {
                                         columnArr={[
                                             translate('manufacturing.lot.index'),
                                             translate('manufacturing.lot.code'),
-                                            translate('manufacturing.lot.command_code'),
+                                            // translate('manufacturing.lot.command_code'),
                                             translate('manufacturing.lot.good'),
                                             translate('manufacturing.lot.base_unit'),
                                             translate('manufacturing.lot.original_quantity'),
@@ -256,7 +302,7 @@ class ManufacturingLotManagementTable extends Component {
                                     <tr key={index}>
                                         <td>{index + 1}</td>
                                         <td>{lot.code}</td>
-                                        <td>{lot.manufacturingCommand && lot.manufacturingCommand.code}</td>
+                                        {/* <td>{lot.manufacturingCommand && lot.manufacturingCommand.code}</td> */}
                                         <td>{lot.good && lot.good.name}</td>
                                         <td>{lot.good && lot.good.baseUnit}</td>
                                         <td>{lot.originalQuantity}</td>
@@ -267,7 +313,12 @@ class ManufacturingLotManagementTable extends Component {
                                         <td style={{ color: translate(`manufacturing.lot.${lot.status}.color`) }}>{translate(`manufacturing.lot.${lot.status}.content`)}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a style={{ width: '5px' }} title={translate('manufacturing.lot.lot_detail')} onClick={() => { this.handleShowDetailLot(lot) }}><i className="material-icons">view_list</i></a>
-                                            <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manufacturing.lot.purchasing_request_edit')} onClick={() => this.handleEditPurchasingRequest(lot)}><i className="material-icons">edit</i></a>
+                                            {
+                                                lot.status === 1 && <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manufacturing.lot.lot_edit')} onClick={() => this.handleEditLot(lot)}><i className="material-icons">edit</i></a>
+                                            }
+                                            {
+                                                lot.status === 1 && <a style={{ width: '5px', color: "green" }} title={translate('manufacturing.lot.create_bill')} onClick={() => { this.handleCreateGoodReceipt(lot) }}><i className="material-icons">account_balance</i></a>
+                                            }
                                         </td>
                                     </tr>
                                 ))
@@ -292,7 +343,9 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     getAllManufacturingLots: LotActions.getAllManufacturingLots,
-    getAllGoodsByType: GoodActions.getAllGoodsByType
+    getAllGoodsByType: GoodActions.getAllGoodsByType,
+    getAllStocks: StockActions.getAllStocks,
+    getAllUserOfCompany: UserActions.getAllUserOfCompany
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManufacturingLotManagementTable));

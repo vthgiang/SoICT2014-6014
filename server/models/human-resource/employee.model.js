@@ -205,6 +205,10 @@ const EmployeeSchema = new Schema({
             type: String,
             enum: ['excellent', 'very_good', 'good', 'average_good', 'ordinary'] //excellent-Xuất sắc, very_good-Giỏi, good-Khá, average_good-Trung bình khá, ordinary-Trung bình
         },
+        field:{
+            type: Schema.Types.ObjectId,
+            ref: 'Field',
+        },
         file: String,
         urlFile: String
     }],
@@ -265,6 +269,7 @@ const EmployeeSchema = new Schema({
         urlFile: String
     }],
     career: [{
+        package: String,
         field: {
             name: String,
             id: String,
@@ -275,11 +280,11 @@ const EmployeeSchema = new Schema({
             id: String,
             code: String
         },
-        action: {
+        action: [{
             name: String,
             id: String,
             code: String
-        },
+        }],
         startDate: Date,
         endDate: Date,
         file: String,

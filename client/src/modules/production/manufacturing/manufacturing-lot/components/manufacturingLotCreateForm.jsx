@@ -13,8 +13,6 @@ class ManufacturingLotCreateForm extends Component {
         super(props);
         this.state = {
             // 1 thành phẩm, 2 phế phẩm
-            code1: generateCode('LTP'),
-            code2: generateCode('LPP'),
             quantity1: '',
             quantity2: '',
             expirationDate1: '',
@@ -28,6 +26,8 @@ class ManufacturingLotCreateForm extends Component {
         if (state.command !== props.command) {
             return {
                 ...state,
+                code1: props.code1,
+                code2: props.code2,
                 manufacturingCommandId: props.command._id,
                 manufacturingCommandCode: props.command.code,
                 good: props.command.good,
@@ -135,7 +135,6 @@ class ManufacturingLotCreateForm extends Component {
                 code: this.state.code1,
                 type: "product",
                 originalQuantity: this.state.quantity1,
-                lotType: 1,
                 productType: 1,
                 manufacturingCommand: this.state.manufacturingCommandId,
                 good: this.state.good.good._id,
@@ -151,7 +150,6 @@ class ManufacturingLotCreateForm extends Component {
                     code: this.state.code2,
                     type: "product",
                     originalQuantity: this.state.quantity2,
-                    lotType: 1,
                     productType: 2,
                     manufacturingCommand: this.state.manufacturingCommandId,
                     good: this.state.good.good._id,

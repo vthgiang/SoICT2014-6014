@@ -2,11 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import parse from 'html-react-parser';
-import Quill from 'quill';
-import QuillImageDropAndPaste from 'quill-image-drop-and-paste';
-import * as QuillTableUI from 'quill-table-ui';
-import QuillTable from 'quill-table';
-
 class QuillEditor extends Component {
     constructor(props) {
         super(props);
@@ -17,36 +12,12 @@ class QuillEditor extends Component {
     }
 
     componentDidMount() {
-        const { edit = true, value } = this.props;
+        const { id, edit = true, value } = this.props;
 
         if (edit) {
-            // Thêm các module tiện ích
-            Quill.register({
-                'modules/imageDropAndPaste': QuillImageDropAndPaste,
-                // 'modules/tableUI': QuillTableUI.default,
-            }, true)
-
-            // Khởi tạo Quill Editor trong thẻ có id='editor-container'
-            const quill = new Quill('#editor-container', {
-                modules: {
-                    toolbar: [
-                        [{ 'font': [] }],
-                        [{ header: [1, 2, 3, false] }],
-                        ['bold', 'italic', 'underline', 'strike'],
-                        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                        [{ 'align': [] }],
-                        ['image', 'code-block', 'list']
-                    ],
-                    imageDropAndPaste: true,
-                    // table: true,
-                    // tableUI: true,
-                },
-                scrollingContainer: true,
-                placeholder: 'Start typing here...',
-                theme: 'snow',
-                value: value  
-            });
-
+            // Khởi tạo Quill Editor trong thẻ có id = id truyền vào
+            const quill = window.initializationQuill(`#editor-container${id}`);
+            
             // Insert value ban đầu
             if (value) {
                 if (quill && quill.container && quill.container.firstChild) {
@@ -60,7 +31,7 @@ class QuillEditor extends Component {
                 const imgs = Array.from(
                     quill.container.querySelectorAll('img[src^="data:"]:not(.loading)')
                 );
-                
+
                 this.props.getTextData(quill.root.innerHTML, imgs);
             });
         }
@@ -107,13 +78,13 @@ class QuillEditor extends Component {
     }
 
     render() {
-        const { edit = true, value, height = 200 } = this.props;
+        const { id, edit = true, value, height = 200 } = this.props;
 
         return (
             <React.Fragment>
                 {
                     edit
-                        ? <div id="editor-container" style={{ height: height }}/>
+                        ? <div id={`editor-container${id}`} style={{ height: height }}/>
                         : parse(value)
                 }
             </React.Fragment>

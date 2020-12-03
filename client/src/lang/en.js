@@ -559,7 +559,7 @@ export default {
             downloads: "Downloads",
             add: "Add new",
             export: "Export data",
-            import: "Import from file",
+            import: "Add data from file",
             edit: "Edit",
             view: "View",
             time: "Time",
@@ -798,6 +798,7 @@ export default {
             close: "Close",
             email: "Email",
             password: "Password",
+            portal: "Portal",
             new_password: "New password",
             confirm: "Confirm password",
             description: "Description",
@@ -860,6 +861,17 @@ export default {
             non_status: "Select status",
         },
 
+        common_component: {
+            import_excel: {
+                config: 'Import file configuration',
+                user_config: 'User configuration',
+                file: 'File import read data sheet',
+                properties: 'Properties',
+                title: 'Title',
+                
+            }
+        },
+
         menu: {
             home: "Home Page",
             system_administration: "System Administration",
@@ -910,6 +922,7 @@ export default {
             discipline: "Manage Commendation And Discipline",
             annual_leave: "Manage Annual Leave",
             salary_employee: "Manage Salary",
+            manage_field:'Manage career/fields',
             time_keeping: "Attendance Staff",
             list_education: "Training Programs",
             training_plan: "Manage Training Courses",
@@ -1047,6 +1060,7 @@ export default {
             zoom_out: "Zoom Out",
             zoom_in: "Zoom In",
             add: "Add",
+            import: "Add data from file",
             edit_title: "Edit organizational unit",
             add_title: "Add new department",
             info: "Department Information",
@@ -1226,8 +1240,8 @@ export default {
                 add_salary_title: "Add salary",
                 add_by_hand: "Add by hand",
                 add_by_hand_title: "Add by hand",
-                add_import: "Import file excel",
-                add_import_title: "Import file excel",
+                add_import: "Add data from file",
+                add_import_title: "Add data from file",
                 add_more_salary: "Add other salary",
                 add_new_salary: "Add new salary",
 
@@ -1305,6 +1319,8 @@ export default {
                 edit_annual_leave_faile: "Edit annual leave faile",
                 aplication_annual_leave_success:
                     "Send application annual leave success",
+                import_annual_leave_success: 'Add data from file success',
+                import_annual_leave_faile: 'Add data from file faile',
             },
 
             // Quản lý khen thưởng kỷ luật
@@ -1452,13 +1468,14 @@ export default {
                 religion: "Religion",
                 active: "Official staff",
                 leave: "Quit job",
-                maternity_leave: 'Maternity leave',
-                unpaid_leave:'Unpaid leave',
-                probationary:'Probationary',
-                sick_leave:'Sick leave',
+                career_fields: 'Career/fields',
+                maternity_leave: "Maternity leave",
+                unpaid_leave: "Unpaid leave",
+                probationary: "Probationary",
+                sick_leave: "Sick leave",
 
                 status_work: "Labor status",
-                hours_off_remaining: 'Total hours annual leave remaining',
+                hours_off_remaining: "Total hours annual leave remaining",
 
                 mobile_phone: "Mobile phone",
                 mobile_phone_1: "Mobile phone 1",
@@ -1712,7 +1729,7 @@ export default {
                     add_employee: "Add staff",
                     add_employee_title: "Add new staff",
                     add_by_hand: "Add a staff",
-                    add_import: "Import file excel",
+                    add_import: "Add data from file",
                     // Thông điệp trả về từ server
                     get_list_employee_success: "Get list employee success",
                     get_list_employee_faile: "Get list employee faile",
@@ -1780,7 +1797,7 @@ export default {
                 add_work_plan: "Add work schedule",
                 add_work_plan_title: "Add new work schedule",
                 add_by_hand: "Add one work schedule",
-                add_import: "Import file excel",
+                add_import: "Add data from file",
                 accept_application: "Accept leave application",
                 refuse_application: "Refuse leave application",
 
@@ -1805,6 +1822,65 @@ export default {
                 import_work_plan_faile: "Import work schedule faile",
             },
 
+            dashboard_personal: {
+                remind_work: "Nhắc việc",
+                number_annual_leave_in_year: "Số ngày nghỉ phép còn lại trong năm",
+                day: "ngày",
+                task: "công việc",
+                accountable: "phê duyệt",
+                responsible: "thực hiện",
+                consulted: "tư vấn",
+                informed: "quan sát",
+                task_total: "Tổng số Công việc",               
+                kpi_results: "Kết quả KPI",
+                point: "điểm",
+                overtime_total: "Tổng thời gian tăng ca",
+                hours: "giờ", 
+                total_time_annual_leave: "Tổng thời gian nghỉ phép",
+                fullname: "Họ và tên",
+                task_total: "Số công việc",
+                general_task: "Tổng hợp công việc",
+                see_all: "Xem tất cả",
+                general_commendation: "Tổng hợp khen thưởng",
+                reason_praise: "Lý do khen thưởng",
+                general_discipline: "Tổng hợp kỷ luật",
+                reason_discipline: "Lý do kỷ luật",
+                
+                general_annual_leave: "Tổng hợp tình hình nghỉ phép",
+                total_hours: "Tổng số giờ",
+                total_hours_works: "Tổng số giờ",
+                general_overtime: "Tổng hợp tình hình tăng ca",
+                not_org_unit: "Bạn chưa có đơn vị",
+                
+                trend_of_work:"Xu hướng làm việc"
+
+            },
+
+            // Quản lý ngành nghề lĩnh vực
+            field:{
+                // Nhóm dành cho table
+                table: {
+                   name: "Name career/fields",
+                   description: "Description",
+               },
+
+               // Nhóm dành cho action
+               edit_fields: "Edit career/fields",
+               delete_fields: "Delete career/fields",
+               add_fields: "Add new",
+               add_fields_title: "Add career/fields",
+
+               // Thông điệp trả về từ server
+               get_fields_success:"Get career/fields success",
+               get_fields_faile: "Get career/fields faile",
+               create_fields_success:"Add career/fields success",
+               create_fields_faile: "Add career/fields faile",
+               delete_fields_success: "Delete career/fields success",
+               delete_fields_faile: "Delete career/fields faile",
+               edit_fields_success:"Edit career/fields success",
+               edit_fields_faile: "Edit career/fields faile",
+           },
+
             // Quản lý chấm công nhân viên
             timesheets: {
                 file_name_export: "Timesheets",
@@ -1826,7 +1902,7 @@ export default {
                 add_timesheets: "Add timesheets",
                 add_timesheets_title: "Add new timesheets",
                 add_by_hand: "Add one timesheets",
-                add_import: "Import file excel",
+                add_import: "Add data from file",
 
                 // Thông điệp trả về từ server
                 employee_code_duplicated: "Staff code is duplicated",
@@ -2139,6 +2215,7 @@ export default {
                 statistic_by: "Statistic by",
                 expired: "Exprired",
                 remaining_time: "Remaining time",
+                day: "days"
             },
 
             //  Quản lý loại tài sản
@@ -2157,6 +2234,7 @@ export default {
                 edit_asset_type_success: "Edit asset type successfully",
                 edit_asset_type_faile: "Edit asset type fail",
                 asset_type_name_exist: "Asset type name exist",
+                asset_type_number_exist: "Asset type number exist",
             },
 
             // Quản lý thông tin tài sản
@@ -2397,6 +2475,7 @@ export default {
             save: "Save",
             close: "Close",
             add: "Add new",
+            import: "Add data from file",
             confirm: "Confirm",
             confirm_title:
                 "Are you sure you want to delete this task template?",
@@ -2548,8 +2627,10 @@ export default {
                 role_in_collaborated_unit: "The role of the employee in",
                 confirm_assigned: "Confirm the assignment",
                 confirm_assigned_success: "You have confirmed the assignment",
-                confirm_assigned_failure: "You have not confirmed the assignment",
-                unit_not_confirm_assigned_task: "Organizational unit has not confirmed the assignment",
+                confirm_assigned_failure:
+                    "You have not confirmed the assignment",
+                unit_not_confirm_assigned_task:
+                    "Organizational unit has not confirmed the assignment",
 
                 name: "Name of task",
                 search_by_name: "Search by name",
@@ -2721,10 +2802,9 @@ export default {
                 err_eval_end:
                     "Evaluate date should be less than equal end date",
                 err_eval_on_month: "Evaluate date should be day of month",
-                explain_avg_rating:
-                    "Since no activity has been evaluated, the activity rating default is 10",
-                explain_not_has_failed_and_passed_action:
-                    " - (Since no failed or passed activity, so the number of passed action and failed action will be considered equal and equal to 1)",
+                explain_avg_rating: "Since no activity has been evaluated, the activity rating default is 10",
+                explain_not_has_failed_and_passed_action: " - (Since no actions or no failed or passed activity, so the number of passed action will be considered equal to 1)",
+                    // " - (Since no failed or passed activity, so the number of passed action and failed action will be considered equal and equal to 1)",
 
                 info_eval_month: "Task infomation in evaluation",
 
@@ -3827,6 +3907,8 @@ export default {
             delete_fail: "Delete example fail!",
             add: "Add example",
             add_title: "Add a new example",
+            add_multi_example: "Add many new examples",
+            add_one_example: "Add 1 new example",
             add_success: "Add example successfully!",
             add_fail: "Add example fail!",
             example_description: "Example Description",

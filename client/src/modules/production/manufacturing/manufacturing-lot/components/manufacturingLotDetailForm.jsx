@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { DialogModal } from '../../../../../common-components';
 import { formatDate, formatFullDate } from '../../../../../helpers/formatDate';
+import BillDetailForm from '../../../warehouse/bill-management/components/genaral/billDetailForm';
+import { BillActions } from '../../../warehouse/bill-management/redux/actions';
 import { LotActions } from '../../../warehouse/inventory-management/redux/actions';
 
 class ManufacturingLotDetailForm extends Component {
@@ -14,17 +16,28 @@ class ManufacturingLotDetailForm extends Component {
     shouldComponentUpdate = (nextProps) => {
         if (this.props.lotDetail !== nextProps.lotDetail) {
             this.props.getDetailManufacturingLot(nextProps.lotDetail._id);
+            this.props.getBillsByCommand({ manufacturingCommandId: nextProps.lotDetail.manufacturingCommand._id });
             return false;
         }
         return true;
     }
 
+    showDetailBill = async (id) => {
+        await this.props.getDetailBill(id);
+        window.$('#modal-detail-bill').modal('show');
+    }
+
     render() {
-        const { translate, lots } = this.props;
+        const { translate, lots, bills } = this.props;
         let currentLot = {};
         if (lots.currentLot && lots.isLoading === false) {
             currentLot = lots.currentLot
         }
+        let listBillByCommand = [];
+        if (bills.listBillByCommand && bills.isLoading === false) {
+            listBillByCommand = bills.listBillByCommand;
+        }
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -36,6 +49,7 @@ class ManufacturingLotDetailForm extends Component {
                     hasSaveButton={false}
                     hasNote={false}
                 >
+                    <BillDetailForm />
                     <form id={`form-detail-manufacturing-lot`}>
                         <div className="row">
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -53,7 +67,12 @@ class ManufacturingLotDetailForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manufacturing.lot.bill_import_code')}:&emsp;</strong>
-                                    { }
+                                    {currentLot.bills && currentLot.bills.map((bill, index) => {
+                                        if (index === currentLot.bills.length - 1) {
+                                            return <a href="#" onClick={() => this.showDetailBill(bill._id)}>{bill.code}</a>
+                                        }
+                                        return <a href="#" onClick={() => this.showDetailBill(bill._id)}>{bill.code}, </a>
+                                    })}
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manufacturing.lot.manufacturing_mill')}:&emsp;</strong>
@@ -81,8 +100,8 @@ class ManufacturingLotDetailForm extends Component {
                                     <strong>{translate('manufacturing.lot.status')}:&emsp;</strong>
                                     {
                                         currentLot.status &&
-                                        <span style={{ color: translate(`manufacturing.command.${currentLot.status}.color`) }}>
-                                            {translate(`manufacturing.command.${currentLot.status}.content`)}
+                                        <span style={{ color: translate(`manufacturing.lot.${currentLot.status}.color`) }}>
+                                            {translate(`manufacturing.lot.${currentLot.status}.content`)}
                                         </span>
                                     }
                                 </div>
@@ -115,7 +134,7 @@ class ManufacturingLotDetailForm extends Component {
                                                     <td>{currentLot.good && currentLot.good.code}</td>
                                                     <td>{currentLot.good && currentLot.good.name}</td>
                                                     <td>{currentLot.good && currentLot.good.baseUnit}</td>
-                                                    <td>{currentLot.quantity}</td>
+                                                    <td>{currentLot.originalQuantity}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -126,9 +145,52 @@ class ManufacturingLotDetailForm extends Component {
                         <div className="row">
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <fieldset className="scheduler-border">
-                                    <legend className="scheduler-border">{translate('manufacturing.lot.material')}</legend>
+                                    <legend className="scheduler-border">{translate('manufacturing.command.material')}</legend>
                                     <div className={`form-group`}>
-                                        Thông tin về nguyên vật liệu được nhập từ đâu
+                                        <table className="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>{translate('manufacturing.command.material_code')}</th>
+                                                    <th>{translate('manufacturing.command.material_name')}</th>
+                                                    <th>{translate('manufacturing.command.good_base_unit')}</th>
+                                                    <th>{translate('manufacturing.command.quantity')}</th>
+                                                    <th>{translate('manufacturing.command.from_stock')}</th>
+                                                    <th style={{ textAlign: "left" }}>{translate('manufacturing.command.status_bill')}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    listBillByCommand && listBillByCommand.length &&
+                                                    listBillByCommand.map((bill, index) => (
+                                                        bill.goods.map((good, index1) => (
+                                                            index1 === 0
+                                                                ?
+                                                                <tr key={index1}>
+                                                                    <td>{good.good.code}</td>
+                                                                    <td>{good.good.name}</td>
+                                                                    <td>{good.good.baseUnit}</td>
+                                                                    <td style={{ textAlign: "left" }}>{good.quantity}</td>
+                                                                    <td rowSpan={bill.goods.length}>{bill.fromStock.code + " - " + bill.fromStock.name}</td>
+                                                                    <td
+                                                                        style={{ textAlign: "left", color: translate(`manufacturing.command.bill.${bill.status}.color`) }}
+                                                                        rowSpan={bill.goods.length}
+                                                                    >
+                                                                        {translate(`manufacturing.command.bill.${bill.status}.content`)}
+                                                                    </td>
+                                                                </tr>
+                                                                :
+                                                                <tr key={index1}>
+                                                                    <td>{good.good.code}</td>
+                                                                    <td>{good.good.name}</td>
+                                                                    <td>{good.good.baseUnit}</td>
+                                                                    <td style={{ textAlign: "left" }}>{good.quantity}</td>
+                                                                </tr>
+                                                        ))
+                                                    ))
+
+                                                }
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </fieldset>
                             </div>
@@ -208,7 +270,39 @@ class ManufacturingLotDetailForm extends Component {
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manufacturing.lot.lot_diary')}</legend>
                                     <div className={`form-group`}>
-                                        Cho biết lô được nhập vào những kho nào,  những lô hàng, thậm trí là xuất đi đơn hàng nào
+                                        <table className="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th style={{ width: "5%" }} title={translate('manage_warehouse.inventory_management.index')}>{translate('manage_warehouse.inventory_management.index')}</th>
+                                                    <th title={translate('manage_warehouse.inventory_management.bill')}>{translate('manage_warehouse.inventory_management.bill')}</th>
+                                                    <th title={translate('manage_warehouse.inventory_management.date_month')}>{translate('manage_warehouse.inventory_management.date_month')}</th>
+                                                    <th title={translate('manage_warehouse.inventory_management.status')}>{translate('manage_warehouse.inventory_management.status')}</th>
+                                                    <th title={translate('manage_warehouse.inventory_management.number')}>{translate('manage_warehouse.inventory_management.number')}</th>
+                                                    {/* <th title={translate('manage_warehouse.inventory_management.quantity')}>{translate('manage_warehouse.inventory_management.quantity')}</th> */}
+                                                    <th title={translate('manage_warehouse.inventory_management.stock')}>{translate('manage_warehouse.inventory_management.stock')}</th>
+                                                    {/* <th style={{width: "16%"}} title={translate('manage_warehouse.inventory_management.bin')}>{translate('manage_warehouse.inventory_management.bin')}</th> */}
+                                                    <th title={translate('manage_warehouse.inventory_management.partner')}>{translate('manage_warehouse.inventory_management.partner')}</th>
+                                                    <th title={translate('manage_warehouse.inventory_management.note')}>{translate('manage_warehouse.inventory_management.note')}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id={`good-edit-manage-by-archive`}>
+                                                {(typeof currentLot.lotLogs === 'undefined' || currentLot.lotLogs.length === 0) ? <tr><td colSpan={8}><center>{translate('task_template.no_data')}</center></td></tr> :
+                                                    currentLot.lotLogs.map((x, index) =>
+                                                        <tr key={index}>
+                                                            <td>{index + 1}</td>
+                                                            {x.bill ? <td><a href="#" onClick={() => this.handleShowDetailInfo(x.bill._id)}>{x.bill.code}</a></td> : <td></td>}
+                                                            <td>{this.formatDate(x.createdAt)}</td>
+                                                            <td>{x.bill ? translate(`manage_warehouse.bill_management.billType.${x.bill.type}`) : ''}</td>
+                                                            <td>{x.quantity ? x.quantity : 0}</td>
+                                                            <td>{x.stock ? x.stock.name : ""}</td>
+                                                            {/* <td>{x.binLocations ? x.binLocations.map((item, index) => <p key={index}>{item.binLocation.path} ({item.quantity})</p>) : ""}</td> */}
+                                                            <td></td>
+                                                            <td>{x.description}</td>
+                                                        </tr>
+                                                    )
+                                                }
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </fieldset>
                             </div>
@@ -221,12 +315,14 @@ class ManufacturingLotDetailForm extends Component {
 }
 
 function mapStateToProps(state) {
-    const { lots } = state;
-    return { lots }
+    const { lots, bills } = state;
+    return { lots, bills }
 }
 
 const mapDispatchToProps = {
-    getDetailManufacturingLot: LotActions.getDetailManufacturingLot
+    getDetailManufacturingLot: LotActions.getDetailManufacturingLot,
+    getBillsByCommand: BillActions.getBillsByCommand,
+    getDetailBill: BillActions.getDetailBill,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManufacturingLotDetailForm));

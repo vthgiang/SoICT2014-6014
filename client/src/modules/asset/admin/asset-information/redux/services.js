@@ -19,33 +19,36 @@ function getAll(data) {
         url: `${process.env.REACT_APP_SERVER}/asset/assets`,
         method: 'GET',
         params: {
-            code: data !== undefined ? data.code : data,
-            assetName: data !== undefined ? data.assetName : data,
-            status: data !== undefined ? data.status : data,
-            group: data !== undefined ? data.group : data,
-            assetType: data !== undefined ? data.assetType : data,
-            purchaseDate: data !== undefined ? data.purchaseDate : data,
-            disposalDate: data !== undefined ? data.disposalDate : data,
-            handoverUnit: data !== undefined ? data.handoverUnit : data,
-            handoverUser: data !== undefined ? data.handoverUser : data,
-            typeRegisterForUse: data !== undefined ? data.typeRegisterForUse : data,
-            page: data !== undefined ? data.page : data,
-            limit: data !== undefined ? data.limit : data,
-            managedBy: data !== undefined ? data.managedBy : data,
-            location: data !== undefined ? data.location : data,
-            currentRole: data !== undefined ? data.currentRole : data,
+            code: data ? data.code : data,
+            assetName: data ? data.assetName : data,
+            status: data ? data.status : data,
+            group: data ? data.group : data,
+            assetType: data ? data.assetType : data,
+            purchaseDate: data ? data.purchaseDate : data,
+            disposalDate: data ? data.disposalDate : data,
+            handoverUnit: data ? data.handoverUnit : data,
+            handoverUser: data ? data.handoverUser : data,
+            typeRegisterForUse: data ? data.typeRegisterForUse : data,
+            page: data ? data.page : data,
+            limit: data ? data.limit : data,
+            managedBy: data ? data.managedBy : data,
+            location: data ? data.location : data,
+            currentRole: data ? data.currentRole : data,
 
-            startDepreciation: data !== undefined ? data.startDepreciation : data,
-            depreciationType: data !== undefined ? data.depreciationType : data,
+            startDepreciation: data ? data.startDepreciation : data,
+            depreciationType: data ? data.depreciationType : data,
 
-            maintainanceCode: data !== undefined ? data.maintainanceCode : data,
-            maintainCreateDate: data !== undefined ? data.maintainCreateDate : data,
-            maintainStatus: data !== undefined ? data.maintainStatus : data,
-            maintainType: data !== undefined ? data.maintainType : data,
+            maintainanceCode: data ? data.maintainanceCode : data,
+            maintainCreateDate: data ? data.maintainCreateDate : data,
+            maintainStatus: data ? data.maintainStatus : data,
+            maintainType: data ? data.maintainType : data,
 
-            incidentCode: data !== undefined ? data.incidentCode : data,
-            incidentStatus: data !== undefined ? data.incidentStatus : data,
-            incidentType: data !== undefined ? data.incidentType : data,
+            incidentCode: data ? data.incidentCode : data,
+            incidentStatus: data ? data.incidentStatus : data,
+            incidentType: data ? data.incidentType : data,
+
+            // hình thức lấy danh sách tài sản (bình thường, tài sản có thông tin khấu hao, v.v.)
+            getType: data ? data.getType : undefined
         }
     }, false, true, 'asset.asset_info');
 }
@@ -80,7 +83,7 @@ function addNewAsset(data) {
  * @param {*} id : id thông tin tài sản cần chỉnh sửa
  * @param {*} data :dữ liệu chỉnh sửa thông tin tài sản
  */
-function updateInformationAsset(id, data) {
+function updateInformationAsset(id, data, page) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/asset/assets/${id}`,
         method: 'PATCH',

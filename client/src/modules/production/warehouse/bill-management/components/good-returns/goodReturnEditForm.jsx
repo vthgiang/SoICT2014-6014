@@ -712,7 +712,7 @@ class GoodReturnEditForm extends Component {
 
     render() {
         const { translate, group, bills } = this.props;
-        const { lots, listGood, good, code, approvers, approver, listQualityControlStaffs, qualityControlStaffs, accountables, responsibles, status, fromStock, 
+        const { lots, listGood, description, good, code, approvers, approver, listQualityControlStaffs, qualityControlStaffs, accountables, responsibles, status, fromStock, 
             type, name, phone, email, address, errorStock, errorType, errorApprover, errorCustomer, bill, errorQualityControlStaffs, errorAccountables, errorResponsibles } = this.state;
         const dataApprover = this.getApprover();
         const dataStock = this.getStock();
@@ -811,7 +811,7 @@ class GoodReturnEditForm extends Component {
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     <div className="form-group">
                                         <label>{translate('manage_warehouse.bill_management.description')}</label>
-                                        <textarea type="text" className="form-control" onChange={this.handleDescriptionChange} />
+                                        <textarea type="text" className="form-control" value={description} onChange={this.handleDescriptionChange} />
                                     </div>
                                 </div>
                             </fieldset>

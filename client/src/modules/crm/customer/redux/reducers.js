@@ -25,7 +25,8 @@ export function customers(state = initState, action) {
         case CrmCustomerConstants.EDIT_CRM_CUSTOMER_REQUEST:
         case CrmCustomerConstants.DELETE_CRM_CUSTOMER_REQUEST:
         case CrmCustomerConstants.IMPORT_CRM_CUSTOMER_REQUEST:
-
+        case CrmCustomerConstants.GET_CRM_CUSTOMER_POINT_REQUEST:
+        case CrmCustomerConstants.EDIT_CRM_CUSTOMER_POINT_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -37,6 +38,8 @@ export function customers(state = initState, action) {
         case CrmCustomerConstants.EDIT_CRM_CUSTOMER_FAILE:
         case CrmCustomerConstants.DELETE_CRM_CUSTOMER_FAILE:
         case CrmCustomerConstants.IMPORT_CRM_CUSTOMER_FAILE:
+        case CrmCustomerConstants.GET_CRM_CUSTOMER_POINT_FAILE:
+        case CrmCustomerConstants.EDIT_CRM_CUSTOMER_POINT_FAILE:
             return {
                 ...state,
                 isLoading: false
@@ -56,6 +59,12 @@ export function customers(state = initState, action) {
                 customerById: action.payload,
                 isLoading: false,
             };
+        case CrmCustomerConstants.GET_CRM_CUSTOMER_POINT_SUCCESS: 
+            return {
+                ...state,
+                customerPoint: action.payload,
+                isLoading: false,
+            }
 
         case CrmCustomerConstants.CREATE_CRM_CUSTOMER_SUCCESS:
             return {
@@ -75,6 +84,12 @@ export function customers(state = initState, action) {
             return {
                 ...state,
                 list: state.list.map(cus => ((cus._id === action.payload._id) ? action.payload : cus)),
+                isLoading: false
+            };
+        
+        case CrmCustomerConstants.EDIT_CRM_CUSTOMER_POINT_SUCCESS:
+            return {
+                ...state,
                 isLoading: false
             };
 

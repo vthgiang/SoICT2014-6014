@@ -311,7 +311,7 @@ exports.getManufacturingCommandById = async (id, portal) => {
     }
     let lot = await Lot(connect(DB_CONNECTION, portal)).find({
         manufacturingCommand: manufacturingCommand._id
-    }).select('code _id');
+    }).select('code _id manufacturingCommand');
     if (lot) {
         // await manufacturingCommand.markModified('attribute');
         manufacturingCommand.lot = lot;
@@ -394,7 +394,7 @@ exports.editManufaturingCommand = async (id, data, portal) => {
             path: "qualityControlStaffs.staff"
         }, {
             path: "good.good",
-            select: "code name baseUnit"
+            select: "code name baseUnit numberExpirationDate"
         }]);
 
     return { manufacturingCommand }

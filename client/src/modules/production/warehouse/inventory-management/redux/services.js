@@ -8,7 +8,8 @@ export const LotServices = {
     deleteManyLots,
     getAllManufacturingLots,
     createManufacturingLot,
-    getDetailManufacturingLot
+    getDetailManufacturingLot,
+    handleEditManufacturingLot
 }
 
 function getAllLots(params) {
@@ -92,4 +93,12 @@ function getDetailManufacturingLot(id) {
         false,
         true,
         'manufacturing.lot')
+}
+
+function handleEditManufacturingLot(id, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/lot/${id}`,
+        method: 'PATCH',
+        data
+    }, true, true, 'manage_warehouse.inventory_management')
 }

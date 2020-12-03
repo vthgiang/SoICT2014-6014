@@ -50,6 +50,7 @@ class PurchaseRequestManager extends Component {
 
     // Function format dữ liệu Date thành string
     formatDate2(date, monthYear = false) {
+        if (!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -167,15 +168,15 @@ class PurchaseRequestManager extends Component {
             data = data.map((x, index) => {
 
                 let code = x.recommendNumber;
-                let equipment = x.equipment;
-                let assigner = (x.proponent) ? x.proponent.email : 'Không tìm thấy người đề nghị'
-                let createDate = x.dateCreate;
+                let equipment = x.equipmentName;
+                let assigner = x.proponent ? x.proponent.email : null;
+                let createDate = this.formatDate2(x.dateCreate);
                 let note = x.note;
                 let supplier = x.supplier;
                 let amount = x.total;
-                let cost = parseInt(x.estimatePrice);
-                let status = x.status;
-                let approver = (x.approver) ? x.approver.email : "";
+                let cost = x.estimatePrice ? Intl.NumberFormat().format(parseInt(x.estimatePrice)) : null;
+                let status = this.formatStatus(x.status);
+                let approver = x.approver ? x.approver.email : null;
 
                 return {
                     index: index + 1,
@@ -190,7 +191,6 @@ class PurchaseRequestManager extends Component {
                     equipment: equipment,
                     approver: approver
                 }
-
             })
         }
 
@@ -245,7 +245,7 @@ class PurchaseRequestManager extends Component {
 
         switch (status) {
             case 'approved': return translate('asset.usage.approved');
-            case 'waiting_approval': return translate('asset.usage.waiting_approval');
+            case 'waiting_for_approval': return translate('asset.usage.waiting_approval');
             case 'disapproved': return translate('asset.usage.not_approved');
             default: return 'Deleted';
         }
@@ -315,8 +315,8 @@ class PurchaseRequestManager extends Component {
                                 onChange={this.handleStatusChange}
                                 items={[
                                     { value: "approved", text: translate('asset.usage.approved') },
-                                    { value: "waiting_approval", text: translate('asset.usage.waiting_approval') },
-                                    { value: "not_approved", text: translate('asset.usage.not_approved') }
+                                    { value: "waiting_for_approval", text: translate('asset.usage.waiting_approval') },
+                                    { value: "disapproved", text: translate('asset.usage.not_approved') }
                                 ]}
                             >
                             </SelectMulti>
@@ -363,15 +363,15 @@ class PurchaseRequestManager extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(listRecommendProcures && listRecommendProcures.length !== 0) &&
+                            {(listRecommendProcures && listRecommendProcures.length !== 0) ?
                                 listRecommendProcures.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.recommendNumber}</td>
                                         <td>{this.formatDate2(x.dateCreate)}</td>
-                                        <td>{x.proponent ? x.proponent.name : 'User is deleted'}</td>
+                                        <td>{x.proponent ? x.proponent.email : 'User is deleted'}</td>
                                         <td>{x.equipmentName}</td>
                                         <td>{x.equipmentDescription}</td>
-                                        <td>{x.approver ? x.approver.name : ''}</td>
+                                        <td>{x.approver ? x.approver.email : ''}</td>
                                         <td>{x.note}</td>
                                         <td>{this.formatStatus(x.status)}</td>
                                         <td style={{ textAlign: "center" }}>
@@ -387,7 +387,7 @@ class PurchaseRequestManager extends Component {
                                             />
                                         </td>
                                     </tr>
-                                ))
+                                )) : null
                             }
                         </tbody>
                     </table>

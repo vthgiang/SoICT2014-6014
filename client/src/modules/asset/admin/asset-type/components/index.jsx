@@ -68,6 +68,17 @@ class AdministrationAssetTypes extends Component {
         })
     }
 
+    formatAssetTypeInformations = (informations) => {
+        let list = !informations ? '' : informations.reduce((value, cur) => {
+            if (!value) {
+                if (!cur) return value;
+                else return cur.nameField ? value + cur.nameField : value;
+            }
+            else return value + ', ' + cur.nameField
+        }, '');
+        return list;
+    }
+
     convertDataToExportData = (dataTree) => {
         let data = dataTree.map((item, index) => {
             let information = "";
@@ -80,7 +91,7 @@ class AdministrationAssetTypes extends Component {
                 code: item.typeNumber,
                 name: item.typeName,
                 description: item.description,
-                information: item.defaultInformation.length !== 0 ? information : "",
+                information: this.formatAssetTypeInformations(item.defaultInformation)
             }
         })
         let exportData = {
@@ -109,18 +120,27 @@ class AdministrationAssetTypes extends Component {
         return exportData;
     }
 
+    //Kiểm tra mã id của tài sản cha có tồn tại
+    checkValidParentAsset = (data, id) => {
+        let check = data.filter(node => node._id === id);
+        if (check.length !== 0) return true;
+        else return false;
+    }
+
     render() {
         const { translate } = this.props;
         const { list } = this.props.assetType.administration.types;
         const { domainParent, currentDomain, deleteNode } = this.state;
 
         const dataTree = list.map(node => {
+            const result = this.checkValidParentAsset(list, node.parent);
+
             return {
                 ...node,
                 id: node._id,
                 text: node.typeName,
                 state: { "opened": true },
-                parent: node.parent ? node.parent.toString() : "#"
+                parent: !node.parent || !result ? '#' : node.parent.toString()
             }
         })
 
@@ -142,7 +162,7 @@ class AdministrationAssetTypes extends Component {
                     <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('task_template.add')}</button>
                     <ul className="dropdown-menu pull-right">
                         <li><a style={{ cursor: "pointer" }} onClick={() => { window.$('#modal-create-asset-type').modal('show') }}>{translate('task_template.add')}</a></li>
-                        <li><a style={{ cursor: "pointer" }} onClick={() => { window.$('#import_asset_type').modal('show') }}>Thêm file</a></li>
+                        <li><a style={{ cursor: "pointer" }} onClick={() => { window.$('#import_asset_type').modal('show') }}>{translate('human_resource.profile.employee_management.add_import')}</a></li>
                     </ul>
                     <ImportAssetTypeModal />
                     <CreateAssetTypeModal domainParent={domainParent} />

@@ -89,7 +89,7 @@ class TaskTemplate extends Component {
                                     <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('task_template.add')}</button>
                                     <ul className="dropdown-menu pull-right">
                                         <li><a href="#modal-add-task-template" title="ImportForm" onClick={(event) => { this.handleAddTaskTemplate(event) }}>{translate('task_template.add')}</a></li>
-                                        <li><a href="#modal_import_file" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>Thêm file</a></li>
+                                        <li><a href="#modal_import_file" title="Import file excell" onClick={(event) => { this.handImportFile(event) }}>{translate('task_template.import')}</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -341,12 +341,12 @@ class TaskTemplate extends Component {
         if (data) {
             for (let k = 0; k < data.length; k++) {
                 const { auth, role } = this.props;
-                let annunciator ;
+                let annunciator;
                 let x = data[k];
                 let length = 0;
                 let actionName = [], actionDescription = [], mandatory = [];
 
-                if (!role.isLoading && !auth.isLoading){
+                if (!role.isLoading && !auth.isLoading) {
                     annunciator = auth.user.name + " - " + role.item.name;
                 }
                 if (x.taskActions) {
@@ -549,7 +549,7 @@ class TaskTemplate extends Component {
                                 { key: "name", value: "Tên mẫu" },
                                 { key: "description", value: "Mô tả" },
                                 { key: "organizationalUnits", value: "Đơn vị" },
-                                { key: "collaboratedWithOrganizationalUnits", value: "Đơn vị phối hợp thực hiện công việc"},
+                                { key: "collaboratedWithOrganizationalUnits", value: "Đơn vị phối hợp thực hiện công việc" },
                                 { key: "numberOfUse", value: "Số lần sử dụng" },
                                 { key: "creator", value: "Người tạo mẫu" },
                                 { key: "annunciator", value: "Người xuất báo cáo" },

@@ -32,16 +32,20 @@ exports.getEmployeeKPISets = async (portal, data) => {
         year = data.endDate.slice(0, 4);
         month = data.endDate.slice(5, 7);
     }
-    if ((new Number(month)) == 12) {
+    if (year && month && (new Number(month)) === 12) {
         month = '1';
         year = (new Number(year)) + 1;
     } else {
-        month = (new Number(month)) + 1;
+        if (month) {
+            month = (new Number(month)) + 1;
+        }
     }
-    if (month < 10) {
+    if (year && month && month < 10) {
         data.endDate = year + '-0' + month;
     } else {
-        data.endDate = year + '-' + month;
+        if (year && month) {
+            data.endDate = year + '-' + month;
+        }
     }
 
     if (data.startDate) {
@@ -77,13 +81,13 @@ exports.getEmployeeKPISets = async (portal, data) => {
         }
     }
     
-    if (startdate !== null && enddate !== null) {
+    if (startdate && enddate) {
         keySearch = {
             ...keySearch,
             date: { "$gte": startdate, "$lt": enddate }
         }
     }
-    if (startdate !== null && enddate === null) {
+    if (startdate && !enddate) {
         keySearch = {
             ...keySearch,
             date: {
@@ -91,7 +95,7 @@ exports.getEmployeeKPISets = async (portal, data) => {
             }
         }
     }
-    if (enddate !== null && startdate === null) {
+    if (enddate && !startdate) {
         keySearch = {
             ...keySearch,
             date: {

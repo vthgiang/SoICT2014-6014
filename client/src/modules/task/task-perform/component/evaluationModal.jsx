@@ -84,11 +84,13 @@ class EvaluationModal extends Component {
 
         let endDate = new Date(task && task.endDate);
         let monthOfEndDate = endDate.getMonth();
+        let yearOfEndDate = endDate.getUTCFullYear();
         
         // kiểm tra xem bước sang tháng mới so với ngày kết thúc hay chưa.
         let isInNextMonthOfEndDate = false;
-        if(monthOfEval > monthOfEndDate){
+        if((yearOfEval === yearOfEndDate && monthOfEval > monthOfEndDate ) || (yearOfEval > yearOfEndDate)){
             isInNextMonthOfEndDate = true;
+            console.log('isInNextMonthOfEndDate', isInNextMonthOfEndDate, monthOfEval, monthOfEndDate);
         }
 
         // nếu expire < 0 là đang quá hạn; ngược lại thì vẫn đúng hạn
@@ -242,8 +244,8 @@ class EvaluationModal extends Component {
                                 )}
 
                                 {/* Thêm mới đánh giá */}
-                                {/* Kiểm tra có phải tháng hiện tại hay không và chưa chọn đánh giá tháng này (showEval == false) */}
-                                {(checkMonth === false && showEval === false) && !(isInNextMonthOfEndDate) &&
+                                {/* Kiểm tra có phải tháng hiện tại hay không và chưa chọn đánh giá tháng này (showEval == false) !(isInNextMonthOfEndDate) && */}
+                                {(checkMonth === false && showEval === false) && !(isInNextMonthOfEndDate) && 
                                     <li className={content === 'new' ? "active" : undefined}>
                                         <a style={{ cursor: 'pointer' }} onClick={() => this.handleAddEval()}>
                                             {translate('task.task_management.add_eval_of_this_month')}&nbsp;&nbsp;&nbsp;&nbsp;<i style={{ color: 'green' }} className="fa fa-plus-square"></i>

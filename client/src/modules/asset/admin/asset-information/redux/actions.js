@@ -88,7 +88,6 @@ function addNewAsset(asset) {
                 dispatch({
                     type: AssetConstants.ADDASSET_FAILURE,
                     error: err,
-                    payload: err.response.data.content
                 });
             })
     };
@@ -100,37 +99,37 @@ function addNewAsset(asset) {
  * @param {*} data 
  * @param {*} managedBy khi manageBy !="", role gọi service này không phải là admin
  */
-function updateInformationAsset(id, data, managedBy = "") {
+function updateInformationAsset(id, data, managedBy = "", page) {
     return dispatch => {
         dispatch({
             type: AssetConstants.UPDATE_INFOR_ASSET_REQUEST
         });
 
-        AssetService.updateInformationAsset(id, data)
+        AssetService.updateInformationAsset(id, data, page)
             .then(res => {
-                if (managedBy === "") {
-                    dispatch(getAllAsset({
-                        code: "",
-                        assetName: "",
-                        assetType: null,
-                        month: null,
-                        status: "",
-                        page: 0,
-                        limit: 5,
-                    }));
-                }
-                else {
-                    dispatch(getAllAsset({
-                        code: "",
-                        assetName: "",
-                        assetType: null,
-                        month: null,
-                        status: "",
-                        page: 0,
-                        limit: 5,
-                        managedBy: managedBy
-                    }));
-                }
+                // if (managedBy === "") {
+                //     dispatch(getAllAsset({
+                //         code: "",
+                //         assetName: "",
+                //         assetType: null,
+                //         month: null,
+                //         status: "",
+                //         page: page,
+                //         limit: 5,
+                //     }));
+                // }
+                // else {
+                //     dispatch(getAllAsset({
+                //         code: "",
+                //         assetName: "",
+                //         assetType: null,
+                //         month: null,
+                //         status: "",
+                //         page: page,
+                //         limit: 5,
+                //         managedBy: managedBy
+                //     }));
+                // }
 
                 dispatch({
                     type: AssetConstants.UPDATE_INFOR_ASSET_SUCCESS,
@@ -151,7 +150,7 @@ function updateInformationAsset(id, data, managedBy = "") {
  * @param {*} id 
  * @param {*} managedBy khi manageBy !="", role gọi service này không phải là admin
  */
-function deleteAsset(id, managedBy = "") {
+function deleteAsset(id, managedBy = "", page) {
     return dispatch => {
         dispatch({
             type: AssetConstants.DELETE_ASSET_REQUEST
@@ -159,29 +158,29 @@ function deleteAsset(id, managedBy = "") {
 
         AssetService.deleteAsset(id)
             .then(res => {
-                if (managedBy === "") {
-                    dispatch(getAllAsset({
-                        code: "",
-                        assetName: "",
-                        assetType: null,
-                        month: null,
-                        status: "",
-                        page: 0,
-                        limit: 5,
-                    }));
-                }
-                else {
-                    dispatch(getAllAsset({
-                        code: "",
-                        assetName: "",
-                        assetType: null,
-                        month: null,
-                        status: "",
-                        page: 0,
-                        limit: 5,
-                        managedBy: managedBy
-                    }));
-                }
+                // if (managedBy === "") {
+                //     dispatch(getAllAsset({
+                //         code: "",
+                //         assetName: "",
+                //         assetType: null,
+                //         month: null,
+                //         status: "",
+                //         page: 0,
+                //         limit: 5,
+                //     }));
+                // }
+                // else {
+                //     dispatch(getAllAsset({
+                //         code: "",
+                //         assetName: "",
+                //         assetType: null,
+                //         month: null,
+                //         status: "",
+                //         page: 0,
+                //         limit: 5,
+                //         managedBy: managedBy
+                //     }));
+                // }
 
                 dispatch({
                     type: AssetConstants.DELETE_ASSET_SUCCESS,

@@ -59,6 +59,7 @@ class IncidentManagement extends Component {
 
     // Function format dữ liệu Date thành string
     formatDate2(date, monthYear = false) {
+        if (!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -81,6 +82,7 @@ class IncidentManagement extends Component {
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
     formatDate(date) {
+        if (!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -195,10 +197,10 @@ class IncidentManagement extends Component {
                         let code = x.incidentCode;
                         let assetName = item.assetName;
                         let assetCode = item.code;
-                        let type = x.type;
+                        let type = this.convertIncidentType(x.type);
                         let reporter = (x.reportedBy && userlist.length && userlist.filter(item => item._id === x.reportedBy).pop()) ? userlist.filter(item => item._id === x.reportedBy).pop().email : '';
                         let createDate = (x.dateOfIncident) ? this.formatDate2(x.dateOfIncident) : ''
-                        let status = x.incidentCode;
+                        let status = this.convertIncidentStatus(x.statusIncident);
                         let description = x.description;
 
                         return {
@@ -269,31 +271,29 @@ class IncidentManagement extends Component {
 
     convertIncidentType = (type) => {
         const { translate } = this.props;
-        if (type == 1) {
+        if (Number(type) === 1) {
             return translate('asset.general_information.damaged');
-        } else if (type == 2) {
+        } else if (Number(type) === 2) {
             return translate('asset.general_information.lost')
         } else {
-            return 'Type is deleted'
+            return null;
         }
     }
 
     convertIncidentStatus = (status) => {
         const { translate } = this.props;
-        if (status == 1) {
+        if (Number(status) === 1) {
             return translate('asset.general_information.waiting');
-        } else if (status == 2) {
+        } else if (Number(status) === 2) {
             return translate('asset.general_information.processed')
-        } else {
-            return 'Status is deleted'
-        }
+        } else return null;
     }
 
     render() {
         const { translate, assetsManager, assetType, user, isActive, incidentManager } = this.props;
         const { page, limit, currentRow, currentRowEditAsset, managedBy } = this.state;
 
-        var lists = "", exportData;
+        var lists = [], exportData;
         var userlist = user.list;
         if (incidentManager.isLoading === false) {
             lists = incidentManager.incidentList;
@@ -403,7 +403,7 @@ class IncidentManagement extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(lists && lists.length !== 0) &&
+                            {(lists && lists.length !== 0) ?
                                 lists.map((x, index) => {
                                     return (
                                         <tr key={index}>
@@ -411,7 +411,8 @@ class IncidentManagement extends Component {
                                             <td>{x.asset.assetName}</td>
                                             <td>{x.incidentCode}</td>
                                             <td>{this.convertIncidentType(x.type)}</td>
-                                            <td>{x.reportedBy && userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : ''}</td>
+                                            <td>{this.convertIncidentStatus(x.statusIncident)}</td>
+                                            <td>{x.reportedBy && userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().email : ''}</td>
                                             <td>{x.dateOfIncident ? this.formatDate2(x.dateOfIncident) : ''}</td>
                                             <td>{x.description}</td>
                                             <td style={{ textAlign: "center" }}>
@@ -428,7 +429,7 @@ class IncidentManagement extends Component {
                                             </td>
                                         </tr>
                                     )
-                                })
+                                }) : null
                             }
                         </tbody>
                     </table>

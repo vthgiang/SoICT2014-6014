@@ -146,7 +146,7 @@ class PurchaseRequest extends Component {
 
         switch (status) {
             case 'approved': return translate('asset.usage.approved');
-            case 'waiting_approval': return translate('asset.usage.waiting_approval');
+            case 'waiting_for_approval': return translate('asset.usage.waiting_approval');
             case 'disapproved': return translate('asset.usage.not_approved');
             default: return 'Deleted';
         }
@@ -252,15 +252,15 @@ class PurchaseRequest extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(listRecommendProcures && listRecommendProcures.length !== 0) &&
+                            {(listRecommendProcures && listRecommendProcures.length !== 0) ?
                                 listRecommendProcures.filter(item => item.proponent && item.proponent._id === auth.user._id).map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.recommendNumber}</td>
                                         <td>{this.formatDate2(x.dateCreate)}</td>
-                                        <td>{x.proponent ? x.proponent.name : 'User is deleted'}</td>
+                                        <td>{x.proponent ? x.proponent.email : 'User is deleted'}</td>
                                         <td>{x.equipmentName}</td>
                                         <td>{x.equipmentDescription}</td>
-                                        <td>{x.approver ? x.approver.name : ''}</td>
+                                        <td>{x.approver ? x.approver.email : ''}</td>
                                         <td>{x.note}</td>
                                         <td>{this.formatStatus(x.status)}</td>
                                         <td style={{ textAlign: "center" }}>
@@ -276,7 +276,7 @@ class PurchaseRequest extends Component {
                                             />
                                         </td>
                                     </tr>
-                                ))
+                                )) : null
                             }
                         </tbody>
                     </table>
