@@ -261,8 +261,8 @@ class AssetManagement extends Component {
                 let type = this.formatAssetTypes(x.assetType);
                 let purchaseDate = this.formatDate(x.purchaseDate);
                 let disposalDate = this.formatDate(x.disposalDate);
-                let manager = x.managedBy && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).email : '';
-                let assigner = x.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.assignedToUser) ? userlist.find(item => item._id === x.assignedToUser).email : '') : ''
+                let manager = x.managedBy && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).name : '';
+                let assigner = x.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.assignedToUser) ? userlist.find(item => item._id === x.assignedToUser).name : '') : ''
                 // let handoverFromDate = x.handoverFromDate ? this.formatDate(x.handoverFromDate) : '';
                 // let handoverToDate = x.handoverToDate ? this.formatDate(x.handoverToDate) : '';
                 let status = this.formatStatus(x.status);
@@ -474,7 +474,6 @@ class AssetManagement extends Component {
         if (assetsManager.isLoading === false) {
             lists = assetsManager.listAssets;
         }
-        console.log("=======rendre=========", lists)
 
         let assetbuilding = assetsManager && assetsManager.buildingAssets;
         let assetbuildinglist = assetbuilding && assetbuilding.list;

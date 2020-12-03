@@ -68,6 +68,17 @@ class AdministrationAssetTypes extends Component {
         })
     }
 
+    formatAssetTypeInformations = (informations) => {
+        let list = !informations ? '' : informations.reduce((value, cur) => {
+            if (!value) {
+                if (!cur) return value;
+                else return cur.nameField ? value + cur.nameField : value;
+            }
+            else return value + ', ' + cur.nameField
+        }, '');
+        return list;
+    }
+
     convertDataToExportData = (dataTree) => {
         let data = dataTree.map((item, index) => {
             let information = "";
@@ -80,7 +91,7 @@ class AdministrationAssetTypes extends Component {
                 code: item.typeNumber,
                 name: item.typeName,
                 description: item.description,
-                information: item.defaultInformation.length !== 0 ? information : "",
+                information: this.formatAssetTypeInformations(item.defaultInformation)
             }
         })
         let exportData = {

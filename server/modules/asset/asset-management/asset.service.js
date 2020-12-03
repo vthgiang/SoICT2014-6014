@@ -679,7 +679,7 @@ exports.getMaintainances = async (portal, params) => {
     let mintainanceLength = 0;
     let aggregateLengthQuery = [...aggregateQuery, { $count: "mintainance_Length" }]
     let count = await Asset(connect(DB_CONNECTION, portal)).aggregate(aggregateLengthQuery);
-    mintainanceLength = count[0].mintainance_Length;
+    mintainanceLength = Array.isArray(count) && count.length > 0 ? count[0].mintainance_Length : 0;
 
     // Tìm kiếm câc danh sách sự cố
     aggregateListQuery = [...aggregateQuery, { $sort: { 'createdAt': 1 } }, { $skip: (page - 1) * limit }, { $limit: limit }]
