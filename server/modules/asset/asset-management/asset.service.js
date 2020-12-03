@@ -4,6 +4,7 @@ const nodemailer = require("nodemailer");
 const Models = require(`${SERVER_MODELS_DIR}`);
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 const arrayToTree = require('array-to-tree');
+const { freshObject } = require(`${SERVER_HELPERS_DIR}/functionHelper`);
 const { sendEmail } = require(`${SERVER_HELPERS_DIR}/emailHelper`);
 
 const { Asset, User } = Models;
@@ -171,7 +172,8 @@ exports.searchAssetProfiles = async (portal, company, params) => {
 
     // Thêm key tìm kiếm tài sản theo id người quản lý
     if (params.managedBy) {
-        keySearch = { ...keySearch, managedBy: { $in: params.managedBy } };
+        let arr = Array.isArray(params.managedBy) ? params.managedBy : [params.managedBy];
+        keySearch = { ...keySearch, managedBy: { $in: arr } };
     }
 
     // Thêm key tìm kiếm tài sản theo vị trí
@@ -196,7 +198,8 @@ exports.searchAssetProfiles = async (portal, company, params) => {
 
     // Thêm key tìm kiếm tài sản theo vai trò
     if (params.currentRole) {
-        keySearch = { ...keySearch, readByRoles: { $in: params.currentRole } };
+        let arr = Array.isArray(params.currentRole) ? params.currentRole : [params.currentRole];
+        keySearch = { ...keySearch, readByRoles: { $in: arr } };
     }
 
     // Thêm key tìm kiếm tài sản theo ngày bắt đầu khấu hao
@@ -498,7 +501,8 @@ exports.createAsset = async (portal, company, data, fileInfo) => {
  * Cập nhât thông tin tài sản theo id
  */
 exports.updateAssetInformation = async (portal, company, id, data, fileInfo) => {
-
+    //Lọc lại những giá trị lỗi ('undefined') từ FormData gửi từ bên client
+    data = freshObject(data);
     let {
         createMaintainanceLogs,
         deleteMaintainanceLogs,
@@ -527,7 +531,6 @@ exports.updateAssetInformation = async (portal, company, id, data, fileInfo) => 
         }
     }
 
-
     deleteEditCreateObjectInArrayObject = (arrObject, arrDelete, arrEdit, arrCreate, fileInfor = undefined) => {
         if (arrDelete) {
             for (let n in arrDelete) {
@@ -548,41 +551,37 @@ exports.updateAssetInformation = async (portal, company, id, data, fileInfo) => 
             if (fileInfor) {
                 arrCreate = this.mergeUrlFileToObject(fileInfor, arrCreate);
             }
-            arrCreate.forEach(x => {
-
-                arrObject.push(x)
-            });
+            arrCreate.forEach(x => arrObject.push(x));
         }
 
         return arrObject;
     }
 
-    // GUI EMAIL
+    let newIncident = deleteEditCreateObjectInArrayObject(oldAsset.incidentLogs, deleteIncidentLogs, editIncidentLogs, createIncidentLogs)
 
-    // let newIncident = deleteEditCreateObjectInArrayObject(oldAsset.incidentLogs, deleteIncidentLogs, editIncidentLogs, createIncidentLogs)
+    let check = false;
+    if (oldAsset.incidentLogs.length !== newIncident.length) {
+        check = true;
+    }
+    for (let i in newIncident) {
+        let elm = newIncident[i];
+        let checkList = oldAsset.incidentLogs.filter(x => JSON.stringify(x) !== JSON.stringify(elm));
 
-    // let check = false;
-    // if (oldAsset.incidentLogs.length !== newIncident.length) {
-    //     check = true;
-    // }
-    // for (let i in newIncident) {
-    //     let elm = newIncident[i];
-    //     let checkList = oldAsset.incidentLogs.filter(x => JSON.stringify(x) !== JSON.stringify(elm));
-
-    //     if (checkList.length !== 0) {
-    //         check = true;
-    //     }
-    // }
+        if (checkList.length !== 0) {
+            check = true;
+        }
+    }
 
 
-    // if (check === true) {
-    //     let mail = await this.sendEmailToManager(portal, newIncident, oldAsset)
-    // } 
+    if (check === true) {
+        let mail = await this.sendEmailToManager(portal, newIncident, oldAsset)
+    } // gui email
 
     oldAsset.usageLogs = deleteEditCreateObjectInArrayObject(oldAsset.usageLogs, deleteUsageLogs, editUsageLogs, createUsageLogs);
     oldAsset.maintainanceLogs = deleteEditCreateObjectInArrayObject(oldAsset.maintainanceLogs, deleteMaintainanceLogs, editMaintainanceLogs, createMaintainanceLogs);
     oldAsset.incidentLogs = deleteEditCreateObjectInArrayObject(oldAsset.incidentLogs, deleteIncidentLogs, editIncidentLogs, createIncidentLogs);
     oldAsset.documents = deleteEditCreateObjectInArrayObject(oldAsset.documents, deleteFiles, editFiles, createFiles, file);
+
     oldAsset.avatar = avatar;
     oldAsset.assetName = data.assetName;
     oldAsset.code = data.code;
@@ -591,18 +590,18 @@ exports.updateAssetInformation = async (portal, company, id, data, fileInfo) => 
     oldAsset.group = data.group;
     oldAsset.purchaseDate = data.purchaseDate;
     oldAsset.warrantyExpirationDate = data.warrantyExpirationDate;
-    oldAsset.managedBy = (!data.managedBy || data.managedBy === 'undefined') ? null : data.managedBy;
-    oldAsset.assignedToUser = data.assignedToUser !== '' ? data.assignedToUser : null;
-    oldAsset.assignedToOrganizationalUnit = data.assignedToOrganizationalUnit !== '' ? data.assignedToOrganizationalUnit : null;
+    oldAsset.managedBy = data.managedBy;
+    oldAsset.assignedToUser = data.assignedToUser;
+    oldAsset.assignedToOrganizationalUnit = data.assignedToOrganizationalUnit;
     oldAsset.readByRoles = data.readByRoles
-    oldAsset.location = data.location ? data.location : null;
+    oldAsset.location = data.location;
     oldAsset.status = data.status;
     oldAsset.typeRegisterForUse = data.typeRegisterForUse;
     oldAsset.description = data.description;
     oldAsset.detailInfo = data.detailInfo;
     // Khấu hao
-    oldAsset.cost = data.cost ? data.cost : 0;
-    oldAsset.usefulLife = data.usefulLife ? data.usefulLife : 0;
+    oldAsset.cost = data.cost;
+    oldAsset.usefulLife = data.usefulLife;
     oldAsset.residualValue = data.residualValue;
     oldAsset.startDepreciation = data.startDepreciation;
     oldAsset.depreciationType = data.depreciationType ? data.depreciationType : 'none';
@@ -624,7 +623,7 @@ exports.updateAssetInformation = async (portal, company, id, data, fileInfo) => 
     oldAsset.disposalDesc = data.disposalDesc;
 
     // Edit  thông tin tài sản
-    oldAsset.save();
+    await oldAsset.save();
 
 
     // Function edit, create, Delete Document of collection
@@ -648,8 +647,7 @@ exports.updateAssetInformation = async (portal, company, id, data, fileInfo) => 
     let assets = await Asset(connect(DB_CONNECTION, portal)).find({ _id: oldAsset._id });
 
     return {
-        assets: assets,
-
+        assets: assets
     };
 }
 
@@ -941,7 +939,7 @@ exports.getIncidents = async (portal, params) => {
     let incidentLength = 0;
     let aggregateLengthQuery = [...aggregateQuery, { $count: "incident_length" }]
     let count = await Asset(connect(DB_CONNECTION, portal)).aggregate(aggregateLengthQuery);
-    if (count.length) {
+    if(count.length){
         incidentLength = count[0].incident_length;
 
         // Tìm kiếm câc danh sách sự cố
@@ -958,7 +956,7 @@ exports.getIncidents = async (portal, params) => {
             incidents[i].asset = asset;
         }
     }
-
+    
     return {
         incidentList: incidents,
         incidentLength: incidentLength,
@@ -969,7 +967,6 @@ exports.getIncidents = async (portal, params) => {
  * Thêm mới thông tin sự cố tài sản
  */
 exports.createIncident = async (portal, id, data) => {
-
     let assetIncident = await Asset(connect(DB_CONNECTION, portal)).update({ _id: id }, {
         status: data.status,
         $addToSet: { incidentLogs: data }
