@@ -174,9 +174,9 @@ class PurchaseRequestManager extends Component {
                 let note = x.note;
                 let supplier = x.supplier;
                 let amount = x.total;
-                let cost = Intl.NumberFormat().format(parseInt(x.estimatePrice));
+                let cost = x.estimatePrice ? Intl.NumberFormat().format(parseInt(x.estimatePrice)) : null;
                 let status = this.formatStatus(x.status);
-                let approver = (x.approver) ? x.approver.name : null;
+                let approver = x.approver ? x.approver.name : null;
 
                 return {
                     index: index + 1,
