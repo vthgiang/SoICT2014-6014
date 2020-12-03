@@ -2005,6 +2005,40 @@ export default {
                 import_work_plan_faile: "Import thông tin nghỉ lễ tết thất bại",
             },
 
+            dashboard_personal: {
+                remind_work: "Nhắc việc",
+                number_annual_leave_in_year: "Số ngày nghỉ phép còn lại trong năm",
+                day: "ngày",
+                task: "công việc",
+                accountable: "phê duyệt",
+                responsible: "thực hiện",
+                consulted: "tư vấn",
+                informed: "quan sát",
+                task_total: "Tổng số Công việc",               
+                kpi_results: "Kết quả KPI",
+                point: "điểm",
+                overtime_total: "Tổng thời gian tăng ca",
+                hours: "giờ", 
+                total_time_annual_leave: "Tổng thời gian nghỉ phép",
+                fullname: "Họ và tên",
+                task_total: "Số công việc",
+                general_task: "Tổng hợp công việc",
+                see_all: "Xem tất cả",
+                general_commendation: "Tổng hợp khen thưởng",
+                reason_praise: "Lý do khen thưởng",
+                general_discipline: "Tổng hợp kỷ luật",
+                reason_discipline: "Lý do kỷ luật",
+                
+                general_annual_leave: "Tổng hợp tình hình nghỉ phép",
+                total_hours: "Tổng số giờ",
+                total_hours_works: "Tổng số giờ",
+                general_overtime: "Tổng hợp tình hình tăng ca",
+                not_org_unit: "Bạn chưa có đơn vị",
+                
+                trend_of_work:"Xu hướng làm việc"
+
+            },
+
             field:{
 
                  // Nhóm dành cho table
@@ -2380,7 +2414,6 @@ export default {
                 statistic_by: "Thống kê theo",
                 expired: "Đã hết hạn",
                 remaining_time: "Thời gian còn lại",
-                day: "ngày"
             },
 
             //  Quản lý loại tài sản

@@ -31,7 +31,10 @@ const QuoteSchema = Schema({
         type: Schema.Types.ObjectId,
         ref: 'Customer',
         required: true
-    }, 
+    },
+    customerName: {
+        type: String
+    },
     customerPhone: {
         type: String,
         required: true
