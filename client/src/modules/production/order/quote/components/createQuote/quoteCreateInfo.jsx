@@ -138,7 +138,7 @@ class QuoteCreateInfo extends Component {
                                     Mã báo giá
                                     <span className="attention"> * </span>
                                 </label>
-                                <input type="text" className="form-control" value={code} disabled="true" />
+                                <input type="text" className="form-control" value={code} disabled={true} />
                             </div>
                             <div className={`form-group ${!dateError ? "" : "has-error"}`}>
                                 <label>Ngày báo giá</label>
@@ -172,7 +172,7 @@ class QuoteCreateInfo extends Component {
                                     onChange={handleUseForeignCurrencyChange}
                                     style={{ minWidth: "20px" }}
                                 />
-                                <label className={`form-check-label`} for={`checkbox-use-foreign-currency`} style={{ fontWeight: 500 }}>
+                                <label className={`form-check-label`} htmlFor={`checkbox-use-foreign-currency`} style={{ fontWeight: 500 }}>
                                     Sử dụng ngoại tệ
                                 </label>
                             </div>
