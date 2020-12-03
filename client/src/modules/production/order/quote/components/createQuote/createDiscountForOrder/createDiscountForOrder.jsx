@@ -24,6 +24,7 @@ class CreateDiscountsForOrder extends Component {
         let discountChange = {
             _id: discount._id,
             code: discount.code,
+            name: discount.name,
             formality: discount.formality,
             type: discount.type,
             effectiveDate: discount.effectiveDate,
@@ -86,9 +87,6 @@ class CreateDiscountsForOrder extends Component {
         if (discount.maximumThresholdToBeApplied) {
             title = title + " đến " + formatCurrency(discount.maximumThresholdToBeApplied);
         }
-        // if (discount.minimumThresholdToBeApplied >= 0) {
-        //     title = title + " sản phẩm";
-        // }
         return title;
     };
 
