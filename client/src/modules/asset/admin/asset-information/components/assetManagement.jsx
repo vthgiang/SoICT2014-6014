@@ -93,11 +93,8 @@ class AssetManagement extends Component {
 
     // Bắt sự kiện click chỉnh sửa thông tin tài sản
     handleEdit = async (value) => {
-        await this.setState(state => {
-            return {
-                // ...state,
-                currentRow: value
-            }
+        await this.setState({
+            currentRow: value
         });
         window.$('#modal-edit-asset').modal('show');
     }
@@ -444,7 +441,7 @@ class AssetManagement extends Component {
     }
 
     formatAssetTypes = (types) => {
-        let list = types.reduce((value, cur) => {
+        let list = !types ? '' : types.reduce((value, cur) => {
             if (!value) {
                 if (!cur) return value;
                 else return cur.typeName ? value + cur.typeName : value;
@@ -697,7 +694,7 @@ class AssetManagement extends Component {
                                             translate('asset.general_information.purchase_date'),
                                             translate('asset.general_information.manager'),
                                             translate('asset.general_information.user'),
-                                            translate('asset.general_information.organizaiton_unit'),
+                                            translate('asset.general_information.organization_unit'),
                                             translate('asset.general_information.status'),
                                             translate('asset.general_information.disposal_date')
                                         ]}
