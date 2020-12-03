@@ -87,14 +87,38 @@ class QuoteCreatePayment extends Component {
         return freeShipCost;
     };
 
+    getCoinOfAll = () => {
+        let coinOfAll = 0;
+        let { listGoods } = this.props;
+        let { discountsOfOrderValue } = this.props;
+
+        listGoods.forEach((good) => {
+            good.discountsOfGood.forEach((discount) => {
+                if (discount.formality == "2") {
+                    coinOfAll += discount.loyaltyCoin;
+                }
+            });
+        });
+
+        discountsOfOrderValue.forEach((discount) => {
+            if (discount.formality == "2") {
+                coinOfAll += discount.loyaltyCoin;
+            }
+        });
+        console.log("coinOfAll", coinOfAll);
+        return coinOfAll;
+    };
+
     getBonusGoodOfAll = () => {
         //Lấy tất cả các mặt hàng được tặng theo sản phẩm và toàn đơn
         let bonusGoods = [];
         let { listGoods } = this.props;
         let { discountsOfOrderValue } = this.props;
+
         listGoods.forEach((good) => {
             good.discountsOfGood.forEach((discount) => {
                 if (discount.formality == "4") {
+                    //Hình thức tặng hàng
                     discount.bonusGoods.forEach((goodOfBonus) => {
                         let indexOfGood = bonusGoods.findIndex((element) => element.good._id === goodOfBonus.good._id); //Kiểm tra xem mặt hàng này đã tồn tại trong bonusGood hay chưa, nếu có rồi thì chỉ cộng thêm số lượng, còn nếu chưa thì thêm vào
                         if (indexOfGood >= 0 && bonusGoods[indexOfGood].good.expirationDate === goodOfBonus.good.expirationDate) {
@@ -110,6 +134,7 @@ class QuoteCreatePayment extends Component {
 
         discountsOfOrderValue.forEach((discount) => {
             if (discount.formality == "4") {
+                //Hình thức tặng hàng
                 discount.bonusGoods.forEach((goodOfBonus) => {
                     let indexOfGood = bonusGoods.findIndex((element) => element.good._id === goodOfBonus.good._id); //Kiểm tra xem mặt hàng này đã tồn tại trong bonusGood hay chưa, nếu có rồi thì chỉ cộng thêm số lượng, còn nếu chưa thì thêm vào
                     if (indexOfGood >= 0 && bonusGoods[indexOfGood].good.expirationDate === goodOfBonus.good.expirationDate) {
@@ -120,7 +145,6 @@ class QuoteCreatePayment extends Component {
                 });
             }
         });
-        console.log("bonusGoods", bonusGoods);
         return bonusGoods;
     };
 
@@ -135,6 +159,7 @@ class QuoteCreatePayment extends Component {
             setCurrentSlasOfGood,
             setCurrentDiscountsOfGood,
             handleCoinChange,
+            saveQuote,
         } = this.props;
         const {
             customerPhone,
@@ -152,6 +177,7 @@ class QuoteCreatePayment extends Component {
 
         let allOfBonusGood = this.getBonusGoodOfAll();
         let freeShipCost = this.getFreeShipCost();
+        let coinOfAll = this.getCoinOfAll();
 
         let customerCoin = 0;
         if (this.props.customers.customerPoint) {
@@ -414,7 +440,18 @@ class QuoteCreatePayment extends Component {
                         ""
                     )}
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 shopping-payment">
-                        <div className="shopping-payment-title">Tổng thanh toán</div>
+                        <div className="shopping-payment-header">
+                            <div className="shopping-payment-title">Tổng thanh toán</div>
+                            {coinOfAll ? (
+                                <div className="shopping-payment-all-coin">
+                                    <div>
+                                        <span className="text-yellow">+{formatCurrency(coinOfAll)} xu</span>
+                                    </div>
+                                </div>
+                            ) : (
+                                ""
+                            )}
+                        </div>
                         <div className="shopping-payment-content">
                             <div className="shopping-payment-element">
                                 <div className="shopping-payment-element-title">Tổng tiền hàng (sau thuế)</div>
@@ -465,7 +502,7 @@ class QuoteCreatePayment extends Component {
                             </div>
                         </div>
                         <div className="shopping-payment-button">
-                            <button>Lưu báo giá</button>
+                            <button onClick={saveQuote}>Lưu báo giá</button>
                         </div>
                     </div>
                 </fieldset>

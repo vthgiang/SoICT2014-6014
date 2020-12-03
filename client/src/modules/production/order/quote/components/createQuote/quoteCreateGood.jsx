@@ -135,30 +135,55 @@ class QuoteCreateGood extends Component {
     };
 
     handleGoodChange = async (value) => {
-        let { listGoodsByType } = this.props.goods;
-        const goodInfo = listGoodsByType.filter((item) => item._id === value[0]);
-        await this.setState((state) => {
-            return {
-                ...state,
-                good: goodInfo[0]._id,
-                code: goodInfo[0].code,
-                goodName: goodInfo[0].name,
-                baseUnit: goodInfo[0].baseUnit,
-                pricePerBaseUnit: goodInfo[0].pricePerBaseUnit,
-                pricePerBaseUnitOrigin: goodInfo[0].pricePerBaseUnit, //giá gốc
-                inventory: goodInfo[0].quantity,
-                salesPriceVariance: goodInfo[0].salesPriceVariance ? goodInfo[0].salesPriceVariance : 0,
-                pricePerBaseUnitError: undefined,
-                taxs: [],
-                slasOfGood: [],
-                slasOfGoodChecked: {},
-                discountsOfGood: [],
-                discountsOfGoodChecked: {},
-                quantity: "",
-            };
-        });
+        if (value[0] !== "title") {
+            let { listGoodsByType } = this.props.goods;
+            const goodInfo = listGoodsByType.filter((item) => item._id === value[0]);
+            if (goodInfo.length) {
+                await this.setState((state) => {
+                    return {
+                        ...state,
+                        good: goodInfo[0]._id,
+                        code: goodInfo[0].code,
+                        goodName: goodInfo[0].name,
+                        baseUnit: goodInfo[0].baseUnit,
+                        pricePerBaseUnit: goodInfo[0].pricePerBaseUnit,
+                        pricePerBaseUnitOrigin: goodInfo[0].pricePerBaseUnit, //giá gốc
+                        inventory: goodInfo[0].quantity,
+                        salesPriceVariance: goodInfo[0].salesPriceVariance ? goodInfo[0].salesPriceVariance : 0,
+                        pricePerBaseUnitError: undefined,
+                        taxs: [],
+                        slasOfGood: [],
+                        slasOfGoodChecked: {},
+                        discountsOfGood: [],
+                        discountsOfGoodChecked: {},
+                        quantity: "",
+                    };
+                });
+            }
 
-        await this.props.getItemsForGood(value[0]);
+            await this.props.getItemsForGood(value[0]);
+        } else {
+            this.setState((state) => {
+                return {
+                    ...state,
+                    good: value[0],
+                    code: "",
+                    goodName: "",
+                    baseUnit: "",
+                    pricePerBaseUnit: "",
+                    pricePerBaseUnitOrigin: "", //giá gốc
+                    inventory: "",
+                    salesPriceVariance: "",
+                    pricePerBaseUnitError: undefined,
+                    taxs: [],
+                    slasOfGood: [],
+                    slasOfGoodChecked: {},
+                    discountsOfGood: [],
+                    discountsOfGoodChecked: {},
+                    quantity: "",
+                };
+            });
+        }
     };
 
     validatePrice = (value, willUpdateState = true) => {

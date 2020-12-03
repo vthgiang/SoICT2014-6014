@@ -13,7 +13,7 @@ exports.getAssetTypes = async (portal, company, query) => {
     const { typeNumber, typeName, page, limit } = query;
 
     if (typeNumber || typeName || page || limit) {
-        var keySearch = { company: company };
+        var keySearch = { };
 
         // Bắt sựu kiện mã loại tài sản tìm kiếm khác ""
         if (typeNumber !== "") {
@@ -30,7 +30,7 @@ exports.getAssetTypes = async (portal, company, query) => {
 
         return { totalList, listAssetTypes };
     } else {
-        const list = await AssetType(connect(DB_CONNECTION, portal)).find({ company: company });
+        const list = await AssetType(connect(DB_CONNECTION, portal)).find();
         const dataConverted = list.map(type => {
             return {
                 id: type._id.toString(),

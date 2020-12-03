@@ -1382,7 +1382,7 @@ class EvaluateByAccountableEmployee extends Component {
 
 
 
-                    <div>
+                    <div className="body-evaluation" style={{height:"calc(100vh - 186px)", overflow: "auto"}}>
                         {/* Đánh giá từ ngày ... đến ngày ... */}
                         <form id="form-evaluate-task-by-accountable">
                             <fieldset className="scheduler-border">

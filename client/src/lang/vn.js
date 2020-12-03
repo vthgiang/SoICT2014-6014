@@ -2990,14 +2990,12 @@ export default {
                 err_eval_on_month: "Ngày đánh giá phải là ngày trong tháng",
 
                 info_eval_month: "Thông tin công việc trong đánh giá này",
-                explain_avg_rating:
-                    "Do chưa có hoạt động nào được đánh giá nên mặc định điểm đánh giá hoạt động là 10",
-                explain_not_has_failed_and_passed_action:
-                    " - (Do chưa có hành động nào được đánh giá qua hay không qua, nên số lượng hành động qua và không qua sẽ được coi bằng nhau và bằng 1)",
+                explain_avg_rating: "Do chưa có hoạt động nào được đánh giá nên mặc định điểm đánh giá hoạt động là 10",
+                explain_not_has_failed_and_passed_action: " - (Do chưa có hành động nào, hoặc chưa hành động nào được đánh giá, nên số lượng hành động đạt sẽ được coi là bằng 1)",
+                    // " - (Do chưa có hành động nào được đánh giá qua hay không qua, nên số lượng hành động qua và không qua sẽ được coi bằng nhau và bằng 1)",
 
                 auto_point_field: "Điểm công việc tự động trong đánh giá này",
-                get_outside_info:
-                    "Nhập tự động từ thông tin công việc hiện tại",
+                get_outside_info: "Nhập tự động từ thông tin công việc hiện tại",
 
                 dashboard_created: "Số CV bạn đã tạo",
                 dashboard_need_perform: "Số CV bạn thực hiện",
@@ -4363,6 +4361,24 @@ export default {
                     4: "Xem chi tiết thay đổi phiếu kiểm kê kho",
                     5: "Xem chi tiết thay đổi phiếu luân chuyển kho",
                 },
+                qc_status: {
+                    1: {
+                        color: "orange",
+                        content: "Chưa kiểm định",
+                    },
+                    2: {
+                        color: "green",
+                        content: "Đạt kiểm định",
+                    },
+                    3: {
+                        color: "red",
+                        content: "Không đạt kiểm định",
+                    },
+                },
+                qc_name: "Tên người kiểm định",
+                qc_email: "email",
+                qc_status_bill: "Trạng thái",
+                quality_control_content: "Nội dung",
                 infor: "Thông tin chung",
                 name: "Tên",
                 phone: "Số điện thoại",

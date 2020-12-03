@@ -1553,11 +1553,10 @@ exports.createTask = async (portal, task) => {
     if (taskTemplate) {
         formula = taskTemplate.formula;
     } else if (task.formula) {
-        // formula = "progress / (dayUsed / totalDay)"; // default
-        formula = "progress / (dayUsed / totalDay) - (numberOfFailedAction / (numberOfFailedAction + numberOfPassedAction)) * 100"
+        formula = "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100"
     }
 
-    var task = await Task(connect(DB_CONNECTION, portal)).create({ //Tạo dữ liệu mẫu công việc
+    var newTask = await Task(connect(DB_CONNECTION, portal)).create({ //Tạo dữ liệu mẫu công việc
         organizationalUnit: task.organizationalUnit,
         collaboratedWithOrganizationalUnits: task.collaboratedWithOrganizationalUnits,
         creator: task.creator, //id của người tạo
@@ -1579,16 +1578,16 @@ exports.createTask = async (portal, task) => {
         confirmedByEmployees: task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees).includes(task.creator) ? task.creator : []
     });
 
-    if (task.taskTemplate !== null) {
+    if (newTask.taskTemplate !== null) {
         await TaskTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
-            task.taskTemplate, { $inc: { 'numberOfUse': 1 } }, { new: true }
+            newTask.taskTemplate, { $inc: { 'numberOfUse': 1 } }, { new: true }
         );
     }
 
-    let mail = await this.sendEmailForCreateTask(portal, task);
+    let mail = await this.sendEmailForCreateTask(portal, newTask);
 
     return {
-        task: task,
+        task: newTask,
         user: mail.user, email: mail.email, html: mail.html,
         deansOfOrganizationalUnitThatHasCollaborated: mail.deansOfOrganizationalUnitThatHasCollaborated,
         collaboratedEmail: mail.collaboratedEmail, collaboratedHtml: mail.collaboratedHtml

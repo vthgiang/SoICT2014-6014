@@ -109,18 +109,27 @@ class AdministrationAssetTypes extends Component {
         return exportData;
     }
 
+    //Kiểm tra mã id của tài sản cha có tồn tại
+    checkValidParentAsset = (data, id) => {
+        let check = data.filter(node => node._id === id);
+        if (check.length !== 0) return true;
+        else return false;
+    }
+
     render() {
         const { translate } = this.props;
         const { list } = this.props.assetType.administration.types;
         const { domainParent, currentDomain, deleteNode } = this.state;
 
         const dataTree = list.map(node => {
+            const result = this.checkValidParentAsset(list, node.parent);
+
             return {
                 ...node,
                 id: node._id,
                 text: node.typeName,
                 state: { "opened": true },
-                parent: node.parent ? node.parent.toString() : "#"
+                parent: !node.parent || !result ? '#' : node.parent.toString()
             }
         })
 

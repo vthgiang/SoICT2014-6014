@@ -2766,10 +2766,9 @@ export default {
                 err_eval_end:
                     "Evaluate date should be less than equal end date",
                 err_eval_on_month: "Evaluate date should be day of month",
-                explain_avg_rating:
-                    "Since no activity has been evaluated, the activity rating default is 10",
-                explain_not_has_failed_and_passed_action:
-                    " - (Since no failed or passed activity, so the number of passed action and failed action will be considered equal and equal to 1)",
+                explain_avg_rating: "Since no activity has been evaluated, the activity rating default is 10",
+                explain_not_has_failed_and_passed_action: " - (Since no actions or no failed or passed activity, so the number of passed action will be considered equal to 1)",
+                    // " - (Since no failed or passed activity, so the number of passed action and failed action will be considered equal and equal to 1)",
 
                 info_eval_month: "Task infomation in evaluation",
 

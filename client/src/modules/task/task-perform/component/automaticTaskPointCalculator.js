@@ -27,20 +27,20 @@ function calcAutoPoint(data) {
     let startDate = new Date(task.startDate);
     let endDate = new Date(task.endDate);
 
-    let totalDay = endDate.getTime() - startDate.getTime() + 86400000;
-    let dayUsed = evaluationsDate.getTime() - startDate.getTime() + 86400000;
-    let overdueDate = (dayUsed - totalDay > 0) ? dayUsed - totalDay : 0;
+    let totalDays = endDate.getTime() - startDate.getTime() + 86400000;
+    let daysUsed = evaluationsDate.getTime() - startDate.getTime() + 86400000;
+    let daysOverdue = (daysUsed - totalDays > 0) ? daysUsed - totalDays : 0;
 
 
     // chuyển về đơn vị ngày
-    totalDay = totalDay / 86400000;
-    dayUsed = dayUsed / 86400000;
-    overdueDate = overdueDate / 86400000;
+    totalDays = totalDays / 86400000;
+    daysUsed = daysUsed / 86400000;
+    daysOverdue = daysOverdue / 86400000;
 
-    if (dayUsed <= 0) dayUsed = 0.5;
+    if (daysUsed <= 0) daysUsed = 0.5;
 
     // Tính điểm theo độ trễ ngày tương đối
-    let autoDependOnDay = progressTask / (dayUsed / totalDay); // tiến độ thực tế / tiến độ lí thuyết
+    let autoDependOnDay = progressTask / (daysUsed / totalDays); // tiến độ thực tế / tiến độ lí thuyết
 
     // Các hoạt động (chỉ lấy những hoạt động đã đánh giá)
     let taskActions = task.taskActions;
@@ -52,29 +52,30 @@ function calcAutoPoint(data) {
 
     let actionRating = actions.map(action => action.rating);
 
-    let numberOfPassedAction = actions.filter(act => act.rating >= 5).length;
-    let numberOfFailedAction = actions.filter(act => act.rating < 5).length;
+    let numberOfPassedActions = actions.filter(act => act.rating >= 5).length;
+    let numberOfFailedActions = actions.filter(act => act.rating < 5).length;
 
     // Tổng số hoạt động
     let a = 0;
     a = actionRating.length;
 
-    if ((numberOfPassedAction === 0 && numberOfFailedAction === 0) || a === 0) {
-        numberOfPassedAction = 1;
-        numberOfFailedAction = 1;
+    if ((numberOfPassedActions === 0 && numberOfFailedActions === 0) || a === 0) {
+        numberOfPassedActions = 1;
+        numberOfFailedActions = 0;
     }
 
-    // tiên tửu - thần cồn - ma men :))
     let pen = 0;
-    pen = !a ? 0 : (numberOfFailedAction / (numberOfFailedAction + numberOfPassedAction));
+    pen = !a ? 0 : (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions));
 
     // Tổng số điểm của các hoạt động
     let reduceAction = actionRating.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
     reduceAction = reduceAction > 0 ? reduceAction : 0;
 
     let averageActionRating = !a ? 10 : reduceAction / a; // a = 0 thì avg mặc định là 10
-    let autoHasActionInfo = progress / (dayUsed / totalDay) - 0.5 * (10 - (averageActionRating)) * 10;
+    let autoHasActionInfo = progress / (daysUsed / totalDays) - 0.5 * (10 - (averageActionRating)) * 10;
     let automaticPoint = 0;
+
+    console.log('avgRating', averageActionRating);
 
     if (!task.formula) {
         if (task.taskTemplate === null || task.taskTemplate === undefined) { // Công việc không theo mẫu
@@ -85,12 +86,12 @@ function calcAutoPoint(data) {
             let taskInformations = info;
 
             // thay các biến bằng giá trị
-            formula = formula.replace(/overdueDate/g, `(${overdueDate})`);
-            formula = formula.replace(/totalDay/g, `(${totalDay})`);
-            formula = formula.replace(/dayUsed/g, `(${dayUsed})`);
+            formula = formula.replace(/daysOverdue/g, `(${daysOverdue})`);
+            formula = formula.replace(/totalDays/g, `(${totalDays})`);
+            formula = formula.replace(/daysUsed/g, `(${daysUsed})`);
             formula = formula.replace(/averageActionRating/g, `(${averageActionRating})`);
-            formula = formula.replace(/numberOfFailedAction/g, `(${numberOfFailedAction})`);
-            formula = formula.replace(/numberOfPassedAction/g, `(${numberOfPassedAction})`);
+            formula = formula.replace(/numberOfFailedActions/g, `(${numberOfFailedActions})`);
+            formula = formula.replace(/numberOfPassedActions/g, `(${numberOfPassedActions})`);
             formula = formula.replace(/progress/g, `(${progressTask})`);
 
             // thay mã code bằng giá trị(chỉ dùng cho kiểu số)
@@ -119,12 +120,12 @@ function calcAutoPoint(data) {
             // automaticPoint = a ? autoHasActionInfo : autoDependOnDay;
             formula = task.formula;
 
-            formula = formula.replace(/overdueDate/g, `(${overdueDate})`);
-            formula = formula.replace(/totalDay/g, `(${totalDay})`);
-            formula = formula.replace(/dayUsed/g, `(${dayUsed})`);
+            formula = formula.replace(/daysOverdue/g, `(${daysOverdue})`);
+            formula = formula.replace(/totalDays/g, `(${totalDays})`);
+            formula = formula.replace(/daysUsed/g, `(${daysUsed})`);
             formula = formula.replace(/averageActionRating/g, `(${averageActionRating})`);
-            formula = formula.replace(/numberOfFailedAction/g, `(${numberOfFailedAction})`);
-            formula = formula.replace(/numberOfPassedAction/g, `(${numberOfPassedAction})`);
+            formula = formula.replace(/numberOfFailedActions/g, `(${numberOfFailedActions})`);
+            formula = formula.replace(/numberOfPassedActions/g, `(${numberOfPassedActions})`);
             formula = formula.replace(/progress/g, `(${progressTask})`);
         }
         else {
@@ -133,12 +134,12 @@ function calcAutoPoint(data) {
             let taskInformations = info;
 
             // thay các biến bằng giá trị
-            formula = formula.replace(/overdueDate/g, `(${overdueDate})`);
-            formula = formula.replace(/totalDay/g, `(${totalDay})`);
-            formula = formula.replace(/dayUsed/g, `(${dayUsed})`);
+            formula = formula.replace(/daysOverdue/g, `(${daysOverdue})`);
+            formula = formula.replace(/totalDays/g, `(${totalDays})`);
+            formula = formula.replace(/daysUsed/g, `(${daysUsed})`);
             formula = formula.replace(/averageActionRating/g, `(${averageActionRating})`);
-            formula = formula.replace(/numberOfFailedAction/g, `(${numberOfFailedAction})`);
-            formula = formula.replace(/numberOfPassedAction/g, `(${numberOfPassedAction})`);
+            formula = formula.replace(/numberOfFailedActions/g, `(${numberOfFailedActions})`);
+            formula = formula.replace(/numberOfPassedActions/g, `(${numberOfPassedActions})`);
             formula = formula.replace(/progress/g, `(${progressTask})`);
 
             // thay mã code bằng giá trị(chỉ dùng cho kiểu số)

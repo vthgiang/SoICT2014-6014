@@ -41,12 +41,11 @@ exports.searchAssetProfiles = async (req, res) => {
                 incidentCode: req.query.incidentCode,
                 incidentStatus: req.query.incidentStatus,
                 incidentType: req.query.incidentType,
+                getType: req.query.getType
             }
             data = await AssetService.searchAssetProfiles(req.portal, req.user.company._id, params);
 
         }
-
-        // data = await AssetService.searchAssetProfiles(params, req.portal);
 
         await Logger.info(req.user.email, 'GET_ASSETS', req.portal);
         res.status(200).json({
@@ -103,7 +102,7 @@ exports.createAsset = async (req, res) => {
  * Cập nhật thông tin tài sản
  */
 exports.updateAssetInformation = async (req, res) => {
-    try {
+    try { 
         let avatar = "";
         if (req.files.fileAvatar) {
             avatar = `/${req.files.fileAvatar[0].path}`;
