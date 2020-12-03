@@ -380,7 +380,8 @@ class TaskTemplateImportForm extends Component {
                                     configData={configData}
                                     importData={importData}
                                     rowError={rowError}
-                                    scrollTable={false}
+                                    // scrollTable={false}
+                                    scrollTableWidth={2500}
                                     checkFileImport={checkFileImport}
                                     limit={limit}
                                     page={page}
