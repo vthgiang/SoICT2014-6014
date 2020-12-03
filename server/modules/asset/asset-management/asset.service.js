@@ -14,103 +14,21 @@ const { Asset, User } = Models;
  * @param {*} portal id công ty
  * @param {*} assetIncident tài sản gặp sự cố
  */
-exports.sendEmailToManager = async (portal, assetIncident, oldAsset) => {
-    // let user = await User.find()
-    let user = await User(connect(DB_CONNECTION, portal)).find();
+exports.sendEmailToManager = async (portal, oldAsset, userId, type) => {
 
-    // task = await task.populate("organizationalUnit creator parent").execPopulate();
-
-    // var transporter = nodemailer.createTransport({
-    //     service: 'Gmail',
-    //     auth: { user: 'vnist.qlcv@gmail.com', pass: 'qlcv123@' }
-    // });
-
-    // var email, userId, user, users, userIds
-    // var deansOfOrganizationalUnitThatHasCollaboratedId = [], deansOfOrganizationalUnitThatHasCollaborated, collaboratedHtml, collaboratedEmail;
-
-    // var resId = task.responsibleEmployees;  // lấy id người thực hiện
-    // var res = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: resId } });
-    // // res = res.map(item => item.name);
-    // userIds = resId;
-    // var accId = task.accountableEmployees;  // lấy id người phê duyệt
-    // var acc = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: accId } });
-    // userIds.push(...accId);
-
-    // var conId = task.consultedEmployees;  // lấy id người tư vấn
-    // var con = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: conId } })
-    // userIds.push(...conId);
-
-    // var infId = task.informedEmployees;  // lấy id người quan sát
-    // var inf = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: infId } })
-    // userIds.push(...infId);  // lấy ra id của tất cả người dùng có nhiệm vụ
-
-    // // loại bỏ các id trùng nhau
-    // userIds = userIds.map(u => u.toString());
-    // for (let i = 0, max = userIds.length; i < max; i++) {
-    //     if (userIds.indexOf(userIds[i]) != userIds.lastIndexOf(userIds[i])) {
-    //         userIds.splice(userIds.indexOf(userIds[i]), 1);
-    //         i--;
-    //     }
-    // }
-
-    // // Lấy id trưởng phòng các đơn vị phối hợp
-    // for (let i = 0; i < task.collaboratedWithOrganizationalUnits.length; i++) {
-    //     let unit = task.collaboratedWithOrganizationalUnits[i] && await OrganizationalUnit(connect(DB_CONNECTION, portal))
-    //         .findById(task.collaboratedWithOrganizationalUnits[i].organizationalUnit)
-
-    //     unit && unit.deans.map(item => {
-    //         deansOfOrganizationalUnitThatHasCollaboratedId.push(item);
-    //     })
-    // }
-
-    // deansOfOrganizationalUnitThatHasCollaborated = await UserRole(connect(DB_CONNECTION, portal))
-    //     .find({
-    //         roleId: { $in: deansOfOrganizationalUnitThatHasCollaboratedId }
-    //     })
-    //     .populate("userId")
-    // user = await User(connect(DB_CONNECTION, portal)).find({
-    //     _id: { $in: userIds }
-    // })
-
-    // email = user.map(item => item.email); // Lấy ra tất cả email của người dùng
-    // collaboratedEmail = deansOfOrganizationalUnitThatHasCollaborated.map(item => item.userId && item.userId.email) // Lấy email trưởng đơn vị phối hợp 
-    // email.push("trinhhong102@gmail.com");
-
-    // var body = `<a href="${process.env.WEBSITE}/task?taskId=${task._id}" target="_blank" title="${process.env.WEBSITE}/task?taskId=${task._id}"><strong>${task.name}</strong></a></p> ` +
-    //     `<h3>Nội dung công việc</h3>` +
-    //     // `<p>Tên công việc : <strong>${task.name}</strong></p>` +
-    //     `<p>Mô tả : ${task.description}</p>` +
-    //     `<p>Người thực hiện</p> ` +
-    //     `<ul>${res.map((item) => {
-    //         return `<li>${item.name} - ${item.email}</li>`
-    //     })}
-    //                 </ul>`+
-    //     `<p>Người phê duyệt</p> ` +
-    //     `<ul>${acc.map((item) => {
-    //         return `<li>${item.name} - ${item.email}</li>`
-    //     })}
-    //                 </ul>` +
-    //     `${con.length > 0 ? `<p>Người tư vấn</p> ` +
-    //         `<ul>${con.map((item) => {
-    //             return `<li>${item.name} - ${item.email}</li>`
-    //         })}
-    //                 </ul>` : ""}` +
-    //     `${inf.length > 0 ? `<p>Người quan sát</p> ` +
-    //         `<ul>${inf.map((item) => {
-    //             return `<li>${item.name} - ${item.email}</li>`
-    //         })}
-    //                 </ul>` : ""}`
-    //     ;
-    // var html = `<p>Bạn có công việc mới: ` + body;
-    // collaboratedHtml = `<p>Đơn vị bạn được phối hợp thực hiện công việc mới: ` + body;
-
+    let idManager = oldAsset.managedBy;
+    let manager = await User(connect(DB_CONNECTION, portal)).findById(idManager);
+    let currentUser = await User(connect(DB_CONNECTION, portal)).findById(userId);
+    let email = [manager.email, "linhnq.vnist@gmail.com"];
+    let body = `<p>Mô tả : ${currentUser.name} đã ${type} trong tài sản mã ${oldAsset.code}  </p>`;
+    let html = `<p>Bạn có thông báo mới: ` + body;
 
     return {
-        assetIncident
-        //     task: task,
-        //     user: userIds, email: email, html: html,
-        //     deansOfOrganizationalUnitThatHasCollaborated: deansOfOrganizationalUnitThatHasCollaborated.map(item => item.userId && item.userId._id),
-        //     collaboratedEmail: collaboratedEmail, collaboratedHtml: collaboratedHtml
+        oldAsset: oldAsset,
+        manager: idManager,
+        user: currentUser,
+        email: email,
+        html: html
     };
 }
 /**
@@ -127,7 +45,7 @@ exports.getAssetInforById = async (portal, id) => {
  * @params : dữ liệu key tìm kiếm
  */
 exports.searchAssetProfiles = async (portal, company, params) => {
-    let {getType} = params;
+    let { getType } = params;
     let keySearch = {};
 
     // Bắt sựu kiện MSTS tìm kiếm khác ""
@@ -297,24 +215,24 @@ exports.searchAssetProfiles = async (portal, company, params) => {
 
     let totalList = 0, listAssets = [];
     // Lấy danh sách tài sản
-    if(getType === 'depreciation') {
+    if (getType === 'depreciation') {
         keySearch = {
             ...keySearch,
             $or: [
-                { depreciationType: {$ne: 'none'} },
-                { cost: {$gt: 0} },
-                { usefulLife: {$gt: 0} },
-                { residualValue: {$gt: 0} },
-                { rate: {$gt: 0} },
-                { estimatedTotalProduction: {$gt: 0} },
-                { startDepreciation: {$ne: null} },
+                { depreciationType: { $ne: 'none' } },
+                { cost: { $gt: 0 } },
+                { usefulLife: { $gt: 0 } },
+                { residualValue: { $gt: 0 } },
+                { rate: { $gt: 0 } },
+                { estimatedTotalProduction: { $gt: 0 } },
+                { startDepreciation: { $ne: null } },
             ]
         }
         totalList = await Asset(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
         listAssets = await Asset(connect(DB_CONNECTION, portal)).find(keySearch).populate({ path: 'assetType' })
             .sort({ 'createdAt': 'desc' }).skip(params.page).limit(params.limit);
 
-    }else{
+    } else {
         totalList = await Asset(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
         listAssets = await Asset(connect(DB_CONNECTION, portal)).find(keySearch).populate({ path: 'assetType' })
             .sort({ 'createdAt': 'desc' }).skip(params.page).limit(params.limit);
@@ -395,7 +313,7 @@ exports.createAsset = async (portal, company, data, fileInfo) => {
     if (checkAsset.length === 0) {
         for (let i = 0; i < data.length; i++) {
             let avatar = fileInfo && fileInfo.avatar === "" ? data[i].avatar : fileInfo.avatar,
-            file = fileInfo && fileInfo.file;
+                file = fileInfo && fileInfo.file;
             let { maintainanceLogs, usageLogs, incidentLogs, locationLogs, files } = data[i];
 
             files = files && this.mergeUrlFileToObject(file, files);
@@ -489,10 +407,9 @@ exports.createAsset = async (portal, company, data, fileInfo) => {
             assetCodeError: checkAsset
         };
     }
-    
+
     // Lấy thông tin tài sản vừa thêm vào
     let assets = await Asset(connect(DB_CONNECTION, portal)).find({ _id: createAsset._id });
-
     return { assets };
 }
 
@@ -500,7 +417,7 @@ exports.createAsset = async (portal, company, data, fileInfo) => {
 /**
  * Cập nhât thông tin tài sản theo id
  */
-exports.updateAssetInformation = async (portal, company, id, data, fileInfo) => {
+exports.updateAssetInformation = async (portal, company, userId, id, data, fileInfo) => {
     //Lọc lại những giá trị lỗi ('undefined') từ FormData gửi từ bên client
     data = freshObject(data);
     let {
@@ -517,9 +434,11 @@ exports.updateAssetInformation = async (portal, company, id, data, fileInfo) => 
         editFiles,
         deleteFiles
     } = data;
+
     let avatar = fileInfo.avatar === "" ? data.avatar : fileInfo.avatar,
         file = fileInfo.file;
     let oldAsset = await Asset(connect(DB_CONNECTION, portal)).findById(id);
+    let assetBeforeUpdate = oldAsset;
 
     if (oldAsset.code !== data.code) {
         let checkCodeAsset = await Asset(connect(DB_CONNECTION, portal)).findOne({
@@ -557,25 +476,6 @@ exports.updateAssetInformation = async (portal, company, id, data, fileInfo) => 
         return arrObject;
     }
 
-    let newIncident = deleteEditCreateObjectInArrayObject(oldAsset.incidentLogs, deleteIncidentLogs, editIncidentLogs, createIncidentLogs)
-
-    let check = false;
-    if (oldAsset.incidentLogs.length !== newIncident.length) {
-        check = true;
-    }
-    for (let i in newIncident) {
-        let elm = newIncident[i];
-        let checkList = oldAsset.incidentLogs.filter(x => JSON.stringify(x) !== JSON.stringify(elm));
-
-        if (checkList.length !== 0) {
-            check = true;
-        }
-    }
-
-
-    if (check === true) {
-        let mail = await this.sendEmailToManager(portal, newIncident, oldAsset)
-    } // gui email
 
     oldAsset.usageLogs = deleteEditCreateObjectInArrayObject(oldAsset.usageLogs, deleteUsageLogs, editUsageLogs, createUsageLogs);
     oldAsset.maintainanceLogs = deleteEditCreateObjectInArrayObject(oldAsset.maintainanceLogs, deleteMaintainanceLogs, editMaintainanceLogs, createMaintainanceLogs);
@@ -643,8 +543,31 @@ exports.updateAssetInformation = async (portal, company, id, data, fileInfo) => 
         }
     };
 
+
+
     // Lấy thông tin tài sản vừa thêm vào
     let assets = await Asset(connect(DB_CONNECTION, portal)).find({ _id: oldAsset._id });
+
+    if (createIncidentLogs || editIncidentLogs || deleteIncidentLogs) {
+        let type;
+        if (createIncidentLogs) {
+            type = "thêm thông báo sự cố";
+        }
+        else if (editIncidentLogs) {
+            type = "chỉnh sửa thông báo sự cố";
+        }
+        else if (deleteIncidentLogs) {
+            type = "xóa thông báo sự cố";
+        }
+        var mail = await this.sendEmailToManager(portal, oldAsset, userId, type);
+        return {
+            assets: assets,
+            manager: mail.manager,
+            user: mail.user,
+            email: mail.email,
+            html: mail.html
+        };
+    }
 
     return {
         assets: assets
@@ -939,7 +862,7 @@ exports.getIncidents = async (portal, params) => {
     let incidentLength = 0;
     let aggregateLengthQuery = [...aggregateQuery, { $count: "incident_length" }]
     let count = await Asset(connect(DB_CONNECTION, portal)).aggregate(aggregateLengthQuery);
-    if(count.length){
+    if (count.length) {
         incidentLength = count[0].incident_length;
 
         // Tìm kiếm câc danh sách sự cố
@@ -956,7 +879,7 @@ exports.getIncidents = async (portal, params) => {
             incidents[i].asset = asset;
         }
     }
-    
+
     return {
         incidentList: incidents,
         incidentLength: incidentLength,

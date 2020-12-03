@@ -26,6 +26,9 @@ const CompanySchema = new Schema({
     superAdmin: {
         type: Schema.Types.ObjectId,
         ref: 'User'
+    },
+    organizationalUnitImage: {
+        type: String,
     }
 },{
     timestamps: true
