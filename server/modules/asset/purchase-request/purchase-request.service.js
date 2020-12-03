@@ -6,8 +6,8 @@ const { RecommendProcure, User } = Models;
  * Lấy danh sách phiếu đề nghị mua sắm thiết bị
  */
 exports.searchPurchaseRequests = async (portal, company, query) => {
-    const { recommendNumber, approver, proponent, proposalDate, status, page, limit } = query;
-
+    const { recommendNumber, approver, proponent, proposalDate, status, page, limit, month } = query; // tại sao check theo tháng mà lại ko khai báo month
+ 
     var keySearch = { company: company };
 
     // Bắt sựu kiện mã phiếu tìm kiếm khác ""
@@ -17,7 +17,7 @@ exports.searchPurchaseRequests = async (portal, company, query) => {
 
     //Bắt sựu kiện tháng tìm kiếm khác ""
     if (proposalDate) {
-        keySearch = { ...keySearch, dateCreate: { $regex: month, $options: "i" } }
+        keySearch = { ...keySearch, dateCreate: { $regex: month, $options: "i" } } // filter theo tháng nhưng không khai báo month
     }
 
     // Thêm người đề nghị vào trường tìm kiếm

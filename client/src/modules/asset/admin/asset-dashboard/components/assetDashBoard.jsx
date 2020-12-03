@@ -147,9 +147,9 @@ class DashBoardAssets extends Component {
             data = valueOfAsset.map((item, index) => {
                 return {
                     STT: index + 1,
-                    name: valueOfAsset[index][0],
-                    valueOfAsset: valueOfAsset[index][1],
-                    depreciationOfAsset: depreciationOfAsset[index][1],
+                    name: item[0],
+                    valueOfAsset: new Intl.NumberFormat().format(item[1]),
+                    depreciationOfAsset: new Intl.NumberFormat().format(depreciationOfAsset[index][1]),
                     amountOfAsset: amountOfAsset[index][1]
                 }
             })

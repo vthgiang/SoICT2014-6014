@@ -83,7 +83,7 @@ function addNewAsset(data) {
  * @param {*} id : id thông tin tài sản cần chỉnh sửa
  * @param {*} data :dữ liệu chỉnh sửa thông tin tài sản
  */
-function updateInformationAsset(id, data) {
+function updateInformationAsset(id, data, page) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/asset/assets/${id}`,
         method: 'PATCH',

@@ -521,8 +521,8 @@ class AssetImportForm extends Component {
                 if (valueTemporary.code) {
                     let errorAlert = [];
 
-                    // Check lỗi dữ liệu import
-                    if (!valueTemporary.code || !valueTemporary.assetName || !valueTemporary.group || !valueTemporary.assetType || !valueTemporary.status || !valueTemporary.typeRegisterForUse
+                    // Check lỗi dữ liệu import || !valueTemporary.group
+                    if (!valueTemporary.code || !valueTemporary.assetName || !valueTemporary.assetType || !valueTemporary.status || !valueTemporary.typeRegisterForUse
                         || (valueTemporary.group && !assetGroups[valueTemporary.group])
                         || (valueTemporary.assetType && !assetTypes[valueTemporary.assetType])
                         || (valueTemporary.typeRegisterForUse && !typeRegisterForUse[valueTemporary.typeRegisterForUse])
@@ -543,9 +543,10 @@ class AssetImportForm extends Component {
                         errorAlert = [...errorAlert, 'Tên tài sản không được để trống'];
                     }
 
-                    if (!valueTemporary.group) {
-                        errorAlert = [...errorAlert, 'Nhóm tài sản không được để trống'];
-                    } else if (valueTemporary.group && !assetGroups[valueTemporary.group]) {
+                    // if (!valueTemporary.group) {
+                    //     errorAlert = [...errorAlert, 'Nhóm tài sản không được để trống'];
+                    // } else
+                    if (valueTemporary.group && !assetGroups[valueTemporary.group]) {
                         errorAlert = [...errorAlert, 'Nhóm tài sản không chính xác'];
                     }
 
@@ -1137,7 +1138,8 @@ class AssetImportForm extends Component {
         } = this.state;
 
         let importAssetTemplateData = this.convertAssetTemplate(importAssetTemplate);
-
+        console.log('importDisposalInformationDataShow', importDisposalInformationDataShow)
+        console.log('rowErrorDisposalInformationData', rowErrorDisposalInformationData)
         return (
             <React.Fragment>
                 <DialogModal
