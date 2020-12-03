@@ -920,7 +920,7 @@ exports.getBillsByCommand = async (query, portal) => {
 exports.createManyProductBills = async (data, portal) => {
     var logs = [];
     let log = {};
-    log.creator = data.creator;
+    log.creator = data[0].creator;
     log.createAt = new Date(Date.now());
     log.title = "Tạo phiếu";
     log.versions = "versions 1";
