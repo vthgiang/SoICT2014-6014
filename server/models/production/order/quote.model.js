@@ -139,9 +139,6 @@ const QuoteSchema = Schema({
                     expirationDateOfGoodBonus: {
                         type: Date
                     },
-                    baseUnit: {
-                        type: String
-                    },
                     quantityOfBonusGood: {
                         type: Number
                     }
@@ -162,7 +159,6 @@ const QuoteSchema = Schema({
         ],
         note: {
             type: String,
-            required: true
         }, 
         amount: { //Tổng tiền hàng nguyên bản
             type: Number
@@ -217,9 +213,6 @@ const QuoteSchema = Schema({
                 },
                 expirationDateOfGoodBonus: {
                     type: Date
-                },
-                baseUnit: {
-                    type: String
                 },
                 quantityOfBonusGood: {
                     type: Number

@@ -317,7 +317,6 @@ class QuoteCreateForm extends Component {
 
     formatDiscountForSubmit = (discounts) => {
         let discountsMap = discounts.map((dis) => {
-            console.log("dis.discountOnGoods", dis.discountOnGoods);
             return {
                 _id: dis._id,
                 code: dis.code,
@@ -334,7 +333,6 @@ class QuoteCreateForm extends Component {
                           return {
                               good: bonus.good._id,
                               expirationDateOfGoodBonus: bonus.expirationDateOfGoodBonus,
-                              baseUnit: bonus.baseUnit,
                               quantityOfBonusGood: bonus.quantityOfBonusGood,
                           };
                       })
@@ -387,6 +385,7 @@ class QuoteCreateForm extends Component {
             coin,
             discountsOfOrderValue,
         } = this.state;
+
         let data = {
             code,
             effectiveDate: effectiveDate ? new Date(formatToTimeZoneDate(effectiveDate)) : undefined,
@@ -401,7 +400,9 @@ class QuoteCreateForm extends Component {
             deliveryTime: deliveryTime ? new Date(formatToTimeZoneDate(deliveryTime)) : undefined,
             coin,
         };
-        console.log("DATA", data);
+
+        console.log("Data", data);
+
         await this.props.createNewQuote(data);
     };
 
