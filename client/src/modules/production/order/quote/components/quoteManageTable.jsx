@@ -1,14 +1,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { quoteActions } from "../redux/actions";
+import { QuoteActions } from "../redux/actions";
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import { formatDate } from "../../../../../helpers/formatDate";
-import {
-    PaginateBar,
-    DataTableSetting,
-    SelectBox,
-} from "../../../../../common-components";
+import { PaginateBar, DataTableSetting, SelectBox } from "../../../../../common-components";
 import QuoteDetailForm from "./quoteDetailForm";
 import QuoteCreateForm from "./quoteCreateForm";
 
@@ -98,18 +94,11 @@ class QuoteManageTable extends Component {
             <React.Fragment>
                 <div className="nav-tabs-custom">
                     <div className="box-body qlcv">
-                        {this.state.currentRow && (
-                            <QuoteDetailForm
-                                data={this.state.currentRow}
-                                type={this.state.type}
-                            />
-                        )}
+                        {this.state.currentRow && <QuoteDetailForm data={this.state.currentRow} type={this.state.type} />}
                         <QuoteCreateForm />
                         <div className="form-inline">
                             <div className="form-group">
-                                <label className="form-control-static">
-                                    Tìm mã đơn mua
-                                </label>
+                                <label className="form-control-static">Tìm mã đơn mua</label>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -120,11 +109,9 @@ class QuoteManageTable extends Component {
                                 />
                             </div>
                             <div className="form-group">
-                                <label className="form-control-static">
-                                    Trạng thái đơn
-                                </label>
+                                <label className="form-control-static">Trạng thái đơn</label>
                                 <SelectBox
-                                    id={`select-filter-status-material-purchase-order`}
+                                    id={`select-filter-status-quote`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={[
@@ -146,21 +133,12 @@ class QuoteManageTable extends Component {
                                 />
                             </div>
                             <div className="form-group">
-                                <button
-                                    type="button"
-                                    className="btn btn-success"
-                                    title="Lọc"
-                                    onClick={this.handleSubmitSearch}
-                                >
+                                <button type="button" className="btn btn-success" title="Lọc" onClick={this.handleSubmitSearch}>
                                     Tìm kiếm
                                 </button>
                             </div>
                         </div>
-                        <table
-                            id={`quote-table`}
-                            className="table table-striped table-bordered table-hover"
-                            style={{ marginTop: 20 }}
-                        >
+                        <table id={`quote-table`} className="table table-striped table-bordered table-hover" style={{ marginTop: 20 }}>
                             <thead>
                                 <tr>
                                     <th>STT</th>
@@ -198,44 +176,22 @@ class QuoteManageTable extends Component {
                                 </tr>
                             </thead>
                             <tbody>
+                                {console.log("listQuotes", listQuotes)}
                                 {typeof listQuotes !== "undefined" &&
                                     listQuotes.length !== 0 &&
                                     listQuotes.map((item, index) => (
                                         <tr key={index}>
-                                            <td>
-                                                {index + 1 + (page - 1) * limit}
-                                            </td>
-                                            <td>{item.code}</td>
-                                            <td>{item.creator}</td>
-                                            <td>{item.customer}</td>
-                                            <td>
-                                                {formatDate(item.effectiveDate)}
-                                            </td>
-                                            <td>
-                                                {formatDate(
-                                                    item.expirationDate
-                                                )}
-                                            </td>
-                                            <td>
-                                                {formatCurrency(
-                                                    item.paymentAmount
-                                                )}
-                                            </td>
-                                            <td
-                                                className={
-                                                    dataStatus[item.status]
-                                                        .className
-                                                }
-                                            >
-                                                {dataStatus[item.status].text}
-                                            </td>
-                                            {item.status === 0 ? (
+                                            <td>{index + 1 + (page - 1) * limit}</td>
+                                            <td>{item.code ? item.code : ""}</td>
+                                            <td>{item.creator ? item.creator.name : ""}</td>
+                                            <td>{item.customer ? item.customer.name : ""}</td>
+                                            <td>{item.effectiveDate ? formatDate(item.effectiveDate) : "---"}</td>
+                                            <td>{item.expirationDate ? formatDate(item.expirationDate) : "---"}</td>
+                                            <td>{item.paymentAmount ? formatCurrency(item.paymentAmount) : "---"}</td>
+                                            <td className={dataStatus[item.status].className}>{dataStatus[item.status].text}</td>
+                                            {item.status === -1 ? (
                                                 <td>
-                                                    <a
-                                                        onClick={
-                                                            this.handleCreate
-                                                        }
-                                                    >
+                                                    <a onClick={this.handleCreate}>
                                                         <i className="fa fa-plus-square text-primary"></i>
                                                     </a>
                                                 </td>
@@ -245,31 +201,16 @@ class QuoteManageTable extends Component {
                                                         textAlign: "center",
                                                     }}
                                                 >
-                                                    <a
-                                                        className="text-green"
-                                                        onClick={() =>
-                                                            this.handleShowDetailInfo(
-                                                                item
-                                                            )
-                                                        }
-                                                    >
-                                                        <i className="material-icons">
-                                                            visibility
-                                                        </i>
+                                                    <a className="text-green" onClick={() => this.handleShowDetailInfo(item)}>
+                                                        <i className="material-icons">visibility</i>
                                                     </a>
                                                     <a
-                                                        onClick={() =>
-                                                            this.handleEdit(
-                                                                item
-                                                            )
-                                                        }
+                                                        onClick={() => this.handleEdit(item)}
                                                         className="edit text-yellow"
                                                         style={{ width: "5px" }}
                                                         title="Sửa đơn"
                                                     >
-                                                        <i className="material-icons">
-                                                            edit
-                                                        </i>
+                                                        <i className="material-icons">edit</i>
                                                     </a>
                                                 </td>
                                             )}
@@ -278,22 +219,13 @@ class QuoteManageTable extends Component {
                             </tbody>
                         </table>
                         {quotes.isLoading ? (
-                            <div className="table-info-panel">
-                                {translate("confirm.loading")}
-                            </div>
+                            <div className="table-info-panel">{translate("confirm.loading")}</div>
                         ) : (
-                            (typeof listQuotes === "undefined" ||
-                                listQuotes.length === 0) && (
-                                <div className="table-info-panel">
-                                    {translate("confirm.no_data")}
-                                </div>
+                            (typeof listQuotes === "undefined" || listQuotes.length === 0) && (
+                                <div className="table-info-panel">{translate("confirm.no_data")}</div>
                             )
                         )}
-                        <PaginateBar
-                            pageTotal={totalPages ? totalPages : 0}
-                            currentPage={page}
-                            func={this.setPage}
-                        />
+                        <PaginateBar pageTotal={totalPages ? totalPages : 0} currentPage={page} func={this.setPage} />
                     </div>
                 </div>
             </React.Fragment>
@@ -307,10 +239,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    getAllQuotes: quoteActions.getAllQuotes,
+    getAllQuotes: QuoteActions.getAllQuotes,
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(withTranslate(QuoteManageTable));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuoteManageTable));

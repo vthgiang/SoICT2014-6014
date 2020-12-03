@@ -414,9 +414,10 @@ class AssetManagement extends Component {
         else if (group === 'machine') {
             return translate('asset.dashboard.machine')
         }
-        else {
+        else if (group === 'other') {
             return translate('asset.dashboard.other')
         }
+        else return null;
     }
 
     formatStatus = (status) => {
@@ -828,6 +829,8 @@ class AssetManagement extends Component {
                         incidentLogs={currentRow.incidentLogs}
                         archivedRecordNumber={currentRow.archivedRecordNumber}
                         files={currentRow.documents}
+
+                        page={page}
                     />
                 }
             </div>
