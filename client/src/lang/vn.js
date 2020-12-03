@@ -2040,8 +2040,8 @@ export default {
 
             },
 
+            // Quản lý ngành nghề lĩnh vực
             field:{
-
                  // Nhóm dành cho table
                  table: {
                     name: "Tên ngành nghề/lĩnh vực",
