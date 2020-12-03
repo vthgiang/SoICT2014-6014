@@ -2380,6 +2380,7 @@ export default {
                 statistic_by: "Thống kê theo",
                 expired: "Đã hết hạn",
                 remaining_time: "Thời gian còn lại",
+                day: "ngày"
             },
 
             //  Quản lý loại tài sản

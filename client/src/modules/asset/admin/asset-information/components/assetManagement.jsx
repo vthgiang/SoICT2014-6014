@@ -93,11 +93,8 @@ class AssetManagement extends Component {
 
     // Bắt sự kiện click chỉnh sửa thông tin tài sản
     handleEdit = async (value) => {
-        await this.setState(state => {
-            return {
-                // ...state,
-                currentRow: value
-            }
+        await this.setState({
+            currentRow: value
         });
         window.$('#modal-edit-asset').modal('show');
     }
@@ -261,14 +258,14 @@ class AssetManagement extends Component {
                 let code = x.code;
                 let name = x.assetName;
                 let description = x.description;
-                let type = x.assetType && assettypelist.length && assettypelist.find(item => item._id === x.assetType) ? assettypelist.find(item => item._id === x.assetType).typeName : 'Asset Type is deleted';
+                let type = this.formatAssetTypes(x.assetType);
                 let purchaseDate = this.formatDate(x.purchaseDate);
                 let disposalDate = this.formatDate(x.disposalDate);
                 let manager = x.managedBy && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).email : '';
                 let assigner = x.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.assignedToUser) ? userlist.find(item => item._id === x.assignedToUser).email : '') : ''
                 // let handoverFromDate = x.handoverFromDate ? this.formatDate(x.handoverFromDate) : '';
                 // let handoverToDate = x.handoverToDate ? this.formatDate(x.handoverToDate) : '';
-                let status = x.status;
+                let status = this.formatStatus(x.status);
                 length = x.detailInfo && x.detailInfo.length;
                 let info = (length) ? (x.detailInfo.map((item, index) => {
                     return {
@@ -441,6 +438,17 @@ class AssetManagement extends Component {
         else {
             return 'Deleted';
         }
+    }
+
+    formatAssetTypes = (types) => {
+        let list = !types ? '' : types.reduce((value, cur) => {
+            if (!value) {
+                if (!cur) return value;
+                else return cur.typeName ? value + cur.typeName : value;
+            }
+            else return value + ', ' + cur.typeName
+        }, '');
+        return list;
     }
 
     formatDisposalDate(disposalDate, status) {
@@ -686,7 +694,7 @@ class AssetManagement extends Component {
                                             translate('asset.general_information.purchase_date'),
                                             translate('asset.general_information.manager'),
                                             translate('asset.general_information.user'),
-                                            translate('asset.general_information.organizaiton_unit'),
+                                            translate('asset.general_information.organization_unit'),
                                             translate('asset.general_information.status'),
                                             translate('asset.general_information.disposal_date')
                                         ]}
@@ -704,7 +712,7 @@ class AssetManagement extends Component {
                                         <td>{x.code}</td>
                                         <td>{x.assetName}</td>
                                         <td>{this.convertGroupAsset(x.group)}</td>
-                                        <td>{x.assetType && x.assetType.length ? x.assetType.map((item, index) => { let suffix = index < x.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : 'Asset is deleted'}</td>
+                                        <td>{this.formatAssetTypes(x.assetType)}</td>
                                         <td>{this.formatDate(x.purchaseDate)}</td>
                                         <td>{x.managedBy && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).name : ''}</td>
                                         <td>{x.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.assignedToUser) ? userlist.find(item => item._id === x.assignedToUser).name : '') : ''}</td>
