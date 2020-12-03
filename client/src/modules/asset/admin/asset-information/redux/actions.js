@@ -88,7 +88,6 @@ function addNewAsset(asset) {
                 dispatch({
                     type: AssetConstants.ADDASSET_FAILURE,
                     error: err,
-                    payload: err.response.data.content
                 });
             })
     };
@@ -108,29 +107,29 @@ function updateInformationAsset(id, data, managedBy = "", page) {
 
         AssetService.updateInformationAsset(id, data, page)
             .then(res => {
-                if (managedBy === "") {
-                    dispatch(getAllAsset({
-                        code: "",
-                        assetName: "",
-                        assetType: null,
-                        month: null,
-                        status: "",
-                        page: page,
-                        limit: 5,
-                    }));
-                }
-                else {
-                    dispatch(getAllAsset({
-                        code: "",
-                        assetName: "",
-                        assetType: null,
-                        month: null,
-                        status: "",
-                        page: page,
-                        limit: 5,
-                        managedBy: managedBy
-                    }));
-                }
+                // if (managedBy === "") {
+                //     dispatch(getAllAsset({
+                //         code: "",
+                //         assetName: "",
+                //         assetType: null,
+                //         month: null,
+                //         status: "",
+                //         page: page,
+                //         limit: 5,
+                //     }));
+                // }
+                // else {
+                //     dispatch(getAllAsset({
+                //         code: "",
+                //         assetName: "",
+                //         assetType: null,
+                //         month: null,
+                //         status: "",
+                //         page: page,
+                //         limit: 5,
+                //         managedBy: managedBy
+                //     }));
+                // }
 
                 dispatch({
                     type: AssetConstants.UPDATE_INFOR_ASSET_SUCCESS,
@@ -159,29 +158,29 @@ function deleteAsset(id, managedBy = "", page) {
 
         AssetService.deleteAsset(id)
             .then(res => {
-                if (managedBy === "") {
-                    dispatch(getAllAsset({
-                        code: "",
-                        assetName: "",
-                        assetType: null,
-                        month: null,
-                        status: "",
-                        page: 0,
-                        limit: 5,
-                    }));
-                }
-                else {
-                    dispatch(getAllAsset({
-                        code: "",
-                        assetName: "",
-                        assetType: null,
-                        month: null,
-                        status: "",
-                        page: 0,
-                        limit: 5,
-                        managedBy: managedBy
-                    }));
-                }
+                // if (managedBy === "") {
+                //     dispatch(getAllAsset({
+                //         code: "",
+                //         assetName: "",
+                //         assetType: null,
+                //         month: null,
+                //         status: "",
+                //         page: 0,
+                //         limit: 5,
+                //     }));
+                // }
+                // else {
+                //     dispatch(getAllAsset({
+                //         code: "",
+                //         assetName: "",
+                //         assetType: null,
+                //         month: null,
+                //         status: "",
+                //         page: 0,
+                //         limit: 5,
+                //         managedBy: managedBy
+                //     }));
+                // }
 
                 dispatch({
                     type: AssetConstants.DELETE_ASSET_SUCCESS,

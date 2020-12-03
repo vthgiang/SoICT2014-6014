@@ -19,7 +19,7 @@ exports.sendEmailToManager = async (portal, oldAsset, userId, type) => {
     let idManager = oldAsset.managedBy;
     let manager = await User(connect(DB_CONNECTION, portal)).findById(idManager);
     let currentUser = await User(connect(DB_CONNECTION, portal)).findById(userId);
-    let email = [manager.email, "linhnq.vnist@gmail.com"];
+    let email = [manager.email];
     let body = `<p>Mô tả : ${currentUser.name} đã ${type} trong tài sản mã ${oldAsset.code}  </p>`;
     let html = `<p>Bạn có thông báo mới: ` + body;
 

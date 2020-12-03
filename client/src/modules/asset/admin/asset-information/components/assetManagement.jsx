@@ -463,10 +463,10 @@ class AssetManagement extends Component {
         let typeArr = this.getAssetTypes();
         let dataSelectBox = this.getDepartment();
         let assetTypeName = this.state.assetType ? this.state.assetType : [];
-
         if (assetsManager.isLoading === false) {
             lists = assetsManager.listAssets;
         }
+        console.log("=======rendre=========", lists)
 
         let assetbuilding = assetsManager && assetsManager.buildingAssets;
         let assetbuildinglist = assetbuilding && assetbuilding.list;
