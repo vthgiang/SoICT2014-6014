@@ -7,7 +7,7 @@ const {
 } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 exports.createNewQuote = async (userId, data, portal) => {
-    console.log("Data:", data.goods[0].discounts[0].bonusGoods);
+    console.log("Data:", data.goods[0].discounts);
     let newQuote = await Quote(connect(DB_CONNECTION, portal)).create({
         code: data.code,
         status: data.status,
@@ -60,7 +60,6 @@ exports.createNewQuote = async (userId, data, portal) => {
                             return {
                                 good: bonus.good,
                                 expirationDateOfGoodBonus: bonus.expirationDateOfGoodBonus,
-                                baseUnit: bonus.baseUnit,
                                 quantityOfBonusGood: bonus.quantityOfBonusGood
                             }
                         }) : undefined,
@@ -95,7 +94,6 @@ exports.createNewQuote = async (userId, data, portal) => {
                     return {
                         good: bonus.good,
                         expirationDateOfGoodBonus: bonus.expirationDateOfGoodBonus,
-                        baseUnit: bonus.baseUnit,
                         quantityOfBonusGood: bonus.quantityOfBonusGood
                     }
                 }) : undefined,
@@ -109,8 +107,12 @@ exports.createNewQuote = async (userId, data, portal) => {
         note: data.note
     });
 
-    let quote = await Quote(connect(DB_CONNECTION, portal)).findById({ _id: newQuote._id });
-    return quote
+    let quote = await Quote(connect(DB_CONNECTION, portal)).findById({ _id: newQuote._id }).populate([{
+        path: 'creator', select: 'name'
+    }, {
+        path: 'customer', select: 'name'
+    }]);;
+    return { quote }
 }
 
 exports.getAllQuotes = async (query, portal) => {

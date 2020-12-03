@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const CompanyControllers = require('./company.controller');
-const { auth } = require(`${SERVER_MIDDLEWARE_DIR}`);
+const { auth,uploadFile } = require(`${SERVER_MIDDLEWARE_DIR}`);
 
 // Các route về thêm sửa xóa công ty
 router.get("/companies", auth, CompanyControllers.getAllCompanies);
@@ -17,5 +17,8 @@ router.post('/data-import-configurations', auth, CompanyControllers.createImport
 
 // Chỉnh sửa thông tin cấu hình file import theo id
 router.patch('/data-import-configurations/:id', auth, CompanyControllers.editImportConfiguraion);
+
+router.patch('/organizationalUnitImage', auth, uploadFile([{name:'organizationalUnitImage', path:'/Unit/image'}], 'fields'), CompanyControllers.editCompanyOrgInformation);
+router.get('/organizationalUnitImage', auth, CompanyControllers.getCompanyInformation);
 
 module.exports = router;

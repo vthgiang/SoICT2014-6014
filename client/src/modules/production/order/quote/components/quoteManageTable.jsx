@@ -176,17 +176,18 @@ class QuoteManageTable extends Component {
                                 </tr>
                             </thead>
                             <tbody>
+                                {console.log("listQuotes", listQuotes)}
                                 {typeof listQuotes !== "undefined" &&
                                     listQuotes.length !== 0 &&
                                     listQuotes.map((item, index) => (
                                         <tr key={index}>
                                             <td>{index + 1 + (page - 1) * limit}</td>
-                                            <td>{item.code}</td>
-                                            <td>{item.creator.name}</td>
-                                            <td>{item.customer.name}</td>
-                                            <td>{formatDate(item.effectiveDate)}</td>
-                                            <td>{formatDate(item.expirationDate)}</td>
-                                            <td>{formatCurrency(item.paymentAmount)}</td>
+                                            <td>{item.code ? item.code : ""}</td>
+                                            <td>{item.creator ? item.creator.name : ""}</td>
+                                            <td>{item.customer ? item.customer.name : ""}</td>
+                                            <td>{item.effectiveDate ? formatDate(item.effectiveDate) : "---"}</td>
+                                            <td>{item.expirationDate ? formatDate(item.expirationDate) : "---"}</td>
+                                            <td>{item.paymentAmount ? formatCurrency(item.paymentAmount) : "---"}</td>
                                             <td className={dataStatus[item.status].className}>{dataStatus[item.status].text}</td>
                                             {item.status === -1 ? (
                                                 <td>

@@ -26,6 +26,7 @@ const initState = {
     error: null,
     isLoading: true,
     item: {
+        image:null,
         links: {
             isLoading: true,
             list: [],
@@ -363,6 +364,45 @@ export function company(state = initState, action) {
                 isLoading: false,
                 error: action.payload
             };
+        
+        case CompanyConstants.UPLOAD_ORGANIZATIONAL_UNIT_REQUEST:
+            return {
+                ...state,
+                isLoading: true,
+            }
+        case CompanyConstants.UPLOAD_ORGANIZATIONAL_UNIT_SUCCESS:
+            return {
+                ...state,
+                item: {...state.item, image:action.payload.organizationalUnitImage},
+                isLoading: false,
+            }
+        
+        case CompanyConstants.UPLOAD_ORGANIZATIONAL_UNIT_FAILURE:
+        return {
+                ...state,
+                isLoading:false,
+                error: action.error
+            } 
+        
+        case CompanyConstants.GET_COMPANY_INFOMATION_REQUES:
+            return {
+                ...state,
+                isLoading: true,
+            }
+        case CompanyConstants.GET_COMPANY_INFOMATION_SUCCESS:
+            return {
+                ...state,
+                item: {...state.item, image:action.payload.organizationalUnitImage},
+                isLoading: false,
+            }
+        
+        case CompanyConstants.GET_COMPANY_INFOMATION_FAILURE:
+        return {
+             ...state,
+                isLoading:false,
+                error: action.error
+            } 
+        
         default:
             return state;
     }

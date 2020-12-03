@@ -18,6 +18,8 @@ export const CompanyActions = {
 
     updateCompanyLinks,
     updateCompanyComponents,
+    uploadOrganizationalUnitImage,
+    getCompanyInformation,
 };
 
 /**
@@ -424,4 +426,46 @@ function updateCompanyComponents(data, params) {
             })
         
     }
+}
+
+function uploadOrganizationalUnitImage(data) {
+    return dispatch => {
+        dispatch({
+            type: CompanyConstants.UPLOAD_ORGANIZATIONAL_UNIT_REQUEST
+        });
+        CompanyServices.uploadOrganizationalUnitImage(data)
+            .then(res => {
+                dispatch({
+                    type: CompanyConstants.UPLOAD_ORGANIZATIONAL_UNIT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: CompanyConstants.UPLOAD_ORGANIZATIONAL_UNIT_FAILURE,
+                    payload: err
+                });
+            })
+    };
+}
+
+function getCompanyInformation(data) {
+    return dispatch => {
+        dispatch({
+            type: CompanyConstants.GET_COMPANY_INFOMATION_REQUES
+        });
+        CompanyServices.getCompanyInformation(data)
+            .then(res => {
+                dispatch({
+                    type: CompanyConstants.GET_COMPANY_INFOMATION_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: CompanyConstants.GET_COMPANY_INFOMATION_FAILURE,
+                    payload: err
+                });
+            })
+    };
 }

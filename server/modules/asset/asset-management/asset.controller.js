@@ -103,7 +103,7 @@ exports.createAsset = async (req, res) => {
  * Cập nhật thông tin tài sản
  */
 exports.updateAssetInformation = async (req, res) => {
-    try {
+    try { 
         let avatar = "";
         if (req.files.fileAvatar) {
             avatar = `/${req.files.fileAvatar[0].path}`;

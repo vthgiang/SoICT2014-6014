@@ -46,7 +46,6 @@ export function quotes(state = initState, action) {
                     error: action.error
                 }
             case QuoteConstants.GET_ALL_QUOTES_SUCCESS:
-                console.log("PAYLOAD:", action.payload);
                 return {
                     ...state,
                     isLoading: false,
@@ -62,7 +61,6 @@ export function quotes(state = initState, action) {
                     nextPage: action.payload.allQuotes.nextPage
                 }
             case QuoteConstants.CREATE_QUOTE_SUCCESS:
-                console.log("PAYLOAD: ", action.payload.quote);
                 return {
                     ...state,
                     listQuotes: [
