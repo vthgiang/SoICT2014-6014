@@ -18,7 +18,6 @@ export function assetsManager(state = initState, action) {
         case AssetConstants.GET_LIST_BUILDING_AS_TREE_REQUEST:
         case AssetConstants.ADDASSET_REQUEST:
         case AssetConstants.UPDATE_INFOR_ASSET_REQUEST:
-        case AssetConstants.DELETE_ASSET_REQUEST:
         case AssetConstants.CREATE_USAGE_REQUEST:
             return {
                 ...state,
@@ -78,23 +77,43 @@ export function assetsManager(state = initState, action) {
 
 
         case AssetConstants.ADDASSET_SUCCESS:
+            state.listAssets = [...state.listAssets, ...action.payload.assets[0]];
+
             return {
                 ...state,
-                listAssets: [...state.listAssets, ...action.payload.assets],
                 isLoading: false
             };
 
         case AssetConstants.UPDATE_INFOR_ASSET_SUCCESS:
+            for (let i in state.listAssets) {
+                if (state.listAssets[i]._id === action.payload.assets[0]._id) {
+                    state.listAssets[i] = action.payload.assets[0];
+                }
+            }
             return {
                 ...state,
-                listAssets: state.listAssets.map(x => x._id === action.payload.assets[0]._id ? action.payload : x),
+                listAssets: state.listAssets,
+                // .map(x => x._id === action.payload.assets[0]._id ?
+                //     action.payload.asset[0] : x),
+                isLoading: false
+            };
+
+
+        case AssetConstants.DELETE_ASSET_REQUEST:
+            return {
+                ...state,
+                listAssets: state.listAssets.map(asset =>
+                    asset._id === action.id
+                        ? { ...asset, deleting: true }
+                        : asset
+                ),
                 isLoading: false
             };
 
         case AssetConstants.DELETE_ASSET_SUCCESS:
             return {
                 ...state,
-                listAssets: state.listAssets.filter(x => (x.assets._id !== action.payload._id)),
+                listAssets: state.listAssets.filter(x => (x._id !== action.payload._id)),
                 isLoading: false,
             };
 

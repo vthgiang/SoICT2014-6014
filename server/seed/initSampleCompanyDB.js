@@ -5156,7 +5156,10 @@ const initSampleCompanyDB = async () => {
                 customer: null,
                 supplier: null,
             },
-            approver: users[2]._id,
+            approvers: [{
+                approver: users[2]._id,
+                approvedTime: null
+            }],
             receiver: {
                 name: "Nguyễn Văn Thắng",
                 phone: 0344213030,
@@ -5208,7 +5211,10 @@ const initSampleCompanyDB = async () => {
                 customer: null,
                 supplier: null,
             },
-            approver: users[2]._id,
+            approvers: [{
+                approver: users[2]._id,
+                approvedTime: null
+            }],
             receiver: {
                 name: "Nguyễn Văn Thắng",
                 phone: 0344213030,
