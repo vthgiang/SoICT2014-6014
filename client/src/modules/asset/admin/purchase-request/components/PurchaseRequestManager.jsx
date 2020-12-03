@@ -169,14 +169,14 @@ class PurchaseRequestManager extends Component {
 
                 let code = x.recommendNumber;
                 let equipment = x.equipmentName;
-                let assigner = x.proponent ? x.proponent.name : null;
+                let assigner = x.proponent ? x.proponent.email : null;
                 let createDate = this.formatDate2(x.dateCreate);
                 let note = x.note;
                 let supplier = x.supplier;
                 let amount = x.total;
                 let cost = x.estimatePrice ? Intl.NumberFormat().format(parseInt(x.estimatePrice)) : null;
                 let status = this.formatStatus(x.status);
-                let approver = x.approver ? x.approver.name : null;
+                let approver = x.approver ? x.approver.email : null;
 
                 return {
                     index: index + 1,
@@ -368,10 +368,10 @@ class PurchaseRequestManager extends Component {
                                     <tr key={index}>
                                         <td>{x.recommendNumber}</td>
                                         <td>{this.formatDate2(x.dateCreate)}</td>
-                                        <td>{x.proponent ? x.proponent.name : 'User is deleted'}</td>
+                                        <td>{x.proponent ? x.proponent.email : 'User is deleted'}</td>
                                         <td>{x.equipmentName}</td>
                                         <td>{x.equipmentDescription}</td>
-                                        <td>{x.approver ? x.approver.name : ''}</td>
+                                        <td>{x.approver ? x.approver.email : ''}</td>
                                         <td>{x.note}</td>
                                         <td>{this.formatStatus(x.status)}</td>
                                         <td style={{ textAlign: "center" }}>

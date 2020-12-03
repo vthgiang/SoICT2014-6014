@@ -713,8 +713,8 @@ class AssetManagement extends Component {
                                         <td>{this.convertGroupAsset(x.group)}</td>
                                         <td>{this.formatAssetTypes(x.assetType)}</td>
                                         <td>{this.formatDate(x.purchaseDate)}</td>
-                                        <td>{x.managedBy && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).name : ''}</td>
-                                        <td>{x.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.assignedToUser) ? userlist.find(item => item._id === x.assignedToUser).name : '') : ''}</td>
+                                        <td>{x.managedBy && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).email : ''}</td>
+                                        <td>{x.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.assignedToUser) ? userlist.find(item => item._id === x.assignedToUser).email : '') : ''}</td>
                                         <td>{x.assignedToOrganizationalUnit ? (departmentlist.length && departmentlist.find(item => item._id === x.assignedToOrganizationalUnit) ? departmentlist.find(item => item._id === x.assignedToOrganizationalUnit).name : 'Organizational Unit is deleted') : ''}</td>
                                         <td>{this.formatStatus(x.status)}</td>
                                         <td>{this.formatDisposalDate(x.disposalDate, x.status)}</td>

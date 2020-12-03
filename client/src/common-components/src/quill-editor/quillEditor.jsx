@@ -2,11 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import parse from 'html-react-parser';
-import Quill from 'quill';
-import QuillImageDropAndPaste from 'quill-image-drop-and-paste';
-import * as QuillTableUI from 'quill-table-ui';
-import QuillTable from 'quill-table';
-
 class QuillEditor extends Component {
     constructor(props) {
         super(props);
@@ -20,38 +15,15 @@ class QuillEditor extends Component {
         const { id, edit = true, value } = this.props;
 
         if (edit) {
-            // Thêm các module tiện ích
-            Quill.register({
-                'modules/imageDropAndPaste': QuillImageDropAndPaste,
-                // 'modules/tableUI': QuillTableUI.default,
-            }, true)
-
-            // Khởi tạo Quill Editor trong thẻ có id='editor-container'
-            const quill = new Quill(`#editor-container${id}`, {
-                modules: {
-                    toolbar: [
-                        [{ 'font': [] }],
-                        [{ header: [1, 2, 3, false] }],
-                        ['bold', 'italic', 'underline', 'strike'],
-                        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                        [{ 'align': [] }],
-                        ['image', 'code-block', 'list']
-                    ],
-                    imageDropAndPaste: true,
-                    // table: true,
-                    // tableUI: true,
-                },
-                placeholder: 'Start typing here...',
-                theme: 'snow'
-            });
-
+            // Khởi tạo Quill Editor trong thẻ có id = id truyền vào
+            const quill = window.initializationQuill(`#editor-container${id}`);
+            
             // Insert value ban đầu
             if (value) {
                 if (quill && quill.container && quill.container.firstChild) {
                     quill.container.firstChild.innerHTML = value;
                 } 
             }
-
 
             // Bắt sự kiện text-change
             quill.on('text-change', (delta, oldDelta, source) => {

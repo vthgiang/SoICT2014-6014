@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DatePicker } from '../../../../common-components';
+import { FieldsActions } from '../../field/redux/actions';
 
 import c3 from 'c3';
 import 'c3/c3.css';
@@ -11,7 +11,14 @@ import 'c3/c3.css';
 class QualificationChart extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            typeChart: false,
+        }
+    }
+
+    componentDidMount() {
+        console.log("háhdawd")
+
     }
 
     static isEqual = (items1, items2) => {
@@ -29,6 +36,18 @@ class QualificationChart extends Component {
         return true;
     }
 
+    /**
+     * Bắt sự kiện thay đổi chế đọ xem biểu đồ
+     * @param {*} value : chế độ xem biểu đồ (true or false)
+     */
+    handleChangeViewChart = (value) => {
+        this.props.getListFields();
+        this.setState({
+            ...this.state,
+            typeChart: value
+        })
+    }
+
     /** Xóa các chart đã render khi chưa đủ dữ liệu */
     removePreviousChart() {
         const chart = this.refs.donutChart;
@@ -42,6 +61,7 @@ class QualificationChart extends Component {
      * @param {*} data : Dữ liệu của chart
      */
     renderChart = (data) => {
+        const { typeChart } = this.state;
         this.removePreviousChart();
         let chart = c3.generate({
             bindto: this.refs.donutChart,
@@ -52,7 +72,7 @@ class QualificationChart extends Component {
                 type: 'donut',
             },
             donut: {
-                title: "Trình độ học vấn"
+                title: typeChart ? "Trình độ chuyên ngành" : "Trình độ chuyên môn"
             }
         });
     };
@@ -75,46 +95,61 @@ class QualificationChart extends Component {
         return null;
     }
     shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.organizationalUnits !== this.state.organizationalUnits ||
-            !QualificationChart.isEqual(nextProps.employeesManager.listAllEmployees, this.state.listAllEmployees) ||
-            !QualificationChart.isEqual(nextProps.employeesManager.listEmployeesOfOrganizationalUnits, this.state.listEmployeesOfOrganizationalUnits)) {
-            return true;
-        };
+        // if (nextProps.organizationalUnits !== this.state.organizationalUnits ||
+        //     !QualificationChart.isEqual(nextProps.employeesManager.listAllEmployees, this.state.listAllEmployees) ||
+        //     !QualificationChart.isEqual(nextProps.employeesManager.listEmployeesOfOrganizationalUnits, this.state.listEmployeesOfOrganizationalUnits)) {
+        //     return true;
+        // };
         return true;
     }
 
     /**
      * Function chyển dữ liệu thành dữ liệu chart
      * @param {*} data: Dữ liệu truyền vào 
+     * intermediate_degree - Trung cấp, colleges - Cao đẳng, university-Đại học, master_degree - Thạc sỹ, phd- Tiến sỹ, unavailable - Không có 
      */
-    //Trình độ chuyên môn: intermediate_degree - Trung cấp, colleges - Cao đẳng, university-Đại học, master_degree - Thạc sỹ, phd- Tiến sỹ, unavailable - Không có 
     convertData = (data) => {
-        const { translate } = this.props;
+        const { translate, field } = this.props;
+        const { typeChart } = this.state;
+        let listFields = field.listFields;
         let intermediate_degree = 0, colleges = 0, university = 0, master_degree = 0, phd = 0, unavailable = 0;
-        data.forEach(x => {
-            switch (x.professionalSkill) {
-                case 'intermediate_degree':
-                    intermediate_degree = intermediate_degree + 1;
-                case 'colleges':
-                    colleges = colleges + 1;
-                case 'university':
-                    university = university + 1;
-                case 'master_degree':
-                    master_degree = master_degree + 1;
-                case 'phd':
-                    phd = phd + 1;
-                default:
-                    unavailable = unavailable + 1;
-            }
-        });
-        return [
-            [translate(`human_resource.profile.intermediate_degree`), intermediate_degree],
-            [translate(`human_resource.profile.colleges`), colleges],
-            [translate(`human_resource.profile.university`), university],
-            [translate(`human_resource.profile.master_degree`), master_degree],
-            [translate(`human_resource.profile.unavailable`), unavailable]
-        ]
 
+        if (typeChart) {
+            let degrees = [];
+            data.forEach(x => {
+                degrees = degrees.concat(x.degrees)
+            });
+
+            listFields = listFields.map(x => {
+                let total = degrees.filter(y => y.field && y.field.toString() === x._id.toString())
+                return [x.name, total.length]
+            })
+            return listFields
+        } else {
+            data.forEach(x => {
+                switch (x.professionalSkill) {
+                    case 'intermediate_degree':
+                        intermediate_degree = intermediate_degree + 1;
+                    case 'colleges':
+                        colleges = colleges + 1;
+                    case 'university':
+                        university = university + 1;
+                    case 'master_degree':
+                        master_degree = master_degree + 1;
+                    case 'phd':
+                        phd = phd + 1;
+                    default:
+                        unavailable = unavailable + 1;
+                }
+            });
+            return [
+                [translate(`human_resource.profile.intermediate_degree`), intermediate_degree],
+                [translate(`human_resource.profile.colleges`), colleges],
+                [translate(`human_resource.profile.university`), university],
+                [translate(`human_resource.profile.master_degree`), master_degree],
+                [translate(`human_resource.profile.unavailable`), unavailable]
+            ]
+        }
     };
 
     componentDidMount() {
@@ -123,7 +158,7 @@ class QualificationChart extends Component {
 
     render() {
         const { employeesManager, department, translate } = this.props;
-        const { organizationalUnits } = this.state;
+        const { organizationalUnits, typeChart } = this.state;
 
         let organizationalUnitsName;
         if (organizationalUnits) {
@@ -140,6 +175,8 @@ class QualificationChart extends Component {
             this.removePreviousChart();
         }
 
+        console.log(listAllEmployees)
+
         return (
             <React.Fragment>
                 <div className="box box-solid">
@@ -151,6 +188,12 @@ class QualificationChart extends Component {
                     <div className="box-body">
                         <div className="dashboard_box_body">
                             <p className="pull-right" style={{ marginBottom: 0 }} > < b > ĐV tính: Người</b></p >
+                            <div className="box-tools pull-left" >
+                                <div className="btn-group pull-left">
+                                    <button type="button" className={`btn btn-xs ${typeChart ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Trình độ chuyên môn</button>
+                                    <button type="button" className={`btn btn-xs ${typeChart ? 'btn-danger' : "active"}`} onClick={() => this.handleChangeViewChart(true)}>Trình độ huyên ngành</button>
+                                </div>
+                            </div>
                             <div ref="donutChart"></div>
                         </div>
                     </div>
@@ -161,9 +204,14 @@ class QualificationChart extends Component {
 }
 
 function mapState(state) {
-    const { employeesManager, department } = state;
-    return { employeesManager, department };
+    const { employeesManager, field, department } = state;
+    return { employeesManager, field, department };
 }
 
-const qualificationChart = connect(mapState, null)(withTranslate(QualificationChart));
+
+const actionCreators = {
+    getListFields: FieldsActions.getListFields,
+};
+
+const qualificationChart = connect(mapState, actionCreators)(withTranslate(QualificationChart));
 export { qualificationChart as QualificationChart };

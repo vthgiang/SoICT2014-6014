@@ -17,9 +17,9 @@ function getListFields(data) {
         url: `${ process.env.REACT_APP_SERVER }/field/fields`,
         method: 'GET',
         params: {
-           name: data.name,
-           limit: data.limit,
-           page: data.page,
+           name: data ? data.name : data,
+           limit: data ? data.limit : data,
+           page: data ? data.page : data,
         }
     }, false, true, 'human_resource.field');
 }
