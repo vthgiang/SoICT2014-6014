@@ -33,7 +33,6 @@ exports.getDocuments = async (
             if (og) {
                 return await Document(connect(DB_CONNECTION, portal))
                     .find({
-                        company,
                         archivedRecordPlaceOrganizationalUnit: og._id,
                     })
                     .select(
@@ -42,7 +41,7 @@ exports.getDocuments = async (
             }
         } else {
             return await Document(connect(DB_CONNECTION, portal))
-                .find({ company })
+                .find({ })
                 .select(
                     "id name archives category domains numberOfDownload numberOfView "
                 );
@@ -51,10 +50,9 @@ exports.getDocuments = async (
         let option =
             by === "organizational-unit" && og
                 ? {
-                      company: company,
                       archivedRecordPlaceOrganizationalUnit: og._id,
                   }
-                : { company };
+                : { };
 
         if (query.category) {
             option.category = query.category;
@@ -185,8 +183,7 @@ exports.createDocument = async (portal, data, company) => {
 
         roles: data.roles,
         relationshipDescription: data.relationshipDescription,
-        archivedRecordPlaceOrganizationalUnit:
-            data.archivedRecordPlaceOrganizationalUnit,
+        archivedRecordPlaceOrganizationalUnit: data.archivedRecordPlaceOrganizationalUnit,
     };
     let versions = [];
 
@@ -668,9 +665,7 @@ exports.importDocumentCategory = async (portal, data, company) => {
  * Danh mục văn bản
  */
 exports.getDocumentDomains = async (portal, company) => {
-    const list = await DocumentDomain(connect(DB_CONNECTION, portal)).find({
-        company,
-    });
+    const list = await DocumentDomain(connect(DB_CONNECTION, portal)).find();
     const dataConverted = list.map((domain) => {
         return {
             id: domain._id.toString(),
@@ -720,16 +715,12 @@ exports.getDocumentsThatRoleCanView = async (portal, query, company) => {
 
     if (page === undefined && limit === undefined) {
         return await Document(connect(DB_CONNECTION, portal))
-            .find({
-                company,
-                roles: { $in: roleArr },
-            })
+            .find({ roles: { $in: roleArr } })
             .select(
                 "id name archives category domains numberOfDownload numberOfView "
             );
     } else {
         let option = {
-            company: company,
             roles: { $in: roleArr },
         };
 
@@ -970,9 +961,7 @@ exports.importDocumentDomain = async (portal, data, company) => {
  */
 
 exports.getDocumentArchives = async (portal, company) => {
-    const list = await DocumentArchive(connect(DB_CONNECTION, portal)).find({
-        company,
-    });
+    const list = await DocumentArchive(connect(DB_CONNECTION, portal)).find();
 
     const dataConverted = list.map((archive) => {
         return {
