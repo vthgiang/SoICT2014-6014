@@ -283,8 +283,8 @@ class UseRequest extends Component {
                                             <td>{x.proponent ? x.proponent.name : 'User is deleted'}</td>
                                             <td>{x.asset ? x.asset.code : 'Asset is deleted'}</td>
                                             <td>{x.asset ? x.asset.assetName : 'Asset is deleted'}</td>
-                                            <td>{this.formatDateTime(x.dateStartUse, x.asset.typeRegisterForUse)}</td>
-                                            <td>{this.formatDateTime(x.dateEndUse, x.asset.typeRegisterForUse)}</td>
+                                            <td>{x.asset ? this.formatDateTime(x.dateStartUse, x.asset.typeRegisterForUse) : ''}</td>
+                                            <td>{x.asset ? this.formatDateTime(x.dateEndUse, x.asset.typeRegisterForUse) : ''}</td>
                                             <td>{x.approver ? x.approver.name : 'User is deleted'}</td>
                                             <td>{this.formatStatus(x.status)}</td>
                                             <td style={{ textAlign: "center" }}>

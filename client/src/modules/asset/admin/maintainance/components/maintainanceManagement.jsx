@@ -260,7 +260,7 @@ class MaintainanceManagement extends Component {
             return translate('asset.asset_info.made')
         }
         else {
-            return 'Deleted'
+            return ''
         }
     }
 
@@ -277,7 +277,7 @@ class MaintainanceManagement extends Component {
             return translate('asset.asset_info.upgrade')
         }
         else {
-            return 'Deleted'
+            return ''
         }
     }
 

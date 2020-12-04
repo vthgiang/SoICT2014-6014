@@ -682,7 +682,7 @@ exports.getMaintainances = async (portal, params) => {
     mintainanceLength = Array.isArray(count) && count.length > 0 ? count[0].mintainance_Length : 0;
 
     // Tìm kiếm câc danh sách sự cố
-    aggregateListQuery = [...aggregateQuery, { $sort: { 'createdAt': 1 } }, { $skip: (page - 1) * limit }, { $limit: limit }]
+    aggregateListQuery = [...aggregateQuery, { $sort: { 'createdAt': -1 } }, { $skip: (page - 1) * limit }, { $limit: limit }]
     maintainances = await Asset(connect(DB_CONNECTION, portal)).aggregate(aggregateListQuery);
 
 
@@ -707,23 +707,36 @@ exports.getMaintainances = async (portal, params) => {
  * Thêm mới phiếu bảo trì
  */
 exports.createMaintainance = async (portal, id, data, incident_id) => {
+    const params = { code: "",
+            maintainanceCode: "",
+            maintainCreateDate: "",
+            type: '',
+            status: '',
+            page: 1,
+            limit: 5,
+        }
+    
     if (incident_id) {
-        return await Asset(connect(DB_CONNECTION, portal)).update({ _id: id, "incidentLogs._id": incident_id }, {
+        await Asset(connect(DB_CONNECTION, portal)).updateOne({ _id: id, "incidentLogs._id": incident_id }, {
             $set: {
                 "incidentLogs.$.statusIncident": "Đã xử lý"
             },
             $addToSet: { maintainanceLogs: data }
         });
     } else {
-        return await Asset(connect(DB_CONNECTION, portal)).update({ _id: id }, { $addToSet: { maintainanceLogs: data } });
+        await Asset(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, { $addToSet: { maintainanceLogs: data } }, { new: true });
+        return await this.getMaintainances(portal, params);
     }
 };
+
 
 /**
  * Chỉnh sửa phiếu bảo trì
  */
 exports.updateMaintainance = async (portal, maintainanceId, data) => {
-    return await Asset(connect(DB_CONNECTION, portal)).update({ _id: data.assetId, "maintainanceLogs._id": maintainanceId }, {
+    const { assetId } = data;
+
+    const maintainances = await Asset(connect(DB_CONNECTION, portal)).findOneAndUpdate({ _id: assetId, "maintainanceLogs._id": maintainanceId }, {
         $set: {
             "maintainanceLogs.$.maintainanceCode": data.maintainanceCode,
             "maintainanceLogs.$.createDate": data.createDate,
@@ -734,7 +747,18 @@ exports.updateMaintainance = async (portal, maintainanceId, data) => {
             "maintainanceLogs.$.expense": data.expense,
             "maintainanceLogs.$.status": data.status,
         }
-    })
+    }, { new: true }).lean();
+
+    let newMaintainances = {};
+    if (maintainances) {
+        maintainances.maintainanceLogs.map(obj => {
+            if (JSON.stringify(obj._id) === JSON.stringify(maintainanceId)) {
+                newMaintainances = { ...obj, asset: maintainances }
+            }
+        })
+    }
+
+    return newMaintainances;
 }
 
 /**
