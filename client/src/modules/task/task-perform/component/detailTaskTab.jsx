@@ -81,7 +81,7 @@ class DetailTaskTab extends Component {
             } else { // Dữ liệu đã về
                 let task = nextProps.task;
 
-                if (task || task.organizationalUnit) this.props.getChildrenOfOrganizationalUnits(task.organizationalUnit._id);
+                if (task && task.organizationalUnit) this.props.getChildrenOfOrganizationalUnits(task.organizationalUnit._id);
 
                 let roles = [];
                 if (task) {
