@@ -128,11 +128,7 @@ class GeneralTab extends Component {
                         {/* Anh tài sản */}
                         <div className="col-md-4 " style={{ textAlign: 'center', paddingLeft: '0px' }}>
                             <div>
-                                {/* <a href={process.env.REACT_APP_SERVER + avatar} target="_blank">
-                                    <img className="attachment-img avarta" src={process.env.REACT_APP_SERVER + avatar} alt="Attachment" />
-                                </a> */}
-                                {avatar && <ApiImage className="attachment-img avarta" id={`avater-imform-${id}`} src={avatar ? avatar : defaultAvatar} />}
-
+                                {avatar && <ApiImage className="attachment-img avarta" id={`avater-imform-${id}`} src={`.${avatar}`} />}
                             </div>
                         </div>
 
