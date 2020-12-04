@@ -9,6 +9,7 @@ import { TimesheetsByShiftImportForm, TimesheetsCreateForm, TimesheetsEditForm, 
 import { EmployeeViewForm } from '../../profile/employee-management/components/combinedContent';
 
 import { TimesheetsActions } from '../redux/actions';
+import { AnnualLeaveActions } from '../../annual-leave/redux/actions';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { ConfigurationActions } from '../../../super-admin//module-configuration/redux/actions';
 
@@ -43,6 +44,7 @@ class TimesheetsManagement extends Component {
         this.props.getConfiguration();
         this.props.getDepartment();
         this.props.searchTimesheets({ ...this.state, month: monthSearch });
+        this.props.searchAnnualLeaves({ page: 0, limit: 10000000, month: monthSearch, status: 'approved' });
     }
 
     /** Function bắt sự kiện thêm thông tin chấm công */
@@ -138,7 +140,7 @@ class TimesheetsManagement extends Component {
             if (i.toString().length < 2)
                 day = '0' + i;
             let date = new Date([partMonth[1], partMonth[0], day]);
-            arrayDay = [...arrayDay, { day: days[date.getDay()], date: date.getDate() }]
+            arrayDay = [...arrayDay, { day: days[date.getDay()], date: date.getDate(), time: [partMonth[1], partMonth[0], day].join('-') }]
         }
         return arrayDay
     }
@@ -194,6 +196,7 @@ class TimesheetsManagement extends Component {
 
         let monthNew = [partMonth[1], partMonth[0]].join('-');
         this.props.searchTimesheets({ ...this.state, month: monthNew });
+        this.props.searchAnnualLeaves({ page: 0, limit: 10000000, month: monthNew, status: 'approved' });
     }
 
     /**
@@ -378,17 +381,21 @@ class TimesheetsManagement extends Component {
     }
 
     render() {
-        const { translate, timesheets, department, modelConfiguration } = this.props;
+        const { translate, timesheets, annualLeave, department, modelConfiguration } = this.props;
 
         const { month, limit, page, allDayOfMonth, dayNow, organizationalUnits, currentRowViewChart, currentRowView, currentRow, importExcel } = this.state;
 
-        let timekeepingType, config, listTimesheets = [], exportData = [], humanResourceConfig = modelConfiguration.humanResourceConfig;
+        let timekeepingType, config, listAnnualLeaves = [], listTimesheets = [], exportData = [], humanResourceConfig = modelConfiguration.humanResourceConfig;
 
         if (humanResourceConfig) {
             timekeepingType = humanResourceConfig.timekeepingType;
             if (timekeepingType === 'shift') {
                 config = humanResourceConfig.timekeepingByShift
             }
+        }
+
+        if (annualLeave.isLoading === false) {
+            listAnnualLeaves = annualLeave.listAnnualLeaves;
         }
 
         if (timesheets.isLoading === false && timekeepingType) {
@@ -527,7 +534,7 @@ class TimesheetsManagement extends Component {
                                 </table>
                             </div>
                             <div className="col-lg-6 col-md-6 col-sm-5 col-xs-4" style={{ padding: 0 }}>
-                                <table id="timesheets" className="timekeeping table table-striped table-bordered table-hover" style={{ marginLeft: -1 }}>
+                                <table id="timesheets" className="timekeeping table table-striped table-bordered" style={{ marginLeft: -1 }}>
                                     <thead>
                                         <tr style={{ height: 58 }}>
                                             {allDayOfMonth.map((x, index) => (
@@ -538,34 +545,75 @@ class TimesheetsManagement extends Component {
                                     <tbody>
                                         {
                                             listTimesheets.length !== 0 && listTimesheets.map((x, index) => {
+                                                let annualLeaves = listAnnualLeaves.filter(a => a.employee._id === x.employee._id);
+
                                                 let shift1s = x.timekeepingByShift.shift1s, shift2s = x.timekeepingByShift.shift2s, shift3s = x.timekeepingByShift.shift3s;
                                                 return (
                                                     <React.Fragment key={index}>
                                                         <tr>{
-                                                            allDayOfMonth.map((y, indexs) => (
-                                                                <td key={indexs}>
-                                                                    {shift1s[indexs] && indexs < dayNow ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
-                                                                        (indexs < dayNow ? <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i> : null)}
-                                                                </td>
-                                                            ))
+                                                            allDayOfMonth.map((y, indexs) => {
+                                                                let check = false;
+                                                                let data = []
+                                                                annualLeaves.forEach(a => {
+                                                                    console.log(y.time)
+                                                                    console.log(a.startDate)
+                                                                    if (new Date(a.startDate).getTime() <= new Date(y.time).getTime() && new Date(a.endDate).getTime() >= new Date(y.time).getTime()) {
+                                                                        check = true;
+                                                                        data = [...data, a]
+                                                                    }
+                                                                })
+                                                                return (
+                                                                    <td key={indexs} title={check ? data[0].reason : ""} style={{ backgroundColor: check ? "#D49E11" : "none", borderBottomColor: check ? "#D49E11" : "none" }}>
+                                                                        {shift1s[indexs] && indexs < dayNow ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
+                                                                            (indexs < dayNow ? <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i> : null)}
+                                                                    </td>
+                                                                )
+                                                            })
                                                         }
                                                         </tr>
                                                         <tr>{
-                                                            allDayOfMonth.map((y, indexs) => (
-                                                                <td key={indexs}>
-                                                                    {shift2s[indexs] === true && indexs < dayNow ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
-                                                                        (indexs < dayNow ? <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i> : null)}
-                                                                </td>
-                                                            ))
+                                                            allDayOfMonth.map((y, indexs) => {
+                                                                let check = false;
+                                                                let data = []
+                                                                annualLeaves.forEach(a => {
+                                                                    console.log(y.time)
+                                                                    console.log(a.startDate)
+                                                                    if (new Date(a.startDate).getTime() <= new Date(y.time).getTime() && new Date(a.endDate).getTime() >= new Date(y.time).getTime()) {
+                                                                        check = true;
+                                                                        data = [...data, a]
+                                                                    }
+                                                                })
+                                                                return (
+                                                                    <td key={indexs} title={check ? data[0].reason : ""} style={{
+                                                                        backgroundColor: check ? "#D49E11" : "none",
+                                                                        borderTopColor: check ? "#D49E11" : "none", borderBottomColor: check ? "#D49E11" : "none"
+                                                                    }} >
+                                                                        {shift2s[indexs] === true && indexs < dayNow ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
+                                                                            (indexs < dayNow ? <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i> : null)}
+                                                                    </td>
+                                                                )
+                                                            })
                                                         }
                                                         </tr>
                                                         <tr>{
-                                                            allDayOfMonth.map((y, indexs) => (
-                                                                <td key={indexs}>
-                                                                    {shift3s[indexs] === true && indexs < dayNow ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
-                                                                        (indexs < dayNow ? <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i> : null)}
-                                                                </td>
-                                                            ))
+                                                            allDayOfMonth.map((y, indexs) => {
+                                                                let check = false;
+                                                                let data = []
+                                                                annualLeaves.forEach(a => {
+                                                                    console.log(y.time)
+                                                                    console.log(a.startDate)
+                                                                    if (new Date(a.startDate).getTime() <= new Date(y.time).getTime() && new Date(a.endDate).getTime() >= new Date(y.time).getTime()) {
+                                                                        check = true;
+                                                                        data = [...data, a]
+                                                                    }
+                                                                })
+                                                                return (
+                                                                    <td key={indexs} title={check ? data[0].reason : ""} style={{ backgroundColor: check ? "#D49E11" : "none", borderTopColor: check ? "#D49E11" : "none" }} >
+                                                                        {shift3s[indexs] === true && indexs < dayNow ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
+                                                                            (indexs < dayNow ? <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i> : null)}
+                                                                    </td>
+                                                                )
+                                                            })
                                                         }
                                                         </tr>
                                                     </React.Fragment>
@@ -599,6 +647,7 @@ class TimesheetsManagement extends Component {
                                 <tbody>
                                     {
                                         listTimesheets.length !== 0 && listTimesheets.map((x, index) => {
+                                            let annualLeaves = listAnnualLeaves.filter(a => a.employee._id === x.employee._id);
                                             let timekeepingByHours = x.timekeepingByHours;
                                             return (
                                                 <tr key={index}>
@@ -619,11 +668,23 @@ class TimesheetsManagement extends Component {
 
                                                     </td>
                                                     {
-                                                        allDayOfMonth.map((y, indexs) => (
-                                                            <td key={indexs}>
-                                                                {timekeepingByHours[indexs] !== 0 ? timekeepingByHours[indexs] : null}
-                                                            </td>
-                                                        ))
+                                                        allDayOfMonth.map((y, indexs) => {
+                                                            let check = false;
+                                                            let data = []
+                                                            annualLeaves.forEach(a => {
+                                                                console.log(y.time)
+                                                                console.log(a.startDate)
+                                                                if (new Date(a.startDate).getTime() <= new Date(y.time).getTime() && new Date(a.endDate).getTime() >= new Date(y.time).getTime()) {
+                                                                    check = true;
+                                                                    data = [...data, a]
+                                                                }
+                                                            })
+                                                            return (
+                                                                <td key={indexs} title={check ? data[0].reason : ""} style={{ backgroundColor: check ? "#D49E11" : "none" }}>
+                                                                    {timekeepingByHours[indexs] !== 0 ? timekeepingByHours[indexs] : null}
+                                                                </td>
+                                                            )
+                                                        })
                                                     }
                                                 </tr>
                                             )
@@ -676,8 +737,8 @@ class TimesheetsManagement extends Component {
 }
 
 function mapState(state) {
-    const { department, timesheets, modelConfiguration } = state;
-    return { department, timesheets, modelConfiguration };
+    const { department, annualLeave, timesheets, modelConfiguration } = state;
+    return { department, annualLeave, timesheets, modelConfiguration };
 };
 
 const actionCreators = {
@@ -685,6 +746,7 @@ const actionCreators = {
     searchTimesheets: TimesheetsActions.searchTimesheets,
     deleteTimesheets: TimesheetsActions.deleteTimesheets,
     getConfiguration: ConfigurationActions.getConfiguration,
+    searchAnnualLeaves: AnnualLeaveActions.searchAnnualLeaves,
 
 };
 

@@ -81,7 +81,7 @@ class DetailTaskTab extends Component {
             } else { // Dữ liệu đã về
                 let task = nextProps.task;
 
-                this.props.getChildrenOfOrganizationalUnits(task.organizationalUnit._id);
+                if (task && task.organizationalUnit) this.props.getChildrenOfOrganizationalUnits(task.organizationalUnit._id);
 
                 let roles = [];
                 if (task) {
@@ -119,7 +119,7 @@ class DetailTaskTab extends Component {
                     }
                 }
 
-                
+
                 this.setState(state => {
                     return {
                         ...state,
@@ -543,7 +543,7 @@ class DetailTaskTab extends Component {
         if (usersInUnitsOfCompany && usersInUnitsOfCompany.length !== 0) {
             unitThatCurrentUserIsDean = usersInUnitsOfCompany.filter(unit => {
                 let check = false;
-                let unitCollaborated = task.collaboratedWithOrganizationalUnits.map(item => item.organizationalUnit && item.organizationalUnit._id); 
+                let unitCollaborated = task.collaboratedWithOrganizationalUnits.map(item => item.organizationalUnit && item.organizationalUnit._id);
 
                 if (unitCollaborated.includes(unit.id) && unit.deans) {
                     let employee = Object.values(unit.deans);
@@ -579,7 +579,7 @@ class DetailTaskTab extends Component {
     render() {
         const { tasks, performtasks, user, translate } = this.props;
         const { showToolbar, id, isProcess } = this.props; // props form parent component ( task, id, showToolbar, onChangeTaskRole() )
-        const { currentUser, roles, currentRole, collapseInfo, showEdit, showEndTask, showEvaluate  } = this.state
+        const { currentUser, roles, currentRole, collapseInfo, showEdit, showEndTask, showEvaluate } = this.state
 
         let task;
         let codeInProcess, typeOfTask, statusTask, checkInactive = true, evaluations, evalList = [];
@@ -877,7 +877,7 @@ class DetailTaskTab extends Component {
                                 />
                             )
                         }
-                        
+
 
                         {/* Các trường thông tin cơ bản */}
                         {task &&

@@ -532,7 +532,7 @@ class DepreciationManager extends Component {
                                             <td><a onClick={() => this.handleEditAsset(x)}>{x.code}</a></td>
                                             <td>{x.assetName}</td>
                                             <td>{this.convertGroupAsset(x.group)}</td>
-                                            <td>{x.assetType && x.assetType.length ? x.assetType.map((item, index) => { let suffix = index < x.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : 'Asset is deleted'}</td>
+                                            <td>{x.assetType && x.assetType.length ? x.assetType.map((item, index) => { let suffix = index < x.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : ''}</td>
                                             <td>{formater.format(parseInt(x.cost))} VNĐ</td>
                                             <td>{this.formatDate(x.startDepreciation)}</td>
                                             <td>{x.usefulLife} {translate('training.course.month')}</td>

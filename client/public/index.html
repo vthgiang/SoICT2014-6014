@@ -54,7 +54,43 @@
   <link rel="stylesheet" href="%PUBLIC_URL%/library/jquery-plugin/jstree/themes/default/style.min.css">
 
   <!-- Quill editor -->
-  <link href="%PUBLIC_URL%/library/jquery-plugin/quill-editor/quill.snow.css" rel="stylesheet">
+  <script src="%PUBLIC_URL%/library/jquery-plugin/quill-editor/quill.min.js" type="text/javascript"></script>
+  <link href="%PUBLIC_URL%/library/jquery-plugin/quill-editor/quill.snow.min.css" rel="stylesheet">
+  <script src="%PUBLIC_URL%/library/jquery-plugin/quill-editor/quill-table.js" type="text/javascript"></script>
+  <link href="%PUBLIC_URL%/library/jquery-plugin/quill-editor/quill-table.css" rel="stylesheet">
+  <script src="%PUBLIC_URL%/library/jquery-plugin/quill-editor/quill-image.min.js"></script>
+
+  <!-- Script khởi tạo quill-editor -->
+  <script>
+    function initializationQuill(id) {
+      // Thêm các module tiện ích
+      Quill.register({
+        'modules/imageDropAndPaste': QuillImageDropAndPaste,
+        'modules/tableUI': quillTableUI.default
+      }, true);
+
+      // Khởi tạo Quill Editor trong thẻ có id = id truyền vào
+      const quill = new Quill(id, {
+        modules: {
+          toolbar: [
+            [{ 'font': [] }],
+            [{ header: [1, 2, 3, false] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+            [{ 'align': [] }],
+            ['image', 'code-block', 'list']
+          ],
+          imageDropAndPaste: true,
+          table: true,
+          tableUI: true,
+        },
+        placeholder: 'Start typing here...',
+        theme: 'snow'
+      });
+
+      return quill;
+    }
+  </script>
 </head>
 
 <body class="hold-transition skin-purple sidebar-mini" style="background-color: #222D32;">

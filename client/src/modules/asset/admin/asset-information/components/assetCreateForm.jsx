@@ -21,6 +21,9 @@ class AssetCreateForm extends Component {
             avatar: "./upload/asset/pictures/picture5.png",
             asset: {
                 avatar: './upload/asset/pictures/picture5.png',
+                code: "",
+                assetName: "",
+                serial: "",
                 purchaseDate: null,
                 warrantyExpirationDate: null,
                 assignedToUser: null,

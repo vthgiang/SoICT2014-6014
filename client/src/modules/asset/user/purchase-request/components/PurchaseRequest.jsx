@@ -257,10 +257,10 @@ class PurchaseRequest extends Component {
                                     <tr key={index}>
                                         <td>{x.recommendNumber}</td>
                                         <td>{this.formatDate2(x.dateCreate)}</td>
-                                        <td>{x.proponent ? x.proponent.name : 'User is deleted'}</td>
+                                        <td>{x.proponent ? x.proponent.email : 'User is deleted'}</td>
                                         <td>{x.equipmentName}</td>
                                         <td>{x.equipmentDescription}</td>
-                                        <td>{x.approver ? x.approver.name : ''}</td>
+                                        <td>{x.approver ? x.approver.email : ''}</td>
                                         <td>{x.note}</td>
                                         <td>{this.formatStatus(x.status)}</td>
                                         <td style={{ textAlign: "center" }}>

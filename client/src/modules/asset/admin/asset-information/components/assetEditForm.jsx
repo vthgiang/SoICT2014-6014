@@ -239,11 +239,11 @@ class AssetEditForm extends Component {
     }
 
     save = async () => {
-        let { img, maintainanceLogs, usageLogs, incidentLogs, files, assignedToUser,
+        let { avatar, maintainanceLogs, usageLogs, incidentLogs, files, assignedToUser,
             assignedToOrganizationalUnit, handoverFromDate, handoverToDate, employeeId, page } = this.state;
 
         await this.setState({
-            img: img,
+            // img: img,
             createMaintainanceLogs: maintainanceLogs.filter(x => !x._id),
             createUsageLogs: usageLogs.filter(x => !x._id),
             createIncidentLogs: incidentLogs.filter(x => !x._id),
@@ -255,7 +255,8 @@ class AssetEditForm extends Component {
                 formData.append("file", item.fileUpload);
             })
         })
-        formData.append("fileAvatar", this.state.avatar);
+        formData.append("fileAvatar", avatar);
+
         this.props.updateInformationAsset(this.state._id, formData, employeeId, page);
 
         // Thêm vào thông tin sử dụng
@@ -308,8 +309,8 @@ class AssetEditForm extends Component {
             return {
                 ...prevState,
                 _id: nextProps._id,
-                img: nextProps.img,
-                avatar: nextProps.avatar,
+                img: `.${nextProps.avatar}`,
+                avatar: "",
                 code: nextProps.code,
                 assetName: nextProps.assetName,
                 serial: nextProps.serial,
@@ -382,11 +383,10 @@ class AssetEditForm extends Component {
 
     render() {
         const { translate, assetsManager } = this.props;
-        const { _id, img, avatar, code, assetName, serial, assetType, group, purchaseDate, warrantyExpirationDate, managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate,
+        const { _id, img, code, assetName, serial, assetType, group, purchaseDate, warrantyExpirationDate, managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate,
             handoverToDate, location, description, status, typeRegisterForUse, detailInfo, usageLogs, maintainanceLogs, cost, residualValue, startDepreciation,
             usefulLife, depreciationType, incidentLogs, disposalDate, disposalType, unitsProducedDuringTheYears, disposalCost, disposalDesc, archivedRecordNumber,
             files, estimatedTotalProduction, readByRoles } = this.state;
-
         return (
             <React.Fragment>
                 <DialogModal
@@ -415,7 +415,7 @@ class AssetEditForm extends Component {
                                 img={img}
                                 handleChange={this.handleChange}
                                 handleUpload={this.handleUpload}
-                                avatar={avatar}
+                                // avatar={avatar}
                                 code={code}
                                 assetName={assetName}
                                 serial={serial}

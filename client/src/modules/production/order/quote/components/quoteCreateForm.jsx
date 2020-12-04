@@ -357,6 +357,7 @@ class QuoteCreateForm extends Component {
                     : undefined,
             };
         });
+
         return discountsMap;
     };
 
@@ -382,7 +383,6 @@ class QuoteCreateForm extends Component {
     };
 
     save = async () => {
-        // e.preventDefault();
         let {
             customer,
             customerName,

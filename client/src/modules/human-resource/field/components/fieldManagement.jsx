@@ -77,7 +77,6 @@ class FieldManagement extends Component {
         const { limit, page, currentRow } = this.state;
 
         let listFields = field.listFields;
-        console.log(listFields)
 
         let pageTotal = ((field.totalList % limit) === 0) ?
             parseInt(field.totalList / limit) :

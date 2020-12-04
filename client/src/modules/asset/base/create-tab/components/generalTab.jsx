@@ -11,17 +11,36 @@ import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { AssetTypeActions } from '../../../admin/asset-type/redux/actions';
 import { string2literal } from '../../../../../helpers/handleResponse';
 
+import { generateCode } from "../../../../../helpers/generateCode";
+
 class GeneralTab extends Component {
     constructor(props) {
         super(props);
         this.state = {
             detailInfo: [],
             isObj: true,
-            defaultAvatar: "./upload/asset/pictures/picture5.png"
+            // defaultAvatar: "./upload/asset/pictures/picture5.png"
             // status: "ready_to_use",
             // typeRegisterForUse: "Được phép đăng ký sử dụng",
         };
     }
+
+    regenerateCode = () => {
+        let code = generateCode("VVTM");
+        this.setState((state) => ({
+            ...state,
+            code: code,
+        }));
+    }
+    componentDidMount = () => {
+        // Mỗi khi modal mở, cần sinh lại code
+        window.$('#modal-add-asset').on('shown.bs.modal', this.regenerateCode)
+    }
+    componentWillUnmount = () => {
+        // Unsuscribe event
+        window.$('#modal-add-asset').unbind('shown.bs.modal', this.regenerateCode)
+    }
+
 
     // Function format dữ liệu Date thành string
     formatDate(date, monthYear = false) {
@@ -468,11 +487,13 @@ class GeneralTab extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id || nextProps.assignedToUser !== prevState.assignedToUser || nextProps.assignedToOrganizationalUnit !== prevState.assignedToOrganizationalUnit) {
+            // if (nextProps.id !== prevState.id || nextProps.asset.assignedToUser !== prevState.assignedToUser || nextProps.asset.assignedToOrganizationalUnit !== prevState.assignedToOrganizationalUnit) {
             return {
                 ...prevState,
                 id: nextProps.id,
                 img: nextProps.img,
                 avatar: nextProps.avatar,
+
                 code: nextProps.code,
                 assetName: nextProps.assetName,
                 serial: nextProps.serial,
@@ -492,6 +513,26 @@ class GeneralTab extends Component {
                 detailInfo: nextProps.detailInfo,
                 usageLogs: nextProps.usageLogs,
                 readByRoles: nextProps.readByRoles,
+
+                // code: nextProps.asset.code,
+                // assetName: nextProps.asset.assetName,
+                // serial: nextProps.asset.serial,
+                // assetTypes: nextProps.asset.assetTypes,
+                // group: nextProps.asset.group,
+                // location: nextProps.asset.location,
+                // purchaseDate: nextProps.asset.purchaseDate,
+                // warrantyExpirationDate: nextProps.asset.warrantyExpirationDate,
+                // managedBy: nextProps.asset.managedBy,
+                // assignedToUser: nextProps.asset.assignedToUser,
+                // assignedToOrganizationalUnit: nextProps.asset.assignedToOrganizationalUnit,
+                // handoverFromDate: nextProps.asset.handoverFromDate,
+                // handoverToDate: nextProps.asset.handoverToDate,
+                // description: nextProps.asset.description,
+                // status: nextProps.asset.status,
+                // typeRegisterForUse: nextProps.asset.typeRegisterForUse,
+                // detailInfo: nextProps.asset.detailInfo,
+                // usageLogs: nextProps.asset.usageLogs,
+                // readByRoles: nextProps.asset.readByRoles,
 
                 errorOnCode: undefined,
                 errorOnAssetName: undefined,
@@ -564,7 +605,7 @@ class GeneralTab extends Component {
                     {/* Ảnh tài sản */}
                     <div className="col-md-4" style={{ textAlign: 'center', paddingLeft: '0px' }}>
                         <div>
-                            {<ApiImage className="attachment-img avarta" id={`avater-imform-${id}`} src={avatar ? avatar : defaultAvatar} />}
+                            {< ApiImage className="attachment-img avarta" id={`avater-imform-${id}`} src={img ? img : defaultAvatar} />}
                         </div>
                         <div className="upload btn btn-default ">
                             {translate('manage_asset.upload')}
