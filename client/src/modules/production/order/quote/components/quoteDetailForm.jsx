@@ -5,6 +5,9 @@ import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import { DialogModal, DatePicker } from "../../../../../common-components";
 import { formatDate } from "../../../../../helpers/formatDate";
 import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
+import DiscountsOfQuoteDetail from "./detailQuote/discountOfQuoteDetail";
+import DiscountOfGoodDetail from "./detailQuote/discountOfGoodDetail";
+import SlasOfGoodDetail from "./detailQuote/slasOfGoodDetail";
 import "./quote.css";
 
 class QuoteDetailForm extends Component {
@@ -31,7 +34,6 @@ class QuoteDetailForm extends Component {
 
     getAmountAfterApplyTax = () => {
         let { goods } = this.props.quoteDetail;
-        console.log("goods", goods);
         let amountAfterApplyTax = 0;
         if (goods) {
             amountAfterApplyTax = goods.reduce((accumulator, currentValue) => {
@@ -42,49 +44,9 @@ class QuoteDetailForm extends Component {
         return amountAfterApplyTax;
     };
 
-    applyDiscountForOrder = (amount, freeShipCost) => {
-        const { setPaymentAmount } = this.props;
-        let { discountsOfOrderValue, coin, paymentAmount } = this.props;
-
-        let discountForFormality = {
-            0: [],
-            1: [],
-            2: [],
-            3: [],
-            4: [],
-            5: [],
-        };
-        discountsOfOrderValue.forEach((element) => {
-            discountForFormality[element.formality].push(element);
-        });
-
-        if (discountForFormality[0].length) {
-            amount = amount - discountForFormality[0][0].discountedCash;
-        }
-        if (discountForFormality[1].length) {
-            amount = (amount * (100 - discountForFormality[1][0].discountedPercentage)) / 100;
-        }
-
-        if (freeShipCost) {
-            amount = amount - freeShipCost;
-        }
-
-        if (coin) {
-            amount = amount - coin;
-        }
-
-        amount = Math.round(amount * 100) / 100;
-
-        //SET STATE paymentAmout để tính tổng tiền lưu vào DB
-        if (amount !== paymentAmount) {
-            setPaymentAmount(amount);
-        }
-    };
-
     getFreeShipCost = () => {
         let maxFreeShip = 0;
         let { discounts, shippingFee } = this.props.quoteDetail;
-        console.log("discounts", discounts);
         if (discounts) {
             discounts.forEach((item) => {
                 if (item.formality == 3) {
@@ -93,7 +55,6 @@ class QuoteDetailForm extends Component {
             });
         }
 
-        console.log("maximumFreeShippingCost", maxFreeShip);
         let freeShipCost = 0;
         if (shippingFee >= maxFreeShip) {
             //Phí giao hàng lớn hơn tiền miễn phí giao hàng tối đa
@@ -172,8 +133,67 @@ class QuoteDetailForm extends Component {
         return bonusGoods;
     };
 
+    getDiscountsValueQuote = (amount) => {
+        let amountAfterApplyTax = amount;
+        let { discounts } = this.props.quoteDetail;
+
+        let discountForFormality = {
+            0: [],
+            1: [],
+            2: [],
+            3: [],
+            4: [],
+            5: [],
+        };
+
+        if (discounts) {
+            discounts.forEach((element) => {
+                discountForFormality[element.formality].push(element);
+            });
+        }
+
+        if (discountForFormality[0].length) {
+            amount = amount - discountForFormality[0][0].discountedCash;
+        }
+        if (discountForFormality[1].length) {
+            amount = (amount * (100 - discountForFormality[1][0].discountedPercentage)) / 100;
+        }
+
+        amount = Math.round(amount * 100) / 100;
+        return amountAfterApplyTax - amount;
+    };
+
+    setCurrentDiscountOfQuote = async (discountsOfQuoteDetail) => {
+        await this.setState((state) => {
+            return {
+                ...state,
+                discountsOfQuoteDetail,
+            };
+        });
+        window.$("#modal-detail-quote-discounts").modal("show");
+    };
+
+    setCurrentDiscountOfGood = async (discountOfGoodDetail) => {
+        await this.setState((state) => {
+            return {
+                ...state,
+                discountOfGoodDetail,
+            };
+        });
+        window.$("#modal-quote-detail-discounts-of-good").modal("show");
+    };
+
+    setCurrentSlasOfGood = async (slasOfGoodDetail) => {
+        await this.setState((state) => {
+            return {
+                ...state,
+                slasOfGoodDetail,
+            };
+        });
+        window.$("#modal-quote-detail-slas-of-good").modal("show");
+    };
+
     render() {
-        let { listGoods, discountsOfOrderValue } = this.props;
         const {
             customerPhone,
             customerAddress,
@@ -191,6 +211,8 @@ class QuoteDetailForm extends Component {
             discounts,
         } = this.props.quoteDetail;
 
+        const { discountsOfQuoteDetail, discountOfGoodDetail, slasOfGoodDetail } = this.state;
+
         let allOfBonusGood = this.getBonusGoodOfAll();
         let freeShipCost = this.getFreeShipCost();
         let coinOfAll = this.getCoinOfAll();
@@ -201,6 +223,7 @@ class QuoteDetailForm extends Component {
         }
 
         const amountAfterApplyTax = this.getAmountAfterApplyTax();
+        let discountsOfQuote = this.getDiscountsValueQuote(amountAfterApplyTax); // Chưa tính miễn phí vận chuyển và sử dụng xu
         return (
             <React.Fragment>
                 <DialogModal
@@ -212,6 +235,9 @@ class QuoteDetailForm extends Component {
                     hasSaveButton={false}
                     hasNote={false}
                 >
+                    {discountsOfQuoteDetail && <DiscountsOfQuoteDetail discountsOfQuoteDetail={discountsOfQuoteDetail} />}
+                    {discountOfGoodDetail && <DiscountOfGoodDetail discountOfGoodDetail={discountOfGoodDetail} />}
+                    {slasOfGoodDetail && <SlasOfGoodDetail slasOfGoodDetail={slasOfGoodDetail} />}
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <fieldset className="scheduler-border" style={{ background: "#f5f5f5" }}>
                             {/* <legend className="scheduler-border">Chốt đơn báo giá</legend> */}
@@ -284,13 +310,10 @@ class QuoteDetailForm extends Component {
                                                     <td>{item.quantity}</td>
                                                     <td>
                                                         <a
-                                                            // onClick={() => setCurrentDiscountsOfGood(item.discountsOfGood)}
+                                                            onClick={() => this.setCurrentDiscountOfGood(item.discounts)}
                                                             style={{
                                                                 cursor: "pointer",
                                                             }}
-                                                            data-toggle="modal"
-                                                            data-backdrop="static"
-                                                            href={"#modal-create-quote-discounts-of-good-detail"}
                                                             title="Click để xem chi tiết"
                                                         >
                                                             {item.amount && item.amountAfterDiscount
@@ -316,10 +339,7 @@ class QuoteDetailForm extends Component {
                                                                 style={{
                                                                     cursor: "pointer",
                                                                 }}
-                                                                data-toggle="modal"
-                                                                data-backdrop="static"
-                                                                href={"#modal-create-quote-slas-of-good-detail"}
-                                                                // onClick={() => setCurrentSlasOfGood(item.slasOfGood)}
+                                                                onClick={() => this.setCurrentSlasOfGood(item.serviceLevelAgreements)}
                                                             >
                                                                 Chi tiết &ensp;
                                                                 <i className="fa fa-arrow-circle-right"></i>
@@ -396,14 +416,14 @@ class QuoteDetailForm extends Component {
                                         <div className="shopping-apply-discounts-tag">
                                             <div>{`Đã sử dụng ${discounts.length} mã giảm giá`}</div>
                                         </div>
-                                        <a>Xem chi tiết</a>
-                                        {/* <CreateDiscountForOrder
-                                        discountsProps={discountsOfOrderValue}
-                                        discountsChecked={discountsOfOrderValueChecked}
-                                        handleDiscountsChange={(data) => handleDiscountsOfOrderValueChange(data)}
-                                        setDiscountsChecked={(checked) => setDiscountsOfOrderValueChecked(checked)}
-                                        paymentAmount={amountAfterApplyTax}
-                                    /> */}
+                                        <a
+                                            style={{
+                                                cursor: "pointer",
+                                            }}
+                                            onClick={() => this.setCurrentDiscountOfQuote(discounts)}
+                                        >
+                                            Xem chi tiết
+                                        </a>
                                     </div>
                                 </div>
                             ) : (
@@ -452,12 +472,10 @@ class QuoteDetailForm extends Component {
                                         </div>
                                     </div>
 
-                                    {amountAfterApplyTax && paymentAmount && amountAfterApplyTax > paymentAmount + coin + freeShipCost ? ( //Tiền khuyến mãi toàn đơn là chưa tính freeship và trừ
+                                    {discountsOfQuote > 0 ? ( //Tiền khuyến mãi toàn đơn là chưa tính freeship và trừ
                                         <div className="shopping-payment-element">
                                             <div className="shopping-payment-element-title">Khuyến mãi cho toàn đơn</div>
-                                            <div className="shopping-payment-element-value">
-                                                -{formatCurrency(amountAfterApplyTax - paymentAmount - coin - freeShipCost)}
-                                            </div>
+                                            <div className="shopping-payment-element-value">-{formatCurrency(discountsOfQuote)}</div>
                                         </div>
                                     ) : (
                                         ""

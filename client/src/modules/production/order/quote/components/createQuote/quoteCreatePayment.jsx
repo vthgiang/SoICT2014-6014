@@ -34,9 +34,37 @@ class QuoteCreatePayment extends Component {
         return amountAfterApplyTax;
     };
 
-    applyDiscountForOrder = (amount, freeShipCost) => {
+    getDiscountsValueQuote = (amount) => {
+        let amountAfterApplyTax = amount;
+        let { discountsOfOrderValue } = this.props;
+
+        let discountForFormality = {
+            0: [],
+            1: [],
+            2: [],
+            3: [],
+            4: [],
+            5: [],
+        };
+
+        discountsOfOrderValue.forEach((element) => {
+            discountForFormality[element.formality].push(element);
+        });
+
+        if (discountForFormality[0].length) {
+            amount = amount - discountForFormality[0][0].discountedCash;
+        }
+        if (discountForFormality[1].length) {
+            amount = (amount * (100 - discountForFormality[1][0].discountedPercentage)) / 100;
+        }
+
+        amount = Math.round(amount * 100) / 100;
+        return amountAfterApplyTax - amount;
+    };
+
+    getPaymentAmount = (amount, freeShipCost) => {
         const { setPaymentAmount } = this.props;
-        let { discountsOfOrderValue, coin, paymentAmount } = this.props;
+        let { discountsOfOrderValue, coin, paymentAmount, shippingFee } = this.props;
 
         let discountForFormality = {
             0: [],
@@ -57,8 +85,12 @@ class QuoteCreatePayment extends Component {
             amount = (amount * (100 - discountForFormality[1][0].discountedPercentage)) / 100;
         }
 
+        if (shippingFee) {
+            amount = parseInt(amount) + parseInt(shippingFee);
+        }
+
         if (freeShipCost) {
-            amount = amount - freeShipCost;
+            amount = parseInt(amount) - parseInt(freeShipCost);
         }
 
         if (coin) {
@@ -190,7 +222,8 @@ class QuoteCreatePayment extends Component {
         }
 
         const amountAfterApplyTax = this.getAmountAfterApplyTax();
-        this.applyDiscountForOrder(amountAfterApplyTax, freeShipCost);
+        let discountsOfQuote = this.getDiscountsValueQuote(amountAfterApplyTax); // Chưa tính miễn phí vận chuyển và sử dụng xu
+        this.getPaymentAmount(amountAfterApplyTax, freeShipCost);
 
         return (
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -465,12 +498,10 @@ class QuoteCreatePayment extends Component {
                                 </div>
                             </div>
 
-                            {amountAfterApplyTax && paymentAmount && amountAfterApplyTax > paymentAmount + coin + freeShipCost ? ( //Tiền khuyến mãi toàn đơn là chưa tính freeship và trừ
+                            {discountsOfQuote > 0 ? ( //Tiền khuyến mãi toàn đơn là chưa tính freeship và trừ
                                 <div className="shopping-payment-element">
                                     <div className="shopping-payment-element-title">Khuyến mãi cho toàn đơn</div>
-                                    <div className="shopping-payment-element-value">
-                                        -{formatCurrency(amountAfterApplyTax - paymentAmount - coin - freeShipCost)}
-                                    </div>
+                                    <div className="shopping-payment-element-value">-{formatCurrency(discountsOfQuote)}</div>
                                 </div>
                             ) : (
                                 ""

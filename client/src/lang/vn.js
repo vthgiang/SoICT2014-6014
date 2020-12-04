@@ -1639,6 +1639,7 @@ export default {
                 religion: "Tôn giáo",
                 active: "Đang làm việc",
                 leave: "Đã nghỉ làm",
+                career_fields:'Ngành nghề/lĩnh vực',
                 maternity_leave: "Nghỉ thai sản",
                 unpaid_leave: "Nghỉ không lương",
                 probationary: "Đang thử việc",
@@ -2039,8 +2040,8 @@ export default {
 
             },
 
+            // Quản lý ngành nghề lĩnh vực
             field:{
-
                  // Nhóm dành cho table
                  table: {
                     name: "Tên ngành nghề/lĩnh vực",
