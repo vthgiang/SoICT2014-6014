@@ -19,7 +19,8 @@ class ActionForm extends Component {
             EMPTY_ACTION: Object.assign({}, EMPTY_ACTION),
             editAction: false,
             action: Object.assign({}, EMPTY_ACTION),
-            taskActions: this.props.initialData
+            taskActions: this.props.initialData,
+            quillValueDefault: null
         }
     }
 
@@ -103,7 +104,8 @@ class ActionForm extends Component {
             action: {
                 ...action,
                 description: value
-            }
+            },
+            quillValueDefault: null
         })
     }
 
@@ -124,6 +126,7 @@ class ActionForm extends Component {
                 ...state,
                 editAction: false,
                 action: Object.assign({}, state.EMPTY_ACTION),
+                quillValueDefault: state.EMPTY_ACTION.description
             }
         });
     }
@@ -135,6 +138,7 @@ class ActionForm extends Component {
             return {
                 ...state,
                 action: Object.assign({}, state.EMPTY_ACTION),
+                quillValueDefault: state.EMPTY_ACTION.description
             }
         });
     }
@@ -149,12 +153,13 @@ class ActionForm extends Component {
                 ...state,
                 taskActions: taskActions,
                 action: Object.assign({}, state.EMPTY_ACTION),
+                quillValueDefault: state.EMPTY_ACTION.description
             }
         });
         this.props.onDataChange(this.state.taskActions);
     }
 
-    /**Sửa các thông tin của hành động */
+    /** Sửa các thông tin của hành động */
     handleEditAction = (action, index) => {
         this.setState(state => {
             return {
@@ -162,6 +167,7 @@ class ActionForm extends Component {
                 editAction: true,
                 indexAction: index,
                 action: { ...action },
+                quillValueDefault: action.description
             }
         });
     }
@@ -183,6 +189,7 @@ class ActionForm extends Component {
                 taskActions: newTaskActions,
                 editAction: false,
                 action: { ...state.EMPTY_ACTION },
+                quillValueDefault: state.EMPTY_ACTION.description
             }
         })
         this.props.onDataChange(this.state.taskActions);
@@ -206,7 +213,7 @@ class ActionForm extends Component {
 
     render() {
         const { translate } = this.props;
-        var { action, taskActions } = this.state;
+        var { action, taskActions, quillValueDefault } = this.state;
         const { initialData } = this.props;
 
         taskActions = initialData;
@@ -235,7 +242,7 @@ class ActionForm extends Component {
                     <QuillEditor
                         id={'actionsTemplate'}
                         getTextData={this.handleChangeActionDesc}
-                        value={action && action.description}
+                        quillValueDefault={quillValueDefault}
                     />
                 </div>
 
