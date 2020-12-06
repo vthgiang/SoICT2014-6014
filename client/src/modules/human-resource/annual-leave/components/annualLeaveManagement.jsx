@@ -212,7 +212,7 @@ class AnnualLeaveManagement extends Component {
                     STT: index + 1,
                     employeeNumber: x.employee.employeeNumber,
                     fullName: x.employee.fullName,
-                    organizationalUnit: organizationalUnit ? organizationalUnit.name : "Deleted",
+                    organizationalUnit: organizationalUnit ? organizationalUnit.name : "",
                     startDate: new Date(x.startDate),
                     endDate: new Date(x.endDate),
                     totalHours: x.totalHours,
@@ -414,7 +414,7 @@ class AnnualLeaveManagement extends Component {
                     currentRow &&
                     <AnnualLeaveEditForm
                         _id={currentRow._id}
-                        employeeNumber={currentRow.employee ? `${currentRow.employee.employeeNumber} - ${currentRow.employee.fullName}` : 'Deleted'}
+                        employeeNumber={currentRow.employee ? `${currentRow.employee.employeeNumber} - ${currentRow.employee.fullName}` : ''}
                         organizationalUnit={currentRow.organizationalUnit}
                         endDate={this.formatDate(currentRow.endDate)}
                         startDate={this.formatDate(currentRow.startDate)}

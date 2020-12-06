@@ -236,7 +236,7 @@ class MaintainanceCreateForm extends Component {
         let assetlist = assetsManager.listAssets;
         if (assetlist) {
             assetlist = assetlist.map(x => { return { value: x._id, text: x.code + " - " + x.assetName } })
-            assetlist.unshift({ value: '', text: '---Chọn tài sản---' });
+            assetlist.unshift({ value: '', text: `---${translate('asset.general_information.choose_asset')}---` });
         }
 
         return (
@@ -276,7 +276,7 @@ class MaintainanceCreateForm extends Component {
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.type')}</label>
                                     <select className="form-control" value={type} name="type" onChange={this.handleTypeChange}>
-                                        <option value="">---Chọn phân loại---</option>
+                                        <option value="">{`---${translate('asset.general_information.choose_type')}---`}</option>
                                         <option value="1">{translate('asset.asset_info.repair')}</option>
                                         <option value="2">{translate('asset.asset_info.replace')}</option>
                                         <option value="3">{translate('asset.asset_info.upgrade')}</option>
@@ -338,7 +338,7 @@ class MaintainanceCreateForm extends Component {
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.status')}</label>
                                     <select className="form-control" value={status} name="status" onChange={this.handleStatusChange}>
-                                        <option value="">---Chọn trạng thái---</option>
+                                        <option value="">{`---${translate('asset.general_information.choose_status')}---`}</option>
                                         <option value="1">{translate('asset.asset_info.unfulfilled')}</option>
                                         <option value="2">{translate('asset.asset_info.processing')}</option>
                                         <option value="3">{translate('asset.asset_info.made')}</option>

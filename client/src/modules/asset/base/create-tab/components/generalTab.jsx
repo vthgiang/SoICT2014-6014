@@ -719,7 +719,7 @@ class GeneralTab extends Component {
                                             id={`select-link-default-roles-${id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={role.list.map(role => { return { value: role ? role._id : null, text: role ? role.name : "Role is deleted" } })}
+                                            items={role.list.map(role => { return { value: role ? role._id : null, text: role ? role.name : "" } })}
                                             value={readByRoles}
                                             onChange={this.handleRoles}
                                             multiple={true}

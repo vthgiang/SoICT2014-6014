@@ -160,7 +160,7 @@ class CommendationManagement extends Component {
                     employeeNumber: x.employee.employeeNumber,
                     fullName: x.employee.fullName,
                     decisionNumber: x.decisionNumber,
-                    decisionUnit: decisionUnit ? decisionUnit.name : 'Deleted',
+                    decisionUnit: decisionUnit ? decisionUnit.name : '',
                     startDate: new Date(x.startDate),
                     type: x.type,
                     reason: x.reason,
@@ -299,11 +299,11 @@ class CommendationManagement extends Component {
                                     let decisionUnit = department.list.find(y => y._id === x.organizationalUnit);
                                     return (
                                         <tr key={index}>
-                                            <td><a style={{ cursor: 'pointer' }} onClick={() => this.handleView(x.employee)}>{x.employee ? x.employee.employeeNumber : "Deleted"}</a></td>
-                                            <td>{x.employee ? x.employee.fullName : "Deleted"}</td>
+                                            <td><a style={{ cursor: 'pointer' }} onClick={() => this.handleView(x.employee)}>{x.employee ? x.employee.employeeNumber : ""}</a></td>
+                                            <td>{x.employee ? x.employee.fullName : ""}</td>
                                             <td>{this.formatDate(x.startDate)}</td>
                                             <td>{x.decisionNumber}</td>
-                                            <td>{decisionUnit ? decisionUnit.name : 'Deleted'}</td>
+                                            <td>{decisionUnit ? decisionUnit.name : ''}</td>
                                             <td>{x.type}</td>
                                             <td style={{ textAlign: "center" }}>
                                                 <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.commendation_discipline.commendation.edit_commendation')}><i className="material-icons">edit</i></a>

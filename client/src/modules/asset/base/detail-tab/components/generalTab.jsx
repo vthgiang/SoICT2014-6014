@@ -105,7 +105,7 @@ class GeneralTab extends Component {
             return translate('asset.general_information.disposal')
         }
         else {
-            return 'Deleted';
+            return '';
         }
     }
 
