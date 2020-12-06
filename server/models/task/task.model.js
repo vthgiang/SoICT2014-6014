@@ -450,7 +450,6 @@ const TaskSchema = new Schema(
                 },
                 description: {
                     type: String,
-                    required: true,
                 },
                 mandatory: {
                     // Hoạt động này bắt buộc hay không?
