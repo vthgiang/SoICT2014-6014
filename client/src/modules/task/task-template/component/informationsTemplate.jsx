@@ -29,6 +29,7 @@ class InformationForm extends Component{
             information: {...this.EMPTY_INFORMATION},
             taskInformations: this.props.initialData,
             editInfo: false,
+            quillValueDefault: null
         }
     }
     componentDidMount(){
@@ -75,7 +76,8 @@ class InformationForm extends Component{
         this.setState({
             editInfo: true,
             indexInfo,
-            information
+            information,
+            quillValueDefault: information && information.description
         });
     }
 
@@ -95,6 +97,7 @@ class InformationForm extends Component{
                 taskInformations: newTaskInformations,
                 editInfo: false,
                 information: {...this.EMPTY_INFORMATION},
+                quillValueDefault: this.EMPTY_INFORMATION.description
         })
         this.props.onDataChange(this.state.taskInformations);
     }
@@ -104,6 +107,7 @@ class InformationForm extends Component{
         this.setState({
             editInfo: false,
             information: {...this.EMPTY_INFORMATION},
+            quillValueDefault: this.EMPTY_INFORMATION.description
         });        
     }
     
@@ -111,7 +115,8 @@ class InformationForm extends Component{
     handleClearInformation = (event) => {
         event.preventDefault(); // Ngăn không submit
         this.setState({
-            information: {...this.EMPTY_INFORMATION}
+            information: {...this.EMPTY_INFORMATION},
+            quillValueDefault: this.EMPTY_INFORMATION.description
         })
     }
 
@@ -138,6 +143,7 @@ class InformationForm extends Component{
                 ...state,
                 taskInformations: taskInformations,
                 information: Object.assign({}, this.EMPTY_INFORMATION),
+                quillValueDefault: this.EMPTY_INFORMATION.description
             }
         })
         this.props.onDataChange(this.state.taskInformations);
@@ -181,7 +187,8 @@ class InformationForm extends Component{
             information: {
                 ...information,
                 description: value
-            }
+            },
+            quillValueDefault: null
         })
     }
 
@@ -237,7 +244,7 @@ class InformationForm extends Component{
 
     render(){
         const { translate } = this.props;
-        let { taskInformations, information } =this.state;
+        let { taskInformations, information, quillValueDefault } =this.state;
         const { initialData } = this.props;
 
         taskInformations = initialData;
@@ -263,7 +270,7 @@ class InformationForm extends Component{
                     <QuillEditor
                         id={'informationsTemplate'}
                         getTextData={this.handleChangeInfoDesc}
-                        value={information.description}
+                        quillValueDefault={quillValueDefault}
                     />
                 </div>
                 <div className="form-group" >

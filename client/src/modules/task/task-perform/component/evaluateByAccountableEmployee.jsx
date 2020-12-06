@@ -1525,7 +1525,7 @@ class EvaluateByAccountableEmployee extends Component {
                                                                 ({index + 1})&nbsp;&nbsp;
                                                             <QuillEditor
                                                                 id={'evaluateByAccountable'}
-                                                                value={item.description}
+                                                                quillValueDefault={item.description}
                                                                 edit={false}
                                                             />
                                                             </span>

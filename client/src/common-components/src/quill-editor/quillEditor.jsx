@@ -2,26 +2,42 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import parse from 'html-react-parser';
+
+import { configQuillEditor } from './configQuillEditor';
+
 class QuillEditor extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            quill: null
         }
 
     }
+    
+    componentDidUpdate = () => {
+        const { quillValueDefault } = this.props;
+        const { quill } = this.state;
 
-    componentDidMount() {
-        const { id, edit = true, value } = this.props;
+        // Insert value ban đầu
+        // Lưu ý: quillValueDefault phải được truyền vào 1 giá trị cố định, không thayđô
+        if (quillValueDefault || quillValueDefault === '') {
+            if (quill && quill.container && quill.container.firstChild) {
+                quill.container.firstChild.innerHTML = quillValueDefault;
+            }  
+        }
+    }
 
+    componentDidMount = () => {
+        const { id, edit = true, quillValueDefault } = this.props;
         if (edit) {
             // Khởi tạo Quill Editor trong thẻ có id = id truyền vào
-            const quill = window.initializationQuill(`#editor-container${id}`);
+            const quill = window.initializationQuill(`#editor-container${id}`, configQuillEditor);
             
             // Insert value ban đầu
-            if (value) {
+            if (quillValueDefault || quillValueDefault === '') {
                 if (quill && quill.container && quill.container.firstChild) {
-                    quill.container.firstChild.innerHTML = value;
+                    quill.container.firstChild.innerHTML = quillValueDefault;
                 } 
             }
 
@@ -34,6 +50,13 @@ class QuillEditor extends Component {
 
                 this.props.getTextData(quill.root.innerHTML, imgs);
             });
+
+            this.setState(state => {
+                return {
+                    ...state,
+                    quill: quill
+                }
+            })
         }
         
     }
@@ -78,14 +101,14 @@ class QuillEditor extends Component {
     }
 
     render() {
-        const { id, edit = true, value, height = 200 } = this.props;
+        const { id, edit = true, quillValueDefault, height = 200 } = this.props;
 
         return (
             <React.Fragment>
                 {
                     edit
                         ? <div id={`editor-container${id}`} style={{ height: height }}/>
-                        : parse(value)
+                        : parse(quillValueDefault)
                 }
             </React.Fragment>
         )

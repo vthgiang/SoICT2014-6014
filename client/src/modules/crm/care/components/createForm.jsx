@@ -243,7 +243,6 @@ class CreateCareForm extends Component {
                             <QuillEditor
                                 id={'createCare'}
                                 getTextData={this.handleChangeDescription}
-                                value={newCare.description ? newCare.description : ""}
                             />
                         </div>
 
