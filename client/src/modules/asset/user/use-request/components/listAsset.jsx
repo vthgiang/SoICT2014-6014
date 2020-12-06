@@ -128,7 +128,6 @@ class ListAsset extends Component {
         }
 
         this.setState({
-            ...this.state,
             assetType: value
         })
     }
@@ -140,7 +139,6 @@ class ListAsset extends Component {
         }
 
         this.setState({
-            ...this.state,
             group: value
         })
     }
@@ -152,7 +150,6 @@ class ListAsset extends Component {
         }
 
         this.setState({
-            ...this.state,
             status: value
         })
     }
@@ -164,14 +161,12 @@ class ListAsset extends Component {
         }
 
         this.setState({
-            ...this.state,
             typeRegisterForUse: value
         })
     }
     // Function bắt sự kiện tìm kiếm
     handleSubmitSearch = () => {
         this.setState({
-            ...this.state,
             page: 0
         })
 
@@ -212,16 +207,18 @@ class ListAsset extends Component {
     }
 
     convertGroupAsset = (group) => {
+        const {translate} = this.props;
         if (group === 'building') {
-            return 'Mặt bằng';
+            return translate('asset.dashboard.building');
         } else if (group === 'vehicle') {
-            return 'Xe cộ'
+            return translate('asset.dashboard.vehicle')
         } else if (group === 'machine') {
-            return 'Máy móc'
+            return translate('asset.dashboard.machine')
         } else if (group === 'other') {
-            return 'Khác'
+            return translate('asset.dashboard.other')
         } else return null;
     }
+    
     convertStatusAsset = (status) => {
         const { translate } = this.props;
         if (status === 'ready_to_use') {
