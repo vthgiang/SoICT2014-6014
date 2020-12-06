@@ -76,6 +76,7 @@ class UseRequestManager extends Component {
     }
 
     formatDateTime(date, typeRegisterForUse) {
+        if(!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -219,18 +220,18 @@ class UseRequestManager extends Component {
             data = data.map((x, index) => {
 
                 let code = x.recommendNumber;
-                let assetName = (x.asset) ? x.asset.assetName : "";
+                let assetName = (x.asset) ? x.asset.assetName : '';
                 let approver = (x.approver) ? x.approver.email : '';
-                let assigner = (x.proponent) ? x.proponent.email : "";
-                let createDate = x.dateCreate
-                let dateStartUse = x.dateStartUse;
-                let dateEndUse = x.dateEndUse;
+                let assigner = (x.proponent) ? x.proponent.email : ''
+                let createDate = this.formatDateTime(x.dateCreate)
+                let dateStartUse = this.formatDateTime(x.dateStartUse);
+                let dateEndUse = this.formatDateTime(x.dateEndUse);
                 let assetCode = (x.asset) ? x.asset.code : ''
-                let status = x.status;
+                let status = this.formatStatus(x.status);
 
                 return {
                     index: index + 1,
-                    code: code,
+                    code: code, 
                     createDate: createDate,
                     assigner: assigner,
                     assetName: assetName,
