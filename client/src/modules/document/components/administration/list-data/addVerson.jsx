@@ -147,19 +147,19 @@ class AddVersion extends Component {
                     <div className="form-group">
                         <label>{translate('document.doc_version.issuing_date')}</label>
                         <DatePicker
-                            id={`document-add-version-issuing-datee`}
+                            id={`document-add-version-issuing-date`}
                             onChange={this.handleIssuingDate}
                         />
                     </div>
                     <div className="form-group">
                         <label>{translate('document.doc_version.effective_date')}</label>
                         <DatePicker
-                            id={`document-add-version-effective-datee`}
+                            id={`document-add-version-effective-date`}
                             onChange={this.handleEffectiveDate}
                         />
                     </div>
                     <div className="form-group">
-                        <label>{translate('document.doc_version.expired_datee')}</label>
+                        <label>{translate('document.doc_version.expired_date')}</label>
                         <DatePicker
                             id={`document-add-version-expired-date`}
                             onChange={this.handleExpiredDate}

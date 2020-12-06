@@ -169,13 +169,13 @@ class ListAsset extends Component {
         })
     }
     // Function bắt sự kiện tìm kiếm
-    handleSubmitSearch = async () => {
+    handleSubmitSearch = () => {
         this.setState({
             ...this.state,
             page: 0
         })
 
-        this.props.getAllAsset(this.state);
+        this.props.getAllAsset({ ...this.state, page: 0 });
     }
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
@@ -218,9 +218,9 @@ class ListAsset extends Component {
             return 'Xe cộ'
         } else if (group === 'machine') {
             return 'Máy móc'
-        } else {
+        } else if (group === 'other') {
             return 'Khác'
-        }
+        } else return null;
     }
     convertStatusAsset = (status) => {
         const { translate } = this.props;
@@ -236,9 +236,9 @@ class ListAsset extends Component {
         else if (status === 'lost') {
             return translate('asset.general_information.lost');
         }
-        else {
+        else if (status === 'disposal') {
             return translate('asset.general_information.disposal')
-        }
+        } else return null;
     }
 
     render() {
