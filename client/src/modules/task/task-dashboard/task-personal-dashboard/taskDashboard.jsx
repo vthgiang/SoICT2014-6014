@@ -76,39 +76,39 @@ class TaskDashboard extends Component {
         });
     }
 
-    shouldComponentUpdate = async (nextProps, nextState) => {
-        if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-            if (!nextProps.tasks.responsibleTasks
-                || !nextProps.tasks.accountableTasks
-                || !nextProps.tasks.consultedTasks
-                || !nextProps.tasks.informedTasks
-                || !nextProps.tasks.creatorTasks
-                || !nextProps.tasks.tasksbyuser
-            ) {
-                return false;
-            }
+    // shouldComponentUpdate = async (nextProps, nextState) => {
+    //     if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
+    //         if (!nextProps.tasks.responsibleTasks
+    //             || !nextProps.tasks.accountableTasks
+    //             || !nextProps.tasks.consultedTasks
+    //             || !nextProps.tasks.informedTasks
+    //             || !nextProps.tasks.creatorTasks
+    //             || !nextProps.tasks.tasksbyuser
+    //         ) {
+    //             return false;
+    //         }
 
-            this.setState(state => {
-                return {
-                    ...state,
-                    dataStatus: this.DATA_STATUS.AVAILABLE,
-                    callAction: true
-                }
-            });
-        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && nextState.willUpdate) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    dataStatus: this.DATA_STATUS.FINISHED,
-                    willUpdate: false       // Khi true sẽ cập nhật dữ liệu vào props từ redux
-                }
-            });
+    //         this.setState(state => {
+    //             return {
+    //                 ...state,
+    //                 dataStatus: this.DATA_STATUS.AVAILABLE,
+    //                 callAction: true
+    //             }
+    //         });
+    //     } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && nextState.willUpdate) {
+    //         this.setState(state => {
+    //             return {
+    //                 ...state,
+    //                 dataStatus: this.DATA_STATUS.FINISHED,
+    //                 willUpdate: false       // Khi true sẽ cập nhật dữ liệu vào props từ redux
+    //             }
+    //         });
 
-            return true;
-        }
+    //         return true;
+    //     }
 
-        return false;
-    }
+    //     return false;
+    // }
 
     generateDataPoints(noOfDps) {
         let xVal = 1, yVal = 100;
