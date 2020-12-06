@@ -299,7 +299,7 @@ class UseRequestManager extends Component {
             case 'approved': return translate('asset.usage.approved');
             case 'waiting_for_approval': return translate('asset.usage.waiting_approval');
             case 'disapproved': return translate('asset.usage.not_approved');
-            default: return 'Deleted';
+            default: return '';
         }
     }
 
@@ -417,11 +417,11 @@ class UseRequestManager extends Component {
                             {(listRecommendDistributes && listRecommendDistributes.length !== 0) ?
                                 listRecommendDistributes.map((x, index) => {
                                     return (<tr key={index}>
-                                        <td><a onClick={() => this.handleEditAsset(x.asset)}>{x.asset ? x.asset.code : 'Asset is deleted'}</a></td>
+                                        <td><a onClick={() => this.handleEditAsset(x.asset)}>{x.asset ? x.asset.code : ''}</a></td>
                                         <td>{x.recommendNumber}</td>
                                         <td>{this.formatDateTime(x.dateCreate)}</td>
-                                        <td>{x.proponent ? x.proponent.email : 'User is deleted'}</td>
-                                        <td>{x.asset ? x.asset.assetName : 'Asset is deleted'}</td>
+                                        <td>{x.proponent ? x.proponent.email : ''}</td>
+                                        <td>{x.asset ? x.asset.assetName : ''}</td>
                                         <td>{this.formatDateTime(x.dateStartUse, x.asset ? x.asset.typeRegisterForUse : undefined)}</td>
                                         <td>{this.formatDateTime(x.dateEndUse, x.asset ? x.asset.typeRegisterForUse : undefined)}</td>
                                         <td>{x.approver ? x.approver.email : ''}</td>

@@ -435,7 +435,7 @@ class AssetManagement extends Component {
             return translate('asset.general_information.disposal')
         }
         else {
-            return 'Deleted';
+            return '';
         }
     }
 
@@ -551,7 +551,7 @@ class AssetManagement extends Component {
                             <SelectMulti id={`multiSelectStatus1`} multiple="multiple"
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('asset.general_information.select_all_status') }}
                                 onChange={this.handleStatusChange}
-                                value={status}
+                                value={status ? status : []}
                                 items={[
                                     { value: "ready_to_use", text: translate('asset.general_information.ready_use') },
                                     { value: "in_use", text: translate('asset.general_information.using') },
@@ -699,11 +699,11 @@ class AssetManagement extends Component {
                                         <td>{x.code}</td>
                                         <td>{x.assetName}</td>
                                         <td>{this.convertGroupAsset(x.group)}</td>
-                                        <td>{x.assetType && x.assetType.length ? x.assetType.map((item, index) => { let suffix = index < x.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : 'Asset is deleted'}</td>
+                                        <td>{x.assetType && x.assetType.length ? x.assetType.map((item, index) => { let suffix = index < x.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : 'Asset Type is deleted'}</td>
                                         <td>{this.formatDate(x.purchaseDate)}</td>
                                         <td>{x.managedBy && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).name : ''}</td>
                                         <td>{x.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.assignedToUser) ? userlist.find(item => item._id === x.assignedToUser).name : '') : ''}</td>
-                                        <td>{x.assignedToOrganizationalUnit ? (departmentlist.length && departmentlist.find(item => item._id === x.assignedToOrganizationalUnit) ? departmentlist.find(item => item._id === x.assignedToOrganizationalUnit).name : 'Organizational Unit is deleted') : ''}</td>
+                                        <td>{x.assignedToOrganizationalUnit ? (departmentlist.length && departmentlist.find(item => item._id === x.assignedToOrganizationalUnit) ? departmentlist.find(item => item._id === x.assignedToOrganizationalUnit).name : '') : ''}</td>
                                         <td>{this.formatStatus(x.status)}</td>
                                         <td>{this.formatDisposalDate(x.disposalDate, x.status)}</td>
                                         <td style={{ textAlign: "center" }}>
