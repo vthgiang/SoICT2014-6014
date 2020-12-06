@@ -34,7 +34,7 @@ export default {
             success: "Thành công",
             error: "Lỗi",
             new_notification: "Bạn có thông báo mới!",
-            search:"Gõ để tìm kiêm",
+            search: "Gõ để tìm kiêm",
             auth_alert: {
                 title:
                     "Hệ thống xác nhận có lỗi xảy ra trong phiên làm việc của bạn!",
@@ -50,7 +50,7 @@ export default {
                 ],
             },
             server_disconnect: "Kết nối tới máy chủ thất bại",
-            check_connect_again:"kiểm tra lại kết nối tới máy chủ",
+            check_connect_again: "kiểm tra lại kết nối tới máy chủ",
             validate: {
                 invalid_character_error:
                     "Giá trị không được chứa ký tự đặc biệt",
@@ -1062,7 +1062,7 @@ export default {
             employee_capacity: "Năng lực nhân viên",
             discipline: "Quản lý khen thưởng - kỷ luật",
             annual_leave: "Quản lý nghỉ phép",
-            manage_field:'Quản lý ngành nghề/lĩnh vực',
+            manage_field: "Quản lý ngành nghề/lĩnh vực",
             salary_employee: "Quản lý lương nhân viên",
             time_keeping: "Chấm công nhân viên",
             list_education: "Chương trình đào tạo bắt buộc",
@@ -1471,8 +1471,8 @@ export default {
                     "Chỉnh sửa đơn xin nghỉ phép thành công",
                 edit_annual_leave_faile: "Chỉnh sửa đơn xin nghỉ phép thất bại",
                 aplication_annual_leave_success: "Thêm đơn xin nghỉ thành công",
-                import_annual_leave_success:'Thêm dữ liệu từ file thành công',
-                import_annual_leave_faile:'Thêm dữ liệu từ file thất bại',
+                import_annual_leave_success: "Thêm dữ liệu từ file thành công",
+                import_annual_leave_faile: "Thêm dữ liệu từ file thất bại",
             },
 
             // Quản lý khen thưởng kỷ luật
@@ -1642,7 +1642,7 @@ export default {
                 religion: "Tôn giáo",
                 active: "Đang làm việc",
                 leave: "Đã nghỉ làm",
-                career_fields:'Ngành nghề/lĩnh vực',
+                career_fields: "Ngành nghề/lĩnh vực",
                 maternity_leave: "Nghỉ thai sản",
                 unpaid_leave: "Nghỉ không lương",
                 probationary: "Đang thử việc",
@@ -2011,18 +2011,19 @@ export default {
 
             dashboard_personal: {
                 remind_work: "Nhắc việc",
-                number_annual_leave_in_year: "Số ngày nghỉ phép còn lại trong năm",
+                number_annual_leave_in_year:
+                    "Số ngày nghỉ phép còn lại trong năm",
                 day: "ngày",
                 task: "công việc",
                 accountable: "phê duyệt",
                 responsible: "thực hiện",
                 consulted: "tư vấn",
                 informed: "quan sát",
-                task_total: "Tổng số Công việc",               
+                task_total: "Tổng số Công việc",
                 kpi_results: "Kết quả KPI",
                 point: "điểm",
                 overtime_total: "Tổng thời gian tăng ca",
-                hours: "giờ", 
+                hours: "giờ",
                 total_time_annual_leave: "Tổng thời gian nghỉ phép",
                 fullname: "Họ và tên",
                 task_total: "Số công việc",
@@ -2032,21 +2033,20 @@ export default {
                 reason_praise: "Lý do khen thưởng",
                 general_discipline: "Tổng hợp kỷ luật",
                 reason_discipline: "Lý do kỷ luật",
-                
+
                 general_annual_leave: "Tổng hợp tình hình nghỉ phép",
                 total_hours: "Tổng số giờ",
                 total_hours_works: "Tổng số giờ",
                 general_overtime: "Tổng hợp tình hình tăng ca",
                 not_org_unit: "Bạn chưa có đơn vị",
-                
-                trend_of_work:"Xu hướng làm việc"
 
+                trend_of_work: "Xu hướng làm việc",
             },
 
             // Quản lý ngành nghề lĩnh vực
-            field:{
-                 // Nhóm dành cho table
-                 table: {
+            field: {
+                // Nhóm dành cho table
+                table: {
                     name: "Tên ngành nghề/lĩnh vực",
                     description: "Mô tả",
                 },
@@ -2058,13 +2058,15 @@ export default {
                 add_fields_title: "Thêm mới ngành nghề/lĩnh vực",
 
                 // Thông điệp trả về từ server
-                get_fields_success:"Lấy danh sách ngành nghề/lĩnh vực thành công",
+                get_fields_success:
+                    "Lấy danh sách ngành nghề/lĩnh vực thành công",
                 get_fields_faile: "Lấy danh sách ngành nghề/lĩnh vực thất bại",
-                create_fields_success:"Thêm mới ngành nghề/lĩnh vực thành công",
+                create_fields_success:
+                    "Thêm mới ngành nghề/lĩnh vực thành công",
                 create_fields_faile: "Thêm mới ngành nghề/lĩnh vực thất bại",
                 delete_fields_success: "Xoá ngành nghề/lĩnh vực thành công",
                 delete_fields_faile: "Xoá ngành nghề/lĩnh vực thất bại",
-                edit_fields_success:"Chỉnh sửa ngành nghề/lĩnh vực thành công",
+                edit_fields_success: "Chỉnh sửa ngành nghề/lĩnh vực thành công",
                 edit_fields_faile: "Chỉnh sửa ngành nghề/lĩnh vực thất bại",
             },
 
@@ -2281,7 +2283,7 @@ export default {
             general_information: {
                 view_more: "Xem thêm",
                 asset: "Tài sản",
-                choose_asset:"Chọn tài sản",
+                choose_asset: "Chọn tài sản",
                 asset_list: "Danh sách tài sản",
                 search: "Tìm kiếm",
                 add: "Thêm",
@@ -2325,12 +2327,12 @@ export default {
                 handover_from_date: "Thời gian bắt đầu sử dụng",
                 handover_to_date: "Thời gian kết thúc sử dụng",
                 status: "Trạng thái",
-                choose_status:"Chọn trạng thái",
+                choose_status: "Chọn trạng thái",
                 action: "Hành động",
                 asset_value: "Giá trị tài sản",
                 disposal_date: "Ngày thanh lý",
                 not_disposal: "Chưa thanh lý",
-                not_disposal_date:"Chưa nhập thời gian thanh lý",
+                not_disposal_date: "Chưa nhập thời gian thanh lý",
 
                 general_information: "Thông tin chung",
                 usage_information: "Thông tin sử dụng",
@@ -2351,7 +2353,7 @@ export default {
                 form_code: "Mã phiếu",
                 create_date: "Ngày lập",
                 type: "Phân loại",
-                choose_type:"Chọn phân loại",
+                choose_type: "Chọn phân loại",
                 start_date: "Ngày bắt đầu",
                 end_date: "Ngày hoàn thành",
                 expense: "Chi phí",
@@ -2651,6 +2653,7 @@ export default {
                     "Chỉnh sửa thông tin phiếu thành công",
                 edit_purchase_request_faile:
                     "Chỉnh sửa thông tin phiếu thất bại",
+                recommend_number_exist: "Mã phiếu đăng ký đã tồn tại",
             },
 
             // Đăng ký sử dụng thiết bị
@@ -3031,12 +3034,15 @@ export default {
                 err_eval_on_month: "Ngày đánh giá phải là ngày trong tháng",
 
                 info_eval_month: "Thông tin công việc trong đánh giá này",
-                explain_avg_rating: "Do chưa có hoạt động nào được đánh giá nên mặc định điểm đánh giá hoạt động là 10",
-                explain_not_has_failed_and_passed_action: " - (Do chưa có hành động nào, hoặc chưa hành động nào được đánh giá, nên số lượng hành động đạt sẽ được coi là bằng 1)",
-                    // " - (Do chưa có hành động nào được đánh giá qua hay không qua, nên số lượng hành động qua và không qua sẽ được coi bằng nhau và bằng 1)",
+                explain_avg_rating:
+                    "Do chưa có hoạt động nào được đánh giá nên mặc định điểm đánh giá hoạt động là 10",
+                explain_not_has_failed_and_passed_action:
+                    " - (Do chưa có hành động nào, hoặc chưa hành động nào được đánh giá, nên số lượng hành động đạt sẽ được coi là bằng 1)",
+                // " - (Do chưa có hành động nào được đánh giá qua hay không qua, nên số lượng hành động qua và không qua sẽ được coi bằng nhau và bằng 1)",
 
                 auto_point_field: "Điểm công việc tự động trong đánh giá này",
-                get_outside_info: "Nhập tự động từ thông tin công việc hiện tại",
+                get_outside_info:
+                    "Nhập tự động từ thông tin công việc hiện tại",
 
                 dashboard_created: "Số CV bạn đã tạo",
                 dashboard_need_perform: "Số CV bạn thực hiện",
@@ -4450,7 +4456,8 @@ export default {
                 bill_information: "Các phiếu nhập kho",
                 quantity_error: "Vui lòng nhập số lượng",
                 quantity_error_input: "Số lượng nhập vào phải lớn hơn 0",
-                quantity_error_input_1: "Số lượng nhập vào không được lớn hơn số lượng còn lại trong lô",
+                quantity_error_input_1:
+                    "Số lượng nhập vào không được lớn hơn số lượng còn lại trong lô",
                 name_receiver: "Tên người giao hàng",
                 email_receiver: "Email người giao hàng",
                 phone_receiver: "Số điện thoại người giao hàng",
@@ -4458,15 +4465,18 @@ export default {
                 choose_stock_error: "Vui lòng chọn kho",
                 choose_user: "Chọn người",
                 error_name_receiver: "Tên người giao hàng không được để trống",
-                error_phone_receiver: "Số điện thoại người giao hàng không được để trống",
+                error_phone_receiver:
+                    "Số điện thoại người giao hàng không được để trống",
                 error_phone_receiver_input: "Số điện thoại không hợp lệ",
                 choose_approvers: "Vui lòng chọn người phê duyệt",
                 choose_accountables: "Vui lòng chọn người giám sát",
                 chooos_reponsibles: "Vui lòng chọn người thực hiện",
-                choose_all_lot: "Vui lòng nhập hết số lượng sản phẩm trong lô để tạo phiếu nhập kho",
-                create_product_bill_successfully: "Thêm phiếu nhập sản phẩm thành công",
+                choose_all_lot:
+                    "Vui lòng nhập hết số lượng sản phẩm trong lô để tạo phiếu nhập kho",
+                create_product_bill_successfully:
+                    "Thêm phiếu nhập sản phẩm thành công",
                 create_product_bill_failed: "Thêm phiếu nhập sản phẩm thất bại",
-                add_product_bill: "Thêm phiếu nhập sản phẩm"
+                add_product_bill: "Thêm phiếu nhập sản phẩm",
             },
             inventory_management: {
                 product: "Sản phẩm",
@@ -4739,9 +4749,9 @@ export default {
                 creator: "Người tạo",
                 index: "STT",
                 select_all: "Chọn tất cả",
-                1: { content: "Chưa xử lý", color: "orange" },
-                2: { content: "Đã xử lý", color: "green" },
-                3: { content: "Đã hủy", color: "red" },
+                1: {content: "Chưa xử lý", color: "orange"},
+                2: {content: "Đã xử lý", color: "green"},
+                3: {content: "Đã hủy", color: "red"},
                 search: "Tìm kiếm",
                 select_status: "Chọn trạng thái",
                 add_purchasing_request_button: "Thêm phiếu",
