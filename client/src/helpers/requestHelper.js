@@ -44,6 +44,10 @@ const showAuthResponseAlertAndRedirectToLoginPage = async () => {
     await window.$(`#alert-error-auth`).modal({ backdrop: 'static', keyboard: false, display: 'show' });
 }
 
+const showServerDisconnectedError = async () => {
+    await window.$(`#alert-error-server-disconnected`).modal({ display: 'show' });
+}
+
 /**
  * Hàm gọi request đến server
  * @param {*} data Cấu trúc của data bao gồm (url method, data)
@@ -76,7 +80,12 @@ export async function sendRequest(options, showSuccessAlert = false, showFailAle
         );
         return Promise.resolve(res);
     }).catch(err => {
-        const messages = Array.isArray(err.response.data.messages) ? err.response.data.messages : [err.response.data.messages];
+        let messages;
+        if (!err.response) {
+            showServerDisconnectedError();
+        } else {
+            messages = Array.isArray(err.response.data.messages) ? err.response.data.messages : [err.response.data.messages];
+        }
 
         if (messages) {
             if (checkErrorAuth(messages[0]))

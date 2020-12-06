@@ -48,6 +48,8 @@ export default {
                     "Company service stoped",
                 ],
             },
+            server_disconnect:"Connection to server failed",
+            check_connect_again:"Check the server connection again",
             validate: {
                 invalid_character_error: "Value invalid character error",
                 length_error: "Value should have length between {min} to {max}",

@@ -9,6 +9,7 @@ import { PinnedPanel } from '../src/common-components';
 import TaskTimesheetLog from '../src/modules/task/task-perform/component/taskTimesheetLog';
 
 import AuthAlert from './modules/alert/components/authAlert';
+import ServerDisconnectedAlert from './modules/alert/components/serverDisconnectdAlert';
 import { ToastContainer, toast } from 'react-toastify';
 import { SocketConstants } from './modules/socket/redux/constants';
 
@@ -53,6 +54,7 @@ class App extends Component {
 
         return (
             <React.Fragment>
+                <ServerDisconnectedAlert/>
                 <AuthAlert />
                 <ToastContainer 
                     enableMultiContainer={true}

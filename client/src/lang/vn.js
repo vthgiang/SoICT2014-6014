@@ -49,6 +49,8 @@ export default {
                     "Dịch vụ cho công ty không còn hoạt động",
                 ],
             },
+            server_disconnect: "Kết nối tới máy chủ thất bại",
+            check_connect_again:"kiểm tra lại kết nối tới máy chủ",
             validate: {
                 invalid_character_error:
                     "Giá trị không được chứa ký tự đặc biệt",
