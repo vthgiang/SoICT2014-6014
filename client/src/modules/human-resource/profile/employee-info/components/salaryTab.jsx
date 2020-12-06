@@ -85,7 +85,7 @@ class SalaryTab extends Component {
                                                     <td>{this.formatDate(x.month, true)}</td>
                                                     <td>{formater.format(parseInt(x.mainSalary))} {x.unit}</td>
                                                     <td>{formater.format(total)} {x.unit}</td>
-                                                    <td>{organizationalUnit ? organizationalUnit.name : 'Deleted'}</td>
+                                                    <td>{organizationalUnit ? organizationalUnit.name : ''}</td>
                                                 </tr>
                                             )
                                         })
@@ -121,7 +121,7 @@ class SalaryTab extends Component {
                                                 <td>{this.formatDate(x.endDate)}</td>
                                                 <td>{x.reason}</td>
                                                 <td>{translate(`human_resource.annual_leave.status.${x.status}`)}</td>
-                                                <td>{organizationalUnit ? organizationalUnit.name : "Deleted"}</td>
+                                                <td>{organizationalUnit ? organizationalUnit.name : ""}</td>
                                             </tr>
                                         )
                                     })}

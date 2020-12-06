@@ -62,31 +62,15 @@
 
   <!-- Script khởi tạo quill-editor -->
   <script>
-    function initializationQuill(id) {
+    function initializationQuill(id, config) {
       // Thêm các module tiện ích
       Quill.register({
         'modules/imageDropAndPaste': QuillImageDropAndPaste,
         'modules/tableUI': quillTableUI.default
       }, true);
 
-      // Khởi tạo Quill Editor trong thẻ có id = id truyền vào
-      const quill = new Quill(id, {
-        modules: {
-          toolbar: [
-            [{ 'font': [] }],
-            [{ header: [1, 2, 3, false] }],
-            ['bold', 'italic', 'underline', 'strike'],
-            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-            [{ 'align': [] }],
-            ['image', 'code-block', 'list']
-          ],
-          imageDropAndPaste: true,
-          table: true,
-          tableUI: true,
-        },
-        placeholder: 'Start typing here...',
-        theme: 'snow'
-      });
+      // Khởi tạo Quill Editor trong thẻ có id = id truyền vào, config lấy từ common-component/quill-editor
+      const quill = new Quill(id, config);
 
       return quill;
     }

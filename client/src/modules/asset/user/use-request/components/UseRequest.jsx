@@ -172,7 +172,7 @@ class UseRequest extends Component {
             case 'approved': return translate('asset.usage.approved');
             case 'waiting_for_approval': return translate('asset.usage.waiting_approval');
             case 'disapproved': return translate('asset.usage.not_approved');
-            default: return 'Deleted';
+            default: return '';
         }
     }
 
@@ -280,12 +280,12 @@ class UseRequest extends Component {
                                         <tr key={index}>
                                             <td>{x.recommendNumber}</td>
                                             <td>{this.formatDateTime(x.dateCreate)}</td>
-                                            <td>{x.proponent ? x.proponent.name : 'User is deleted'}</td>
-                                            <td>{x.asset ? x.asset.code : 'Asset is deleted'}</td>
-                                            <td>{x.asset ? x.asset.assetName : 'Asset is deleted'}</td>
-                                            <td>{this.formatDateTime(x.dateStartUse, x.asset.typeRegisterForUse)}</td>
-                                            <td>{this.formatDateTime(x.dateEndUse, x.asset.typeRegisterForUse)}</td>
-                                            <td>{x.approver ? x.approver.name : 'User is deleted'}</td>
+                                            <td>{x.proponent ? x.proponent.name : ''}</td>
+                                            <td>{x.asset ? x.asset.code : ''}</td>
+                                            <td>{x.asset ? x.asset.assetName : ''}</td>
+                                            <td>{x.asset ? this.formatDateTime(x.dateStartUse, x.asset.typeRegisterForUse) : ''}</td>
+                                            <td>{x.asset ? this.formatDateTime(x.dateEndUse, x.asset.typeRegisterForUse) : ''}</td>
+                                            <td>{x.approver ? x.approver.name : ''}</td>
                                             <td>{this.formatStatus(x.status)}</td>
                                             <td style={{ textAlign: "center" }}>
                                                 <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_usage_info')}><i className="material-icons">edit</i></a>

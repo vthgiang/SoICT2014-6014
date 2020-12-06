@@ -1,27 +1,28 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
 import { ButtonModal, DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
 
-import { MaintainanceFormValidator } from './maintainanceFormValidator';
-
-import { MaintainanceActions } from '../redux/actions';
 import { AssetManagerActions } from '../../asset-information/redux/actions';
+import { MaintainanceActions } from '../redux/actions';
+
+import ValidationHelper from '../../../../../helpers/validationHelper';
 
 class MaintainanceCreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            maintainanceCode: "",
-            createDate: this.formatDate(Date.now()),
-            type: "1",
-            asset: "",
-            description: "",
-            startDate: this.formatDate(Date.now()),
-            endDate: this.formatDate(Date.now()),
-            expense: "",
-            status: "2",
+            newMaintainance: {
+                maintainanceCode: "",
+                createDate: this.formatDate(Date.now()),
+                type: "",
+                asset: "",
+                description: "",
+                startDate: this.formatDate(Date.now()),
+                endDate: this.formatDate(Date.now()),
+                expense: "",
+                status: "",
+            }
         };
     }
 
@@ -49,47 +50,47 @@ class MaintainanceCreateForm extends Component {
 
     // Bắt sự kiện thay đổi mã phiếu
     handleMaintainanceCodeChange = (e) => {
+        const { newMaintainance } = this.state;
+        const { translate } = this.props;
         let { value } = e.target;
-        this.validateMaintainanceCode(value, true);
-    }
-    validateMaintainanceCode = (value, willUpdateState = true) => {
-        let msg = MaintainanceFormValidator.validateMaintainanceCode(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnMaintainanceCode: msg,
-                    maintainanceCode: value,
-                }
-            });
-        }
-        return msg === undefined;
+
+        let { message } = ValidationHelper.validateName(translate, value, 4, 255);
+
+        this.setState({
+            newMaintainance: {
+                ...newMaintainance,
+                maintainanceCode: value,
+            },
+            errorOnMaintainanceCode: message
+        })
     }
 
     // Bắt sự kiện thay đổi "Ngày lập"
     handleCreateDateChange = (value) => {
-        this.validateCreateDate(value, true);
-    }
-    validateCreateDate = (value, willUpdateState = true) => {
-        let msg = MaintainanceFormValidator.validateCreateDate(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnCreateDate: msg,
-                    createDate: value,
-                }
-            });
-        }
-        return msg === undefined;
+        const { newMaintainance } = this.state;
+        const { translate } = this.props;
+
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
+        this.setState({
+            newMaintainance: {
+                ...newMaintainance,
+                createDate: value,
+            },
+            errorOnCreateDate: message
+        })
     }
 
     // Bắt sự kiện thay đổi loại phiếu
     handleTypeChange = (e) => {
+        const { newMaintainance } = this.state;
         let { value } = e.target;
+
         this.setState({
-            ...this.state,
-            type: value
+            newMaintainance: {
+                ...newMaintainance,
+                type: value,
+            }
         })
     }
 
@@ -97,137 +98,146 @@ class MaintainanceCreateForm extends Component {
      * Bắt sự kiện thay đổi Mã tài sản
      */
     handleAssetChange = (value) => {
+        const { newMaintainance } = this.state;
+        const { translate } = this.props;
+        let { message } = ValidationHelper.validateName(translate, value[0], 4, 255);
+
         this.setState({
-            asset: value[0]
+            newMaintainance: {
+                ...newMaintainance,
+                asset: value[0]
+            },
+            assetError: message
         });
     }
 
     // Bắt sự kiện thay đổi "Nội dung"
     handleDescriptionChange = (e) => {
+        const { newMaintainance } = this.state;
         let { value } = e.target;
-        this.validateDescription(value, true);
-    }
-    validateDescription = (value, willUpdateState = true) => {
-        let msg = MaintainanceFormValidator.validateDescription(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnDescription: msg,
-                    description: value,
-                }
-            });
-        }
-        return msg === undefined;
+
+        this.setState({
+            newMaintainance: {
+                ...newMaintainance,
+                description: value,
+            }
+        })
     }
 
     // Bắt sự kiện thay đổi "Ngày thực hiện"
     handleStartDateChange = (value) => {
-        this.validateStartDate(value, true);
-    }
-    validateStartDate = (value, willUpdateState = true) => {
-        let msg = MaintainanceFormValidator.validateStartDate(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnStartDate: msg,
-                    startDate: value,
-                }
-            });
-        }
-        return msg === undefined;
+        const { newMaintainance } = this.state;
+        const { translate } = this.props;
+
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+        this.setState({
+            newMaintainance: {
+                ...newMaintainance,
+                startDate: value,
+            },
+            errorOnStartDate: message
+        })
     }
 
     // Bắt sự kiện thay đổi "Ngày hoàn thành"
     handleEndDateChange = (value) => {
+        const { newMaintainance } = this.state;
+
         this.setState({
-            ...this.state,
-            endDate: value
+            newMaintainance: {
+                ...newMaintainance,
+                endDate: value,
+            }
         })
     }
 
     // Bắt sự kiện thay đổi "Chi phí"
     handleExpenseChange = (e) => {
         let { value } = e.target;
-        this.validateExpense(value, true);
-    }
-    validateExpense = (value, willUpdateState = true) => {
-        let msg = MaintainanceFormValidator.validateExpense(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnExpense: msg,
-                    expense: value,
-                }
-            });
-        }
-        return msg === undefined;
+        const { newMaintainance } = this.state;
+
+        this.setState({
+            newMaintainance: {
+                ...newMaintainance,
+                expense: value,
+            }
+        })
     }
 
     // Bắt sự kiện thay đổi "Trạng thái phiếu"
     handleStatusChange = (e) => {
+        const { newMaintainance } = this.state;
         let { value } = e.target;
+
         this.setState({
-            ...this.state,
-            status: value
+            newMaintainance: {
+                ...newMaintainance,
+                status: value
+            }
         })
     }
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result = this.validateCreateDate(this.state.createDate, false)
+        const { maintainanceCode, asset, startDate } = this.state.newMaintainance;
+        const { translate } = this.props;
 
-        return result;
+        if (!ValidationHelper.validateName(translate, maintainanceCode).status
+            || !ValidationHelper.validateName(translate, asset).status
+            || !ValidationHelper.validateName(translate, startDate).status)
+            return false;
+        return true;
     }
 
 
     // Bắt sự kiện submit form
     save = () => {
-        var partCreate = this.state.createDate.split('-');
-        var createDate = [partCreate[2], partCreate[1], partCreate[0]].join('-');
-        var partStart = this.state.startDate.split('-');
-        var startDate = [partStart[2], partStart[1], partStart[0]].join('-');
-        var partEnd = this.state.endDate.split('-');
-        var endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+        let { maintainanceCode, createDate, type, asset, description, startDate, endDate, expense, status } = this.state.newMaintainance
+
+        const partCreate = createDate.split('-');
+        const createDateConverted = [partCreate[2], partCreate[1], partCreate[0]].join('-');
+
+        const partStart = startDate.split('-');
+        const startDateConverted = [partStart[2], partStart[1], partStart[0]].join('-');
+
+        const partEnd = endDate.split('-');
+        const endDateConverted = [partEnd[2], partEnd[1], partEnd[0]].join('-');
 
         if (this.isFormValidated()) {
             let dataToSubit = {
-                maintainanceCode: this.state.maintainanceCode,
-                createDate: createDate,
-                type: this.state.type,
-                description: this.state.description,
-                startDate: startDate,
-                endDate: endDate,
-                expense: this.state.expense,
-                status: this.state.status,
+                maintainanceCode: maintainanceCode,
+                createDate: createDateConverted,
+                type: type,
+                description: description,
+                startDate: startDateConverted,
+                endDate: endDateConverted,
+                expense: expense,
+                status: status,
 
             }
-            let assetId = !this.state.asset ? this.props.assetsManager.listAssets[0]._id : this.state.asset;
-            return this.props.createMaintainance(assetId, dataToSubit).then(({ response }) => {
-                if (response.data.success) {
-                    this.props.getAllAsset({
-                        code: "",
-                        assetName: "",
-                        month: null,
-                        status: "",
-                        page: 0,
-                        limit: 5,
-                    });
-                }
-            });;
+
+            return this.props.createMaintainance(asset, dataToSubit);
         }
     };
 
+    onSearch = (value) => {
+        this.props.getAllAsset({ assetName: value, page: 0, limit: 10 });
+    }
+
+    componentDidMount() {
+        this.props.getAllAsset({ page: 0, limit: 10 })
+    }
+
     render() {
         const { id, translate, assetsManager } = this.props;
-        const {
-            maintainanceCode, createDate, type, asset, description, startDate, endDate, expense, status,
-            errorOnMaintainanceCode, errorOnCreateDate, errorOnCode, errorOnDescription, errorOnStartDate, errorOnExpense
-        } = this.state;
+        const { errorOnMaintainanceCode, errorOnCreateDate, errorOnStartDate, assetError } = this.state;
+        const { maintainanceCode, createDate, type, asset, description, startDate, endDate, expense, status } = this.state.newMaintainance
 
-        var assetlist = assetsManager.listAssets;
+        let assetlist = assetsManager.listAssets;
+        if (assetlist) {
+            assetlist = assetlist.map(x => { return { value: x._id, text: x.code + " - " + x.assetName } })
+            assetlist.unshift({ value: '', text: `---${translate('asset.general_information.choose_asset')}---` });
+        }
 
         return (
             <React.Fragment>
@@ -266,6 +276,7 @@ class MaintainanceCreateForm extends Component {
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.type')}</label>
                                     <select className="form-control" value={type} name="type" onChange={this.handleTypeChange}>
+                                        <option value="">{`---${translate('asset.general_information.choose_type')}---`}</option>
                                         <option value="1">{translate('asset.asset_info.repair')}</option>
                                         <option value="2">{translate('asset.asset_info.replace')}</option>
                                         <option value="3">{translate('asset.asset_info.upgrade')}</option>
@@ -273,28 +284,25 @@ class MaintainanceCreateForm extends Component {
                                 </div>
 
                                 {/* Tài sản */}
-                                <div className={`form-group`}>
-                                    <label>{translate('asset.general_information.asset')}</label>
-                                    <div>
-                                        <div id="add-assetBox">
-                                            <SelectBox
-                                                id={`add-asset${id}`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                items={assetlist.map(x => { return { value: x._id, text: x.code + " - " + x.assetName } })}
-                                                onChange={this.handleAssetChange}
-                                                value={asset}
-                                                multiple={false}
-                                            />
-                                        </div>
-                                    </div>
+                                <div className={`form-group ${!assetError ? "" : "has-error"}`}>
+                                    <label>{translate('asset.general_information.asset')} <span className="text-red">*</span></label>
+                                    <SelectBox
+                                        id={`create-timesheets-employee`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={assetlist}
+                                        onChange={this.handleAssetChange}
+                                        value={asset}
+                                        multiple={false}
+                                        onSearch={this.onSearch}
+                                    />
+                                    <ErrorLabel content={assetError} />
                                 </div>
 
                                 {/* Nội dung */}
-                                <div className={`form-group ${!errorOnDescription ? "" : "has-error"}`}>
+                                <div className={`form-group`}>
                                     <label>{translate('asset.general_information.content')}</label>
                                     <textarea className="form-control" rows="3" name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off" placeholder={translate('asset.general_information.content')}></textarea>
-                                    <ErrorLabel content={errorOnDescription} />
                                 </div>
                             </div>
 
@@ -321,16 +329,16 @@ class MaintainanceCreateForm extends Component {
                                 </div>
 
                                 {/* Chi phí */}
-                                <div className={`form-group ${!errorOnExpense ? "" : "has-error"}`}>
+                                <div className={`form-group`}>
                                     <label>{translate('asset.general_information.expense')} (VNĐ)</label>
                                     <input type="number" className="form-control" name="expense" value={expense} onChange={this.handleExpenseChange} autoComplete="off" placeholder={translate('asset.general_information.expense')} />
-                                    <ErrorLabel content={errorOnExpense} />
                                 </div>
 
                                 {/* Trạng thái */}
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.status')}</label>
                                     <select className="form-control" value={status} name="status" onChange={this.handleStatusChange}>
+                                        <option value="">{`---${translate('asset.general_information.choose_status')}---`}</option>
                                         <option value="1">{translate('asset.asset_info.unfulfilled')}</option>
                                         <option value="2">{translate('asset.asset_info.processing')}</option>
                                         <option value="3">{translate('asset.asset_info.made')}</option>
@@ -358,3 +366,4 @@ const actionCreators = {
 
 const createForm = connect(mapState, actionCreators)(withTranslate(MaintainanceCreateForm));
 export { createForm as MaintainanceCreateForm };
+

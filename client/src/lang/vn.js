@@ -34,6 +34,7 @@ export default {
             success: "Thành công",
             error: "Lỗi",
             new_notification: "Bạn có thông báo mới!",
+            search:"Gõ để tìm kiêm",
             auth_alert: {
                 title:
                     "Hệ thống xác nhận có lỗi xảy ra trong phiên làm việc của bạn!",
@@ -48,6 +49,8 @@ export default {
                     "Dịch vụ cho công ty không còn hoạt động",
                 ],
             },
+            server_disconnect: "Kết nối tới máy chủ thất bại",
+            check_connect_again:"kiểm tra lại kết nối tới máy chủ",
             validate: {
                 invalid_character_error:
                     "Giá trị không được chứa ký tự đặc biệt",
@@ -2278,6 +2281,7 @@ export default {
             general_information: {
                 view_more: "Xem thêm",
                 asset: "Tài sản",
+                choose_asset:"Chọn tài sản",
                 asset_list: "Danh sách tài sản",
                 search: "Tìm kiếm",
                 add: "Thêm",
@@ -2321,6 +2325,7 @@ export default {
                 handover_from_date: "Thời gian bắt đầu sử dụng",
                 handover_to_date: "Thời gian kết thúc sử dụng",
                 status: "Trạng thái",
+                choose_status:"Chọn trạng thái",
                 action: "Hành động",
                 asset_value: "Giá trị tài sản",
                 disposal_date: "Ngày thanh lý",
@@ -2346,6 +2351,7 @@ export default {
                 form_code: "Mã phiếu",
                 create_date: "Ngày lập",
                 type: "Phân loại",
+                choose_type:"Chọn phân loại",
                 start_date: "Ngày bắt đầu",
                 end_date: "Ngày hoàn thành",
                 expense: "Chi phí",

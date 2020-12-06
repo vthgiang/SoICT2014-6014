@@ -174,7 +174,7 @@ class AssetCrashManager extends Component {
         } else if (type == 2) {
             return translate('asset.general_information.lost')
         } else {
-            return 'Type is deleted'
+            return ''
         }
     }
 
@@ -185,7 +185,7 @@ class AssetCrashManager extends Component {
         } else if (stt == 2) {
             return translate('asset.general_information.processed')
         } else {
-            return 'Type is deleted'
+            return ''
         }
     }
 
@@ -301,7 +301,7 @@ class AssetCrashManager extends Component {
                                             <td>{x.incidentCode}</td>
                                             <td>{this.convertIncidentType(x.type)}</td>
                                             <td>{this.convertIncidentStatus(x.statusIncident)}</td>
-                                            <td>{x.reportedBy && userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : 'User is deleted'}</td>
+                                            <td>{x.reportedBy && userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : ''}</td>
                                             <td>{this.formatDate2(x.dateOfIncident)}</td>
                                             <td>{x.description}</td>
                                             <td style={{ textAlign: "center" }}>

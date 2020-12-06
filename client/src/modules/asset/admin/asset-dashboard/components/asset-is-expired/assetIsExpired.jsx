@@ -65,7 +65,7 @@ class AssetIsExpired extends Component {
             case 'broken': return translate('asset.general_information.damaged');
             case 'lost': return translate('asset.general_information.lost');
             case 'disposed': return translate('asset.general_information.disposal');
-            default: return 'Deleted'
+            default: return ''
         }
     }
 

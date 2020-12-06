@@ -34,6 +34,7 @@ export default {
             success: "Successfully",
             error: "Error",
             new_notification: "You have new notification!",
+            search:"Type here to search",
             auth_alert: {
                 title: "Current Session invalid. Please log in again",
                 reason: "Reasons maybe:",
@@ -47,6 +48,8 @@ export default {
                     "Company service stoped",
                 ],
             },
+            server_disconnect:"Connection to server failed",
+            check_connect_again:"Check the server connection again",
             validate: {
                 invalid_character_error: "Value invalid character error",
                 length_error: "Value should have length between {min} to {max}",
@@ -2079,6 +2082,7 @@ export default {
         asset: {
             general_information: {
                 asset: "Asset",
+                choose_asset:"Choose asset",
                 asset_list: "Assets list",
                 search: "Search",
                 add: "Add",
@@ -2122,6 +2126,7 @@ export default {
                 handover_from_date: "Handover from date",
                 handover_to_date: "Handover to date",
                 status: "Status",
+                choose_status:"Choose status",
                 action: "Action",
                 asset_value: "Asset value",
                 disposal_date: "Disposal date",
@@ -2146,6 +2151,7 @@ export default {
                 form_code: "Form code",
                 create_date: "Create date",
                 type: "Classify",
+                choose_type:"Choose classify",
                 start_date: "Start date of repair",
                 end_date: "End date of repair",
                 expense: "Cost",
