@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { DatePicker, SelectBox } from '../../../../../../common-components';
+import { DatePicker, SelectBox, TreeSelect } from '../../../../../../common-components';
 import Swal from 'sweetalert2';
 
 import c3 from 'c3';
@@ -25,6 +25,7 @@ class AssetIncidentChart extends Component {
         this.INFO_SEARCH = {
             incidentDateAfter: year + '-' + (month - 3),
             incidentDateBefore: [year, month].join('-'),
+            type: []
         }
 
         this.state = {
@@ -33,11 +34,12 @@ class AssetIncidentChart extends Component {
             defaultStartMonth: '0' + (month - 3) + '-' + year,
             defaultEndMonth: [month, year].join('-'),
             year: "false",
+            type: this.INFO_SEARCH.type,
         }
     }
 
-    setDataColumnChartForMonth = () => {
-        const { listAssets, translate } = this.props;
+    setDataColumnChartForMonth = (listAssets) => {
+        const { translate } = this.props;
         let { incidentDateAfter, incidentDateBefore } = this.state;
 
         let startDate = new Date(incidentDateAfter);
@@ -102,8 +104,8 @@ class AssetIncidentChart extends Component {
         return dataColumnChart;
     }
 
-    setDataColumnChartForYear = () => {
-        const { listAssets, translate } = this.props;
+    setDataColumnChartForYear = (listAssets) => {
+        const { translate } = this.props;
         let { incidentDateAfter, incidentDateBefore } = this.state;
 
         let startDate = incidentDateAfter.slice(0, 4);
@@ -153,10 +155,27 @@ class AssetIncidentChart extends Component {
     }
 
     columnChart = () => {
-        let { translate } = this.props;
-        let { year } = this.state;
-        let dataColumnChart = year == "true" ? this.setDataColumnChartForYear() : this.setDataColumnChartForMonth();
-        console.log('data', dataColumnChart);
+        const { translate, listAssets } = this.props;
+        const { year, type } = this.state;
+        let filterAsset = [];
+
+        if (type && type.length) {
+            listAssets.map(x => {
+                if (x.assetType.length) {
+                    for (let i in x.assetType) {
+                        for (let j in type) {
+                            type[j] === x.assetType[i]._id && filterAsset.push(x);
+                        }
+                    }
+                }
+            })
+        }
+        else {
+            filterAsset = listAssets;
+        }
+
+        let dataColumnChart = year == "true" ? this.setDataColumnChartForYear(filterAsset) : this.setDataColumnChartForMonth(filterAsset);
+
         let chart = c3.generate({
             bindto: this.refs.assetIncidentChart,
             data: {
@@ -201,6 +220,14 @@ class AssetIncidentChart extends Component {
         this.INFO_SEARCH.incidentDateBefore = month;
     }
 
+    handleChangeTypeAsset = (value) => {
+        if (value.length === 0) {
+            value = []
+        }
+        this.INFO_SEARCH.type = value;
+        this.forceUpdate();
+    }
+
     handleSearchData = async () => {
         let incidentDateAfter = new Date(this.INFO_SEARCH.incidentDateAfter);
         let incidentDateBefore = new Date(this.INFO_SEARCH.incidentDateBefore);
@@ -219,6 +246,7 @@ class AssetIncidentChart extends Component {
                     ...state,
                     incidentDateAfter: this.INFO_SEARCH.incidentDateAfter,
                     incidentDateBefore: this.INFO_SEARCH.incidentDateBefore,
+                    type: this.INFO_SEARCH.type
                 }
             })
         }
@@ -233,20 +261,34 @@ class AssetIncidentChart extends Component {
         })
     }
 
+    getAssetTypes = () => {
+        let { assetType } = this.props;
+        let typeArr = [];
+        assetType && assetType.map(item => {
+            typeArr.push({
+                _id: item._id,
+                id: item._id,
+                name: item.typeName,
+                parent: item.parent ? item.parent._id : null
+            })
+        })
+        return typeArr;
+    }
+
     render() {
         const { translate } = this.props;
         let { year } = this.state;
-        let { incidentDateAfter, incidentDateBefore } = this.INFO_SEARCH;
+        let { incidentDateAfter, incidentDateBefore, type } = this.INFO_SEARCH;
+        let typeArr = this.getAssetTypes();
 
         let dateFormat = year == "true" ? "year" : "month-year";
         let startValue = year == "true" ? incidentDateAfter.slice(0, 4) : incidentDateAfter.slice(5, 7) + ' - ' + incidentDateAfter.slice(0, 4);
         let endValue = year == "true" ? incidentDateBefore.slice(0, 4) : incidentDateBefore.slice(5, 7) + ' - ' + incidentDateBefore.slice(0, 4);
 
         this.columnChart();
-
         return (
             <React.Fragment>
-                <div className="form-inline" style={{ textAlign: "right" }}>
+                <div className="form-inline">
 
                     {/* Chọn hiển thị theo tháng/năm */}
                     <div className="form-group">
@@ -266,6 +308,18 @@ class AssetIncidentChart extends Component {
                         />
                     </div>
 
+                    {/* Chọn loại tài sản */}
+                    <div className="form-group">
+                        <label >{translate('asset.general_information.asset_type')}</label>
+                        <TreeSelect
+                            data={typeArr}
+                            value={type}
+                            handleChange={this.handleChangeTypeAsset}
+                            mode="hierarchical"
+                        />
+                    </div>
+                </div>
+                <div className="form-inline">
                     {/* Chọn ngày bắt đầu và kết thúc để tìm kiếm */}
                     <div className="form-group">
                         <label>{translate('task.task_management.from')}</label>

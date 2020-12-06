@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { DatePicker, SelectBox } from '../../../../../../common-components';
+import { DatePicker, SelectBox, TreeSelect } from '../../../../../../common-components';
 import Swal from 'sweetalert2';
 
 import c3 from 'c3';
@@ -25,6 +25,7 @@ class AssetMaintenanceChart extends Component {
         this.INFO_SEARCH = {
             maintenanceDateAfter: year + '-' + (month - 3),
             maintenanceDateBefore: [year, month].join('-'),
+            type: []
         }
 
         this.state = {
@@ -33,11 +34,12 @@ class AssetMaintenanceChart extends Component {
             defaultStartMonth: '0' + (month - 3) + '-' + year,
             defaultEndMonth: [month, year].join('-'),
             year: 'false',
+            type: this.INFO_SEARCH.type,
         }
     }
 
-    setDataColumnChartForMonth = () => {
-        const { listAssets, translate } = this.props;
+    setDataColumnChartForMonth = (listAssets) => {
+        const { translate } = this.props;
         let { maintenanceDateAfter, maintenanceDateBefore } = this.state;
 
         let startDate = new Date(maintenanceDateAfter);
@@ -107,8 +109,8 @@ class AssetMaintenanceChart extends Component {
         return dataColumnChart;
     }
 
-    setDataColumnChartForYear = () => {
-        const { listAssets, translate } = this.props;
+    setDataColumnChartForYear = (listAssets) => {
+        const { translate } = this.props;
         let { maintenanceDateAfter, maintenanceDateBefore } = this.state;
 
         let startDate = maintenanceDateAfter.slice(0, 4);
@@ -164,9 +166,27 @@ class AssetMaintenanceChart extends Component {
     }
 
     columnChart = () => {
-        let { translate } = this.props;
-        let { year } = this.state;
-        let dataColumnChart = year == "true" ? this.setDataColumnChartForYear() : this.setDataColumnChartForMonth();
+        let { translate, listAssets } = this.props;
+        let { year, type } = this.state;
+
+        let filterAsset = [];
+
+        if (type && type.length) {
+            listAssets.map(x => {
+                if (x.assetType.length) {
+                    for (let i in x.assetType) {
+                        for (let j in type) {
+                            type[j] === x.assetType[i]._id && filterAsset.push(x);
+                        }
+                    }
+                }
+            })
+        }
+        else {
+            filterAsset = listAssets;
+        }
+
+        let dataColumnChart = year == "true" ? this.setDataColumnChartForYear(filterAsset) : this.setDataColumnChartForMonth(filterAsset);
 
         if (translate('asset.dashboard.amount') === 'Số lượng') {
             let chart = c3.generate({
@@ -274,6 +294,14 @@ class AssetMaintenanceChart extends Component {
         this.INFO_SEARCH.maintenanceDateBefore = month;
     }
 
+    handleChangeTypeAsset = (value) => {
+        if (value.length === 0) {
+            value = []
+        }
+        this.INFO_SEARCH.type = value;
+        this.forceUpdate();
+    }
+
     handleSearchData = async () => {
         let maintenanceDateAfter = new Date(this.INFO_SEARCH.maintenanceDateAfter);
         let maintenanceDateBefore = new Date(this.INFO_SEARCH.maintenanceDateBefore);
@@ -292,6 +320,7 @@ class AssetMaintenanceChart extends Component {
                     ...state,
                     maintenanceDateAfter: this.INFO_SEARCH.maintenanceDateAfter,
                     maintenanceDateBefore: this.INFO_SEARCH.maintenanceDateBefore,
+                    type: this.INFO_SEARCH.type,
                 }
             })
         }
@@ -306,22 +335,36 @@ class AssetMaintenanceChart extends Component {
         })
     }
 
+    getAssetTypes = () => {
+        let { assetType } = this.props;
+        // let assetTypeName = assetType && assetType.listAssetTypes;
+        let typeArr = [];
+        assetType && assetType.map(item => {
+            typeArr.push({
+                _id: item._id,
+                id: item._id,
+                name: item.typeName,
+                parent: item.parent ? item.parent._id : null
+            })
+        })
+        return typeArr;
+    }
+
     render() {
         const { translate } = this.props;
         let { year } = this.state;
-        let { maintenanceDateAfter, maintenanceDateBefore } = this.INFO_SEARCH;
+        let { maintenanceDateAfter, maintenanceDateBefore, type } = this.INFO_SEARCH;
+        let typeArr = this.getAssetTypes();
 
         let dateFormat = year === "true" ? "year" : "month-year";
         let startValue = year === "true" ? maintenanceDateAfter.slice(0, 4) : maintenanceDateAfter.slice(5, 7) + ' - ' + maintenanceDateAfter.slice(0, 4);
         let endValue = year === "true" ? maintenanceDateBefore.slice(0, 4) : maintenanceDateBefore.slice(5, 7) + ' - ' + maintenanceDateBefore.slice(0, 4);
 
-
         this.columnChart();
-        console.log(dateFormat);
 
         return (
             <React.Fragment>
-                <div className="form-inline" style={{ textAlign: "right" }}>
+                <div className="form-inline" >
 
                     {/* Chọn hiển thị theo tháng/năm */}
                     <div className="form-group">
@@ -340,7 +383,18 @@ class AssetMaintenanceChart extends Component {
                             options={{ minimumResultsForSearch: 3 }}
                         />
                     </div>
-
+                    {/* Chọn loại tài sản */}
+                    <div className="form-group">
+                        <label >{translate('asset.general_information.asset_type')}</label>
+                        <TreeSelect
+                            data={typeArr}
+                            value={type}
+                            handleChange={this.handleChangeTypeAsset}
+                            mode="hierarchical"
+                        />
+                    </div>
+                </div>
+                <div className="form-inline">
                     {/* Chọn ngày bắt đầu và kết thúc để tìm kiếm */}
                     <div className="form-group">
                         <label>{translate('task.task_management.from')}</label>
