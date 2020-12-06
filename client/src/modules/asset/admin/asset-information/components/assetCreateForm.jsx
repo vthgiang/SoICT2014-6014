@@ -176,24 +176,23 @@ class AssetCreateForm extends Component {
     }
 
     // Function thêm mới thông tin tài sản
-    save = async () => {
-        let { asset, maintainanceLogs, usageLogs, incidentLogs, files } = this.state;
+    save = () => {
+        let { asset, maintainanceLogs, usageLogs, incidentLogs, files, avatar } = this.state;
+        let assetUpdate = {
+            ...asset,
+            maintainanceLogs,
+            usageLogs,
+            incidentLogs,
+            files
+        }
 
-        await this.setState({
-            asset: {
-                ...asset,
-                maintainanceLogs,
-                usageLogs,
-                incidentLogs,
-                files
-            }
-        })
+        this.setState({asset: assetUpdate})
 
-        let formData = convertJsonObjectToFormData(this.state.asset);
+        let formData = convertJsonObjectToFormData(assetUpdate);
         files.forEach(x => {
             formData.append("file", x.fileUpload);
         })
-        formData.append("fileAvatar", this.state.avatar);
+        formData.append("fileAvatar", avatar);
         this.props.addNewAsset(formData);
     }
 

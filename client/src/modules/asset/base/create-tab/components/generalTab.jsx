@@ -3,14 +3,11 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DatePicker, ErrorLabel, SelectBox, TreeSelect, SelectMulti, ApiImage } from '../../../../../common-components';
-
 import "./addAsset.css";
 import { AssetCreateValidator } from './combinedContent';
-import { RoleActions } from '../../../../super-admin/role/redux/actions';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { AssetTypeActions } from '../../../admin/asset-type/redux/actions';
 import { string2literal } from '../../../../../helpers/handleResponse';
-
 import { generateCode } from "../../../../../helpers/generateCode";
 
 class GeneralTab extends Component {
@@ -19,9 +16,6 @@ class GeneralTab extends Component {
         this.state = {
             detailInfo: [],
             isObj: true,
-            // defaultAvatar: "./upload/asset/pictures/picture5.png"
-            // status: "ready_to_use",
-            // typeRegisterForUse: "Được phép đăng ký sử dụng",
         };
     }
 
@@ -469,9 +463,6 @@ class GeneralTab extends Component {
     delete = (index) => {
         var { detailInfo } = this.state;
         detailInfo.splice(index, 1);
-        this.setState({
-            detailInfo: detailInfo
-        })
         if (detailInfo.length !== 0) {
             for (let n in detailInfo) {
                 this.validateNameField(detailInfo[n].nameField, n);
@@ -479,6 +470,7 @@ class GeneralTab extends Component {
             }
         } else {
             this.setState({
+                detailInfo: detailInfo,
                 errorOnValue: undefined,
                 errorOnNameField: undefined
             })
@@ -487,7 +479,6 @@ class GeneralTab extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id || nextProps.assignedToUser !== prevState.assignedToUser || nextProps.assignedToOrganizationalUnit !== prevState.assignedToOrganizationalUnit) {
-            // if (nextProps.id !== prevState.id || nextProps.asset.assignedToUser !== prevState.assignedToUser || nextProps.asset.assignedToOrganizationalUnit !== prevState.assignedToOrganizationalUnit) {
             return {
                 ...prevState,
                 id: nextProps.id,
@@ -514,26 +505,6 @@ class GeneralTab extends Component {
                 usageLogs: nextProps.usageLogs,
                 readByRoles: nextProps.readByRoles,
 
-                // code: nextProps.asset.code,
-                // assetName: nextProps.asset.assetName,
-                // serial: nextProps.asset.serial,
-                // assetTypes: nextProps.asset.assetTypes,
-                // group: nextProps.asset.group,
-                // location: nextProps.asset.location,
-                // purchaseDate: nextProps.asset.purchaseDate,
-                // warrantyExpirationDate: nextProps.asset.warrantyExpirationDate,
-                // managedBy: nextProps.asset.managedBy,
-                // assignedToUser: nextProps.asset.assignedToUser,
-                // assignedToOrganizationalUnit: nextProps.asset.assignedToOrganizationalUnit,
-                // handoverFromDate: nextProps.asset.handoverFromDate,
-                // handoverToDate: nextProps.asset.handoverToDate,
-                // description: nextProps.asset.description,
-                // status: nextProps.asset.status,
-                // typeRegisterForUse: nextProps.asset.typeRegisterForUse,
-                // detailInfo: nextProps.asset.detailInfo,
-                // usageLogs: nextProps.asset.usageLogs,
-                // readByRoles: nextProps.asset.readByRoles,
-
                 errorOnCode: undefined,
                 errorOnAssetName: undefined,
                 errorOnSerial: undefined,
@@ -542,7 +513,6 @@ class GeneralTab extends Component {
                 errorOnPurchaseDate: undefined,
                 errorOnWarrantyExpirationDate: undefined,
                 errorOnManagedBy: undefined,
-
                 errorOnNameField: undefined,
                 errorOnValue: undefined,
             }
@@ -568,10 +538,10 @@ class GeneralTab extends Component {
 
     render() {
         const { id } = this.props;
-        const { translate, user, assetType, assetsManager, role, department } = this.props;
+        const { translate, user, assetsManager, role, department } = this.props;
         const {
-            avatar, img, defaultAvatar, code, assetName, assetTypes, group, serial, purchaseDate, warrantyExpirationDate, managedBy, isObj,
-            assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location, description, status, typeRegisterForUse, detailInfo,
+            img, defaultAvatar, code, assetName, assetTypes, group, serial, purchaseDate, warrantyExpirationDate, managedBy, isObj,
+            assignedToUser, assignedToOrganizationalUnit, location, description, status, typeRegisterForUse, detailInfo,
             errorOnCode, errorOnAssetName, errorOnSerial, errorOnAssetType, errorOnLocation, errorOnPurchaseDate,
             errorOnWarrantyExpirationDate, errorOnManagedBy, errorOnNameField, errorOnValue, usageLogs, readByRoles, errorOnNameFieldPosition, errorOnValuePosition
         } = this.state;
@@ -605,7 +575,7 @@ class GeneralTab extends Component {
                     {/* Ảnh tài sản */}
                     <div className="col-md-4" style={{ textAlign: 'center', paddingLeft: '0px' }}>
                         <div>
-                            {< ApiImage className="attachment-img avarta" id={`avater-imform-${id}`} src={img ? img : defaultAvatar} />}
+                            {< ApiImage className="attachment-img avarta" id={`avatar-imform-${id}`} src={img ? img : defaultAvatar} />}
                         </div>
                         <div className="upload btn btn-default ">
                             {translate('manage_asset.upload')}
