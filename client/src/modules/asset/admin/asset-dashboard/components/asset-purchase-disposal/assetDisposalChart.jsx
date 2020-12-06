@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { DatePicker, SelectBox } from '../../../../../../common-components';
+import { DatePicker, SelectBox, TreeSelect } from '../../../../../../common-components';
 import Swal from 'sweetalert2';
 
 import c3 from 'c3';
@@ -25,6 +25,7 @@ class AssetDisposalChart extends Component {
         this.INFO_SEARCH = {
             disposalDateAfter: year + '-' + (month - 3),
             disposalDateBefore: [year, month].join('-'),
+            type: []
         }
 
         this.state = {
@@ -33,11 +34,12 @@ class AssetDisposalChart extends Component {
             defaultStartMonth: '0' + (month - 3) + '-' + year,
             defaultEndMonth: [month, year].join('-'),
             year: "false",
+            type: this.INFO_SEARCH.type,
         }
     }
     // Lấy dữ liệu biểu đồ trường hợp chọn hiển thị theo tháng
-    setDataColumnChartForMonth = () => {
-        const { getDisposalData, listAssets, translate } = this.props;
+    setDataColumnChartForMonth = (listAssets) => {
+        const { getDisposalData, translate } = this.props;
         let { disposalDateAfter, disposalDateBefore } = this.state;
 
         let startDate = new Date(disposalDateAfter);
@@ -106,8 +108,8 @@ class AssetDisposalChart extends Component {
     }
 
     // Lấy dữ liệu biểu đồ trường hợp chọn hiển thị theo năm
-    setDataColumnChartForYear = () => {
-        const { getDisposalData, listAssets, translate } = this.props;
+    setDataColumnChartForYear = (listAssets) => {
+        const { getDisposalData, translate } = this.props;
         let { disposalDateAfter, disposalDateBefore } = this.state;
 
         let startDate = disposalDateAfter.slice(0, 4);
@@ -163,10 +165,26 @@ class AssetDisposalChart extends Component {
 
     // Thiết lập biểu đồ
     columnChart = () => {
-        let { translate } = this.props;
-        let { year } = this.state;
-        let dataColumnChart = year == "true" ? this.setDataColumnChartForYear() : this.setDataColumnChartForMonth();
+        let { translate, listAssets } = this.props;
+        let { year, type } = this.state;
+        let filterAsset = [];
 
+        if (type && type.length) {
+            listAssets.map(x => {
+                if (x.assetType.length) {
+                    for (let i in x.assetType) {
+                        for (let j in type) {
+                            type[j] === x.assetType[i]._id && filterAsset.push(x);
+                        }
+                    }
+                }
+            })
+        }
+        else {
+            filterAsset = listAssets;
+        }
+
+        let dataColumnChart = year == "true" ? this.setDataColumnChartForYear(filterAsset) : this.setDataColumnChartForMonth(filterAsset);
         if (translate('asset.dashboard.amount') === "Số lượng") {
             let chart = c3.generate({
                 bindto: this.refs.DisposalColumnChart,
@@ -274,6 +292,14 @@ class AssetDisposalChart extends Component {
         this.INFO_SEARCH.disposalDateBefore = month;
     }
 
+    handleChangeTypeAsset = (value) => {
+        if (value.length === 0) {
+            value = []
+        }
+        this.INFO_SEARCH.type = value;
+        this.forceUpdate();
+    }
+
     //Bắt sự kiện tìm kiếm
     handleSearchData = async () => {
         let disposalDateAfter = new Date(this.INFO_SEARCH.disposalDateAfter);
@@ -293,6 +319,7 @@ class AssetDisposalChart extends Component {
                     ...state,
                     disposalDateAfter: this.INFO_SEARCH.disposalDateAfter,
                     disposalDateBefore: this.INFO_SEARCH.disposalDateBefore,
+                    type: this.INFO_SEARCH.type
                 }
             })
         }
@@ -308,10 +335,25 @@ class AssetDisposalChart extends Component {
         })
     }
 
+    getAssetTypes = () => {
+        let { assetType } = this.props;
+        let typeArr = [];
+        assetType && assetType.map(item => {
+            typeArr.push({
+                _id: item._id,
+                id: item._id,
+                name: item.typeName,
+                parent: item.parent ? item.parent._id : null
+            })
+        })
+        return typeArr;
+    }
+
     render() {
         const { translate } = this.props;
         let { year } = this.state;
-        let { disposalDateAfter, disposalDateBefore } = this.INFO_SEARCH;
+        let { disposalDateAfter, disposalDateBefore, type } = this.INFO_SEARCH;
+        let typeArr = this.getAssetTypes();
 
         let dateFormat = year === "true" ? "year" : "month-year";
         let startValue = year === "true" ? disposalDateAfter.slice(0, 4) : disposalDateAfter.slice(5, 7) + ' - ' + disposalDateAfter.slice(0, 4);
@@ -321,7 +363,7 @@ class AssetDisposalChart extends Component {
         return (
             <React.Fragment>
 
-                <div className="form-inline" style={{ textAlign: "right" }}>
+                <div className="form-inline" >
 
                     {/* Chọn hiển thị theo tháng/năm */}
                     <div className="form-group">
@@ -340,10 +382,21 @@ class AssetDisposalChart extends Component {
                             options={{ minimumResultsForSearch: 3 }}
                         />
                     </div>
-
+                    {/* Chọn loại tài sản */}
+                    <div className="form-group">
+                        <label >{translate('asset.general_information.asset_type')}</label>
+                        <TreeSelect
+                            data={typeArr}
+                            value={type}
+                            handleChange={this.handleChangeTypeAsset}
+                            mode="hierarchical"
+                        />
+                    </div>
+                </div>
+                <div className="form-inline">
                     {/* Chọn ngày bắt đầu và kết thúc để tìm kiếm */}
                     <div className="form-group">
-                        <label style={{ width: "60px" }}>{translate('task.task_management.from')}</label>
+                        <label >{translate('task.task_management.from')}</label>
                         <DatePicker
                             id={`disposal_after${dateFormat}`}
                             dateFormat={dateFormat}
@@ -353,7 +406,7 @@ class AssetDisposalChart extends Component {
                         />
                     </div>
                     <div className="form-group">
-                        <label style={{ width: "60px" }}>{translate('task.task_management.to')}</label>
+                        <label >{translate('task.task_management.to')}</label>
                         <DatePicker
                             id={`disposal_before${dateFormat}`}
                             dateFormat={dateFormat}
