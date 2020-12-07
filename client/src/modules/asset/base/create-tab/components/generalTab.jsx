@@ -15,7 +15,7 @@ class GeneralTab extends Component {
         super(props);
         this.state = {
             detailInfo: [],
-            isObj: true,
+            isObj: true
         };
     }
 
@@ -25,6 +25,7 @@ class GeneralTab extends Component {
             ...state,
             code: code,
         }));
+        this.validateCode(code);
     }
     componentDidMount = () => {
         // Mỗi khi modal mở, cần sinh lại code
@@ -537,8 +538,7 @@ class GeneralTab extends Component {
     }
 
     render() {
-        const { id } = this.props;
-        const { translate, user, assetsManager, role, department } = this.props;
+        const { id, translate, user, assetsManager, role, department } = this.props;
         const {
             img, defaultAvatar, code, assetName, assetTypes, group, serial, purchaseDate, warrantyExpirationDate, managedBy, isObj,
             assignedToUser, assignedToOrganizationalUnit, location, description, status, typeRegisterForUse, detailInfo,

@@ -154,11 +154,11 @@ class AssetCreateForm extends Component {
 
     // function kiểm tra các trường bắt buộc phải nhập
     validatorInput = (value) => {
-        if (value !== null && value !== undefined && value.toString().trim() !== '') {
+        if (value) {
             return true;
+        } else {
+            return false;
         }
-
-        return false;
     }
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
@@ -186,7 +186,7 @@ class AssetCreateForm extends Component {
             files
         }
 
-        this.setState({asset: assetUpdate})
+        this.setState({ asset: assetUpdate })
 
         let formData = convertJsonObjectToFormData(assetUpdate);
         files.forEach(x => {
