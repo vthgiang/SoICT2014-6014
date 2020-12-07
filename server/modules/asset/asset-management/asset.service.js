@@ -514,7 +514,7 @@ exports.createAsset = async (portal, company, data, fileInfo) => {
     // Lấy thông tin tài sản vừa thêm vào
     let assets = await Asset(connect(DB_CONNECTION, portal)).find({
         _id: createAsset._id,
-    });
+    }).populate({path: 'assetType'});
     return {assets};
 };
 
@@ -708,7 +708,7 @@ exports.updateAssetInformation = async (
     // Lấy thông tin tài sản vừa thêm vào
     let assets = await Asset(connect(DB_CONNECTION, portal)).find({
         _id: oldAsset._id,
-    });
+    }).populate({path: 'assetType'});
 
     if (createIncidentLogs || editIncidentLogs || deleteIncidentLogs) {
         let type;
