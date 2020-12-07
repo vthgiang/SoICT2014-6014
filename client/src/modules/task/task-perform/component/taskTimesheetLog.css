@@ -1,5 +1,6 @@
 .timesheet-box {
     min-width: 150px;
+    max-width: 300px;
     border-radius: 2px;
     font-size: 13px;
     margin: 0px 0px 0px;
