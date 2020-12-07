@@ -400,7 +400,7 @@ function deleteTaskById(taskId) {
 }
 
 /**
- * lấy công việc con
+ * lấy công việc liên quan
  * @param {*} taskId id công việc liên quan
  */
 function getSubTask(taskId) {

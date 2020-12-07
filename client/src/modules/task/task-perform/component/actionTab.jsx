@@ -1620,7 +1620,7 @@ class ActionTab extends Component {
                             </React.Fragment>
                         </div>
 
-                        {/* Chuyển qua tab công việc con */}
+                        {/* Chuyển qua tab công việc liên quan */}
                         <div className={selected === "subTask" ? "active tab-pane" : "tab-pane"} id="subTask">
                             <SubTaskTab
                                 id={this.state.id}
