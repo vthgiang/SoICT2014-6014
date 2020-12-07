@@ -9,14 +9,14 @@ class ComponentInfoForm extends Component {
         super(props);
         this.state = {}
     }
-    
+
     handleComponentDescription = (e) => {
-        let {value} = e.target;
-        let {translate} = this.props;
-        let {message} = ValidationHelper.validateDescription(translate, value);
-        this.setState({ 
+        let { value } = e.target;
+        let { translate } = this.props;
+        let { message } = ValidationHelper.validateDescription(translate, value);
+        this.setState({
             componentDescription: value,
-            componentDescriptionError: message 
+            componentDescriptionError: message
         });
     }
 
@@ -45,9 +45,9 @@ class ComponentInfoForm extends Component {
     }
 
     isFormValidated = () => {
-        let {componentDescription} = this.state;
-        let {translate} = this.props;
-        if(!ValidationHelper.validateDescription(translate, componentDescription).status) return false;
+        let { componentDescription } = this.state;
+        let { translate } = this.props;
+        if (!ValidationHelper.validateDescription(translate, componentDescription).status) return false;
         return true;
     }
 
@@ -121,7 +121,7 @@ class ComponentInfoForm extends Component {
                                 id={`component-roles-${componentId}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
-                                items={role.list.map(role => { return { value: role ? role._id : null, text: role ? role.name : "Role is deleted" } })}
+                                items={role.list.map(role => { return { value: role ? role._id : null, text: role ? role.name : "" } })}
                                 onChange={this.handleComponentRoles}
                                 value={componentRoles}
                                 multiple={true}

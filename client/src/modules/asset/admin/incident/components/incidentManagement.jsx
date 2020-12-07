@@ -306,6 +306,7 @@ class IncidentManagement extends Component {
         if (lists && userlist) {
             exportData = this.convertDataToExportData(lists, userlist);
         }
+
         return (
             <div className={isActive ? isActive : "box"}>
                 <div className="box-body qlcv">

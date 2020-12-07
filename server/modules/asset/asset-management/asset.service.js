@@ -1194,21 +1194,29 @@ exports.createIncident = async (portal, id, data) => {
  * Chỉnh sửa thông tin sự cố tài sản
  */
 exports.updateIncident = async (portal, incidentId, data) => {
-    return await Asset(connect(DB_CONNECTION, portal)).update(
-        {_id: data.assetId, "incidentLogs._id": incidentId},
-        {
-            $set: {
-                "incidentLogs.$.incidentCode": data.incidentCode,
-                "incidentLogs.$.type": data.type,
-                "incidentLogs.$.reportedBy": data.reportedBy,
-                "incidentLogs.$.dateOfIncident": data.dateOfIncident,
-                "incidentLogs.$.description": data.description,
-                "incidentLogs.$.statusIncident": data.statusIncident,
-                status: data.status,
-            },
+    const { assetId } = data;
+    const incident = await Asset(connect(DB_CONNECTION, portal)).findOneAndUpdate({ _id: assetId, "incidentLogs._id": incidentId }, {
+        $set: {
+            "incidentLogs.$.incidentCode": data.incidentCode,
+            "incidentLogs.$.type": data.type,
+            "incidentLogs.$.reportedBy": data.reportedBy,
+            "incidentLogs.$.dateOfIncident": data.dateOfIncident,
+            "incidentLogs.$.description": data.description,
+            "incidentLogs.$.statusIncident": data.statusIncident,
+            status: data.status
         }
-    );
-};
+    }, { new: true }).lean();
+
+    let newIncident = {};
+    if (incident) {
+        incident.incidentLogs.map(obj => {
+            if (JSON.stringify(obj._id) === JSON.stringify(incidentId)) {
+                newIncident = { ...obj, asset: incident }
+            }
+        })
+    }
+    return newIncident;
+}
 
 /**
  * Xóa thông tin sự cố tài sản
