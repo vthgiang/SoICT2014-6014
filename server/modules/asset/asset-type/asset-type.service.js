@@ -1,8 +1,7 @@
 const Models = require(`${SERVER_MODELS_DIR}`);
-const { AssetType } = Models;
+const { AssetType, Asset } = Models;
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 const arrayToTree = require('array-to-tree');
-const fs = require('fs');
 const ObjectId = require('mongoose').Types.ObjectId;
 
 
@@ -92,12 +91,12 @@ exports.editAssetType = async (portal, id, data) => {
     }
 
     type.typeNumber = data.typeNumber,
-        type.typeName = data.typeName,
-        type.description = data.description,
-        type.parent = ObjectId.isValid(data.parent) ? data.parent : undefined
+    type.typeName = data.typeName,
+    type.description = data.description,
+    type.parent = ObjectId.isValid(data.parent) ? data.parent : undefined
     type.defaultInformation = data.defaultInformation,
 
-        await type.save();
+    await type.save();
 
     return type;
 }
@@ -115,8 +114,33 @@ exports.deleteAssetTypes = async (portal, id) => {
 }
 
 
+/**
+ * Xóa danh sách các loại tài sản
+ * @param {*} portal 
+ * @param {*} company 
+ * @param {*} array 
+ */
 exports.deleteManyAssetType = async (portal, company, array) => {
-    await AssetType(connect(DB_CONNECTION, portal)).deleteMany({ _id: { $in: array } });
+    const assetType = await AssetType(connect(DB_CONNECTION, portal)).find({ _id: { $in: array } });
+    let errors = [];
 
-    return await this.getAssetTypes(portal, company, {});
+    const deleteAssetType = async(assetTypeId) => {
+        const assets = await Asset(connect(DB_CONNECTION, portal)).find({ assetType: assetTypeId });
+        for(let i=0; i < assets.length; i++){
+            if(Array.isArray(assets[i].assetType)){
+                assets[i].assetType = assets[i].assetType.filter(type => type.toString() !== assetTypeId);
+                console.log('asset update: ', assets[i]);
+                await assets[i].save();
+            }
+        }
+        await AssetType(connect(DB_CONNECTION, portal)).deleteOne({ _id: assetTypeId });
+    }
+
+    for(let i=0; i < assetType.length; i++){
+        await deleteAssetType(assetType[i]._id);
+    }
+
+    const assetTypes = await this.getAssetTypes(portal, company, {});
+
+    return assetTypes;
 }
