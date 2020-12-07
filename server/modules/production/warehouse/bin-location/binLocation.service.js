@@ -57,7 +57,7 @@ exports.getChildBinLocations = async (query, portal) => {
     if(!managementLocation) throw new Error("roles not avaiable");
 
     //lấy id các kho của role hiện tại
-    const stocks = await Stock(connect(DB_CONNECTION, portal)).find({ managementLocation: { $in: managementLocation } })
+    const stocks = await Stock(connect(DB_CONNECTION, portal)).find({ managementLocation: { $elemMatch: { role: managementLocation }} })
     var arrayStock = [];
     if(stocks && stocks.length > 0) {
         for(let i = 0; i < stocks.length; i++) {
