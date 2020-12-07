@@ -11,8 +11,8 @@ class ExampleCreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            exampleName: undefined,
-            description: undefined,
+            exampleName: "",
+            description: "",
             exampleNameError: {
                 message: undefined,
                 status: true
@@ -32,7 +32,7 @@ class ExampleCreateForm extends Component {
         if (this.isFormValidated()) {
             const { page, limit } = this.props;
             const { exampleName, description } = this.state;
-            
+
             if (exampleName) {
                 this.props.createExample([{ exampleName, description }]);
                 this.props.getExamples({

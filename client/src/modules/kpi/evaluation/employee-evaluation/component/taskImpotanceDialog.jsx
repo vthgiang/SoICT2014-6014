@@ -19,9 +19,9 @@ class TaskImpartanceDialog extends Component {
                     hasSaveButton={false}
                 >
                     <div>
-                        <div>{translate('kpi.evaluation.employee_evaluation.num_of_working_day')}: {this.props.task ? this.props.task.daykpi : "Deleted"}</div>
-                        <div>{translate('kpi.evaluation.employee_evaluation.contribution')}: {this.props.task ? this.props.task.results.contribution : "Deleted"}</div>
-                        <div>{translate('kpi.evaluation.employee_evaluation.priority')}: {this.props.task ? this.props.task.priority : "Deleted"}</div>
+                        <div>{translate('kpi.evaluation.employee_evaluation.num_of_working_day')}: {this.props.task ? this.props.task.daykpi : ""}</div>
+                        <div>{translate('kpi.evaluation.employee_evaluation.contribution')}: {this.props.task ? this.props.task.results.contribution : ""}</div>
+                        <div>{translate('kpi.evaluation.employee_evaluation.priority')}: {this.props.task ? this.props.task.priority : ""}</div>
                         <div>{translate('kpi.evaluation.employee_evaluation.formula')}:</div>
                         <div> 3 * ({this.props.task.priority} / 3) + 3 * ({this.props.task.results.contribution} / 100) + 4 * ({this.props.task.daykpi} / 30)</div>
                         <div> = {this.props.task.taskImportanceLevelCal}</div>

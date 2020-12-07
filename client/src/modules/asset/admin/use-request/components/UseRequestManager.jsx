@@ -76,6 +76,7 @@ class UseRequestManager extends Component {
     }
 
     formatDateTime(date, typeRegisterForUse) {
+        if(!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -219,18 +220,18 @@ class UseRequestManager extends Component {
             data = data.map((x, index) => {
 
                 let code = x.recommendNumber;
-                let assetName = (x.asset) ? x.asset.assetName : "";
+                let assetName = (x.asset) ? x.asset.assetName : '';
                 let approver = (x.approver) ? x.approver.email : '';
-                let assigner = (x.proponent) ? x.proponent.email : "";
-                let createDate = x.dateCreate
-                let dateStartUse = x.dateStartUse;
-                let dateEndUse = x.dateEndUse;
+                let assigner = (x.proponent) ? x.proponent.email : ''
+                let createDate = this.formatDateTime(x.dateCreate)
+                let dateStartUse = this.formatDateTime(x.dateStartUse);
+                let dateEndUse = this.formatDateTime(x.dateEndUse);
                 let assetCode = (x.asset) ? x.asset.code : ''
-                let status = x.status;
+                let status = this.formatStatus(x.status);
 
                 return {
                     index: index + 1,
-                    code: code,
+                    code: code, 
                     createDate: createDate,
                     assigner: assigner,
                     assetName: assetName,
@@ -299,7 +300,7 @@ class UseRequestManager extends Component {
             case 'approved': return translate('asset.usage.approved');
             case 'waiting_for_approval': return translate('asset.usage.waiting_approval');
             case 'disapproved': return translate('asset.usage.not_approved');
-            default: return 'Deleted';
+            default: return '';
         }
     }
 
@@ -417,11 +418,11 @@ class UseRequestManager extends Component {
                             {(listRecommendDistributes && listRecommendDistributes.length !== 0) ?
                                 listRecommendDistributes.map((x, index) => {
                                     return (<tr key={index}>
-                                        <td><a onClick={() => this.handleEditAsset(x.asset)}>{x.asset ? x.asset.code : 'Asset is deleted'}</a></td>
+                                        <td><a onClick={() => this.handleEditAsset(x.asset)}>{x.asset ? x.asset.code : ''}</a></td>
                                         <td>{x.recommendNumber}</td>
                                         <td>{this.formatDateTime(x.dateCreate)}</td>
-                                        <td>{x.proponent ? x.proponent.email : 'User is deleted'}</td>
-                                        <td>{x.asset ? x.asset.assetName : 'Asset is deleted'}</td>
+                                        <td>{x.proponent ? x.proponent.email : ''}</td>
+                                        <td>{x.asset ? x.asset.assetName : ''}</td>
                                         <td>{this.formatDateTime(x.dateStartUse, x.asset ? x.asset.typeRegisterForUse : undefined)}</td>
                                         <td>{this.formatDateTime(x.dateEndUse, x.asset ? x.asset.typeRegisterForUse : undefined)}</td>
                                         <td>{x.approver ? x.approver.email : ''}</td>

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DatePicker, TimePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
-
+import { compareTime } from '../../../../../helpers/stringMethod';
 import { UseRequestFromValidator } from './UseRequestFromValidator';
 
 import { RecommendDistributeActions } from '../redux/actions';
@@ -207,19 +207,22 @@ class UseRequestCreateForm extends Component {
         if (this.isFormValidated() && this.validateExitsRecommendNumber(this.state.recommendNumber) === false) {
             let nowDate = new Date();
             let dateStartUse, date;
+
             date = this.state.dateStartUse.split("-");
             date = [date[2], date[1], date[0]].join('-')
             dateStartUse = new Date(date)
-            if (dateStartUse < nowDate) {
+
+            if (compareTime(dateStartUse, nowDate) === 1) {
                 Swal.fire({
                     title: 'Ngày đã qua không thể tạo đăng ký sử dụng',
                     type: 'warning',
+                    html: dateStartUse + "--" + nowDate,
                     confirmButtonColor: '#dd4b39',
                     confirmButtonText: "Đóng",
                 })
             } else {
                 await this.props.createRecommendDistribute(dataToSubmit);
-                if (this.props._id == `calendar-${this.props.asset}`) {
+                if (this.props._id === `calendar-${this.props.asset}`) {
                     await this.props.handleChange(dataToSubmit)
                 }
             }
@@ -347,7 +350,6 @@ class UseRequestCreateForm extends Component {
                                             id={`time-picker-start`}
                                             onChange={this.handleStartTimeChange}
                                             value={startTime}
-                                        // getDefaultValue = {this.getDefaultStartValue}
                                         />
                                     }
                                     <ErrorLabel content={errorOnDateStartUse} />

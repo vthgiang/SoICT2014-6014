@@ -40,7 +40,7 @@ class PurchaseRequestDetailForm extends Component {
             case 'approved': return translate('asset.usage.approved');
             case 'waiting_approval': return translate('asset.usage.waiting_approval');
             case 'disapproved': return translate('asset.usage.not_approved');
-            default: return 'Deleted';
+            default: return '';
         }
     }
 
@@ -78,7 +78,7 @@ class PurchaseRequestDetailForm extends Component {
                                 {/* Người đề nghị */}
                                 <div className="form-group">
                                     <strong>{translate('asset.usage.proponent')}&emsp; </strong>
-                                    {proponent ? proponent.name : 'User is deleted'}
+                                    {proponent ? proponent.name : ''}
                                 </div>
 
                                 {/* Thiết bị đề nghị mua */}
@@ -122,7 +122,7 @@ class PurchaseRequestDetailForm extends Component {
                                 {/* Người phê duyệt */}
                                 <div className="form-group">
                                     <strong>{translate('asset.usage.accountable')}&emsp; </strong>
-                                    {approver ? approver.name : 'User is deleted'}
+                                    {approver ? approver.name : ''}
                                 </div>
 
                                 {/* Trạng thái */}

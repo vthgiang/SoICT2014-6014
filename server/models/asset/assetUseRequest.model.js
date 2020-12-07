@@ -14,7 +14,7 @@ const AssetUseRequestSchema = new Schema({
     },
     dateCreate: {
         //ngày lập
-        type: String,
+        type: Date,
         defaut: Date.now,
     },
     proponent: {
@@ -33,12 +33,12 @@ const AssetUseRequestSchema = new Schema({
     },
     dateStartUse: {
         //thời gian đăng ký sử dụng từ ngày
-        type: String,
+        type: Date,
         defaut: Date.now,
     },
     dateEndUse: {
         //thời gian đăng ký sử dụng đến ngày
-        type: String,
+        type: Date,
         defaut: Date.now,
     },
     approver: {
@@ -54,14 +54,6 @@ const AssetUseRequestSchema = new Schema({
         //trạng thái, tình trạng: chờ phê duyệt || không chấp nhận || đã chấp nhận
         type: String,
         enum: ["approved", "waiting_for_approval", "disapproved"],
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now,
     },
 });
 

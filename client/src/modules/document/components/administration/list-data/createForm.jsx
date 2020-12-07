@@ -278,7 +278,6 @@ class CreateForm extends Component {
             documentDomains,
             documentArchives,
             documentDescription,
-            documentVersionName,
             documentIssuingBody,
             documentOfficialNumber,
             documentIssuingDate,
@@ -293,7 +292,6 @@ class CreateForm extends Component {
             documentRoles,
             documentArchivedRecordPlaceOrganizationalUnit,
             documentArchivedRecordPlaceManager,
-            documentVersions,
 
         } = this.state;
         const formData = new FormData();
@@ -408,8 +406,11 @@ class CreateForm extends Component {
     }
 
     deleteDocumentVersion = (i) => {
-        let { documentVersions, documentFile, documentFileScan, versionName, documentIssuingDate,
-            documentEffectiveDate, documentExpiredDate, } = this.state;
+        let {
+            documentVersions, documentFile, documentFileScan,
+            versionName, documentIssuingDate,
+            documentEffectiveDate, documentExpiredDate
+        } = this.state;
         documentVersions.splice(i, 1);
         documentFile.splice(i, 1);
         documentFileScan.splice(i, 1);
@@ -450,7 +451,6 @@ class CreateForm extends Component {
     addVersion = async (data) => {
         let { documentVersions, documentFile, documentFileScan, versionName, documentIssuingDate,
             documentEffectiveDate, documentExpiredDate, } = this.state;
-        let numberFile, numberFileScan;
         const file = {
             file: data.file,
             urlFile: data.urlFile,
@@ -478,22 +478,20 @@ class CreateForm extends Component {
                 versionName: [...versionName, data.versionName],
                 documentIssuingDate: [...documentIssuingDate, this.convertISODate(data.documentIssuingDate)],
                 documentEffectiveDate: [...documentEffectiveDate, this.convertISODate(data.documentEffectiveDate)],
-                documentExpiredDate: [...documentExpiredDate, this.convertISODate(documentExpiredDate)],
+                documentExpiredDate: [...documentExpiredDate, this.convertISODate(data.documentExpiredDate)],
                 documentFile: [...documentFile, {
                     ...file
                 }],
                 documentFileScan: [...documentFileScan, {
                     ...fileScan
                 }],
-
-
             }
         });
     }
+
     editVersion = async (data) => {
         let { documentVersions, documentFile, documentFileScan, versionName, documentIssuingDate,
             documentEffectiveDate, documentExpiredDate, } = this.state;
-        let numberFile, numberFileScan;
         const file = {
             file: data.file,
             urlFile: data.urlFile,
@@ -539,6 +537,7 @@ class CreateForm extends Component {
 
     }
     formatDate(date, monthYear = false) {
+        if (!date) return null;
         if (date) {
             let d = new Date(date),
                 month = '' + (d.getMonth() + 1),
@@ -560,14 +559,18 @@ class CreateForm extends Component {
         const { translate, role, documents, department } = this.props;
         const { list } = documents.administration.domains;
 
-        const { errorName, errorCategory, errorVersionName, errorOfficialNumber,
-            documentArchives, documentDomains, listDocumentRelationship, documentVersions, currentVersion } = this.state;
+        const {
+            errorName, errorCategory, errorOfficialNumber,
+            documentArchives, documentDomains, listDocumentRelationship,
+            documentVersions, currentVersion
+        } = this.state;
         const archives = documents.administration.archives.list;
 
         const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
         const documentRoles = role.list.map(role => { return { value: role._id, text: role.name } });
         const relationshipDocs = documents.administration.relationshipDocs.paginate.map(doc => { return { value: doc._id, text: doc.name } });
         let path = documentArchives ? this.findPath(archives, documentArchives) : "";
+
         return (
             <React.Fragment>
 
