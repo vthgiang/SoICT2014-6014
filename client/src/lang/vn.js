@@ -34,7 +34,6 @@ export default {
             success: "Thành công",
             error: "Lỗi",
             new_notification: "Bạn có thông báo mới!",
-            search: "Gõ để tìm kiêm",
             auth_alert: {
                 title:
                     "Hệ thống xác nhận có lỗi xảy ra trong phiên làm việc của bạn!",
