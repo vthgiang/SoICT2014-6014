@@ -33,7 +33,7 @@ class TaskDashboard extends Component {
 
         this.INFO_SEARCH = {
             startMonth: [year, month - 3].join('-'),
-            endMonth: [year, month].join('-'),
+            endMonth: month === '13' ? [year + 1, '01'].join('-') : [year, month].join('-'),
 
             startMonthTitle: `0${month - 4}-${year}`,
             endMonthTitle: [month - 1, year].join('-')
@@ -56,11 +56,13 @@ class TaskDashboard extends Component {
     }
 
     componentDidMount = async () => {
-        await this.props.getResponsibleTaskByUser([], 1, 1000, [], [], [], null, null, null, null, null, false);
-        await this.props.getAccountableTaskByUser([], 1, 1000, [], [], [], null, null, null, null, null, false);
-        await this.props.getConsultedTaskByUser([], 1, 1000, [], [], [], null, null, null, null, null, false);
-        await this.props.getInformedTaskByUser([], 1, 1000, [], [], [], null, null, null, null, null, false);
-        await this.props.getCreatorTaskByUser([], 1, 1000, [], [], [], null, null, null, null, null, false);
+        const { startMonth, endMonth } = this.state;
+
+        await this.props.getResponsibleTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
+        await this.props.getAccountableTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
+        await this.props.getConsultedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
+        await this.props.getInformedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
+        await this.props.getCreatorTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
 
         let data = {
             type: "user"
@@ -76,39 +78,40 @@ class TaskDashboard extends Component {
         });
     }
 
-    // shouldComponentUpdate = async (nextProps, nextState) => {
-    //     if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-    //         if (!nextProps.tasks.responsibleTasks
-    //             || !nextProps.tasks.accountableTasks
-    //             || !nextProps.tasks.consultedTasks
-    //             || !nextProps.tasks.informedTasks
-    //             || !nextProps.tasks.creatorTasks
-    //             || !nextProps.tasks.tasksbyuser
-    //         ) {
-    //             return false;
-    //         }
+    shouldComponentUpdate = async (nextProps, nextState) => {
+        if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
+            if (!nextProps.tasks.responsibleTasks
+                || !nextProps.tasks.accountableTasks
+                || !nextProps.tasks.consultedTasks
+                || !nextProps.tasks.informedTasks
+                || !nextProps.tasks.creatorTasks
+                || !nextProps.tasks.tasksbyuser
+            ) {
+                return false;
+            }
 
-    //         this.setState(state => {
-    //             return {
-    //                 ...state,
-    //                 dataStatus: this.DATA_STATUS.AVAILABLE,
-    //                 callAction: true
-    //             }
-    //         });
-    //     } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && nextState.willUpdate) {
-    //         this.setState(state => {
-    //             return {
-    //                 ...state,
-    //                 dataStatus: this.DATA_STATUS.FINISHED,
-    //                 willUpdate: false       // Khi true sẽ cập nhật dữ liệu vào props từ redux
-    //             }
-    //         });
+            this.setState(state => {
+                return {
+                    ...state,
+                    dataStatus: this.DATA_STATUS.AVAILABLE,
+                    callAction: true
+                }
+            });
+        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && nextState.willUpdate) {
+            this.setState(state => {
+                
+                return {
+                    ...state,
+                    dataStatus: this.DATA_STATUS.FINISHED,
+                    willUpdate: false       // Khi true sẽ cập nhật dữ liệu vào props từ redux
+                }
+            });
 
-    //         return true;
-    //     }
+            return true;
+        }
 
-    //     return false;
-    // }
+        return false;
+    }
 
     generateDataPoints(noOfDps) {
         let xVal = 1, yVal = 100;
