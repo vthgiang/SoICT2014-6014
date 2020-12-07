@@ -1,13 +1,13 @@
 .timesheet-box {
-    width: 280px;
-    border-radius: 10px;
+    min-width: 150px;
+    border-radius: 2px;
     font-size: 13px;
-    margin: 10px 0px 0px;
-    padding: 10px;
+    margin: 0px 0px 0px;
+    padding: 5px 10px 5px 10px;
     display: block;
     box-sizing: border-box;
-    border-top: 2px solid rgb(236, 61, 61);
-    background-color: rgb(244, 233, 233);
+    border-top: 2px solid gold;
+    background-color: #fff;
 
     -webkit-box-shadow: 4px 4px 15px rgba(50, 50, 50, 0.85);
     -moz-box-shadow: 4px 4px 15px rgba(50, 50, 50, 0.85);
@@ -23,5 +23,6 @@
 }
 
 .timesheet-box .time {
-    font-size: 1.8em;
+    font-size: 1.4em;
+    font-weight: bold;
 }
