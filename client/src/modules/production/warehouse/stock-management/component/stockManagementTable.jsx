@@ -233,7 +233,7 @@ class StockManagementTable extends Component {
                                         <td>{x.address}</td>
                                         <td>{x.description}</td>
                                         <td style={{textAlign: 'center'}}>
-                                            <a className="text-green" onClick={() => this.handleShowDetailInfo(x)}><i className="material-icons">visibility</i></a>
+                                            <a onClick={() => this.handleShowDetailInfo(x)}><i className="material-icons">view_list</i></a>
                                             <a onClick={() => this.handleEdit(x)} href={`#${x._id}`} className="text-yellow" ><i className="material-icons">edit</i></a>
                                             {/* <DeleteNotification
                                                 content={translate('manage_warehouse.stock_management.delete_info')}

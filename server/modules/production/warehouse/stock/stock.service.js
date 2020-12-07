@@ -6,25 +6,22 @@ exports.getAllStocks = async (company, query, portal) => {
     
     if(!company) throw['company_invalid'];
     if(!page || !limit){
+        let options = {};
         if(managementLocation) {
-            return await Stock(connect(DB_CONNECTION, portal))
-            .find({ company, managementLocation: { $in: managementLocation } })
-            .populate([
-                { path: 'goods.good', select: 'id name'}
-            ])
-        } else {
-            return await Stock(connect(DB_CONNECTION, portal))
-            .find({ company })
-            .populate([
-                { path: 'goods.good', select: 'id name'}
-            ])
+            options.managementLocation = { $elemMatch: { role: managementLocation }};
         }
+        return await Stock(connect(DB_CONNECTION, portal))
+            .find(options)
+            .populate([
+                { path: 'goods.good', select: 'id name'},
+                { path: 'managementLocation.role', select: 'id name'}
+            ])
     }
     else{
         if (!managementLocation) {
             throw Error("Role is not defined")
         }
-        let option = { company: company, managementLocation: managementLocation }
+        let option = { managementLocation: { $elemMatch: { role: managementLocation }} }
 
         if(query.code){
             option.code = new RegExp(query.code, "i")
@@ -43,7 +40,8 @@ exports.getAllStocks = async (company, query, portal) => {
                 page,
                 limit,
                 populate: [
-                    { path: 'goods.good', select: 'id name'}
+                    { path: 'goods.good', select: 'id name'},
+                    { path: 'managementLocation.role', select: 'id name'}
                 ]
             })
     }
@@ -53,7 +51,8 @@ exports.getStock = async (id, portal) => {
     return await Stock(connect(DB_CONNECTION, portal))
         .findById(id)
         .populate([
-            { path: 'goods.good', select: 'id name'}
+            { path: 'goods.good', select: 'id name'},
+            { path: 'managementLocation.role', select: 'id name'}
         ])
 }
 
@@ -72,13 +71,18 @@ exports.createStock = async (company, data, portal) => {
                 minQuantity: item.minQuantity
             }
         }),
-        managementLocation: data.managementLocation,
-        manageDepartment: data.manageDepartment
+        managementLocation: data.managementLocation ? data.managementLocation.map(item => {
+            return {
+                role: item.role,
+                managementGood: item.managementGood
+            }
+        }) : [],
     })
     return await Stock(connect(DB_CONNECTION, portal))
         .findById(stock._id)
         .populate([
-            { path: 'goods.good', select: 'id name'}
+            { path: 'goods.good', select: 'id name'},
+            { path: 'managementLocation.role', select: 'id name'}
         ])
 }
 
@@ -97,15 +101,20 @@ exports.editStock = async (id, data, portal) => {
             minQuantity: item.minQuantity
         }
     }),
-    stock.managementLocation = data.managementLocation,
-    stock.manageDepartment = data.manageDepartment
+    stock.managementLocation = data.managementLocation ? data.managementLocation.map(item => {
+        return {
+            role: item.role,
+            managementGood: item.managementGood
+        }
+    }) : stock.managementLocation,
 
     await stock.save();
 
     return await Stock(connect(DB_CONNECTION, portal))
         .findById(stock._id)
         .populate([
-            { path: 'goods.good', select: 'id name'}
+            { path: 'goods.good', select: 'id name'},
+            { path: 'managementLocation.role', select: 'id name'}
         ])
 }
 

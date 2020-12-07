@@ -522,6 +522,7 @@ exports.data = [
     { path: '/lot/get-lot-by-good', method: 'GET', roles: ['Super Admin', 'Admin'] },
     { path: '/lot/create-or-edit-lot', method: 'POST', roles: ['Super Admin', 'Admin'] },
     { path: '/lot/delete-many', method: 'POST', roles: ['Super Admin', 'Admin'] },
+    { path: '/lot/get-inventory', method: 'GET', roles: ['Super Admin', 'Admin'] },
     { path: '/lot/get-detail/:id', method: 'GET', roles: ['Super Admin', 'Admin']},
     { path: '/lot/:id', method: 'PATCH', roles: ['Super Admin', 'Admin']},
 

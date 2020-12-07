@@ -60,10 +60,6 @@ class StockDetailForm extends Component {
                                     <strong>{translate('manage_warehouse.stock_management.address')}:&emsp;</strong>
                                     {address}
                                 </div>
-                                <div className="form-group">
-                                    <strong>{translate('manage_warehouse.stock_management.department')}:&emsp;</strong>
-                                    {manageDepartment && department.list.length && department.list.filter(item => item._id === manageDepartment).pop() ? department.list.filter(item => item._id === manageDepartment).pop().name : 'Department is deleted'}
-                                </div>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className="form-group">
@@ -74,18 +70,37 @@ class StockDetailForm extends Component {
                                     <strong>{translate('manage_warehouse.stock_management.status')}:&emsp;</strong>
                                     {translate(`manage_warehouse.stock_management.${status}`)}
                                 </div>
-                                <div className="form-group">
-                                    <strong>{translate('manage_warehouse.stock_management.management_location')}:&emsp;</strong>
-                                    <div style={{marginLeft:"40%"}}>{managementLocation.map((x, index) => 
-                                        <p key={index}>{role.list.filter(item => item._id === x).pop().name}</p>
-                                    )}</div>
-                                </div>
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.stock_management.description')}:&emsp;</strong>
                                     {description}
                                 </div>
+                                <fieldset className="scheduler-border">
+                                    <legend className="scheduler-border">{translate('manage_warehouse.stock_management.management_location')}</legend>
+
+                                    <table className="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th title={translate('manage_warehouse.stock_management.index')}>{translate('manage_warehouse.stock_management.index')}</th>
+                                                <th title={translate('manage_warehouse.stock_management.role')}>{translate('manage_warehouse.stock_management.role')}</th>
+                                                <th title={translate('manage_warehouse.stock_management.management_good')}>{translate('manage_warehouse.stock_management.management_good')}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id={`good-edit-manage-by-stock`}>
+                                            {
+                                                (typeof managementLocation === 'undefined' || managementLocation.length === 0) ? <tr><td colSpan={3}><center>{translate('task_template.no_data')}</center></td></tr> :
+                                                managementLocation.map((x, index) =>
+                                                    <tr key={index}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{x.role.name}</td>
+                                                        <td>{x.managementGood ? x.managementGood.map((item, key) => { return <p key={key}>{translate(`manage_warehouse.stock_management.${item}`)}</p>}) : ''}</td>
+                                                    </tr>
+                                                )
+                                            }
+                                        </tbody>
+                                    </table>
+                                </fieldset>
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manage_warehouse.stock_management.goods')}</legend>
 
