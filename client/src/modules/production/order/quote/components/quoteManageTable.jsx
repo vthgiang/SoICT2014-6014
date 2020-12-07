@@ -16,6 +16,7 @@ class QuoteManageTable extends Component {
             limit: 5,
             code: "",
             status: null,
+            quoteDetail: {},
         };
     }
 
@@ -50,7 +51,7 @@ class QuoteManageTable extends Component {
         this.setState((state) => {
             return {
                 ...state,
-                currentRow: data,
+                quoteDetail: data,
             };
         });
         window.$("#modal-detail-quote").modal("show");
@@ -61,11 +62,10 @@ class QuoteManageTable extends Component {
     };
 
     render() {
-        let { limit } = this.state;
+        let { limit, quoteDetail } = this.state;
         const { translate, quotes } = this.props;
         const { totalPages, page } = quotes;
 
-        console.log("quotes:", quotes);
         let listQuotes = [];
         if (quotes.isLoading === false) {
             listQuotes = quotes.listQuotes;
@@ -94,7 +94,7 @@ class QuoteManageTable extends Component {
             <React.Fragment>
                 <div className="nav-tabs-custom">
                     <div className="box-body qlcv">
-                        {this.state.currentRow && <QuoteDetailForm data={this.state.currentRow} type={this.state.type} />}
+                        <QuoteDetailForm quoteDetail={quoteDetail} />
                         <QuoteCreateForm />
                         <div className="form-inline">
                             <div className="form-group">
@@ -181,12 +181,12 @@ class QuoteManageTable extends Component {
                                     listQuotes.map((item, index) => (
                                         <tr key={index}>
                                             <td>{index + 1 + (page - 1) * limit}</td>
-                                            <td>{item.code}</td>
-                                            <td>{item.creator.name}</td>
-                                            <td>{item.customer.name}</td>
-                                            <td>{formatDate(item.effectiveDate)}</td>
-                                            <td>{formatDate(item.expirationDate)}</td>
-                                            <td>{formatCurrency(item.paymentAmount)}</td>
+                                            <td>{item.code ? item.code : ""}</td>
+                                            <td>{item.creator ? item.creator.name : ""}</td>
+                                            <td>{item.customer ? item.customer.name : ""}</td>
+                                            <td>{item.effectiveDate ? formatDate(item.effectiveDate) : "---"}</td>
+                                            <td>{item.expirationDate ? formatDate(item.expirationDate) : "---"}</td>
+                                            <td>{item.paymentAmount ? formatCurrency(item.paymentAmount) : "---"}</td>
                                             <td className={dataStatus[item.status].className}>{dataStatus[item.status].text}</td>
                                             {item.status === -1 ? (
                                                 <td>
@@ -200,8 +200,8 @@ class QuoteManageTable extends Component {
                                                         textAlign: "center",
                                                     }}
                                                 >
-                                                    <a className="text-green" onClick={() => this.handleShowDetailInfo(item)}>
-                                                        <i className="material-icons">visibility</i>
+                                                    <a onClick={() => this.handleShowDetailInfo(item)}>
+                                                        <i className="material-icons">view_list</i>
                                                     </a>
                                                     <a
                                                         onClick={() => this.handleEdit(item)}

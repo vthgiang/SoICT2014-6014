@@ -31,7 +31,10 @@ const QuoteSchema = Schema({
         type: Schema.Types.ObjectId,
         ref: 'Customer',
         required: true
-    }, 
+    },
+    customerName: {
+        type: String
+    },
     customerPhone: {
         type: String,
         required: true
@@ -41,6 +44,12 @@ const QuoteSchema = Schema({
         required: true
     },
     customerRepresent: { //người đại diện
+        type: String
+    },
+    customerTaxNumber: {
+        type: String
+    },
+    customerEmail: {
         type: String
     },
     goods: [{
@@ -139,14 +148,11 @@ const QuoteSchema = Schema({
                     expirationDateOfGoodBonus: {
                         type: Date
                     },
-                    baseUnit: {
-                        type: String
-                    },
                     quantityOfBonusGood: {
                         type: Number
                     }
                 }],
-                discountOnGoods: [{
+                discountOnGoods: {
                     good: {
                         type: Schema.Types.ObjectId,
                         ref: 'Good'
@@ -157,12 +163,11 @@ const QuoteSchema = Schema({
                     discountedPrice: {
                         type: Number
                     }
-                }]
+                }
             },
         ],
         note: {
             type: String,
-            required: true
         }, 
         amount: { //Tổng tiền hàng nguyên bản
             type: Number
@@ -217,9 +222,6 @@ const QuoteSchema = Schema({
                 },
                 expirationDateOfGoodBonus: {
                     type: Date
-                },
-                baseUnit: {
-                    type: String
                 },
                 quantityOfBonusGood: {
                     type: Number

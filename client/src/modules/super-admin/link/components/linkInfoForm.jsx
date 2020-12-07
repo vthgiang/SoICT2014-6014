@@ -29,10 +29,10 @@ class LinkInfoForm extends Component {
     }
 
     handleLinkDescription = (e) => {
-        let {value} = e.target;
-        let {translate} = this.props;
-        let {message} = ValidationHelper.validateDescription(translate, value);
-        this.setState({ 
+        let { value } = e.target;
+        let { translate } = this.props;
+        let { message } = ValidationHelper.validateDescription(translate, value);
+        this.setState({
             linkDescription: value,
             linkDescriptionError: message
         });
@@ -59,9 +59,9 @@ class LinkInfoForm extends Component {
     }
 
     isFormValidated = () => {
-        let {linkDescription} = this.state;
-        let {translate} = this.props;
-        if(!ValidationHelper.validateDescription(translate, linkDescription).status) return false;
+        let { linkDescription } = this.state;
+        let { translate } = this.props;
+        if (!ValidationHelper.validateDescription(translate, linkDescription).status) return false;
         return true;
     }
 
@@ -107,7 +107,7 @@ class LinkInfoForm extends Component {
                                 id={`link-roles-${linkId}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
-                                items={role.list.map(role => { return { value: role ? role._id : null, text: role ? role.name : "Role is deleted" } })}
+                                items={role.list.map(role => { return { value: role ? role._id : null, text: role ? role.name : "" } })}
                                 onChange={this.handleLinkRoles}
                                 value={linkRoles}
                                 multiple={true}

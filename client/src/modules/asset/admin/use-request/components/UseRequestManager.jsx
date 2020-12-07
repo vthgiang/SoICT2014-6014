@@ -76,6 +76,7 @@ class UseRequestManager extends Component {
     }
 
     formatDateTime(date, typeRegisterForUse) {
+        if (!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -219,14 +220,14 @@ class UseRequestManager extends Component {
             data = data.map((x, index) => {
 
                 let code = x.recommendNumber;
-                let assetName = (x.asset) ? x.asset.assetName : "";
+                let assetName = (x.asset) ? x.asset.assetName : '';
                 let approver = (x.approver) ? x.approver.email : '';
-                let assigner = (x.proponent) ? x.proponent.email : "";
-                let createDate = x.dateCreate
-                let dateStartUse = x.dateStartUse;
-                let dateEndUse = x.dateEndUse;
+                let assigner = (x.proponent) ? x.proponent.email : ''
+                let createDate = this.formatDateTime(x.dateCreate)
+                let dateStartUse = this.formatDateTime(x.dateStartUse);
+                let dateEndUse = this.formatDateTime(x.dateEndUse);
                 let assetCode = (x.asset) ? x.asset.code : ''
-                let status = x.status;
+                let status = this.formatStatus(x.status);
 
                 return {
                     index: index + 1,
@@ -239,9 +240,7 @@ class UseRequestManager extends Component {
                     dateEndUse: dateEndUse,
                     approver: approver,
                     status: status
-
                 }
-
             })
         }
 
@@ -263,7 +262,7 @@ class UseRequestManager extends Component {
                                 { key: "assetCode", value: "Mã tài sản" },
                                 { key: "dateStartUse", value: "Ngày bắt đầu sử dụng" },
                                 { key: "dateEndUse", value: "Ngày kết thúc sử dụng" },
-                                { key: "appprover", value: "Người phê duyệt" },
+                                { key: "approver", value: "Người phê duyệt" },
                                 { key: "status", value: "Trạng thái" },
                             ],
                             data: data
@@ -299,7 +298,7 @@ class UseRequestManager extends Component {
             case 'approved': return translate('asset.usage.approved');
             case 'waiting_for_approval': return translate('asset.usage.waiting_approval');
             case 'disapproved': return translate('asset.usage.not_approved');
-            default: return 'Deleted';
+            default: return '';
         }
     }
 
@@ -417,22 +416,21 @@ class UseRequestManager extends Component {
                             {(listRecommendDistributes && listRecommendDistributes.length !== 0) ?
                                 listRecommendDistributes.map((x, index) => {
                                     return (<tr key={index}>
-                                        <td><a onClick={() => this.handleEditAsset(x.asset)}>{x.asset ? x.asset.code : 'Asset is deleted'}</a></td>
+                                        <td><a onClick={() => this.handleEditAsset(x.asset)}>{x.asset ? x.asset.code : ''}</a></td>
                                         <td>{x.recommendNumber}</td>
                                         <td>{this.formatDateTime(x.dateCreate)}</td>
-                                        <td>{x.proponent ? x.proponent.name : 'User is deleted'}</td>
-                                        <td>{x.asset ? x.asset.assetName : 'Asset is deleted'}</td>
+                                        <td>{x.proponent ? x.proponent.email : ''}</td>
+                                        <td>{x.asset ? x.asset.assetName : ''}</td>
                                         <td>{this.formatDateTime(x.dateStartUse, x.asset ? x.asset.typeRegisterForUse : undefined)}</td>
                                         <td>{this.formatDateTime(x.dateEndUse, x.asset ? x.asset.typeRegisterForUse : undefined)}</td>
-                                        <td>{x.approver ? x.approver.name : ''}</td>
+                                        <td>{x.approver ? x.approver.email : ''}</td>
                                         <td>{this.formatStatus(x.status)}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_usage_info')}><i className="material-icons">edit</i></a>
                                             <DeleteNotification
                                                 content={translate('asset.asset_info.delete_usage_info')}
                                                 data={{
-                                                    id: x._id,
-                                                    // info: x.recommendNumber + " - " + x.dateCreate.replace(/-/gi, "/")
+                                                    id: x._id
                                                 }}
                                                 func={this.props.deleteRecommendDistribute}
                                             />

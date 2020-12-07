@@ -28,12 +28,14 @@ class GoodSelected extends Component {
     };
 
     render() {
-        let { good, goodName, pricePerBaseUnit, baseUnit, inventory, quantity, pricePerBaseUnitError } = this.props;
+        let { good, goodName, pricePerBaseUnit, baseUnit, inventory, quantity } = this.props;
+        let { pricePerBaseUnitError, goodError, quantityError } = this.props;
         const { handleGoodChange, handlePriceChange, handleQuantityChange } = this.props;
+
         return (
             <React.Fragment>
                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 10, height: "100%" }}>
-                    <div className="form-group">
+                    <div className={`form-group ${!goodError ? "" : "has-error"}`}>
                         <label>
                             Sản phẩm
                             <span className="attention"> * </span>
@@ -47,6 +49,7 @@ class GoodSelected extends Component {
                             onChange={handleGoodChange}
                             multiple={false}
                         />
+                        <ErrorLabel content={goodError} />
                     </div>
 
                     <div className="form-group">
@@ -87,12 +90,13 @@ class GoodSelected extends Component {
                         />
                     </div>
 
-                    <div className="form-group">
+                    <div className={`form-group ${!quantityError ? "" : "has-error"}`}>
                         <label>
                             Số lượng
                             <span className="attention"> * </span>
                         </label>
                         <input type="number" className="form-control" value={quantity} onChange={handleQuantityChange} />
+                        <ErrorLabel content={quantityError} />
                     </div>
                 </div>
             </React.Fragment>

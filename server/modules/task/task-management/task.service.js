@@ -1522,7 +1522,7 @@ exports.sendEmailForCreateTask = async (portal, task) => {
  * Tạo công việc mới
  */
 exports.createTask = async (portal, task) => {
-    // Lấy thông tin công việc cha
+    // Lấy thông tin công việc liên quan
     var level = 1;
     if (mongoose.Types.ObjectId.isValid(task.parent)) {
         var parent = await Task(connect(DB_CONNECTION, portal)).findById(task.parent);

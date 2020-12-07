@@ -408,7 +408,7 @@ class GoodReceiptCreateFrom extends Component {
                     approvers: bill.approvers.map(approver => {
                         return {
                             approver: approver,
-                            approvedTime: new Date(Date.now())
+                            approvedTime: null
                         }
                     }),
                     responsibles: bill.responsibles,

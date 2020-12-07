@@ -138,7 +138,6 @@ class IncidentLogAddModal extends Component {
     save = async () => {
         var partDateOfIncident = this.state.dateOfIncident.split('-');
         var dateOfIncident = [partDateOfIncident[2], partDateOfIncident[1], partDateOfIncident[0]].join('-');
-
         if (this.isFormValidated()) {
             return this.props.handleChange({ ...this.state, dateOfIncident: dateOfIncident });
         }

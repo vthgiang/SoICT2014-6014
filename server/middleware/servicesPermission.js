@@ -63,6 +63,9 @@ exports.data = [
     { path: '/system-admin/company/companies/:companyId/components', method: 'GET', roles: ['System Admin'] },
     { path: '/system-admin/company/companies/:companyId/components', method: 'POST', roles: ['System Admin'] },
     { path: '/system-admin/company/companies/:companyId/components/:componentId', method: 'DELETE', roles: ['System Admin'] },
+    
+    { path: '/system-admin/company/organizationalUnitImage', method: 'PATCH', roles: ['System Admin'] },
+    { path: '/system-admin/company/organizationalUnitImage', method: 'get', roles: ['System Admin'] },
 
     { path: '/system-admin/company/:id/links-paginate/:page/:limit', method: 'POST', roles: ['System Admin'] },
     { path: '/system-admin/company/:id/components-paginate/:page/:limit', method: 'POST', roles: ['System Admin'] },

@@ -465,6 +465,12 @@ class AddTaskTemplate extends Component {
 
                 <div className="row">
                     <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
+                        {/**Tên mẫu công việc */}
+                        <div className={`form-group ${this.state.newTemplate.errorOnName === undefined ? "" : "has-error"}`} >
+                            <label className="control-label">{translate('task_template.name')} <span style={{ color: "red" }}>*</span></label>
+                            <input type="Name" className="form-control" placeholder={translate('task_template.name')} value={newTemplate.name} onChange={this.handleTaskTemplateName} />
+                            <ErrorLabel content={this.state.newTemplate.errorOnName} />
+                        </div>
 
                         {/**Đơn vị(phòng ban) của Task template*/}
                         <div className={`form-group ${this.state.newTemplate.errorOnUnit === undefined ? "" : "has-error"}`} style={{ marginLeft: 0, marginRight: 0 }}>
@@ -531,19 +537,8 @@ class AddTaskTemplate extends Component {
                             </div>
                         </div>
                     }
-                </div>
-                {/* </div> */}
 
-
-
-                <div className="row">
-                    {/**Tên mẫu công việc */}
                     <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
-                        <div className={`form-group ${this.state.newTemplate.errorOnName === undefined ? "" : "has-error"}`} >
-                            <label className="control-label">{translate('task_template.name')} <span style={{ color: "red" }}>*</span></label>
-                            <input type="Name" className="form-control" placeholder={translate('task_template.name')} value={newTemplate.name} onChange={this.handleTaskTemplateName} />
-                            <ErrorLabel content={this.state.newTemplate.errorOnName} />
-                        </div>
                         {/**Độ ưu tiên mẫu công việc */}
                         <div className="form-group" >
                             <label className="control-label">{translate('task_template.priority')}</label>
@@ -554,6 +549,7 @@ class AddTaskTemplate extends Component {
                             </select>
                         </div>
                     </div>
+
                     {/**Mô tả mẫu công việc */}
                     <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
                         {/* <div className={`form-group ${this.state.newTemplate.errorOnDescription === undefined ? "" : "has-error"}`} > */}
@@ -564,6 +560,7 @@ class AddTaskTemplate extends Component {
                         </div>
                     </div>
                 </div>
+                {/* </div> */}
 
                 <div className="row">
                     <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>

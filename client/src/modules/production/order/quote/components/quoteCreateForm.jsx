@@ -2,10 +2,11 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
-import { QuoteActions, quoteActions } from "../redux/actions";
+import { QuoteActions } from "../redux/actions";
 import { generateCode } from "../../../../../helpers/generateCode";
 import { formatToTimeZoneDate } from "../../../../../helpers/formatDate";
-import { DatePicker, DialogModal, SelectBox, ButtonModal, ErrorLabel } from "../../../../../common-components";
+import { DialogModal, SelectBox, ButtonModal } from "../../../../../common-components";
+import ValidationHelper from "../../../../../helpers/validationHelper";
 import QuoteCreateGood from "./createQuote/quoteCreateGood";
 import QuoteCreateInfo from "./createQuote/quoteCreateInfo";
 import QuoteCreatePayment from "./createQuote/quoteCreatePayment";
@@ -20,6 +21,7 @@ class QuoteCreateForm extends Component {
             discountsOfOrderValueChecked: {},
             currentSlasOfGood: [],
             currentDiscountsOfGood: [],
+            paymentAmount: 0,
             code: "",
             note: "",
             customer: "",
@@ -60,6 +62,24 @@ class QuoteCreateForm extends Component {
         });
     };
 
+    validateCustomer = (value, willUpdateState = true) => {
+        let msg = undefined;
+        if (!value) {
+            msg = "Giá trị không được để trống";
+        } else if (value[0] === "title") {
+            msg = "Giá trị không được để trống";
+        }
+        if (willUpdateState) {
+            this.setState((state) => {
+                return {
+                    ...state,
+                    customerError: msg,
+                };
+            });
+        }
+        return msg;
+    };
+
     handleCustomerChange = (value) => {
         if (value[0] !== "title") {
             let customerInfo = this.props.customers.list.filter((item) => item._id === value[0]);
@@ -70,6 +90,8 @@ class QuoteCreateForm extends Component {
                     customerAddress: customerInfo[0].address,
                     customerPhone: customerInfo[0].mobilephoneNumber,
                     customerRepresent: customerInfo[0].represent,
+                    customerTaxNumber: customerInfo[0].taxNumber,
+                    customerEmail: customerInfo[0].email,
                 });
             }
         } else {
@@ -81,9 +103,27 @@ class QuoteCreateForm extends Component {
                     customerAddress: "",
                     customerPhone: "",
                     customerRepresent: "",
+                    customerTaxNumber: "",
+                    customerEmail: "",
                 };
             });
         }
+
+        this.validateCustomer(value, true);
+    };
+
+    handleCustomerEmailChange = (e) => {
+        let { value } = e.target;
+        this.setState((state) => {
+            return {
+                ...state,
+                customerEmail: value,
+            };
+        });
+
+        let { translate } = this.props;
+        let { message } = ValidationHelper.validateEmail(translate, value);
+        this.setState({ customerEmailError: message });
     };
 
     handleCustomerPhoneChange = (e) => {
@@ -94,6 +134,10 @@ class QuoteCreateForm extends Component {
                 customerPhone: value,
             };
         });
+
+        let { translate } = this.props;
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+        this.setState({ customerPhoneError: message });
     };
 
     handleCustomerAddressChange = (e) => {
@@ -104,6 +148,10 @@ class QuoteCreateForm extends Component {
                 customerAddress: value,
             };
         });
+
+        let { translate } = this.props;
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+        this.setState({ customerAddressError: message });
     };
 
     handleCustomerRepresentChange = (e) => {
@@ -128,6 +176,7 @@ class QuoteCreateForm extends Component {
 
     validateDateStage = (effectiveDate, expirationDate, willUpdateState = true) => {
         let msg = undefined;
+        let {} = this.state;
         if (effectiveDate && expirationDate) {
             let effDate = new Date(formatToTimeZoneDate(effectiveDate));
             let expDate = new Date(formatToTimeZoneDate(expirationDate));
@@ -139,11 +188,14 @@ class QuoteCreateForm extends Component {
         }
 
         if (willUpdateState) {
-            this.setState({
-                ...this.state,
-                effectiveDate: effectiveDate,
-                expirationDate: expirationDate,
-                dateError: msg,
+            this.setState((state) => {
+                return {
+                    ...state,
+                    effectiveDate: effectiveDate,
+                    expirationDate: expirationDate,
+                    effectiveDateError: msg,
+                    expirationDateError: msg,
+                };
             });
         }
         return msg;
@@ -155,7 +207,13 @@ class QuoteCreateForm extends Component {
             value = null;
         }
 
-        this.validateDateStage(value, expirationDate, true);
+        let { translate } = this.props;
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+        this.setState({ effectiveDateError: message, expirationDateError: undefined });
+
+        if (value) {
+            this.validateDateStage(value, expirationDate, true);
+        }
     };
 
     handleChangeExpirationDate = (value) => {
@@ -163,8 +221,13 @@ class QuoteCreateForm extends Component {
         if (!value) {
             value = null;
         }
+        let { translate } = this.props;
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+        this.setState({ expirationDateError: message, effectiveDateError: undefined });
 
-        this.validateDateStage(effectiveDate, value, true);
+        if (value) {
+            this.validateDateStage(effectiveDate, value, true);
+        }
     };
 
     setCurrentStep = (e, step) => {
@@ -315,9 +378,53 @@ class QuoteCreateForm extends Component {
         });
     };
 
+    setPaymentAmount = (paymentAmount) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                paymentAmount,
+            };
+        });
+    };
+
+    isValidateQuoteCreateInfo = () => {
+        let { customer, customerEmail, customerPhone, customerAddress, effectiveDate, expirationDate } = this.state;
+        let { translate } = this.props;
+
+        if (
+            this.validateCustomer(customer, false) ||
+            !ValidationHelper.validateEmail(translate, customerEmail).status ||
+            !ValidationHelper.validateEmpty(translate, customerPhone).status ||
+            !ValidationHelper.validateEmpty(translate, customerAddress).status ||
+            this.validateDateStage(effectiveDate, expirationDate, false) ||
+            !ValidationHelper.validateEmpty(translate, effectiveDate).status ||
+            !ValidationHelper.validateEmpty(translate, expirationDate).status
+        ) {
+            return false;
+        } else {
+            return true;
+        }
+    };
+
+    isValidateQuoteCreateGood = () => {
+        let { goods } = this.state;
+        if (goods && goods.length) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+    isValidateForm = () => {
+        if (this.isValidateQuoteCreateInfo() && this.isValidateQuoteCreateGood()) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
     formatDiscountForSubmit = (discounts) => {
         let discountsMap = discounts.map((dis) => {
-            console.log("dis.discountOnGoods", dis.discountOnGoods);
             return {
                 _id: dis._id,
                 code: dis.code,
@@ -328,13 +435,13 @@ class QuoteCreateForm extends Component {
                 expirationDate: dis.expirationDate,
                 discountedCash: dis.discountedCash,
                 discountedPercentage: dis.discountedPercentage,
+                maximumFreeShippingCost: dis.maximumFreeShippingCost,
                 loyaltyCoin: dis.loyaltyCoin,
                 bonusGoods: dis.bonusGoods
                     ? dis.bonusGoods.map((bonus) => {
                           return {
                               good: bonus.good._id,
                               expirationDateOfGoodBonus: bonus.expirationDateOfGoodBonus,
-                              baseUnit: bonus.baseUnit,
                               quantityOfBonusGood: bonus.quantityOfBonusGood,
                           };
                       })
@@ -348,6 +455,7 @@ class QuoteCreateForm extends Component {
                     : undefined,
             };
         });
+
         return discountsMap;
     };
 
@@ -372,37 +480,77 @@ class QuoteCreateForm extends Component {
         return goodMap;
     };
 
-    save = async (e) => {
-        e.preventDefault();
-        let {
-            customer,
-            customerAddress,
-            customerPhone,
-            customerRepresent,
-            code,
-            effectiveDate,
-            expirationDate,
-            shippingFee,
-            deliveryTime,
-            coin,
-            discountsOfOrderValue,
-        } = this.state;
-        let data = {
-            code,
-            effectiveDate: effectiveDate ? new Date(formatToTimeZoneDate(effectiveDate)) : undefined,
-            expirationDate: expirationDate ? new Date(formatToTimeZoneDate(expirationDate)) : undefined,
-            customer,
-            customerPhone,
-            customerAddress,
-            customerRepresent,
-            goods: this.formatGoodForSubmit(),
-            discounts: discountsOfOrderValue.length ? this.formatDiscountForSubmit(discountsOfOrderValue) : [],
-            shippingFee,
-            deliveryTime: deliveryTime ? new Date(formatToTimeZoneDate(deliveryTime)) : undefined,
-            coin,
-        };
-        console.log("DATA", data);
-        await this.props.createNewQuote(data);
+    save = async () => {
+        console.log("this.isValidateForm()", this.isValidateForm());
+        if (this.isValidateForm()) {
+            let {
+                customer,
+                customerName,
+                customerAddress,
+                customerPhone,
+                customerRepresent,
+                customerTaxNumber,
+                customerEmail,
+                code,
+                effectiveDate,
+                expirationDate,
+                shippingFee,
+                deliveryTime,
+                coin,
+                discountsOfOrderValue,
+                paymentAmount,
+                note,
+            } = this.state;
+
+            let data = {
+                code,
+                effectiveDate: effectiveDate ? new Date(formatToTimeZoneDate(effectiveDate)) : undefined,
+                expirationDate: expirationDate ? new Date(formatToTimeZoneDate(expirationDate)) : undefined,
+                customer,
+                customerName,
+                customerPhone,
+                customerAddress,
+                customerRepresent,
+                customerTaxNumber,
+                customerEmail,
+                goods: this.formatGoodForSubmit(),
+                discounts: discountsOfOrderValue.length ? this.formatDiscountForSubmit(discountsOfOrderValue) : [],
+                shippingFee,
+                deliveryTime: deliveryTime ? new Date(formatToTimeZoneDate(deliveryTime)) : undefined,
+                coin,
+                paymentAmount,
+                note,
+            };
+
+            await this.props.createNewQuote(data);
+
+            this.setState((state) => {
+                return {
+                    ...state,
+                    customer: "",
+                    customerName: "",
+                    customerAddress: "",
+                    customerPhone: "",
+                    customerRepresent: "",
+                    customerTaxNumbe: "",
+                    customerEmail: "",
+                    code: "",
+                    effectiveDate: "",
+                    expirationDate: "",
+                    shippingFee: "",
+                    deliveryTime: "",
+                    coin: "",
+                    goods: [],
+                    discountsOfOrderValue: [],
+                    paymentAmount: "",
+                    note: "",
+                    paymentAmount: "",
+                    step: 0,
+                };
+            });
+
+            window.$(`#modal-add-quote`).modal("hide");
+        }
     };
 
     render() {
@@ -414,9 +562,10 @@ class QuoteCreateForm extends Component {
             customerAddress,
             customerPhone,
             customerRepresent,
+            customerTaxNumber,
+            customerEmail,
             effectiveDate,
             expirationDate,
-            dateError,
             step,
             goods,
             shippingFee,
@@ -430,7 +579,14 @@ class QuoteCreateForm extends Component {
             discountsOfOrderValueChecked,
             currentSlasOfGood,
             currentDiscountsOfGood,
+            paymentAmount,
         } = this.state;
+
+        let { customerError, customerEmailError, customerPhoneError, customerAddressError, effectiveDateError, expirationDateError } = this.state;
+
+        let enableStepOne = this.isValidateQuoteCreateInfo();
+        let enableStepTwo = this.isValidateQuoteCreateGood();
+        let enableFormSubmit = enableStepOne && enableStepTwo;
 
         return (
             <React.Fragment>
@@ -448,26 +604,57 @@ class QuoteCreateForm extends Component {
                     msg_success={"Thêm đơn thành công"}
                     msg_faile={"Thêm đơn không thành công"}
                     // disableSubmit={!this.isFormValidated()}
-                    func={this.save}
+                    // func={this.save}
                     size="100"
                     style={{ backgroundColor: "green" }}
                     hasSaveButton={false}
                 >
                     <div className="nav-tabs-custom">
-                        <ul className="nav nav-tabs">
-                            <li className="active" key="1">
+                        {/* <ul className="nav nav-tabs">
+                            <li className={step === 0 ? "active" : ""} key="1">
                                 <a data-toggle="tab" onClick={(e) => this.setCurrentStep(e, 0)} style={{ cursor: "pointer" }}>
                                     Thông tin chung
                                 </a>
                             </li>
-                            <li key="2">
+                            <li className={step === 1 ? "active" : ""} key="2">
                                 <a data-toggle="tab" onClick={(e) => this.setCurrentStep(e, 1)} style={{ cursor: "pointer" }}>
                                     Chọn sản phẩm
                                 </a>
                             </li>
-                            <li key="3">
+                            <li className={step === 2 ? "active" : ""} key="3">
                                 <a data-toggle="tab" onClick={(e) => this.setCurrentStep(e, 2)} style={{ cursor: "pointer" }}>
                                     Chốt báo giá
+                                </a>
+                            </li>
+                        </ul> */}
+                        <ul className="breadcrumbs">
+                            <li key="1">
+                                <a
+                                    className={`${step >= 0 ? "quote-active-tab" : "quote-defaul-tab"}`}
+                                    onClick={(e) => this.setCurrentStep(e, 0)}
+                                    style={{ cursor: "pointer" }}
+                                >
+                                    <span>Thông tin chung</span>
+                                </a>
+                            </li>
+                            <li key="2">
+                                <a
+                                    className={`${step >= 1 ? "quote-active-tab" : "quote-defaul-tab"} 
+                                    ${enableStepOne ? "" : "disable-onclick-prevent"}`}
+                                    onClick={(e) => this.setCurrentStep(e, 1)}
+                                    style={{ cursor: "pointer" }}
+                                >
+                                    <span>Chọn sản phẩm</span>
+                                </a>
+                            </li>
+                            <li key="3">
+                                <a
+                                    className={`${step >= 2 ? "quote-active-tab" : "quote-defaul-tab"} 
+                                    ${enableStepOne && enableStepTwo ? "" : "disable-onclick-prevent"}`}
+                                    onClick={(e) => this.setCurrentStep(e, 2)}
+                                    style={{ cursor: "pointer" }}
+                                >
+                                    <span>Chốt báo giá</span>
                                 </a>
                             </li>
                         </ul>
@@ -496,6 +683,7 @@ class QuoteCreateForm extends Component {
                         <div className="row row-equal-height" style={{ marginTop: 0 }}>
                             {step === 0 && (
                                 <QuoteCreateInfo
+                                    //state
                                     code={code}
                                     note={note}
                                     customer={customer}
@@ -503,13 +691,16 @@ class QuoteCreateForm extends Component {
                                     customerAddress={customerAddress}
                                     customerPhone={customerPhone}
                                     customerRepresent={customerRepresent}
+                                    customerTaxNumber={customerTaxNumber}
+                                    customerEmail={customerEmail}
                                     effectiveDate={effectiveDate}
                                     expirationDate={expirationDate}
-                                    dateError={dateError}
                                     isUseForeignCurrency={isUseForeignCurrency}
                                     foreignCurrency={foreignCurrency}
+                                    //handle
                                     handleCustomerChange={this.handleCustomerChange}
                                     handleCustomerAddressChange={this.handleCustomerAddressChange}
+                                    handleCustomerEmailChange={this.handleCustomerEmailChange}
                                     handleCustomerPhoneChange={this.handleCustomerPhoneChange}
                                     handleCustomerRepresentChange={this.handleCustomerRepresentChange}
                                     handleNoteChange={this.handleNoteChange}
@@ -518,6 +709,13 @@ class QuoteCreateForm extends Component {
                                     handleUseForeignCurrencyChange={this.handleUseForeignCurrencyChange}
                                     handleRatioOfCurrencyChange={this.handleRatioOfCurrencyChange}
                                     handleSymbolOfForreignCurrencyChange={this.handleSymbolOfForreignCurrencyChange}
+                                    //Error Status
+                                    customerError={customerError}
+                                    customerEmailError={customerEmailError}
+                                    customerPhoneError={customerPhoneError}
+                                    customerAddressError={customerAddressError}
+                                    effectiveDateError={effectiveDateError}
+                                    expirationDateError={expirationDateError}
                                 />
                             )}
                             {step === 1 && (
@@ -538,12 +736,15 @@ class QuoteCreateForm extends Component {
                             )}
                             {step === 2 && (
                                 <QuoteCreatePayment
+                                    paymentAmount={paymentAmount}
                                     listGoods={goods}
                                     customer={customer}
                                     customerPhone={customerPhone}
                                     customerAddress={customerAddress}
                                     customerName={customerName}
                                     customerRepresent={customerRepresent}
+                                    customerTaxNumber={customerTaxNumber}
+                                    customerEmail={customerEmail}
                                     effectiveDate={effectiveDate}
                                     expirationDate={expirationDate}
                                     code={code}
@@ -553,6 +754,7 @@ class QuoteCreateForm extends Component {
                                     note={note}
                                     discountsOfOrderValue={discountsOfOrderValue}
                                     discountsOfOrderValueChecked={discountsOfOrderValueChecked}
+                                    enableFormSubmit={enableFormSubmit}
                                     handleDiscountsOfOrderValueChange={(data) => this.handleDiscountsOfOrderValueChange(data)}
                                     setDiscountsOfOrderValueChecked={(checked) => this.setDiscountsOfOrderValueChecked(checked)}
                                     handleShippingFeeChange={this.handleShippingFeeChange}
@@ -564,6 +766,7 @@ class QuoteCreateForm extends Component {
                                     setCurrentDiscountsOfGood={(data) => {
                                         this.setCurrentDiscountsOfGood(data);
                                     }}
+                                    setPaymentAmount={(data) => this.setPaymentAmount(data)}
                                     saveQuote={this.save}
                                 />
                             )}

@@ -6,6 +6,7 @@ import { AssetService } from '../../../asset-information/redux/services';
 
 import { StautsChart } from './stautsChart';
 import { CostChart } from './costChart';
+import { AssetTypeService } from '../../../asset-type/redux/services';
 
 class AssetStatistics extends Component {
 
@@ -36,6 +37,14 @@ class AssetStatistics extends Component {
         }).catch(err => {
             console.log(err);
         });
+
+        AssetTypeService.getAssetTypes().then(res => {
+            if (res.data.success) {
+                this.setState({ assetType: res.data.content.list })
+            }
+        }).catch(err => {
+            console.log(err);
+        });
     }
 
     getAssetStatusData = (assetStatusData) => {
@@ -52,8 +61,7 @@ class AssetStatistics extends Component {
 
     render() {
         const { translate } = this.props;
-        const { listAssets } = this.state;
-
+        const { listAssets, assetType } = this.state;
         return (
             <React.Fragment>
                 <div className="qlcv">
@@ -66,6 +74,7 @@ class AssetStatistics extends Component {
                                 </div>
                                 <div className="box-body qlcv">
                                     <StautsChart
+                                        assetType={assetType}
                                         listAssets={listAssets}
                                         getAssetStatusData={this.getAssetStatusData}
                                     />
@@ -81,6 +90,7 @@ class AssetStatistics extends Component {
                                 </div>
                                 <div className="box-body qlcv">
                                     <CostChart
+                                        assetType={assetType}
                                         listAssets={listAssets}
                                         getAssetCostData={this.getAssetCostData}
                                     />
@@ -95,6 +105,8 @@ class AssetStatistics extends Component {
 }
 
 function mapState(state) {
+    const { assetType } = state;
+    return { assetType };
 }
 
 const AssetStatisticsConnect = connect(mapState)(withTranslate(AssetStatistics));

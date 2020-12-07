@@ -6,8 +6,7 @@ const AssetPurchaseRequestSchema = new Schema({
     company: {
         //thuộc công ty nào
         type: Schema.Types.ObjectId,
-        ref: "Company",
-        required: true,
+        ref: "Company"
     },
     recommendNumber: {
         //mã phiếu
@@ -61,15 +60,10 @@ const AssetPurchaseRequestSchema = new Schema({
     status: {
         //trạng thái, tình trạng: chờ phê duyệt || không chấp nhận || đã chấp nhận
         type: String,
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now,
-    },
+    }
+},{
+    timestamps: true,
+    toJSON: { virtuals: true },
 });
 
 module.exports = (db) => {

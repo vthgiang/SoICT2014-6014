@@ -231,7 +231,7 @@ class AssetAssignedManager extends Component {
             return translate('asset.general_information.disposal')
         }
         else {
-            return 'Deleted';
+            return '';
         }
     }
     render() {
@@ -362,7 +362,7 @@ class AssetAssignedManager extends Component {
                                     <tr key={index}>
                                         <td>{x.code}</td>
                                         <td>{x.assetName}</td>
-                                        <td>{x.assetType && x.assetType.length ? x.assetType.map((item, index) => { let suffix = index < x.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : 'Asset is deleted'}</td>
+                                        <td>{x.assetType && x.assetType.length ? x.assetType.map((item, index) => { let suffix = index < x.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : ''}</td>
                                         <td>{formater.format(parseInt(x.cost))} VNĐ</td>
                                         <td>{this.formatStatus(x.status)}</td>
                                         <td style={{ textAlign: "center" }}>

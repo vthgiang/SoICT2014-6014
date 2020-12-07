@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ErrorLabel, UploadFile } from '../../../../../common-components';
+import { DialogModal, ErrorLabel, UploadFile, SelectBox } from '../../../../../common-components';
 
 import { EmployeeCreateValidator } from './combinedContent';
 
@@ -98,6 +98,16 @@ class DegreeEditModal extends Component {
         });
     }
 
+    /**
+     * Bắt sự kiện thay đổi ngành nghề, lĩnh vực
+     * @param {*} value : id Ngành nghề lĩnh vực
+     */
+    handleFieldChange = (value) => {
+        this.setState({
+            field: value
+        })
+    }
+
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     isFormValidated = () => {
         const { name, issuedBy, year } = this.state;
@@ -123,6 +133,7 @@ class DegreeEditModal extends Component {
                 index: nextProps.index,
                 name: nextProps.name,
                 issuedBy: nextProps.issuedBy,
+                field: nextProps.field,
                 year: nextProps.year,
                 degreeType: nextProps.degreeType,
                 file: nextProps.file,
@@ -143,9 +154,10 @@ class DegreeEditModal extends Component {
 
         const { id } = this.props;
 
-        const { name, issuedBy, year, degreeType, file, urlFile, fileUpload, errorOnName, errorOnIssuedBy, errorOnYear } = this.state;
+        const { name, issuedBy, year, degreeType, file, urlFile, fileUpload, errorOnName, errorOnIssuedBy, errorOnYear, field } = this.state;
 
         let files;
+        let listFields = this.props.field.listFields;
         if (file) {
             files = [{ fileName: file, urlFile: urlFile, fileUpload: fileUpload }]
         }
@@ -171,6 +183,18 @@ class DegreeEditModal extends Component {
                             <label>{translate('human_resource.profile.diploma_issued_by')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="issuedBy" value={issuedBy} onChange={this.handleIssuedByChange} autoComplete="off" />
                             <ErrorLabel content={errorOnIssuedBy} />
+                        </div>
+                        {/* Ngành nghề/ lĩnh vực */}
+                        <div className="form-group">
+                            <label>{translate('human_resource.profile.career_fields')}</label>
+                            <SelectBox
+                                id={`edit-degree-field${id}`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={field}
+                                items={listFields.map(y => { return { value: y._id, text: y.name } })}
+                                onChange={this.handleFieldChange}
+                            />
                         </div>
                         <div className="row">
                             {/* Năm tốt nghiệp */}
@@ -202,6 +226,10 @@ class DegreeEditModal extends Component {
         );
     }
 };
+function mapState(state) {
+    const { field } = state;
+    return { field };
+};
 
-const editModal = connect(null, null)(withTranslate(DegreeEditModal));
+const editModal = connect(mapState, null)(withTranslate(DegreeEditModal));
 export { editModal as DegreeEditModal };

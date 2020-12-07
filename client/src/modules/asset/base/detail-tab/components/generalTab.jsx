@@ -40,16 +40,20 @@ class GeneralTab extends Component {
     }
 
     convertGroupAsset = (group) => {
+        const { translate } = this.props;
         if (group === 'building') {
-            return 'Mặt bằng';
-        } else if (group === 'vehicle') {
-            return 'Xe cộ'
-        } else if (group === 'machine') {
-            return 'Máy móc'
-        } else {
-            return 'Khác'
+            return translate('asset.dashboard.building')
         }
-
+        else if (group === 'vehicle') {
+            return translate('asset.asset_info.vehicle')
+        }
+        else if (group === 'machine') {
+            return translate('asset.dashboard.machine')
+        }
+        else if (group === 'other') {
+            return translate('asset.dashboard.other')
+        }
+        else return null;
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -101,7 +105,7 @@ class GeneralTab extends Component {
             return translate('asset.general_information.disposal')
         }
         else {
-            return 'Deleted';
+            return '';
         }
     }
 
@@ -124,11 +128,7 @@ class GeneralTab extends Component {
                         {/* Anh tài sản */}
                         <div className="col-md-4 " style={{ textAlign: 'center', paddingLeft: '0px' }}>
                             <div>
-                                {/* <a href={process.env.REACT_APP_SERVER + avatar} target="_blank">
-                                    <img className="attachment-img avarta" src={process.env.REACT_APP_SERVER + avatar} alt="Attachment" />
-                                </a> */}
-                                {avatar && <ApiImage className="attachment-img avarta" id={`avater-imform-${id}`} src={avatar ? avatar : defaultAvatar} />}
-
+                                {avatar && <ApiImage className="attachment-img avarta" id={`avater-imform-${id}`} src={`.${avatar}`} />}
                             </div>
                         </div>
 
@@ -165,7 +165,7 @@ class GeneralTab extends Component {
                                     {/* Loại tài sản */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.asset_type')}&emsp; </strong>
-                                        {assetTypes && assetTypes.length ? assetTypes.map((item, index) => { let suffix = index < assetTypes.length - 1 ? ", " : ""; return item.typeName + suffix }) : 'Asset type is deleted'}
+                                        {assetTypes && assetTypes.length ? assetTypes.map((item, index) => { let suffix = index < assetTypes.length - 1 ? ", " : ""; return item.typeName + suffix }) : ''}
                                     </div>
 
                                     {/* Ngày nhập */}

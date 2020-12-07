@@ -1066,7 +1066,7 @@ class EvaluateByResponsibleEmployee extends Component {
                                                         ({index + 1})&nbsp;&nbsp;
                                                         <QuillEditor
                                                             id={'evaluateByRes'}
-                                                            value={item.description}
+                                                            quillValueDefault={item.description}
                                                             edit={false}
                                                         />
                                                     </span>

@@ -10,7 +10,8 @@ const {
 const arrayToTree = require("array-to-tree");
 const fs = require("fs");
 const ObjectId = require("mongoose").Types.ObjectId;
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { connect, } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { dateParse } = require(`${SERVER_HELPERS_DIR}/functionHelper`);
 
 /**
  * Lấy danh sách tất cả các tài liệu văn bản
@@ -33,7 +34,6 @@ exports.getDocuments = async (
             if (og) {
                 return await Document(connect(DB_CONNECTION, portal))
                     .find({
-                        company,
                         archivedRecordPlaceOrganizationalUnit: og._id,
                     })
                     .select(
@@ -42,7 +42,7 @@ exports.getDocuments = async (
             }
         } else {
             return await Document(connect(DB_CONNECTION, portal))
-                .find({ company })
+                .find({ })
                 .select(
                     "id name archives category domains numberOfDownload numberOfView "
                 );
@@ -51,10 +51,9 @@ exports.getDocuments = async (
         let option =
             by === "organizational-unit" && og
                 ? {
-                      company: company,
                       archivedRecordPlaceOrganizationalUnit: og._id,
                   }
-                : { company };
+                : { };
 
         if (query.category) {
             option.category = query.category;
@@ -185,56 +184,44 @@ exports.createDocument = async (portal, data, company) => {
 
         roles: data.roles,
         relationshipDescription: data.relationshipDescription,
-        archivedRecordPlaceOrganizationalUnit:
-            data.archivedRecordPlaceOrganizationalUnit,
+        archivedRecordPlaceOrganizationalUnit: data.archivedRecordPlaceOrganizationalUnit,
     };
     let versions = [];
-
-    if (!Array.isArray(data.versionName)) {
-        versions = [
-            {
-                versionName: data.versionName,
-                issuingDate:
-                    data.issuingDate !== "Invalid date" ? data.issuingDate : "",
-                effectiveDate:
-                    data.effectiveDate !== "Invalid date"
-                        ? data.effectiveDate
-                        : "",
-                expiredDate:
-                    data.expiredDate !== "Invalid date" ? data.expiredDate : "",
-                file: data.file,
-                scannedFileOfSignedDocument: data.scannedFileOfSignedDocument,
-            },
-        ];
-    } else {
-        for (let i in data.versionName) {
-            let version = {
-                versionName: data.versionName[i],
-                issuingDate:
-                    data.issuingDate[i] !== "Invalid date"
-                        ? data.issuingDate[i]
-                        : "",
-                effectiveDate:
-                    data.effectiveDate[i] !== "Invalid date"
-                        ? data.effectiveDate[i]
-                        : "",
-                expiredDate:
-                    data.expiredDate[i] !== "Invalid date"
-                        ? data.expiredDate[i]
-                        : "",
-                file:
-                    data.numberFile[i] == 1 && data.files
-                        ? data.files[numberFile++]
-                        : "",
-                scannedFileOfSignedDocument:
-                    data.numberFileScan[i] == 1 &&
-                    data.scannedFileOfSignedDocument
-                        ? data.scannedFileOfSignedDocument[numberFileScan++]
-                        : "",
-            };
-            versions.push(version);
+    if(data.versionName && data.scannedFileOfSignedDocument){
+        if (!Array.isArray(data.versionName)) {
+            versions = [
+                {
+                    versionName: data.versionName,
+             
+                    issuingDate: dateParse(data.issuingDate),
+                    effectiveDate: dateParse(data.effectiveDate),
+                    expiredDate: dateParse(data.expiredDate),
+                    file: data.file,
+                    scannedFileOfSignedDocument: data.scannedFileOfSignedDocument[0],
+                },
+            ];
+        } else {
+            for (let i in data.versionName) {
+                let version = {
+                    versionName: data.versionName[i],
+                    issuingDate: dateParse(data.issuingDate[i]),
+                    effectiveDate: dateParse(data.effectiveDate[i]),
+                    expiredDate: dateParse(data.expiredDate[i]),
+                    file:
+                        data.numberFile[i] == 1 && data.files
+                            ? data.files[numberFile++]
+                            : "",
+                    scannedFileOfSignedDocument:
+                        data.numberFileScan[i] == 1 &&
+                        data.scannedFileOfSignedDocument
+                            ? data.scannedFileOfSignedDocument[numberFileScan++]
+                            : "",
+                };
+                versions.push(version);
+            }
         }
     }
+    console.log('ser', versions)
     newDoc.versions = versions;
 
     const doc = await Document(connect(DB_CONNECTION, portal)).create(newDoc);
@@ -366,6 +353,7 @@ exports.editDocument = async (id, data, query = undefined, portal) => {
             data.archivedRecordPlaceOrganizationalUnit &&
             data.archivedRecordPlaceOrganizationalUnit !== "[object Object]"
         ) {
+            console.log('type:', typeof(data.archivedRecordPlaceOrganizationalUnit))
             doc.archivedRecordPlaceOrganizationalUnit =
                 data.archivedRecordPlaceOrganizationalUnit;
         }
@@ -390,25 +378,6 @@ exports.deleteDocument = async (id, portal) => {
 
     return doc;
 };
-
-// exports.addDocumentLog = async (params, body) => {
-//     let { creator, title, description } = body;
-//     let log = {
-//         creator: creator,
-//         title: title,
-//         description: description,
-//         createdAt: Date.now,
-//     }
-//     let document = await Document.findByIdAndUpdate(
-//         params.id,
-//         {
-//             $push: { logs: log }
-//         },
-//         { new: true }
-//     ).populate({ path: "logs.creator", model: User, select: "name id" })
-//     let documentLog = document.logs.reserve();
-//     return documentLog;
-// }
 
 /**
  * Download File and File Scan
@@ -668,9 +637,7 @@ exports.importDocumentCategory = async (portal, data, company) => {
  * Danh mục văn bản
  */
 exports.getDocumentDomains = async (portal, company) => {
-    const list = await DocumentDomain(connect(DB_CONNECTION, portal)).find({
-        company,
-    });
+    const list = await DocumentDomain(connect(DB_CONNECTION, portal)).find();
     const dataConverted = list.map((domain) => {
         return {
             id: domain._id.toString(),
@@ -720,16 +687,12 @@ exports.getDocumentsThatRoleCanView = async (portal, query, company) => {
 
     if (page === undefined && limit === undefined) {
         return await Document(connect(DB_CONNECTION, portal))
-            .find({
-                company,
-                roles: { $in: roleArr },
-            })
+            .find({ roles: { $in: roleArr } })
             .select(
                 "id name archives category domains numberOfDownload numberOfView "
             );
     } else {
         let option = {
-            company: company,
             roles: { $in: roleArr },
         };
 
@@ -970,9 +933,7 @@ exports.importDocumentDomain = async (portal, data, company) => {
  */
 
 exports.getDocumentArchives = async (portal, company) => {
-    const list = await DocumentArchive(connect(DB_CONNECTION, portal)).find({
-        company,
-    });
+    const list = await DocumentArchive(connect(DB_CONNECTION, portal)).find();
 
     const dataConverted = list.map((archive) => {
         return {

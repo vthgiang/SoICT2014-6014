@@ -7,8 +7,7 @@ const AssetTypeSchema = new Schema({
     company: {
         //thuộc công ty nào
         type: Schema.Types.ObjectId,
-        ref: "Company",
-        required: true,
+        ref: "Company"
     },
 
     typeNumber: {
@@ -31,8 +30,7 @@ const AssetTypeSchema = new Schema({
 
     description: {
         // Mô tả
-        type: String,
-        // required: true
+        type: String
     },
 
     defaultInformation: [
@@ -41,16 +39,9 @@ const AssetTypeSchema = new Schema({
             nameField: String, // Tên trường dữ liệu
         },
     ],
-
-    createdAt: {
-        type: Date,
-        default: Date.now,
-    },
-
-    updatedAt: {
-        type: Date,
-        default: Date.now,
-    },
+},{
+    timestamps: true,
+    toJSON: { virtuals: true },
 });
 
 AssetTypeSchema.plugin(mongoosePaginate);

@@ -59,6 +59,7 @@ class IncidentManagement extends Component {
 
     // Function format dữ liệu Date thành string
     formatDate2(date, monthYear = false) {
+        if (!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -81,6 +82,7 @@ class IncidentManagement extends Component {
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
     formatDate(date) {
+        if (!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -195,10 +197,10 @@ class IncidentManagement extends Component {
                         let code = x.incidentCode;
                         let assetName = item.assetName;
                         let assetCode = item.code;
-                        let type = x.type;
+                        let type = this.convertIncidentType(x.type);
                         let reporter = (x.reportedBy && userlist.length && userlist.filter(item => item._id === x.reportedBy).pop()) ? userlist.filter(item => item._id === x.reportedBy).pop().email : '';
                         let createDate = (x.dateOfIncident) ? this.formatDate2(x.dateOfIncident) : ''
-                        let status = x.incidentCode;
+                        let status = this.convertIncidentStatus(x.statusIncident);
                         let description = x.description;
 
                         return {
@@ -304,6 +306,7 @@ class IncidentManagement extends Component {
         if (lists && userlist) {
             exportData = this.convertDataToExportData(lists, userlist);
         }
+
         return (
             <div className={isActive ? isActive : "box"}>
                 <div className="box-body qlcv">
@@ -410,7 +413,7 @@ class IncidentManagement extends Component {
                                             <td>{x.incidentCode}</td>
                                             <td>{this.convertIncidentType(x.type)}</td>
                                             <td>{this.convertIncidentStatus(x.statusIncident)}</td>
-                                            <td>{x.reportedBy && userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : ''}</td>
+                                            <td>{x.reportedBy && userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().email : ''}</td>
                                             <td>{x.dateOfIncident ? this.formatDate2(x.dateOfIncident) : ''}</td>
                                             <td>{x.description}</td>
                                             <td style={{ textAlign: "center" }}>

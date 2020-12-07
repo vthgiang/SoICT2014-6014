@@ -570,3 +570,15 @@ exports.editImportConfiguraion = async (id, data) => {
 
     return await ImportConfiguraion.findById(id);
 };
+
+exports.editCompanyOrgInformation = async (shortName, organizationalUnitImage) => {
+   return await Company(connect(DB_CONNECTION, process.env.DB_NAME)).findOneAndUpdate({shortName: shortName}, {
+        $set: {organizationalUnitImage: organizationalUnitImage}
+    }, { new: true })
+};
+
+exports.getCompanyInformation = async (shortName) => {
+    return await Company(
+        connect(DB_CONNECTION, process.env.DB_NAME)
+    ).findOne({ shortName: shortName });   
+}
