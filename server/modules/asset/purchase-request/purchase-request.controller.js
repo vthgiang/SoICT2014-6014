@@ -40,7 +40,6 @@ exports.createPurchaseRequest = async (req, res) => {
         });
 
     } catch (error) {
-        console.log(error);
         await Logger.error(req.user.email, 'CREATE_PURCHASE_REQUEST', req.portal);
         res.status(400).json({
             success: false,
