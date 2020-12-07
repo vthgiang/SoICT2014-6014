@@ -158,7 +158,7 @@ class AssetIsExpired extends Component {
                                         <tr key={index}>
                                             <td>{x.asset.code}</td>
                                             <td>{x.asset.assetName}</td>
-                                            <td>{x.asset.assetType && x.asset.assetType.length ? x.asset.assetType.map((item, index) => { let suffix = index < x.asset.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : 'Asset Type is deleted'}</td>
+                                            <td>{x.asset.assetType && x.asset.assetType.length ? x.asset.assetType.map((item, index) => { let suffix = index < x.asset.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : ''}</td>
                                             <td>{this.formatDate(x.asset.purchaseDate)}</td>
                                             <td>{x.asset.managedBy && userlist.length && userlist.find(item => item._id === x.asset.managedBy) ? userlist.find(item => item._id === x.asset.managedBy).name : ''}</td>
                                             <td>{x.asset.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.asset.assignedToUser) ? userlist.find(item => item._id === x.asset.assignedToUser).name : '') : ''}</td>
@@ -172,7 +172,7 @@ class AssetIsExpired extends Component {
                                         <tr key={index}>
                                             <td>{x.asset.code}</td>
                                             <td>{x.asset.assetName}</td>
-                                            <td>{x.asset.assetType && x.asset.assetType.length ? x.asset.assetType.map((item, index) => { let suffix = index < x.asset.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : 'Asset type is deleted'}</td>
+                                            <td>{x.asset.assetType && x.asset.assetType.length ? x.asset.assetType.map((item, index) => { let suffix = index < x.asset.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : ''}</td>
                                             <td>{this.formatDate(x.asset.purchaseDate)}</td>
                                             <td>{x.asset.managedBy && userlist.length && userlist.find(item => item._id === x.asset.managedBy) ? userlist.find(item => item._id === x.asset.managedBy).name : ''}</td>
                                             <td>{x.asset.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.asset.assignedToUser) ? userlist.find(item => item._id === x.asset.assignedToUser).name : '') : ''}</td>

@@ -18,7 +18,7 @@ class ManageLink extends Component {
             value: ""
         }
     }
-    
+
     setOption = (title, option) => {
         this.setState({
             [title]: option
@@ -26,7 +26,7 @@ class ManageLink extends Component {
     }
 
     searchWithOption = () => {
-        let {option, value, limit} = this.state;
+        let { option, value, limit } = this.state;
         const params = {
             type: "active",
             limit,
@@ -39,7 +39,7 @@ class ManageLink extends Component {
 
     setPage = (page) => {
         this.setState({ page });
-        let {limit, option, value} = this.state;
+        let { limit, option, value } = this.state;
         const params = {
             type: "active",
             limit,
@@ -52,7 +52,7 @@ class ManageLink extends Component {
 
     setLimit = (number) => {
         this.setState({ limit: number });
-        let {page, option, value} = this.state;
+        let { page, option, value } = this.state;
         const params = {
             type: "active",
             limit: number,
@@ -64,9 +64,9 @@ class ManageLink extends Component {
     }
 
     componentDidMount() {
-        let {page, limit} = this.state;
-        this.props.getLinks({type: "active"});
-        this.props.getLinks({type: "active", page, limit});
+        let { page, limit } = this.state;
+        this.props.getLinks({ type: "active" });
+        this.props.getLinks({ type: "active", page, limit });
     }
 
     // Cac ham xu ly du lieu voi modal
@@ -138,7 +138,7 @@ class ManageLink extends Component {
                                             <td>{link.url}</td>
                                             <td>{link.category}</td>
                                             <td>{link.description}</td>
-                                            <td><ToolTip dataTooltip={link.roles.map(role => role && role.roleId ? role.roleId.name : "Role is deleted")} /></td>
+                                            <td><ToolTip dataTooltip={link.roles.map(role => role && role.roleId ? role.roleId.name : "")} /></td>
                                             <td style={{ textAlign: 'center' }}>
                                                 <a className="edit" onClick={() => this.handleEdit(link)}><i className="material-icons">edit</i></a>
                                             </td>
@@ -149,11 +149,11 @@ class ManageLink extends Component {
                         </table>
                         {
                             link.isLoading ?
-                            <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                            link.listPaginate && link.listPaginate.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                                link.listPaginate && link.listPaginate.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                         {/* PaginateBar */}
-                        <PaginateBar display={link.listPaginate.length} total={link.totalDocs}  pageTotal={link.totalPages} currentPage={link.page} func={this.setPage} />
+                        <PaginateBar display={link.listPaginate.length} total={link.totalDocs} pageTotal={link.totalPages} currentPage={link.page} func={this.setPage} />
                     </React.Fragment>
                 </div>
             </div>

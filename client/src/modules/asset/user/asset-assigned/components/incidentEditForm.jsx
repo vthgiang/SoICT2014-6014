@@ -169,10 +169,15 @@ class IncidentEditForm extends Component {
             incidentCode, type, asset, reportedBy, dateOfIncident, description, errorOnIncidentCode, errorOnDateOfIncident, errorOnDescription, statusIncident
         } = this.state;
 
-        var userlist = user.list;
-        var assetlist = assetsManager.listAssets;
+        const userlist = user.list;
+        let assetlist = assetsManager.listAssets;
 
-        console.log('\n\n @@@@@@@@@@', asset._id, assetlist);
+        if (assetlist) {
+            const checkExist = assetlist.some(obj => obj._id === asset._id);
+            if (!checkExist) {
+                assetlist = [...assetlist, asset];
+            }
+        }
         return (
             <React.Fragment>
                 <DialogModal
