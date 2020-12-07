@@ -432,7 +432,7 @@ class EditTaskTemplate extends Component {
     }
 
     render() {
-        
+
         console.log('\n\n=======EDIT=========\n\n');
         var units, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsDean, listRoles = [];
         var { editingTemplate, id, showMore } = this.state;
@@ -487,6 +487,14 @@ class EditTaskTemplate extends Component {
                 {/**Form chứa thông tin của mẫu công việc đang sửa */}
                 <div className="row">
                     <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
+                        {/**Tên mẫu công việc này */}
+                        <div className={`form-group ${this.state.editingTemplate.errorOnName === undefined ? "" : "has-error"}`} >
+                            <label className="control-label">{translate('task_template.tasktemplate_name')} <span style={{ color: "red" }}>*</span></label>
+                            <input type="Name" className="form-control" placeholder={translate('task_template.tasktemplate_name')} value={editingTemplate.name} onChange={this.handleTaskTemplateName} />
+                            <ErrorLabel content={this.state.editingTemplate.errorOnName} />
+                        </div>
+
+
                         {/**Đơn vị của mẫu công việc */}
                         <div className={`form-group ${editingTemplate.errorOnUnit === undefined ? "" : "has-error"}`} >
                             <label className="control-label">{translate('task_template.unit')} <span style={{ color: "red" }}>*</span></label>
@@ -528,6 +536,8 @@ class EditTaskTemplate extends Component {
                             </div>
                         }
                     </div>
+
+
                     {
                         !isProcess &&
                         <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
@@ -553,18 +563,7 @@ class EditTaskTemplate extends Component {
                         </div>
                     }
 
-                </div>
-
-                <div className="row">
                     <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
-
-                        {/**Tên mẫu công việc này */}
-                        <div className={`form-group ${this.state.editingTemplate.errorOnName === undefined ? "" : "has-error"}`} >
-                            <label className="control-label">{translate('task_template.tasktemplate_name')} <span style={{ color: "red" }}>*</span></label>
-                            <input type="Name" className="form-control" placeholder={translate('task_template.tasktemplate_name')} value={editingTemplate.name} onChange={this.handleTaskTemplateName} />
-                            <ErrorLabel content={this.state.editingTemplate.errorOnName} />
-                        </div>
-
                         {/**Độ ưu tiên mẫu công việc này */}
                         <div className="form-group" >
                             <label className="control-label">{translate('task_template.priority')}</label>
@@ -585,7 +584,10 @@ class EditTaskTemplate extends Component {
                             {/* <ErrorLabel content={this.state.editingTemplate.errorOnDescription} /> */}
                         </div>
                     </div>
+
                 </div>
+
+
 
                 <div className="row">
                     <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>

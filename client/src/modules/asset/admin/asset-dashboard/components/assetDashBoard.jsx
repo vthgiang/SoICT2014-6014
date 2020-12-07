@@ -459,8 +459,7 @@ class DashBoardAssets extends Component {
 
     render() {
         const { translate } = this.props;
-        const { listAssets, exportData, currentTab } = this.state;
-
+        const { listAssets, assetType, exportData, currentTab } = this.state;
         return (
             <div className="qlcv">
                 <div className="row" style={{ marginTop: 10 }}>
@@ -576,6 +575,7 @@ class DashBoardAssets extends Component {
                                 key="AdministrationAssetStatistics"
                             >
                                 <AssetStatistics
+                                    assetType={assetType}
                                     setAssetStatisticsExportData={this.setAssetStatisticsExportData}
                                 />
                             </LazyLoadComponent>

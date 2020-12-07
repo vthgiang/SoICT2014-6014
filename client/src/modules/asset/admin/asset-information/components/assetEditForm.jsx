@@ -16,9 +16,7 @@ class AssetEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            employeeId: this.props.employeeId ? this.props.employeeId : '',
-            img: './upload/human-resource/avatars/avatar5.png',
-            avatar: "./upload/asset/pictures/picture5.png",
+            employeeId: this.props.employeeId ? this.props.employeeId : ''
         };
     }
 
@@ -277,6 +275,7 @@ class AssetEditForm extends Component {
 
     // Function format dữ liệu Date thành string
     formatDate(date, monthYear = false) {
+        if(!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -298,6 +297,7 @@ class AssetEditForm extends Component {
     }
 
     addMonth = (date, month) => {
+        if(!date) return null;
         date = new Date(date);
         let newDate = new Date(date.setMonth(date.getMonth() + month));
 

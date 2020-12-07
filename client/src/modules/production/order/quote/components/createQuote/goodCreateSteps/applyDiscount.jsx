@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import CreateDiscountsForGood from "./createDiscountsForGood";
+import { ErrorLabel } from "../../../../../../../common-components";
 import { formatCurrency } from "../../../../../../../helpers/formatCurrency";
 import "../../quote.css";
 import CreateSlaForGood from "./createSlaForGood";
@@ -59,6 +60,9 @@ class ApplyDiscount extends Component {
             handleSlasOfGoodChange,
             setSlasOfGoodChecked,
         } = this.props;
+
+        let { quantityError } = this.props;
+
         const { handleDiscountsChange, setDiscountsChecked } = this.props;
 
         let countOfSlasChecked = this.countSlasChecked();
@@ -91,6 +95,13 @@ class ApplyDiscount extends Component {
                         </div>
                         <div>&ensp;{inventory} sản phẩm có sẵn trong kho</div>
                     </div>
+                    {quantityError ? (
+                        <div className="text-red" style={{ paddingTop: "5px" }}>
+                            {quantityError}
+                        </div>
+                    ) : (
+                        ""
+                    )}
                 </div>
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 10, height: "100%", borderTop: "solid 0.3px #c5c5c5" }}>
                     <div className="form-group apply-discount-for-good-element">

@@ -4,22 +4,42 @@ import { connect } from 'react-redux';
 import c3 from 'c3';
 import 'c3/c3.css';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
+import { TreeSelect } from '../../../../../../common-components';
 
 class CostChart extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            type: [],
+        }
     }
 
     // Thiết lập dữ liệu biểu đồ
     setDataPieChart = () => {
         const { listAssets, getAssetCostData } = this.props;
-        let dataPieChart, lessThanOneHundred = 0, oneHundred = 0, twoHundred = 0, fiveHundred = 0, oneBillion = 0, twoBillion = 0, fiveBillion = 0, tenBillion = 0;
+        const { type } = this.state;
 
-        if (listAssets) {
-            for (let i in listAssets) {
-                let cost = listAssets[i].cost;
+        let filterAsset = [], dataPieChart, lessThanOneHundred = 0, oneHundred = 0, twoHundred = 0, fiveHundred = 0, oneBillion = 0, twoBillion = 0, fiveBillion = 0, tenBillion = 0;
+
+        if (type && type.length) {
+            listAssets.map(x => {
+                if (x.assetType.length) {
+                    for (let i in x.assetType) {
+                        for (let j in type) {
+                            type[j] === x.assetType[i]._id && filterAsset.push(x);
+                        }
+                    }
+                }
+            })
+        }
+        else {
+            filterAsset = listAssets;
+        }
+
+        if (filterAsset) {
+            for (let i in filterAsset) {
+                let cost = filterAsset[i].cost;
 
                 if (cost < 100000000) {
                     lessThanOneHundred++;
@@ -99,11 +119,52 @@ class CostChart extends Component {
         });
     }
 
+    getAssetTypes = () => {
+        let { assetType } = this.props;
+        // let assetTypeName = assetType && assetType.listAssetTypes;
+        let typeArr = [];
+        assetType && assetType.map(item => {
+            typeArr.push({
+                _id: item._id,
+                id: item._id,
+                name: item.typeName,
+                parent: item.parent ? item.parent._id : null
+            })
+        })
+
+        return typeArr;
+    }
+
+    handleChangeTypeAsset = (value) => {
+        if (value.length === 0) {
+            value = []
+        }
+
+        this.setState({
+            ...this.state,
+            type: value
+        })
+
+    }
+
     render() {
+        const { translate } = this.props;
+        const { type } = this.state;
+        let typeArr = this.getAssetTypes();
+
         this.pieChart();
 
         return (
             <React.Fragment>
+                <div className="form-group">
+                    <label style={{ minWidth: "fit-content", marginRight: "10px" }}>{translate('asset.general_information.asset_type')}</label>
+                    <TreeSelect
+                        data={typeArr}
+                        value={type}
+                        handleChange={this.handleChangeTypeAsset}
+                        mode="hierarchical"
+                    />
+                </div>
                 <div className="box-body qlcv" id="assetCostChart">
                     <section id="assetCost"></section>
                 </div>

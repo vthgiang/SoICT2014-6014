@@ -199,6 +199,8 @@ class QuoteDetailForm extends Component {
             customerAddress,
             customerName,
             customerRepresent,
+            customerTaxNumber,
+            customerEmail,
             effectiveDate,
             expirationDate,
             code,
@@ -251,13 +253,38 @@ class QuoteDetailForm extends Component {
                                     <div style={{ fontWeight: 600 }}>{`${customerName} (${customerPhone})`} &ensp;</div>
                                     <div>{customerAddress}</div>
                                 </div>
-                                <div>
-                                    <small className="shopping-address-represent">{customerRepresent}</small>
-                                </div>
-                                <div style={{ padding: "0px 20px" }}>
-                                    <small>Ghi chú: &ensp;</small>
-                                    <small style={{ color: "grey", fontStyle: "italic" }}>{note}</small>
-                                </div>
+                                {customerTaxNumber ? (
+                                    <div className="shopping-customer-info-item">
+                                        <small>Mã số thuế: &ensp;</small>
+                                        <small className="shopping-customer-info-item-text">{customerTaxNumber}</small>
+                                    </div>
+                                ) : (
+                                    ""
+                                )}
+                                {customerRepresent ? (
+                                    <div className="shopping-customer-info-item">
+                                        <small>Người liên hệ: &ensp;</small>
+                                        <small className="shopping-customer-info-item-text">{customerRepresent}</small>
+                                    </div>
+                                ) : (
+                                    ""
+                                )}
+                                {customerEmail ? (
+                                    <div className="shopping-customer-info-item">
+                                        <small>Email: &ensp;</small>
+                                        <small className="shopping-customer-info-item-text">{customerEmail}</small>
+                                    </div>
+                                ) : (
+                                    ""
+                                )}
+                                {note ? (
+                                    <div className="shopping-customer-info-item">
+                                        <small>Ghi chú: </small>
+                                        <small className="shopping-customer-info-item-text">{note}</small>
+                                    </div>
+                                ) : (
+                                    ""
+                                )}
                             </div>
 
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 shopping-quote-info">

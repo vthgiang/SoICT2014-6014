@@ -160,7 +160,7 @@ const TaskSchema = new Schema(
             ref: "TaskTemplate",
         },
         parent: {
-            // Công việc cha
+            // Công việc liên quan
             type: Schema.Types.ObjectId,
             replies: this,
         },
