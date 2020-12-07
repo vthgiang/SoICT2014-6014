@@ -18,6 +18,8 @@ exports.createNewQuote = async (userId, data, portal) => {
         customerPhone: data.customerPhone,
         customerAddress: data.customerAddress,
         customerRepresent: data.customerRepresent,
+        customerTaxNumber: data.customerTaxNumber,
+        customerEmail: data.customerEmail,
         goods: data.goods.length ? data.goods.map((item) => {
             return {
                 good: item.good,

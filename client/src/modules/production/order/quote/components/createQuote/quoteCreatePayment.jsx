@@ -186,7 +186,6 @@ class QuoteCreatePayment extends Component {
 
     render() {
         let { listGoods, discountsOfOrderValue, discountsOfOrderValueChecked } = this.props;
-        const { listDiscountsByOrderValue } = this.props.discounts;
         const {
             handleDiscountsOfOrderValueChange,
             setDiscountsOfOrderValueChecked,
@@ -202,6 +201,8 @@ class QuoteCreatePayment extends Component {
             customerAddress,
             customerName,
             customerRepresent,
+            customerTaxNumber,
+            customerEmail,
             effectiveDate,
             expirationDate,
             code,
@@ -210,6 +211,7 @@ class QuoteCreatePayment extends Component {
             note,
             coin,
             paymentAmount,
+            enableFormSubmit,
         } = this.props;
 
         let allOfBonusGood = this.getBonusGoodOfAll();
@@ -239,13 +241,38 @@ class QuoteCreatePayment extends Component {
                             <div style={{ fontWeight: 600 }}>{`${customerName} (${customerPhone})`} &ensp;</div>
                             <div>{customerAddress}</div>
                         </div>
-                        <div>
-                            <small className="shopping-address-represent">{customerRepresent}</small>
-                        </div>
-                        <div style={{ padding: "0px 20px" }}>
-                            <small>Ghi chú: &ensp;</small>
-                            <small style={{ color: "grey", fontStyle: "italic" }}>{note}</small>
-                        </div>
+                        {customerTaxNumber ? (
+                            <div className="shopping-customer-info-item">
+                                <small>Mã số thuế: &ensp;</small>
+                                <small className="shopping-customer-info-item-text">{customerTaxNumber}</small>
+                            </div>
+                        ) : (
+                            ""
+                        )}
+                        {customerRepresent ? (
+                            <div className="shopping-customer-info-item">
+                                <small>Người liên hệ: &ensp;</small>
+                                <small className="shopping-customer-info-item-text">{customerRepresent}</small>
+                            </div>
+                        ) : (
+                            ""
+                        )}
+                        {customerEmail ? (
+                            <div className="shopping-customer-info-item">
+                                <small>Email: &ensp;</small>
+                                <small className="shopping-customer-info-item-text">{customerEmail}</small>
+                            </div>
+                        ) : (
+                            ""
+                        )}
+                        {note ? (
+                            <div className="shopping-customer-info-item">
+                                <small>Ghi chú: </small>
+                                <small className="shopping-customer-info-item-text">{note}</small>
+                            </div>
+                        ) : (
+                            ""
+                        )}
                     </div>
 
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 shopping-quote-info">
@@ -391,7 +418,7 @@ class QuoteCreatePayment extends Component {
                         </div>
                         <div className="shoppe-shipping-content">
                             <div className="shopping-shipping-fee">
-                                <div> Phí giao hàng &ensp;</div>
+                                <div>Phí giao hàng &ensp;</div>
                                 <input type="number" value={shippingFee} placeholder="Phí giao hàng... (vnđ)" onChange={handleShippingFeeChange} />
                             </div>
                             <div className="shopping-shipping-time">
@@ -538,7 +565,13 @@ class QuoteCreatePayment extends Component {
                             </div>
                         </div>
                         <div className="shopping-payment-button">
-                            <button onClick={saveQuote}>Lưu báo giá</button>
+                            <button
+                                style={{ cursor: "pointer" }}
+                                className={`${enableFormSubmit ? "" : "disable-onclick-prevent"}`}
+                                onClick={saveQuote}
+                            >
+                                Lưu báo giá
+                            </button>
                         </div>
                     </div>
                 </fieldset>
