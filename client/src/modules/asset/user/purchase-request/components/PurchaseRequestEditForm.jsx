@@ -160,7 +160,15 @@ class PurchaseRequestEditForm extends Component {
 
     save = () => {
         if (this.isFormValidated()) {
-            return this.props.updateRecommendProcure(this.state._id, this.state);
+            let data = this.state;
+            if (data.dateCreate) {
+                let dateData = data.dateCreate.split("-");
+                data = {
+                    ...data,
+                    dateCreate: new Date(`${dateData[2]}-${dateData[1]}-${dateData[0]}`)
+                }
+            }
+            return this.props.updateRecommendProcure(this.state._id, data);
         }
     }
 
@@ -170,7 +178,7 @@ class PurchaseRequestEditForm extends Component {
                 ...prevState,
                 _id: nextProps._id,
                 recommendNumber: nextProps.recommendNumber,
-                dateCreate: nextProps.dateCreate,
+                dateCreate: this.formatDate(nextProps.dateCreate),
                 proponent: nextProps.proponent,
                 equipmentName: nextProps.equipmentName,
                 equipmentDescription: nextProps.equipmentDescription,
@@ -188,6 +196,24 @@ class PurchaseRequestEditForm extends Component {
         } else {
             return null;
         }
+    }
+
+    formatDate = (date) => {
+        if (!date) return null;
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2) {
+            month = '0' + month;
+        }
+
+        if (day.length < 2) {
+            day = '0' + day;
+        }
+
+        return [day, month, year].join('-');
     }
 
     render() {

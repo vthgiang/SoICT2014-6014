@@ -1,5 +1,6 @@
 const Models = require(`${SERVER_MODELS_DIR}`);
 const {connect} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const {freshObject} = require(`${SERVER_HELPERS_DIR}/functionHelper`);
 const {RecommendProcure, User} = Models;
 
 /**
@@ -87,7 +88,6 @@ exports.searchPurchaseRequests = async (portal, company, query) => {
         keySearch = {...keySearch, status: {$in: status}};
     }
 
-    console.log('keysearch', keySearch)
     var totalList = await RecommendProcure(
         connect(DB_CONNECTION, portal)
     ).countDocuments(keySearch);
@@ -112,7 +112,7 @@ exports.createPurchaseRequest = async (portal, company, data) => {
         connect(DB_CONNECTION, portal)
     ).findOne({recommendNumber: data.recommendNumber});
     if (checkPur) throw ["recommend_number_exist"];
-    console.log(data);
+    data = freshObject(data);
 
     var createRecommendProcure = await RecommendProcure(
         connect(DB_CONNECTION, portal)
