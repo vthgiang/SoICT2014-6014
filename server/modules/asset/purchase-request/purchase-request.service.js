@@ -82,7 +82,7 @@ exports.searchPurchaseRequests = async (portal, company, query) => {
 exports.createPurchaseRequest = async (portal, company, data) => {
     const checkPur = await RecommendProcure(
         connect(DB_CONNECTION, portal)
-    ).find({recommendNumber: data.recommendNumber});
+    ).findOne({recommendNumber: data.recommendNumber});
     if (checkPur) throw ["recommend_number_exist"];
 
     var createRecommendProcure = await RecommendProcure(

@@ -4,8 +4,6 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DatePicker, TimePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
 import { compareTime } from '../../../../../helpers/stringMethod';
-import { UseRequestFromValidator } from './UseRequestFromValidator';
-
 import { RecommendDistributeActions } from '../redux/actions';
 import { AssetManagerActions } from '../../../admin/asset-information/redux/actions';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
@@ -30,6 +28,7 @@ class UseRequestCreateForm extends Component {
 
     // Function format ngày hiện tại thành dạnh dd-mm-yyyy
     formatDate = (date) => {
+        if (!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
