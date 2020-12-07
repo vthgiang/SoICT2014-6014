@@ -29,7 +29,33 @@ exports.searchPurchaseRequests = async (portal, company, query) => {
 
     //Bắt sựu kiện tháng tìm kiếm khác ""
     if (proposalDate) {
-        keySearch = {...keySearch, dateCreate: {$regex: month, $options: "i"}}; // filter theo tháng nhưng không khai báo month
+        // Convert lại do bên client gửi dữ liệu month dạng month-year
+        let date = proposalDate.split("-");0
+        let start = new Date(date[1], date[0]-1, 1); //ngày cuối cùng của tháng trước
+        let end = new Date(date[1], date[0], 1); // ngày cuối cùng của tháng
+
+        keySearch = {
+            ...keySearch,
+            dateCreate: {
+                $gt: start,
+                $lte: end,
+            },
+        };
+    }
+
+    if (month) {
+        // Convert lại do bên client gửi dữ liệu month dạng month-year
+        let date = month.split("-");0
+        let start = new Date(date[1], date[0]-1, 1); //ngày cuối cùng của tháng trước
+        let end = new Date(date[1], date[0], 1); // ngày cuối cùng của tháng
+
+        keySearch = {
+            ...keySearch,
+            dateCreate: {
+                $gt: start,
+                $lte: end,
+            },
+        };
     }
 
     // Thêm người đề nghị vào trường tìm kiếm
@@ -60,6 +86,8 @@ exports.searchPurchaseRequests = async (portal, company, query) => {
     if (status) {
         keySearch = {...keySearch, status: {$in: status}};
     }
+
+    console.log('keysearch', keySearch)
     var totalList = await RecommendProcure(
         connect(DB_CONNECTION, portal)
     ).countDocuments(keySearch);
@@ -84,6 +112,7 @@ exports.createPurchaseRequest = async (portal, company, data) => {
         connect(DB_CONNECTION, portal)
     ).findOne({recommendNumber: data.recommendNumber});
     if (checkPur) throw ["recommend_number_exist"];
+    console.log(data);
 
     var createRecommendProcure = await RecommendProcure(
         connect(DB_CONNECTION, portal)

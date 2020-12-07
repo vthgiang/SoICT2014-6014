@@ -15,7 +15,7 @@ const AssetPurchaseRequestSchema = new Schema({
     },
     dateCreate: {
         //ngày lập
-        type: String,
+        type: Date,
         defaut: Date.now,
     },
     proponent: {
