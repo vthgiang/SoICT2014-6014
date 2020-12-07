@@ -2984,8 +2984,8 @@ export default {
 
                 add_template: "Mẫu công việc",
                 add_template_notice: "Hãy chọn mẫu công việc",
-                add_parent_task: "Công việc cha",
-                add_parent_task_notice: "Hãy chọn công việc cha",
+                add_parent_task: "Công việc liên quan",
+                add_parent_task_notice: "Hãy chọn công việc liên quan",
                 add_raci: "Phân định trách nhiệm",
                 add_resp: "Chọn người thực hiện",
                 add_acc: "Chọn người phê duyệt",

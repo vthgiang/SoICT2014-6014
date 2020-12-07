@@ -401,7 +401,7 @@ function deleteTaskById(taskId) {
 
 /**
  * lấy công việc con
- * @param {*} taskId id công việc cha
+ * @param {*} taskId id công việc liên quan
  */
 function getSubTask(taskId) {
     return sendRequest({
