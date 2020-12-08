@@ -3359,14 +3359,7 @@ const initSampleCompanyDB = async () => {
             parent: null,
             type: "equipment",
             description: "NVL",
-        },
-        {
-            name: "Tài sản",
-            code: "AS002",
-            parent: null,
-            type: "asset",
-            description: "NVL",
-        },
+        }
     ]);
     console.log("Khởi tạo xong danh sách danh mục hàng hóa");
 
@@ -3398,28 +3391,6 @@ const initSampleCompanyDB = async () => {
             unit: [],
             quantity: 30,
             description: "Nguyên vật liệu thuốc thú y",
-        },
-        {
-            company: vnist._id,
-            category: listCategory[4]._id,
-            name: "Máy chiết rót viên thuốc tự động",
-            code: "AS001",
-            type: "asset",
-            baseUnit: "Chiếc",
-            unit: [],
-            quantity: 2,
-            description: "Máy sản xuất thuốc thú y",
-        },
-        {
-            company: vnist._id,
-            category: listCategory[4]._id,
-            name: "Máy Dập Viên Thuốc",
-            code: "AS002",
-            type: "asset",
-            baseUnit: "Chiếc",
-            unit: [],
-            quantity: 2,
-            description: "Máy sản xuất thuốc thú y",
         },
         {
             company: vnist._id,

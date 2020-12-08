@@ -181,9 +181,11 @@ class PurchaseRequestCreateForm extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result = this.validateEquipment(this.state.equipmentName, false) &&
-            this.validateTotal(this.state.total, false) &&
-            this.validateUnit(this.state.unit, false);
+        const { equipmentName, total, unit, recommendNumber } = this.state;
+        let result = this.validateEquipment(equipmentName, false) &&
+            this.validateTotal(total, false) &&
+            this.validateUnit(unit, false) &&
+            this.validateRecommendNumber(recommendNumber, false);
 
         return result;
     }
@@ -229,7 +231,7 @@ class PurchaseRequestCreateForm extends Component {
                             <div className="col-sm-6">
                                 {/* Mã phiếu */}
                                 <div className={`form-group ${!errorOnRecommendNumber ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.form_code')}</label>
+                                    <label>{translate('asset.general_information.form_code')}<span className="text-red">*</span></label>
                                     <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={this.handleRecommendNumberChange} autoComplete="off"
                                         placeholder="Mã phiếu" />
                                     <ErrorLabel content={errorOnRecommendNumber} />

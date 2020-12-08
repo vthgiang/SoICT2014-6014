@@ -58,7 +58,6 @@ class DepartmentTreeView extends Component {
                 let name = x.name;
                 let description = x.description;
                 let deans = x.deans.map(item => item.name);
-                console.log(deans);
                 if (deans.length > length) {
                     length = deans.length;
                 }
@@ -338,9 +337,16 @@ class DepartmentTreeView extends Component {
                                     {/* <input className="custom-file-input" type="file" id="file" onChange={this.handleUpload} /> */}
                                     <input type="file" id="files" onChange={this.handleUpload} style={{ display: 'none' }} />
                                     {organizationalUnitImagePreview &&
-                                        <label style={{ marginBottom: 0 }} className="custom-file-input" htmlFor="files"></label>
+                                        <>
+                                            <label style={{ marginBottom: 0 }} className="custom-file-input" htmlFor="files">
+                                                <span className="material-icons icon_upload">
+                                                    cloud_upload
+                                                </span>
+                                                Cập nhật ảnh cơ cấu tổ chức
+                                            </label>
+                                            <button style={{ marginLeft: '10px' }} type="button" className="btn btn-success pull-right" title='Thêm' onClick={this.handleUploadImage}>Lưu</button>
+                                        </>
                                     }
-                                    <button style={{ marginLeft: '10px' }} type="button" className="btn btn-success pull-right" title='Thêm' onClick={this.handleUploadImage}>Lưu</button>
                                 </div>
                                 <div style={{ height: '500px', textAlign: "center" }}>
                                     {
@@ -349,7 +355,7 @@ class DepartmentTreeView extends Component {
                                             :
                                             <>
                                                 <h4 style={{ fontWeight: 'bold' }}>Chưa có ảnh cơ cấu tổ chức</h4>
-                                                <label class="upload_now" style={{ cursor: 'pointer' }} htmlFor="files">Cập nhật ngay</label>
+                                                <label className="upload_now" style={{ cursor: 'pointer' }} htmlFor="files">Cập nhật ngay</label>
                                             </>
                                     }
                                 </div>
