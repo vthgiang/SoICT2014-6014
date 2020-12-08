@@ -126,7 +126,7 @@ class ManufacturingLotDetailForm extends Component {
                                                     <th>{translate('manufacturing.command.good_code')}</th>
                                                     <th>{translate('manufacturing.command.good_name')}</th>
                                                     <th>{translate('manufacturing.command.good_base_unit')}</th>
-                                                    <th>{translate('manufacturing.command.good_base_unit_quantity')}</th>
+                                                    <th>{translate('manufacturing.command.quantity')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>

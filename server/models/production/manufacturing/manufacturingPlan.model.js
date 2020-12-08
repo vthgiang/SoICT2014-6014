@@ -12,10 +12,10 @@ const ManufacturingPlanSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "ManufacturingOrder"
     },
-    salesOrder: {
+    salesOrders: [{ //  Mã các đơn kinh doanh của kế hoạch
         type: Schema.Types.ObjectId,
         ref: "SalesOrder"
-    },
+    }],
     manufacturingWorks: [{
         type: Schema.Types.ObjectId,
         ref: "ManufacturingWorks"

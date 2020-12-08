@@ -148,7 +148,7 @@ const ProcessTemplateSchema = new Schema({
             formula: {
                 type: String,
                 default:
-                    "progress / (dayUsed / totalDay) - 0.5 * (10 - (averageActionRating)) * 10",
+                    "progress / (daysUsed / totalDays) - 0.5 * (10 - (averageActionRating)) * 10",
             },
             status: {
                 type: Boolean,
