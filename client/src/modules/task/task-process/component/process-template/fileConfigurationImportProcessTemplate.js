@@ -177,7 +177,7 @@ export const templateImportProcessTemplate = {
                             accountableEmployees: ["vtc.vnist@gmail.com"],
                             consultedEmployees: ["tvb.vnist@gmail.com"],
                             informedEmployees: [],
-                            formula: "progress / (dayUsed / totalDay) - (numberOfFailedAction / (numberOfFailedAction + numberOfPassedAction)) * 100",
+                            formula: "progress / (daysUsed / totalDays) - (numberOfFailedAction / (numberOfFailedAction + numberOfPassedAction)) * 100",
                             taskActions: [
                                 {
                                     name: "Xây dựng định mức kỹ thuật",
@@ -229,7 +229,7 @@ export const templateImportProcessTemplate = {
                             accountableEmployees: [],
                             consultedEmployees: [],
                             informedEmployees: [],
-                            formula: "progress / (dayUsed / totalDay)",
+                            formula: "progress / (daysUsed / totalDays)",
                             taskActions: [
                                 {
                                     name: "Duyệt maquette",
@@ -271,7 +271,7 @@ export const templateImportProcessTemplate = {
                             accountableEmployees: ["tvb.vnist@gmail.com"],
                             consultedEmployees: [],
                             informedEmployees: [],
-                            formula: "progress / (dayUsed / totalDay) - (numberOfFailedAction / (numberOfFailedAction + numberOfPassedAction)) * 100",
+                            formula: "progress / (daysUsed / totalDays) - (numberOfFailedAction / (numberOfFailedAction + numberOfPassedAction)) * 100",
                             taskActions: [
                                 {
                                     name: "Duyệt maquette",
@@ -313,7 +313,7 @@ export const templateImportProcessTemplate = {
                             accountableEmployees: ["vtc.vnist@gmail.com"],
                             consultedEmployees: ["nhungnt.vnist@gmail.com"],
                             informedEmployees: [],
-                            formula: "progress / (dayUsed / totalDay) - (numberOfFailedAction / (numberOfFailedAction + numberOfPassedAction)) * 100",
+                            formula: "progress / (daysUsed / totalDays) - (numberOfFailedAction / (numberOfFailedAction + numberOfPassedAction)) * 100",
                             taskActions: [
                                 {
                                     name: "Duyệt maquette",
