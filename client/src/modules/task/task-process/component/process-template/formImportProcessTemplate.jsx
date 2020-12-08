@@ -433,12 +433,14 @@ class FormImportProcessTemplate extends Component {
                                     buttonName='Download file import mẫu' />
                             </div>
                             <div className="form-group col-md-12 col-xs-12">
+                                {/*  style={{width: "100vmax !important", maxWidth: "100vmax !important"}} */}
                                 <ShowImportData
                                     id="import_process_template_show_data"
                                     configData={configData}
                                     importData={importData}
                                     rowError={rowError}
-                                    scrollTable={false}
+                                    // scrollTable={false}
+                                    scrollTableWidth={2500}
                                     checkFileImport={checkFileImport}
                                     limit={limit}
                                     page={page}

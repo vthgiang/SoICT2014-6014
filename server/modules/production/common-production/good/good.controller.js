@@ -15,7 +15,7 @@ exports.getGoodsByType = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_good_failed'],
-            content: error
+            content: error.message
         });
     }
 }
@@ -34,7 +34,7 @@ exports.getAllGoodsByType = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_good_failed'],
-            content: error
+            content: error.message
         });
     }
 }
@@ -53,7 +53,7 @@ exports.getAllGoodsByCategory = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_good_failed'],
-            content: error
+            content: error.message
         });
     }
 }
@@ -74,7 +74,7 @@ exports.createGoodByType = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['add_faile'],
-            content: error
+            content: error.message
         })
     }
 }
@@ -94,7 +94,7 @@ exports.editGood = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['edit_faile'],
-            content: error
+            content: error.message
         })
     }
 }
@@ -115,7 +115,7 @@ exports.deleteGood = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['delete_faile'],
-            content: error
+            content: error.message
         })
     }
 }
@@ -136,7 +136,7 @@ exports.getGoodDetail = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_good_failed'],
-            content: error
+            content: error.message
         })
     }
 }
@@ -157,7 +157,7 @@ exports.getAllGoods = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_good_failed'],
-            content: error
+            content: error.message
         })
     }
 }

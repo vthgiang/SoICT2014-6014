@@ -4,6 +4,7 @@ import { withTranslate } from "react-redux-multilingual";
 import { GoodActions } from "../../../../common-production/good-management/redux/actions";
 import { DiscountActions } from "../../../discount/redux/actions";
 import { formatCurrency } from "../../../../../../helpers/formatCurrency";
+import ValidationHelper from "../../../../../../helpers/validationHelper";
 import GoodSelected from "./goodCreateSteps/goodSelected";
 import ApplyDiscount from "./goodCreateSteps/applyDiscount";
 import Payment from "./goodCreateSteps/payment";
@@ -134,6 +135,25 @@ class QuoteCreateGood extends Component {
         });
     };
 
+    validateGood = (value, willUpdateState = true) => {
+        let msg = undefined;
+        if (!value) {
+            msg = "Giá trị không được để trống";
+        } else if (value[0] === "title") {
+            msg = "Giá trị không được để trống";
+        }
+
+        if (willUpdateState) {
+            this.setState((state) => {
+                return {
+                    ...state,
+                    goodError: msg,
+                };
+            });
+        }
+        return msg;
+    };
+
     handleGoodChange = async (value) => {
         if (value[0] !== "title") {
             let { listGoodsByType } = this.props.goods;
@@ -184,6 +204,8 @@ class QuoteCreateGood extends Component {
                 };
             });
         }
+
+        this.validateGood(value, true);
     };
 
     validatePrice = (value, willUpdateState = true) => {
@@ -216,14 +238,31 @@ class QuoteCreateGood extends Component {
         this.validatePrice(value, true);
     };
 
+    validateQuantity = (value, willUpdateState = true) => {
+        let msg = undefined;
+        if (!value) {
+            msg = "Giá trị không được để trống!";
+        } else if (value <= 0) {
+            msg = "Số lượng phải lớn hơn 0";
+        }
+
+        if (willUpdateState) {
+            this.setState((state) => {
+                return {
+                    ...state,
+                    quantity: value,
+                    quantityError: msg,
+                };
+            });
+        }
+        return msg;
+    };
+
     handleQuantityChange = (e) => {
         let { value } = e.target;
-        this.setState((state) => {
-            return {
-                ...state,
-                quantity: value,
-            };
-        });
+        if (value >= 0) {
+            this.validateQuantity(value, true);
+        }
     };
 
     handleSlasOfGoodChange = (value) => {
@@ -325,119 +364,109 @@ class QuoteCreateGood extends Component {
         return amountAfterApplyTax;
     };
 
-    handleClearGood = (e) => {
-        e.preventDefault();
-        this.setState((state) => {
-            return {
-                ...state,
-                discountsOfGood: [],
-                taxs: [],
-                slasOfGood: [],
-                quantity: "",
-                pricePerBaseUnit: "",
-                pricePerBaseUnitError: "",
-                pricePerBaseUnitOrigin: "",
-                note: "",
-                inventory: "",
-                baseUnit: "",
-                good: "",
-                goodName: "",
-            };
-        });
+    isValidateGoodSelected = () => {
+        let { good, pricePerBaseUnit, quantity } = this.state;
+        if (this.validateGood([good], false) || this.validatePrice(pricePerBaseUnit, false) || this.validateQuantity(quantity, false)) {
+            return false;
+        } else {
+            return true;
+        }
     };
 
     addGood = (e) => {
         e.preventDefault();
-        const { listTaxsByGoodId } = this.props.goods.goodItems;
-        let {
-            taxs,
-            slasOfGood,
-            pricePerBaseUnit,
-            discountsOfGood,
-            good,
-            goodName,
-            baseUnit,
-            quantity,
-            code,
-            pricePerBaseUnitOrigin,
-            note,
-            steps,
-            salesPriceVariance,
-        } = this.state;
+        if (this.isValidateGoodSelected()) {
+            const { listTaxsByGoodId } = this.props.goods.goodItems;
+            let {
+                taxs,
+                slasOfGood,
+                pricePerBaseUnit,
+                discountsOfGood,
+                good,
+                goodName,
+                baseUnit,
+                quantity,
+                code,
+                pricePerBaseUnitOrigin,
+                note,
+                steps,
+                salesPriceVariance,
+            } = this.state;
 
-        let { listGoods } = this.props;
+            let { listGoods } = this.props;
 
-        let amount = this.getOriginAmountOfGood();
-        let amountAfterDiscount = this.getAmountAfterApplyDiscount();
-        let amountAfterTax = this.getAmountAfterApplyTax();
+            let amount = this.getOriginAmountOfGood();
+            let amountAfterDiscount = this.getAmountAfterApplyDiscount();
+            let amountAfterTax = this.getAmountAfterApplyTax();
 
-        let listTaxs = taxs.map((item) => {
-            let tax = listTaxsByGoodId.find((element) => element._id == item);
-            if (tax) {
-                return tax;
+            let listTaxs = taxs.map((item) => {
+                let tax = listTaxsByGoodId.find((element) => element._id == item);
+                if (tax) {
+                    return tax;
+                }
+            });
+
+            let listSlas = [];
+            let { listSlasByGoodId } = this.props.goods.goodItems;
+            for (const key in slasOfGood) {
+                let slaInfo = listSlasByGoodId.find((element) => element._id === key);
+                listSlas.push({
+                    _id: key,
+                    title: slaInfo.title,
+                    descriptions: slasOfGood[key],
+                });
             }
-        });
 
-        let listSlas = [];
-        let { listSlasByGoodId } = this.props.goods.goodItems;
-        for (const key in slasOfGood) {
-            let slaInfo = listSlasByGoodId.find((element) => element._id === key);
-            listSlas.push({
-                _id: key,
-                title: slaInfo.title,
-                descriptions: slasOfGood[key],
+            let additionGood = {
+                good: {
+                    _id: good,
+                    name: goodName,
+                    baseUnit: baseUnit,
+                    code: code,
+                },
+                pricePerBaseUnit: pricePerBaseUnit,
+                pricePerBaseUnitOrigin: pricePerBaseUnitOrigin,
+                quantity: quantity,
+                taxs: listTaxs,
+                slasOfGood: listSlas,
+                discountsOfGood: discountsOfGood,
+                note: note,
+                amount,
+                amountAfterDiscount,
+                amountAfterTax,
+                salesPriceVariance,
+            };
+
+            listGoods.push(additionGood);
+            steps = steps.map((step, index) => {
+                step.active = !index ? true : false;
+                return step;
+            });
+            this.props.setGoods(listGoods);
+            this.setState((state) => {
+                return {
+                    ...state,
+                    discountsOfGood: [],
+                    discountsOfGoodChecked: {},
+                    taxs: [],
+                    slasOfGood: [],
+                    slasOfGoodChecked: {},
+                    quantity: "",
+                    pricePerBaseUnit: "",
+                    pricePerBaseUnitError: undefined,
+                    pricePerBaseUnitOrigin: "",
+                    salesPriceVariance: "",
+                    note: "",
+                    inventory: "",
+                    baseUnit: "",
+                    good: "",
+                    code: "",
+                    goodName: "",
+                    step: 0,
+                    steps,
+                };
             });
         }
-
-        let additionGood = {
-            good: {
-                _id: good,
-                name: goodName,
-                baseUnit: baseUnit,
-                code: code,
-            },
-            pricePerBaseUnit: pricePerBaseUnit,
-            pricePerBaseUnitOrigin: pricePerBaseUnitOrigin,
-            quantity: quantity,
-            taxs: listTaxs,
-            slasOfGood: listSlas,
-            discountsOfGood: discountsOfGood,
-            note: note,
-            amount,
-            amountAfterDiscount,
-            amountAfterTax,
-            salesPriceVariance,
-        };
-
-        listGoods.push(additionGood);
-        steps = steps.map((step, index) => {
-            step.active = !index ? true : false;
-            return step;
-        });
-        this.props.setGoods(listGoods);
-        this.setState((state) => {
-            return {
-                ...state,
-                discountsOfGood: [],
-                discountsOfGoodChecked: {},
-                taxs: [],
-                slasOfGood: [],
-                slasOfGoodChecked: {},
-                quantity: "",
-                pricePerBaseUnit: "",
-                pricePerBaseUnitError: undefined,
-                pricePerBaseUnitOrigin: "",
-                salesPriceVariance: "",
-                note: "",
-                inventory: "",
-                baseUnit: "",
-                good: "",
-                code: "",
-                goodName: "",
-                step: 0,
-                steps,
-            };
-        });
     };
 
     deleteGood = (goodId) => {
@@ -570,99 +599,101 @@ class QuoteCreateGood extends Component {
 
     handleSaveEditGood = (e) => {
         e.preventDefault();
-        const { listTaxsByGoodId } = this.props.goods.goodItems;
-        let {
-            taxs,
-            slasOfGood,
-            pricePerBaseUnit,
-            discountsOfGood,
-            good,
-            goodName,
-            baseUnit,
-            quantity,
-            code,
-            pricePerBaseUnitOrigin,
-            note,
-            steps,
-            salesPriceVariance,
-            indexEditting,
-        } = this.state;
+        if (this.isValidateGoodSelected()) {
+            const { listTaxsByGoodId } = this.props.goods.goodItems;
+            let {
+                taxs,
+                slasOfGood,
+                pricePerBaseUnit,
+                discountsOfGood,
+                good,
+                goodName,
+                baseUnit,
+                quantity,
+                code,
+                pricePerBaseUnitOrigin,
+                note,
+                steps,
+                salesPriceVariance,
+                indexEditting,
+            } = this.state;
 
-        let { listGoods } = this.props;
+            let { listGoods } = this.props;
 
-        let amount = this.getOriginAmountOfGood();
-        let amountAfterDiscount = this.getAmountAfterApplyDiscount();
-        let amountAfterTax = this.getAmountAfterApplyTax();
+            let amount = this.getOriginAmountOfGood();
+            let amountAfterDiscount = this.getAmountAfterApplyDiscount();
+            let amountAfterTax = this.getAmountAfterApplyTax();
 
-        let listTaxs = taxs.map((item) => {
-            let tax = listTaxsByGoodId.find((element) => element._id == item);
-            if (tax) {
-                return tax;
+            let listTaxs = taxs.map((item) => {
+                let tax = listTaxsByGoodId.find((element) => element._id == item);
+                if (tax) {
+                    return tax;
+                }
+            });
+
+            let listSlas = [];
+            let { listSlasByGoodId } = this.props.goods.goodItems;
+            for (const key in slasOfGood) {
+                let slaInfo = listSlasByGoodId.find((element) => element._id === key);
+                listSlas.push({
+                    _id: key,
+                    title: slaInfo.title,
+                    descriptions: slasOfGood[key],
+                });
             }
-        });
 
-        let listSlas = [];
-        let { listSlasByGoodId } = this.props.goods.goodItems;
-        for (const key in slasOfGood) {
-            let slaInfo = listSlasByGoodId.find((element) => element._id === key);
-            listSlas.push({
-                _id: key,
-                title: slaInfo.title,
-                descriptions: slasOfGood[key],
+            let additionGood = {
+                good: {
+                    _id: good,
+                    name: goodName,
+                    baseUnit: baseUnit,
+                    code: code,
+                },
+                pricePerBaseUnit: pricePerBaseUnit,
+                pricePerBaseUnitOrigin: pricePerBaseUnitOrigin,
+                quantity: quantity,
+                taxs: listTaxs,
+                slasOfGood: listSlas,
+                discountsOfGood: discountsOfGood,
+                note: note,
+                amount,
+                amountAfterDiscount,
+                amountAfterTax,
+                salesPriceVariance,
+            };
+
+            listGoods[indexEditting] = additionGood;
+            steps = steps.map((step, index) => {
+                step.active = !index ? true : false;
+                return step;
+            });
+            this.props.setGoods(listGoods);
+            this.setState((state) => {
+                return {
+                    ...state,
+                    indexEditting: "",
+                    editGood: false,
+                    discountsOfGood: [],
+                    discountsOfGoodChecked: {},
+                    taxs: [],
+                    slasOfGood: [],
+                    slasOfGoodChecked: {},
+                    quantity: "",
+                    pricePerBaseUnit: "",
+                    pricePerBaseUnitError: undefined,
+                    pricePerBaseUnitOrigin: "",
+                    salesPriceVariance: "",
+                    note: "",
+                    inventory: "",
+                    baseUnit: "",
+                    good: "",
+                    code: "",
+                    goodName: "",
+                    step: 0,
+                    steps,
+                };
             });
         }
-
-        let additionGood = {
-            good: {
-                _id: good,
-                name: goodName,
-                baseUnit: baseUnit,
-                code: code,
-            },
-            pricePerBaseUnit: pricePerBaseUnit,
-            pricePerBaseUnitOrigin: pricePerBaseUnitOrigin,
-            quantity: quantity,
-            taxs: listTaxs,
-            slasOfGood: listSlas,
-            discountsOfGood: discountsOfGood,
-            note: note,
-            amount,
-            amountAfterDiscount,
-            amountAfterTax,
-            salesPriceVariance,
-        };
-
-        listGoods[indexEditting] = additionGood;
-        steps = steps.map((step, index) => {
-            step.active = !index ? true : false;
-            return step;
-        });
-        this.props.setGoods(listGoods);
-        this.setState((state) => {
-            return {
-                ...state,
-                indexEditting: "",
-                editGood: false,
-                discountsOfGood: [],
-                discountsOfGoodChecked: {},
-                taxs: [],
-                slasOfGood: [],
-                slasOfGoodChecked: {},
-                quantity: "",
-                pricePerBaseUnit: "",
-                pricePerBaseUnitError: undefined,
-                pricePerBaseUnitOrigin: "",
-                salesPriceVariance: "",
-                note: "",
-                inventory: "",
-                baseUnit: "",
-                good: "",
-                code: "",
-                goodName: "",
-                step: 0,
-                steps,
-            };
-        });
     };
 
     render() {
@@ -674,7 +705,6 @@ class QuoteCreateGood extends Component {
             baseUnit,
             inventory,
             quantity,
-            pricePerBaseUnitError,
             discountsOfGood,
             discountsOfGoodChecked,
             slasOfGood,
@@ -686,6 +716,8 @@ class QuoteCreateGood extends Component {
             editGood,
         } = this.state;
 
+        let { goodError, pricePerBaseUnitError, quantityError } = this.state;
+
         const { setCurrentSlasOfGood, setCurrentDiscountsOfGood } = this.props;
         let { listGoods } = this.props;
 
@@ -694,6 +726,8 @@ class QuoteCreateGood extends Component {
         let originAmount = this.getOriginAmountOfGood();
         let amountAfterApplyDiscount = this.getAmountAfterApplyDiscount();
         let amountAfterApplyTax = this.getAmountAfterApplyTax();
+
+        let isGoodValidate = this.isValidateGoodSelected();
         return (
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <fieldset className="scheduler-border" style={{ padding: 10 }}>
@@ -705,7 +739,8 @@ class QuoteCreateGood extends Component {
                             <div className="timeline-items">
                                 {steps.map((item, index) => (
                                     <div
-                                        className={`timeline-item ${item.active ? "active" : ""}`}
+                                        className={`timeline-item ${item.active ? "active" : ""} 
+                                        ${!isGoodValidate && index > 0 ? "disable-onclick-prevent" : ""}`}
                                         key={index}
                                         onClick={(e) => {
                                             this.setCurrentStep(e, index);
@@ -729,10 +764,13 @@ class QuoteCreateGood extends Component {
                                         baseUnit={baseUnit}
                                         inventory={inventory}
                                         quantity={quantity}
-                                        pricePerBaseUnitError={pricePerBaseUnitError}
                                         handleGoodChange={this.handleGoodChange}
                                         handlePriceChange={this.handlePriceChange}
                                         handleQuantityChange={this.handleQuantityChange}
+                                        //log error
+                                        pricePerBaseUnitError={pricePerBaseUnitError}
+                                        goodError={goodError}
+                                        quantityError={quantityError}
                                     />
                                 )}
                                 {step === 1 && (
@@ -753,6 +791,8 @@ class QuoteCreateGood extends Component {
                                         handleSlasOfGoodChange={(data) => this.handleSlasOfGoodChange(data)}
                                         slasOfGoodChecked={slasOfGoodChecked}
                                         setSlasOfGoodChecked={(checked) => this.setSlasOfGoodChecked(checked)}
+                                        //log error
+                                        quantityError={quantityError}
                                     />
                                 )}
                                 {step === 2 && (
@@ -823,7 +863,7 @@ class QuoteCreateGood extends Component {
                                     {/* Thêm sản phẩm mới */}
                                     {step === steps.length - 1 && !editGood ? (
                                         <div className="quote-add-good-button">
-                                            <button className="btn btn-success" onClick={this.addGood}>
+                                            <button disabled={!isGoodValidate} className="btn btn-success" onClick={this.addGood}>
                                                 Thêm sản phẩm
                                             </button>
                                         </div>
@@ -834,7 +874,7 @@ class QuoteCreateGood extends Component {
                                     {/* Lưu chỉnh sửa */}
                                     {step === steps.length - 1 && editGood ? (
                                         <div className="quote-save-edit-good-button">
-                                            <button className="btn btn-success" onClick={this.handleSaveEditGood}>
+                                            <button disabled={!isGoodValidate} className="btn btn-success" onClick={this.handleSaveEditGood}>
                                                 Lưu
                                             </button>
                                         </div>
@@ -857,47 +897,7 @@ class QuoteCreateGood extends Component {
                         </div>
 
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <div className={"pull-right"} style={{ padding: 10 }}>
-                                {/* <div>
-                                    <div>
-                                        {step + 1} / {steps.length}
-                                    </div>
-                                    <div>
-                                        {step !== 0 ? (
-                                            <button className="btn" onClick={this.preStep}>
-                                                Trước
-                                            </button>
-                                        ) : (
-                                            ""
-                                        )}
-                                        {step === steps.length - 1 ? (
-                                            ""
-                                        ) : (
-                                            <button className="btn btn-success" onClick={this.nextStep}>
-                                                Sau
-                                            </button>
-                                        )}
-                                        {step === steps.length - 1 ? (
-                                            <button className="btn btn-success" onClick={this.addGood}>
-                                                Thêm
-                                            </button>
-                                        ) : (
-                                            ""
-                                        )}
-                                    </div>
-                                </div> */}
-                                {/* <button
-                                className="btn btn-success"
-                                style={{ marginLeft: "10px" }}
-                                disabled={!this.isGoodsValidated()}
-                                onClick={this.handleAddGood}
-                            >
-                                Thêm mới
-                            </button>
-                            <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearGood}>
-                                Xóa trắng
-                            </button> */}
-                            </div>
+                            <div className={"pull-right"} style={{ padding: 10 }}></div>
                         </div>
                     </div>
 

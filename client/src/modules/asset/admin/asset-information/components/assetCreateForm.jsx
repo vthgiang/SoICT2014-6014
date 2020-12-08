@@ -21,6 +21,9 @@ class AssetCreateForm extends Component {
             avatar: "./upload/asset/pictures/picture5.png",
             asset: {
                 avatar: './upload/asset/pictures/picture5.png',
+                code: "",
+                assetName: "",
+                serial: "",
                 purchaseDate: null,
                 warrantyExpirationDate: null,
                 assignedToUser: null,
@@ -151,11 +154,11 @@ class AssetCreateForm extends Component {
 
     // function kiểm tra các trường bắt buộc phải nhập
     validatorInput = (value) => {
-        if (value !== null && value !== undefined && value.toString().trim() !== '') {
+        if (value) {
             return true;
+        } else {
+            return false;
         }
-
-        return false;
     }
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
@@ -173,24 +176,23 @@ class AssetCreateForm extends Component {
     }
 
     // Function thêm mới thông tin tài sản
-    save = async () => {
-        let { asset, maintainanceLogs, usageLogs, incidentLogs, files } = this.state;
+    save = () => {
+        let { asset, maintainanceLogs, usageLogs, incidentLogs, files, avatar } = this.state;
+        let assetUpdate = {
+            ...asset,
+            maintainanceLogs,
+            usageLogs,
+            incidentLogs,
+            files
+        }
 
-        await this.setState({
-            asset: {
-                ...asset,
-                maintainanceLogs,
-                usageLogs,
-                incidentLogs,
-                files
-            }
-        })
+        this.setState({ asset: assetUpdate })
 
-        let formData = convertJsonObjectToFormData(this.state.asset);
+        let formData = convertJsonObjectToFormData(assetUpdate);
         files.forEach(x => {
             formData.append("file", x.fileUpload);
         })
-        formData.append("fileAvatar", this.state.avatar);
+        formData.append("fileAvatar", avatar);
         this.props.addNewAsset(formData);
     }
 

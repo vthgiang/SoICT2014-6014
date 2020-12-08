@@ -7,3 +7,11 @@ exports.freshObject = (data) => {
     });
     return obj;
 }
+
+exports.dateParse = (date) => {
+    if(!date) return undefined;
+    let check = Date.parse(date);
+    if(!check) return undefined;
+
+    return new Date(date);
+}

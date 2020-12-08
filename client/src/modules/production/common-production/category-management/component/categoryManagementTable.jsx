@@ -108,7 +108,7 @@ class CategoryManagementTable extends Component {
                             { value: "product", title: translate('manage_warehouse.category_management.product') }, 
                             { value: "material", title: translate('manage_warehouse.category_management.material') }, 
                             { value: "equipment", title: translate('manage_warehouse.category_management.equipment') },
-                            { value: "asset", title: translate('manage_warehouse.category_management.asset')}
+                            { value: "waste", title: translate('manage_warehouse.category_management.waste')}
                             ]}
                         option={this.state.option}
                         setOption={this.setOption}

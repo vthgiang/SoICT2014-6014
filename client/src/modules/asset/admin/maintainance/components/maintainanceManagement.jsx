@@ -176,7 +176,7 @@ class MaintainanceManagement extends Component {
                 let createDate = this.formatDate2(x.createDate)
                 let startDate = this.formatDate2(x.startDate);
                 let endDate = this.formatDate2(x.endDate);
-                let cost = new Intl.NumberFormat().format(parseInt(x.expense));
+                let cost = x.expense ? new Intl.NumberFormat().format(parseInt(x.expense)) : '';
                 let assetCode = x.asset.code;
                 let status = this.convertMaintainStatus(x.status);
 
@@ -219,7 +219,7 @@ class MaintainanceManagement extends Component {
                                 { key: "des", value: "Nội dung" },
                                 { key: "startDate", value: "Ngày bắt đầu" },
                                 { key: "endDate", value: "Ngày kết thúc" },
-                                { key: "cost", value: "chi phí" },
+                                { key: "cost", value: "Chi phí" },
                                 { key: "status", value: "Trạng thái" },
                             ],
                             data: convertedData
@@ -260,7 +260,7 @@ class MaintainanceManagement extends Component {
             return translate('asset.asset_info.made')
         }
         else {
-            return 'Deleted'
+            return ''
         }
     }
 
@@ -277,7 +277,7 @@ class MaintainanceManagement extends Component {
             return translate('asset.asset_info.upgrade')
         }
         else {
-            return 'Deleted'
+            return ''
         }
     }
 
@@ -416,7 +416,7 @@ class MaintainanceManagement extends Component {
                                         <td>{x.description}</td>
                                         <td>{x.startDate ? this.formatDate2(x.startDate) : ''}</td>
                                         <td>{x.endDate ? this.formatDate2(x.endDate) : ''}</td>
-                                        <td>{x.expense ? formater.format(parseInt(x.expense)) : ''} VNĐ</td>
+                                        <td>{x.expense ? formater.format(parseInt(x.expense)) : ''}</td>
                                         <td>{this.convertMaintainStatus(x.status)}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => this.handleEdit(x, x.asset)} className="edit text-yellow" style={{ width: '5px', cursor: 'pointer' }} title={translate('asset.asset_info.edit_maintenance_card')}><i

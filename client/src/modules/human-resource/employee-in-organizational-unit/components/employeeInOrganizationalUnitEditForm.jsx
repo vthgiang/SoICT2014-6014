@@ -144,95 +144,105 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                 >
                     <form className="form-group" id={`form-edit-unit${_id}`}>
                         {/* Trưởng đơn vị */}
-                        <fieldset className="scheduler-border" style={{ marginBottom: 10, paddingBottom: 10 }}>
-                            <legend className="scheduler-border" style={{ marginBottom: 0 }}><h4 className="box-title">{translate('human_resource.manage_department.dean_unit')}</h4></legend>
-                            {roleDeans && roleDeans.map((x) => (
-                                < div className="form-group" key={x.id} style={{ marginBottom: 0 }}>
-                                    <label>{x.name}</label>
-                                    <SelectBox
-                                        id={`dean-unit-${x.id}`}
-                                        multiple={true}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={x.users}
-                                        items={user.list.map(y => { return { value: y._id, text: `${y.name} (${y.email})` } })}
-                                        onChange={(e) => this.handleDeansChange(e, x.id)}
-                                    />
-                                </div>
-                            ))}
-                        </fieldset>
-                        {/* Phó đơn vị */}
-                        <fieldset className="scheduler-border" style={{ marginBottom: 10, paddingBottom: 10 }}>
-                            <legend className="scheduler-border" style={{ marginBottom: 0 }}><h4 className="box-title">{translate('human_resource.manage_department.vice_dean_unit')}</h4></legend>
-                            {roleViceDeans && roleViceDeans.map((x) => (
-                                < div className="form-group" key={x.id} style={{ marginBottom: 0 }}>
-                                    <label>{x.name}</label>
-                                    <SelectBox
-                                        id={`vice_dean-unit-${x.id}`}
-                                        className="form-control select2"
-                                        multiple={true}
-                                        style={{ width: "100%" }}
-                                        value={x.users}
-                                        items={user.list.map(y => { return { value: y._id, text: `${y.name} (${y.email})` } })}
-                                        onChange={(e) => this.handleViceDeansChange(e, x.id)}
-                                    />
-                                </div>
-                            ))}
-                        </fieldset>
-                        {/* Nhân viên đơn vị */}
-                        <h4 style={{ marginBottom: 0, marginTop: 40 }}>{translate('human_resource.manage_department.employee_unit')}</h4>
-                        {roleEmployees && roleEmployees.map((x, index) => {
-                            let infoEmployee = [], users = x.users;
-                            for (let n in users) {
-                                infoEmployee = userlist.filter(y => y._id === users[n]).concat(infoEmployee)
-                            }
-                            return (
-                                <fieldset key={index} className="scheduler-border" style={{ marginBottom: 10, paddingBottom: 10 }}>
-                                    <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{x.name}</h4></legend>
-                                    <div className="form-group" key={index} style={{ marginBottom: 0 }}>
-                                        <div className="employeeBox">
-                                            <SelectBox
-                                                id={`employee-unit-${x.id}`}
-                                                ref={`employees${x.id}`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                onChange={this.handleEmployeeChange}
-                                                multiple={true}
-                                                items={user.list.map(y => { return { value: y._id, text: `${y.name} (${y.email})` } })}
-                                            />
-                                        </div>
-                                        <button type="button" className="btn btn-success pull-right" style={{ marginBottom: 5 }} onClick={() => this.handleAdd(x.id)}>{translate('human_resource.manage_department.add_employee_unit')}</button>
+                        {roleDeans && roleDeans.length !== 0 &&
+                            <fieldset className="scheduler-border" style={{ marginBottom: 10, paddingBottom: 10 }}>
+                                <legend className="scheduler-border" style={{ marginBottom: 0 }}><h4 className="box-title">{translate('human_resource.manage_department.dean_unit')}</h4></legend>
+                                {roleDeans && roleDeans.map((x) => (
+                                    < div className="form-group" key={x.id} style={{ marginBottom: 0 }}>
+                                        <label>{x.name}</label>
+                                        <SelectBox
+                                            id={`dean-unit-${x.id}`}
+                                            multiple={true}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={x.users}
+                                            items={user.list.map(y => { return { value: y._id, text: `${y.name} (${y.email})` } })}
+                                            onChange={(e) => this.handleDeansChange(e, x.id)}
+                                        />
                                     </div>
-                                    <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
-                                        <thead>
-                                            <tr>
-                                                <th>{translate('table.employee_name')}</th>
-                                                <th>{translate('human_resource.manage_department.email_employee')}</th>
-                                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {
-                                                infoEmployee.length !== 0 &&
-                                                infoEmployee.map((user, index) => (
-                                                    <tr key={index}>
-                                                        <td style={{ textAlign: "left" }}>{user.name}</td>
-                                                        <td style={{ textAlign: "left" }}>{user.email}</td>
-                                                        <td>
-                                                            <a className="delete" title="Delete" onClick={() => this.handleDelete(user._id, x.id)}><i className="material-icons"></i></a>
-                                                        </td>
-                                                    </tr>
-                                                ))
-                                            }
-                                        </tbody>
-                                    </table>
-                                    {
-                                        (infoEmployee.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                                    }
-                                </fieldset>
-                            )
-                        })}
+                                ))}
+                            </fieldset>
+                        }
 
+                        {/* Phó đơn vị */}
+                        {roleViceDeans && roleViceDeans.length !== 0 &&
+                            <fieldset className="scheduler-border" style={{ marginBottom: 10, paddingBottom: 10 }}>
+                                <legend className="scheduler-border" style={{ marginBottom: 0 }}><h4 className="box-title">{translate('human_resource.manage_department.vice_dean_unit')}</h4></legend>
+                                {roleViceDeans && roleViceDeans.map((x) => (
+                                    < div className="form-group" key={x.id} style={{ marginBottom: 0 }}>
+                                        <label>{x.name}</label>
+                                        <SelectBox
+                                            id={`vice_dean-unit-${x.id}`}
+                                            className="form-control select2"
+                                            multiple={true}
+                                            style={{ width: "100%" }}
+                                            value={x.users}
+                                            items={user.list.map(y => { return { value: y._id, text: `${y.name} (${y.email})` } })}
+                                            onChange={(e) => this.handleViceDeansChange(e, x.id)}
+                                        />
+                                    </div>
+                                ))}
+                            </fieldset>
+                        }
+
+                        {/* Nhân viên đơn vị */}
+                        {
+                            roleEmployees && roleEmployees.length !== 0 &&
+                            <React.Fragment>
+                                <h4 style={{ marginBottom: 0, marginTop: 40 }}>{translate('human_resource.manage_department.employee_unit')}</h4>
+                                {roleEmployees && roleEmployees.map((x, index) => {
+                                    let infoEmployee = [], users = x.users;
+                                    for (let n in users) {
+                                        infoEmployee = userlist.filter(y => y._id === users[n]).concat(infoEmployee)
+                                    }
+                                    return (
+                                        <fieldset key={index} className="scheduler-border" style={{ marginBottom: 10, paddingBottom: 10 }}>
+                                            <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{x.name}</h4></legend>
+                                            <div className="form-group" key={index} style={{ marginBottom: 0 }}>
+                                                <div className="employeeBox">
+                                                    <SelectBox
+                                                        id={`employee-unit-${x.id}`}
+                                                        ref={`employees${x.id}`}
+                                                        className="form-control select2"
+                                                        style={{ width: "100%" }}
+                                                        onChange={this.handleEmployeeChange}
+                                                        multiple={true}
+                                                        items={user.list.map(y => { return { value: y._id, text: `${y.name} (${y.email})` } })}
+                                                    />
+                                                </div>
+                                                <button type="button" className="btn btn-success pull-right" style={{ marginBottom: 5 }} onClick={() => this.handleAdd(x.id)}>{translate('human_resource.manage_department.add_employee_unit')}</button>
+                                            </div>
+                                            <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
+                                                <thead>
+                                                    <tr>
+                                                        <th>{translate('table.employee_name')}</th>
+                                                        <th>{translate('human_resource.manage_department.email_employee')}</th>
+                                                        <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {
+                                                        infoEmployee.length !== 0 &&
+                                                        infoEmployee.map((user, index) => (
+                                                            <tr key={index}>
+                                                                <td style={{ textAlign: "left" }}>{user.name}</td>
+                                                                <td style={{ textAlign: "left" }}>{user.email}</td>
+                                                                <td>
+                                                                    <a className="delete" title="Delete" onClick={() => this.handleDelete(user._id, x.id)}><i className="material-icons"></i></a>
+                                                                </td>
+                                                            </tr>
+                                                        ))
+                                                    }
+                                                </tbody>
+                                            </table>
+                                            {
+                                                (infoEmployee.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                            }
+                                        </fieldset>
+                                    )
+                                })}
+                            </React.Fragment>
+                        }
                     </form>
                 </DialogModal>
             </React.Fragment>

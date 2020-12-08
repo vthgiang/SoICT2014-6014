@@ -205,6 +205,10 @@ const EmployeeSchema = new Schema({
             type: String,
             enum: ['excellent', 'very_good', 'good', 'average_good', 'ordinary'] //excellent-Xuất sắc, very_good-Giỏi, good-Khá, average_good-Trung bình khá, ordinary-Trung bình
         },
+        field:{
+            type: Schema.Types.ObjectId,
+            ref: 'Field',
+        },
         file: String,
         urlFile: String
     }],

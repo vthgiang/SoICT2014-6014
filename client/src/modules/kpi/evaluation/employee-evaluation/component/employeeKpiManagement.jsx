@@ -37,20 +37,19 @@ class EmployeeKpiManagement extends Component {
             },
             showApproveModal: null,
             showEvaluateModal: null,
-            dataStatus : this.DATA_STATUS.NOT_AVAILABLE
+            dataStatus: this.DATA_STATUS.NOT_AVAILABLE
         };
     }
 
-    componentDidMount () {
+    componentDidMount() {
         const { infosearch } = this.state;
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
         this.props.getEmployeeKPISets(infosearch);
     }
 
     shouldComponentUpdate = (nextProps, nextStates) => {
-        const { dataStatus } =this.state;
-        if (dataStatus === this.DATA_STATUS.QUERYING)
-        {
+        const { dataStatus } = this.state;
+        if (dataStatus === this.DATA_STATUS.QUERYING) {
             if (!nextProps.kpimembers.tasksList) {
                 return false;
             } else {
@@ -69,7 +68,7 @@ class EmployeeKpiManagement extends Component {
         return true;
     }
 
-    formatDateBack (date) {
+    formatDateBack(date) {
         let d = new Date(date), month, day, year;
         if (d.getMonth() === 0) {
             month = '' + 12;
@@ -88,7 +87,7 @@ class EmployeeKpiManagement extends Component {
         return [month, year].join('-');
     }
 
-    formatDate (date) {
+    formatDate(date) {
         let d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -100,7 +99,7 @@ class EmployeeKpiManagement extends Component {
             day = '0' + day;
 
         return [month, year].join('-');
-    } 
+    }
 
     formatTaskStatus = (translate, status) => {
         switch (status) {
@@ -224,11 +223,10 @@ class EmployeeKpiManagement extends Component {
     handleExportTotalData = () => {
         let kpimember;
         const { kpimembers } = this.props;
-        if(kpimembers.kpimembers)
-        {
+        if (kpimembers.kpimembers) {
             kpimember = kpimembers.kpimembers
         }
-        let data = kpimember && kpimember.map(item=>{
+        let data = kpimember && kpimember.map(item => {
             return item._id;
         })
         this.props.getTaskByListKpis(data);
@@ -238,7 +236,7 @@ class EmployeeKpiManagement extends Component {
             startDate: null,
             endDate: null
         })
-        
+
         this.setState(state => {
             return {
                 ...state,
@@ -247,73 +245,69 @@ class EmployeeKpiManagement extends Component {
         });
     }
 
-    pushDataIntoTable =(dataOfOneSheet)=>{
-        let tables =[],table=[],names=[],kpiSetApproverPoint=[],kpiSetAutomaticPoint=[],kpiSetEmployeePoint=[],kpiNum=[],numTask=0,row;
+    pushDataIntoTable = (dataOfOneSheet) => {
+        let tables = [], table = [], names = [], kpiSetApproverPoint = [], kpiSetAutomaticPoint = [], kpiSetEmployeePoint = [], kpiNum = [], numTask = 0, row;
 
-        for(let i=0;i<dataOfOneSheet.data.length;i++)
-        {
+        for (let i = 0; i < dataOfOneSheet.data.length; i++) {
             names.push(dataOfOneSheet.data[i].name);
             kpiSetApproverPoint.push(dataOfOneSheet.data[i].kpiSetApproverPoint);
             kpiSetAutomaticPoint.push(dataOfOneSheet.data[i].kpiSetAutomaticPoint);
             kpiSetEmployeePoint.push(dataOfOneSheet.data[i].kpiSetEmployeePoint);
             kpiNum.push(dataOfOneSheet.data[i].kpiNum)
-            table=[];
+            table = [];
             let kpis = dataOfOneSheet.data[i].kpis;
-            let tasks= dataOfOneSheet.data[i].oneKpiSetTasks;
+            let tasks = dataOfOneSheet.data[i].oneKpiSetTasks;
 
-            for(let k =0;k<kpis.length;k++)
-            {
-                let numberRowToMerge =parseInt(tasks[k].length);
-                numTask+=numberRowToMerge;
-                let task = tasks[k];   
+            for (let k = 0; k < kpis.length; k++) {
+                let numberRowToMerge = parseInt(tasks[k].length);
+                numTask += numberRowToMerge;
+                let task = tasks[k];
                 //khi 1 Kpis chưa có công việc nào hoặc chỉ có 1 công việc
-                if(numberRowToMerge < 2)
-                {
+                if (numberRowToMerge < 2) {
                     row = {
-                        STT : k+1,
-                        kpiName : kpis[k].name,
-                        kpiWeight : kpis[k].weight,
-                        kpiAutomaticPoint : kpis[k].automaticPoint,
+                        STT: k + 1,
+                        kpiName: kpis[k].name,
+                        kpiWeight: kpis[k].weight,
+                        kpiAutomaticPoint: kpis[k].automaticPoint,
                         kpiEmployeePoint: kpis[k].employeePoint,
-                        kpiApprovedPoint :kpis[k].approverPoint,
-                        kpiStatus : kpis[k].status,
-                        taskName : task[0] ? (task[0].name):"",
+                        kpiApprovedPoint: kpis[k].approverPoint,
+                        kpiStatus: kpis[k].status,
+                        taskName: task[0] ? (task[0].name) : "",
                         unit: task[0] ? (task[0].unit) : "",
-                        importantLevel: task[0] ?task[0].importantLevel:"",
-                        contributionPoint: task[0] ?task[0].contributionPoint:"",
-                        automaticPoint: task[0] ?task[0].automaticPoint:"",
-                        employeePoint: task[0] ?task[0].employeePoint:"",
-                        approverPoint: task[0] ?task[0].approverPoint:"",
-                        startTaskDate: task[0] ?task[0].startTaskDate:"",
-                        endTaskDate:(task[0] )? task[0].endTaskDate:"",
-                        startApproveDate:task[0] ?task[0].startApproveDate:"",
-                        endApproveDate:task[0] ?task[0].endApproveDate:"",
-                        taskStatus: task[0] ?task[0].status:"",
-                        progress:task[0] ?task[0].progress:"",
+                        importantLevel: task[0] ? task[0].importantLevel : "",
+                        contributionPoint: task[0] ? task[0].contributionPoint : "",
+                        automaticPoint: task[0] ? task[0].automaticPoint : "",
+                        employeePoint: task[0] ? task[0].employeePoint : "",
+                        approverPoint: task[0] ? task[0].approverPoint : "",
+                        startTaskDate: task[0] ? task[0].startTaskDate : "",
+                        endTaskDate: (task[0]) ? task[0].endTaskDate : "",
+                        startApproveDate: task[0] ? task[0].startApproveDate : "",
+                        endApproveDate: task[0] ? task[0].endApproveDate : "",
+                        taskStatus: task[0] ? task[0].status : "",
+                        progress: task[0] ? task[0].progress : "",
 
                     }
                     table.push(row);
                 }
-                else 
-                {
+                else {
                     row = {
-                        merges: { 
+                        merges: {
                             STT: numberRowToMerge,
                             kpiName: numberRowToMerge,
-                            kpiWeight: numberRowToMerge, 
-                            kpiAutomaticPoint: numberRowToMerge, 
+                            kpiWeight: numberRowToMerge,
+                            kpiAutomaticPoint: numberRowToMerge,
                             kpiEmployeePoint: numberRowToMerge,
                             kpiApprovedPoint: numberRowToMerge,
-                            kpiStatus :numberRowToMerge
+                            kpiStatus: numberRowToMerge
                         },
-                        STT : k+1,
-                        kpiName : kpis[k].name,
-                        kpiWeight : kpis[k].weight,
-                        kpiAutomaticPoint : kpis[k].automaticPoint,
+                        STT: k + 1,
+                        kpiName: kpis[k].name,
+                        kpiWeight: kpis[k].weight,
+                        kpiAutomaticPoint: kpis[k].automaticPoint,
                         kpiEmployeePoint: kpis[k].employeePoint,
-                        kpiApprovedPoint :kpis[k].approverPoint,
-                        kpiStatus : kpis[k].status,
-                        taskName : task[0].name,
+                        kpiApprovedPoint: kpis[k].approverPoint,
+                        kpiStatus: kpis[k].status,
+                        taskName: task[0].name,
                         unit: task[0].unit,
                         importantLevel: task[0].importantLevel,
                         contributionPoint: task[0].contributionPoint,
@@ -321,24 +315,23 @@ class EmployeeKpiManagement extends Component {
                         employeePoint: task[0].employeePoint,
                         approverPoint: task[0].approverPoint,
                         startTaskDate: task[0].startTaskDate,
-                        endTaskDate:task[0].endTaskDate,
-                        startApproveDate:task[0].startApproveDate,
-                        endApproveDate:task[0].endApproveDate,
+                        endTaskDate: task[0].endTaskDate,
+                        startApproveDate: task[0].startApproveDate,
+                        endApproveDate: task[0].endApproveDate,
                         taskStatus: task[0].status,
-                        progress:task[0].progress
+                        progress: task[0].progress
                     }
                     table.push(row);
-                    for(let j =1; j < (numberRowToMerge); j++)
-                    {
+                    for (let j = 1; j < (numberRowToMerge); j++) {
                         let row = {
-                            STT : "",
-                            kpiName : "",
-                            kpiWeight : "",
-                            kpiAutomaticPoint : "",
+                            STT: "",
+                            kpiName: "",
+                            kpiWeight: "",
+                            kpiAutomaticPoint: "",
                             kpiEmployeePoint: "",
-                            kpiApprovedPoint : "",
-                            kpiStatus : "",
-                            taskName : task[j].name,
+                            kpiApprovedPoint: "",
+                            kpiStatus: "",
+                            taskName: task[j].name,
                             unit: task[j].unit,
                             importantLevel: task[j].importantLevel,
                             contributionPoint: task[j].contributionPoint,
@@ -346,22 +339,22 @@ class EmployeeKpiManagement extends Component {
                             employeePoint: task[j].employeePoint,
                             approverPoint: task[j].approverPoint,
                             startTaskDate: task[j].startTaskDate,
-                            endTaskDate:task[j].endTaskDate,
-                            startApproveDate:task[j].startApproveDate,
-                            endApproveDate:task[j].endApproveDate,
+                            endTaskDate: task[j].endTaskDate,
+                            startApproveDate: task[j].startApproveDate,
+                            endApproveDate: task[j].endApproveDate,
                             taskStatus: task[j].status,
-                            progress:task[j].progress
+                            progress: task[j].progress
                         }
                         table.push(row);
                     }
-                }   
+                }
             }
             tables.push(table);
         }
-        
+
         return {
-            tables : tables,
-            names : names,
+            tables: tables,
+            names: names,
             kpiSetApproverPoint,
             kpiSetAutomaticPoint,
             kpiSetEmployeePoint,
@@ -370,41 +363,37 @@ class EmployeeKpiManagement extends Component {
         }
     }
 
-    convertDataToExportTotalData =()=>{
+    convertDataToExportTotalData = () => {
         const { kpimembers, managerKpiUnit, user, translate } = this.props;
         let listTasks, listKpis, data = {}, convertedData = [], listKpiUnit = [], unitName;
-        
+
         if (user.userdepartments) {
             unitName = user.userdepartments.department;
         }
-        if (kpimembers.tasksList)
-        {
-            
-            listTasks =kpimembers.tasksList;
-            listKpis =kpimembers.kpimembers;
+        if (kpimembers.tasksList) {
+
+            listTasks = kpimembers.tasksList;
+            listKpis = kpimembers.kpimembers;
         }
-        if (managerKpiUnit)
-        {
+        if (managerKpiUnit) {
             listKpiUnit = managerKpiUnit.kpis;
         }
- 
-        if (listTasks && listKpis && listKpiUnit && unitName)
-        {
+
+        if (listTasks && listKpis && listKpiUnit && unitName) {
             //Convert dữ liệu RAW
             for (let i = 0; i < listKpis.length; i++) {
                 let d = new Date(listKpis[i].date),
-                    month = (d.getMonth()+1),
+                    month = (d.getMonth() + 1),
                     year = d.getFullYear(),
-                    date = month+"-"+year;
-                if (!data.hasOwnProperty(date))
-                {
-                    data[date]=[]
+                    date = month + "-" + year;
+                if (!data.hasOwnProperty(date)) {
+                    data[date] = []
                 }
                 let kpiSetAutomaticPoint = (listKpis[i].automaticPoint === null) ? "Chưa đánh giá" : parseInt(listKpis[i].automaticPoint);
                 let kpiSetEmployeePoint = (listKpis[i].employeePoint === null) ? "Chưa đánh giá" : parseInt(listKpis[i].employeePoint);
                 let kpiSetApproverPoint = (listKpis[i].approvedPoint === null) ? "Chưa đánh giá" : parseInt(listKpis[i].approvedPoint);
                 let kpiNum = listKpis[i].kpis.length;
-                let kpis =listKpis[i].kpis.map((x,index)=>{
+                let kpis = listKpis[i].kpis.map((x, index) => {
                     let name = x.name;
                     let createdAt = new Date(x.createdAt);
                     let automaticPoint = (x.automaticPoint === null) ? "Chưa đánh giá" : parseInt(x.automaticPoint);
@@ -413,7 +402,7 @@ class EmployeeKpiManagement extends Component {
                     let status = this.checkStatusKPI(x.status);
                     let criteria = x.criteria;
                     let weight = x.weight;
-                    
+
                     return {
                         STT: index + 1,
                         name: name,
@@ -428,7 +417,7 @@ class EmployeeKpiManagement extends Component {
                 });
 
                 let oneKpiSetTasks = listTasks[i].map((item, index) => {
-                    let oneKpiTasks = item.map((x,idx) => {
+                    let oneKpiTasks = item.map((x, idx) => {
                         let name = x.name;
                         let startTaskD = new Date(x.startDate);
                         let endTaskD = new Date(x.endDate);
@@ -463,39 +452,37 @@ class EmployeeKpiManagement extends Component {
                     return oneKpiTasks;
                 })
                 let oneSet = {
-                    name:listKpis[i].creator.name,
-                    oneKpiSetTasks : oneKpiSetTasks,
-                    kpis:kpis,
-                    kpiSetAutomaticPoint:kpiSetAutomaticPoint,
+                    name: listKpis[i].creator.name,
+                    oneKpiSetTasks: oneKpiSetTasks,
+                    kpis: kpis,
+                    kpiSetAutomaticPoint: kpiSetAutomaticPoint,
                     kpiSetEmployeePoint: kpiSetEmployeePoint,
                     kpiSetApproverPoint: kpiSetApproverPoint,
-                    kpiNum : kpiNum
+                    kpiNum: kpiNum
                 }
-                data[date].push( oneSet);
+                data[date].push(oneSet);
             }
-            
-            let keys= Object.keys(data);
-            for(let i=0;i<keys.length;i++){
-                let temp ={
-                    time:keys[i],
-                    data:data[keys[i]],
+
+            let keys = Object.keys(data);
+            for (let i = 0; i < keys.length; i++) {
+                let temp = {
+                    time: keys[i],
+                    data: data[keys[i]],
                 }
                 convertedData.push(temp);
-            }       
+            }
 
             //Convert xong, push data theo form data của component ExportExcel
-            let dataSheets =[],sheetInfo =[];
-            for(let i=0;i<listKpiUnit.length;i++)
-            {
+            let dataSheets = [], sheetInfo = [];
+            for (let i = 0; i < listKpiUnit.length; i++) {
                 let d = new Date(listKpiUnit[i].date),
-                    time = (d.getMonth()+1) + "-" + (d.getFullYear());
+                    time = (d.getMonth() + 1) + "-" + (d.getFullYear());
                 let employeeNumber = parseInt(listKpiUnit[i].organizationalUnit.deans.length) + parseInt(listKpiUnit[i].organizationalUnit.viceDeans.length) + parseInt(listKpiUnit[i].organizationalUnit.employees.length);
                 let kpisUnitNumber = listKpiUnit[i].kpis.length;
                 let automaticPoint = (listKpiUnit[i].automaticPoint === null) ? "Chưa đánh giá" : parseInt(listKpiUnit[i].automaticPoint);
                 let employeePoint = (listKpiUnit[i].employeePoint === null) ? "Chưa đánh giá" : parseInt(listKpiUnit[i].employeePoint);
                 let approverPoint = (listKpiUnit[i].approvedPoint === null) ? "Chưa đánh giá" : parseInt(listKpiUnit[i].approvedPoint);
-                if (time === (convertedData[i].time))
-                {
+                if (time === (convertedData[i].time)) {
                     let info = {
                         employeeNumber,
                         kpisUnitNumber,
@@ -506,14 +493,13 @@ class EmployeeKpiManagement extends Component {
                     sheetInfo.push(info);
                 }
             }
-            for(let i = 0; i < convertedData.length; i++)
-            {
+            for (let i = 0; i < convertedData.length; i++) {
                 let tablesData = this.pushDataIntoTable(convertedData[i]);
                 let temp = {
-                    sheetName : convertedData[i].time,
-                    sheetTitle:"Báo cáo tổng hợp " + unitName + " tháng " + convertedData[i].time,
+                    sheetName: convertedData[i].time,
+                    sheetTitle: "Báo cáo tổng hợp " + unitName + " tháng " + convertedData[i].time,
                     tables: tablesData.tables,
-                    names : tablesData.names,
+                    names: tablesData.names,
                     kpiSetEmployeePoint: tablesData.kpiSetEmployeePoint,
                     kpiSetAutomaticPoint: tablesData.kpiSetAutomaticPoint,
                     kpiSetApproverPoint: tablesData.kpiSetApproverPoint,
@@ -524,32 +510,32 @@ class EmployeeKpiManagement extends Component {
             }
             let exportData = {
                 fileName: "Báo cáo tổng hợp ",
-                dataSheets: dataSheets.map((item,idx)=>{
+                dataSheets: dataSheets.map((item, idx) => {
                     return {
-                        sheetName : item.sheetName,
-                        sheetTitle : item.sheetTitle,
-                        tables: item.tables.map((x,index)=>{
+                        sheetName: item.sheetName,
+                        sheetTitle: item.sheetTitle,
+                        tables: item.tables.map((x, index) => {
                             return {
                                 moreInform: [
-                                    (index===0)?{
-                                        title: "Thông tin chung KPI "+ (unitName) +" "+ item.sheetName,
+                                    (index === 0) ? {
+                                        title: "Thông tin chung KPI " + (unitName) + " " + item.sheetName,
                                         value: [
-                                                "Số nhân viên: "+ sheetInfo[idx].employeeNumber,
-                                                "Số lượng KPI đơn vị: "+ sheetInfo[idx].kpisUnitNumber,
-                                                "Điểm KPI tự động của đơn vị: "+ sheetInfo[idx].automaticPoint,
-                                                "Điểm KPI tự đánh giá của đơn vị: "+ sheetInfo[idx].employeePoint,
-                                                "Điểm KPI được phê duyệt của đơn vị: "+ sheetInfo[idx].approverPoint,
-                                                "Số công việc được đánh giá: "+ item.numTask
-                                            ]
-                                    }:"",
+                                            "Số nhân viên: " + sheetInfo[idx].employeeNumber,
+                                            "Số lượng KPI đơn vị: " + sheetInfo[idx].kpisUnitNumber,
+                                            "Điểm KPI tự động của đơn vị: " + sheetInfo[idx].automaticPoint,
+                                            "Điểm KPI tự đánh giá của đơn vị: " + sheetInfo[idx].employeePoint,
+                                            "Điểm KPI được phê duyệt của đơn vị: " + sheetInfo[idx].approverPoint,
+                                            "Số công việc được đánh giá: " + item.numTask
+                                        ]
+                                    } : "",
                                     {
-                                        title: "Báo cáo "+ (item.names[index]? item.names[index]:"") +" "+ item.sheetName,
+                                        title: "Báo cáo " + (item.names[index] ? item.names[index] : "") + " " + item.sheetName,
                                         value: [
-                                                "Số KPI: "+ item.kpiNum[index],
-                                                "Điểm KPI tự động: "+ item.kpiSetAutomaticPoint[index],
-                                                "Điểm KPI tự đánh giá: "+ item.kpiSetEmployeePoint[index],
-                                                "Điểm KPI được phê duyệt: "+ item.kpiSetApproverPoint[index]
-                                            ]
+                                            "Số KPI: " + item.kpiNum[index],
+                                            "Điểm KPI tự động: " + item.kpiSetAutomaticPoint[index],
+                                            "Điểm KPI tự đánh giá: " + item.kpiSetEmployeePoint[index],
+                                            "Điểm KPI được phê duyệt: " + item.kpiSetApproverPoint[index]
+                                        ]
                                     }],
                                 merges: [{
                                     key: "kpiPoint",
@@ -575,13 +561,13 @@ class EmployeeKpiManagement extends Component {
                                 }],
                                 rowHeader: 2,
                                 columns: [
-                                    { key: "STT", value: "STT" ,vertical:'center' ,horizontal:'center'},
-                                    { key: "kpiName", value: "KPI",vertical:'center' ,horizontal:'center' }, 
-                                    { key: "kpiWeight", value : "Trọng số",vertical:'center' ,horizontal:'center'},                               
-                                    { key: "kpiStatus", value: "Trạng thái KPI" ,vertical:'center' ,horizontal:'center'},
-                                    { key: "kpiAutomaticPoint", value: "Tự động",vertical:'center' ,horizontal:'center' },
-                                    { key: "kpiEmployeePoint", value: "Tự đánh giá",vertical:'center' ,horizontal:'center' },
-                                    { key: "kpiApprovedPoint", value: "Được phê duyệt",vertical:'center' ,horizontal:'center' },
+                                    { key: "STT", value: "STT", vertical: 'center', horizontal: 'center' },
+                                    { key: "kpiName", value: "KPI", vertical: 'center', horizontal: 'center' },
+                                    { key: "kpiWeight", value: "Trọng số", vertical: 'center', horizontal: 'center' },
+                                    { key: "kpiStatus", value: "Trạng thái KPI", vertical: 'center', horizontal: 'center' },
+                                    { key: "kpiAutomaticPoint", value: "Tự động", vertical: 'center', horizontal: 'center' },
+                                    { key: "kpiEmployeePoint", value: "Tự đánh giá", vertical: 'center', horizontal: 'center' },
+                                    { key: "kpiApprovedPoint", value: "Được phê duyệt", vertical: 'center', horizontal: 'center' },
                                     { key: "taskName", value: "Tên công việc" },
                                     { key: "unit", value: "Đơn vị quản lý công việc" },
                                     { key: "importantLevel", value: "Độ quan trọng" },
@@ -594,8 +580,8 @@ class EmployeeKpiManagement extends Component {
                                     { key: "startApproveDate", value: "Bắt đầu" },
                                     { key: "endApproveDate", value: "Kết thúc" },
                                     { key: "taskStatus", value: "Trạng thái" },
-                                    { key: "progress", value: "% Hoàn thành công việc" }                                    
-                                    ],
+                                    { key: "progress", value: "% Hoàn thành công việc" }
+                                ],
                                 data: x
                             }
                         })
@@ -604,34 +590,34 @@ class EmployeeKpiManagement extends Component {
             }
             return exportData;
         }
-        
+
     }
 
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
     convertDataToExportData = (data, unitName) => {
-        let fileName = "Bảng theo dõi KPI nhân viên "+ (unitName?unitName:"");
-        if (data) {           
+        let fileName = "Bảng theo dõi KPI nhân viên " + (unitName ? unitName : "");
+        if (data) {
             data = data.map((x, index) => {
-               
-                let fullName =x.creator.name;
+
+                let fullName = x.creator.name;
                 let email = x.creator.email;
                 let automaticPoint = (x.automaticPoint === null) ? "Chưa đánh giá" : parseInt(x.automaticPoint);
                 let employeePoint = (x.employeePoint === null) ? "Chưa đánh giá" : parseInt(x.employeePoint);
-                let approverPoint = (x.approvedPoint===null) ? "Chưa đánh giá" : parseInt(x.approvedPoint);
+                let approverPoint = (x.approvedPoint === null) ? "Chưa đánh giá" : parseInt(x.approvedPoint);
                 let time = new Date(x.date)
                 let status = this.checkStatusKPI(x.status);
-                let numberTarget = parseInt(x.kpis.length);               
+                let numberTarget = parseInt(x.kpis.length);
 
                 return {
                     STT: index + 1,
-                    fullName: fullName,    
-                    email:email,               
+                    fullName: fullName,
+                    email: email,
                     automaticPoint: automaticPoint,
                     status: status,
                     employeePoint: employeePoint,
                     approverPoint: approverPoint,
-                    time :time,
-                    numberTarget:numberTarget                   
+                    time: time,
+                    numberTarget: numberTarget
                 };
             })
         }
@@ -641,14 +627,14 @@ class EmployeeKpiManagement extends Component {
             dataSheets: [
                 {
                     sheetName: "sheet1",
-                    sheetTitle : fileName,
+                    sheetTitle: fileName,
                     tables: [
                         {
                             columns: [
                                 { key: "STT", value: "STT" },
                                 { key: "time", value: "Thời gian" },
-                                { key: "fullName", value: "Họ và tên" }, 
-                                { key: "email", value : "Email nhân viên"},                               
+                                { key: "fullName", value: "Họ và tên" },
+                                { key: "email", value: "Email nhân viên" },
                                 { key: "numberTarget", value: "Số lượng mục tiêu" },
                                 { key: "status", value: "Trạng thái mục tiêu" },
                                 { key: "automaticPoint", value: "Điểm KPI tự động" },
@@ -662,8 +648,8 @@ class EmployeeKpiManagement extends Component {
             ]
         }
 
-        return exportData;        
-       
+        return exportData;
+
     }
 
     render() {
@@ -680,10 +666,10 @@ class EmployeeKpiManagement extends Component {
             unitMembers = [{ text: translate('kpi.evaluation.employee_evaluation.choose_employee'), value: 0 }, ...unitMembers[0].value];
         }
 
-        if(kpimember&&userdepartments){
-            exportData = this.convertDataToExportData(kpimember,userdepartments.department);            
+        if (kpimember && userdepartments) {
+            exportData = this.convertDataToExportData(kpimember, userdepartments.department);
         }
-       
+
         let startDateDefault, endDateDefault;
         let d = new Date(),
             endmonth = d.getMonth(),
@@ -694,7 +680,7 @@ class EmployeeKpiManagement extends Component {
             month = '0' + month;
         if (endmonth == 0) {
             endmonth = 12;
-            startDateDefault = [endmonth, year-1].join('-');
+            startDateDefault = [endmonth, year - 1].join('-');
         } else if (endmonth < 10) {
             endmonth = '0' + endmonth;
             startDateDefault = [endmonth, year].join('-');
@@ -757,11 +743,11 @@ class EmployeeKpiManagement extends Component {
                                 />
                             </div>
                             <div className="form-group">
-                                <button type="button" className="btn btn-success"  onClick={() => this.handleSearchData()}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
+                                <button type="button" className="btn btn-success" onClick={() => this.handleSearchData()}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
                             </div>
-                            {exportData&&<ExportExcel id="export-employee-kpi-evaluation-management" buttonName ="Báo cáo chung" exportData={exportData} style={{ marginRight: 15, marginTop:5 }} />}
-                            {kpimember&&
-                                 <ExportExcel buttonName ="Báo cáo tổng hợp" onClick={()=>this.handleExportTotalData(kpimember)}/> 
+                            {exportData && <ExportExcel id="export-employee-kpi-evaluation-management" buttonName="Báo cáo chung" exportData={exportData} style={{ marginRight: 15, marginTop: 5 }} />}
+                            {kpimember &&
+                                <ExportExcel buttonName="Báo cáo tổng hợp" onClick={() => this.handleExportTotalData(kpimember)} />
                             }
                         </div>
 
@@ -799,10 +785,10 @@ class EmployeeKpiManagement extends Component {
                                     kpimember.map((item, index) =>
                                         <tr key={index}>
                                             <td>{index + 1}</td>
-                                            <td>{item ? this.formatDate(item.date) : "Deleted"}</td>
-                                            <td>{item.creator ? item.creator.name : "Deleted"}</td>
-                                            <td>{item.kpis ? item.kpis.length : "Deleted"}</td>
-                                            <td>{item ? this.checkStatusKPI(item.status) : "Deleted"}</td>
+                                            <td>{item ? this.formatDate(item.date) : ""}</td>
+                                            <td>{item.creator ? item.creator.name : ""}</td>
+                                            <td>{item.kpis ? item.kpis.length : ""}</td>
+                                            <td>{item ? this.checkStatusKPI(item.status) : ""}</td>
                                             <td>{item.automaticPoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.automaticPoint}</td>
                                             <td>{item.employeePoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.employeePoint}</td>
                                             <td>{item.approvedPoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.approvedPoint}</td>
@@ -821,7 +807,7 @@ class EmployeeKpiManagement extends Component {
                                         </td>
                                     </tr>}
                             </tbody>
-                            
+
                         </table>
                     </div>
                 </div>
@@ -831,8 +817,8 @@ class EmployeeKpiManagement extends Component {
 }
 
 function mapState(state) {
-    const { user, kpimembers, KPIPersonalManager,managerKpiUnit } = state;
-    return { user, kpimembers, KPIPersonalManager,managerKpiUnit };
+    const { user, kpimembers, KPIPersonalManager, managerKpiUnit } = state;
+    return { user, kpimembers, KPIPersonalManager, managerKpiUnit };
 }
 
 const actionCreators = {

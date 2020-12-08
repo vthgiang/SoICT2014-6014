@@ -7,6 +7,7 @@ import AssetIncidentChart from './assetIncidentChart';
 import AssetMaintenanceChart from './assetMaintenanceChart';
 
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
+import { AssetTypeService } from '../../../asset-type/redux/services';
 
 class IncidentAndMaintenance extends Component {
 
@@ -39,6 +40,13 @@ class IncidentAndMaintenance extends Component {
             console.log(err);
         });
 
+        AssetTypeService.getAssetTypes().then(res => {
+            if (res.data.success) {
+                this.setState({ assetType: res.data.content.list })
+            }
+        }).catch(err => {
+            console.log(err);
+        });
     }
 
     // getPurchaseData = (purchaseData) => {
@@ -71,6 +79,7 @@ class IncidentAndMaintenance extends Component {
                                 <div className="box-body qlcv">
                                     < AssetIncidentChart
                                         listAssets={listAssets}
+                                        assetType={assetType}
                                     // getPurchaseData={this.getPurchaseData}
                                     />
                                 </div>
@@ -86,6 +95,7 @@ class IncidentAndMaintenance extends Component {
                                 <div className="box-body qlcv">
                                     <AssetMaintenanceChart
                                         listAssets={listAssets}
+                                        assetType={assetType}
                                     // getDisposalData={this.getDisposalData}
                                     />
                                 </div>

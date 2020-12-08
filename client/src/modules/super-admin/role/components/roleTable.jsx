@@ -22,7 +22,7 @@ class RoleTable extends Component {
             value: ''
         }
     }
-    
+
     // Cac ham xu ly du lieu voi modal
     handleEdit = (role) => {
         this.setState({
@@ -139,31 +139,31 @@ class RoleTable extends Component {
                     <tbody>
                         {
                             role.listPaginate && role.listPaginate.length > 0 &&
-                                role.listPaginate.map(role =>
-                                    <tr key={`roleList${role._id}`}>
-                                        <td> {role.name} </td>
-                                        <td><ToolTip dataTooltip={role.parents.map(parent => parent ? parent.name : "Parent role is deleted")} /></td>
-                                        <td><ToolTip dataTooltip={role.users.map(user => user && user.userId ? user.userId.name : "Role is deleted")} /></td>
-                                        <td style={{ textAlign: 'center' }}>
-                                            <a className="edit" href={`#${role._id}`} onClick={() => this.handleEdit(role)}><i className="material-icons">edit</i></a>
-                                            {
-                                                role.type && role.type.name === ROLE_TYPE.COMPANY_DEFINED &&
-                                                <DeleteNotification
-                                                    content={translate('manage_role.delete')}
-                                                    data={{ id: role._id, info: role.name }}
-                                                    func={this.props.destroy}
-                                                />
-                                            }
-                                        </td>
-                                    </tr>
-                                )
+                            role.listPaginate.map(role =>
+                                <tr key={`roleList${role._id}`}>
+                                    <td> {role.name} </td>
+                                    <td><ToolTip dataTooltip={role.parents.map(parent => parent ? parent.name : "")} /></td>
+                                    <td><ToolTip dataTooltip={role.users.map(user => user && user.userId ? user.userId.name : "")} /></td>
+                                    <td style={{ textAlign: 'center' }}>
+                                        <a className="edit" href={`#${role._id}`} onClick={() => this.handleEdit(role)}><i className="material-icons">edit</i></a>
+                                        {
+                                            role.type && role.type.name === ROLE_TYPE.COMPANY_DEFINED &&
+                                            <DeleteNotification
+                                                content={translate('manage_role.delete')}
+                                                data={{ id: role._id, info: role.name }}
+                                                func={this.props.destroy}
+                                            />
+                                        }
+                                    </td>
+                                </tr>
+                            )
                         }
                     </tbody>
                 </table>
                 {
                     role.isLoading ?
-                    <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                    role.listPaginate && role.listPaginate.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                        role.listPaginate && role.listPaginate.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                 }
                 {/* PaginateBar */}
                 <PaginateBar display={role.listPaginate.length} total={role.totalDocs} pageTotal={role.totalPages} currentPage={role.page} func={this.setPage} />

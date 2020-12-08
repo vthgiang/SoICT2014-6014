@@ -164,15 +164,20 @@ class IncidentEditForm extends Component {
 
     render() {
         const { _id } = this.props;
-        const { translate, assetsManager, user, auth } = this.props;
+        const { translate, assetsManager, user } = this.props;
         const {
             incidentCode, type, asset, reportedBy, dateOfIncident, description, errorOnIncidentCode, errorOnDateOfIncident, errorOnDescription, statusIncident
         } = this.state;
 
-        var userlist = user.list;
-        var assetlist = assetsManager.listAssets;
+        const userlist = user.list;
+        let assetlist = assetsManager.listAssets;
 
-        console.log('\n\n @@@@@@@@@@', asset._id, assetlist);
+        if (assetlist) {
+            const checkExist = assetlist.some(obj => obj._id === asset._id);
+            if (!checkExist) {
+                assetlist = [...assetlist, asset];
+            }
+        }
         return (
             <React.Fragment>
                 <DialogModal
@@ -200,7 +205,9 @@ class IncidentEditForm extends Component {
                                     id={`edit-type-incident-asset${_id}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
+                                    value={type}
                                     items={[
+                                        { value: '', text: translate('asset.general_information.select_incident_type') },
                                         { value: 1, text: translate('asset.general_information.damaged') },
                                         { value: 2, text: translate('asset.general_information.lost') },
                                     ]}

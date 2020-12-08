@@ -2,26 +2,40 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DatePicker, ErrorLabel, SelectBox, TreeSelect, SelectMulti, ApiImage } from '../../../../../common-components';
-
+import { DatePicker, ErrorLabel, SelectBox, TreeSelect, ApiImage } from '../../../../../common-components';
 import "./addAsset.css";
 import { AssetCreateValidator } from './combinedContent';
-import { RoleActions } from '../../../../super-admin/role/redux/actions';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { AssetTypeActions } from '../../../admin/asset-type/redux/actions';
 import { string2literal } from '../../../../../helpers/handleResponse';
+import { generateCode } from "../../../../../helpers/generateCode";
 
 class GeneralTab extends Component {
     constructor(props) {
         super(props);
         this.state = {
             detailInfo: [],
-            isObj: true,
-            defaultAvatar: "./upload/asset/pictures/picture5.png"
-            // status: "ready_to_use",
-            // typeRegisterForUse: "Được phép đăng ký sử dụng",
+            isObj: true
         };
     }
+
+    regenerateCode = () => {
+        let code = generateCode("VVTM");
+        this.setState((state) => ({
+            ...state,
+            code: code,
+        }));
+        this.validateCode(code);
+    }
+    componentDidMount = () => {
+        // Mỗi khi modal mở, cần sinh lại code
+        window.$('#modal-add-asset').on('shown.bs.modal', this.regenerateCode)
+    }
+    componentWillUnmount = () => {
+        // Unsuscribe event
+        window.$('#modal-add-asset').unbind('shown.bs.modal', this.regenerateCode)
+    }
+
 
     // Function format dữ liệu Date thành string
     formatDate(date, monthYear = false) {
@@ -450,9 +464,6 @@ class GeneralTab extends Component {
     delete = (index) => {
         var { detailInfo } = this.state;
         detailInfo.splice(index, 1);
-        this.setState({
-            detailInfo: detailInfo
-        })
         if (detailInfo.length !== 0) {
             for (let n in detailInfo) {
                 this.validateNameField(detailInfo[n].nameField, n);
@@ -460,6 +471,7 @@ class GeneralTab extends Component {
             }
         } else {
             this.setState({
+                detailInfo: detailInfo,
                 errorOnValue: undefined,
                 errorOnNameField: undefined
             })
@@ -473,6 +485,7 @@ class GeneralTab extends Component {
                 id: nextProps.id,
                 img: nextProps.img,
                 avatar: nextProps.avatar,
+
                 code: nextProps.code,
                 assetName: nextProps.assetName,
                 serial: nextProps.serial,
@@ -501,7 +514,6 @@ class GeneralTab extends Component {
                 errorOnPurchaseDate: undefined,
                 errorOnWarrantyExpirationDate: undefined,
                 errorOnManagedBy: undefined,
-
                 errorOnNameField: undefined,
                 errorOnValue: undefined,
             }
@@ -526,11 +538,10 @@ class GeneralTab extends Component {
     }
 
     render() {
-        const { id } = this.props;
-        const { translate, user, assetType, assetsManager, role, department } = this.props;
+        const { id, translate, user, assetsManager, role, department } = this.props;
         const {
-            avatar, img, defaultAvatar, code, assetName, assetTypes, group, serial, purchaseDate, warrantyExpirationDate, managedBy, isObj,
-            assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location, description, status, typeRegisterForUse, detailInfo,
+            img, defaultAvatar, code, assetName, assetTypes, group, serial, purchaseDate, warrantyExpirationDate, managedBy, isObj,
+            assignedToUser, assignedToOrganizationalUnit, location, description, status, typeRegisterForUse, detailInfo,
             errorOnCode, errorOnAssetName, errorOnSerial, errorOnAssetType, errorOnLocation, errorOnPurchaseDate,
             errorOnWarrantyExpirationDate, errorOnManagedBy, errorOnNameField, errorOnValue, usageLogs, readByRoles, errorOnNameFieldPosition, errorOnValuePosition
         } = this.state;
@@ -564,7 +575,7 @@ class GeneralTab extends Component {
                     {/* Ảnh tài sản */}
                     <div className="col-md-4" style={{ textAlign: 'center', paddingLeft: '0px' }}>
                         <div>
-                            {<ApiImage className="attachment-img avarta" id={`avater-imform-${id}`} src={avatar ? avatar : defaultAvatar} />}
+                            {< ApiImage className="attachment-img avarta" id={`avatar-imform-${id}`} src={img ? img : defaultAvatar} />}
                         </div>
                         <div className="upload btn btn-default ">
                             {translate('manage_asset.upload')}
@@ -678,7 +689,7 @@ class GeneralTab extends Component {
                                             id={`select-link-default-roles-${id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={role.list.map(role => { return { value: role ? role._id : null, text: role ? role.name : "Role is deleted" } })}
+                                            items={role.list.map(role => { return { value: role ? role._id : null, text: role ? role.name : "" } })}
                                             value={readByRoles}
                                             onChange={this.handleRoles}
                                             multiple={true}

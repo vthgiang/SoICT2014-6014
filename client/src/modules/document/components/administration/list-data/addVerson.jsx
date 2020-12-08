@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import Swal from 'sweetalert2';
-import { DialogModal, ButtonModal, DateTimeConverter, SelectBox, DatePicker, TreeSelect, ErrorLabel, UploadFile } from '../../../../../common-components';
-import { DocumentActions } from '../../../redux/actions';
-import moment from 'moment';
-import { getStorage } from "../../../../../config";
+import { DialogModal, DatePicker, ErrorLabel, UploadFile } from '../../../../../common-components';
 
 class AddVersion extends Component {
     constructor(props) {
@@ -30,6 +26,7 @@ class AddVersion extends Component {
         const value = e.target.value;
         this.validateVersionName(value, true)
     }
+
     handleUploadFile = (value) => {
         if (value.length !== 0) {
             this.setState({
@@ -121,7 +118,8 @@ class AddVersion extends Component {
 
     render() {
         const { translate } = this.props;
-        const { versionId, versionName, issuingDate, effectiveDate, expiredDate, errorVersionName } = this.state;
+        const { errorVersionName } = this.state;
+
         return (
             <DialogModal
                 modalID="sub-modal-add-document-new-version"
@@ -147,19 +145,19 @@ class AddVersion extends Component {
                     <div className="form-group">
                         <label>{translate('document.doc_version.issuing_date')}</label>
                         <DatePicker
-                            id={`document-add-version-issuing-datee`}
+                            id={`document-add-version-issuing-date`}
                             onChange={this.handleIssuingDate}
                         />
                     </div>
                     <div className="form-group">
                         <label>{translate('document.doc_version.effective_date')}</label>
                         <DatePicker
-                            id={`document-add-version-effective-datee`}
+                            id={`document-add-version-effective-date`}
                             onChange={this.handleEffectiveDate}
                         />
                     </div>
                     <div className="form-group">
-                        <label>{translate('document.doc_version.expired_datee')}</label>
+                        <label>{translate('document.doc_version.expired_date')}</label>
                         <DatePicker
                             id={`document-add-version-expired-date`}
                             onChange={this.handleExpiredDate}
@@ -173,9 +171,5 @@ class AddVersion extends Component {
 
 const mapStateToProps = state => state;
 
-const mapDispatchToProps = {
-    //editDocument: DocumentActions.editDocument,
-}
-
-const addVersion = connect(mapStateToProps, mapDispatchToProps)(withTranslate(AddVersion));
+const addVersion = connect(mapStateToProps, null)(withTranslate(AddVersion));
 export { addVersion as AddVersion }

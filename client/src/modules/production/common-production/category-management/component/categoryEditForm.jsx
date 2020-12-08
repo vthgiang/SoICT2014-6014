@@ -145,7 +145,7 @@ class CategoryEditForm extends Component {
                                     items= {[{ value: "product", text: translate('manage_warehouse.category_management.product') }, 
                                     { value: "material", text: translate('manage_warehouse.category_management.material') }, 
                                     { value: "equipment", text: translate('manage_warehouse.category_management.equipment') },
-                                    { value: "asset", text: translate('manage_warehouse.category_management.asset')}
+                                    { value: "waste", text: translate('manage_warehouse.category_management.waste')}
                                     ]}
                                     onChange={(e)=>{this.handleTypeChange(e)}}
                                     multiple={false}

@@ -98,7 +98,7 @@ class MaintainanceLogTab extends Component {
             case "3":
                 return translate('asset.asset_info.upgrade');
             default:
-                return 'Deleted';
+                return '';
         }
     }
 
@@ -113,7 +113,7 @@ class MaintainanceLogTab extends Component {
             case "3":
                 return translate('asset.asset_info.made');
             default:
-                return 'Deleted';
+                return '';
         }
     }
 

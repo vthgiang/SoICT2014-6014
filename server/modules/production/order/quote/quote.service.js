@@ -7,7 +7,6 @@ const {
 } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 exports.createNewQuote = async (userId, data, portal) => {
-    console.log("Data:", data.goods[0].discounts);
     let newQuote = await Quote(connect(DB_CONNECTION, portal)).create({
         code: data.code,
         status: data.status,
@@ -15,9 +14,12 @@ exports.createNewQuote = async (userId, data, portal) => {
         effectiveDate: data.effectiveDate,
         expirationDate: data.expirationDate,
         customer: data.customer,
+        customerName: data.customerName,
         customerPhone: data.customerPhone,
         customerAddress: data.customerAddress,
         customerRepresent: data.customerRepresent,
+        customerTaxNumber: data.customerTaxNumber,
+        customerEmail: data.customerEmail,
         goods: data.goods.length ? data.goods.map((item) => {
             return {
                 good: item.good,
@@ -111,6 +113,14 @@ exports.createNewQuote = async (userId, data, portal) => {
         path: 'creator', select: 'name'
     }, {
         path: 'customer', select: 'name'
+    }, {
+        path: 'goods.good', select: 'code name baseUnit'
+    }, {
+        path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
+    }, {
+        path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
+    }, {
+        path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
     }]);;
     return { quote }
 }
@@ -134,6 +144,14 @@ exports.getAllQuotes = async (query, portal) => {
             path: 'creator', select: 'name'
         }, {
             path: 'customer', select: 'name'
+        }, {
+            path: 'goods.good', select: 'code name baseUnit'
+        },{
+            path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
+        },{
+            path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
+        }, {
+            path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
         }]);
         return { allQuotes }
     } else {
@@ -144,6 +162,14 @@ exports.getAllQuotes = async (query, portal) => {
                 path: 'creator', select: 'name'
             }, {
                 path: 'customer', select: 'name'
+            }, {
+                path: 'goods.good', select: 'code name baseUnit'
+            }, {
+                path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
+            }, {
+                path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
+            }, {
+                path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
             }]
             })
         return { allQuotes }    

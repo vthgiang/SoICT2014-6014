@@ -160,7 +160,15 @@ class PurchaseRequestEditForm extends Component {
 
     save = () => {
         if (this.isFormValidated()) {
-            return this.props.updateRecommendProcure(this.state._id, this.state);
+            let data = this.state;
+            if (data.dateCreate) {
+                let dateData = data.dateCreate.split("-");
+                data = {
+                    ...data,
+                    dateCreate: new Date(`${dateData[2]}-${dateData[1]}-${dateData[0]}`)
+                }
+            }
+            return this.props.updateRecommendProcure(this.state._id, data);
         }
     }
 
@@ -170,7 +178,7 @@ class PurchaseRequestEditForm extends Component {
                 ...prevState,
                 _id: nextProps._id,
                 recommendNumber: nextProps.recommendNumber,
-                dateCreate: nextProps.dateCreate,
+                dateCreate: this.formatDate(nextProps.dateCreate),
                 proponent: nextProps.proponent,
                 equipmentName: nextProps.equipmentName,
                 equipmentDescription: nextProps.equipmentDescription,
@@ -188,6 +196,24 @@ class PurchaseRequestEditForm extends Component {
         } else {
             return null;
         }
+    }
+
+    formatDate = (date) => {
+        if (!date) return null;
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2) {
+            month = '0' + month;
+        }
+
+        if (day.length < 2) {
+            day = '0' + day;
+        }
+
+        return [day, month, year].join('-');
     }
 
     render() {
@@ -252,14 +278,14 @@ class PurchaseRequestEditForm extends Component {
                                 {/* Thiết bị đề nghị mua */}
                                 <div className={`form-group ${!errorOnEquipment ? "" : "has-error"}`}>
                                     <label>{translate('asset.manage_recommend_procure.asset_recommend')}<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="equipmentName" value={equipmentName} onChange={this.handleEquipmentChange} autoComplete="off" placeholder="Thiết bị đề nghị mua" />
+                                    <input type="text" className="form-control" name="equipmentName" value={equipmentName ? equipmentName : ""} onChange={this.handleEquipmentChange} autoComplete="off" placeholder="Thiết bị đề nghị mua" />
                                     <ErrorLabel content={errorOnEquipment} />
                                 </div>
 
                                 {/* Mô tả thiết bị đề nghị mua */}
                                 <div className={`form-group ${errorOnEquipmentDescription === undefined ? "" : "has-error"}`}>
                                     <label>{translate('asset.manage_recommend_procure.equipment_description')}</label>
-                                    <textarea className="form-control" rows="3" name="equipmentDescription" value={equipmentDescription} onChange={this.handleEquipmentDescriptionChange} autoComplete="off"
+                                    <textarea className="form-control" rows="3" name="equipmentDescription" value={equipmentDescription ? equipmentDescription : ""} onChange={this.handleEquipmentDescriptionChange} autoComplete="off"
                                         placeholder="Thiết bị đề nghị mua"></textarea>
                                     <ErrorLabel content={errorOnEquipmentDescription} />
                                 </div>
@@ -270,27 +296,27 @@ class PurchaseRequestEditForm extends Component {
                                 {/* Nhà cung cấp */}
                                 <div className="form-group">
                                     <label>{translate('asset.manage_recommend_procure.supplier')}</label>
-                                    <input type="text" className="form-control" name="supplier" value={supplier} onChange={this.handleSupplierChange} />
+                                    <input type="text" className="form-control" name="supplier" value={supplier ? supplier : ""} onChange={this.handleSupplierChange} />
                                 </div>
 
                                 {/* Số lượng */}
                                 <div className={`form-group ${!errorOnTotal ? "" : "has-error"}`}>
                                     <label>{translate('asset.general_information.number')}<span className="text-red">*</span></label>
-                                    <input type="number" className="form-control" name="total" value={total} onChange={this.handleTotalChange} />
+                                    <input type="number" className="form-control" name="total" value={total ? total : ""} onChange={this.handleTotalChange} />
                                     <ErrorLabel content={errorOnTotal} />
                                 </div>
 
                                 {/* Đơn vị tính */}
                                 <div className={`form-group ${!errorOnUnit ? "" : "has-error"}`}>
                                     <label>{translate('asset.manage_recommend_procure.unit')}<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="unit" value={unit} onChange={this.handleUnitChange} autoComplete="off" placeholder="Đơn vị tính" />
+                                    <input type="text" className="form-control" name="unit" value={unit ? unit : ""} onChange={this.handleUnitChange} autoComplete="off" placeholder="Đơn vị tính" />
                                     <ErrorLabel content={errorOnUnit} />
                                 </div>
 
                                 {/* Giá trị dự tính */}
                                 <div className="form-group">
                                     <label>{translate('asset.manage_recommend_procure.expected_value')} (VNĐ)</label>
-                                    <input type="number" className="form-control" name="estimatePrice" value={estimatePrice} onChange={this.handleEstimatePriceChange} />
+                                    <input type="number" className="form-control" name="estimatePrice" value={estimatePrice ? estimatePrice : ""} onChange={this.handleEstimatePriceChange} />
                                 </div>
                             </div>
                         </div>

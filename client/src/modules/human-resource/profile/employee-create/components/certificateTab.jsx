@@ -5,11 +5,16 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DegreeAddModal, CertificateAddModal, DegreeEditModal, CertificateEditModal } from './combinedContent';
 
 import { AuthActions } from '../../../../auth/redux/actions';
+import { FieldsActions } from '../../../field/redux/actions';
 
 class CertificateTab extends Component {
     constructor(props) {
         super(props);
         this.state = {};
+    }
+
+    componentDidMount() {
+        this.props.getListFields()
     }
 
     /**
@@ -176,11 +181,13 @@ class CertificateTab extends Component {
     }
 
     render() {
-        const { translate } = this.props;
+        const { translate, field } = this.props;
 
         const { id } = this.props;
 
         const { degrees, certificates, currentRow, currentRowCertificates } = this.state;
+        let listFields = field.listFields;
+        console.log('listFields', listFields)
 
         return (
             <div id={id} className="tab-pane">
@@ -194,6 +201,7 @@ class CertificateTab extends Component {
                                 <tr>
                                     <th>{translate('human_resource.profile.name_diploma')}</th>
                                     <th>{translate('human_resource.profile.diploma_issued_by')}</th>
+                                    <th>{translate('human_resource.profile.career_fields')}</th>
                                     <th>{translate('human_resource.profile.graduation_year')}</th>
                                     <th>{translate('human_resource.profile.ranking_learning')}</th>
                                     <th>{translate('human_resource.profile.attached_files')}</th>
@@ -202,25 +210,38 @@ class CertificateTab extends Component {
                             </thead>
                             <tbody>
                                 {degrees && degrees.length !== 0 &&
-                                    degrees.map((x, index) => (
-                                        <tr key={index}>
-                                            <td>{x.name}</td>
-                                            <td>{x.issuedBy}</td>
-                                            <td>{x.year}</td>
-                                            <td>{translate(`human_resource.profile.${x.degreeType}`)}</td>
-                                            <td>{!x.urlFile ? translate('human_resource.profile.no_files') :
-                                                <a className='intable'
-                                                    style={{ cursor: "pointer" }}
-                                                    onClick={(e) => this.requestDownloadFile(e, `.${x.urlFile}`, x.name)}>
-                                                    <i className="fa fa-download"> &nbsp;Download!</i>
-                                                </a>
-                                            }</td>
-                                            <td>
-                                                <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.edit_diploma')}><i className="material-icons">edit</i></a>
-                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteDegree(index)}><i className="material-icons"></i></a>
-                                            </td>
-                                        </tr>
-                                    ))}
+                                    degrees.map((x, index) => {
+                                        let field = '';
+                                        if (x.field) {
+                                            field = listFields.find(y => y._id.toString() === x.field.toString());
+                                            if (field) {
+                                                field = field.name
+                                            } else {
+                                                field = 'DELETED'
+                                            }
+                                        }
+                                        return (
+                                            <tr key={index}>
+                                                <td>{x.name}</td>
+                                                <td>{x.issuedBy}</td>
+                                                <td>{field}</td>
+                                                <td>{x.year}</td>
+                                                <td>{translate(`human_resource.profile.${x.degreeType}`)}</td>
+                                                <td>{!x.urlFile ? translate('human_resource.profile.no_files') :
+                                                    <a className='intable'
+                                                        style={{ cursor: "pointer" }}
+                                                        onClick={(e) => this.requestDownloadFile(e, `.${x.urlFile}`, x.name)}>
+                                                        <i className="fa fa-download"> &nbsp;Download!</i>
+                                                    </a>
+                                                }</td>
+                                                <td>
+                                                    <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.edit_diploma')}><i className="material-icons">edit</i></a>
+                                                    <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteDegree(index)}><i className="material-icons"></i></a>
+                                                </td>
+                                            </tr>
+                                        )
+                                    }
+                                    )}
                             </tbody>
                         </table>
                         {
@@ -279,6 +300,7 @@ class CertificateTab extends Component {
                         index={currentRow.index}
                         name={currentRow.name}
                         issuedBy={currentRow.issuedBy}
+                        field={currentRow.field}
                         year={currentRow.year}
                         degreeType={currentRow.degreeType}
                         file={currentRow.file}
@@ -308,9 +330,15 @@ class CertificateTab extends Component {
     }
 };
 
-const actionCreators = {
-    downloadFile: AuthActions.downloadFile,
+function mapState(state) {
+    const { field } = state;
+    return { field };
 };
 
-const certificateTab = connect(null, actionCreators)(withTranslate(CertificateTab));
+const actionCreators = {
+    downloadFile: AuthActions.downloadFile,
+    getListFields: FieldsActions.getListFields,
+};
+
+const certificateTab = connect(mapState, actionCreators)(withTranslate(CertificateTab));
 export { certificateTab as CertificateTab };

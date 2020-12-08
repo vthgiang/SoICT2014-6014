@@ -65,7 +65,7 @@ class UserCreateForm extends Component {
 
         const items = role.list.filter(role => {
             return role && role.name !== 'Super Admin'
-        }).map(role => { return { value: role ? role._id : null, text: role ? role.name : "Role is deleted" } })
+        }).map(role => { return { value: role ? role._id : null, text: role ? role.name : "" } })
 
         return (
             <React.Fragment>

@@ -312,11 +312,11 @@ class EmployeeKpiApproveModal extends Component {
                                             kpimembercmp.kpis.map((item, index) =>
                                                 <tr key={index}>
                                                     <td>{index + 1}</td>
-                                                    <td>{item ? item.name : "Deleted"}</td>
-                                                    <td>{item.parent ? item.parent.name : "Deleted"}</td>
-                                                    <td>{item ? item.criteria : "Deleted"}</td>
+                                                    <td>{item ? item.name : ""}</td>
+                                                    <td>{item.parent ? item.parent.name : ""}</td>
+                                                    <td>{item ? item.criteria : ""}</td>
                                                     <td>{edit === item._id ? <input min="0" max="100" defaultValue={item.weight} style={{ width: "60px" }} /> : item.weight}</td>
-                                                    <td>{item ? item.approvedPoint : "Deleted"}</td>
+                                                    <td>{item ? item.approvedPoint : ""}</td>
                                                 </tr>
                                             ) : <tr><td colSpan={6}>{translate('kpi.evaluation.employee_evaluation.data_not_found')}</td></tr>
                                         }
@@ -361,9 +361,9 @@ class EmployeeKpiApproveModal extends Component {
                                 {kpimember && kpimember.kpis.map((item, index) =>
                                     <tr key={index}>
                                         <td>{index + 1}</td>
-                                        <td>{item ? item.name : "Deleted"}</td>
-                                        <td>{item.parent ? item.parent.name : "Deleted"}</td>
-                                        <td>{item ? item.criteria : "Deleted"}</td>
+                                        <td>{item ? item.name : ""}</td>
+                                        <td>{item.parent ? item.parent.name : ""}</td>
+                                        <td>{item ? item.criteria : ""}</td>
                                         <td>{edit === item._id ?
                                             <input min="0" max="100"
                                                 ref={input => this.newWeight[item._id] = input}
@@ -372,7 +372,7 @@ class EmployeeKpiApproveModal extends Component {
                                             /> : item.weight}
                                         </td>
                                         <td>{this.handleCheckEmployeeKpiStatus(item.status)}</td>
-                                        <td>{item ? item.approvedPoint : "Deleted"}</td>
+                                        <td>{item ? item.approvedPoint : ""}</td>
                                         <td>
                                             {edit === item._id ? <a style={{ cursor: 'pointer' }} className="approve" title={translate('kpi.evaluation.employee_evaluation.save_result')} onClick={() => this.handleSaveEdit(item)}><i className="material-icons">save</i></a>
                                                 : <a style={{ cursor: 'pointer' }} className="edit" title={translate('kpi.evaluation.employee_evaluation.edit_target')} onClick={() => this.handleEdit(item)}><i className="material-icons">edit</i></a>}

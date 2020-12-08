@@ -17,7 +17,7 @@ exports.getBinLocations = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_bin_locations_failed'],
-            content: error
+            content: error.message
         });
     }
 }
@@ -38,7 +38,7 @@ exports.getChildBinLocations = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_bin_locations_failed'],
-            content: error
+            content: error.message
         });
     }
 }
@@ -59,7 +59,7 @@ exports.getDetailBinLocation = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_bin_location_failed'],
-            content: error
+            content: error.message
         })
     }
 }
@@ -80,7 +80,7 @@ exports.createBinLocation = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['add_faile'],
-            content: error
+            content: error.message
         });
     }
 }
@@ -101,7 +101,7 @@ exports.editBinLocation = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['edit_faile'],
-            content: error
+            content: error.message
         });
     }
 }
@@ -122,7 +122,7 @@ exports.deleteBinLocation = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['delete_faile'],
-            content: error
+            content: error.message
         });
     }
 }
@@ -143,7 +143,7 @@ exports.deleteManyBinLocations = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['delete_faile'],
-            content: error
+            content: error.message
         });
     }
 }

@@ -31,7 +31,10 @@ const QuoteSchema = Schema({
         type: Schema.Types.ObjectId,
         ref: 'Customer',
         required: true
-    }, 
+    },
+    customerName: {
+        type: String
+    },
     customerPhone: {
         type: String,
         required: true
@@ -41,6 +44,12 @@ const QuoteSchema = Schema({
         required: true
     },
     customerRepresent: { //người đại diện
+        type: String
+    },
+    customerTaxNumber: {
+        type: String
+    },
+    customerEmail: {
         type: String
     },
     goods: [{
@@ -143,7 +152,7 @@ const QuoteSchema = Schema({
                         type: Number
                     }
                 }],
-                discountOnGoods: [{
+                discountOnGoods: {
                     good: {
                         type: Schema.Types.ObjectId,
                         ref: 'Good'
@@ -154,7 +163,7 @@ const QuoteSchema = Schema({
                     discountedPrice: {
                         type: Number
                     }
-                }]
+                }
             },
         ],
         note: {

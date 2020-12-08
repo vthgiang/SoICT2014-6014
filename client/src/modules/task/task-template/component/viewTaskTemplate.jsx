@@ -31,7 +31,7 @@ class ViewTaskTemplate extends Component {
     }
 
     render() {
-        
+
         console.log('\n\n=======VIEW=========\n\n');
         const { translate, department } = this.props;
         const { isProcess, data, taskTemplate, listUser } = this.props;// data là props dữ liệu của process được chọn nếu đây là process
@@ -192,17 +192,17 @@ class ViewTaskTemplate extends Component {
 
                 <div className="row row-equal-height">
                     <div className={`${isProcess ? "col-lg-12 col-sm-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }} >
-                        <div className="description-box">
+                        <div className="description-box" style={{ height: "100%" }}>
                             <h4>
                                 {translate('task_template.activity_list')}
                             </h4>
 
                             {/**Các hoạt động mẫu công việc */}
-                            <div style={{ padding: '5px 30px' }}>
-                                {
-                                    (!taskTemplate?.taskActions || taskTemplate?.taskActions.length === 0) ?
-                                        <div><strong>{translate('task_template.no_data')}</strong></div> :
-                                        taskTemplate?.taskActions.map((item, index, array) =>
+                            {
+                                (!taskTemplate?.taskActions || taskTemplate?.taskActions.length === 0) ?
+                                    <strong>{translate('task_template.no_data')}</strong> :
+                                    taskTemplate?.taskActions.map((item, index, array) =>
+                                        <div style={{ padding: '5px 30px' }}>
                                             <div className="task-item" key={index}>
                                                 <p>
                                                     <b className="number">{index + 1}</b>
@@ -215,13 +215,13 @@ class ViewTaskTemplate extends Component {
                                                 </p>
                                                 <div>{parse(item.description)}</div>
                                             </div>
-                                        )
-                                }
-                            </div>
+                                        </div>
+                                    )
+                            }
                         </div>
                     </div>
                     <div className={`${isProcess ? "col-lg-12 col-sm-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }}>
-                        <div className="description-box">
+                        <div className="description-box" style={{ height: "100%" }}>
                             <h4>
                                 {translate('task_template.information_list')}
                             </h4>
@@ -230,7 +230,7 @@ class ViewTaskTemplate extends Component {
                             <div>
                                 {
                                     (!taskTemplate?.taskInformations || taskTemplate?.taskInformations.length === 0) ?
-                                        <div><strong>{translate('task_template.no_data')}</strong></div> :
+                                        <strong>{translate('task_template.no_data')}</strong> :
                                         taskTemplate?.taskInformations.map((item, index) =>
                                             <div key={index}>
                                                 <strong>

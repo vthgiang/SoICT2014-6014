@@ -58,7 +58,7 @@ class DisposalTab extends Component {
             return translate('asset.asset_info.give')
         }
         else {
-            return 'Type is deleted'
+            return ''
         }
     }
 

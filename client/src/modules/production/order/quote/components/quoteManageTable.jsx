@@ -16,6 +16,7 @@ class QuoteManageTable extends Component {
             limit: 5,
             code: "",
             status: null,
+            quoteDetail: {},
         };
     }
 
@@ -50,7 +51,7 @@ class QuoteManageTable extends Component {
         this.setState((state) => {
             return {
                 ...state,
-                currentRow: data,
+                quoteDetail: data,
             };
         });
         window.$("#modal-detail-quote").modal("show");
@@ -61,11 +62,10 @@ class QuoteManageTable extends Component {
     };
 
     render() {
-        let { limit } = this.state;
+        let { limit, quoteDetail } = this.state;
         const { translate, quotes } = this.props;
         const { totalPages, page } = quotes;
 
-        console.log("quotes:", quotes);
         let listQuotes = [];
         if (quotes.isLoading === false) {
             listQuotes = quotes.listQuotes;
@@ -94,7 +94,7 @@ class QuoteManageTable extends Component {
             <React.Fragment>
                 <div className="nav-tabs-custom">
                     <div className="box-body qlcv">
-                        {this.state.currentRow && <QuoteDetailForm data={this.state.currentRow} type={this.state.type} />}
+                        <QuoteDetailForm quoteDetail={quoteDetail} />
                         <QuoteCreateForm />
                         <div className="form-inline">
                             <div className="form-group">
@@ -176,7 +176,6 @@ class QuoteManageTable extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {console.log("listQuotes", listQuotes)}
                                 {typeof listQuotes !== "undefined" &&
                                     listQuotes.length !== 0 &&
                                     listQuotes.map((item, index) => (
@@ -201,8 +200,8 @@ class QuoteManageTable extends Component {
                                                         textAlign: "center",
                                                     }}
                                                 >
-                                                    <a className="text-green" onClick={() => this.handleShowDetailInfo(item)}>
-                                                        <i className="material-icons">visibility</i>
+                                                    <a onClick={() => this.handleShowDetailInfo(item)}>
+                                                        <i className="material-icons">view_list</i>
                                                     </a>
                                                     <a
                                                         onClick={() => this.handleEdit(item)}

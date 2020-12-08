@@ -272,7 +272,7 @@ class SalaryCreateForm extends Component {
                 organizationalUnit = department._id;
             }
         }
-        let employeeID = employeesManager.listAllEmployees.find(x => x.emailInCompany === employee);
+        let employeeID = employeesManager.listEmployeesOfOrganizationalUnits.find(x => x.emailInCompany === employee);
         employeeID = employeeID._id;
 
         let partMonth = month.split('-');
@@ -288,7 +288,7 @@ class SalaryCreateForm extends Component {
         let { employee, organizationalUnit, unit, mainSalary, bonus, month, errorOnEmployee, errorOnOrganizationalUnit,
             errorOnMainSalary, errorOnNameSalary, errorOnMoreMoneySalary, errorOnMonthSalary } = this.state;
 
-        let listAllEmployees = employeesManager.listAllEmployees;
+        let listAllEmployees = employeesManager.listEmployeesOfOrganizationalUnits;
         let listDepartments = [{ _id: "", name: translate('human_resource.non_unit') }];
 
         if (user.organizationalUnitsOfUserByEmail) {
