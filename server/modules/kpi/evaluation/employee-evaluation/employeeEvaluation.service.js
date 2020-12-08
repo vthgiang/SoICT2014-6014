@@ -32,12 +32,12 @@ exports.getEmployeeKPISets = async (portal, data) => {
         year = data.endDate.slice(0, 4);
         month = data.endDate.slice(5, 7);
     }
-    if (year && month && (new Number(month)) === 12) {
-        month = '1';
-        year = (new Number(year)) + 1;
+    if (year && month && Number(month) === 12) {
+        month = 1;
+        year = Number(year) + 1;
     } else {
         if (month) {
-            month = (new Number(month)) + 1;
+            month = Number(month) + 1;
         }
     }
     if (year && month && month < 10) {
@@ -54,6 +54,7 @@ exports.getEmployeeKPISets = async (portal, data) => {
     if (data.endDate) {
         enddate = new Date(data.endDate);
     }
+
     if (data.status) status = parseInt(data.status);
 
     if (department) {

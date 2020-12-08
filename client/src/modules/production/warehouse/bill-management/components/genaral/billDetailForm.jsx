@@ -247,9 +247,9 @@ class BillDetailForm extends Component {
                                                 billDetail.goods.map((x, index) =>
                                                     <tr key={index}>
                                                         <td>{index + 1}</td>
-                                                        <td>{x.good.code}</td>
-                                                        <td>{x.good.name}</td>
-                                                        <td>{x.good.baseUnit}</td>
+                                                        <td>{x.good ? x.good.code : ''}</td>
+                                                        <td>{x.good ? x.good.name : ''}</td>
+                                                        <td>{x.good ? x.good.baseUnit : ''}</td>
                                                         {billDetail.group !== '3' && <td>{x.quantity} <a href="#" onClick={() => this.handleShowDetailQuantity(x)}> (Chi tiết)</a></td>}
                                                         {billDetail.group === '3' && <td>{x.quantity}</td>}
                                                         {billDetail.group === '3' && <td>{x.returnQuantity} <a href="#" onClick={() => this.handleShowDetailQuantity(x)}> (Chi tiết)</a></td>}

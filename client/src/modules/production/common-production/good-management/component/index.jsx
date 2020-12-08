@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { GoodActions } from "../redux/actions";
 import { CategoryActions } from "../../category-management/redux/actions";
+import { StockActions } from "../../../warehouse/stock-management/redux/actions";
 import { DataTableSetting, DeleteNotification, PaginateBar, TreeSelect } from "../../../../../common-components";
 import GoodCreateForm from "./goodCreateForm";
 import GoodEditForm from "./goodEditForm";
@@ -12,22 +13,28 @@ class GoodManagement extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            currentRole: localStorage.getItem("currentRole"),
             page: 1,
             limit: 5,
             code: "",
             name: "",
             category: "",
             value: "",
-            type: "product",
-            oldType: "product",
+            type: "",
+            oldType: "",
+            activeP: false,
+            activeM: false,
+            activeE: false,
+            activeW: false,
         };
     }
 
     componentDidMount() {
-        let { page, limit, type } = this.state;
+        let { page, limit, type, currentRole } = this.state;
         this.props.getGoodsByType();
         this.props.getGoodsByType({ page, limit, type });
         this.props.getCategoryToTree();
+        this.props.getAllStocks({ managementLocation: currentRole })
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -38,6 +45,14 @@ class GoodManagement extends Component {
             };
         }
         return null;
+    }
+
+    shouldComponentUpdate(nextProps, nextPage) {
+        if(!nextPage.type) {
+            this.setType();
+            return false;
+        }
+        return true;
     }
 
     setPage = (page) => {
@@ -111,8 +126,8 @@ class GoodManagement extends Component {
         });
     };
 
-    handleAsset = () => {
-        let type = "asset";
+    handleWaste = () => {
+        let type = "waste";
         let page = 1;
         this.setState({
             page: page,
@@ -205,6 +220,42 @@ class GoodManagement extends Component {
         return categoryArr;
     };
 
+    checkManagementGood = (value) => {
+        const { currentRole } = this.state;
+        const { stocks } = this.props;
+        const { listStocks } = stocks;
+        let arrayType = [];
+        if(listStocks && listStocks.length > 0) {
+            for (let i = 0; i < listStocks.length; i++) {
+                if(listStocks[i].managementLocation.length > 0) {
+                    for(let j = 0; j < listStocks[i].managementLocation.length > 0; j++) {
+                        if(listStocks[i].managementLocation[j].role._id === currentRole){
+                            arrayType = arrayType.concat(listStocks[i].managementLocation[j].managementGood);
+                        }
+                    }
+                }
+            }
+        }
+
+        if(arrayType.includes(value)){
+            return true;
+        }
+
+        return false;
+    }
+
+    setType = () => {
+        if(this.checkManagementGood('product')){
+            this.setState({ type: 'product', activeP: true});
+        } else if(this.checkManagementGood('material')){
+            this.setState({ type: 'material', activeM: true});
+        } else if(this.checkManagementGood('equipment')){
+            this.setState({ type: 'equipment', activeE: true });
+        } else if(this.checkManagementGood('waste')){
+            this.setState({ type: 'waste', activeW: true });
+        }
+    }
+
     render() {
         const { goods, categories, translate } = this.props;
         const { categoryToTree } = categories;
@@ -216,26 +267,26 @@ class GoodManagement extends Component {
         return (
             <div className="nav-tabs-custom">
                 <ul className="nav nav-tabs">
-                    <li className="active">
+                    { this.checkManagementGood('product') && <li className={`${this.state.activeP ? "active" : ''}`}>
                         <a href="#good-products" data-toggle="tab" onClick={() => this.handleProduct()}>
                             {translate("manage_warehouse.good_management.product")}
                         </a>
-                    </li>
-                    <li>
+                    </li>}
+                    { this.checkManagementGood('material') && <li className={`${this.state.activeM ? "active" : ''}`}>
                         <a href="#good-materials" data-toggle="tab" onClick={this.handleMaterial}>
                             {translate("manage_warehouse.good_management.material")}
                         </a>
-                    </li>
-                    <li>
+                    </li>}
+                    { this.checkManagementGood('equipment') && <li className={`${this.state.activeE ? "active" : ''}`}>
                         <a href="#good-equipments" data-toggle="tab" onClick={() => this.handleEquipment()}>
                             {translate("manage_warehouse.good_management.equipment")}
                         </a>
-                    </li>
-                    <li>
-                        <a href="#good-assets" data-toggle="tab" onClick={() => this.handleAsset()}>
-                            {translate("manage_warehouse.good_management.asset")}
+                    </li>}
+                    { this.checkManagementGood('waste') && <li className={`${this.state.activeW ? "active" : ''}`}>
+                        <a href="#good-wastes" data-toggle="tab" onClick={() => this.handleWaste()}>
+                            {translate("manage_warehouse.good_management.waste")}
                         </a>
-                    </li>
+                    </li>}
                 </ul>
                 <div className="box-body qlcv">
                     <GoodCreateForm type={type} />
@@ -378,8 +429,8 @@ class GoodManagement extends Component {
                                             )}
                                         <td>{x.description}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a className="text-green" onClick={() => this.handleShowDetailInfo(x)}>
-                                                <i className="material-icons">visibility</i>
+                                            <a onClick={() => this.handleShowDetailInfo(x)}>
+                                                <i className="material-icons">view_list</i>
                                             </a>
                                             <a onClick={() => this.handleEdit(x)} href={`#${x._id}`} className="text-yellow">
                                                 <i className="material-icons">edit</i>
@@ -412,8 +463,8 @@ class GoodManagement extends Component {
 }
 
 function mapStateToProps(state) {
-    const { goods, categories } = state;
-    return { goods, categories };
+    const { goods, categories, stocks } = state;
+    return { goods, categories, stocks };
 }
 
 const mapDispatchToProps = {
@@ -421,5 +472,6 @@ const mapDispatchToProps = {
     getCategoryToTree: CategoryActions.getCategoryToTree,
     deleteGood: GoodActions.deleteGood,
     getGoodDetail: GoodActions.getGoodDetail,
+    getAllStocks: StockActions.getAllStocks
 };
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(GoodManagement));

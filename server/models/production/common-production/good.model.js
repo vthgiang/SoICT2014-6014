@@ -26,7 +26,7 @@ const GoodSchema = new Schema({
 
     type: {
         type: String,
-        enum: ["product", "material", "equipment", "asset"],
+        enum: ["product", "material", "equipment", "waste"],
         required: true
     },
 

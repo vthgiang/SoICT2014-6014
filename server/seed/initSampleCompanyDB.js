@@ -3527,7 +3527,16 @@ const initSampleCompanyDB = async () => {
             code: "ST001",
             address: "Trần Đại Nghĩa - Hai Bà Trưng - Hà Nội",
             description: "D5",
-            managementLocation: [roleSuperAdmin._id, roleAdmin._id],
+            managementLocation: [
+                {
+                    role: roleSuperAdmin._id,
+                    managementGood: ["product", "material", "equipment", "waste"]
+                },
+                {
+                    role: roleAdmin._id,
+                    managementGood: ["material", "equipment"]
+                }
+            ],
             status: "1",
             goods: [
                 {
@@ -3553,7 +3562,16 @@ const initSampleCompanyDB = async () => {
             code: "ST002",
             address: "Tạ Quang Bửu - Hai Bà Trưng - Hà Nội",
             description: "B1",
-            managementLocation: [roleSuperAdmin._id, roleAdmin._id],
+            managementLocation: [
+                {
+                    role: roleSuperAdmin._id,
+                    managementGood: ["product", "material", "equipment", "waste"]
+                },
+                {
+                    role: roleAdmin._id,
+                    managementGood: ["material", "equipment"]
+                }
+            ],
             status: "1",
             goods: [
                 {

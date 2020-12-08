@@ -37,7 +37,7 @@ exports.getDetailLot = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['get_lot_failed'],
-            content: error
+            content: error.message
         })
     }
 }
@@ -58,7 +58,7 @@ exports.editLot = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['edit_faile'],
-            content: error
+            content: error.message
         })
     }
 }
@@ -79,7 +79,7 @@ exports.getLotsByGood = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['get_lot_failed'],
-            content: error
+            content: error.message
         })
     }
 }
@@ -101,7 +101,7 @@ exports.createOrUpdateLots = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['get_lot_failed'],
-            content: error
+            content: error.message
         })
     }
 }
@@ -122,7 +122,7 @@ exports.deleteManyLots = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['delete_failed'],
-            error: error
+            error: error.message
         })
     }
 }
@@ -193,6 +193,27 @@ exports.getDetailManufacturingLot = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['get_detail_failed'],
+            error: error.message
+        })
+    }
+}
+
+exports.getInventoryByGoods = async (req, res) => {
+    try {
+        const invetory = await LotService.getInventoryByGoods(req.body, req.portal);
+
+        await Logger.info(req.user.email, 'GET_INVENTORY_SUCCESS', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['get_inventory_success'],
+            content: invetory
+        })
+    }
+    catch (error) {
+        await Logger.error(req.user.email, 'GET_INVENTORY_FAILED', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['get_inventory_failed'],
             error: error.message
         })
     }

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import parse from 'html-react-parser';
 
 import { configQuillEditor } from './configQuillEditor';
-
+import { ToolbarQuillEditor } from './toolbarQuillEditor';
 class QuillEditor extends Component {
     constructor(props) {
         super(props);
@@ -32,7 +32,7 @@ class QuillEditor extends Component {
         const { id, edit = true, quillValueDefault } = this.props;
         if (edit) {
             // Khởi tạo Quill Editor trong thẻ có id = id truyền vào
-            const quill = window.initializationQuill(`#editor-container${id}`, configQuillEditor);
+            const quill = window.initializationQuill(`#editor-container${id}`, configQuillEditor(id));
             
             // Insert value ban đầu
             if (quillValueDefault || quillValueDefault === '') {
@@ -51,6 +51,13 @@ class QuillEditor extends Component {
                 this.props.getTextData(quill.root.innerHTML, imgs);
             });
 
+            // Custom icon insert table
+            let insertTable = document.querySelector('#insert-table');
+            insertTable.addEventListener('click', () => {
+                let table = quill.getModule('table');
+                table.insertTable(3, 3);
+            });
+            
             this.setState(state => {
                 return {
                     ...state,
@@ -70,7 +77,7 @@ class QuillEditor extends Component {
         let imageFile;
         if (imgs && imgs.length !== 0) {
             imageFile = imgs.map((item, index) => {
-                 // Split the base64 string in data and contentType
+                // Split the base64 string in data and contentType
                 let block = item.getAttribute("src").split(";");
                 let contentType = block[0].split(":")[1];
                 let realData = block[1].split(",")[1];
@@ -107,7 +114,12 @@ class QuillEditor extends Component {
             <React.Fragment>
                 {
                     edit
-                        ? <div id={`editor-container${id}`} style={{ height: height }}/>
+                        ? <React.Fragment>
+                            <ToolbarQuillEditor
+                                id={`toolbar${id}`}
+                            />
+                            <div id={`editor-container${id}`} style={{ height: height }} />
+                        </React.Fragment>
                         : parse(quillValueDefault)
                 }
             </React.Fragment>
