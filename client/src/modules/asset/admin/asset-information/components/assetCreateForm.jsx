@@ -17,10 +17,10 @@ class AssetCreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            img: process.env.REACT_APP_SERVER + '/upload/asset/pictures/picture5.png',
-            avatar: "./upload/asset/pictures/picture5.png",
+            img: '',
+            avatar: "",
             asset: {
-                avatar: './upload/asset/pictures/picture5.png',
+                avatar: '',
                 code: "",
                 assetName: "",
                 serial: "",
