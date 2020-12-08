@@ -213,9 +213,13 @@ class ManufacturingPlanManagementTable extends Component {
 
                     </div>
                     <div className="form-inline">
-                        <div className="form-group">
+                        {/* <div className="form-group">
                             <label className="form-control-static">{translate('manufacturing.plan.manufacturing_order_code')}</label>
                             <input type="text" className="form-control" value={manufacturingOrderCode} onChange={this.handleManufacturingOrderCodeChange} placeholder="DSX202012242" autoComplete="off" />
+                        </div> */}
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('manufacturing.plan.sales_order_code')}</label>
+                            <input type="text" className="form-control" value={salesOrderCode} onChange={this.handleSalesOrderCodeChange} placeholder="DKD202012223" autoComplete="off" />
                         </div>
                         <div className="form-group">
                             <label className="form-control-static">{translate('manufacturing.plan.end_date')}</label>
@@ -229,8 +233,8 @@ class ManufacturingPlanManagementTable extends Component {
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">{translate('manufacturing.plan.sales_order_code')}</label>
-                            <input type="text" className="form-control" value={salesOrderCode} onChange={this.handleSalesOrderCodeChange} placeholder="DKD202012223" autoComplete="off" />
+                            <label className="form-control-static">{translate('manufacturing.plan.command_code')}</label>
+                            <input type="text" className="form-control" value={commandCode} onChange={this.handleCommandCodeChange} placeholder="LSX202012224" autoComplete="off" />
                         </div>
                         <div className="form-group">
                             <label className="form-control-static">{translate('manufacturing.plan.created_at')}</label>
@@ -244,8 +248,16 @@ class ManufacturingPlanManagementTable extends Component {
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">{translate('manufacturing.plan.command_code')}</label>
-                            <input type="text" className="form-control" value={commandCode} onChange={this.handleCommandCodeChange} placeholder="LSX202012224" autoComplete="off" />
+                            <label className="form-control-static">{translate('manufacturing.plan.works')}</label>
+                            <SelectMulti
+                                id={`select-multi-works`}
+                                multiple="multiple"
+                                options={{ nonSelectedText: translate('manufacturing.plan.choose_works'), allSelectedText: translate('manufacturing.plan.choose_all') }}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={this.getListManufacturingWorksArr()}
+                                onChange={this.handleManufacturingWorksChange}
+                            />
                         </div>
                         <div className="form-group">
                             <label className="form-control-static">{translate('manufacturing.plan.status')}</label>
@@ -269,18 +281,7 @@ class ManufacturingPlanManagementTable extends Component {
                     </div>
 
                     <div className="form-inline">
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('manufacturing.plan.works')}</label>
-                            <SelectMulti
-                                id={`select-multi-works`}
-                                multiple="multiple"
-                                options={{ nonSelectedText: translate('manufacturing.plan.choose_works'), allSelectedText: translate('manufacturing.plan.choose_all') }}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={this.getListManufacturingWorksArr()}
-                                onChange={this.handleManufacturingWorksChange}
-                            />
-                        </div>
+
                         <div className="form-group">
                             <label className="form-control-static">{translate('manufacturing.plan.progess')}</label>
                             <SelectMulti
@@ -298,6 +299,7 @@ class ManufacturingPlanManagementTable extends Component {
                             />
                         </div>
                         <div className="form-group">
+                            <label className="form-control-static"></label>
                             <button type="button" className="btn btn-success" title={translate('manufacturing.plan.search')} onClick={this.handleSubmitSearch}>{translate('manufacturing.plan.search')}</button>
                         </div>
                     </div>

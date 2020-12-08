@@ -679,8 +679,6 @@ class EditTaskTemplate extends Component {
                                 {/**Công thức tính điểm mẫu công việc này */}
                                 <div className={`form-group ${this.state.editingTemplate.errorOnFormula === undefined ? "" : "has-error"}`} >
                                     <label className="control-label" htmlFor="inputFormula">{translate('task_template.formula')}</label>
-                                    {/* <input type="text" className="form-control" id="inputFormula" placeholder="progress / (dayUsed / totalDay) - (numberOfFailedAction / (numberOfFailedAction + numberOfPassedAction)) * 100" value={editingTemplate.formula} onChange={this.handleTaskTemplateFormula} /> */}
-
                                     <input type="text" className="form-control" id="inputFormula" placeholder="progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100" value={editingTemplate.formula} onChange={this.handleTaskTemplateFormula} />
                                     <ErrorLabel content={this.state.editingTemplate.errorOnFormula} />
 

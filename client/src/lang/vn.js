@@ -4756,9 +4756,9 @@ export default {
                 creator: "Người tạo",
                 index: "STT",
                 select_all: "Chọn tất cả",
-                1: {content: "Chưa xử lý", color: "orange"},
-                2: {content: "Đã xử lý", color: "green"},
-                3: {content: "Đã hủy", color: "red"},
+                1: { content: "Chưa xử lý", color: "orange" },
+                2: { content: "Đã xử lý", color: "green" },
+                3: { content: "Đã hủy", color: "red" },
                 search: "Tìm kiếm",
                 select_status: "Chọn trạng thái",
                 add_purchasing_request_button: "Thêm phiếu",
@@ -4891,6 +4891,43 @@ export default {
                 progress_1: "Đúng tiến độ",
                 progress_2: "Chậm tiến độ",
                 progress_3: "Quá hạn",
+
+                general_info: "Thông tin chung",
+                material_info: "Nguyên vật liệu",
+                command_info: "Lệnh sản xuất",
+                turn_info: "Ca sản xuất",
+                worker_info: "Công nhân",
+                create_plan: "Tạo kế hoạch",
+                create_plan_title: "Tạo kế hoạch sản xuất",
+                create_successfully: "Tạo kế hoạch sản xuất thành công",
+                create_failed: "Tạo kế hoạch sản xuất thất bại",
+                choose_sales_order: "Chọn đơn kinh doanh",
+                sales_order: {
+                    "1": {
+                        content: "Thấp"
+                    },
+                    "2": {
+                        content: "Trung bình"
+                    },
+                    "3": {
+                        content: "Cao"
+                    },
+                    "4": {
+                        content: "Đặc biệt"
+                    }
+                },
+                add_good_info: "Thêm thông tin các sản phẩm sản xuất",
+                good: "Sản phẩm",
+                good_code: "Mã sản phẩm",
+                good_name: "Tên sản phẩm",
+                choose_good: "Chọn sản phẩm",
+                base_unit: "Đơn vị tính tiêu chuẩn",
+                quantity_good_inventory: "Số lượng tồn kho",
+                quantity: "Số lượng sản xuất",
+                choose_good_input: "---Chọn sản phẩm---",
+                error_good: "Vui lòng chọn sản phẩm",
+                error_quantity: "Vui lòng nhập số lượng",
+                error_quantity_input: "Số lượng nhập vào không hợp lệ"
             },
             command: {
                 code: "Mã lệnh sản xuất",
@@ -4944,8 +4981,7 @@ export default {
                 good_name: "Tên sản phẩm",
                 good_base_unit: "Đơn vị tính tiêu chuẩn",
                 packing_rule: "Quy cách đóng gói",
-                good_base_unit_quantity:
-                    "Số lượng sản phẩm theo đơn vị tính tiêu chuẩn",
+                good_base_unit_quantity: "Số lượng sản phẩm theo đơn vị tính tiêu chuẩn",
                 packing_rule_quantity: "Số lượng theo quy cách đóng gói",
                 approved: "Đã phê duyệt",
                 approvedTime: "Thời gian phê duyệt",
@@ -5052,14 +5088,13 @@ export default {
                 packing_rule: "Quy cách đóng gói",
                 conversion_rate: "Trọng số chuyển đổi",
                 quantity_packing_rule: "Số lượng theo quy cách đóng gói",
-                quantity_base_unit:
-                    "Số lượng cần sản xuất theo đơn vị tính tiêu chuẩn",
+                quantity_base_unit: "Số lượng cần sản xuất",
                 product_lot_code: "Mã lô thành phẩm",
                 code1: "Mã lô thành phẩm",
                 code2: "Mã lô phế phẩm",
                 finished_product: "Thành phẩm",
                 substandard_product: "Phế phẩm",
-                quantity: "Số lượng theo đơn vị tính tiêu chuẩn",
+                quantity: "Số lượng",
                 error_quantity_1: "Số lượng nhập vào không hợp lệ",
                 error_quantity_1_input: "Số lượng nhập vào phải lớn hơn 0",
                 description: "Mô tả",
