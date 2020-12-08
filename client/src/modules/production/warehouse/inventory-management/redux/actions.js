@@ -13,7 +13,8 @@ export const LotActions = {
     getAllManufacturingLots,
     createManufacturingLot,
     getDetailManufacturingLot,
-    handleEditManufacturingLot
+    handleEditManufacturingLot,
+    getInventoryByGoodIds,
 
 }
 
@@ -237,6 +238,26 @@ function handleEditManufacturingLot(id, data) {
             }).catch((error) => {
                 dispatch({
                     type: LotConstants.EDIT_MANUFACTURING_LOT_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function getInventoryByGoodIds(data) {
+    return dispatch => {
+        dispatch({
+            type: LotConstants.GET_INVENTORY_BY_GOOD_IDS_REQUEST
+        });
+        LotServices.getInventoryByGoodIds(data)
+            .then((res) => {
+                dispatch({
+                    type: LotConstants.GET_INVENTORY_BY_GOOD_IDS_SUCCESS,
+                    payload: res.data.content
+                });
+            }).catch((error) => {
+                dispatch({
+                    type: LotConstants.GET_INVENTORY_BY_GOOD_IDS_FAILURE,
                     error
                 });
             });

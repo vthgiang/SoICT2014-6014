@@ -3,6 +3,7 @@ import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { connect } from 'react-redux';
 import { DatePicker, ErrorLabel, SelectBox } from '../../../../../../common-components';
 import sampleData from '../../../sampleData';
+import { LotActions } from '../../../../warehouse/inventory-management/redux/actions';
 
 
 class PlanInfoForm extends Component {
@@ -15,7 +16,8 @@ class PlanInfoForm extends Component {
             quantity: ''
         }
         this.state = {
-            good: Object.assign({}, this.EMPTY_GOOD)
+            good: Object.assign({}, this.EMPTY_GOOD),
+            currentGoodId: '1'
         };
     }
 
@@ -108,13 +110,20 @@ class PlanInfoForm extends Component {
             let goodArrFilter = listGoodsByType.filter(x => x._id === good.goodId);
             if (goodArrFilter.length) {
                 good.baseUnit = goodArrFilter[0].baseUnit;
+                const { lots } = this.props;
+                const { listInventories } = lots;
+                if (listInventories) {
+                    good.inventory = listInventories[0].inventory
+                }
             } else {
+                good.inventory = ""
                 good.baseUnit = ""
             }
             this.setState((state) => ({
                 ...state,
                 good: { ...good },
-                errorGood: msg
+                errorGood: msg,
+                currentGoodId: value
             }))
         }
         return msg;
@@ -160,11 +169,33 @@ class PlanInfoForm extends Component {
         e.preventDefault();
         this.setState({
             good: Object.assign({}, this.EMPTY_GOOD)
-        })
+        });
+    }
+
+    shouldComponentUpdate = (nextProps, nextState) => {
+        if (nextState.currentGoodId !== "1" && this.state.currentGoodId !== nextState.currentGoodId) {
+            this.props.getInventoryByGoodIds({
+                array: [nextState.currentGoodId]
+            });
+            return false;
+        }
+        return true;
+    }
+
+    static getDerivedStateFromProps = (props, state) => {
+        if (state.currentGoodId !== "1" && props.lots.listInventories) {
+            state.good.inventory = props.lots.listInventories[0].inventory;
+            return {
+                ...state,
+                good: { ...state.good }
+            }
+        }
+        return null;
     }
 
 
     render() {
+        console.log(this.state.good);
         const { translate, code, salesOrders, approvers, startDate, endDate, description } = this.props;
         const { good, errorGood, errorQuantity } = this.state;
         return (
@@ -252,7 +283,7 @@ class PlanInfoForm extends Component {
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className={`form-group`}>
                                         <label>{translate('manufacturing.plan.quantity_good_inventory')}</label>
-                                        <input type="text" className="form-control" />
+                                        <input type="number" value={good.inventory} disabled={true} className="form-control" />
                                     </div>
                                 </div>
                             </div>
@@ -306,11 +337,12 @@ class PlanInfoForm extends Component {
 }
 
 function mapStateToProps(state) {
-    const { salesOrder, manufacturingPlan, goods } = state;
-    return { salesOrder, manufacturingPlan, goods }
+    const { salesOrder, manufacturingPlan, goods, lots } = state;
+    return { salesOrder, manufacturingPlan, goods, lots }
 }
 
 const mapDispatchToProps = {
+    getInventoryByGoodIds: LotActions.getInventoryByGoodIds
 }
 
 
