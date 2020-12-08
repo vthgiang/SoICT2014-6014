@@ -244,3 +244,11 @@
         display: none;
     }
 }
+
+.disable-timeline-contain {
+    pointer-events: none;
+
+    /* for "disabled" effect */
+    opacity: 0.5;
+    background: #ddd;
+}

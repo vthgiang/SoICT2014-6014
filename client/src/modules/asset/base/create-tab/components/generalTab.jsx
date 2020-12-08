@@ -15,7 +15,8 @@ class GeneralTab extends Component {
         super(props);
         this.state = {
             detailInfo: [],
-            isObj: true
+            isObj: true,
+            defaultAvatar: "image/asset_blank.jpg"
         };
     }
 
@@ -568,6 +569,7 @@ class GeneralTab extends Component {
             }
         })
         let typeArr = this.getAssetTypes();
+        console.log('STATTEEE', this.state.img);
 
         return (
             <div id={id} className="tab-pane active">
@@ -575,7 +577,12 @@ class GeneralTab extends Component {
                     {/* Ảnh tài sản */}
                     <div className="col-md-4" style={{ textAlign: 'center', paddingLeft: '0px' }}>
                         <div>
-                            {< ApiImage className="attachment-img avarta" id={`avatar-imform-${id}`} src={img ? img : defaultAvatar} />}
+                            {
+                                img ?
+                                    < ApiImage className="attachment-img avarta" id={`avatar-imform-${id}`} src={img} />
+                                    :
+                                    <img className="customer-avatar" src={defaultAvatar} />
+                            }
                         </div>
                         <div className="upload btn btn-default ">
                             {translate('manage_asset.upload')}

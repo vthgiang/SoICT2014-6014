@@ -15,8 +15,8 @@ const AssetPurchaseRequestSchema = new Schema({
     },
     dateCreate: {
         //ngày lập
-        type: String,
-        defaut: Date.now,
+        type: Date,
+        default: Date.now,
     },
     proponent: {
         //người đề nghị

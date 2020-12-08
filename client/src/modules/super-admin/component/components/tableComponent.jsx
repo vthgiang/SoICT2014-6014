@@ -22,13 +22,13 @@ class TableComponent extends Component {
     }
 
     componentDidMount() {
-        let {page, limit} = this.state;
+        let { page, limit } = this.state;
         this.props.getLinks({ type: "active" });
         this.props.get({ type: "active" });
         this.props.get({ type: "active", page, limit });
         this.props.getRoles();
     }
-    
+
     setOption = (title, option) => {
         this.setState({
             [title]: option
@@ -36,7 +36,7 @@ class TableComponent extends Component {
     }
 
     searchWithOption = () => {
-        let {option, limit, value} = this.state;
+        let { option, limit, value } = this.state;
         const params = {
             type: "active",
             limit,
@@ -49,7 +49,7 @@ class TableComponent extends Component {
 
     setPage = (page) => {
         this.setState({ page });
-        let {option, limit, value} = this.state;
+        let { option, limit, value } = this.state;
         const params = {
             type: "active",
             limit,
@@ -62,7 +62,7 @@ class TableComponent extends Component {
 
     setLimit = (number) => {
         this.setState({ limit: number });
-        let {option, value, page} = this.state;
+        let { option, value, page } = this.state;
         const params = {
             type: "active",
             limit: number,
@@ -92,7 +92,7 @@ class TableComponent extends Component {
                     <ComponentInfoForm
                         componentId={currentRow._id}
                         componentName={currentRow.name}
-                        componentLink={currentRow.links.map(link=>link._id)}
+                        componentLink={currentRow.links.map(link => link._id)}
                         componentDescription={currentRow.description}
                         componentRoles={currentRow.roles.map(role => role && role.roleId ? role.roleId._id : null)}
                     />
@@ -136,27 +136,27 @@ class TableComponent extends Component {
                     <tbody>
                         {
                             component.listPaginate && component.listPaginate.length > 0 &&
-                                component.listPaginate.map(component =>
-                                    <tr key={component._id}>
-                                        <td>{component.name}</td>
-                                        <td>{component.links.map(link=>`${link.url} `)}</td>
-                                        <td>{component.description}</td>
-                                        <td><ToolTip dataTooltip={component.roles.map(role => role && role.roleId ? role.roleId.name : "Role is deleted")} /></td>
-                                        <td style={{ textAlign: 'center' }}>
-                                            <a className="edit" onClick={() => this.handleEdit(component)}><i className="material-icons">edit</i></a>
-                                        </td>
-                                    </tr>
-                                )
+                            component.listPaginate.map(component =>
+                                <tr key={component._id}>
+                                    <td>{component.name}</td>
+                                    <td>{component.links.map(link => `${link.url} `)}</td>
+                                    <td>{component.description}</td>
+                                    <td><ToolTip dataTooltip={component.roles.map(role => role && role.roleId ? role.roleId.name : "")} /></td>
+                                    <td style={{ textAlign: 'center' }}>
+                                        <a className="edit" onClick={() => this.handleEdit(component)}><i className="material-icons">edit</i></a>
+                                    </td>
+                                </tr>
+                            )
                         }
                     </tbody>
                 </table>
                 {
                     component.isLoading ?
-                    <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                    component.listPaginate && component.listPaginate.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                        component.listPaginate && component.listPaginate.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                 }
                 {/* PaginateBar */}
-                <PaginateBar display={component.listPaginate.length} total={component.totalDocs}  pageTotal={component.totalPages} currentPage={component.page} func={this.setPage} />
+                <PaginateBar display={component.listPaginate.length} total={component.totalDocs} pageTotal={component.totalPages} currentPage={component.page} func={this.setPage} />
 
             </React.Fragment>
         );

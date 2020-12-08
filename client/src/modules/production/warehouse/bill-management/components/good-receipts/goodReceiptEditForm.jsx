@@ -98,6 +98,20 @@ class GoodReceiptEditForm extends Component {
         return CustomerArr;
     }
 
+    getMills = () => {
+        const { manufacturingMill, translate } = this.props;
+        let MillArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_customer') }];
+
+        manufacturingMill.listMills.map(item => {
+            MillArr.push({
+                value: item._id,
+                text: item.name
+            })
+        })
+
+        return MillArr;
+    }
+
     getStock = () => {
         const { stocks, translate } = this.props;
         let stockArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_stock') }];
@@ -365,9 +379,9 @@ class GoodReceiptEditForm extends Component {
             this.validateType(this.state.type, false) &&
             this.validateStock(this.state.fromStock, false) &&
             this.validateApprover(this.state.approver, false) &&
-            this.validatePartner(this.state.supplier, false) &&
+            // this.validatePartner(this.state.supplier, false) &&
             this.validateAccountables(this.state.accountables, false) &&
-            this.validateQualityControlStaffs(this.state.qualityControlStaffs, false) &&
+            // // this.validateQualityControlStaffs(this.state.qualityControlStaffs, false) &&
             this.validateResponsibles(this.state.responsibles, false)
         if(status === '2') {
             result = result &&
@@ -691,6 +705,7 @@ class GoodReceiptEditForm extends Component {
                 accountables: accountables,
                 description: nextProps.description,
                 supplier: nextProps.supplier,
+                manufacturingMill: nextProps.manufacturingMillId,
                 name: nextProps.name,
                 phone: nextProps.phone,
                 email: nextProps.email,
@@ -714,7 +729,7 @@ class GoodReceiptEditForm extends Component {
     }
 
     save = async () => {
-        const { billId, fromStock, code, toStock, type, status, oldStatus, users, approvers, customer, supplier, 
+        const { billId, fromStock, code, toStock, type, status, oldStatus, users, approvers, customer, supplier, manufacturingMill,
             name, phone, email, address, description, listGood, oldGoods, arrayId, listQualityControlStaffs, responsibles, accountables } = this.state;
         const { group } = this.props;
 
@@ -737,6 +752,7 @@ class GoodReceiptEditForm extends Component {
             accountables: accountables,
             customer: customer,
             supplier: supplier,
+            manufacturingMill: manufacturingMill,
             name: name,
             phone: phone,
             email: email,
@@ -800,15 +816,17 @@ class GoodReceiptEditForm extends Component {
     render() {
         const { translate, group } = this.props;
         const { lots, lotName, listGood, good, billId, code, approvers, approver, listQualityControlStaffs, accountables, responsibles, 
-            qualityControlStaffs, status, supplier, fromStock, type, name, phone, email, address, description, errorStock, 
+            qualityControlStaffs, status, supplier, fromStock, type, name, phone, email, address, description, errorStock, manufacturingMill,
             errorType, errorApprover, errorCustomer, quantity, errorQualityControlStaffs, errorAccountables, errorResponsibles } = this.state;
         const listGoods = this.getAllGoods();
         const dataApprover = this.getApprover();
         const dataCustomer = this.getCustomer();
+        const dataMills = this.getMills();
         const dataStock = this.getStock();
         const dataType = this.getType();
         const dataStatus = this.getStatus();
-        const checkApproved = this.checkApproved(approvers, listQualityControlStaffs)
+        const checkApproved = this.checkApproved(approvers, listQualityControlStaffs);
+        console.log(manufacturingMill);
 
         return (
             <React.Fragment>
@@ -876,7 +894,7 @@ class GoodReceiptEditForm extends Component {
                                         />
                                         <ErrorLabel content = { errorStock } />
                                     </div>
-                                    <div className={`form-group ${!errorCustomer ? "" : "has-error"}`}>
+                                    { type === '1'  && <div className={`form-group ${!errorCustomer ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.supplier')}<span className="attention"> * </span></label>
                                         <SelectBox
                                             id={`select-supplier-receipt-edit`}
@@ -886,9 +904,24 @@ class GoodReceiptEditForm extends Component {
                                             items={dataCustomer}
                                             onChange={this.handlePartnerChange}    
                                             multiple={false}
+                                            disabled={true}
                                         />
                                         <ErrorLabel content = { errorCustomer } />
-                                    </div>
+                                    </div> }
+                                    { type === '2'  && <div className={`form-group ${!errorCustomer ? "" : "has-error"}`}>
+                                        <label>{translate('manage_warehouse.bill_management.mill')}<span className="attention"> * </span></label>
+                                        <SelectBox
+                                            id={`select-mill-receipt-edit`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={manufacturingMill}
+                                            items={dataMills}
+                                            onChange={this.handlePartnerChange}    
+                                            multiple={false}
+                                            disabled={true}
+                                        />
+                                        <ErrorLabel content = { errorCustomer } />
+                                    </div> }
                                 </div>
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     <div className="form-group">
@@ -930,7 +963,7 @@ class GoodReceiptEditForm extends Component {
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className={`form-group ${!errorQualityControlStaffs ? "" : "has-error"}`}>
+                                    { type === '1' && <div className={`form-group ${!errorQualityControlStaffs ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.qualityControlStaffs')}<span className="attention"> * </span></label>
                                         <SelectBox
                                             id={`select-qualityControlStaffs-bill-receipt-edit`}
@@ -942,7 +975,7 @@ class GoodReceiptEditForm extends Component {
                                             multiple={true}
                                         />
                                         <ErrorLabel content = { errorQualityControlStaffs } />
-                                    </div>
+                                    </div>}
                                     <div className={`form-group ${!errorAccountables ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.accountables')}<span className="attention"> * </span></label>
                                         <SelectBox
@@ -1047,7 +1080,7 @@ class GoodReceiptEditForm extends Component {
                                                         <td>{x.good.code}</td>
                                                         <td>{x.good.name}</td>
                                                         <td>{x.good.baseUnit}</td>
-                                                        { (this.checkLots(x.lots, x.quantity) && status === '2') ? <td>{x.quantity}</td> : <td style={{color: 'red'}}>{x.quantity}</td> }
+                                                        { (this.checkLots(x.lots, x.quantity)) ? <td>{x.quantity}</td> : <td style={{color: 'red'}}>{x.quantity}</td> }
                                                         <td>{x.description}</td>
                                                         <td>
                                                             <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => this.handleEditGood(x, index)}><i className="material-icons"></i></a>

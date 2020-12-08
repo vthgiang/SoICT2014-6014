@@ -13,6 +13,10 @@ class StockEditForm extends Component {
             maxQuantity: '',
             minQuantity: ''
         }
+        this.EMPTY_ROLE = {
+            role: '',
+            managementGood: []
+        }
         this.state = {
             code: '',
             name: '',
@@ -21,9 +25,10 @@ class StockEditForm extends Component {
             goods: [],
             good: Object.assign({}, this.EMPTY_GOOD),
             managementLocation: [],
+            role: Object.assign({}, this.MANAGEMENT_ROLE),
             description: '',
-            manageDepartment: '',
-            editInfo: false
+            editInfo: false,
+            editInfoRole: false,
             
         }
     }
@@ -49,7 +54,9 @@ class StockEditForm extends Component {
                 errorOnManagementLocation: undefined, 
                 errorOnGood: undefined, 
                 errorOnMinQuantity: undefined, 
-                errorOnMaxQuantity: undefined
+                errorOnMaxQuantity: undefined,
+                errorOnRole: undefined, 
+                errorOnManagementGood: undefined
 
             }
         }
@@ -180,9 +187,7 @@ class StockEditForm extends Component {
     isFormValidated = () => {
         let result =
             this.validateName(this.state.name, false) &&
-            this.validateAddress(this.state.address, false) &&
-            this.validateDepartment(this.state.manageDepartment, false) &&
-            this.validateManagementLocation(this.state.managementLocation, false)
+            this.validateAddress(this.state.address, false)
         return result;
     }
 
@@ -204,6 +209,20 @@ class StockEditForm extends Component {
         })
 
         return manageDepartmentArr;
+    }
+
+    getAllRoles = () => {
+        const  { translate, role } = this.props;
+        let roleArr = [{ value: '', text: translate('manage_warehouse.stock_management.choose_role') }];
+
+        role.list.map(item => {
+            roleArr.push({ 
+                value: item._id, 
+                text: item.name 
+            });
+        })
+
+        return roleArr;
     }
 
     handleMinQuantityChange = (e) => {
@@ -272,6 +291,66 @@ class StockEditForm extends Component {
     isGoodsValidated = () => {
         let result =
             this.validateGood(this.state.good.good, false)
+        return result;
+    }
+
+    handleRoleChange = (value) => {
+        let role = value[0];
+        this.validateRole(role, true);
+    }
+
+    validateRole = async (value, willUpdateState = true) => {
+        const dataRoles = await this.getAllRoles();
+        
+        let msg = undefined;
+        const { translate } = this.props;
+        let { role } = this.state;
+        if(!value){
+            msg = translate('manage_warehouse.stock_management.validate_good');
+        }
+        if (willUpdateState) {
+        let roleName = dataRoles.find(x => x.value === value);
+            role.role = { _id:value, name: roleName.text };
+            this.setState(state => {
+                return {
+                    ...state,
+                    role:{...role},
+                    errorOnRole: msg
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
+    handleManagementGoodChange = (value) => {
+        let managementGood = value;
+        this.validateManagementRole(managementGood, true);
+    }
+
+    validateManagementRole = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = this.props;
+        const { role } = this.state;
+        if(!value){
+            msg = translate('manage_warehouse.category_management.validate_name');
+        }
+        if (willUpdateState) {
+            role.managementGood = value;
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnManagementGood: msg,
+                    role: { ...role }
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
+    isRolesValidated = () => {
+        let result =
+            this.validateManagementRole(this.state.role.managementGood, false) &&
+            this.validateRole(this.state.role.role, false)
         return result;
     }
 
@@ -351,12 +430,90 @@ class StockEditForm extends Component {
         })
     }
 
+    handleAddRole = async (e) => {
+        e.preventDefault();
+        await this.setState(state => {
+            let managementLocation = [ ...(this.state.managementLocation), state.role];
+            return {
+                ...state,
+                managementLocation: managementLocation,
+                role: Object.assign({}, this.EMPTY_ROLE)
+            }
+        })
+    }
+
+    handleDeleteRole = async (index) => {
+        let { managementLocation } = this.state;
+        let newManagementLocation;
+        if(managementLocation){
+            newManagementLocation = managementLocation.filter((item, x) => index !== x);
+        }
+        await this.setState(state => {
+            return {
+                ...state,
+                managementLocation: newManagementLocation
+            }
+        })
+    }
+
+    handleEditRole = async (role, index) => {
+        this.setState(state => {
+            return{
+                ...state,
+                editInfoRole: true,
+                indexInfoRole: index,
+                role: Object.assign({}, role)
+            }
+        })
+    }
+
+    handleSaveEditRole = async (e) => {
+        e.preventDefault();
+        const { indexInfoRole, managementLocation } = this.state;
+        let newManagementLocation;
+        if(managementLocation){
+            newManagementLocation = managementLocation.map((item, index) => {
+                return (index === indexInfoRole) ? this.state.role : item;
+            })
+        }
+        await this.setState(state => {
+            return {
+                ...state,
+                editInfoRole: false,
+                managementLocation: newManagementLocation,
+                role: Object.assign({}, this.EMPTY_ROLE)
+            }
+        })
+    }
+
+    handleCancelEditRole = async (e) => {
+        e.preventDefault();
+        this.setState(state => {
+            return {
+                ...state,
+                editInfoRole: false,
+                role: Object.assign({}, this.EMPTY_ROLE)
+            }
+        })
+    }
+
+    handleClearRole = (e) => {
+        e.preventDefault();
+        this.setState(state => {
+            return {
+                ...state,
+                role: Object.assign({}, this.EMPTY_ROLE)
+            }
+        })
+    }
+
     render() {
-        const { translate, stocks, role } = this.props;
-        const { errorOnName, errorOnAddress, errorOnDepartment, errorOnManagementLocation, 
+        const { translate, stocks } = this.props;
+        const { errorOnName, errorOnAddress, errorOnDepartment, errorOnManagementLocation, errorOnRole, errorOnManagementGood, role,
                 errorOnGood, errorOnMinQuantity, errorOnMaxQuantity, code, name, managementLocation, status, address, description, manageDepartment, goods, good } = this.state;
         const departmentManagement = this.getAllDepartment();
         const listGoods = this.getAllGoods();
+        const listRoles = this.getAllRoles();
         return (
             <React.Fragment>
                 <DialogModal
@@ -381,7 +538,7 @@ class StockEditForm extends Component {
                                     <input type="text" className="form-control" value={address} onChange={this.handleAddressChange} />
                                     <ErrorLabel content = { errorOnAddress } />
                                 </div>
-                                <div className={`form-group ${!errorOnDepartment ? "" : "has-error"}`}>
+                                {/* <div className={`form-group ${!errorOnDepartment ? "" : "has-error"}`}>
                                     <label>{translate('manage_warehouse.stock_management.department')}<span className="attention"> * </span></label>
                                     <SelectBox
                                         id={`select-edit-status-of-stock`}
@@ -393,7 +550,7 @@ class StockEditForm extends Component {
                                         multiple={false}
                                     />
                                     <ErrorLabel content = { errorOnDepartment } />
-                                </div>
+                                </div> */}
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group ${!errorOnName ? "" : "has-error"}`}>
@@ -418,7 +575,7 @@ class StockEditForm extends Component {
                                         multiple={false}
                                     />
                                 </div>
-                                <div className={`form-group ${!errorOnManagementLocation ? "" : "has-error"}`}>
+                                {/* <div className={`form-group ${!errorOnManagementLocation ? "" : "has-error"}`}>
                                     <label>{translate('manage_warehouse.stock_management.management_location')}<span className="attention"> * </span></label>
                                     <SelectBox
                                         id={`select-management-location-edit-stock`}
@@ -430,13 +587,86 @@ class StockEditForm extends Component {
                                         multiple={true}
                                     />
                                     <ErrorLabel content = { errorOnManagementLocation } />
-                                </div>
+                                </div> */}
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <div className="form-group">
                                     <label>{translate('manage_warehouse.stock_management.description')}</label>
                                     <textarea type="text" className="form-control" value={description} onChange={this.handleDescriptionChange} />
                                 </div>
+                                <fieldset className="scheduler-border">
+                                    <legend className="scheduler-border">{translate('manage_warehouse.stock_management.management_location')}</legend>
+                                    
+                                    <div className={`form-group ${!errorOnRole ? "" : "has-error"}`}>
+                                        <label>{translate('manage_warehouse.stock_management.role')}</label>
+                                        <SelectBox
+                                            id={`select-role-by-stock-edit`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={role.role ? role.role._id : { value: '', text: translate('manage_warehouse.stock_management.choose_role') }}
+                                            items={listRoles}
+                                            onChange={this.handleRoleChange}
+                                            multiple={false}
+                                        />
+                                        <ErrorLabel content = { errorOnRole } />
+                                    </div>
+                                    <div className={`form-group ${!errorOnManagementGood ? "" : "has-error"}`}>
+                                        <label>{translate('manage_warehouse.stock_management.management_good')}<span className="attention"> * </span></label>
+                                        <SelectBox
+                                            id={`select-management-good-stock-edit`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={role.managementGood ? role.managementGood : ''}
+                                            items={[
+                                                { value: 'product', text: translate('manage_warehouse.stock_management.product')},
+                                                { value: 'material', text: translate('manage_warehouse.stock_management.material')},
+                                                { value: 'equipment', text: translate('manage_warehouse.stock_management.equipment')},
+                                                { value: 'waste', text: translate('manage_warehouse.stock_management.waste')},
+                                            ]}
+                                            onChange={this.handleManagementGoodChange}    
+                                            multiple={true}
+                                        />
+                                        <ErrorLabel content = { errorOnManagementGood } />
+                                    </div>
+
+                                    <div className="pull-right" style={{marginBottom: "10px"}}>
+                                        {this.state.editInfoRole ?
+                                            <React.Fragment>
+                                                <button className="btn btn-success" onClick={this.handleCancelEditRole} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
+                                                <button className="btn btn-success" disabled={!this.isRolesValidated()} onClick={this.handleSaveEditRole} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
+                                            </React.Fragment>:
+                                            <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isRolesValidated()} onClick={this.handleAddRole}>{translate('task_template.add')}</button>
+                                        }
+                                        <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearRole}>{translate('task_template.delete')}</button>
+                                    </div>
+
+                                    <table className="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th title={translate('manage_warehouse.stock_management.index')}>{translate('manage_warehouse.stock_management.index')}</th>
+                                                <th title={translate('manage_warehouse.stock_management.role')}>{translate('manage_warehouse.stock_management.role')}</th>
+                                                <th title={translate('manage_warehouse.stock_management.management_good')}>{translate('manage_warehouse.stock_management.management_good')}</th>
+                                                <th>{translate('task_template.action')}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id={`good-manage-location-by-stock`}>
+                                            {
+                                                (typeof managementLocation === 'undefined' || managementLocation.length === 0) ? <tr><td colSpan={4}><center>{translate('task_template.no_data')}</center></td></tr> :
+                                                managementLocation.map((x, index) =>
+                                                    <tr key={index}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{x.role.name}</td>
+                                                        <td>{x.managementGood ? x.managementGood.map((item, key) => { return <p key={key}>{translate(`manage_warehouse.stock_management.${item}`)}</p>}) : ''}</td>
+                                                        <td>
+                                                            <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => this.handleEditRole(x, index)}><i className="material-icons"></i></a>
+                                                            <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => this.handleDeleteRole(index)}><i className="material-icons"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            }
+                                        </tbody>
+                                    </table>
+                                </fieldset>
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manage_warehouse.stock_management.goods')}</legend>
                                     

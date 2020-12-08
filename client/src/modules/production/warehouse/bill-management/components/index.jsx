@@ -14,6 +14,7 @@ import { StockActions } from '../../stock-management/redux/actions';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { GoodActions } from '../../../common-production/good-management/redux/actions';
 import { CrmCustomerActions } from '../../../../crm/customer/redux/actions';
+import { millActions } from '../../../manufacturing/manufacturing-mill/redux/actions';
 
 class BillManagement extends Component {
 
@@ -35,6 +36,7 @@ class BillManagement extends Component {
         this.props.getUser();
         this.props.getAllGoods();
         this.props.getCustomers();
+        this.props.getAllManufacturingMills();
     }
 
     handleShowDetailInfo = async (id) => {
@@ -584,7 +586,8 @@ const mapDispatchToProps = {
     getUser: UserActions.get,
     getAllGoods: GoodActions.getAllGoods,
     getCustomers: CrmCustomerActions.getCustomers,
-    editBill: BillActions.editBill
+    editBill: BillActions.editBill,
+    getAllManufacturingMills: millActions.getAllManufacturingMills
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(BillManagement));

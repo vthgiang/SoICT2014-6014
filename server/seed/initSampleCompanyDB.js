@@ -58,6 +58,7 @@ const {
     ManufacturingPlan,
     ManufacturingCommand,
     WorkSchedule,
+    SalesOrder
 } = require("../models");
 
 require("dotenv").config();
@@ -3358,14 +3359,7 @@ const initSampleCompanyDB = async () => {
             parent: null,
             type: "equipment",
             description: "NVL",
-        },
-        {
-            name: "Tài sản",
-            code: "AS002",
-            parent: null,
-            type: "asset",
-            description: "NVL",
-        },
+        }
     ]);
     console.log("Khởi tạo xong danh sách danh mục hàng hóa");
 
@@ -3397,28 +3391,6 @@ const initSampleCompanyDB = async () => {
             unit: [],
             quantity: 30,
             description: "Nguyên vật liệu thuốc thú y",
-        },
-        {
-            company: vnist._id,
-            category: listCategory[4]._id,
-            name: "Máy chiết rót viên thuốc tự động",
-            code: "AS001",
-            type: "asset",
-            baseUnit: "Chiếc",
-            unit: [],
-            quantity: 2,
-            description: "Máy sản xuất thuốc thú y",
-        },
-        {
-            company: vnist._id,
-            category: listCategory[4]._id,
-            name: "Máy Dập Viên Thuốc",
-            code: "AS002",
-            type: "asset",
-            baseUnit: "Chiếc",
-            unit: [],
-            quantity: 2,
-            description: "Máy sản xuất thuốc thú y",
         },
         {
             company: vnist._id,
@@ -3527,7 +3499,16 @@ const initSampleCompanyDB = async () => {
             code: "ST001",
             address: "Trần Đại Nghĩa - Hai Bà Trưng - Hà Nội",
             description: "D5",
-            managementLocation: [roleSuperAdmin._id, roleAdmin._id],
+            managementLocation: [
+                {
+                    role: roleSuperAdmin._id,
+                    managementGood: ["product", "material", "equipment", "waste"]
+                },
+                {
+                    role: roleAdmin._id,
+                    managementGood: ["material", "equipment"]
+                }
+            ],
             status: "1",
             goods: [
                 {
@@ -3553,7 +3534,16 @@ const initSampleCompanyDB = async () => {
             code: "ST002",
             address: "Tạ Quang Bửu - Hai Bà Trưng - Hà Nội",
             description: "B1",
-            managementLocation: [roleSuperAdmin._id, roleAdmin._id],
+            managementLocation: [
+                {
+                    role: roleSuperAdmin._id,
+                    managementGood: ["product", "material", "equipment", "waste"]
+                },
+                {
+                    role: roleAdmin._id,
+                    managementGood: ["material", "equipment"]
+                }
+            ],
             status: "1",
             goods: [
                 {
@@ -5171,7 +5161,7 @@ const initSampleCompanyDB = async () => {
             description: "Xuất kho nguyên vật liệu",
             goods: [
                 {
-                    good: listProduct[0]._id,
+                    good: listGood[0]._id,
                     quantity: 275,
                     lots: [
                         {
@@ -5186,7 +5176,7 @@ const initSampleCompanyDB = async () => {
                     description: "Xuất xuất nguyên vật liệu",
                 },
                 {
-                    good: listProduct[1]._id,
+                    good: listGood[1]._id,
                     quantity: 345,
                     lots: [
                         {
@@ -5226,7 +5216,7 @@ const initSampleCompanyDB = async () => {
             description: "Xuất kho nguyên vật liệu",
             goods: [
                 {
-                    good: listProduct[0]._id,
+                    good: listGood[0]._id,
                     quantity: 275,
                     lots: [
                         {
@@ -5241,7 +5231,7 @@ const initSampleCompanyDB = async () => {
                     description: "Xuất xuất nguyên vật liệu",
                 },
                 {
-                    good: listProduct[1]._id,
+                    good: listGood[1]._id,
                     quantity: 345,
                     lots: [
                         {
@@ -5523,9 +5513,69 @@ const initSampleCompanyDB = async () => {
     ]);
     console.log("Xong! Đã tạo mẫu dữ liệu khách hàng");
 
+    /*---------------------------------------------------------------------------------------------
+   -----------------------------------------------------------------------------------------------
+       TẠO DỮ LIỆU THÔNG TIN ĐƠN HÀNG
+   -----------------------------------------------------------------------------------------------
+   ----------------------------------------------------------------------------------------------- */
+
+    const salesOrderData = [{
+        code: 'DKD20200001',
+        goods: [{
+            good: listProduct[0]._id,
+            packingRule: 'Baox10Thung',
+            conversionRate: '10',
+            quantity: 100
+        }, {
+            good: listProduct[1]._id,
+            packingRule: 'Thungx20Bao',
+            conversionRate: '12',
+            quantity: 150
+        }],
+        priority: 1
+    }, {
+        code: 'DKD20200002',
+        goods: [{
+            good: listProduct[0]._id,
+            packingRule: 'Baox10Thung',
+            conversionRate: '10',
+            quantity: 50
+        }, {
+            good: listProduct[1]._id,
+            packingRule: 'Thungx20Bao',
+            conversionRate: '12',
+            quantity: 100
+        }],
+        priority: 2
+    }, {
+        code: 'DKD20200003',
+        goods: [{
+            good: listProduct[0]._id,
+            packingRule: 'Baox10Thung',
+            conversionRate: '10',
+            quantity: 200
+        }],
+        priority: 3
+    }];
+
+    const listSalesOrders = await SalesOrder(vnistDB).insertMany(salesOrderData);
+
+    console.log("Tạo xong dữ liệu đơn hàng", listSalesOrders);
+
+
+
+
+
+
     /**
      * Ngắt kết nối db
      */
+
+
+
+
+
+
     systemDB.close();
     vnistDB.close();
 

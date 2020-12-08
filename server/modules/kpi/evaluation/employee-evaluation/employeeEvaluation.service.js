@@ -32,12 +32,12 @@ exports.getEmployeeKPISets = async (portal, data) => {
         year = data.endDate.slice(0, 4);
         month = data.endDate.slice(5, 7);
     }
-    if (year && month && (new Number(month)) === 12) {
-        month = '1';
-        year = (new Number(year)) + 1;
+    if (year && month && Number(month) === 12) {
+        month = 1;
+        year = Number(year) + 1;
     } else {
         if (month) {
-            month = (new Number(month)) + 1;
+            month = Number(month) + 1;
         }
     }
     if (year && month && month < 10) {
@@ -54,6 +54,7 @@ exports.getEmployeeKPISets = async (portal, data) => {
     if (data.endDate) {
         enddate = new Date(data.endDate);
     }
+
     if (data.status) status = parseInt(data.status);
 
     if (department) {
@@ -157,6 +158,10 @@ exports.approveAllKpis = async (portal, id) => {
     employee_kpi_set = employee_kpi_set && await employee_kpi_set
         .populate("organizationalUnit creator approver")
         .populate({ path: "kpis", populate: { path: 'parent' } })
+        .populate([
+            { path: 'comments.creator', select: 'name email avatar ' },
+            { path: 'comments.comments.creator', select: 'name email avatar' }
+        ])
         .execPopulate();
     return employee_kpi_set;
 }
@@ -194,6 +199,10 @@ exports.editStatusKpi = async (portal, data, query) => {
     employee_kpi_set = employee_kpi_set && await employee_kpi_set
         .populate("organizationalUnit creator approver")
         .populate({ path: "kpis", populate: { path: 'parent' } })
+        .populate([
+            { path: 'comments.creator', select: 'name email avatar ' },
+            { path: 'comments.comments.creator', select: 'name email avatar' }
+        ])
         .execPopulate();
 
     return employee_kpi_set;
@@ -232,7 +241,7 @@ exports.getKpisByKpiSetId = async (portal, id) => {
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
             { path: 'comments.comments.creator', select: 'name email avatar' }
-        ])
+        ]);
 
     return employee_kpi_set;
 }

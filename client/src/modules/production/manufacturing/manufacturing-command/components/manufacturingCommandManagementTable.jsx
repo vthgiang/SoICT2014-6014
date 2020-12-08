@@ -305,9 +305,13 @@ class ManufacturingCommandManagementTable extends Component {
 
                     </div>
                     <div className="form-inline">
-                        <div className="form-group">
+                        {/* <div className="form-group">
                             <label className="form-control-static">{translate('manufacturing.command.manufacturing_order_code')}</label>
                             <input type="text" className="form-control" value={manufacturingOrderCode} onChange={this.handleManufacturingOrderCodeChange} placeholder="DSX202012221" autoComplete="off" />
+                        </div> */}
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('manufacturing.command.sales_order_code')}</label>
+                            <input type="text" className="form-control" value={salesOrderCode} onChange={this.handleSalesOrderCodeChange} placeholder="DKD202032210" autoComplete="off" />
                         </div>
                         <div className="form-group">
                             <label className="form-control-static">{translate('manufacturing.command.from_date')}</label>
@@ -321,8 +325,8 @@ class ManufacturingCommandManagementTable extends Component {
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">{translate('manufacturing.command.sales_order_code')}</label>
-                            <input type="text" className="form-control" value={salesOrderCode} onChange={this.handleSalesOrderCodeChange} placeholder="DKD202032210" autoComplete="off" />
+                            <label className="form-control-static">{translate('manufacturing.command.lot_code')}</label>
+                            <input type="text" className="form-control" value={lotCode} onChange={this.handleLotCodoChange} placeholder="LOSX202031233" autoComplete="off" />
                         </div>
                         <div className="form-group">
                             <label className="form-control-static">{translate('manufacturing.command.to_date')}</label>
@@ -335,10 +339,6 @@ class ManufacturingCommandManagementTable extends Component {
                         </div>
                     </div>
                     <div className="form-inline">
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('manufacturing.command.lot_code')}</label>
-                            <input type="text" className="form-control" value={lotCode} onChange={this.handleLotCodoChange} placeholder="LOSX202031233" autoComplete="off" />
-                        </div>
                         <div className="form-group">
                             <label className="form-control-static">{translate('manufacturing.command.status')}</label>
                             <SelectMulti
@@ -358,6 +358,7 @@ class ManufacturingCommandManagementTable extends Component {
                             />
                         </div>
                         <div className="form-group">
+                            <label className="form-control-static"></label>
                             <button type="button" className="btn btn-success" title={translate('manufacturing.command.search')} onClick={this.handleSubmitSearch}>{translate('manufacturing.command.search')}</button>
                         </div>
                     </div>

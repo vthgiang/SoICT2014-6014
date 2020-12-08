@@ -34,7 +34,6 @@ export default {
             success: "Successfully",
             error: "Error",
             new_notification: "You have new notification!",
-            search: "Type here to search",
             auth_alert: {
                 title: "Current Session invalid. Please log in again",
                 reason: "Reasons maybe:",
