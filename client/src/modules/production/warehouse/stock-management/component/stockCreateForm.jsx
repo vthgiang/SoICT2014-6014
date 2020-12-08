@@ -483,6 +483,15 @@ class StockCreateForm extends Component {
         })
     }
 
+    checkHasComponent = (name) => {
+        var { auth } = this.props;
+        var result = false;
+        auth.components.forEach(component => {
+            if (component.name === name) result = true;
+        });
+        return result;
+    }
+
     render() {
         const { translate, stocks } = this.props;
         const { errorOnName, errorOnAddress, errorOnDepartment, errorOnManagementLocation, errorOnGood, errorOnMinQuantity, errorOnMaxQuantity, code, name, 
@@ -493,7 +502,9 @@ class StockCreateForm extends Component {
 
         return (
             <React.Fragment>
+                {this.checkHasComponent('create-stock-button') &&
                 <ButtonModal onButtonCallBack={this.handleClickCreate} modalID={`modal-create-stock`} button_name={translate('manage_warehouse.stock_management.add')} title={translate('manage_warehouse.stock_management.add_title')} />
+                }
                 <DialogModal
                     modalID={`modal-create-stock`} isLoading={stocks.isLoading}
                     formID={`form-create-stock`}
@@ -724,8 +735,8 @@ class StockCreateForm extends Component {
     }
 }
 function mapStateToProps(state) {
-    const { stocks, department, role, goods } = state;
-    return { stocks, department, role, goods };
+    const { stocks, department, role, goods, auth } = state;
+    return { stocks, department, role, goods, auth };
 }
 
 const mapDispatchToProps = {
