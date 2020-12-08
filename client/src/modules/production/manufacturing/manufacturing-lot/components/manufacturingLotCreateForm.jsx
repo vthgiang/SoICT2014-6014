@@ -198,21 +198,21 @@ class ManufacturingLotCreateForm extends Component {
                             <label>{translate('manufacturing.lot.good')}:&emsp;</label>
                             {good && good.good && good.good.name}
                         </div>
-                        <div className="form-group">
+                        {/* <div className="form-group">
                             <label>{translate('manufacturing.lot.packing_rule')}:&emsp;</label>
                             {good && good.packingRule}
                         </div>
                         <div className="form-group">
                             <label>{translate('manufacturing.lot.quantity_packing_rule')}:&emsp;</label>
                             {good && good.quantity + " " + good.packingRule}
-                        </div>
+                        </div> */}
                         <div className="form-group">
                             <label>{translate('manufacturing.lot.base_unit')}:&emsp;</label>
                             {good && good.good && good.good.baseUnit}
                         </div>
                         <div className="form-group">
                             <label>{translate('manufacturing.lot.quantity_base_unit')}:&emsp;</label>
-                            {good && good.quantity * good.conversionRate + " " + good.good.baseUnit}
+                            {good && good.quantity + " " + good.good.baseUnit}
                         </div>
 
                         <fieldset className="scheduler-border">

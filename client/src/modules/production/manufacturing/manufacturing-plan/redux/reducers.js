@@ -13,16 +13,19 @@ const initState = {
     hasNextPage: false,
     prevPage: 0,
     nextPage: 0,
+    listApprovers: []
 }
 
 export function manufacturingPlan(state = initState, action) {
     switch (action.type) {
         case manufacturingPlanConstants.GET_ALL_MANUFACTURING_PLANS_REQUEST:
+        case manufacturingPlanConstants.GET_ALL_APPROVERS_OF_PLAN_REQUEST:
             return {
                 ...state,
                 isLoading: true
             }
         case manufacturingPlanConstants.GET_ALL_MANUFACTURING_PLANS_FAILURE:
+        case manufacturingPlanConstants.GET_ALL_APPROVERS_OF_PLAN_FAILURE:
             return {
                 ...state,
                 isLoading: false
@@ -41,6 +44,12 @@ export function manufacturingPlan(state = initState, action) {
                 hasNextPage: action.payload.manufacturingPlans.hasNextPage,
                 prevPage: action.payload.manufacturingPlans.prevPage,
                 nextPage: action.payload.manufacturingPlans.nextPage,
+            }
+        case manufacturingPlanConstants.GET_ALL_APPROVERS_OF_PLAN_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                listApprovers: action.payload.users
             }
         default:
             return state

@@ -357,7 +357,7 @@ class AssetAssignedManager extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(lists && lists.length !== 0) &&
+                            {(lists && lists.length !== 0) ?
                                 lists.filter(item => item.assignedToUser === auth.user._id).map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.code}</td>
@@ -371,7 +371,7 @@ class AssetAssignedManager extends Component {
                                                 className="material-icons">notification_important</i></a>
                                         </td>
                                     </tr>
-                                ))
+                                )) : null
                             }
                         </tbody>
                     </table>
