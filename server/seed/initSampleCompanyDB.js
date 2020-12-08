@@ -58,6 +58,7 @@ const {
     ManufacturingPlan,
     ManufacturingCommand,
     WorkSchedule,
+    SalesOrder
 } = require("../models");
 
 require("dotenv").config();
@@ -5171,7 +5172,7 @@ const initSampleCompanyDB = async () => {
             description: "Xuất kho nguyên vật liệu",
             goods: [
                 {
-                    good: listProduct[0]._id,
+                    good: listGood[0]._id,
                     quantity: 275,
                     lots: [
                         {
@@ -5186,7 +5187,7 @@ const initSampleCompanyDB = async () => {
                     description: "Xuất xuất nguyên vật liệu",
                 },
                 {
-                    good: listProduct[1]._id,
+                    good: listGood[1]._id,
                     quantity: 345,
                     lots: [
                         {
@@ -5226,7 +5227,7 @@ const initSampleCompanyDB = async () => {
             description: "Xuất kho nguyên vật liệu",
             goods: [
                 {
-                    good: listProduct[0]._id,
+                    good: listGood[0]._id,
                     quantity: 275,
                     lots: [
                         {
@@ -5241,7 +5242,7 @@ const initSampleCompanyDB = async () => {
                     description: "Xuất xuất nguyên vật liệu",
                 },
                 {
-                    good: listProduct[1]._id,
+                    good: listGood[1]._id,
                     quantity: 345,
                     lots: [
                         {
@@ -5523,9 +5524,69 @@ const initSampleCompanyDB = async () => {
     ]);
     console.log("Xong! Đã tạo mẫu dữ liệu khách hàng");
 
+    /*---------------------------------------------------------------------------------------------
+   -----------------------------------------------------------------------------------------------
+       TẠO DỮ LIỆU THÔNG TIN ĐƠN HÀNG
+   -----------------------------------------------------------------------------------------------
+   ----------------------------------------------------------------------------------------------- */
+
+    const salesOrderData = [{
+        code: 'DKD20200001',
+        goods: [{
+            good: listProduct[0]._id,
+            packingRule: 'Baox10Thung',
+            conversionRate: '10',
+            quantity: 100
+        }, {
+            good: listProduct[1]._id,
+            packingRule: 'Thungx20Bao',
+            conversionRate: '12',
+            quantity: 150
+        }],
+        priority: 1
+    }, {
+        code: 'DKD20200002',
+        goods: [{
+            good: listProduct[0]._id,
+            packingRule: 'Baox10Thung',
+            conversionRate: '10',
+            quantity: 50
+        }, {
+            good: listProduct[1]._id,
+            packingRule: 'Thungx20Bao',
+            conversionRate: '12',
+            quantity: 100
+        }],
+        priority: 2
+    }, {
+        code: 'DKD20200003',
+        goods: [{
+            good: listProduct[0]._id,
+            packingRule: 'Baox10Thung',
+            conversionRate: '10',
+            quantity: 200
+        }],
+        priority: 3
+    }];
+
+    const listSalesOrders = await SalesOrder(vnistDB).insertMany(salesOrderData);
+
+    console.log("Tạo xong dữ liệu đơn hàng", listSalesOrders);
+
+
+
+
+
+
     /**
      * Ngắt kết nối db
      */
+
+
+
+
+
+
     systemDB.close();
     vnistDB.close();
 

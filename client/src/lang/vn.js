@@ -1059,7 +1059,7 @@ export default {
             employee_capacity: "Năng lực nhân viên",
             discipline: "Quản lý khen thưởng - kỷ luật",
             annual_leave: "Quản lý nghỉ phép",
-            manage_field:'Quản lý ngành nghề/lĩnh vực',
+            manage_field: 'Quản lý ngành nghề/lĩnh vực',
             salary_employee: "Quản lý lương nhân viên",
             time_keeping: "Chấm công nhân viên",
             list_education: "Chương trình đào tạo bắt buộc",
@@ -1468,8 +1468,8 @@ export default {
                     "Chỉnh sửa đơn xin nghỉ phép thành công",
                 edit_annual_leave_faile: "Chỉnh sửa đơn xin nghỉ phép thất bại",
                 aplication_annual_leave_success: "Thêm đơn xin nghỉ thành công",
-                import_annual_leave_success:'Thêm dữ liệu từ file thành công',
-                import_annual_leave_faile:'Thêm dữ liệu từ file thất bại',
+                import_annual_leave_success: 'Thêm dữ liệu từ file thành công',
+                import_annual_leave_faile: 'Thêm dữ liệu từ file thất bại',
             },
 
             // Quản lý khen thưởng kỷ luật
@@ -2005,10 +2005,10 @@ export default {
                 import_work_plan_faile: "Import thông tin nghỉ lễ tết thất bại",
             },
 
-            field:{
+            field: {
 
-                 // Nhóm dành cho table
-                 table: {
+                // Nhóm dành cho table
+                table: {
                     name: "Tên ngành nghề/lĩnh vực",
                     description: "Mô tả",
                 },
@@ -2020,13 +2020,13 @@ export default {
                 add_fields_title: "Thêm mới ngành nghề/lĩnh vực",
 
                 // Thông điệp trả về từ server
-                get_fields_success:"Lấy danh sách ngành nghề/lĩnh vực thành công",
+                get_fields_success: "Lấy danh sách ngành nghề/lĩnh vực thành công",
                 get_fields_faile: "Lấy danh sách ngành nghề/lĩnh vực thất bại",
-                create_fields_success:"Thêm mới ngành nghề/lĩnh vực thành công",
+                create_fields_success: "Thêm mới ngành nghề/lĩnh vực thành công",
                 create_fields_faile: "Thêm mới ngành nghề/lĩnh vực thất bại",
                 delete_fields_success: "Xoá ngành nghề/lĩnh vực thành công",
                 delete_fields_faile: "Xoá ngành nghề/lĩnh vực thất bại",
-                edit_fields_success:"Chỉnh sửa ngành nghề/lĩnh vực thành công",
+                edit_fields_success: "Chỉnh sửa ngành nghề/lĩnh vực thành công",
                 edit_fields_faile: "Chỉnh sửa ngành nghề/lĩnh vực thất bại",
             },
 
@@ -2290,7 +2290,7 @@ export default {
                 asset_value: "Giá trị tài sản",
                 disposal_date: "Ngày thanh lý",
                 not_disposal: "Chưa thanh lý",
-                not_disposal_date:"Chưa nhập thời gian thanh lý",
+                not_disposal_date: "Chưa nhập thời gian thanh lý",
 
                 general_information: "Thông tin chung",
                 usage_information: "Thông tin sử dụng",
@@ -2992,7 +2992,7 @@ export default {
                 info_eval_month: "Thông tin công việc trong đánh giá này",
                 explain_avg_rating: "Do chưa có hoạt động nào được đánh giá nên mặc định điểm đánh giá hoạt động là 10",
                 explain_not_has_failed_and_passed_action: " - (Do chưa có hành động nào, hoặc chưa hành động nào được đánh giá, nên số lượng hành động đạt sẽ được coi là bằng 1)",
-                    // " - (Do chưa có hành động nào được đánh giá qua hay không qua, nên số lượng hành động qua và không qua sẽ được coi bằng nhau và bằng 1)",
+                // " - (Do chưa có hành động nào được đánh giá qua hay không qua, nên số lượng hành động qua và không qua sẽ được coi bằng nhau và bằng 1)",
 
                 auto_point_field: "Điểm công việc tự động trong đánh giá này",
                 get_outside_info: "Nhập tự động từ thông tin công việc hiện tại",
@@ -4833,6 +4833,43 @@ export default {
                 progress_1: "Đúng tiến độ",
                 progress_2: "Chậm tiến độ",
                 progress_3: "Quá hạn",
+
+                general_info: "Thông tin chung",
+                material_info: "Nguyên vật liệu",
+                command_info: "Lệnh sản xuất",
+                turn_info: "Ca sản xuất",
+                worker_info: "Công nhân",
+                create_plan: "Tạo kế hoạch",
+                create_plan_title: "Tạo kế hoạch sản xuất",
+                create_successfully: "Tạo kế hoạch sản xuất thành công",
+                create_failed: "Tạo kế hoạch sản xuất thất bại",
+                choose_sales_order: "Chọn đơn kinh doanh",
+                sales_order: {
+                    "1": {
+                        content: "Thấp"
+                    },
+                    "2": {
+                        content: "Trung bình"
+                    },
+                    "3": {
+                        content: "Cao"
+                    },
+                    "4": {
+                        content: "Đặc biệt"
+                    }
+                },
+                add_good_info: "Thêm thông tin các sản phẩm sản xuất",
+                good: "Sản phẩm",
+                good_code: "Mã sản phẩm",
+                good_name: "Tên sản phẩm",
+                choose_good: "Chọn sản phẩm",
+                base_unit: "Đơn vị tính tiêu chuẩn",
+                quantity_good_inventory: "Số lượng tồn kho",
+                quantity: "Số lượng sản xuất",
+                choose_good_input: "---Chọn sản phẩm---",
+                error_good: "Vui lòng chọn sản phẩm",
+                error_quantity: "Vui lòng nhập số lượng",
+                error_quantity_input: "Số lượng nhập vào không hợp lệ"
             },
             command: {
                 code: "Mã lệnh sản xuất",
@@ -4886,8 +4923,7 @@ export default {
                 good_name: "Tên sản phẩm",
                 good_base_unit: "Đơn vị tính tiêu chuẩn",
                 packing_rule: "Quy cách đóng gói",
-                good_base_unit_quantity:
-                    "Số lượng sản phẩm theo đơn vị tính tiêu chuẩn",
+                good_base_unit_quantity: "Số lượng sản phẩm theo đơn vị tính tiêu chuẩn",
                 packing_rule_quantity: "Số lượng theo quy cách đóng gói",
                 approved: "Đã phê duyệt",
                 approvedTime: "Thời gian phê duyệt",
@@ -4994,14 +5030,13 @@ export default {
                 packing_rule: "Quy cách đóng gói",
                 conversion_rate: "Trọng số chuyển đổi",
                 quantity_packing_rule: "Số lượng theo quy cách đóng gói",
-                quantity_base_unit:
-                    "Số lượng cần sản xuất theo đơn vị tính tiêu chuẩn",
+                quantity_base_unit: "Số lượng cần sản xuất",
                 product_lot_code: "Mã lô thành phẩm",
                 code1: "Mã lô thành phẩm",
                 code2: "Mã lô phế phẩm",
                 finished_product: "Thành phẩm",
                 substandard_product: "Phế phẩm",
-                quantity: "Số lượng theo đơn vị tính tiêu chuẩn",
+                quantity: "Số lượng",
                 error_quantity_1: "Số lượng nhập vào không hợp lệ",
                 error_quantity_1_input: "Số lượng nhập vào phải lớn hơn 0",
                 description: "Mô tả",

@@ -8,6 +8,10 @@ import WorkerBooking from './workerBooking';
 import './planCreate.css';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
+import { generateCode } from '../../../../../../helpers/generateCode';
+import { salesOrderActions } from '../../../../order/sales-order/redux/actions';
+import { manufacturingPlanActions } from '../../redux/actions';
+import { GoodActions } from '../../../../common-production/good-management/redux/actions';
 
 class NewPlanCreateForm extends Component {
     constructor(props) {
@@ -15,31 +19,42 @@ class NewPlanCreateForm extends Component {
         this.state = {
             step: 0,
             steps: [{
-                label: "Thông tin chung",
-                active: true
+                label: this.props.translate('manufacturing.plan.general_info'),
+                active: true,
+                disabled: false
             }, {
-                label: "Nguyên vật liệu",
-                active: false
+                label: this.props.translate('manufacturing.plan.command_info'),
+                active: false,
+                disabled: false
             }, {
-                label: "Lệnh sản xuất",
-                active: false
+                label: this.props.translate('manufacturing.plan.turn_info'),
+                active: false,
+                disabled: true
             }, {
-                label: "Ca sản xuất",
-                active: false
-            }, {
-                label: "Nhân công",
-                active: false
-            }]
+                label: this.props.translate('manufacturing.plan.worker_info'),
+                active: false,
+                disabled: true
+            }],
+
+            code: '',
+            salesOrders: [],
+            startDate: '',
+            endDate: '',
+            description: '',
+            goods: [],
         };
     }
 
-    nextStep = async (e) => {
-        e.preventDefault();
-        await this.setState((state) => ({
-            step: state.step + 1
-        }));
+    componentDidMount = () => {
+        this.props.getAllSalesOrder();
+        const currentRole = localStorage.getItem("currentRole");
+        this.props.getAllApproversOfPlan(currentRole);
+        this.props.getAllGoodsByType({ type: "product" })
+    }
 
-        let { step, steps } = this.state;
+    setCurrentStep = async (e, step) => {
+        e.preventDefault();
+        let { steps } = this.state;
         steps.map((item, index) => {
             if (index <= step) {
                 item.active = true;
@@ -48,58 +63,80 @@ class NewPlanCreateForm extends Component {
             }
             return item;
         });
-        await this.setState({
-            steps: steps
-        })
-
-    }
-
-    prevStep = async (e) => {
-        e.preventDefault();
-        await this.setState((state) => ({
-            step: state.step - 1
-        }));
-
-        let { step, steps } = this.state;
-        steps.map((item, index) => {
-            if (index <= step) {
-                item.active = true;
-            } else {
-                item.active = false;
-            }
-            return item;
+        this.setState((state) => {
+            return {
+                ...state,
+                steps: steps,
+                step: step,
+            };
         });
-        await this.setState({
-            steps: steps
+    }
+
+    handleClickCreate = () => {
+        this.setState({
+            code: generateCode('KHSX')
+        });
+    }
+
+    handleStartDateChange = (value) => {
+        this.setState({
+            startDate: value
         })
     }
+
+    handleEndDateChange = (value) => {
+        this.setState({
+            endDate: value
+        })
+    }
+
+    handleDescriptionChange = (value) => {
+        this.setState({
+            description: value
+        })
+    }
+
+    handleSalesOrderChange = (value) => {
+        this.setState({
+            salesOrders: value
+        })
+    }
+
+    getListApproverIds = () => {
+        const { manufacturingPlan } = this.props;
+        let approvers = [];
+        if (manufacturingPlan.listApprovers && manufacturingPlan.isLoading === false) {
+            approvers = manufacturingPlan.listApprovers.map(x => x._id);
+        }
+        return approvers;
+    }
+
     render() {
         const { step, steps } = this.state;
-        console.log(steps);
+        const { translate } = this.props;
+        const { code, salesOrders, startDate, endDate, description, goods } = this.state;
         return (
             <React.Fragment>
-                <ButtonModal modalID="modal-create-new-plan" button_name="Tạo kế hoạch" title="Tạo kế hoạch sản xuất" />
+                <ButtonModal onButtonCallBack={this.handleClickCreate} modalID="modal-create-new-plan" button_name={translate('manufacturing.plan.create_plan')} title={translate('manufacturing.plan.create_plan_title')} />
                 <DialogModal
                     modalID="modal-create-new-plan" isLoading={false}
                     formID="form-create-new-plan"
-                    title="Tạo kế hoạch sản xuất"
-                    // msg_success={translate('manage_plan.add_success')}
-                    // msg_faile={translate('manage_plan.add_fail')}
+                    title={translate('manufacturing.plan.create_plan_title')}
+                    msg_success={translate('manufacturing.plan.create_successfully')}
+                    msg_faile={translate('manufacturing.plan.create_failed')}
                     // func={this.save}
                     // disableSubmit={!this.isFormValidated()}
-                    hasNote={false}
                     size={100}
                     maxWidth={500}
                 >
                     <form id="form-create-new-plan">
-
                         <div className="timeline">
                             <div className="timeline-progress" style={{ width: `${step * 100 / (steps.length - 1)}%` }}></div>
                             <div className="timeline-items">
                                 {
                                     steps.map((item, index) => (
                                         <div className={`timeline-item ${item.active ? 'active' : ''}`} key={index}>
-                                            <div className="timeline-contain">{item.label}</div>
+                                            <div className={`timeline-contain ${item.disabled ? 'disable-timeline-contain' : ''}`} onClick={(e) => this.setCurrentStep(e, index)}>{item.label}</div>
                                         </div>
                                     ))
                                 }
@@ -107,45 +144,32 @@ class NewPlanCreateForm extends Component {
                         </div>
                         <div>
                             {
-                                step === 0 && <PlanInfoForm />
+                                step === 0 && <PlanInfoForm
+                                    code={code}
+                                    salesOrders={salesOrders}
+                                    approvers={this.getListApproverIds()}
+                                    startDate={startDate}
+                                    endDate={endDate}
+                                    description={description}
+                                    goods={goods}
+                                    onStartDateChange={this.handleStartDateChange}
+                                    onEndDateChange={this.handleEndDateChange}
+                                    onDescriptionChange={this.handleDescriptionChange}
+                                    onSalesOrdersChange={this.handleSalesOrderChange}
+                                />
                             }
                             {
-                                step === 1 && <MaterialInfoForm />
+                                step === 1 && <CommandCreateForm />
                             }
                             {
-                                step === 2 && <CommandCreateForm />
+                                step === 2 && <MillScheduleBooking />
                             }
                             {
-                                step === 3 && <MillScheduleBooking />
-                            }
-                            {
-                                step === 4 && <WorkerBooking />
+                                step === 3 && <WorkerBooking />
                             }
                         </div>
                         <div style={{ textAlign: "center" }}>
-                            <div>
-                                {step + 1} / {steps.length}
-                            </div>
-                            <div>
-                                {
-                                    step !== 0
-                                        ?
-                                        <button className="btn" onClick={this.prevStep}>Trước</button>
-                                        :
-                                        ""
-                                }
-                                {
-                                    " "
-                                }
-                                {
-                                    step === (steps.length - 1)
-                                        ?
-                                        ""
-                                        :
-                                        <button className="btn btn-success" onClick={this.nextStep}>Sau</button>
-                                }
-
-                            </div>
+                            {`${step + 1} / ${steps.length}`}
                         </div>
                     </form>
                 </DialogModal>
@@ -154,5 +178,16 @@ class NewPlanCreateForm extends Component {
     }
 }
 
-export default connect(null, null)(withTranslate(NewPlanCreateForm));
+function mapStateToProps(state) {
+    const { salesOrder, manufacturingPlan } = state;
+    return { salesOrder, manufacturingPlan }
+}
+
+const mapDispatchToProps = {
+    getAllSalesOrder: salesOrderActions.getAllSalesOrder,
+    getAllApproversOfPlan: manufacturingPlanActions.getAllApproversOfPlan,
+    getAllGoodsByType: GoodActions.getAllGoodsByType
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(NewPlanCreateForm));
 // export default NewPlanCreateForm;

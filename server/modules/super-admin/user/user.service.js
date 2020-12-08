@@ -66,11 +66,11 @@ exports.getUsers = async (portal, company, query) => {
         const option =
             query.key && query.value
                 ? Object.assign(
-                      {},
-                      {
-                          [`${query.key}`]: new RegExp(query.value, "i"),
-                      }
-                  )
+                    {},
+                    {
+                        [`${query.key}`]: new RegExp(query.value, "i"),
+                    }
+                )
                 : {};
 
         return await User(connect(DB_CONNECTION, portal)).paginate(option, {
@@ -853,3 +853,21 @@ exports.getUserIsDeanOfOrganizationalUnit = async (portal, id) => {
     userIsDean = userIsDean.map((x) => x.userId);
     return userIsDean;
 };
+
+/**
+ * Lấy danh sách người dùng theo mảng roles truyền vào
+ * @roles : Mảng các roles
+ */
+
+exports.getUsersByRolesArray = async (portal, roles) => {
+    let users = await UserRole(connect(DB_CONNECTION, portal)).find({
+        roleId: {
+            $in: roles
+        }
+    }).populate({
+        path: "userId",
+        select: "name email avatar",
+    });
+
+    return users;
+}

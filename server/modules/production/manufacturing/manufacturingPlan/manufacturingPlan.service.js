@@ -7,6 +7,7 @@ const {
     connect
 } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
+const UserService = require('../../../super-admin/user/user.service');
 
 
 function getArrayTimeFromString(stringDate) {
@@ -68,7 +69,7 @@ exports.createManufacturingPlan = async (data, portal) => {
     let newManufacturingPlan = await ManufacturingPlan(connect(DB_CONNECTION, portal)).create({
         code: data.code,
         manufacturingOrder: data.manufacturingOrder ? data.manufacturingOrder : null,
-        salesOrder: data.salesOrder ? data.salesOrder : null,
+        salesOrders: data.salesOrders ? data.salesOrders : [],
         goods: data.goods.map(x => {
             return {
                 good: x.good,
@@ -118,7 +119,7 @@ exports.getAllManufacturingPlans = async (query, portal) => {
             $in: organizationalUnitId
         }
     });
-    // Lấy ra các nhà máy à currentRole cũng quản lý
+    // Lấy ra các nhà máy mà currentRole cũng quản lý
     let listWorksByManageRole = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
         manageRoles: {
             $in: role
@@ -194,7 +195,7 @@ exports.getAllManufacturingPlans = async (query, portal) => {
                 code: new RegExp(salesOrderCode, "i")
             });
             let salesOrderIds = salesOrders.map(x => x._id);
-            options.salesOrder = {
+            options.salesOrders = {
                 $in: salesOrderIds
             }
 
@@ -261,4 +262,42 @@ exports.getAllManufacturingPlans = async (query, portal) => {
         manufacturingPlans.docs = plans;
         return { manufacturingPlans }
     }
+}
+
+// Lấy ra danh sách người dùng duyệt kế hoạch theo roleId của người hiện tại tạo kế hoạch
+
+exports.getApproversOfPlan = async (portal, currentRole) => {
+    // Lấy ra danh sách các nhà máy mà người này là quản đốc
+    if (!currentRole) {
+        throw Error("Role is not defined")
+    }
+
+    // Lấy ra list các nhà máy là currentRole là trưởng phòng hoặc currentRole là role quản lý khác
+    // Lấy ra list nhà máy mà currentRole là quản đốc nhà máy
+    let role = [currentRole];
+    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'deans': { $in: role } });
+    let organizationalUnitId = departments.map(department => department._id);
+    let listManufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        organizationalUnit: {
+            $in: organizationalUnitId
+        }
+    });
+
+    // Lấy ra tất cả các manageRoles của các nhà máy này push vào mảng roles;
+    let roles = [];
+    for (let i = 0; i < listManufacturingWorks.length; i++) {
+        let manageRoles = listManufacturingWorks[i].manageRoles;
+        if (manageRoles.length) {
+            for (let j = 0; j < manageRoles.length; j++) {
+                if (!roles.includes(manageRoles[j])) {
+                    roles.push(manageRoles[j])
+                }
+            }
+        }
+    }
+
+    // Dùng service bên users để lấy ra tất cả các users trong mảng roles
+
+    let users = await UserService.getUsersByRolesArray(portal, roles);
+    return { users }
 }
