@@ -41,13 +41,13 @@ class QuoteCreateGood extends Component {
         this.props.getAllGoodsByType({ type: "product" });
     }
 
-    // shouldComponentUpdate = async (nextProps, nextState) => {
-    //     if (this.props.goods.goodItems.goodId !== nextProps.goods.goodItems.goodId) {
-    //         await this.getCheckedForGood(nextProps.goods.goodItems);
-    //         return false;
-    //     }
-    //     return true;
-    // };
+    shouldComponentUpdate = async (nextProps, nextState) => {
+        if (this.props.goods.goodItems.goodId !== nextProps.goods.goodItems.goodId) {
+            await this.getCheckedForGood(nextProps.goods.goodItems);
+            return false;
+        }
+        return true;
+    };
 
     nextStep = (e) => {
         e.preventDefault();
