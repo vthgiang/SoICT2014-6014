@@ -13,6 +13,7 @@ class QuoteCreateGood extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            good: "",
             discountsOfGood: [],
             discountsOfGoodChecked: {},
             slasOfGood: [],
@@ -40,13 +41,13 @@ class QuoteCreateGood extends Component {
         this.props.getAllGoodsByType({ type: "product" });
     }
 
-    shouldComponentUpdate = async (nextProps, nextState) => {
-        if (this.props.goods.goodItems.goodId !== nextProps.goods.goodItems.goodId) {
-            await this.getCheckedForGood(nextProps.goods.goodItems);
-            return false;
-        }
-        return true;
-    };
+    // shouldComponentUpdate = async (nextProps, nextState) => {
+    //     if (this.props.goods.goodItems.goodId !== nextProps.goods.goodItems.goodId) {
+    //         await this.getCheckedForGood(nextProps.goods.goodItems);
+    //         return false;
+    //     }
+    //     return true;
+    // };
 
     nextStep = (e) => {
         e.preventDefault();
@@ -146,6 +147,7 @@ class QuoteCreateGood extends Component {
     handleGoodChange = async (value) => {
         if (value[0] !== "title") {
             let { listGoodsByType } = this.props.goods;
+
             const goodInfo = listGoodsByType.filter((item) => item._id === value[0]);
             if (goodInfo.length) {
                 await this.setState((state) => {
@@ -351,10 +353,11 @@ class QuoteCreateGood extends Component {
         const { listTaxsByGoodId } = this.props.goods.goodItems;
         let amountAfterApplyTax = this.getAmountAfterApplyDiscount();
         const { taxs } = this.state;
-        let listTaxs = taxs.map((item) => {
+        let listTaxs = [];
+        taxs.forEach((item) => {
             let tax = listTaxsByGoodId.find((element) => element._id == item);
             if (tax) {
-                return tax;
+                listTaxs.push(Object.assign({}, tax));
             }
         });
 
@@ -535,8 +538,12 @@ class QuoteCreateGood extends Component {
             });
         }
 
-        //Trong trường hợp gọi nhưng slasOfGood đã chuyển về dạng Object để checkbox rồi
-        if (typeof slasOfGood === "object") {
+        if (slasOfGood && slasOfGood.length) {
+            slasOfGood.forEach((element) => {
+                slasOfGoodChecked = this.getSlasCheckedForEditGood(goodItems, slasOfGoodChecked, element);
+            });
+        } //Trong trường hợp gọi nhưng slasOfGood đã chuyển về dạng Object để checkbox rồi
+        else if (typeof slasOfGood === "object") {
             for (let key in slasOfGood) {
                 let element = {
                     _id: key,
@@ -546,9 +553,18 @@ class QuoteCreateGood extends Component {
             }
         }
 
+        // let slasForEdit = {};
+
+        // if (slasOfGood && slasOfGood.length) {
+        //     slasOfGood.forEach((element) => {
+        //         slasForEdit[element._id] = element.descriptions;
+        //     });
+        // }
+
         this.setState({
             discountsOfGoodChecked,
             slasOfGoodChecked,
+            // slasOfGood: slasOfGood ? slasForEdit : slasOfGood,
         });
     };
 
@@ -750,6 +766,7 @@ class QuoteCreateGood extends Component {
         let amountAfterApplyTax = this.getAmountAfterApplyTax();
 
         let isGoodValidate = this.isValidateGoodSelected();
+
         return (
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <fieldset className="scheduler-border" style={{ padding: 10 }}>
