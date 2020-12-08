@@ -533,6 +533,12 @@ exports.getInventoryByGoods = async (data, portal) => {
             goodInventory.inventory = inventory;
             arrayGoods = [...arrayGoods, goodInventory];
         }
+        else {
+            const good = await Good(connect(DB_CONNECTION, portal)).findById({ _id: array[i] });
+            goodInventory.good = good;
+            goodInventory.inventory = 0;
+            arrayGoods = [ ...arrayGoods, goodInventory ];
+        }
     }
 
     return arrayGoods;

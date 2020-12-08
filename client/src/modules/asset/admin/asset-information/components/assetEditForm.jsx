@@ -275,7 +275,7 @@ class AssetEditForm extends Component {
 
     // Function format dữ liệu Date thành string
     formatDate(date, monthYear = false) {
-        if(!date) return null;
+        if (!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -297,7 +297,7 @@ class AssetEditForm extends Component {
     }
 
     addMonth = (date, month) => {
-        if(!date) return null;
+        if (!date) return null;
         date = new Date(date);
         let newDate = new Date(date.setMonth(date.getMonth() + month));
 
@@ -309,7 +309,7 @@ class AssetEditForm extends Component {
             return {
                 ...prevState,
                 _id: nextProps._id,
-                img: `.${nextProps.avatar}`,
+                img: nextProps.avatar ? `.${nextProps.avatar}` : null,
                 avatar: "",
                 code: nextProps.code,
                 assetName: nextProps.assetName,

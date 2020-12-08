@@ -158,6 +158,10 @@ exports.approveAllKpis = async (portal, id) => {
     employee_kpi_set = employee_kpi_set && await employee_kpi_set
         .populate("organizationalUnit creator approver")
         .populate({ path: "kpis", populate: { path: 'parent' } })
+        .populate([
+            { path: 'comments.creator', select: 'name email avatar ' },
+            { path: 'comments.comments.creator', select: 'name email avatar' }
+        ])
         .execPopulate();
     return employee_kpi_set;
 }
@@ -195,6 +199,10 @@ exports.editStatusKpi = async (portal, data, query) => {
     employee_kpi_set = employee_kpi_set && await employee_kpi_set
         .populate("organizationalUnit creator approver")
         .populate({ path: "kpis", populate: { path: 'parent' } })
+        .populate([
+            { path: 'comments.creator', select: 'name email avatar ' },
+            { path: 'comments.comments.creator', select: 'name email avatar' }
+        ])
         .execPopulate();
 
     return employee_kpi_set;
@@ -233,7 +241,7 @@ exports.getKpisByKpiSetId = async (portal, id) => {
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
             { path: 'comments.comments.creator', select: 'name email avatar' }
-        ])
+        ]);
 
     return employee_kpi_set;
 }
