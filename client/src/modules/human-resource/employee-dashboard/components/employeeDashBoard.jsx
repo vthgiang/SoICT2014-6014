@@ -148,6 +148,14 @@ class DashBoardEmployees extends Component {
         let listAllEmployees = (!organizationalUnits || organizationalUnits.length === 0 || organizationalUnits.length === childOrganizationalUnit.length) ?
             employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
 
+        let totalHourAnnualLeave = 0;
+        annualLeave.totalListAnnulLeave.forEach(x => {
+            if (x.totalHours && x.totalHours !== 0) {
+                totalHourAnnualLeave = totalHourAnnualLeave + x.totalHours;
+            } else {
+                totalHourAnnualLeave = totalHourAnnualLeave + (Math.round((new Date(x.endDate).getTime() - new Date(x.startDate).getTime()) / (24 * 60 * 60 * 1000)) + 1) * 8;
+            }
+        });
         return (
             <React.Fragment>
                 <div className="qlcv">
@@ -192,9 +200,9 @@ class DashBoardEmployees extends Component {
                             <div className="info-box with-border">
                                 <span className="info-box-icon bg-yellow"><i className="fa fa-tasks"></i></span>
                                 <div className="info-box-content">
-                                    <span className="info-box-text">Số nghỉ phép</span>
+                                    <span className="info-box-text">Số giờ nghỉ phép</span>
                                     <span className="info-box-number">
-                                        {annualLeave.totalList}
+                                        {totalHourAnnualLeave}
                                     </span>
                                 </div>
                             </div>

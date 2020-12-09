@@ -176,13 +176,10 @@ class QualificationChart extends Component {
             employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
 
         if (listAllEmployees.length !== 0) {
-            console.log(this.convertData(listAllEmployees))
             this.renderChart(this.convertData(listAllEmployees));
         } else {
             this.removePreviousChart();
         }
-
-        console.log(listAllEmployees)
 
         return (
             <React.Fragment>

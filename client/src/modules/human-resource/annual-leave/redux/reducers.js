@@ -8,6 +8,7 @@ const initState = {
 
     listAnnualLeaves: [],
     totalList: 0,
+    totalListAnnulLeave:[],
 
     totalListAnnualLeavesOfYear: 0,
     arrMonth: [],
@@ -49,6 +50,7 @@ export function annualLeave(state = initState, action) {
                     isLoading: false,
                     listAnnualLeaves: action.payload.listAnnualLeaves !== undefined ? action.payload.listAnnualLeaves : [],
                     totalList: action.payload.totalList,
+                    totalListAnnulLeave: action.payload.totalListAnnulLeave ? action.payload.totalListAnnulLeave : [],
                     totalListAnnualLeavesOfYear: action.payload.totalListOfYear ? action.payload.totalListOfYear : 0
                 };
             };
