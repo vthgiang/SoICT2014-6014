@@ -159,11 +159,10 @@ class UseRequestCreateForm extends Component {
             date = [date[2], date[1], date[0]].join('-')
             dateStartUse = new Date(date)
 
-            if (compareTime(dateStartUse, nowDate) === 1) {
+            if (compareTime(nowDate, dateStartUse) === 1) {
                 Swal.fire({
                     title: 'Ngày đã qua không thể tạo đăng ký sử dụng',
                     type: 'warning',
-                    html: dateStartUse + "--" + nowDate,
                     confirmButtonColor: '#dd4b39',
                     confirmButtonText: "Đóng",
                 })

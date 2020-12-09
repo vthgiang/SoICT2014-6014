@@ -51,6 +51,7 @@ class DiscountManagementTable extends Component {
     };
 
     handleEditDiscount = async (discount) => {
+        console.log("discount", discount);
         await this.setState((state) => {
             return {
                 ...state,

@@ -48,6 +48,8 @@ export function lots(state = initState, action) {
         case LotConstants.CREATE_MANUFACTURING_LOT_REQUEST:
         case LotConstants.GET_DETAIL_MANUFACTURING_LOT_REQUEST:
         case LotConstants.EDIT_MANUFACTURING_LOT_REQUEST:
+        case LotConstants.GET_INVENTORY_BY_GOOD_IDS_REQUEST:
+        case LotConstants.GET_INVENTORY_BY_GOOD_ID_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -155,6 +157,16 @@ export function lots(state = initState, action) {
                 ...state,
                 isLoading: false
             }
+        case LotConstants.GET_INVENTORY_BY_GOOD_IDS_SUCCESS:
+            return {
+                ...state,
+                listInventories: action.payload
+            }
+        case LotConstants.GET_INVENTORY_BY_GOOD_ID_SUCCESS:
+            return {
+                ...state,
+                currentInventory: action.payload[0]
+            }
         case LotConstants.GET_LOT_FAILURE:
         case LotConstants.GET_LOT_PAGINATE_FAILURE:
         case LotConstants.GET_LOT_DETAIL_FAILURE:
@@ -166,6 +178,8 @@ export function lots(state = initState, action) {
         case LotConstants.CREATE_MANUFACTURING_LOT_FAILURE:
         case LotConstants.GET_DETAIL_MANUFACTURING_LOT_FAILURE:
         case LotConstants.EDIT_MANUFACTURING_LOT_FAILURE:
+        case LotConstants.GET_INVENTORY_BY_GOOD_IDS_FAILURE:
+        case LotConstants.GET_INVENTORY_BY_GOOD_ID_FAILURE:
             return {
                 ...state,
                 isLoading: false

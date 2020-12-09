@@ -66,11 +66,11 @@ exports.getUsers = async (portal, company, query) => {
         const option =
             query.key && query.value
                 ? Object.assign(
-                      {},
-                      {
-                          [`${query.key}`]: new RegExp(query.value, "i"),
-                      }
-                  )
+                    {},
+                    {
+                        [`${query.key}`]: new RegExp(query.value, "i"),
+                    }
+                )
                 : {};
 
         return await User(connect(DB_CONNECTION, portal)).paginate(option, {
@@ -242,7 +242,7 @@ getAllUserInUnitAndItsSubUnits = async (portal, id, unitId) => {
 
         while (queue.length > 0) {
             var v = queue.shift();
-            if (v.children) {
+            if (v && v.children) {
                 for (var i = 0; i < v.children.length; i++) {
                     var u = v.children[i];
                     queue.push(u);
@@ -733,72 +733,74 @@ _getAllUsersInOrganizationalUnits = async (portal, data) => {
     var userArray = [];
     for (let i = 0; i < data.length; i++) {
         var department = data[i];
-        var userRoles = await UserRole(connect(DB_CONNECTION, portal))
-            .find({
-                roleId: {
-                    $in: [
-                        ...department.deans,
-                        ...department.viceDeans,
-                        ...department.employees,
-                    ],
+        if(department) {
+            var userRoles = await UserRole(connect(DB_CONNECTION, portal))
+                .find({
+                    roleId: {
+                        $in: [
+                            ...department.deans,
+                            ...department.viceDeans,
+                            ...department.employees,
+                        ],
+                    },
+                })
+                .populate({
+                    path: "userId",
+                    select: "name",
+                });
+
+            var tmp = await Role(connect(DB_CONNECTION, portal)).find(
+                {
+                    _id: {
+                        $in: [
+                            ...department.deans,
+                            ...department.viceDeans,
+                            ...department.employees,
+                        ],
+                    },
                 },
-            })
-            .populate({
-                path: "userId",
-                select: "name",
+                {
+                    name: 1,
+                }
+            );
+            var users = {
+                deans: {},
+                viceDeans: {},
+                employees: {},
+                department: department.name,
+                id: department.id,
+            };
+            tmp.forEach((item) => {
+                let obj = {};
+                obj._id = item.id;
+                obj.name = item.name;
+                obj.members = [];
+
+                if (department.deans.includes(item._id.toString())) {
+                    users.deans[item._id.toString()] = obj;
+                } else if (department.viceDeans.includes(item._id.toString())) {
+                    users.viceDeans[item._id.toString()] = obj;
+                } else if (department.employees.includes(item._id.toString())) {
+                    users.employees[item._id.toString()] = obj;
+                }
             });
 
-        var tmp = await Role(connect(DB_CONNECTION, portal)).find(
-            {
-                _id: {
-                    $in: [
-                        ...department.deans,
-                        ...department.viceDeans,
-                        ...department.employees,
-                    ],
-                },
-            },
-            {
-                name: 1,
-            }
-        );
-        var users = {
-            deans: {},
-            viceDeans: {},
-            employees: {},
-            department: department.name,
-            id: department.id,
-        };
-        tmp.forEach((item) => {
-            let obj = {};
-            obj._id = item.id;
-            obj.name = item.name;
-            obj.members = [];
+            userRoles.forEach((item) => {
+                if (users.deans[item.roleId.toString()] && item.userId) {
+                    users.deans[item.roleId.toString()].members.push(item.userId);
+                } else if (users.viceDeans[item.roleId.toString()] && item.userId) {
+                    users.viceDeans[item.roleId.toString()].members.push(
+                        item.userId
+                    );
+                } else if (users.employees[item.roleId.toString()] && item.userId) {
+                    users.employees[item.roleId.toString()].members.push(
+                        item.userId
+                    );
+                }
+            });
 
-            if (department.deans.includes(item._id.toString())) {
-                users.deans[item._id.toString()] = obj;
-            } else if (department.viceDeans.includes(item._id.toString())) {
-                users.viceDeans[item._id.toString()] = obj;
-            } else if (department.employees.includes(item._id.toString())) {
-                users.employees[item._id.toString()] = obj;
-            }
-        });
-
-        userRoles.forEach((item) => {
-            if (users.deans[item.roleId.toString()] && item.userId) {
-                users.deans[item.roleId.toString()].members.push(item.userId);
-            } else if (users.viceDeans[item.roleId.toString()] && item.userId) {
-                users.viceDeans[item.roleId.toString()].members.push(
-                    item.userId
-                );
-            } else if (users.employees[item.roleId.toString()] && item.userId) {
-                users.employees[item.roleId.toString()].members.push(
-                    item.userId
-                );
-            }
-        });
-
-        userArray.push(users);
+            userArray.push(users);
+        }
     }
     return userArray;
 };
@@ -853,3 +855,21 @@ exports.getUserIsDeanOfOrganizationalUnit = async (portal, id) => {
     userIsDean = userIsDean.map((x) => x.userId);
     return userIsDean;
 };
+
+/**
+ * Lấy danh sách người dùng theo mảng roles truyền vào
+ * @roles : Mảng các roles
+ */
+
+exports.getUsersByRolesArray = async (portal, roles) => {
+    let users = await UserRole(connect(DB_CONNECTION, portal)).find({
+        roleId: {
+            $in: roles
+        }
+    }).populate({
+        path: "userId",
+        select: "name email avatar",
+    });
+
+    return users;
+}

@@ -10,3 +10,11 @@ const {
 
 exports.create = async (data, portal) => {
 }
+
+exports.getAllSalesOrders = async (portal) => {
+    let salesOrders = await SalesOrder(connect(DB_CONNECTION, portal)).find()
+        .populate([{
+            path: 'goods.good'
+        }]);
+    return { salesOrders }
+}

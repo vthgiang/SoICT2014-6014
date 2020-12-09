@@ -40,24 +40,13 @@ class QuoteCreateGood extends Component {
         this.props.getAllGoodsByType({ type: "product" });
     }
 
-    // shouldComponentUpdate = (nextProps, nextState) => {
-    //     console.log("next", nextProps.currency, this.props.currency);
-    //     if (nextProps.currency.type !== this.props.currency.type) {
-    //         const { isUseForeignCurrency, foreignCurrency, standardCurrency, currency } = nextProps;
-    //         console.log("SAO LAI VAO DAY");
-    //         if (currency.type === "standard" && isUseForeignCurrency) {
-    //             this.setState({
-    //                 pricePerBaseUnit: this.state.pricePerBaseUnit * currency.ratio,
-    //             });
-    //         } else {
-    //             this.setState({
-    //                 pricePerBaseUnit: this.state.pricePerBaseUnit / currency.ratio,
-    //             });
-    //         }
-    //         return false;
-    //     }
-    //     return true;
-    // };
+    shouldComponentUpdate = async (nextProps, nextState) => {
+        if (this.props.goods.goodItems.goodId !== nextProps.goods.goodItems.goodId) {
+            await this.getCheckedForGood(nextProps.goods.goodItems);
+            return false;
+        }
+        return true;
+    };
 
     nextStep = (e) => {
         e.preventDefault();
@@ -208,14 +197,27 @@ class QuoteCreateGood extends Component {
         this.validateGood(value, true);
     };
 
+    hasDiscountsOnGoodChecker = () => {
+        let { discountsOfGood } = this.state;
+        let checked = false;
+        discountsOfGood.forEach((element) => {
+            if (element.formality == "5") {
+                checked = true;
+            }
+        });
+        return checked;
+    };
+
     validatePrice = (value, willUpdateState = true) => {
         let msg = undefined;
+        let checkDiscountOnGoods = this.hasDiscountsOnGoodChecker(); //Nếu mặt hàng là giảm giá tồn kho thì không cần salesPriceVariance
+
         let { salesPriceVariance, pricePerBaseUnitOrigin } = this.state;
         if (!value) {
             msg = "Giá trị không được để trống!";
         } else if (parseInt(value) < 0) {
             msg = "Giá không được âm";
-        } else if (parseInt(value) < pricePerBaseUnitOrigin - salesPriceVariance) {
+        } else if (parseInt(value) < pricePerBaseUnitOrigin - salesPriceVariance && !checkDiscountOnGoods) {
             msg = `Giá không được chênh lệch quá ${salesPriceVariance ? formatCurrency(salesPriceVariance) : 0} (vnđ) so với giá gốc: ${
                 pricePerBaseUnitOrigin ? formatCurrency(pricePerBaseUnitOrigin) : 0
             } (vnđ)`;
@@ -500,48 +502,68 @@ class QuoteCreateGood extends Component {
         return checked;
     };
 
-    getSlasCheckedForEditGood = (slasOfGoodChecked, slaChecked) => {
-        let { listSlasByGoodId } = this.props.goods.goodItems;
+    getSlasCheckedForEditGood = (goodItems, slasOfGoodChecked, slaChecked) => {
+        let { listSlasByGoodId } = goodItems;
         let slaInfo = listSlasByGoodId.find((element) => element._id === slaChecked._id);
 
-        slaChecked.descriptions.forEach((desOfSlaChecked) => {
-            slaInfo.descriptions.forEach((desOfSlaInfo, index) => {
-                if (desOfSlaInfo === desOfSlaChecked) {
-                    slasOfGoodChecked[`${slaChecked._id}-${index}`] = true;
-                }
+        if (slaInfo) {
+            slaChecked.descriptions.forEach((desOfSlaChecked) => {
+                slaInfo.descriptions.forEach((desOfSlaInfo, index) => {
+                    if (desOfSlaInfo === desOfSlaChecked) {
+                        slasOfGoodChecked[`${slaChecked._id}-${index}`] = true;
+                    }
+                });
             });
-        });
+        }
 
         return slasOfGoodChecked;
     };
 
-    handleEditGood = (item, index) => {
-        let { listDiscountsByGoodId } = this.props.goods.goodItems;
+    getCheckedForGood = (goodItems) => {
+        //lấy những sla và discount đã check box set vào state
+        let { discountsOfGoodChecked, slasOfGoodChecked, discountsOfGood, slasOfGood, quantity, good } = this.state;
+        let { listDiscountsByGoodId } = goodItems;
+
+        if (discountsOfGood) {
+            discountsOfGood.forEach((element) => {
+                //checked các khuyến mãi đã có trong danh mục
+                let discount = listDiscountsByGoodId.find((dis) => dis._id === element._id);
+                if (discount) {
+                    let checked = this.getDiscountsCheckedForEditGood(discount, quantity, good);
+                    discountsOfGoodChecked[`${checked.id}`] = checked.status;
+                }
+            });
+        }
+
+        //Trong trường hợp gọi nhưng slasOfGood đã chuyển về dạng Object để checkbox rồi
+        if (typeof slasOfGood === "object") {
+            for (let key in slasOfGood) {
+                let element = {
+                    _id: key,
+                    descriptions: slasOfGood[key],
+                };
+                slasOfGoodChecked = this.getSlasCheckedForEditGood(goodItems, slasOfGoodChecked, element);
+            }
+        }
+
+        this.setState({
+            discountsOfGoodChecked,
+            slasOfGoodChecked,
+        });
+    };
+
+    handleEditGood = async (item, index) => {
+        await this.props.getItemsForGood(item.good._id);
 
         let { listGoodsByType } = this.props.goods;
         const goodInfo = listGoodsByType.filter((good) => good._id === item.good._id);
-
-        let { discountsOfGoodChecked, slasOfGoodChecked } = this.state;
-
-        item.discountsOfGood.forEach((element) => {
-            //checked các khuyến mãi đã có trong danh mục
-            let discount = listDiscountsByGoodId.find((dis) => dis._id === element._id);
-            if (discount) {
-                let checked = this.getDiscountsCheckedForEditGood(discount, item.quantity, item.good._id);
-                discountsOfGoodChecked[`${checked.id}`] = checked.status;
-            }
-        });
-
-        item.slasOfGood.forEach((element) => {
-            slasOfGoodChecked = this.getSlasCheckedForEditGood(slasOfGoodChecked, element);
-        });
 
         let slasForEdit = {};
         item.slasOfGood.forEach((element) => {
             slasForEdit[element._id] = element.descriptions;
         });
 
-        this.setState({
+        await this.setState({
             editGood: true,
             indexEditting: index,
             taxs: item.taxs.map((tax) => tax._id),
@@ -557,10 +579,10 @@ class QuoteCreateGood extends Component {
             baseUnit: item.good.baseUnit,
             code: item.good.code,
             discountsOfGood: item.discountsOfGood,
-            discountsOfGoodChecked,
-            slasOfGoodChecked,
             slasOfGood: slasForEdit,
         });
+
+        this.getCheckedForGood(this.props.goods.goodItems); //gọi để checked trong trường hợp không thay đổi goodId
     };
 
     handleCancelEditGood = (e) => {
