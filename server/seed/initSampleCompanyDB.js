@@ -44,6 +44,13 @@ const {
     Category,
     Good,
 
+    Tax,
+    ServiceLevelAgreement,
+    Discount,
+    BankAccount,
+    CoinRule,
+    Quote,
+
     Customer,
     Care,
     CareType,
@@ -173,6 +180,13 @@ const initSampleCompanyDB = async () => {
         if (!db.models.Lot) Lot(db);
         if (!db.models.Category) Category(db);
         if (!db.models.Good) Good(db);
+
+        if (!db.models.Tax) Tax(db);
+        if (!db.models.ServiceLevelAgreement) ServiceLevelAgreement(db);
+        if (!db.models.Discount) Discount(db);
+        if (!db.models.BankAccount) BankAccount(db);
+        if (!db.models.CoinRule) CoinRule(db);
+        if (!db.models.Quote) Quote(db);
 
         if (!db.models.Customer) Customer(db);
         if (!db.models.Care) Care(db);
@@ -3438,6 +3452,8 @@ const initSampleCompanyDB = async () => {
             ],
             numberExpirationDate: 800,
             description: "Sản phẩm thuốc thú y",
+            pricePerBaseUnit: 90000,
+            salesPriceVariance: 9000
         },
         {
             company: vnist._id,
@@ -3460,6 +3476,8 @@ const initSampleCompanyDB = async () => {
             ],
             numberExpirationDate: 900,
             description: "Sản phẩm thuốc thú y",
+            pricePerBaseUnit: 80000,
+            salesPriceVariance: 8000
         },
         {
             company: vnist._id,
@@ -3482,6 +3500,8 @@ const initSampleCompanyDB = async () => {
             ],
             numberExpirationDate: 1000,
             description: "Sản phẩm trị cảm cúm",
+            pricePerBaseUnit: 100000,
+            salesPriceVariance: 10000
         },
     ]);
     console.log("Khởi tạo xong danh sách hàng hóa");
@@ -3854,12 +3874,14 @@ const initSampleCompanyDB = async () => {
             },
         ],
     });
-
+    
     /*---------------------------------------------------------------------------------------------
        -----------------------------------------------------------------------------------------------
            TẠO DỮ LIỆU THÔNG TIN MODULE SẢN XUẤT
        -----------------------------------------------------------------------------------------------
        ----------------------------------------------------------------------------------------------- */
+    
+    
     const manufacturingWorksData = [
         {
             code: "NMSX202011111",
@@ -5418,7 +5440,7 @@ const initSampleCompanyDB = async () => {
     console.log("Xong! Đã tạo mẫu dữ liệu hình thức chăm sóc khách hàng");
 
     // ****************** Tạo mẫu dữ liệu khách hàng********************
-    await Customer(vnistDB).insertMany([
+    var listCustomers = await Customer(vnistDB).insertMany([
         {
             creator: users[7]._id,
             code: "KH001",
@@ -5563,7 +5585,424 @@ const initSampleCompanyDB = async () => {
     console.log("Tạo xong dữ liệu đơn hàng", listSalesOrders);
 
 
+         /*---------------------------------------------------------------------------------------------
+       -----------------------------------------------------------------------------------------------
+           TẠO DỮ LIỆU THÔNG TIN THUẾ
+       -----------------------------------------------------------------------------------------------
+       ----------------------------------------------------------------------------------------------- */
+    
+       console.log("Khởi tạo dữ liệu thông tin thuế");
+       var listTaxs = await Tax(vnistDB).insertMany([
+           {
+               name: "VAT",
+               code:"TAX_2011112342",
+               description: "Thuế giá trị gia tăng",
+               creator: users[1]._id,
+               goods: [{
+                    good: listProduct[0]._id,
+                    percent: 5
+                    },
+                    {
+                        good: listProduct[1]._id,
+                        percent: 10
+                    },
+                    {
+                        good: listProduct[2]._id,
+                       percent: 10
+                   }],
+               status: true,
+               lastVersion: true, 
+               version: 1
+           },
+           
+       ]);
+       console.log("Khởi tạo xong danh sách thông tin thuế");
+    
+     /*---------------------------------------------------------------------------------------------
+       -----------------------------------------------------------------------------------------------
+           TẠO DỮ LIỆU THÔNG TIN CAM KẾT CHẤT LƯỢNG
+       -----------------------------------------------------------------------------------------------
+       ----------------------------------------------------------------------------------------------- */
+    console.log("istProduct[0]._id,", listProduct[0]._id);
+       console.log("Khởi tạo dữ liệu thông tin cam kết chất lượng");
+       var listServiceLevelAgreements = await ServiceLevelAgreement(vnistDB).insertMany([
+           {
+                title: "Chất lượng sản phẩm đi đầu",
+                code:"SLA_201124144445",
+                description: ["Sản phẩm đi đầu về chất lượng", "Đóng gói đúng quy trình"],
+                creator: users[1]._id,
+                goods: [listProduct[0]._id, listProduct[1]._id,listProduct[2]._id],
+               status: true,
+               lastVersion: true,
+               version: 1
+           },
+           {
+            title: "Quy cách về hàng hóa",
+            code:"SLA_20111219136",
+            description: ["Sản phẩm đạt tiêu chuẩn an toàn", "Sản phẩm được đóng gói theo tiêu chuẩn quốc tế"],
+            creator: users[1]._id,
+            goods: [listProduct[0]._id, listProduct[1]._id],
+            status: true,
+            lastVersion: true,
+            version: 1
+       },
+       ]);
+    console.log("Khởi tạo xong danh sách thông tin cam kết chất lượng");
 
+     /*---------------------------------------------------------------------------------------------
+       -----------------------------------------------------------------------------------------------
+           TẠO DỮ LIỆU THÔNG TIN KHUYẾN MÃI
+       -----------------------------------------------------------------------------------------------
+       ----------------------------------------------------------------------------------------------- */
+    
+       console.log("Khởi tạo dữ liệu thông tin khuyến mãi");
+       var listDistcounts = await Discount(vnistDB).insertMany([
+           {
+            code:"DIS_20111384718",
+            name:"Tặng 2 bao ACID CITRIC MONO với đơn hàng trên 1 triệu đồng",
+            description:"",
+            effectiveDate: null,
+            expirationDate: null,
+            type:0,
+            creator:users[1]._id,
+            formality: "4",
+            discounts: [{
+                minimumThresholdToBeApplied:1000000,
+                customerType:2,
+                bonusGoods: [{
+                    good: listProduct[1],
+                    quantityOfBonusGood: 2
+                }]
+            }],
+            version:1,
+            status:true,
+            lastVersion:true,
+           },
+           {
+            code:"DIS_20111384718",
+            name:"Tặng 3 gói TIFFY Khi mua từ 10 thùng Đường ACESULFAME K",
+            description:"",
+            effectiveDate: null,
+            expirationDate: null,
+            type:1,
+            creator:users[1]._id,
+            formality: "4",
+            discounts: [{
+                minimumThresholdToBeApplied:10,
+                customerType:2,
+                bonusGoods: [{
+                    good: listProduct[2],
+                    quantityOfBonusGood: 3
+                }]
+            }],
+            version:1,
+            status:true,
+            lastVersion:true,
+           },
+           {
+            code: "DIS_20112095557",
+            name: "giảm giá 10% khi mua 10 sản phẩm",
+            description: "",
+            effectiveDate: null,
+            expirationDate: null,
+            type: 1,
+            creator:users[1]._id,
+            formality: "1",
+            discounts: [
+                {
+                    discountedPercentage: 10,
+                    minimumThresholdToBeApplied: 10,
+                    customerType: 0,
+                    discountOnGoods: [
+                        {
+                            good: listProduct[0]._id
+                        },
+                        {
+                            good: listProduct[1]._id
+                        },
+                        {
+                            good: listProduct[2]._id
+                        }
+                    ]
+                }
+            ],
+            version: 1,
+            status: true,
+            lastVersion: true,
+        },
+        {
+            code: "DIS_2011209559",
+            name: "giảm 10k khi mua từ 10 sản phẩm",
+            description: "",
+            effectiveDate: null,
+            expirationDate: null,
+            type: 1,
+            creator: users[1]._id,
+            formality: "0",
+            discounts: [
+                {
+                    discountedCash: 10000,
+                    minimumThresholdToBeApplied: 10,
+                    customerType: 2,
+                    discountOnGoods: [
+                        {
+                            good: listProduct[0]._id
+                        },
+                        {
+                            good: listProduct[1]._id
+                        },
+                        {
+                            good: listProduct[2]._id
+                        }
+                    ]
+                }
+            ],
+            version: 1,
+            status: true,
+            lastVersion: true,
+           },
+        
+           {
+               code: "DIS_20111382649",
+               name: "Tồn kho",
+               description: "",
+               effectiveDate: "2020-11-16T00:00:00.000Z",
+               expirationDate: "2021-01-29T00:00:00.000Z",
+               type: 1,
+               creator: users[1]._id,
+               formality: "5",
+               discounts: [
+                   {
+                       minimumThresholdToBeApplied: 10,
+                       maximumThresholdToBeApplied: 15,
+                       customerType: 2,
+                       bonusGoods: [],
+                       discountOnGoods: [
+                           {
+                               good: listProduct[0],
+                               discountedPrice: 60000
+                           },
+                           {
+                               good: listProduct[0],
+                               discountedPrice: 65000
+                           },
+                           {
+                               good: listProduct[0],
+                               discountedPrice: 69000
+                           },
+                       ]
+                   },
+                   {
+                       minimumThresholdToBeApplied: 16,
+                       customerType: 2,
+                       bonusGoods: [],
+                       discountOnGoods: [
+                           {
+                               good: listProduct[0],
+                               discountedPrice: 50000
+                           },
+                           {
+                               good: listProduct[0],
+                               discountedPrice: 55000
+                           },
+                           {
+                               good: listProduct[0],
+                               discountedPrice: 65000
+                           },
+                       ]
+                   },
+                ],
+                    version: 1,
+                    status: true,
+                    lastVersion: true,
+            },
+                {
+                    code: "DIS_20121163953",
+                    name: "Miễn phí vận chuyển đơn hàng từ 0 đồng",
+                    description: "",
+                    effectiveDate: null,
+                    expirationDate: null,
+                    type: 0,
+                    creator: users[1]._id,
+                    formality: "3",
+                    discounts: [
+                        {
+                            maximumFreeShippingCost: 20000,
+                            minimumThresholdToBeApplied: 0,
+                            customerType: 2,
+                        }
+                    ],
+                    version: 1,
+                    status: true,
+                    lastVersion: true,
+                },
+                {
+                    code: "DIS_2012120451",
+                    name: "giảm 10% cho đơn hàng từ 100000",
+                    description: "Chưa có mô tả",
+                    effectiveDate: null,
+                    expirationDate: null,
+                    type: 0,
+                    creator: users[1]._id,
+                    formality: "1",
+                    discounts: [
+                        {
+                            discountedPercentage: 10,
+                            minimumThresholdToBeApplied: 100000,
+                            customerType: 2,
+                        }
+                    ],
+                    version: 1,
+                    status: true,
+                    lastVersion: true,
+                },
+                {
+                    code: "DIS_2012275644",
+                    name: "Tặng 1000 xu cho đơn hàng từ 30k",
+                    description: "",
+                    effectiveDate: "2020-12-01T00:00:00.000Z",
+                    expirationDate: "2020-12-31T00:00:00.000Z",
+                    type: 0,
+                    creator: users[1]._id,
+                    formality: "2",
+                    discounts: [
+                        {
+                            loyaltyCoin: 1000,
+                            minimumThresholdToBeApplied: 30000,
+                            customerType: 2,
+                        }
+                    ],
+                    version: 1,
+                    status: true,
+                    lastVersion: true,
+                },
+                {
+                    code: "DIS_20123142627",
+                    name: "Tặng xu 1000 xu khi mua 10 sản phẩm",
+                    description: "",
+                    effectiveDate: "2020-12-01T00:00:00.000Z",
+                    expirationDate: "2020-12-26T00:00:00.000Z",
+                    type: 1,
+                    creator: users[1]._id,
+                    formality: "2",
+                    discounts: [
+                        {
+                            loyaltyCoin: 1000,
+                            minimumThresholdToBeApplied: 10,
+                            customerType: 2,
+                            discountOnGoods: [
+                                {
+                                    good: listProduct[0]._id
+                                },
+                                {
+                                    good: listProduct[1]._id
+                                },
+                                {
+                                    good: listProduct[2]._id
+                                }
+                            ]
+                        }
+                    ],
+                    version: 1,
+                    status: true,
+                    lastVersion: true,
+                }
+       ]);
+    console.log("Khởi tạo xong danh sách thông tin khuyến mãi");
+    
+    /*---------------------------------------------------------------------------------------------
+       -----------------------------------------------------------------------------------------------
+           TẠO DỮ LIỆU THÔNG TIN BÁO GIÁ
+       -----------------------------------------------------------------------------------------------
+       ----------------------------------------------------------------------------------------------- */
+    
+    
+       console.log("Khởi tạo dữ liệu thông tin báo giá");
+       var listQuote = await Quote(vnistDB).insertMany([
+        {
+            status: 0,
+            code: "QUOTE_201249330",
+            creator: users[1]._id,
+            effectiveDate: "2020-12-07T00:00:00.000Z",
+            expirationDate: "2020-12-19T00:00:00.000Z",
+            customer: listCustomers[0]._id,
+            customerName: listCustomers[0].name,
+            customerPhone: listCustomers[0].mobilephoneNumber,
+            customerAddress: listCustomers[0].address,
+            customerRepresent: listCustomers[0].represent,
+            customerTaxNumber: listCustomers[0].taxNumber,
+            customerEmail: listCustomers[0].email,
+            goods: [
+                {
+                    good: listProduct[0]._id,
+                    pricePerBaseUnit: 60000,
+                    pricePerBaseUnitOrigin: listProduct[0].pricePerBaseUnit,
+                    salesPriceVariance: listProduct[0].salesPriceVariance,
+                    quantity: 12,
+                    serviceLevelAgreements: [
+                        {
+                            descriptions: ["Đóng gói đúng quy trình","Sản phẩm đi đầu về chất lượng"],
+                            _id: listServiceLevelAgreements[0]._id,
+                            title: "Chất lượng sản phẩm đi đầu"
+                        }
+                    ],
+                    taxs: [
+                        {
+                            _id: listTaxs[0]._id,
+                            code: listTaxs[0]._id,
+                            name: "VAT",
+                            description: listTaxs[0]._id,
+                            percent: 5,
+                        }
+                    ],
+                    discounts: [],
+                    amount: 720000,
+                    amountAfterDiscount: 720000,
+                    amountAfterTax: 792000
+                },
+            ],
+            discounts: [
+                {
+                    _id: listDistcounts[5]._id,
+                    code: listDistcounts[5].code,
+                    type: listDistcounts[5].type,
+                    formality: listDistcounts[5].formality,
+                    name: listDistcounts[5].name,
+                    effectiveDate: listDistcounts[5].effectiveDate,
+                    expirationDate: listDistcounts[5].expirationDate,
+                    maximumFreeShippingCost: 20000,
+                },
+                {
+                    _id: listDistcounts[6]._id,
+                    code: listDistcounts[6].code,
+                    type: listDistcounts[6].type,
+                    formality: listDistcounts[6].formality,
+                    name: listDistcounts[6].name,
+                    effectiveDate: listDistcounts[6].effectiveDate,
+                    expirationDate: listDistcounts[6].expirationDate,
+                    discountedPercentage: listDistcounts[6].discountedPercentage,
+                },
+                {
+                    _id: listDistcounts[7]._id,
+                    code: listDistcounts[7].code,
+                    type: listDistcounts[7].type,
+                    formality: listDistcounts[7].formality,
+                    name: listDistcounts[7].name,
+                    effectiveDate: listDistcounts[7].effectiveDate,
+                    expirationDate: listDistcounts[7].expirationDate,
+                    loyaltyCoin: listDistcounts[7].loyaltyCoin,
+                },
+                
+            ],
+            shippingFee: 100000,
+            deliveryTime: "2020-12-18T00:00:00.000Z",
+            coin: 500,
+            paymentAmount: 871500,
+            note: "Khách hàng quen thuộc",
+        },
+           
+       ]);
+       console.log("Khởi tạo xong danh sách thông tin báo giá");
 
 
 
