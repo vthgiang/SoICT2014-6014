@@ -89,8 +89,12 @@ const GoodSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'ManufacturingMill'
         },
-        productivity: Number,
-        personNumber: Number
+        productivity: {
+            type: Number
+        },
+        personNumber: {
+            type: Number
+        }
     }],
     // Module chưa hoàn thiện
     returnRules: [{

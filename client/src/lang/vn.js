@@ -4930,7 +4930,21 @@ export default {
                 choose_good_input: "---Chọn sản phẩm---",
                 error_good: "Vui lòng chọn sản phẩm",
                 error_quantity: "Vui lòng nhập số lượng",
-                error_quantity_input: "Số lượng nhập vào không hợp lệ"
+                error_quantity_input: "Số lượng nhập vào không hợp lệ",
+                sales_order_info: "Thông tin sản phẩm trong đơn",
+                add_to_plan: "Thêm tất cả",
+                added_to_plan: "Đã thêm tất cả",
+                manufacturing_good_info: "Thông tin các sản phẩm cần sản xuất",
+                productivity_mill: "Thông tin năng xuất của phân xưởng sản xuất",
+                divide_command: "Phân chia các lệnh sản xuất",
+                quantity_commmanded: "Số lượng đã tạo lệnh",
+                mill: "Xưởng sản xuất",
+                productity: "Năng xuất / ca",
+                number_workers: "Số nhân công / ca"
+
+
+
+
             },
             command: {
                 code: "Mã lệnh sản xuất",
@@ -5113,6 +5127,7 @@ export default {
                 material: "Thông tin nguyên vật liệu",
                 lot_edit: "Chỉnh sửa lô sản xuất",
                 create_bill: "Lên phiếu nhập kho",
+
             },
         },
     },

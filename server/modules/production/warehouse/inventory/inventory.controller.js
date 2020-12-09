@@ -200,7 +200,7 @@ exports.getDetailManufacturingLot = async (req, res) => {
 
 exports.getInventoryByGoods = async (req, res) => {
     try {
-        const invetory = await LotService.getInventoryByGoods(req.body, req.portal);
+        const invetory = await LotService.getInventoryByGoods(req.query, req.portal);
 
         await Logger.info(req.user.email, 'GET_INVENTORY_SUCCESS', req.portal);
         res.status(200).json({
