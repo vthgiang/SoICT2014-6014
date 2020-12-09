@@ -225,7 +225,7 @@ class DashBoardEmployees extends Component {
                     </div>
                     <div className="nav-tabs-custom">
                         <ul className="nav nav-tabs">
-                            <li className="active"><a href="#human-resourse" data-toggle="tab" onClick={() => this.handleNavTabs()}>Tổng quan nhân sự</a></li>
+                            <li className="active"><a href="#human-resourse" data-toggle="tab" onClick={() => this.handleNavTabs(true)}>Tổng quan nhân sự</a></li>
                             <li><a href="#annualLeave" data-toggle="tab" onClick={() => this.handleNavTabs()}>Nghỉ phép-Tăng ca</a></li>
                             <li><a href="#salary" data-toggle="tab" onClick={() => this.handleNavTabs(true)}>Lương thưởng nhân viên</a></li>
                             <li><a href="#integrated-statistics" data-toggle="tab">Thống kê tổng hợp</a></li>
@@ -233,9 +233,7 @@ class DashBoardEmployees extends Component {
                         <div className="tab-content ">
                             {/* Tab tổng quan nhân sự*/}
                             <div className="tab-pane active" id="human-resourse">
-                                <LazyLoadComponent>
-                                    <TabHumanResource childOrganizationalUnit={childOrganizationalUnit} defaultUnit={false} organizationalUnits={organizationalUnits} monthShow={monthShow} />
-                                </LazyLoadComponent>
+                                <TabHumanResource childOrganizationalUnit={childOrganizationalUnit} defaultUnit={false} organizationalUnits={organizationalUnits} monthShow={monthShow} />
                             </div>
 
                             {/* Tab nghỉ phép tăng ca*/}
