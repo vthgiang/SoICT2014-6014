@@ -292,7 +292,7 @@ class AssetCrashManager extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(lists && lists.length) &&
+                            {(lists && lists.length) ?
                                 lists.filter(item => item.assignedToUser === auth.user._id).map(asset => {
                                     return asset.incidentLogs.filter(item => item.reportedBy === auth.user._id).map((x, index) => (
                                         <tr key={index}>
@@ -318,7 +318,7 @@ class AssetCrashManager extends Component {
                                             </td>
                                         </tr>
                                     ))
-                                })
+                                }) : null
 
                             }
                         </tbody>

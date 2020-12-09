@@ -2298,6 +2298,8 @@ export default {
                 cancel: "Hủy",
 
                 select_asset_type: "Chọn loại tài sản",
+                select_asset_status: "Chọn trạng thái tài sản",
+                asset_status:"Trạng thái tài sản",
                 select_all_asset_type: "Chọn tất cả loại tài sản",
                 select_all_status: "Chọn tất cả trạng thái",
                 select_all_group: "Chọn tất cả nhóm tài sản",
