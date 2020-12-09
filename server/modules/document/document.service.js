@@ -25,8 +25,8 @@ exports.getDocuments = async (
 ) => {
     const og = currentRole
         ? await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({
-              deans: currentRole,
-          })
+            deans: currentRole,
+        })
         : null;
     let { by, page, limit } = query;
     if (!(page || limit)) {
@@ -42,7 +42,7 @@ exports.getDocuments = async (
             }
         } else {
             return await Document(connect(DB_CONNECTION, portal))
-                .find({ })
+                .find({})
                 .select(
                     "id name archives category domains numberOfDownload numberOfView "
                 );
@@ -51,9 +51,9 @@ exports.getDocuments = async (
         let option =
             by === "organizational-unit" && og
                 ? {
-                      archivedRecordPlaceOrganizationalUnit: og._id,
-                  }
-                : { };
+                    archivedRecordPlaceOrganizationalUnit: og._id,
+                }
+                : {};
 
         if (query.category) {
             option.category = query.category;
@@ -158,11 +158,13 @@ exports.increaseNumberView = async (id, viewer, portal) => {
  * Tạo một tài liệu văn bản mới
  */
 exports.createDocument = async (portal, data, company) => {
+    console.log('dtaaaaaaaa', data);
     let numberFile = 0,
         numberFileScan = 0;
     const existedName = await Document(connect(DB_CONNECTION, portal)).findOne({
         name: data.name,
     });
+    console.log('exxx', existedName)
     if (existedName) throw ["document_exist"];
     const existedNumber = await Document(
         connect(DB_CONNECTION, portal)
@@ -187,12 +189,12 @@ exports.createDocument = async (portal, data, company) => {
         archivedRecordPlaceOrganizationalUnit: data.archivedRecordPlaceOrganizationalUnit,
     };
     let versions = [];
-    if(data.versionName && data.scannedFileOfSignedDocument){
+    if (data.versionName && data.scannedFileOfSignedDocument) {
         if (!Array.isArray(data.versionName)) {
             versions = [
                 {
                     versionName: data.versionName,
-             
+
                     issuingDate: dateParse(data.issuingDate),
                     effectiveDate: dateParse(data.effectiveDate),
                     expiredDate: dateParse(data.expiredDate),
@@ -213,7 +215,7 @@ exports.createDocument = async (portal, data, company) => {
                             : "",
                     scannedFileOfSignedDocument:
                         data.numberFileScan[i] == 1 &&
-                        data.scannedFileOfSignedDocument
+                            data.scannedFileOfSignedDocument
                             ? data.scannedFileOfSignedDocument[numberFileScan++]
                             : "",
                 };
@@ -353,7 +355,7 @@ exports.editDocument = async (id, data, query = undefined, portal) => {
             data.archivedRecordPlaceOrganizationalUnit &&
             data.archivedRecordPlaceOrganizationalUnit !== "[object Object]"
         ) {
-            console.log('type:', typeof(data.archivedRecordPlaceOrganizationalUnit))
+            console.log('type:', typeof (data.archivedRecordPlaceOrganizationalUnit))
             doc.archivedRecordPlaceOrganizationalUnit =
                 data.archivedRecordPlaceOrganizationalUnit;
         }
@@ -563,9 +565,9 @@ exports.getDocumentCategories = async (portal, query, company) => {
         const option =
             query.key !== undefined && query.value !== undefined
                 ? Object.assign(
-                      { company },
-                      { [`${query.key}`]: new RegExp(query.value, "i") }
-                  )
+                    { company },
+                    { [`${query.key}`]: new RegExp(query.value, "i") }
+                )
                 : { company };
         return await DocumentCategory(
             connect(DB_CONNECTION, portal)
