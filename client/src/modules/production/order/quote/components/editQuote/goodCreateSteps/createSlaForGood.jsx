@@ -26,11 +26,9 @@ class CreateSlaForGood extends Component {
             handleSlasOfGoodChange(slasOfGood);
         } else {
             let textUnChecked = item.descriptions[index];
-            if (slasOfGood[`${slaId}`]) {
-                let descriptions = slasOfGood[`${slaId}`].filter((element) => element !== textUnChecked);
-                slasOfGood[`${slaId}`] = descriptions;
-                handleSlasOfGoodChange(slasOfGood);
-            }
+            let descriptions = slasOfGood[`${slaId}`].filter((element) => element !== textUnChecked);
+            slasOfGood[`${slaId}`] = descriptions;
+            handleSlasOfGoodChange(slasOfGood);
         }
         slasOfGoodChecked[`${id}`] = checked;
         this.props.setSlasOfGoodChecked(slasOfGoodChecked);

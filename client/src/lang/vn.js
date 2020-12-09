@@ -2781,6 +2781,7 @@ export default {
                     "Không thể thay đổi trạng thái công việc",
                 edit_status_archived_of_task_fail:
                     "Chỉnh sửa trạng thái lưu kho của công việc thất bại",
+                task_status_error: "Trạng thái của công việc không cho phép lưu kho",
                 confirm_delete:
                     "Không thể xóa công việc này vì công việc đang trong quá trình thực hiện!",
 

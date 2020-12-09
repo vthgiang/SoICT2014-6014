@@ -251,6 +251,10 @@ exports.deleteEmployeeKpi = async (portal, id, employeeKpiSetId) => {
     employeeKpiSet = employeeKpiSet && await employeeKpiSet
         .populate("organizationalUnit creator approver")
         .populate({ path: "kpis", populate: { path: 'parent' } })
+        .populate([
+            { path: 'comments.creator', select: 'name email avatar ' },
+            { path: 'comments.comments.creator', select: 'name email avatar' }
+        ])
         .execPopulate();
 
     return employeeKpiSet;
@@ -265,6 +269,10 @@ exports.updateEmployeeKpiSetStatus = async (portal, id, statusId) => {
     employeeKpiSet = employeeKpiSet && await employeeKpiSet
         .populate("organizationalUnit creator approver")
         .populate({ path: "kpis", populate: { path: 'parent' } })
+        .populate([
+            { path: 'comments.creator', select: 'name email avatar ' },
+            { path: 'comments.comments.creator', select: 'name email avatar' }
+        ])
         .execPopulate();
 
     return employeeKpiSet;

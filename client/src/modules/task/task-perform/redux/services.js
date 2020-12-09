@@ -443,7 +443,7 @@ function editArchivedOfTask(taskId) {
         data: {
             type: 'edit_archived'
         }
-    }, false, true, 'task.task_management');
+    }, true, true, 'task.task_management');
 }
 
 /**

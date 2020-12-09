@@ -1,3 +1,5 @@
+import Swal from 'sweetalert2';
+
 export const AutomaticTaskPointCalculator = {
     calcAutoPoint
 }
@@ -16,6 +18,15 @@ String.prototype.replaceAll = function (
     }
 
     return (strText);
+}
+
+const calculateExpression = (expression) => {
+    try{
+        let point = eval(expression);
+        return point;
+    }catch(err){
+        return null;
+    }
 }
 
 function calcAutoPoint(data) {
@@ -75,8 +86,6 @@ function calcAutoPoint(data) {
     let autoHasActionInfo = progress / (daysUsed / totalDays) - 0.5 * (10 - (averageActionRating)) * 10;
     let automaticPoint = 0;
 
-    console.log('avgRating', averageActionRating);
-
     if (!task.formula) {
         if (task.taskTemplate === null || task.taskTemplate === undefined) { // Công việc không theo mẫu
             automaticPoint = a ? autoHasActionInfo : autoDependOnDay;
@@ -111,7 +120,7 @@ function calcAutoPoint(data) {
             }
 
             // automaticPoint = 1;
-            automaticPoint = eval(formula);
+            automaticPoint = calculateExpression(formula);
         }
     }
     else {
@@ -159,11 +168,8 @@ function calcAutoPoint(data) {
             }
         }
 
-
-        console.log('form2', formula);
-        automaticPoint = eval(formula);
+        automaticPoint = calculateExpression(formula);
     }
 
-    // automaticPoint = ( !isNaN(automaticPoint) && automaticPoint > 0 ) ? automaticPoint : 0;
     return Math.round(Math.min(automaticPoint, 100));
 }
