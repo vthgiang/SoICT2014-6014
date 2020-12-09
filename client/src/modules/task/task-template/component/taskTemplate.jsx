@@ -183,6 +183,17 @@ class TaskTemplate extends Component {
         );
     }
 
+    getPriority = (value) => {
+        let priority = Number(value);
+        let { translate } = this.props;
+        switch (priority) {
+            case 1: return translate('task_template.low');
+            case 2: return translate('task_template.medium');
+            case 3: return translate('task_template.high');
+            default: return '';
+        }
+    }
+
     handleChangeTaskTemplateName = (e) => {
         let { value } = e.target;
         this.setState({
@@ -347,7 +358,7 @@ class TaskTemplate extends Component {
                 let actionName = [], actionDescription = [], mandatory = [];
 
                 if (!role.isLoading && !auth.isLoading) {
-                    annunciator = auth.user.name + " - " + role.item.name;
+                    annunciator = auth.user.name + role.item ? " - " + role.item.name : '';
                 }
                 if (x.taskActions) {
                     if (x.taskActions.length > length) {
@@ -405,7 +416,7 @@ class TaskTemplate extends Component {
                         } else {
                             filledByAccountableEmployeesOnly[i] = "false";
                         }
-                        
+
                     }
                     for (let i in x.taskInformations) {
                         if (x.taskInformations[i].description) {
@@ -481,7 +492,7 @@ class TaskTemplate extends Component {
                     collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits[0],
                     creator: x.creator.email,
                     annunciator: annunciator,
-                    priority: x.priority,
+                    priority: this.getPriority(x.priority),
                     formula: x.formula,
                     actionName: actionName[0],
                     actionDescription: actionDescription[0],
