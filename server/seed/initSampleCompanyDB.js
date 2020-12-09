@@ -5629,7 +5629,7 @@ const initSampleCompanyDB = async () => {
            {
                 title: "Chất lượng sản phẩm đi đầu",
                 code:"SLA_201124144445",
-                description: ["Sản phẩm đi đầu về chất lượng", "Đóng gói đúng quy trình"],
+                descriptions: ["Sản phẩm đi đầu về chất lượng", "Đóng gói đúng quy trình"],
                 creator: users[1]._id,
                 goods: [listProduct[0]._id, listProduct[1]._id,listProduct[2]._id],
                status: true,
@@ -5639,7 +5639,7 @@ const initSampleCompanyDB = async () => {
            {
             title: "Quy cách về hàng hóa",
             code:"SLA_20111219136",
-            description: ["Sản phẩm đạt tiêu chuẩn an toàn", "Sản phẩm được đóng gói theo tiêu chuẩn quốc tế"],
+            descriptions: ["Sản phẩm đạt tiêu chuẩn an toàn", "Sản phẩm được đóng gói theo tiêu chuẩn quốc tế"],
             creator: users[1]._id,
             goods: [listProduct[0]._id, listProduct[1]._id],
             status: true,
