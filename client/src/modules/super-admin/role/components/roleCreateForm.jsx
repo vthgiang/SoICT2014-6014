@@ -13,16 +13,16 @@ class RoleCreateForm extends Component {
             roleParents: [],
         }
     }
-    
+
     componentDidMount() {
         this.props.get();
     }
 
     handleRoleName = (e) => {
-        let {value} = e.target;
-        let {translate} = this.props;
-        let {message} = ValidationHelper.validateName(translate, value, 4, 255);
-        this.setState({ 
+        let { value } = e.target;
+        let { translate } = this.props;
+        let { message } = ValidationHelper.validateName(translate, value, 4, 255);
+        this.setState({
             roleName: value,
             roleNameError: message
         });
@@ -48,9 +48,9 @@ class RoleCreateForm extends Component {
     }
 
     isFormValidated = () => {
-        let {roleName} = this.state;
-        let {translate} = this.props;
-        if(!ValidationHelper.validateName(translate, roleName).status) return false;
+        let { roleName } = this.state;
+        let { translate } = this.props;
+        if (!ValidationHelper.validateName(translate, roleName).status) return false;
         return true;
     }
 
@@ -100,7 +100,7 @@ class RoleCreateForm extends Component {
                                 style={{ width: "100%" }}
                                 items={
                                     role.list.filter(role => (role && role.name !== 'Super Admin'))
-                                        .map(role => { return { value: role ? role._id : null, text: role ? role.name : "Role is deleted" } })
+                                        .map(role => { return { value: role ? role._id : null, text: role ? role.name : "" } })
                                 }
                                 onChange={this.handleParents}
                                 multiple={true}
@@ -115,7 +115,7 @@ class RoleCreateForm extends Component {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={
-                                    user.list.map(user => { return { value: user ? user._id : null, text: user ? `${user.name} - ${user.email}` : "User is deleted" } })
+                                    user.list.map(user => { return { value: user ? user._id : null, text: user ? `${user.name} - ${user.email}` : "" } })
                                 }
                                 onChange={this.handleUsers}
                                 multiple={true}

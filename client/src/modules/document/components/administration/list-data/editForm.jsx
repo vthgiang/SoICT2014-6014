@@ -839,7 +839,7 @@ class EditForm extends Component {
                                                     style={{ width: "100%" }}
                                                     items={department.list.map(organ => { return { value: organ._id, text: organ.name } })}
                                                     onChange={this.handleArchivedRecordPlaceOrganizationalUnit}
-                                                    value={[documentArchivedRecordPlaceOrganizationalUnit]}
+                                                    value={documentArchivedRecordPlaceOrganizationalUnit}
                                                     multiple={false}
                                                 />
                                             </div>
@@ -863,8 +863,8 @@ class EditForm extends Component {
                                                     handleChange={this.handleArchives}
                                                     mode="hierarchical"
                                                 />
-                                                {path && path.length ? path.map(y =>
-                                                    <div>{y}</div>
+                                                {path && path.length ? path.map((y, index) =>
+                                                    <div key={index}>{y}</div>
                                                 ) : null}
                                             </div>
                                         </div>

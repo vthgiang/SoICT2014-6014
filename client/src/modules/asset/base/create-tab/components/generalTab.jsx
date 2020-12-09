@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DatePicker, ErrorLabel, SelectBox, TreeSelect, SelectMulti, ApiImage } from '../../../../../common-components';
+import { DatePicker, ErrorLabel, SelectBox, TreeSelect, ApiImage } from '../../../../../common-components';
 import "./addAsset.css";
 import { AssetCreateValidator } from './combinedContent';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
@@ -16,6 +16,7 @@ class GeneralTab extends Component {
         this.state = {
             detailInfo: [],
             isObj: true,
+            defaultAvatar: "image/asset_blank.jpg"
         };
     }
 
@@ -25,6 +26,7 @@ class GeneralTab extends Component {
             ...state,
             code: code,
         }));
+        this.validateCode(code);
     }
     componentDidMount = () => {
         // Mỗi khi modal mở, cần sinh lại code
@@ -537,8 +539,7 @@ class GeneralTab extends Component {
     }
 
     render() {
-        const { id } = this.props;
-        const { translate, user, assetsManager, role, department } = this.props;
+        const { id, translate, user, assetsManager, role, department } = this.props;
         const {
             img, defaultAvatar, code, assetName, assetTypes, group, serial, purchaseDate, warrantyExpirationDate, managedBy, isObj,
             assignedToUser, assignedToOrganizationalUnit, location, description, status, typeRegisterForUse, detailInfo,
@@ -568,6 +569,7 @@ class GeneralTab extends Component {
             }
         })
         let typeArr = this.getAssetTypes();
+        console.log('STATTEEE', this.state.img);
 
         return (
             <div id={id} className="tab-pane active">
@@ -575,7 +577,12 @@ class GeneralTab extends Component {
                     {/* Ảnh tài sản */}
                     <div className="col-md-4" style={{ textAlign: 'center', paddingLeft: '0px' }}>
                         <div>
-                            {< ApiImage className="attachment-img avarta" id={`avatar-imform-${id}`} src={img ? img : defaultAvatar} />}
+                            {
+                                img ?
+                                    < ApiImage className="attachment-img avarta" id={`avatar-imform-${id}`} src={img} />
+                                    :
+                                    <img className="customer-avatar" src={defaultAvatar} />
+                            }
                         </div>
                         <div className="upload btn btn-default ">
                             {translate('manage_asset.upload')}

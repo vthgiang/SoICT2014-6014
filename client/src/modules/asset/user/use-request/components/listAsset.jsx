@@ -207,7 +207,7 @@ class ListAsset extends Component {
     }
 
     convertGroupAsset = (group) => {
-        const {translate} = this.props;
+        const { translate } = this.props;
         if (group === 'building') {
             return translate('asset.dashboard.building');
         } else if (group === 'vehicle') {
@@ -218,7 +218,7 @@ class ListAsset extends Component {
             return translate('asset.dashboard.other')
         } else return null;
     }
-    
+
     convertStatusAsset = (status) => {
         const { translate } = this.props;
         if (status === 'ready_to_use') {
@@ -387,7 +387,7 @@ class ListAsset extends Component {
                                         <td>{x.code}</td>
                                         <td>{x.assetName}</td>
                                         <td>{this.convertGroupAsset(x.group)}</td>
-                                        <td>{x.assetType && x.assetType.length ? x.assetType.map((item, index) => { let suffix = index < x.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : 'Asset Type is deleted'}</td>
+                                        <td>{x.assetType && x.assetType.length ? x.assetType.map((item, index) => { let suffix = index < x.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : ''}</td>
                                         <td>{x.assignedToUser ? (userlist.length && userlist.filter(item => item._id === x.assignedToUser).pop() ? userlist.filter(item => item._id === x.assignedToUser).pop().name : '') : ''}</td>
                                         <td>{x.handoverFromDate ? this.formatDate2(x.handoverFromDate) : ''}</td>
                                         <td>{x.handoverToDate ? this.formatDate2(x.handoverToDate) : ''}</td>

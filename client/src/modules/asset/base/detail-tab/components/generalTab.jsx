@@ -165,7 +165,7 @@ class GeneralTab extends Component {
                                     {/* Loại tài sản */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.asset_type')}&emsp; </strong>
-                                        {assetTypes && assetTypes.length ? assetTypes.map((item, index) => { let suffix = index < assetTypes.length - 1 ? ", " : ""; return item.typeName + suffix }) : 'Asset type is deleted'}
+                                        {assetTypes && assetTypes.length ? assetTypes.map((item, index) => { let suffix = index < assetTypes.length - 1 ? ", " : ""; return item.typeName + suffix }) : ''}
                                     </div>
 
                                     {/* Ngày nhập */}

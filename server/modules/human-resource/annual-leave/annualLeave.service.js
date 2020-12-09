@@ -152,9 +152,10 @@ exports.getTotalAnnualLeave = async (portal, company, organizationalUnits, month
         }
     };
 
-    let totalList = await AnnualLeave(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    let listAnnulLeave = await AnnualLeave(connect(DB_CONNECTION, portal)).find(keySearch);
     return {
-        totalList,
+        totalList: listAnnulLeave.length,
+        totalListAnnulLeave: listAnnulLeave,
         totalListOfYear
     };
 }

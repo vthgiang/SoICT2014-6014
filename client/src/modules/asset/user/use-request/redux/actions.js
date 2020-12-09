@@ -35,42 +35,23 @@ function searchRecommendDistributes(data) {
 
 // Tạo mới thông tin phiếu đề nghị mua sắm thiết bị
 function createRecommendDistribute(data) {
-    return async dispatch => {
-        try {
-            dispatch({
-                type: RecommendDistributeConstants.CREATE_RECOMMEND_DISTRIBUTE_REQUEST
-            });
-            const response = await RecommendDistributeService.createRecommendDistribute(data).then(res => res);
-            
-            dispatch(searchRecommendDistributes({
-                recommendNumber: "",
-                month: "",
-                status: "",
-                page: 0,
-                limit: 5,
-            }));
-            dispatch(AssetManagerActions.getAllAsset({
-                code: "",
-                assetName: "",
-                month: "",
-                type: null,
-                page: 0,
-                limit: 5,
-            }));
-            dispatch({
-                type: RecommendDistributeConstants.CREATE_RECOMMEND_DISTRIBUTE_SUCCESS,
-                payload: response.data.content
-            });
-            return {
-                response
-            }
-        } catch (err) {
-            dispatch({
-                type: RecommendDistributeConstants.CREATE_RECOMMEND_DISTRIBUTE_FAILURE,
-                error: err.response.data
-            });
-        }
-
+    return dispatch => {
+        dispatch({
+            type: RecommendDistributeConstants.CREATE_RECOMMEND_DISTRIBUTE_REQUEST
+        });
+        RecommendDistributeService.createRecommendDistribute(data)
+            .then(res => {
+                dispatch({
+                    type: RecommendDistributeConstants.CREATE_RECOMMEND_DISTRIBUTE_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(err => {
+                dispatch({
+                    type: RecommendDistributeConstants.CREATE_RECOMMEND_DISTRIBUTE_FAILURE,
+                    error: err.response.data
+                });
+            })
     }
 }
 

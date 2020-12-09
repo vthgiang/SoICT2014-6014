@@ -46,6 +46,12 @@ const QuoteSchema = Schema({
     customerRepresent: { //người đại diện
         type: String
     },
+    customerTaxNumber: {
+        type: String
+    },
+    customerEmail: {
+        type: String
+    },
     goods: [{
         good: {
             type: Schema.Types.ObjectId,

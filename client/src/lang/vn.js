@@ -34,7 +34,6 @@ export default {
             success: "Thành công",
             error: "Lỗi",
             new_notification: "Bạn có thông báo mới!",
-            search: "Gõ để tìm kiêm",
             auth_alert: {
                 title:
                     "Hệ thống xác nhận có lỗi xảy ra trong phiên làm việc của bạn!",
@@ -1640,7 +1639,7 @@ export default {
                 ethnic: "Dân tộc",
                 nationality: "Quốc tịch",
                 religion: "Tôn giáo",
-                active: "Đang làm việc",
+                active: "Làm việc chính thức",
                 leave: "Đã nghỉ làm",
                 career_fields: "Ngành nghề/lĩnh vực",
                 maternity_leave: "Nghỉ thai sản",
@@ -1675,7 +1674,7 @@ export default {
                 university: "Đại học",
                 master_degree: "Thạc sỹ",
                 phd: "Tiến sỹ",
-                unavailable: "Không có",
+                unavailable: "Khác",
                 work_experience: "Kinh nghiệm làm việc",
                 unit: "Đơn vị công tác",
                 from_month_year: "Từ tháng/năm",
@@ -2299,6 +2298,8 @@ export default {
                 cancel: "Hủy",
 
                 select_asset_type: "Chọn loại tài sản",
+                select_asset_status: "Chọn trạng thái tài sản",
+                asset_status:"Trạng thái tài sản",
                 select_all_asset_type: "Chọn tất cả loại tài sản",
                 select_all_status: "Chọn tất cả trạng thái",
                 select_all_group: "Chọn tất cả nhóm tài sản",
@@ -2736,7 +2737,7 @@ export default {
 
         task: {
             task_management: {
-                get_subtask_success: "Lấy công việc con thành công",
+                get_subtask_success: "Lấy công việc liên quan thành công",
                 get_task_of_informed_employee_success:
                     "Lấy công việc theo vai trò người quan sát thành công",
                 get_task_of_creator_success:
@@ -2760,7 +2761,7 @@ export default {
                 edit_status_archived_of_task_success:
                     "Chỉnh sửa trạng thái lưu kho của công việc thành công",
 
-                get_subtask_fail: "Lấy công việc con thất bại",
+                get_subtask_fail: "Lấy công việc liên quan thất bại",
                 get_task_of_informed_employee_fail:
                     "Lấy công việc theo vai trò người quan sát thất bại",
                 get_task_of_creator_fail:
@@ -2782,6 +2783,7 @@ export default {
                     "Không thể thay đổi trạng thái công việc",
                 edit_status_archived_of_task_fail:
                     "Chỉnh sửa trạng thái lưu kho của công việc thất bại",
+                task_status_error: "Trạng thái của công việc không cho phép lưu kho",
                 confirm_delete:
                     "Không thể xóa công việc này vì công việc đang trong quá trình thực hiện!",
 
@@ -2810,7 +2812,7 @@ export default {
 
                 add_task: "Thêm mới",
                 add_title: "Thêm mới một công việc",
-                add_subtask: "Thêm công việc con",
+                add_subtask: "Thêm công việc liên quan",
 
                 department: "Đơn vị",
                 select_department: "Chọn đơn vị",
@@ -2876,7 +2878,7 @@ export default {
                 action_delete: "Xóa công việc",
                 action_store: "Lưu vào kho",
                 action_restore: "Lấy ra khỏi kho",
-                action_add: "Thêm công việc con",
+                action_add: "Thêm công việc liên quan",
                 action_start_timer: "Bắt đầu bấm giờ",
 
                 from: "Từ ",
@@ -2984,8 +2986,8 @@ export default {
 
                 add_template: "Mẫu công việc",
                 add_template_notice: "Hãy chọn mẫu công việc",
-                add_parent_task: "Công việc cha",
-                add_parent_task_notice: "Hãy chọn công việc cha",
+                add_parent_task: "Công việc liên quan",
+                add_parent_task_notice: "Hãy chọn công việc liên quan",
                 add_raci: "Phân định trách nhiệm",
                 add_resp: "Chọn người thực hiện",
                 add_acc: "Chọn người phê duyệt",
@@ -3126,7 +3128,7 @@ export default {
                 communication: "Trao đổi",
                 documents: "Tài liệu",
                 timesheetlogs: "Lịch sử bấm giờ",
-                subtasks: "Công việc con",
+                subtasks: "Công việc liên quan",
                 change_history: "Lịch sử thay đổi",
                 change_process: "Quy trình",
                 change_incoming: "Dữ liệu vào",
@@ -3155,7 +3157,7 @@ export default {
                 create_action: "Thêm hoạt động",
                 total_time: "Tổng thời gian",
                 time: "Thời gian",
-                none_subtask: "Không có công việc con",
+                none_subtask: "Không có công việc liên quan",
                 enter_comment_action: "Nhập bình luận cho hoạt động",
                 create_comment_action: "Thêm bình luận",
                 stop_timer: "Dừng bấm giờ",
@@ -4091,7 +4093,7 @@ export default {
                 product: "Sản phẩm",
                 material: "Nguyên vật liệu",
                 equipment: "Công cụ dụng cụ",
-                asset: "Tài sản",
+                waste: "Phế phẩm",
                 search: "Tìm kiếm",
                 validate_code: "Mã danh mục không được để trống",
                 validate_name: "Tên danh mục không được để trống",
@@ -4102,7 +4104,7 @@ export default {
                 product: "Sản phẩm",
                 material: "Nguyên vật liệu",
                 equipment: "Công cụ dụng cụ",
-                asset: "Tài sản",
+                waste: "Tài sản",
                 index: "STT",
                 add: "Thêm mới",
                 add_title: "Thêm hàng hóa mới",
@@ -4126,7 +4128,7 @@ export default {
                 product: "Sản phẩm",
                 material: "Nguyên vật liệu",
                 equipment: "Công cụ dụng cụ",
-                asset: "Tài sản",
+                waste: "Phế phẩm",
                 search: "Tìm kiếm",
                 validate_code: "Mã hàng hóa không được để trống",
                 validate_name: "Tên hàng hóa không được để trống",
@@ -4203,11 +4205,18 @@ export default {
                 max_quantity: "Định mức tối đa",
                 min_quantity: "Định mức tối thiểu",
                 choose_good: "Chọn hàng hóa",
+                choose_role: "Chọn quyền quản lý",
                 validate_good: "Hàng hóa không được để trống",
                 detail_stock: "Xem chi tiết kho",
                 validate_address: "Địa chỉ không được bỏ trống",
                 validate_department: "Phòng ban không được để trống",
                 validate_management: "Các vị trí quản lý không được để trống",
+                product: "Sản phẩm",
+                material: "Nguyên vật liệu",
+                equipment: "Công cụ dụng cụ",
+                waste: "Phế phẩm",
+                role: "Quyền quản lý",
+                management_good: "Loại hàng hóa được quản lý"
             },
             bin_location_management: {
                 product: "Sản phẩm",
@@ -4346,6 +4355,7 @@ export default {
                 receipt_stock: "Kho nhập",
                 customer: "Khách hàng",
                 supplier: "Nhà cung cấp",
+                mill: "Xưởng sản xuất",
                 issued: "Đơn đã xuất",
                 partner: "Đối tác",
                 bill_detail: "Chi tiết đơn hàng",
@@ -4482,7 +4492,7 @@ export default {
                 product: "Sản phẩm",
                 material: "Nguyên vật liệu",
                 equipment: "Công cụ dụng cụ",
-                asset: "Tài sản",
+                waste: "Phế phẩm",
                 name: "Tên hàng hóa",
                 stock: "Kho",
                 index: "STT",
@@ -4749,9 +4759,9 @@ export default {
                 creator: "Người tạo",
                 index: "STT",
                 select_all: "Chọn tất cả",
-                1: {content: "Chưa xử lý", color: "orange"},
-                2: {content: "Đã xử lý", color: "green"},
-                3: {content: "Đã hủy", color: "red"},
+                1: { content: "Chưa xử lý", color: "orange" },
+                2: { content: "Đã xử lý", color: "green" },
+                3: { content: "Đã hủy", color: "red" },
                 search: "Tìm kiếm",
                 select_status: "Chọn trạng thái",
                 add_purchasing_request_button: "Thêm phiếu",
@@ -4884,6 +4894,57 @@ export default {
                 progress_1: "Đúng tiến độ",
                 progress_2: "Chậm tiến độ",
                 progress_3: "Quá hạn",
+
+                general_info: "Thông tin chung",
+                material_info: "Nguyên vật liệu",
+                command_info: "Lệnh sản xuất",
+                turn_info: "Ca sản xuất",
+                worker_info: "Công nhân",
+                create_plan: "Tạo kế hoạch",
+                create_plan_title: "Tạo kế hoạch sản xuất",
+                create_successfully: "Tạo kế hoạch sản xuất thành công",
+                create_failed: "Tạo kế hoạch sản xuất thất bại",
+                choose_sales_order: "Chọn đơn kinh doanh",
+                sales_order: {
+                    "1": {
+                        content: "Thấp"
+                    },
+                    "2": {
+                        content: "Trung bình"
+                    },
+                    "3": {
+                        content: "Cao"
+                    },
+                    "4": {
+                        content: "Đặc biệt"
+                    }
+                },
+                add_good_info: "Thêm thông tin các sản phẩm sản xuất",
+                good: "Sản phẩm",
+                good_code: "Mã sản phẩm",
+                good_name: "Tên sản phẩm",
+                choose_good: "Chọn sản phẩm",
+                base_unit: "Đơn vị tính tiêu chuẩn",
+                quantity_good_inventory: "Số lượng tồn kho",
+                quantity: "Số lượng sản xuất",
+                choose_good_input: "---Chọn sản phẩm---",
+                error_good: "Vui lòng chọn sản phẩm",
+                error_quantity: "Vui lòng nhập số lượng",
+                error_quantity_input: "Số lượng nhập vào không hợp lệ",
+                sales_order_info: "Thông tin sản phẩm trong đơn",
+                add_to_plan: "Thêm tất cả",
+                added_to_plan: "Đã thêm tất cả",
+                manufacturing_good_info: "Thông tin các sản phẩm cần sản xuất",
+                productivity_mill: "Thông tin năng xuất của phân xưởng sản xuất",
+                divide_command: "Phân chia các lệnh sản xuất",
+                quantity_commmanded: "Số lượng đã tạo lệnh",
+                mill: "Xưởng sản xuất",
+                productity: "Năng xuất / ca",
+                number_workers: "Số nhân công / ca"
+
+
+
+
             },
             command: {
                 code: "Mã lệnh sản xuất",
@@ -4937,8 +4998,7 @@ export default {
                 good_name: "Tên sản phẩm",
                 good_base_unit: "Đơn vị tính tiêu chuẩn",
                 packing_rule: "Quy cách đóng gói",
-                good_base_unit_quantity:
-                    "Số lượng sản phẩm theo đơn vị tính tiêu chuẩn",
+                good_base_unit_quantity: "Số lượng sản phẩm theo đơn vị tính tiêu chuẩn",
                 packing_rule_quantity: "Số lượng theo quy cách đóng gói",
                 approved: "Đã phê duyệt",
                 approvedTime: "Thời gian phê duyệt",
@@ -5045,14 +5105,13 @@ export default {
                 packing_rule: "Quy cách đóng gói",
                 conversion_rate: "Trọng số chuyển đổi",
                 quantity_packing_rule: "Số lượng theo quy cách đóng gói",
-                quantity_base_unit:
-                    "Số lượng cần sản xuất theo đơn vị tính tiêu chuẩn",
+                quantity_base_unit: "Số lượng cần sản xuất",
                 product_lot_code: "Mã lô thành phẩm",
                 code1: "Mã lô thành phẩm",
                 code2: "Mã lô phế phẩm",
                 finished_product: "Thành phẩm",
                 substandard_product: "Phế phẩm",
-                quantity: "Số lượng theo đơn vị tính tiêu chuẩn",
+                quantity: "Số lượng",
                 error_quantity_1: "Số lượng nhập vào không hợp lệ",
                 error_quantity_1_input: "Số lượng nhập vào phải lớn hơn 0",
                 description: "Mô tả",
@@ -5068,6 +5127,7 @@ export default {
                 material: "Thông tin nguyên vật liệu",
                 lot_edit: "Chỉnh sửa lô sản xuất",
                 create_bill: "Lên phiếu nhập kho",
+
             },
         },
     },

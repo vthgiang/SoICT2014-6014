@@ -219,7 +219,7 @@ class MaintainanceManagement extends Component {
                                 { key: "des", value: "Nội dung" },
                                 { key: "startDate", value: "Ngày bắt đầu" },
                                 { key: "endDate", value: "Ngày kết thúc" },
-                                { key: "cost", value: "chi phí" },
+                                { key: "cost", value: "Chi phí" },
                                 { key: "status", value: "Trạng thái" },
                             ],
                             data: convertedData

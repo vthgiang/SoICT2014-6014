@@ -76,7 +76,7 @@ class UseRequestManager extends Component {
     }
 
     formatDateTime(date, typeRegisterForUse) {
-        if(!date) return null;
+        if (!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -231,7 +231,7 @@ class UseRequestManager extends Component {
 
                 return {
                     index: index + 1,
-                    code: code, 
+                    code: code,
                     createDate: createDate,
                     assigner: assigner,
                     assetName: assetName,
@@ -240,9 +240,7 @@ class UseRequestManager extends Component {
                     dateEndUse: dateEndUse,
                     approver: approver,
                     status: status
-
                 }
-
             })
         }
 
@@ -264,7 +262,7 @@ class UseRequestManager extends Component {
                                 { key: "assetCode", value: "Mã tài sản" },
                                 { key: "dateStartUse", value: "Ngày bắt đầu sử dụng" },
                                 { key: "dateEndUse", value: "Ngày kết thúc sử dụng" },
-                                { key: "appprover", value: "Người phê duyệt" },
+                                { key: "approver", value: "Người phê duyệt" },
                                 { key: "status", value: "Trạng thái" },
                             ],
                             data: data
@@ -432,8 +430,7 @@ class UseRequestManager extends Component {
                                             <DeleteNotification
                                                 content={translate('asset.asset_info.delete_usage_info')}
                                                 data={{
-                                                    id: x._id,
-                                                    // info: x.recommendNumber + " - " + x.dateCreate.replace(/-/gi, "/")
+                                                    id: x._id
                                                 }}
                                                 func={this.props.deleteRecommendDistribute}
                                             />

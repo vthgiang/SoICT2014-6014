@@ -241,29 +241,21 @@
 .custom-file-input::-webkit-file-upload-button {
   visibility: hidden;
 }
+.custom-file-input {
+    background-color: #3c8dbc;
+    color: white;
+    padding: .8rem .9rem;
+    font-weight: 400;
+    border-radius: 0.3rem;
+    cursor: pointer;
 
-.custom-file-input::before{
-    content: ''
+    display: flex;
+    align-items: center;
 }
-.custom-file-input::after {
-  content: ' Cập nhật ảnh cơ cấu tổ chức';
-  display: inline-block;
-  border: 1px solid #999;
-  border-radius: 3px;
-  padding: 6px 8px;
-  outline: none;
-  white-space: nowrap;
-  -webkit-user-select: none;
-  cursor: pointer;
-  text-shadow: 1px 1px #fff;
-  font-weight: 700;
-  font-size: 10pt;
-}
-.custom-file-input:hover::before {
-  border-color: black;
-}
-.custom-file-input:active::before {
-  background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
+
+.icon_upload{
+    font-size: 19px;
+    margin-right: 5px;
 }
 
 .organizationalUnitImageWrapper{

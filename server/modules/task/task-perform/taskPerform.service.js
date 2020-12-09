@@ -4141,17 +4141,21 @@ exports.editTaskInformation = async (
  * @param taskID id công việc
  */
 exports.editArchivedOfTask = async (portal, taskID) => {
+    let task;
     let t = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
         taskID
     );
-    let isArchived = t.isArchived;
 
-    let task = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
+    let isArchived = t.isArchived;
+    if (t.status === 'finished' || t.status === 'delayed' || t.status === 'canceled') {
+        task = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
         taskID,
         { $set: { isArchived: !isArchived } },
         { new: true }
-    );
-
+        );
+    } else {
+        throw ['task_status_error']
+    }
     return task;
 };
 

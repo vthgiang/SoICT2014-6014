@@ -239,6 +239,7 @@ function getItemsForGood(goodId) {
             dispatch({
                 type: GoodConstants.GET_ITEMS_FOR_GOOD_SUCCESS,
                 payload: {
+                    goodId: goodId,
                     listTaxsByGoodId: res[0].taxs,
                     listSlasByGoodId: res[1].slas,
                     listDiscountsByGoodId: res[2].discounts

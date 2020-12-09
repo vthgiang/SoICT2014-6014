@@ -27,7 +27,7 @@ class ManageUserTable extends Component {
             currentRow: user
         }, () => window.$('#modal-edit-user').modal('show'));
     }
-    
+
     checkSuperRole = (roles) => {
         var result = false;
         if (roles !== undefined) {
@@ -50,7 +50,7 @@ class ManageUserTable extends Component {
                 key: this.state.option,
                 value: this.state.value
             };
-    
+
             this.props.getUser(data);
         });
     }
@@ -64,7 +64,7 @@ class ManageUserTable extends Component {
                     key: this.state.option,
                     value: this.state.value
                 };
-    
+
                 this.props.getUser(data);
             });
         }
@@ -155,7 +155,7 @@ class ManageUserTable extends Component {
                                 >
                                     <td>{parse(u.name)}</td>
                                     <td>{u.email}</td>
-                                    <td><ToolTip dataTooltip={u.roles.map(role => role && role.roleId ? role.roleId.name : "Role is deleted")} /></td>
+                                    <td><ToolTip dataTooltip={u.roles.map(role => role && role.roleId ? role.roleId.name : "")} /></td>
                                     <td>{u.active
                                         ? <p><i className="fa fa-circle text-success" style={{ fontSize: "1em", marginRight: "0.25em" }} /> {translate('manage_user.enable')} </p>
                                         : <p><i className="fa fa-circle text-danger" style={{ fontSize: "1em", marginRight: "0.25em" }} /> {translate('manage_user.disable')} </p>}</td>
@@ -177,8 +177,8 @@ class ManageUserTable extends Component {
                 </table>
                 {
                     user.isLoading ?
-                    <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                    user.listPaginate && user.listPaginate.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                        user.listPaginate && user.listPaginate.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                 }
 
                 {/* PaginateBar */}

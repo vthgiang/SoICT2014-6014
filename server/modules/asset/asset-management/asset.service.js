@@ -514,7 +514,7 @@ exports.createAsset = async (portal, company, data, fileInfo) => {
     // Lấy thông tin tài sản vừa thêm vào
     let assets = await Asset(connect(DB_CONNECTION, portal)).find({
         _id: createAsset._id,
-    });
+    }).populate({path: 'assetType'});
     return {assets};
 };
 
@@ -708,7 +708,7 @@ exports.updateAssetInformation = async (
     // Lấy thông tin tài sản vừa thêm vào
     let assets = await Asset(connect(DB_CONNECTION, portal)).find({
         _id: oldAsset._id,
-    });
+    }).populate({path: 'assetType'});
 
     if (createIncidentLogs || editIncidentLogs || deleteIncidentLogs) {
         let type;
@@ -1183,7 +1183,7 @@ exports.createIncident = async (portal, id, data) => {
     let assetIncident = await Asset(connect(DB_CONNECTION, portal)).update(
         {_id: id},
         {
-            status: data.status,
+            status: data.assetStatus,
             $addToSet: {incidentLogs: data},
         }
     );
@@ -1194,21 +1194,29 @@ exports.createIncident = async (portal, id, data) => {
  * Chỉnh sửa thông tin sự cố tài sản
  */
 exports.updateIncident = async (portal, incidentId, data) => {
-    return await Asset(connect(DB_CONNECTION, portal)).update(
-        {_id: data.assetId, "incidentLogs._id": incidentId},
-        {
-            $set: {
-                "incidentLogs.$.incidentCode": data.incidentCode,
-                "incidentLogs.$.type": data.type,
-                "incidentLogs.$.reportedBy": data.reportedBy,
-                "incidentLogs.$.dateOfIncident": data.dateOfIncident,
-                "incidentLogs.$.description": data.description,
-                "incidentLogs.$.statusIncident": data.statusIncident,
-                status: data.status,
-            },
+    const { assetId } = data;
+    const incident = await Asset(connect(DB_CONNECTION, portal)).findOneAndUpdate({ _id: assetId, "incidentLogs._id": incidentId }, {
+        $set: {
+            "incidentLogs.$.incidentCode": data.incidentCode,
+            "incidentLogs.$.type": data.type,
+            "incidentLogs.$.reportedBy": data.reportedBy,
+            "incidentLogs.$.dateOfIncident": data.dateOfIncident,
+            "incidentLogs.$.description": data.description,
+            "incidentLogs.$.statusIncident": data.statusIncident,
+            status: data.assetStatus
         }
-    );
-};
+    }, { new: true }).lean();
+
+    let newIncident = {};
+    if (incident) {
+        incident.incidentLogs.map(obj => {
+            if (JSON.stringify(obj._id) === JSON.stringify(incidentId)) {
+                newIncident = { ...obj, asset: incident }
+            }
+        })
+    }
+    return newIncident;
+}
 
 /**
  * Xóa thông tin sự cố tài sản

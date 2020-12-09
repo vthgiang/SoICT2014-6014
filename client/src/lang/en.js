@@ -34,7 +34,6 @@ export default {
             success: "Successfully",
             error: "Error",
             new_notification: "You have new notification!",
-            search: "Type here to search",
             auth_alert: {
                 title: "Current Session invalid. Please log in again",
                 reason: "Reasons maybe:",
@@ -1462,7 +1461,7 @@ export default {
                 ethnic: "Ethnic group",
                 nationality: "Nationality",
                 religion: "Religion",
-                active: "Official staff",
+                active: "Official working",
                 leave: "Quit job",
                 career_fields: "Career/fields",
                 maternity_leave: "Maternity leave",
@@ -1498,7 +1497,7 @@ export default {
                 university: "University",
                 master_degree: "Maste degree",
                 phd: "Ph.D",
-                unavailable: "Unavailable",
+                unavailable: "Other",
                 work_experience: "Work experience",
                 unit: "Unit",
                 from_month_year: "From month/year",
@@ -2524,6 +2523,7 @@ export default {
                 edit_status_of_task_fail: "Can't edit status of task",
                 edit_status_archived_of_task_fail:
                     "Can't edit archived status of task",
+                task_status_error:"Status of task doesn't allow archive",
                 confirm_delete:
                     "This task cannot be deleted because it is in progress!",
 

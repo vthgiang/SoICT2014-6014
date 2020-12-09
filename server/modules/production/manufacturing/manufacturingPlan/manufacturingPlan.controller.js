@@ -48,3 +48,25 @@ exports.getAllManufacturingPlans = async (req, res) => {
         })
     }
 }
+
+exports.getApproversOfPlan = async (req, res) => {
+    try {
+        const currentRole = req.params.id;
+        let users = await ManufacturingPlanService.getApproversOfPlan(req.portal, currentRole);
+
+        await Logger.info(req.user.email, "GET_APPROVERS_OF_PLAN", req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["get_approvers_successfully"],
+            content: users
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, "GET_APPROVERS_OF_PLAN", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["get_approvers_failed"],
+            content: error.message
+        })
+    }
+}

@@ -274,7 +274,7 @@ class IncidentManagement extends Component {
         if (Number(type) === 1) {
             return translate('asset.general_information.damaged');
         } else if (Number(type) === 2) {
-            return translate('asset.general_information.lost')
+            return translate('asset.general_information.lost');
         } else {
             return null;
         }
@@ -306,6 +306,7 @@ class IncidentManagement extends Component {
         if (lists && userlist) {
             exportData = this.convertDataToExportData(lists, userlist);
         }
+
         return (
             <div className={isActive ? isActive : "box"}>
                 <div className="box-body qlcv">

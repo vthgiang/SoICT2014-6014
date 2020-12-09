@@ -226,7 +226,7 @@ class DepartmentEditForm extends Component {
                                                             className="form-control"
                                                             name={`dean${index}`}
                                                             placeholder={translate('manage_department.dean_example')}
-                                                            value={dean ? dean.name : "Dean is deleted"}
+                                                            value={dean ? dean.name : ""}
                                                             onChange={(e) => this.handleChangeDean(e, index)}
                                                         />
                                                     </td>
@@ -263,7 +263,7 @@ class DepartmentEditForm extends Component {
                                                             className="form-control"
                                                             name={`vicedean${index}`}
                                                             placeholder={translate('manage_department.vice_dean_example')}
-                                                            value={vicedean ? vicedean.name : "Vicedean is deleted"}
+                                                            value={vicedean ? vicedean.name : ""}
                                                             onChange={(e) => this.handleChangeViceDean(e, index)}
                                                         />
                                                     </td>
@@ -299,7 +299,7 @@ class DepartmentEditForm extends Component {
                                                         className="form-control"
                                                         name={`employee${index}`}
                                                         placeholder={translate('manage_department.employee_example')}
-                                                        value={employee ? employee.name : "Employee is deleted"}
+                                                        value={employee ? employee.name : ""}
                                                         onChange={(e) => this.handleChangeEmployee(e, index)}
                                                     /></td>
                                                     <td><a href="#delete-employee"

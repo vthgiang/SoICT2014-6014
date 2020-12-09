@@ -34,8 +34,15 @@ const StockSchema = new Schema ({
     },
 
     managementLocation: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Role'
+        role: {
+            type: Schema.Types.ObjectId,
+            ref: 'Role'
+        },
+
+        managementGood: [{
+            type: String,
+            enum: ["product", "material", "equipment", "waste"],
+        }]
     }],
 
     goods: [{

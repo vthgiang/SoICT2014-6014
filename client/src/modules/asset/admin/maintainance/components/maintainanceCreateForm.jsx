@@ -225,7 +225,7 @@ class MaintainanceCreateForm extends Component {
     }
 
     componentDidMount() {
-        this.props.getAllAsset({ page: 0, limit: 10 })
+        this.props.getAllAsset({ page: 0, limit: 20 })
     }
 
     render() {
