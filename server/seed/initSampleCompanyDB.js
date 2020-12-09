@@ -5980,7 +5980,7 @@ const initSampleCompanyDB = async () => {
                     name: listDistcounts[6].name,
                     effectiveDate: listDistcounts[6].effectiveDate,
                     expirationDate: listDistcounts[6].expirationDate,
-                    discountedPercentage: listDistcounts[6].discountedPercentage,
+                    discountedPercentage: 10,
                 },
                 {
                     _id: listDistcounts[7]._id,
@@ -5990,7 +5990,7 @@ const initSampleCompanyDB = async () => {
                     name: listDistcounts[7].name,
                     effectiveDate: listDistcounts[7].effectiveDate,
                     expirationDate: listDistcounts[7].expirationDate,
-                    loyaltyCoin: listDistcounts[7].loyaltyCoin,
+                    loyaltyCoin: 1000,
                 },
                 
             ],
