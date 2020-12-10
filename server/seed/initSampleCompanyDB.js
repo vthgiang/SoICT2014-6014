@@ -3665,21 +3665,21 @@ const initSampleCompanyDB = async () => {
             ],
             numberExpirationDate: 1000,
             description: "Sản phẩm trị cảm cúm",
-            manufacturingMills: [{
-                manufacturingMill: manufacturingMills[0]._id,
-                productivity: 100,
-                personNumber: 3
-            }, {
-                manufacturingMill: manufacturingMills[1]._id,
-                productivity: 100,
-                personNumber: 2
-            }, {
-                manufacturingMill: manufacturingMills[2]._id,
-                productivity: 50,
-                personNumber: 1
-            }],
-            pricePerBaseUnit: 100000,
-            salesPriceVariance: 10000
+            // manufacturingMills: [{
+            //     manufacturingMill: manufacturingMills[0]._id,
+            //     productivity: 100,
+            //     personNumber: 3
+            // }, {
+            //     manufacturingMill: manufacturingMills[1]._id,
+            //     productivity: 100,
+            //     personNumber: 2
+            // }, {
+            //     manufacturingMill: manufacturingMills[2]._id,
+            //     productivity: 50,
+            //     personNumber: 1
+            // }],
+            // pricePerBaseUnit: 100000,
+            // salesPriceVariance: 10000
         },
     ]);
     console.log("Khởi tạo xong danh sách hàng hóa");
@@ -4621,7 +4621,7 @@ const initSampleCompanyDB = async () => {
                 {
                     quantity: 200,
                     description: "Nhập hàng lần đầu",
-                    type: "Nhập kho thành phẩm",
+                    type: "2",
                     createdAt: new Date("05-06-2020"),
                     stock: listStock[1]._id,
                     binLocations: [
@@ -4638,7 +4638,7 @@ const initSampleCompanyDB = async () => {
                 {
                     quantity: 100,
                     description: "Nhập hàng lần hai",
-                    type: "Nhập kho thành phẩm",
+                    type: "2",
                     createdAt: new Date("05-10-2020"),
                     stock: listStock[0]._id,
                     binLocations: [
@@ -4697,7 +4697,7 @@ const initSampleCompanyDB = async () => {
                 {
                     quantity: 200,
                     description: "Nhập hàng",
-                    type: "Nhập kho thành phẩm",
+                    type: "2",
                     createdAt: new Date("11-12-2019"),
                     stock: listStock[0]._id,
                     binLocations: [
@@ -4714,7 +4714,7 @@ const initSampleCompanyDB = async () => {
                 {
                     quantity: 250,
                     description: "Nhập hàng",
-                    type: "Nhập kho thành phẩm",
+                    type: "2",
                     createdAt: new Date("07-10-2020"),
                     stock: listStock[1]._id,
                     binLocations: [
@@ -4773,7 +4773,7 @@ const initSampleCompanyDB = async () => {
                 {
                     quantity: 200,
                     description: "Nhập hàng lần đầu",
-                    type: "Nhập kho thành phẩm",
+                    type: "2",
                     createdAt: new Date("09-11-2020"),
                     stock: listStock[1]._id,
                     binLocations: [
@@ -4790,7 +4790,7 @@ const initSampleCompanyDB = async () => {
                 {
                     quantity: 120,
                     description: "Nhập hàng lần đầu",
-                    type: "Nhập kho thành phẩm",
+                    type: "2",
                     createdAt: new Date("05-06-2020"),
                     stock: listStock[0]._id,
                     binLocations: [
@@ -4849,7 +4849,7 @@ const initSampleCompanyDB = async () => {
                 {
                     quantity: 100,
                     description: "Nhập hàng lần đầu",
-                    type: "Nhập kho thành phẩm",
+                    type: "2",
                     createdAt: new Date("07-09-2020"),
                     stock: listStock[0]._id,
                     binLocations: [
@@ -4866,7 +4866,7 @@ const initSampleCompanyDB = async () => {
                 {
                     quantity: 200,
                     description: "Nhập hàng lần đầu",
-                    type: "Nhập kho thành phẩm",
+                    type: "2",
                     createdAt: new Date("08-10-2020"),
                     stock: listStock[1]._id,
                     binLocations: [
@@ -4925,7 +4925,7 @@ const initSampleCompanyDB = async () => {
                 {
                     quantity: 100,
                     description: "Nhập hàng lần đầu",
-                    type: "Nhập kho thành phẩm",
+                    type: "2",
                     createdAt: new Date("08-10-2020"),
                     stock: listStock[0]._id,
                     binLocations: [
@@ -4942,7 +4942,7 @@ const initSampleCompanyDB = async () => {
                 {
                     quantity: 200,
                     description: "Nhập hàng lần đầu",
-                    type: "Nhập kho thành phẩm",
+                    type: "2",
                     createdAt: new Date("09-10-2020"),
                     stock: listStock[1]._id,
                     binLocations: [
@@ -5001,7 +5001,7 @@ const initSampleCompanyDB = async () => {
                 {
                     quantity: 200,
                     description: "Nhập hàng lần đầu",
-                    type: "Nhập kho thành phẩm",
+                    type: "2",
                     createdAt: new Date("10-10-2020"),
                     stock: listStock[1]._id,
                     binLocations: [
@@ -5018,7 +5018,7 @@ const initSampleCompanyDB = async () => {
                 {
                     quantity: 100,
                     description: "Nhập hàng lần đầu",
-                    type: "Nhập kho thành phẩm",
+                    type: "2",
                     createdAt: new Date("11-10-2020"),
                     stock: listStock[0]._id,
                     binLocations: [
@@ -5102,7 +5102,7 @@ const initSampleCompanyDB = async () => {
             group: "1",
             fromStock: listStock[0]._id,
             users: [],
-            creator: users[7]._id,
+            creator: users[1]._id,
             partner: {
                 customer: null,
                 supplier: null,

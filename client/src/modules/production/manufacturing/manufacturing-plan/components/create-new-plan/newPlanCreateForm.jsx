@@ -13,6 +13,7 @@ import { manufacturingPlanActions } from '../../redux/actions';
 import { GoodActions } from '../../../../common-production/good-management/redux/actions';
 import { LotActions } from '../../../../warehouse/inventory-management/redux/actions';
 import { isValidDate } from '@fullcalendar/react';
+import { UserActions } from '../../../../../super-admin/user/redux/actions';
 
 class NewPlanCreateForm extends Component {
     constructor(props) {
@@ -43,8 +44,11 @@ class NewPlanCreateForm extends Component {
             endDate: '',
             description: '',
             goods: [],
+            manufacturingCommands: [],
             // Danh sách list goods được tổng hợp từ các salesorder
             listGoodsSalesOrders: [],
+            // Mảng chưa good, số lượng good chưa được nhập vào lệnh sản xuất
+            listRemainingGoods: [],
         };
     }
 
@@ -232,6 +236,19 @@ class NewPlanCreateForm extends Component {
         }))
     }
 
+    // Phần chia lệnh sản xuất
+
+    handleChangeListCommands = (listCommands) => {
+        this.setState((state) => ({
+            ...state,
+            manufacturingCommands: listCommands
+        }))
+    }
+
+
+
+
+
 
     static getDerivedStateFromProps = (props, state) => {
         if (state.salesOrders.length) {
@@ -253,6 +270,27 @@ class NewPlanCreateForm extends Component {
         return null;
     }
 
+    handleRemainingGoodsChange = (listRemainingGoods) => {
+        this.setState((state) => ({
+            ...state,
+            listRemainingGoods: listRemainingGoods
+        }))
+    }
+
+    // Check xem bước phân chia lệnh đã được validate hay chưa
+    checkValidateListRemainingGoods = () => {
+        const { listRemainingGoods } = this.state;
+        if (listRemainingGoods.length === 0) {
+            return false;
+        }
+        for (let i = 0; i < listRemainingGoods.length; i++) {
+            if (listRemainingGoods[i].remainingQuantity > 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     isValidateStep = (index) => {
         if (index == 1) {
             if (this.state.goods.length === 0
@@ -264,6 +302,14 @@ class NewPlanCreateForm extends Component {
             return true
         }
         else if (index == 2) {
+            if (this.state.goods.length === 0
+                || this.state.startDate === ""
+                || this.state.endDate === ""
+                || !this.checkValidateListRemainingGoods()
+            ) {
+                return false;
+            }
+            return true
         }
         else if (index == 3) {
 
@@ -273,7 +319,8 @@ class NewPlanCreateForm extends Component {
     render() {
         const { step, steps } = this.state;
         const { translate } = this.props;
-        const { code, salesOrders, startDate, endDate, description, goods, listGoodsSalesOrders, addedAllGoods } = this.state;
+        const { code, salesOrders, startDate, endDate, description, goods, listGoodsSalesOrders, addedAllGoods, manufacturingCommands } = this.state;
+        console.log(manufacturingCommands);
         return (
             <React.Fragment>
                 <ButtonModal onButtonCallBack={this.handleClickCreate} modalID="modal-create-new-plan" button_name={translate('manufacturing.plan.create_plan')} title={translate('manufacturing.plan.create_plan_title')} />
@@ -327,6 +374,11 @@ class NewPlanCreateForm extends Component {
                             {
                                 step === 1 && <CommandCreateForm
                                     listGoods={goods}
+                                    commandCode={generateCode("LSX")}
+                                    approvers={this.getListApproverIds()}
+                                    onChangeListCommands={this.handleChangeListCommands}
+                                    manufacturingCommands={manufacturingCommands}
+                                    onListRemainingGoodsChange={this.handleRemainingGoodsChange}
                                 />
                             }
                             {
