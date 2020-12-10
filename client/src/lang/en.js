@@ -1262,6 +1262,8 @@ export default {
                 edit_salary_faile: "Edit salary faile",
                 import_salary_success: "Import salary success",
                 import_salary_faile: "Import salary faile",
+
+                employee_invalid: 'The account has not registered employee information. Please check again.',
             },
 
             // Quản lý nghỉ phép
