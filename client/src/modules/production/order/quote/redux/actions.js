@@ -3,7 +3,8 @@ import { QuoteServices } from  './services';
 
 export const QuoteActions = {
     createNewQuote,
-    getAllQuotes
+    getAllQuotes,
+    editQuote
 }
 
 function createNewQuote (data) {
@@ -42,6 +43,28 @@ function getAllQuotes (queryData) {
         .catch((error) => {
             dispatch({
                 type: QuoteConstants.GET_ALL_QUOTES_FAILURE,
+                error
+            })
+        })
+    }
+}
+
+function editQuote (id, data) {
+    return (dispatch) => {
+        dispatch({
+            type: QuoteConstants.EDIT_QUOTE_REQUEST
+        })
+
+        QuoteServices.editQuote(id, data)
+        .then((res) => {
+            dispatch({
+                type: QuoteConstants.EDIT_QUOTE_SUCCESS,
+                payload: res.data.content
+            })
+        })
+        .catch((error) => {
+            dispatch({
+                type: QuoteConstants.EDIT_QUOTE_FAILURE,
                 error
             })
         })

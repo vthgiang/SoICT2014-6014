@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { ButtonModal, DialogModal } from '../../../../../../common-components';
 import CommandCreateForm from './commandCreateForm';
 import PlanInfoForm from './generalPlanInfoForm';
-import MaterialInfoForm from './materialInfoForm';
 import MillScheduleBooking from './millScheduleBooking';
 import WorkerBooking from './workerBooking';
 import './planCreate.css';
@@ -12,6 +11,9 @@ import { generateCode } from '../../../../../../helpers/generateCode';
 import { salesOrderActions } from '../../../../order/sales-order/redux/actions';
 import { manufacturingPlanActions } from '../../redux/actions';
 import { GoodActions } from '../../../../common-production/good-management/redux/actions';
+import { LotActions } from '../../../../warehouse/inventory-management/redux/actions';
+import { isValidDate } from '@fullcalendar/react';
+import { UserActions } from '../../../../../super-admin/user/redux/actions';
 
 class NewPlanCreateForm extends Component {
     constructor(props) {
@@ -25,7 +27,7 @@ class NewPlanCreateForm extends Component {
             }, {
                 label: this.props.translate('manufacturing.plan.command_info'),
                 active: false,
-                disabled: false
+                disabled: true
             }, {
                 label: this.props.translate('manufacturing.plan.turn_info'),
                 active: false,
@@ -42,6 +44,11 @@ class NewPlanCreateForm extends Component {
             endDate: '',
             description: '',
             goods: [],
+            manufacturingCommands: [],
+            // Danh sách list goods được tổng hợp từ các salesorder
+            listGoodsSalesOrders: [],
+            // Mảng chưa good, số lượng good chưa được nhập vào lệnh sản xuất
+            listRemainingGoods: [],
         };
     }
 
@@ -99,8 +106,70 @@ class NewPlanCreateForm extends Component {
     handleSalesOrderChange = (value) => {
         this.setState({
             salesOrders: value
+        });
+        const { salesOrder } = this.props;
+        const { listSalesOrders } = salesOrder;
+        let listOrders = [];
+        if (listSalesOrders.length) {
+            listOrders = listSalesOrders.filter(x => value.includes(x._id))
+        }
+        let goods = [];
+        let goodIds = goods.map(x => x.good._id);
+        for (let i = 0; i < listOrders.length; i++) {
+            listOrders[i].goods.map(x => {
+                if (!goodIds.includes(x.good._id)) {
+                    goodIds.push(x.good._id);
+                    goods.push({
+                        good: x.good,
+                        quantity: x.quantity
+                    });
+                } else {
+                    goods[this.findIndex(goods, x.good._id)].quantity += Number(x.quantity);
+                }
+            })
+        }
+        if (goodIds.length) {
+            this.props.getInventoryByGoodIds({
+                array: goodIds
+            });
+        }
+        this.setState({
+            listGoodsSalesOrders: [...goods],
         })
     }
+
+    findIndex = (array, id) => {
+        let result = -1;
+        array.map((x, index) => {
+            if (x.good._id === id) {
+                result = index;
+            }
+        });
+        return result;
+    }
+
+    // Hàm xử lý thêm tất cả các good trong sales orders vào goods
+    handleAddAllGood = () => {
+        let { goods, listGoodsSalesOrders } = this.state;
+        let goodIds = goods.map(x => x.good._id);
+        for (let i = 0; i < listGoodsSalesOrders.length; i++) {
+            let x = listGoodsSalesOrders[i];
+            if (!goodIds.includes(x.good._id)) {
+                goodIds.push(x.good._id);
+                goods.push({ ...x });
+            } else {
+                goods[this.findIndex(goods, x.good._id)].quantity = Number(goods[this.findIndex(goods, x.good._id)].quantity);
+                goods[this.findIndex(goods, x.good._id)].quantity += Number(x.quantity);
+            }
+        }
+        this.setState({
+            goods: [...goods],
+            // State đánh dấu đã add tất cả các good của sales order để tạo KH => Không được sửa lại nữa
+            addedAllGoods: true
+        });
+    }
+
+
 
     getListApproverIds = () => {
         const { manufacturingPlan } = this.props;
@@ -111,10 +180,147 @@ class NewPlanCreateForm extends Component {
         return approvers;
     }
 
+    handleListGoodsChange = (goods) => {
+        this.setState({
+            goods: goods
+        });
+    }
+
+    handleAddGood = (good) => {
+        const { goods } = this.state;
+        const goodIds = goods.map(x => x.good._id);
+        if (!goodIds.includes(good.goodId)) {
+            const { listGoodsByType } = this.props.goods;
+            const goodObject = listGoodsByType.filter(x => x._id === good.goodId)[0];
+            good.good = goodObject;
+            goods.push(good);
+        } else {
+            goods[this.findIndex(goods, good.goodId)].quantity += Number(good.quantity)
+        }
+        this.setState((state) => ({
+            ...state,
+            goods: [...goods],
+
+        }));
+    }
+
+    handleSaveEditGood = (good, indexEditting) => {
+        // Do good.good cũ truyền sang vẫn của good.good cũ, nên nếu thay đổi tên mặt hàng phải cập nhật lại;
+        const { listGoodsByType } = this.props.goods;
+        const goodObject = listGoodsByType.filter(x => x._id === good.goodId)[0];
+        good.good = goodObject;
+
+        const { goods } = this.state;
+        const goodIds = goods.map(x => x.good._id);
+        if (!goodIds.includes(good.goodId)) {
+            goods[indexEditting] = good;
+        } else if (goods[indexEditting].good._id === good.goodId) {
+            goods[indexEditting] = good;
+        } else {
+            goods[this.findIndex(goods, good.goodId)].quantity = Number(goods[this.findIndex(goods, good.goodId)].quantity);
+            goods[this.findIndex(goods, good.goodId)].quantity += Number(good.quantity);
+            goods.splice(indexEditting, 1);
+        }
+        this.setState((state) => ({
+            ...state,
+            goods: [...goods]
+        }))
+    }
+
+    handleDeleteGood = (index) => {
+        const { goods } = this.state;
+        goods.splice(index, 1);
+        this.setState((state) => ({
+            ...state,
+            goods: [...goods]
+        }))
+    }
+
+    // Phần chia lệnh sản xuất
+
+    handleChangeListCommands = (listCommands) => {
+        this.setState((state) => ({
+            ...state,
+            manufacturingCommands: listCommands
+        }))
+    }
+
+
+
+
+
+
+    static getDerivedStateFromProps = (props, state) => {
+        if (state.salesOrders.length) {
+            const { lots } = props;
+            const { listInventories } = lots;
+            const { listGoodsSalesOrders } = state;
+            if (listInventories) {
+                listInventories.map((x, index) => {
+                    if (listGoodsSalesOrders[index]) {
+                        listGoodsSalesOrders[index].inventory = x.inventory;
+                    }
+                })
+            }
+            return {
+                ...state,
+                listGoodsSalesOrders: listGoodsSalesOrders
+            }
+        }
+        return null;
+    }
+
+    handleRemainingGoodsChange = (listRemainingGoods) => {
+        this.setState((state) => ({
+            ...state,
+            listRemainingGoods: listRemainingGoods
+        }))
+    }
+
+    // Check xem bước phân chia lệnh đã được validate hay chưa
+    checkValidateListRemainingGoods = () => {
+        const { listRemainingGoods } = this.state;
+        if (listRemainingGoods.length === 0) {
+            return false;
+        }
+        for (let i = 0; i < listRemainingGoods.length; i++) {
+            if (listRemainingGoods[i].remainingQuantity > 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    isValidateStep = (index) => {
+        if (index == 1) {
+            if (this.state.goods.length === 0
+                || this.state.startDate === ""
+                || this.state.endDate === ""
+            ) {
+                return false;
+            }
+            return true
+        }
+        else if (index == 2) {
+            if (this.state.goods.length === 0
+                || this.state.startDate === ""
+                || this.state.endDate === ""
+                || !this.checkValidateListRemainingGoods()
+            ) {
+                return false;
+            }
+            return true
+        }
+        else if (index == 3) {
+
+        }
+    }
+
     render() {
         const { step, steps } = this.state;
         const { translate } = this.props;
-        const { code, salesOrders, startDate, endDate, description, goods } = this.state;
+        const { code, salesOrders, startDate, endDate, description, goods, listGoodsSalesOrders, addedAllGoods, manufacturingCommands } = this.state;
+        console.log(manufacturingCommands);
         return (
             <React.Fragment>
                 <ButtonModal onButtonCallBack={this.handleClickCreate} modalID="modal-create-new-plan" button_name={translate('manufacturing.plan.create_plan')} title={translate('manufacturing.plan.create_plan_title')} />
@@ -136,7 +342,7 @@ class NewPlanCreateForm extends Component {
                                 {
                                     steps.map((item, index) => (
                                         <div className={`timeline-item ${item.active ? 'active' : ''}`} key={index}>
-                                            <div className={`timeline-contain ${item.disabled ? 'disable-timeline-contain' : ''}`} onClick={(e) => this.setCurrentStep(e, index)}>{item.label}</div>
+                                            <div className={`timeline-contain ${(!this.isValidateStep(index) && index > 0) ? 'disable-timeline-contain' : ''}`} onClick={(e) => this.setCurrentStep(e, index)}>{item.label}</div>
                                         </div>
                                     ))
                                 }
@@ -151,15 +357,29 @@ class NewPlanCreateForm extends Component {
                                     startDate={startDate}
                                     endDate={endDate}
                                     description={description}
-                                    goods={goods}
+                                    listGoods={goods}
+                                    listGoodsSalesOrders={listGoodsSalesOrders}
+                                    addedAllGoods={addedAllGoods}
                                     onStartDateChange={this.handleStartDateChange}
                                     onEndDateChange={this.handleEndDateChange}
                                     onDescriptionChange={this.handleDescriptionChange}
                                     onSalesOrdersChange={this.handleSalesOrderChange}
+                                    onListGoodsChange={this.handleListGoodsChange}
+                                    onAddAllGood={this.handleAddAllGood}
+                                    onAddGood={this.handleAddGood}
+                                    onSaveEditGood={this.handleSaveEditGood}
+                                    onDeleteGood={this.handleDeleteGood}
                                 />
                             }
                             {
-                                step === 1 && <CommandCreateForm />
+                                step === 1 && <CommandCreateForm
+                                    listGoods={goods}
+                                    commandCode={generateCode("LSX")}
+                                    approvers={this.getListApproverIds()}
+                                    onChangeListCommands={this.handleChangeListCommands}
+                                    manufacturingCommands={manufacturingCommands}
+                                    onListRemainingGoodsChange={this.handleRemainingGoodsChange}
+                                />
                             }
                             {
                                 step === 2 && <MillScheduleBooking />
@@ -179,14 +399,15 @@ class NewPlanCreateForm extends Component {
 }
 
 function mapStateToProps(state) {
-    const { salesOrder, manufacturingPlan } = state;
-    return { salesOrder, manufacturingPlan }
+    const { salesOrder, manufacturingPlan, lots, goods } = state;
+    return { salesOrder, manufacturingPlan, lots, goods }
 }
 
 const mapDispatchToProps = {
     getAllSalesOrder: salesOrderActions.getAllSalesOrder,
     getAllApproversOfPlan: manufacturingPlanActions.getAllApproversOfPlan,
-    getAllGoodsByType: GoodActions.getAllGoodsByType
+    getAllGoodsByType: GoodActions.getAllGoodsByType,
+    getInventoryByGoodIds: LotActions.getInventoryByGoodIds
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(NewPlanCreateForm));

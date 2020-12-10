@@ -11,8 +11,6 @@ exports.searchAssetProfiles = async (req, res) => {
         let data;
         if (req.query.type === "get-building-as-tree") {
             data = await AssetService.getListBuildingAsTree(req.portal, req.user.company._id);
-        } else if (!req.query.page && !req.query.limit) {
-            data = await AssetService.getAssets(req.portal, req.user.company._id, false);
         } else {
             let params = {
                 code: req.query.code,

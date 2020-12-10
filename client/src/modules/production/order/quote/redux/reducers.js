@@ -32,6 +32,7 @@ export function quotes(state = initState, action) {
             case QuoteConstants.CREATE_QUOTE_REQUEST:
             case QuoteConstants.GET_DETAIL_QUOTE_REQUEST:
             case QuoteConstants.UPDATE_QUOTE_REQUEST:
+            case QuoteConstants.EDIT_QUOTE_REQUEST:
                 return {
                     ...state,
                     isLoading: false
@@ -40,6 +41,7 @@ export function quotes(state = initState, action) {
             case QuoteConstants.CREATE_QUOTE_FAILURE:
             case QuoteConstants.GET_DETAIL_QUOTE_FAILURE:
             case QuoteConstants.UPDATE_QUOTE_FAILURE:
+            case QuoteConstants.EDIT_QUOTE_FAILURE:
                 return {
                     ...state,
                     isLoading: false,
@@ -74,7 +76,11 @@ export function quotes(state = initState, action) {
                     ...state,
                     isLoading: false
                 }
-            case QuoteConstants.UPDATE_QUOTE_SUCCESS:
+            case QuoteConstants.EDIT_QUOTE_SUCCESS:
+                index = findIndex(state.listQuotes, action.payload.quote._id);
+                if (index !== -1) {
+                    state.listQuotes[index] = action.payload.quote
+                }
                 return {
                     ...state,
                     isLoading: false

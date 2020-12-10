@@ -5,5 +5,8 @@ const { auth } = require(`${SERVER_MIDDLEWARE_DIR}`);
 
 router.post('/', auth, QuoteController.createNewQuote);
 router.get('/', auth, QuoteController.getAllQuotes);
+router.patch('/:id', auth, QuoteController.editQuote);
+router.patch('/approve/:id', auth, QuoteController.approveQuote);
+router.delete('/:id', auth, QuoteController.deleteQuote);
 
 module.exports = router;

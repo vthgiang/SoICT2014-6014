@@ -69,3 +69,37 @@ export const formatYearMonth = (date) => {
 
     return `${month}-${year}`
 }
+
+export const compareLteDate = (startDate, endDate) => { //Ngày bắt đầu trước hoặc cùng ngày kết thúc
+    let startTimeZoneDate = new Date(formatToTimeZoneDate(startDate));
+    let endTimeZoneDate = new Date(formatToTimeZoneDate(endDate));
+
+    if (startTimeZoneDate.getTime() > endTimeZoneDate.getTime()) {
+        return {
+            status: false,
+            message: "Ngày bắt đầu phải trước hoặc cùng ngày kết thúc"
+        }
+    } else {
+        return {
+            status: true,
+            message: undefined
+        }
+    }
+}
+
+export const compareLtDate = (startDate, endDate) => { //Ngày bắt đầu trước ngày kết thúc
+    let startTimeZoneDate = new Date(formatToTimeZoneDate(startDate));
+    let endTimeZoneDate = new Date(formatToTimeZoneDate(endDate));
+
+    if (startTimeZoneDate.getTime() >= endTimeZoneDate.getTime()) {
+        return {
+            status: false,
+            message: "Ngày bắt đầu phải trước hoặc cùng ngày kết thúc"
+        }
+    } else {
+        return {
+            status: true,
+            message: undefined
+        }
+    }
+}

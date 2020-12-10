@@ -16,6 +16,7 @@ export function tasks(state = {}, action) {
             };
         case taskManagementConstants.GETALL_TASK_FAILURE:
             return {
+                ...state,
                 error: action.error,
                 isLoading: false
             };
@@ -34,6 +35,7 @@ export function tasks(state = {}, action) {
             };
         case taskManagementConstants.GETTASK_BYID_FAILURE:
             return {
+                ...state,
                 error: action.error,
                 isLoading: false
             };
@@ -56,6 +58,7 @@ export function tasks(state = {}, action) {
             };
         case taskManagementConstants.GETTASK_RESPONSIBLE_BYUSER_FAILURE:
             return {
+                ...state,
                 error: action.error,
                 isLoading: false
             };
@@ -79,6 +82,7 @@ export function tasks(state = {}, action) {
             };
         case taskManagementConstants.GETTASK_ACCOUNTABLE_BYUSER_FAILURE:
             return {
+                ...state,
                 error: action.error,
                 isLoading: false
             };
@@ -101,6 +105,7 @@ export function tasks(state = {}, action) {
             };
         case taskManagementConstants.GETTASK_CONSULTED_BYUSER_FAILURE:
             return {
+                ...state,
                 error: action.error,
                 isLoading: false
             };
@@ -123,6 +128,7 @@ export function tasks(state = {}, action) {
             };
         case taskManagementConstants.GETTASK_INFORMED_BYUSER_FAILURE:
             return {
+                ...state,
                 error: action.error,
                 isLoading: false
             };
@@ -145,6 +151,7 @@ export function tasks(state = {}, action) {
             };
         case taskManagementConstants.GETTASK_CREATOR_BYUSER_FAILURE:
             return {
+                ...state,
                 error: action.error,
                 isLoading: false
             };
@@ -184,6 +191,7 @@ export function tasks(state = {}, action) {
             };
         case taskManagementConstants.GET_PAGINATE_TASK_BYUSER_FAILURE:
             return {
+                ...state,
                 error: action.error,
                 isLoading: false
             };
@@ -204,6 +212,7 @@ export function tasks(state = {}, action) {
             };
         case taskManagementConstants.GET_PAGINATE_TASK_FAILURE:
             return {
+                ...state,
                 error: action.error,
                 isLoading: false
             };
@@ -223,6 +232,7 @@ export function tasks(state = {}, action) {
             };
         case taskManagementConstants.GET_PAGINATE_TASK_BY_ORGANIZATIONALUNIT_FAILURE:
             return {
+                ...state,
                 error: action.error,
                 isLoading: false
             };
@@ -243,6 +253,7 @@ export function tasks(state = {}, action) {
             };
         case taskManagementConstants.ADDNEW_TASK_FAILURE:
             return {
+                ...state,
                 error: action.error,
                 isLoading: false
             };
@@ -286,6 +297,7 @@ export function tasks(state = {}, action) {
             };
         case taskManagementConstants.EDIT_STATUS_OF_TASK_FAILURE:
             return {
+                ...state,
                 isLoading: false,
                 error: action.error
             };
@@ -304,6 +316,7 @@ export function tasks(state = {}, action) {
 
         case taskManagementConstants.EDIT_ARCHIVED_STATUS_OF_TASK_FAILURE:
             return {
+                ...state,
                 isLoading: false,
                 error: action.error
             };
@@ -326,6 +339,7 @@ export function tasks(state = {}, action) {
             };
         case taskManagementConstants.DELETE_TASK_FAILURE:
             return {
+                ...state,
                 error: action.error,
                 isLoading: false
             };
@@ -343,6 +357,7 @@ export function tasks(state = {}, action) {
             };
         case taskManagementConstants.GET_SUBTASK_FAILURE:
             return {
+                ...state,
                 error: action.error,
                 isLoading: false
             }
@@ -359,6 +374,7 @@ export function tasks(state = {}, action) {
             };
         case taskManagementConstants.EDIT_TASK_BY_ACCOUNTABLE_FAILURE:
             return {
+                ...state,
                 isLoading: false,
                 error: action.error
             };
@@ -375,6 +391,7 @@ export function tasks(state = {}, action) {
             };
         case taskManagementConstants.EDIT_TASK_BY_RESPONSIBLE_FAILURE:
             return {
+                ...state,
                 isLoading: false,
                 error: action.error
             };
@@ -391,6 +408,7 @@ export function tasks(state = {}, action) {
             };
         case taskManagementConstants.EVALUATE_TASK_BY_ACCOUNTABLE_FAILURE:
             return {
+                ...state,
                 isLoading: false,
                 error: action.error
             };
@@ -407,6 +425,7 @@ export function tasks(state = {}, action) {
             };
         case taskManagementConstants.EVALUATE_TASK_BY_RESPONSIBLE_FAILURE:
             return {
+                ...state,
                 isLoading: false,
                 error: action.error
             };
@@ -423,6 +442,7 @@ export function tasks(state = {}, action) {
             };
         case taskManagementConstants.EVALUATE_TASK_BY_CONSULTED_FAILURE:
             return {
+                ...state,
                 isLoading: false,
                 error: action.error
             };
@@ -440,6 +460,7 @@ export function tasks(state = {}, action) {
             };
         case taskManagementConstants.GET_TASK_BY_USER_FAILURE:
             return {
+                ...state,
                 error: action.error,
                 isLoading: false
             }
@@ -458,6 +479,7 @@ export function tasks(state = {}, action) {
             };
         case taskManagementConstants.GET_TASK_EVALUATION_FAILURE:
             return {
+                ...state,
                 isLoading: false,
                 error: action.error,
 
@@ -491,6 +513,7 @@ export function tasks(state = {}, action) {
             };
         case taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_FAILURE:
             return {
+                ...state,
                 isLoading: false,
                 error: action.error,
 

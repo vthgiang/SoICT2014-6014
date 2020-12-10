@@ -16,7 +16,7 @@ class QuillEditor extends Component {
     }
     
     componentDidUpdate = () => {
-        const { quillValueDefault } = this.props;
+        const { quillValueDefault, fileUrls } = this.props;
         const { quill } = this.state;
 
         // Insert value ban đầu
@@ -25,11 +25,22 @@ class QuillEditor extends Component {
             if (quill && quill.container && quill.container.firstChild) {
                 quill.container.firstChild.innerHTML = quillValueDefault;
             }  
+            if (fileUrls) {
+                let imgs = Array.from(
+                    quill.container.querySelectorAll('img[src]')
+                );
+                if (imgs && imgs.length !== 0) {
+                    imgs = imgs.map((item, index) => {
+                        item.src = fileUrls[index];
+                        return item;
+                    })
+                }
+            }
         }
     }
 
     componentDidMount = () => {
-        const { id, edit = true, quillValueDefault } = this.props;
+        const { id, edit = true, quillValueDefault, fileUrls } = this.props;
         if (edit) {
             // Khởi tạo Quill Editor trong thẻ có id = id truyền vào
             const quill = window.initializationQuill(`#editor-container${id}`, configQuillEditor(id));
@@ -39,16 +50,41 @@ class QuillEditor extends Component {
                 if (quill && quill.container && quill.container.firstChild) {
                     quill.container.firstChild.innerHTML = quillValueDefault;
                 } 
+                if (fileUrls) {
+                    let imgs = Array.from(
+                        quill.container.querySelectorAll('img[src]')
+                    );
+                    if (imgs && imgs.length !== 0) {
+                        imgs = imgs.map((item, index) => {
+                            item.src = fileUrls[index];
+                            return item;
+                        })
+                    }
+                }
             }
 
             // Bắt sự kiện text-change
-            quill.on('text-change', (delta, oldDelta, source) => {
-                console.log("change", quill.root.innerHTML, delta, oldDelta, source);
-                const imgs = Array.from(
+            quill.on('text-change', () => {
+                let imgs, imageSources = [];
+
+                imgs = Array.from(
                     quill.container.querySelectorAll('img[src^="data:"]:not(.loading)')
                 );
 
+                if (imgs && imgs.length !== 0) {
+                    imgs = imgs.map((item, index) => {
+                        imageSources.push(item.getAttribute("src"));
+                        item.src = "image" + index;
+                        return item;
+                    })
+                }
                 this.props.getTextData(quill.root.innerHTML, imgs);
+                if (imgs && imgs.length !== 0) {
+                    imgs = imgs.map((item, index) => {
+                        item.src = imageSources[index];
+                        return item;
+                    })
+                }
             });
 
             // Custom icon insert table
@@ -73,10 +109,10 @@ class QuillEditor extends Component {
      * @imgs mảng hình ảnh dạng base64
      * @names mảng tên các ảnh tương ứng
      * */ 
-    static convertImageBase64ToFile = (imgs, names) => {
+    static convertImageBase64ToFile = (imgs) => {
         let imageFile;
         if (imgs && imgs.length !== 0) {
-            imageFile = imgs.map((item, index) => {
+            imageFile = imgs.map((item) => {
                 // Split the base64 string in data and contentType
                 let block = item.getAttribute("src").split(";");
                 let contentType = block[0].split(":")[1];
@@ -101,7 +137,7 @@ class QuillEditor extends Component {
                 }
             
                 let blob = new Blob(byteArrays, { type: contentType });
-                return new File([blob], names[index]);
+                return new File([blob], "png");
             })
         }
         return imageFile;

@@ -2,11 +2,13 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { QuoteActions } from "../redux/actions";
+import { DiscountActions } from "../../discount/redux/actions";
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import { formatDate } from "../../../../../helpers/formatDate";
 import { PaginateBar, DataTableSetting, SelectBox } from "../../../../../common-components";
 import QuoteDetailForm from "./quoteDetailForm";
 import QuoteCreateForm from "./quoteCreateForm";
+import QuoteEditForm from "./quoteEditForm";
 
 class QuoteManageTable extends Component {
     constructor(props) {
@@ -23,6 +25,7 @@ class QuoteManageTable extends Component {
     componentDidMount = () => {
         const { page, limit } = this.state;
         this.props.getAllQuotes({ page, limit });
+        this.props.getDiscountForOrderValue();
     };
 
     setPage = async (page) => {
@@ -61,8 +64,19 @@ class QuoteManageTable extends Component {
         window.$("#modal-add-quote").modal("show");
     };
 
+    handleEditQuote = async (quoteEdit) => {
+        console.log("quoteEdit", quoteEdit);
+        await this.setState((state) => {
+            return {
+                ...state,
+                quoteEdit,
+            };
+        });
+        window.$("#modal-edit-quote").modal("show");
+    };
+
     render() {
-        let { limit, quoteDetail } = this.state;
+        let { limit, quoteDetail, quoteEdit } = this.state;
         const { translate, quotes } = this.props;
         const { totalPages, page } = quotes;
 
@@ -96,6 +110,7 @@ class QuoteManageTable extends Component {
                     <div className="box-body qlcv">
                         <QuoteDetailForm quoteDetail={quoteDetail} />
                         <QuoteCreateForm />
+                        {quoteEdit && <QuoteEditForm quoteEdit={quoteEdit} />}
                         <div className="form-inline">
                             <div className="form-group">
                                 <label className="form-control-static">Tìm mã đơn mua</label>
@@ -204,7 +219,7 @@ class QuoteManageTable extends Component {
                                                         <i className="material-icons">view_list</i>
                                                     </a>
                                                     <a
-                                                        onClick={() => this.handleEdit(item)}
+                                                        onClick={() => this.handleEditQuote(item)}
                                                         className="edit text-yellow"
                                                         style={{ width: "5px" }}
                                                         title="Sửa đơn"
@@ -239,6 +254,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     getAllQuotes: QuoteActions.getAllQuotes,
+    getDiscountForOrderValue: DiscountActions.getDiscountForOrderValue,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuoteManageTable));

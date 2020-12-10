@@ -3,16 +3,16 @@ import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
 import { QuoteActions } from "../redux/actions";
-import { generateCode } from "../../../../../helpers/generateCode";
-import { formatToTimeZoneDate } from "../../../../../helpers/formatDate";
-import { DialogModal, SelectBox, ButtonModal } from "../../../../../common-components";
+import { DiscountActions } from "../../discount/redux/actions";
+import { formatToTimeZoneDate, formatDate } from "../../../../../helpers/formatDate";
+import { DialogModal, SelectBox } from "../../../../../common-components";
 import ValidationHelper from "../../../../../helpers/validationHelper";
-import QuoteCreateGood from "./createQuote/quoteCreateGood";
-import QuoteCreateInfo from "./createQuote/quoteCreateInfo";
-import QuoteCreatePayment from "./createQuote/quoteCreatePayment";
-import SlasOfGoodDetail from "./createQuote/viewDetailOnCreate/slasOfGoodDetail";
-import DiscountOfGoodDetail from "./createQuote/viewDetailOnCreate/discountOfGoodDetail";
-class QuoteCreateForm extends Component {
+import QuoteCreateGood from "./editQuote/quoteCreateGood";
+import QuoteCreateInfo from "./editQuote/quoteCreateInfo";
+import QuoteCreatePayment from "./editQuote/quoteCreatePayment";
+import SlasOfGoodDetail from "./editQuote/viewDetailOnCreate/slasOfGoodDetail";
+import DiscountOfGoodDetail from "./editQuote/viewDetailOnCreate/discountOfGoodDetail";
+class QuoteEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -52,14 +52,151 @@ class QuoteCreateForm extends Component {
         };
     }
 
-    componentDidMount() {
-        this.props.getCustomers();
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.quoteEdit._id !== prevState.quoteId) {
+            return {
+                ...prevState,
+                quoteId: nextProps.quoteEdit._id,
+                code: nextProps.quoteEdit.code,
+                effectiveDate: nextProps.quoteEdit.effectiveDate ? formatDate(nextProps.quoteEdit.effectiveDate) : "",
+                expirationDate: nextProps.quoteEdit.expirationDate ? formatDate(nextProps.quoteEdit.expirationDate) : "",
+                customer: nextProps.quoteEdit.customer._id,
+                customerName: nextProps.quoteEdit.customer.name,
+                customerPhone: nextProps.quoteEdit.customerPhone,
+                customerTaxNumber: nextProps.quoteEdit.customer.taxNumber,
+                customerRepresent: nextProps.quoteEdit.customerRepresent,
+                customerAddress: nextProps.quoteEdit.customerAddress,
+                customerEmail: nextProps.quoteEdit.customerEmail,
+                deliveryTime: nextProps.quoteEdit.deliveryTime ? formatDate(nextProps.quoteEdit.effectiveDate) : "",
+                discountsOfOrderValue: nextProps.quoteEdit.discounts,
+                note: nextProps.quoteEdit.note,
+                paymentAmount: nextProps.quoteEdit.paymentAmount,
+                shippingFee: nextProps.quoteEdit.shippingFee,
+                coin: nextProps.quoteEdit.coin,
+                status: nextProps.quoteEdit.status,
+                goods: nextProps.quoteEdit.goods
+                    ? nextProps.quoteEdit.goods.map((item) => {
+                          return {
+                              good: item.good,
+                              pricePerBaseUnit: item.pricePerBaseUnit,
+                              pricePerBaseUnitOrigin: item.pricePerBaseUnitOrigin,
+                              salesPriceVariance: item.salesPriceVariance,
+                              quantity: item.quantity,
+                              slasOfGood: item.serviceLevelAgreements,
+                              taxs: item.taxs,
+                              note: item.note,
+                              amount: item.amount,
+                              amountAfterDiscount: item.amountAfterDiscount,
+                              amountAfterTax: item.amountAfterTax,
+                              discountsOfGood: item.discounts.length
+                                  ? item.discounts.map((dis) => {
+                                        return {
+                                            _id: dis._id,
+                                            code: dis.code,
+                                            type: dis.type,
+                                            formality: dis.formality,
+                                            name: dis.name,
+                                            effectiveDate: dis.effectiveDate ? formatDate(dis.effectiveDate) : undefined,
+                                            expirationDate: dis.expirationDate ? formatDate(dis.expirationDate) : undefined,
+                                            discountedCash: dis.discountedCash,
+                                            discountedPercentage: dis.discountedPercentage,
+                                            maximumFreeShippingCost: dis.maximumFreeShippingCost,
+                                            loyaltyCoin: dis.loyaltyCoin,
+                                            bonusGoods: dis.bonusGoods
+                                                ? dis.bonusGoods.map((bonus) => {
+                                                      return {
+                                                          good: bonus.good,
+                                                          expirationDateOfGoodBonus: bonus.expirationDateOfGoodBonus
+                                                              ? formatDate(bonus.expirationDateOfGoodBonus)
+                                                              : undefined,
+                                                          quantityOfBonusGood: bonus.quantityOfBonusGood,
+                                                      };
+                                                  })
+                                                : undefined,
+                                            discountOnGoods: dis.discountOnGoods
+                                                ? {
+                                                      good: dis.discountOnGoods.good,
+                                                      expirationDate: dis.discountOnGoods.expirationDate
+                                                          ? formatDate(dis.discountOnGoods.expirationDate)
+                                                          : undefined,
+                                                      discountedPrice: dis.discountOnGoods.discountedPrice,
+                                                  }
+                                                : undefined,
+                                        };
+                                    })
+                                  : [],
+                          };
+                      })
+                    : [],
+            };
+        }
     }
 
-    handleClickCreateCode = () => {
-        this.setState((state) => {
-            return { ...state, code: generateCode("QUOTE_") };
+    shouldComponentUpdate(nextProps, nextState) {
+        if (nextState.code !== this.state.quoteCode) {
+            this.getDiscountOfOrderValueChecked();
+            this.setState({
+                quoteCode: nextState.code,
+            });
+            return false;
+        }
+        return true;
+    }
+
+    componentDidMount() {
+        this.props.getCustomers();
+        // this.props.getDiscountForOrderValue();
+    }
+
+    getDiscountOfOrderValueChecked = () => {
+        const { listDiscountsByOrderValue } = this.props.discounts;
+        let { discountsOfOrderValue, discountsOfOrderValueChecked } = this.state;
+        let amountAfterApplyTax = this.getAmountAfterApplyTax();
+        if (discountsOfOrderValue) {
+            discountsOfOrderValue.forEach((element) => {
+                //checked các khuyến mãi đã có trong danh mục
+                let discount = listDiscountsByOrderValue.find((dis) => dis._id === element._id);
+                if (discount) {
+                    let checked = this.getDiscountsCheckedForEditQuote(discount, amountAfterApplyTax);
+                    discountsOfOrderValueChecked[`${checked.id}`] = checked.status;
+                }
+            });
+            this.setState({
+                discountsOfOrderValueChecked,
+            });
+        }
+    };
+
+    getDiscountsCheckedForEditQuote = (item, orderValue) => {
+        let checked = { id: "", status: false };
+        item.discounts.forEach((discount, index) => {
+            let disabled = false;
+            if (discount.minimumThresholdToBeApplied) {
+                if (parseInt(orderValue) < discount.minimumThresholdToBeApplied) {
+                    disabled = true;
+                }
+            }
+            if (discount.maximumThresholdToBeApplied) {
+                if (parseInt(orderValue) > discount.maximumThresholdToBeApplied) {
+                    disabled = true;
+                }
+            }
+            if (!disabled) {
+                checked = { id: `${item._id}-${index}`, status: true };
+            }
         });
+
+        return checked;
+    };
+
+    getAmountAfterApplyTax = () => {
+        let { goods } = this.state;
+        let amountAfterApplyTax = goods.reduce((accumulator, currentValue) => {
+            return accumulator + currentValue.amountAfterTax;
+        }, 0);
+
+        // this.setState({ amountAfterApplyTax });
+        return amountAfterApplyTax;
     };
 
     validateCustomer = (value, willUpdateState = true) => {
@@ -431,8 +568,8 @@ class QuoteCreateForm extends Component {
                 type: dis.type,
                 formality: dis.formality,
                 name: dis.name,
-                effectiveDate: dis.effectiveDate,
-                expirationDate: dis.expirationDate,
+                effectiveDate: dis.effectiveDate ? new Date(formatToTimeZoneDate(dis.effectiveDate)) : undefined,
+                expirationDate: dis.expirationDate ? new Date(formatToTimeZoneDate(dis.expirationDate)) : undefined,
                 discountedCash: dis.discountedCash,
                 discountedPercentage: dis.discountedPercentage,
                 maximumFreeShippingCost: dis.maximumFreeShippingCost,
@@ -441,7 +578,9 @@ class QuoteCreateForm extends Component {
                     ? dis.bonusGoods.map((bonus) => {
                           return {
                               good: bonus.good._id,
-                              expirationDateOfGoodBonus: bonus.expirationDateOfGoodBonus,
+                              expirationDateOfGoodBonus: bonus.expirationDateOfGoodBonus
+                                  ? new Date(formatToTimeZoneDate(bonus.expirationDateOfGoodBonus))
+                                  : undefined,
                               quantityOfBonusGood: bonus.quantityOfBonusGood,
                           };
                       })
@@ -449,7 +588,9 @@ class QuoteCreateForm extends Component {
                 discountOnGoods: dis.discountOnGoods
                     ? {
                           good: dis.discountOnGoods.good._id,
-                          expirationDate: dis.discountOnGoods.expirationDate,
+                          expirationDate: dis.discountOnGoods.expirationDate
+                              ? new Date(formatToTimeZoneDate(dis.discountOnGoods.expirationDate))
+                              : undefined,
                           discountedPrice: dis.discountOnGoods.discountedPrice,
                       }
                     : undefined,
@@ -481,15 +622,12 @@ class QuoteCreateForm extends Component {
     };
 
     save = async () => {
-        console.log("this.isValidateForm()", this.isValidateForm());
         if (this.isValidateForm()) {
             let {
                 customer,
-                // customerName,
                 customerAddress,
                 customerPhone,
                 customerRepresent,
-                // customerTaxNumber,
                 customerEmail,
                 code,
                 effectiveDate,
@@ -500,6 +638,7 @@ class QuoteCreateForm extends Component {
                 discountsOfOrderValue,
                 paymentAmount,
                 note,
+                quoteId,
             } = this.state;
 
             let data = {
@@ -507,11 +646,9 @@ class QuoteCreateForm extends Component {
                 effectiveDate: effectiveDate ? new Date(formatToTimeZoneDate(effectiveDate)) : undefined,
                 expirationDate: expirationDate ? new Date(formatToTimeZoneDate(expirationDate)) : undefined,
                 customer,
-                // customerName,
                 customerPhone,
                 customerAddress,
                 customerRepresent,
-                // customerTaxNumber,
                 customerEmail,
                 goods: this.formatGoodForSubmit(),
                 discounts: discountsOfOrderValue.length ? this.formatDiscountForSubmit(discountsOfOrderValue) : [],
@@ -522,34 +659,16 @@ class QuoteCreateForm extends Component {
                 note,
             };
 
-            await this.props.createNewQuote(data);
+            await this.props.editQuote(quoteId, data);
 
             this.setState((state) => {
                 return {
                     ...state,
-                    customer: "",
-                    customerName: "",
-                    customerAddress: "",
-                    customerPhone: "",
-                    customerRepresent: "",
-                    customerTaxNumbe: "",
-                    customerEmail: "",
-                    code: "",
-                    effectiveDate: "",
-                    expirationDate: "",
-                    shippingFee: "",
-                    deliveryTime: "",
-                    coin: "",
-                    goods: [],
-                    discountsOfOrderValue: [],
-                    paymentAmount: "",
-                    note: "",
-                    paymentAmount: "",
                     step: 0,
                 };
             });
 
-            window.$(`#modal-add-quote`).modal("hide");
+            window.$(`#modal-edit-quote`).modal("hide");
         }
     };
 
@@ -590,43 +709,16 @@ class QuoteCreateForm extends Component {
 
         return (
             <React.Fragment>
-                <ButtonModal
-                    onButtonCallBack={this.handleClickCreateCode}
-                    modalID={`modal-add-quote`}
-                    button_name={"Đơn báo giá mới"}
-                    title={"Đơn báo giá mới"}
-                />
                 <DialogModal
-                    modalID={`modal-add-quote`}
+                    modalID={`modal-edit-quote`}
                     isLoading={false}
                     formID={`form-add-quote`}
-                    title={"Đơn báo giá mới"}
-                    msg_success={"Thêm đơn thành công"}
-                    msg_faile={"Thêm đơn không thành công"}
-                    // disableSubmit={!this.isFormValidated()}
-                    // func={this.save}
+                    title={"Chỉnh sửa báo giá"}
                     size="100"
                     style={{ backgroundColor: "green" }}
                     hasSaveButton={false}
                 >
                     <div className="nav-tabs-custom">
-                        {/* <ul className="nav nav-tabs">
-                            <li className={step === 0 ? "active" : ""} key="1">
-                                <a data-toggle="tab" onClick={(e) => this.setCurrentStep(e, 0)} style={{ cursor: "pointer" }}>
-                                    Thông tin chung
-                                </a>
-                            </li>
-                            <li className={step === 1 ? "active" : ""} key="2">
-                                <a data-toggle="tab" onClick={(e) => this.setCurrentStep(e, 1)} style={{ cursor: "pointer" }}>
-                                    Chọn sản phẩm
-                                </a>
-                            </li>
-                            <li className={step === 2 ? "active" : ""} key="3">
-                                <a data-toggle="tab" onClick={(e) => this.setCurrentStep(e, 2)} style={{ cursor: "pointer" }}>
-                                    Chốt báo giá
-                                </a>
-                            </li>
-                        </ul> */}
                         <ul className="breadcrumbs">
                             <li key="1">
                                 <a
@@ -806,12 +898,14 @@ class QuoteCreateForm extends Component {
 
 function mapStateToProps(state) {
     const { customers } = state.crm;
-    return { customers };
+    const { discounts } = state;
+    return { discounts, customers };
 }
 
 const mapDispatchToProps = {
+    getDiscountForOrderValue: DiscountActions.getDiscountForOrderValue,
     getCustomers: CrmCustomerActions.getCustomers,
-    createNewQuote: QuoteActions.createNewQuote,
+    editQuote: QuoteActions.editQuote,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuoteCreateForm));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuoteEditForm));

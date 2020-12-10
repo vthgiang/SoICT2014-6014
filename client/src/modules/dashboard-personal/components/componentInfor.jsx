@@ -156,11 +156,6 @@ class ComponentInfor extends Component {
         window.$(`#modal-view-${"hoursOff"}`).modal('show');
     }
 
-    // /** Function xem danh sách sinh nhật */
-    // ViewBirthdayList = () => {
-    //     window.$(`#modal-view-birthday-list`).modal('show');
-    // }
-
     render() {
         const { discipline, translate, timesheets, tasks, user, workPlan, annualLeave, createEmployeeKpiSet } = this.props;
 
@@ -184,7 +179,7 @@ class ComponentInfor extends Component {
             maximumNumberOfLeaveDays = workPlan.maximumNumberOfLeaveDays
         }
 
-        /* Lấy dữ liệu công việc của môi nhân viên trong đơn vị */
+        /* Lấy dữ liệu công việc của mỗi nhân viên trong đơn vị */
         let taskListByStatus = tasks.organizationUnitTasks ? tasks.organizationUnitTasks.tasks : null;
         let listEmployee = user.employees;
         let maxTask = 1;

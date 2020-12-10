@@ -1472,6 +1472,8 @@ export default {
                 aplication_annual_leave_success: "Thêm đơn xin nghỉ thành công",
                 import_annual_leave_success: "Thêm dữ liệu từ file thành công",
                 import_annual_leave_faile: "Thêm dữ liệu từ file thất bại",
+
+                employee_invalid: 'Tài khoản chưa đăng ký thông tin nhân viên. Vui lòng kiểm tra lại',
             },
 
             // Quản lý khen thưởng kỷ luật
@@ -1639,7 +1641,7 @@ export default {
                 ethnic: "Dân tộc",
                 nationality: "Quốc tịch",
                 religion: "Tôn giáo",
-                active: "Đang làm việc",
+                active: "Làm việc chính thức",
                 leave: "Đã nghỉ làm",
                 career_fields: "Ngành nghề/lĩnh vực",
                 maternity_leave: "Nghỉ thai sản",
@@ -1674,7 +1676,7 @@ export default {
                 university: "Đại học",
                 master_degree: "Thạc sỹ",
                 phd: "Tiến sỹ",
-                unavailable: "Không có",
+                unavailable: "Khác",
                 work_experience: "Kinh nghiệm làm việc",
                 unit: "Đơn vị công tác",
                 from_month_year: "Từ tháng/năm",
@@ -2298,6 +2300,8 @@ export default {
                 cancel: "Hủy",
 
                 select_asset_type: "Chọn loại tài sản",
+                select_asset_status: "Chọn trạng thái tài sản",
+                asset_status:"Trạng thái tài sản",
                 select_all_asset_type: "Chọn tất cả loại tài sản",
                 select_all_status: "Chọn tất cả trạng thái",
                 select_all_group: "Chọn tất cả nhóm tài sản",
@@ -2781,6 +2785,7 @@ export default {
                     "Không thể thay đổi trạng thái công việc",
                 edit_status_archived_of_task_fail:
                     "Chỉnh sửa trạng thái lưu kho của công việc thất bại",
+                task_status_error: "Trạng thái của công việc không cho phép lưu kho",
                 confirm_delete:
                     "Không thể xóa công việc này vì công việc đang trong quá trình thực hiện!",
 
@@ -4929,7 +4934,32 @@ export default {
                 choose_good_input: "---Chọn sản phẩm---",
                 error_good: "Vui lòng chọn sản phẩm",
                 error_quantity: "Vui lòng nhập số lượng",
-                error_quantity_input: "Số lượng nhập vào không hợp lệ"
+                error_quantity_input: "Số lượng nhập vào không hợp lệ",
+                sales_order_info: "Thông tin sản phẩm trong đơn",
+                add_to_plan: "Thêm tất cả",
+                added_to_plan: "Đã thêm tất cả",
+                manufacturing_good_info: "Thông tin các sản phẩm cần sản xuất",
+                productivity_mill: "Thông tin năng xuất của phân xưởng sản xuất",
+                divide_command: "Phân chia các lệnh sản xuất",
+                quantity_not_commmanded: "Số lượng chưa tạo lệnh",
+                mill: "Xưởng sản xuất",
+                productity: "Số sản phẩm sản xuất / ca",
+                person_number: "Số công nhân / ca",
+                approvers: "Người phê duyệt",
+                qualityControlStaffs: "Người đảm bảo chất lượng",
+                accountables: "Người giám sát",
+                command_code: "Mã lệnh",
+                created_all_command: "Vui lòng phân hết số lượng các sản phẩm vào lệnh sản xuất",
+                command_quantity: "Số lượng",
+                choose_quality_control_staffs: "Vui lòng chọn người kiểm định chất lượng",
+                error_quantity_input_remaining: "Số lượng không thể lớn hơn số lượng chưa tạo lệnh sản xuất",
+                error_quantity_input_good: "Vui lòng chọn sản phẩm cần sản xuất trước"
+
+
+
+
+
+
             },
             command: {
                 code: "Mã lệnh sản xuất",
@@ -5112,6 +5142,7 @@ export default {
                 material: "Thông tin nguyên vật liệu",
                 lot_edit: "Chỉnh sửa lô sản xuất",
                 create_bill: "Lên phiếu nhập kho",
+
             },
         },
     },

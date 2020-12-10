@@ -280,7 +280,7 @@ exports.searchAssetProfiles = async (portal, company, params) => {
         );
         listAssets = await Asset(connect(DB_CONNECTION, portal))
             .find(keySearch)
-            .populate({path: "assetType"})
+            .populate("assetType assignedToOrganizationalUnit")
             .sort({createdAt: "desc"})
             .skip(params.page)
             .limit(params.limit);
@@ -290,7 +290,7 @@ exports.searchAssetProfiles = async (portal, company, params) => {
         );
         listAssets = await Asset(connect(DB_CONNECTION, portal))
             .find(keySearch)
-            .populate({path: "assetType"})
+            .populate("assetType assignedToOrganizationalUnit")
             .sort({createdAt: "desc"})
             .skip(params.page)
             .limit(params.limit);
@@ -1183,7 +1183,7 @@ exports.createIncident = async (portal, id, data) => {
     let assetIncident = await Asset(connect(DB_CONNECTION, portal)).update(
         {_id: id},
         {
-            status: data.status,
+            status: data.assetStatus,
             $addToSet: {incidentLogs: data},
         }
     );
@@ -1203,7 +1203,7 @@ exports.updateIncident = async (portal, incidentId, data) => {
             "incidentLogs.$.dateOfIncident": data.dateOfIncident,
             "incidentLogs.$.description": data.description,
             "incidentLogs.$.statusIncident": data.statusIncident,
-            status: data.status
+            status: data.assetStatus
         }
     }, { new: true }).lean();
 
