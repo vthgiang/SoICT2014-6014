@@ -5,6 +5,8 @@ import parse from 'html-react-parser';
 
 import { configQuillEditor } from './configQuillEditor';
 import { ToolbarQuillEditor } from './toolbarQuillEditor';
+
+import './quillEditor.css';
 class QuillEditor extends Component {
     constructor(props) {
         super(props);
@@ -87,9 +89,8 @@ class QuillEditor extends Component {
                 }
             });
 
-            // Custom icon insert table
-            let insertTable = document.querySelector('#insert-table');
-            insertTable.addEventListener('click', () => {
+            // Custom insert table
+            window.$(`#insert-tabletoolbar${id}`).click(() => {
                 let table = quill.getModule('table');
                 table.insertTable(3, 3);
             });
