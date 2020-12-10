@@ -1,24 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
 import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
+import ValidationHelper from '../../../../../helpers/validationHelper';
 
-import { AssetCreateValidator } from '../../../base/create-tab/components/assetCreateValidator';
-
-import { IncidentActions } from '../redux/actions';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { AssetManagerActions } from '../../../admin/asset-information/redux/actions';
-
+import { IncidentActions } from '../redux/actions';
 class IncidentCreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            incidentCode: "",
-            type: "1", // Phân loại: 1. broken, 2.  lost
-            reportedBy: "", // Người báo cáo
             dateOfIncident: this.formatDate(Date.now()), // Ngày phát hiện
-            description: "",
         };
     }
 
@@ -46,29 +39,54 @@ class IncidentCreateForm extends Component {
 
     // Bắt sự kiện thay đổi mã sự cố
     handleIncidentCodeChange = (e) => {
-        let { value } = e.target;
-        this.validateIncidentCode(value, true);
-    }
-    validateIncidentCode = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateIncidentCode(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnIncidentCode: msg,
-                    incidentCode: value,
-                }
-            });
-        }
-        return msg === undefined;
+        const { translate } = this.props;
+        const { value } = e.target;
+
+        let { message } = ValidationHelper.validateName(translate, value, 4, 255);
+        this.setState({
+            incidentCode: value,
+            errorOnIncidentCode: message,
+        })
     }
 
     // Bắt sự kiện thay đổi loại sự cố
     handleTypeChange = (e) => {
-        let { value } = e.target;
+        const { translate } = this.props;
+        const { value } = e.target;
+        let { assetStatus } = this.state;
+
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+        switch (value) {
+            case '1':
+                assetStatus = 'broken';
+                this.setState({
+                    type: value,
+                    assetStatus,
+                    errorOnIncidentType: message,
+                })
+                break;
+
+            case '2':
+                assetStatus = 'lost';
+                this.setState({
+                    type: value,
+                    assetStatus,
+                    errorOnIncidentType: message,
+                })
+                break;
+            default:
+                this.setState({
+                    type: value,
+                    assetStatus,
+                    errorOnIncidentType: message,
+                })
+
+        }
+    }
+
+    handleStatusAsset = (value) => {
         this.setState({
-            ...this.state,
-            type: value
+            assetStatus: value[0],
         })
     }
 
@@ -93,65 +111,58 @@ class IncidentCreateForm extends Component {
 
     //Bắt sự kiện thay đổi "Thời gian phát hiện"
     handleDateOfIncidentChange = (value) => {
-        this.validateDateOfIncident(value, true);
-    }
-    validateDateOfIncident = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateDateOfIncident(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnDateOfIncident: msg,
-                    dateOfIncident: value,
-                }
-            });
-        }
-        return msg === undefined;
+        const { translate } = this.props;
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
+        this.setState({
+            dateOfIncident: value,
+            errorOnDateOfIncident: message,
+        })
     }
 
     //8. Bắt sự kiện thay đổi "Nội dung sự cố"
     handleDescriptionChange = (e) => {
-        let value = e.target.value;
-        this.validateIncidentDescription(value, true);
-    }
-    validateIncidentDescription = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateIncidentDescription(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnDescription: msg,
-                    description: value,
-                }
-            });
-        }
-        return msg === undefined;
-    }
+        const { translate } = this.props;
+        const { value } = e.target;
 
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+        this.setState({
+            description: value,
+            errorOnDescription: message,
+        })
+    }
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result = this.validateDateOfIncident(this.state.dateOfIncident, false) &&
-            this.validateIncidentDescription(this.state.description, false)
+        const { incidentCode, type, dateOfIncident, description } = this.state;
+        const { translate } = this.props;
 
-        return result;
+        if (!ValidationHelper.validateName(translate, incidentCode).status
+            || !ValidationHelper.validateEmpty(translate, type).status
+            || !ValidationHelper.validateEmpty(translate, dateOfIncident).status
+            || !ValidationHelper.validateEmpty(translate, description).status)
+            return false;
+        return true;
     }
 
     // Bắt sự kiện submit form
     save = () => {
-        var partIncident = this.state.dateOfIncident.split('-');
-        var dateOfIncident = [partIncident[2], partIncident[1], partIncident[0]].join('-');
-        let assetId = !this.state.asset ? this.props.assetsManager.listAssets[0]._id : this.state.asset._id;
+        const { incidentCode, type, description, assetStatus } = this.state;
+        let { dateOfIncident } = this.state;
+
+        const partIncident = dateOfIncident.split('-');
+        dateOfIncident = [partIncident[2], partIncident[1], partIncident[0]].join('-');
+        const assetId = !this.state.asset ? this.props.assetsManager.listAssets[0]._id : this.state.asset._id;
 
         if (this.isFormValidated()) {
             let dataToSubmit = {
-                incidentCode: this.state.incidentCode,
-                type: this.state.type,
+                incidentCode: incidentCode,
+                type: type,
                 reportedBy: this.props.auth.user._id,
                 dateOfIncident: dateOfIncident,
-                description: this.state.description,
+                description: description,
                 statusIncident: 1,
-                status: this.state.type == "broken" ? 1 : 2,
+                assetStatus: assetStatus,
                 assetId
             }
 
@@ -172,21 +183,23 @@ class IncidentCreateForm extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps._id !== prevState._id) {
+            const { status } = nextProps.asset;
             return {
                 ...prevState,
                 _id: nextProps._id,
-                asset: nextProps.asset
+                asset: nextProps.asset,
+                assetStatus: status,
+                type: "",
             }
         } else {
             return null;
         }
-
     }
 
     render() {
         const { _id } = this.props;
         const { translate, assetsManager, user, auth } = this.props;
-        const { incidentCode, type, asset, reportedBy, dateOfIncident, description, errorOnIncidentCode, errorOnDateOfIncident, errorOnDescription } = this.state;
+        const { incidentCode, type, assetStatus, asset, reportedBy, dateOfIncident, description, errorOnIncidentCode, errorOnIncidentType, errorOnDateOfIncident, errorOnDescription } = this.state;
 
         var userlist = user.list;
         var assetlist = assetsManager.listAssets;
@@ -205,19 +218,42 @@ class IncidentCreateForm extends Component {
 
                         <div className="col-md-12">
                             {/* Mã sự cố */}
-                            <div className={`form-group ${errorOnIncidentCode === undefined ? "" : "has-error"}`}>
-                                <label>{translate('asset.general_information.incident_code')}</label>
-                                <input type="text" className="form-control" name="incidentCode" value={incidentCode} onChange={this.handleIncidentCodeChange} autoComplete="off" placeholder={translate('asset.general_information.incident_code')} />
+                            <div className={`form-group ${!errorOnIncidentCode ? "" : "has-error"}`}>
+                                <label>{translate('asset.general_information.incident_code')}<span className="text-red">*</span></label>
+                                <input type="text" className="form-control" name="incidentCode" value={incidentCode ? incidentCode : ""} onChange={this.handleIncidentCodeChange} autoComplete="off" placeholder={translate('asset.general_information.incident_code')} />
                                 <ErrorLabel content={errorOnIncidentCode} />
                             </div>
 
                             {/* Phân loại */}
-                            <div className="form-group">
-                                <label>{translate('asset.general_information.type')}</label>
-                                <select className="form-control" value={type} name="type" onChange={this.handleTypeChange}>
-                                    <option value="broken">{translate('asset.general_information.damaged')}</option>
-                                    <option value="lost">{translate('asset.general_information.lost')}</option>
+                            <div className={`form-group ${!errorOnIncidentType ? "" : "has-error"}`}>
+                                <label>{translate('asset.general_information.type')}<span className="text-red">*</span></label>
+                                <select className="form-control" value={type ? type : ""} name="type" onChange={this.handleTypeChange}>
+                                    <option value="">{`---${translate('asset.general_information.select_incident_type')}---`} </option>
+                                    <option value="1">{translate('asset.general_information.damaged')}</option>
+                                    <option value="2">{translate('asset.general_information.lost')}</option>
                                 </select>
+                                <ErrorLabel content={errorOnIncidentType} />
+                            </div>
+
+                            {/* Trạng thái tài sản */}
+                            <div className="form-group">
+                                <label>{translate('asset.general_information.asset_status')}</label>
+                                <SelectBox
+                                    id={`status-asset-${type}`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={[
+                                        { value: '', text: `---${translate('asset.general_information.select_asset_status')}---` },
+                                        { value: 'ready_to_use', text: translate('asset.general_information.ready_use') },
+                                        { value: 'in_use', text: translate('asset.general_information.using') },
+                                        { value: 'broken', text: translate('asset.general_information.damaged') },
+                                        { value: 'lost', text: translate('asset.general_information.lost') },
+                                        { value: 'disposed', text: translate('asset.general_information.disposal') },
+                                    ]}
+                                    onChange={this.handleStatusAsset}
+                                    value={assetStatus}
+                                    multiple={false}
+                                />
                             </div>
 
                             {/* Tài sản */}
@@ -297,3 +333,4 @@ const actionCreators = {
 
 const createForm = connect(mapState, actionCreators)(withTranslate(IncidentCreateForm));
 export { createForm as IncidentCreateForm };
+

@@ -3,6 +3,7 @@ import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { connect } from 'react-redux';
 import { DatePicker, ErrorLabel, SelectBox } from '../../../../../../common-components';
 import sampleData from '../../../sampleData';
+import { LotActions } from '../../../../warehouse/inventory-management/redux/actions';
 
 
 class PlanInfoForm extends Component {
@@ -15,7 +16,8 @@ class PlanInfoForm extends Component {
             quantity: ''
         }
         this.state = {
-            good: Object.assign({}, this.EMPTY_GOOD)
+            good: Object.assign({}, this.EMPTY_GOOD),
+            currentGoodId: '1',
         };
     }
 
@@ -26,6 +28,8 @@ class PlanInfoForm extends Component {
     handleEndDateChange = (value) => {
         this.props.onEndDateChange(value);
     }
+
+
 
     handleDescriptionChange = (e) => {
         const { value } = e.target;
@@ -48,7 +52,17 @@ class PlanInfoForm extends Component {
     }
 
     handleSalesOrdersChange = (value) => {
-        this.props.onSalesOrdersChange(value)
+        this.props.onSalesOrdersChange(value);
+    }
+
+    findIndex = (array, id) => {
+        let result = -1;
+        array.map((x, index) => {
+            if (x.good._id === id) {
+                result = index;
+            }
+        });
+        return result;
     }
 
     getListApproversArr = () => {
@@ -107,14 +121,21 @@ class PlanInfoForm extends Component {
             const { listGoodsByType } = goods;
             let goodArrFilter = listGoodsByType.filter(x => x._id === good.goodId);
             if (goodArrFilter.length) {
-                good.baseUnit = goodArrFilter[0].baseUnit;
+                good.baseUnit = goodArrFilter[0].baseUnit
+                const { lots } = this.props;
+                const { listInventories } = lots;
+                if (listInventories) {
+                    good.inventory = listInventories[0].inventory
+                }
             } else {
-                good.baseUnit = ""
+                good.inventory = "";
+                good.baseUnit = "";
             }
             this.setState((state) => ({
                 ...state,
                 good: { ...good },
-                errorGood: msg
+                errorGood: msg,
+                currentGoodId: value
             }))
         }
         return msg;
@@ -159,13 +180,89 @@ class PlanInfoForm extends Component {
     handleClearGood = (e) => {
         e.preventDefault();
         this.setState({
-            good: Object.assign({}, this.EMPTY_GOOD)
-        })
+            good: Object.assign({}, this.EMPTY_GOOD),
+            currentGoodId: "1"
+        });
+    }
+
+    handleAddGood = (e) => {
+        e.preventDefault();
+        const { good } = this.state;
+        this.props.onAddGood(good);
+        this.setState((state) => ({
+            ...state,
+            good: Object.assign({}, this.EMPTY_GOOD),
+            currentGoodId: "1"
+        }))
+    }
+
+    handleEditGood = (good, index) => {
+        good.baseUnit = good.good.baseUnit;
+        good.goodId = good.good._id;
+        this.setState((state) => ({
+            ...state,
+            editGood: true,
+            good: { ...good },
+            indexEditting: index
+        }));
+    }
+
+    handleCancelEditGood = (e) => {
+        e.preventDefault();
+        this.setState((state) => ({
+            ...state,
+            editGood: false,
+            good: Object.assign({}, this.EMPTY_GOOD),
+            currentGoodId: "1"
+        }));
+    }
+
+    handleSaveEditGood = (e) => {
+        e.preventDefault();
+        const { good, indexEditting } = this.state;
+        this.props.onSaveEditGood(good, indexEditting);
+        this.setState((state) => ({
+            ...state,
+            editGood: false,
+            good: Object.assign({}, this.EMPTY_GOOD),
+            currentGoodId: '1'
+        }))
+    }
+
+    handleDeleteGood = (index) => {
+        this.props.onDeleteGood(index);
+        this.setState((state) => ({
+            ...state,
+            good: Object.assign({}, this.EMPTY_GOOD),
+            currentGoodId: '1',
+            editGood: false
+        }))
+    }
+
+    shouldComponentUpdate = (nextProps, nextState) => {
+        if (nextState.currentGoodId !== "1" && this.state.currentGoodId !== nextState.currentGoodId) {
+            this.props.getInventoryByGoodId({
+                array: [nextState.currentGoodId]
+            });
+            return false;
+        }
+        return true;
+    }
+
+    static getDerivedStateFromProps = (props, state) => {
+        if (state.currentGoodId !== "1" && props.lots.currentInventory) {
+            state.good.inventory = props.lots.currentInventory.inventory;
+            return {
+                ...state,
+                good: { ...state.good }
+            }
+        }
+        return null;
     }
 
 
     render() {
-        const { translate, code, salesOrders, approvers, startDate, endDate, description } = this.props;
+        const { translate, code, salesOrders, approvers, startDate, endDate, description, listGoodsSalesOrders, addedAllGoods, listGoods } = this.props;
         const { good, errorGood, errorQuantity } = this.state;
         return (
             <React.Fragment>
@@ -228,9 +325,57 @@ class PlanInfoForm extends Component {
                         </div>
                     </div>
                 </div>
+                {
+                    listGoodsSalesOrders.length > 0 &&
+                    <div className="row">
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <fieldset className="scheduler-border">
+                                <legend className="scheduler-border">{translate('manufacturing.plan.sales_order_info')}</legend>
+                                <table className="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>{translate('manufacturing.plan.index')}</th>
+                                            <th>{translate('manufacturing.plan.good_code')}</th>
+                                            <th>{translate('manufacturing.plan.good_name')}</th>
+                                            <th>{translate('manufacturing.plan.base_unit')}</th>
+                                            <th>{translate('manufacturing.plan.quantity_good_inventory')}</th>
+                                            <th>{translate('manufacturing.plan.quantity')}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            listGoodsSalesOrders.map((x, index) => (
+                                                <tr key={index}>
+                                                    <td>{index + 1}</td>
+                                                    <td>{x.good.code}</td>
+                                                    <td>{x.good.name}</td>
+                                                    <td>{x.good.baseUnit}</td>
+                                                    <td>{x.inventory}</td>
+                                                    <td>{x.quantity}</td>
+                                                </tr>
+                                            ))
+                                        }
+                                    </tbody>
+                                </table>
+                                {
+                                    !addedAllGoods
+                                        ?
+                                        <div className="pull-right" style={{ marginBottom: "10px" }}>
+                                            <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={() => { this.props.onAddAllGood() }}>{translate('manufacturing.plan.add_to_plan')}</button>
+                                        </div>
+                                        :
+                                        <div className="pull-right" style={{ marginBottom: "10px" }}>
+                                            <button className="btn btn-primary" style={{ marginLeft: "10px" }} disabled={true}>{translate('manufacturing.plan.added_to_plan')}</button>
+                                        </div>
+                                }
+
+                            </fieldset>
+                        </div>
+                    </div>
+                }
+
                 <div className="row">
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{translate('manufacturing.plan.add_good_info')}</legend>
                             <div className="row">
@@ -252,7 +397,7 @@ class PlanInfoForm extends Component {
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className={`form-group`}>
                                         <label>{translate('manufacturing.plan.quantity_good_inventory')}</label>
-                                        <input type="text" className="form-control" />
+                                        <input type="number" value={good.inventory} disabled={true} className="form-control" />
                                     </div>
                                 </div>
                             </div>
@@ -272,12 +417,12 @@ class PlanInfoForm extends Component {
                                 </div>
                             </div>
                             <div className="pull-right" style={{ marginBottom: "10px" }}>
-                                {this.state.editBill ?
+                                {this.state.editGood ?
                                     <React.Fragment>
-                                        <button className="btn btn-success" onClick={this.handleCancelEditBill} style={{ marginLeft: "10px" }}>{translate('manufacturing.purchasing_request.cancel_editing_good')}</button>
-                                        <button className="btn btn-success" onClick={this.handleSaveEditBill} style={{ marginLeft: "10px" }}>{translate('manufacturing.purchasing_request.save_good')}</button>
+                                        <button className="btn btn-success" onClick={this.handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('manufacturing.purchasing_request.cancel_editing_good')}</button>
+                                        <button className="btn btn-success" onClick={this.handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('manufacturing.purchasing_request.save_good')}</button>
                                     </React.Fragment> :
-                                    <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isGoodValidated()} onClick={this.handleAddBill}>{translate('manufacturing.purchasing_request.add_good')}</button>
+                                    <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isGoodValidated()} onClick={this.handleAddGood}>{translate('manufacturing.purchasing_request.add_good')}</button>
                                 }
                                 <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearGood}>{translate('manufacturing.purchasing_request.delete_good')}</button>
                             </div>
@@ -295,7 +440,26 @@ class PlanInfoForm extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-
+                                {
+                                    listGoods &&
+                                        listGoods.length === 0 ?
+                                        <tr><td colSpan={7}>{translate('general.no_data')}</td></tr>
+                                        :
+                                        listGoods.map((x, index) => (
+                                            <tr key={index}>
+                                                <td>{index + 1}</td>
+                                                <td>{x.good.code}</td>
+                                                <td>{x.good.name}</td>
+                                                <td>{x.good.baseUnit}</td>
+                                                <td>{x.inventory}</td>
+                                                <td>{x.quantity}</td>
+                                                <td>
+                                                    <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => this.handleEditGood(x, index)}><i className="material-icons"></i></a>
+                                                    <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => this.handleDeleteGood(index)}><i className="material-icons"></i></a>
+                                                </td>
+                                            </tr>
+                                        ))
+                                }
                             </tbody>
                         </table>
                     </div>
@@ -306,11 +470,12 @@ class PlanInfoForm extends Component {
 }
 
 function mapStateToProps(state) {
-    const { salesOrder, manufacturingPlan, goods } = state;
-    return { salesOrder, manufacturingPlan, goods }
+    const { salesOrder, manufacturingPlan, goods, lots } = state;
+    return { salesOrder, manufacturingPlan, goods, lots }
 }
 
 const mapDispatchToProps = {
+    getInventoryByGoodId: LotActions.getInventoryByGoodId
 }
 
 

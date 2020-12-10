@@ -81,28 +81,6 @@ class DashBoardAssets extends Component {
         });
     }
 
-    // Function format dữ liệu Date thành string
-    formatDate(date, monthYear = false) {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2) {
-            month = '0' + month;
-        }
-
-        if (day.length < 2) {
-            day = '0' + day;
-        }
-
-        if (monthYear === true) {
-            return [month, year].join('-');
-        } else {
-            return [day, month, year].join('-');
-        }
-    }
-
     returnCountNumber = (array, status) => array.filter(item => item.status === status).length;
 
     handleNavTabs = (tab) => {
@@ -120,6 +98,7 @@ class DashBoardAssets extends Component {
 
     // Function format dữ liệu Date thành string
     formatDate(date, monthYear = false) {
+        if (!date) return '';
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -241,6 +220,24 @@ class DashBoardAssets extends Component {
         })
     }
 
+    formatStatus = (status) => {
+        const { translate } = this.props;
+        switch (status) {
+            case 'ready_to_use': return translate('asset.general_information.ready_use');
+            case 'in_use': return translate('asset.general_information.using');
+            case 'broken': return translate('asset.general_information.damaged');
+            case 'lost': return translate('asset.general_information.lost');
+            case 'disposed': return translate('asset.general_information.disposal');
+            default: return ''
+        }
+    }
+
+    getOrganizationalUnit = (org) => {
+        if (!org) return '';
+        else if (typeof (org) !== 'object') return '';
+        else return org.name;
+    }
+
     setAssetIsExpiredExportData = (data, assetTypeList, userList, dayAvailable) => {
         let exportData, assetIsExpired;
 
@@ -254,11 +251,11 @@ class DashBoardAssets extends Component {
                         name: asset.assetName,
                         type: assetTypeList.find(item => item._id === asset.assetType) ? assetTypeList.find(item => item._id === asset.assetType).typeName : '',
                         purchaseDate: this.formatDate(asset.purchaseDate),
-                        manager: userList.find(item => item._id === asset.managedBy) ? userList.find(item => item._id === asset.managedBy).name : '',
-                        user: asset.assignedToUser ? (userList.length !== 0 && userList.find(item => item._id === asset.assignedToUser) ? userList.find(item => item._id === asset.assignedToUser).name : '') : '',
-                        organizationalUnit: asset.assignedToOrganizationalUnit ? asset.assignedToOrganizationalUnit : '',
-                        status: asset.status,
-                        dayAvailable: item.day + (dayAvailable ? " ngày" : "")
+                        manager: userList.find(item => item._id === asset.managedBy) ? userList.find(item => item._id === asset.managedBy).email : '',
+                        user: asset.assignedToUser ? (userList.length !== 0 && userList.find(item => item._id === asset.assignedToUser) ? userList.find(item => item._id === asset.assignedToUser).email : '') : '',
+                        organizationalUnit: this.getOrganizationalUnit(asset.assignedToOrganizationalUnit),
+                        status: this.formatStatus(asset.status),
+                        dayAvailable: item.day
                     }
                 }
 

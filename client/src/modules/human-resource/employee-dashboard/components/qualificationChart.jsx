@@ -130,14 +130,19 @@ class QualificationChart extends Component {
                 switch (x.professionalSkill) {
                     case 'intermediate_degree':
                         intermediate_degree = intermediate_degree + 1;
+                        break;
                     case 'colleges':
                         colleges = colleges + 1;
+                        break;
                     case 'university':
                         university = university + 1;
+                        break;
                     case 'master_degree':
                         master_degree = master_degree + 1;
+                        break;
                     case 'phd':
                         phd = phd + 1;
+                        break;
                     default:
                         unavailable = unavailable + 1;
                 }
@@ -147,6 +152,7 @@ class QualificationChart extends Component {
                 [translate(`human_resource.profile.colleges`), colleges],
                 [translate(`human_resource.profile.university`), university],
                 [translate(`human_resource.profile.master_degree`), master_degree],
+                [translate(`human_resource.profile.phd`), phd],
                 [translate(`human_resource.profile.unavailable`), unavailable]
             ]
         }
@@ -175,8 +181,6 @@ class QualificationChart extends Component {
             this.removePreviousChart();
         }
 
-        console.log(listAllEmployees)
-
         return (
             <React.Fragment>
                 <div className="box box-solid">
@@ -187,11 +191,10 @@ class QualificationChart extends Component {
                     </div>
                     <div className="box-body">
                         <div className="dashboard_box_body">
-                            <p className="pull-right" style={{ marginBottom: 0 }} > < b > ĐV tính: Người</b></p >
                             <div className="box-tools pull-left" >
                                 <div className="btn-group pull-left">
                                     <button type="button" className={`btn btn-xs ${typeChart ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Trình độ chuyên môn</button>
-                                    <button type="button" className={`btn btn-xs ${typeChart ? 'btn-danger' : "active"}`} onClick={() => this.handleChangeViewChart(true)}>Trình độ huyên ngành</button>
+                                    <button type="button" className={`btn btn-xs ${typeChart ? 'btn-danger' : "active"}`} onClick={() => this.handleChangeViewChart(true)}>Trình độ chuyên ngành</button>
                                 </div>
                             </div>
                             <div ref="donutChart"></div>
