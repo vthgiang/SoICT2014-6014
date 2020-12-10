@@ -53,3 +53,65 @@ export const getPropertyOfValue = (value, property = "name", getValue = true, ar
         }
     }
 }
+
+/**
+ * Hàm lấy định dạng thời gian theo format
+ * @param {*} time 
+ * @param {*} type 
+ */
+export const getFormatDateFromTime = (time, format='date') => {
+    if(!time) return null;
+
+    let d = new Date(time);
+    if(!d) return null;
+    
+    let day = d.getDate();
+    day =  day < 10 ? `0${day}` : day;
+    
+    let month = d.getMonth() + 1;
+    month = month < 10 ? `0${month}` : month; 
+    
+    let year = d.getFullYear();
+
+    switch(format) {
+        case 'mm-yyyy': 
+            return [month, year].join('-');
+        case 'dd-mm-yyyy': 
+            return [day, month, year].join('-');
+        default:
+            return d;
+    }
+}
+
+/**
+ * Hàm lấy giá trị thời gian theo format
+ * @param {*} time 
+ * @param {*} format 
+ */
+export const getTimeFromFormatDate = (time, format='date') => {
+    if(!time) return null;
+
+    let formatedTime, dataTime, year, month, day;
+    switch(format) {
+        case 'mm-yyyy':
+            dataTime = time.split('-');
+            month = dataTime[0];
+            year = dataTime[1];
+            formatedTime = new Date(`${year}-${month}`);
+            break;
+
+        case 'dd-mm-yyyy': 
+            dataTime = time.split('-');
+            day = dataTime[0];
+            month = dataTime[1];
+            year = dataTime[2];
+            formatedTime = new Date(`${year}-${month}-${day}`);
+            break;
+
+        default:
+            formatedTime = new Date(time);
+    }
+
+    if(!formatedTime) return null;
+    return formatedTime;
+}
