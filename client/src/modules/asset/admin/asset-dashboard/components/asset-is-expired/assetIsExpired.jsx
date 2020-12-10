@@ -74,13 +74,24 @@ class AssetIsExpired extends Component {
         else return org.name;
     }
 
+    getUserName = (user) => {
+        let userlist = this.props.user.list;
+        if (!user) return '';
+        else if (typeof (user) === 'object') {
+            return user.email;
+        } else {
+            let findUser = userlist.find(item => item._id === user);
+            if (!findUser) return '';
+            else return findUser.email;
+        }
+    }
+
     render() {
         const { translate } = this.props;
         const { user, assetType, setAssetIsExpiredExportData } = this.props;
         const { listAssets } = this.state;
-
-        var userlist = user && user.list;
         let lists;
+        var userlist = user && user.list;
         var ExpiryDateAssets = [], willExpiryDateAssets = [];
         let nowDate = new Date();
         if (listAssets && !ExpiryDateAssets.length && !willExpiryDateAssets.length) {
@@ -164,8 +175,8 @@ class AssetIsExpired extends Component {
                                             <td>{!x.asset ? '' : x.asset.assetName}</td>
                                             <td>{!x.asset ? '' : x.asset.assetType && x.asset.assetType.length ? x.asset.assetType.map((item, index) => { let suffix = index < x.asset.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : ''}</td>
                                             <td>{!x.asset ? '' : this.formatDate(x.asset.purchaseDate)}</td>
-                                            <td>{!x.asset ? '' : x.asset.managedBy && userlist.length && userlist.find(item => item._id === x.asset.managedBy) ? userlist.find(item => item._id === x.asset.managedBy).email : ''}</td>
-                                            <td>{!x.asset ? '' : x.asset.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.asset.assignedToUser) ? userlist.find(item => item._id === x.asset.assignedToUser).email : '') : ''}</td>
+                                            <td>{!x.asset ? '' : this.getUserName(x.asset.managedBy)}</td>
+                                            <td>{!x.asset ? '' : this.getUserName(x.asset.assignedToUser)}</td>
                                             <td>{!x.asset ? '' : this.getOrganizationalUnit(x.asset.assignedToOrganizationalUnit)}</td>
                                             <td>{this.formatStatus(!x.asset ? '' : x.asset.status)}</td>
                                             <td>{x.day} {translate('asset.dashboard.day')}</td>
@@ -178,8 +189,8 @@ class AssetIsExpired extends Component {
                                             <td>{!x.asset ? '' : x.asset.assetName}</td>
                                             <td>{!x.asset ? '' : x.asset.assetType && x.asset.assetType.length ? x.asset.assetType.map((item, index) => { let suffix = index < x.asset.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : ''}</td>
                                             <td>{!x.asset ? '' : this.formatDate(x.asset.purchaseDate)}</td>
-                                            <td>{!x.asset ? '' : x.asset.managedBy && userlist.length && userlist.find(item => item._id === x.asset.managedBy) ? userlist.find(item => item._id === x.asset.managedBy).email : ''}</td>
-                                            <td>{!x.asset ? '' : x.asset.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.asset.assignedToUser) ? userlist.find(item => item._id === x.asset.assignedToUser).email : '') : ''}</td>
+                                            <td>{!x.asset ? '' : this.getUserName(x.asset.managedBy)}</td>
+                                            <td>{!x.asset ? '' : this.getUserName(x.asset.assignedToUser)}</td>
                                             <td>{!x.asset ? '' : this.getOrganizationalUnit(x.asset.assignedToOrganizationalUnit)}</td>
                                             <td>{!x.asset ? '' : this.formatStatus(x.asset.status)}</td>
                                             <td>{x.day}</td>

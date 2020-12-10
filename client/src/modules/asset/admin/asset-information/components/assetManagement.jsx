@@ -373,17 +373,6 @@ class AssetManagement extends Component {
         return typeArr;
     }
 
-    // checkHasComponent = (name) => {
-    //     var { auth } = this.props;
-    //     var result = false;
-    //     if (auth) {
-    //         auth.components.forEach(component => {
-    //             if (component.name === name) result = true;
-    //         });
-    //     }
-    //     return result;
-    // }
-
     getDepartment = () => {
         let { department } = this.props;
         let listUnit = department && department.list
