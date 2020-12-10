@@ -280,7 +280,7 @@ exports.searchAssetProfiles = async (portal, company, params) => {
         );
         listAssets = await Asset(connect(DB_CONNECTION, portal))
             .find(keySearch)
-            .populate({path: "assetType"})
+            .populate("assetType assignedToOrganizationalUnit")
             .sort({createdAt: "desc"})
             .skip(params.page)
             .limit(params.limit);
@@ -290,7 +290,7 @@ exports.searchAssetProfiles = async (portal, company, params) => {
         );
         listAssets = await Asset(connect(DB_CONNECTION, portal))
             .find(keySearch)
-            .populate({path: "assetType"})
+            .populate("assetType assignedToOrganizationalUnit")
             .sort({createdAt: "desc"})
             .skip(params.page)
             .limit(params.limit);
