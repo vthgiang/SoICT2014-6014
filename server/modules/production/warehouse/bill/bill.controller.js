@@ -3,7 +3,7 @@ const Logger = require(`${SERVER_LOGS_DIR}`);
 
 exports.getBillsByType = async (req, res) => {
     try {
-        const bills = await BillService.getBillsByType(req.query, req.portal);
+        const bills = await BillService.getBillsByType(req.query, req.user._id, req.portal);
 
         await Logger.info(req.user.email, 'GET_BILL_SUCCESS', req.portal);
 

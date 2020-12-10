@@ -6,6 +6,7 @@ import QuantityLotGoodReceipt from './quantityLotGoodReceipt';
 import { generateCode } from '../../../../../../helpers/generateCode';
 import { LotActions } from '../../../inventory-management/redux/actions';
 import { BillActions } from '../../redux/actions';
+import './goodReceipt.css'
 
 class GoodReceiptEditForm extends Component {
     constructor(props) {
@@ -18,6 +19,7 @@ class GoodReceiptEditForm extends Component {
             lots: []
         }
         this.state = {
+            userId: localStorage.getItem("userId"),
             list: [],
             lots: [],
             listGood: [],
@@ -697,6 +699,7 @@ class GoodReceiptEditForm extends Component {
                 group: nextProps.group,
                 type: nextProps.type,
                 users: nextProps.users,
+                creator: nextProps.creator,
                 approvers: nextProps.approvers,
                 approver: approver,
                 qualityControlStaffs: qualityControlStaffs,
@@ -931,67 +934,69 @@ class GoodReceiptEditForm extends Component {
                                 </div>
                             </fieldset>
                         </div>
-                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{translate('manage_warehouse.bill_management.list_saffs')}</legend>
-                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.approved')}<span className="attention"> * </span></label>
-                                    <SelectBox
-                                        id={`select-approver-bill-receipt-edit`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={approver}
-                                        items={dataApprover}
-                                        onChange={this.handleApproverChange}    
-                                        multiple={true}
-                                    />
-                                    <ErrorLabel content = { errorApprover } />
-                                </div>
-                                <div className={`form-group ${!errorResponsibles ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.users')}<span className="attention"> * </span></label>
-                                    <SelectBox
-                                        id={`select-accountables-bill-receipt-edit`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={responsibles}
-                                        items={dataApprover}
-                                        onChange={this.handleResponsiblesChange}    
-                                        multiple={true}
-                                    />
-                                    <ErrorLabel content = { errorResponsibles } />
-                                </div>
-                            </div>
-                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    { type === '1' && <div className={`form-group ${!errorQualityControlStaffs ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.qualityControlStaffs')}<span className="attention"> * </span></label>
+                        { this.state.userId === this.state.creator &&
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <fieldset className="scheduler-border">
+                                <legend className="scheduler-border">{translate('manage_warehouse.bill_management.list_saffs')}</legend>
+                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
+                                        <label>{translate('manage_warehouse.bill_management.approved')}<span className="attention"> * </span></label>
                                         <SelectBox
-                                            id={`select-qualityControlStaffs-bill-receipt-edit`}
+                                            id={`select-approver-bill-receipt-edit`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            value={qualityControlStaffs}
+                                            value={approver}
                                             items={dataApprover}
-                                            onChange={this.handleQualityControlStaffsChange}    
+                                            onChange={this.handleApproverChange}    
                                             multiple={true}
                                         />
-                                        <ErrorLabel content = { errorQualityControlStaffs } />
-                                    </div>}
-                                    <div className={`form-group ${!errorAccountables ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.accountables')}<span className="attention"> * </span></label>
-                                        <SelectBox
-                                            id={`select-responsibles-bill-receipt-edit`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            value={accountables}
-                                            items={dataApprover}
-                                            onChange={this.handleAccountablesChange}    
-                                            multiple={true}
-                                        />
-                                        <ErrorLabel content = { errorAccountables } />
+                                        <ErrorLabel content = { errorApprover } />
                                     </div>
-                            </div>
-                        </fieldset>
+                                    <div className={`form-group ${!errorResponsibles ? "" : "has-error"}`}>
+                                        <label>{translate('manage_warehouse.bill_management.users')}<span className="attention"> * </span></label>
+                                        <SelectBox
+                                            id={`select-accountables-bill-receipt-edit`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={responsibles}
+                                            items={dataApprover}
+                                            onChange={this.handleResponsiblesChange}    
+                                            multiple={true}
+                                        />
+                                        <ErrorLabel content = { errorResponsibles } />
+                                    </div>
+                                </div>
+                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                        { type === '1' && <div className={`form-group ${!errorQualityControlStaffs ? "" : "has-error"}`}>
+                                            <label>{translate('manage_warehouse.bill_management.qualityControlStaffs')}<span className="attention"> * </span></label>
+                                            <SelectBox
+                                                id={`select-qualityControlStaffs-bill-receipt-edit`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                value={qualityControlStaffs}
+                                                items={dataApprover}
+                                                onChange={this.handleQualityControlStaffsChange}    
+                                                multiple={true}
+                                            />
+                                            <ErrorLabel content = { errorQualityControlStaffs } />
+                                        </div>}
+                                        <div className={`form-group ${!errorAccountables ? "" : "has-error"}`}>
+                                            <label>{translate('manage_warehouse.bill_management.accountables')}<span className="attention"> * </span></label>
+                                            <SelectBox
+                                                id={`select-responsibles-bill-receipt-edit`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                value={accountables}
+                                                items={dataApprover}
+                                                onChange={this.handleAccountablesChange}    
+                                                multiple={true}
+                                            />
+                                            <ErrorLabel content = { errorAccountables } />
+                                        </div>
+                                </div>
+                            </fieldset>
                         </div>
+                        }
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('manage_warehouse.bill_management.receiver')}</legend>
@@ -1080,7 +1085,11 @@ class GoodReceiptEditForm extends Component {
                                                         <td>{x.good.code}</td>
                                                         <td>{x.good.name}</td>
                                                         <td>{x.good.baseUnit}</td>
-                                                        { (this.checkLots(x.lots, x.quantity)) ? <td>{x.quantity}</td> : <td style={{color: 'red'}}>{x.quantity}</td> }
+                                                        { (this.checkLots(x.lots, x.quantity)) ? <td>{x.quantity}</td> : 
+                                                        <td className="tooltip-abc">
+                                                            <span style={{ color: "red" }}>{x.quantity}</span>
+                                                            <span className="tooltiptext"><p style={{ color: "white" }}>{translate('manage_warehouse.bill_management.text')}</p></span>
+                                                        </td> }
                                                         <td>{x.description}</td>
                                                         <td>
                                                             <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => this.handleEditGood(x, index)}><i className="material-icons"></i></a>

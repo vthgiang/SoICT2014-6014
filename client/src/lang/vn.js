@@ -4289,6 +4289,7 @@ export default {
                 detail_title: "Chi tiết khu vực lưu trữ",
             },
             bill_management: {
+                text: "Chưa đánh lô cho hàng hóa",
                 billType: {
                     1: "Nhập nguyên vật liệu",
                     2: "Nhập thành phẩm",
@@ -4534,6 +4535,7 @@ export default {
                 edit_faile: "Chỉnh sửa lô hàng thất bại",
                 get_lot_failed: "Lấy lô hàng thất bại",
                 push_lot: "Lô chưa được xếp vào kho",
+                text: "Hàng hóa chưa xếp hết vào kho",
             },
         },
 

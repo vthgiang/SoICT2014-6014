@@ -1667,7 +1667,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={false}
+                        isLoading={this.props.categories.isLoading}
                         key={"category-management"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1687,7 +1687,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={false}
+                        isLoading={this.props.goods.isLoading}
                         key={"good-management"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1706,7 +1706,7 @@ class Routes extends Component {
                         component={GoodManagement}
                     />
                     <PrivateRoute
-                        isLoading={false}
+                        isLoading={this.props.stocks.isLoading}
                         key={"stock-management"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1725,7 +1725,7 @@ class Routes extends Component {
                         component={StockManagement}
                     />
                     <PrivateRoute
-                        isLoading={false}
+                        isLoading={this.props.binLocations.isLoading}
                         key={"bin-location-management"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1744,7 +1744,7 @@ class Routes extends Component {
                         component={BinLocationManagement}
                     />
                     <PrivateRoute
-                        isLoading={false}
+                        isLoading={this.props.lots.isLoading}
                         key={"inventory-management"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1763,7 +1763,7 @@ class Routes extends Component {
                         component={InventoryManagement}
                     />
                     <PrivateRoute
-                        isLoading={false}
+                        isLoading={this.props.bills.isLoading}
                         key={"bill-management"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },

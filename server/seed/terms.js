@@ -150,6 +150,16 @@ const COMPONENTS = [{
     links: [
         '/manage-manufacturing-plan',
     ],
+},{
+    name: 'create-stock-button',
+    description: 'Button thêm mới kho',
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ],
+    links: [
+        '/stock-management'
+    ]
 }];
 exports.COMPONENTS = COMPONENTS;
 
