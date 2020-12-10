@@ -9,7 +9,7 @@ const QuoteSchema = Schema({
     },
     status: {
         type: Number,
-        enum: [0, 1, 2, 3], //0. Gửi yêu cầu, 1: chờ phản hồi, 2: Đã chốt đơn, 3: Đã hủy
+        enum: [0, 1, 2, 3], //0. Gửi yêu cầu, 1: Đã duyệt, 2: Đã chốt đơn, 3: Đã hủy
         required: true,
         default: 0
     }, 
@@ -32,9 +32,9 @@ const QuoteSchema = Schema({
         ref: 'Customer',
         required: true
     },
-    customerName: {
-        type: String
-    },
+    // customerName: {
+    //     type: String
+    // },
     customerPhone: {
         type: String,
         required: true
@@ -46,11 +46,15 @@ const QuoteSchema = Schema({
     customerRepresent: { //người đại diện
         type: String
     },
-    customerTaxNumber: {
-        type: String
-    },
+    // customerTaxNumber: {
+    //     type: String
+    // },
     customerEmail: {
         type: String
+    },
+    approver: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
     },
     goods: [{
         good: {

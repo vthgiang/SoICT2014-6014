@@ -473,7 +473,7 @@ class QuoteCreateGood extends Component {
 
     deleteGood = (goodId) => {
         let { listGoods } = this.props;
-        let goodsFilter = listGoods.filter((item) => item._id !== goodId);
+        let goodsFilter = listGoods.filter((item) => item.good._id !== goodId);
         this.props.setGoods(goodsFilter);
     };
 
@@ -1019,7 +1019,7 @@ class QuoteCreateGood extends Component {
                                                 </i>
                                             </a>
                                             <a className="edit text-red">
-                                                <i className="material-icons" onClick={() => this.deleteGood(item._id)}>
+                                                <i className="material-icons" onClick={() => this.deleteGood(item.good._id)}>
                                                     delete
                                                 </i>
                                             </a>

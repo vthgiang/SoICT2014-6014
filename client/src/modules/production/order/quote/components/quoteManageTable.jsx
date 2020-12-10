@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { QuoteActions } from "../redux/actions";
+import { DiscountActions } from "../../discount/redux/actions";
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import { formatDate } from "../../../../../helpers/formatDate";
 import { PaginateBar, DataTableSetting, SelectBox } from "../../../../../common-components";
@@ -24,6 +25,7 @@ class QuoteManageTable extends Component {
     componentDidMount = () => {
         const { page, limit } = this.state;
         this.props.getAllQuotes({ page, limit });
+        this.props.getDiscountForOrderValue();
     };
 
     setPage = async (page) => {
@@ -252,6 +254,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     getAllQuotes: QuoteActions.getAllQuotes,
+    getDiscountForOrderValue: DiscountActions.getDiscountForOrderValue,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuoteManageTable));
