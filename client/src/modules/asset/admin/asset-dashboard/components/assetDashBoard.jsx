@@ -13,6 +13,7 @@ import { AssetIsExpired } from './asset-is-expired/assetIsExpired';
 import { AssetByType } from './asset-by-type/assetByType';
 import { PurchaseAndDisposal } from './asset-purchase-disposal/purchaseAndDisposal';
 import { IncidentAndMaintenance } from './asset-incident-maintenance/incidentAndMaintenance';
+import { getPropertyOfValue } from '../../../../../helpers/stringMethod';
 
 class DashBoardAssets extends Component {
 
@@ -232,27 +233,9 @@ class DashBoardAssets extends Component {
         }
     }
 
-    getOrganizationalUnit = (org) => {
-        if (!org) return '';
-        else if (typeof (org) !== 'object') return '';
-        else return org.name;
-    }
-
-    getUserName = (user) => {
-        let userlist = this.props.user.list;
-        if (!user) return '';
-        else if (typeof (user) === 'object') {
-            return user.email;
-        } else {
-            let findUser = userlist.find(item => item._id === user);
-            if (!findUser) return '';
-            else return findUser.email;
-        }
-    }
-
     setAssetIsExpiredExportData = (data, assetTypeList, userList, dayAvailable) => {
         let exportData, assetIsExpired;
-
+        let userlist = this.props.user.list;
         if (data && data.length !== 0 && assetTypeList && userList) {
             exportData = data.map((item, index) => {
                 let asset = item.asset;
@@ -263,14 +246,13 @@ class DashBoardAssets extends Component {
                         name: asset.assetName,
                         type: typeof (asset.assetType) === 'object' ? asset.assetType.reduce(((node, cur) => node ? node + ', ' + cur.typeName : node + cur.typeName), '') : '',
                         purchaseDate: this.formatDate(asset.purchaseDate),
-                        manager: this.getUserName(asset.managedBy),
-                        user: this.getUserName(asset.assignedToUser),
-                        organizationalUnit: this.getOrganizationalUnit(asset.assignedToOrganizationalUnit),
+                        manager: getPropertyOfValue(asset.managedBy, 'email', false, userlist),
+                        user: getPropertyOfValue(asset.assignedToUser, 'email', false, userlist),
+                        organizationalUnit: getPropertyOfValue(asset.assignedToOrganizationalUnit, 'name', false),
                         status: this.formatStatus(asset.status),
                         dayAvailable: item.day
                     }
                 }
-
             })
         }
 

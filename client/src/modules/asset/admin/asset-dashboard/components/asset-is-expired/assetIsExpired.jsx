@@ -4,6 +4,7 @@ import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { AssetService } from '../../../asset-information/redux/services';
 import { UserActions } from '../../../../../super-admin/user/redux/actions';
 import { AssetTypeActions } from "../../../asset-type/redux/actions";
+import { getPropertyOfValue } from '../../../../../../helpers/stringMethod';
 
 class AssetIsExpired extends Component {
     constructor(props) {
@@ -65,24 +66,6 @@ class AssetIsExpired extends Component {
             case 'lost': return translate('asset.general_information.lost');
             case 'disposed': return translate('asset.general_information.disposal');
             default: return ''
-        }
-    }
-
-    getOrganizationalUnit = (org) => {
-        if (!org) return '';
-        else if (typeof (org) !== 'object') return '';
-        else return org.name;
-    }
-
-    getUserName = (user) => {
-        let userlist = this.props.user.list;
-        if (!user) return '';
-        else if (typeof (user) === 'object') {
-            return user.email;
-        } else {
-            let findUser = userlist.find(item => item._id === user);
-            if (!findUser) return '';
-            else return findUser.email;
         }
     }
 
@@ -175,9 +158,9 @@ class AssetIsExpired extends Component {
                                             <td>{!x.asset ? '' : x.asset.assetName}</td>
                                             <td>{!x.asset ? '' : x.asset.assetType && x.asset.assetType.length ? x.asset.assetType.map((item, index) => { let suffix = index < x.asset.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : ''}</td>
                                             <td>{!x.asset ? '' : this.formatDate(x.asset.purchaseDate)}</td>
-                                            <td>{!x.asset ? '' : this.getUserName(x.asset.managedBy)}</td>
-                                            <td>{!x.asset ? '' : this.getUserName(x.asset.assignedToUser)}</td>
-                                            <td>{!x.asset ? '' : this.getOrganizationalUnit(x.asset.assignedToOrganizationalUnit)}</td>
+                                            <td>{!x.asset ? '' : getPropertyOfValue(x.asset.managedBy, 'email', false, userlist)}</td>
+                                            <td>{!x.asset ? '' : getPropertyOfValue(x.asset.assignedToUser, 'email', false, userlist)}</td>
+                                            <td>{!x.asset ? '' : getPropertyOfValue(x.asset.assignedToOrganizationalUnit, 'name', false)}</td>
                                             <td>{this.formatStatus(!x.asset ? '' : x.asset.status)}</td>
                                             <td>{x.day} {translate('asset.dashboard.day')}</td>
                                         </tr>))
@@ -189,9 +172,9 @@ class AssetIsExpired extends Component {
                                             <td>{!x.asset ? '' : x.asset.assetName}</td>
                                             <td>{!x.asset ? '' : x.asset.assetType && x.asset.assetType.length ? x.asset.assetType.map((item, index) => { let suffix = index < x.asset.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : ''}</td>
                                             <td>{!x.asset ? '' : this.formatDate(x.asset.purchaseDate)}</td>
-                                            <td>{!x.asset ? '' : this.getUserName(x.asset.managedBy)}</td>
-                                            <td>{!x.asset ? '' : this.getUserName(x.asset.assignedToUser)}</td>
-                                            <td>{!x.asset ? '' : this.getOrganizationalUnit(x.asset.assignedToOrganizationalUnit)}</td>
+                                            <td>{!x.asset ? '' : getPropertyOfValue(x.asset.managedBy, 'email', false, userlist)}</td>
+                                            <td>{!x.asset ? '' : getPropertyOfValue(x.asset.assignedToUser, 'email', false, userlist)}</td>
+                                            <td>{!x.asset ? '' : getPropertyOfValue(x.asset.assignedToOrganizationalUnit, 'name', false)}</td>
                                             <td>{!x.asset ? '' : this.formatStatus(x.asset.status)}</td>
                                             <td>{x.day}</td>
                                         </tr>))

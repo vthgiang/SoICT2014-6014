@@ -29,3 +29,27 @@ export const compareTime = (time1, time2, type='dmy') => {
             return time1 > time2 ? 1 : -1;
     }
 }
+
+/**
+ * Hàm lấy ra một thuộc tính của một giá trị đầu vào cho trước
+ * Giá trị có thể có hoặc không phụ thuộc vào một mảng các giá trị mà giá trị đầu vào có hoặc không thuộc trong mảng
+ * @param {*} value 
+ * @param {*} property 
+ * @param {*} getValue 
+ * @param {*} arr 
+ */
+export const getPropertyOfValue = (value, property = "name", getValue = true, arr) => {
+    if (!value) return '';
+    if (!arr) {
+        if (typeof (value) !== 'object') return getValue ? value : '';
+        else return value[property];
+    } else {
+        if (typeof (value) === 'object') {
+            return value[property];
+        } else {
+            let findValue = arr.find(item => item._id === value);
+            if (!findValue) return '';
+            else return findValue[property];
+        }
+    }
+}
