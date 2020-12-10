@@ -997,7 +997,7 @@ editArchivedOfTask = async (req, res) => {
         await Logger.error(req.user.email, ` edit status of task `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['edit_status_archived_of_task_fail'],
+            messages: Array.isArray(error)? error: ['edit_status_archived_of_task_fail'],
             content: error
         });
     }

@@ -525,7 +525,6 @@ exports.searchEmployeeProfiles = async (portal, params, company) => {
     let keySearch = {
         company: company
     };
-
     // Bắt sựu kiện theo đơn vị
     if (params.organizationalUnits) {
         let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(portal, params.organizationalUnits, undefined);

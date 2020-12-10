@@ -7,7 +7,7 @@ exports.getBillsByType = async (query, portal) => {
     if (!managementLocation) throw new Error("roles not avaiable");
 
     //lấy id các kho của role hiện tại
-    const stocks = await Stock(connect(DB_CONNECTION, portal)).find({ managementLocation: { $in: managementLocation } })
+    const stocks = await Stock(connect(DB_CONNECTION, portal)).find({ managementLocation: { $elemMatch: { role: managementLocation }} })
     var arrayStock = [];
     if (stocks && stocks.length > 0) {
         for (let i = 0; i < stocks.length; i++) {
@@ -448,9 +448,7 @@ exports.editBill = async (id, userId, data, portal) => {
             bill.status = 5;
         }
     }
-    else {
-        bill.status = data.status ? data.status : bill.status;
-    }
+    bill.status = data.status ? data.status : bill.status;
 
     var log = {};
     log.creator = userId;
@@ -492,6 +490,35 @@ exports.editBill = async (id, userId, data, portal) => {
                     }
                 }
             }
+        }
+
+        if(data.group === '1' && data.type === '2'){
+            if (data.goods && data.goods.length > 0) {
+                for (let i = 0; i < data.goods.length; i++) {
+                    if (data.goods[i].lots && data.goods[i].lots.length > 0) {
+                        for (let j = 0; j < data.goods[i].lots.length; j++) {
+                            var quantity = data.goods[i].lots[j].quantity;
+                            let lotId = data.goods[i].lots[j].lot;
+                            let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
+                            let stock = {};
+                            stock.stock = data.fromStock;
+                            stock.quantity = quantity;
+                            stock.binLocation = [];
+                            lot.stocks = [ ...lot.stocks, stock ];
+                            let lotLog = {};
+                            lotLog.bill = bill._id;
+                            lotLog.quantity = quantity;
+                            lotLog.description = data.goods[i].description ? data.goods[i].description : '';
+                            lotLog.type = bill.type;
+                            lotLog.createdAt = bill.updatedAt;
+                            lotLog.stock = data.fromStock;
+                            lot.lotLogs = [...lot.lotLogs, lotLog];
+                            await lot.save();
+                        }
+                    }
+                }
+            }
+            
         }
 
         //Nếu là phiếu trả hàng

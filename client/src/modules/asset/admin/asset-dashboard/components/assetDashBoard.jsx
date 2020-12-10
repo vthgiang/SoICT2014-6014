@@ -252,7 +252,7 @@ class DashBoardAssets extends Component {
                         STT: index + 1,
                         code: asset.code,
                         name: asset.assetName,
-                        type: assetTypeList.find(item => item._id === asset.assetType) ? assetTypeList.find(item => item._id === asset.assetType).typeName : 'Asset type is deleted',
+                        type: assetTypeList.find(item => item._id === asset.assetType) ? assetTypeList.find(item => item._id === asset.assetType).typeName : '',
                         purchaseDate: this.formatDate(asset.purchaseDate),
                         manager: userList.find(item => item._id === asset.managedBy) ? userList.find(item => item._id === asset.managedBy).name : '',
                         user: asset.assignedToUser ? (userList.length !== 0 && userList.find(item => item._id === asset.assignedToUser) ? userList.find(item => item._id === asset.assignedToUser).name : '') : '',
@@ -459,8 +459,7 @@ class DashBoardAssets extends Component {
 
     render() {
         const { translate } = this.props;
-        const { listAssets, exportData, currentTab } = this.state;
-
+        const { listAssets, assetType, exportData, currentTab } = this.state;
         return (
             <div className="qlcv">
                 <div className="row" style={{ marginTop: 10 }}>
@@ -576,6 +575,7 @@ class DashBoardAssets extends Component {
                                 key="AdministrationAssetStatistics"
                             >
                                 <AssetStatistics
+                                    assetType={assetType}
                                     setAssetStatisticsExportData={this.setAssetStatisticsExportData}
                                 />
                             </LazyLoadComponent>

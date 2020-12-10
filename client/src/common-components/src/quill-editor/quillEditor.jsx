@@ -2,66 +2,104 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import parse from 'html-react-parser';
-import Quill from 'quill';
-import QuillImageDropAndPaste from 'quill-image-drop-and-paste';
-import * as QuillTableUI from 'quill-table-ui';
-import QuillTable from 'quill-table';
 
+import { configQuillEditor } from './configQuillEditor';
+import { ToolbarQuillEditor } from './toolbarQuillEditor';
 class QuillEditor extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            quill: null
         }
 
     }
+    
+    componentDidUpdate = () => {
+        const { quillValueDefault, fileUrls } = this.props;
+        const { quill } = this.state;
 
-    componentDidMount() {
-        const { id, edit = true, value } = this.props;
+        // Insert value ban đầu
+        // Lưu ý: quillValueDefault phải được truyền vào 1 giá trị cố định, không thayđô
+        if (quillValueDefault || quillValueDefault === '') {
+            if (quill && quill.container && quill.container.firstChild) {
+                quill.container.firstChild.innerHTML = quillValueDefault;
+            }  
+            if (fileUrls) {
+                let imgs = Array.from(
+                    quill.container.querySelectorAll('img[src]')
+                );
+                if (imgs && imgs.length !== 0) {
+                    imgs = imgs.map((item, index) => {
+                        item.src = fileUrls[index];
+                        return item;
+                    })
+                }
+            }
+        }
+    }
 
+    componentDidMount = () => {
+        const { id, edit = true, quillValueDefault, fileUrls } = this.props;
         if (edit) {
-            // Thêm các module tiện ích
-            Quill.register({
-                'modules/imageDropAndPaste': QuillImageDropAndPaste,
-                // 'modules/tableUI': QuillTableUI.default,
-            }, true)
-
-            // Khởi tạo Quill Editor trong thẻ có id='editor-container'
-            const quill = new Quill(`#editor-container${id}`, {
-                modules: {
-                    toolbar: [
-                        [{ 'font': [] }],
-                        [{ header: [1, 2, 3, false] }],
-                        ['bold', 'italic', 'underline', 'strike'],
-                        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                        [{ 'align': [] }],
-                        ['image', 'code-block', 'list']
-                    ],
-                    imageDropAndPaste: true,
-                    // table: true,
-                    // tableUI: true,
-                },
-                placeholder: 'Start typing here...',
-                theme: 'snow'
-            });
-
+            // Khởi tạo Quill Editor trong thẻ có id = id truyền vào
+            const quill = window.initializationQuill(`#editor-container${id}`, configQuillEditor(id));
+            
             // Insert value ban đầu
-            if (value) {
+            if (quillValueDefault || quillValueDefault === '') {
                 if (quill && quill.container && quill.container.firstChild) {
-                    quill.container.firstChild.innerHTML = value;
+                    quill.container.firstChild.innerHTML = quillValueDefault;
                 } 
+                if (fileUrls) {
+                    let imgs = Array.from(
+                        quill.container.querySelectorAll('img[src]')
+                    );
+                    if (imgs && imgs.length !== 0) {
+                        imgs = imgs.map((item, index) => {
+                            item.src = fileUrls[index];
+                            return item;
+                        })
+                    }
+                }
             }
 
-
             // Bắt sự kiện text-change
-            quill.on('text-change', (delta, oldDelta, source) => {
-                console.log("change", quill.root.innerHTML, delta, oldDelta, source);
-                const imgs = Array.from(
+            quill.on('text-change', () => {
+                let imgs, imageSources = [];
+
+                imgs = Array.from(
                     quill.container.querySelectorAll('img[src^="data:"]:not(.loading)')
                 );
 
+                if (imgs && imgs.length !== 0) {
+                    imgs = imgs.map((item, index) => {
+                        imageSources.push(item.getAttribute("src"));
+                        item.src = "image" + index;
+                        return item;
+                    })
+                }
                 this.props.getTextData(quill.root.innerHTML, imgs);
+                if (imgs && imgs.length !== 0) {
+                    imgs = imgs.map((item, index) => {
+                        item.src = imageSources[index];
+                        return item;
+                    })
+                }
             });
+
+            // Custom icon insert table
+            let insertTable = document.querySelector('#insert-table');
+            insertTable.addEventListener('click', () => {
+                let table = quill.getModule('table');
+                table.insertTable(3, 3);
+            });
+            
+            this.setState(state => {
+                return {
+                    ...state,
+                    quill: quill
+                }
+            })
         }
         
     }
@@ -71,11 +109,11 @@ class QuillEditor extends Component {
      * @imgs mảng hình ảnh dạng base64
      * @names mảng tên các ảnh tương ứng
      * */ 
-    static convertImageBase64ToFile = (imgs, names) => {
+    static convertImageBase64ToFile = (imgs) => {
         let imageFile;
         if (imgs && imgs.length !== 0) {
-            imageFile = imgs.map((item, index) => {
-                 // Split the base64 string in data and contentType
+            imageFile = imgs.map((item) => {
+                // Split the base64 string in data and contentType
                 let block = item.getAttribute("src").split(";");
                 let contentType = block[0].split(":")[1];
                 let realData = block[1].split(",")[1];
@@ -99,21 +137,26 @@ class QuillEditor extends Component {
                 }
             
                 let blob = new Blob(byteArrays, { type: contentType });
-                return new File([blob], names[index]);
+                return new File([blob], "png");
             })
         }
         return imageFile;
     }
 
     render() {
-        const { id, edit = true, value, height = 200 } = this.props;
+        const { id, edit = true, quillValueDefault, height = 200 } = this.props;
 
         return (
             <React.Fragment>
                 {
                     edit
-                        ? <div id={`editor-container${id}`} style={{ height: height }}/>
-                        : parse(value)
+                        ? <React.Fragment>
+                            <ToolbarQuillEditor
+                                id={`toolbar${id}`}
+                            />
+                            <div id={`editor-container${id}`} style={{ height: height }} />
+                        </React.Fragment>
+                        : parse(quillValueDefault)
                 }
             </React.Fragment>
         )

@@ -99,7 +99,7 @@ class TaskReportDetailForm extends Component {
         let newlistTaskEvaluations, dataForAxisXInChart = [], results, output, pieChartDataConvert, barAndLineDataChartConvert;
 
         if (listTaskEvaluations && listTaskEvaluations.length > 0) {
-            // Lọc lấy các trường cần thiết cho việc config dữ liệu biểu đồ.
+            // Lọc lấy các trường cần thiết cho việc liên quanfig dữ liệu biểu đồ.
             results = chartFunction.filterFieldInListTask(listTaskEvaluations);
 
             // Dữ liệu sau khi lọc

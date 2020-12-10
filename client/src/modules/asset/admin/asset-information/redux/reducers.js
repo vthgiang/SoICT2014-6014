@@ -77,11 +77,10 @@ export function assetsManager(state = initState, action) {
 
 
         case AssetConstants.ADDASSET_SUCCESS:
-            state.listAssets = [...state.listAssets, ...action.payload.assets[0]];
-
             return {
                 ...state,
-                isLoading: false
+                isLoading: false,
+                listAssets: [action.payload.assets[0],...state.listAssets]
             };
 
         case AssetConstants.UPDATE_INFOR_ASSET_SUCCESS:

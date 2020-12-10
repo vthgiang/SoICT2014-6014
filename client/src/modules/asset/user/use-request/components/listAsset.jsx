@@ -128,7 +128,6 @@ class ListAsset extends Component {
         }
 
         this.setState({
-            ...this.state,
             assetType: value
         })
     }
@@ -140,7 +139,6 @@ class ListAsset extends Component {
         }
 
         this.setState({
-            ...this.state,
             group: value
         })
     }
@@ -152,7 +150,6 @@ class ListAsset extends Component {
         }
 
         this.setState({
-            ...this.state,
             status: value
         })
     }
@@ -164,18 +161,16 @@ class ListAsset extends Component {
         }
 
         this.setState({
-            ...this.state,
             typeRegisterForUse: value
         })
     }
     // Function bắt sự kiện tìm kiếm
-    handleSubmitSearch = async () => {
+    handleSubmitSearch = () => {
         this.setState({
-            ...this.state,
             page: 0
         })
 
-        this.props.getAllAsset(this.state);
+        this.props.getAllAsset({ ...this.state, page: 0 });
     }
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
@@ -212,16 +207,18 @@ class ListAsset extends Component {
     }
 
     convertGroupAsset = (group) => {
+        const { translate } = this.props;
         if (group === 'building') {
-            return 'Mặt bằng';
+            return translate('asset.dashboard.building');
         } else if (group === 'vehicle') {
-            return 'Xe cộ'
+            return translate('asset.dashboard.vehicle')
         } else if (group === 'machine') {
-            return 'Máy móc'
-        } else {
-            return 'Khác'
-        }
+            return translate('asset.dashboard.machine')
+        } else if (group === 'other') {
+            return translate('asset.dashboard.other')
+        } else return null;
     }
+
     convertStatusAsset = (status) => {
         const { translate } = this.props;
         if (status === 'ready_to_use') {
@@ -236,9 +233,9 @@ class ListAsset extends Component {
         else if (status === 'lost') {
             return translate('asset.general_information.lost');
         }
-        else {
+        else if (status === 'disposal') {
             return translate('asset.general_information.disposal')
-        }
+        } else return null;
     }
 
     render() {
@@ -390,7 +387,7 @@ class ListAsset extends Component {
                                         <td>{x.code}</td>
                                         <td>{x.assetName}</td>
                                         <td>{this.convertGroupAsset(x.group)}</td>
-                                        <td>{x.assetType && x.assetType.length ? x.assetType.map((item, index) => { let suffix = index < x.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : 'Asset Type is deleted'}</td>
+                                        <td>{x.assetType && x.assetType.length ? x.assetType.map((item, index) => { let suffix = index < x.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : ''}</td>
                                         <td>{x.assignedToUser ? (userlist.length && userlist.filter(item => item._id === x.assignedToUser).pop() ? userlist.filter(item => item._id === x.assignedToUser).pop().name : '') : ''}</td>
                                         <td>{x.handoverFromDate ? this.formatDate2(x.handoverFromDate) : ''}</td>
                                         <td>{x.handoverToDate ? this.formatDate2(x.handoverToDate) : ''}</td>

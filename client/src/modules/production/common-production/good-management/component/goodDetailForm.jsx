@@ -62,7 +62,6 @@ class GoodDetailForm extends Component {
             salesPriceVariance,
             numberExpirationDate
         } = this.state;
-
         return (
             <React.Fragment>
                 <DialogModal
@@ -100,10 +99,10 @@ class GoodDetailForm extends Component {
                                 <div className="form-group">
                                     <strong>{translate("manage_warehouse.good_management.category")}:&emsp;</strong>
                                     {category &&
-                                        categories.listCategoriesByType.length &&
-                                        categories.listCategoriesByType.filter((item) => item._id === category).pop()
-                                        ? categories.listCategoriesByType.filter((item) => item._id === category).pop().name
-                                        : "aaa"}
+                                        categories.categoryToTree.list.length &&
+                                        categories.categoryToTree.list.filter((item) => item._id === category).pop()
+                                        ? categories.categoryToTree.list.filter((item) => item._id === category).pop().name
+                                        : "Category is deleted"}
                                 </div>
                                 <div className="form-group">
                                     <strong>{"Giá một đơn vị tính cơ bản"}:&emsp;</strong>

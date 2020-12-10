@@ -368,7 +368,7 @@ function convertArray3dTo1d(input) {
 
 
 /**
- * Hàm lọc lấy các trường cần thiết cho việc config dữ liệu biểu đồ.
+ * Hàm lọc lấy các trường cần thiết cho việc liên quanfig dữ liệu biểu đồ.
  * @param {*} tasks danh sách công việc ban đầu
  * 
  * Đầu ra sẽ là danh sách các công việc được rút gọn và chiều dữ liệu

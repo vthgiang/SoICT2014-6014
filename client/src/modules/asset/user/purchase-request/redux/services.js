@@ -20,6 +20,7 @@ function searchRecommendProcures(data) {
             status: data.status,
             page: data.page,
             limit: data.limit,
+            month: data.month
         },
     }, false, true, 'asset.purchase-request');
 }

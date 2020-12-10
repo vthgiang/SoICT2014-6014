@@ -96,6 +96,7 @@ exports.deleteManyAssetType = async (req, res) => {
             content: type
         });
     } catch (error) {
+        console.log(error)
         await Logger.error(req.user.email, 'DELETE_MANY_ASSET_TYPE', req.portal);
         res.status(400).json({
             success: false,

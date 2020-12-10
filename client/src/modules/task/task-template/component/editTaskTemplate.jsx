@@ -319,6 +319,7 @@ class EditTaskTemplate extends Component {
     }
 
     handleChangeCollaboratedWithOrganizationalUnits = (value) => {
+        console.log(value);
         this.setState(state => {
             return {
                 ...state,
@@ -333,6 +334,7 @@ class EditTaskTemplate extends Component {
     }
 
     handleTaskTemplateRead = (value) => {
+        console.log(value);
 
         this.validateTaskTemplateRead(value, true);
     }
@@ -430,7 +432,7 @@ class EditTaskTemplate extends Component {
     }
 
     render() {
-        
+
         console.log('\n\n=======EDIT=========\n\n');
         var units, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsDean, listRoles = [];
         var { editingTemplate, id, showMore } = this.state;
@@ -485,6 +487,14 @@ class EditTaskTemplate extends Component {
                 {/**Form chứa thông tin của mẫu công việc đang sửa */}
                 <div className="row">
                     <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
+                        {/**Tên mẫu công việc này */}
+                        <div className={`form-group ${this.state.editingTemplate.errorOnName === undefined ? "" : "has-error"}`} >
+                            <label className="control-label">{translate('task_template.tasktemplate_name')} <span style={{ color: "red" }}>*</span></label>
+                            <input type="Name" className="form-control" placeholder={translate('task_template.tasktemplate_name')} value={editingTemplate.name} onChange={this.handleTaskTemplateName} />
+                            <ErrorLabel content={this.state.editingTemplate.errorOnName} />
+                        </div>
+
+
                         {/**Đơn vị của mẫu công việc */}
                         <div className={`form-group ${editingTemplate.errorOnUnit === undefined ? "" : "has-error"}`} >
                             <label className="control-label">{translate('task_template.unit')} <span style={{ color: "red" }}>*</span></label>
@@ -526,6 +536,8 @@ class EditTaskTemplate extends Component {
                             </div>
                         }
                     </div>
+
+
                     {
                         !isProcess &&
                         <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
@@ -541,7 +553,7 @@ class EditTaskTemplate extends Component {
                                             listRoles.map(x => { return { value: x._id, text: x.name } })
                                         }
                                         onChange={this.handleTaskTemplateRead}
-                                        value={editingTemplate.readByEmployees.map(item => item._id)}
+                                        value={editingTemplate.readByEmployees}
                                         multiple={true}
                                         options={{ placeholder: `${translate('task_template.permission_view')}` }}
                                     />
@@ -551,18 +563,7 @@ class EditTaskTemplate extends Component {
                         </div>
                     }
 
-                </div>
-
-                <div className="row">
                     <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
-
-                        {/**Tên mẫu công việc này */}
-                        <div className={`form-group ${this.state.editingTemplate.errorOnName === undefined ? "" : "has-error"}`} >
-                            <label className="control-label">{translate('task_template.tasktemplate_name')} <span style={{ color: "red" }}>*</span></label>
-                            <input type="Name" className="form-control" placeholder={translate('task_template.tasktemplate_name')} value={editingTemplate.name} onChange={this.handleTaskTemplateName} />
-                            <ErrorLabel content={this.state.editingTemplate.errorOnName} />
-                        </div>
-
                         {/**Độ ưu tiên mẫu công việc này */}
                         <div className="form-group" >
                             <label className="control-label">{translate('task_template.priority')}</label>
@@ -583,7 +584,10 @@ class EditTaskTemplate extends Component {
                             {/* <ErrorLabel content={this.state.editingTemplate.errorOnDescription} /> */}
                         </div>
                     </div>
+
                 </div>
+
+
 
                 <div className="row">
                     <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
@@ -598,7 +602,7 @@ class EditTaskTemplate extends Component {
                                     style={{ width: "100%" }}
                                     items={allUnitsMember}
                                     onChange={this.handleTaskTemplateResponsible}
-                                    value={editingTemplate.responsibleEmployees.map(item => item._id)}
+                                    value={editingTemplate.responsibleEmployees}
                                     multiple={true}
                                     options={{ placeholder: `${translate('task_template.performer')}` }}
                                 />
@@ -615,7 +619,7 @@ class EditTaskTemplate extends Component {
                                     style={{ width: "100%" }}
                                     items={allUnitsMember}
                                     onChange={this.handleTaskTemplateAccountable}
-                                    value={editingTemplate.accountableEmployees.map(item => item._id)}
+                                    value={editingTemplate.accountableEmployees}
                                     multiple={true}
                                     options={{ placeholder: `${translate('task_template.approver')}` }}
                                 />
@@ -631,7 +635,7 @@ class EditTaskTemplate extends Component {
                                     style={{ width: "100%" }}
                                     items={allUnitsMember}
                                     onChange={this.handleTaskTemplateConsult}
-                                    value={editingTemplate.consultedEmployees.map(item => item._id)}
+                                    value={editingTemplate.consultedEmployees}
                                     multiple={true}
                                     options={{ placeholder: `${translate('task_template.consultant')}` }}
                                 />
@@ -649,7 +653,7 @@ class EditTaskTemplate extends Component {
                                     items={allUnitsMember}
                                     onChange={this.handleTaskTemplateInform}
                                     multiple={true}
-                                    value={editingTemplate.informedEmployees.map(item => item._id)}
+                                    value={editingTemplate.informedEmployees}
                                     options={{ placeholder: `${translate('task_template.observer')}` }}
                                 />
                             }
@@ -675,8 +679,6 @@ class EditTaskTemplate extends Component {
                                 {/**Công thức tính điểm mẫu công việc này */}
                                 <div className={`form-group ${this.state.editingTemplate.errorOnFormula === undefined ? "" : "has-error"}`} >
                                     <label className="control-label" htmlFor="inputFormula">{translate('task_template.formula')}</label>
-                                    {/* <input type="text" className="form-control" id="inputFormula" placeholder="progress / (dayUsed / totalDay) - (numberOfFailedAction / (numberOfFailedAction + numberOfPassedAction)) * 100" value={editingTemplate.formula} onChange={this.handleTaskTemplateFormula} /> */}
-
                                     <input type="text" className="form-control" id="inputFormula" placeholder="progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100" value={editingTemplate.formula} onChange={this.handleTaskTemplateFormula} />
                                     <ErrorLabel content={this.state.editingTemplate.errorOnFormula} />
 

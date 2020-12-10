@@ -333,10 +333,10 @@ class Comment extends Component {
         }
     }
     render() {
-        var minRows = 3, maxRows = 20;
-        const { editComment, editChildComment, showChildComment, currentUser, newCommentEdited, newChildCommentEdited, deleteFile, childComment, showfile } = this.state
+        const { editComment, editChildComment, showChildComment, currentUser, newCommentEdited, newChildCommentEdited, childComment, showfile } = this.state
         const { auth, translate } = this.props
         const { data, comments } = this.props;
+
         return (
             <React.Fragment>
                 { comments && comments ?

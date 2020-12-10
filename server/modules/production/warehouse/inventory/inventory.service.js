@@ -1,5 +1,5 @@
 
-const { Lot, BinLocation, Stock, ManufacturingCommand, OrganizationalUnit, ManufacturingWorks, ManufacturingMill } = require(`${SERVER_MODELS_DIR}`);
+const { Lot, Good, Bill, BinLocation, Stock, ManufacturingCommand, OrganizationalUnit, ManufacturingWorks, ManufacturingMill } = require(`${SERVER_MODELS_DIR}`);
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 exports.getAllLots = async (query, portal) => {
@@ -8,7 +8,7 @@ exports.getAllLots = async (query, portal) => {
     if (!managementLocation) throw new Error("roles not avaiable");
 
     //lấy id các kho của role hiện tại
-    const stocks = await Stock(connect(DB_CONNECTION, portal)).find({ managementLocation: { $in: managementLocation } })
+    const stocks = await Stock(connect(DB_CONNECTION, portal)).find({ managementLocation: { $elemMatch: { role: managementLocation } } })
     var arrayStock = [];
     if (stocks && stocks.length > 0) {
         for (let i = 0; i < stocks.length; i++) {
@@ -18,15 +18,15 @@ exports.getAllLots = async (query, portal) => {
 
     if (!limit || !page) {
 
-        let options = {type: type, quantity: { $ne: 0 }};
+        let options = { type: type, quantity: { $ne: 0 } };
 
-        if(query.stock) {
-            options.stocks = { $elemMatch: { stock: query.stock }};
+        if (query.stock) {
+            options.stocks = { $elemMatch: { stock: query.stock } };
         } else {
-            options.stocks = { $elemMatch: { stock: arrayStock }};
+            options.stocks = { $elemMatch: { stock: arrayStock } };
         }
 
-        if(query.good) {
+        if (query.good) {
             options.good = query.good;
         }
 
@@ -44,10 +44,10 @@ exports.getAllLots = async (query, portal) => {
     else {
         let option = { quantity: { $ne: 0 }, type: type };
 
-        if(query.stock) {
-            option.stocks = { $elemMatch: { stock: query.stock }};
+        if (query.stock) {
+            option.stocks = { $elemMatch: { stock: query.stock } };
         } else {
-            option.stocks = { $elemMatch: { stock: arrayStock }};
+            option.stocks = { $elemMatch: { stock: arrayStock } };
         }
 
         if (query.code) {
@@ -501,4 +501,45 @@ exports.getDetailManufacturingLot = async (id, portal) => {
             select: 'code'
         }]);
     return { lot }
+}
+
+exports.getInventoryByGoods = async (data, portal) => {
+    const { array } = data;
+    const group = '2';
+    const status = ['1', '3', '5'];
+    let arrayGoods = [];
+    for (let i = 0; i < array.length; i++) {
+        let inventory = 0;
+        let goodInventory = {};
+        const lots = await Lot(connect(DB_CONNECTION, portal)).find({ good: array[i] });
+        if (lots.length > 0) {
+            for (let j = 0; j < lots.length; j++) {
+                inventory += Number(lots[j].quantity);
+            }
+            const good = await Good(connect(DB_CONNECTION, portal)).findById({ _id: lots[0].good });
+
+            const bills = await Bill(connect(DB_CONNECTION, portal)).find({ goods: { $elemMatch: { good: good._id } }, group: group, status: { $in: status } });
+            if (bills.length > 0) {
+                for (let k = 0; k < bills.length; k++) {
+                    for (let x = 0; x < bills[k].goods.length; x++) {
+                        if (bills[k].goods[x].good.toString() === good._id.toString()) {
+                            inventory -= Number(bills[k].goods[x].quantity)
+                        }
+                    }
+                }
+            }
+
+            goodInventory.good = good;
+            goodInventory.inventory = inventory;
+            arrayGoods = [...arrayGoods, goodInventory];
+        }
+        else {
+            const good = await Good(connect(DB_CONNECTION, portal)).findById({ _id: array[i] });
+            goodInventory.good = good;
+            goodInventory.inventory = 0;
+            arrayGoods = [ ...arrayGoods, goodInventory ];
+        }
+    }
+
+    return arrayGoods;
 }

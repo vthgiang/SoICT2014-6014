@@ -1011,7 +1011,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         if (user.userdepartments) departmentUsers = user.userdepartments;
         if (user.usercompanys) usercompanys = user.usercompanys;
 
-        // list công việc cha.
+        // list công việc liên quan.
         let listParentTask = [{ value: "", text: `--${translate('task.task_management.add_parent_task')}--` }];
 
         if (tasks.listSearchTasks) {

@@ -10,3 +10,19 @@
 .top-200 {
     margin-top: 200px;
 }
+.box-inner { 
+    margin: 2px; 
+    width: 100%; 
+    height: 130px;
+} 
+
+.iconWrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.iconAlert{
+    font-size: 70px;
+    color: #dd4b39;
+}

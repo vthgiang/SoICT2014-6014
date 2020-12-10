@@ -23,7 +23,7 @@ class MaintainanceEditForm extends Component {
             month: null,
             status: "",
             page: 0,
-            limit: 5,
+            limit: 10,
         });
     }
 
@@ -227,9 +227,16 @@ class MaintainanceEditForm extends Component {
             errorOnMaintainanceCode, errorOnCreateDate, errorOnDescription, errorOnStartDate, errorOnExpense
         } = this.state;
 
-        var assetlist = assetsManager.listAssets;
-        console.log(this.state, 'this.state-u')
+        let assetlist = assetsManager.listAssets;
 
+        // kiểm tra xem id tài sản click xem có nằm trong listAsset trong selectbox chọn tài sản hay kkhoong
+        // Không có thì add thêm, có rồi thì thôi
+        if (assetlist) {
+            const checkExist = assetlist.some(obj => obj._id === asset._id);
+            if (!checkExist) {
+                assetlist = [...assetlist, asset];
+            }
+        }
         return (
             <React.Fragment>
                 <DialogModal
@@ -270,10 +277,12 @@ class MaintainanceEditForm extends Component {
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={[
+                                            { value: "", text: "---Chọn phân loại---" },
                                             { value: "1", text: translate('asset.asset_info.repair') },
                                             { value: "2", text: translate('asset.asset_info.replace') },
                                             { value: "3", text: translate('asset.asset_info.upgrade') }
                                         ]}
+                                        value={type}
                                         onChange={this.handleTypeChange}
                                         multiple={false}
                                     />
@@ -343,10 +352,12 @@ class MaintainanceEditForm extends Component {
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={[
+                                            { value: "", text: "---Chọn trạng thái---" },
                                             { value: "1", text: translate('asset.asset_info.unfulfilled') },
                                             { value: "2", text: translate('asset.asset_info.processing') },
                                             { value: "3", text: translate('asset.asset_info.made') },
                                         ]}
+                                        value={status}
                                         onChange={this.handleStatusChange}
                                         multiple={false}
                                     />
@@ -372,4 +383,4 @@ const actionCreators = {
 };
 
 const editForm = connect(mapState, actionCreators)(withTranslate(MaintainanceEditForm));
-export { editForm as MaintainanceEditForm };
+export { editForm as MaintainanceEditForm }

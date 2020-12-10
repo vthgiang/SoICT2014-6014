@@ -192,6 +192,7 @@ class ReceiptManagement extends Component {
                             responsibles={currentRow.responsibles ? currentRow.responsibles : []}
                             accountables={currentRow.accountables ? currentRow.accountables : []}
                             supplier={currentRow.supplier ? currentRow.supplier._id : null}
+                            manufacturingMillId={currentRow.manufacturingMill ? currentRow.manufacturingMill._id : null}
                             name={currentRow.receiver ? currentRow.receiver.name : ''}
                             phone={currentRow.receiver ? currentRow.receiver.phone : ''}
                             email={currentRow.receiver ? currentRow.receiver.email : ''}
@@ -248,7 +249,8 @@ class ReceiptManagement extends Component {
                                             <td>{x.approvers ? x.approvers.map((a, key) => { return <p key={key}>{a.approver.name}</p>}) : "approver is deleted"}</td>
                                             <td>{this.props.formatDate(x.updatedAt)}</td>
                                             <td>{x.fromStock ? x.fromStock.name : "Stock is deleted"}</td>
-                                            <td>{x.supplier ? x.supplier.name : 'Supplier is deleted'}</td>
+                                            { x.type === '1' && <td>{x.supplier ? x.supplier.name : 'Supplier is deleted'}</td> }
+                                            { x.type === '2' && <td>{x.manufacturingMill ? x.manufacturingMill.name : 'manufacturingMill is deleted'}</td>}
                                             <td>{x.description}</td>
                                             <td style={{textAlign: 'center'}}>
                                                 <a onClick={() => this.props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>

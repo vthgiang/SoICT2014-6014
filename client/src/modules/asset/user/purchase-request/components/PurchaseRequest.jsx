@@ -30,27 +30,23 @@ class PurchaseRequest extends Component {
 
     // Bắt sự kiện click xem thông tin phiếu đề nghị mua sắm
     handleView = async (value) => {
-        await this.setState(state => {
-            return {
-                currentRowView: value
-            }
+        await this.setState({
+            currentRowView: value
         });
         window.$('#modal-view-recommendprocure').modal('show');
     }
 
     // Bắt sự kiện click chỉnh sửa thông tin phiếu đề nghị mua sắm
     handleEdit = async (value) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                currentRow: value
-            }
+        await this.setState({
+            currentRow: value
         });
         window.$('#modal-edit-recommendprocure').modal('show');
     }
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
     formatDate(date) {
+        if (!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -68,6 +64,7 @@ class PurchaseRequest extends Component {
     }
     // Function format dữ liệu Date thành string
     formatDate2(date, monthYear = false) {
+        if (!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -98,7 +95,6 @@ class PurchaseRequest extends Component {
     // Function lưu giá trị tháng vào state khi thay đổi
     handleMonthChange = (value) => {
         this.setState({
-            ...this.state,
             month: value
         });
     }
@@ -109,36 +105,37 @@ class PurchaseRequest extends Component {
             value = null
         };
         this.setState({
-            ...this.state,
             status: value
         })
     }
 
     // Function bắt sự kiện tìm kiếm 
-    handleSubmitSearch = async () => {
-        await this.setState({
-            ...this.state,
-        })
-
-        this.props.searchRecommendProcures(this.state);
+    handleSubmitSearch = () => {
+        let data = this.state;
+        this.props.searchRecommendProcures(data);
     }
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
-    setLimit = async (number) => {
-        await this.setState({
+    setLimit = (number) => {
+        this.setState({
             limit: parseInt(number),
         });
-        this.props.searchRecommendProcures(this.state);
+        this.props.searchRecommendProcures({
+            ...this.state,
+            limit: parseInt(number)
+        });
     }
 
     // Bắt sự kiện chuyển trang
-    setPage = async (pageNumber) => {
+    setPage = (pageNumber) => {
         var page = (pageNumber - 1) * this.state.limit;
-        await this.setState({
-            page: parseInt(page),
-
+        this.setState({
+            page: parseInt(page)
         });
-        this.props.searchRecommendProcures(this.state);
+        this.props.searchRecommendProcures({
+            ...this.state,
+            page: parseInt(page)
+        });
     }
 
     formatStatus(status) {
@@ -148,7 +145,7 @@ class PurchaseRequest extends Component {
             case 'approved': return translate('asset.usage.approved');
             case 'waiting_for_approval': return translate('asset.usage.waiting_approval');
             case 'disapproved': return translate('asset.usage.not_approved');
-            default: return 'Deleted';
+            default: return '';
         }
     }
 
@@ -186,11 +183,10 @@ class PurchaseRequest extends Component {
 
                         {/* Tháng */}
                         <div className="form-group">
-                            <label className="form-control-static">Ngày đề nghị</label>
+                            <label className="form-control-static">{translate('asset.general_information.create_date')}</label>
                             <DatePicker
                                 id="month"
                                 dateFormat="month-year"
-                                value={this.formatDate(Date.now())}
                                 onChange={this.handleMonthChange}
                             />
                         </div>
@@ -257,7 +253,7 @@ class PurchaseRequest extends Component {
                                     <tr key={index}>
                                         <td>{x.recommendNumber}</td>
                                         <td>{this.formatDate2(x.dateCreate)}</td>
-                                        <td>{x.proponent ? x.proponent.email : 'User is deleted'}</td>
+                                        <td>{x.proponent ? x.proponent.email : ''}</td>
                                         <td>{x.equipmentName}</td>
                                         <td>{x.equipmentDescription}</td>
                                         <td>{x.approver ? x.approver.email : ''}</td>
