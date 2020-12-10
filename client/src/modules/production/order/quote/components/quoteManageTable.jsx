@@ -3,9 +3,10 @@ import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { QuoteActions } from "../redux/actions";
 import { DiscountActions } from "../../discount/redux/actions";
+import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import { formatDate } from "../../../../../helpers/formatDate";
-import { PaginateBar, DataTableSetting, SelectBox } from "../../../../../common-components";
+import { PaginateBar, DataTableSetting, SelectMulti, SelectBox, DeleteNotification } from "../../../../../common-components";
 import QuoteDetailForm from "./quoteDetailForm";
 import QuoteCreateForm from "./quoteCreateForm";
 import QuoteEditForm from "./quoteEditForm";
@@ -26,6 +27,7 @@ class QuoteManageTable extends Component {
         const { page, limit } = this.state;
         this.props.getAllQuotes({ page, limit });
         this.props.getDiscountForOrderValue();
+        this.props.getCustomers();
     };
 
     setPage = async (page) => {
@@ -46,6 +48,38 @@ class QuoteManageTable extends Component {
         const data = {
             limit: limit,
             page: this.state.page,
+        };
+        this.props.getAllQuotes(data);
+    };
+
+    handleStatusChange = (value) => {
+        this.setState({
+            status: value,
+        });
+    };
+
+    handleOrderCodeChange = (e) => {
+        let { value } = e.target;
+        this.setState({
+            code: value,
+        });
+    };
+
+    handleCustomerSearchChange = (value) => {
+        //Tìm kiếm theo khách hàng
+        this.setState({
+            customer: value,
+        });
+    };
+
+    handleSubmitSearch = () => {
+        let { limit, page, code, status, customer } = this.state;
+        const data = {
+            limit,
+            page,
+            code,
+            status,
+            customer,
         };
         this.props.getAllQuotes(data);
     };
@@ -75,6 +109,10 @@ class QuoteManageTable extends Component {
         window.$("#modal-edit-quote").modal("show");
     };
 
+    deleteQuote = async (id) => {
+        this.props.deleteQuote(id);
+    };
+
     render() {
         let { limit, quoteDetail, quoteEdit } = this.state;
         const { translate, quotes } = this.props;
@@ -92,7 +130,7 @@ class QuoteManageTable extends Component {
             },
             {
                 className: "text-warning",
-                text: "chờ phản hồi",
+                text: "Đã duyệt",
             },
             {
                 className: "text-success",
@@ -113,7 +151,7 @@ class QuoteManageTable extends Component {
                         {quoteEdit && <QuoteEditForm quoteEdit={quoteEdit} />}
                         <div className="form-inline">
                             <div className="form-group">
-                                <label className="form-control-static">Tìm mã đơn mua</label>
+                                <label className="form-control-static">Mã đơn</label>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -125,28 +163,56 @@ class QuoteManageTable extends Component {
                             </div>
                             <div className="form-group">
                                 <label className="form-control-static">Trạng thái đơn</label>
-                                <SelectBox
-                                    id={`select-filter-status-quote`}
+
+                                <SelectMulti
+                                    id={`selectMulti-filter-status-quote`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={[
                                         {
-                                            value: "Gửi yêu cầu",
+                                            value: 0,
                                             text: "Gửi yêu cầu",
                                         },
                                         {
-                                            value: "Chờ phản hồi",
-                                            text: "Chờ phản hồi",
+                                            value: 1,
+                                            text: "Đã duyệt",
                                         },
                                         {
-                                            value: "Đạt thỏa thuận",
-                                            text: "Đạt thỏa thuận",
+                                            value: 2,
+                                            text: "Đã chốt đơn",
                                         },
-                                        { value: "Hủy đơn", text: "Hủy đơn" },
+                                        {
+                                            value: 3,
+                                            text: "Hủy đơn",
+                                        },
                                     ]}
+                                    multiple="multiple"
+                                    options={{ nonSelectedText: "Chọn trạng thái đơn", allSelectedText: "Đã chọn tất cả" }}
                                     onChange={this.handleStatusChange}
                                 />
                             </div>
+                            <div className="form-group">
+                                <label className="form-control-static">Khách hàng</label>
+                                <SelectMulti
+                                    id={`selectMulti-filter-customer-quote`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={
+                                        this.props.customers.list
+                                            ? this.props.customers.list.map((customerItem) => {
+                                                  return {
+                                                      value: customerItem._id,
+                                                      text: customerItem.name,
+                                                  };
+                                              })
+                                            : []
+                                    }
+                                    multiple="multiple"
+                                    options={{ nonSelectedText: "Chọn khách hàng", allSelectedText: "Đã chọn tất cả" }}
+                                    onChange={this.handleCustomerSearchChange}
+                                />
+                            </div>
+
                             <div className="form-group">
                                 <button type="button" className="btn btn-success" title="Lọc" onClick={this.handleSubmitSearch}>
                                     Tìm kiếm
@@ -226,6 +292,14 @@ class QuoteManageTable extends Component {
                                                     >
                                                         <i className="material-icons">edit</i>
                                                     </a>
+                                                    <DeleteNotification
+                                                        content={"Bạn có chắc chắn muốn xóa báo giá này"}
+                                                        data={{
+                                                            id: item._id,
+                                                            info: item.code,
+                                                        }}
+                                                        func={() => this.deleteQuote(item._id)}
+                                                    />
                                                 </td>
                                             )}
                                         </tr>
@@ -248,13 +322,16 @@ class QuoteManageTable extends Component {
 }
 
 function mapStateToProps(state) {
+    const { customers } = state.crm;
     const { quotes } = state;
-    return { quotes };
+    return { quotes, customers };
 }
 
 const mapDispatchToProps = {
     getAllQuotes: QuoteActions.getAllQuotes,
+    deleteQuote: QuoteActions.deleteQuote,
     getDiscountForOrderValue: DiscountActions.getDiscountForOrderValue,
+    getCustomers: CrmCustomerActions.getCustomers,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuoteManageTable));

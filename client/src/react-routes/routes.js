@@ -1902,7 +1902,7 @@ class Routes extends Component {
                     {/* Orders Management */}
 
                     <PrivateRoute
-                        isLoading={false}
+                        isLoading={this.props.salesOrder.isLoading}
                         key={"/manage-sales-order"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1962,7 +1962,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={false}
+                        isLoading={this.props.quotes.isLoading}
                         key={"/manage-quote"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -2022,7 +2022,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={false}
+                        isLoading={this.props.discounts.isLoading}
                         key={"/manage-discount"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -2042,7 +2042,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={false}
+                        isLoading={this.props.taxs.isLoading}
                         key={"/manage-tax"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -2062,7 +2062,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={false}
+                        isLoading={this.props.serviceLevelAgreements.isLoading}
                         key={"/manage-sla"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },

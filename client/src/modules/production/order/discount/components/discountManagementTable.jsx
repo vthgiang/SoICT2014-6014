@@ -68,9 +68,9 @@ class DiscountManagementTable extends Component {
     };
 
     deleteDiscountByCode = (code) => {
-        let { limit, page, queryDate } = this.state;
+        // let { limit, page, queryDate } = this.state;
         this.props.deleteDiscountByCode({ code });
-        this.props.getAllDiscounts({ limit, page, queryDate });
+        // this.props.getAllDiscounts({ limit, page, queryDate });
     };
 
     handleQueryDateChange = (value) => {

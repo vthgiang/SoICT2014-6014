@@ -102,15 +102,11 @@ class TaxManagementTable extends Component {
     };
 
     disableTax = (id) => {
-        let { limit, page, status } = this.state;
         this.props.disableTax(id);
-        this.props.getAllTaxs({ limit, page, status });
     };
 
     deleteTax = (code) => {
-        let { limit, page, status } = this.state;
         this.props.deleteTax({ code });
-        this.props.getAllTaxs({ limit, page, status });
     };
 
     render() {
@@ -121,12 +117,7 @@ class TaxManagementTable extends Component {
         return (
             <React.Fragment>
                 <TaxDetailForm taxId={this.state.taxId} />
-                {this.state.currentRow && (
-                    <TaxEditForm
-                        taxEdit={this.state.currentRow}
-                        reloadState={() => this.props.getAllTaxs({ limit: this.state.limit, page: this.state.page, status: this.state.status })}
-                    />
-                )}
+                {this.state.currentRow && <TaxEditForm taxEdit={this.state.currentRow} />}
                 <div className="box-body qlcv">
                     <TaxCreateForm reloadState={() => this.props.getAllTaxs({ limit: this.state.limit, page: this.state.page })} />
                     <div className="form-inline">
