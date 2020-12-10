@@ -568,7 +568,7 @@ class Table extends Component {
                             translate('kpi.organizational_unit.management.over_view.search')}</button>
                     </div>
                 </div>
-                <table className="table table-hover table-striped table-bordered" id="table-manage-document-list" style={{ marginBottom: 0 }}>
+                <table className="data-table table table-hover table-striped table-bordered" id="table-manage-document-list" style={{ marginBottom: 0 }}>
                     <thead>
                         <tr>
                             <th>{translate('document.name')}</th>

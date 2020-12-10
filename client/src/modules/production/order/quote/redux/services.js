@@ -3,7 +3,9 @@ import { sendRequest } from '../../../../../helpers/requestHelper';
 export const QuoteServices = {
     createNewQuote,
     getAllQuotes,
-    editQuote
+    editQuote,
+    deleteQuote,
+    approveQuote
 }
 
 function createNewQuote(data) {
@@ -33,10 +35,31 @@ function getAllQuotes (queryData){
 function editQuote (id, data) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/quote/${id}`,
-            method: "PATCH",
-            data
+        method: "PATCH",
+        data
     },
         true,
+        true,
+    "manage_order.quote")
+}
+
+function deleteQuote (id) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/quote/${id}`,
+        method: "DELETE"
+    },
+        true,
+        true,
+    "manage_order.quote")
+}
+
+function approveQuote(id, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/quote/approve/${id}`,
+        method: "PATCH",
+        data
+    },
+        false,
         true,
     "manage_order.quote")
 }

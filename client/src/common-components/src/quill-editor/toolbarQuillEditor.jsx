@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import './quillEditor.css';
+
 class ToolbarQuillEditor extends Component {
     constructor(props) {
         super(props);
@@ -61,7 +63,7 @@ class ToolbarQuillEditor extends Component {
                     <span className="ql-formats">
                         <button className="ql-image"></button>
                         <button className="ql-code-block"></button>
-                        <button id="insert-table"><a className="fa fa-table" style={{ color: 'black' }}></a></button>
+                        <button id={`insert-table${id}`}><a id={`insert-tableicon${id}`} className="fa fa-table insert-table-icon-quill"></a></button>
                     </span>
                 </div>
             </React.Fragment>
