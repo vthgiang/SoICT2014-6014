@@ -3665,21 +3665,21 @@ const initSampleCompanyDB = async () => {
             ],
             numberExpirationDate: 1000,
             description: "Sản phẩm trị cảm cúm",
-            manufacturingMills: [{
-                manufacturingMill: manufacturingMills[0]._id,
-                productivity: 100,
-                personNumber: 3
-            }, {
-                manufacturingMill: manufacturingMills[1]._id,
-                productivity: 100,
-                personNumber: 2
-            }, {
-                manufacturingMill: manufacturingMills[2]._id,
-                productivity: 50,
-                personNumber: 1
-            }],
-            pricePerBaseUnit: 100000,
-            salesPriceVariance: 10000
+            // manufacturingMills: [{
+            //     manufacturingMill: manufacturingMills[0]._id,
+            //     productivity: 100,
+            //     personNumber: 3
+            // }, {
+            //     manufacturingMill: manufacturingMills[1]._id,
+            //     productivity: 100,
+            //     personNumber: 2
+            // }, {
+            //     manufacturingMill: manufacturingMills[2]._id,
+            //     productivity: 50,
+            //     personNumber: 1
+            // }],
+            // pricePerBaseUnit: 100000,
+            // salesPriceVariance: 10000
         },
     ]);
     console.log("Khởi tạo xong danh sách hàng hóa");

@@ -4935,10 +4935,21 @@ export default {
                 manufacturing_good_info: "Thông tin các sản phẩm cần sản xuất",
                 productivity_mill: "Thông tin năng xuất của phân xưởng sản xuất",
                 divide_command: "Phân chia các lệnh sản xuất",
-                quantity_commmanded: "Số lượng đã tạo lệnh",
+                quantity_not_commmanded: "Số lượng chưa tạo lệnh",
                 mill: "Xưởng sản xuất",
-                productity: "Năng xuất / ca",
-                number_workers: "Số nhân công / ca"
+                productity: "Số sản phẩm sản xuất / ca",
+                person_number: "Số công nhân / ca",
+                approvers: "Người phê duyệt",
+                qualityControlStaffs: "Người đảm bảo chất lượng",
+                accountables: "Người giám sát",
+                command_code: "Mã lệnh",
+                created_all_command: "Vui lòng phân hết số lượng các sản phẩm vào lệnh sản xuất",
+                command_quantity: "Số lượng",
+                choose_quality_control_staffs: "Vui lòng chọn người kiểm định chất lượng",
+                error_quantity_input_remaining: "Số lượng không thể lớn hơn số lượng chưa tạo lệnh sản xuất",
+                error_quantity_input_good: "Vui lòng chọn sản phẩm cần sản xuất trước"
+
+
 
 
 
