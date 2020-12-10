@@ -1472,6 +1472,8 @@ export default {
                 aplication_annual_leave_success: "Thêm đơn xin nghỉ thành công",
                 import_annual_leave_success: "Thêm dữ liệu từ file thành công",
                 import_annual_leave_faile: "Thêm dữ liệu từ file thất bại",
+
+                employee_invalid: 'Tài khoản chưa đăng ký thông tin nhân viên. Vui lòng kiểm tra lại',
             },
 
             // Quản lý khen thưởng kỷ luật
@@ -1639,7 +1641,7 @@ export default {
                 ethnic: "Dân tộc",
                 nationality: "Quốc tịch",
                 religion: "Tôn giáo",
-                active: "Đang làm việc",
+                active: "Làm việc chính thức",
                 leave: "Đã nghỉ làm",
                 career_fields: "Ngành nghề/lĩnh vực",
                 maternity_leave: "Nghỉ thai sản",
@@ -1674,7 +1676,7 @@ export default {
                 university: "Đại học",
                 master_degree: "Thạc sỹ",
                 phd: "Tiến sỹ",
-                unavailable: "Không có",
+                unavailable: "Khác",
                 work_experience: "Kinh nghiệm làm việc",
                 unit: "Đơn vị công tác",
                 from_month_year: "Từ tháng/năm",

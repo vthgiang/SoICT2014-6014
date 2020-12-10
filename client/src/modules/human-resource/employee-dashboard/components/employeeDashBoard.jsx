@@ -148,6 +148,14 @@ class DashBoardEmployees extends Component {
         let listAllEmployees = (!organizationalUnits || organizationalUnits.length === 0 || organizationalUnits.length === childOrganizationalUnit.length) ?
             employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
 
+        let totalHourAnnualLeave = 0;
+        annualLeave.totalListAnnulLeave.forEach(x => {
+            if (x.totalHours && x.totalHours !== 0) {
+                totalHourAnnualLeave = totalHourAnnualLeave + x.totalHours;
+            } else {
+                totalHourAnnualLeave = totalHourAnnualLeave + (Math.round((new Date(x.endDate).getTime() - new Date(x.startDate).getTime()) / (24 * 60 * 60 * 1000)) + 1) * 8;
+            }
+        });
         return (
             <React.Fragment>
                 <div className="qlcv">
@@ -192,9 +200,9 @@ class DashBoardEmployees extends Component {
                             <div className="info-box with-border">
                                 <span className="info-box-icon bg-yellow"><i className="fa fa-tasks"></i></span>
                                 <div className="info-box-content">
-                                    <span className="info-box-text">Số nghỉ phép</span>
+                                    <span className="info-box-text">Số giờ nghỉ phép</span>
                                     <span className="info-box-number">
-                                        {annualLeave.totalList}
+                                        {totalHourAnnualLeave}
                                     </span>
                                 </div>
                             </div>
@@ -225,7 +233,7 @@ class DashBoardEmployees extends Component {
                     </div>
                     <div className="nav-tabs-custom">
                         <ul className="nav nav-tabs">
-                            <li className="active"><a href="#human-resourse" data-toggle="tab" onClick={() => this.handleNavTabs()}>Tổng quan nhân sự</a></li>
+                            <li className="active"><a href="#human-resourse" data-toggle="tab" onClick={() => this.handleNavTabs(true)}>Tổng quan nhân sự</a></li>
                             <li><a href="#annualLeave" data-toggle="tab" onClick={() => this.handleNavTabs()}>Nghỉ phép-Tăng ca</a></li>
                             <li><a href="#salary" data-toggle="tab" onClick={() => this.handleNavTabs(true)}>Lương thưởng nhân viên</a></li>
                             <li><a href="#integrated-statistics" data-toggle="tab">Thống kê tổng hợp</a></li>
@@ -233,9 +241,7 @@ class DashBoardEmployees extends Component {
                         <div className="tab-content ">
                             {/* Tab tổng quan nhân sự*/}
                             <div className="tab-pane active" id="human-resourse">
-                                <LazyLoadComponent>
-                                    <TabHumanResource childOrganizationalUnit={childOrganizationalUnit} defaultUnit={false} organizationalUnits={organizationalUnits} monthShow={monthShow} />
-                                </LazyLoadComponent>
+                                <TabHumanResource childOrganizationalUnit={childOrganizationalUnit} defaultUnit={false} organizationalUnits={organizationalUnits} monthShow={monthShow} />
                             </div>
 
                             {/* Tab nghỉ phép tăng ca*/}
