@@ -2,7 +2,8 @@ import { sendRequest } from '../../../../../helpers/requestHelper';
 
 export const QuoteServices = {
     createNewQuote,
-    getAllQuotes
+    getAllQuotes,
+    editQuote
 }
 
 function createNewQuote(data) {
@@ -27,4 +28,15 @@ function getAllQuotes (queryData){
         false,
         true,
         "manage_order.quote_get_all_success")
+}
+
+function editQuote (id, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/quote/${id}`,
+            method: "PATCH",
+            data
+    },
+        true,
+        true,
+    "manage_order.quote")
 }
