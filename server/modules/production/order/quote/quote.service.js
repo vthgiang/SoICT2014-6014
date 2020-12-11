@@ -139,6 +139,18 @@ exports.getAllQuotes = async (query, portal) => {
         option.customer = customer
     }
 
+    if (query.queryDate) {
+        switch (query.queryDate) {
+            case "expire": option.expirationDate = { $lt: new Date(), $exists: true }; break;
+            case "effective":
+                option.expirationDate = { $gte: new Date(), $exists: true }
+                
+                break;
+            case "all": break;
+            default: 
+        }
+    }
+
     page = Number(page);
     limit = Number(limit);
 
