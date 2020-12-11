@@ -27,7 +27,6 @@ exports.getBackups = async(req, res) => {
 exports.downloadBackup = async(req, res) => {
     try {
         let {path} = req.query;
-        console.log('path-data', path)
         if (fs.existsSync(path+'/data.zip')) {
             res.download(path+'/data.zip');
         } else {
@@ -35,12 +34,11 @@ exports.downloadBackup = async(req, res) => {
             const archive = archiver('zip');
         
             archive.pipe(output);
-            const files = archive.directory(path+'/data', false);
+            archive.directory(path+'/data', false);
             archive.on('error', (err) => {
                 throw(err);
             });
             archive.on('end', function() {
-                console.log("SIZE: ", archive.pointer())
                 setTimeout(()=>{
                     res.download(path+'/data.zip');
                 }, 3000)
