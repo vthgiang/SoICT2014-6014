@@ -1,5 +1,6 @@
 import { SystemServices } from "./services";
 import { SystemConstants } from "./constants";
+const FileDownload = require("js-file-download");
 
 export const SystemActions = {
     getBackups,
@@ -7,7 +8,9 @@ export const SystemActions = {
     createBackup,
     configBackup,
     deleteBackup,
-    restore
+    restore,
+    editBackupInfo,
+    downloadBackupVersion
 }
 
 function getBackups() {
@@ -131,3 +134,40 @@ function restore(version) {
             })
     }
 }
+
+function editBackupInfo(version, data) {
+    return dispatch => {
+        dispatch({ type: SystemConstants.EDIT_BACKUP_INFO_REQUEST });
+
+        SystemServices.editBackupInfo(version, data)
+            .then(res => {
+                dispatch({
+                    type: SystemConstants.EDIT_BACKUP_INFO_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: SystemConstants.EDIT_BACKUP_INFO_FAILE,
+                    payload: error
+                })
+            })
+    }
+}
+
+function downloadBackupVersion(path) {
+    return dispatch => {
+        dispatch({ type: SystemConstants.DOWNLOAD_BACKUP_VERSION_REQUEST });
+
+        SystemServices.downloadBackupVersion(path)
+            .then(res => {
+                dispatch({ type: SystemConstants.DOWNLOAD_BACKUP_VERSION_SUCCESS })
+                const content = res.headers["content-type"];
+                FileDownload(res.data, 'data', content);
+            })
+            .catch(error => {
+                dispatch({ type: SystemConstants.DOWNLOAD_BACKUP_VERSION_FAILE })
+            })
+    }
+}
+

@@ -1,5 +1,7 @@
 const SystemService = require('./system.service');
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require('../../../logs');
+const fs = require('fs');
+const archiver = require('archiver');
 
 exports.getBackups = async(req, res) => {
     try {
@@ -12,7 +14,7 @@ exports.getBackups = async(req, res) => {
             content: backupedList
         })
     } catch (error) {
-      
+        
         Logger.error(req.user.email, 'get_backup_list_faile', req.portal);
         res.status(400).json({
             success: true,
@@ -21,6 +23,63 @@ exports.getBackups = async(req, res) => {
         })
     }
 };
+
+exports.downloadBackup = async(req, res) => {
+    try {
+        let {path} = req.query;
+        console.log('path-data', path)
+        if (fs.existsSync(path+'/data.zip')) {
+            res.download(path+'/data.zip');
+        } else {
+            const output = fs.createWriteStream(path + "/data.zip");
+            const archive = archiver('zip');
+        
+            archive.pipe(output);
+            const files = archive.directory(path+'/data', false);
+            archive.on('error', (err) => {
+                throw(err);
+            });
+            archive.on('end', function() {
+                console.log("SIZE: ", archive.pointer())
+                setTimeout(()=>{
+                    res.download(path+'/data.zip');
+                }, 3000)
+            })
+            archive.finalize('close');
+        }
+        Logger.info(req.user.email, 'download_backup_success', req.portal);
+    } catch (error) {
+
+        Logger.error(req.user.email, 'download_backup_faile', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['download_backup_faile'],
+            content: error
+        })
+    }
+}
+
+exports.editBackupInfo = async(req, res) => {
+    try {
+        let {version} = req.params;
+        let data = await SystemService.editBackupInfo(version, req.body, req.portal);
+
+        Logger.info(req.user.email, 'edit_backup_info_success', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['edit_backup_info_success'],
+            content: data
+        })
+    } catch (error) {
+
+        Logger.error(req.user.email, 'edit_backup_info_faile', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['edit_backup_info_faile'],
+            content: error
+        })
+    }
+}
 
 exports.getConfigBackup = async(req, res) => {
     try {
@@ -54,7 +113,7 @@ exports.createBackup = async(req, res) => {
             content: backupInfo
         })
     } catch (error) {
-        
+
         Logger.error(req.user.email, 'create_backup_faile', req.portal);
         res.status(400).json({
             success: true,
@@ -75,7 +134,7 @@ exports.configBackup = async (req, res) => {
             content: backupInfo
         })
     } catch (error) {
-            console.log(error) 
+
         Logger.error(req.user.email, 'config_backup_faile', req.portal);
         res.status(400).json({
             success: true,
