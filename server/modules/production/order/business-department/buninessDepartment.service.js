@@ -90,7 +90,7 @@ exports.getAllBusinessDepartments = async (query, portal) => {
     }
 
     if (!page || !limit) {
-        let allbusinessDepartments = await BusinessDepartment(connect(DB_CONNECTION, portal))
+        let allBusinessDepartments = await BusinessDepartment(connect(DB_CONNECTION, portal))
             .find(option)
             .populate([{
                 path: "organizationalUnit",
@@ -109,9 +109,9 @@ exports.getAllBusinessDepartments = async (query, portal) => {
                 path: 'manager'
             }]);
 
-        return { allbusinessDepartments }
+        return { allBusinessDepartments }
     } else {
-        let allbusinessDepartments = await ManufacturingWorks(connect(DB_CONNECTION, portal))
+        let allBusinessDepartments = await BusinessDepartment(connect(DB_CONNECTION, portal))
             .paginate(option, {
                 page,
                 limit,
@@ -132,6 +132,6 @@ exports.getAllBusinessDepartments = async (query, portal) => {
                     path: 'manager'
                 }]
             })
-        return { allbusinessDepartments }
+        return { allBusinessDepartments }
     }
 }

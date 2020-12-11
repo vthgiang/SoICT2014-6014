@@ -103,7 +103,7 @@ exports.getAllAdminDepartments = async (query, portal) => {
 
         return { allAdminDepartments }
     } else {
-        let allAdminDepartments = await ManufacturingWorks(connect(DB_CONNECTION, portal))
+        let allAdminDepartments = await AdminDepartment(connect(DB_CONNECTION, portal))
             .paginate(option, {
                 page,
                 limit,
