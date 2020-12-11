@@ -124,12 +124,14 @@ import GeneralConfiguration from "../modules/crm/generalConfiguration/components
 import PurchaseOrder from "../modules/production/order/purchase-order/components";
 import SalesOrder from "../modules/production/order/sales-order/components";
 import ManufacturingOrder from "../modules/production/order/manufacturing-order/components";
+import ManufacturingOrderDashboard from "../modules/production/order/manufacturing-order-dashboard/components";
 import Discount from "../modules/production/order/discount/components";
 import Quote from "../modules/production/order/quote/components";
-import ManufacturingOrderDashboard from "../modules/production/order/manufacturing-order-dashboard/components";
 import SalesOrderDashboard from "../modules/production/order/sales-order-dashboard/components";
 import Tax from "../modules/production/order/tax/components";
 import ServiceLevelAgreement from "../modules/production/order/service-level-agreement/components";
+import BusinessDepartment from "../modules/production/order/business-department/components";
+import AdminDepartment from "../modules/production/order/admin-department/components";
 
 // plans
 import PlanManagement from "../modules/plan/components";
@@ -2079,6 +2081,46 @@ class Routes extends Component {
                         pageName={"manage_sla"}
                         layout={Layout}
                         component={ServiceLevelAgreement}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/manage-business-department"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-business-department",
+                                name: "manage_business_department",
+                                icon: "fa fa-address-card",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-business-department"}
+                        path={"/manage-business-department"}
+                        pageName={"manage_business_department"}
+                        layout={Layout}
+                        component={BusinessDepartment}
+                    />
+
+                    <PrivateRoute
+                        isLoading={this.props.serviceLevelAgreements.isLoading}
+                        key={"/manage-admin-department"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-admin-department",
+                                name: "manage_admin_department",
+                                icon: "fa fa-address-card",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-admin-department"}
+                        path={"/manage-admin-department"}
+                        pageName={"manage_admin_department"}
+                        layout={Layout}
+                        component={AdminDepartment}
                     />
 
                     {/* Plans Management */}

@@ -1154,6 +1154,8 @@ export default {
             manage_discount: "Giảm giá",
             manage_tax: "Thuế",
             manage_sla: "Cam kết chất lượng",
+            manage_business_department: "Phòng kinh doanh",
+            manage_admin_department: "Phòng kế toán bán hàng",
 
             // Quản lý kế hoạch sản xuất
             manage_plans: "Quản lý kế hoạch sản xuất",

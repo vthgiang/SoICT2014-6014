@@ -556,6 +556,16 @@ class SideBar extends Component {
                                             icon: "fa fa-registered",
                                             path: "/manage-sla",
                                         },
+                                        {
+                                            name: "menu.manage_business_department",
+                                            icon: "fa fa-sitemap",
+                                            path: "/manage-business-department",
+                                        },
+                                        {
+                                            name: "menu.manage_admin_department",
+                                            icon: "fa fa-sitemap",
+                                            path: "/manage-admin-department",
+                                        },
                                     ],
                                 }}
                             />
