@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal } from '../../../../../common-components';
+import { getFormatDateFromTime } from '../../../../../helpers/stringMethod';
 
 class PurchaseRequestDetailForm extends Component {
     constructor(props) {
@@ -72,7 +73,7 @@ class PurchaseRequestDetailForm extends Component {
                                 {/* Ngày lập */}
                                 <div className="form-group">
                                     <strong>{translate('asset.general_information.create_date')}&emsp; </strong>
-                                    {dateCreate}
+                                    {getFormatDateFromTime(dateCreate, 'dd-mm-yyyy')}
                                 </div>
 
                                 {/* Người đề nghị */}
