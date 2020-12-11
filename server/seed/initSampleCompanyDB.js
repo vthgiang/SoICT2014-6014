@@ -50,6 +50,7 @@ const {
     BankAccount,
     CoinRule,
     Quote,
+    BusinessDepartment,
 
     Customer,
     Care,
