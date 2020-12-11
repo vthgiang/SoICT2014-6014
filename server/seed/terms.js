@@ -1091,7 +1091,7 @@ const LINKS = [{
     components: getComponentsInLink('/manage-sla'),
 },
 {
-    url: "/business-department",
+    url: "/manage-business-department",
     description: "Phòng kinh doanh",
     category: LINK_CATEGORY.ORDER.name,
     roles: [
@@ -1101,10 +1101,10 @@ const LINKS = [{
         ROOT_ROLES.VICE_DEAN.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
-    components: getComponentsInLink('/business-department'),
+    components: getComponentsInLink('/manage-business-department'),
 },
 {
-    url: "/admin-department",
+    url: "/manage-admin-department",
     description: "Phòng kế toán bán hàng",
     category: LINK_CATEGORY.ORDER.name,
     roles: [
@@ -1114,7 +1114,7 @@ const LINKS = [{
         ROOT_ROLES.VICE_DEAN.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
-    components: getComponentsInLink('/admin-department'),
+    components: getComponentsInLink('/manage-admin-department'),
 },
 {
     url: '/crm/dashboard',
