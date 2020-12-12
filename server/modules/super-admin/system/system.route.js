@@ -11,9 +11,9 @@ router.get("/backup/config", auth, SystemController.getConfigBackup);
 
 router.post("/backup", auth, SystemController.createBackup);
 
-router.patch("/backup/:version", auth, SystemController.editBackupInfo);
-
 router.patch("/backup/config", auth, SystemController.configBackup);
+
+router.patch("/backup/:version/edit", auth, SystemController.editBackupInfo);
 
 router.delete("/backup/:version", auth, SystemController.deleteBackup);
 
