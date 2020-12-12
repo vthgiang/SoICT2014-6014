@@ -371,9 +371,6 @@ const TaskSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'User',
         },
-        name: {
-            type: String,
-        },
         description: {
             type: String,
             required: true
@@ -389,9 +386,6 @@ const TaskSchema = new Schema({
         updatedAt: {
             type: Date,
             default: Date.now
-        },
-        order: {
-            type: Number
         },
         rating: { // -1: chưa đánh giá, 0-10: tùy mức độ tốt
             type: Number,

@@ -91,14 +91,14 @@ function getTimesheetLogs(taskId) {
 };
 
 /**
- * Lấy lịch sử bấm giờ ?????
+ * Lấy ra các đồng hồ đang bấm giờ
  */
-function getTimerStatusTask() {
-    var userId = getStorage("userId");
+function getTimerStatusTask(taskId) {
+    let userId = getStorage("userId")
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/performtask/task-timesheet-logs`,
         method: 'GET',
-        params: { userId: userId }
+        params: {taskId: taskId , userId: userId}
     }, false, false, 'task.task_perform');
 };
 

@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "(webpack) && (nodemon dist/backend.js)",
+    "watch": "webpack --watch",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "dev": "nodemon index.js",
@@ -56,6 +58,14 @@
     "socket.io": "^2.3.0",
     "swagger-ui-express": "^4.1.4",
     "unique-random": "^2.1.0",
+    "webpack": "^5.9.0",
     "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "raw-loader": "^4.0.2",
+    "source-map-loader": "^1.1.2",
+    "webpack-cli": "^4.2.0",
+    "webpack-dev-server": "^3.11.0",
+    "webpack-merge": "^5.4.0"
   }
 }
