@@ -7,6 +7,7 @@ import AssetPurchaseChart from './assetPurchaseChart';
 import AssetDisposalChart from './assetDisposalChart';
 
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
+import { AssetTypeService } from '../../../asset-type/redux/services';
 
 class PurchaseAndDisposal extends Component {
 
@@ -39,6 +40,13 @@ class PurchaseAndDisposal extends Component {
             console.log(err);
         });
 
+        AssetTypeService.getAssetTypes().then(res => {
+            if (res.data.success) {
+                this.setState({ assetType: res.data.content.list })
+            }
+        }).catch(err => {
+            console.log(err);
+        });
     }
 
     getPurchaseData = (purchaseData) => {
@@ -70,6 +78,7 @@ class PurchaseAndDisposal extends Component {
                                 </div>
                                 <div className="box-body qlcv">
                                     < AssetPurchaseChart
+                                        assetType={assetType}
                                         listAssets={listAssets}
                                         getPurchaseData={this.getPurchaseData}
                                     />
@@ -85,6 +94,7 @@ class PurchaseAndDisposal extends Component {
                                 </div>
                                 <div className="box-body qlcv">
                                     <AssetDisposalChart
+                                        assetType={assetType}
                                         listAssets={listAssets}
                                         getDisposalData={this.getDisposalData}
                                     />

@@ -50,14 +50,13 @@ class IncidentLogTab extends Component {
 
     formatType = (type) => {
         const { translate } = this.props;
-
-        if (type === 'broken') {
+        if (type === '1') {
             return translate('asset.general_information.damaged');
         }
-        else if (type === 'lost') {
+        else if (type === '2') {
             return translate('asset.general_information.lost');
         }
-        else return 'Deleted';
+        else return '';
     }
 
     render() {
@@ -93,7 +92,7 @@ class IncidentLogTab extends Component {
                                     <tr key={index}>
                                         <td>{x.incidentCode}</td>
                                         <td>{this.formatType(x.type)}</td>
-                                        <td>{x.reportedby ? (userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : 'User is deleted') : ''}</td>
+                                        <td>{x.reportedBy ? (userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : '') : ''}</td>
                                         <td>{x.dateOfIncident ? this.formatDate(x.dateOfIncident) : ''}</td>
                                         <td>{x.description}</td>
                                     </tr>

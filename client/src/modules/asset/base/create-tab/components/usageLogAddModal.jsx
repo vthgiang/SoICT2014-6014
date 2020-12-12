@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
 import { ButtonModal, DatePicker, DialogModal, ErrorLabel, SelectBox, TimePicker } from '../../../../../common-components';
-
-import { AssetCreateValidator } from './combinedContent';
-
+import ValidationHelper from '../../../../../helpers/validationHelper';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 
 class UsageLogAddModal extends Component {
@@ -24,6 +21,7 @@ class UsageLogAddModal extends Component {
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
     formatDate = (date) => {
+        if (!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -44,10 +42,13 @@ class UsageLogAddModal extends Component {
      * Bắt sự kiện thay đổi người sử dụng
      */
     handleUsedByUserChange = (value) => {
+        const { translate } = this.props;
         let usedByUser = value[0] !== 'null' ? value[0] : null;
+        let { message } = ValidationHelper.validateEmpty(translate, usedByUser);
+
         this.setState({
-            ...this.state,
-            usedByUser: usedByUser
+            usedByUser: usedByUser,
+            errorOnUser: message,
         });
     }
 
@@ -57,27 +58,18 @@ class UsageLogAddModal extends Component {
     handleUsedByOrganizationalUnitChange = (value) => {
         let usedByOrganizationalUnit = value[0] !== 'null' ? value[0] : null;
         this.setState({
-            ...this.state,
             usedByOrganizationalUnit: usedByOrganizationalUnit
         });
     }
 
     //Bắt sự kiện thay đổi "Thời gian bắt đầu sử dụng"
     handleStartDateChange = (value) => {
-        this.validateStartDate(value, true);
-    }
-    validateStartDate = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateStartDate(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnStartDate: msg,
-                    startDate: value,
-                }
-            });
-        }
-        return msg === undefined;
+        const { translate } = this.props;
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+        this.setState({
+            startDate: value,
+            errorOnStartDate: message,
+        })
     }
 
     handleStartTimeChange = (value) => {
@@ -91,20 +83,13 @@ class UsageLogAddModal extends Component {
     }
     // Bắt sự kiện thay đổi "Thời gian kết thúc sử dụng"
     handleEndDateChange = (value) => {
-        this.validateEndDate(value, true);
-    }
-    validateEndDate = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateEndDate(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnEndDate: msg,
-                    endDate: value,
-                }
-            });
-        }
-        return msg === undefined;
+        const { translate } = this.props;
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
+        this.setState({
+            endDate: value,
+            errorOnEndDate: message,
+        })
     }
 
     handleStopTimeChange = (value) => {
@@ -118,44 +103,23 @@ class UsageLogAddModal extends Component {
     }
     // Bắt sự kiện thay đổi "Nội dung"
     handleDescriptionChange = (e) => {
-        let value = e.target.value;
-        this.validateDescription(value, true);
-    }
-    validateDescription = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateDescription(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnDescription: msg,
-                    description: value,
-                }
-            });
-        }
-        return msg === undefined;
-    }
+        const { value } = e.target;
+        this.setState({
+            description: value,
 
+        })
+    }
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let checkUsed;
-        let checkUsedByUser = true, checkUsedByOrganizationalUnit = true;
-        if (this.state.usedByUser == "" || !this.state.usedByUser) {
-            checkUsedByUser = false
-        }
-        if (this.state.usedByOrganizationalUnit == "" || !this.state.usedByOrganizationalUnit) {
-            checkUsedByOrganizationalUnit = false
-        }
+        const { usedByUser, startDate, endDate } = this.state;
+        const { translate } = this.props;
 
-        if (!checkUsedByUser && !checkUsedByOrganizationalUnit) {
-            checkUsed = false;
-        } else {
-            checkUsed = true;
-        }
-
-        let result = checkUsed && this.validateStartDate(this.state.startDate, false)
-
-        return result;
+        if (!ValidationHelper.validateName(translate, usedByUser).status
+            || !ValidationHelper.validateName(translate, startDate).status
+            || !ValidationHelper.validateName(translate, endDate).status)
+            return false;
+        return true;
     }
 
     // Bắt sự kiện submit form
@@ -202,7 +166,7 @@ class UsageLogAddModal extends Component {
 
         const { id } = this.props;
         const { translate, user, department } = this.props;
-        const { usedByUser, usedByOrganizationalUnit, startDate, endDate, description, errorOnDescription, startTime, stopTime } = this.state;
+        const { usedByUser, usedByOrganizationalUnit, startDate, endDate, description, errorOnDescription, startTime, stopTime, errorOnEndDate, errorOnStartDate, errorOnUser } = this.state;
 
         var userlist = user.list, departmentlist = department.list;
 
@@ -223,7 +187,7 @@ class UsageLogAddModal extends Component {
                         <div className="col-md-12">
 
                             {/* Người sử dụng */}
-                            <div className={`form-group`}>
+                            <div className={`form-group ${!errorOnUser ? "" : "has-error"}`}>
                                 <label>{translate('asset.general_information.user')}<span className="text-red">*</span></label>
                                 <div>
                                     <div id="usedByUserBox">
@@ -236,6 +200,7 @@ class UsageLogAddModal extends Component {
                                             value={usedByUser}
                                             multiple={false}
                                         />
+                                        <ErrorLabel content={errorOnUser} />
                                     </div>
                                 </div>
                             </div>
@@ -258,13 +223,14 @@ class UsageLogAddModal extends Component {
                             </div>
 
                             {/* Thời gian bắt đầu sử dụng */}
-                            <div className={`form-group`}>
+                            <div className={`form-group ${!errorOnStartDate ? "" : "has-error"}`}>
                                 <label>{translate('asset.general_information.handover_from_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`add-start-date-${id}`}
                                     value={startDate}
                                     onChange={this.handleStartDateChange}
                                 />
+                                <ErrorLabel content={errorOnStartDate} />
                             </div>
                             {this.props.typeRegisterForUse == 2 &&
                                 <TimePicker
@@ -276,13 +242,14 @@ class UsageLogAddModal extends Component {
                             }
 
                             {/* Thời gian kết thúc sử dụng */}
-                            <div className={`form-group`}>
-                                <label>{translate('asset.general_information.handover_to_date')}</label>
+                            <div className={`form-group ${!errorOnEndDate ? "" : "has-error"}`}>
+                                <label>{translate('asset.general_information.handover_to_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`add-end-date-${id}`}
                                     value={endDate}
                                     onChange={this.handleEndDateChange}
                                 />
+                                <ErrorLabel content={errorOnEndDate} />
                             </div>
                             {this.props.typeRegisterForUse == 2 &&
                                 <TimePicker
@@ -299,7 +266,6 @@ class UsageLogAddModal extends Component {
                                 <label>{translate('asset.general_information.content')}</label>
                                 <textarea className="form-control" rows="3" name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off"
                                     placeholder={translate('asset.general_information.content')}></textarea>
-                                <ErrorLabel content={errorOnDescription} />
                             </div>
                         </div>
                     </form>
@@ -320,3 +286,4 @@ const actionCreators = {
 
 const addModal = connect(mapState, actionCreators)(withTranslate(UsageLogAddModal));
 export { addModal as UsageLogAddModal };
+

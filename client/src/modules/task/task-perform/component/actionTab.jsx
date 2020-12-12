@@ -928,8 +928,8 @@ class ActionTab extends Component {
                                                             }
                                                             {showSort === true && (role === 'responsible' || role === 'accountable') &&
                                                                 <div className="sort-action">
-                                                                    {index !== 0 && <a style={{ marginTop: index === taskActions.length - 1 ? "10px" : "0px" }} onClick={() => this.sort(index, "up")}><i className="fa fa-arrow-up"></i> </a>}
-                                                                    {index !== taskActions.length - 1 && <a style={{ marginTop: index === 0 ? "13px" : "0px" }} onClick={() => this.sort(index, "down")}><i className="fa fa-arrow-down "></i> </a>}
+                                                                    {index !== 0 && <a style={{ marginTop: index === taskActions.length - 1 ? "10px" : "0px" }} onClick={() => this.sort(index, "up")}><i className="glyphicon glyphicon-arrow-up"></i> </a>}
+                                                                    {index !== taskActions.length - 1 && <a style={{ marginTop: index === 0 ? "13px" : "0px" }} onClick={() => this.sort(index, "down")}><i className="glyphicon glyphicon-arrow-down"></i> </a>}
                                                                 </div>
                                                             }
 
@@ -1217,10 +1217,18 @@ class ActionTab extends Component {
                             }
                             {/* Thêm hoạt động cho công việc*/}
                             {showSort ?
-                                <div className="" style={{ display: "flex", justifyContent: "center" }}>
-                                    <button className="link-black text-sm btn btn-primary" style={{ cursor: "pointer", marginRight: "5px", color: "white", width: "48%", height: "40px", fontSize: "16px" }} onClick={() => this.saveSort(task._id)}>Lưu</button>
-                                    <button className="link-black text-sm btn btn-warning" style={{ cursor: "pointer", width: "48%", color: "white", fontSize: "16px" }} onClick={() => this.cancelSort()}>Hủy</button>
+                                <div class="row" style={{ marginTop: 20 }}>
+                                    <div className="col-xs-6">
+                                        <button type="button" className={`btn btn-block`} onClick={() => this.cancelSort()}>Hủy</button>
+                                    </div>
+                                    <div className="col-xs-6">
+                                        <button type="button" className={`btn btn-block`} onClick={() => this.saveSort(task._id)}>Lưu</button>
+                                    </div>
                                 </div>
+                                // <div className="" style={{ display: "flex", justifyContent: "center" }}>
+                                //     <button className="link-black text-sm btn btn-primary" onClick={() => this.saveSort(task._id)}>Lưu</button>
+                                //     <button className="link-black text-sm btn btn-warning" onClick={() => this.cancelSort()}>Hủy</button>
+                                // </div>
                                 :
                                 <React.Fragment>
                                     {role === "responsible" && task &&
@@ -1243,7 +1251,7 @@ class ActionTab extends Component {
                                                 onSubmit={(e) => { this.submitAction(task._id, taskActions.length) }}
                                             />
                                         </React.Fragment>}
-                                    {(role === "responsible" || role === "accountable") && taskActions.length > 1 && <a style={{ cursor: "pointer" }} onClick={this.showSort}><i className="fa fa-sort"></i>Sắp xếp hoạt động</a>}
+                                    {(role === "responsible" || role === "accountable") && taskActions.length > 1 && <button className="btn btn-block btn-default btn-sm" onClick={this.showSort}>Sắp xếp hoạt động</button>}
                                 </React.Fragment>
                             }
                         </div>
@@ -1614,7 +1622,7 @@ class ActionTab extends Component {
                             </React.Fragment>
                         </div>
 
-                        {/* Chuyển qua tab công việc con */}
+                        {/* Chuyển qua tab công việc liên quan */}
                         <div className={selected === "subTask" ? "active tab-pane" : "tab-pane"} id="subTask">
                             <SubTaskTab
                                 id={this.state.id}

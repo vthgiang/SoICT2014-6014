@@ -63,14 +63,14 @@ class ManufacturingCommandDetailInfo extends Component {
                                     <strong>{translate('manufacturing.command.plan_code')}:&emsp;</strong>
                                     {currentCommand.manufacturingPlan && currentCommand.manufacturingPlan.code}
                                 </div>
-                                <div className="form-group">
+                                {/* <div className="form-group">
                                     <strong>{translate('manufacturing.command.manufacturing_order_code')}:&emsp;</strong>
                                     {
                                         currentCommand.manufacturingPlan && currentCommand.manufacturingPlan.manufacturingOrder
                                         && currentCommand.manufacturingPlan.manufacturingOrder.code
 
                                     }
-                                </div>
+                                </div> */}
                                 <div className="form-group">
                                     <strong>{translate('manufacturing.command.sales_order_code')}:&emsp;</strong>
                                     {
@@ -127,6 +127,9 @@ class ManufacturingCommandDetailInfo extends Component {
                                         </span>
                                     }
                                 </div>
+
+                            </div>
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <div className="form-group">
                                     <strong>{translate('manufacturing.command.description')}:&emsp;</strong>
                                     {currentCommand.description}
@@ -145,20 +148,20 @@ class ManufacturingCommandDetailInfo extends Component {
                                                     <tr>
                                                         <th>{translate('manufacturing.command.good_code')}</th>
                                                         <th>{translate('manufacturing.command.good_name')}</th>
-                                                        <th>{translate('manufacturing.command.packing_rule')}</th>
-                                                        <th>{translate('manufacturing.command.packing_rule_quantity')}</th>
+                                                        {/* <th>{translate('manufacturing.command.packing_rule')}</th> */}
+                                                        {/* <th>{translate('manufacturing.command.packing_rule_quantity')}</th> */}
                                                         <th>{translate('manufacturing.command.good_base_unit')}</th>
-                                                        <th>{translate('manufacturing.command.good_base_unit_quantity')}</th>
+                                                        <th>{translate('manufacturing.command.quantity')}</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <tr>
                                                         <td>{currentCommand.good.good.code}</td>
                                                         <td>{currentCommand.good.good.name}</td>
-                                                        <td>{currentCommand.good.packingRule}</td>
-                                                        <td>{currentCommand.good.quantity}</td>
+                                                        {/* <td>{currentCommand.good.packingRule}</td> */}
+                                                        {/* <td>{currentCommand.good.quantity}</td> */}
                                                         <td>{currentCommand.good.good.baseUnit}</td>
-                                                        <td>{Number(currentCommand.good.quantity) * Number(currentCommand.good.conversionRate)}</td>
+                                                        <td>{currentCommand.good.quantity}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -185,33 +188,34 @@ class ManufacturingCommandDetailInfo extends Component {
                                             </thead>
                                             <tbody>
                                                 {
-                                                    listBillByCommand && listBillByCommand.length &&
-                                                    listBillByCommand.map((bill, index) => (
-                                                        bill.goods.map((good, index1) => (
-                                                            index1 === 0
-                                                                ?
-                                                                <tr key={index1}>
-                                                                    <td>{good.good.code}</td>
-                                                                    <td>{good.good.name}</td>
-                                                                    <td>{good.good.baseUnit}</td>
-                                                                    <td style={{ textAlign: "left" }}>{good.quantity}</td>
-                                                                    <td rowSpan={bill.goods.length}>{bill.fromStock.code + " - " + bill.fromStock.name}</td>
-                                                                    <td
-                                                                        style={{ textAlign: "left", color: translate(`manufacturing.command.bill.${bill.status}.color`) }}
-                                                                        rowSpan={bill.goods.length}
-                                                                    >
-                                                                        {translate(`manufacturing.command.bill.${bill.status}.content`)}
-                                                                    </td>
-                                                                </tr>
-                                                                :
-                                                                <tr key={index1}>
-                                                                    <td>{good.good.code}</td>
-                                                                    <td>{good.good.name}</td>
-                                                                    <td>{good.good.baseUnit}</td>
-                                                                    <td style={{ textAlign: "left" }}>{good.quantity}</td>
-                                                                </tr>
+                                                    listBillByCommand && listBillByCommand.length === 0 ? <tr><td colSpan={6}>{translate('general.no_data')}</td></tr>
+                                                        :
+                                                        listBillByCommand.map((bill, index) => (
+                                                            bill.goods.map((good, index1) => (
+                                                                index1 === 0
+                                                                    ?
+                                                                    <tr key={index1}>
+                                                                        <td>{good.good.code}</td>
+                                                                        <td>{good.good.name}</td>
+                                                                        <td>{good.good.baseUnit}</td>
+                                                                        <td style={{ textAlign: "left" }}>{good.quantity}</td>
+                                                                        <td rowSpan={bill.goods.length}>{bill.fromStock.code + " - " + bill.fromStock.name}</td>
+                                                                        <td
+                                                                            style={{ textAlign: "left", color: translate(`manufacturing.command.bill.${bill.status}.color`) }}
+                                                                            rowSpan={bill.goods.length}
+                                                                        >
+                                                                            {translate(`manufacturing.command.bill.${bill.status}.content`)}
+                                                                        </td>
+                                                                    </tr>
+                                                                    :
+                                                                    <tr key={index1}>
+                                                                        <td>{good.good.code}</td>
+                                                                        <td>{good.good.name}</td>
+                                                                        <td>{good.good.baseUnit}</td>
+                                                                        <td style={{ textAlign: "left" }}>{good.quantity}</td>
+                                                                    </tr>
+                                                            ))
                                                         ))
-                                                    ))
 
                                                 }
                                             </tbody>
@@ -231,14 +235,14 @@ class ManufacturingCommandDetailInfo extends Component {
                                             <React.Fragment>
                                                 <p>
                                                     {translate('manufacturing.command.finishedProductQuantity')}: &emsp;
-                                                    {currentCommand.finishedProductQuantity}
+                                                    {currentCommand.finishedProductQuantity + " (" + currentCommand.good.good.baseUnit + ")"}
                                                     &emsp;&emsp;&emsp;
                                                     {translate('manufacturing.command.rateFinishedProductQuantity')}: &emsp;
                                                     {Math.round(currentCommand.finishedProductQuantity * 100 / (currentCommand.finishedProductQuantity + (currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity : 0)) * 100) / 100}%
                                                 </p>
                                                 <p>
                                                     {translate('manufacturing.command.substandardProductQuantity')}: &emsp;
-                                                    {currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity : 0}
+                                                    {currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity + " (" + currentCommand.good.good.baseUnit + ")" : 0 + " (" + currentCommand.good.good.baseUnit + ")"}
                                                     &emsp;&emsp;&emsp;
                                                     {translate('manufacturing.command.rateSubstandardProductQuantity')}: &emsp;
                                                     {Math.round((currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity : 0) * 100 / (currentCommand.finishedProductQuantity + (currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity : 0)) * 100) / 100}%

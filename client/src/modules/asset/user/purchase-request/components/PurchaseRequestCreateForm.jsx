@@ -14,7 +14,7 @@ class PurchaseRequestCreateForm extends Component {
         super(props);
         this.state = {
             recommendNumber: "",
-            dateCreate: this.formatDate(Date.now()),
+            dateCreate: this.formatDate(new Date()),
             equipmentName: "",
             supplier: "",
             total: "",
@@ -28,6 +28,7 @@ class PurchaseRequestCreateForm extends Component {
 
     // Function format ngày hiện tại thành dạnh dd-mm-yyyy
     formatDate = (date) => {
+        if (!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -52,19 +53,13 @@ class PurchaseRequestCreateForm extends Component {
     validateRecommendNumber = (value, willUpdateState = true) => {
         let msg = PurchaseRequestFromValidator.validateRecommendNumber(value, this.props.translate)
         if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnRecommendNumber: msg,
-                    recommendNumber: value,
-                }
+            this.setState({
+                errorOnRecommendNumber: msg,
+                recommendNumber: value
             });
         }
         return msg === undefined;
     }
-    // validateExitsRecommendNumber = (value) => {
-    //     return this.props.recommendProcure.listRecommendProcures.some(item => item.recommendNumber === value);
-    // }
 
     // Bắt sự kiện thay đổi "Ngày lập"
     handleDateCreateChange = (value) => {
@@ -73,12 +68,9 @@ class PurchaseRequestCreateForm extends Component {
     validateDateCreate = (value, willUpdateState = true) => {
         let msg = PurchaseRequestFromValidator.validateDateCreate(value, this.props.translate)
         if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnDateCreate: msg,
-                    dateCreate: value,
-                }
+            this.setState({
+                errorOnDateCreate: msg,
+                dateCreate: value
             });
         }
         return msg === undefined;
@@ -89,7 +81,6 @@ class PurchaseRequestCreateForm extends Component {
      */
     handleProponentChange = (value) => {
         this.setState({
-            ...this.state,
             proponent: value[0]
         });
     }
@@ -190,9 +181,11 @@ class PurchaseRequestCreateForm extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result = this.validateEquipment(this.state.equipmentName, false) &&
-            this.validateTotal(this.state.total, false) &&
-            this.validateUnit(this.state.unit, false);
+        const { equipmentName, total, unit, recommendNumber } = this.state;
+        let result = this.validateEquipment(equipmentName, false) &&
+            this.validateTotal(total, false) &&
+            this.validateUnit(unit, false) &&
+            this.validateRecommendNumber(recommendNumber, false);
 
         return result;
     }
@@ -200,9 +193,14 @@ class PurchaseRequestCreateForm extends Component {
     // Bắt sự kiện submit form
     save = () => {
         let dataToSubmit = { ...this.state, proponent: this.props.auth.user._id }
-
+        let { dateCreate } = this.state;
+        let dateData = dateCreate.split("-");
+        dataToSubmit = {
+            ...dataToSubmit,
+            dateCreate: new Date(`${dateData[2]}-${dateData[1]}-${dateData[0]}`)
+        }
+        console.log('dataSubmit', dataToSubmit)
         if (this.isFormValidated()) {
-            console.log('\n\n\n\n', this.props.auth.user._id);
             return this.props.createRecommendProcure(dataToSubmit);
         }
     }
@@ -233,7 +231,7 @@ class PurchaseRequestCreateForm extends Component {
                             <div className="col-sm-6">
                                 {/* Mã phiếu */}
                                 <div className={`form-group ${!errorOnRecommendNumber ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.form_code')}</label>
+                                    <label>{translate('asset.general_information.form_code')}<span className="text-red">*</span></label>
                                     <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={this.handleRecommendNumberChange} autoComplete="off"
                                         placeholder="Mã phiếu" />
                                     <ErrorLabel content={errorOnRecommendNumber} />

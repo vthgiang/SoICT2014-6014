@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { connect  } from 'react-redux';
+import { connect } from 'react-redux';
 
 import { ButtonModal, DialogModal, ErrorLabel } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
@@ -11,8 +11,8 @@ function ExampleCreateForm(props) {
 
     // Khởi tạo state
     const [state, setState] = useState({
-        exampleName: undefined,
-        description: undefined,
+        exampleName: "",
+        description: "",
         exampleNameError: {
             message: undefined,
             status: true
@@ -60,7 +60,7 @@ function ExampleCreateForm(props) {
         });
     }
 
-    
+
     return (
         <React.Fragment>
             <DialogModal

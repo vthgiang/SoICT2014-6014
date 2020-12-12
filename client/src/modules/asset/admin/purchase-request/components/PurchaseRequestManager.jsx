@@ -9,6 +9,7 @@ import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { PurchaseRequestDetailForm } from "../../../user/purchase-request/components/PurchaseRequestDetailForm";
 
 import { PurchaseRequestEditForm } from './PurchaseRequestManagerEditForm';
+import { getFormatDateFromTime } from '../../../../../helpers/stringMethod';
 
 class PurchaseRequestManager extends Component {
     constructor(props) {
@@ -46,46 +47,6 @@ class PurchaseRequestManager extends Component {
             }
         });
         window.$('#modal-edit-recommendprocuremanage').modal('show');
-    }
-
-    // Function format dữ liệu Date thành string
-    formatDate2(date, monthYear = false) {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2) {
-            month = '0' + month;
-        }
-
-        if (day.length < 2) {
-            day = '0' + day;
-        }
-
-        if (monthYear === true) {
-            return [month, year].join('-');
-        } else {
-            return [day, month, year].join('-');
-        }
-    }
-
-    // Function format ngày hiện tại thành dạnh mm-yyyy
-    formatDate(date) {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2) {
-            month = '0' + month;
-        }
-
-        if (day.length < 2) {
-            day = '0' + day;
-        }
-
-        return [month, year].join('-');
     }
 
     // Function lưu giá trị mã nhân viên vào state khi thay đổi
@@ -127,7 +88,6 @@ class PurchaseRequestManager extends Component {
         };
 
         this.setState({
-            ...this.state,
             status: value
         })
     }
@@ -135,11 +95,9 @@ class PurchaseRequestManager extends Component {
     // Function bắt sự kiện tìm kiếm 
     handleSubmitSearch = async () => {
         await this.setState({
-            ...this.state,
             page: 0
         })
-        console.log('thí', this.state);
-        this.props.searchRecommendProcures(this.state);
+        this.props.searchRecommendProcures({ ...this.state, page: 0 });
     }
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
@@ -157,7 +115,7 @@ class PurchaseRequestManager extends Component {
             page: parseInt(page),
 
         });
-        this.props.searchRecommendProcures(this.state);
+        this.props.searchRecommendProcures({ ...this.state, page: parseInt(page) });
     }
 
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
@@ -167,15 +125,15 @@ class PurchaseRequestManager extends Component {
             data = data.map((x, index) => {
 
                 let code = x.recommendNumber;
-                let equipment = x.equipment;
-                let assigner = (x.proponent) ? x.proponent.email : 'Không tìm thấy người đề nghị'
-                let createDate = x.dateCreate;
+                let equipment = x.equipmentName;
+                let assigner = x.proponent ? x.proponent.email : null;
+                let createDate = getFormatDateFromTime(x.dateCreate, 'dd-mm-yyyy');
                 let note = x.note;
                 let supplier = x.supplier;
                 let amount = x.total;
-                let cost = parseInt(x.estimatePrice);
-                let status = x.status;
-                let approver = (x.approver) ? x.approver.email : "";
+                let cost = x.estimatePrice ? Intl.NumberFormat().format(parseInt(x.estimatePrice)) : null;
+                let status = this.formatStatus(x.status);
+                let approver = x.approver ? x.approver.email : null;
 
                 return {
                     index: index + 1,
@@ -190,7 +148,6 @@ class PurchaseRequestManager extends Component {
                     equipment: equipment,
                     approver: approver
                 }
-
             })
         }
 
@@ -247,7 +204,7 @@ class PurchaseRequestManager extends Component {
             case 'approved': return translate('asset.usage.approved');
             case 'waiting_for_approval': return translate('asset.usage.waiting_approval');
             case 'disapproved': return translate('asset.usage.not_approved');
-            default: return 'Deleted';
+            default: return '';
         }
     }
 
@@ -286,7 +243,6 @@ class PurchaseRequestManager extends Component {
                             <DatePicker
                                 id="month"
                                 dateFormat="month-year"
-                                // value={this.formatDate(Date.now())}
                                 onChange={this.handleMonthChange}
                             />
 
@@ -367,11 +323,11 @@ class PurchaseRequestManager extends Component {
                                 listRecommendProcures.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.recommendNumber}</td>
-                                        <td>{this.formatDate2(x.dateCreate)}</td>
-                                        <td>{x.proponent ? x.proponent.name : 'User is deleted'}</td>
+                                        <td>{getFormatDateFromTime(x.dateCreate, 'dd-mm-yyyy')}</td>
+                                        <td>{x.proponent ? x.proponent.email : ''}</td>
                                         <td>{x.equipmentName}</td>
                                         <td>{x.equipmentDescription}</td>
-                                        <td>{x.approver ? x.approver.name : ''}</td>
+                                        <td>{x.approver ? x.approver.email : ''}</td>
                                         <td>{x.note}</td>
                                         <td>{this.formatStatus(x.status)}</td>
                                         <td style={{ textAlign: "center" }}>

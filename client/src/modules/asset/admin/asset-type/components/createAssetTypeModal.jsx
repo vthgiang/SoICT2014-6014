@@ -12,12 +12,12 @@ class CreateAssetTypeModal extends Component {
         super(props);
         this.state = {
             domainParent: "",
-            defaultInfo: [], 
-            errorOnNameField: undefined, 
+            defaultInfo: [],
+            errorOnNameField: undefined,
             errorOnValue: undefined,
         }
     }
-    
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.domainParent !== prevState.domainParent && nextProps.domainParent.length) {
             let dm = prevState.domainParent;
@@ -54,7 +54,7 @@ class CreateAssetTypeModal extends Component {
     handleParent = (value) => {
         this.setState({ domainParent: value[0] });
     };
-    
+
     /**
      * Bắt sự kiện click thêm Thông tin mặc định
      */
@@ -237,8 +237,8 @@ class CreateAssetTypeModal extends Component {
                                             defaultInfo.map((x, index) => {
                                                 return <tr key={index}>
                                                     {/* Tên trường dữ liệu */}
-                                                    <td style={{ paddingLeft: '0px' }}><input className="form-control" type="text" value={x.nameField} name="nameField" style={{ width: "100%" }} onChange={ (e) => this.handleChangeNameField(e, index)} /></td>
-                                                    
+                                                    <td style={{ paddingLeft: '0px' }}><input className="form-control" type="text" value={x.nameField} name="nameField" style={{ width: "100%" }} onChange={(e) => this.handleChangeNameField(e, index)} /></td>
+
                                                     {/* Hành động */}
                                                     <td style={{ textAlign: "center" }}>
                                                         <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>

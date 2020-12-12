@@ -46,11 +46,11 @@ class ModalEditTaskTemplate extends Component {
                     organizationalUnit: props.taskTemplate.organizationalUnit,
                     collaboratedWithOrganizationalUnits: props.taskTemplate.collaboratedWithOrganizationalUnits.map(item => { if (item) return item._id }),
                     name: props.taskTemplate.name,
-                    readByEmployees: props.taskTemplate.readByEmployees,
-                    responsibleEmployees: props.taskTemplate.responsibleEmployees,
-                    accountableEmployees: props.taskTemplate.accountableEmployees,
-                    consultedEmployees: props.taskTemplate.consultedEmployees,
-                    informedEmployees: props.taskTemplate.informedEmployees,
+                    readByEmployees: props.taskTemplate.readByEmployees.map(item => item.id),
+                    responsibleEmployees: props.taskTemplate.responsibleEmployees.map(item => item.id),
+                    accountableEmployees: props.taskTemplate.accountableEmployees.map(item => item.id),
+                    consultedEmployees: props.taskTemplate.consultedEmployees.map(item => item.id),
+                    informedEmployees: props.taskTemplate.informedEmployees.map(item => item.id),
                     description: props.taskTemplate.description,
                     formula: props.taskTemplate.formula,
                     priority: props.taskTemplate.priority,
@@ -196,17 +196,7 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    getTaskTemplate: taskTemplateActions.getTaskTemplateById,
     editTaskTemplate: taskTemplateActions.editTaskTemplate,
-    addNewTemplate: taskTemplateActions.addTaskTemplate,
-    getDepartment: UserActions.getDepartmentOfUser,
-    getAllUserOfCompany: UserActions.getAllUserOfCompany,
-    getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
-    getRoleSameDepartment: UserActions.getRoleSameDepartment,
-    getDepartmentsThatUserIsDean: DepartmentActions.getDepartmentsThatUserIsDean,
-    getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
-    getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany
-
 };
 const connectedModalEditTaskTemplate = connect(mapState, actionCreators)(withTranslate(ModalEditTaskTemplate));
 export { connectedModalEditTaskTemplate as ModalEditTaskTemplate };

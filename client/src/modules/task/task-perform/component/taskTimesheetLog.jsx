@@ -233,31 +233,30 @@ class TaskTimesheetLog extends Component {
                                     <i className="fa fa-stop-circle-o fa-lg" style={{ color: "red", cursor: "pointer" }} aria-hidden="true" title="Dừng bấm giờ" onClick={this.handleStopTimer}></i>
                                 </span>
                                 <span>&nbsp; {moment.utc(a).format('HH:mm:ss')}</span>
+                                <a style={{ position: 'absolute', right: '10px' }} href={`/task?taskId=${currentTimer._id}`}><i className="fa fa-arrow-circle-right"></i></a>
                             </div>
                             {this.state.showModal === auth.user.id &&
                                 <React.Fragment>
-                                    <br />
+                                    <h4 style={{ marginTop: '10px' }}>{currentTimer.name}</h4>
                                     <form>
                                         <input type="checkbox" id="stoppedAt" name="stoppedAt" onChange={this.endDate} />
                                         <label htmlFor="stoppedAt">&nbsp;Tự chọn ngày giờ kết thúc công việc</label>
                                     </form>
 
                                     {showEndDate &&
-                                        <React.Fragment>
-                                            <div className={`form-group ${!errorOnEndDate ? "" : "has-error"}`}>
-                                                <ErrorLabel content={errorOnEndDate} />
-                                                <DatePicker
-                                                    id={`date-picker-${currentTimer._id}`}
-                                                    onChange={this.handleDateChange}
-                                                    defaultValue={this.formatDate1(Date.now())}
-                                                />
-                                                <TimePicker
-                                                    id={`time-picker-${currentTimer._id}`}
-                                                    onChange={this.handleTimeChange}
-                                                    getDefaultValue={this.getDefaultValue}
-                                                />
-                                            </div>
-                                        </React.Fragment>
+                                        <div className={`form-group ${!errorOnEndDate ? "" : "has-error"}`}>
+                                            <ErrorLabel content={errorOnEndDate} />
+                                            <DatePicker
+                                                id={`date-picker-${currentTimer._id}`}
+                                                onChange={this.handleDateChange}
+                                                defaultValue={this.formatDate1(Date.now())}
+                                            />
+                                            <TimePicker
+                                                id={`time-picker-${currentTimer._id}`}
+                                                onChange={this.handleTimeChange}
+                                                getDefaultValue={this.getDefaultValue}
+                                            />
+                                        </div>
                                     }
                                     <br />
                                     <label>Mô tả công việc đã làm (*)</label>

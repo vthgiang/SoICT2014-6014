@@ -150,6 +150,16 @@ const COMPONENTS = [{
     links: [
         '/manage-manufacturing-plan',
     ],
+},{
+    name: 'create-stock-button',
+    description: 'Button thêm mới kho',
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ],
+    links: [
+        '/stock-management'
+    ]
 }];
 exports.COMPONENTS = COMPONENTS;
 
@@ -1079,6 +1089,32 @@ const LINKS = [{
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/manage-sla'),
+},
+{
+    url: "/manage-business-department",
+    description: "Phòng kinh doanh",
+    category: LINK_CATEGORY.ORDER.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/manage-business-department'),
+},
+{
+    url: "/manage-admin-department",
+    description: "Phòng kế toán bán hàng",
+    category: LINK_CATEGORY.ORDER.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/manage-admin-department'),
 },
 {
     url: '/crm/dashboard',

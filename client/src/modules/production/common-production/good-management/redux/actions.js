@@ -203,25 +203,25 @@ function deleteGood(id){
 
 function getTaxByGoodsId(goodId) {
     return new Promise((resolve, reject) => {
-        GoodServices.getTaxByGoodsId(goodId).then(res => { console.log("res.data.content", res.data.content); resolve(res.data.content) }).catch(err => {
-            reject(err)
-        })
+        GoodServices.getTaxByGoodsId(goodId)
+            .then(res => {resolve(res.data.content)})
+            .catch(err => {reject(err)})
     })
 }
 
 function getSlaByGoodsId(goodId) {
     return new Promise((resolve, reject) => {
-        GoodServices.getSlaByGoodsId(goodId).then(res => { console.log("res.data.content", res.data.content); resolve(res.data.content) }).catch(err => {
-            reject(err)
-        })
+        GoodServices.getSlaByGoodsId(goodId)
+            .then(res => { resolve(res.data.content) })
+            .catch(err => {reject(err)})
     })
 }
 
 function getDiscountByGoodsId(goodId) {
     return new Promise((resolve, reject) => {
-        GoodServices.getDiscountByGoodsId(goodId).then(res => { console.log("res.data.content", res.data.content); resolve(res.data.content) }).catch(err => {
-            reject(err)
-        })
+        GoodServices.getDiscountByGoodsId(goodId)
+            .then(res => { resolve(res.data.content) })
+            .catch(err => {reject(err)})
     })
 }
 
@@ -239,6 +239,7 @@ function getItemsForGood(goodId) {
             dispatch({
                 type: GoodConstants.GET_ITEMS_FOR_GOOD_SUCCESS,
                 payload: {
+                    goodId: goodId,
                     listTaxsByGoodId: res[0].taxs,
                     listSlasByGoodId: res[1].slas,
                     listDiscountsByGoodId: res[2].discounts

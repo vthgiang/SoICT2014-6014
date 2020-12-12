@@ -18,6 +18,7 @@ class GoodReturnEditForm extends Component {
             lots: []
         }
         this.state = {
+            userId: localStorage.getItem("userId"),
             list: [],
             code: generateCode("BIGR"),
             lots: [],
@@ -639,6 +640,7 @@ class GoodReturnEditForm extends Component {
                 group: nextProps.group,
                 type: nextProps.type,
                 users: nextProps.users,
+                creator: nextProps.creator,
                 approvers: nextProps.approvers,
                 approver: approver,
                 qualityControlStaffs: qualityControlStaffs,
@@ -712,7 +714,7 @@ class GoodReturnEditForm extends Component {
 
     render() {
         const { translate, group, bills } = this.props;
-        const { lots, listGood, good, code, approvers, approver, listQualityControlStaffs, qualityControlStaffs, accountables, responsibles, status, fromStock, 
+        const { lots, listGood, description, good, code, approvers, approver, listQualityControlStaffs, qualityControlStaffs, accountables, responsibles, status, fromStock, 
             type, name, phone, email, address, errorStock, errorType, errorApprover, errorCustomer, bill, errorQualityControlStaffs, errorAccountables, errorResponsibles } = this.state;
         const dataApprover = this.getApprover();
         const dataStock = this.getStock();
@@ -811,11 +813,12 @@ class GoodReturnEditForm extends Component {
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     <div className="form-group">
                                         <label>{translate('manage_warehouse.bill_management.description')}</label>
-                                        <textarea type="text" className="form-control" onChange={this.handleDescriptionChange} />
+                                        <textarea type="text" className="form-control" value={description} onChange={this.handleDescriptionChange} />
                                     </div>
                                 </div>
                             </fieldset>
                         </div>
+                        { this.state.userId === this.state.creator &&
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{translate('manage_warehouse.bill_management.list_saffs')}</legend>
@@ -877,6 +880,7 @@ class GoodReturnEditForm extends Component {
                             </div>
                         </fieldset>
                         </div>
+                        }
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('manage_warehouse.bill_management.receiver')}</legend>

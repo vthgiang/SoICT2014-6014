@@ -9,7 +9,7 @@ const QuoteSchema = Schema({
     },
     status: {
         type: Number,
-        enum: [0, 1, 2, 3], //0. Gửi yêu cầu, 1: chờ phản hồi, 2: Đã chốt đơn, 3: Đã hủy
+        enum: [0, 1, 2, 3], //0. Gửi yêu cầu, 1: Đã duyệt, 2: Đã chốt đơn, 3: Đã hủy
         required: true,
         default: 0
     }, 
@@ -31,7 +31,10 @@ const QuoteSchema = Schema({
         type: Schema.Types.ObjectId,
         ref: 'Customer',
         required: true
-    }, 
+    },
+    // customerName: {
+    //     type: String
+    // },
     customerPhone: {
         type: String,
         required: true
@@ -42,6 +45,16 @@ const QuoteSchema = Schema({
     },
     customerRepresent: { //người đại diện
         type: String
+    },
+    // customerTaxNumber: {
+    //     type: String
+    // },
+    customerEmail: {
+        type: String
+    },
+    approver: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
     },
     goods: [{
         good: {
@@ -139,14 +152,11 @@ const QuoteSchema = Schema({
                     expirationDateOfGoodBonus: {
                         type: Date
                     },
-                    baseUnit: {
-                        type: String
-                    },
                     quantityOfBonusGood: {
                         type: Number
                     }
                 }],
-                discountOnGoods: [{
+                discountOnGoods: {
                     good: {
                         type: Schema.Types.ObjectId,
                         ref: 'Good'
@@ -157,12 +167,11 @@ const QuoteSchema = Schema({
                     discountedPrice: {
                         type: Number
                     }
-                }]
+                }
             },
         ],
         note: {
             type: String,
-            required: true
         }, 
         amount: { //Tổng tiền hàng nguyên bản
             type: Number
@@ -217,9 +226,6 @@ const QuoteSchema = Schema({
                 },
                 expirationDateOfGoodBonus: {
                     type: Date
-                },
-                baseUnit: {
-                    type: String
                 },
                 quantityOfBonusGood: {
                     type: Number

@@ -17,7 +17,7 @@ exports.getAllStocks = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['get_stock_failed'],
-            content: error
+            content: error.message
         })
     }
 }
@@ -37,7 +37,7 @@ exports.getStock = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['get_stock_failed'],
-            content: error
+            content: error.message
         })
     }
 }
@@ -58,7 +58,7 @@ exports.createStock = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['add_faile'],
-            content: error
+            content: error.message
         })
     }
 }
@@ -79,7 +79,7 @@ exports.editStock = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['edit_faile'],
-            content: error
+            content: error.message
         })
     }
 }
@@ -100,7 +100,7 @@ exports.deleteStock = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['delete_faile'],
-            content: error
+            content: error.message
         })
     }
 }

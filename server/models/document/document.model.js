@@ -82,22 +82,6 @@ const DocumentSchema = new Schema({
         scannedFileOfSignedDocument: {
             type: String // vị trí file scan (file có chữ ký) được tải lên
         },
-        // file: {
-        //     name: {
-        //         type: String // vị trí lưu file upload (file doc) được tải lên
-        //     },
-        //     url: {
-        //         type: String
-        //     }
-        // },
-        // scannedFileOfSignedDocument: {
-        //     name: {
-        //         type: String // vị trí lưu file upload (file doc) được tải lên
-        //     },
-        //     url: {
-        //         type: String
-        //     }
-        // },
     }],
 
 
@@ -121,9 +105,6 @@ const DocumentSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'DocumentArchive'
     }],
-    // archivedRecordPlaceInfo: {
-    //     type: String
-    // },
     archivedRecordPlaceOrganizationalUnit: {
         type: Schema.Types.ObjectId,
         ref: 'OrganizationalUnit'

@@ -6,6 +6,7 @@ import { SelectMulti, DatePicker, DataTableSetting, PaginateBar, ConfirmNotifica
 import BillDetailForm from '../genaral/billDetailForm';
 import StockTakeEditForm from './stockTakeEditForm';
 import StockTakeCreateForm from './stockTakeCreateForm';
+import QualityControlForm from '../genaral/quatityControlForm';
 
 class TakeManagement extends Component {
     constructor(props) {
@@ -28,6 +29,29 @@ class TakeManagement extends Component {
         window.$('#modal-edit-bill-take').modal('show');
     }
 
+    findIndexOfStaff = (array, id) => {
+        let result = -1;
+        array.forEach((element, index) => {
+            if (element.staff._id === id) {
+                result = index;
+            }
+        });
+        return result;
+    }
+
+    handleFinishedQualityControlStaff = async (bill) => {
+        const userId = localStorage.getItem("userId");
+        let index = this.findIndexOfStaff(bill.qualityControlStaffs, userId);
+        let qcStatus = bill.qualityControlStaffs[index].status ? bill.qualityControlStaffs.status : "";
+        let qcContent = bill.qualityControlStaffs[index].content ? bill.qualityControlStaffs[index].content : "";
+        await this.setState({
+            currentControl: bill,
+            qcStatus: qcStatus,
+            qcContent: qcContent
+        })
+        window.$('#modal-quality-control-bill').modal('show');
+    }
+
     render() {
         const { translate, bills, stocks, user } = this.props;
         const { listPaginate, totalPages, page } = bills;
@@ -38,6 +62,15 @@ class TakeManagement extends Component {
             <div id="bill-stock-takes">
                 <div className="box-body qlcv">
                     <StockTakeCreateForm group={group} />
+                    {
+                        this.state.currentControl &&
+                        <QualityControlForm
+                            billId={this.state.currentControl._id}
+                            code={this.state.currentControl.code}
+                            status={this.state.qcStatus}
+                            content={this.state.qcContent}
+                        />
+                    }
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('manage_warehouse.bill_management.stock')}</label>
@@ -147,6 +180,7 @@ class TakeManagement extends Component {
                             accountables={currentRow.accountables ? currentRow.accountables : []}
                             description={currentRow.description}
                             listGood={currentRow.goods}
+                            creator={currentRow.creator ? currentRow.creator._id : ''}
                         />
                     }
 
@@ -218,7 +252,7 @@ class TakeManagement extends Component {
                                                         content={translate('manage_warehouse.bill_management.staff_true') + " " + x.code}
                                                         name="check_circle"
                                                         className="text-green"
-                                                        func={() => this.props.handleFinishedQualityControlStaff(x)}
+                                                        func={() => this.handleFinishedQualityControlStaff(x)}
                                                     />
                                                 }
                                         </td>

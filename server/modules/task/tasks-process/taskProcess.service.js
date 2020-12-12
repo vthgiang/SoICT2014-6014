@@ -121,7 +121,7 @@ exports.createXmlDiagram = async (portal, body) => {
             }
         }) : [];
         if (body.info[x].formula === '') {
-            body.info[x].formula = "progress / (dayUsed / totalDay) - (numberOfFailedAction / (numberOfFailedAction + numberOfPassedAction)) * 100"
+            body.info[x].formula = "progress / (daysUsed / totalDays) - (numberOfFailedAction / (numberOfFailedAction + numberOfPassedAction)) * 100"
         }
         info.push(body.info[x])
     }
@@ -336,7 +336,7 @@ exports.createTaskByProcess = async (portal, processId, body) => {
 
         let formula = data[i].formula;
         if (data[i].formula === '') {
-            formula = "progress / (dayUsed / totalDay) - 0.5 * (10 - (averageActionRating)) * 10";
+            formula = "progress / (daysUsed / totalDays) - 0.5 * (10 - (averageActionRating)) * 10";
         }
 
         let collaboratedWithOrganizationalUnits = data[i].collaboratedWithOrganizationalUnits.map(item => { return { "organizationalUnit": item } })

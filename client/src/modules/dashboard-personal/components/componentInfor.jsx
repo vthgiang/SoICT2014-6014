@@ -156,11 +156,6 @@ class ComponentInfor extends Component {
         window.$(`#modal-view-${"hoursOff"}`).modal('show');
     }
 
-    // /** Function xem danh sách sinh nhật */
-    // ViewBirthdayList = () => {
-    //     window.$(`#modal-view-birthday-list`).modal('show');
-    // }
-
     render() {
         const { discipline, translate, timesheets, tasks, user, workPlan, annualLeave, createEmployeeKpiSet } = this.props;
 
@@ -184,7 +179,7 @@ class ComponentInfor extends Component {
             maximumNumberOfLeaveDays = workPlan.maximumNumberOfLeaveDays
         }
 
-        /* Lấy dữ liệu công việc của môi nhân viên trong đơn vị */
+        /* Lấy dữ liệu công việc của mỗi nhân viên trong đơn vị */
         let taskListByStatus = tasks.organizationUnitTasks ? tasks.organizationUnitTasks.tasks : null;
         let listEmployee = user.employees;
         let maxTask = 1;
@@ -312,7 +307,7 @@ class ComponentInfor extends Component {
                             <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                 <div className="box box-solid">
                                     <div className="box-header with-border">
-                                        <h3 className="box-title">Nhắc việc {monthShow}</h3>
+                                        <h3 className="box-title">{translate('human_resource.dashboard_personal.remind_work')} {monthShow}</h3>
                                     </div>
                                     <div className="box-body">
                                         <ul className="todo-list">
@@ -321,7 +316,7 @@ class ComponentInfor extends Component {
                                                     <i className="fa fa-ellipsis-v"></i>
                                                     <i className="fa fa-ellipsis-v"></i>
                                                 </span>
-                                                <span className="text"><a href='/hr-annual-leave-personal' target="_blank">Số ngày nghỉ phép còn lại trong năm {year}</a></span>
+                                                <span className="text"><a href='/hr-annual-leave-personal' target="_blank">{translate('human_resource.dashboard_personal.number_annual_leave_in_year')} {year}</a></span>
                                                 <small className="label label-success">{numberAnnualLeave}/{maximumNumberOfLeaveDays} ngày</small>
                                             </li>
 
@@ -330,43 +325,43 @@ class ComponentInfor extends Component {
                                                     <i className="fa fa-ellipsis-v"></i>
                                                     <i className="fa fa-ellipsis-v"></i>
                                                 </span>
-                                                <span className="text"><a href='/task-management-dashboard' target="_blank" >Công việc</a></span>
-                                                <small className="label label-danger">{accountableEmployees} phê duyêt</small>
-                                                <small className="label label-success">{responsibleEmployees} thực hiện</small>
-                                                <small className="label label-warning">{consultedEmployees} tư vấn</small>
-                                                <small className="label label-info">{informedEmployees} quan sát</small>
+                                                <span className="text"><a href='/task-management-dashboard' target="_blank" >{translate('human_resource.dashboard_personal.task')}</a></span>
+                                                <small className="label label-danger">{accountableEmployees} {translate('human_resource.dashboard_personal.accountable')}</small>
+                                                <small className="label label-success">{responsibleEmployees} {translate('human_resource.dashboard_personal.responsible')}</small>
+                                                <small className="label label-warning">{consultedEmployees} {translate('human_resource.dashboard_personal.consulted')}</small>
+                                                <small className="label label-info">{informedEmployees} {translate('human_resource.dashboard_personal.informed')}</small>
                                             </li>
                                             <li>
                                                 <span className="handle">
                                                     <i className="fa fa-ellipsis-v"></i>
                                                     <i className="fa fa-ellipsis-v"></i>
                                                 </span>
-                                                <span className="text"><a href='/task-management-dashboard' target="_blank">Tổng số Công việc</a></span>
-                                                <small className="label label-warning">{totalTask} công việc</small>
+                                                <span className="text"><a href='/task-management-dashboard' target="_blank">{translate('human_resource.dashboard_personal.task_total')}</a></span>
+                                                <small className="label label-warning">{totalTask} {translate('human_resource.dashboard_personal.task')}</small>
                                             </li>
                                             <li title="Hệ thống đánh giá/Cá nhân đánh giá/Quản lý đánh giá">
                                                 <span className="handle">
                                                     <i className="fa fa-ellipsis-v"></i>
                                                     <i className="fa fa-ellipsis-v"></i>
                                                 </span>
-                                                <span className="text"><a target="_blank">Kết quả KPI</a></span>
-                                                <small className="label label-success">80 điểm/90 điểm/95 điểm</small>
+                                                <span className="text"><a target="_blank">{translate('human_resource.dashboard_personal.kpi_results')}</a></span>
+                                                <small className="label label-success">{`80 ${translate('human_resource.dashboard_personal.point')}/ 90 ${translate('human_resource.dashboard_personal.point')}/95 ${translate('human_resource.dashboard_personal.point')}`}</small>
                                             </li>
                                             <li>
                                                 <span className="handle">
                                                     <i className="fa fa-ellipsis-v"></i>
                                                     <i className="fa fa-ellipsis-v"></i>
                                                 </span>
-                                                <span className="text"><a style={{ pointerEvents: "none" }} >Tổng thời gian tăng ca</a></span>
-                                                <small className="label label-primary">{totalOvertime} giờ</small>
+                                                <span className="text"><a style={{ pointerEvents: "none" }} >{translate('human_resource.dashboard_personal.overtime_total')}</a></span>
+                                                <small className="label label-primary">{totalOvertime} {translate('human_resource.dashboard_personal.hours')}</small>
                                             </li>
                                             <li>
                                                 <span className="handle">
                                                     <i className="fa fa-ellipsis-v"></i>
                                                     <i className="fa fa-ellipsis-v"></i>
                                                 </span>
-                                                <span className="text"><a style={{ pointerEvents: "none" }} >Tổng thời gian nghỉ phép</a></span>
-                                                <small className="label label-danger">{totalHoursOff} giờ</small>
+                                                <span className="text"><a style={{ pointerEvents: "none" }} >{translate('human_resource.dashboard_personal.total_time_annual_leave')}</a></span>
+                                                <small className="label label-danger">{totalHoursOff} {translate('human_resource.dashboard_personal.hours')}</small>
                                             </li>
                                         </ul>
                                     </div>
@@ -377,15 +372,15 @@ class ComponentInfor extends Component {
                             <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                 <div className="box box-solid">
                                     <div className="box-header with-border">
-                                        <h3 className="box-title">Tổng hợp công việc {monthShow}</h3>
+                                        <h3 className="box-title"> {translate('human_resource.dashboard_personal.general_task')} {monthShow}</h3>
                                     </div>
                                     <div className="box-body">
                                         <table className="table table-striped table-bordered table-hover">
                                             <thead>
                                                 <tr>
                                                     <th>STT</th>
-                                                    <th>Họ và tên</th>
-                                                    <th>Số công việc</th>
+                                                    <th>{translate('human_resource.dashboard_personal.fullname')}</th>
+                                                    <th>{translate('human_resource.dashboard_personal.task_total')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -408,7 +403,7 @@ class ComponentInfor extends Component {
                                         </table>
                                     </div>
                                     <div className="box-footer text-center">
-                                        <a style={{ cursor: 'pointer' }} onClick={this.viewAllTasks} className="uppercase">Xem tất cả</a>
+                                        <a style={{ cursor: 'pointer' }} onClick={this.viewAllTasks} className="uppercase">{translate('human_resource.dashboard_personal.see_all')}</a>
                                     </div>
                                 </div>
                             </div>
@@ -418,15 +413,15 @@ class ComponentInfor extends Component {
                             <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                 <div className="box box-solid">
                                     <div className="box-header with-border">
-                                        <h3 className="box-title">Tổng hợp khen thưởng {monthShow}</h3>
+                                        <h3 className="box-title">{translate('human_resource.dashboard_personal.general_commendation')} {monthShow}</h3>
                                     </div>
                                     <div className="box-body">
                                         <table className="table table-striped table-bordered table-hover">
                                             <thead>
                                                 <tr>
                                                     <th>STT</th>
-                                                    <th>Họ và tên</th>
-                                                    <th>Lý do khen thưởng </th>
+                                                    <th>{translate('human_resource.dashboard_personal.fullname')}</th>
+                                                    <th>{translate('human_resource.dashboard_personal.reason_praise')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -446,7 +441,7 @@ class ComponentInfor extends Component {
                                         }
                                     </div>
                                     <div className="box-footer text-center">
-                                        <a style={{ cursor: 'pointer' }} onClick={this.viewAllCommendation} className="uppercase">Xem tất cả</a>
+                                        <a style={{ cursor: 'pointer' }} onClick={this.viewAllCommendation} className="uppercase">{translate('human_resource.dashboard_personal.see_all')}</a>
                                     </div>
                                 </div>
                             </div>
@@ -454,15 +449,15 @@ class ComponentInfor extends Component {
                             <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                 <div className="box box-solid">
                                     <div className="box-header with-border">
-                                        <h3 className="box-title">Tổng hợp kỷ luật {monthShow}</h3>
+                                        <h3 className="box-title">{translate('human_resource.dashboard_personal.general_discipline')} {monthShow}</h3>
                                     </div>
                                     <div className="box-body">
                                         <table className="table table-striped table-bordered table-hover">
                                             <thead>
                                                 <tr>
                                                     <th>STT</th>
-                                                    <th>Họ và tên</th>
-                                                    <th>Lý do kỷ luật</th>
+                                                    <th>{translate('human_resource.dashboard_personal.fullname')}</th>
+                                                    <th>{translate('human_resource.dashboard_personal.reason_discipline')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -482,7 +477,7 @@ class ComponentInfor extends Component {
                                         }
                                     </div>
                                     <div className="box-footer text-center">
-                                        <a style={{ cursor: 'pointer' }} onClick={this.viewAllDiscipline} className="uppercase">Xem tất cả</a>
+                                        <a style={{ cursor: 'pointer' }} onClick={this.viewAllDiscipline} className="uppercase">{translate('human_resource.dashboard_personal.see_all')}</a>
                                     </div>
                                 </div>
                             </div>
@@ -493,15 +488,15 @@ class ComponentInfor extends Component {
                             <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                 <div className="box box-solid">
                                     <div className="box-header with-border">
-                                        <h3 className="box-title">Tổng hợp tình hình nghỉ phép {monthShow}</h3>
+                                        <h3 className="box-title">{translate('human_resource.dashboard_personal.general_annual_leave')} {monthShow}</h3>
                                     </div>
                                     <div className="box-body">
                                         <table className="table table-striped table-bordered table-hover">
                                             <thead>
                                                 <tr>
                                                     <th>STT</th>
-                                                    <th>Họ và tên</th>
-                                                    <th>Tổng số giờ</th>
+                                                    <th>{translate('human_resource.dashboard_personal.fullname')}</th>
+                                                    <th>{translate('human_resource.dashboard_personal.total_hours')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -518,7 +513,7 @@ class ComponentInfor extends Component {
                                         </table>
                                     </div>
                                     <div className="box-footer text-center">
-                                        <a style={{ cursor: 'pointer' }} onClick={this.viewAllHoursOff} className="uppercase">Xem tất cả</a>
+                                        <a style={{ cursor: 'pointer' }} onClick={this.viewAllHoursOff} className="uppercase">{translate('human_resource.dashboard_personal.see_all')}</a>
                                     </div>
                                 </div>
                             </div>
@@ -527,15 +522,15 @@ class ComponentInfor extends Component {
                             <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                 <div className="box box-solid">
                                     <div className="box-header with-border">
-                                        <h3 className="box-title">Tổng hợp tình hình tăng ca {monthShow}</h3>
+                                        <h3 className="box-title">{translate('human_resource.dashboard_personal.general_overtime')} {monthShow}</h3>
                                     </div>
                                     <div className="box-body">
                                         <table className="table table-striped table-bordered table-hover">
                                             <thead>
                                                 <tr>
                                                     <th>STT</th>
-                                                    <th>Họ và tên</th>
-                                                    <th>Tổng số giờ</th>
+                                                    <th>{translate('human_resource.dashboard_personal.fullname')}</th>
+                                                    <th>{translate('human_resource.dashboard_personal.total_hours')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -552,31 +547,31 @@ class ComponentInfor extends Component {
                                         </table>
                                     </div>
                                     <div className="box-footer text-center">
-                                        <a style={{ cursor: 'pointer' }} onClick={this.viewAllOverTime} className="uppercase">Xem tất cả</a>
+                                        <a style={{ cursor: 'pointer' }} onClick={this.viewAllOverTime} className="uppercase">{translate('human_resource.dashboard_personal.see_all')}</a>
                                     </div>
                                 </div>
                             </div>
 
-                            <TrendWorkChart nameChart={'Xu hướng làm việc'} nameData1={'Tổng giờ làm'} nameData2={'Tổng giờ tăng ca'} />
+                            <TrendWorkChart nameChart={`${translate('human_resource.dashboard_personal.trend_of_work')}`} nameData1={`${translate('human_resource.dashboard_personal.total_hours_works')}`} nameData2={`${translate('human_resource.dashboard_personal.overtime_total')}`} />
 
                         </div>
                     </div> : <div className="box">
                         <div className="box-body">
-                            <h4>Bạn chưa có đơn vị</h4>
+                            <h4>{translate('human_resource.dashboard_personal.not_org_unit')}</h4>
                         </div>
                     </div>
                 }
 
-                <ViewAllTasks employeeTasks={employeeTasks} title={`Tổng hợp công việc ${monthShow}`} showCheck={true} />
-                <ViewAllCommendation dataCommendation={discipline.totalListCommendation} title={`Tổng hợp khen thưởng ${monthShow}`} />
-                <ViewAllDiscipline dataDiscipline={discipline.totalListDiscipline} title={`Tổng hợp kỷ luật ${monthShow}`} />
+                <ViewAllTasks employeeTasks={employeeTasks} title={`${translate('human_resource.dashboard_personal.general_task')} ${monthShow}`} showCheck={true} />
+                <ViewAllCommendation dataCommendation={discipline.totalListCommendation} title={`${translate('human_resource.dashboard_personal.general_commendation')} ${monthShow}`} />
+                <ViewAllDiscipline dataDiscipline={discipline.totalListDiscipline} title={`${translate('human_resource.dashboard_personal.general_discipline')} ${monthShow}`} />
                 {
                     viewOverTime &&
-                    <ViewAllOverTime dataView={employeeOvertime} title={`Tổng hợp tình hình tăng ca ${monthShow}`} id={viewOverTime} showCheck={true} />
+                    <ViewAllOverTime dataView={employeeOvertime} title={`${translate('human_resource.dashboard_personal.general_overtime')} ${monthShow}`} id={viewOverTime} showCheck={true} />
                 }
                 {
                     viewHoursOff &&
-                    <ViewAllOverTime dataView={employeeHoursOff} title={`Tổng hợp tình hình nghỉ phép ${monthShow}`} id={viewHoursOff} showCheck={true} />
+                    <ViewAllOverTime dataView={employeeHoursOff} title={`${translate('human_resource.dashboard_personal.general_annual_leave')} ${monthShow}`} id={viewHoursOff} showCheck={true} />
                 }
 
             </React.Fragment>

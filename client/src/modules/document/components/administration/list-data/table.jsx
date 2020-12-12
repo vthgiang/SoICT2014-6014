@@ -45,7 +45,7 @@ class Table extends Component {
 
     componentDidMount() {
         const currentPage = window.location.pathname;
-        this.props.getAllDocuments({ calledId: "all", by: currentPage === '/documents/organizational-unit' ? 'organizational-unit' : undefined});
+        this.props.getAllDocuments({ calledId: "all", by: currentPage === '/documents/organizational-unit' ? 'organizational-unit' : undefined });
         this.props.getAllDocuments({ page: this.state.page, limit: this.state.limit, calledId: "paginate", by: currentPage === '/documents/organizational-unit' ? 'organizational-unit' : undefined });
         this.props.getAllDocuments({ page: this.state.page, limit: this.state.limit, calledId: "relationshipDocs", by: currentPage === '/documents/organizational-unit' ? 'organizational-unit' : undefined });
         this.props.getAllRoles();
@@ -568,7 +568,7 @@ class Table extends Component {
                             translate('kpi.organizational_unit.management.over_view.search')}</button>
                     </div>
                 </div>
-                <table className="table table-hover table-striped table-bordered" id="table-manage-document-list" style={{marginBottom: 0}}>
+                <table className="data-table table table-hover table-striped table-bordered" id="table-manage-document-list" style={{ marginBottom: 0 }}>
                     <thead>
                         <tr>
                             <th>{translate('document.name')}</th>
@@ -605,50 +605,50 @@ class Table extends Component {
                     <tbody>
                         {
                             paginate && paginate.length > 0 &&
-                                paginate.map(doc =>
+                            paginate.map(doc =>
 
-                                    <tr key={doc._id}>
-                                        <td>{doc.name}</td>
-                                        <td>{doc.description ? doc.description : ""}</td>
-                                        <td>{doc.versions.length ? this.formatDate(doc.versions[doc.versions.length - 1].issuingDate) : null}</td>
-                                        <td>{doc.versions.length ? this.formatDate(doc.versions[doc.versions.length - 1].effectiveDate) : null}</td>
-                                        <td>{doc.versions.length ? this.formatDate(doc.versions[doc.versions.length - 1].expiredDate) : null}</td>
-                                        <td>
-                                            <a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}>
-                                                <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u>
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <a href="#" onClick={() => this.requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}>
-                                                <u>{doc.versions.length && doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument ? translate('document.download') : ""}</u>
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <a href="#modal-list-view" onClick={() => this.showDetailListView(doc)}>{doc.numberOfView}</a>
-                                        </td>
-                                        <td>
-                                            <a href="#modal-list-download" onClick={() => this.showDetailListDownload(doc)}>{doc.numberOfDownload}</a>
-                                        </td>
-                                        <td>
-                                            <a className="text-green" title={translate('document.view')} onClick={() => this.toggleDocumentInformation(doc)}>
-                                                <i className="material-icons">visibility</i>
-                                            </a>
-                                            <a className="text-yellow" title={translate('document.edit')} onClick={() => this.toggleEditDocument(doc)}>
-                                                <i className="material-icons">edit</i>
-                                            </a>
-                                            <a className="text-red" title={translate('document.delete')} onClick={() => this.deleteDocument(doc._id, doc.name)}>
-                                                <i className="material-icons">delete</i>
-                                            </a>
-                                        </td>
-                                    </tr>)
+                                <tr key={doc._id}>
+                                    <td>{doc.name}</td>
+                                    <td>{doc.description ? doc.description : ""}</td>
+                                    <td>{doc.versions.length ? this.formatDate(doc.versions[doc.versions.length - 1].issuingDate) : null}</td>
+                                    <td>{doc.versions.length ? this.formatDate(doc.versions[doc.versions.length - 1].effectiveDate) : null}</td>
+                                    <td>{doc.versions.length ? this.formatDate(doc.versions[doc.versions.length - 1].expiredDate) : null}</td>
+                                    <td>
+                                        <a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}>
+                                            <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="#" onClick={() => this.requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}>
+                                            <u>{doc.versions.length && doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument ? translate('document.download') : ""}</u>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="#modal-list-view" onClick={() => this.showDetailListView(doc)}>{doc.numberOfView}</a>
+                                    </td>
+                                    <td>
+                                        <a href="#modal-list-download" onClick={() => this.showDetailListDownload(doc)}>{doc.numberOfDownload}</a>
+                                    </td>
+                                    <td>
+                                        <a className="text-green" title={translate('document.view')} onClick={() => this.toggleDocumentInformation(doc)}>
+                                            <i className="material-icons">visibility</i>
+                                        </a>
+                                        <a className="text-yellow" title={translate('document.edit')} onClick={() => this.toggleEditDocument(doc)}>
+                                            <i className="material-icons">edit</i>
+                                        </a>
+                                        <a className="text-red" title={translate('document.delete')} onClick={() => this.deleteDocument(doc._id, doc.name)}>
+                                            <i className="material-icons">delete</i>
+                                        </a>
+                                    </td>
+                                </tr>)
                         }
 
                     </tbody>
                 </table>
                 {
                     isLoading ?
-                    <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                    paginate && paginate.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                        paginate && paginate.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                 }
                 <PaginateBar pageTotal={docs.totalPages} currentPage={docs.page} func={this.setPage} />
             </div>

@@ -13,7 +13,7 @@ class ImportAssetTypeModal extends Component {
 
     constructor(props) {
         super(props);
-        
+
         this.state = {
             configData: configAssetType,
             limit: 100,
@@ -23,7 +23,7 @@ class ImportAssetTypeModal extends Component {
 
     save = () => {
         const { importShowData } = this.state;
-        
+
         this.props.createAssetTypes(importShowData);
     }
 
@@ -46,12 +46,13 @@ class ImportAssetTypeModal extends Component {
                         STT: dataTemporary.code ? index + 1 : null,
                         code: dataTemporary.code,
                         name: dataTemporary.name,
+                        parent: dataTemporary.parent,
                         description: dataTemporary.description,
                         information: dataTemporary.information
                     }
                     datas = [...datas, out];
                 }
-                
+
                 dataExport.dataSheets[i].tables[j].data = datas;
             }
         }
@@ -59,23 +60,51 @@ class ImportAssetTypeModal extends Component {
         return dataExport;
     }
 
+    getAssetTypeParentId = (parentName, data) => {
+        let indexOfArr = -1,
+            AssetTypeParentId;
+
+        // Kiểm tra xem loại tài sản cha có tồn tại hay không
+        if (!parentName) return
+
+        data.forEach((item, index) => {
+            if (item.typeName === parentName)
+                indexOfArr = index;
+        })
+
+        if (indexOfArr !== -1) {
+            for (let i = 0; i < data.length; i++) {
+                if (parentName === data[i].typeName) {
+                    AssetTypeParentId = data[i]._id;
+                    return AssetTypeParentId;
+                }
+            }
+        } else {
+            return indexOfArr;
+        }
+    }
+
+
     handleImportExcel = (value, checkFileImport) => {
+        const { list } = this.props.assetType.administration.types;
         let values = [], valueShow = [], index = -1;
-        
+
         for (let i = 0; i < value.length; i++) {
-            let valueTemporary = value[i];
+            const valueTemporary = value[i];
             if (valueTemporary.name) {
                 index = index + 1;
                 values = [...values, {
                     "STT": index + 1,
                     "code": valueTemporary.code,
                     "name": valueTemporary.name,
+                    "parent": valueTemporary.parent,
                     "description": valueTemporary.description,
                     "information": valueTemporary.information
                 }];
                 valueShow = [...valueShow, {
                     "typeNumber": valueTemporary.code,
                     "typeName": valueTemporary.name,
+                    "parent": this.getAssetTypeParentId(valueTemporary.parent, list),
                     "description": valueTemporary.description,
                     "defaultInformation": [{ nameField: valueTemporary.information }]
                 }];
@@ -85,6 +114,7 @@ class ImportAssetTypeModal extends Component {
                         "STT": "",
                         "code": "",
                         "name": "",
+                        "parent": "",
                         "description": "",
                         "information": "",
                     }
@@ -107,7 +137,7 @@ class ImportAssetTypeModal extends Component {
             for (let i = 0; i < value.length; i++) {
                 let x = value[i], errorAlert = [];
 
-                if (x.name === null || x.code === null) {
+                if (x.name === null || x.code === null || this.getAssetTypeParentId(x.parent, list) === -1) {
                     rowError = [...rowError, i + 1];
                     x = { ...x, error: true };
                 }
@@ -117,14 +147,17 @@ class ImportAssetTypeModal extends Component {
                 if (x.name === null) {
                     errorAlert = [...errorAlert, 'Tên loại tài sản không được để trống'];
                 }
+                if (this.getAssetTypeParentId(x.parent, list) === -1) {
+                    errorAlert = [...errorAlert, 'Loại tài sản cha không đúng định dạng'];
+                }
 
                 x = { ...x, errorAlert: errorAlert };
                 value[i] = x;
             };
 
             this.setState({
-                importData: value,
-                importShowData: valueShow,
+                importData: value, // show ra :))
+                importShowData: valueShow, // Luuw db
                 rowError: rowError,
                 checkFileImport: checkFileImport,
             })
@@ -138,12 +171,11 @@ class ImportAssetTypeModal extends Component {
     render() {
         const { translate } = this.props;
         const { configData, importData, rowError, checkFileImport, limit, page } = this.state;
-        
-        let importDataTemplate = this.convertDataExport(importAssetTypeTemplate);
 
+        let importDataTemplate = this.convertDataExport(importAssetTypeTemplate);
         return (
             <React.Fragment>
-                <DialogModal 
+                <DialogModal
                     modalID={`import_asset_type`} isLoading={false}
                     formID={`form_import_asset_type`}
                     title="Thêm loại tài sản bằng import file excel"
@@ -177,7 +209,7 @@ class ImportAssetTypeModal extends Component {
                                     configData={configData}
                                     importData={importData}
                                     rowError={rowError}
-                                    scrollTable={false}
+                                    scrollTable={true}
                                     checkFileImport={checkFileImport}
                                     limit={limit}
                                     page={page}
@@ -189,12 +221,12 @@ class ImportAssetTypeModal extends Component {
             </React.Fragment>
         )
     }
-    
+
 }
 
 function mapState(state) {
-    const {  } = state;
-    return {  };
+    const { assetType } = state;
+    return { assetType };
 };
 const actions = {
     createAssetTypes: AssetTypeActions.createAssetTypes,

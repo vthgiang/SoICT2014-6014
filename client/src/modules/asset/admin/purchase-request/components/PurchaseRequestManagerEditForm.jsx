@@ -8,6 +8,7 @@ import { PurchaseRequestFromValidator } from '../../../user/purchase-request/com
 
 import { RecommendProcureActions } from '../../../user/purchase-request/redux/actions';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
+import { getFormatDateFromTime } from '../../../../../helpers/stringMethod';
 
 class PurchaseRequestEditForm extends Component {
     constructor(props) {
@@ -175,9 +176,12 @@ class PurchaseRequestEditForm extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result = this.validateEquipment(this.state.equipmentName, false) &&
-            this.validateTotal(this.state.total, false) &&
-            this.validateUnit(this.state.unit, false);
+        const { recommendNumber, equipmentName, total, unit } = this.state;
+
+        let result = this.validateEquipment(equipmentName, false) &&
+            this.validateTotal(total, false) &&
+            this.validateUnit(unit, false) &&
+            this.validateRecommendNumber(recommendNumber, false);
 
         return result;
     };
@@ -196,7 +200,7 @@ class PurchaseRequestEditForm extends Component {
                 ...prevState,
                 _id: nextProps._id,
                 recommendNumber: nextProps.recommendNumber,
-                dateCreate: nextProps.dateCreate,
+                dateCreate: getFormatDateFromTime(nextProps.dateCreate, 'dd-mm-yyyy'),
                 proponent: nextProps.proponent,
                 equipmentName: nextProps.equipmentName,
                 equipmentDescription: nextProps.equipmentDescription,
@@ -220,7 +224,7 @@ class PurchaseRequestEditForm extends Component {
         const { _id, translate, recommendProcure, user, auth } = this.props;
         const {
             recommendNumber, dateCreate, proponent, equipmentName, equipmentDescription, supplier, total, unit, estimatePrice, approver, status, note,
-            errorOnEquipment, errorOnEquipmentDescription, errorOnTotal, errorOnUnit
+            errorOnEquipment, errorOnEquipmentDescription, errorOnTotal, errorOnUnit, errorOnRecommendNumber
         } = this.state;
 
         var userlist = user.list;
@@ -240,9 +244,10 @@ class PurchaseRequestEditForm extends Component {
 
                             <div className="col-sm-6">
                                 {/* Mã phiếu */}
-                                <div className="form-group">
-                                    <label>{translate('asset.general_information.form_code')}</label>
+                                <div className={`form-group ${!errorOnRecommendNumber ? "" : "has-error"}`}>
+                                    <label>{translate('asset.general_information.form_code')}<span className="text-red">*</span></label>
                                     <input type="text" className="form-control" name="recommendNumber" value={recommendNumber ? recommendNumber : ''} onChange={this.handleRecommendNumberChange} />
+                                    <ErrorLabel content={errorOnRecommendNumber} />
                                 </div>
 
                                 {/* Ngày lập */}

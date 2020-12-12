@@ -3,7 +3,7 @@ const Logger = require(`${SERVER_LOGS_DIR}`);
 
 exports.getBillsByType = async (req, res) => {
     try {
-        const bills = await BillService.getBillsByType(req.query, req.portal);
+        const bills = await BillService.getBillsByType(req.query, req.user._id, req.portal);
 
         await Logger.info(req.user.email, 'GET_BILL_SUCCESS', req.portal);
 
@@ -17,7 +17,7 @@ exports.getBillsByType = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['get_bill_failed'],
-            content: error
+            content: error.message
         })
     }
 }
@@ -38,7 +38,7 @@ exports.getBillByGood = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['get_bill_failed'],
-            content: error
+            content: error.message
         })
     }
 }
@@ -59,7 +59,7 @@ exports.getDetailBill = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['get_bill_failed'],
-            error: err
+            content: err.message
         })
     }
 }
@@ -80,7 +80,7 @@ exports.createBill = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['add_failed'],
-            error: err
+            content: err.message
         })
     }
 }
@@ -100,7 +100,7 @@ exports.editBill = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['edit_failed'],
-            error: err
+            content: err.message
         })
     }
 }
@@ -121,7 +121,7 @@ exports.getBillsByStatus = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['get_bill_failed'],
-            error: err
+            content: err.message
         })
     }
 }
@@ -142,7 +142,7 @@ exports.getBillsByCommand = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['get_bill_failed'],
-            error: error
+            content: error.message
         })
     }
 }

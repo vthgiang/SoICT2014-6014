@@ -236,3 +236,45 @@
 .tf-tree li.tf-dashed-children>.tf-node-content:before {
     border-left-style: solid
 }
+
+
+.custom-file-input::-webkit-file-upload-button {
+  visibility: hidden;
+}
+.custom-file-input {
+    background-color: #3c8dbc;
+    color: white;
+    padding: .8rem .9rem;
+    font-weight: 400;
+    border-radius: 0.3rem;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+}
+
+.icon_upload{
+    font-size: 19px;
+    margin-right: 5px;
+}
+
+.organizationalUnitImageWrapper{
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    box-shadow: 0 0 1px rgb(171 169 169);
+}
+.organizationalUnitImageButton{
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: flex-end;
+
+}
+.upload_now{
+    color:#385898;
+}
+
+.upload_now:hover{
+    color:#6a8dd1;
+    opacity: 0.7;
+}

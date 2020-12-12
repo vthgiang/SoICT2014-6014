@@ -29,24 +29,27 @@ export function quotes(state = initState, action) {
     let index = -1;
     switch (action.type) {
         case QuoteConstants.GET_ALL_QUOTES_REQUEST:
-            case QuoteConstants.CREATE_QUOTE_REQUEST:
-            case QuoteConstants.GET_DETAIL_QUOTE_REQUEST:
-            case QuoteConstants.UPDATE_QUOTE_REQUEST:
-                return {
-                    ...state,
-                    isLoading: false
-                }
-            case QuoteConstants.GET_ALL_QUOTES_FAILURE:
-            case QuoteConstants.CREATE_QUOTE_FAILURE:
-            case QuoteConstants.GET_DETAIL_QUOTE_FAILURE:
-            case QuoteConstants.UPDATE_QUOTE_FAILURE:
+        case QuoteConstants.CREATE_QUOTE_REQUEST:
+        case QuoteConstants.EDIT_QUOTE_REQUEST:
+        case QuoteConstants.DELETE_QUOTE_REQUEST:
+        case QuoteConstants.APPROVE_QUOTE_REQUEST:
+        
+            return {
+                ...state,
+                isLoading: true
+            }
+        
+        case QuoteConstants.GET_ALL_QUOTES_FAILURE:
+        case QuoteConstants.CREATE_QUOTE_FAILURE:
+        case QuoteConstants.EDIT_QUOTE_FAILURE:
+        case QuoteConstants.DELETE_QUOTE_FAILURE:
+        case QuoteConstants.APPROVE_QUOTE_FAILURE:
                 return {
                     ...state,
                     isLoading: false,
                     error: action.error
                 }
             case QuoteConstants.GET_ALL_QUOTES_SUCCESS:
-                console.log("PAYLOAD:", action.payload);
                 return {
                     ...state,
                     isLoading: false,
@@ -62,7 +65,6 @@ export function quotes(state = initState, action) {
                     nextPage: action.payload.allQuotes.nextPage
                 }
             case QuoteConstants.CREATE_QUOTE_SUCCESS:
-                console.log("PAYLOAD: ", action.payload.quote);
                 return {
                     ...state,
                     listQuotes: [
@@ -71,12 +73,23 @@ export function quotes(state = initState, action) {
                     ],
                     isLoading: false
                 }
-            case QuoteConstants.GET_DETAIL_QUOTE_SUCCESS:
+            
+            case QuoteConstants.EDIT_QUOTE_SUCCESS:
+                index = findIndex(state.listQuotes, action.payload.quote._id);
+                if (index !== -1) {
+                    state.listQuotes[index] = action.payload.quote
+                }
                 return {
                     ...state,
                     isLoading: false
+            }
+            
+        case QuoteConstants.DELETE_QUOTE_SUCCESS:
+                index = findIndex(state.listQuotes, action.payload.quote._id);
+
+                if(index !== -1){
+                    state.listQuotes.splice(index, 1);
                 }
-            case QuoteConstants.UPDATE_QUOTE_SUCCESS:
                 return {
                     ...state,
                     isLoading: false

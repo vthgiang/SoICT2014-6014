@@ -17,6 +17,7 @@ class StockTakeEditForm extends Component {
             lots: []
         }
         this.state = {
+            userId: localStorage.getItem("userId"),
             list: [],
             lots: [],
             listGood: [],
@@ -536,6 +537,7 @@ class StockTakeEditForm extends Component {
                 group: nextProps.group,
                 type: nextProps.type,
                 users: nextProps.users,
+                creator: nextProps.creator,
                 approvers: nextProps.approvers,
                 approver: approver,
                 qualityControlStaffs: qualityControlStaffs,
@@ -642,18 +644,6 @@ class StockTakeEditForm extends Component {
                                             />
                                             <ErrorLabel content = { errorType } />
                                         </div>
-                                        {/* <div className={`form-group`}>
-                                            <label>{translate('manage_warehouse.bill_management.status')}</label>
-                                            <SelectBox
-                                                id={`select-status-take-edit`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                value={status}
-                                                items={dataStatus}
-                                                onChange={this.handleStatusChange}    
-                                                multiple={false}
-                                            />
-                                        </div> */}
                                     </div>
                                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                         <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
@@ -670,6 +660,19 @@ class StockTakeEditForm extends Component {
                                             />
                                             <ErrorLabel content = { errorStock } />
                                         </div>
+                                        
+                                        <div className={`form-group`}>
+                                            <label>{translate('manage_warehouse.bill_management.status')}</label>
+                                            <SelectBox
+                                                id={`select-status-take-edit`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                value={status}
+                                                items={dataStatus}
+                                                onChange={this.handleStatusChange}    
+                                                multiple={false}
+                                            />
+                                        </div>
                                     </div>
                                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                         <div className="form-group">
@@ -679,6 +682,7 @@ class StockTakeEditForm extends Component {
                                     </div>
                                 </fieldset>
                             </div>
+                            { this.state.userId === this.state.creator &&
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('manage_warehouse.bill_management.list_saffs')}</legend>
@@ -740,6 +744,7 @@ class StockTakeEditForm extends Component {
                                 </div>
                             </fieldset>
                             </div>
+                            }
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manage_warehouse.bill_management.goods')}</legend>

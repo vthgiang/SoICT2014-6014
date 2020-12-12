@@ -12,6 +12,7 @@ import { RoleActions } from '../../../../super-admin/role/redux/actions';
 
 import { AssetCreateForm, AssetDetailForm, AssetEditForm, AssetImportForm } from './combinedContent';
 import qs from 'qs';
+import { getPropertyOfValue } from '../../../../../helpers/stringMethod';
 class AssetManagement extends Component {
     constructor(props) {
         super(props);
@@ -83,10 +84,9 @@ class AssetManagement extends Component {
 
     // Bắt sự kiện click xem thông tin tài sản
     handleView = async (value) => {
-        await this.setState(state => {
-            return {
-                currentRowView: value
-            }
+        console.log("giá trị lấy được", value)
+        await this.setState({
+            currentRowView: value
         });
         window.$('#modal-view-asset').modal('show');
     }
@@ -95,7 +95,7 @@ class AssetManagement extends Component {
     handleEdit = async (value) => {
         await this.setState(state => {
             return {
-                // ...state,
+                ...state,
                 currentRow: value
             }
         });
@@ -261,13 +261,11 @@ class AssetManagement extends Component {
                 let code = x.code;
                 let name = x.assetName;
                 let description = x.description;
-                let type = x.assetType && assettypelist.length && assettypelist.find(item => item._id === x.assetType) ? assettypelist.find(item => item._id === x.assetType).typeName : 'Asset Type is deleted';
+                let type = x.assetType && assettypelist.length && assettypelist.find(item => item._id === x.assetType) ? assettypelist.find(item => item._id === x.assetType).typeName : '';
                 let purchaseDate = this.formatDate(x.purchaseDate);
                 let disposalDate = this.formatDate(x.disposalDate);
                 let manager = x.managedBy && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).email : '';
-                let assigner = x.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.assignedToUser) ? userlist.find(item => item._id === x.assignedToUser).email : '') : ''
-                // let handoverFromDate = x.handoverFromDate ? this.formatDate(x.handoverFromDate) : '';
-                // let handoverToDate = x.handoverToDate ? this.formatDate(x.handoverToDate) : '';
+                let assigner = x.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.assignedToUser) ? userlist.find(item => item._id === x.assignedToUser).email : '') : '';
                 let status = x.status;
                 length = x.detailInfo && x.detailInfo.length;
                 let info = (length) ? (x.detailInfo.map((item, index) => {
@@ -290,8 +288,6 @@ class AssetManagement extends Component {
                     disposalDate: disposalDate,
                     manager: manager,
                     assigner: assigner,
-                    // handoverFromDate: handoverFromDate,
-                    // handoverToDate: handoverToDate,
                     status: status,
                     infoName: infoName,
                     value: value
@@ -377,17 +373,6 @@ class AssetManagement extends Component {
         return typeArr;
     }
 
-    // checkHasComponent = (name) => {
-    //     var { auth } = this.props;
-    //     var result = false;
-    //     if (auth) {
-    //         auth.components.forEach(component => {
-    //             if (component.name === name) result = true;
-    //         });
-    //     }
-    //     return result;
-    // }
-
     getDepartment = () => {
         let { department } = this.props;
         let listUnit = department && department.list
@@ -414,9 +399,10 @@ class AssetManagement extends Component {
         else if (group === 'machine') {
             return translate('asset.dashboard.machine')
         }
-        else {
+        else if (group === 'other') {
             return translate('asset.dashboard.other')
         }
+        else return null;
     }
 
     formatStatus = (status) => {
@@ -438,7 +424,7 @@ class AssetManagement extends Component {
             return translate('asset.general_information.disposal')
         }
         else {
-            return 'Deleted';
+            return '';
         }
     }
 
@@ -455,14 +441,13 @@ class AssetManagement extends Component {
 
     render() {
         const { assetsManager, assetType, translate, user, isActive, department } = this.props;
-        const { page, limit, currentRowView, status, currentRow, purchaseDate, disposalDate, managedBy, location, typeRegisterForUse, handoverUnit, handoverUser } = this.state;
+        const { page, limit, currentRowView, status, currentRow, purchaseDate, disposalDate, managedBy, location } = this.state;
         var lists = "", exportData;
         var userlist = user.list, departmentlist = department.list;
         var assettypelist = assetType.listAssetTypes;
         let typeArr = this.getAssetTypes();
         let dataSelectBox = this.getDepartment();
         let assetTypeName = this.state.assetType ? this.state.assetType : [];
-
         if (assetsManager.isLoading === false) {
             lists = assetsManager.listAssets;
         }
@@ -555,7 +540,7 @@ class AssetManagement extends Component {
                             <SelectMulti id={`multiSelectStatus1`} multiple="multiple"
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('asset.general_information.select_all_status') }}
                                 onChange={this.handleStatusChange}
-                                value={status}
+                                value={status ? status : []}
                                 items={[
                                     { value: "ready_to_use", text: translate('asset.general_information.ready_use') },
                                     { value: "in_use", text: translate('asset.general_information.using') },
@@ -703,11 +688,11 @@ class AssetManagement extends Component {
                                         <td>{x.code}</td>
                                         <td>{x.assetName}</td>
                                         <td>{this.convertGroupAsset(x.group)}</td>
-                                        <td>{x.assetType && x.assetType.length ? x.assetType.map((item, index) => { let suffix = index < x.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : 'Asset is deleted'}</td>
+                                        <td>{x.assetType && x.assetType.length ? x.assetType.map((item, index) => { let suffix = index < x.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : ''}</td>
                                         <td>{this.formatDate(x.purchaseDate)}</td>
-                                        <td>{x.managedBy && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).name : ''}</td>
-                                        <td>{x.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.assignedToUser) ? userlist.find(item => item._id === x.assignedToUser).name : '') : ''}</td>
-                                        <td>{x.assignedToOrganizationalUnit ? (departmentlist.length && departmentlist.find(item => item._id === x.assignedToOrganizationalUnit) ? departmentlist.find(item => item._id === x.assignedToOrganizationalUnit).name : 'Organizational Unit is deleted') : ''}</td>
+                                        <td>{getPropertyOfValue(x.managedBy, 'email', false, userlist)}</td>
+                                        <td>{getPropertyOfValue(x.assignedToUser, 'email', false, userlist)}</td>
+                                        <td>{getPropertyOfValue(x.assignedToOrganizationalUnit, 'name', false, departmentlist)}</td>
                                         <td>{this.formatStatus(x.status)}</td>
                                         <td>{this.formatDisposalDate(x.disposalDate, x.status)}</td>
                                         <td style={{ textAlign: "center" }}>
@@ -748,9 +733,9 @@ class AssetManagement extends Component {
                         group={currentRowView.group}
                         purchaseDate={currentRowView.purchaseDate}
                         warrantyExpirationDate={currentRowView.warrantyExpirationDate}
-                        managedBy={currentRowView.managedBy}
-                        assignedToUser={currentRowView.assignedToUser}
-                        assignedToOrganizationalUnit={currentRowView.assignedToOrganizationalUnit}
+                        managedBy={getPropertyOfValue(currentRowView.managedBy, '_id', true, userlist)}
+                        assignedToUser={getPropertyOfValue(currentRowView.assignedToUser, '_id', true, userlist)}
+                        assignedToOrganizationalUnit={getPropertyOfValue(currentRowView.assignedToOrganizationalUnit, '_id', true, departmentlist)}
                         handoverFromDate={currentRowView.handoverFromDate}
                         handoverToDate={currentRowView.handoverToDate}
                         location={currentRowView.location}
@@ -795,9 +780,9 @@ class AssetManagement extends Component {
                         group={currentRow.group}
                         purchaseDate={currentRow.purchaseDate}
                         warrantyExpirationDate={currentRow.warrantyExpirationDate}
-                        managedBy={currentRow.managedBy}
-                        assignedToUser={currentRow.assignedToUser}
-                        assignedToOrganizationalUnit={currentRow.assignedToOrganizationalUnit}
+                        managedBy={getPropertyOfValue(currentRow.managedBy, '_id', true, userlist)}
+                        assignedToUser={getPropertyOfValue(currentRow.assignedToUser, '_id', true, userlist)}
+                        assignedToOrganizationalUnit={getPropertyOfValue(currentRow.assignedToOrganizationalUnit, '_id', true, departmentlist)}
                         handoverFromDate={currentRow.handoverFromDate}
                         handoverToDate={currentRow.handoverToDate}
                         location={currentRow.location}
@@ -828,6 +813,8 @@ class AssetManagement extends Component {
                         incidentLogs={currentRow.incidentLogs}
                         archivedRecordNumber={currentRow.archivedRecordNumber}
                         files={currentRow.documents}
+
+                        page={page}
                     />
                 }
             </div>

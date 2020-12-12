@@ -83,6 +83,9 @@ import { taxs } from "../modules/production/order/tax/redux/reducers";
 import { quotes } from '../modules/production/order/quote/redux/reducers';
 import { discounts } from "../modules/production/order/discount/redux/reducers";
 import { serviceLevelAgreements } from "../modules/production/order/service-level-agreement/redux/reducers";
+import { businessDepartments } from "../modules/production/order/business-department/redux/reducers";
+import { adminDepartments } from "../modules/production/order/admin-department/redux/reducers";
+import { salesOrder } from "../modules/production/order/sales-order/redux/reducers";
 
 //plan
 import { plan } from "../modules/plan/redux/reducers";
@@ -196,6 +199,9 @@ const appReducer = combineReducers({
     quotes,
     discounts,
     serviceLevelAgreements,
+    businessDepartments,
+    adminDepartments,
+    salesOrder,
 
     //plane
     plan,

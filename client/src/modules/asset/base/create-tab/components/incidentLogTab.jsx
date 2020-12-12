@@ -59,7 +59,8 @@ class IncidentLogTab extends Component {
     handleEditIncident = async (data) => {
         const { incidentLogs } = this.state;
         incidentLogs[data.index] = data;
-        console.log('update', data);
+        data.reportedBy = data.reportedBy ? data.reportedBy : localStorage.getItem("userId");
+
         await this.setState({
             incidentLogs: incidentLogs,
         })
@@ -94,13 +95,13 @@ class IncidentLogTab extends Component {
     formatType = (type) => {
         const { translate } = this.props;
 
-        if (type === 'broken') {
+        if (type === '1') {
             return translate('asset.general_information.damaged');
         }
-        else if (type === 'lost') {
+        else if (type === '2') {
             return translate('asset.general_information.lost');
         }
-        else return 'Deleted';
+        else return '';
     }
 
     formatStatus = (status) => {
@@ -112,7 +113,7 @@ class IncidentLogTab extends Component {
         else if (status === '2') {
             return translate('asset.general_information.processed');
         }
-        else return 'Deleted';
+        else return '';
     }
 
     render() {
@@ -151,7 +152,7 @@ class IncidentLogTab extends Component {
                                     <tr key={index}>
                                         <td>{x.incidentCode}</td>
                                         <td>{this.formatType(x.type)}</td>
-                                        <td>{x.reportedBy ? (userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : 'User is deleted') : ''}</td>
+                                        <td>{x.reportedBy ? (userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : '') : ''}</td>
                                         <td>{x.dateOfIncident ? this.formatDate(x.dateOfIncident) : ''}</td>
                                         <td>{x.description}</td>
                                         <td>{this.formatStatus(x.statusIncident)}</td>

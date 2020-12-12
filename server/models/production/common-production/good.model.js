@@ -26,7 +26,7 @@ const GoodSchema = new Schema({
 
     type: {
         type: String,
-        enum: ["product", "material", "equipment", "asset"],
+        enum: ["product", "material", "equipment", "waste"],
         required: true
     },
 
@@ -89,8 +89,12 @@ const GoodSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'ManufacturingMill'
         },
-        productivity: Number,
-        personNumber: Number
+        productivity: {
+            type: Number
+        },
+        personNumber: {
+            type: Number
+        }
     }],
     // Module chưa hoàn thiện
     returnRules: [{

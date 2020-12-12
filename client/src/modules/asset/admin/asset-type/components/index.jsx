@@ -68,6 +68,28 @@ class AdministrationAssetTypes extends Component {
         })
     }
 
+    formatAssetTypeInformations = (informations) => {
+        let list = !informations ? '' : informations.reduce((value, cur) => {
+            if (!value) {
+                if (!cur) return value;
+                else return cur.nameField ? value + cur.nameField : value;
+            }
+            else return value + ', ' + cur.nameField
+        }, '');
+        return list;
+    }
+
+    getAssetTypeParentName = (parentId, data) => {
+        let name;
+        for (let i = 0; i < data.length; i++) {
+            if (String(parentId) === String(data[i].id)) {
+                name = data[i].typeName;
+                break;
+            }
+        }
+        return name;
+    }
+
     convertDataToExportData = (dataTree) => {
         let data = dataTree.map((item, index) => {
             let information = "";
@@ -80,7 +102,8 @@ class AdministrationAssetTypes extends Component {
                 code: item.typeNumber,
                 name: item.typeName,
                 description: item.description,
-                information: item.defaultInformation.length !== 0 ? information : "",
+                information: this.formatAssetTypeInformations(item.defaultInformation),
+                parent: this.getAssetTypeParentName(item.parent, dataTree)
             }
         })
         let exportData = {
@@ -96,6 +119,7 @@ class AdministrationAssetTypes extends Component {
                                 { key: "STT", value: "STT" },
                                 { key: "code", value: "Mã loại tài sản" },
                                 { key: "name", value: "Tên loại tài sản" },
+                                { key: "parent", value: "Tên loại tài sản cha" },
                                 { key: "description", value: "Mô tả" },
                                 { key: "information", value: "Thuộc tính mặc định" }
                             ],
@@ -109,18 +133,27 @@ class AdministrationAssetTypes extends Component {
         return exportData;
     }
 
+    //Kiểm tra mã id của tài sản cha có tồn tại
+    checkValidParentAsset = (data, id) => {
+        let check = data.filter(node => node._id === id);
+        if (check.length !== 0) return true;
+        else return false;
+    }
+
     render() {
         const { translate } = this.props;
         const { list } = this.props.assetType.administration.types;
         const { domainParent, currentDomain, deleteNode } = this.state;
 
         const dataTree = list.map(node => {
+            const result = this.checkValidParentAsset(list, node.parent);
+
             return {
                 ...node,
                 id: node._id,
                 text: node.typeName,
                 state: { "opened": true },
-                parent: node.parent ? node.parent.toString() : "#"
+                parent: !node.parent || !result ? '#' : node.parent.toString()
             }
         })
 

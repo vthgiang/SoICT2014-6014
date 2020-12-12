@@ -19,7 +19,7 @@ class QuoteCreatePayment extends Component {
     componentDidMount() {
         this.props.getDiscountForOrderValue();
         this.props.getCustomerPoint(this.props.customer);
-        this.getAmountAfterApplyTax();
+        // this.getAmountAfterApplyTax();
         // this.props.editCustomerPoint(this.props.customer, { point: 500 });
         //Lấy xu dựa vào customer Id
     }
@@ -30,11 +30,41 @@ class QuoteCreatePayment extends Component {
             return accumulator + currentValue.amountAfterTax;
         }, 0);
 
-        this.setState({ amountAfterApplyTax });
+        // this.setState({ amountAfterApplyTax });
+        return amountAfterApplyTax;
     };
 
-    applyDiscountForOrder = (amount, freeShipCost) => {
-        let { discountsOfOrderValue, coin } = this.props;
+    getDiscountsValueQuote = (amount) => {
+        let amountAfterApplyTax = amount;
+        let { discountsOfOrderValue } = this.props;
+
+        let discountForFormality = {
+            0: [],
+            1: [],
+            2: [],
+            3: [],
+            4: [],
+            5: [],
+        };
+
+        discountsOfOrderValue.forEach((element) => {
+            discountForFormality[element.formality].push(element);
+        });
+
+        if (discountForFormality[0].length) {
+            amount = amount - discountForFormality[0][0].discountedCash;
+        }
+        if (discountForFormality[1].length) {
+            amount = (amount * (100 - discountForFormality[1][0].discountedPercentage)) / 100;
+        }
+
+        amount = Math.round(amount * 100) / 100;
+        return amountAfterApplyTax - amount;
+    };
+
+    getPaymentAmount = (amount, freeShipCost) => {
+        const { setPaymentAmount } = this.props;
+        let { discountsOfOrderValue, coin, paymentAmount, shippingFee } = this.props;
 
         let discountForFormality = {
             0: [],
@@ -55,8 +85,12 @@ class QuoteCreatePayment extends Component {
             amount = (amount * (100 - discountForFormality[1][0].discountedPercentage)) / 100;
         }
 
+        if (shippingFee) {
+            amount = parseInt(amount) + parseInt(shippingFee);
+        }
+
         if (freeShipCost) {
-            amount = amount - freeShipCost;
+            amount = parseInt(amount) - parseInt(freeShipCost);
         }
 
         if (coin) {
@@ -65,7 +99,10 @@ class QuoteCreatePayment extends Component {
 
         amount = Math.round(amount * 100) / 100;
 
-        return amount;
+        //SET STATE paymentAmout để tính tổng tiền lưu vào DB
+        if (amount !== paymentAmount) {
+            setPaymentAmount(amount);
+        }
     };
 
     getFreeShipCost = () => {
@@ -105,7 +142,6 @@ class QuoteCreatePayment extends Component {
                 coinOfAll += discount.loyaltyCoin;
             }
         });
-        console.log("coinOfAll", coinOfAll);
         return coinOfAll;
     };
 
@@ -150,7 +186,6 @@ class QuoteCreatePayment extends Component {
 
     render() {
         let { listGoods, discountsOfOrderValue, discountsOfOrderValueChecked } = this.props;
-        const { listDiscountsByOrderValue } = this.props.discounts;
         const {
             handleDiscountsOfOrderValueChange,
             setDiscountsOfOrderValueChecked,
@@ -166,6 +201,8 @@ class QuoteCreatePayment extends Component {
             customerAddress,
             customerName,
             customerRepresent,
+            customerTaxNumber,
+            customerEmail,
             effectiveDate,
             expirationDate,
             code,
@@ -173,6 +210,8 @@ class QuoteCreatePayment extends Component {
             deliveryTime,
             note,
             coin,
+            paymentAmount,
+            enableFormSubmit,
         } = this.props;
 
         let allOfBonusGood = this.getBonusGoodOfAll();
@@ -184,8 +223,9 @@ class QuoteCreatePayment extends Component {
             customerCoin = this.props.customers.customerPoint.point;
         }
 
-        const { amountAfterApplyTax } = this.state;
-        let amountAfterApplyDiscountOfOrder = this.applyDiscountForOrder(amountAfterApplyTax, freeShipCost);
+        const amountAfterApplyTax = this.getAmountAfterApplyTax();
+        let discountsOfQuote = this.getDiscountsValueQuote(amountAfterApplyTax); // Chưa tính miễn phí vận chuyển và sử dụng xu
+        this.getPaymentAmount(amountAfterApplyTax, freeShipCost);
 
         return (
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -201,13 +241,38 @@ class QuoteCreatePayment extends Component {
                             <div style={{ fontWeight: 600 }}>{`${customerName} (${customerPhone})`} &ensp;</div>
                             <div>{customerAddress}</div>
                         </div>
-                        <div>
-                            <small className="shopping-address-represent">{customerRepresent}</small>
-                        </div>
-                        <div style={{ padding: "0px 20px" }}>
-                            <small>Ghi chú: &ensp;</small>
-                            <small style={{ color: "grey", fontStyle: "italic" }}>{note}</small>
-                        </div>
+                        {customerTaxNumber ? (
+                            <div className="shopping-customer-info-item">
+                                <small>Mã số thuế: &ensp;</small>
+                                <small className="shopping-customer-info-item-text">{customerTaxNumber}</small>
+                            </div>
+                        ) : (
+                            ""
+                        )}
+                        {customerRepresent ? (
+                            <div className="shopping-customer-info-item">
+                                <small>Người liên hệ: &ensp;</small>
+                                <small className="shopping-customer-info-item-text">{customerRepresent}</small>
+                            </div>
+                        ) : (
+                            ""
+                        )}
+                        {customerEmail ? (
+                            <div className="shopping-customer-info-item">
+                                <small>Email: &ensp;</small>
+                                <small className="shopping-customer-info-item-text">{customerEmail}</small>
+                            </div>
+                        ) : (
+                            ""
+                        )}
+                        {note ? (
+                            <div className="shopping-customer-info-item">
+                                <small>Ghi chú: </small>
+                                <small className="shopping-customer-info-item-text">{note}</small>
+                            </div>
+                        ) : (
+                            ""
+                        )}
                     </div>
 
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 shopping-quote-info">
@@ -353,7 +418,7 @@ class QuoteCreatePayment extends Component {
                         </div>
                         <div className="shoppe-shipping-content">
                             <div className="shopping-shipping-fee">
-                                <div> Phí giao hàng &ensp;</div>
+                                <div>Phí giao hàng &ensp;</div>
                                 <input type="number" value={shippingFee} placeholder="Phí giao hàng... (vnđ)" onChange={handleShippingFeeChange} />
                             </div>
                             <div className="shopping-shipping-time">
@@ -460,12 +525,10 @@ class QuoteCreatePayment extends Component {
                                 </div>
                             </div>
 
-                            {amountAfterApplyTax && amountAfterApplyDiscountOfOrder && amountAfterApplyTax > amountAfterApplyDiscountOfOrder ? (
+                            {discountsOfQuote > 0 ? ( //Tiền khuyến mãi toàn đơn là chưa tính freeship và trừ
                                 <div className="shopping-payment-element">
                                     <div className="shopping-payment-element-title">Khuyến mãi cho toàn đơn</div>
-                                    <div className="shopping-payment-element-value">
-                                        -{formatCurrency(amountAfterApplyTax - amountAfterApplyDiscountOfOrder - coin)}
-                                    </div>
+                                    <div className="shopping-payment-element-value">-{formatCurrency(discountsOfQuote)}</div>
                                 </div>
                             ) : (
                                 ""
@@ -497,12 +560,18 @@ class QuoteCreatePayment extends Component {
                             <div className="shopping-payment-element">
                                 <div className="shopping-payment-element-title"> Tổng tiền thanh toán:</div>
                                 <div className="shopping-payment-element-value" style={{ color: "#ee4d2d", fontSize: "20px" }}>
-                                    {amountAfterApplyDiscountOfOrder ? formatCurrency(amountAfterApplyDiscountOfOrder) : "0"}
+                                    {paymentAmount ? formatCurrency(paymentAmount) : "0"}
                                 </div>
                             </div>
                         </div>
                         <div className="shopping-payment-button">
-                            <button onClick={saveQuote}>Lưu báo giá</button>
+                            <button
+                                style={{ cursor: "pointer" }}
+                                className={`${enableFormSubmit ? "" : "disable-onclick-prevent"}`}
+                                onClick={saveQuote}
+                            >
+                                Lưu báo giá
+                            </button>
                         </div>
                     </div>
                 </fieldset>

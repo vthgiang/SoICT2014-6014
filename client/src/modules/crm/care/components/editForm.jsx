@@ -74,6 +74,7 @@ class EditCareForm extends Component {
 
             this.setState({
                 dataStatus: this.DATA_STATUS.AVAILABLE,
+                quillValueDefault: care.description ? care.description : '',
                 careEditting,
             })
             return false;
@@ -277,7 +278,7 @@ class EditCareForm extends Component {
 
     render() {
         const { crm, translate } = this.props;
-        const { careEditting, listCustomers, listCareTypes, employees } = this.state;
+        const { careEditting, listCustomers, listCareTypes, employees, quillValueDefault } = this.state;
 
         //validate error message
         const { caregiverError, customerError, nameError, descriptionError, careTypeError, statusError, startDateError } = this.state;
@@ -346,7 +347,7 @@ class EditCareForm extends Component {
                             <QuillEditor
                                 id={'editCare'}
                                 getTextData={this.handleChangeDescription}
-                                value={careEditting.description}
+                                quillValueDefault={quillValueDefault}
                             />
                             <ErrorLabel content={descriptionError} />
                         </div>

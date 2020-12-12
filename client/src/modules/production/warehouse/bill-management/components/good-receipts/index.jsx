@@ -7,6 +7,7 @@ import BillDetailForm from '../genaral/billDetailForm';
 import GoodReceiptEditForm from './goodReceiptEditForm';
 import GoodReceiptCreateForm from './goodReceiptCreateForm';
 import { BillActions } from '../../redux/actions';
+import QualityControlForm from '../genaral/quatityControlForm';
 
 class ReceiptManagement extends Component {
     constructor(props) {
@@ -29,6 +30,29 @@ class ReceiptManagement extends Component {
 
         window.$('#modal-edit-bill-receipt').modal('show');
     }
+
+    findIndexOfStaff = (array, id) => {
+        let result = -1;
+        array.forEach((element, index) => {
+            if (element.staff._id === id) {
+                result = index;
+            }
+        });
+        return result;
+    }
+
+    handleFinishedQualityControlStaff = async (bill) => {
+        const userId = localStorage.getItem("userId");
+        let index = this.findIndexOfStaff(bill.qualityControlStaffs, userId);
+        let qcStatus = bill.qualityControlStaffs[index].status ? bill.qualityControlStaffs.status : "";
+        let qcContent = bill.qualityControlStaffs[index].content ? bill.qualityControlStaffs[index].content : "";
+        await this.setState({
+            currentControl: bill,
+            qcStatus: qcStatus,
+            qcContent: qcContent
+        })
+        window.$('#modal-quality-control-bill').modal('show');
+    }
     
     render() {
         const { translate, bills, stocks, user} = this.props;
@@ -40,6 +64,15 @@ class ReceiptManagement extends Component {
             <div id="bill-good-receipts">
                 <div className="box-body qlcv">
                     <GoodReceiptCreateForm group={group} />
+                    {
+                        this.state.currentControl &&
+                        <QualityControlForm
+                            billId={this.state.currentControl._id}
+                            code={this.state.currentControl.code}
+                            status={this.state.qcStatus}
+                            content={this.state.qcContent}
+                        />
+                    }
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('manage_warehouse.bill_management.stock')}</label>
@@ -159,12 +192,14 @@ class ReceiptManagement extends Component {
                             responsibles={currentRow.responsibles ? currentRow.responsibles : []}
                             accountables={currentRow.accountables ? currentRow.accountables : []}
                             supplier={currentRow.supplier ? currentRow.supplier._id : null}
+                            manufacturingMillId={currentRow.manufacturingMill ? currentRow.manufacturingMill._id : null}
                             name={currentRow.receiver ? currentRow.receiver.name : ''}
                             phone={currentRow.receiver ? currentRow.receiver.phone : ''}
                             email={currentRow.receiver ? currentRow.receiver.email : ''}
                             address={currentRow.receiver ? currentRow.receiver.address : ''}
                             description={currentRow.description}
                             listGood={currentRow.goods}
+                            creator={currentRow.creator ? currentRow.creator._id : ''}
                         />
                     }
 
@@ -215,7 +250,8 @@ class ReceiptManagement extends Component {
                                             <td>{x.approvers ? x.approvers.map((a, key) => { return <p key={key}>{a.approver.name}</p>}) : "approver is deleted"}</td>
                                             <td>{this.props.formatDate(x.updatedAt)}</td>
                                             <td>{x.fromStock ? x.fromStock.name : "Stock is deleted"}</td>
-                                            <td>{x.supplier ? x.supplier.name : 'Supplier is deleted'}</td>
+                                            { x.type === '1' && <td>{x.supplier ? x.supplier.name : 'Supplier is deleted'}</td> }
+                                            { x.type === '2' && <td>{x.manufacturingMill ? x.manufacturingMill.name : 'manufacturingMill is deleted'}</td>}
                                             <td>{x.description}</td>
                                             <td style={{textAlign: 'center'}}>
                                                 <a onClick={() => this.props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>
@@ -239,7 +275,7 @@ class ReceiptManagement extends Component {
                                                         content={translate('manage_warehouse.bill_management.staff_true') + " " + x.code}
                                                         name="check_circle"
                                                         className="text-green"
-                                                        func={() => this.props.handleFinishedQualityControlStaff(x)}
+                                                        func={() => this.handleFinishedQualityControlStaff(x)}
                                                     />
                                                 }
                                             </td>

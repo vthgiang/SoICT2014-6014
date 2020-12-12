@@ -22,13 +22,13 @@ class DepartmentCreateWithParent extends Component {
     }
 
     handleChangeDean = (e, index) => {
-        let {deans} = this.state;
+        let { deans } = this.state;
         deans[index] = e.target.value;
         this.setState({ deans });
     }
 
     handleRemoveDean = (index) => {
-        let {deans} = this.state;
+        let { deans } = this.state;
         deans.splice(index, 1);
         this.setState({ deans });
     }
@@ -40,13 +40,13 @@ class DepartmentCreateWithParent extends Component {
     }
 
     handleChangeViceDean = (e, index) => {
-        let {viceDeans} = this.state;
+        let { viceDeans } = this.state;
         viceDeans[index] = e.target.value;
         this.setState({ viceDeans });
     }
 
     handleRemoveViceDean = (index) => {
-        let {viceDeans} = this.state;
+        let { viceDeans } = this.state;
         viceDeans.splice(index, 1);
         this.setState({ viceDeans });
     }
@@ -58,13 +58,13 @@ class DepartmentCreateWithParent extends Component {
     }
 
     handleChangeEmployee = (e, index) => {
-        let {employees} = this.state;
+        let { employees } = this.state;
         employees[index] = e.target.value;
         this.setState({ employees });
     }
 
     handleRemoveEmployee = (index) => {
-        let {employees} = this.state;
+        let { employees } = this.state;
         employees.splice(index, 1);
         this.setState({ employees });
     }
@@ -91,9 +91,9 @@ class DepartmentCreateWithParent extends Component {
      * Validate form
     */
     isFormValidated = () => {
-        let {departmentName, departmentDescription} = this.state;
-        let {translate} = this.props;
-        if(!ValidationHelper.validateName(translate, departmentName).status || !ValidationHelper.validateDescription(translate, departmentDescription).status) return false;
+        let { departmentName, departmentDescription } = this.state;
+        let { translate } = this.props;
+        if (!ValidationHelper.validateName(translate, departmentName).status || !ValidationHelper.validateDescription(translate, departmentDescription).status) return false;
         return true;
     }
 
@@ -120,20 +120,20 @@ class DepartmentCreateWithParent extends Component {
     }
 
     handleName = (e) => {
-        let {value} = e.target;
-        let {translate} = this.props;
-        let {message} = ValidationHelper.validateName(translate, value, 4, 255);
-        this.setState({ 
+        let { value } = e.target;
+        let { translate } = this.props;
+        let { message } = ValidationHelper.validateName(translate, value, 4, 255);
+        this.setState({
             departmentName: value,
             departmentNameError: message
         });
     }
 
     handleDescription = (e) => {
-        let {value} = e.target;
-        let {translate} = this.props;
-        let {message} = ValidationHelper.validateDescription(translate, value);
-        this.setState({ 
+        let { value } = e.target;
+        let { translate } = this.props;
+        let { message } = ValidationHelper.validateDescription(translate, value);
+        this.setState({
             departmentDescription: value,
             departmentDescriptionError: message
         });
@@ -185,7 +185,7 @@ class DepartmentCreateWithParent extends Component {
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={[
-                                        { text: "Không có phòng ban cha" }, ...department.list.map(department => { return { value: department ? department._id : null, text: department ? department.name : "Organizational unit is deleted" } })
+                                        { text: "Không có phòng ban cha" }, ...department.list.map(department => { return { value: department ? department._id : null, text: department ? department.name : "" } })
                                     ]}
                                     onChange={this.handleParent}
                                     value={departmentParent}

@@ -31,6 +31,8 @@ class ViewTaskTemplate extends Component {
     }
 
     render() {
+
+        console.log('\n\n=======VIEW=========\n\n');
         const { translate, department } = this.props;
         const { isProcess, data, taskTemplate, listUser } = this.props;// data là props dữ liệu của process được chọn nếu đây là process
         const { showMore } = this.state;
@@ -97,13 +99,14 @@ class ViewTaskTemplate extends Component {
                                 <strong>{translate('task_template.parameters')}:</strong>
                             </div>
                             <ul>
-                                <li><span style={{ fontWeight: 600 }}>overdueDate</span> - Thời gian quá hạn (ngày)</li>
-                                <li><span style={{ fontWeight: 600 }}>dayUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</li>
-                                <li><span style={{ fontWeight: 600 }}>totalDay</span> - Thời gian từ ngày bắt đầu đến ngày kết thúc công việc (ngày)</li>
-                                {/* <li><span style={{ fontWeight: 600 }}>averageActionRating</span> - Trung bình cộng điểm đánh giá hoạt động (1-10)</li> */}
-                                <li><span style={{ fontWeight: 600 }}>numberOfFailedAction</span> - Số hoạt động không đạt (rating &lt; 5)</li>
-                                <li><span style={{ fontWeight: 600 }}>numberOfPassedAction</span> - Số hoạt động đạt (rating &ge; 5)</li>
+                                <li><span style={{ fontWeight: 600 }}>daysOverdue</span> - Thời gian quá hạn (ngày)</li>
+                                <li><span style={{ fontWeight: 600 }}>daysUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</li>
+                                <li><span style={{ fontWeight: 600 }}>totalDays</span> - Thời gian từ ngày bắt đầu đến ngày kết thúc công việc (ngày)</li>
+                                <li><span style={{ fontWeight: 600 }}>averageActionRating</span> - Trung bình cộng điểm đánh giá hoạt động (1-10)</li>
+                                <li><span style={{ fontWeight: 600 }}>numberOfFailedActions</span> - Số hoạt động không đạt (rating &lt; 5)</li>
+                                <li><span style={{ fontWeight: 600 }}>numberOfPassedActions</span> - Số hoạt động đạt (rating &ge; 5)</li>
                                 <li><span style={{ fontWeight: 600 }}>progress</span> - % Tiến độ công việc (0-100)</li>
+                                <li><span style={{ fontWeight: 600 }}>p1, p2,...</span> - Thông tin công việc kiểu số có trong mẫu</li>
                             </ul>
                         </div>
                     </div>
@@ -189,17 +192,17 @@ class ViewTaskTemplate extends Component {
 
                 <div className="row row-equal-height">
                     <div className={`${isProcess ? "col-lg-12 col-sm-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }} >
-                        <div className="description-box">
+                        <div className="description-box" style={{ height: "100%" }}>
                             <h4>
                                 {translate('task_template.activity_list')}
                             </h4>
 
                             {/**Các hoạt động mẫu công việc */}
-                            <div style={{ padding: '5px 30px' }}>
-                                {
-                                    (!taskTemplate?.taskActions || taskTemplate?.taskActions.length === 0) ?
-                                        <div><strong>{translate('task_template.no_data')}</strong></div> :
-                                        taskTemplate?.taskActions.map((item, index, array) =>
+                            {
+                                (!taskTemplate?.taskActions || taskTemplate?.taskActions.length === 0) ?
+                                    <strong>{translate('task_template.no_data')}</strong> :
+                                    taskTemplate?.taskActions.map((item, index, array) =>
+                                        <div style={{ padding: '5px 30px' }}>
                                             <div className="task-item" key={index}>
                                                 <p>
                                                     <b className="number">{index + 1}</b>
@@ -212,13 +215,13 @@ class ViewTaskTemplate extends Component {
                                                 </p>
                                                 <div>{parse(item.description)}</div>
                                             </div>
-                                        )
-                                }
-                            </div>
+                                        </div>
+                                    )
+                            }
                         </div>
                     </div>
                     <div className={`${isProcess ? "col-lg-12 col-sm-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }}>
-                        <div className="description-box">
+                        <div className="description-box" style={{ height: "100%" }}>
                             <h4>
                                 {translate('task_template.information_list')}
                             </h4>
@@ -227,7 +230,7 @@ class ViewTaskTemplate extends Component {
                             <div>
                                 {
                                     (!taskTemplate?.taskInformations || taskTemplate?.taskInformations.length === 0) ?
-                                        <div><strong>{translate('task_template.no_data')}</strong></div> :
+                                        <strong>{translate('task_template.no_data')}</strong> :
                                         taskTemplate?.taskInformations.map((item, index) =>
                                             <div key={index}>
                                                 <strong>

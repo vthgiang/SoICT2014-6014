@@ -31,6 +31,26 @@ export function incidentManager(state = initState, action) {
                 error: action.error
             };
 
+        case IncidentConstants.UPDATE_INCIDENT_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            };
+
+        case IncidentConstants.UPDATE_INCIDENT_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                incidentList: state.incidentList.map(obj=>(obj._id === action.payload._id)?action.payload:obj),
+            }
+
+        case IncidentConstants.UPDATE_INCIDENT_FAILURE:
+            return {
+                ...state,
+                isLoading: false,
+                error: action.error
+            };
+        
         default:
             return state
     }

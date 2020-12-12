@@ -41,12 +41,16 @@ class QuoteCreateInfo extends Component {
             customerAddress,
             customerPhone,
             customerRepresent,
+            customerTaxNumber,
+            customerEmail,
             effectiveDate,
             expirationDate,
             dateError,
             isUseForeignCurrency,
             foreignCurrency,
         } = this.props;
+
+        let { customerError, customerEmailError, customerPhoneError, customerAddressError, effectiveDateError, expirationDateError } = this.props;
 
         const {
             handleCustomerChange,
@@ -59,6 +63,7 @@ class QuoteCreateInfo extends Component {
             handleUseForeignCurrencyChange,
             handleRatioOfCurrencyChange,
             handleSymbolOfForreignCurrencyChange,
+            handleCustomerEmailChange,
         } = this.props;
         return (
             <React.Fragment>
@@ -66,56 +71,85 @@ class QuoteCreateInfo extends Component {
                     <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8" style={{ padding: 10, height: "100%" }}>
                         <fieldset className="scheduler-border" style={{ height: "100%" }}>
                             <legend className="scheduler-border">Thông tin chung</legend>
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 0 }}>
+                                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                    <div className={`form-group ${!customerError ? "" : "has-error"}`}>
+                                        <label>
+                                            Khách hàng
+                                            <span className="attention"> * </span>
+                                        </label>
+                                        <SelectBox
+                                            id={`select-quote-customer`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={customer}
+                                            items={this.getCustomerOptions()}
+                                            onChange={handleCustomerChange}
+                                            multiple={false}
+                                        />
+                                        <ErrorLabel content={customerError} />
+                                    </div>
+                                </div>
+                                <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+                                    <div className="form-group">
+                                        <label>
+                                            Tên khách hàng <span className="attention"> </span>
+                                        </label>
+                                        <input type="text" className="form-control" value={customerName} disabled={true} />
+                                    </div>
+                                </div>
+                            </div>
                             <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                <div className="form-group">
+                                <div className={`form-group ${!customerEmailError ? "" : "has-error"}`}>
                                     <label>
-                                        Khách hàng
+                                        email
                                         <span className="attention"> * </span>
                                     </label>
-                                    <SelectBox
-                                        id={`select-quote-customer`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={customer}
-                                        items={this.getCustomerOptions()}
-                                        onChange={handleCustomerChange}
-                                        multiple={false}
-                                    />
+                                    <input type="text" className="form-control" value={customerEmail} onChange={handleCustomerEmailChange} />
+                                    <ErrorLabel content={customerEmailError} />
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
                                 <div className="form-group">
                                     <label>
-                                        Tên khách hàng <span className="attention"> </span>
+                                        Mã số thuế <span className="attention"> </span>
                                     </label>
-                                    <input type="text" className="form-control" value={customerName} disabled={true} />
+                                    <input type="text" className="form-control" value={customerTaxNumber} disabled={true} />
                                 </div>
                             </div>
-
-                            <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                <div className="form-group">
-                                    <label>
-                                        Số điện thoại
-                                        <span className="attention"> * </span>
-                                    </label>
-                                    <input type="text" className="form-control" value={customerPhone} onChange={handleCustomerPhoneChange} />
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 0 }}>
+                                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                    <div className={`form-group ${!customerPhoneError ? "" : "has-error"}`}>
+                                        <label>
+                                            Số điện thoại
+                                            <span className="attention"> * </span>
+                                        </label>
+                                        <input type="number" className="form-control" value={customerPhone} onChange={handleCustomerPhoneChange} />
+                                        <ErrorLabel content={customerPhoneError} />
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-                                <div className="form-group">
-                                    <label>
-                                        Người liên hệ <span className="attention"> </span>
-                                    </label>
-                                    <input type="text" className="form-control" value={customerRepresent} onChange={handleCustomerRepresentChange} />
+                                <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+                                    <div className="form-group">
+                                        <label>
+                                            Người liên hệ <span className="attention"> </span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            value={customerRepresent}
+                                            onChange={handleCustomerRepresentChange}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <div className="form-group">
+                                <div className={`form-group ${!customerAddressError ? "" : "has-error"}`}>
                                     <label>
                                         Địa chỉ nhận hàng
-                                        <span className="attention">* </span>
+                                        <span className="attention"> * </span>
                                     </label>
                                     <textarea type="text" className="form-control" value={customerAddress} onChange={handleCustomerAddressChange} />
+                                    <ErrorLabel content={customerAddressError} />
                                 </div>
                             </div>
 
@@ -138,28 +172,34 @@ class QuoteCreateInfo extends Component {
                                     Mã báo giá
                                     <span className="attention"> * </span>
                                 </label>
-                                <input type="text" className="form-control" value={code} disabled="true" />
+                                <input type="text" className="form-control" value={code} disabled={true} />
                             </div>
-                            <div className={`form-group ${!dateError ? "" : "has-error"}`}>
-                                <label>Ngày báo giá</label>
+                            <div className={`form-group ${!effectiveDateError ? "" : "has-error"}`}>
+                                <label>
+                                    Ngày báo giá
+                                    <span className="attention"> * </span>
+                                </label>
                                 <DatePicker
                                     id="date_picker_create_discount_effectiveDate"
                                     value={effectiveDate}
                                     onChange={handleChangeEffectiveDate}
                                     disabled={false}
                                 />
-                                <ErrorLabel content={dateError} />
+                                <ErrorLabel content={effectiveDateError} />
                             </div>
 
-                            <div className={`form-group ${!dateError ? "" : "has-error"}`}>
-                                <label>Hiệu lực đến</label>
+                            <div className={`form-group ${!expirationDateError ? "" : "has-error"}`}>
+                                <label>
+                                    Hiệu lực đến
+                                    <span className="attention"> * </span>
+                                </label>
                                 <DatePicker
                                     id="date_picker_create_discount_expirationDate"
                                     value={expirationDate}
                                     onChange={handleChangeExpirationDate}
                                     disabled={false}
                                 />
-                                <ErrorLabel content={dateError} />
+                                <ErrorLabel content={expirationDateError} />
                             </div>
 
                             <div className="form-group ">
@@ -172,7 +212,7 @@ class QuoteCreateInfo extends Component {
                                     onChange={handleUseForeignCurrencyChange}
                                     style={{ minWidth: "20px" }}
                                 />
-                                <label className={`form-check-label`} for={`checkbox-use-foreign-currency`} style={{ fontWeight: 500 }}>
+                                <label className={`form-check-label`} htmlFor={`checkbox-use-foreign-currency`} style={{ fontWeight: 500 }}>
                                     Sử dụng ngoại tệ
                                 </label>
                             </div>

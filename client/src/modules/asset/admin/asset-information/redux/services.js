@@ -1,6 +1,4 @@
-import {
-    sendRequest
-} from '../../../../../helpers/requestHelper';
+import {sendRequest} from "../../../../../helpers/requestHelper";
 
 export const AssetService = {
     getAll,
@@ -8,62 +6,72 @@ export const AssetService = {
     updateInformationAsset,
     deleteAsset,
     getListBuildingAsTree,
-}
+};
 
 /**
  * Lấy danh sách tài sản
  * @param {*} data : dữ liệu key tìm kiếm
  */
 function getAll(data) {
-    return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/asset/assets`,
-        method: 'GET',
-        params: {
-            code: data ? data.code : data,
-            assetName: data ? data.assetName : data,
-            status: data ? data.status : data,
-            group: data ? data.group : data,
-            assetType: data ? data.assetType : data,
-            purchaseDate: data ? data.purchaseDate : data,
-            disposalDate: data ? data.disposalDate : data,
-            handoverUnit: data ? data.handoverUnit : data,
-            handoverUser: data ? data.handoverUser : data,
-            typeRegisterForUse: data ? data.typeRegisterForUse : data,
-            page: data ? data.page : data,
-            limit: data ? data.limit : data,
-            managedBy: data ? data.managedBy : data,
-            location: data ? data.location : data,
-            currentRole: data ? data.currentRole : data,
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/asset/assets`,
+            method: "GET",
+            params: {
+                code: data ? data.code : data,
+                assetName: data ? data.assetName : data,
+                status: data ? data.status : data,
+                group: data ? data.group : data,
+                assetType: data ? data.assetType : data,
+                purchaseDate: data ? data.purchaseDate : data,
+                disposalDate: data ? data.disposalDate : data,
+                handoverUnit: data ? data.handoverUnit : data,
+                handoverUser: data ? data.handoverUser : data,
+                typeRegisterForUse: data ? data.typeRegisterForUse : data,
+                page: data ? data.page : data,
+                limit: data ? data.limit : data,
+                managedBy: data ? data.managedBy : data,
+                location: data ? data.location : data,
+                currentRole: data ? data.currentRole : data,
 
-            startDepreciation: data ? data.startDepreciation : data,
-            depreciationType: data ? data.depreciationType : data,
+                startDepreciation: data ? data.startDepreciation : data,
+                depreciationType: data ? data.depreciationType : data,
 
-            maintainanceCode: data ? data.maintainanceCode : data,
-            maintainCreateDate: data ? data.maintainCreateDate : data,
-            maintainStatus: data ? data.maintainStatus : data,
-            maintainType: data ? data.maintainType : data,
+                maintainanceCode: data ? data.maintainanceCode : data,
+                maintainCreateDate: data ? data.maintainCreateDate : data,
+                maintainStatus: data ? data.maintainStatus : data,
+                maintainType: data ? data.maintainType : data,
 
-            incidentCode: data ? data.incidentCode : data,
-            incidentStatus: data ? data.incidentStatus : data,
-            incidentType: data ? data.incidentType : data,
+                incidentCode: data ? data.incidentCode : data,
+                incidentStatus: data ? data.incidentStatus : data,
+                incidentType: data ? data.incidentType : data,
 
-            // hình thức lấy danh sách tài sản (bình thường, tài sản có thông tin khấu hao, v.v.)
-            getType: data ? data.getType : undefined
-        }
-    }, false, true, 'asset.asset_info');
+                // hình thức lấy danh sách tài sản (bình thường, tài sản có thông tin khấu hao, v.v.)
+                getType: data ? data.getType : undefined,
+            },
+        },
+        false,
+        true,
+        "asset.asset_info"
+    );
 }
 
 /**
  * Lấy danh sách mặt bằng dạng cây
  */
 function getListBuildingAsTree() {
-    return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/asset/assets`,
-        method: 'GET',
-        params: {
-            type: "get-building-as-tree"
-        }
-    }, false, true, 'asset.asset_info');
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/asset/assets`,
+            method: "GET",
+            params: {
+                type: "get-building-as-tree",
+            },
+        },
+        false,
+        true,
+        "asset.asset_info"
+    );
 }
 
 /**
@@ -71,11 +79,16 @@ function getListBuildingAsTree() {
  * @param {*} data : dữ liệu thông tin tài sản cần tạo
  */
 function addNewAsset(data) {
-    return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/asset/assets`,
-        method: 'POST',
-        data: data,
-    }, true, true, 'asset.asset_info');
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/asset/assets`,
+            method: "POST",
+            data: data,
+        },
+        true,
+        true,
+        "asset.asset_info"
+    );
 }
 
 /**
@@ -84,11 +97,16 @@ function addNewAsset(data) {
  * @param {*} data :dữ liệu chỉnh sửa thông tin tài sản
  */
 function updateInformationAsset(id, data) {
-    return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/asset/assets/${id}`,
-        method: 'PATCH',
-        data: data,
-    }, true, true, 'asset.asset_info');
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/asset/assets/${id}`,
+            method: "PATCH",
+            data,
+        },
+        true,
+        true,
+        "asset.asset_info"
+    );
 }
 
 /**
@@ -96,8 +114,13 @@ function updateInformationAsset(id, data) {
  * @id : id thông tin tài sản cần xoá
  */
 function deleteAsset(id) {
-    return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/asset/assets/${id}`,
-        method: 'DELETE',
-    }, true, true, 'asset.asset_info');
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/asset/assets/${id}`,
+            method: "DELETE",
+        },
+        true,
+        true,
+        "asset.asset_info"
+    );
 }

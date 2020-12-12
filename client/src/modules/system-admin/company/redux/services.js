@@ -14,6 +14,8 @@ export const CompanyServices = {
     getImportConfiguration,
     createImportConfiguration,
     editImportConfiguration,
+    uploadOrganizationalUnitImage,
+    getCompanyInformation,
 };
 
 /**
@@ -138,4 +140,20 @@ function editImportConfiguration(data) {
         method: 'PATCH',
         data,
     }, true, true, 'system_admin.company');
+}
+
+function uploadOrganizationalUnitImage(data) {
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/system-admin/company/organizationalUnitImage`,
+        method: 'PATCH',
+        data: data,
+    }, true, true, 'super_admin.organization_unit');
+}
+
+function getCompanyInformation(data) {
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/system-admin/company/organizationalUnitImage`,
+        method: 'GET',
+        data: data,
+    }, false, true, 'super_admin.organization_unit');
 }

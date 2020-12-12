@@ -113,7 +113,7 @@ class EditTaskTemplate extends Component {
                 // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
                 defaultUnit = user.organizationalUnitsOfUser[0]
             }
-            this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
+            // this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
             return false;
         }
 
@@ -164,7 +164,7 @@ class EditTaskTemplate extends Component {
                     };
                 });
 
-                this.props.getChildrenOfOrganizationalUnits(defaultUnit._id);
+                // this.props.getChildrenOfOrganizationalUnits(defaultUnit._id);
                 return false; // Sẽ cập nhật lại state nên không cần render
             }
         }
@@ -285,7 +285,7 @@ class EditTaskTemplate extends Component {
                 // Khi đổi department, cần lấy lại dữ liệu cho các selectbox (ai được xem, các vai trò)
                 let dept = department.departmentsThatUserIsDean.find(item => item._id === singleValue);
                 if (dept) {
-                    this.props.getChildrenOfOrganizationalUnits(singleValue);
+                    // this.props.getChildrenOfOrganizationalUnits(singleValue);
                     this.props.getRoleSameDepartment(dept.dean);
                 }
             }
@@ -319,6 +319,7 @@ class EditTaskTemplate extends Component {
     }
 
     handleChangeCollaboratedWithOrganizationalUnits = (value) => {
+        console.log(value);
         this.setState(state => {
             return {
                 ...state,
@@ -333,6 +334,7 @@ class EditTaskTemplate extends Component {
     }
 
     handleTaskTemplateRead = (value) => {
+        console.log(value);
 
         this.validateTaskTemplateRead(value, true);
     }
@@ -430,6 +432,8 @@ class EditTaskTemplate extends Component {
     }
 
     render() {
+
+        console.log('\n\n=======EDIT=========\n\n');
         var units, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsDean, listRoles = [];
         var { editingTemplate, id, showMore } = this.state;
 
@@ -464,17 +468,17 @@ class EditTaskTemplate extends Component {
         if (user.usercompanys) usercompanys = user.usercompanys;
         if (user.userdepartments) userdepartments = user.userdepartments;
 
-        var usersOfChildrenOrganizationalUnit;
-        if (user && user.usersOfChildrenOrganizationalUnit) {
-            usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
-        }
+        // var usersOfChildrenOrganizationalUnit;
+        // if (user && user.usersOfChildrenOrganizationalUnit) {
+        //     usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
+        // }
         var usersInUnitsOfCompany;
         if (user && user.usersInUnitsOfCompany) {
             usersInUnitsOfCompany = user.usersInUnitsOfCompany;
         }
 
         var allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
-        let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
+        // let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
 
         console.log("editting tasktemplate action: ", editingTemplate.taskActions, this.state.showMore)
 
@@ -483,6 +487,14 @@ class EditTaskTemplate extends Component {
                 {/**Form chứa thông tin của mẫu công việc đang sửa */}
                 <div className="row">
                     <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
+                        {/**Tên mẫu công việc này */}
+                        <div className={`form-group ${this.state.editingTemplate.errorOnName === undefined ? "" : "has-error"}`} >
+                            <label className="control-label">{translate('task_template.tasktemplate_name')} <span style={{ color: "red" }}>*</span></label>
+                            <input type="Name" className="form-control" placeholder={translate('task_template.tasktemplate_name')} value={editingTemplate.name} onChange={this.handleTaskTemplateName} />
+                            <ErrorLabel content={this.state.editingTemplate.errorOnName} />
+                        </div>
+
+
                         {/**Đơn vị của mẫu công việc */}
                         <div className={`form-group ${editingTemplate.errorOnUnit === undefined ? "" : "has-error"}`} >
                             <label className="control-label">{translate('task_template.unit')} <span style={{ color: "red" }}>*</span></label>
@@ -524,6 +536,8 @@ class EditTaskTemplate extends Component {
                             </div>
                         }
                     </div>
+
+
                     {
                         !isProcess &&
                         <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
@@ -539,7 +553,7 @@ class EditTaskTemplate extends Component {
                                             listRoles.map(x => { return { value: x._id, text: x.name } })
                                         }
                                         onChange={this.handleTaskTemplateRead}
-                                        value={editingTemplate.readByEmployees.map(item => item._id)}
+                                        value={editingTemplate.readByEmployees}
                                         multiple={true}
                                         options={{ placeholder: `${translate('task_template.permission_view')}` }}
                                     />
@@ -549,18 +563,7 @@ class EditTaskTemplate extends Component {
                         </div>
                     }
 
-                </div>
-
-                <div className="row">
                     <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
-
-                        {/**Tên mẫu công việc này */}
-                        <div className={`form-group ${this.state.editingTemplate.errorOnName === undefined ? "" : "has-error"}`} >
-                            <label className="control-label">{translate('task_template.tasktemplate_name')} <span style={{ color: "red" }}>*</span></label>
-                            <input type="Name" className="form-control" placeholder={translate('task_template.tasktemplate_name')} value={editingTemplate.name} onChange={this.handleTaskTemplateName} />
-                            <ErrorLabel content={this.state.editingTemplate.errorOnName} />
-                        </div>
-
                         {/**Độ ưu tiên mẫu công việc này */}
                         <div className="form-group" >
                             <label className="control-label">{translate('task_template.priority')}</label>
@@ -581,7 +584,10 @@ class EditTaskTemplate extends Component {
                             {/* <ErrorLabel content={this.state.editingTemplate.errorOnDescription} /> */}
                         </div>
                     </div>
+
                 </div>
+
+
 
                 <div className="row">
                     <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
@@ -596,7 +602,7 @@ class EditTaskTemplate extends Component {
                                     style={{ width: "100%" }}
                                     items={allUnitsMember}
                                     onChange={this.handleTaskTemplateResponsible}
-                                    value={editingTemplate.responsibleEmployees.map(item => item._id)}
+                                    value={editingTemplate.responsibleEmployees}
                                     multiple={true}
                                     options={{ placeholder: `${translate('task_template.performer')}` }}
                                 />
@@ -613,7 +619,7 @@ class EditTaskTemplate extends Component {
                                     style={{ width: "100%" }}
                                     items={allUnitsMember}
                                     onChange={this.handleTaskTemplateAccountable}
-                                    value={editingTemplate.accountableEmployees.map(item => item._id)}
+                                    value={editingTemplate.accountableEmployees}
                                     multiple={true}
                                     options={{ placeholder: `${translate('task_template.approver')}` }}
                                 />
@@ -629,7 +635,7 @@ class EditTaskTemplate extends Component {
                                     style={{ width: "100%" }}
                                     items={allUnitsMember}
                                     onChange={this.handleTaskTemplateConsult}
-                                    value={editingTemplate.consultedEmployees.map(item => item._id)}
+                                    value={editingTemplate.consultedEmployees}
                                     multiple={true}
                                     options={{ placeholder: `${translate('task_template.consultant')}` }}
                                 />
@@ -647,7 +653,7 @@ class EditTaskTemplate extends Component {
                                     items={allUnitsMember}
                                     onChange={this.handleTaskTemplateInform}
                                     multiple={true}
-                                    value={editingTemplate.informedEmployees.map(item => item._id)}
+                                    value={editingTemplate.informedEmployees}
                                     options={{ placeholder: `${translate('task_template.observer')}` }}
                                 />
                             }
@@ -673,19 +679,21 @@ class EditTaskTemplate extends Component {
                                 {/**Công thức tính điểm mẫu công việc này */}
                                 <div className={`form-group ${this.state.editingTemplate.errorOnFormula === undefined ? "" : "has-error"}`} >
                                     <label className="control-label" htmlFor="inputFormula">{translate('task_template.formula')}</label>
-                                    <input type="text" className="form-control" id="inputFormula" placeholder="progress / (dayUsed / totalDay) - (numberOfFailedAction / (numberOfFailedAction + numberOfPassedAction)) * 100" value={editingTemplate.formula} onChange={this.handleTaskTemplateFormula} />
+                                    <input type="text" className="form-control" id="inputFormula" placeholder="progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100" value={editingTemplate.formula} onChange={this.handleTaskTemplateFormula} />
                                     <ErrorLabel content={this.state.editingTemplate.errorOnFormula} />
 
                                     <br />
-                                    <div><span style={{ fontWeight: 800 }}>Ví dụ: </span>progress / (dayUsed / totalDay) - (numberOfFailedAction / (numberOfFailedAction + numberOfPassedAction)) * 100</div>
+                                    <div><span style={{ fontWeight: 800 }}>Ví dụ: </span>progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100</div>
                                     <br />
                                     <div><span style={{ fontWeight: 800 }}>{translate('task_template.parameters')}:</span></div>
-                                    <div><span style={{ fontWeight: 600 }}>overdueDate</span> - Thời gian quá hạn (ngày)</div>
-                                    <div><span style={{ fontWeight: 600 }}>dayUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
-                                    <div><span style={{ fontWeight: 600 }}>totalDay</span> - Thời gian từ ngày bắt đầu đến ngày kết thúc công việc (ngày)</div>
-                                    <div><span style={{ fontWeight: 600 }}>numberOfFailedAction</span> - Số hoạt động không đạt (rating &lt; 5)</div>
-                                    <div><span style={{ fontWeight: 600 }}>numberOfPassedAction</span> - Số hoạt động đạt (rating &ge; 5)</div>
+                                    <div><span style={{ fontWeight: 600 }}>daysOverdue</span> - Thời gian quá hạn (ngày)</div>
+                                    <div><span style={{ fontWeight: 600 }}>daysUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
+                                    <div><span style={{ fontWeight: 600 }}>totalDays</span> - Thời gian từ ngày bắt đầu đến ngày kết thúc công việc (ngày)</div>
+                                    <div><span style={{ fontWeight: 600 }}>averageActionRating</span> - Trung bình điểm đánh giá (rating) hoạt động của công việc</div>
+                                    <div><span style={{ fontWeight: 600 }}>numberOfFailedActions</span> - Số hoạt động không đạt (rating &lt; 5)</div>
+                                    <div><span style={{ fontWeight: 600 }}>numberOfPassedActions</span> - Số hoạt động đạt (rating &ge; 5)</div>
                                     <div><span style={{ fontWeight: 600 }}>progress</span> - % Tiến độ công việc (0-100)</div>
+                                    <div><span style={{ fontWeight: 600 }}>p1, p2,...</span> - Thông tin công việc kiểu số có trong mẫu</div>
                                 </div>
                             </div>
                         </div>

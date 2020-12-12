@@ -13,7 +13,9 @@ export const LotActions = {
     getAllManufacturingLots,
     createManufacturingLot,
     getDetailManufacturingLot,
-    handleEditManufacturingLot
+    handleEditManufacturingLot,
+    getInventoryByGoodIds,
+    getInventoryByGoodId
 
 }
 
@@ -237,6 +239,48 @@ function handleEditManufacturingLot(id, data) {
             }).catch((error) => {
                 dispatch({
                     type: LotConstants.EDIT_MANUFACTURING_LOT_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function getInventoryByGoodIds(data) {
+    return dispatch => {
+        dispatch({
+            type: LotConstants.GET_INVENTORY_BY_GOOD_IDS_REQUEST
+        });
+        LotServices.getInventoryByGoodIds(data)
+            .then((res) => {
+                dispatch({
+                    type: LotConstants.GET_INVENTORY_BY_GOOD_IDS_SUCCESS,
+                    payload: res.data.content
+                });
+            }).catch((error) => {
+                dispatch({
+                    type: LotConstants.GET_INVENTORY_BY_GOOD_IDS_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+
+// Hàm này chỉ nhận vào data : array có 1 phần tử để nhận về tồn kho chỉ của 1 mặt hàng
+function getInventoryByGoodId(data) {
+    return dispatch => {
+        dispatch({
+            type: LotConstants.GET_INVENTORY_BY_GOOD_ID_REQUEST
+        });
+        LotServices.getInventoryByGoodIds(data)
+            .then((res) => {
+                dispatch({
+                    type: LotConstants.GET_INVENTORY_BY_GOOD_ID_SUCCESS,
+                    payload: res.data.content
+                });
+            }).catch((error) => {
+                dispatch({
+                    type: LotConstants.GET_INVENTORY_BY_GOOD_ID_FAILURE,
                     error
                 });
             });

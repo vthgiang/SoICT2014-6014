@@ -56,7 +56,7 @@ exports.createAnnualLeave = async (req, res) => {
         if (req.body.createApplication) {
             let users = await UserService.getUserIsDeanOfOrganizationalUnit(req.portal, req.body.organizationalUnit);
             let employee = await EmployeeService.getEmployeeInforByEmailInCompany(req.portal, req.user.email, req.user.company._id);
-
+            if(!employee) throw ['employee_invalid']; // Thông báo lỗi không tìm thấy dữ liệu về nhân viên tương ứng
             let html = `
                 <h3><strong>Thông báo từ hệ thống ${process.env.WEB_NAME}.</strong></h3>
                 <p>Nhân viên: ${employee.fullName} - ${employee.employeeNumber}. </p>
@@ -167,7 +167,7 @@ exports.createAnnualLeave = async (req, res) => {
         await Log.error(req.user.email, 'CREATE_ANNUALLEAVE', req.portal);
         res.status(400).json({
             success: false,
-            messages: "create_annual_leave_faile",
+            messages: Array.isArray(error) ? error : ['create_annual_leave_faile'],
             content: {
                 error: error
             }

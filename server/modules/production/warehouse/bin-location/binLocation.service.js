@@ -57,7 +57,7 @@ exports.getChildBinLocations = async (query, portal) => {
     if(!managementLocation) throw new Error("roles not avaiable");
 
     //lấy id các kho của role hiện tại
-    const stocks = await Stock(connect(DB_CONNECTION, portal)).find({ managementLocation: { $in: managementLocation } })
+    const stocks = await Stock(connect(DB_CONNECTION, portal)).find({ managementLocation: { $elemMatch: { role: managementLocation }} })
     var arrayStock = [];
     if(stocks && stocks.length > 0) {
         for(let i = 0; i < stocks.length; i++) {
@@ -65,63 +65,44 @@ exports.getChildBinLocations = async (query, portal) => {
         }
     }
     const arr = [];
-    if(!page && !limit) {
-        if(stock){
-            return await BinLocation(connect(DB_CONNECTION, portal)).find({ child: arr, stock })
-            .populate([
-                { path: 'enableGoods.good', select: 'id name type baseUnit'}
-            ]);
-        } else {
-            return await BinLocation(connect(DB_CONNECTION, portal)).find({ child: arr, stock: { $in: arrayStock } })
-            .populate([
-                { path: 'enableGoods.good', select: 'id name type baseUnit'}
-            ]);
-        }
-    } else {
+    if(!page || !limit) {
+        let options = { child: arr };
+
         if(stock) {
-            let option = { child: [], stock };
-
-            if(query.path) {
-                option.path = new RegExp(query.path, "i")
-            }
-
-            if(query.status) {
-                option.status = query.status
-            }
-
-            return await await BinLocation(connect(DB_CONNECTION, portal))
-                .paginate(option, {
-                    page,
-                    limit,
-                    populate: [
-                        { path: 'enableGoods.good', select: 'id name type baseUnit'}
-                    ]
-                })
+            options.stock = stock;
+        } else {
+            options.stock = { $in: arrayStock }
         }
-        else {
-            let option = { child: [], stock: arrayStock };
+        
+        return await BinLocation(connect(DB_CONNECTION, portal)).find(options)
+            .populate([
+                { path: 'enableGoods.good', select: 'id name type baseUnit'}
+            ]);
+    } else {
+        let option = { child: [] };
 
-            if(query.stock) {
-                option.stock = query.stock
-            }
-
-            if(query.path) {
-                option.path = new RegExp(query.path, "i")
-            }
-
-            if(query.status) {
-                option.status = query.status
-            }
-
-            return await await BinLocation(connect(DB_CONNECTION, portal))
-                .paginate(option, {
-                    page,
-                    limit,
-                    populate: [
-                        { path: 'enableGoods.good', select: 'id name type baseUnit'}
-                    ]
-                })
+        if(stock) {
+            option.stock = stock;
+        } else {
+            option.stock = { $in: arrayStock }
         }
+
+        if(query.path) {
+            option.path = new RegExp(query.path, "i")
+        }
+
+        if(query.status) {
+            option.status = query.status
+        }
+
+        return await await BinLocation(connect(DB_CONNECTION, portal))
+            .paginate(option, {
+                page,
+                limit,
+                populate: [
+                    { path: 'enableGoods.good', select: 'id name type baseUnit'}
+                ]
+            })
     }
 }
 

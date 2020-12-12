@@ -57,9 +57,9 @@ exports.initModels = (db, models) => {
 exports.restore = async (options) => {
     const commandRestoreDB = (options) => {
         if(!options.db){
-            return `mongorestore --drop --host="${options.host}" --port="${options.port}" ${SERVER_BACKUP_DIR}/all/${options.version}/database`;
+            return `mongorestore --drop --host="${options.host}" --port="${options.port}" ${SERVER_BACKUP_DIR}/all/${options.version}/data/database`;
         } else {
-            return `mongorestore --drop --host="${options.host}" --port="${options.port}" -d ${options.db} ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/database/${options.db}`;
+            return `mongorestore --drop --host="${options.host}" --port="${options.port}" -d ${options.db} ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/data/database/${options.db}`;
         }
     }
 
@@ -111,11 +111,11 @@ exports.backup = async (options) => {
             fs.appendFile(backupPath+'/README.txt', description, err => { 
                 if(err) throw err;
             });
-            return `mongodump --host="${options.host}" --port="${options.port}" --out="${backupPath}/database" --db="${options.db}"`;
+            return `mongodump --host="${options.host}" --port="${options.port}" --out="${backupPath}/data/database" --db="${options.db}"`;
         }else{
             checkDirectory(`${SERVER_BACKUP_DIR}/all/${version}`, description);
 
-            return `mongodump --host="${options.host}" --port="${options.port}" --out="${SERVER_BACKUP_DIR}/all/${version}/database"`;
+            return `mongodump --host="${options.host}" --port="${options.port}" --out="${SERVER_BACKUP_DIR}/all/${version}/data/database"`;
         }
     }
     const command = commandBackupDB(options);
@@ -128,23 +128,23 @@ exports.backup = async (options) => {
     const getCommandBackupFile = (options) => {
         if(options.db) {
             checkDirectory(`${SERVER_DIR}/upload/private/${options.db}`);
-            checkDirectory(`${backupPath}/private`);
+            checkDirectory(`${backupPath}/data/private`);
             checkDirectory(`${SERVER_DIR}/upload/avatars/${options.db}`);
-            checkDirectory(`${backupPath}/avatars`);
+            checkDirectory(`${backupPath}/data/avatars`);
 
-            return `cp -r ${SERVER_DIR}/upload/private/${options.db}/* ${backupPath}/private && cp -r ${SERVER_DIR}/upload/avatars/${options.db}/* ${backupPath}/avatars`;
+            return `cp -r ${SERVER_DIR}/upload/private/${options.db}/* ${backupPath}/data/private && cp -r ${SERVER_DIR}/upload/avatars/${options.db}/* ${backupPath}/data/avatars`;
         }else{
             checkDirectory(`${SERVER_DIR}/upload`);
-            checkDirectory(`${SERVER_BACKUP_DIR}/all/${version}/upload`);
+            checkDirectory(`${SERVER_BACKUP_DIR}/all/${version}/data/upload`);
 
-            return `cp -r ${SERVER_DIR}/upload/* ${SERVER_BACKUP_DIR}/all/${version}/upload`;
+            return `cp -r ${SERVER_DIR}/upload/* ${SERVER_BACKUP_DIR}/all/${version}/data/upload`;
         }
     }
 
     // 2. Backup file dữ liệu trong thư mục upload
     const commandBackupFile  = getCommandBackupFile(options);
     await exec(commandBackupFile, (error, stdout, stderr) => {
-        if(error !== null) console.log("co loi roif", error);
+        if(error) console.log(error);
     });
     const folderInfo = options.db ?
     fs.statSync(backupPath) :
@@ -179,7 +179,7 @@ exports.backup = async (options) => {
             }
         }
     }
-
+    
     return {
         version,
         description: description,

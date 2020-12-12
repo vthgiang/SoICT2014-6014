@@ -21,7 +21,12 @@ exports.searchUseRequests = async (portal, company, query) => {
 
     // Thêm key tìm kiếm theo người đăng ký vào keySearch
     if (reqUseEmployee) {
-        let user = await User(connect(DB_CONNECTION, portal)).find({ name: { $regex: reqUseEmployee, $options: "i" } }).select('_id');
+        let user = await User(connect(DB_CONNECTION, portal)).find({
+            $or: [
+                {email: {$regex: reqUseEmployee, $options: "i"}},
+                {name: {$regex: reqUseEmployee, $options: "i"}}
+            ]
+        }).select('_id');
         let userIds = [];
         user.map(x => {
             userIds.push(x._id)
@@ -31,7 +36,12 @@ exports.searchUseRequests = async (portal, company, query) => {
 
     // Thêm key tìm kiếm theo người phê duyệt vào keySearch
     if (approver) {
-        let user = await User(connect(DB_CONNECTION, portal)).find({ name: { $regex: approver, $options: "i" } }).select('_id');
+        let user = await User(connect(DB_CONNECTION, portal)).find({
+            $or: [
+                {email: {$regex: approver, $options: "i"}},
+                {name: {$regex: approver, $options: "i"}}
+            ]
+        }).select('_id');
         let userIds = [];
         user.map(x => {
             userIds.push(x._id)
@@ -58,11 +68,13 @@ exports.searchUseRequests = async (portal, company, query) => {
     }
 
     var totalList = await RecommendDistribute(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
-    var listRecommendDistributes = await RecommendDistribute(connect(DB_CONNECTION, portal)).find(keySearch).populate({ path: 'asset proponent approver' }).sort({ 'createdAt': 'desc' }).skip(page ? parseInt(page) : 0).limit(limit ? parseInt(limit) : 0);
-    var test = await RecommendDistribute(connect(DB_CONNECTION, portal)).find(keySearch);
+    var listRecommendDistributes = await RecommendDistribute(connect(DB_CONNECTION, portal)).find(keySearch)
+        .populate({ path: 'asset proponent approver' }).sort({ 'createdAt': 'desc' })
+        .skip(page ? parseInt(page) : 0)
+        .limit(limit ? parseInt(limit) : 0);
 
-    if (managedBy !== "" && managedBy !== undefined) {
-        let tempListRecommendDistributes = listRecommendDistributes.filter(item => item.asset.managedBy.toString() === managedBy);
+    if (managedBy) {
+        let tempListRecommendDistributes = listRecommendDistributes.filter(item => item.asset.managedBy && item.asset.managedBy.toString() === managedBy);
         listRecommendDistributes = tempListRecommendDistributes;
     }
 

@@ -202,7 +202,7 @@ class SalaryManagement extends Component {
                     birthdate: new Date(x.employee.birthdate),
                     status: x.employee.status === 'active' ? translate('human_resource.profile.active') : translate('human_resource.profile.leave'),
                     gender: x.employee.gender === 'male' ? translate('human_resource.profile.male') : translate('human_resource.profile.female'),
-                    organizationalUnit: organizationalUnit ? organizationalUnit.name : 'Deleted',
+                    organizationalUnit: organizationalUnit ? organizationalUnit.name : '',
                     total: total + parseInt(x.mainSalary),
                     month: month,
                     year: year,
@@ -376,7 +376,7 @@ class SalaryManagement extends Component {
                                             <td>{x.employee ? x.employee.fullName : null}</td>
                                             <td>{this.formatDate(x.month, true)}</td>
                                             <td>{formater.format(total)} {x.unit}</td>
-                                            <td>{organizationalUnit ? organizationalUnit.name : 'Deleted'}</td>
+                                            <td>{organizationalUnit ? organizationalUnit.name : ''}</td>
                                             <td style={{ textAlign: 'center' }}>
                                                 <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.salary.edit_salary')}><i className="material-icons">edit</i></a>
                                                 <DeleteNotification

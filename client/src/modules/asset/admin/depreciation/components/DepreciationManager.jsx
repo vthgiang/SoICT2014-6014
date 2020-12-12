@@ -185,20 +185,21 @@ class DepreciationManager extends Component {
     };
 
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
-    convertDataToExportData = (data, assettypelist) => {
+    convertDataToExportData = (data) => {
+        const { translate } = this.props;
         let fileName = "Bảng quản lý khấu hao tài sản ";
         let formater = new Intl.NumberFormat();
-
+        console.log('data', data);
         if (data) {
 
             data = data.map((x, index) => {
 
                 let code = x.code;
                 let assetName = x.assetName;
-                let type = assettypelist && assettypelist.filter(item => item._id === x.assetType).pop() ? assettypelist.filter(item => item._id === x.assetType).pop().typeName : ''
+                let type = x.assetType && x.assetType.map(obj => obj.typeName).join(", ");
                 let cost = formater.format(parseInt(x.cost));
                 let startDepreciation = this.formatDate(x.startDepreciation);
-                let month = x.usefulLife;
+                let month = `${x.usefulLife} ${translate('general.month')}`;
                 let depreciationPerYear = formater.format(parseInt(12 * (x.cost / x.usefulLife)));
                 let depreciationPerMonth = formater.format(parseInt((x.cost / x.usefulLife)));
                 let accumulatedValue = formater.format(parseInt(((x.cost / x.usefulLife)) * ((new Date().getFullYear() * 12 + new Date().getMonth()) - (new Date(x.startDepreciation).getFullYear() * 12 + new Date(x.startDepreciation).getMonth()))));
@@ -240,7 +241,7 @@ class DepreciationManager extends Component {
                                 { key: "type", value: "Loại tài sản" },
                                 { key: "cost", value: "Nguyên giá (VNĐ)" },
                                 { key: "startDepreciation", value: "Thời gian bắt đầu trích khấu hao" },
-                                { key: "month", value: "Thời gian chích khấu hao" },
+                                { key: "month", value: "Thời gian trích khấu hao" },
                                 { key: "depreciationPerYear", value: "Mức độ khấu hao trung bình hàng năm" },
                                 { key: "depreciationPerMonth", value: "Mức độ khấu hao trung bình hàng tháng" },
                                 { key: "accumulatedValue", value: "Giá trị hao mòn lũy kế" },
@@ -383,7 +384,6 @@ class DepreciationManager extends Component {
         var { page, limit, currentRowView, currentRowEditAsset, managedBy } = this.state;
 
         var lists = "", exportData;
-        var assettypelist = assetType.listAssetTypes;
         let typeArr = this.getAssetTypes();
         let assetTypeName = this.state.assetType ? this.state.assetType : [];
 
@@ -397,8 +397,8 @@ class DepreciationManager extends Component {
             parseInt((assetsManager.totalList / limit) + 1);
         var currentPage = parseInt((page / limit) + 1);
 
-        if (lists && assettypelist) {
-            exportData = this.convertDataToExportData(lists, assettypelist);
+        if (lists) {
+            exportData = this.convertDataToExportData(lists);
         }
 
         return (
@@ -452,7 +452,7 @@ class DepreciationManager extends Component {
 
                         {/* Loại khấu hao */}
                         <div className="form-group">
-                            <label className="form-control-static">{translate('asset.general_information.asset_type')}</label>
+                            <label className="form-control-static">{translate('asset.general_information.depreciation_type')}</label>
                             <SelectMulti id={`multiSelectDepreTypeInManagement`} multiple="multiple"
                                 options={{ nonSelectedText: translate('asset.depreciation.select_depreciation_type'), allSelectedText: translate('asset.depreciation.select_all_depreciation_type') }}
                                 onChange={this.handleDepreciationTypeChange}
@@ -532,7 +532,7 @@ class DepreciationManager extends Component {
                                             <td><a onClick={() => this.handleEditAsset(x)}>{x.code}</a></td>
                                             <td>{x.assetName}</td>
                                             <td>{this.convertGroupAsset(x.group)}</td>
-                                            <td>{x.assetType && x.assetType.length ? x.assetType.map((item, index) => { let suffix = index < x.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : 'Asset is deleted'}</td>
+                                            <td>{x.assetType && x.assetType.length ? x.assetType.map((item, index) => { let suffix = index < x.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : ''}</td>
                                             <td>{formater.format(parseInt(x.cost))} VNĐ</td>
                                             <td>{this.formatDate(x.startDepreciation)}</td>
                                             <td>{x.usefulLife} {translate('training.course.month')}</td>

@@ -51,6 +51,7 @@ class DiscountManagementTable extends Component {
     };
 
     handleEditDiscount = async (discount) => {
+        console.log("discount", discount);
         await this.setState((state) => {
             return {
                 ...state,
@@ -67,9 +68,7 @@ class DiscountManagementTable extends Component {
     };
 
     deleteDiscountByCode = (code) => {
-        let { limit, page, queryDate } = this.state;
         this.props.deleteDiscountByCode({ code });
-        this.props.getAllDiscounts({ limit, page, queryDate });
     };
 
     handleQueryDateChange = (value) => {

@@ -184,10 +184,10 @@ class UserEditForm extends Component {
                                         style={{ width: "100%" }}
                                         items={
                                             this.checkSuperAdmin(userRoles) ? // Neu tai khoan nay hien tai khong co role la Super Admin
-                                                role.list.map(role => { return { value: role ? role._id : null, text: role ? role.name : "Role is deleted" } }) :
+                                                role.list.map(role => { return { value: role ? role._id : null, text: role ? role.name : "" } }) :
                                                 role.list.filter(role => {
                                                     return role && role.name !== 'Super Admin'
-                                                }).map(role => { return { value: role ? role._id : null, text: role ? role.name : "Role is deleted" } })
+                                                }).map(role => { return { value: role ? role._id : null, text: role ? role.name : "" } })
                                         }
                                         onChange={this.handleRolesChange}
                                         value={userRoles}
