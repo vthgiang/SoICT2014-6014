@@ -50,13 +50,13 @@ class IncidentLogTab extends Component {
 
     formatType = (type) => {
         const { translate } = this.props;
-        if (type === '1') {
+        if (Number(type) === 1) {
             return translate('asset.general_information.damaged');
-        }
-        else if (type === '2') {
+        } else if (Number(type) === 2) {
             return translate('asset.general_information.lost');
+        } else {
+            return '';
         }
-        else return '';
     }
 
     render() {
