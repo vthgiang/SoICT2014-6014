@@ -5,14 +5,21 @@ import { AssetService } from '../../../asset-information/redux/services';
 import { UserActions } from '../../../../../super-admin/user/redux/actions';
 import { AssetTypeActions } from "../../../asset-type/redux/actions";
 import { getPropertyOfValue } from '../../../../../../helpers/stringMethod';
+import { AssetTypeService } from '../../../asset-type/redux/services';
+import { TreeSelect } from '../../../../../../common-components';
 
 class AssetIsExpired extends Component {
     constructor(props) {
         super(props);
+        this.INFO_SEARCH = {
+            type: []
+        }
         this.state = {
             listAssets: null,
             limit: 5,
+            type: this.INFO_SEARCH.type
         }
+
     }
 
     componentDidMount() {
@@ -26,6 +33,14 @@ class AssetIsExpired extends Component {
         }).then(res => {
             if (res.data.success) {
                 this.setState({ listAssets: res.data.content.data });
+            }
+        }).catch(err => {
+            console.log(err);
+        });
+
+        AssetTypeService.getAssetTypes().then(res => {
+            if (res.data.success) {
+                this.setState({ assetType: res.data.content.list })
             }
         }).catch(err => {
             console.log(err);
@@ -69,14 +84,64 @@ class AssetIsExpired extends Component {
         }
     }
 
+    handleChangeTypeAsset = (value) => {
+        if (value.length === 0) {
+            value = []
+        }
+        this.INFO_SEARCH.type = value;
+        this.forceUpdate();
+    }
+
+    getAssetTypes = () => {
+        let { assetType } = this.state;
+        let typeArr = [];
+        assetType && assetType.map(item => {
+            typeArr.push({
+                _id: item._id,
+                id: item._id,
+                name: item.typeName,
+                parent: item.parent ? item.parent._id : null
+            })
+        })
+        return typeArr;
+    }
+
+    handleSearchData = async () => {
+
+        await this.setState(state => {
+            return {
+                ...state,
+                type: this.INFO_SEARCH.type
+            }
+        })
+    }
+
     render() {
         const { translate } = this.props;
         const { user, assetType, setAssetIsExpiredExportData } = this.props;
-        const { listAssets } = this.state;
-        let lists;
+        const { listAssets, } = this.state;
+        const typeAsset = this.state.type;
         var userlist = user && user.list;
         var ExpiryDateAssets = [], willExpiryDateAssets = [];
         let nowDate = new Date();
+        let typeArr = this.getAssetTypes();
+        let { type } = this.INFO_SEARCH;
+        let filterAsset = [];
+        if (typeAsset && typeAsset.length) {
+            listAssets.map(x => {
+                if (x.assetType.length) {
+                    for (let i in x.assetType) {
+                        for (let j in typeAsset) {
+                            typeAsset[j] === x.assetType[i]._id && filterAsset.push(x);
+                        }
+                    }
+                }
+            })
+        }
+        else {
+            filterAsset = listAssets;
+        }
+
         if (listAssets && !ExpiryDateAssets.length && !willExpiryDateAssets.length) {
             for (let i in listAssets) {
                 if (listAssets[i].purchaseDate && listAssets[i].usefulLife) {
@@ -117,10 +182,9 @@ class AssetIsExpired extends Component {
                 }
             }
         }
+
         if (assetType && assetType.listAssetTypes)
             var assettypelist = assetType.listAssetTypes;
-        if (listAssets)
-            lists = listAssets;
 
         // Lấy dữ liệu để export
         if (ExpiryDateAssets && ExpiryDateAssets.length !== 0 || willExpiryDateAssets && willExpiryDateAssets.length !== 0) {
@@ -133,7 +197,22 @@ class AssetIsExpired extends Component {
         return (
             <React.Fragment>
                 <div className="qlcv">
-                    {/* Biểu thống kê tài sản theo trạng thái */}
+                    <div className="form-inline pull-right">
+                        {/* Chọn loại tài sản */}
+                        <div className="form-group  ">
+                            <label >{translate('asset.general_information.asset_type')}</label>
+                            <TreeSelect
+                                data={typeArr}
+                                value={type}
+                                handleChange={this.handleChangeTypeAsset}
+                                mode="hierarchical"
+                            />
+                        </div>
+                        {/* Tim kiem */}
+                        <div className="form-group">
+                            <button className="btn btn-success" onClick={this.handleSearchData}>{translate('task.task_management.search')}</button>
+                        </div>
+                    </div>
                     {/* Bảng các tài sản */}
                     {(ExpiryDateAssets && ExpiryDateAssets.length !== 0) || (willExpiryDateAssets && willExpiryDateAssets.length !== 0) ?
                         <table id="asset-table" className="table table-striped table-bordered table-hover">
