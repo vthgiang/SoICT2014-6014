@@ -103,6 +103,7 @@ class CareerField extends Component {
                 ...elm,
                 id: elm._id,
                 text: elm.name,
+                code: elm.code,
                 state: { "opened": true },
                 parent: "#",
             }
@@ -112,7 +113,8 @@ class CareerField extends Component {
                 return {
                     ...elm,
                     id: elm._id,
-                    text: elm.name,
+                    text: elm.position.name,
+                    code: elm.position.code,
                     // state: { "opened": true },
                     parent: list[i]._id.toString(),
                 }

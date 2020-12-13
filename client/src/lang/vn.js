@@ -433,8 +433,11 @@ export default {
         },
         super_admin: {
             system: {
-                restore_backup: "Restore backup",
-                delete_backup: "Delete backup",
+                edit_backup_info: "Chỉnh sửa thông tin phiên bản dữ liệu",
+                download_backup_version: "Tải xuống phiên bản dữ liệu",
+                backup_description: "Mô tả về phiên bản dữ liệu",
+                restore_backup: "Khôi phục phiên bản dữ liệu",
+                delete_backup: "Xóa phiên bản dữ liệu",
 
                 get_backup_list_success: "Lấy dữ liệu sao lưu thành công",
                 get_backup_list_faile: "Lấy dữ liệu sao lưu thất bại",
@@ -444,6 +447,9 @@ export default {
                 delete_backup_faile: "Xóa sao lưu thất bại",
                 restore_data_success: "Khôi phục dữ liệu thành công",
                 restore_data_faile: "Khôi phục dữ liệu thất bại",
+                edit_backup_info_success: "Chỉnh sửa thông tin phiên bản sao lưu thành công",
+                edit_backup_info_faile: "Chỉnh sửa thông tin phiên bản sao lưu thất bại",
+                backup_version_deleted: 'Phiên bản sao lưu dữ liệu này đã bị xóa, Không thể chính sửa thông tin phiên bản',
             },
 
             organization_unit: {

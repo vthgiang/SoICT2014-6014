@@ -82,19 +82,19 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
     save = () => {
         let { roleDeans, roleViceDeans, roleEmployees } = this.state;
         roleDeans.forEach(x => {
-            x = { ...x, showAlert: false, editRoleInfo: false }
+            x = { ...x, showAlert: false, notEditRoleInfo: true }
             this.props.edit(x);
         });
         roleViceDeans.forEach(x => {
-            x = { ...x, showAlert: false, editRoleInfo: false }
+            x = { ...x, showAlert: false, notEditRoleInfo: true }
             this.props.edit(x);
         });
         roleEmployees.forEach((x, index) => {
             let users = this.refs[`employees${x.id}`].getValue();
             if (roleEmployees.length - 1 === index) {
-                x = { ...x, users: x.users.concat(users), editRoleInfo: false }
+                x = { ...x, users: x.users.concat(users), notEditRoleInfo: true }
             } else {
-                x = { ...x, users: x.users.concat(users), showAlert: false, editRoleInfo: false }
+                x = { ...x, users: x.users.concat(users), showAlert: false, notEditRoleInfo: true }
             }
             this.props.edit(x);
         });

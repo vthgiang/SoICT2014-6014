@@ -177,7 +177,8 @@ class CareerEditModal extends Component {
         //     fileUpload: data.fileUpload,
         // }
         // return this.props.handleChange(career);
-        return this.props.handleChange({ ...this.state, startDate: startDateNew, endDate: endDateNew });
+        console.log("---", this.state);
+        // return this.props.handleChange({ ...this.state, startDate: startDateNew, endDate: endDateNew });
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -231,14 +232,14 @@ class CareerEditModal extends Component {
                     <form className="form-group" id={`form-edit-career-${id}`}>
                         <div className="form-group">
                             <label>Lĩnh vực công việc</label>
-                            <TreeSelect data={listField} value={field?.id} handleChange={this.handleField} mode="radioSelect" />
+                            <TreeSelect data={listField} value={field?._id} handleChange={this.handleField} mode="radioSelect" />
                         </div>
                         <div className="form-group">
                             <label>Gói thầu: </label> {this.state.package ? this.state.package : "Chưa có"}
                         </div>
                         <div className="form-group">
                             <label>Vị trí công việc</label>
-                            <TreeSelect data={listPosition} value={position?.id} handleChange={this.handlePosition} mode="radioSelect" />
+                            <TreeSelect data={listPosition} value={position?._id} handleChange={this.handlePosition} mode="radioSelect" />
                         </div>
                         <div className="form-group">
                             <label>Hoạt động công việc</label>
@@ -252,7 +253,7 @@ class CareerEditModal extends Component {
                                 })}
                                 options={{ placeholder: "Chọn hoạt động công việc" }}
                                 onChange={this.handleAction}
-                                value={action?.map(e => e?.id)}
+                                value={action?.map(e => e?._id)}
                                 multiple={true}
                             />
                         </div>

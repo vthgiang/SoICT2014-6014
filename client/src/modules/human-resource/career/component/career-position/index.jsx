@@ -103,6 +103,7 @@ class CareerPosition extends Component {
             return {
                 ...elm,
                 id: elm._id,
+                code: elm.code,
                 text: elm.name,
                 state: { "opened": true },
                 parent: "#",
@@ -113,7 +114,8 @@ class CareerPosition extends Component {
                 return {
                     ...elm,
                     id: elm._id,
-                    text: elm.name,
+                    text: elm.action.name,
+                    code: elm.action.code,
                     // state: { "opened": true },
                     parent: list[i]._id.toString(),
                 }
