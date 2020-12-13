@@ -184,7 +184,7 @@ class CareerMajorTab extends Component {
     render() {
         const { translate } = this.props;
 
-        const { id } = this.props;
+        const { id, type } = this.props;
 
         const { major, career, currentRowMajor, currentRowCareer } = this.state;
         console.log('careerrrr', this.state);
@@ -195,14 +195,14 @@ class CareerMajorTab extends Component {
                     {/* Danh sách bằng cấp */}
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">Chuyên ngành tương đương</h4></legend>
-                        <MajorAddModal handleChange={this.handleAddMajor} id={`addMajor${id}`} />
+                        {(type !== "view") && <MajorAddModal handleChange={this.handleAddMajor} id={`addMajor${id}`} />}
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                             <thead>
                                 <tr>
                                     <th>Nhóm chuyên ngành</th>
                                     <th>Chuyên ngành</th>
                                     <th>File đính kèm</th>
-                                    <th style={{ width: '120px' }}>{translate('general.action')}</th>
+                                    {(type !== "view") && <th style={{ width: '120px' }}>{translate('general.action')}</th>}
                                 </tr>
                             </thead>
                             <tbody>
@@ -218,10 +218,12 @@ class CareerMajorTab extends Component {
                                                     <i className="fa fa-download"> &nbsp;Download!</i>
                                                 </a>
                                             }</td>
-                                            <td>
-                                                <a onClick={() => this.handleEditMajorModal(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.edit_diploma')}><i className="material-icons">edit</i></a>
-                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteMajor(index)}><i className="material-icons"></i></a>
-                                            </td>
+                                            {(type !== "view") &&
+                                                <td>
+                                                    <a onClick={() => this.handleEditMajorModal(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.edit_diploma')}><i className="material-icons">edit</i></a>
+                                                    <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteMajor(index)}><i className="material-icons"></i></a>
+                                                </td>
+                                            }
                                         </tr>
                                     ))}
                             </tbody>
@@ -234,17 +236,18 @@ class CareerMajorTab extends Component {
                     {/* Danh sách chứng chỉ */}
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">Công việc tương đương</h4></legend>
-                        <CareerAddModal handleChange={this.handleAddCareer} id={`addCareer${id}`} />
+                        {(type !== "view") && <CareerAddModal handleChange={this.handleAddCareer} id={`addCareer${id}`} />}
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>
                                 <tr>
                                     <th>Lĩnh vực công việc</th>
+                                    {(type === "view") && <th>Gói thầu</th>}
                                     <th>Vị trí công việc</th>
                                     <th>Hành động công việc</th>
                                     <th>Ngày bắt đầu</th>
                                     <th>Ngày kết thúc</th>
                                     <th>{translate('human_resource.profile.attached_files')}</th>
-                                    <th style={{ width: '120px' }}>{translate('general.action')}</th>
+                                    {(type !== "view") && <th style={{ width: '120px' }}>{translate('general.action')}</th>}
                                 </tr>
                             </thead>
                             <tbody>
@@ -252,10 +255,11 @@ class CareerMajorTab extends Component {
                                     career.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.field?.name}</td>
+                                            {(type === "view") && <td>{x.package}</td>}
                                             <td>{x.position?.name}</td>
-                                            <td>{x.action?.map((e, key) => { 
-                                                    return <li key={key}> {e?.name} </li> 
-                                                })}
+                                            <td>{x.action?.map((e, key) => {
+                                                return <li key={key}> {e?.name} </li>
+                                            })}
                                             </td>
                                             <td>{this.formatDate(x.startDate)}</td>
                                             <td>{this.formatDate(x.endDate)}</td>
@@ -266,10 +270,12 @@ class CareerMajorTab extends Component {
                                                     <i className="fa fa-download"> &nbsp;Download!</i>
                                                 </a>
                                             }</td>
-                                            <td>
-                                                <a onClick={() => this.handleEditCareerModal(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.edit_certificate')}><i className="material-icons">edit</i></a>
-                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteCareer(index)}><i className="material-icons"></i></a>
-                                            </td>
+                                            {(type !== "view") &&
+                                                <td>
+                                                    <a onClick={() => this.handleEditCareerModal(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.edit_certificate')}><i className="material-icons">edit</i></a>
+                                                    <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteCareer(index)}><i className="material-icons"></i></a>
+                                                </td>
+                                            }
                                         </tr>
                                     ))}
                             </tbody>
@@ -291,6 +297,8 @@ class CareerMajorTab extends Component {
                         urlFile={currentRowMajor.urlFile}
                         fileUpload={currentRowMajor.fileUpload}
                         handleChange={this.handleEditMajor}
+
+                        type={type === "view" ? "view" : "edit"}
                     />
                 }
                 {   /** Form chỉnh sửa thông tin công việc tương đương*/
@@ -309,6 +317,8 @@ class CareerMajorTab extends Component {
                         urlFile={currentRowCareer.urlFile}
                         fileUpload={currentRowCareer.fileUpload}
                         handleChange={this.handleEditCareer}
+
+                        type={type === "view" ? "view" : "edit"}
                     />
                 }
             </div>

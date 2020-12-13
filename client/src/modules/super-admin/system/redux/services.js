@@ -57,7 +57,7 @@ function restore(version) {
 
 function editBackupInfo(version, data) {
     return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/system/backup/${version}`,
+        url: `${process.env.REACT_APP_SERVER}/system/backup/${version}/edit`,
         method: 'PATCH',
         data
     }, true, true, 'super_admin.system');

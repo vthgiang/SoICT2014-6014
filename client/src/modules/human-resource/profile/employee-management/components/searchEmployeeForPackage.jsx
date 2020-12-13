@@ -30,6 +30,7 @@ class SearchEmployeeForPackage extends Component {
         }
 
         this.state = {
+            searchForPackage: true,
             organizationalUnits: organizationalUnits,
             status: 'active',
             page: 0,
@@ -144,33 +145,28 @@ class SearchEmployeeForPackage extends Component {
     handleAction = (value) => {
         // let { career } = this.props;
         // let listAction = career?.listAction.map(elm => { return { ...elm, id: elm._id } });
-        // let action = listAction?.find(e => e._id === value[0]);
 
-        // this.setState({ action: action });
-        let { career } = this.props;
-        let listAction = career?.listAction.map(elm => { return { ...elm, id: elm._id } });
+        // let action = listAction?.filter(e => value.indexOf(e._id) !== -1);
 
-        let action = listAction?.filter(e => value.indexOf(e._id) !== -1);
-
-        console.log('action', action);
-        this.setState({ action: action });
+        console.log('action', value);
+        this.setState({ action: value });
     };
 
     handleField = (value) => {
-        let { career } = this.props;
-        let listField = career?.listField.map(elm => { return { ...elm, id: elm._id } });
-        let listPosition = career?.listPosition.map(elm => { return { ...elm, id: elm._id } });
-        let field = listField?.find(e => e._id === value[0]);
+        // let { career } = this.props;
+        // let listField = career?.listField.map(elm => { return { ...elm, id: elm._id } });
+        // let listPosition = career?.listPosition.map(elm => { return { ...elm, id: elm._id } });
+        // let field = listField?.find(e => e._id === value[0]);
 
-        this.setState({ field: field, position: {} });
+        this.setState({ field: value, position: undefined });
     };
 
     handlePosition = (value) => {
-        let { career } = this.props;
-        let listPosition = career?.listPosition.map(elm => { return { ...elm, id: elm._id } });
-        let position = listPosition?.find(e => e._id === value[0]);
+        // let { career } = this.props;
+        // let listPosition = career?.listPosition.map(elm => { return { ...elm, id: elm._id } });
+        // let position = listPosition?.find(e => e._id === value[0]);
 
-        this.setState({ position: position });
+        this.setState({ position: value });
     };
 
     // handleCareer = (value) => {
@@ -178,73 +174,14 @@ class SearchEmployeeForPackage extends Component {
     // }
 
     /**
-     * Function lưu giá trị chức vụ vào state khi thay đổi
-     * @param {*} value : Array id chức vụ
-     */
-    // 
-    handlePositionChange = (value) => {
-        if (value.length === 0) {
-            value = null
-        };
-        this.setState({
-            ...this.state,
-            position: value
-        })
-    }
-
-    /**
-     * Function lưu giá trị giới tính vào state khi thay đổi
-     * @param {*} value : Giá trị giới tính
-     */
-    handleGenderChange = (value) => {
-        if (value.length === 0) {
-            value = null
-        };
-        this.setState({
-            ...this.state,
-            gender: value
-        })
-    }
-
-    /**
-     * Function lưu giá trị trạng thái vào state khi thay đổi
-     * @param {*} value : Giá trị trạng thái
-     */
-    handleStatusChange = (value) => {
-        if (value.length === 0) {
-            value = null
-        };
-        this.setState({
-            ...this.state,
-            status: value
-        })
-    }
-
-    /**
-     * Function lưu giá trị tháng sinh vào state khi thay đổi
-     * @param {*} value : Giá trị tháng sinh
-     */
-    // 
-    handleBirthdateChange = (value) => {
-        if (value) {
-            let partMonth = value.split('-');
-            value = [partMonth[1], partMonth[0]].join('-');
-        }
-        this.setState({
-            ...this.state,
-            birthdate: value
-        });
-    }
-
-    /**
      * Function lưu giá trị ngày hết hạn hợp đồng vào state khi thay đổi
      * @param {*} value : Tháng hết hạn hợp đồng
      */
     handleEndDateOfCertificateChange = (value) => {
-        if (value) {
-            let partMonth = value.split('-');
-            value = [partMonth[1], partMonth[0]].join('-');
-        }
+        // if (value) {
+        //     let partMonth = value.split('-');
+        //     value = [partMonth[1], partMonth[0]].join('-');
+        // }
         this.setState({
             ...this.state,
             endDateOfCertificate: value
@@ -289,7 +226,7 @@ class SearchEmployeeForPackage extends Component {
     render() {
         const { employeesManager, translate, department, career, major } = this.props;
 
-        const { importEmployee, limit, page, organizationalUnits, professionalSkill, majorInfo, field, position, action, currentRow, currentRowView } = this.state; // filterField, filterPosition, filterAction, 
+        const { importEmployee, limit, page, certificatesEndDate, organizationalUnits, professionalSkill, majorInfo, field, position, action, currentRow, currentRowView } = this.state; // filterField, filterPosition, filterAction, 
 
         let listEmployees = [];
         if (employeesManager.listEmployees) {
@@ -313,19 +250,19 @@ class SearchEmployeeForPackage extends Component {
             }
         });
         dataTreeField = [...dataTreeField, ...lField];
-        for (let i in listField) {
-            let posMap = listField[i].position;
-            let position = posMap.map(elm => {
-                return {
-                    ...elm,
-                    id: elm._id,
-                    text: elm.name,
-                    state: { "opened": true },
-                    parent: listField[i]._id.toString(),
-                }
-            });
-            dataTreeField = [...dataTreeField, ...position];
-        }
+        // for (let i in listField) {
+        //     let posMap = listField[i].position;
+        //     let position = posMap.map(elm => {
+        //         return {
+        //             ...elm,
+        //             id: elm._id,
+        //             text: elm.name,
+        //             state: { "opened": true },
+        //             parent: listField[i]._id.toString(),
+        //         }
+        //     });
+        //     dataTreeField = [...dataTreeField, ...position];
+        // }
 
         let listPosition = career.listPosition;
         let dataTreePosition = []
@@ -339,20 +276,20 @@ class SearchEmployeeForPackage extends Component {
             }
         });
         dataTreePosition = [...dataTreePosition, ...pos];
-        for (let i in listPosition) {
-            let desMap = listPosition[i].description;
-            let description = desMap.map(elm => {
-                return {
-                    ...elm,
-                    id: elm._id,
-                    text: elm.name,
-                    state: { "opened": true },
-                    parent: listPosition[i]._id.toString(),
-                }
-            });
-            dataTreePosition = [...dataTreePosition, ...description];
+        // for (let i in listPosition) {
+        //     let desMap = listPosition[i].description;
+        //     let description = desMap.map(elm => {
+        //         return {
+        //             ...elm,
+        //             id: elm._id,
+        //             text: elm.name,
+        //             state: { "opened": true },
+        //             parent: listPosition[i]._id.toString(),
+        //         }
+        //     });
+        //     dataTreePosition = [...dataTreePosition, ...description];
 
-        }
+        // }
         let listAction = career.listAction;
         let dataTreeAction = []
         let act = listAction.map(elm => {
@@ -365,19 +302,19 @@ class SearchEmployeeForPackage extends Component {
             }
         });
         dataTreeAction = [...dataTreeAction, ...act];
-        for (let i in listAction) {
-            let detailMap = listAction[i].detail;
-            let detail = detailMap.map(elm => {
-                return {
-                    ...elm,
-                    id: elm._id,
-                    text: elm.name,
-                    state: { "opened": true },
-                    parent: listAction[i]._id.toString(),
-                }
-            });
-            dataTreeAction = [...dataTreeAction, ...detail];
-        }
+        // for (let i in listAction) {
+        //     let detailMap = listAction[i].detail;
+        //     let detail = detailMap.map(elm => {
+        //         return {
+        //             ...elm,
+        //             id: elm._id,
+        //             text: elm.name,
+        //             state: { "opened": true },
+        //             parent: listAction[i]._id.toString(),
+        //         }
+        //     });
+        //     dataTreeAction = [...dataTreeAction, ...detail];
+        // }
 
         const listMajor = major.listMajor;
         let dataTreeMajor = []
@@ -505,20 +442,20 @@ class SearchEmployeeForPackage extends Component {
                         {/* Loại chứng chỉ */}
                         <div className="form-group">
                             <label className="form-control-static">Loại chứng chỉ</label>
-                            <input type="text" className="form-control" name="typeOfCertificate" onChange={this.handleChange} placeholder={"Oracal Database"} />
+                            <input type="text" className="form-control" name="certificatesType" onChange={this.handleChange} placeholder={"Oracal Database"} />
                         </div>
                         {/* Loại hợp đồng lao động */}
                         <div className="form-group">
                             <label className="form-control-static">Tên chứng chỉ</label>
-                            <input type="text" className="form-control" name="certificateName" onChange={this.handleChange} />
+                            <input type="text" className="form-control" name="certificatesName" onChange={this.handleChange} />
                         </div>
                         {/* Tháng hết hạn chứng chỉ */}
                         <div className="form-group">
                             <label className="form-control-static">Hiệu lực chứng chỉ</label>
                             <DatePicker
                                 id="month-endDate-certificate"
-                                dateFormat="month-year"
-                                value=""
+                                // dateFormat="month-year"
+                                value={certificatesEndDate}
                                 onChange={this.handleEndDateOfCertificateChange}
                             />
                         </div>
@@ -528,17 +465,17 @@ class SearchEmployeeForPackage extends Component {
                         {/* Vị trí công việc  */}
                         <div className="form-group">
                             <label className="form-control-static">Lĩnh vực công việc</label>
-                            <TreeSelect data={dataTreeField} value={field?.id} handleChange={this.handleField} mode="radioSelect" />
+                            <TreeSelect data={dataTreeField} value={field} handleChange={this.handleField} mode="radioSelect" />
                         </div>
                         {/* Tên gói thầu */}
                         <div className="form-group">
                             <label className="form-control-static">Tên gói thầu</label>
-                            <input type="text" className="form-control" name="packageName" onChange={this.handleChange} />
+                            <input type="text" className="form-control" name="package" onChange={this.handleChange} />
                         </div>
                         {/* Vị trí công việc  */}
                         <div className="form-group">
                             <label className="form-control-static">Vị trí công việc</label>
-                            <TreeSelect data={dataTreePosition} value={position?.id} handleChange={this.handlePosition} mode="radioSelect" />
+                            <TreeSelect data={dataTreePosition} value={position} handleChange={this.handlePosition} mode="radioSelect" />
                         </div>
                         {/* Vị trí công việc  */}
                         {/* <div className="form-group">
@@ -560,19 +497,19 @@ class SearchEmployeeForPackage extends Component {
                                 })}
                                 options={{ placeholder: "Chọn hoạt động công việc" }}
                                 onChange={this.handleAction}
-                                value={action?.map(e => e?.id)}
+                                value={action}
                                 multiple={true}
                             />
                         </div>
                         {/* Số năm kinh nghiệm */}
                         <div className="form-group">
                             <label className="form-control-static">Số năm KN</label>
-                            <input type="number" className="form-control" name="numOfExp" onChange={this.handleChange} placeholder={"Số năm kinh nghiệm"} />
+                            <input type="number" className="form-control" name="exp" onChange={this.handleChange} placeholder={"Số năm kinh nghiệm"} />
                         </div>
                         {/* Số năm kinh nghiệm công việc tương đương */}
                         <div className="form-group">
                             <label className="form-control-static">Số năm KN công việc tương đương</label>
-                            <input type="number" className="form-control" name="numOfSameCareer" onChange={this.handleChange} placeholder={"Kinh nghiệm công việc tương tự"} />
+                            <input type="number" className="form-control" name="sameExp" onChange={this.handleChange} placeholder={"Kinh nghiệm công việc tương tự"} />
                         </div>
                     </div>
 
