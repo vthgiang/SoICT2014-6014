@@ -433,8 +433,11 @@ export default {
         },
         super_admin: {
             system: {
-                restore_backup: "Restore backup",
-                delete_backup: "Delete backup",
+                edit_backup_info: "Chỉnh sửa thông tin phiên bản dữ liệu",
+                download_backup_version: "Tải xuống phiên bản dữ liệu",
+                backup_description: "Mô tả về phiên bản dữ liệu",
+                restore_backup: "Khôi phục phiên bản dữ liệu",
+                delete_backup: "Xóa phiên bản dữ liệu",
 
                 get_backup_list_success: "Lấy dữ liệu sao lưu thành công",
                 get_backup_list_faile: "Lấy dữ liệu sao lưu thất bại",
@@ -444,6 +447,9 @@ export default {
                 delete_backup_faile: "Xóa sao lưu thất bại",
                 restore_data_success: "Khôi phục dữ liệu thành công",
                 restore_data_faile: "Khôi phục dữ liệu thất bại",
+                edit_backup_info_success: "Chỉnh sửa thông tin phiên bản sao lưu thành công",
+                edit_backup_info_faile: "Chỉnh sửa thông tin phiên bản sao lưu thất bại",
+                backup_version_deleted: 'Phiên bản sao lưu dữ liệu này đã bị xóa, Không thể chính sửa thông tin phiên bản',
             },
 
             organization_unit: {
@@ -1154,6 +1160,8 @@ export default {
             manage_discount: "Giảm giá",
             manage_tax: "Thuế",
             manage_sla: "Cam kết chất lượng",
+            manage_business_department: "Phòng kinh doanh",
+            manage_admin_department: "Phòng kế toán bán hàng",
 
             // Quản lý kế hoạch sản xuất
             manage_plans: "Quản lý kế hoạch sản xuất",
@@ -1472,6 +1480,8 @@ export default {
                 aplication_annual_leave_success: "Thêm đơn xin nghỉ thành công",
                 import_annual_leave_success: "Thêm dữ liệu từ file thành công",
                 import_annual_leave_faile: "Thêm dữ liệu từ file thất bại",
+
+                employee_invalid: 'Tài khoản chưa đăng ký thông tin nhân viên. Vui lòng kiểm tra lại',
             },
 
             // Quản lý khen thưởng kỷ luật
@@ -4292,6 +4302,7 @@ export default {
                 detail_title: "Chi tiết khu vực lưu trữ",
             },
             bill_management: {
+                text: "Chưa đánh lô cho hàng hóa",
                 billType: {
                     1: "Nhập nguyên vật liệu",
                     2: "Nhập thành phẩm",
@@ -4537,6 +4548,7 @@ export default {
                 edit_faile: "Chỉnh sửa lô hàng thất bại",
                 get_lot_failed: "Lấy lô hàng thất bại",
                 push_lot: "Lô chưa được xếp vào kho",
+                text: "Hàng hóa chưa xếp hết vào kho",
             },
         },
 
@@ -4937,10 +4949,21 @@ export default {
                 manufacturing_good_info: "Thông tin các sản phẩm cần sản xuất",
                 productivity_mill: "Thông tin năng xuất của phân xưởng sản xuất",
                 divide_command: "Phân chia các lệnh sản xuất",
-                quantity_commmanded: "Số lượng đã tạo lệnh",
+                quantity_not_commmanded: "Số lượng chưa tạo lệnh",
                 mill: "Xưởng sản xuất",
-                productity: "Năng xuất / ca",
-                number_workers: "Số nhân công / ca"
+                productity: "Số sản phẩm sản xuất / ca",
+                person_number: "Số công nhân / ca",
+                approvers: "Người phê duyệt",
+                qualityControlStaffs: "Người đảm bảo chất lượng",
+                accountables: "Người giám sát",
+                command_code: "Mã lệnh",
+                created_all_command: "Vui lòng phân hết số lượng các sản phẩm vào lệnh sản xuất",
+                command_quantity: "Số lượng",
+                choose_quality_control_staffs: "Vui lòng chọn người kiểm định chất lượng",
+                error_quantity_input_remaining: "Số lượng không thể lớn hơn số lượng chưa tạo lệnh sản xuất",
+                error_quantity_input_good: "Vui lòng chọn sản phẩm cần sản xuất trước"
+
+
 
 
 

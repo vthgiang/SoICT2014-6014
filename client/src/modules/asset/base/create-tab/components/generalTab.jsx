@@ -569,7 +569,6 @@ class GeneralTab extends Component {
             }
         })
         let typeArr = this.getAssetTypes();
-        console.log('STATTEEE', this.state.img);
 
         return (
             <div id={id} className="tab-pane active">
@@ -754,10 +753,10 @@ class GeneralTab extends Component {
 
                                 {/* Người sử dụng */}
                                 <div className={`form-group`}>
-                                    <label>{translate('asset.general_information.user')}&emsp; </label>
+                                    <label>{translate('asset.general_information.user')}</label>
                                     <div id="assignedToUserBox">
                                         <SelectBox
-                                            id={`assignedToUserBox${assignedToUser}`}
+                                            id={`assignedToUserBox${id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={assignedToUser ? assignedToUser : ""}
@@ -770,10 +769,10 @@ class GeneralTab extends Component {
 
                                 {/* Đơn vị sử dụng */}
                                 <div className="form-group">
-                                    <label>{translate('asset.general_information.organization_unit')}&emsp; </label>
+                                    <label>{translate('asset.general_information.organization_unit')}</label>
                                     <div id="assignedToOrganizationalUnitBox">
                                         <SelectBox
-                                            id={`assignedToOrganizationalUnitBox${assignedToOrganizationalUnit}`}
+                                            id={`assignedToOrganizationalUnitBox${id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={[{ value: 'null', text: 'Chưa có đơn vị được giao sử dụng' }, ...departmentlist.map(x => { return { value: x._id, text: x.name } })]}
@@ -786,9 +785,9 @@ class GeneralTab extends Component {
 
                                 {/* Thời gian bắt đầu sử dụng */}
                                 <div className="form-group">
-                                    <label>{translate('asset.general_information.handover_from_date')}&emsp; </label>
+                                    <label>{translate('asset.general_information.handover_from_date')}</label>
                                     < DatePicker
-                                        id={`start-date${assignedToUser}-${assignedToOrganizationalUnit}`}
+                                        id={`start-date-${id}`}
                                         value={startDate}
                                         disabled
                                     />
@@ -796,9 +795,9 @@ class GeneralTab extends Component {
 
                                 {/* Thời gian kết thúc sử dụng */}
                                 <div className="form-group">
-                                    <label>{translate('asset.general_information.handover_to_date')}&emsp; </label>
+                                    <label>{translate('asset.general_information.handover_to_date')}</label>
                                     < DatePicker
-                                        id={`end-date${assignedToUser}-${assignedToOrganizationalUnit}`}
+                                        id={`end-date-${id}`}
                                         value={endDate}
                                         disabled
                                     />

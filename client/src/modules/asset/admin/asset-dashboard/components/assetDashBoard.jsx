@@ -13,6 +13,7 @@ import { AssetIsExpired } from './asset-is-expired/assetIsExpired';
 import { AssetByType } from './asset-by-type/assetByType';
 import { PurchaseAndDisposal } from './asset-purchase-disposal/purchaseAndDisposal';
 import { IncidentAndMaintenance } from './asset-incident-maintenance/incidentAndMaintenance';
+import { getPropertyOfValue } from '../../../../../helpers/stringMethod';
 
 class DashBoardAssets extends Component {
 
@@ -81,28 +82,6 @@ class DashBoardAssets extends Component {
         });
     }
 
-    // Function format dữ liệu Date thành string
-    formatDate(date, monthYear = false) {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2) {
-            month = '0' + month;
-        }
-
-        if (day.length < 2) {
-            day = '0' + day;
-        }
-
-        if (monthYear === true) {
-            return [month, year].join('-');
-        } else {
-            return [day, month, year].join('-');
-        }
-    }
-
     returnCountNumber = (array, status) => array.filter(item => item.status === status).length;
 
     handleNavTabs = (tab) => {
@@ -120,6 +99,7 @@ class DashBoardAssets extends Component {
 
     // Function format dữ liệu Date thành string
     formatDate(date, monthYear = false) {
+        if (!date) return '';
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -241,9 +221,21 @@ class DashBoardAssets extends Component {
         })
     }
 
+    formatStatus = (status) => {
+        const { translate } = this.props;
+        switch (status) {
+            case 'ready_to_use': return translate('asset.general_information.ready_use');
+            case 'in_use': return translate('asset.general_information.using');
+            case 'broken': return translate('asset.general_information.damaged');
+            case 'lost': return translate('asset.general_information.lost');
+            case 'disposed': return translate('asset.general_information.disposal');
+            default: return ''
+        }
+    }
+
     setAssetIsExpiredExportData = (data, assetTypeList, userList, dayAvailable) => {
         let exportData, assetIsExpired;
-
+        let userlist = this.props.user.list;
         if (data && data.length !== 0 && assetTypeList && userList) {
             exportData = data.map((item, index) => {
                 let asset = item.asset;
@@ -252,16 +244,15 @@ class DashBoardAssets extends Component {
                         STT: index + 1,
                         code: asset.code,
                         name: asset.assetName,
-                        type: assetTypeList.find(item => item._id === asset.assetType) ? assetTypeList.find(item => item._id === asset.assetType).typeName : '',
+                        type: typeof (asset.assetType) === 'object' ? asset.assetType.reduce(((node, cur) => node ? node + ', ' + cur.typeName : node + cur.typeName), '') : '',
                         purchaseDate: this.formatDate(asset.purchaseDate),
-                        manager: userList.find(item => item._id === asset.managedBy) ? userList.find(item => item._id === asset.managedBy).name : '',
-                        user: asset.assignedToUser ? (userList.length !== 0 && userList.find(item => item._id === asset.assignedToUser) ? userList.find(item => item._id === asset.assignedToUser).name : '') : '',
-                        organizationalUnit: asset.assignedToOrganizationalUnit ? asset.assignedToOrganizationalUnit : '',
-                        status: asset.status,
-                        dayAvailable: item.day + (dayAvailable ? " ngày" : "")
+                        manager: getPropertyOfValue(asset.managedBy, 'email', false, userlist),
+                        user: getPropertyOfValue(asset.assignedToUser, 'email', false, userlist),
+                        organizationalUnit: getPropertyOfValue(asset.assignedToOrganizationalUnit, 'name', false),
+                        status: this.formatStatus(asset.status),
+                        dayAvailable: item.day
                     }
                 }
-
             })
         }
 
@@ -282,7 +273,7 @@ class DashBoardAssets extends Component {
                                 { key: "purchaseDate", value: "Ngày nhập" },
                                 { key: "manager", value: "Người quản lý" },
                                 { key: "user", value: "Người sử dụng" },
-                                { key: "organizaitonalUnit", value: "Đơn vị sử dụng" },
+                                { key: "organizationalUnit", value: "Đơn vị sử dụng" },
                                 { key: "status", value: "Trạng thái" },
                                 { key: "dayAvailable", value: "Thời gian còn lại" }
                             ],
@@ -558,7 +549,7 @@ class DashBoardAssets extends Component {
                             </LazyLoadComponent>
                         </div>
 
-                        {/* Thống kê mua bán tài sản*/}
+                        {/* Thống kê sự cố bảo trì*/}
                         <div className="tab-pane" id="administration-incident-maintenance">
                             <LazyLoadComponent
                                 key="AdministrationIncidentAndMaintenance"
@@ -569,7 +560,7 @@ class DashBoardAssets extends Component {
                             </LazyLoadComponent>
                         </div>
 
-                        {/** Biểu đồ thống kê tài sản */}
+                        {/** Thống kê theo trạng thái và giá trị */}
                         <div className="tab-pane" id="administration-asset-statistics">
                             <LazyLoadComponent
                                 key="AdministrationAssetStatistics"
@@ -600,8 +591,8 @@ class DashBoardAssets extends Component {
 
 function mapState(state) {
     const { listAssets } = state.assetsManager;
-    const { assetType } = state;
-    return { listAssets, assetType };
+    const { assetType, user } = state;
+    return { listAssets, assetType, user };
 }
 
 const DashBoard = connect(mapState)(withTranslate(DashBoardAssets));

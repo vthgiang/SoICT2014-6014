@@ -107,7 +107,8 @@ exports.getGoodDetail = async (id, portal) => {
     return await Good(connect(DB_CONNECTION, portal))
         .findById(id)
         .populate([
-            { path: 'materials.good', select: 'id name' }
+            { path: 'materials.good', select: 'id name' },
+            { path: 'manufacturingMills.manufacturingMill' }
         ])
 }
 
@@ -165,5 +166,6 @@ exports.getAllGoods = async (company, portal) => {
         .find({ company })
         .populate([
             { path: 'materials.good', select: 'id name' },
+            { path: 'manufacturingMills.manufacturingMill' }
         ])
 }

@@ -475,8 +475,11 @@ class QuoteCreateGood extends Component {
     };
 
     deleteGood = (goodId) => {
+        console.log("goodId", goodId);
         let { listGoods } = this.props;
-        let goodsFilter = listGoods.filter((item) => item._id !== goodId);
+        console.log("listGoods", listGoods);
+        let goodsFilter = listGoods.filter((item) => item.good._id !== goodId);
+        console.log("goodsFilter", goodsFilter);
         this.props.setGoods(goodsFilter);
     };
 
@@ -988,7 +991,7 @@ class QuoteCreateGood extends Component {
                                                 }}
                                                 data-toggle="modal"
                                                 data-backdrop="static"
-                                                href={"#modal-create-quote-discounts-of-good-detail"}
+                                                href={"#modal-edit-quote-discounts-of-good-detail"}
                                                 title="Click để xem chi tiết"
                                             >
                                                 {item.amount && item.amountAfterDiscount
@@ -1020,7 +1023,7 @@ class QuoteCreateGood extends Component {
                                                     }}
                                                     data-toggle="modal"
                                                     data-backdrop="static"
-                                                    href={"#modal-create-quote-slas-of-good-detail"}
+                                                    href={"#modal-edit-quote-slas-of-good-detail"}
                                                     onClick={() => setCurrentSlasOfGood(item.slasOfGood)}
                                                 >
                                                     Chi tiết &ensp;
@@ -1036,7 +1039,7 @@ class QuoteCreateGood extends Component {
                                                 </i>
                                             </a>
                                             <a className="edit text-red">
-                                                <i className="material-icons" onClick={() => this.deleteGood(item._id)}>
+                                                <i className="material-icons" onClick={() => this.deleteGood(item.good._id)}>
                                                     delete
                                                 </i>
                                             </a>

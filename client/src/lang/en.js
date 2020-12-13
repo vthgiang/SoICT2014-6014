@@ -422,6 +422,9 @@ export default {
         },
         super_admin: {
             system: {
+                edit_backup_info: "Edit backup version information",
+                download_backup_version: "Download backup version",
+                backup_description: "Backup version information",
                 restore_backup: "Restore backup",
                 delete_backup: "Delete backup",
 
@@ -433,6 +436,9 @@ export default {
                 delete_backup_faile: "Delete backup faile",
                 restore_data_success: "Restore data successfully",
                 restore_data_faile: "Restore data faile",
+                edit_backup_info_success: "Edit backup information success",
+                edit_backup_info_faile: "Edit backup information faile",
+                backup_version_deleted: "Backup version has been deleted, cannot edit backup version information."
             },
 
             organization_unit: {
@@ -997,6 +1003,8 @@ export default {
             manage_discount: "Discount",
             manage_tax: "Tax",
             manage_sla: "Service Level Agreement",
+            manage_business_department: "Sales Department",
+            manage_admin_department: "Sales Accounting Department",
 
             //QUẢN LÝ KẾ HOẠCH SẢN XUẤT
             manage_plans: "Manage Plans",
@@ -1262,6 +1270,8 @@ export default {
                 edit_salary_faile: "Edit salary faile",
                 import_salary_success: "Import salary success",
                 import_salary_faile: "Import salary faile",
+
+                employee_invalid: 'The account has not registered employee information. Please check again.',
             },
 
             // Quản lý nghỉ phép

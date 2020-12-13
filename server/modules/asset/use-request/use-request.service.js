@@ -21,7 +21,12 @@ exports.searchUseRequests = async (portal, company, query) => {
 
     // Thêm key tìm kiếm theo người đăng ký vào keySearch
     if (reqUseEmployee) {
-        let user = await User(connect(DB_CONNECTION, portal)).find({ name: { $regex: reqUseEmployee, $options: "i" } }).select('_id');
+        let user = await User(connect(DB_CONNECTION, portal)).find({
+            $or: [
+                {email: {$regex: reqUseEmployee, $options: "i"}},
+                {name: {$regex: reqUseEmployee, $options: "i"}}
+            ]
+        }).select('_id');
         let userIds = [];
         user.map(x => {
             userIds.push(x._id)
@@ -31,7 +36,12 @@ exports.searchUseRequests = async (portal, company, query) => {
 
     // Thêm key tìm kiếm theo người phê duyệt vào keySearch
     if (approver) {
-        let user = await User(connect(DB_CONNECTION, portal)).find({ name: { $regex: approver, $options: "i" } }).select('_id');
+        let user = await User(connect(DB_CONNECTION, portal)).find({
+            $or: [
+                {email: {$regex: approver, $options: "i"}},
+                {name: {$regex: approver, $options: "i"}}
+            ]
+        }).select('_id');
         let userIds = [];
         user.map(x => {
             userIds.push(x._id)

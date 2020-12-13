@@ -8,6 +8,7 @@ import { PurchaseRequestFromValidator } from '../../../user/purchase-request/com
 
 import { RecommendProcureActions } from '../../../user/purchase-request/redux/actions';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
+import { getFormatDateFromTime } from '../../../../../helpers/stringMethod';
 
 class PurchaseRequestEditForm extends Component {
     constructor(props) {
@@ -199,7 +200,7 @@ class PurchaseRequestEditForm extends Component {
                 ...prevState,
                 _id: nextProps._id,
                 recommendNumber: nextProps.recommendNumber,
-                dateCreate: nextProps.dateCreate,
+                dateCreate: getFormatDateFromTime(nextProps.dateCreate, 'dd-mm-yyyy'),
                 proponent: nextProps.proponent,
                 equipmentName: nextProps.equipmentName,
                 equipmentDescription: nextProps.equipmentDescription,

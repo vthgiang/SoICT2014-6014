@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
 import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
+import ValidationHelper from '../../../../../helpers/validationHelper';
 
-import { AssetCreateValidator } from '../../../base/create-tab/components/assetCreateValidator';
-
-import { IncidentActions } from '../redux/actions';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { AssetManagerActions } from '../../../admin/asset-information/redux/actions';
-import ValidationHelper from '../../../../../helpers/validationHelper';
+import { IncidentActions } from '../redux/actions';
 class IncidentCreateForm extends Component {
     constructor(props) {
         super(props);
@@ -242,7 +239,7 @@ class IncidentCreateForm extends Component {
                             <div className="form-group">
                                 <label>{translate('asset.general_information.asset_status')}</label>
                                 <SelectBox
-                                    id={`status-asset-${this.state._id}`}
+                                    id={`status-asset-${type}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={[
@@ -336,3 +333,4 @@ const actionCreators = {
 
 const createForm = connect(mapState, actionCreators)(withTranslate(IncidentCreateForm));
 export { createForm as IncidentCreateForm };
+

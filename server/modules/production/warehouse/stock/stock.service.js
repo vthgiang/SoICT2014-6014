@@ -89,18 +89,18 @@ exports.createStock = async (company, data, portal) => {
 exports.editStock = async (id, data, portal) => {
     let stock = await Stock(connect(DB_CONNECTION, portal)).findById(id);
 
-    stock.code = data.code,
-    stock.name = data.name,
-    stock.status = data.status,
-    stock.description = data.description,
-    stock.address = data.address,
-    stock.goods = data.goods.map(item => {
+    stock.code = data.code ? data.code : stock.code,
+    stock.name = data.name ? data.name : stock.name,
+    stock.status = data.status ? data.status : stock.status,
+    stock.description = data.description ? data.description : stock.description,
+    stock.address = data.address ? data.address : stock.address,
+    stock.goods = data.goods ? data.goods.map(item => {
         return {
             good: item.good,
             maxQuantity: item.maxQuantity,
             minQuantity: item.minQuantity
         }
-    }),
+    }) : stock.goods,
     stock.managementLocation = data.managementLocation ? data.managementLocation.map(item => {
         return {
             role: item.role,

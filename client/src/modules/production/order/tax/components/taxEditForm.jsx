@@ -516,7 +516,6 @@ class TaxEditForm extends Component {
                 goods: dataGoods,
             };
             await this.props.updateTax(taxId, data);
-            await this.props.reloadState();
         }
     };
 
