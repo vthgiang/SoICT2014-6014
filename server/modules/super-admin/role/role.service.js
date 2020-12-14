@@ -228,13 +228,12 @@ exports.createRelationshipUserRole = async (portal, userId, roleId) => {
 exports.editRole = async(portal, id, data={}) => {
     const role = await Role(connect(DB_CONNECTION, portal)).findById(id);
     const check = await Role(connect(DB_CONNECTION, portal)).findOne({name: data.name});
-    if(check && check._id !== role._id) throw ['role_name_exist'];
-
-    if(data.name && data.name !== ''){
+    if(check && check._id.toString() !== role._id.toString()) throw ['role_name_exist'];
+    if(data.name){
         role.name = data.name;
     }
 
-    if(data.parents && data.parents !== ''){
+    if(data.parents){
         role.parents = data.parents;
     }
 

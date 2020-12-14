@@ -51,6 +51,7 @@ class DiscountManagementTable extends Component {
     };
 
     handleEditDiscount = async (discount) => {
+        console.log("discount", discount);
         await this.setState((state) => {
             return {
                 ...state,
@@ -67,9 +68,7 @@ class DiscountManagementTable extends Component {
     };
 
     deleteDiscountByCode = (code) => {
-        let { limit, page, queryDate } = this.state;
         this.props.deleteDiscountByCode({ code });
-        this.props.getAllDiscounts({ limit, page, queryDate });
     };
 
     handleQueryDateChange = (value) => {
@@ -129,7 +128,7 @@ class DiscountManagementTable extends Component {
                 <div className="box-body qlcv">
                     <DiscountCreateForm />
                     <DiscountDetailForm discountDetail={discountDetail} />
-                    {/* {currentRow && <DiscountEditForm discountEdit={currentRow} />} */}
+                    {currentRow && <DiscountEditForm discountEdit={currentRow} />}
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">Mã giảm giá</label>

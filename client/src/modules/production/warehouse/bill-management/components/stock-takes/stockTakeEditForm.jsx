@@ -17,6 +17,7 @@ class StockTakeEditForm extends Component {
             lots: []
         }
         this.state = {
+            userId: localStorage.getItem("userId"),
             list: [],
             lots: [],
             listGood: [],
@@ -536,6 +537,7 @@ class StockTakeEditForm extends Component {
                 group: nextProps.group,
                 type: nextProps.type,
                 users: nextProps.users,
+                creator: nextProps.creator,
                 approvers: nextProps.approvers,
                 approver: approver,
                 qualityControlStaffs: qualityControlStaffs,
@@ -680,6 +682,7 @@ class StockTakeEditForm extends Component {
                                     </div>
                                 </fieldset>
                             </div>
+                            { this.state.userId === this.state.creator &&
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('manage_warehouse.bill_management.list_saffs')}</legend>
@@ -741,6 +744,7 @@ class StockTakeEditForm extends Component {
                                 </div>
                             </fieldset>
                             </div>
+                            }
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manage_warehouse.bill_management.goods')}</legend>

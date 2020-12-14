@@ -269,21 +269,20 @@ const EmployeeSchema = new Schema({
         urlFile: String
     }],
     career: [{
-        package: String,
+        package: [{
+            type: String,
+        }],
         field: {
-            name: String,
-            id: String,
-            code: String
+            type: Schema.Types.ObjectId,
+            ref: 'CareerField',
         },
         position: {
-            name: String,
-            id: String,
-            code: String
+            type: Schema.Types.ObjectId,
+            ref: "CareerPosition",
         },
         action: [{
-            name: String,
-            id: String,
-            code: String
+            type: Schema.Types.ObjectId,
+            ref: "CareerAction",
         }],
         startDate: Date,
         endDate: Date,

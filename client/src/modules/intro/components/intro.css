@@ -7,17 +7,18 @@ header.fixed-top {
     background-color: #605CA8;
 }
 
-header.fixed-top > h3 {
+header.fixed-top > h1 {
+    font-family: 'Trebuchet MS', sans-serif;
     margin: 0;
     color: white;
-    font-size: 2.5rem;
-    font-weight: 600;
-    padding: 10px 20px;
+    font-size: 3.0rem;
+    font-weight: bold;
+    padding: 12px 24px 12px 24px;
 }
 
 span.dx-language {
     position: absolute;
-    top: 4px;
+    top: 10px;
     right: 10px;
 }
 
@@ -46,8 +47,21 @@ span.dx-language-setting > a > img {
 
 span.dx-auth {
     position: absolute;
-    top: 13px;
+    top: 20px;
     right: 50px;
+}
+
+span.dx-options {
+    position: absolute;
+    top: 20px;
+    right: 180px;
+    font-weight: bold;
+}
+
+span.dx-options > a {
+    padding-left: 12px;
+    font-size: 1.6rem;
+    color: #fff;
 }
 
 span.dx-auth > button.signin {
@@ -56,7 +70,7 @@ span.dx-auth > button.signin {
     background-color: white;
     border-radius: 2px;
     color: #605CA8;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     font-weight: bolder;
 }
 
@@ -76,18 +90,22 @@ div.row.dx-footer {
 
 section.dx-container {
     background-color: #fff;
-    padding: 60px 400px;
+    padding: 140px 400px;
+}
+
+section#dx-intro.dx-container {
+    min-height: 100vh;
 }
 
 @media (max-width: 1400px) {
     section.dx-container {
-        padding: 60px 120px;
+        padding: 80px 120px;
     }    
 }
 
 @media (max-width: 900px) {
     section.dx-container {
-        padding: 60px 120px;
+        padding: 90px 120px;
     }    
 }
 
@@ -95,6 +113,15 @@ section.dx-container {
     section.dx-container {
         padding: 60px 10px 0px 10px;
     }    
+}
+
+.dx-intro-container {
+    display: flex;
+    align-items: center;
+    /* justify-content: center; */
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
 }
 
 .p-center-h {
@@ -122,16 +149,18 @@ section.dx-container {
 
 ul.dx-services {
     margin-top: 20px;
-    font-size: 14px;
+    font-size: 16px;
     list-style-type: none;
 }
 
 li.dx-service-item {
     font-weight: 400;
+    font-size: 18px;
 }
 
 h2.dx-sologan {
-    font-size: 4rem;
+    font-size: 5rem;
+    font-weight: bold;
 }
 
 li.dx-service-item > i {

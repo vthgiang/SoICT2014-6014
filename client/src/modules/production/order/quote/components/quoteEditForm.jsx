@@ -61,14 +61,15 @@ class QuoteEditForm extends Component {
                 effectiveDate: nextProps.quoteEdit.effectiveDate ? formatDate(nextProps.quoteEdit.effectiveDate) : "",
                 expirationDate: nextProps.quoteEdit.expirationDate ? formatDate(nextProps.quoteEdit.expirationDate) : "",
                 customer: nextProps.quoteEdit.customer._id,
-                customerName: nextProps.quoteEdit.customerName,
+                customerName: nextProps.quoteEdit.customer.name,
                 customerPhone: nextProps.quoteEdit.customerPhone,
+                customerTaxNumber: nextProps.quoteEdit.customer.taxNumber,
+                customerRepresent: nextProps.quoteEdit.customerRepresent,
                 customerAddress: nextProps.quoteEdit.customerAddress,
                 customerEmail: nextProps.quoteEdit.customerEmail,
-                customerRepresent: nextProps.quoteEdit.customerRepresent,
-                customerTaxNumber: nextProps.quoteEdit.customerTaxNumber,
                 deliveryTime: nextProps.quoteEdit.deliveryTime ? formatDate(nextProps.quoteEdit.effectiveDate) : "",
                 discountsOfOrderValue: nextProps.quoteEdit.discounts,
+                discountsOfOrderValueChecked: Object.assign({}),
                 note: nextProps.quoteEdit.note,
                 paymentAmount: nextProps.quoteEdit.paymentAmount,
                 shippingFee: nextProps.quoteEdit.shippingFee,
@@ -133,22 +134,26 @@ class QuoteEditForm extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        console.log("nextState.code", nextState.code, this.state.code);
-        if (nextProps.quoteEdit._id !== this.state.quoteId) {
+        console.log("nextState", nextState.code, this.state.quoteCode);
+        if (nextState.code !== this.state.quoteCode) {
             this.getDiscountOfOrderValueChecked();
+            this.setState({
+                quoteCode: nextState.code,
+            });
             return false;
         }
         return true;
     }
 
     componentDidMount() {
-        this.props.getCustomers();
-        this.props.getDiscountForOrderValue();
+        // this.props.getCustomers();
+        // this.props.getDiscountForOrderValue();
     }
 
     getDiscountOfOrderValueChecked = () => {
         const { listDiscountsByOrderValue } = this.props.discounts;
         let { discountsOfOrderValue, discountsOfOrderValueChecked } = this.state;
+        console.log("discountsOfOrderValueChecked", discountsOfOrderValueChecked);
         let amountAfterApplyTax = this.getAmountAfterApplyTax();
         if (discountsOfOrderValue) {
             discountsOfOrderValue.forEach((element) => {
@@ -158,6 +163,10 @@ class QuoteEditForm extends Component {
                     let checked = this.getDiscountsCheckedForEditQuote(discount, amountAfterApplyTax);
                     discountsOfOrderValueChecked[`${checked.id}`] = checked.status;
                 }
+            });
+            console.log("discountsOfOrderValueChecked", discountsOfOrderValueChecked);
+            this.setState({
+                discountsOfOrderValueChecked,
             });
         }
     };
@@ -563,8 +572,8 @@ class QuoteEditForm extends Component {
                 type: dis.type,
                 formality: dis.formality,
                 name: dis.name,
-                effectiveDate: dis.effectiveDate,
-                expirationDate: dis.expirationDate,
+                effectiveDate: dis.effectiveDate ? new Date(formatToTimeZoneDate(dis.effectiveDate)) : undefined,
+                expirationDate: dis.expirationDate ? new Date(formatToTimeZoneDate(dis.expirationDate)) : undefined,
                 discountedCash: dis.discountedCash,
                 discountedPercentage: dis.discountedPercentage,
                 maximumFreeShippingCost: dis.maximumFreeShippingCost,
@@ -573,7 +582,9 @@ class QuoteEditForm extends Component {
                     ? dis.bonusGoods.map((bonus) => {
                           return {
                               good: bonus.good._id,
-                              expirationDateOfGoodBonus: bonus.expirationDateOfGoodBonus,
+                              expirationDateOfGoodBonus: bonus.expirationDateOfGoodBonus
+                                  ? new Date(formatToTimeZoneDate(bonus.expirationDateOfGoodBonus))
+                                  : undefined,
                               quantityOfBonusGood: bonus.quantityOfBonusGood,
                           };
                       })
@@ -581,7 +592,9 @@ class QuoteEditForm extends Component {
                 discountOnGoods: dis.discountOnGoods
                     ? {
                           good: dis.discountOnGoods.good._id,
-                          expirationDate: dis.discountOnGoods.expirationDate,
+                          expirationDate: dis.discountOnGoods.expirationDate
+                              ? new Date(formatToTimeZoneDate(dis.discountOnGoods.expirationDate))
+                              : undefined,
                           discountedPrice: dis.discountOnGoods.discountedPrice,
                       }
                     : undefined,
@@ -616,11 +629,9 @@ class QuoteEditForm extends Component {
         if (this.isValidateForm()) {
             let {
                 customer,
-                customerName,
                 customerAddress,
                 customerPhone,
                 customerRepresent,
-                customerTaxNumber,
                 customerEmail,
                 code,
                 effectiveDate,
@@ -631,6 +642,7 @@ class QuoteEditForm extends Component {
                 discountsOfOrderValue,
                 paymentAmount,
                 note,
+                quoteId,
             } = this.state;
 
             let data = {
@@ -638,11 +650,9 @@ class QuoteEditForm extends Component {
                 effectiveDate: effectiveDate ? new Date(formatToTimeZoneDate(effectiveDate)) : undefined,
                 expirationDate: expirationDate ? new Date(formatToTimeZoneDate(expirationDate)) : undefined,
                 customer,
-                customerName,
                 customerPhone,
                 customerAddress,
                 customerRepresent,
-                customerTaxNumber,
                 customerEmail,
                 goods: this.formatGoodForSubmit(),
                 discounts: discountsOfOrderValue.length ? this.formatDiscountForSubmit(discountsOfOrderValue) : [],
@@ -653,34 +663,16 @@ class QuoteEditForm extends Component {
                 note,
             };
 
-            await this.props.createNewQuote(data);
+            await this.props.editQuote(quoteId, data);
 
             this.setState((state) => {
                 return {
                     ...state,
-                    customer: "",
-                    customerName: "",
-                    customerAddress: "",
-                    customerPhone: "",
-                    customerRepresent: "",
-                    customerTaxNumbe: "",
-                    customerEmail: "",
-                    code: "",
-                    effectiveDate: "",
-                    expirationDate: "",
-                    shippingFee: "",
-                    deliveryTime: "",
-                    coin: "",
-                    goods: [],
-                    discountsOfOrderValue: [],
-                    paymentAmount: "",
-                    note: "",
-                    paymentAmount: "",
                     step: 0,
                 };
             });
 
-            window.$(`#modal-add-quote`).modal("hide");
+            window.$(`#modal-edit-quote`).modal("hide");
         }
     };
 
@@ -718,7 +710,8 @@ class QuoteEditForm extends Component {
         let enableStepOne = this.isValidateQuoteCreateInfo();
         let enableStepTwo = this.isValidateQuoteCreateGood();
         let enableFormSubmit = enableStepOne && enableStepTwo;
-        console.log("STATE", this.state);
+
+        console.log("discountsOfOrderValueChecked", discountsOfOrderValueChecked);
 
         return (
             <React.Fragment>
@@ -917,8 +910,8 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     getDiscountForOrderValue: DiscountActions.getDiscountForOrderValue,
-    getCustomers: CrmCustomerActions.getCustomers,
-    createNewQuote: QuoteActions.createNewQuote,
+    // getCustomers: CrmCustomerActions.getCustomers,
+    editQuote: QuoteActions.editQuote,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuoteEditForm));

@@ -150,7 +150,31 @@ class UseRequestCreateForm extends Component {
 
     // Bắt sự kiện submit form
     save = async () => {
-        let dataToSubmit = { ...this.state, proponent: this.props.auth.user._id }
+        let { dateStartUse, dateEndUse, dateCreate, date, partStart, partEnd, partCreate, startTime, stopTime } = this.state;
+
+        partStart = dateStartUse.split('-');
+        partEnd = dateEndUse.split('-');
+        partCreate = dateCreate.split('-');
+
+        if (startTime) {
+            date = [partStart[2], partStart[1], partStart[0]].join('-') + ' ' + startTime;
+            dateStartUse = new Date(date);
+        } else {
+            date = [partStart[2], partStart[1], partStart[0]].join('-')
+            dateStartUse = new Date(date);
+        }
+        if (stopTime) {
+            date = [partEnd[2], partEnd[1], partEnd[0]].join('-') + ' ' + stopTime;
+            dateEndUse = new Date(date);
+        } else {
+            date = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+            dateEndUse = new Date(date);
+        }
+
+        date = [partCreate[2], partCreate[1], partCreate[0]].join('-');
+        dateCreate = new Date(date);
+
+        let dataToSubmit = { ...this.state, dateCreate, dateStartUse, dateEndUse, proponent: this.props.auth.user._id }
         if (this.isFormValidated()) {
             let nowDate = new Date();
             let dateStartUse, date;

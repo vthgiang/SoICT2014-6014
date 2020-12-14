@@ -11,8 +11,6 @@ exports.searchAssetProfiles = async (req, res) => {
         let data;
         if (req.query.type === "get-building-as-tree") {
             data = await AssetService.getListBuildingAsTree(req.portal, req.user.company._id);
-        } else if (!req.query.page && !req.query.limit) {
-            data = await AssetService.getAssets(req.portal, req.user.company._id, false);
         } else {
             let params = {
                 code: req.query.code,
@@ -136,13 +134,12 @@ exports.updateAssetInformation = async (req, res) => {
             content: data
         });
     } catch (error) {
-        let messages = error[0] === 'asset_code_exist' ? ["asset_code_exist"] : ["create_asset_faile"];
 
         await Logger.error(req.user.email, 'EDIT_ASSET', req.portal);
         res.status(400).json({
             success: false,
-            messages: messages,
-            content: { error: error }
+            messages: Array.isArray(error) ? error : ['create_asset_faile'] ,
+            content: { error }
         });
     }
 }

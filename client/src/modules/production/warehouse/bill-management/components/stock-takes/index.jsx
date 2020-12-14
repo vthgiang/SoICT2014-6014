@@ -180,6 +180,7 @@ class TakeManagement extends Component {
                             accountables={currentRow.accountables ? currentRow.accountables : []}
                             description={currentRow.description}
                             listGood={currentRow.goods}
+                            creator={currentRow.creator ? currentRow.creator._id : ''}
                         />
                     }
 

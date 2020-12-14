@@ -1,9 +1,9 @@
 import { SLAConstants } from './constants';
 
-var findIndex = (array, id) => {
+var findIndex = (array, code) => {
     var result = -1;
     array.forEach((value, index) => {
-        if (value._id === id) {
+        if (value.code === code) {
             result = index;
         }
     });
@@ -94,17 +94,17 @@ export function serviceLevelAgreements(state = initState, action) {
                 isLoading: false
             }
         case SLAConstants.DISABLE_SLA_SUCCESS:
-            index = findIndex(state.listSLAs, action.payload);
+            index = findIndex(state.listSLAs, action.payload.sla.code);
 
             if(index !== -1){
-                state.listSLAs.splice(index, 1);
+                state.listSLAs[index] = action.payload.sla;
             }
             return {
                 ...state,
                 isLoading: false
         }
         case SLAConstants.DELETE_SLA_BY_CODE_SUCCESS:
-            index = findIndex(state.listSLAs, action.payload);
+            index = findIndex(state.listSLAs, action.payload[0].code);
 
             if(index !== -1){
                 state.listSLAs.splice(index, 1);

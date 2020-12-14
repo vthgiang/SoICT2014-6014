@@ -32,7 +32,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
 
         let { task, userId } = this.state;
         let date = this.formatDate(new Date());
-        let department = task.organizationalUnit._id;
+        let department = task.organizationalUnit ? task.organizationalUnit._id : '';
 
         this.props.getAllKpiSetsOrganizationalUnitByMonth(userId, department, date);
     }
@@ -357,15 +357,15 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     isFormValidated = () => {
         let { info, errorInfo } = this.state;
         let check = true;
-        if(Object.keys(errorInfo).length !== 0) {
-            for(let i in errorInfo ) {
+        if (Object.keys(errorInfo).length !== 0) {
+            for (let i in errorInfo) {
                 if (errorInfo[i]) {
                     check = false;
                     return;
                 }
             }
         }
-       
+
         return this.validateTaskName(this.state.taskName, false)
             && this.validateTaskDescription(this.state.taskDescription, false) && (this.state.errorOnProgress === undefined && check)
     }
@@ -415,7 +415,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         if (title !== '' || description !== '') {
             this.props.addTaskLog({
                 createdAt: Date.now(),
-                
+
                 creator: getStorage("userId"),
                 title: title,
                 description: description,
@@ -443,7 +443,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     }
 
     checkNullUndefined = (x) => {
-        if( x === null || x === undefined ) {
+        if (x === null || x === undefined) {
             return false;
         }
         else return true;

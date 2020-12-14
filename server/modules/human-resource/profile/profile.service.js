@@ -39,20 +39,20 @@ exports.getAllPositionRolesAndOrganizationalUnitsOfUser = async (portal, emailIn
         let newRoles = roles.map(role => role.roleId._id);
         organizationalUnits = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({
             $or: [{
-                    'deans': {
-                        $in: newRoles
-                    }
-                },
-                {
-                    'viceDeans': {
-                        $in: newRoles
-                    }
-                },
-                {
-                    'employees': {
-                        $in: newRoles
-                    }
+                'deans': {
+                    $in: newRoles
                 }
+            },
+            {
+                'viceDeans': {
+                    $in: newRoles
+                }
+            },
+            {
+                'employees': {
+                    $in: newRoles
+                }
+            }
             ]
         });
     }
@@ -117,7 +117,11 @@ exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async (portal, orga
 exports.getEmployeeProfile = async (portal, email) => {
     let employees = await Employee(connect(DB_CONNECTION, portal)).find({
         emailInCompany: email
-    });
+    }).populate([
+        { path: "career.field" },
+        { path: "career.position" },
+        { path: "career.action" },
+    ]);
     if (employees.length === 0) {
         return {
             employees: employees
@@ -276,15 +280,15 @@ exports.getEmployees = async (portal, company, organizationalUnits, positions, a
         }
     } else {
         if (organizationalUnits !== undefined) {
-            let emailInCompany=[];
-            if(organizationalUnits==='allUnist'){
+            let emailInCompany = [];
+            if (organizationalUnits === 'allUnist') {
                 let units = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find();
-                units =units.map(x=>x._id);
+                units = units.map(x => x._id);
                 emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(portal, units, undefined);
             } else {
                 emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(portal, organizationalUnits, positions);
             }
-            
+
             keySearch = {
                 ...keySearch,
                 emailInCompany: {
@@ -302,8 +306,8 @@ exports.getEmployees = async (portal, company, organizationalUnits, positions, a
                 startingDate: 1,
                 leavingDate: 1,
                 professionalSkill: 1,
-                status:1,
-                degrees:1
+                status: 1,
+                degrees: 1
 
             });
             let totalEmployee = listEmployeesOfOrganizationalUnits.length;
@@ -323,8 +327,8 @@ exports.getEmployees = async (portal, company, organizationalUnits, positions, a
             startingDate: 1,
             leavingDate: 1,
             professionalSkill: 1,
-            status:1,
-            degrees:1
+            status: 1,
+            degrees: 1
         });
         return {
             totalAllEmployee,
@@ -390,7 +394,7 @@ exports.getEmployeesByStartingAndLeaving = async (portal, organizationalUnits, s
         let endYear = new Date(endDate).getFullYear();
         endMonth = endMonth + 1;
         let arrMonth = [];
-        for (let i = 0;; i++) {
+        for (let i = 0; ; i++) {
             let month = endMonth - i;
             if (month > 0) {
                 if (month.toString().length === 1) {
@@ -405,17 +409,17 @@ exports.getEmployeesByStartingAndLeaving = async (portal, organizationalUnits, s
                 }
             } else {
                 let j = 1;
-                for (j;; j++) {
+                for (j; ; j++) {
                     month = month + 12;
                     if (month > 0) {
                         break;
                     }
                 }
                 if (month.toString().length === 1) {
-                    month = `${endYear-j}-0${month}-01`;
+                    month = `${endYear - j}-0${month}-01`;
                     arrMonth = [...arrMonth, month];
                 } else {
-                    month = `${endYear-j}-${month}-01`;
+                    month = `${endYear - j}-${month}-01`;
                     arrMonth = [...arrMonth, month];
                 }
                 if (`${startDate}-01` === month) {
@@ -431,11 +435,11 @@ exports.getEmployeesByStartingAndLeaving = async (portal, organizationalUnits, s
             let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
             let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
             querysStartingDate = [...querysStartingDate, {
-                    startingDate: {
-                        "$gt": firstDay,
-                        "$lte": lastDay
-                    }
-                }],
+                startingDate: {
+                    "$gt": firstDay,
+                    "$lte": lastDay
+                }
+            }],
                 querysLeavingDate = [...querysLeavingDate, {
                     leavingDate: {
                         "$gt": firstDay,
@@ -521,7 +525,6 @@ exports.searchEmployeeProfiles = async (portal, params, company) => {
     let keySearch = {
         company: company
     };
-
     // Bắt sựu kiện theo đơn vị
     if (params.organizationalUnits) {
         let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(portal, params.organizationalUnits, undefined);
@@ -615,18 +618,23 @@ exports.searchEmployeeProfiles = async (portal, params, company) => {
 
     // Lấy danh sách nhân viên
     let listEmployees = await Employee(connect(DB_CONNECTION, portal)).find(keySearch, {
-            field1: 1,
-            employeeNumber: 1,
-            emailInCompany: 1,
-            birthdate: 1,
-            contracts: 1,
-            fullName: 1,
-            gender: 1,
-            contractEndDate: 1,
-            contractType: 1,
-            status: 1,
-            degrees:1
-        })
+        field1: 1,
+        employeeNumber: 1,
+        emailInCompany: 1,
+        birthdate: 1,
+        contracts: 1,
+        fullName: 1,
+        gender: 1,
+        contractEndDate: 1,
+        contractType: 1,
+        status: 1,
+        degrees: 1
+    })
+        .populate([
+            { path: "career.field" },
+            { path: "career.position" },
+            { path: "career.action" },
+        ])
         .sort({
             'createdAt': 'desc'
         }).skip(params.page).limit(params.limit);
@@ -840,7 +848,6 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
  * Cập nhât thông tin nhân viên theo id
  */
 exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company) => {
-    console.log('quququq\n\n\n', data);
     let {
         employee,
         createExperiences,
@@ -880,6 +887,7 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
         editSocialInsuranceDetails,
         deleteSocialInsuranceDetails
     } = data;
+    console.log('dataatatatta\n\n\n\n', data.createCareer, data.editCareer, data.deleteCareer);
     let avatar = employee.avatar,
         fileDegree = fileInfor.fileDegree,
         fileCertificate = fileInfor.fileCertificate,
@@ -947,6 +955,19 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
     oldEmployee.certificates = deleteEditCreateObjectInArrayObject(oldEmployee.certificates, deleteCertificates, editCertificates, createCertificates, fileCertificate);
     oldEmployee.contracts = deleteEditCreateObjectInArrayObject(oldEmployee.contracts, deleteContracts, editContracts, createContracts, fileContract);
     oldEmployee.files = deleteEditCreateObjectInArrayObject(oldEmployee.files, deleteFiles, editFiles, createFiles, file);
+
+    let x = oldEmployee.career;
+    console.log('xxxx', x);
+    let careerEdit = {
+        ...x,
+        package: x.position && x.position.package,
+        field: x.field && x.field._id,
+        position: x.position && x.position._id,
+        action: x.action && x.action.length > 0 && x.action.map(e => e._id),
+    }
+
+    // oldEmployee.career = careerEdit;
+    console.log("====\n\n", oldEmployee.career);
 
     oldEmployee.avatar = avatar;
     oldEmployee.fullName = employee.fullName;
@@ -1289,10 +1310,10 @@ exports.createNotificationEndOfContract = async (portal) => {
         // Lấy thời gian phải gia hạn hợp đồng do được học các khoá đào tạo có thời gian cam kết
         for (let i in employees) {
             let infoCourses = await EmployeeCourse(connect(DB_CONNECTION, portal)).find({
-                    employee: employees[i]._id
-                }, {
-                    course: 1
-                })
+                employee: employees[i]._id
+            }, {
+                course: 1
+            })
                 .populate({
                     path: 'course',
                     select: "endDate employeeCommitmentTime"
@@ -1336,8 +1357,8 @@ exports.createNotificationEndOfContract = async (portal) => {
                 title: "Thông báo hết hạn hợp đồng lao động",
                 level: "important",
                 content: `Hợp đồng lao động của bạn sẽ hết hiệu lực sau ${arrayTime[n]} ngày.` +
-                    `${employees[index].endDateCommitmentTime? " Tuy nhiên bạn phải làm thêm đến ngày "+
-                        this.formatDate(employees[index].endDateCommitmentTime, false) + " do bạn tham gia các khoá học có thời gian cam kết làm việc sau khi học xong khoá đào tạo.": ""}`,
+                    `${employees[index].endDateCommitmentTime ? " Tuy nhiên bạn phải làm thêm đến ngày " +
+                        this.formatDate(employees[index].endDateCommitmentTime, false) + " do bạn tham gia các khoá học có thời gian cam kết làm việc sau khi học xong khoá đào tạo." : ""}`,
                 sender: process.env.WEB_NAME,
                 user: user._id,
                 manualNotification: undefined
@@ -1748,5 +1769,232 @@ exports.importFile = async (portal, company, data) => {
             editEmployee.save();
         }
         return data;
+    }
+}
+
+
+/**
+ * Hàm tính tổng số năm kinh nghiệm tương đương
+ * @param {*} params 
+ */
+exports.calcSumOfExp = (data) => {
+    let sum = 0;
+    console.log('data', data);
+    for (let i in data) {
+        console.log('oo1', data[i].startDate, data[i].endDate);
+        let start = new Date(data[i].startDate).getTime();
+        let end = new Date(data[i].endDate).getTime();
+
+        console.log('oo2', start, end);
+
+        sum = sum + (end - start);
+    }
+
+    console.log("sum Exp", sum);
+
+    return sum;
+}
+
+/**
+ * Lấy danh sách nhân viên theo key tìm kiếm
+ * @params : Dữ liệu key tìm kiếm
+ * @company : Id công ty người tìm kiếm
+ */
+exports.searchEmployeeForPackage = async (portal, params, company) => {
+    let keySearch = {
+        company: company
+    };
+
+    // Bắt sựu kiện theo đơn vị
+    if (params.organizationalUnits) {
+        let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(portal, params.organizationalUnits, undefined);
+        keySearch = {
+            ...keySearch,
+            emailInCompany: {
+                $in: emailInCompany
+            }
+        }
+    }
+
+    // Bắt sựu kiện theo trình độ chuyên môn
+    if (params.professionalSkill) {
+        keySearch = {
+            ...keySearch,
+            professionalSkill: params.professionalSkill,
+        }
+    };
+
+    // Bắt sựu kiện theo chhuyeen ngành
+    if (params.major) {
+        keySearch = {
+            ...keySearch,
+            "major.group.id": params.major
+        }
+    };
+
+    // Bắt sựu kiện theo loại chứng chỉ
+    if (params.certificatesType) {
+        keySearch = {
+            ...keySearch,
+            "certificates.issueBy": {
+                $regex: params.certificatesType,
+                $options: "i"
+            }
+        }
+    };
+    // Bắt sựu kiện theo tên chứng chỉ
+    if (params.certificatesName) {
+        keySearch = {
+            ...keySearch,
+            "certificates.name": {
+                $regex: params.certificatesName,
+                $options: "i"
+            }
+        }
+    };
+    // Bắt sựu kiện theo ngày hết hạn chứng chỉ
+    if (params.certificatesEndDate) {
+        let date = new Date(params.certificatesEndDate);
+        keySearch = {
+            ...keySearch,
+            "certificates.endDate": {
+                "$lte": date,
+            }
+        }
+    };
+
+    // Bắt sựu kiện tìm kiếm gói thầu
+    if (params.package) {
+        keySearch = {
+            ...keySearch,
+            "career.package": {
+                $regex: params.package,
+                $options: "i"
+            },
+        };
+    };
+
+    // Bắt sựu kiện tìm kiếm field
+    if (params.field) {
+        keySearch = {
+            ...keySearch,
+            "career.field": params.field,
+        };
+    };
+
+    // Bắt sựu kiện tìm kiếm vị trí cv
+    if (params.position) {
+        keySearch = {
+            ...keySearch,
+            "career.position": params.position,
+        };
+    };
+
+    // Bắt sự kiện tìm kiếm theo action
+    if (params.action) {
+        keySearch = {
+            ...keySearch,
+            "career.action": {
+                $in: params.action
+            }
+        };
+    };
+
+    // Bắt sự kiện tìm kiếm theo số năm kinh nghiệm
+    if (params.exp) {
+        let now = new Date().getTime();
+        let date = new Date(now - params.exp * 24 * 60 * 60 * 1000);
+
+        keySearch = {
+            ...keySearch,
+            "career.startDate": {
+                "$lte": date,
+            },
+            // "degrees.year": {
+            //     "$lte": date,
+            // }
+        };
+    };
+
+    // // Thêm key tìm kiếm nhân viên theo ngày hết hạn hợp đồng vào keySearch
+    // if (params.endDateOfContract) {
+    //     let month = new Date(params.endDateOfContract);
+    //     let firstDay = new Date(month.getFullYear(), month.getMonth(), 1);
+    //     let lastDay = new Date(month.getFullYear(), month.getMonth() + 1, 1);
+    //     keySearch = {
+    //         ...keySearch,
+    //         contractEndDate: {
+    //             "$gt": firstDay,
+    //             "$lte": lastDay
+    //         }
+    //     }
+    // }
+
+    // // Bắt sựu kiện theo Loại hợp đồng lao động
+    // if (params.typeOfContract) {
+    //     keySearch = {
+    //         ...keySearch,
+    //         contractType: {
+    //             $regex: params.typeOfContract,
+    //             $options: "i"
+    //         }
+    //     }
+    // };
+
+    // // Bắt sựu kiện theo tháng sinh
+    // if (params.birthdate) {
+    //     let month = new Date(params.birthdate).getMonth() + 1;
+    //     keySearch = {
+    //         ...keySearch,
+    //         "$expr": {
+    //             "$eq": [{
+    //                 "$month": "$birthdate"
+    //             }, month]
+    //         }
+    //     }
+    // }
+
+
+    console.log('key', keySearch);
+    // Lấy danh sách nhân viên
+    let listData = await Employee(connect(DB_CONNECTION, portal)).find(keySearch, {
+        field: 1,
+        employeeNumber: 1,
+        emailInCompany: 1,
+        birthdate: 1,
+        contracts: 1,
+        fullName: 1,
+        gender: 1,
+        contractEndDate: 1,
+        contractType: 1,
+        status: 1,
+        degrees: 1,
+        career: 1,
+        major: 1,
+    })
+        .populate([
+            { path: "career.field" },
+            { path: "career.position" },
+            { path: "career.action" },
+        ])
+        .sort({
+            'createdAt': 'desc'
+        }).skip(params.page).limit(params.limit);
+
+    let listEmployees = listData;
+    let totalList = await Employee(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    console.log('list', totalList);
+    if (params.sameExp) {
+        let timeOfSameExp = params.sameExp * (24 * 60 * 60 * 1000 * 365);
+        listEmployees = listData.filter(e => this.calcSumOfExp(e.career) >= timeOfSameExp);
+        totalList = listEmployees.length;
+    }
+
+
+    // let expiresContract = await this.getEmployeeNumberExpiresContractInCurrentMonth(portal, company, new Date());
+    // let employeesHaveBirthdateInCurrentMonth = await this.getEmployeeNumberHaveBirthdateInCurrentMonth(portal, company, new Date())
+    return {
+        listEmployees,
+        totalList,
     }
 }

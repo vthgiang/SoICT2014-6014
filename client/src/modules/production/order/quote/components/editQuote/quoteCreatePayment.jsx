@@ -330,7 +330,7 @@ class QuoteCreatePayment extends Component {
                                                     }}
                                                     data-toggle="modal"
                                                     data-backdrop="static"
-                                                    href={"#modal-create-quote-discounts-of-good-detail"}
+                                                    href={"#modal-edit-quote-discounts-of-good-detail"}
                                                     title="Click để xem chi tiết"
                                                 >
                                                     {item.amount && item.amountAfterDiscount
@@ -358,7 +358,7 @@ class QuoteCreatePayment extends Component {
                                                         }}
                                                         data-toggle="modal"
                                                         data-backdrop="static"
-                                                        href={"#modal-create-quote-slas-of-good-detail"}
+                                                        href={"#modal-edit-quote-slas-of-good-detail"}
                                                         onClick={() => setCurrentSlasOfGood(item.slasOfGood)}
                                                     >
                                                         Chi tiết &ensp;

@@ -422,6 +422,9 @@ export default {
         },
         super_admin: {
             system: {
+                edit_backup_info: "Edit backup version information",
+                download_backup_version: "Download backup version",
+                backup_description: "Backup version information",
                 restore_backup: "Restore backup",
                 delete_backup: "Delete backup",
 
@@ -433,6 +436,9 @@ export default {
                 delete_backup_faile: "Delete backup faile",
                 restore_data_success: "Restore data successfully",
                 restore_data_faile: "Restore data faile",
+                edit_backup_info_success: "Edit backup information success",
+                edit_backup_info_faile: "Edit backup information faile",
+                backup_version_deleted: "Backup version has been deleted, cannot edit backup version information."
             },
 
             organization_unit: {
@@ -997,6 +1003,8 @@ export default {
             manage_discount: "Discount",
             manage_tax: "Tax",
             manage_sla: "Service Level Agreement",
+            manage_business_department: "Sales Department",
+            manage_admin_department: "Sales Accounting Department",
 
             //QUẢN LÝ KẾ HOẠCH SẢN XUẤT
             manage_plans: "Manage Plans",
@@ -1262,6 +1270,8 @@ export default {
                 edit_salary_faile: "Edit salary faile",
                 import_salary_success: "Import salary success",
                 import_salary_faile: "Import salary faile",
+
+                employee_invalid: 'The account has not registered employee information. Please check again.',
             },
 
             // Quản lý nghỉ phép
@@ -1461,7 +1471,7 @@ export default {
                 ethnic: "Ethnic group",
                 nationality: "Nationality",
                 religion: "Religion",
-                active: "Official staff",
+                active: "Official working",
                 leave: "Quit job",
                 career_fields: "Career/fields",
                 maternity_leave: "Maternity leave",
@@ -1497,7 +1507,7 @@ export default {
                 university: "University",
                 master_degree: "Maste degree",
                 phd: "Ph.D",
-                unavailable: "Unavailable",
+                unavailable: "Other",
                 work_experience: "Work experience",
                 unit: "Unit",
                 from_month_year: "From month/year",
@@ -2647,7 +2657,7 @@ export default {
                 err_total_log_time: "Total logged time deleted",
 
                 detail_refresh: "Refresh",
-                detail_edit: "Edit",
+                detail_edit: "Update task",
                 detail_end: "Finish",
                 detail_evaluate: "Evaluate",
                 detail_start_timer: "Start timer",

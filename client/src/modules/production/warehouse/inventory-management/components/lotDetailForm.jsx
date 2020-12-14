@@ -4,8 +4,7 @@ import { connect } from 'react-redux';
 import { DialogModal } from '../../../../../common-components';
 import { translate } from 'react-redux-multilingual/lib/utils';
 
-import { BillActions } from '../../bill-management/redux/actions';
-import BillDetailForm from '../../bill-management/components/genaral/billDetailForm';
+import LogLots from './logLots';
 
 class LotDetailForm extends Component {
     constructor(props) {
@@ -29,12 +28,6 @@ class LotDetailForm extends Component {
         return [day, month, year].join('-');
     }
 
-    handleShowDetailInfo = async (id) => {
-        console.log(id);
-        await this.props.getDetailBill(id);
-        window.$('#modal-detail-bill').modal('show');
-    }
-
     render() {
         const { translate, lots } = this.props;
         const { lotDetail } = lots;
@@ -51,7 +44,6 @@ class LotDetailForm extends Component {
                     hasNote={false}
                 >
                     
-                    <BillDetailForm />
                     <form id={`form-detail-lot`} >
                         {
                             lotDetail ?
@@ -97,43 +89,7 @@ class LotDetailForm extends Component {
                                     <legend className="scheduler-border">{translate('manage_warehouse.inventory_management.bin')}</legend>
                                     {lotDetail.stocks.map((x, index) => <p key={index}><b>Kho {x.stock.name} có {x.quantity} {lotDetail.good.baseUnit}: </b>{x.binLocations.map(item => item.binLocation.path + "(" + item.quantity + lotDetail.good.baseUnit +"), " )}</p>)}
                                 </fieldset>
-                                <fieldset className="scheduler-border">
-                                    <legend className="scheduler-border">{translate('manage_warehouse.inventory_management.history')}</legend>
-
-                                    <table className="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th style={{width: "5%"}} title={translate('manage_warehouse.inventory_management.index')}>{translate('manage_warehouse.inventory_management.index')}</th>
-                                                <th title={translate('manage_warehouse.inventory_management.bill')}>{translate('manage_warehouse.inventory_management.bill')}</th>
-                                                <th title={translate('manage_warehouse.inventory_management.date_month')}>{translate('manage_warehouse.inventory_management.date_month')}</th>
-                                                <th title={translate('manage_warehouse.inventory_management.status')}>{translate('manage_warehouse.inventory_management.status')}</th>
-                                                <th title={translate('manage_warehouse.inventory_management.number')}>{translate('manage_warehouse.inventory_management.number')}</th>
-                                                {/* <th title={translate('manage_warehouse.inventory_management.quantity')}>{translate('manage_warehouse.inventory_management.quantity')}</th> */}
-                                                <th title={translate('manage_warehouse.inventory_management.stock')}>{translate('manage_warehouse.inventory_management.stock')}</th>
-                                                {/* <th style={{width: "16%"}} title={translate('manage_warehouse.inventory_management.bin')}>{translate('manage_warehouse.inventory_management.bin')}</th> */}
-                                                <th title={translate('manage_warehouse.inventory_management.partner')}>{translate('manage_warehouse.inventory_management.partner')}</th>
-                                                <th title={translate('manage_warehouse.inventory_management.note')}>{translate('manage_warehouse.inventory_management.note')}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id={`good-edit-manage-by-archive`}>
-                                            {(typeof lotDetail.lotLogs === 'undefined' || lotDetail.lotLogs.length === 0) ? <tr><td colSpan={3}><center>{translate('task_template.no_data')}</center></td></tr> :
-                                                lotDetail.lotLogs.map((x, index) =>
-                                                <tr key={index}>
-                                                        <td>{index + 1}</td>
-                                                        {x.bill ? <td><a href="#" onClick={() => this.handleShowDetailInfo(x.bill._id)}>{x.bill.code}</a></td> : <td></td>}
-                                                        <td>{this.formatDate(x.createdAt)}</td>
-                                                        <td>{x.bill ? translate(`manage_warehouse.bill_management.billType.${x.bill.type}`) : ''}</td>
-                                                        <td>{x.quantity ? x.quantity : 0}</td>
-                                                        <td>{x.stock ? x.stock.name : ""}</td>
-                                                        {/* <td>{x.binLocations ? x.binLocations.map((item, index) => <p key={index}>{item.binLocation.path} ({item.quantity})</p>) : ""}</td> */}
-                                                        <td></td>
-                                                        <td>{x.description}</td>
-                                                    </tr>
-                                                )
-                                            }
-                                        </tbody>
-                                    </table>
-                                </fieldset>
+                                <LogLots logs={lotDetail.lotLogs} />
                             </div>
                         </div> : []
                         }
@@ -147,7 +103,7 @@ class LotDetailForm extends Component {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
-    getDetailBill: BillActions.getDetailBill
+    
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(LotDetailForm));

@@ -30,7 +30,8 @@ class SearchEmployeeForPackage extends Component {
         }
 
         this.state = {
-            organizationalUnits: organizationalUnits,
+            searchForPackage: true,
+            // organizationalUnits: organizationalUnits,
             status: 'active',
             page: 0,
             limit: 5,
@@ -131,9 +132,46 @@ class SearchEmployeeForPackage extends Component {
      * Function lưu giá trị unit vào state khi thay đổi
      * @param {*} value : Array id Chuyên ngành
      */
-
     handleMajor = (value) => {
-        this.setState({ majorInfo: value[0] });
+        let { major } = this.props;
+        const listMajor = major.listMajor;
+        let dataTreeMajor = []
+        for (let i in listMajor) {
+            let groupMap = listMajor[i].group;
+            let group = listMajor[i].group.map(elm => {
+                return {
+                    ...elm,
+                    id: elm._id,
+                    text: elm.name,
+                    state: { "opened": true },
+                    parent: "#",
+                }
+            });
+            dataTreeMajor = [...dataTreeMajor, ...group];
+            for (let x in groupMap) {
+                let specializedMap = groupMap[x].specialized;
+                let specialized = groupMap[x].specialized.map(elm => {
+                    return {
+                        ...elm,
+                        id: elm._id,
+                        text: elm.name,
+                        state: { "opened": true },
+                        parent: groupMap[x]._id.toString(),
+                    }
+                });
+                dataTreeMajor = [...dataTreeMajor, ...specialized];
+            }
+        }
+
+        let majorSearch;
+        let tmp = dataTreeMajor.find(e => e.id === value[0])
+        if(tmp.specialized) { // là group
+            majorSearch = tmp.id
+        } else { // là specialize
+            majorSearch = tmp.parent;
+        }
+
+        this.setState({ majorID: value[0], majorInfo: majorSearch });
     }
 
     /**
@@ -144,33 +182,28 @@ class SearchEmployeeForPackage extends Component {
     handleAction = (value) => {
         // let { career } = this.props;
         // let listAction = career?.listAction.map(elm => { return { ...elm, id: elm._id } });
-        // let action = listAction?.find(e => e._id === value[0]);
 
-        // this.setState({ action: action });
-        let { career } = this.props;
-        let listAction = career?.listAction.map(elm => { return { ...elm, id: elm._id } });
+        // let action = listAction?.filter(e => value.indexOf(e._id) !== -1);
 
-        let action = listAction?.filter(e => value.indexOf(e._id) !== -1);
-
-        console.log('action', action);
-        this.setState({ action: action });
+        console.log('action', value);
+        this.setState({ action: value });
     };
 
     handleField = (value) => {
-        let { career } = this.props;
-        let listField = career?.listField.map(elm => { return { ...elm, id: elm._id } });
-        let listPosition = career?.listPosition.map(elm => { return { ...elm, id: elm._id } });
-        let field = listField?.find(e => e._id === value[0]);
+        // let { career } = this.props;
+        // let listField = career?.listField.map(elm => { return { ...elm, id: elm._id } });
+        // let listPosition = career?.listPosition.map(elm => { return { ...elm, id: elm._id } });
+        // let field = listField?.find(e => e._id === value[0]);
 
-        this.setState({ field: field, position: {} });
+        this.setState({ field: value, position: undefined });
     };
 
     handlePosition = (value) => {
-        let { career } = this.props;
-        let listPosition = career?.listPosition.map(elm => { return { ...elm, id: elm._id } });
-        let position = listPosition?.find(e => e._id === value[0]);
+        // let { career } = this.props;
+        // let listPosition = career?.listPosition.map(elm => { return { ...elm, id: elm._id } });
+        // let position = listPosition?.find(e => e._id === value[0]);
 
-        this.setState({ position: position });
+        this.setState({ position: value });
     };
 
     // handleCareer = (value) => {
@@ -178,73 +211,14 @@ class SearchEmployeeForPackage extends Component {
     // }
 
     /**
-     * Function lưu giá trị chức vụ vào state khi thay đổi
-     * @param {*} value : Array id chức vụ
-     */
-    // 
-    handlePositionChange = (value) => {
-        if (value.length === 0) {
-            value = null
-        };
-        this.setState({
-            ...this.state,
-            position: value
-        })
-    }
-
-    /**
-     * Function lưu giá trị giới tính vào state khi thay đổi
-     * @param {*} value : Giá trị giới tính
-     */
-    handleGenderChange = (value) => {
-        if (value.length === 0) {
-            value = null
-        };
-        this.setState({
-            ...this.state,
-            gender: value
-        })
-    }
-
-    /**
-     * Function lưu giá trị trạng thái vào state khi thay đổi
-     * @param {*} value : Giá trị trạng thái
-     */
-    handleStatusChange = (value) => {
-        if (value.length === 0) {
-            value = null
-        };
-        this.setState({
-            ...this.state,
-            status: value
-        })
-    }
-
-    /**
-     * Function lưu giá trị tháng sinh vào state khi thay đổi
-     * @param {*} value : Giá trị tháng sinh
-     */
-    // 
-    handleBirthdateChange = (value) => {
-        if (value) {
-            let partMonth = value.split('-');
-            value = [partMonth[1], partMonth[0]].join('-');
-        }
-        this.setState({
-            ...this.state,
-            birthdate: value
-        });
-    }
-
-    /**
      * Function lưu giá trị ngày hết hạn hợp đồng vào state khi thay đổi
      * @param {*} value : Tháng hết hạn hợp đồng
      */
     handleEndDateOfCertificateChange = (value) => {
-        if (value) {
-            let partMonth = value.split('-');
-            value = [partMonth[1], partMonth[0]].join('-');
-        }
+        // if (value) {
+        //     let partMonth = value.split('-');
+        //     value = [partMonth[1], partMonth[0]].join('-');
+        // }
         this.setState({
             ...this.state,
             endDateOfCertificate: value
@@ -286,10 +260,21 @@ class SearchEmployeeForPackage extends Component {
         this.props.getAllEmployee(this.state);
     }
 
+    /** show more option search */
+    clickShowMore = () => {
+        this.setState(state => {
+            return {
+                ...state,
+                showMore: !state.showMore,
+            }
+        });
+    }
+
+
     render() {
         const { employeesManager, translate, department, career, major } = this.props;
 
-        const { importEmployee, limit, page, organizationalUnits, professionalSkill, majorInfo, field, position, action, currentRow, currentRowView } = this.state; // filterField, filterPosition, filterAction, 
+        const { showMore, importEmployee, limit, page, certificatesEndDate, organizationalUnits, professionalSkill, majorInfo, majorID, field, position, action, currentRow, currentRowView } = this.state; // filterField, filterPosition, filterAction, 
 
         let listEmployees = [];
         if (employeesManager.listEmployees) {
@@ -313,19 +298,19 @@ class SearchEmployeeForPackage extends Component {
             }
         });
         dataTreeField = [...dataTreeField, ...lField];
-        for (let i in listField) {
-            let posMap = listField[i].position;
-            let position = posMap.map(elm => {
-                return {
-                    ...elm,
-                    id: elm._id,
-                    text: elm.name,
-                    state: { "opened": true },
-                    parent: listField[i]._id.toString(),
-                }
-            });
-            dataTreeField = [...dataTreeField, ...position];
-        }
+        // for (let i in listField) {
+        //     let posMap = listField[i].position;
+        //     let position = posMap.map(elm => {
+        //         return {
+        //             ...elm,
+        //             id: elm._id,
+        //             text: elm.name,
+        //             state: { "opened": true },
+        //             parent: listField[i]._id.toString(),
+        //         }
+        //     });
+        //     dataTreeField = [...dataTreeField, ...position];
+        // }
 
         let listPosition = career.listPosition;
         let dataTreePosition = []
@@ -339,20 +324,20 @@ class SearchEmployeeForPackage extends Component {
             }
         });
         dataTreePosition = [...dataTreePosition, ...pos];
-        for (let i in listPosition) {
-            let desMap = listPosition[i].description;
-            let description = desMap.map(elm => {
-                return {
-                    ...elm,
-                    id: elm._id,
-                    text: elm.name,
-                    state: { "opened": true },
-                    parent: listPosition[i]._id.toString(),
-                }
-            });
-            dataTreePosition = [...dataTreePosition, ...description];
+        // for (let i in listPosition) {
+        //     let desMap = listPosition[i].description;
+        //     let description = desMap.map(elm => {
+        //         return {
+        //             ...elm,
+        //             id: elm._id,
+        //             text: elm.name,
+        //             state: { "opened": true },
+        //             parent: listPosition[i]._id.toString(),
+        //         }
+        //     });
+        //     dataTreePosition = [...dataTreePosition, ...description];
 
-        }
+        // }
         let listAction = career.listAction;
         let dataTreeAction = []
         let act = listAction.map(elm => {
@@ -365,19 +350,19 @@ class SearchEmployeeForPackage extends Component {
             }
         });
         dataTreeAction = [...dataTreeAction, ...act];
-        for (let i in listAction) {
-            let detailMap = listAction[i].detail;
-            let detail = detailMap.map(elm => {
-                return {
-                    ...elm,
-                    id: elm._id,
-                    text: elm.name,
-                    state: { "opened": true },
-                    parent: listAction[i]._id.toString(),
-                }
-            });
-            dataTreeAction = [...dataTreeAction, ...detail];
-        }
+        // for (let i in listAction) {
+        //     let detailMap = listAction[i].detail;
+        //     let detail = detailMap.map(elm => {
+        //         return {
+        //             ...elm,
+        //             id: elm._id,
+        //             text: elm.name,
+        //             state: { "opened": true },
+        //             parent: listAction[i]._id.toString(),
+        //         }
+        //     });
+        //     dataTreeAction = [...dataTreeAction, ...detail];
+        // }
 
         const listMajor = major.listMajor;
         let dataTreeMajor = []
@@ -462,26 +447,10 @@ class SearchEmployeeForPackage extends Component {
             <div className="box">
                 <div className="box-body qlcv">
                     <div className="form-inline">
-                        {/* Button thêm mới nhân viên */}
-                        {/* <div className="dropdown pull-right">
-                            <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.profile.employee_management.add_employee_title')} >{translate('human_resource.profile.employee_management.add_employee')}</button>
-                            <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
-                                <li><a style={{ cursor: 'pointer' }} onClick={this.importEmployee}>{translate('human_resource.profile.employee_management.add_import')}</a></li>
-                                <li><a style={{ cursor: 'pointer' }} onClick={this.createEmployee}>{translate('human_resource.profile.employee_management.add_by_hand')}</a></li>
-                            </ul>
-                        </div> */}
-                        {/* <button type="button" style={{ marginRight: 15, marginTop: 0 }} className="btn btn-primary pull-right" onClick={this.handleExportExcel} >{translate('human_resource.name_button_export')}<i className="fa fa-fw fa-file-excel-o"> </i></button> */}
-                    </div>
-
-                    <div className="form-inline">
-                        {/* Đơn vị */}
+                        {/* Vị trí công việc  */}
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.unit')}</label>
-                            <SelectMulti id={`multiSelectUnit`} multiple="multiple"
-                                options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
-                                value={organizationalUnits ? organizationalUnits : []}
-                                items={department.list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
-                            </SelectMulti>
+                            <label className="form-control-static">Vị trí công việc</label>
+                            <TreeSelect data={dataTreePosition} value={position} handleChange={this.handlePosition} mode="radioSelect" />
                         </div>
                         {/* Trình độ chuyên môn  */}
                         <div className="form-group">
@@ -497,7 +466,7 @@ class SearchEmployeeForPackage extends Component {
                         {/* Chuyên ngành  */}
                         <div className="form-group">
                             <label className="form-control-static">Chuyên ngành</label>
-                            <TreeSelect data={dataTreeMajor} value={majorInfo} handleChange={this.handleMajor} mode="radioSelect" />
+                            <TreeSelect data={dataTreeMajor} value={[majorID]} handleChange={this.handleMajor} mode="radioSelect" />
                         </div>
                     </div>
 
@@ -505,82 +474,114 @@ class SearchEmployeeForPackage extends Component {
                         {/* Loại chứng chỉ */}
                         <div className="form-group">
                             <label className="form-control-static">Loại chứng chỉ</label>
-                            <input type="text" className="form-control" name="typeOfCertificate" onChange={this.handleChange} placeholder={"Oracal Database"} />
+                            <input type="text" className="form-control" name="certificatesType" onChange={this.handleChange} placeholder={"Oracal Database"} />
                         </div>
                         {/* Loại hợp đồng lao động */}
                         <div className="form-group">
                             <label className="form-control-static">Tên chứng chỉ</label>
-                            <input type="text" className="form-control" name="certificateName" onChange={this.handleChange} />
+                            <input type="text" className="form-control" name="certificatesName" onChange={this.handleChange} />
                         </div>
                         {/* Tháng hết hạn chứng chỉ */}
                         <div className="form-group">
                             <label className="form-control-static">Hiệu lực chứng chỉ</label>
                             <DatePicker
                                 id="month-endDate-certificate"
-                                dateFormat="month-year"
-                                value=""
+                                // dateFormat="month-year"
+                                value={certificatesEndDate}
                                 onChange={this.handleEndDateOfCertificateChange}
                             />
                         </div>
                     </div>
 
                     <div className="form-inline">
-                        {/* Vị trí công việc  */}
-                        <div className="form-group">
-                            <label className="form-control-static">Lĩnh vực công việc</label>
-                            <TreeSelect data={dataTreeField} value={field?.id} handleChange={this.handleField} mode="radioSelect" />
-                        </div>
-                        {/* Tên gói thầu */}
-                        <div className="form-group">
-                            <label className="form-control-static">Tên gói thầu</label>
-                            <input type="text" className="form-control" name="packageName" onChange={this.handleChange} />
-                        </div>
-                        {/* Vị trí công việc  */}
-                        <div className="form-group">
-                            <label className="form-control-static">Vị trí công việc</label>
-                            <TreeSelect data={dataTreePosition} value={position?.id} handleChange={this.handlePosition} mode="radioSelect" />
-                        </div>
-                        {/* Vị trí công việc  */}
-                        {/* <div className="form-group">
-                            <label className="form-control-static">Hoạt động công việc</label>
-                            <TreeSelect data={dataTreeAction} value={action?.id} handleChange={this.handleAction} mode="radioSelect" />
-                        </div> */}
-                    </div>
-                    <div className="form-inline">
-                        {/* Vị trí công việc  */}
-                        <div className="form-group">
-                            <label className="form-control-static">Hoạt động công việc</label>
-                            {/* <TreeSelect data={dataTreeAction} value={action?.id} handleChange={this.handleAction} mode="radioSelect" /> */}
-                            <SelectBox
-                                id={`select-career-action-select`}
-                                lassName="form-control select2"
-                                style={{ width: "100%" }}
-                                items={listAction.map(x => {
-                                    return { text: x.name, value: x._id }
-                                })}
-                                options={{ placeholder: "Chọn hoạt động công việc" }}
-                                onChange={this.handleAction}
-                                value={action?.map(e => e?.id)}
-                                multiple={true}
-                            />
-                        </div>
                         {/* Số năm kinh nghiệm */}
                         <div className="form-group">
                             <label className="form-control-static">Số năm KN</label>
-                            <input type="number" className="form-control" name="numOfExp" onChange={this.handleChange} placeholder={"Số năm kinh nghiệm"} />
+                            <input type="number" className="form-control" name="exp" onChange={this.handleChange} placeholder={"Số năm kinh nghiệm"} />
                         </div>
                         {/* Số năm kinh nghiệm công việc tương đương */}
                         <div className="form-group">
                             <label className="form-control-static">Số năm KN công việc tương đương</label>
-                            <input type="number" className="form-control" name="numOfSameCareer" onChange={this.handleChange} placeholder={"Kinh nghiệm công việc tương tự"} />
+                            <input type="number" className="form-control" name="sameExp" onChange={this.handleChange} placeholder={"Kinh nghiệm công việc tương tự"} />
                         </div>
                     </div>
 
+                    {/* <div className="form-inline">
+                        <div className="form-group">
+                            <label className="form-control-static">
+                                <a style={{ cursor: "pointer" }} onClick={this.clickShowMore}>
+                                    {showMore ?
+                                        <span>
+                                            Show less <i className="fa fa-angle-double-up"></i>
+                                        </span>
+                                        : <span>
+                                            Show more <i className="fa fa-angle-double-down"></i>
+                                        </span>
+                                    }
+                                </a>
+                            </label>
+                        </div>
+                    </div> */}
 
+                    {showMore &&
+                        <div className="form-inline">
+                            {/* Lĩnh vực công việc  */}
+                            <div className="form-group">
+                                <label className="form-control-static">Lĩnh vực công việc</label>
+                                <TreeSelect data={dataTreeField} value={field} handleChange={this.handleField} mode="radioSelect" />
+                            </div>
+                            {/* Tên gói thầu */}
+                            <div className="form-group">
+                                <label className="form-control-static">Tên gói thầu</label>
+                                <input type="text" className="form-control" name="package" onChange={this.handleChange} />
+                            </div>
+                            {/* Hoạt động công việc  */}
+                            <div className="form-group">
+                                <label className="form-control-static">Hoạt động công việc</label>
+                                {/* <TreeSelect data={dataTreeAction} value={action?.id} handleChange={this.handleAction} mode="radioSelect" /> */}
+                                <SelectBox
+                                    id={`select-career-action-select`}
+                                    lassName="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={listAction.map(x => {
+                                        return { text: x.name, value: x._id }
+                                    })}
+                                    options={{ placeholder: "Chọn hoạt động công việc" }}
+                                    onChange={this.handleAction}
+                                    value={action}
+                                    multiple={true}
+                                />
+                            </div>
+                            {/* Vị trí công việc  */}
+                            {/* <div className="form-group">
+                            <label className="form-control-static">Vị trí công việc</label>
+                            <TreeSelect data={dataTreePosition} value={position} handleChange={this.handlePosition} mode="radioSelect" />
+                        </div> */}
+                            {/* Hoạt động công việc  */}
+                            {/* <div className="form-group">
+                            <label className="form-control-static">Hoạt động công việc</label>
+                            <TreeSelect data={dataTreeAction} value={action?.id} handleChange={this.handleAction} mode="radioSelect" />
+                        </div> */}
+                        </div>
+                    }
                     <div className="form-inline" style={{ marginBottom: 15 }}>
-                        {/* Button tìm kiếm */}
+                        {/* Button show more */}
                         <div className="form-group">
                             <label></label>
+                            <button type="button" className="btn btn-primary" title={translate('general.search')} onClick={this.clickShowMore} >
+                                { showMore ?
+                                    <span>
+                                        Show less <i className="fa fa-angle-double-up"></i>
+                                    </span>
+                                    : <span>
+                                        Show more <i className="fa fa-angle-double-down"></i>
+                                    </span>
+                                }    
+                            </button>
+                        </div>
+                        {/* Button tìm kiếm */}
+                        <div className="form-group">
+                            {/* <label></label> */}
                             <button type="button" className="btn btn-success" title={translate('general.search')} onClick={this.handleSunmitSearch} >{translate('general.search')}</button>
                         </div>
                     </div>

@@ -6,15 +6,15 @@ class SlasOfGoodDetail extends Component {
         const { currentSlasOfGood } = this.props;
         return (
             <DialogModal
-                modalID="modal-create-quote-slas-of-good-detail"
+                modalID="modal-edit-quote-slas-of-good-detail"
                 isLoading={false}
-                formID="form-create-quote-slas-of-good-detail"
+                formID="form-edit-quote-slas-of-good-detail"
                 title={"Chi tiết cam kết chất lượng"}
                 size="50"
                 hasSaveButton={false}
                 hasNote={false}
             >
-                <form id="form-create-quote-slas-of-good-detail">
+                <form id="form-edits-quote-slas-of-good-detail">
                     {!currentSlasOfGood.length ? (
                         <div style={{ display: "flex", alignItems: "center" }}>
                             <i className="fa fa-frown-o text-warning" style={{ fontSize: "20px" }}></i> &ensp;

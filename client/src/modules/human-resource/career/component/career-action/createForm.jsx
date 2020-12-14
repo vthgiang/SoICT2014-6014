@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ErrorLabel, TreeSelect } from '../../../../../common-components';
+import { DialogModal, ErrorLabel, SelectBox, TreeSelect } from '../../../../../common-components';
 import { CareerReduxAction } from '../../redux/actions';
 import ValidationHelper from '../../../../../helpers/validationHelper';
 class CreateForm extends Component {
@@ -44,6 +44,11 @@ class CreateForm extends Component {
         this.setState({ parent: value[0] });
     };
 
+    handlePosition = (value) => {
+        this.setState({ position: value });
+        console.log('position...', this.state);
+    };
+
     isValidateForm = () => {
         let {name} = this.state;
         let {translate} = this.props;
@@ -56,15 +61,16 @@ class CreateForm extends Component {
             name: this.state.name,
             code: this.state.code,
             parent: this.state.parent,
+            position: this.state.position,
         }
         console.log('data', data);
         this.props.createCareerAction(data);
     }
 
     render() {
-        const { translate, documents } = this.props;
+        const { translate, career } = this.props;
         const { list } = this.props;
-        let { parent, nameError, codeError } = this.state;
+        let { parent, position, nameError, codeError } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
@@ -89,6 +95,24 @@ class CreateForm extends Component {
                             <label>Chọn thông tin cha</label>
                             <TreeSelect data={list} value={parent} handleChange={this.handleParent} mode="radioSelect" />
                         </div>
+                        { !parent &&
+                            <div className="form-group">
+                                <label>Lĩnh vực</label>
+                                <SelectBox
+                                    id={`position-career-add`}
+                                    lassName="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={career?.listPosition.map(x => {
+                                        return { text: x.name, value: x._id }
+                                    })}
+                                    options={{ placeholder: "Chọn vị trí công việc" }}
+                                    onChange={this.handlePosition}
+                                    value={position}
+                                    multiple={true}
+                                />
+                            </div>
+                        }
+
                         <div className={`form-group ${!codeError ? "" : "has-error"}`}>
                             <label>Nhãn<span className="text-red">*</span></label>
                             <input type="text" className="form-control" onChange={this.handleCode} />

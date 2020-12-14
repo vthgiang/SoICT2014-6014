@@ -35,14 +35,7 @@ class SideBar extends Component {
                     <section className="sidebar">
                         <div className="user-panel">
                             <div className="pull-left image">
-                                <img
-                                    src={
-                                        process.env.REACT_APP_SERVER +
-                                        auth.user.avatar
-                                    }
-                                    className="img-circle"
-                                    alt="User avatar"
-                                />
+                                <img src={process.env.REACT_APP_SERVER + auth.user.avatar} className="img-circle" alt="User avatar" />
                             </div>
                             <div className="pull-left info">
                                 <p>{user.name}</p>
@@ -54,8 +47,7 @@ class SideBar extends Component {
                                                 marginRight: "10px",
                                             }}
                                         >
-                                            <i className="fa fa-circle text-success"></i>{" "}
-                                            Online{" "}
+                                            <i className="fa fa-circle text-success"></i> Online{" "}
                                         </span>
                                         <Link to="/notifications">
                                             <i className="fa fa-bell text-yellow"></i>
@@ -63,18 +55,13 @@ class SideBar extends Component {
                                         </Link>
                                     </React.Fragment>
                                 ) : (
-                                        <p style={{ fontSize: "10px" }}>
-                                            <i className="fa fa-circle text-success"></i>{" "}
-                                        Online{" "}
-                                        </p>
-                                    )}
+                                    <p style={{ fontSize: "10px" }}>
+                                        <i className="fa fa-circle text-success"></i> Online{" "}
+                                    </p>
+                                )}
                             </div>
                         </div>
-                        <ul
-                            className="sidebar-menu"
-                            data-widget="tree"
-                            ref="sideBarMenu"
-                        >
+                        <ul className="sidebar-menu" data-widget="tree" ref="sideBarMenu">
                             {/* Trang chủ */}
                             <Item
                                 item={{
@@ -140,20 +127,17 @@ class SideBar extends Component {
                                         {
                                             name: "menu.manage_role",
                                             icon: "fa fa-lock",
-                                            path:
-                                                "/system/roles-default-management",
+                                            path: "/system/roles-default-management",
                                         },
                                         {
                                             name: "menu.manage_link",
                                             icon: "fa fa-link",
-                                            path:
-                                                "/system/links-default-management",
+                                            path: "/system/links-default-management",
                                         },
                                         {
                                             name: "menu.manage_component",
                                             icon: "fa fa-object-group",
-                                            path:
-                                                "/system/components-default-management",
+                                            path: "/system/components-default-management",
                                         },
                                     ],
                                 }}
@@ -258,8 +242,7 @@ class SideBar extends Component {
                                             path: "/stock-management",
                                         },
                                         {
-                                            name:
-                                                "menu.bin_location_management",
+                                            name: "menu.bin_location_management",
                                             icon: "fa fa-sitemap",
                                             path: "/bin-location-management",
                                         },
@@ -349,14 +332,12 @@ class SideBar extends Component {
                                             path: "/manage-info-asset",
                                         },
                                         {
-                                            name:
-                                                "menu.manage_depreciation_asset",
+                                            name: "menu.manage_depreciation_asset",
                                             icon: "fa fa-balance-scale",
                                             path: "/manage-depreciation-asset",
                                         },
                                         {
-                                            name:
-                                                "menu.manage_maintainance_asset",
+                                            name: "menu.manage_maintainance_asset",
                                             icon: "fa fa-sitemap",
                                             path: "/manage-maintainance-asset",
                                         },
@@ -366,17 +347,14 @@ class SideBar extends Component {
                                             path: "/manage-incident-asset",
                                         },
                                         {
-                                            name:
-                                                "menu.manage_recommend_distribute_asset",
+                                            name: "menu.manage_recommend_distribute_asset",
                                             icon: "fa fa-calendar",
                                             path: "/manage-asset-use-request",
                                         },
                                         {
-                                            name:
-                                                "menu.manage_recommend_procure",
+                                            name: "menu.manage_recommend_procure",
                                             icon: "fa fa-sitemap",
-                                            path:
-                                                "/manage-asset-purchase-request",
+                                            path: "/manage-asset-purchase-request",
                                         },
                                         {
                                             name: "menu.manage_type_asset",
@@ -394,20 +372,17 @@ class SideBar extends Component {
                                             path: "/manage-assigned-asset",
                                         },
                                         {
-                                            name:
-                                                "menu.employee_manage_asset_info",
+                                            name: "menu.employee_manage_asset_info",
                                             icon: "fa fa-sitemap",
                                             path: "/employee-manage-info-asset",
                                         },
                                         {
-                                            name:
-                                                "menu.recommend_distribute_asset",
+                                            name: "menu.recommend_distribute_asset",
                                             icon: "fa fa-calendar",
                                             path: "/asset-use-request",
                                         },
                                         {
-                                            name:
-                                                "menu.recommend_equipment_procurement",
+                                            name: "menu.recommend_equipment_procurement",
                                             icon: "fa fa-calendar",
                                             path: "/asset-purchase-request",
                                         },
@@ -425,27 +400,29 @@ class SideBar extends Component {
                             />
 
                             {/* Quản lý nhân sự */}
-                            <GroupItem groupItem={{
-                                name: 'menu.manage_employee',
-                                icon: 'fa fa-address-book',
-                                list: [
-                                    { name: 'menu.dashboard_employee', icon: 'fa fa-dashboard', path: '/hr-dashboard-employee' },
-                                    // { name: 'menu.employee_capacity', icon: 'fa fa-dashboard', path: '/hr-employee-capacity' },
-                                    { name: 'menu.manage_unit', icon: 'fa fa-sitemap', path: '/hr-manage-department' },
-                                    { name: 'menu.add_employee', icon: 'fa fa-user-plus', path: '/hr-add-employee' },
-                                    { name: 'menu.list_employee', icon: 'fa fa-address-card', path: '/hr-list-employee' },
-                                    { name: 'menu.salary_employee', icon: 'fa fa-line-chart', path: '/hr-salary-employee' },
-                                    { name: 'menu.time_keeping', icon: 'fa fa-calculator', path: '/hr-time-keeping' },
-                                    { name: 'menu.discipline', icon: 'fa fa-balance-scale', path: '/hr-discipline' },
-                                    { name: 'menu.annual_leave', icon: 'fa fa-calendar-times-o', path: '/hr-annual-leave' },
-                                    { name: 'menu.manage_work_plan', icon: 'fa fa-calendar', path: '/hr-manage-work-plan' },
-                                    { name: 'menu.manage_field', icon: 'fa fa-list-ul', path: '/hr-manage-field' },
-                                    // nhân sự gói thầu
-                                    { name: 'menu.list_search_for_package', icon: 'fa fa-calendar', path: '/hr-search-for-package' },
-                                    { name: 'menu.list_major', icon: 'fa fa-calendar', path: '/hr-list-major' },
-                                    { name: 'menu.list_career_position', icon: 'fa fa-calendar', path: '/hr-list-career-position' },
-                                ]
-                            }} />
+                            <GroupItem
+                                groupItem={{
+                                    name: "menu.manage_employee",
+                                    icon: "fa fa-address-book",
+                                    list: [
+                                        { name: "menu.dashboard_employee", icon: "fa fa-dashboard", path: "/hr-dashboard-employee" },
+                                        // { name: 'menu.employee_capacity', icon: 'fa fa-dashboard', path: '/hr-employee-capacity' },
+                                        { name: "menu.manage_unit", icon: "fa fa-sitemap", path: "/hr-manage-department" },
+                                        { name: "menu.add_employee", icon: "fa fa-user-plus", path: "/hr-add-employee" },
+                                        { name: "menu.list_employee", icon: "fa fa-address-card", path: "/hr-list-employee" },
+                                        { name: "menu.salary_employee", icon: "fa fa-line-chart", path: "/hr-salary-employee" },
+                                        { name: "menu.time_keeping", icon: "fa fa-calculator", path: "/hr-time-keeping" },
+                                        { name: "menu.discipline", icon: "fa fa-balance-scale", path: "/hr-discipline" },
+                                        { name: "menu.annual_leave", icon: "fa fa-calendar-times-o", path: "/hr-annual-leave" },
+                                        { name: "menu.manage_work_plan", icon: "fa fa-calendar", path: "/hr-manage-work-plan" },
+                                        { name: "menu.manage_field", icon: "fa fa-list-ul", path: "/hr-manage-field" },
+                                        // nhân sự gói thầu
+                                        { name: "menu.list_search_for_package", icon: "fa fa-calendar", path: "/hr-search-for-package" },
+                                        { name: "menu.list_major", icon: "fa fa-calendar", path: "/hr-list-major" },
+                                        { name: "menu.list_career_position", icon: "fa fa-calendar", path: "/hr-list-career-position" },
+                                    ],
+                                }}
+                            />
 
                             {/* Quản lý đào tạo */}
                             <GroupItem
@@ -532,19 +509,17 @@ class SideBar extends Component {
                                     icon: "fa  fa-book",
                                     list: [
                                         {
-                                            name:
-                                                "menu.manage_sales_order_dashboard",
+                                            name: "menu.manage_sales_order_dashboard",
                                             icon: "fa fa-dashboard",
-                                            path:
-                                                "/manage-sales-order-dashboard",
+                                            path: "/manage-sales-order-dashboard",
                                         },
-                                        {
-                                            name:
-                                                "menu.manage_manufacturing_order_dashboard",
-                                            icon: "fa  fa-dashboard",
-                                            path:
-                                                "/manage-manufacturing-order-dashboard",
-                                        },
+                                        // {
+                                        //     name:
+                                        //         "menu.manage_manufacturing_order_dashboard",
+                                        //     icon: "fa  fa-dashboard",
+                                        //     path:
+                                        //         "/manage-manufacturing-order-dashboard",
+                                        // },
                                         {
                                             name: "menu.manage_quote",
                                             icon: "fa fa-tablet",
@@ -555,12 +530,12 @@ class SideBar extends Component {
                                             icon: "fa fa-dollar",
                                             path: "/manage-sales-order",
                                         },
-                                        {
-                                            name:
-                                                "menu.manage_manufacturing_order",
-                                            icon: "fa  fa-flask",
-                                            path: "/manage-manufacturing-order",
-                                        },
+                                        // {
+                                        //     name:
+                                        //         "menu.manage_manufacturing_order",
+                                        //     icon: "fa  fa-flask",
+                                        //     path: "/manage-manufacturing-order",
+                                        // },
                                         {
                                             name: "menu.manage_purchase_order",
                                             icon: "fa fa-shopping-cart",
@@ -581,6 +556,16 @@ class SideBar extends Component {
                                             icon: "fa fa-registered",
                                             path: "/manage-sla",
                                         },
+                                        {
+                                            name: "menu.manage_business_department",
+                                            icon: "fa fa-sitemap",
+                                            path: "/manage-business-department",
+                                        },
+                                        {
+                                            name: "menu.manage_admin_department",
+                                            icon: "fa fa-sitemap",
+                                            path: "/manage-admin-department",
+                                        },
                                     ],
                                 }}
                             />
@@ -600,23 +585,19 @@ class SideBar extends Component {
                                     icon: "fa fa-tasks",
                                     list: [
                                         {
-                                            name:
-                                                "menu.task_organization_management_dashboard",
+                                            name: "menu.task_organization_management_dashboard",
                                             icon: "fa fa-circle-o",
-                                            path:
-                                                "/task-organization-management-dashboard",
+                                            path: "/task-organization-management-dashboard",
                                         },
                                         {
-                                            name:
-                                                "menu.task_management_dashboard",
+                                            name: "menu.task_management_dashboard",
                                             icon: "fa fa-circle-o",
                                             path: "/task-management-dashboard",
                                         },
                                         {
-                                            name:
-                                                'menu.task_management_of_unit',
-                                            icon: 'fa fa-circle-o',
-                                            path: '/task-management-unit'
+                                            name: "menu.task_management_of_unit",
+                                            icon: "fa fa-circle-o",
+                                            path: "/task-management-unit",
                                         },
                                         {
                                             name: "menu.task_management",
@@ -629,8 +610,7 @@ class SideBar extends Component {
                                             path: "/task-process-template",
                                         },
                                         {
-                                            name:
-                                                "menu.task_management_process",
+                                            name: "menu.task_management_process",
                                             icon: "fa fa-circle-o",
                                             path: "/task-process-management",
                                         },
@@ -681,7 +661,7 @@ class SideBar extends Component {
                                             name: "menu.manage_examples_hooks_2",
                                             icon: "fa fa-adjust",
                                             path: "/manage-examples-hooks-2",
-                                        }
+                                        },
                                     ],
                                 }}
                             />
@@ -693,60 +673,47 @@ class SideBar extends Component {
                                     icon: "fa fa-gears",
                                     list: [
                                         {
-                                            name:
-                                                "menu.manufacturing_dashboard",
+                                            name: "menu.manufacturing_dashboard",
                                             icon: "fa fa-dashboard",
                                             path: "/manufacturing-dashboard",
                                         },
                                         {
-                                            name:
-                                                "menu.manage_manufacturing_plan",
+                                            name: "menu.manage_manufacturing_plan",
                                             icon: "fa fa-file-o",
                                             path: "/manage-manufacturing-plan",
                                         },
                                         {
-                                            name:
-                                                "menu.manage_manufacturing_command",
+                                            name: "menu.manage_manufacturing_command",
                                             icon: "fa fa-gavel",
-                                            path:
-                                                "/manage-manufacturing-command",
+                                            path: "/manage-manufacturing-command",
                                         },
                                         {
-                                            name:
-                                                "menu.manage_work_schedule",
+                                            name: "menu.manage_work_schedule",
                                             icon: "fa fa-calendar",
-                                            path:
-                                                "/manage-work-schedule",
+                                            path: "/manage-work-schedule",
                                         },
                                         {
-                                            name:
-                                                "menu.manage_manufacturing_lot",
+                                            name: "menu.manage_manufacturing_lot",
                                             icon: "fa fa-navicon",
-                                            path:
-                                                "/manage-manufacturing-lot",
+                                            path: "/manage-manufacturing-lot",
                                         },
                                         {
-                                            name:
-                                                "menu.manage_purchasing_request",
+                                            name: "menu.manage_purchasing_request",
                                             icon: "fa fa-file-text-o",
                                             path: "/manage-purchasing-request",
                                         },
                                         {
-                                            name:
-                                                "menu.analysis_manufacturing_performance",
+                                            name: "menu.analysis_manufacturing_performance",
                                             icon: "fa fa-bar-chart",
-                                            path:
-                                                "/analysis-manufacturing-performance",
+                                            path: "/analysis-manufacturing-performance",
                                         },
                                         {
-                                            name:
-                                                "menu.manage_manufacturing_works",
+                                            name: "menu.manage_manufacturing_works",
                                             icon: "fa fa-university",
                                             path: "/manage-manufacturing-works",
                                         },
                                         {
-                                            name:
-                                                "menu.manage_manufacturing_mill",
+                                            name: "menu.manage_manufacturing_mill",
                                             icon: "fa fa-home",
                                             path: "/manage-manufacturing-mill",
                                         },
