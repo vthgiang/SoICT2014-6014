@@ -69,13 +69,6 @@ class IncidentLogTab extends Component {
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body qlcv">
-                    {/* Danh sách sự cố tài sản */}
-                    {/* <fieldset className="scheduler-border">
-                        <legend className="scheduler-border">
-                            <h4 className="box-title">{translate('asset.asset_info.incident_list')}</h4>
-                        </legend> */}
-
-                    {/* Bảng thông tin sự cố */}
                     <table className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
@@ -103,7 +96,6 @@ class IncidentLogTab extends Component {
                     {
                         (!incidentLogs || incidentLogs.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
-                    {/* </fieldset> */}
                 </div>
             </div>
         );
