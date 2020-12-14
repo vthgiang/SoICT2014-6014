@@ -2293,6 +2293,7 @@ export default {
                 view_more: "Xem thêm",
                 asset: "Tài sản",
                 choose_asset: "Chọn tài sản",
+                choose_all:"Chọn tất cả",
                 asset_list: "Danh sách tài sản",
                 search: "Tìm kiếm",
                 add: "Thêm",

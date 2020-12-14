@@ -73,7 +73,7 @@ class CostChart extends Component {
         ];
 
         if (getAssetCostData && listAssets) {
-            getAssetCostData(dataPieChart);
+            getAssetCostData(dataPieChart, type);
         }
 
         return dataPieChart;

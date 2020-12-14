@@ -295,6 +295,8 @@ class DashBoardAssets extends Component {
         })
     }
 
+
+
     setPurchaseAndDisposalExportData = (purchaseData, disposalData) => {
         let purchaseExportData, disposalExportData, purchaseDisposal;
 
@@ -385,67 +387,73 @@ class DashBoardAssets extends Component {
     setAssetStatisticsExportData = (assetStatusData, assetCostData) => {
         let assetStatusExportData, assetCostExportData, assetStatistics;
 
-        if (assetStatusData && assetStatusData.length !== 0) {
-            assetStatusExportData = assetStatusData.map((status, index) => {
-                return {
-                    STT: index + 1,
-                    status: status[0],
-                    amount: status[1]
-                }
-            })
-        }
-
-
-        if (assetCostData && assetCostData.length !== 0) {
-            assetCostExportData = assetCostData.map((cost, index) => {
-                return {
-                    STT: index + 1,
-                    cost: cost[0],
-                    amount: cost[1]
-                }
-            })
-        }
-
-        assetStatistics = {
-            fileName: "Thống kê tài sản",
-            dataSheets: [
-                {
-                    sheetName: "Sheet1",
-                    tables: [
-                        {
-                            tableName: "Thống kê tài sản theo trạng thái",
-                            rowHeader: 1,
-                            columns: [
-                                { key: "STT", value: "STT" },
-                                { key: "status", value: "Trạng thái" },
-                                { key: "amount", value: "Số lượng" }
-                            ],
-                            data: assetStatusExportData
-                        },
-                        {
-                            tableName: "Thống kê tài sản theo giá trị",
-                            rowHeader: 1,
-                            columns: [
-                                { key: "STT", value: "STT" },
-                                { key: "cost", value: "Giá trị" },
-                                { key: "amount", value: "Số lượng" }
-                            ],
-                            data: assetCostExportData
-                        },
-                    ]
-                },
-            ]
-        }
-
-        this.setState(state => {
-            return {
-                ...state,
-                exportData: {
-                    ...state.exportData,
-                    assetStatistics: assetStatistics
-                }
+        if (assetStatusData && assetStatusData.length > 0) {
+            if (assetStatusData && assetStatusData.length !== 0) {
+                assetStatusExportData = assetStatusData.map((status, index) => {
+                    return {
+                        STT: index + 1,
+                        status: status[0],
+                        amount: status[1],
+                        assetType: status[2].map(x => x).join(", ")
+                    }
+                })
             }
-        })
+
+            if (assetCostData && assetCostData.length !== 0) {
+                assetCostExportData = assetCostData.map((cost, index) => {
+                    return {
+                        STT: index + 1,
+                        cost: cost[0],
+                        amount: cost[1],
+                        assetType: cost[2].map(x => x).join(", ")
+                    }
+                })
+            }
+
+            assetStatistics = {
+                fileName: "Thống kê tài sản",
+                dataSheets: [
+                    {
+                        sheetName: "Sheet1",
+                        tables: [
+                            {
+                                tableName: "Thống kê tài sản theo trạng thái",
+                                rowHeader: 1,
+                                columns: [
+                                    { key: "STT", value: "STT" },
+                                    { key: "status", value: "Trạng thái" },
+                                    { key: "amount", value: "Số lượng" },
+                                    { key: "assetType", value: "Loại tài sản" }
+                                ],
+                                data: assetStatusExportData
+                            },
+                            {
+                                tableName: "Thống kê tài sản theo giá trị",
+                                rowHeader: 1,
+                                columns: [
+                                    { key: "STT", value: "STT" },
+                                    { key: "cost", value: "Giá trị" },
+                                    { key: "amount", value: "Số lượng" },
+                                    { key: "assetType", value: "Loại tài sản" }
+                                ],
+                                data: assetCostExportData
+                            },
+                        ]
+                    },
+                ]
+            }
+
+            this.setState(state => {
+                return {
+                    ...state,
+                    exportData: {
+                        ...state.exportData,
+                        assetStatistics: assetStatistics
+                    }
+                }
+            })
+        }
+
     }
 
     render() {
