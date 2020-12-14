@@ -67,7 +67,7 @@ class StautsChart extends Component {
         ];
 
         if (getAssetStatusData && listAssets) {
-            getAssetStatusData(dataPieChart);
+            getAssetStatusData(dataPieChart, type);
         }
 
         return dataPieChart;
