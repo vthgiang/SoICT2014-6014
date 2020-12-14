@@ -152,7 +152,7 @@ exports.searchAssetProfiles = async (portal, company, params) => {
         let date = params.startDepreciation.split("-");
         let start = new Date(date[1], date[0] - 1, 1);
         let end = new Date(date[1], date[0], 1);
-
+        
         keySearch = {
             ...keySearch,
             startDepreciation: {
