@@ -2917,7 +2917,7 @@ export default {
                 err_total_log_time: "Thời gian thực hiện công việc bị xóa",
 
                 detail_refresh: "Làm mới",
-                detail_edit: "Chỉnh sửa",
+                detail_edit: "Cập nhật công việc",
                 detail_end: "Kết thúc",
                 detail_evaluate: "Đánh giá",
                 detail_start_timer: "Bấm giờ",
@@ -3148,7 +3148,7 @@ export default {
                 edit_action: "Sửa hành động",
                 delete_action: "Xóa hành động",
                 mandatory_action: "Hành động bắt buộc",
-                confirm_action: "Xác nhận hoàn thành",
+                confirm_action: "Xác nhận thực hiện",
                 evaluation: "Đánh giá",
                 attach_file: "Đính kèm file",
                 comment: "Bình luận",

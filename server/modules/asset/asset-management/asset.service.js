@@ -599,7 +599,6 @@ exports.updateAssetInformation = async (
                 arrCreate = this.mergeUrlFileToObject(fileInfor, arrCreate);
             }
             arrCreate.forEach((x) => {
-                console.log('sự cố: ', x.incidentCode);
                 if(x.incidentCode && arrObject.some(curNode => curNode.incidentCode === x.incidentCode ))
                     throw ['incident_code_exist'];
                 arrObject.push(x)
