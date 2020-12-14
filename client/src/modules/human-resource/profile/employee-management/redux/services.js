@@ -14,11 +14,10 @@ export const EmployeeService = {
  * @param {*} data : dữ liệu key tìm kiếm
  */
 function getAll(data) {
-    console.log('----quang', data.searchForPackage);
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/employee/employees`,
         method: 'GET',
-        params: data.searchForPackage ? data : {
+        params: data?.searchForPackage ? data : {
             exportData: data ? data.exportData : data,
             arrEmail: data ? data.arrEmail : data,
             startDate: data ? data.startDate : data,

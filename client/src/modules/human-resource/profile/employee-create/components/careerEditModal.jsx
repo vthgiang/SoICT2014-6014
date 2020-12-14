@@ -99,6 +99,7 @@ class CareerEditModal extends Component {
             errorOnEndDate = undefined;
         }
 
+        console.log('start', value);
         this.setState({
             startDate: value,
             errorOnStartDate: errorOnStartDate,
@@ -127,6 +128,7 @@ class CareerEditModal extends Component {
             errorOnStartDate = undefined;
         }
 
+        console.log('end', value);
         this.setState({
             endDate: value,
             errorOnStartDate: errorOnStartDate,
@@ -178,7 +180,7 @@ class CareerEditModal extends Component {
         // }
         // return this.props.handleChange(career);
         console.log("---", this.state);
-        // return this.props.handleChange({ ...this.state, startDate: startDateNew, endDate: endDateNew });
+        return this.props.handleChange({ ...this.state, startDate: startDateNew, endDate: endDateNew });
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
