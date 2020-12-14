@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 import { DataTableSetting, DatePicker, PaginateBar, SelectMulti, TreeTable } from '../../../../common-components';
+import { getFormatDateFromTime } from '../../../../helpers/stringMethod';
 import { getStorage } from '../../../../config';
 
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
@@ -45,7 +46,6 @@ class TaskManagement extends Component {
         this.props.getDepartment();
         this.props.getAllDepartment();
         this.props.getPaginateTasks(this.state.currentTab, [], '1', '20', this.state.status, null, null, null, null, null);
-        // this.props.getResponsibleTaskByUser([], "1", "20", this.state.status, [], [], null, null, null, null, null);
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -70,20 +70,6 @@ class TaskManagement extends Component {
         if (prevProps.tasks.tasks && this.props.tasks.tasks && prevProps.tasks.tasks.length !== this.props.tasks.tasks.length) {
             this.handleUpdateData();
         }
-    }
-
-    formatDate(date) {
-        let d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-
-        return [day, month, year].join('-');
     }
 
     list_to_tree = (list) => {
@@ -523,8 +509,8 @@ class TaskManagement extends Component {
                     name: dataTemp[n].name,
                     organization: dataTemp[n].organizationalUnit ? dataTemp[n].organizationalUnit.name : translate('task.task_management.err_organizational_unit'),
                     priority: this.formatPriority(dataTemp[n].priority),
-                    startDate: this.formatDate(dataTemp[n].startDate),
-                    endDate: this.formatDate(dataTemp[n].endDate),
+                    startDate: getFormatDateFromTime(dataTemp[n].startDate, 'dd-mm-yyyy'),
+                    endDate: getFormatDateFromTime(dataTemp[n].endDate, 'dd-mm-yyyy'),
                     status: this.formatStatus(dataTemp[n].status),
                     progress: dataTemp[n].progress ? dataTemp[n].progress + "%" : "0%",
                     totalLoggedTime: this.convertTime(dataTemp[n].hoursSpentOnTask.totalHoursSpent),

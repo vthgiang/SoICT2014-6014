@@ -941,7 +941,7 @@ class ActionTab extends Component {
                                                         <li><span className="text-sm">{<DateTimeConverter dateTime={item.createdAt} />}</span></li>
                                                         <li>{item.mandatory && !item.creator && <b className="text-sm">{translate("task.task_perform.mandatory_action")}</b>}</li>
                                                         {((item.creator === undefined || item.creator === null) && role === "responsible") &&
-                                                            <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={(e) => this.handleConfirmAction(e, item._id, currentUser, task._id)}><i className="fa fa-check-circle" aria-hidden="true"></i> {translate("task.task_perform.confirm_action")}</a></li>}
+                                                            <li><a style={{ cursor: "pointer" }} className="text-green text-sm" onClick={(e) => this.handleConfirmAction(e, item._id, currentUser, task._id)}><i className="fa fa-check-circle" aria-hidden="true"></i> {translate("task.task_perform.confirm_action")}</a></li>}
 
                                                         {/* Các chức năng tương tác với action */}
                                                         {item.creator &&
@@ -1632,16 +1632,16 @@ class ActionTab extends Component {
                         {/* Chuyển qua tab Bấm giờ */}
                         <div className={selected === "logTimer" ? "active tab-pane" : "tab-pane"} id="logTimer">
                             {logTimer && logTimer.map(item =>
-                            <React.Fragment>
-                            {item.duration && 
-                                <div key={item._id} className="item-box">
-                                    <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} </a>
-                                    {translate("task.task_perform.total_time")} {moment.utc(item.duration, "x").format('HH:mm:ss')}&nbsp;
+                                <React.Fragment>
+                                    {item.duration &&
+                                        <div key={item._id} className="item-box">
+                                            <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} </a>
+                                            {translate("task.task_perform.total_time")} {moment.utc(item.duration, "x").format('HH:mm:ss')}&nbsp;
                                     ({moment(item.startedAt, "x").format("HH:mm:ss DD/MM/YYYY")} - {moment(item.stoppedAt).format("HH:mm:ss DD/MM/YYYY")})
                                     <div>{item.description ? item.description : translate("task.task_perform.none_description")}</div>
-                                </div>
-                            }
-                            </React.Fragment>
+                                        </div>
+                                    }
+                                </React.Fragment>
                             )}
                         </div>
 
@@ -1738,7 +1738,7 @@ const actionCreators = {
     downloadFile: AuthActions.downloadFile,
     getSubTask: taskManagementActions.getSubTask,
     uploadFile: performTaskAction.uploadFile,
-    deleteFileAction: performTaskAction.deleteFileAction, 
+    deleteFileAction: performTaskAction.deleteFileAction,
     deleteFileCommentOfAction: performTaskAction.deleteFileCommentOfAction,
     deleteFileTaskComment: performTaskAction.deleteFileTaskComment,
     deleteFileChildTaskComment: performTaskAction.deleteFileChildTaskComment,

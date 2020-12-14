@@ -2657,7 +2657,7 @@ export default {
                 err_total_log_time: "Total logged time deleted",
 
                 detail_refresh: "Refresh",
-                detail_edit: "Edit",
+                detail_edit: "Update task",
                 detail_end: "Finish",
                 detail_evaluate: "Evaluate",
                 detail_start_timer: "Start timer",

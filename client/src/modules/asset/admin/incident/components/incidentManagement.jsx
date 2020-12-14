@@ -189,7 +189,7 @@ class IncidentManagement extends Component {
         let fileName = "Bảng quản lý thông tin sự cố tài sản ";
         let convertedData = [];
         if (data) {
-            data = data.forEach(asset => {
+            data = data.forEach((asset, dataIndex) => {
                 let item = asset.asset;
 
                 if (item.incidentLogs.length !== 0) {
@@ -204,7 +204,7 @@ class IncidentManagement extends Component {
                         let description = x.description;
 
                         return {
-                            index: index + 1,
+                            index: dataIndex + index + 1,
                             assetCode: assetCode,
                             assetName: assetName,
                             code: code,
@@ -217,7 +217,7 @@ class IncidentManagement extends Component {
                         }
                     })
                     for (let i = 0; i < assetLog.length; i++) {
-                        convertedData.push(assetLog[i]);
+                        convertedData = [...convertedData, assetLog[i]];
                     }
                 }
 
