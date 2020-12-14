@@ -2685,6 +2685,8 @@ export default {
                 edit_use_request_success:
                     "Chỉnh sửa thông tin phiếu thành công",
                 edit_use_request_faile: "Chỉnh sửa thông tin phiếu thất bại",
+                recommendNumber_exists: "Mã phiếu đăng kí sử dụng tài sản đã tồn tại",
+                dayUse_exists: "Thời gian sử dụng tài sản đã tồn tại",
             },
         },
 
