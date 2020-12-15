@@ -10,7 +10,7 @@ import { managerKpiActions } from '../../../kpi/employee/management/redux/action
 import { taskTemplateActions } from '../../../task/task-template/redux/actions';
 import { taskManagementActions } from '../redux/actions';
 
-import { DialogModal, DatePicker, SelectBox, ErrorLabel } from '../../../../common-components';
+import { DialogModal, DatePicker, SelectBox, ErrorLabel, ToolTip } from '../../../../common-components';
 import { TaskFormValidator } from './taskFormValidator';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 
@@ -561,7 +561,13 @@ class TaskAddModal extends Component {
                             </div> */}
 
                             <div className="form-group">
-                                <label>{translate('task.task_management.add_parent_task')}</label>
+                                <label>{translate('task.task_management.add_parent_task')}
+                                    <ToolTip
+                                        type={"icon_tooltip"}
+                                        dataTooltip={[translate('task.task_management.search_task_by_typing')]}
+                                    />
+                                </label>
+
                                 <SelectBox
                                     id={`select-parent-new-task`}
                                     className="form-control select2"

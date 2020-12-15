@@ -3000,6 +3000,7 @@ export default {
                 add_template: "Mẫu công việc",
                 add_template_notice: "Hãy chọn mẫu công việc",
                 add_parent_task: "Công việc liên quan",
+                search_task_by_typing:"Nhập để tìm kiếm công việc liên quan",
                 add_parent_task_notice: "Hãy chọn công việc liên quan",
                 add_raci: "Phân định trách nhiệm",
                 add_resp: "Chọn người thực hiện",
