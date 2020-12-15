@@ -455,7 +455,6 @@ class TaskManagement extends Component {
         if (currentTasks && currentTasks.length !== 0) {
             let dataTemp = currentTasks;
             let idTaskProjectRoot = 'task-project-root';
-            // Convert dữ liệu cho phần table
             for (let n in dataTemp) {
                 data[n] = {
                     ...dataTemp[n],
@@ -489,16 +488,11 @@ class TaskManagement extends Component {
 
             }
 
-            // Convert dữ liệu cho phần tree
             for (let i = 0; i < currentTasks.length; i++) {
                 let task = currentTasks[i];
-                console.log("taskssss", currentTasks)
                 if (task.parent) { // có công việc liên quan
                     if (typeof (task.parent) === 'object') {
-                        let checkP = currentTasks.some(t => {
-                            console.log("TTTTT ", t)
-                            return t._id.toString() === task.parent._id.toString()
-                        });
+                        let checkP = currentTasks.some(t => t._id.toString() === task.parent._id.toString());
 
                         dataTree = [...dataTree, {
                             ...task,
@@ -509,7 +503,7 @@ class TaskManagement extends Component {
                             parent: checkP ? task.parent._id.toString() : '#'
                         }]
                     } else {
-                        let checkP = currentTasks.some(task => task._id.toString() === task.parent.toString());
+                        let checkP = currentTasks.some(t => t._id.toString() === task.parent.toString());
 
                         dataTree = [...dataTree, {
                             ...task,
@@ -536,7 +530,7 @@ class TaskManagement extends Component {
                         parent: task.taskProject + task._id
                     }]
                 } else {
-                    let findPublic = dataTree.some(task => task.id.toString() === idTaskProjectRoot.toString());
+                    let findPublic = dataTree.some(t => t.id.toString() === idTaskProjectRoot.toString());
                     if (!findPublic) {
                         dataTree = [...dataTree, {
                             id: idTaskProjectRoot,
@@ -654,10 +648,10 @@ class TaskManagement extends Component {
                             <label>{translate('task.task_management.start_date')}</label>
                             <DatePicker
                                 id="start-date"
-                                dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                value={startDate} // giá trị mặc định cho datePicker    
+                                dateFormat="month-year"
+                                value={startDate}
                                 onChange={this.handleChangeStartDate}
-                                disabled={false}                     // sử dụng khi muốn disabled, mặc định là false
+                                disabled={false}
                             />
                         </div>
 
@@ -665,10 +659,10 @@ class TaskManagement extends Component {
                             <label>{translate('task.task_management.end_date')}</label>
                             <DatePicker
                                 id="end-date"
-                                dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                value={endDate} // giá trị mặc định cho datePicker    
+                                dateFormat="month-year"
+                                value={endDate}
                                 onChange={this.handleChangeEndDate}
-                                disabled={false}                     // sử dụng khi muốn disabled, mặc định là false
+                                disabled={false}
                             />
                         </div>
 
@@ -708,8 +702,6 @@ class TaskManagement extends Component {
                         />
                     }
 
-                    {/* Bảng danh sách công việc */}
-
                     <div id="tree-table-container" style={{ marginTop: '30px' }}>
                         <TreeTable
                             behaviour="show-children"
@@ -738,6 +730,8 @@ class TaskManagement extends Component {
                     </div>
 
                     <PaginateBar
+                        display={tasks.tasks ? tasks.tasks.length : null}
+                        total={tasks.listSearchTasks ? tasks.listSearchTasks.length : null}
                         pageTotal={tasks.pages}
                         currentPage={currentPage}
                         func={this.handleGetDataPagination}
