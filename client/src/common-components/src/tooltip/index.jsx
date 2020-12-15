@@ -42,16 +42,13 @@ class ToolTip extends Component {
     }
 
     displayTooltipForIcon = (data, icon) => {
-        // let title = data.map(element => {
-        //     return `${element}`
-        // })
         let content = data.join(', ');
         let title = <span>{content}</span>
 
         return <React.Fragment>
             <Tooltip placement="topLeft" overlay={title}>
-                <a style={{ cursor: "pointer" }}>
-                    <i className="material-icons">{icon}</i>
+                <a style={{ cursor: "pointer", marginLeft: '5px' }}>
+                    <i className="material-icons" style={{ fontSize: '15px' }}>{icon}</i>
                 </a>
             </Tooltip>
         </React.Fragment>
