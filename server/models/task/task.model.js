@@ -313,7 +313,6 @@ const TaskSchema = new Schema(
         ],
         formula: {
             type: String,
-            //require: true,
             default:
                 "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
         },
@@ -626,6 +625,10 @@ const TaskSchema = new Schema(
                 },
             },
         ],
+
+        taskProject: { //tên dự án công việc thuộc về
+            type: String
+        },
     },
     {
         timestamps: true,

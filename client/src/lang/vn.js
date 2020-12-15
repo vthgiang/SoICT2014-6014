@@ -3135,6 +3135,8 @@ export default {
                 warning_days: "ngày",
                 warning_hours: "giờ",
                 warning_minutes: "phút",
+
+                project: 'Tên dự án (nếu có)',
             },
             task_perform: {
                 actions: "Hoạt động",
