@@ -989,7 +989,13 @@ class AssetManagement extends Component {
                     }
 
                     {/* PaginateBar */}
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
+                    <PaginateBar
+                        display={assetsManager.listAssets ? assetsManager.listAssets.length : null}
+                        total={assetsManager.totalList ? assetsManager.totalList : null}
+                        pageTotal={pageTotal ? pageTotal : 0}
+                        currentPage={currentPage}
+                        func={this.setPage}
+                    />
                 </div>
 
                 {/* Form xem thông tin tài sản */}
