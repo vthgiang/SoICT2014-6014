@@ -699,7 +699,6 @@ class DetailTaskTab extends Component {
 
         return (
             <React.Fragment>
-                jslfjsklfsdklf
                 {(showToolbar) &&
                     <div style={{ marginLeft: "-10px" }}>
                         <a className="btn btn-app" onClick={this.refresh} title="Refresh">

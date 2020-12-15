@@ -34,6 +34,7 @@ class TaskAddModal extends Component {
                 collaboratedWithOrganizationalUnits: [],
                 taskTemplate: "",
                 parent: "",
+                taskProject: ""
             },
 
             currentRole: getStorage('currentRole'),
@@ -86,7 +87,18 @@ class TaskAddModal extends Component {
         return msg === undefined;
     }
 
-
+    handleChangeTaskProject = (e) => {
+        let { value } = e.target;
+        this.setState(state => {
+            return {
+                ...state,
+                newTask: {
+                    ...state.newTask,
+                    taskProject: value
+                }
+            }
+        })
+    }
 
     handleChangeTaskDescription = (event) => {
         let value = event.target.value;
@@ -497,6 +509,10 @@ class TaskAddModal extends Component {
                                 <label>{translate('task.task_management.name')}*</label>
                                 <input type="Name" className="form-control" placeholder={translate('task.task_management.name')} value={(newTask.name)} onChange={this.handleChangeTaskName} />
                                 <ErrorLabel content={newTask.errorOnName} />
+                            </div>
+                            <div className="form-group">
+                                <label>{translate('task.task_management.project')}</label>
+                                <input className="form-control" placeholder={translate('task.task_management.project')} value={(newTask.taskProject)} onChange={this.handleChangeTaskProject} />
                             </div>
                             <div className={`form-group ${newTask.errorOnDescription === undefined ? "" : "has-error"}`}>
                                 <label className="control-label">{translate('task.task_management.detail_description')}*</label>

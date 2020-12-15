@@ -2865,6 +2865,8 @@ export default {
                 warning_days: "days",
                 warning_hours: "hours",
                 warning_minutes: "minutes",
+
+                project: 'Project name (if you have)'
             },
             task_perform: {
                 actions: "Actions",
