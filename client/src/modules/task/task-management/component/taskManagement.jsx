@@ -428,6 +428,17 @@ class TaskManagement extends Component {
         }
     }
 
+    handleShowTask = (e, data) => {
+        const { tasks } = this.props;
+        let idValid = tasks.tasks.some(t => t._id.toString() === data.node.id.toString());
+        let id = data ? data.node ? data.node.id : '' : '';
+        if (id && idValid) {
+            this.setState({
+                currentTaskId: id
+            }, () => { window.$(`#modelPerformTask${id}`).modal('show') })
+        }
+    }
+
     render() {
         const { tasks, user, translate } = this.props;
         const { currentTaskId, currentPage, currentTab, parentTask, startDate, endDate, perPage, status, displayType } = this.state;
@@ -488,6 +499,20 @@ class TaskManagement extends Component {
 
             }
 
+            let getTaskProjectInfo = (arr, text) => {
+                let check = arr.some(t => t.text.toString() === text);
+                return {
+                    create: !check,
+                    node: {
+                        id: 'project' + text,
+                        icon: 'glyphicon glyphicon-folder-open',
+                        text,
+                        state: { "opened": true },
+                        parent: '#'
+                    }
+                }
+            }
+
             for (let i = 0; i < currentTasks.length; i++) {
                 let task = currentTasks[i];
                 if (task.parent) { // có công việc liên quan
@@ -515,19 +540,17 @@ class TaskManagement extends Component {
                         }]
                     }
                 } else if (task.taskProject) { // không có công việc liên quan nhưng lại có tên dự án
+                    let checkTaskProject = getTaskProjectInfo(dataTree, task.taskProject);
+                    if (checkTaskProject.create) {
+                        dataTree = [...dataTree, checkTaskProject.node];
+                    }
                     dataTree = [...dataTree, {
-                        id: task.taskProject + task._id,
-                        icon: 'glyphicon glyphicon-folder-open',
-                        text: task.taskProject,
-                        state: { "opened": true },
-                        parent: '#'
-                    }, {
                         ...task,
                         id: task._id,
                         icon: 'fa fa-file-text-o',
                         text: task.name,
                         state: { "opened": true },
-                        parent: task.taskProject + task._id
+                        parent: checkTaskProject.node.id
                     }]
                 } else {
                     let findPublic = dataTree.some(t => t.id.toString() === idTaskProjectRoot.toString());
@@ -725,14 +748,7 @@ class TaskManagement extends Component {
                     <div id="tasks-list-tree" style={{ display: 'none', marginTop: '30px' }}>
                         <Tree id="tasks-list-treeview"
                             plugins={false}
-                            onChanged={(e, data) => {
-                                let id = data ? data.node ? data.node.id : '' : '';
-                                if (id) {
-                                    this.setState({
-                                        currentTaskId: id
-                                    }, () => { window.$(`#modelPerformTask${id}`).modal('show') })
-                                }
-                            }}
+                            onChanged={this.handleShowTask}
                             data={dataTree} />
                     </div>
 
