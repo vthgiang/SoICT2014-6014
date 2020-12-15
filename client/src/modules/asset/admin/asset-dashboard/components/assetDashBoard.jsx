@@ -32,7 +32,8 @@ class DashBoardAssets extends Component {
                 assetByType: null,
                 assetStatistics: null,
                 purchaseDisposal: null,
-                assetIsExpired: null
+                assetIsExpired: null,
+                incidentMaintenance: null,
             }
         }
     }
@@ -453,7 +454,69 @@ class DashBoardAssets extends Component {
                 }
             })
         }
+    }
 
+    setIncidentAndMaintenanceDataExportData = (incidentData, maintenanceData) => {
+        let incidentExportData, maintenanceExportData = [];
+
+        if (incidentData && incidentData.category && incidentData.count) {
+            incidentExportData = incidentData.category.map((obj, index) => ({
+                month: obj,
+                count: incidentData.count[index + 1],
+                assetType: incidentData.assetTypeName.join(', ')
+
+            }))
+        }
+
+        if (maintenanceData && maintenanceData.category && maintenanceData.count && maintenanceData.value) {
+            const maintenanceDataLength = maintenanceData.category.length;
+            for (let index = 1; index < maintenanceDataLength; index++) {
+                maintenanceExportData.push({
+                    month: maintenanceData.category[index],
+                    count: maintenanceData.count[index],
+                    value: maintenanceData.value[index],
+                    assetType: maintenanceData.assetTypeName.join(', ')
+                })
+            }
+        }
+
+        const incidentMaintenance = {
+            fileName: "Thống kê sự cố - bảo trì",
+            dataSheets: [
+                {
+                    sheetName: "Sheet1",
+                    tables: [
+                        {
+                            tableName: "Thống kê sự tài sản",
+                            rowHeader: 1,
+                            columns: [
+                                { key: "month", value: "Tháng" },
+                                { key: "count", value: "Số lần" },
+                                { key: "assetType", value: "Loại tài sản" }
+                            ],
+                            data: incidentExportData
+                        },
+                        {
+                            tableName: "Thống kê bảo trì tài sản",
+                            rowHeader: 1,
+                            columns: [
+                                { key: "month", value: "Tháng" },
+                                { key: "count", value: "Số lần" },
+                                { key: "value", value: "Chi phí" },
+                                { key: "assetType", value: "Loại tài sản" }
+                            ],
+                            data: maintenanceExportData
+                        },
+                    ]
+                },
+            ]
+        }
+        this.setState({
+            exportData: {
+                ...this.state.exportData,
+                incidentMaintenance,
+            }
+        })
     }
 
     render() {
@@ -563,7 +626,7 @@ class DashBoardAssets extends Component {
                                 key="AdministrationIncidentAndMaintenance"
                             >
                                 <IncidentAndMaintenance
-                                // setPurchaseAndDisposalExportData={this.setPurchaseAndDisposalExportData}
+                                    setIncidentAndMaintenanceDataExportData={this.setIncidentAndMaintenanceDataExportData}
                                 />
                             </LazyLoadComponent>
                         </div>

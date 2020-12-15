@@ -209,7 +209,7 @@ class IncidentEditForm extends Component {
                             </div>
 
                             {/* Phân loại */}
-                            <div className="form-group">
+                            <div className={`form-group ${!errorOnIncidentType ? "" : "has-error"}`}>
                                 <label>{translate('asset.general_information.incident_type')}<span className="text-red">*</span></label>
                                 <SelectBox
                                     id={`edit-type-incident-asset${_id}`}
