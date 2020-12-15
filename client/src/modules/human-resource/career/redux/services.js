@@ -12,7 +12,15 @@ export const CareerService = {
     createCareerAction,
 
     editCareerPosition,
+    editCareerField,
+    editCareerAction,
+
+    deleteCareerField,
+    deleteCareerPosition,
+    deleteCareerAction,
 }
+
+// =============GET=================
 
 /**
  * Lấy danh sách kỷ luật
@@ -65,11 +73,11 @@ function getListCareerAction(data) {
 
 
 
-// ==============================
+// =============CREATE=================
 
 /**
  * Thêm mới chuyên ngành
- * @data : Dữ liệu kỷ luật cần thêm 
+ * @data : Dữ liệu
  */
 function createCareerField(data) {
     return sendRequest({
@@ -81,7 +89,7 @@ function createCareerField(data) {
 
 /**
  * Thêm mới chuyên ngành
- * @data : Dữ liệu kỷ luật cần thêm 
+ * @data : Dữ liệu 
  */
 function createCareerPosition(data) {
     return sendRequest({
@@ -93,7 +101,7 @@ function createCareerPosition(data) {
 
 /**
  * Thêm mới chuyên ngành
- * @data : Dữ liệu kỷ luật cần thêm 
+ * @data : Dữ liệu
  */
 function createCareerAction(data) {
     return sendRequest({
@@ -103,14 +111,80 @@ function createCareerAction(data) {
     }, true, true, 'human_resource.commendation_discipline.discipline');
 }
 
+
+//=============EDIT===============
+
 /**
  * Chỉnh sửa vị trí cv
- * @data : Dữ liệu kỷ luật cần thêm 
+ * @data : Dữ liệu
  */
 function editCareerPosition(data) {
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/career-positions/career-positions/${data.careerId}`,
         method: 'PATCH',
+        data: data
+    }, true, true, 'human_resource.commendation_discipline.discipline');
+}
+
+/**
+ * Chỉnh sửa vị trí cv
+ * @data : Dữ liệu 
+ */
+function editCareerField(data) {
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/career-positions/career-fields/${data.careerId}`,
+        method: 'PATCH',
+        data: data
+    }, true, true, 'human_resource.commendation_discipline.discipline');
+}
+
+/**
+ * Chỉnh sửa hoạt động cv
+ * @data : Dữ liệu
+ */
+function editCareerAction(data) {
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/career-positions/career-actions/${data.careerId}`,
+        method: 'PATCH',
+        data: data
+    }, true, true, 'human_resource.commendation_discipline.discipline');
+}
+
+
+// =============DELETE===============
+
+/**
+ * Xóa lĩnh vực cv
+ * @data : Dữ liệu xóa
+ */
+function deleteCareerField(data) {
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/career-positions/career-fields`,
+        method: 'DELETE',
+        data: data
+    }, true, true, 'human_resource.commendation_discipline.discipline');
+}
+
+/**
+ * Xóa lĩnh vực cv
+ * @data : Dữ liệu xóa
+ */
+function deleteCareerPosition(data) {
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/career-positions/career-positions`,
+        method: 'DELETE',
+        data: data
+    }, true, true, 'human_resource.commendation_discipline.discipline');
+}
+
+/**
+ * Xóa lĩnh vực cv
+ * @data : Dữ liệu xóa
+ */
+function deleteCareerAction(data) {
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/career-positions/career-actions`,
+        method: 'DELETE',
         data: data
     }, true, true, 'human_resource.commendation_discipline.discipline');
 }

@@ -41,16 +41,17 @@ class EditForm extends Component {
         });
     }
 
-    // handleParent = (value) => {
-    //     this.setState({ archiveParent: value[0] });
-    // };
+    handleParent = (value) => {
+        this.setState({ parent: value[0] });
+    };
 
     isValidateForm = () => {
-        let { name, description } = this.state;
+        let { name, showParent, parent, code } = this.state;
         let { translate } = this.props;
         if (
             !ValidationHelper.validateName(translate, name, 1, 255).status
         ) return false;
+        if (showParent && !parent) return false;
         return true;
     }
 
@@ -86,17 +87,8 @@ class EditForm extends Component {
         const { archiveId, name, description, archiveParent } = this.state;
         const { list } = documents.administration.archives;
 
-        // let node = "";
-        // node = list.filter(archive => archive._id === archiveId)[0]
-
-        // // find node child 
-        // let array = [];
-        // if (node) {
-        //     array = this.findChildrenNode(list, node);
-        // }
-
         console.log('state data', this.state);
-
+        this.props.editCareerAction(this.state);
         // this.props.editDocumentArchive(archiveId, {
         //     name,
         //     description,
@@ -109,11 +101,19 @@ class EditForm extends Component {
         if (nextProps.careerId !== prevState.careerId) {
             return {
                 ...prevState,
+                oldData: {
+                    careerId: nextProps.careerId,
+                    name: nextProps.careerName,
+                    package: nextProps.careerPackage,
+                    code: nextProps.careerCode,
+                    parent: nextProps.careerParent,
+                },
                 careerId: nextProps.careerId,
                 name: nextProps.careerName,
                 package: nextProps.careerPackage,
                 code: nextProps.careerCode,
                 parent: nextProps.careerParent,
+                showParent: nextProps.careerParent,
 
                 nameError: undefined,
                 codeError: undefined
@@ -126,9 +126,9 @@ class EditForm extends Component {
     render() {
         const { translate, documents } = this.props;
         const { listData, unChooseNode } = this.props;
-        const { name, code, codeError, nameError } = this.state;
+        const { name, code, parent, showParent, codeError, nameError } = this.state;
         const { list } = listData;
-            let listCareer = [];
+        let listCareer = [];
         for (let i in list) {
             if (!unChooseNode.includes(list[i].id)) {
                 listCareer.push(list[i]);
@@ -137,11 +137,13 @@ class EditForm extends Component {
         const disabled = !this.isValidateForm();
         return (
             <div id="edit-career-action">
-                <div className={`form-group`}>
-                    <label>Tên<span className="text-red">*</span></label>
-                    <input type="text" className="form-control" onChange={this.handlePackage} value={this.state.package} />
-                    {/* <ErrorLabel content={nameError} /> */}
-                </div>
+                {!showParent &&
+                    <div className={`form-group`}>
+                        <label>Gói thầu<span className="text-red">*</span></label>
+                        <input type="text" className="form-control" onChange={this.handlePackage} value={this.state.package} />
+                        {/* <ErrorLabel content={nameError} /> */}
+                    </div>
+                }
                 <div className={`form-group ${nameError === undefined ? "" : "has-error"}`}>
                     <label>Tên<span className="text-red">*</span></label>
                     <input type="text" className="form-control" onChange={this.handleName} value={name} />
@@ -152,17 +154,19 @@ class EditForm extends Component {
                     <input type="text" className="form-control" onChange={this.handleCode} value={code} />
                     <ErrorLabel content={codeError} />
                 </div>
-                {/* <div className="form-group">
-                    <label>{translate('document.administration.archives.parent')}</label>
-                    <TreeSelect data={listArchive} value={[archiveParent]} handleChange={this.handleParent} mode="radioSelect" />
-                </div> */}
+                { showParent &&
+                    <div className="form-group">
+                        <label>{translate('document.administration.archives.parent')}</label>
+                        <TreeSelect data={listData} value={[parent]} handleChange={this.handleParent} mode="radioSelect" />
+                    </div>
+                }
                 <div className="form-group">
                     <button className="btn btn-success pull-right" style={{ marginLeft: '5px' }} disabled={disabled} onClick={this.save}>{translate('form.save')}</button>
                     <button className="btn btn-danger" onClick={() => {
                         window.$(`#edit-career-action`).slideUp()
                     }}>{translate('form.close')}</button>
                 </div>
-            </div>
+            </div >
         )
     }
 }
@@ -171,8 +175,7 @@ class EditForm extends Component {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
-    // editDocumentArchive: CareerReduxAction.editDocumentArchive,
-    // getDocumentArchives: CareerReduxAction.getDocumentArchive,
+    editCareerAction: CareerReduxAction.editCareerAction,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(EditForm));

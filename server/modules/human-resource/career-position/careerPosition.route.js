@@ -13,9 +13,13 @@ router.get('/career-actions', auth, careerPositionController.searchCareerAction)
 router.post('/career-fields', auth, careerPositionController.crateNewCareerField);
 router.post('/career-positions', auth, careerPositionController.crateNewCareerPosition);
 router.post('/career-actions', auth, careerPositionController.crateNewCareerAction);
-// router.post('/career-positions', auth, careerPositionController.createAnnualLeave);
 
+router.patch('/career-fields/:id', auth, careerPositionController.editCareerField);
 router.patch('/career-positions/:id', auth, careerPositionController.editCareerPosition);
-// router.delete('/career-positions/:id', auth, careerPositionController.deleteAnnualLeave);
+router.patch('/career-actions/:id', auth, careerPositionController.editCareerAction);
+
+router.delete('/career-fields', auth, careerPositionController.deleteCareerField);
+router.delete('/career-positions', auth, careerPositionController.deleteCareerPosition);
+router.delete('/career-actions', auth, careerPositionController.deleteCareerAction);
 
 module.exports = router;
