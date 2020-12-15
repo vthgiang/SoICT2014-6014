@@ -454,7 +454,7 @@ class TaskManagement extends Component {
         let data = [], dataTree = [];;
         if (currentTasks && currentTasks.length !== 0) {
             let dataTemp = currentTasks;
-
+            let idTaskProjectRoot = 'task-project-root';
             // Convert dữ liệu cho phần table
             for (let n in dataTemp) {
                 data[n] = {
@@ -492,16 +492,35 @@ class TaskManagement extends Component {
             // Convert dữ liệu cho phần tree
             for (let i = 0; i < currentTasks.length; i++) {
                 let task = currentTasks[i];
-                if (task.parent) {
-                    dataTree = [...dataTree, {
-                        ...task,
-                        id: task._id,
-                        icon: 'fa fa-file-text-o',
-                        text: task.name,
-                        state: { "opened": true },
-                        parent: typeof (task.parent) !== 'object' ? task.parent.toString() : task.parent._id.toString()
-                    }]
-                } else if (task.taskProject) {
+                console.log("taskssss", currentTasks)
+                if (task.parent) { // có công việc liên quan
+                    if (typeof (task.parent) === 'object') {
+                        let checkP = currentTasks.some(t => {
+                            console.log("TTTTT ", t)
+                            return t._id.toString() === task.parent._id.toString()
+                        });
+
+                        dataTree = [...dataTree, {
+                            ...task,
+                            id: task._id,
+                            icon: 'fa fa-file-text-o',
+                            text: task.name,
+                            state: { "opened": true },
+                            parent: checkP ? task.parent._id.toString() : '#'
+                        }]
+                    } else {
+                        let checkP = currentTasks.some(task => task._id.toString() === task.parent.toString());
+
+                        dataTree = [...dataTree, {
+                            ...task,
+                            id: task._id,
+                            icon: 'fa fa-file-text-o',
+                            text: task.name,
+                            state: { "opened": true },
+                            parent: checkP ? task.parent.toString() : '#'
+                        }]
+                    }
+                } else if (task.taskProject) { // không có công việc liên quan nhưng lại có tên dự án
                     dataTree = [...dataTree, {
                         id: task.taskProject + task._id,
                         icon: 'glyphicon glyphicon-folder-open',
@@ -517,8 +536,7 @@ class TaskManagement extends Component {
                         parent: task.taskProject + task._id
                     }]
                 } else {
-                    let idTaskProjectRoot = 'task-project-root';
-                    let findPublic = dataTree.some(task => task.id === idTaskProjectRoot);
+                    let findPublic = dataTree.some(task => task.id.toString() === idTaskProjectRoot.toString());
                     if (!findPublic) {
                         dataTree = [...dataTree, {
                             id: idTaskProjectRoot,
