@@ -2809,7 +2809,7 @@ export default {
 
                 responsible_role: "Thực hiện",
                 accountable_role: "Phê duyệt",
-                consulted_role: "Hỗ trợ",
+                consulted_role: "Tư vấn",
                 informed_role: "Quan sát",
                 distribution_Of_Employee: "Đóng góp công việc",
                 employees_each_chart: "Số nhân viên tối đa mỗi biểu đồ",

@@ -234,6 +234,25 @@ exports.crateNewCareerAction = async (portal, data) => {
             package: data.package,
             detail: [],
         })
+
+        console.log('pos', data.position);
+
+        // thêm vào lĩnh vực công việc vị trí công việc này
+        for (let i in data.position) {
+            await CareerPosition(connect(DB_CONNECTION, portal)).findOneAndUpdate(
+                {
+                    _id: data.position[i],
+                },
+                {
+                    $push: {
+                        "description": {
+                            action: action._id,
+                            multi: 1
+                        }
+                    }
+                }
+            )
+        }
     }
     else {
         let isDetail = await CareerAction(connect(DB_CONNECTION, portal)).findOne({ _id: data.parent })
@@ -259,37 +278,82 @@ exports.crateNewCareerAction = async (portal, data) => {
 
 
 /**
+ * Chỉnh sửa lĩnh vực công việc
+ * @data dữ liệu chỉnh sửa
+ */
+exports.editCareerField = async (portal, data, params) => {
+    let oldItem = data.oldData;
+
+    if (!data.parent) {
+        await CareerField(connect(DB_CONNECTION, portal)).updateOne({ _id: params.id },
+            {
+                $set: {
+                    name: data.name,
+                    code: data.code,
+                },
+            }, { $new: true }
+        )
+
+    } else {
+        let fieldItem = await CareerField(connect(DB_CONNECTION, portal)).findOne({ "position._id": params.id })
+        let posId;
+        let tmp = fieldItem.position.find(e => String(e._id) === String(params.id));
+        console.log('tmp', tmp);
+        if (tmp) {
+            posId = tmp.position;
+
+            await CareerPosition(connect(DB_CONNECTION, portal)).updateOne(
+                {
+                    "_id": posId,
+                },
+                {
+                    $set: {
+                        name: data.name,
+                        code: data.code,
+                    },
+                }, { $new: true }
+            )
+        }
+        if (data.parent !== oldItem.parent) { // parent có thay đổi
+            await CareerField(connect(DB_CONNECTION, portal)).update(
+                {
+                    _id: oldItem.parent,
+                    "position._id": params.id
+                },
+                {
+                    $pull: { position: { "_id": params.id, } },
+                },
+                { safe: true }
+            )
+
+            // thêm mới vào 1 vị trí cv mới
+            await CareerField(connect(DB_CONNECTION, portal)).updateOne(
+                {
+                    "_id": data.parent,
+                },
+                {
+                    $push: {
+                        "position": {
+                            _id: params.id,
+                            position: posId,
+                        }
+                    },
+                }
+            )
+        }
+    }
+
+    return await CareerField(connect(DB_CONNECTION, portal)).find({}).populate([{ path: "position.position" }])
+}
+
+/**
  * Chỉnh sửa vị trí công việc
  * @data dữ liệu chỉnh sửa
  */
 exports.editCareerPosition = async (portal, data, params) => {
     let oldItem = data.oldData;
-    // CareerPosition(connect(DB_CONNECTION, portal)).find({ _id: params.id });
 
     if (!data.parent) {
-        let oldPosition = await CareerPosition(connect(DB_CONNECTION, portal)).findOne({ _id: params.id })
-        let listField = await CareerPosition(connect(DB_CONNECTION, portal)).find({});
-
-        let filterField = listField.filter(e => e.position.find(x => x.code === oldItem.code))
-
-        console.log('=====\n\n', filterField);
-
-        for (let i in filterField) {
-            await CareerField(connect(DB_CONNECTION, portal)).findOneAndUpdate(
-                {
-                    _id: filterField[i],
-                    "position.name": oldItem.name,
-                    "position.code": oldItem.code,
-                },
-                {
-                    $set: {
-                        "position.$.name": data.name,
-                        "position.$.code": data.code,
-                    }
-                }
-            )
-        }
-
         await CareerPosition(connect(DB_CONNECTION, portal)).updateOne({ _id: params.id },
             {
                 $set: {
@@ -300,107 +364,31 @@ exports.editCareerPosition = async (portal, data, params) => {
                 },
             }, { $new: true }
         )
-
-
-        // let oldDif = [],
-        //     newDif = [], 
-        //     common = [];
-        // newDif = newDif.filter(e => oldDif.indexOf(e) === -1); // cac phan tu them vao
-        // oldDif = oldDif.filter(e => newDif.indexOf(e) === -1); // casc phan tu bi mat di
-        // common = oldDif.filter(e => newDif.indexOf(e) !== -1); // casc phan tu chung
-
-
-        // // console.log('=====\n\n', newDif, oldDif, common);
-        // // bỏ đi những vị trí có trong danh sách lĩnh vực cũ,
-        // for (let i in oldDif) {
-        //     await CareerField(connect(DB_CONNECTION, portal)).findOneAndUpdate(
-        //         {
-        //             _id: oldDif[i],
-        //             "position.name": oldItem.name,
-        //             "position.code": oldItem.code,
-        //         },
-        //         {
-        //             $pull: {
-        //                 "position": {
-        //                     name: oldDif.name,
-        //                     code: oldItem.code,
-        //                 }
-        //             }
-        //         }
-        //     )
-        // }
-
-        // // cap nhat vi tri  trong linh vuc
-        // for (let i in common) {
-        //     await CareerField(connect(DB_CONNECTION, portal)).findOneAndUpdate(
-        //         {
-        //             _id: common[i],
-        //             "position.name": oldItem.name,
-        //             "position.code": oldItem.code,
-        //         },
-        //         {
-        //             $set: {
-        //                 "position.$.name": data.name,
-        //                 "position.$.code": data.code,
-        //             }
-        //         }
-        //     )
-        // }
-
-        // // them moi vi tri vao linh vuc
-        // for (let i in newDif) {
-        //     await CareerField(connect(DB_CONNECTION, portal)).findOneAndUpdate(
-        //         {
-        //             _id: newDif[i],
-        //         },
-        //         {
-        //             $push: {
-        //                 "position": {
-        //                     name: data.name,
-        //                     code: data.code,
-        //                 }
-        //             }
-        //         }
-        //     )
-        // }
-
-        // // TODO: cap nhat thông tin trong employee
-
     }
 
     else {
-        let r = await CareerAction(connect(DB_CONNECTION, portal)).findOne({ name: oldItem.name })
-        console.log('pppppppppppppp', r, oldItem.name);
-        await CareerAction(connect(DB_CONNECTION, portal)).updateOne({ name: oldItem.name },
-            {
-                $set: {
-                    name: data.name,
-                    // code: data.code,
-                }
-            }, { $new: true }
-        )
-        if (data.parent === oldItem.parent) {
-            // parent k đổi
-            await CareerPosition(connect(DB_CONNECTION, portal)).updateOne(
+        let positionItem = await CareerPosition(connect(DB_CONNECTION, portal)).findOne({ "description._id": params.id });
+        let actionId
+        let tmp = positionItem.description.find(e => String(e._id) === String(params.id));
+        console.log('tmp', tmp);
+        if (tmp) {
+            actionId = tmp.action;
+            await CareerAction(connect(DB_CONNECTION, portal)).updateOne(
                 {
-                    "description._id": params.id
+                    _id: actionId,
                 },
                 {
                     $set: {
-                        "description.$.name": data.name,
-                        "description.$.code": data.code,
-                        "description.$.package": data.package,
-                        // description: [],
-                    },
-                }, { $new: true })
-        } else {
+                        name: data.name,
+                        code: data.code,
+                    }
+                }, { $new: true }
+            )
+        }
+
+        if (data.parent !== oldItem.parent) { // thay dổi cha
             // bỏ đi description ở vị trí cv cũ (parent cũ)
-            let xxx = await CareerPosition(connect(DB_CONNECTION, portal)).findOne(
-                {
-                    "description._id": params.id
-                })
-            console.log('xxx', xxx);
-            let yyy = await CareerPosition(connect(DB_CONNECTION, portal)).update(
+            await CareerPosition(connect(DB_CONNECTION, portal)).update(
                 {
                     _id: oldItem.parent,
                     "description._id": params.id
@@ -410,11 +398,8 @@ exports.editCareerPosition = async (portal, data, params) => {
                 },
                 { safe: true }
             )
-            console.log('yyyy', yyy);
 
             // thêm mới vào 1 vị trí cv mới
-            let oldPosition = await CareerPosition(connect(DB_CONNECTION, portal)).findOne({ "description._id": params.id });
-            // let oldId = oldPosition?._id;
             await CareerPosition(connect(DB_CONNECTION, portal)).updateOne(
                 {
                     "_id": data.parent,
@@ -423,8 +408,7 @@ exports.editCareerPosition = async (portal, data, params) => {
                     $push: {
                         "description": {
                             _id: params.id,
-                            name: data.name,
-                            code: data.code,
+                            action: actionId
                         }
                     },
                 }
@@ -433,62 +417,197 @@ exports.editCareerPosition = async (portal, data, params) => {
         }
     }
 
-    return await CareerPosition(connect(DB_CONNECTION, portal)).find({})
+    return await CareerPosition(connect(DB_CONNECTION, portal)).find({}).populate([{ path: "description.action" }])
 }
 
-// /**
-//  * Thêm mới thông tin nghỉ phép
-//  * @data : dữ liệu chuyên ngành tương đương mới
-//  * 
-//  */
-// exports.createNewAdditionalCareerPosition = async (portal, data) => {
-//     // Tạo mới thông tin nghỉ phép vào database
-//     let AdditionalMajor = await CareerPosition(connect(DB_CONNECTION, portal)).find(
-//         {
-//             _id: data.majorID,
-//             "position._id": data.groupId,
-//         },
-//         {
-//             $push: {
-//                 "position.$.description": {
-//                     name: data.name,
-//                     type: 0,
-//                 }
-//             }
-//         }
-//     );
+/**
+ * Chỉnh sửa hoạt động công việc
+ * @data dữ liệu chỉnh sửa
+ */
+exports.editCareerAction = async (portal, data, params) => {
+    let oldItem = data.oldData;
 
-//     return await CareerPosition(connect(DB_CONNECTION, portal)).find({})
-// }
+    if (!data.parent) {
+        await CareerAction(connect(DB_CONNECTION, portal)).updateOne({ _id: params.id },
+            {
+                $set: {
+                    name: data.name,
+                    code: data.code,
+                    package: data.package,
+                },
+            }, { $new: true }
+        )
+    }
+    else {
+        console.log('1');
+        await CareerAction(connect(DB_CONNECTION, portal)).updateOne(
+            {
+                _id: oldItem.parent,
+                "detail._id": params.id,
+            },
+            {
+                $set: {
+                    "detail.$.name": data.name,
+                    "detail.$.code": data.code,
+                }
+            }, { $new: true }
+        )
 
-// /**
-//  * Xoá thông tin nghỉ phép
-//  * @id : Id nghỉ phép muốn xoá
-//  */
-// exports.deleteAnnualLeave = async (portal, id) => {
-//     return await AnnualLeave(connect(DB_CONNECTION, portal)).findOneAndDelete({
-//         _id: id
-//     });
-// }
+        console.log('2');
+        let actionItem = await CareerAction(connect(DB_CONNECTION, portal)).findOne(
+            {
+                _id: oldItem.parent,
+                "detail._id": params.id,
+            },
+        );
 
-// /**
-//  * Cập nhật thông tin nghỉ phép
-//  * @id : Id nghỉ phép muốn chỉnh sửa
-//  * @data : Dữ liệu thay đổi
-//  */
-// exports.updateAnnualLeave = async (portal, id, data) => {
-//     let annualLeave = await AnnualLeave(connect(DB_CONNECTION, portal)).findById(id);
+        console.log('3');
+        let updatedDetail = actionItem.detail.find(e => String(e._id) === String(params.id))
 
-//     annualLeave.startDate = data.startDate;
-//     annualLeave.status = data.status;
-//     annualLeave.endDate = data.endDate;
-//     annualLeave.reason = data.reason;
-//     await annualLeave.save();
+        console.log('4', updatedDetail);
+        if (data.parent !== oldItem.parent) { // thay dổi cha
+            // bỏ đi description ở vị trí cv cũ (parent cũ)
+            console.log('5');
+            await CareerAction(connect(DB_CONNECTION, portal)).update(
+                {
+                    _id: oldItem.parent,
+                    "detail._id": params.id
+                },
+                {
+                    $pull: { detail: { "_id": params.id, } },
+                },
+                { safe: true }
+            )
 
-//     return await AnnualLeave(connect(DB_CONNECTION, portal)).findOne({
-//         _id: id
-//     }).populate([{
-//         path: 'employee',
-//         select: 'emailInCompany fullName employeeNumber'
-//     }]);
-// }
+            console.log('6');
+
+            // thêm mới vào 1 vị trí cv mới
+            await CareerAction(connect(DB_CONNECTION, portal)).updateOne(
+                {
+                    "_id": data.parent,
+                },
+                {
+                    $push: {
+                        "detail": {
+                            _id: params.id,
+                            name: updatedDetail.name,
+                            code: updatedDetail.code,
+                            type: updatedDetail.type,
+                        }
+                    },
+                }, {new: true}
+            )
+            console.log('7');
+
+        }
+    }
+
+    return await CareerAction(connect(DB_CONNECTION, portal)).find({})
+}
+
+
+// =================DELETE=====================
+
+/**
+ * Xoá lĩnh vực
+ * @data : list id xóa
+ */
+exports.deleteCareerField = async (portal, data) => {
+    for (let i in data) {
+        await CareerField(connect(DB_CONNECTION, portal)).findOneAndDelete({ _id: data[i] });
+    }
+
+    for (let i in data) {
+        await CareerField(connect(DB_CONNECTION, portal)).update(
+            {
+                "position._id": data[i],
+            },
+            {
+                $pull: { position: { "_id": data[i], } },
+            },
+            { safe: true }
+        );
+    }
+
+    return await CareerField(connect(DB_CONNECTION, portal)).find({}).populate([{ path: "position.position" }])
+}
+
+/**
+ * Xoá lĩnh vực
+ * @data : list id xóa
+ */
+exports.deleteCareerPosition = async (portal, data) => {
+    for (let i in data) {
+        // let fieldItem = await CareerField(connect(DB_CONNECTION, portal)).findOne({ "position._id": data[i] })
+        // let posId;
+        // let tmp = fieldItem.position.find(e => String(e._id) === String(data[i]));
+        // console.log('tmp', tmp);
+        // if (tmp) {
+        //     posId = tmp.position;
+        // }
+        await CareerField(connect(DB_CONNECTION, portal)).updateMany(
+            {
+                "position.position": data[i],
+            },
+            {
+                $pull: { position: { "position": data[i], } },
+            },
+            { multi: true }
+        );
+        await CareerPosition(connect(DB_CONNECTION, portal)).findOneAndDelete({ _id: data[i] });
+    }
+
+    for (let i in data) {
+        await CareerPosition(connect(DB_CONNECTION, portal)).update(
+            {
+                "description._id": data[i],
+            },
+            {
+                $pull: { description: { "_id": data[i], } },
+            },
+            { safe: true }
+        );
+    }
+
+    return await CareerPosition(connect(DB_CONNECTION, portal)).find({}).populate([{ path: "description.action" }])
+}
+
+/**
+ * Xoá lĩnh vực
+ * @data : list id xóa
+ */
+exports.deleteCareerAction = async (portal, data) => {
+    for (let i in data) {
+        // let positionItem = await CareerField(connect(DB_CONNECTION, portal)).findOne({ "position._id": data[i] })
+        // let actionId;
+        // let tmp = positionItem.description.find(e => String(e._id) === String(data[i]));
+        // console.log('tmp', tmp);
+        // if (tmp) {
+        //     actionId = tmp.action;
+        // }
+        await CareerPosition(connect(DB_CONNECTION, portal)).update(
+            {
+                "description.action": data[i],
+            },
+            {
+                $pull: { description: { "action": data[i], } },
+            },
+            { multi: true }
+        );
+        await CareerAction(connect(DB_CONNECTION, portal)).findOneAndDelete({ _id: data[i] });
+    }
+
+    for (let i in data) {
+        await CareerAction(connect(DB_CONNECTION, portal)).update(
+            {
+                "detail._id": data[i],
+            },
+            {
+                $pull: { detail: { "_id": data[i], } },
+            },
+            { safe: true }
+        );
+    }
+
+    return await CareerAction(connect(DB_CONNECTION, portal)).find({})
+}

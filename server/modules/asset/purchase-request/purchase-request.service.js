@@ -164,7 +164,7 @@ exports.updatePurchaseRequest = async (portal, id, data) => {
     var recommendProcureChange = {
         recommendNumber: data.recommendNumber,
         dateCreate: data.dateCreate,
-        proponent: data.proponent, // Người đề nghị
+        proponent: data.proponent._id, // Người đề nghị
         equipmentName: data.equipmentName,
         equipmentDescription: data.equipmentDescription,
         supplier: data.supplier,
@@ -177,15 +177,10 @@ exports.updatePurchaseRequest = async (portal, id, data) => {
     };
 
     // Cập nhật thông tin phiếu đề nghị mua sắm thiết bị vào database
-    await RecommendProcure(connect(DB_CONNECTION, portal)).findOneAndUpdate(
-        {
-            _id: id,
-        },
+    return await RecommendProcure(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
+       id,
         {
             $set: recommendProcureChange,
-        }
+        },{new:true}
     );
-    return await RecommendProcure(connect(DB_CONNECTION, portal)).findOne({
-        _id: id,
-    });
 };
