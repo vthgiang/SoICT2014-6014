@@ -458,7 +458,7 @@ class TaskAddModal extends Component {
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{translate('task.task_management.detail_info')}</legend>
                             <div className={'form-group'}>
-                                <label className="control-label">{translate('task.task_management.unit_manage_task')}*</label>
+                                <label className="control-label">{translate('task.task_management.unit_manage_task')}<span className="text-red">*</span></label>
 
                                 {listDepartment &&
                                     <select value={newTask.organizationalUnit} className="form-control" onChange={this.handleChangeTaskOrganizationalUnit}>
@@ -506,7 +506,7 @@ class TaskAddModal extends Component {
 
 
                             <div className={`form-group ${newTask.errorOnName === undefined ? "" : "has-error"}`}>
-                                <label>{translate('task.task_management.name')}*</label>
+                                <label>{translate('task.task_management.name')}<span className="text-red">*</span></label>
                                 <input type="Name" className="form-control" placeholder={translate('task.task_management.name')} value={(newTask.name)} onChange={this.handleChangeTaskName} />
                                 <ErrorLabel content={newTask.errorOnName} />
                             </div>
@@ -515,13 +515,13 @@ class TaskAddModal extends Component {
                                 <input className="form-control" placeholder={translate('task.task_management.project')} value={(newTask.taskProject)} onChange={this.handleChangeTaskProject} />
                             </div>
                             <div className={`form-group ${newTask.errorOnDescription === undefined ? "" : "has-error"}`}>
-                                <label className="control-label">{translate('task.task_management.detail_description')}*</label>
+                                <label className="control-label">{translate('task.task_management.detail_description')}<span className="text-red">*</span></label>
                                 <textarea type="Description" className="form-control" name="Mô tả công việc" placeholder={translate('task.task_management.detail_description')} value={newTask.description} onChange={this.handleChangeTaskDescription} />
                                 <ErrorLabel content={newTask.errorOnDescription} />
                             </div>
                             <div className="row form-group">
                                 <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${newTask.errorOnStartDate === undefined ? "" : "has-error"}`}>
-                                    <label className="control-label">{translate('task.task_management.start_date')}*</label>
+                                    <label className="control-label">{translate('task.task_management.start_date')}<span className="text-red">*</span></label>
                                     <DatePicker
                                         id="datepicker1"
                                         dateFormat="day-month-year"
@@ -531,7 +531,7 @@ class TaskAddModal extends Component {
                                     <ErrorLabel content={newTask.errorOnStartDate} />
                                 </div>
                                 <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${newTask.errorOnEndDate === undefined ? "" : "has-error"}`}>
-                                    <label className="control-label">{translate('task.task_management.end_date')}*</label>
+                                    <label className="control-label">{translate('task.task_management.end_date')}<span className="text-red">*</span></label>
                                     <DatePicker
                                         id="datepicker2"
                                         value={newTask.endDate}
@@ -541,7 +541,7 @@ class TaskAddModal extends Component {
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label className="control-label">{translate('task.task_management.detail_priority')}*</label>
+                                <label className="control-label">{translate('task.task_management.detail_priority')}<span className="text-red">*</span></label>
                                 <select className="form-control" value={newTask.priority} onChange={this.handleChangeTaskPriority}>
                                     <option value={3}>{translate('task.task_management.high')}</option>
                                     <option value={2}>{translate('task.task_management.normal')}</option>
@@ -581,7 +581,7 @@ class TaskAddModal extends Component {
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{translate('task.task_management.add_raci')} (RACI)</legend>
                             <div className={`form-group ${newTask.errorOnResponsibleEmployees === undefined ? "" : "has-error"}`}>
-                                <label className="control-label">{translate('task.task_management.responsible')}*</label>
+                                <label className="control-label">{translate('task.task_management.responsible')}<span className="text-red">*</span></label>
                                 {allUnitsMember &&
                                     <SelectBox
                                         id={`responsible-select-box${newTask.taskTemplate}`}
@@ -598,7 +598,7 @@ class TaskAddModal extends Component {
                             </div>
 
                             <div className={`form-group ${newTask.errorOnAccountableEmployees === undefined ? "" : "has-error"}`}>
-                                <label className="control-label">{translate('task.task_management.accountable')}*</label>
+                                <label className="control-label">{translate('task.task_management.accountable')}<span className="text-red">*</span></label>
                                 {allUnitsMember &&
                                     <SelectBox
                                         id={`accounatable-select-box${newTask.taskTemplate}`}
