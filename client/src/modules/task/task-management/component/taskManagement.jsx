@@ -725,13 +725,18 @@ class TaskManagement extends Component {
                     <div id="tasks-list-tree" style={{ display: 'none', marginTop: '30px' }}>
                         <Tree id="tasks-list-treeview"
                             plugins={false}
-                            onChanged={(e, data) => console.log(data)}
+                            onChanged={(e, data) => {
+                                let id = data ? data.node ? data.node.id : '' : '';
+                                if (id) {
+                                    this.setState({
+                                        currentTaskId: id
+                                    }, () => { window.$(`#modelPerformTask${id}`).modal('show') })
+                                }
+                            }}
                             data={dataTree} />
                     </div>
 
                     <PaginateBar
-                        display={tasks.tasks ? tasks.tasks.length : null}
-                        total={tasks.listSearchTasks ? tasks.listSearchTasks.length : null}
                         pageTotal={tasks.pages}
                         currentPage={currentPage}
                         func={this.handleGetDataPagination}
