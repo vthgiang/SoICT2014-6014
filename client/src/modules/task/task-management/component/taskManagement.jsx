@@ -454,8 +454,7 @@ class TaskManagement extends Component {
         let data = [], dataTree = [];;
         if (currentTasks && currentTasks.length !== 0) {
             let dataTemp = currentTasks;
-
-            // Convert dữ liệu cho phần table
+            let idTaskProjectRoot = 'task-project-root';
             for (let n in dataTemp) {
                 data[n] = {
                     ...dataTemp[n],
@@ -489,19 +488,33 @@ class TaskManagement extends Component {
 
             }
 
-            // Convert dữ liệu cho phần tree
             for (let i = 0; i < currentTasks.length; i++) {
                 let task = currentTasks[i];
-                if (task.parent) {
-                    dataTree = [...dataTree, {
-                        ...task,
-                        id: task._id,
-                        icon: 'fa fa-file-text-o',
-                        text: task.name,
-                        state: { "opened": true },
-                        parent: typeof (task.parent) !== 'object' ? task.parent.toString() : task.parent._id.toString()
-                    }]
-                } else if (task.taskProject) {
+                if (task.parent) { // có công việc liên quan
+                    if (typeof (task.parent) === 'object') {
+                        let checkP = currentTasks.some(t => t._id.toString() === task.parent._id.toString());
+
+                        dataTree = [...dataTree, {
+                            ...task,
+                            id: task._id,
+                            icon: 'fa fa-file-text-o',
+                            text: task.name,
+                            state: { "opened": true },
+                            parent: checkP ? task.parent._id.toString() : '#'
+                        }]
+                    } else {
+                        let checkP = currentTasks.some(t => t._id.toString() === task.parent.toString());
+
+                        dataTree = [...dataTree, {
+                            ...task,
+                            id: task._id,
+                            icon: 'fa fa-file-text-o',
+                            text: task.name,
+                            state: { "opened": true },
+                            parent: checkP ? task.parent.toString() : '#'
+                        }]
+                    }
+                } else if (task.taskProject) { // không có công việc liên quan nhưng lại có tên dự án
                     dataTree = [...dataTree, {
                         id: task.taskProject + task._id,
                         icon: 'glyphicon glyphicon-folder-open',
@@ -517,8 +530,7 @@ class TaskManagement extends Component {
                         parent: task.taskProject + task._id
                     }]
                 } else {
-                    let idTaskProjectRoot = 'task-project-root';
-                    let findPublic = dataTree.some(task => task.id === idTaskProjectRoot);
+                    let findPublic = dataTree.some(t => t.id.toString() === idTaskProjectRoot.toString());
                     if (!findPublic) {
                         dataTree = [...dataTree, {
                             id: idTaskProjectRoot,
@@ -636,10 +648,10 @@ class TaskManagement extends Component {
                             <label>{translate('task.task_management.start_date')}</label>
                             <DatePicker
                                 id="start-date"
-                                dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                value={startDate} // giá trị mặc định cho datePicker    
+                                dateFormat="month-year"
+                                value={startDate}
                                 onChange={this.handleChangeStartDate}
-                                disabled={false}                     // sử dụng khi muốn disabled, mặc định là false
+                                disabled={false}
                             />
                         </div>
 
@@ -647,10 +659,10 @@ class TaskManagement extends Component {
                             <label>{translate('task.task_management.end_date')}</label>
                             <DatePicker
                                 id="end-date"
-                                dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                value={endDate} // giá trị mặc định cho datePicker    
+                                dateFormat="month-year"
+                                value={endDate}
                                 onChange={this.handleChangeEndDate}
-                                disabled={false}                     // sử dụng khi muốn disabled, mặc định là false
+                                disabled={false}
                             />
                         </div>
 
@@ -690,8 +702,6 @@ class TaskManagement extends Component {
                         />
                     }
 
-                    {/* Bảng danh sách công việc */}
-
                     <div id="tree-table-container" style={{ marginTop: '30px' }}>
                         <TreeTable
                             behaviour="show-children"
@@ -715,7 +725,14 @@ class TaskManagement extends Component {
                     <div id="tasks-list-tree" style={{ display: 'none', marginTop: '30px' }}>
                         <Tree id="tasks-list-treeview"
                             plugins={false}
-                            onChanged={(e, data) => console.log(data)}
+                            onChanged={(e, data) => {
+                                let id = data ? data.node ? data.node.id : '' : '';
+                                if (id) {
+                                    this.setState({
+                                        currentTaskId: id
+                                    }, () => { window.$(`#modelPerformTask${id}`).modal('show') })
+                                }
+                            }}
                             data={dataTree} />
                     </div>
 

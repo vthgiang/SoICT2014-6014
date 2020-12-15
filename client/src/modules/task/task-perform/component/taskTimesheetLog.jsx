@@ -217,7 +217,7 @@ class TaskTimesheetLog extends Component {
     render() {
 
         const { translate, performtasks, auth } = this.props;
-        const { showEndDate, disabled, errorOnEndDate,currentUser, time } = this.state
+        const { showEndDate, disabled, errorOnEndDate, currentUser, time } = this.state
         const currentTimer = performtasks.currentTimer;
         const a = (this.state.time - currentTimer?.timesheetLogs[0].startedAt > 0) ? this.state.time - currentTimer?.timesheetLogs[0].startedAt : 0
         return (
@@ -225,9 +225,7 @@ class TaskTimesheetLog extends Component {
                 {
                     currentTimer &&
                     <React.Fragment>
-                        <div className="timesheet-box" id = {currentUser} >
-                            <h4>Bấm giờ công việc</h4>
-                            <div>{currentTimer.name} <a href={`/task?taskId=${currentTimer._id}`}><i className="fa fa-arrow-circle-right"></i></a></div>
+                        <div className="timesheet-box" id={currentUser} >
                             <div className="time">
                                 <span>
                                     <i className="fa fa-stop-circle-o fa-lg" style={{ color: "red", cursor: "pointer" }} aria-hidden="true" title="Dừng bấm giờ" onClick={this.handleStopTimer}></i>
