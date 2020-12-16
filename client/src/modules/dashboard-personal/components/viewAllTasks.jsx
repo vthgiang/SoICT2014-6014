@@ -24,7 +24,7 @@ class ViewAllTasks extends Component {
                         <table className="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    <th>STT</th>
+                                    <th className="col-fixed" style={{ width: 80 }}>STT</th>
                                     <th>Họ và tên</th>
                                     <th>Số công việc</th>
                                 </tr>

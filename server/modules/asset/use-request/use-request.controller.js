@@ -68,7 +68,7 @@ exports.createUseRequest = async (req, res) => {
         await Logger.error(req.user.email, 'CREATE_USE_REQUEST', req.portal);
         res.status(400).json({
             success: false,
-            messages: "create_use_request_faile",
+            messages: Array.isArray(error) ? error: ["create_use_request_faile"],
             content: {
                 inputData: req.body
             }

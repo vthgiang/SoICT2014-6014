@@ -50,7 +50,7 @@ class ViewAllEmployee extends Component {
                         <table className="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    <th>STT</th>
+                                    <th className="col-fixed" style={{ width: 80 }}>STT</th>
                                     <th>Họ và tên</th>
                                     <th>Giới tính</th>
                                     <th>Ngày sinh</th>

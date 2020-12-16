@@ -31,14 +31,16 @@ class CareerPosition extends Component {
     checkNode = (e, data) => {
         this.setState({
             careerParent: [...data.selected],
-            deleteNode: [...data.selected, ...data.node.children_d]
+            // deleteNode: [...data.selected, ...data.node.children_d],
+            deleteNode: [...data.selected]
         })
     }
 
     unCheckNode = (e, data) => {
         this.setState({
             careerParent: [...data.selected],
-            deleteNode: [...data.selected, ...data.node.children_d],
+            // deleteNode: [...data.selected, ...data.node.children_d],
+            deleteNode: [...data.selected],
 
         })
     }
@@ -64,17 +66,18 @@ class CareerPosition extends Component {
             confirmButtonText: translate('general.yes'),
         }).then(result => {
             console.log('Confirm delete');
-            if (result.value && careerParent.length > 1) {
-                // this.props.deleteDocumentArchive(careerParent, "many");
-                // this.setState({
-                //     deleteNode: []
-                // });
-            } else if (result.value && careerParent.length === 1) {
-                // this.props.deleteDocumentArchive(careerParent, 'single');
-                // this.setState({
-                //     deleteNode: []
-                // });
-            }
+            this.props.deleteCareerPosition(deleteNode)
+            // if (result.value && careerParent.length > 1) {
+            //     // this.props.deleteDocumentArchive(careerParent, "many");
+            //     // this.setState({
+            //     //     deleteNode: []
+            //     // });
+            // } else if (result.value && careerParent.length === 1) {
+            //     // this.props.deleteDocumentArchive(careerParent, 'single');
+            //     // this.setState({
+            //     //     deleteNode: []
+            //     // });
+            // }
         })
     }
 
@@ -103,6 +106,7 @@ class CareerPosition extends Component {
             return {
                 ...elm,
                 id: elm._id,
+                code: elm.code,
                 text: elm.name,
                 state: { "opened": true },
                 parent: "#",
@@ -113,7 +117,8 @@ class CareerPosition extends Component {
                 return {
                     ...elm,
                     id: elm._id,
-                    text: elm.name,
+                    text: elm.action.name,
+                    code: elm.action.code,
                     // state: { "opened": true },
                     parent: list[i]._id.toString(),
                 }
@@ -121,7 +126,7 @@ class CareerPosition extends Component {
             dataTree = [...dataTree, ...description];
         }
         let unChooseNode = currentNode ? this.findChildrenNode(list, currentNode) : [];
-        console.log('dataTree', dataTree);
+        // console.log('dataTree', dataTree);
         return (
             <React.Fragment>
                 <div className="box box-body">
@@ -165,7 +170,7 @@ class CareerPosition extends Component {
                                     careerName={currentNode.text}
                                     careerCode={currentNode.original.code}
                                     careerPackage={currentNode.original.package ? currentNode.original.package : ""}
-                                    careerParent={(currentNode.parent !== "#")? currentNode.parent : undefined}
+                                    careerParent={(currentNode.parent !== "#") ? currentNode.parent : undefined}
 
                                     listData={dataTree}
                                     unChooseNode={unChooseNode}
@@ -183,8 +188,7 @@ const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
     getListCareerPosition: CareerReduxAction.getListCareerPosition,
-    // editDocumentArchive: DocumentActions.editDocumentArchive,
-    // deleteDocumentArchive: DocumentActions.deleteDocumentArchive,
+    deleteCareerPosition: CareerReduxAction.deleteCareerPosition,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CareerPosition));

@@ -129,7 +129,7 @@ class Content extends Component {
 
         for (let i = 0; i < tables.length; ++i) {
             let table = window.$(tables[i]);
-            let tableHeadings = table.find("th");
+            let tableHeadings = table.find("th:not(:last-child)").not(".not-sort");
             for (let j = 0; j < tableHeadings.length; ++j) {
                 let th = window.$(tableHeadings[j]);
 
@@ -166,7 +166,7 @@ class Content extends Component {
                     }
 
                     let up = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer', class: 'fa fa-caret-up' });
-                    let down = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer', class: 'fa fa-caret-down' });
+                    let down = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer; margin-top: -5px', class: 'fa fa-caret-down' });
                     up.click(() => {
                         sort(true);
                     })
@@ -175,7 +175,7 @@ class Content extends Component {
                     })
 
 
-                    let div = window.$("<div>", { style: 'float: left', class: 'sort' });
+                    let div = window.$("<div>", { style: 'float: left; margin-top: -2px', class: 'sort' });
                     div.append(up, down);
                     th.prepend(div);
                 }

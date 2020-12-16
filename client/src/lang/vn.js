@@ -433,8 +433,11 @@ export default {
         },
         super_admin: {
             system: {
-                restore_backup: "Restore backup",
-                delete_backup: "Delete backup",
+                edit_backup_info: "Chỉnh sửa thông tin phiên bản dữ liệu",
+                download_backup_version: "Tải xuống phiên bản dữ liệu",
+                backup_description: "Mô tả về phiên bản dữ liệu",
+                restore_backup: "Khôi phục phiên bản dữ liệu",
+                delete_backup: "Xóa phiên bản dữ liệu",
 
                 get_backup_list_success: "Lấy dữ liệu sao lưu thành công",
                 get_backup_list_faile: "Lấy dữ liệu sao lưu thất bại",
@@ -444,6 +447,9 @@ export default {
                 delete_backup_faile: "Xóa sao lưu thất bại",
                 restore_data_success: "Khôi phục dữ liệu thành công",
                 restore_data_faile: "Khôi phục dữ liệu thất bại",
+                edit_backup_info_success: "Chỉnh sửa thông tin phiên bản sao lưu thành công",
+                edit_backup_info_faile: "Chỉnh sửa thông tin phiên bản sao lưu thất bại",
+                backup_version_deleted: 'Phiên bản sao lưu dữ liệu này đã bị xóa, Không thể chính sửa thông tin phiên bản',
             },
 
             organization_unit: {
@@ -1256,6 +1262,9 @@ export default {
         manage_user: {
             add: "Thêm",
             add_title: "Thêm tài khoản người dùng mới",
+            add_common: 'Nhập tay',
+            import: 'Thêm dữ liệu từ file',
+            import_title: 'Thêm dữ liệu người dùng từ file',
             info: "Thông tin về tài khoản người dùng",
             edit: "Chỉnh sửa thông tin tài khoản người dùng",
             disable: "Ngưng hoạt động",
@@ -2287,6 +2296,7 @@ export default {
                 view_more: "Xem thêm",
                 asset: "Tài sản",
                 choose_asset: "Chọn tài sản",
+                choose_all: "Chọn tất cả",
                 asset_list: "Danh sách tài sản",
                 search: "Tìm kiếm",
                 add: "Thêm",
@@ -2303,7 +2313,7 @@ export default {
 
                 select_asset_type: "Chọn loại tài sản",
                 select_asset_status: "Chọn trạng thái tài sản",
-                asset_status:"Trạng thái tài sản",
+                asset_status: "Trạng thái tài sản",
                 select_all_asset_type: "Chọn tất cả loại tài sản",
                 select_all_status: "Chọn tất cả trạng thái",
                 select_all_group: "Chọn tất cả nhóm tài sản",
@@ -2679,6 +2689,8 @@ export default {
                 edit_use_request_success:
                     "Chỉnh sửa thông tin phiếu thành công",
                 edit_use_request_faile: "Chỉnh sửa thông tin phiếu thất bại",
+                recommendNumber_exists: "Mã phiếu đăng kí sử dụng tài sản đã tồn tại",
+                dayUse_exists: "Thời gian sử dụng tài sản đã tồn tại",
             },
         },
 
@@ -2800,7 +2812,7 @@ export default {
 
                 responsible_role: "Thực hiện",
                 accountable_role: "Phê duyệt",
-                consulted_role: "Hỗ trợ",
+                consulted_role: "Tư vấn",
                 informed_role: "Quan sát",
                 distribution_Of_Employee: "Đóng góp công việc",
                 employees_each_chart: "Số nhân viên tối đa mỗi biểu đồ",
@@ -2849,17 +2861,17 @@ export default {
                 stored: "Lưu trong kho",
                 current_month: "Tháng hiện tại",
 
-                assigned_collaborate: "Trạng thái phân công công việc",
-                not_assigned: "Chưa sắp xếp nhân viên",
-                assigned: "Đã sắp xếp nhân viên",
+                assigned_collaborate: "Sắp xếp nhân viên cho công việc liên đơn vị",
+                not_assigned: "Chưa xác nhận sắp xếp nhân viên",
+                assigned: "Đã xác nhận sắp xếp nhân viên",
                 none_select_assigned: "Không phân loại",
-                role_in_collaborated_unit: "Vai trò của nhân viên thuộc",
-                confirm_assigned: "Xác nhận đã phân công công việc",
-                confirm_assigned_success: "Bạn đã xác nhận phân công công việc",
+                role_in_collaborated_unit: "Phân công phối hợp thực hiện công việc cho",
+                confirm_assigned: "Xác nhận đã sắp xếp nhân viên tham gia phối hợp",
+                confirm_assigned_success: "Bạn đã xác nhận sắp xếp nhân viên tham gia phối hợp",
                 confirm_assigned_failure:
-                    "Bạn chưa xác nhận phân công công việc",
+                    "Bạn chưa xác nhận sắp xếp nhân viên tham gia phối hợp",
                 unit_not_confirm_assigned_task:
-                    "Đơn vị chưa xác nhận phân công công việc",
+                    "Đơn vị chưa xác nhận sắp xếp nhân viên tham gia phối hợp",
 
                 name: "Tên công việc",
                 search_by_name: "Tìm kiếm theo tên",
@@ -2909,7 +2921,7 @@ export default {
                 err_total_log_time: "Thời gian thực hiện công việc bị xóa",
 
                 detail_refresh: "Làm mới",
-                detail_edit: "Chỉnh sửa",
+                detail_edit: "Cập nhật công việc",
                 detail_end: "Kết thúc",
                 detail_evaluate: "Đánh giá",
                 detail_start_timer: "Bấm giờ",
@@ -2991,6 +3003,7 @@ export default {
                 add_template: "Mẫu công việc",
                 add_template_notice: "Hãy chọn mẫu công việc",
                 add_parent_task: "Công việc liên quan",
+                search_task_by_typing: "Nhập để tìm kiếm công việc liên quan",
                 add_parent_task_notice: "Hãy chọn công việc liên quan",
                 add_raci: "Phân định trách nhiệm",
                 add_resp: "Chọn người thực hiện",
@@ -3099,7 +3112,7 @@ export default {
                     "Đơn vị phối hợp thực hiện công việc",
                 not_collaborated_with_organizational_units:
                     "Không có đơn vị phối hợp",
-                task_empty_employee: "Đơn vị bạn chưa có người tham gia",
+                task_empty_employee: "Chưa có người tham gia phối hợp",
                 delete_eval: "Xóa đánh giá tháng này",
                 delete_eval_title: "Bạn có chắc chắn muốn xóa đánh giá này?",
                 delete_evaluation_success: "Xóa đánh giá thành công",
@@ -3126,6 +3139,8 @@ export default {
                 warning_days: "ngày",
                 warning_hours: "giờ",
                 warning_minutes: "phút",
+
+                project: 'Tên dự án (nếu có)',
             },
             task_perform: {
                 actions: "Hoạt động",
@@ -3140,7 +3155,7 @@ export default {
                 edit_action: "Sửa hành động",
                 delete_action: "Xóa hành động",
                 mandatory_action: "Hành động bắt buộc",
-                confirm_action: "Xác nhận hoàn thành",
+                confirm_action: "Xác nhận thực hiện",
                 evaluation: "Đánh giá",
                 attach_file: "Đính kèm file",
                 comment: "Bình luận",

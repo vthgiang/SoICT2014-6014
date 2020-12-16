@@ -119,7 +119,7 @@ class TabIntegratedStatistics extends Component {
                                     <table className="table table-striped table-bordered table-hover">
                                         <thead>
                                             <tr>
-                                                <th>STT</th>
+                                                <th className="col-fixed" style={{ width: 80 }}>STT</th>
                                                 <th>Họ và tên</th>
                                                 <th>Giới tính</th>
                                                 <th>Ngày sinh</th>
@@ -165,7 +165,7 @@ class TabIntegratedStatistics extends Component {
                                     <table className="table table-striped table-bordered table-hover">
                                         <thead>
                                             <tr>
-                                                <th>STT</th>
+                                                <th className="col-fixed" style={{ width: 80 }}>STT</th>
                                                 <th>Họ và tên</th>
                                                 <th>Lý do khen thưởng </th>
                                             </tr>
@@ -201,7 +201,7 @@ class TabIntegratedStatistics extends Component {
                                     <table className="table table-striped table-bordered table-hover">
                                         <thead>
                                             <tr>
-                                                <th>STT</th>
+                                                <th className="col-fixed" style={{ width: 80 }}>STT</th>
                                                 <th>Họ và tên</th>
                                                 <th>Lý do kỷ luật</th>
                                             </tr>
@@ -241,7 +241,7 @@ class TabIntegratedStatistics extends Component {
                                     <table className="table table-striped table-bordered table-hover">
                                         <thead>
                                             <tr>
-                                                <th>STT</th>
+                                                <th className="col-fixed" style={{ width: 80 }}>STT</th>
                                                 <th>Họ và tên</th>
                                                 <th>Tổng số giờ</th>
                                             </tr>
@@ -277,7 +277,7 @@ class TabIntegratedStatistics extends Component {
                                     <table className="table table-striped table-bordered table-hover">
                                         <thead>
                                             <tr>
-                                                <th>STT</th>
+                                                <th className="col-fixed" style={{ width: 80 }}>STT</th>
                                                 <th>Họ và tên</th>
                                                 <th>Tổng số giờ</th>
                                             </tr>

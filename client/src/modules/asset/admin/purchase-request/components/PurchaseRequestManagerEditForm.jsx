@@ -187,8 +187,14 @@ class PurchaseRequestEditForm extends Component {
     };
 
     save = () => {
-        let dataToSubmit = { ...this.state, approver: this.props.auth.user._id };
+        const { dateCreate } = this.state;
+        let slitDateCreate, dateCreateConvert;
+        if (dateCreate) {
+            slitDateCreate = dateCreate.split('-');
+            dateCreateConvert = new Date([slitDateCreate[2], slitDateCreate[1], slitDateCreate[0]].join('-'))
+        }
 
+        let dataToSubmit = { ...this.state, dateCreate: dateCreateConvert, approver: this.props.auth.user._id };
         if (this.isFormValidated()) {
             return this.props.updateRecommendProcure(this.state._id, dataToSubmit);
         }
@@ -365,7 +371,7 @@ class PurchaseRequestEditForm extends Component {
                                 {/* Ghi chú */}
                                 <div className="form-group">
                                     <label>{translate('asset.usage.note')}</label>
-                                    <textarea className="form-control" rows="3" name="note" value={note} onChange={this.handleNoteChange}></textarea>
+                                    <textarea className="form-control" rows="3" name="note" value={note ? note : ''} onChange={this.handleNoteChange}></textarea>
                                 </div>
                             </div>
                         </div>

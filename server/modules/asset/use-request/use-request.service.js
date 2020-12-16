@@ -1,7 +1,7 @@
 const Models = require(`${SERVER_MODELS_DIR}`);
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 const { RecommendDistribute, User } = Models;
-
+const mongoose = require("mongoose");
 /**
  * Lấy danh sách phiếu đề nghị cấp thiết bị
  */
@@ -97,34 +97,22 @@ exports.getUseRequestByAsset = async (portal, data) => {
  * @data: dữ liệu phiếu đề nghị cap phat thiết bị
  */
 exports.createUseRequest = async (portal, company, data) => {
+    // check trùng mã dki sử dụng
+    const getUseRequest = await RecommendDistribute(connect(DB_CONNECTION, portal)).findOne({ recommendNumber: data.recommendNumber });
+    if (getUseRequest) throw ['recommendNumber_exists'];
 
-    let dateStartUse, dateEndUse, dateCreate, date, partStart, partEnd, partCreate;
-    partStart = data.dateStartUse.split('-');
-    partEnd = data.dateEndUse.split('-');
-    partCreate = data.dateCreate.split('-');
+    const dateStartUse = new Date(data.dateStartUse);
+    const dateEndUse = new Date(data.dateEndUse);
 
-    if (data.startTime) {
-        date = [partStart[2], partStart[1], partStart[0]].join('-') + ' ' + data.startTime;
-        dateStartUse = new Date(date);
-    } else {
-        date = [partStart[2], partStart[1], partStart[0]].join('-')
-        dateStartUse = new Date(date);
-    }
-    if (data.stopTime) {
-        date = [partEnd[2], partEnd[1], partEnd[0]].join('-') + ' ' + data.stopTime;
-        dateEndUse = new Date(date);
-    } else {
-        date = [partEnd[2], partEnd[1], partEnd[0]].join('-');
-        dateEndUse = new Date(date);
-    }
+    // check trùng thời gian đăng kí sử dụng cho từng tài sản
+    const checkDayUse = await RecommendDistribute(connect(DB_CONNECTION, portal)).find({asset:mongoose.Types.ObjectId(data.asset) ,dateEndUse: { $gt: dateStartUse } })
+   
+    if (checkDayUse && checkDayUse.length > 0) throw ['dayUse_exists'];
 
-    date = [partCreate[2], partCreate[1], partCreate[0]].join('-');
-    dateCreate = new Date(date);
-
-    var createRecommendDistribute = await RecommendDistribute(connect(DB_CONNECTION, portal)).create({
+    const createRecommendDistribute = await RecommendDistribute(connect(DB_CONNECTION, portal)).create({
         company: company,
         recommendNumber: data.recommendNumber,
-        dateCreate: dateCreate,
+        dateCreate: data.dateCreate,
         proponent: data.proponent, // Người đề nghị
         reqContent: data.reqContent,
         asset: data.asset,

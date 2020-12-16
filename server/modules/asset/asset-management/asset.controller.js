@@ -134,13 +134,12 @@ exports.updateAssetInformation = async (req, res) => {
             content: data
         });
     } catch (error) {
-        let messages = error[0] === 'asset_code_exist' ? ["asset_code_exist"] : ["create_asset_faile"];
 
         await Logger.error(req.user.email, 'EDIT_ASSET', req.portal);
         res.status(400).json({
             success: false,
-            messages: messages,
-            content: { error: error }
+            messages: Array.isArray(error) ? error : ['create_asset_faile'] ,
+            content: { error }
         });
     }
 }

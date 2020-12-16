@@ -16,3 +16,12 @@
 4. this.props.fileUrls (sử dụng khi this.props.quillValueDefault có thẻ <img/>)
     Mảng url của ảnh download từ server. Trong text html, thẻ <img/> khi lưu trên server ko có src ảnh,
     do vậy cần url để chèn ảnh vào text khi render 
+
+5. { font, header, typography, fontColor, alignAndList, embeds, table } = this.props
+    Các công cụ trên thanh toolbar (mặc định = true)
+    Cái nào không sử dụng set = false
+    Ví dụ: 
+        <QuillEditor
+            font={false}
+            ...
+        />

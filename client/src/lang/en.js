@@ -422,6 +422,9 @@ export default {
         },
         super_admin: {
             system: {
+                edit_backup_info: "Edit backup version information",
+                download_backup_version: "Download backup version",
+                backup_description: "Backup version information",
                 restore_backup: "Restore backup",
                 delete_backup: "Delete backup",
 
@@ -433,6 +436,9 @@ export default {
                 delete_backup_faile: "Delete backup faile",
                 restore_data_success: "Restore data successfully",
                 restore_data_faile: "Restore data faile",
+                edit_backup_info_success: "Edit backup information success",
+                edit_backup_info_faile: "Edit backup information faile",
+                backup_version_deleted: "Backup version has been deleted, cannot edit backup version information."
             },
 
             organization_unit: {
@@ -1099,7 +1105,10 @@ export default {
 
         manage_user: {
             add: "Add",
-            add_title: "Add new user/account",
+            add_title: "Add new user/account",            
+            add_common: 'Add common',
+            import: 'Import from file',
+            import_title: 'Import users data from file',
             info: "User/Account information",
             edit: "Edit User/Account information",
             disable: "Disable",
@@ -2651,7 +2660,7 @@ export default {
                 err_total_log_time: "Total logged time deleted",
 
                 detail_refresh: "Refresh",
-                detail_edit: "Edit",
+                detail_edit: "Update task",
                 detail_end: "Finish",
                 detail_evaluate: "Evaluate",
                 detail_start_timer: "Start timer",
@@ -2859,6 +2868,8 @@ export default {
                 warning_days: "days",
                 warning_hours: "hours",
                 warning_minutes: "minutes",
+
+                project: 'Project name (if you have)'
             },
             task_perform: {
                 actions: "Actions",

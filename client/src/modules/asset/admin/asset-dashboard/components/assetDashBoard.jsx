@@ -32,7 +32,8 @@ class DashBoardAssets extends Component {
                 assetByType: null,
                 assetStatistics: null,
                 purchaseDisposal: null,
-                assetIsExpired: null
+                assetIsExpired: null,
+                incidentMaintenance: null,
             }
         }
     }
@@ -295,6 +296,8 @@ class DashBoardAssets extends Component {
         })
     }
 
+
+
     setPurchaseAndDisposalExportData = (purchaseData, disposalData) => {
         let purchaseExportData, disposalExportData, purchaseDisposal;
 
@@ -385,65 +388,133 @@ class DashBoardAssets extends Component {
     setAssetStatisticsExportData = (assetStatusData, assetCostData) => {
         let assetStatusExportData, assetCostExportData, assetStatistics;
 
-        if (assetStatusData && assetStatusData.length !== 0) {
-            assetStatusExportData = assetStatusData.map((status, index) => {
+        if (assetStatusData && assetStatusData.length > 0) {
+            if (assetStatusData && assetStatusData.length !== 0) {
+                assetStatusExportData = assetStatusData.map((status, index) => {
+                    return {
+                        STT: index + 1,
+                        status: status[0],
+                        amount: status[1],
+                        assetType: status[2].map(x => x).join(", ")
+                    }
+                })
+            }
+
+            if (assetCostData && assetCostData.length !== 0) {
+                assetCostExportData = assetCostData.map((cost, index) => {
+                    return {
+                        STT: index + 1,
+                        cost: cost[0],
+                        amount: cost[1],
+                        assetType: cost[2].map(x => x).join(", ")
+                    }
+                })
+            }
+
+            assetStatistics = {
+                fileName: "Thống kê tài sản",
+                dataSheets: [
+                    {
+                        sheetName: "Sheet1",
+                        tables: [
+                            {
+                                tableName: "Thống kê tài sản theo trạng thái",
+                                rowHeader: 1,
+                                columns: [
+                                    { key: "STT", value: "STT" },
+                                    { key: "status", value: "Trạng thái" },
+                                    { key: "amount", value: "Số lượng" },
+                                    { key: "assetType", value: "Loại tài sản" }
+                                ],
+                                data: assetStatusExportData
+                            },
+                            {
+                                tableName: "Thống kê tài sản theo giá trị",
+                                rowHeader: 1,
+                                columns: [
+                                    { key: "STT", value: "STT" },
+                                    { key: "cost", value: "Giá trị" },
+                                    { key: "amount", value: "Số lượng" },
+                                    { key: "assetType", value: "Loại tài sản" }
+                                ],
+                                data: assetCostExportData
+                            },
+                        ]
+                    },
+                ]
+            }
+
+            this.setState(state => {
                 return {
-                    STT: index + 1,
-                    status: status[0],
-                    amount: status[1]
+                    ...state,
+                    exportData: {
+                        ...state.exportData,
+                        assetStatistics: assetStatistics
+                    }
                 }
             })
         }
+    }
 
+    setIncidentAndMaintenanceDataExportData = (incidentData, maintenanceData) => {
+        let incidentExportData, maintenanceExportData = [];
 
-        if (assetCostData && assetCostData.length !== 0) {
-            assetCostExportData = assetCostData.map((cost, index) => {
-                return {
-                    STT: index + 1,
-                    cost: cost[0],
-                    amount: cost[1]
-                }
-            })
+        if (incidentData && incidentData.category && incidentData.count) {
+            incidentExportData = incidentData.category.map((obj, index) => ({
+                month: obj,
+                count: incidentData.count[index + 1],
+                assetType: incidentData.assetTypeName.join(', ')
+
+            }))
         }
 
-        assetStatistics = {
-            fileName: "Thống kê tài sản",
+        if (maintenanceData && maintenanceData.category && maintenanceData.count && maintenanceData.value) {
+            const maintenanceDataLength = maintenanceData.category.length;
+            for (let index = 1; index < maintenanceDataLength; index++) {
+                maintenanceExportData.push({
+                    month: maintenanceData.category[index],
+                    count: maintenanceData.count[index],
+                    value: maintenanceData.value[index],
+                    assetType: maintenanceData.assetTypeName.join(', ')
+                })
+            }
+        }
+
+        const incidentMaintenance = {
+            fileName: "Thống kê sự cố - bảo trì",
             dataSheets: [
                 {
                     sheetName: "Sheet1",
                     tables: [
                         {
-                            tableName: "Thống kê tài sản theo trạng thái",
+                            tableName: "Thống kê sự tài sản",
                             rowHeader: 1,
                             columns: [
-                                { key: "STT", value: "STT" },
-                                { key: "status", value: "Trạng thái" },
-                                { key: "amount", value: "Số lượng" }
+                                { key: "month", value: "Tháng" },
+                                { key: "count", value: "Số lần" },
+                                { key: "assetType", value: "Loại tài sản" }
                             ],
-                            data: assetStatusExportData
+                            data: incidentExportData
                         },
                         {
-                            tableName: "Thống kê tài sản theo giá trị",
+                            tableName: "Thống kê bảo trì tài sản",
                             rowHeader: 1,
                             columns: [
-                                { key: "STT", value: "STT" },
-                                { key: "cost", value: "Giá trị" },
-                                { key: "amount", value: "Số lượng" }
+                                { key: "month", value: "Tháng" },
+                                { key: "count", value: "Số lần" },
+                                { key: "value", value: "Chi phí" },
+                                { key: "assetType", value: "Loại tài sản" }
                             ],
-                            data: assetCostExportData
+                            data: maintenanceExportData
                         },
                     ]
                 },
             ]
         }
-
-        this.setState(state => {
-            return {
-                ...state,
-                exportData: {
-                    ...state.exportData,
-                    assetStatistics: assetStatistics
-                }
+        this.setState({
+            exportData: {
+                ...this.state.exportData,
+                incidentMaintenance,
             }
         })
     }
@@ -555,7 +626,7 @@ class DashBoardAssets extends Component {
                                 key="AdministrationIncidentAndMaintenance"
                             >
                                 <IncidentAndMaintenance
-                                // setPurchaseAndDisposalExportData={this.setPurchaseAndDisposalExportData}
+                                    setIncidentAndMaintenanceDataExportData={this.setIncidentAndMaintenanceDataExportData}
                                 />
                             </LazyLoadComponent>
                         </div>
