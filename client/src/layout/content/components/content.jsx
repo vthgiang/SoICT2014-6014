@@ -129,7 +129,7 @@ class Content extends Component {
 
         for (let i = 0; i < tables.length; ++i) {
             let table = window.$(tables[i]);
-            let tableHeadings = table.find("th");
+            let tableHeadings = table.find("th").not(".not-sort");
             for (let j = 0; j < tableHeadings.length; ++j) {
                 let th = window.$(tableHeadings[j]);
 
