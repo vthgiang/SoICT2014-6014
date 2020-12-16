@@ -1105,7 +1105,10 @@ export default {
 
         manage_user: {
             add: "Add",
-            add_title: "Add new user/account",
+            add_title: "Add new user/account",            
+            add_common: 'Add common',
+            import: 'Import from file',
+            import_title: 'Import users data from file',
             info: "User/Account information",
             edit: "Edit User/Account information",
             disable: "Disable",

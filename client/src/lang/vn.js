@@ -1262,6 +1262,9 @@ export default {
         manage_user: {
             add: "Thêm",
             add_title: "Thêm tài khoản người dùng mới",
+            add_common: 'Nhập tay',
+            import: 'Thêm dữ liệu từ file',
+            import_title: 'Thêm dữ liệu người dùng từ file',
             info: "Thông tin về tài khoản người dùng",
             edit: "Chỉnh sửa thông tin tài khoản người dùng",
             disable: "Ngưng hoạt động",
