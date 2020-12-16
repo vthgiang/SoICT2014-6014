@@ -26,7 +26,7 @@ class ViewAllSalary extends Component {
                         <table className="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    <th>STT</th>
+                                    <th className="col-fixed" style={{ width: 80 }}>STT</th>
                                     <th>Mã nhân viên</th>
                                     <th>Họ và tên</th>
                                     {viewTotalSalary && <th>Tổng lương</th>}
