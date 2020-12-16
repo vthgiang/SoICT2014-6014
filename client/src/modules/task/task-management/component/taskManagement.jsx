@@ -430,8 +430,8 @@ class TaskManagement extends Component {
 
     handleShowTask = (e, data) => {
         const { tasks } = this.props;
-        let idValid = tasks.tasks.some(t => t._id.toString() === data.node.id.toString());
         let id = data ? data.node ? data.node.id : '' : '';
+        let idValid = tasks.tasks.some(t => t._id.toString() === id.toString());
         if (id && idValid) {
             this.setState({
                 currentTaskId: id
