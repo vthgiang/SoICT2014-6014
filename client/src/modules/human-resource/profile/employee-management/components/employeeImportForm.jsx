@@ -152,12 +152,12 @@ class EmployeeImportForm extends Component {
 
         // Check dữ liệu import có hợp lệ hay không
         let checkImportData = value, rowError = [];
+        console.log(value)
         value = value.map((x, index) => {
             let errorAlert = [];
             if (x.employeeNumber === null || x.fullName === null || x.emailInCompany === null || x.employeeTimesheetId === null
                 || x.birthdate === null || x.identityCardNumber === null || x.identityCardDate === null || x.identityCardAddress === null
-                || x.phoneNumber === null || x.temporaryResidence === null || x.taxDateOfIssue === null || x.taxNumber === null
-                || x.taxRepresentative === null || x.taxAuthority === null || checkImportData.filter(y => y.employeeNumber === x.employeeNumber).length > 1
+                || x.phoneNumber === null || x.temporaryResidence === null || checkImportData.filter(y => y.employeeNumber === x.employeeNumber).length > 1
                 || checkImportData.filter(y => y.emailInCompany === x.emailInCompany).length > 1
                 || checkImportData.filter(y => y.employeeTimesheetId === x.employeeTimesheetId).length > 1) {
                 rowError = [...rowError, index + 1]
