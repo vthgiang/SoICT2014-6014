@@ -513,13 +513,6 @@ class SideBar extends Component {
                                             icon: "fa fa-dashboard",
                                             path: "/manage-sales-order-dashboard",
                                         },
-                                        // {
-                                        //     name:
-                                        //         "menu.manage_manufacturing_order_dashboard",
-                                        //     icon: "fa  fa-dashboard",
-                                        //     path:
-                                        //         "/manage-manufacturing-order-dashboard",
-                                        // },
                                         {
                                             name: "menu.manage_quote",
                                             icon: "fa fa-tablet",
@@ -530,12 +523,6 @@ class SideBar extends Component {
                                             icon: "fa fa-dollar",
                                             path: "/manage-sales-order",
                                         },
-                                        // {
-                                        //     name:
-                                        //         "menu.manage_manufacturing_order",
-                                        //     icon: "fa  fa-flask",
-                                        //     path: "/manage-manufacturing-order",
-                                        // },
                                         {
                                             name: "menu.manage_purchase_order",
                                             icon: "fa fa-shopping-cart",
@@ -561,11 +548,11 @@ class SideBar extends Component {
                                             icon: "fa fa-sitemap",
                                             path: "/manage-business-department",
                                         },
-                                        {
-                                            name: "menu.manage_admin_department",
-                                            icon: "fa fa-sitemap",
-                                            path: "/manage-admin-department",
-                                        },
+                                        // {
+                                        //     name: "menu.manage_admin_department",
+                                        //     icon: "fa fa-sitemap",
+                                        //     path: "/manage-admin-department",
+                                        // },
                                     ],
                                 }}
                             />
