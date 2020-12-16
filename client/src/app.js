@@ -15,10 +15,27 @@ import { SocketConstants } from './modules/socket/redux/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
 import './app.css'
-import { getStorage } from './config';
+import { getStorage, setStorage } from './config';
+import firebase from './firebase';
 
 const history = createBrowserHistory();
 
+const getFCToken = async () => {
+    try{
+        let fcToken = getStorage('fcToken');
+        if(!fcToken) {
+            const messaging = firebase.messaging();
+            fcToken = await messaging.getToken({ vapidKey: 'BLXA7GNvA6Nk3sqs8JP9aSRGI_ZyU03e9C9F3Ue7HpnXD4OWzFvdmENmQoNafmtCDazShrjom0rRLQwRpn0b8Vw' });
+            console.log("TOken", fcToken);
+            setStorage("fcToken", fcToken);
+        }
+
+        return fcToken;
+    } catch(err){
+        console.log(err);
+    }
+}
+// firebase.analytics();
 class App extends Component {
     constructor() {
         super();
@@ -26,6 +43,7 @@ class App extends Component {
     }
 
     componentDidMount() {
+        getFCToken();
         const lang = localStorage.getItem('lang');
         if(lang !== null){
             switch(lang){
@@ -51,7 +69,6 @@ class App extends Component {
     }
 
     render() {
-
         return (
             <React.Fragment>
                 <ServerDisconnectedAlert/>
