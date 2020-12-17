@@ -187,7 +187,7 @@ class ModalAddTaskTemplate extends Component {
                     formID="form-add-task-template"
                     title={translate('task_template.add_tasktemplate')}
                     func={this.handleSubmit}
-                    // disableSubmit={!this.isTaskTemplateFormValidated()}
+                    disableSubmit={!this.isTaskTemplateFormValidated()}
                     size={100}
                 >
                     <AddTaskTemplate onChangeTemplateData={this.onChangeTemplateData}/>

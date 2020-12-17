@@ -1003,7 +1003,7 @@ export default {
             manage_discount: "Discount",
             manage_tax: "Tax",
             manage_sla: "Service Level Agreement",
-            manage_business_department: "Sales Department",
+            manage_business_department: "Manage Department",
             manage_admin_department: "Sales Accounting Department",
 
             //QUẢN LÝ KẾ HOẠCH SẢN XUẤT

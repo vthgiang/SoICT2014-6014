@@ -340,12 +340,11 @@ exports.startTimesheetLog = async (portal, params, body) => {
         { $push: { timesheetLogs: timerUpdate } },
         { new: true, fields: { timesheetLogs: 1, _id: 1, name: 1 } }
     );
-    console.log(timer)
+
     timer.timesheetLogs = timer.timesheetLogs.find(
         (element) => (!element.stoppedAt && element.creator == body.creator)
     );
-    console.log("-------------------------")
-    console.log(timer)
+
     return timer;
 };
 
@@ -685,7 +684,6 @@ exports.deleteCommentOfTaskAction = async (portal, params) => {
  */
 
 exports.createTaskAction = async (portal, params, body, files) => {
-    console.log(SERVER_MODELS_DIR)
     let actionInformation = {
         creator: body.creator,
         description: body.description,
@@ -1696,7 +1694,6 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
         let elem = collaboratedWithOrganizationalUnits[i];
 
         let checkCollab = taskItem.collaboratedWithOrganizationalUnits.find(e => String(e.organizationalUnit) === String(elem));
-        console.log('checkCollab', checkCollab);
 
         if (checkCollab) {
             newCollab.push({
@@ -1810,8 +1807,6 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
             deansOfDeletedCollabID.push(item);
         })
     }
-
-    console.log('deletedCollab, additionalCollab', oldCollab, newCollab, deletedCollab, additionalCollab);
 
     for (let i = 0; i < additionalCollab.length; i++) {
         let unit = additionalCollab[i] && await OrganizationalUnit(connect(DB_CONNECTION, portal)).findById(additionalCollab[i])
@@ -3383,7 +3378,7 @@ exports.editHoursSpentInEvaluate = async (portal, data, taskId) => {
             for (let j = 0; j < results.length; j++) {
                 if (
                     results[j].employee &&
-                    results[j].employee.toString() === employee
+                    results[j].employee.toString() === employee.id.toString()
                 ) {
                     check = false;
                     results[j]["hoursSpent"] = hoursSpent;
@@ -3393,7 +3388,7 @@ exports.editHoursSpentInEvaluate = async (portal, data, taskId) => {
 
         if (check) {
             let employeeHoursSpent = {
-                employee: employee,
+                employee: employee.id,
                 hoursSpent: hoursSpent,
             };
             if (!results) {
@@ -5077,7 +5072,6 @@ exports.sortActions = async (portal, params, body) => {
     let arrayActions = body;
     let taskId = params.taskId;
     let i;
-    console.log(body)
     await Task(connect(DB_CONNECTION, portal)).update(
         { _id: taskId},
         { $set: {"taskActions" : []} }
