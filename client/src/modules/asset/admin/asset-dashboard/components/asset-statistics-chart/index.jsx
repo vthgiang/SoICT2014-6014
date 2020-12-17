@@ -47,16 +47,59 @@ class AssetStatistics extends Component {
         });
     }
 
-    getAssetStatusData = (assetStatusData) => {
-        this.EXPORT_DATA.assetStatusData = assetStatusData;
-
-        this.props.setAssetStatisticsExportData(this.EXPORT_DATA.assetStatusData, this.EXPORT_DATA.assetCostData)
+    getAssetTypeParentName = (listAssetTypeId, ListAssetType) => {
+        const { translate } = this.props;
+        let newArr = [];
+        if (listAssetTypeId && listAssetTypeId.length === 0) {
+            ListAssetType.forEach(() => {
+                newArr = [`${translate('asset.general_information.choose_all')}`];
+            })
+        } else {
+            ListAssetType.forEach(x => {
+                listAssetTypeId.forEach(y => {
+                    if (x._id === y)
+                        newArr = [...newArr, x.typeName]
+                })
+            })
+        }
+        return newArr;
     }
 
-    getAssetCostData = (assetCostData) => {
-        this.EXPORT_DATA.assetCostData = assetCostData;
+    getAssetStatusData = (assetStatusData, assetTypeStatusChart) => {
+        const { assetType } = this.state;
+        let assetTypeName;
+        if (assetType && assetType.length > 0) {
+            // export thêm loại tài sản, khi không search theo loại tài sản thì mặc định lấy tất
+            assetTypeName = this.getAssetTypeParentName(assetTypeStatusChart, assetType);
 
-        this.props.setAssetStatisticsExportData(this.EXPORT_DATA.assetStatusData, this.EXPORT_DATA.assetCostData)
+            let newAssetTypeStatusChart = [];
+            assetStatusData.forEach(x => {
+                newAssetTypeStatusChart = [...newAssetTypeStatusChart, [...x, assetTypeName]];
+            })
+
+            this.EXPORT_DATA.assetStatusData = newAssetTypeStatusChart;
+
+            this.props.setAssetStatisticsExportData(this.EXPORT_DATA.assetStatusData, this.EXPORT_DATA.assetCostData)
+        }
+    }
+
+    getAssetCostData = (assetCostData, assetTypeCostData) => {
+        const { assetType } = this.state;
+        let assetTypeName;
+
+        if (assetType && assetType.length > 0) {
+            // export thêm loại tài sản, khi không search theo loại tài sản thì mặc định lấy tất
+            assetTypeName = this.getAssetTypeParentName(assetTypeCostData, assetType);
+
+            let newAssetTypeCostChart = [];
+            assetCostData.forEach(x => {
+                newAssetTypeCostChart = [...newAssetTypeCostChart, [...x, assetTypeName]];
+            })
+
+            this.EXPORT_DATA.assetCostData = newAssetTypeCostChart;
+
+            this.props.setAssetStatisticsExportData(this.EXPORT_DATA.assetStatusData, this.EXPORT_DATA.assetCostData)
+        }
     }
 
     render() {

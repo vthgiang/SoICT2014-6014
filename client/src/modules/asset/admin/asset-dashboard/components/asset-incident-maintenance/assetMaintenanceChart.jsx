@@ -39,8 +39,8 @@ class AssetMaintenanceChart extends Component {
     }
 
     setDataColumnChartForMonth = (listAssets) => {
-        const { translate } = this.props;
-        let { maintenanceDateAfter, maintenanceDateBefore } = this.state;
+        const { translate, getMaintenanceData } = this.props;
+        let { maintenanceDateAfter, maintenanceDateBefore, type } = this.state;
 
         let startDate = new Date(maintenanceDateAfter);
         let endDate = new Date(maintenanceDateBefore);
@@ -103,15 +103,15 @@ class AssetMaintenanceChart extends Component {
             yValues: arr
         };
 
-        // if (getmaintenanceData && listAssets) {
-        //     getmaintenanceData(dataColumnChart);
-        // }
+        if (dataColumnChart && listAssets) {
+            getMaintenanceData(dataColumnChart, type);
+        }
         return dataColumnChart;
     }
 
     setDataColumnChartForYear = (listAssets) => {
-        const { translate } = this.props;
-        let { maintenanceDateAfter, maintenanceDateBefore } = this.state;
+        const { translate, getMaintenanceData } = this.props;
+        let { maintenanceDateAfter, maintenanceDateBefore, type } = this.state;
 
         let startDate = maintenanceDateAfter.slice(0, 4);
         let endDate = maintenanceDateBefore.slice(0, 4);
@@ -159,9 +159,9 @@ class AssetMaintenanceChart extends Component {
             yValues: arr
         };
 
-        // if (getmaintenanceData && listAssets) {
-        //     getmaintenanceData(dataColumnChart);
-        // }
+        if (dataColumnChart && listAssets) {
+            getMaintenanceData(dataColumnChart, type);
+        }
         return dataColumnChart;
     }
 

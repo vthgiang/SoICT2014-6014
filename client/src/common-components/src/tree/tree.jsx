@@ -14,27 +14,27 @@ class Tree extends Component {
 
     componentDidMount() {
         const { id, data } = this.state;
-        const { onChanged, checkNode, unCheckNode, plugins=true } = this.props;
+        const { onChanged, checkNode, unCheckNode, plugins = true } = this.props;
         window.$(`#${id}`).jstree({
-            checkbox : {
-                whole_node : false,
+            checkbox: {
+                whole_node: false,
                 three_state: false,
                 tie_selection: false,
                 deselect_all: false
             },
-            core:{
-                themes:{
+            core: {
+                themes: {
                     dots: false,
                     icons: true,
                 },
                 data: data,
                 multiple: false,
             },
-            plugins: plugins ? [ "checkbox" ] : null,
+            plugins: plugins ? ["checkbox"] : null,
         });
 
         window.$(`#${id}`).on("changed.jstree", function (e, data) {
-            if (onChanged){
+            if (onChanged) {
                 onChanged(e, data);
             }
         });
@@ -69,9 +69,9 @@ class Tree extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.id !== this.state.id || JSON.stringify(nextProps.data) !== JSON.stringify(this.state.data)){
+        if (nextProps.id !== this.state.id || JSON.stringify(nextProps.data) !== JSON.stringify(this.state.data)) {
             return true;
-        }else return false;
+        } else return false;
     }
 
     render() {
@@ -79,7 +79,7 @@ class Tree extends Component {
         const { id, data } = this.state;
 
         return <React.Fragment>
-            {id !== undefined ? <div id={`${id}`} className={className} style={style}/> : null}
+            {id !== undefined ? <div id={`${id}`} className={className} style={style} /> : null}
         </React.Fragment>;
     }
 }

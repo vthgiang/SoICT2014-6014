@@ -16,6 +16,7 @@ export const UserActions = {
     edit,
     create,
     destroy,
+    importUsers,
 };
 
 /**
@@ -414,5 +415,20 @@ function getAllUsersWithRole() {
                     dispatch({ type: UserConstants.GET_ALL_USERS_WITH_ROLE_FAIL, error });
                 }
             );
+    }
+}
+
+function importUsers(data, params) {
+    return dispatch => {
+        dispatch({
+            type: UserConstants.IMPORT_USERS_REQUEST
+        });
+        UserServices.importUsers(data, params)
+            .then(res => {
+                dispatch({ type: UserConstants.IMPORT_USERS_SUCCESS, payload: res.data.content });
+            })
+            .catch(err => {
+                dispatch({ type: UserConstants.IMPORT_USERS_FAILE });
+            })
     }
 }

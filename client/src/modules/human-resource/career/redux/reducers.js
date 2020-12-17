@@ -37,6 +37,8 @@ export function career(state = initState, action) {
                 ...state,
                 isLoading: true,
             };
+
+
         case CareerConstant.GET_CAREER_POSITION_SUCCESS:
             return {
                 ...state,
@@ -44,7 +46,6 @@ export function career(state = initState, action) {
                 listPosition: action.payload.listPosition !== undefined ? action.payload.listPosition : [],
                 totalListPost: action.payload.totalList,
             };
-
         case CareerConstant.GET_CAREER_FIELD_SUCCESS:
             return {
                 ...state,
@@ -52,7 +53,6 @@ export function career(state = initState, action) {
                 listField: action.payload.listField !== undefined ? action.payload.listField : [],
                 totalListField: action.payload.totalList,
             };
-
         case CareerConstant.GET_CAREER_ACTION_SUCCESS:
             return {
                 ...state,
@@ -61,50 +61,67 @@ export function career(state = initState, action) {
                 totalListAction: action.payload.totalList,
             };
 
+
         case CareerConstant.CREATE_CAREER_FIELD_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
                 listField: action.payload,
             };
-
         case CareerConstant.CREATE_CAREER_POSITION_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
                 listPosition: action.payload,
             };
-
         case CareerConstant.CREATE_CAREER_ACTION_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
                 listAction: action.payload,
             };
+
+
         case CareerConstant.UPDATE_CAREER_POSITION_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
                 listPosition: action.payload,
             };
-        // case CareerConstant.CREATE_CAREER_POSITION_SUCCESS:
-        //     return {
-        //         ...state,
-        //         isLoading: false,
-        //             listDisciplines: [...state.listDisciplines, action.payload]
-        //     };
-        // case CareerConstant.DELETE_CAREER_POSITION_SUCCESS:
-        //     return {
-        //         ...state,
-        //         isLoading: false,
-        //             listDisciplines: state.listDisciplines.filter(discipline => (discipline._id !== action.payload._id))
-        //     };
-        // case CareerConstant.UPDATE_CAREER_POSITION_SUCCESS:
-        //     return {
-        //         ...state,
-        //         isLoading: false,
-        //             listDisciplines: state.listDisciplines.map(discipline => (discipline._id === action.payload._id) ? action.payload : discipline)
-        //     };
+        case CareerConstant.UPDATE_CAREER_FIELD_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                listField: action.payload,
+            };
+        case CareerConstant.UPDATE_CAREER_ACTION_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                listAction: action.payload,
+            };
+
+
+        case CareerConstant.DELETE_CAREER_FIELD_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                listField: action.payload,
+            };
+        case CareerConstant.DELETE_CAREER_ACTION_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                listAction: action.payload,
+            };
+        case CareerConstant.DELETE_CAREER_POSITION_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                listPosition: action.payload,
+            };
+
+
         case CareerConstant.GET_CAREER_POSITION_FAILURE:
         case CareerConstant.CREATE_CAREER_POSITION_FAILURE:
         case CareerConstant.DELETE_CAREER_POSITION_FAILURE:

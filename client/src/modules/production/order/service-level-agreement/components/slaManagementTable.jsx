@@ -107,15 +107,11 @@ class SLAMangementTable extends Component {
     };
 
     deleteSLA = (code) => {
-        let { limit, page, status } = this.state;
         this.props.deleteSLA({ code });
-        this.props.getAllSLAs({ limit, page, status });
     };
 
     disableSLA = (id) => {
-        let { limit, page, status } = this.state;
         this.props.disableSLA(id);
-        this.props.getAllSLAs({ limit, page, status });
     };
 
     render() {

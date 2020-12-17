@@ -11,6 +11,7 @@ import { BillActions } from '../../bill-management/redux/actions';
 import { GoodActions } from '../../../common-production/good-management/redux/actions';
 
 import { SelectMulti, DataTableSetting, SelectBox, DatePicker, PaginateBar } from '../../../../../common-components/index';
+import './inventory.css'
 
 class InventoryManagement extends Component {
 
@@ -551,7 +552,11 @@ class InventoryManagement extends Component {
                                             <td>{index + 1}</td>
                                             <td>{x.good.name}</td>
                                             <td>{x.good.baseUnit}</td>
-                                            { this.checkQuantity(x.stocks) ? <td style={{ color: 'red' }} title={translate('manage_warehouse.inventory_management.push_lot')}>{((stock && stock.length > 0) || stocks.listStocks.length > 0) ? this.totaQuantity(x.stocks) : x. quantity}</td> :
+                                            { this.checkQuantity(x.stocks) ?
+                                                <td className="tooltip-inventory">
+                                                    <span style={{ color: "red" }}>{((stock && stock.length > 0) || stocks.listStocks.length > 0) ? this.totaQuantity(x.stocks) : x. quantity}</span>
+                                                    <span className="tooltiptext"><p style={{ color: "white" }}>{translate('manage_warehouse.inventory_management.text')}</p></span>
+                                                </td> :
                                             <td>{((stock && stock.length > 0) || stocks.listStocks.length > 0) ? this.totaQuantity(x.stocks) : x. quantity}</td> }
                                             <td>{x.code}</td>
                                             <td>{this.formatDate(x.expirationDate)}</td>

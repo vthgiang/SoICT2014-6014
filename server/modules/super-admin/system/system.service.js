@@ -1,8 +1,8 @@
 const fs = require('fs');
-const {backup, restore, connect} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const {backup, restore, connect} = require('../../../helpers/dbHelper');
 const child_process = require('child_process');
 const exec = child_process.exec;
-const { Configuration } = require(`${SERVER_MODELS_DIR}`);
+const { Configuration } = require('../../../models');
 const {time} = require('cron');
 
 exports.getBackups = async(portal) => {
@@ -131,11 +131,23 @@ exports.deleteBackup = async(version, portal=undefined) => {
 };
 
 exports.restore = async(portal, version) => {
-    console.log("restore: ", portal, version)
     return await restore({
         host: process.env.DB_HOST,
         db: portal,
         port: process.env.DB_PORT || '27017',
         version
     });
+}
+
+exports.editBackupInfo = (version, data, portal) => {
+    let path = SERVER_BACKUP_DIR+`/${portal}/${version}`;
+    if (!fs.existsSync(path)) { throw ['backup_version_deleted'] };
+    fs.writeFile(path+'/README.txt', data.description, err => { 
+        if(err) throw err;
+    });
+
+    return {
+        version,
+        data
+    };
 }

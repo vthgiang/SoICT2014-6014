@@ -221,11 +221,11 @@ class ActionForm extends Component {
         return (
             /**Form chứa các thông tin của phần hoạt động của 1 task-template*/
             <fieldset className="scheduler-border">
-                <legend className="scheduler-border">{translate('task_template.activity_list')}*</legend>
+                <legend className="scheduler-border">{translate('task_template.activity_list')}</legend>
 
                 {/**Tên hoạt động  */}
                 <div className={`form-group ${this.state.action.errorOnName === undefined ? "" : "has-error"}`} >
-                    <label className="control-label">{translate('task_template.action_name')}*</label>
+                    <label className="control-label">{translate('task_template.action_name')}<span className="text-red">*</span></label>
                     <div>
                         <input type="text" className="form-control" placeholder={translate('task_template.action_name')} value={action.name} onChange={this.handleChangeActionName} />
                         <ErrorLabel content={this.state.action.errorOnName} />
@@ -234,7 +234,7 @@ class ActionForm extends Component {
 
                 {/**Mô tả hoạt động*/}
                 <div className={`form-group ${this.state.action.errorOnDescription === undefined ? "" : "has-error"}`} >
-                    <label className="control-label">{translate('task_template.description')}*</label>
+                    <label className="control-label">{translate('task_template.description')}<span className="text-red"></span></label>
                     {/* <div>
                         <textarea type="text" className="form-control" name="description" placeholder={translate('task_template.description')} value={action.description} onChange={this.handleChangeActionDesc} />
                         <ErrorLabel content={this.state.action.errorOnDescription}/>

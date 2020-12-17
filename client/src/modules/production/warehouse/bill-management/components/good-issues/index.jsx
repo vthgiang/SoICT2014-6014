@@ -195,6 +195,7 @@ class IssueManagement extends Component {
                             address={currentRow.receiver ? currentRow.receiver.address : ''}
                             description={currentRow.description}
                             listGood={currentRow.goods}
+                            creator={currentRow.creator ? currentRow.creator._id : ''}
                         />
                     }
 

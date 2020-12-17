@@ -1,3 +1,5 @@
+const uuid = require('uuid');
+
 exports.freshObject = (data) => {
     let obj = {};
     Object.keys(data).forEach(key => {
@@ -14,4 +16,17 @@ exports.dateParse = (date) => {
     if(!check) return undefined;
 
     return new Date(date);
+}
+
+exports.generateUniqueCode = (code='dx', type='v1') => {
+    switch(type){
+        case 'v3': 
+            return code+uuid.v3();
+        case 'v4': 
+            return code+uuid.v4();
+        case 'v5':    
+            return code+uuid.v5();
+        default: 
+            return code+uuid.v1();
+    }
 }

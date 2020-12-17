@@ -73,7 +73,7 @@ class CostChart extends Component {
         ];
 
         if (getAssetCostData && listAssets) {
-            getAssetCostData(dataPieChart);
+            getAssetCostData(dataPieChart, type);
         }
 
         return dataPieChart;
@@ -156,7 +156,7 @@ class CostChart extends Component {
 
         return (
             <React.Fragment>
-                <div className="form-group">
+                <div className="form-group" style={{ width: "100%" }}>
                     <label style={{ minWidth: "fit-content", marginRight: "10px" }}>{translate('asset.general_information.asset_type')}</label>
                     <TreeSelect
                         data={typeArr}

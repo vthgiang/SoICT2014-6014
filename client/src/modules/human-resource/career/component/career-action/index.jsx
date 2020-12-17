@@ -19,6 +19,7 @@ class CareerAction extends Component {
 
     componentDidMount() {
         this.props.getListCareerAction({ name: '', page: 1, limit: 1000 });
+        this.props.getListCareerPosition({ name: '', page: 1, limit: 1000 });
     }
     onChanged = async (e, data) => {
         await this.setState({
@@ -30,14 +31,16 @@ class CareerAction extends Component {
     checkNode = (e, data) => {
         this.setState({
             careerParent: [...data.selected],
-            deleteNode: [...data.selected, ...data.node.children_d]
+            // deleteNode: [...data.selected, ...data.node.children_d],
+            deleteNode: [...data.selected],
         })
     }
 
     unCheckNode = (e, data) => {
         this.setState({
             careerParent: [...data.selected],
-            deleteNode: [...data.selected, ...data.node.children_d],
+            // deleteNode: [...data.selected, ...data.node.children_d],
+            deleteNode: [...data.selected],
 
         })
     }
@@ -63,17 +66,18 @@ class CareerAction extends Component {
             confirmButtonText: translate('general.yes'),
         }).then(result => {
             console.log('Confirm delete');
-            if (result.value && careerParent.length > 1) {
-                // this.props.deleteDocumentArchive(careerParent, "many");
-                // this.setState({
-                //     deleteNode: []
-                // });
-            } else if (result.value && careerParent.length === 1) {
-                // this.props.deleteDocumentArchive(careerParent, 'single');
-                // this.setState({
-                //     deleteNode: []
-                // });
-            }
+            this.props.deleteCareerAction(deleteNode)
+            // if (result.value && careerParent.length > 1) {
+            //     // this.props.deleteDocumentArchive(careerParent, "many");
+            //     // this.setState({
+            //     //     deleteNode: []
+            //     // });
+            // } else if (result.value && careerParent.length === 1) {
+            //     // this.props.deleteDocumentArchive(careerParent, 'single');
+            //     // this.setState({
+            //     //     deleteNode: []
+            //     // });
+            // }
         })
     }
 
@@ -120,28 +124,19 @@ class CareerAction extends Component {
             dataTree = [...dataTree, ...detail];
         }
         let unChooseNode = currentNode ? this.findChildrenNode(list, currentNode) : [];
-        console.log('dataTree', dataTree);
+        // console.log('dataTree', dataTree);
         return (
             <React.Fragment>
                 <div className="box box-body">
 
                     <div className="form-inline">
-                        {/* <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
-                            <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('document.administration.domains.add')}>{translate('general.add')}</button>
-                            <ul className="dropdown-menu pull-right">
-                                <li><a href="#modal-create-career-position" title="Add archive" onClick={(event) => { this.handleAddCareerAction(event) }}>{translate('document.add')}</a></li>
-                                <li><a href="#modal_import_file_archive" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>{translate('document.import')}</a></li>
-                            </ul>
-                        </div> */}
                         <a className="btn btn-success pull-right" href="#modal-create-career-action" title="Add Career action" onClick={(event) => { this.handleAddCareerAction(event) }}>Thêm</a>
                     </div>
 
                     {
                         careerParent.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteCareer}>{translate('general.delete')}</button>
                     }
-                    {/* <ExportExcel id="export-career-position" exportData={exportData} style={{ marginRight: 5 }} buttonName={translate('document.export')} /> */}
-                    <CreateForm list={dataTree} />
-                    {/* <ArchiveImportForm /> */}
+                    <CreateForm list={list} />
                     <div className="row"
                     >
                         <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">
@@ -163,10 +158,10 @@ class CareerAction extends Component {
                                     careerId={currentNode.id}
                                     careerName={currentNode.text}
                                     careerCode={currentNode.original.code}
-                                    careerParent={currentNode.parent ? currentNode.parent : undefined}
+                                    careerParent={(currentNode.parent !== "#") ? currentNode.parent : undefined}
                                     careerPackage={currentNode.original.package ? currentNode.original.package : ""}
 
-                                    listData={dataTree}
+                                    listData={list}
                                     unChooseNode={unChooseNode}
                                 />
                             }
@@ -182,8 +177,8 @@ const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
     getListCareerAction: CareerReduxAction.getListCareerAction,
-    // editDocumentArchive: DocumentActions.editDocumentArchive,
-    // deleteDocumentArchive: DocumentActions.deleteDocumentArchive,
+    getListCareerPosition: CareerReduxAction.getListCareerPosition,
+    deleteCareerAction: CareerReduxAction.deleteCareerAction,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CareerAction));

@@ -1177,7 +1177,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                 {/* </div> */}
                                 <div className="row form-group">
                                     <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
-                                        <label className="control-label">{translate('task.task_management.start_date')}*</label>
+                                        <label className="control-label">{translate('task.task_management.start_date')}<span className="text-red">*</span></label>
                                         <DatePicker
                                             id={`datepicker2-startdate-${id}`}
                                             value={startDate}
@@ -1186,7 +1186,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                         <ErrorLabel content={errorOnStartDate} />
                                     </div>
                                     <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
-                                        <label className="control-label">{translate('task.task_management.end_date')}*</label>
+                                        <label className="control-label">{translate('task.task_management.end_date')}<span className="text-red">*</span></label>
                                         <DatePicker
                                             id={`datepicker2-enddate-${id}`}
                                             value={endDate}
@@ -1197,7 +1197,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                 </div>
                                 {/**Công thức tính của mẫu công việc */}
                                 <div className={` form-group ${errorOnFormula === undefined ? "" : "has-error"}`} >
-                                    <label className="control-label" htmlFor="inputFormula">{translate('task_template.formula')}*</label>
+                                    <label className="control-label" htmlFor="inputFormula">{translate('task_template.formula')}<span className="text-red">*</span></label>
                                     <input type="text" className="form-control" id="inputFormula" placeholder="progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100"
                                         value={formula} onChange={this.handleChangeTaskFormula}
                                     />

@@ -242,9 +242,9 @@ class SlaEditForm extends Component {
                 title,
             };
             await this.props.updateSLA(slaId, data);
-            await this.setState({
-                slaId: "",
-            });
+            // await this.setState({
+            //     slaId: "",
+            // });
         }
     };
 

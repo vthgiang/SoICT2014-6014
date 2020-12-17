@@ -14,10 +14,10 @@ class IncidentAndMaintenance extends Component {
     constructor(props) {
         super(props);
 
-        // this.EXPORT_DATA = {
-        //     purchaseData: null,
-        //     disposalData: null
-        // }
+        this.EXPORT_DATA = {
+            incidentData: null,
+            maintenanceData: null
+        }
 
         this.state = {
             listAssets: [],
@@ -49,17 +49,53 @@ class IncidentAndMaintenance extends Component {
         });
     }
 
-    // getPurchaseData = (purchaseData) => {
-    //     this.EXPORT_DATA.purchaseData = purchaseData;
+    getAssetTypeParentName = (listAssetTypeId, ListAssetType) => {
+        const { translate } = this.props;
+        let newArr = [];
+        if (listAssetTypeId && listAssetTypeId.length === 0) {
+            ListAssetType.forEach(() => {
+                newArr = [`${translate('asset.general_information.choose_all')}`];
+            })
+        } else {
+            ListAssetType.forEach(x => {
+                listAssetTypeId.forEach(y => {
+                    if (x._id === y)
+                        newArr = [...newArr, x.typeName]
+                })
+            })
+        }
+        return newArr;
+    }
 
-    //     this.props.setPurchaseAndDisposalExportData(this.EXPORT_DATA.purchaseData, this.EXPORT_DATA.disposalData)
-    // }
+    getIncidentData = (incidentData, assetTypeSearch) => {
+        const { assetType } = this.state;
+        let assetTypeName;
 
-    // getDisposalData = (disposalData) => {
-    //     this.EXPORT_DATA.disposalData = disposalData;
+        if (assetType && assetType.length > 0) {
+            assetTypeName = this.getAssetTypeParentName(assetTypeSearch, assetType);
 
-    //     this.props.setPurchaseAndDisposalExportData(this.EXPORT_DATA.purchaseData, this.EXPORT_DATA.disposalData)
-    // }
+            const newAssetTypeIncidentChart = { ...incidentData, assetTypeName }
+
+            this.EXPORT_DATA.incidentData = newAssetTypeIncidentChart;
+
+            this.props.setIncidentAndMaintenanceDataExportData(this.EXPORT_DATA.incidentData, this.EXPORT_DATA.maintenanceData)
+        }
+    }
+
+    getMaintenanceData = (maintenanceData, assetTypeSearch) => {
+        const { assetType } = this.state;
+        let assetTypeName;
+
+        if (assetType && assetType.length > 0) {
+            assetTypeName = this.getAssetTypeParentName(assetTypeSearch, assetType);
+
+            const newAssetTypeMaintenanceChart = { ...maintenanceData, assetTypeName }
+
+            this.EXPORT_DATA.maintenanceData = newAssetTypeMaintenanceChart;
+
+            this.props.setIncidentAndMaintenanceDataExportData(this.EXPORT_DATA.incidentData, this.EXPORT_DATA.maintenanceData)
+        }
+    }
 
     render() {
         const { translate } = this.props;
@@ -80,7 +116,7 @@ class IncidentAndMaintenance extends Component {
                                     < AssetIncidentChart
                                         listAssets={listAssets}
                                         assetType={assetType}
-                                    // getPurchaseData={this.getPurchaseData}
+                                        getIncidentData={this.getIncidentData}
                                     />
                                 </div>
                             </div>
@@ -96,7 +132,7 @@ class IncidentAndMaintenance extends Component {
                                     <AssetMaintenanceChart
                                         listAssets={listAssets}
                                         assetType={assetType}
-                                    // getDisposalData={this.getDisposalData}
+                                        getMaintenanceData={this.getMaintenanceData}
                                     />
                                 </div>
                             </div>

@@ -13,6 +13,8 @@ class TaskTimesheetLog extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            currentUser: getStorage("userId"),
+            time: {},
             showModal: '',
             description: '',
             showEndDate: false,
@@ -99,7 +101,6 @@ class TaskTimesheetLog extends Component {
                 var milisec = new Date(isoDate).getTime();
             }
         }
-        console.log(this.state.timeStop)
         const timer = {
             employee: getStorage("userId"),
             startedAt: performtasks.currentTimer.timesheetLogs[0].startedAt,
@@ -216,7 +217,7 @@ class TaskTimesheetLog extends Component {
     render() {
 
         const { translate, performtasks, auth } = this.props;
-        const { showEndDate, disabled, errorOnEndDate } = this.state
+        const { showEndDate, disabled, errorOnEndDate, currentUser, time } = this.state
         const currentTimer = performtasks.currentTimer;
         const a = (this.state.time - currentTimer?.timesheetLogs[0].startedAt > 0) ? this.state.time - currentTimer?.timesheetLogs[0].startedAt : 0
         return (
@@ -224,7 +225,7 @@ class TaskTimesheetLog extends Component {
                 {
                     currentTimer &&
                     <React.Fragment>
-                        <div className="timesheet-box">
+                        <div className="timesheet-box" id={currentUser} >
                             <div className="time">
                                 <span>
                                     <i className="fa fa-stop-circle-o fa-lg" style={{ color: "red", cursor: "pointer" }} aria-hidden="true" title="Dừng bấm giờ" onClick={this.handleStopTimer}></i>

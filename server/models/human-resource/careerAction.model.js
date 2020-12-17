@@ -5,7 +5,11 @@ const Schema = mongoose.Schema;
 const CareerActionSchema = new Schema({
     name: String,
     code: String, // lưu lại trong db của employees
-    package: String,
+    
+    package: [{
+        type: String,
+    }],
+    
     detail: [{
         name: {
             type: String,

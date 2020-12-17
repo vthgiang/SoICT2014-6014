@@ -68,53 +68,46 @@ class UserCreateForm extends Component {
         }).map(role => { return { value: role ? role._id : null, text: role ? role.name : "" } })
 
         return (
-            <React.Fragment>
-                {/* Button thêm tài khoản người dùng mới */}
-                <ButtonModal modalID="modal-create-user" button_name={translate('manage_user.add')} title={translate('manage_user.add_title')} />
+            <DialogModal
+                modalID="modal-create-user" isLoading={user.isLoading}
+                formID="form-create-user"
+                title={translate('manage_user.add_title')}
+                func={this.save}
+                disableSubmit={!this.isFormValidated()}
+            >
+                {/* Form thêm tài khoản người dùng mới */}
+                <form id="form-create-user" onSubmit={() => this.save(translate('manage_user.add_success'))}>
 
-                <DialogModal
-                    modalID="modal-create-user" isLoading={user.isLoading}
-                    formID="form-create-user"
-                    title={translate('manage_user.add_title')}
-                    func={this.save}
-                    disableSubmit={!this.isFormValidated()}
-                    size={50}
-                    maxWidth={500}
-                >
-                    {/* Form thêm tài khoản người dùng mới */}
-                    <form id="form-create-user" onSubmit={() => this.save(translate('manage_user.add_success'))}>
+                    {/* Tên người dùng */}
+                    <div className={`form-group ${!userNameError ? "" : "has-error"}`}>
+                        <label>{translate('table.name')}<span className="text-red">*</span></label>
+                        <input type="text" className="form-control" onChange={this.handleUserName} />
+                        <ErrorLabel content={userNameError} />
+                    </div>
 
-                        {/* Tên người dùng */}
-                        <div className={`form-group ${!userNameError ? "" : "has-error"}`}>
-                            <label>{translate('table.name')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" onChange={this.handleUserName} />
-                            <ErrorLabel content={userNameError} />
-                        </div>
+                    {/* Email */}
+                    <div className={`form-group ${!userEmailError ? "" : "has-error"}`}>
+                        <label>{translate('table.email')}<span className="text-red">*</span></label>
+                        <input type="email" className="form-control" onChange={this.handleUserEmail} />
+                        <ErrorLabel content={userEmailError} />
+                    </div>
 
-                        {/* Email */}
-                        <div className={`form-group ${!userEmailError ? "" : "has-error"}`}>
-                            <label>{translate('table.email')}<span className="text-red">*</span></label>
-                            <input type="email" className="form-control" onChange={this.handleUserEmail} />
-                            <ErrorLabel content={userEmailError} />
-                        </div>
-
-                        {/* Phân quyền được cấp */}
-                        <div className="form-group">
-                            <label>{translate('manage_user.roles')}</label>
-                            {items.length !== 0 &&
-                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                    id={`user-role-form-create`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    items={items}
-                                    onChange={this.handleRolesChange}
-                                    multiple={true}
-                                />
-                            }
-                        </div>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
+                    {/* Phân quyền được cấp */}
+                    <div className="form-group">
+                        <label>{translate('manage_user.roles')}</label>
+                        {items.length !== 0 &&
+                            <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                id={`user-role-form-create`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={items}
+                                onChange={this.handleRolesChange}
+                                multiple={true}
+                            />
+                        }
+                    </div>
+                </form>
+            </DialogModal>
         );
     }
 }

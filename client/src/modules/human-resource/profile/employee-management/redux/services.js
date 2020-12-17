@@ -17,7 +17,7 @@ function getAll(data) {
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/employee/employees`,
         method: 'GET',
-        params: {
+        params: data?.searchForPackage ? data : {
             exportData: data ? data.exportData : data,
             arrEmail: data ? data.arrEmail : data,
             startDate: data ? data.startDate : data,
@@ -34,6 +34,18 @@ function getAll(data) {
             page: data ? data.page : data,
             limit: data ? data.limit : data
         }
+    }, false, true, 'human_resource.profile.employee_management');
+}
+
+/**
+ * Lấy danh sách nhân viên
+ * @param {*} data : dữ liệu key tìm kiếm
+ */
+function searchForPackage(data) {
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/employee/employees`,
+        method: 'GET',
+        params: data,
     }, false, true, 'human_resource.profile.employee_management');
 }
 

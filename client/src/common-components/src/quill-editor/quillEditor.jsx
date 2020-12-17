@@ -5,6 +5,8 @@ import parse from 'html-react-parser';
 
 import { configQuillEditor } from './configQuillEditor';
 import { ToolbarQuillEditor } from './toolbarQuillEditor';
+
+import './quillEditor.css';
 class QuillEditor extends Component {
     constructor(props) {
         super(props);
@@ -87,9 +89,8 @@ class QuillEditor extends Component {
                 }
             });
 
-            // Custom icon insert table
-            let insertTable = document.querySelector('#insert-table');
-            insertTable.addEventListener('click', () => {
+            // Custom insert table
+            window.$(`#insert-tabletoolbar${id}`).click(() => {
                 let table = quill.getModule('table');
                 table.insertTable(3, 3);
             });
@@ -144,7 +145,9 @@ class QuillEditor extends Component {
     }
 
     render() {
-        const { id, edit = true, quillValueDefault, height = 200 } = this.props;
+        const { id, edit = true, quillValueDefault, height = 200,
+            font = true, header = true, typography = true, fontColor = true, alignAndList = true, embeds = true, table = true
+        } = this.props;
 
         return (
             <React.Fragment>
@@ -153,6 +156,13 @@ class QuillEditor extends Component {
                         ? <React.Fragment>
                             <ToolbarQuillEditor
                                 id={`toolbar${id}`}
+                                font={font}
+                                header={header}
+                                typography={typography}
+                                fontColor={fontColor}
+                                alignAndList={alignAndList}
+                                embeds={embeds}
+                                table={table}
                             />
                             <div id={`editor-container${id}`} style={{ height: height }} />
                         </React.Fragment>
