@@ -826,7 +826,7 @@ export default {
             short_name: "Short Name",
             employee_name: "Staff name",
             employee_number: "Staff code",
-            total_salary: "Total salary",
+            total_salary: "Total income",
             month: "Month",
             unit: "Unit",
             position: "Position",
@@ -1236,7 +1236,7 @@ export default {
                     other_salary: "Other salary",
                     name_salary: "Name salary",
                     money_salary: "Money",
-                    total_salary: "Total Salary",
+                    total_salary: "Total income",
                     action: "action",
                 },
                 // Nhóm dành cho action
@@ -1452,6 +1452,7 @@ export default {
                     menu_attachments_title: "Attachments",
                 },
 
+                money:'Wage',
                 staff_number: "Staff code",
                 full_name: "Full name",
                 attendance_code: "Attendance code",
@@ -1509,6 +1510,8 @@ export default {
                 colleges: "Colleges",
                 university: "University",
                 master_degree: "Maste degree",
+                engineer: 'Engineer',
+                bachelor: 'Bachelor',
                 phd: "Ph.D",
                 unavailable: "Other",
                 work_experience: "Work experience",
@@ -1600,6 +1603,7 @@ export default {
                 temporary_residence_card: "Temporary residence card",
                 disc_temporary_residence_card:
                     "Certificate of temporary absence",
+                registration_book:'Registration book',
                 add_staff: "Add new staffs",
 
                 reward: "Commendation",

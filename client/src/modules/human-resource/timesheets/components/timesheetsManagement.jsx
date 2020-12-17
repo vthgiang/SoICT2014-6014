@@ -67,7 +67,7 @@ class TimesheetsManagement extends Component {
     }
 
     /**
-     *  Bắt sự kiện click xem xu hướng làm việc của nhân viên
+     *  Bắt sự kiện click xem báo cáo ngày công của nhân viên
      * @param {*} id : id nhân viên
      */
     handleViewChart = async (value) => {
@@ -504,7 +504,7 @@ class TimesheetsManagement extends Component {
                                                         <td rowSpan="3" style={{ paddingTop: 22 }}>{x.employee ? x.employee.fullName : null}</td>
                                                         <td rowSpan="3" style={{ paddingTop: 22 }}> {x.totalHours}</td>
                                                         <td rowSpan="3" style={{ paddingTop: 22, textAlign: "center" }}>
-                                                            <a onClick={() => this.handleViewChart(x.employee)} style={{ width: '5px' }} title={`Xu hướng làm việc của ${x.employee ? x.employee.fullName : null}`}><i className="material-icons">insert_chart_outlined</i></a>
+                                                            <a onClick={() => this.handleViewChart(x.employee)} style={{ width: '5px' }} title={`Báo cáo ngày công của ${x.employee ? x.employee.fullName : null}`}><i className="material-icons">insert_chart_outlined</i></a>
                                                             <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.timesheets.edit_timesheets')}><i className="material-icons">edit</i></a>
                                                             <DeleteNotification
                                                                 content={translate('human_resource.timesheets.delete_timesheets')}
@@ -655,7 +655,7 @@ class TimesheetsManagement extends Component {
                                                     <td>{x.employee ? x.employee.fullName : null}</td>
                                                     <td>{x.totalHours}</td>
                                                     <td style={{ textAlign: "center" }}>
-                                                        <a onClick={() => this.handleViewChart(x.employee)} style={{ width: '5px' }} title={`Xu hướng làm việc của ${x.employee ? x.employee.fullName : null}`}><i className="material-icons">insert_chart_outlined</i></a>
+                                                        <a onClick={() => this.handleViewChart(x.employee)} style={{ width: '5px' }} title={`Báo cáo ngày công của ${x.employee ? x.employee.fullName : null}`}><i className="material-icons">insert_chart_outlined</i></a>
                                                         <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.timesheets.edit_timesheets')}><i className="material-icons">edit</i></a>
                                                         <DeleteNotification
                                                             content={translate('human_resource.timesheets.delete_timesheets')}
@@ -729,7 +729,7 @@ class TimesheetsManagement extends Component {
                 }
                 {
                     currentRowViewChart &&
-                    <TrendWorkOfEmployeeChart employeeId={currentRowViewChart ? currentRowViewChart._id : 'null'} nameChart={`Xu hướng làm việc của ${currentRowViewChart.fullName}`} nameData1='Tổng giờ làm' nameData2='Số giờ tăng ca' />
+                    <TrendWorkOfEmployeeChart employeeId={currentRowViewChart ? currentRowViewChart._id : 'null'} nameChart={`Báo cáo ngày công của ${currentRowViewChart.fullName}`} nameData1='Tổng giờ làm' nameData2='Số giờ tăng ca' />
                 }
             </div>
         );

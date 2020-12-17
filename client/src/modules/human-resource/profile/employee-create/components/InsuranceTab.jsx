@@ -359,6 +359,7 @@ class InsurranceTab extends Component {
                                             <th>{translate('human_resource.profile.to_month_year')}</th>
                                             <th>{translate('human_resource.profile.unit')}</th>
                                             <th>{translate('table.position')}</th>
+                                            <th>{translate('human_resource.profile.money')}</th>
                                             <th style={{ width: '120px' }}>{translate('table.action')}</th>
                                         </tr>
                                     </thead>
@@ -370,6 +371,7 @@ class InsurranceTab extends Component {
                                                     <td>{this.formatDate(x.endDate, true)}</td>
                                                     <td>{x.company}</td>
                                                     <td>{x.position}</td>
+                                                    <td>{x.money}</td>
                                                     <td>
                                                         <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.edit_bhxh')}><i className="material-icons">edit</i></a>
                                                         <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>
@@ -395,6 +397,7 @@ class InsurranceTab extends Component {
                         startDate={this.formatDate(currentRow.startDate, true)}
                         endDate={this.formatDate(currentRow.endDate, true)}
                         position={currentRow.position}
+                        money={currentRow.money}
                         handleChange={this.handleEditBHXH}
                     />
                 }

@@ -22,6 +22,8 @@ function getAll(data) {
             arrEmail: data ? data.arrEmail : data,
             startDate: data ? data.startDate : data,
             endDate: data ? data.endDate : data,
+            professionalSkills: data ? data.professionalSkills : data,
+            careerFields: data? data.careerFields: data,
             organizationalUnits: data ? data.organizationalUnits : data,
             position: data ? data.position : data,
             employeeName: data? data.employeeName : data,

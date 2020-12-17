@@ -107,6 +107,12 @@ class EmployeeImportForm extends Component {
                 case translate('human_resource.profile.master_degree'):
                     professionalSkill = "master_degree";
                     break;
+                case translate('human_resource.profile.bachelor'):
+                    professionalSkill = "bachelor";
+                    break;
+                case translate('human_resource.profile.engineer'):
+                    professionalSkill = "engineer";
+                    break;
                 case translate('human_resource.profile.phd'):
                     professionalSkill = "phd";
                     break;
