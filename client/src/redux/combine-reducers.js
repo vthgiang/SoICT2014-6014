@@ -51,6 +51,7 @@ import { tasks } from "../modules/task/task-management/redux/reducers";
 import { rootRoles } from "../modules/system-admin/root-role/redux/reducers";
 import { systemComponents } from "../modules/system-admin/system-component/redux/reducers";
 import { taskProcess } from "../modules/task/task-process/redux/reducers"
+import taskProject from '../modules/task/task-project/redux/reducer';
 
 //asset
 import { recommendProcure } from "../modules/asset/user/purchase-request/redux/reducers";
@@ -165,6 +166,8 @@ const appReducer = combineReducers({
     tasks,
     performtasks,
     taskProcess,
+    taskProject,
+
     // kpi members
     kpimembers,
 

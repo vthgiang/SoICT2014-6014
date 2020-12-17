@@ -144,6 +144,12 @@ router.use(
     "/task/task-templates",
     require("./modules/task/task-template/taskTemplate.route")
 );
+
+router.use(
+    "/task",
+    require("./modules/task/task-project/taskProject.route")
+);
+
 router.use(
     "/process",
     require("./modules/task/tasks-process/taskProcess.route")

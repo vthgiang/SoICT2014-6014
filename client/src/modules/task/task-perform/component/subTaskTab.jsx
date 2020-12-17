@@ -11,11 +11,11 @@ class SubTaskTab extends Component {
         super(props);
         this.state = {};
     }
-    
+
     componentDidMount = () => {
         if (this.props.location) { // Nếu là trang trực tiếp (trong Route)
             const { taskId } = qs.parse(this.props.location.search, { ignoreQueryPrefix: true });
-            if (taskId){
+            if (taskId) {
                 this.props.getTaskById(taskId);
                 this.props.getSubTask(taskId);
             }
@@ -42,22 +42,22 @@ class SubTaskTab extends Component {
 
         return (
             <div>
-                {subtasks && subtasks.length>0 &&
-                    subtasks.map( item =>{
-                    return (
-                        <div className="item-box">
-                            <strong><a href={`/task?taskId=${item._id}`} target="_blank" >{item.name} </a></strong>
-                            <span>{item.status}, </span>
-                            <span>{item.progress}%, </span>
-                            <span>{this.formatDate(item.startDate)} - {this.formatDate(item.endDate)}</span>
-                            <div>
-                                {item.description}
+                {subtasks && subtasks.length > 0 &&
+                    subtasks.map(item => {
+                        return (
+                            <div className="item-box" key={item._id}>
+                                <strong><a href={`/task?taskId=${item._id}`} target="_blank" >{item.name} </a></strong>
+                                <span>{item.status}, </span>
+                                <span>{item.progress}%, </span>
+                                <span>{this.formatDate(item.startDate)} - {this.formatDate(item.endDate)}</span>
+                                <div>
+                                    {item.description}
+                                </div>
                             </div>
-                        </div>
-                    )
-                })}
+                        )
+                    })}
 
-                {subtasks && subtasks.length==0 && <strong>{translate("task.task_perform.none_subtask")}</strong>}
+                {subtasks && subtasks.length == 0 && <strong>{translate("task.task_perform.none_subtask")}</strong>}
             </div>
         )
     }
