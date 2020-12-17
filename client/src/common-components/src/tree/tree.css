@@ -36,7 +36,7 @@
 }
 .jstree-default i.jstree-icon.jstree-themeicon::before {
     font: normal normal normal 18px/1;
-    color: #d4b147;
+    color: #3C8DBC;
     font-size: 20px;
     margin-right: 10px;
     display: inline-block;
@@ -45,7 +45,7 @@
     padding-right: 2px;
 }
 .jstree-default .jstree-leaf i.jstree-icon.jstree-themeicon::before { /* Icon node lá */
-    color: #2196F3;
+    color: #3C8DBC;
     font-size: 20px;
     margin-top: 2px;
 }

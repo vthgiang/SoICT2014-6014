@@ -161,3 +161,44 @@ exports.getAllGoods = async (req, res) => {
         })
     }
 }
+
+exports.getGoodByManageWorksRole = async (req, res) => {
+    try {
+        const roleId = req.params.id;
+        const goods = await GoodService.getGoodByManageWorksRole(roleId, req.portal);
+        await Logger.info(req.user.email, 'GET_ALL_GOOD_BY_MANAGE_WORK_ROLE', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['get_good_success'],
+            content: goods
+        })
+
+    } catch (error) {
+        await Logger.error(req.user.email, 'GET_ALL_GOOD_BY_MANAGE_WORK_ROLE', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['get_good_failed'],
+            content: error.message
+        })
+    }
+}
+
+exports.getManufacturingWorksByProductId = async (req, res) => {
+    try {
+        const productId = req.params.id;
+        const manufacturingWorks = await GoodService.getManufacturingWorksByProductId(productId, req.portal);
+        await Logger.info(req.user.email, 'GET_WORKS_BY_PRODUCT_ID', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['get_works_success'],
+            content: manufacturingWorks
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, 'GET_WORKS_BY_PRODUCT_ID', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['get_works_failed'],
+            content: error.message
+        })
+    }
+}
