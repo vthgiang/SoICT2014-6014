@@ -32,7 +32,9 @@ const initState = {
         listTaxsByGoodId: [],
         listSlasByGoodId: [],
         listDiscountsByGoodId: []
-    }
+    },
+    listGoodsByRole: [],
+    listManufacturingWorks: []
 }
 
 export function goods(state = initState, action) {
@@ -51,11 +53,13 @@ export function goods(state = initState, action) {
         case GoodConstants.GET_GOOD_DETAIL_REQUEST:
         case GoodConstants.DELETE_GOOD_REQUEST:
         case GoodConstants.GET_ITEMS_FOR_GOOD_REQUEST:
+        case GoodConstants.GET_GOOD_BY_MANAGE_WORK_ROLE_REQUEST:
+        case GoodConstants.GET_MANUFACTURING_WORKS_BY_PRODUCT_ID_REQUEST:
             return {
                 ...state,
                 isLoading: true
             };
-        
+
         case GoodConstants.GET_GOOD_BY_TYPE_FAILURE:
         case GoodConstants.GETALL_GOOD_BY_TYPE_FAILURE:
         case GoodConstants.GETALL_GOODS_FAILURE:
@@ -66,11 +70,13 @@ export function goods(state = initState, action) {
         case GoodConstants.GET_GOOD_DETAIL_FAILURE:
         case GoodConstants.DELETE_GOOD_FAILURE:
         case GoodConstants.GET_ITEMS_FOR_GOOD_FAILURE:
+        case GoodConstants.GET_GOOD_BY_MANAGE_WORK_ROLE_FAILURE:
+        case GoodConstants.GET_MANUFACTURING_WORKS_BY_PRODUCT_ID_FAILURE:
             return {
                 ...state,
                 isLoading: false
             };
-        
+
         case GoodConstants.GETALL_GOOD_BY_TYPE_SUCCESS:
             return {
                 ...state,
@@ -92,7 +98,7 @@ export function goods(state = initState, action) {
                 listGoods: action.payload,
                 isLoading: false
             };
-        
+
         case GoodConstants.GETALL_GOODS_SUCCESS:
             return {
                 ...state,
@@ -141,11 +147,11 @@ export function goods(state = initState, action) {
             index = findIndex(state.listGoods, action.payload._id);
             indexPaginate = findIndex(state.listPaginate, action.payload._id);
 
-            if(index !== -1){
+            if (index !== -1) {
                 state.listGoods[index] = action.payload;
             }
 
-            if(indexPaginate !== -1){
+            if (indexPaginate !== -1) {
                 state.listPaginate[indexPaginate] = action.payload;
             }
             return {
@@ -157,22 +163,35 @@ export function goods(state = initState, action) {
             index = findIndex(state.listGoods, action.payload);
             indexPaginate = findIndex(state.listPaginate, action.payload);
 
-            if(index !== -1){
+            if (index !== -1) {
                 state.listGoods.splice(index, 1);
             }
 
-            if(indexPaginate !== -1){
+            if (indexPaginate !== -1) {
                 state.listPaginate.splice(indexPaginate, 1);
             }
             return {
                 ...state,
                 isLoading: false
             };
-        case GoodConstants.GET_ITEMS_FOR_GOOD_SUCCESS: 
-        return {
-            ...state,
-            goodItems: action.payload
-        };
+        case GoodConstants.GET_ITEMS_FOR_GOOD_SUCCESS:
+            return {
+                ...state,
+                goodItems: action.payload,
+                isLoading: false
+            };
+        case GoodConstants.GET_GOOD_BY_MANAGE_WORK_ROLE_SUCCESS:
+            return {
+                ...state,
+                listGoodsByRole: action.payload.goods,
+                isLoading: false
+            }
+        case GoodConstants.GET_MANUFACTURING_WORKS_BY_PRODUCT_ID_SUCCESS:
+            return {
+                ...state,
+                listManufacturingWorks: action.payload.manufacturingWorks,
+                isLoading: false
+            }
         default:
             return state;
     }

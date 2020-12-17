@@ -2301,7 +2301,7 @@ export default {
 
                 select_asset_type: "Chọn loại tài sản",
                 select_asset_status: "Chọn trạng thái tài sản",
-                asset_status:"Trạng thái tài sản",
+                asset_status: "Trạng thái tài sản",
                 select_all_asset_type: "Chọn tất cả loại tài sản",
                 select_all_status: "Chọn tất cả trạng thái",
                 select_all_group: "Chọn tất cả nhóm tài sản",
@@ -4928,7 +4928,7 @@ export default {
                 choose_good: "Chọn sản phẩm",
                 base_unit: "Đơn vị tính tiêu chuẩn",
                 quantity_good_inventory: "Số lượng tồn kho",
-                quantity: "Số lượng sản xuất",
+                quantity: "Số lượng cần sản xuất",
                 choose_good_input: "---Chọn sản phẩm---",
                 error_good: "Vui lòng chọn sản phẩm",
                 error_quantity: "Vui lòng nhập số lượng",
@@ -4951,7 +4951,11 @@ export default {
                 command_quantity: "Số lượng",
                 choose_quality_control_staffs: "Vui lòng chọn người kiểm định chất lượng",
                 error_quantity_input_remaining: "Số lượng không thể lớn hơn số lượng chưa tạo lệnh sản xuất",
-                error_quantity_input_good: "Vui lòng chọn sản phẩm cần sản xuất trước"
+                error_quantity_input_good: "Vui lòng chọn sản phẩm cần sản xuất trước",
+                choose_approvers: "Vui lòng chọn người phê duyệt",
+                choose_accountables: "Vui lòng chọn người giám sát",
+                quantity_order: "Số lượng trong đơn",
+                quantity_need_planned: "Số lượng cần lập kế hoạch"
 
 
 
