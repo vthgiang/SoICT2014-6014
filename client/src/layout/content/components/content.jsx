@@ -153,6 +153,26 @@ class Content extends Component {
 
                     let sort = (ascOrder) => {
                         let rows = table.find("tbody>tr");
+
+                        for (let k = 0; k < tableHeadings.length; ++k) {
+                            if (k !== j) {
+                                let thNotChoice = window.$(tableHeadings[k]);
+                                let listdiv = thNotChoice.find("div.sort")
+                                window.$(listdiv[0]).find("i.fa.fa-caret-up")[0].style.color = "#cac6c6"
+                                window.$(listdiv[0]).find("i.fa.fa-caret-down")[0].style.color = "#cac6c6"
+                            } else {
+                                let thNotChoice = window.$(tableHeadings[k]);
+                                let listdiv = thNotChoice.find("div.sort")
+                                if (ascOrder) {
+                                    window.$(listdiv[0]).find("i.fa.fa-caret-up")[0].style.color = "black"
+                                    window.$(listdiv[0]).find("i.fa.fa-caret-down")[0].style.color = "#cac6c6"
+                                } else {
+                                    window.$(listdiv[0]).find("i.fa.fa-caret-up")[0].style.color = "#cac6c6"
+                                    window.$(listdiv[0]).find("i.fa.fa-caret-down")[0].style.color = "black"
+                                }
+                            }
+                        }
+
                         rows.sort((a, b) => {
                             let keyA = nonAccentVietnamese(window.$(window.$(a).find("td")[j]).text());
                             let keyB = nonAccentVietnamese(window.$(window.$(b).find("td")[j]).text());
@@ -160,6 +180,7 @@ class Content extends Component {
                             if (keyA > keyB) return ascOrder ? 1 : -1;
                             return 0;
                         });
+
                         window.$.each(rows, function (index, row) {
                             table.children('tbody').append(row);
                         });

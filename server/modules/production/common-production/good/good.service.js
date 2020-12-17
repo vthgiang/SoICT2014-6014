@@ -1,4 +1,4 @@
-const { Good } = require(`${SERVER_MODELS_DIR}`);
+const { Good, OrganizationalUnit, ManufacturingWorks, ManufacturingMill } = require(`${SERVER_MODELS_DIR}`);
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 exports.getGoodsByType = async (company, query, portal) => {
@@ -168,4 +168,54 @@ exports.getAllGoods = async (company, portal) => {
             { path: 'materials.good', select: 'id name' },
             { path: 'manufacturingMills.manufacturingMill' }
         ])
+}
+
+exports.getGoodByManageWorksRole = async (roleId, portal) => {
+    console.log("Vao day day")
+    // Xử  lý các quyền trước để tìm ra các kế hoạch trong các nhà máy được phân quyền
+    let role = [roleId];
+    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'deans': { $in: role } });
+    let organizationalUnitId = departments.map(department => department._id);
+    let listManufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        organizationalUnit: {
+            $in: organizationalUnitId
+        }
+    });
+    let listWorksId = listManufacturingWorks.map(x => x._id);
+    let listManufacturingMills = await ManufacturingMill(connect(DB_CONNECTION, portal)).find({
+        manufacturingWorks: {
+            $in: listWorksId
+        }
+    });
+    let listMillsId = listManufacturingMills.map(x => x._id);
+
+    let goods = await Good(connect(DB_CONNECTION, portal))
+        .find({
+            manufacturingMills: {
+                $elemMatch: {
+                    manufacturingMill: {
+                        $in: listMillsId
+                    }
+                }
+            }
+        }).populate([
+            { path: 'materials.good', select: 'id name' },
+            { path: 'manufacturingMills.manufacturingMill' }
+        ]);
+    return { goods }
+}
+exports.getManufacturingWorksByProductId = async (productId, portal) => {
+    let product = await Good(connect(DB_CONNECTION, portal)).findOne({
+        _id: productId
+    });
+    console.log(product)
+    let manufacturingMills = product.manufacturingMills;
+    console.log(manufacturingMills);
+    manufacturingMillId = manufacturingMills.map(x => x.manufacturingMill);
+    let manufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        manufacturingMills: {
+            $in: manufacturingMillId
+        }
+    });
+    return { manufacturingWorks }
 }

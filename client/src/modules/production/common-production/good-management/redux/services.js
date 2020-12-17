@@ -11,7 +11,9 @@ export const GoodServices = {
     deleteGood,
     getTaxByGoodsId,
     getSlaByGoodsId,
-    getDiscountByGoodsId
+    getDiscountByGoodsId,
+    getGoodByManageWorkRole,
+    getManufacturingWorksByProductId
 }
 
 function getGoodsByType(params) {
@@ -112,4 +114,26 @@ function getDiscountByGoodsId(goodId) {
         false,
         true,
         "manage_order.discount")
+}
+
+function getGoodByManageWorkRole(roleId) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/goods/by-manage-works-role/role/${roleId}`,
+            method: "GET"
+        },
+        false,
+        true,
+        "manage_warehouse.good_management")
+}
+
+function getManufacturingWorksByProductId(productId) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/goods/get-works-by-product-id/${productId}`,
+            method: "GET"
+        },
+        false,
+        true,
+        "manage_warehouse.good_management")
 }
