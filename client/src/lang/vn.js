@@ -1025,7 +1025,7 @@ export default {
             manage_company: "Doanh nghiệp",
             manage_role: "Quản lý phân quyền",
             manage_link: "Quản lý trang",
-            manage_component: "Quản lý UI-Component",
+            manage_component: "Quản lý phân quyền trên các trang",
 
             manage_department: "Quản lý cơ cấu tổ chức",
             manage_user: "Quản lý người dùng",
