@@ -57,9 +57,9 @@ exports.initModels = (db, models) => {
 exports.restore = async (options) => {
     const commandRestoreDB = (options) => {
         if(!options.db){
-            return `mongorestore --drop --host="${options.host}" --port="${options.port}" ${SERVER_BACKUP_DIR}/all/${options.version}/data/database`;
+            return `mongorestore --username ${process.env.DB_USERNAME} --password ${process.env.DB_PASSWORD} --authenticationDatabase admin --drop --host="${options.host}" --port="${options.port}" ${SERVER_BACKUP_DIR}/all/${options.version}/data/database`;
         } else {
-            return `mongorestore --drop --host="${options.host}" --port="${options.port}" -d ${options.db} ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/data/database/${options.db}`;
+            return `mongorestore --username ${process.env.DB_USERNAME} --password ${process.env.DB_PASSWORD} --authenticationDatabase admin --drop --host="${options.host}" --port="${options.port}" -d ${options.db} ${SERVER_BACKUP_DIR}/${options.db}/${options.version}/data/database/${options.db}`;
         }
     }
 
@@ -111,11 +111,11 @@ exports.backup = async (options) => {
             fs.appendFile(backupPath+'/README.txt', description, err => { 
                 if(err) throw err;
             });
-            return `mongodump --host="${options.host}" --port="${options.port}" --out="${backupPath}/data/database" --db="${options.db}"`;
+            return `mongodump --username ${process.env.DB_USERNAME} --password ${process.env.DB_PASSWORD} --authenticationDatabase admin --host="${options.host}" --port="${options.port}" --out="${backupPath}/data/database" --db="${options.db}"`;
         }else{
             checkDirectory(`${SERVER_BACKUP_DIR}/all/${version}`, description);
 
-            return `mongodump --host="${options.host}" --port="${options.port}" --out="${SERVER_BACKUP_DIR}/all/${version}/data/database"`;
+            return `mongodump --username ${process.env.DB_USERNAME} --password ${process.env.DB_PASSWORD} --authenticationDatabase admin --host="${options.host}" --port="${options.port}" --out="${SERVER_BACKUP_DIR}/all/${version}/data/database"`;
         }
     }
     const command = commandBackupDB(options);
