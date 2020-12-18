@@ -85,14 +85,10 @@ class TabIntegratedStatistics extends Component {
         for (let i in listEmployee) {
             let totalOvertime = 0, totalHoursOff = 0;
             listOvertimeOfUnitsByStartDateAndEndDate && listOvertimeOfUnitsByStartDateAndEndDate.forEach(x => {
-                if (listEmployee[i].userId.email === x.employee.emailInCompany && x.totalHoursOff < 0) {
-                    totalOvertime = 0 - x.totalHoursOff;
-
+                if (listEmployee[i].userId.email === x.employee.emailInCompany) {
+                    totalOvertime = x.totalOvertime ? x.totalOvertime : 0;
+                    totalHoursOff = x.totalHoursOff ? x.totalHoursOff : 0;
                 };
-                if (listEmployee[i].userId.email === x.employee.emailInCompany && x.totalHoursOff > 0) {
-                    totalHoursOff = x.totalHoursOff;
-
-                }
             });
             employeeOvertime = [...employeeOvertime, { _id: listEmployee[i].userId._id, name: listEmployee[i].userId.name, totalHours: totalOvertime }];
             employeeHoursOff = [...employeeHoursOff, { _id: listEmployee[i].userId._id, name: listEmployee[i].userId.name, totalHours: totalHoursOff }];

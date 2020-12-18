@@ -4512,7 +4512,8 @@ const initHumanResourceData = async () => {
             ...x,
             totalHours: totalHours,
             timekeepingByHours: timekeepingByHours,
-            totalHoursOff: 0 - totalOverTimeHours,
+            totalHoursOff: 120- totalOverTimeHours > 0 ? 120 - totalOverTimeHours : 0-(120- totalOverTimeHours),
+            totalOvertime: totalOverTimeHours,
         };
     });
     await Timesheet(vnistDB).insertMany(timesheetFake);

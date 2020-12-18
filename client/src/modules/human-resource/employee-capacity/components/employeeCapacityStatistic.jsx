@@ -143,7 +143,7 @@ class EmployeeCapacityStatistic extends Component {
                 <div className="col-md-12">
                     <div className="box box-solid">
                         <div className="box-header with-border">
-                            <h3 className="box-title">{`Top ${numberOfExcellentEmployees} ${translate('kpi.evaluation.dashboard.best_employee')} của ${(!organizationalUnits || organizationalUnits.length === department.list.length) ? "công ty" : organizationalUnitsName.join(', ')} ${this.formatDate(month)}`}</h3>
+                            <h3 className="box-title">{`Top ${numberOfExcellentEmployees} ${translate('kpi.evaluation.dashboard.best_employee')} của ${(!organizationalUnits || organizationalUnits.length === department.list.length) ? "công ty" : organizationalUnitsName.join(', ')} tháng ${this.formatDate(month)}`}</h3>
                             <div className="box-tools pull-right">
                                 <button type="button" data-toggle="collapse" data-target="#setting-excellent" className="pull-right" style={{ border: "none", background: "none", padding: "0px" }}>
                                     <i className="fa fa-gear" style={{ fontSize: "19px" }}></i>

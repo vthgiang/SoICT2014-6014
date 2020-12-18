@@ -149,7 +149,6 @@ exports.getTimesheetsByEmployeeIdOrEmailInCompanyAndTime = async (portal, employ
         } else {
             employee = await Employee(connect(DB_CONNECTION, portal)).findOne({emailInCompany: employeeId }, {_id: 1});
         };
-        console.log(employee);
 
         if (employee) {
             let listTimesheetsByEmployeeIdAndTime = await Timesheet(connect(DB_CONNECTION, portal)).find({
@@ -159,7 +158,8 @@ exports.getTimesheetsByEmployeeIdOrEmailInCompanyAndTime = async (portal, employ
                 }
             }, {
                 totalHoursOff: 1,
-                totalHours:1,
+                totalHours: 1,
+                totalOvertime: 1,
                 month: 1
             });
             return {
@@ -259,6 +259,7 @@ exports.getOvertimeOfUnitsByStartDateAndEndDate = async (portal, organizationalU
             }
             let listOvertimeOfUnitsByStartDateAndEndDate = await Timesheet(connect(DB_CONNECTION, portal)).find(keySearch, {
                 totalHoursOff: 1,
+                totalOvertime: 1,
                 month: 1
             }).populate({path:'employee', select:'employeeNumber fullName emailInCompany _id'});
             return {
@@ -272,6 +273,7 @@ exports.getOvertimeOfUnitsByStartDateAndEndDate = async (portal, organizationalU
                 }
             }, {
                 totalHoursOff: 1,
+                totalOvertime: 1,
                 month: 1
             }).populate({path:'employee', select:'employeeNumber fullName emailInCompany _id'});
             return {

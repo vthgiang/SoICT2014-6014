@@ -7,6 +7,8 @@ const initState = {
     listTimesheets: [],
     totalList: 0,
     arrMonth: [],
+    arrMonthHoursOff:[],
+    listHoursOffOfUnitsByStartDateAndEndDate:[],
     listOvertimeOfUnitsByStartDateAndEndDate: [],
     arrMonthById: [],
     listTimesheetsByEmployeeIdAndTime: [],
@@ -36,12 +38,19 @@ export function timesheets(state = initState, action) {
                     listTimesheetsByEmployeeIdAndTime: action.payload.listTimesheetsByEmployeeIdAndTime,
                 }
 
-            } else if (action.payload.arrMonth) {
+            } else if (action.payload.arrMonth&&!action.trendHoursOff) {
                 return {
                     ...state,
                     isLoading: false,
                     arrMonth: action.payload.arrMonth,
                     listOvertimeOfUnitsByStartDateAndEndDate: action.payload.listOvertimeOfUnitsByStartDateAndEndDate,
+                }
+            }else if (action.trendHoursOff) {
+                return {
+                    ...state,
+                    isLoading: false,
+                    arrMonthHoursOff: action.payload.arrMonth,
+                    listHoursOffOfUnitsByStartDateAndEndDate: action.payload.listOvertimeOfUnitsByStartDateAndEndDate,
                 }
             } else {
                 return {
