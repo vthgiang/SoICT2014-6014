@@ -880,7 +880,7 @@ export default {
             manage_company: "Manage Company",
             manage_role: "Manage Roles",
             manage_link: "Manage Pages",
-            manage_component: "Manage UI-Component",
+            manage_component: "Manage permissions on page",
 
             manage_department: "Manage Departments",
             manage_user: "Manage Users",

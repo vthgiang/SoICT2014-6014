@@ -21,23 +21,21 @@ const initSampleCompanyDB = async () => {
      * 1. Tạo kết nối đến csdl của hệ thống và công ty VNIST
      */
 
-    const vnistDB = mongoose.createConnection(
-        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/vnist`,
-        process.env.DB_AUTHENTICATION === 'true' ?
-            {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-                useCreateIndex: true,
-                useFindAndModify: false,
-                user: process.env.DB_USERNAME,
-                pass: process.env.DB_PASSWORD
-            } : {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-                useCreateIndex: true,
-                useFindAndModify: false,
-            }
-    );
+    let connectOptions = process.env.DB_AUTHENTICATION === 'true' ?
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+        user: process.env.DB_USERNAME,
+        pass: process.env.DB_PASSWORD
+    } : {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false
+    }
+    const vnistDB = mongoose.createConnection(`mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/vnist`, connectOptions);
     if (!vnistDB) throw ('DB vnist cannot connect');
     console.log("DB vnist connected");
 
