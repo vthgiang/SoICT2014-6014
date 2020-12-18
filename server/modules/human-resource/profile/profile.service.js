@@ -567,13 +567,32 @@ exports.searchEmployeeProfiles = async (portal, params, company) => {
             }
         };
     };
-
+    
     // Bắt sự kiện tìm kiếm theo trạng thái
     if (params.status) {
         keySearch = {
             ...keySearch,
             status: {
                 $in: params.status
+            }
+        };
+    };
+
+    // Bắt sự kiện tìm kiếm theo chuyên môn
+    if (params.professionalSkills) {
+        keySearch = {
+            ...keySearch,
+            professionalSkill: {
+                $in: params.professionalSkills
+            }
+        };
+    };
+    // Bắt sự kiện tìm kiếm theo chuyên ngành
+    if (params.careerFields) {
+        keySearch = {
+            ...keySearch,
+            "degrees.field": {
+                $in: params.careerFields
             }
         };
     };

@@ -104,6 +104,8 @@ exports.searchEmployeeProfiles = async (req, res) => {
         } else {
             let params = {
                 organizationalUnits: req.query.organizationalUnits,
+                professionalSkills: req.query. professionalSkills,
+                careerFields: req.query. careerFields,
                 employeeName: req.query.employeeName,
                 employeeNumber: req.query.employeeNumber,
                 gender: req.query.gender,

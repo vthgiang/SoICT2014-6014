@@ -1388,7 +1388,7 @@ export default {
                     other_salary: "Các loại lương thưởng khác",
                     name_salary: "Tên lương thưởng",
                     money_salary: "Số tiền",
-                    total_salary: "Tổng lương",
+                    total_salary: "Tổng thu nhập",
                     action: "Hành động",
                 },
 
@@ -1630,6 +1630,7 @@ export default {
                     menu_attachments_title: "Tài liệu đính kèm",
                 },
 
+                money:'Mức lương đóng',
                 staff_number: "Mã nhân viên",
                 full_name: "Họ và tên",
                 attendance_code: "Mã số chấm công",
@@ -1686,6 +1687,8 @@ export default {
                 colleges: "Cao đẳng",
                 university: "Đại học",
                 master_degree: "Thạc sỹ",
+                engineer: 'Kỹ sư',
+                bachelor: 'Cử nhân',
                 phd: "Tiến sỹ",
                 unavailable: "Khác",
                 work_experience: "Kinh nghiệm làm việc",
@@ -1776,6 +1779,7 @@ export default {
                 disc_commitment: "Giấy cam kết làm việc",
                 temporary_residence_card: "Tạm trú tạm vắng",
                 disc_temporary_residence_card: "Giấy xác nhận tạm trú tạm vắng",
+                registration_book:'Sổ hộ khẩu',
                 add_staff: "Thêm nhân viên",
 
                 reward: "Khen thưởng",
