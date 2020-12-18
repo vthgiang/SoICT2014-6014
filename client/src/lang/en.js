@@ -1900,6 +1900,7 @@ export default {
                 do_work: "Do work",
                 total_timesheets: "Total hours",
                 total_hours_off: "Total hours off",
+                total_over_time: "Total hours overtime",
                 work_date_in_month: "Work date in month",
                 shift_work: "Shift work",
                 shifts1: "Shifts 1",

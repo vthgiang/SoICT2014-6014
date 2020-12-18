@@ -2094,6 +2094,7 @@ export default {
                 do_work: "Có đi làm",
                 total_timesheets: "Số giờ làm",
                 total_hours_off: "Số giờ nghỉ",
+                total_over_time: "Số giờ tăng ca",
                 work_date_in_month: "Công làm việc trong tháng",
                 shift_work: "Ca làm việc",
                 shifts1: "Ca 1",
