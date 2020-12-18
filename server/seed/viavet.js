@@ -29,25 +29,21 @@ const initSampleCompanyDB = async () => {
     /**
      * 1. Tạo kết nối đến csdl của hệ thống và công ty viavet
      */
-    const systemDB = mongoose.createConnection(
-        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/${
-            process.env.DB_NAME
-        }`,
-        {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true,
-            useFindAndModify: false,
-            user:
-                process.env.DB_AUTHENTICATION === "true"
-                    ? process.env.DB_USERNAME
-                    : undefined,
-            pass:
-                process.env.DB_AUTHENTICATION === "true"
-                    ? process.env.DB_PASSWORD
-                    : undefined,
-        }
-    );
+    let connectOptions = process.env.DB_AUTHENTICATION === 'true' ?
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+        user: process.env.DB_USERNAME,
+        pass: process.env.DB_PASSWORD
+    } : {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false
+    }
+    const systemDB = mongoose.createConnection(`mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/${process.env.DB_NAME}`, connectOptions);
     if (!systemDB)
         throw `Cannot connect to database [${process.env.DB_NAME}]. Try check connection config in file .env`;
     await Company(systemDB).deleteOne({ shortName: "_viavet" });
@@ -68,25 +64,21 @@ const initSampleCompanyDB = async () => {
     });
     console.log("@Initial configuration complete.");
 
-    const viavetDB = mongoose.createConnection(
-        `mongodb://${process.env.DB_HOST}:${
-            process.env.DB_PORT || "27017"
-        }/_viavet`,
-        {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true,
-            useFindAndModify: false,
-            user:
-                process.env.DB_AUTHENTICATION === "true"
-                    ? process.env.DB_USERNAME
-                    : undefined,
-            pass:
-                process.env.DB_AUTHENTICATION === "true"
-                    ? process.env.DB_PASSWORD
-                    : undefined,
-        }
-    );
+    let connectVIAVETOptions = process.env.DB_AUTHENTICATION === 'true' ?
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+        user: process.env.DB_USERNAME,
+        pass: process.env.DB_PASSWORD
+    } : {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false
+    }
+    const viavetDB = mongoose.createConnection(`mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/vnist`, connectVIAVETOptions);
     if (!viavetDB)
         throw "Cannot connect to database [viavet]. Try check connection config in file .env";
 

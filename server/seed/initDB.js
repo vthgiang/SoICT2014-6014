@@ -23,16 +23,26 @@ const initDB = async() => {
     /**
      * 1. Tạo kết nối đến cơ sở dữ liệu
      */
-    const systemDB = mongoose.createConnection(
-        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/${process.env.DB_NAME}`,
-        {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true,
-            useFindAndModify: false,
-            user: process.env.DB_AUTHENTICATION === "true" ? process.env.DB_USERNAME : undefined,
-            pass: process.env.DB_AUTHENTICATION === "true" ? process.env.DB_PASSWORD : undefined,
+    let connectOptions = process.env.DB_AUTHENTICATION === 'true' ?
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+        user:process.env.DB_USERNAME,
+        pass:process.env.DB_PASSWORD,
+        auth: {
+            authSource: 'admin'
         }
+    } : {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+    }
+    const systemDB = mongoose.createConnection(
+        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/${process.env.DB_NAME}`, 
+        connectOptions
     );
     if(!systemDB) throw('Error! Cannot connect to MongoDB. Please check connection. :(');
 
