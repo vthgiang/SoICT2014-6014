@@ -461,7 +461,10 @@ exports.getAllManufacturingLot = async (query, user, portal) => {
                     select: "code manufacturingMill",
                 }, {
                     path: "creator"
-                }]
+                }],
+                sort: {
+                    "updatedAt": "desc"
+                }
             });
 
         return { lots }
@@ -537,7 +540,7 @@ exports.getInventoryByGoods = async (data, portal) => {
             const good = await Good(connect(DB_CONNECTION, portal)).findById({ _id: array[i] });
             goodInventory.good = good;
             goodInventory.inventory = 0;
-            arrayGoods = [ ...arrayGoods, goodInventory ];
+            arrayGoods = [...arrayGoods, goodInventory];
         }
     }
 

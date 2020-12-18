@@ -138,15 +138,15 @@ class ConFigImportFile extends Component {
                                 <table id={`importConfig-${id}`} className="table table-striped table-bordered table-hover">
                                     <thead>
                                         <tr>
-                                            <th>{translate('common_component.import_excel.properties')}</th>
+                                            <th className="not-sort">{translate('common_component.import_excel.properties')}</th>
                                             {config.map((x, key) => {
-                                                return <th key={key}>{x.columnName}</th>
+                                                return <th className="not-sort" key={key}>{x.columnName}</th>
                                             })}
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <th>{translate('common_component.import_excel.title')}</th>
+                                            <th className="not-sort" >{translate('common_component.import_excel.title')}</th>
                                             {config.map((x, key) => {
                                                 if (!Array.isArray(x.value)) {
                                                     return <td key={key}>{x.value}</td>

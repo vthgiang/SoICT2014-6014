@@ -463,9 +463,6 @@ const TaskSchema = new Schema(
                     type: Date,
                     default: Date.now,
                 },
-                order: {
-                    type: Number,
-                },
                 rating: {
                     // -1: chưa đánh giá, 0-10: tùy mức độ tốt
                     type: Number,
@@ -627,7 +624,8 @@ const TaskSchema = new Schema(
         ],
 
         taskProject: { //tên dự án công việc thuộc về
-            type: String
+            type: Schema.Types.ObjectId,
+            ref: 'TaskProject'
         },
     },
     {

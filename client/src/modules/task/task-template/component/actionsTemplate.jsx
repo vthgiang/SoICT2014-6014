@@ -234,7 +234,7 @@ class ActionForm extends Component {
 
                 {/**Mô tả hoạt động*/}
                 <div className={`form-group ${this.state.action.errorOnDescription === undefined ? "" : "has-error"}`} >
-                    <label className="control-label">{translate('task_template.description')}<span className="text-red">*</span></label>
+                    <label className="control-label">{translate('task_template.description')}<span className="text-red"></span></label>
                     {/* <div>
                         <textarea type="text" className="form-control" name="description" placeholder={translate('task_template.description')} value={action.description} onChange={this.handleChangeActionDesc} />
                         <ErrorLabel content={this.state.action.errorOnDescription}/>

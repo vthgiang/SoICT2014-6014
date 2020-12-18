@@ -48,7 +48,7 @@ class HighestSalaryChart extends Component {
                     <React.Fragment>
                         <div className="box box-solid">
                             <div className="box-header with-border">
-                                <h3 className="box-title">{`Top 5 lương thưởng cao nhất của ${(!organizationalUnits || organizationalUnits.length === department.list.length) ? "công ty" : organizationalUnitsName.join(', ')} ${monthShow} `}</h3>
+                                <h3 className="box-title">{`Top 5 lương thưởng cao nhất của ${(!organizationalUnits || organizationalUnits.length === department.list.length) ? "công ty" : organizationalUnitsName.join(', ')} tháng ${monthShow} `}</h3>
                             </div>
                             <div className="box-body no-parding">
                                 <ul className="users-list clearfix">

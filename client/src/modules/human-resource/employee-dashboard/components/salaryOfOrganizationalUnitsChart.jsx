@@ -9,7 +9,20 @@ import 'c3/c3.css';
 class SalaryOfOrganizationalUnitsChart extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            unit: true
+        }
+    }
+
+    /**
+     * Bắt sự kiện thay đổi đơn vị biểu đồ
+     * @param {*} value : đơn vị biểu đồ (true or false)
+     */
+    handleChangeUnitChart = (value) => {
+        this.setState({
+            ...this.state,
+            unit: value
+        })
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -22,7 +35,7 @@ class SalaryOfOrganizationalUnitsChart extends Component {
     };
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.salary.listSalaryByMonth !== this.state.listSalaryByMonth) {
+        if (nextProps.salary.listSalaryByMonth !== this.state.listSalaryByMonth || nextState.unit !== this.unit) {
             return true
         };
         return false;
@@ -79,6 +92,7 @@ class SalaryOfOrganizationalUnitsChart extends Component {
         const { translate, salary, department } = this.props;
 
         const { monthShow } = this.props;
+        const { unit } = this.state;
 
         let organizationalUnitsName = department.list.map(x => { return { _id: x._id, name: x.name, salary: 0 } });
         let data = salary.listSalaryByMonth;
@@ -90,7 +104,7 @@ class SalaryOfOrganizationalUnitsChart extends Component {
                         total = total + parseInt(x.bonus[count].number)
                     }
                 };
-                return { ...x, total: x.unit === 'VND' ? total / 1000000 : total / 1000 }
+                return { ...x, total: unit ? total / 1000000000 : total / 1000000 }
             })
         };
 
@@ -118,13 +132,18 @@ class SalaryOfOrganizationalUnitsChart extends Component {
             <React.Fragment>
                 <div className="box box-solid" style={{ paddingBottom: 20 }}>
                     <div className="box-header with-border">
-                        <h3 className="box-title">{`Biểu đồ lương thưởng các đơn vị trong công ty ${monthShow} `}</h3>
+                        <h3 className="box-title">{`Biểu đồ lương thưởng các đơn vị trong công ty tháng ${monthShow} `}</h3>
                     </div>
                     <div className="box-body">
-                        <div>
-                            <p className="pull-right" style={{ marginBottom: 0 }} > < b > ĐV tính: {data[0] && data[0].unit === 'VND' ? 'Triệu VND' : "1000USD"}</b></p >
-                            <div ref="salaryChart"></div>
+                        <div className="box-tools pull-right" >
+
+                            <div className="btn-group pull-right">
+                                <button type="button" className={`btn btn-xs ${unit ? "active" : "btn-danger"}`} onClick={() => this.handleChangeUnitChart(false)}>Triệu</button>
+                                <button type="button" className={`btn btn-xs ${unit ? 'btn-danger' : "active"}`} onClick={() => this.handleChangeUnitChart(true)}>Tỷ</button>
+                            </div>
+                            <p className="pull-right" style={{ marginBottom: 0, marginRight: 10 }} > < b > ĐV tính</b></p >
                         </div>
+                        <div ref="salaryChart"></div>
                     </div>
                 </div>
             </React.Fragment>

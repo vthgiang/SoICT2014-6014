@@ -191,7 +191,7 @@ class EvaluateByResponsibleEmployee extends Component {
         }
 
         // let progress = task.progress;
-        let progress;
+        let progress = 0;
         if (evaluation) {
             progress = evaluation.progress;
             if (evaluation.results.length !== 0) {

@@ -21,6 +21,7 @@ export const EmployeeCreateValidator = {
 
     validateExperienceUnit,
     validateExperiencePosition,
+    validateMoney,
 
     validateNameDegree,
     validateIssuedByDegree,
@@ -148,6 +149,14 @@ function validateExperiencePosition(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Chức vụ không được để trống";
+    }
+    return msg;
+}
+
+function validateMoney(value, translate) {
+    let msg = undefined;
+    if (value===null || value.trim() === "") {
+        msg = "Mức đóng không được để trống";
     }
     return msg;
 }

@@ -19,7 +19,8 @@ exports.login = async (fingerprint, data) => {
     if (data.portal !== process.env.DB_NAME) {
         company = await Company(
             connect(DB_CONNECTION, process.env.DB_NAME)
-        ).findOne({ shortName: data.portal });
+        ).findOne({ shortName: data.portal })
+        .select('_id name shortName active log');
         if (!company) throw ["portal_invalid"];
     }
 
@@ -218,6 +219,7 @@ exports.changeInformation = async (
 ) => {
     let user = await User(connect(DB_CONNECTION, portal))
         .findById(id)
+        .select('-password')
         .populate([{ path: "roles", populate: { path: "roleId" } }]);
     let deleteAvatar = "." + user.avatar;
     user.email = email;
@@ -244,6 +246,7 @@ exports.changeInformation = async (
 exports.changePassword = async (portal, id, password, new_password) => {
     const user = await User(connect(DB_CONNECTION, portal))
         .findById(id)
+        .select('-password')
         .populate([{ path: "roles", populate: { path: "roleId" } }]);
     const validPass = await bcrypt.compare(password, user.password);
     // Kiểm tra mật khẩu cũ nhập vào có đúng hay không

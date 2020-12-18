@@ -60,6 +60,7 @@
     "socket.io": "^2.3.0",
     "swagger-ui-express": "^4.1.4",
     "unique-random": "^2.1.0",
+    "uuid": "^8.3.2",
     "webpack": "^5.9.0",
     "winston": "^3.2.1"
   },

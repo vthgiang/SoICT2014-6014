@@ -10,9 +10,10 @@ import { managerKpiActions } from '../../../kpi/employee/management/redux/action
 import { taskTemplateActions } from '../../../task/task-template/redux/actions';
 import { taskManagementActions } from '../redux/actions';
 
-import { DialogModal, DatePicker, SelectBox, ErrorLabel, ToolTip } from '../../../../common-components';
+import { DialogModal, DatePicker, SelectBox, ErrorLabel, ToolTip, TreeSelect } from '../../../../common-components';
 import { TaskFormValidator } from './taskFormValidator';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
+import ModalAddTaskProject from '../../task-project/component/modalAddTaskProject';
 
 class TaskAddModal extends Component {
 
@@ -346,6 +347,15 @@ class TaskAddModal extends Component {
         });
     }
 
+    handleTaskProject = (selected) => {
+        this.setState({
+            newTask: {
+                ...this.state.newTask,
+                taskProject: selected[0]
+            }
+        })
+    }
+
     shouldComponentUpdate = (nextProps, nextState) => {
         const { user, department } = this.props;
         const { newTask } = this.state;
@@ -397,7 +407,7 @@ class TaskAddModal extends Component {
 
     render() {
         const { newTask } = this.state;
-        const { tasktemplates, user, KPIPersonalManager, translate, tasks, department } = this.props;
+        const { tasktemplates, user, KPIPersonalManager, translate, tasks, department, taskProject } = this.props;
 
         let units, userdepartments, listTaskTemplate, listKPIPersonal, usercompanys;
         let listDepartment = department?.list;
@@ -490,7 +500,7 @@ class TaskAddModal extends Component {
                                     <label>{translate('task.task_management.collaborated_with_organizational_units')}</label>
                                     <SelectBox
                                         id="multiSelectUnitThatHaveCollaborated"
-                                        lassName="form-control select2"
+                                        className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={listDepartment.filter(item => newTask && item._id !== newTask.organizationalUnit).map(x => {
                                             return { text: x.name, value: x._id }
@@ -503,16 +513,28 @@ class TaskAddModal extends Component {
                                 </div>
                             }
 
-
-
                             <div className={`form-group ${newTask.errorOnName === undefined ? "" : "has-error"}`}>
                                 <label>{translate('task.task_management.name')}<span className="text-red">*</span></label>
                                 <input type="Name" className="form-control" placeholder={translate('task.task_management.name')} value={(newTask.name)} onChange={this.handleChangeTaskName} />
                                 <ErrorLabel content={newTask.errorOnName} />
                             </div>
+
+                            {/* Dự án liên quan của công việc */}
                             <div className="form-group">
-                                <label>{translate('task.task_management.project')}</label>
-                                <input className="form-control" placeholder={translate('task.task_management.project')} value={(newTask.taskProject)} onChange={this.handleChangeTaskProject} />
+                                <label>
+                                    {translate('task.task_management.project')}
+                                    {/* <a className="text-purple" style={{ cursor: 'pointer' }} title="Thêm dự án mới" onClick={}><i className="fa fa-plus-square"></i></a> */}
+                                </label>
+                                <TreeSelect
+                                    id='select-task-project-task'
+                                    mode='radioSelect'
+                                    data={taskProject.list}
+                                    handleChange={this.handleTaskProject}
+                                    value={[newTask.taskProject]}
+                                    action={() => { window.$('#modal-add-task-project').modal('show') }}
+                                    actionIcon='fa fa-plus'
+                                />
+                                {/* <input className="form-control" placeholder={translate('task.task_management.project')} value={(newTask.taskProject)} onChange={this.handleChangeTaskProject} /> */}
                             </div>
                             <div className={`form-group ${newTask.errorOnDescription === undefined ? "" : "has-error"}`}>
                                 <label className="control-label">{translate('task.task_management.detail_description')}<span className="text-red">*</span></label>
@@ -548,17 +570,6 @@ class TaskAddModal extends Component {
                                     <option value={1}>{translate('task.task_management.low')}</option>
                                 </select>
                             </div>
-
-                            {/* <div className="form-group">
-                                <label className="control-label">{translate('task.task_management.add_parent_task')}</label>
-                                <select className="form-control" value={newTask.parent} onChange={this.handleChangeTaskParent}>
-                                    <option value="">--{translate('task.task_management.add_parent_task')}--</option>
-                                    {this.props.currentTasks &&
-                                        this.props.currentTasks.map(item => {
-                                            return <option key={item._id} value={item._id}>{item.name}</option>
-                                        })}
-                                </select>
-                            </div> */}
 
                             <div className="form-group">
                                 <label>{translate('task.task_management.add_parent_task')}
@@ -652,6 +663,7 @@ class TaskAddModal extends Component {
                             </div>
                         </fieldset>
                     </div>
+                    <ModalAddTaskProject />
                 </DialogModal>
             </React.Fragment>
         );
@@ -659,8 +671,8 @@ class TaskAddModal extends Component {
 }
 
 function mapState(state) {
-    const { tasktemplates, tasks, user, KPIPersonalManager, department } = state;
-    return { tasktemplates, tasks, user, KPIPersonalManager, department };
+    const { tasktemplates, tasks, user, KPIPersonalManager, department, taskProject } = state;
+    return { tasktemplates, tasks, user, KPIPersonalManager, department, taskProject };
 }
 
 const actionCreators = {

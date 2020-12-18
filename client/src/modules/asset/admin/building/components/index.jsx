@@ -45,6 +45,7 @@ class BuildingAsset extends Component {
                 ...node,
                 id: node._id,
                 text: node.assetName,
+                icon: 'glyphicon glyphicon-road',
                 parent: node.location ? node.location.toString() : "#",
                 state: {
                     opened: true

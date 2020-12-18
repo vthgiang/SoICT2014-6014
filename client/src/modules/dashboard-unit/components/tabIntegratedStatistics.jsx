@@ -102,7 +102,7 @@ class TabIntegratedStatistics extends Component {
                                     <table className="table table-striped table-bordered table-hover">
                                         <thead>
                                             <tr>
-                                                <th>STT</th>
+                                                <th className="col-fixed" style={{ width: 80 }}>STT</th>
                                                 <th>Họ và tên</th>
                                                 <th>Giới tính</th>
                                             </tr>
@@ -133,13 +133,13 @@ class TabIntegratedStatistics extends Component {
                         <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <div className="box box-solid">
                                 <div className="box-header with-border">
-                                    <h3 className="box-title">Tổng hợp công việc {month}</h3>
+                                    <h3 className="box-title">Tổng hợp công việc tháng {month}</h3>
                                 </div>
                                 <div className="box-body">
                                     <table className="table table-striped table-bordered table-hover">
                                         <thead>
                                             <tr>
-                                                <th>STT</th>
+                                                <th className="col-fixed" style={{ width: 80 }}>STT</th>
                                                 <th>Họ và tên</th>
                                                 <th>Số công việc</th>
                                             </tr>
@@ -179,13 +179,13 @@ class TabIntegratedStatistics extends Component {
                         <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <div className="box box-solid">
                                 <div className="box-header with-border">
-                                    <h3 className="box-title">Tổng hợp khen thưởng {month}</h3>
+                                    <h3 className="box-title">Tổng hợp khen thưởng tháng {month}</h3>
                                 </div>
                                 <div className="box-body">
                                     <table className="table table-striped table-bordered table-hover">
                                         <thead>
                                             <tr>
-                                                <th>STT</th>
+                                                <th className="col-fixed" style={{ width: 80 }}>STT</th>
                                                 <th>Họ và tên</th>
                                                 <th>Lý do khen thưởng </th>
                                             </tr>
@@ -215,13 +215,13 @@ class TabIntegratedStatistics extends Component {
                         <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <div className="box box-solid">
                                 <div className="box-header with-border">
-                                    <h3 className="box-title">Tổng hợp kỷ luật {month}</h3>
+                                    <h3 className="box-title">Tổng hợp kỷ luật tháng {month}</h3>
                                 </div>
                                 <div className="box-body">
                                     <table className="table table-striped table-bordered table-hover">
                                         <thead>
                                             <tr>
-                                                <th>STT</th>
+                                                <th className="col-fixed" style={{ width: 80 }}>STT</th>
                                                 <th>Họ và tên</th>
                                                 <th>Lý do kỷ luật</th>
                                             </tr>
@@ -255,13 +255,13 @@ class TabIntegratedStatistics extends Component {
                         <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <div className="box box-solid">
                                 <div className="box-header with-border">
-                                    <h3 className="box-title">Tổng hợp tình hình nghỉ phép {month}</h3>
+                                    <h3 className="box-title">Tổng hợp tình hình nghỉ phép tháng {month}</h3>
                                 </div>
                                 <div className="box-body">
                                     <table className="table table-striped table-bordered table-hover">
                                         <thead>
                                             <tr>
-                                                <th>STT</th>
+                                                <th className="col-fixed" style={{ width: 80 }}>STT</th>
                                                 <th>Họ và tên</th>
                                                 <th>Tổng số giờ</th>
                                             </tr>
@@ -291,13 +291,13 @@ class TabIntegratedStatistics extends Component {
                         <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <div className="box box-solid">
                                 <div className="box-header with-border">
-                                    <h3 className="box-title">Tổng hợp tình hình tăng ca {month}</h3>
+                                    <h3 className="box-title">Tổng hợp tình hình tăng ca tháng {month}</h3>
                                 </div>
                                 <div className="box-body">
                                     <table className="table table-striped table-bordered table-hover">
                                         <thead>
                                             <tr>
-                                                <th>STT</th>
+                                                <th className="col-fixed" style={{ width: 80 }}>STT</th>
                                                 <th>Họ và tên</th>
                                                 <th>Tổng số giờ</th>
                                             </tr>
@@ -325,17 +325,17 @@ class TabIntegratedStatistics extends Component {
                         </div>
                     </div>
                 </div>
-                <ViewAllTasks employeeTasks={employeeTasks} title={`Tổng hợp công việc ${month}`} />
+                <ViewAllTasks employeeTasks={employeeTasks} title={`Tổng hợp công việc tháng ${month}`} />
                 <ViewAllEmployee dataEmployee={listAllEmployees} title={`Tổng hợp nhân viên`} />
-                <ViewAllCommendation dataCommendation={discipline.totalListCommendation} title={`Tổng hợp khen thưởng ${month}`} />
-                <ViewAllDiscipline dataDiscipline={discipline.totalListDiscipline} title={`Tổng hợp kỷ luật ${month}`} />
+                <ViewAllCommendation dataCommendation={discipline.totalListCommendation} title={`Tổng hợp khen thưởng tháng${month}`} />
+                <ViewAllDiscipline dataDiscipline={discipline.totalListDiscipline} title={`Tổng hợp kỷ luật tháng ${month}`} />
                 {
                     viewOverTime &&
-                    <ViewAllOverTime dataView={employeeOvertime} title={`Tổng hợp tình hình tăng ca ${month}`} id={viewOverTime} />
+                    <ViewAllOverTime dataView={employeeOvertime} title={`Tổng hợp tình hình tăng ca tháng ${month}`} id={viewOverTime} />
                 }
                 {
                     viewHoursOff &&
-                    <ViewAllOverTime dataView={employeeHoursOff} title={`Tổng hợp tình hình nghỉ phép ${month}`} id={viewHoursOff} />
+                    <ViewAllOverTime dataView={employeeHoursOff} title={`Tổng hợp tình hình nghỉ phép tháng ${month}`} id={viewHoursOff} />
                 }
             </div >
         );

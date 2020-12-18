@@ -1002,6 +1002,8 @@ const initHumanResourceData = async () => {
         "colleges",
         "university",
         "master_degree",
+        "engineer",
+        "bachelor",
         "phd",
         "unavailable",
     ];
@@ -1082,7 +1084,7 @@ const initHumanResourceData = async () => {
                     foreignLanguage[Math.floor(Math.random() * 7)]
                 } Toeic`,
                 professionalSkill:
-                    professionalSkill[Math.floor(Math.random() * 6)],
+                    professionalSkill[Math.floor(Math.random() * 8)],
                 healthInsuranceNumber: `N1236589${index}`,
                 healthInsuranceStartDate: new Date(
                     `2019-${months[Math.floor(Math.random() * 12)]}-${
@@ -1111,7 +1113,7 @@ const initHumanResourceData = async () => {
                     {
                         name: "Bằng tốt nghiệp",
                         issuedBy: "Đại học Bách Khoa",
-                        year: "2020",
+                        year: 2020,
                         field:fields[Math.floor(Math.random() * 6)]._id,
                         degreeType: "good",
                     },
@@ -1132,14 +1134,14 @@ const initHumanResourceData = async () => {
                         position: "Nhân viên",
                     },
                 ],
-                contractType: "Phụ thuộc",
+                contractType: "Thử việc",
                 contractEndDate: contractEndDate,
                 contracts: [
                     {
                         name: "Thực tập",
                         contractType: `${
                             index < 50
-                                ? "Phụ thuộc"
+                                ? "Thử việc"
                                 : index > 150
                                 ? "Hợp đồng ngắn hạn hạn"
                                 : "Hợp đồng dài hạn"
@@ -1226,7 +1228,7 @@ const initHumanResourceData = async () => {
                 {
                     name: "Bằng tốt nghiệp",
                     issuedBy: "Đại học Bách Khoa",
-                    year: "2020",
+                    year: 2020,
                     field:fields[Math.floor(Math.random() * 6)]._id,
                     degreeType: "good",
                 },
@@ -1247,12 +1249,12 @@ const initHumanResourceData = async () => {
                     position: "Nhân viên",
                 },
             ],
-            contractType: "Phụ thuộc",
+            contractType: "Thử việc",
             contractEndDate: new Date("2020-10-25"),
             contracts: [
                 {
                     name: "Thực tập",
-                    contractType: "Phụ thuộc",
+                    contractType: "Thử việc",
                     startDate: new Date("2019-10-25"),
                     endDate: new Date("2020-10-25"),
                 },
@@ -1328,7 +1330,7 @@ const initHumanResourceData = async () => {
                 {
                     name: "Bằng tốt nghiệp",
                     issuedBy: "Đại học Bách Khoa",
-                    year: "2020",
+                    year: 2020,
                     field:fields[Math.floor(Math.random() * 6)]._id,
                     degreeType: "good",
                 },
@@ -1349,12 +1351,12 @@ const initHumanResourceData = async () => {
                     position: "Nhân viên",
                 },
             ],
-            contractType: "Phụ thuộc",
+            contractType: "Thử việc",
             contractEndDate: new Date("2020-10-25"),
             contracts: [
                 {
                     name: "Thực tập",
-                    contractType: "Phụ thuộc",
+                    contractType: "Thử việc",
                     startDate: new Date("2019-10-25"),
                     endDate: new Date("2020-10-25"),
                 },
@@ -1431,7 +1433,7 @@ const initHumanResourceData = async () => {
                 {
                     name: "Bằng tốt nghiệp",
                     issuedBy: "Đại học Bách Khoa",
-                    year: "2020",
+                    year: 2020,
                     field:fields[Math.floor(Math.random() * 6)]._id,
                     degreeType: "good",
                 },
@@ -1452,12 +1454,12 @@ const initHumanResourceData = async () => {
                     position: "Nhân viên",
                 },
             ],
-            contractType: "Phụ thuộc",
+            contractType: "Thử việc",
             contractEndDate: new Date("2020-10-25"),
             contracts: [
                 {
                     name: "Thực tập",
-                    contractType: "Phụ thuộc",
+                    contractType: "Thử việc",
                     startDate: new Date("2019-10-25"),
                     endDate: new Date("2020-10-25"),
                 },
@@ -1534,7 +1536,7 @@ const initHumanResourceData = async () => {
                 {
                     name: "Bằng tốt nghiệp",
                     issuedBy: "Đại học Bách Khoa",
-                    year: "2020",
+                    year: 2020,
                     field:fields[Math.floor(Math.random() * 6)]._id,
                     degreeType: "good",
                 },
@@ -1555,12 +1557,12 @@ const initHumanResourceData = async () => {
                     position: "Nhân viên",
                 },
             ],
-            contractType: "Phụ thuộc",
+            contractType: "Thử việc",
             contractEndDate: new Date("2020-10-25"),
             contracts: [
                 {
                     name: "Thực tập",
-                    contractType: "Phụ thuộc",
+                    contractType: "Thử việc",
                     startDate: new Date("2019-10-25"),
                     endDate: new Date("2020-10-25"),
                 },
@@ -1637,7 +1639,7 @@ const initHumanResourceData = async () => {
                 {
                     name: "Bằng tốt nghiệp",
                     issuedBy: "Đại học Bách Khoa",
-                    year: "2020",
+                    year: 2020,
                     field:fields[Math.floor(Math.random() * 6)]._id,
                     degreeType: "good",
                 },
@@ -1658,12 +1660,12 @@ const initHumanResourceData = async () => {
                     position: "Nhân viên",
                 },
             ],
-            contractType: "Phụ thuộc",
+            contractType: "Thử việc",
             contractEndDate: new Date("2020-10-25"),
             contracts: [
                 {
                     name: "Thực tập",
-                    contractType: "Phụ thuộc",
+                    contractType: "Thử việc",
                     startDate: new Date("2019-10-25"),
                     endDate: new Date("2020-10-25"),
                 },
@@ -1741,7 +1743,7 @@ const initHumanResourceData = async () => {
                 {
                     name: "Bằng tốt nghiệp",
                     issuedBy: "Đại học Bách Khoa",
-                    year: "2020",
+                    year: 2020,
                     field:fields[Math.floor(Math.random() * 6)]._id,
                     degreeType: "good",
                 },
@@ -1762,12 +1764,12 @@ const initHumanResourceData = async () => {
                     position: "Nhân viên",
                 },
             ],
-            contractType: "Phụ thuộc",
+            contractType: "Thử việc",
             contractEndDate: new Date("2020-10-25"),
             contracts: [
                 {
                     name: "Thực tập",
-                    contractType: "Phụ thuộc",
+                    contractType: "Thử việc",
                     startDate: new Date("2019-10-25"),
                     endDate: new Date("2020-10-25"),
                 },
@@ -1845,7 +1847,7 @@ const initHumanResourceData = async () => {
                 {
                     name: "Bằng tốt nghiệp",
                     issuedBy: "Đại học Bách Khoa",
-                    year: "2020",
+                    year: 2020,
                     field:fields[Math.floor(Math.random() * 6)]._id,
                     degreeType: "good",
                 },
@@ -1866,12 +1868,12 @@ const initHumanResourceData = async () => {
                     position: "Nhân viên",
                 },
             ],
-            contractType: "Phụ thuộc",
+            contractType: "Thử việc",
             contractEndDate: new Date("2020-10-25"),
             contracts: [
                 {
                     name: "Thực tập",
-                    contractType: "Phụ thuộc",
+                    contractType: "Thử việc",
                     startDate: new Date("2019-10-25"),
                     endDate: new Date("2020-10-25"),
                 },
@@ -1949,7 +1951,7 @@ const initHumanResourceData = async () => {
                 {
                     name: "Bằng tốt nghiệp",
                     issuedBy: "Đại học Bách Khoa",
-                    year: "2020",
+                    year: 2020,
                     field:fields[Math.floor(Math.random() * 6)]._id,
                     degreeType: "good",
                 },
@@ -1970,12 +1972,12 @@ const initHumanResourceData = async () => {
                     position: "Nhân viên",
                 },
             ],
-            contractType: "Phụ thuộc",
+            contractType: "Thử việc",
             contractEndDate: new Date("2020-10-25"),
             contracts: [
                 {
                     name: "Thực tập",
-                    contractType: "Phụ thuộc",
+                    contractType: "Thử việc",
                     startDate: new Date("2019-10-25"),
                     endDate: new Date("2020-10-25"),
                 },
@@ -2053,7 +2055,7 @@ const initHumanResourceData = async () => {
                 {
                     name: "Bằng tốt nghiệp",
                     issuedBy: "Đại học Bách Khoa",
-                    year: "2020",
+                    year: 2020,
                     field:fields[Math.floor(Math.random() * 6)]._id,
                     degreeType: "good",
                 },
@@ -2074,12 +2076,12 @@ const initHumanResourceData = async () => {
                     position: "Nhân viên",
                 },
             ],
-            contractType: "Phụ thuộc",
+            contractType: "Thử việc",
             contractEndDate: new Date("2020-10-25"),
             contracts: [
                 {
                     name: "Thực tập",
-                    contractType: "Phụ thuộc",
+                    contractType: "Thử việc",
                     startDate: new Date("2019-10-25"),
                     endDate: new Date("2020-10-25"),
                 },
@@ -2157,7 +2159,7 @@ const initHumanResourceData = async () => {
                 {
                     name: "Bằng tốt nghiệp",
                     issuedBy: "Đại học Bách Khoa",
-                    year: "2020",
+                    year: 2020,
                     field:fields[Math.floor(Math.random() * 6)]._id,
                     degreeType: "good",
                 },
@@ -2261,7 +2263,7 @@ const initHumanResourceData = async () => {
                 {
                     name: "Bằng tốt nghiệp",
                     issuedBy: "Đại học Bách Khoa",
-                    year: "2020",
+                    year: 2020,
                     field:fields[Math.floor(Math.random() * 6)]._id,
                     degreeType: "good",
                 },
@@ -2365,7 +2367,7 @@ const initHumanResourceData = async () => {
                 {
                     name: "Bằng tốt nghiệp",
                     issuedBy: "Đại học Bách Khoa",
-                    year: "2020",
+                    year: 2020,
                     field:fields[Math.floor(Math.random() * 6)]._id,
                     degreeType: "good",
                 },
@@ -2468,7 +2470,7 @@ const initHumanResourceData = async () => {
                 {
                     name: "Bằng tốt nghiệp",
                     issuedBy: "Đại học Bách Khoa",
-                    year: "2020",
+                    year: 2020,
                     field:fields[Math.floor(Math.random() * 6)]._id,
                     degreeType: "good",
                 },
@@ -2571,7 +2573,7 @@ const initHumanResourceData = async () => {
                 {
                     name: "Bằng tốt nghiệp",
                     issuedBy: "Đại học Bách Khoa",
-                    year: "2020",
+                    year: 2020,
                     field:fields[Math.floor(Math.random() * 6)]._id,
                     degreeType: "good",
                 },
@@ -2674,7 +2676,7 @@ const initHumanResourceData = async () => {
                 {
                     name: "Bằng tốt nghiệp",
                     issuedBy: "Đại học Bách Khoa",
-                    year: "2020",
+                    year: 2020,
                     field:fields[Math.floor(Math.random() * 6)]._id,
                     degreeType: "good",
                 },
@@ -2777,7 +2779,7 @@ const initHumanResourceData = async () => {
                 {
                     name: "Bằng tốt nghiệp",
                     issuedBy: "Đại học Bách Khoa",
-                    year: "2020",
+                    year: 2020,
                     field:fields[Math.floor(Math.random() * 6)]._id,
                     degreeType: "good",
                 },
@@ -2880,7 +2882,7 @@ const initHumanResourceData = async () => {
                 {
                     name: "Bằng tốt nghiệp",
                     issuedBy: "Đại học Bách Khoa",
-                    year: "2020",
+                    year: 2020,
                     field:fields[Math.floor(Math.random() * 6)]._id,
                     degreeType: "good",
                 },
@@ -2983,7 +2985,7 @@ const initHumanResourceData = async () => {
                 {
                     name: "Bằng tốt nghiệp",
                     issuedBy: "Đại học Bách Khoa",
-                    year: "2020",
+                    year: 2020,
                     field:fields[Math.floor(Math.random() * 6)]._id,
                     degreeType: "good",
                 },
@@ -3086,7 +3088,7 @@ const initHumanResourceData = async () => {
                 {
                     name: "Bằng tốt nghiệp",
                     issuedBy: "Đại học Bách Khoa",
-                    year: "2020",
+                    year: 2020,
                     field:fields[Math.floor(Math.random() * 6)]._id,
                     degreeType: "good",
                 },
@@ -3189,7 +3191,7 @@ const initHumanResourceData = async () => {
                 {
                     name: "Bằng tốt nghiệp",
                     issuedBy: "Đại học Bách Khoa",
-                    year: "2020",
+                    year: 2020,
                     field:fields[Math.floor(Math.random() * 6)]._id,
                     degreeType: "good",
                 },
@@ -3292,7 +3294,7 @@ const initHumanResourceData = async () => {
                 {
                     name: "Bằng tốt nghiệp",
                     issuedBy: "Đại học Bách Khoa",
-                    year: "2020",
+                    year: 2020,
                     field:fields[Math.floor(Math.random() * 6)]._id,
                     degreeType: "good",
                 },
@@ -3395,7 +3397,7 @@ const initHumanResourceData = async () => {
                 {
                     name: "Bằng tốt nghiệp",
                     issuedBy: "Đại học Bách Khoa",
-                    year: "2020",
+                    year: 2020,
                     field:fields[Math.floor(Math.random() * 6)]._id,
                     degreeType: "good",
                 },
@@ -3498,7 +3500,7 @@ const initHumanResourceData = async () => {
                 {
                     name: "Bằng tốt nghiệp",
                     issuedBy: "Đại học Bách Khoa",
-                    year: "2020",
+                    year: 2020,
                     field:fields[Math.floor(Math.random() * 6)]._id,
                     degreeType: "good",
                 },
@@ -3601,7 +3603,7 @@ const initHumanResourceData = async () => {
                 {
                     name: "Bằng tốt nghiệp",
                     issuedBy: "Đại học Bách Khoa",
-                    year: "2020",
+                    year: 2020,
                     field:fields[Math.floor(Math.random() * 6)]._id,
                     degreeType: "good",
                 },

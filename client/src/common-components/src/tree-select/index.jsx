@@ -3,11 +3,11 @@ import SelectTree from "react-dropdown-tree-select";
 import "./tree-select.css";
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import {convertArrayToTree} from '../../../helpers/arrayToTree';
+import { convertArrayToTree } from '../../../helpers/arrayToTree';
 class TreeSelect extends Component {
     constructor(props) {
         super(props);
-        this.state = { 
+        this.state = {
         }
     }
 
@@ -31,7 +31,7 @@ class TreeSelect extends Component {
 
     onChange = (currentNode, selectedNodes) => {
         const value = selectedNodes.map(node => node._id);
-        
+
         this.setState(state => {
             return {
                 ...state,
@@ -42,27 +42,34 @@ class TreeSelect extends Component {
         this.props.handleChange(value);
     };
 
-    convertData = (array=[], value=[]) => {
+    convertData = (array = [], value = []) => {
         let data = [];
         for (let i = 0; i < array.length; i++) {
             let index = array[i].id ? array[i].id : array[i]._id;
-            if(value.indexOf(index) > -1){
+            if (value.indexOf(index) > -1) {
                 data.push({
                     ...array[i],
                     checked: true
                 })
-            }else{
+            } else {
                 data.push({
                     ...array[i],
                     checked: false
                 })
-            } 
+            }
         }
 
         return data;
     }
 
-    render() { 
+    isFreshArray = (arr) => {
+        if (!Array.isArray(arr)) return false;
+        if (arr.length = 0) return false;
+        let fresh = arr.some(node => !node);
+        return !fresh;
+    }
+
+    render() {
         /**
          * mode có 4 tùy chọn là 
          * 1. multiSelect - chọn phần tử cha mặc định đánh dấu luôn phần tử con
@@ -70,21 +77,54 @@ class TreeSelect extends Component {
          * 3. simpleSelect - chọn một node trong list - không có dạng cây
          * 4. radioSelect - chọn một node trong cây
          */
-        const {mode, data=[], value=[], placeholder=' '} = this.props;
-        const getData = this.convertData(data, value);
-        const tree = convertArrayToTree(getData);
-        return ( <React.Fragment>
-            <SelectTree
-                data={tree}
-                onChange={this.onChange}
-                texts={{ placeholder: placeholder }}
-                mode={mode}
-                className="qlcv"
-            />
-        </React.Fragment> );
+        let { mode, data = [], value = [], placeholder = ' ', action, actionIcon } = this.props;
+        let getData = this.convertData(data, value);
+        let tree = convertArrayToTree(getData);
+        let c = this.isFreshArray(value);
+
+        placeholder = this.isFreshArray(value) ? placeholder : ' ';
+
+        if (!action) {
+            return (
+                <React.Fragment>
+                    <SelectTree
+                        data={tree}
+                        onChange={this.onChange}
+                        texts={{ placeholder }}
+                        mode={mode}
+                        className="qlcv"
+                    />
+                </React.Fragment>
+            )
+        }
+        else
+            return (
+                <div>
+                    <SelectTree
+                        data={tree}
+                        onChange={this.onChange}
+                        texts={{ placeholder }}
+                        mode={mode}
+                        className="qlcv"
+                    />
+                    <span style={{
+                        padding: '5px',
+                        cursor: 'pointer',
+                        height: '34px',
+                        width: '34px',
+                        backgroundColor: '#f1f1f1',
+                        position: 'absolute',
+                        right: '34px',
+                        border: '1px solid #D2D6DE',
+                        justifyContent: 'center',
+                    }} onClick={action}>
+                        <a className="tree-select-action" title="Thêm dự án mới"><i style={{ fontSize: '24px' }} className="material-icons">post_add</i></a>
+                    </span>
+                </div>
+            )
     }
 }
- 
+
 const mapState = state => state;
 const TreeSelectExport = connect(mapState, null)(withTranslate(TreeSelect));
 

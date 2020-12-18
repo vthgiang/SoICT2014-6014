@@ -4,6 +4,7 @@ const Logger = require(`${SERVER_LOGS_DIR}`);
 exports.login = async (req, res) => {
     try {
         const loginUser = await AuthService.login(req.header('fingerprint'), req.body);
+
         await Logger.info(req.body.email, 'login_success', req.body.portal);
         res.status(200).json({
             success: true,
@@ -11,7 +12,7 @@ exports.login = async (req, res) => {
             content: loginUser
         });
     } catch (error) {
-        console.log(error)
+
         await Logger.error(req.body.email, 'login_faile', req.body.portal);
         res.status(400).json({
             success: false,
@@ -32,6 +33,7 @@ exports.logout = async (req, res) => {
             content: logout
         });
     } catch (error) {
+
         await Logger.error(req.user.email, 'logout_faile', req.portal);
         res.status(400).json({
             success: false,
@@ -106,7 +108,6 @@ exports.resetPassword = async (req, res) => {
 };
 
 exports.changeInformation = async (req, res) => {
-
     try {
         let avatar;
         if(req.file){

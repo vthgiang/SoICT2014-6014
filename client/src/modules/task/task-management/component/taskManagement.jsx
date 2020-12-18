@@ -10,6 +10,7 @@ import { DepartmentActions } from '../../../super-admin/organizational-unit/redu
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { performTaskAction } from "../../task-perform/redux/actions";
 import { taskManagementActions } from '../redux/actions';
+import TaskProjectAction from '../../task-project/redux/action';
 
 import { TaskAddModal } from './taskAddModal';
 import { ModalPerform } from '../../task-perform/component/modalPerform';
@@ -47,6 +48,7 @@ class TaskManagement extends Component {
         this.props.getDepartment();
         this.props.getAllDepartment();
         this.props.getPaginateTasks(this.state.currentTab, [], '1', '20', this.state.status, null, null, null, null, null);
+        this.props.getAllTaskProject();
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -428,8 +430,19 @@ class TaskManagement extends Component {
         }
     }
 
+    handleShowTask = (e, data) => {
+        const { tasks } = this.props;
+        let id = data && data.node && data.node.original ? data.node.original._id : '';
+        let idValid = tasks.tasks ? tasks.tasks.some(t => t._id === id) : null;
+        if (id && idValid) {
+            this.setState({
+                currentTaskId: id
+            }, () => { window.$(`#modelPerformTask${id}`).modal('show') })
+        }
+    }
+
     render() {
-        const { tasks, user, translate } = this.props;
+        const { tasks, user, translate, taskProject } = this.props;
         const { currentTaskId, currentPage, currentTab, parentTask, startDate, endDate, perPage, status, displayType } = this.state;
         let currentTasks, units = [];
         if (tasks) {
@@ -488,66 +501,86 @@ class TaskManagement extends Component {
 
             }
 
-            for (let i = 0; i < currentTasks.length; i++) {
-                let task = currentTasks[i];
-                if (task.parent) { // có công việc liên quan
-                    if (typeof (task.parent) === 'object') {
-                        let checkP = currentTasks.some(t => t._id.toString() === task.parent._id.toString());
+            let getId = (data) => {
+                if (data && typeof (data) === 'object') return data._id;
+                else return data;
+            }
 
-                        dataTree = [...dataTree, {
-                            ...task,
-                            id: task._id,
-                            icon: 'fa fa-file-text-o',
-                            text: task.name,
-                            state: { "opened": true },
-                            parent: checkP ? task.parent._id.toString() : '#'
-                        }]
-                    } else {
-                        let checkP = currentTasks.some(t => t._id.toString() === task.parent.toString());
+            let isIdValiInArr = (id, arr) => {
+                if (!arr) return false;
+                let result = arr.some(n => n.id === id);
+                return result;
+            }
 
-                        dataTree = [...dataTree, {
-                            ...task,
-                            id: task._id,
-                            icon: 'fa fa-file-text-o',
-                            text: task.name,
-                            state: { "opened": true },
-                            parent: checkP ? task.parent.toString() : '#'
-                        }]
-                    }
-                } else if (task.taskProject) { // không có công việc liên quan nhưng lại có tên dự án
+            let convertDataProject = taskProject.list.map(p => {
+                return {
+                    ...p,
+                    id: 'pj' + p._id,
+                    parent: 'pj' + getId(p.parent),
+                    isTask: false
+                }
+            });
+
+            let convertDataTask = currentTasks.map(t => {
+                return {
+                    ...t,
+                    id: 't' + t._id,
+                    parent: 't' + getId(t.parent),
+                    taskProject: 'pj' + getId(t.taskProject),
+                    isTask: true
+                }
+            });
+
+            let getDataTree = [...convertDataProject, ...convertDataTask];
+            let idProjectNull = 'project_null';
+            dataTree = [...dataTree, {
+                _id: idProjectNull,
+                id: idProjectNull,
+                icon: 'glyphicon glyphicon-folder-open',
+                text: 'Không có chủ đề',
+                state: { "opened": true },
+                parent: '#'
+            }]
+            for (let i = 0; i < getDataTree.length; i++) {
+                let node = getDataTree[i];
+                if (node.parent || node.taskProject)//Có thông tin về dự án cha/công việc cha
+                {
                     dataTree = [...dataTree, {
-                        id: task.taskProject + task._id,
-                        icon: 'glyphicon glyphicon-folder-open',
-                        text: task.taskProject,
+                        ...node,
+                        id: node.id,
+                        icon: node.isTask ? 'fa fa-file-text-o' : 'glyphicon glyphicon-folder-open',
+                        text: node.name,
                         state: { "opened": true },
-                        parent: '#'
-                    }, {
-                        ...task,
-                        id: task._id,
-                        icon: 'fa fa-file-text-o',
-                        text: task.name,
-                        state: { "opened": true },
-                        parent: task.taskProject + task._id
+                        parent: isIdValiInArr(getId(node.parent), getDataTree) ?
+                            getId(node.parent) :
+                            isIdValiInArr(getId(node.taskProject), getDataTree) ?
+                                getId(node.taskProject) :
+                                !node.code ? idProjectNull : '#'
                     }]
-                } else {
-                    let findPublic = dataTree.some(t => t.id.toString() === idTaskProjectRoot.toString());
-                    if (!findPublic) {
+                }
+                else //Không có cả thông tin về dự án or công việc cha
+                {
+                    if (!node.code) //node này là một công việc - tại thời điểm này (17/12/2020) chỉ có dự án mới có mã code
+                    {
                         dataTree = [...dataTree, {
-                            id: idTaskProjectRoot,
-                            icon: 'glyphicon glyphicon-folder-open',
-                            text: '(Không có chủ đề)',
+                            ...node,
+                            id: node.id,
+                            icon: 'fa fa-file-text-o',
+                            text: node.name,
                             state: { "opened": true },
                             parent: '#'
                         }]
                     }
-                    dataTree = [...dataTree, {
-                        ...task,
-                        id: task._id,
-                        icon: 'fa fa-file-text-o',
-                        text: task.name,
-                        state: { "opened": true },
-                        parent: idTaskProjectRoot
-                    }]
+                    else { //node này là một dự án
+                        dataTree = [...dataTree, {
+                            ...node,
+                            id: node.id,
+                            icon: 'glyphicon glyphicon-folder-open',
+                            text: node.name,
+                            state: { "opened": true },
+                            parent: '#'
+                        }]
+                    }
                 }
             }
         }
@@ -725,14 +758,7 @@ class TaskManagement extends Component {
                     <div id="tasks-list-tree" style={{ display: 'none', marginTop: '30px' }}>
                         <Tree id="tasks-list-treeview"
                             plugins={false}
-                            onChanged={(e, data) => {
-                                let id = data ? data.node ? data.node.id : '' : '';
-                                if (id) {
-                                    this.setState({
-                                        currentTaskId: id
-                                    }, () => { window.$(`#modelPerformTask${id}`).modal('show') })
-                                }
-                            }}
+                            onChanged={this.handleShowTask}
                             data={dataTree} />
                     </div>
 
@@ -749,8 +775,8 @@ class TaskManagement extends Component {
 }
 
 function mapState(state) {
-    const { tasks, user, department } = state;
-    return { tasks, user, department };
+    const { tasks, user, department, taskProject } = state;
+    return { tasks, user, department, taskProject };
 }
 
 const actionCreators = {
@@ -767,6 +793,7 @@ const actionCreators = {
     startTimer: performTaskAction.startTimerTask,
     deleteTaskById: taskManagementActions._delete,
     getAllDepartment: DepartmentActions.get,
+    getAllTaskProject: TaskProjectAction.get,
 };
 const translateTaskManagement = connect(mapState, actionCreators)(withTranslate(TaskManagement));
 export { translateTaskManagement as TaskManagement };

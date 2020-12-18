@@ -140,6 +140,7 @@ class InsurranceTab extends Component {
                                     <th>{translate('human_resource.profile.to_month_year')}</th>
                                     <th>{translate('human_resource.profile.unit')}</th>
                                     <th>{translate('table.position')}</th>
+                                    <th>{translate('human_resource.profile.money')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -151,6 +152,7 @@ class InsurranceTab extends Component {
                                             <td>{this.formatDate(x.endDate, true)}</td>
                                             <td>{x.company}</td>
                                             <td>{x.position}</td>
+                                            <td>{x.money}</td>
                                         </tr>
                                     ))
                                 }

@@ -151,6 +151,7 @@ class AdministrationAssetTypes extends Component {
             return {
                 ...node,
                 id: node._id,
+                icon: 'glyphicon glyphicon-oil',
                 text: node.typeName,
                 state: { "opened": true },
                 parent: !node.parent || !result ? '#' : node.parent.toString()
