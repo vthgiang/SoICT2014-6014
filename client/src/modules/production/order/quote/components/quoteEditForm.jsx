@@ -69,6 +69,7 @@ class QuoteEditForm extends Component {
                 customerEmail: nextProps.quoteEdit.customerEmail,
                 deliveryTime: nextProps.quoteEdit.deliveryTime ? formatDate(nextProps.quoteEdit.effectiveDate) : "",
                 discountsOfOrderValue: nextProps.quoteEdit.discounts,
+                discountsOfOrderValueChecked: Object.assign({}),
                 note: nextProps.quoteEdit.note,
                 paymentAmount: nextProps.quoteEdit.paymentAmount,
                 shippingFee: nextProps.quoteEdit.shippingFee,
@@ -133,6 +134,7 @@ class QuoteEditForm extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
+        console.log("nextState", nextState.code, this.state.quoteCode);
         if (nextState.code !== this.state.quoteCode) {
             this.getDiscountOfOrderValueChecked();
             this.setState({
@@ -144,13 +146,14 @@ class QuoteEditForm extends Component {
     }
 
     componentDidMount() {
-        this.props.getCustomers();
+        // this.props.getCustomers();
         // this.props.getDiscountForOrderValue();
     }
 
     getDiscountOfOrderValueChecked = () => {
         const { listDiscountsByOrderValue } = this.props.discounts;
         let { discountsOfOrderValue, discountsOfOrderValueChecked } = this.state;
+        console.log("discountsOfOrderValueChecked", discountsOfOrderValueChecked);
         let amountAfterApplyTax = this.getAmountAfterApplyTax();
         if (discountsOfOrderValue) {
             discountsOfOrderValue.forEach((element) => {
@@ -161,6 +164,7 @@ class QuoteEditForm extends Component {
                     discountsOfOrderValueChecked[`${checked.id}`] = checked.status;
                 }
             });
+            console.log("discountsOfOrderValueChecked", discountsOfOrderValueChecked);
             this.setState({
                 discountsOfOrderValueChecked,
             });
@@ -707,6 +711,8 @@ class QuoteEditForm extends Component {
         let enableStepTwo = this.isValidateQuoteCreateGood();
         let enableFormSubmit = enableStepOne && enableStepTwo;
 
+        console.log("discountsOfOrderValueChecked", discountsOfOrderValueChecked);
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -904,7 +910,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     getDiscountForOrderValue: DiscountActions.getDiscountForOrderValue,
-    getCustomers: CrmCustomerActions.getCustomers,
+    // getCustomers: CrmCustomerActions.getCustomers,
     editQuote: QuoteActions.editQuote,
 };
 

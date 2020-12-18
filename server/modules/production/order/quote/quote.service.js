@@ -127,13 +127,28 @@ exports.createNewQuote = async (userId, data, portal) => {
 }
 
 exports.getAllQuotes = async (query, portal) => {
-    let { page, limit} = query;
+    let { page, limit, code, status, customer} = query;
     let option = {};
-    if (query.code) {
-        option.code = new RegExp(query.code, "i")
+    if (code) {
+        option.code = new RegExp(code, "i")
     }
-    if (query.status) {
-        option.status = query.status
+    if (status) {
+        option.status = status
+    }
+    if (customer) {
+        option.customer = customer
+    }
+
+    if (query.queryDate) {
+        switch (query.queryDate) {
+            case "expire": option.expirationDate = { $lt: new Date(), $exists: true }; break;
+            case "effective":
+                option.expirationDate = { $gte: new Date(), $exists: true }
+                
+                break;
+            case "all": break;
+            default: 
+        }
     }
 
     page = Number(page);
@@ -157,7 +172,7 @@ exports.getAllQuotes = async (query, portal) => {
         return { allQuotes }
     } else {
         let allQuotes = await Quote(connect(DB_CONNECTION, portal)).paginate(option, {
-                page,
+            page,
             limit,
             populate: [{
                 path: 'creator', select: 'name'

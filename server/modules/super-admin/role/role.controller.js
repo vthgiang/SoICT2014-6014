@@ -68,9 +68,9 @@ exports.createRole = async (req, res) => {
 
 exports.editRole = async (req, res) => {
     try {
-        let {editRoleInfo = true} = req.query;
+        let {notEditRoleInfo} = req.query;
         await RoleService.editRelationshipUserRole(req.portal, req.params.id, req.body.users);
-        if(!editRoleInfo) await RoleService.editRole(req.portal, req.params.id, req.body); //truyền vào id role và dữ liệu chỉnh sửa
+        if(!notEditRoleInfo) await RoleService.editRole(req.portal, req.params.id, req.body); //truyền vào id role và dữ liệu chỉnh sửa
         let data = await RoleService.getRole(req.portal, req.params.id);
         
         Logger.info(req.user.email, 'edit_role_success', req.portal);

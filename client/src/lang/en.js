@@ -422,6 +422,9 @@ export default {
         },
         super_admin: {
             system: {
+                edit_backup_info: "Edit backup version information",
+                download_backup_version: "Download backup version",
+                backup_description: "Backup version information",
                 restore_backup: "Restore backup",
                 delete_backup: "Delete backup",
 
@@ -433,6 +436,9 @@ export default {
                 delete_backup_faile: "Delete backup faile",
                 restore_data_success: "Restore data successfully",
                 restore_data_faile: "Restore data faile",
+                edit_backup_info_success: "Edit backup information success",
+                edit_backup_info_faile: "Edit backup information faile",
+                backup_version_deleted: "Backup version has been deleted, cannot edit backup version information."
             },
 
             organization_unit: {
@@ -820,7 +826,7 @@ export default {
             short_name: "Short Name",
             employee_name: "Staff name",
             employee_number: "Staff code",
-            total_salary: "Total salary",
+            total_salary: "Total income",
             month: "Month",
             unit: "Unit",
             position: "Position",
@@ -874,7 +880,7 @@ export default {
             manage_company: "Manage Company",
             manage_role: "Manage Roles",
             manage_link: "Manage Pages",
-            manage_component: "Manage UI-Component",
+            manage_component: "Manage permissions on page",
 
             manage_department: "Manage Departments",
             manage_user: "Manage Users",
@@ -997,6 +1003,8 @@ export default {
             manage_discount: "Discount",
             manage_tax: "Tax",
             manage_sla: "Service Level Agreement",
+            manage_business_department: "Manage Department",
+            manage_admin_department: "Sales Accounting Department",
 
             //QUẢN LÝ KẾ HOẠCH SẢN XUẤT
             manage_plans: "Manage Plans",
@@ -1097,7 +1105,10 @@ export default {
 
         manage_user: {
             add: "Add",
-            add_title: "Add new user/account",
+            add_title: "Add new user/account",            
+            add_common: 'Add common',
+            import: 'Import from file',
+            import_title: 'Import users data from file',
             info: "User/Account information",
             edit: "Edit User/Account information",
             disable: "Disable",
@@ -1225,7 +1236,7 @@ export default {
                     other_salary: "Other salary",
                     name_salary: "Name salary",
                     money_salary: "Money",
-                    total_salary: "Total Salary",
+                    total_salary: "Total income",
                     action: "action",
                 },
                 // Nhóm dành cho action
@@ -1441,6 +1452,7 @@ export default {
                     menu_attachments_title: "Attachments",
                 },
 
+                money:'Wage',
                 staff_number: "Staff code",
                 full_name: "Full name",
                 attendance_code: "Attendance code",
@@ -1498,6 +1510,8 @@ export default {
                 colleges: "Colleges",
                 university: "University",
                 master_degree: "Maste degree",
+                engineer: 'Engineer',
+                bachelor: 'Bachelor',
                 phd: "Ph.D",
                 unavailable: "Other",
                 work_experience: "Work experience",
@@ -1589,6 +1603,7 @@ export default {
                 temporary_residence_card: "Temporary residence card",
                 disc_temporary_residence_card:
                     "Certificate of temporary absence",
+                registration_book:'Registration book',
                 add_staff: "Add new staffs",
 
                 reward: "Commendation",
@@ -2649,7 +2664,7 @@ export default {
                 err_total_log_time: "Total logged time deleted",
 
                 detail_refresh: "Refresh",
-                detail_edit: "Edit",
+                detail_edit: "Update task",
                 detail_end: "Finish",
                 detail_evaluate: "Evaluate",
                 detail_start_timer: "Start timer",
@@ -2857,6 +2872,8 @@ export default {
                 warning_days: "days",
                 warning_hours: "hours",
                 warning_minutes: "minutes",
+
+                project: 'Project name (if you have)'
             },
             task_perform: {
                 actions: "Actions",

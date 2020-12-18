@@ -138,7 +138,7 @@ class Major extends Component {
             }
         }
         let unChooseNode = currentNode ? this.findChildrenNode(list, currentNode) : [];
-        console.log('dataTree', dataTree, dataTreeSelect);
+        // console.log('dataTree', dataTree, dataTreeSelect);
         return (
             <React.Fragment>
                 <div className="box box-body">

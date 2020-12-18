@@ -5,6 +5,7 @@ const nodemailer = require("nodemailer");
 
 const { Task, User, UserRole, Role, OrganizationalUnit } = require(`${SERVER_MODELS_DIR}`);
 
+
 const OrganizationalUnitService = require(`${SERVER_MODULES_DIR}/super-admin/organizational-unit/organizationalUnit.service`);
 
 const { sendEmail } = require(`${SERVER_HELPERS_DIR}/emailHelper`);
@@ -307,7 +308,7 @@ exports.getActiveTimesheetLog = async (portal, query) => {
         {
             timesheetLogs: {
                 $elemMatch: {
-                    creator: mongoose.Types.ObjectId(query.userId),
+                    creator: query.userId,
                     stoppedAt: null,
                 },
             },
@@ -316,8 +317,9 @@ exports.getActiveTimesheetLog = async (portal, query) => {
     );
     if (timerStatus !== null) {
         timerStatus.timesheetLogs = timerStatus.timesheetLogs.find(
-            (element) => !element.stoppedAt
+            (element) => !element.stoppedAt && element.creator == query.userId
         );
+
         return timerStatus;
     } else {
         return null;
@@ -338,9 +340,11 @@ exports.startTimesheetLog = async (portal, params, body) => {
         { $push: { timesheetLogs: timerUpdate } },
         { new: true, fields: { timesheetLogs: 1, _id: 1, name: 1 } }
     );
+
     timer.timesheetLogs = timer.timesheetLogs.find(
-        (element) => !element.stoppedAt
+        (element) => (!element.stoppedAt && element.creator == body.creator)
     );
+
     return timer;
 };
 
@@ -463,6 +467,7 @@ exports.stopTimesheetLog = async (portal, params, body) => {
                     },
                 ],
             },
+            { path: "timesheetLogs.creator", select: "name" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",
@@ -683,7 +688,6 @@ exports.createTaskAction = async (portal, params, body, files) => {
         creator: body.creator,
         description: body.description,
         files: files,
-        order: body.index,
     };
     let taskAction1 = await Task(connect(DB_CONNECTION, portal))
         .findByIdAndUpdate(
@@ -692,7 +696,6 @@ exports.createTaskAction = async (portal, params, body, files) => {
                 $push: {
                     taskActions: {
                         $each: [actionInformation],
-                        $sort: { order: 1 },
                     },
                 },
             },
@@ -1691,7 +1694,6 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
         let elem = collaboratedWithOrganizationalUnits[i];
 
         let checkCollab = taskItem.collaboratedWithOrganizationalUnits.find(e => String(e.organizationalUnit) === String(elem));
-        console.log('checkCollab', checkCollab);
 
         if (checkCollab) {
             newCollab.push({
@@ -1805,8 +1807,6 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
             deansOfDeletedCollabID.push(item);
         })
     }
-
-    console.log('deletedCollab, additionalCollab', oldCollab, newCollab, deletedCollab, additionalCollab);
 
     for (let i = 0; i < additionalCollab.length; i++) {
         let unit = additionalCollab[i] && await OrganizationalUnit(connect(DB_CONNECTION, portal)).findById(additionalCollab[i])
@@ -3378,7 +3378,7 @@ exports.editHoursSpentInEvaluate = async (portal, data, taskId) => {
             for (let j = 0; j < results.length; j++) {
                 if (
                     results[j].employee &&
-                    results[j].employee.toString() === employee
+                    results[j].employee.toString() === employee.id.toString()
                 ) {
                     check = false;
                     results[j]["hoursSpent"] = hoursSpent;
@@ -3388,7 +3388,7 @@ exports.editHoursSpentInEvaluate = async (portal, data, taskId) => {
 
         if (check) {
             let employeeHoursSpent = {
-                employee: employee,
+                employee: employee.id,
                 hoursSpent: hoursSpent,
             };
             if (!results) {
@@ -5072,28 +5072,31 @@ exports.sortActions = async (portal, params, body) => {
     let arrayActions = body;
     let taskId = params.taskId;
     let i;
-    for (i = 0; i < arrayActions.length; i++) {
-        await Task(connect(DB_CONNECTION, portal)).updateOne(
-            { _id: taskId, "taskActions._id": arrayActions[i].id },
-            {
-                $set: {
-                    "taskActions.$.order": arrayActions[i].order,
-                },
-            }
-        );
-    }
-
     await Task(connect(DB_CONNECTION, portal)).update(
-        { _id: taskId },
+        { _id: taskId},
+        { $set: {"taskActions" : []} }
+    )
+    await Task(connect(DB_CONNECTION, portal)).update(
+        { _id: taskId},
         {
-            $push: {
-                taskActions: {
-                    $each: [],
-                    $sort: { order: 1 },
-                },
+            $set: {
+                "taskActions": body
             },
         }
     );
+
+
+    // await Task(connect(DB_CONNECTION, portal)).update(
+    //     { _id: taskId },
+    //     {
+    //         $push: {
+    //             taskActions: {
+    //                 $each: [],
+    //                 $sort: { order: 1 },
+    //             },
+    //         },
+    //     }
+    // );
 
     let task = await Task(connect(DB_CONNECTION, portal))
         .findOne({ _id: params.taskId })

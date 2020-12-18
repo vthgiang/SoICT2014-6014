@@ -846,6 +846,7 @@ class EmployeeEditFrom extends Component {
 
         let { _id, img, employee, degrees, certificates, socialInsuranceDetails, contracts, courses,
             organizationalUnits, roles, commendations, disciplines, annualLeaves, files, major, career } = this.state;
+            console.log('career', career);
         return (
             <React.Fragment>
                 <DialogModal
@@ -993,6 +994,7 @@ class EmployeeEditFrom extends Component {
                                     handleAddCareer={this.handleAddCareer}
                                     handleEditCareer={this.handleEditCareer}
                                     handleDeleteCareer={this.handleDeleteCareer}
+                                    type={"edit"}
                                 />
                                
                             </div>

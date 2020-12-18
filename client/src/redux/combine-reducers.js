@@ -51,6 +51,7 @@ import { tasks } from "../modules/task/task-management/redux/reducers";
 import { rootRoles } from "../modules/system-admin/root-role/redux/reducers";
 import { systemComponents } from "../modules/system-admin/system-component/redux/reducers";
 import { taskProcess } from "../modules/task/task-process/redux/reducers"
+import taskProject from '../modules/task/task-project/redux/reducer';
 
 //asset
 import { recommendProcure } from "../modules/asset/user/purchase-request/redux/reducers";
@@ -83,6 +84,8 @@ import { taxs } from "../modules/production/order/tax/redux/reducers";
 import { quotes } from '../modules/production/order/quote/redux/reducers';
 import { discounts } from "../modules/production/order/discount/redux/reducers";
 import { serviceLevelAgreements } from "../modules/production/order/service-level-agreement/redux/reducers";
+import { businessDepartments } from "../modules/production/order/business-department/redux/reducers";
+import { adminDepartments } from "../modules/production/order/admin-department/redux/reducers";
 import { salesOrder } from "../modules/production/order/sales-order/redux/reducers";
 
 //plan
@@ -163,6 +166,8 @@ const appReducer = combineReducers({
     tasks,
     performtasks,
     taskProcess,
+    taskProject,
+
     // kpi members
     kpimembers,
 
@@ -197,6 +202,8 @@ const appReducer = combineReducers({
     quotes,
     discounts,
     serviceLevelAgreements,
+    businessDepartments,
+    adminDepartments,
     salesOrder,
 
     //plane

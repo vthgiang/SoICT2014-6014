@@ -80,9 +80,32 @@ exports.searchEmployeeProfiles = async (req, res) => {
             data = await EmployeeService.getEmployeesByStartingAndLeaving(req.portal, req.query.organizationalUnits, req.query.startDate, req.query.endDate, req.user.company._id);
         } else if (req.query.page === undefined && req.query.limit === undefined) {
             data = await EmployeeService.getEmployees(req.portal, req.user.company._id, req.query.organizationalUnits, req.query.position, false, req.query.status);
+        } else if(req.query.searchForPackage){
+            console.log('----searchForPackage----');
+            let params = {
+                organizationalUnits: req.query.organizationalUnits,
+                professionalSkill: req.query.professionalSkill,
+                major: req.query.majorInfo,
+                certificatesName: req.query.certificatesName,
+                certificatesType: req.query.certificatesType,
+                certificatesEndDate: req.query.certificatesEndDate,
+                field: req.query.field,
+                package: req.query.package,
+                position: req.query.position,
+                action: req.query.action,
+                exp: Number(req.query.exp),
+                sameExp: Number(req.query.sameExp),
+                page: Number(req.query.page),
+                limit: Number(req.query.limit),
+            }
+            console.log('qoaoaoao', params);
+            data = await EmployeeService.searchEmployeeForPackage(req.portal, params, req.user.company._id);
+    
         } else {
             let params = {
                 organizationalUnits: req.query.organizationalUnits,
+                professionalSkills: req.query. professionalSkills,
+                careerFields: req.query. careerFields,
                 employeeName: req.query.employeeName,
                 employeeNumber: req.query.employeeNumber,
                 gender: req.query.gender,
@@ -138,7 +161,7 @@ exports.createEmployee = async (req, res) => {
             fileDegree,
             fileCertificate,
             fileContract,
-            fileMajor, 
+            fileMajor,
             fileCareer,
             file,
             avatar
@@ -582,4 +605,50 @@ exports.createNotificationForEmployeesHaveBrithdayCurrent = async () => {
     for (let n in companys) {
         await EmployeeService.createNotificationForEmployeesHaveBrithdayCurrent(companys[n]);
     }
+}
+
+
+/**
+ * Lấy danh sách nhân viên
+ */
+exports.searchEmployeeForPackage = async (req, res) => {
+    // try {
+        console.log('aa',req.query);
+        let data;
+
+        let params = {
+            organizationalUnits: req.query.organizationalUnits,
+            professionalSkill: req.query.professionalSkill,
+            major: req.query.majorInfo,
+            certificatesName: req.query.certificatesName,
+            certificatesType: req.query.certificatesType,
+            certificatesEndDate: req.query.certificatesEndDate,
+            field: req.query.field,
+            package: req.query.package,
+            position: req.query.position,
+            action: req.query.action,
+            exp: Number(req.query.exp),
+            sameExp: Number(req.query.sameExp),
+            page: Number(req.query.page),
+            limit: Number(req.query.limit),
+        }
+console.log('qoaoaoao', params);
+        data = await EmployeeService.searchEmployeeForPackage(req.portal, params, req.user.company._id);
+
+        await Log.info(req.user.email, 'GET_EMPLOYEES', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["get_list_employee_success"],
+            content: data
+        });
+    // } catch (error) {
+    //     await Log.error(req.user.email, 'GET_EMPLOYEES', req.portal);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ["get_list_employee_faile"],
+    //         content: {
+    //             error: error
+    //         }
+    //     });
+    // }
 }

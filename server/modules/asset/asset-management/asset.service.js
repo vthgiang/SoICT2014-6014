@@ -109,16 +109,21 @@ exports.searchAssetProfiles = async (portal, company, params) => {
         keySearch = {...keySearch, location: params.location};
     }
 
-    // Thêm key tìm kiếm tài sản theo id người dùng
+    // Thêm key tìm kiếm tài sản theo người sử dụng (email hoặc name) -> handoverUser ?? không thấy thuộc tính này trong model Asset - thuộc tính cũ nhưng chưa sửa tên lại cho khớp (assignedToUser) với model?
     if (params.handoverUser) {
         let user = await User(connect(DB_CONNECTION, portal))
-            .find({name: {$regex: params.handoverUser, $options: "i"}})
+            .find({
+                $or: [
+                    {email: {$regex: params.handoverUser, $options: "i"}},
+                    {name: {$regex: params.handoverUser, $options: "i"}}
+                ]
+            })
             .select("_id");
         let userIds = [];
         user.map((x) => {
             userIds.push(x._id);
         });
-        keySearch = {...keySearch, handoverUser: {$in: userIds}};
+        keySearch = {...keySearch, assignedToUser: {$in: userIds}};
     }
 
     // Thêm key tìm kiếm tài sản theo loại khấu hao
@@ -147,7 +152,7 @@ exports.searchAssetProfiles = async (portal, company, params) => {
         let date = params.startDepreciation.split("-");
         let start = new Date(date[1], date[0] - 1, 1);
         let end = new Date(date[1], date[0], 1);
-
+        
         keySearch = {
             ...keySearch,
             startDepreciation: {
@@ -280,7 +285,7 @@ exports.searchAssetProfiles = async (portal, company, params) => {
         );
         listAssets = await Asset(connect(DB_CONNECTION, portal))
             .find(keySearch)
-            .populate("assetType assignedToOrganizationalUnit")
+            .populate("assetType assignedToOrganizationalUnit managedBy")
             .sort({createdAt: "desc"})
             .skip(params.page)
             .limit(params.limit);
@@ -290,7 +295,7 @@ exports.searchAssetProfiles = async (portal, company, params) => {
         );
         listAssets = await Asset(connect(DB_CONNECTION, portal))
             .find(keySearch)
-            .populate("assetType assignedToOrganizationalUnit")
+            .populate("assetType assignedToOrganizationalUnit managedBy")
             .sort({createdAt: "desc"})
             .skip(params.page)
             .limit(params.limit);
@@ -593,7 +598,11 @@ exports.updateAssetInformation = async (
             if (fileInfor) {
                 arrCreate = this.mergeUrlFileToObject(fileInfor, arrCreate);
             }
-            arrCreate.forEach((x) => arrObject.push(x));
+            arrCreate.forEach((x) => {
+                if(x.incidentCode && arrObject.some(curNode => curNode.incidentCode === x.incidentCode ))
+                    throw ['incident_code_exist'];
+                arrObject.push(x)
+            });
         }
 
         return arrObject;
@@ -755,7 +764,7 @@ exports.deleteAsset = async (portal, id) => {
  * Chỉnh sửa thông tin khấu hao tài sản
  */
 exports.updateDepreciation = async (portal, id, data) => {
-    return await Asset(connect(DB_CONNECTION, portal)).update(
+    return await Asset(connect(DB_CONNECTION, portal)).updateOne(
         {_id: id},
         {
             cost: data.cost,
@@ -784,7 +793,7 @@ exports.updateDepreciation = async (portal, id, data) => {
  * Thêm mới phiếu bảo trì cho sự cố
  */
 exports.createMaintainanceForIncident = async (portal, incidentId, data) => {
-    return await Asset(connect(DB_CONNECTION, portal)).update(
+    return await Asset(connect(DB_CONNECTION, portal)).updateOne(
         {_id: data.assetId, "incidentLogs._id": incidentId},
         {
             $addToSet: {maintainanceLogs: data},
@@ -980,7 +989,7 @@ exports.updateMaintainance = async (portal, maintainanceId, data) => {
  * Xóa thông tin phiếu bảo trì
  */
 exports.deleteMaintainance = async (portal, assetId, maintainanceId) => {
-    return await Asset(connect(DB_CONNECTION, portal)).update(
+    return await Asset(connect(DB_CONNECTION, portal)).updateOne(
         {_id: assetId},
         {$pull: {maintainanceLogs: {_id: maintainanceId}}}
     );
@@ -1005,7 +1014,7 @@ exports.createUsage = async (portal, id, data) => {
         data.assignedToOrganizationalUnit !== "null"
             ? data.assignedToOrganizationalUnit
             : null;
-    await Asset(connect(DB_CONNECTION, portal)).update(
+    await Asset(connect(DB_CONNECTION, portal)).updateOne(
         {_id: id},
         {
             $addToSet: {usageLogs: data.usageLogs},
@@ -1024,7 +1033,7 @@ exports.createUsage = async (portal, id, data) => {
  * Chỉnh sửa thông tin sử dụng
  */
 exports.updateUsage = async (portal, assetId, data) => {
-    let asset = await Asset(connect(DB_CONNECTION, portal)).update(
+    let asset = await Asset(connect(DB_CONNECTION, portal)).updateOne(
         {_id: assetId},
         {
             $set: {
@@ -1034,7 +1043,7 @@ exports.updateUsage = async (portal, assetId, data) => {
         }
     );
 
-    return await Asset(connect(DB_CONNECTION, portal)).update(
+    return await Asset(connect(DB_CONNECTION, portal)).updatePme(
         {_id: assetId, "usageLogs._id": data._id},
         {
             $set: {
@@ -1056,7 +1065,7 @@ exports.recallAsset = async (portal, assetId, data) => {
     let nowDate = new Date();
     let asset = await Asset(connect(DB_CONNECTION, portal)).findById(assetId);
     let usageLogs = asset.usageLogs[asset.usageLogs.length - 1];
-    let updateUsageLogs = await Asset(connect(DB_CONNECTION, portal)).update(
+    let updateUsageLogs = await Asset(connect(DB_CONNECTION, portal)).updateOne(
         {_id: assetId, "usageLogs.usedByUser": usageLogs._id},
         {
             $set: {
@@ -1064,7 +1073,7 @@ exports.recallAsset = async (portal, assetId, data) => {
             },
         }
     );
-    let updateAsset = await Asset(connect(DB_CONNECTION, portal)).update(
+    let updateAsset = await Asset(connect(DB_CONNECTION, portal)).updateOne(
         {_id: assetId},
         {
             $set: {
@@ -1080,7 +1089,7 @@ exports.recallAsset = async (portal, assetId, data) => {
  * Xóa thông tin sử dụng
  */
 exports.deleteUsage = async (portal, assetId, usageId) => {
-    return await Asset(connect(DB_CONNECTION, portal)).update(
+    return await Asset(connect(DB_CONNECTION, portal)).updateOne(
         {_id: assetId},
         {$pull: {usageLogs: {_id: usageId}}}
     );
@@ -1180,7 +1189,7 @@ exports.getIncidents = async (portal, params) => {
  * Thêm mới thông tin sự cố tài sản
  */
 exports.createIncident = async (portal, id, data) => {
-    let assetIncident = await Asset(connect(DB_CONNECTION, portal)).update(
+    let assetIncident = await Asset(connect(DB_CONNECTION, portal)).updateOne(
         {_id: id},
         {
             status: data.assetStatus,
@@ -1222,7 +1231,7 @@ exports.updateIncident = async (portal, incidentId, data) => {
  * Xóa thông tin sự cố tài sản
  */
 exports.deleteIncident = async (portal, assetId, incidentId) => {
-    return await Asset(connect(DB_CONNECTION, portal)).update(
+    return await Asset(connect(DB_CONNECTION, portal)).updateOne(
         {_id: assetId},
         {$pull: {incidentLogs: {_id: incidentId}}}
     );

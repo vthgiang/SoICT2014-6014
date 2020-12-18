@@ -31,16 +31,17 @@ class EditForm extends Component {
         });
     }
 
-    // handleParent = (value) => {
-    //     this.setState({ archiveParent: value[0] });
-    // };
+    handleParent = (value) => {
+        this.setState({ parent: value[0] });
+    };
 
     isValidateForm = () => {
-        let { name, description } = this.state;
+        let { name, code, parent, showParent } = this.state;
         let { translate } = this.props;
         if (
             !ValidationHelper.validateName(translate, name, 1, 255).status
         ) return false;
+        if(showParent && !parent ) return false;
         return true;
     }
 
@@ -76,16 +77,8 @@ class EditForm extends Component {
         const { archiveId, name, description, archiveParent } = this.state;
         const { list } = documents.administration.archives;
 
-        // let node = "";
-        // node = list.filter(archive => archive._id === archiveId)[0]
-
-        // // find node child 
-        // let array = [];
-        // if (node) {
-        //     array = this.findChildrenNode(list, node);
-        // }
-
         console.log('state data', this.state);
+        this.props.editCareerField(this.state);
 
         // this.props.editDocumentArchive(archiveId, {
         //     name,
@@ -99,10 +92,17 @@ class EditForm extends Component {
         if (nextProps.careerId !== prevState.careerId) {
             return {
                 ...prevState,
+                oldData: {
+                    careerId: nextProps.careerId,
+                    name: nextProps.careerName,
+                    code: nextProps.careerCode,
+                    parent: nextProps.careerParent,
+                },
                 careerId: nextProps.careerId,
                 name: nextProps.careerName,
                 code: nextProps.careerCode,
                 parent: nextProps.careerParent,
+                showParent: nextProps.careerParent,
 
                 nameError: undefined,
                 codeError: undefined
@@ -115,9 +115,9 @@ class EditForm extends Component {
     render() {
         const { translate, documents } = this.props;
         const { listData, unChooseNode } = this.props;
-        const { name, code, codeError, nameError } = this.state;
+        const { name, code, parent, showParent, codeError, nameError } = this.state;
         const { list } = listData;
-            let listCareer = [];
+        let listCareer = [];
         for (let i in list) {
             if (!unChooseNode.includes(list[i].id)) {
                 listCareer.push(list[i]);
@@ -136,10 +136,12 @@ class EditForm extends Component {
                     <input type="text" className="form-control" onChange={this.handleCode} value={code} />
                     <ErrorLabel content={codeError} />
                 </div>
-                {/* <div className="form-group">
-                    <label>{translate('document.administration.archives.parent')}</label>
-                    <TreeSelect data={listArchive} value={[archiveParent]} handleChange={this.handleParent} mode="radioSelect" />
-                </div> */}
+                {showParent &&
+                    <div className="form-group">
+                        <label>{translate('document.administration.archives.parent')}</label>
+                        <TreeSelect data={listData} value={[parent]} handleChange={this.handleParent} mode="radioSelect" />
+                    </div>
+                }
                 <div className="form-group">
                     <button className="btn btn-success pull-right" style={{ marginLeft: '5px' }} disabled={disabled} onClick={this.save}>{translate('form.save')}</button>
                     <button className="btn btn-danger" onClick={() => {
@@ -155,8 +157,7 @@ class EditForm extends Component {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
-    // editDocumentArchive: CareerReduxAction.editDocumentArchive,
-    // getDocumentArchives: CareerReduxAction.getDocumentArchive,
+    editCareerField: CareerReduxAction.editCareerField,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(EditForm));

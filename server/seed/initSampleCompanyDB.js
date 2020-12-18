@@ -50,6 +50,7 @@ const {
     BankAccount,
     CoinRule,
     Quote,
+    BusinessDepartment,
 
     Customer,
     Care,
@@ -892,7 +893,7 @@ const initSampleCompanyDB = async () => {
                 {
                     name: "Bằng tốt nghiệp",
                     issuedBy: "Đại học Bách Khoa",
-                    year: "2020",
+                    year: 2020,
                     degreeType: "good",
                     urlFile:
                         "lib/fileEmployee/1582031878169-quản-trị-hành-chính-việt-anh.xlsm",
@@ -997,7 +998,7 @@ const initSampleCompanyDB = async () => {
                 {
                     name: "Bằng tốt nghiệp",
                     issuedBy: "Đại học Bách Khoa",
-                    year: "2020",
+                    year: 2020,
                     degreeType: "good",
                     urlFile:
                         "lib/fileEmployee/1582031878169-quản-trị-hành-chính-việt-anh.xlsm",
@@ -1104,7 +1105,7 @@ const initSampleCompanyDB = async () => {
             {
                 name: "Bằng tốt nghiệp",
                 issuedBy: "Đại học Bách Khoa",
-                year: "2020",
+                year: 2020,
                 degreeType: "good",
                 urlFile:
                     "lib/fileEmployee/1582031878169-quản-trị-hành-chính-việt-anh.xlsm",

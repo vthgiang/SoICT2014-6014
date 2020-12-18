@@ -6,16 +6,14 @@ const CareerFieldSchema = new Schema({
     name: String,
     code: String, // lưu lại trong db của employees
     position: [{
-        name: {
-            type: String,
+        position: {
+            type: Schema.Types.ObjectId,
+            ref: "CareerPosition",
         },
-        code: {
-            type: String,
-        },
-        type: {
-            type: Number,
-            default: 0, // 1 - default, 0 - additional
-        },
+        multi: {
+            type: Number, // 0: false, 1: true
+            default: 1,
+        }
     }]
 }, {
     timestamps: true,

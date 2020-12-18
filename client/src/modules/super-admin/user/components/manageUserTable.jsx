@@ -9,7 +9,7 @@ import { UserActions } from '../redux/actions';
 
 import UserEditForm from './userEditForm';
 import UserCreateForm from './userCreateForm';
-
+import ModalImportUser from './modalImportUser';
 
 class ManageUserTable extends Component {
     constructor(props) {
@@ -92,11 +92,21 @@ class ManageUserTable extends Component {
 
     render() {
         const { user, translate } = this.props;
-
+        const { limit } = this.state;
         return (
             <React.Fragment>
-                {/* Button thêm tài khoản người dùng mới */}
+                <div className="dropdown pull-right">
+                    <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_user.add_title')} >{translate('manage_user.add')}</button>
+                    <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
+                        <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-create-user').modal('show')}>{translate('manage_user.add_common')}</a></li>
+                        <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-user').modal('show')}>{translate('manage_user.import')}</a></li>
+                    </ul>
+                </div>
+
+                {/* Form thêm mới người dùng */}
                 <UserCreateForm />
+                {/* Form import thông tin người dùng */}
+                <ModalImportUser limit={limit} />
 
                 {/* Thanh tìm kiếm */}
                 <SearchBar

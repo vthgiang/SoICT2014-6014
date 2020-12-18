@@ -1091,6 +1091,32 @@ const LINKS = [{
     components: getComponentsInLink('/manage-sla'),
 },
 {
+    url: "/manage-business-department",
+    description: "Phòng ban liên quan quản lý đơn hàng",
+    category: LINK_CATEGORY.ORDER.name,
+    roles: [
+        // ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        // ROOT_ROLES.DEAN.name,
+        // ROOT_ROLES.VICE_DEAN.name,
+        // ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/manage-business-department'),
+},
+{
+    url: "/manage-admin-department",
+    description: "Phòng kế toán bán hàng",
+    category: LINK_CATEGORY.ORDER.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/manage-admin-department'),
+},
+{
     url: '/crm/dashboard',
     description: `Bảng tin quản lý khách hàng`,
     category: LINK_CATEGORY.CRM.name,

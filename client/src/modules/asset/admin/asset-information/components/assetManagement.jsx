@@ -12,6 +12,7 @@ import { RoleActions } from '../../../../super-admin/role/redux/actions';
 
 import { AssetCreateForm, AssetDetailForm, AssetEditForm, AssetImportForm } from './combinedContent';
 import qs from 'qs';
+import { getFormatDateFromTime, getPropertyOfValue } from '../../../../../helpers/stringMethod';
 class AssetManagement extends Component {
     constructor(props) {
         super(props);
@@ -83,10 +84,9 @@ class AssetManagement extends Component {
 
     // Bắt sự kiện click xem thông tin tài sản
     handleView = async (value) => {
-        await this.setState(state => {
-            return {
-                currentRowView: value
-            }
+        console.log("giá trị lấy được", value)
+        await this.setState({
+            currentRowView: value
         });
         window.$('#modal-view-asset').modal('show');
     }
@@ -219,7 +219,6 @@ class AssetManagement extends Component {
         }
 
         this.setState({
-            ...this.state,
             handoverUnit: value
         })
     }
@@ -229,7 +228,7 @@ class AssetManagement extends Component {
         await this.setState({
             page: 0,
         });
-        this.props.getAllAsset(this.state);
+        this.props.getAllAsset({ page: 0, ...this.state });
     }
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
@@ -237,7 +236,7 @@ class AssetManagement extends Component {
         await this.setState({
             limit: parseInt(number),
         });
-        this.props.getAllAsset(this.state);
+        this.props.getAllAsset({ ...this.state, limit: parseInt(number) });
     }
 
     // Bắt sự kiện chuyển trang
@@ -247,26 +246,101 @@ class AssetManagement extends Component {
             page: parseInt(page),
         });
 
-        this.props.getAllAsset(this.state);
+        this.props.getAllAsset({ ...this.state, page });
     }
 
-    /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
+    getAssetTypesList = (types) => {
+        let list = types.reduce((list, cur) => {
+            return list ? list + ', ' + cur.typeName : cur.typeName;
+        }, '');
+        return list;
+    }
+
+    getNumber = (number) => {
+        return number ? number : '';
+    }
+
+    getAssetDepreciationType = (type) => {
+        const { translate } = this.props;
+        switch (type) {
+            case 'straight_line':
+                return translate('asset.depreciation.line');
+            case 'declining_balance':
+                return translate('asset.depreciation.declining_balance');
+            case 'units_of_production':
+                return translate('asset.depreciation.units_production');
+            default:
+                return '';
+        }
+    }
+
+    getIncidentType = (type) => {
+        const { translate } = this.props;
+        if (Number(type) === 1) {
+            return translate('asset.general_information.damaged');
+        } else if (Number(type) === 2) {
+            return translate('asset.general_information.lost');
+        } else {
+            return null;
+        }
+    }
+
+    getIncidentStatus = (status) => {
+        const { translate } = this.props;
+        if (Number(status) === 1) {
+            return translate('asset.general_information.waiting');
+        } else if (Number(status) === 2) {
+            return translate('asset.general_information.processed')
+        } else return null;
+    }
+
+    gettDisposalType = (type) => {
+        const { translate } = this.props;
+
+        if (type === '1') {
+            return translate('asset.asset_info.destruction');
+        }
+        else if (type === '2') {
+            return translate('asset.asset_info.sale')
+        }
+        else if (type === '3') {
+            return translate('asset.asset_info.give')
+        }
+        else {
+            return ''
+        }
+    }
+
+    getCostNumber = (number) => {
+        if (!number) return '';
+        else return new Intl.NumberFormat().format(number);
+    }
+
     convertDataToExportData = (data, assettypelist, userlist) => {
-        let fileName = "Bảng quản lý thông tin tài sản ";
+        const organizationalUnitList = this.props.department.list;
+        let fileName = "File export tài sản";
         let length = 0;
-        let convertedData = [];
+        let exportThongTinChung = [];
+        let exportKhauHao = [];
+        let exportSuDung = [];
+        let exportSuCo = [];
+        let exportBaoTriSuaChua = [];
+        let exportThanhLy = [];
+
         if (data) {
             data.forEach((x, index) => {
 
+                // Dữ liệu tab thông tin chung
                 let code = x.code;
                 let name = x.assetName;
                 let description = x.description;
-                let type = x.assetType && assettypelist.length && assettypelist.find(item => item._id === x.assetType) ? assettypelist.find(item => item._id === x.assetType).typeName : '';
-                let purchaseDate = this.formatDate(x.purchaseDate);
-                let disposalDate = this.formatDate(x.disposalDate);
-                let manager = x.managedBy && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).email : '';
-                let assigner = x.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.assignedToUser) ? userlist.find(item => item._id === x.assignedToUser).email : '') : '';
-                let status = x.status;
+                let group = this.convertGroupAsset(x.group);
+                let type = x.assetType && this.getAssetTypesList(x.assetType);
+                let purchaseDate = getFormatDateFromTime(x.purchaseDate, 'dd-mm-yyyy');
+                let disposalDate = getFormatDateFromTime(x.disposalDate, 'dd-mm-yyyy');
+                let manager = getPropertyOfValue(x.managedBy, 'email', false, userlist);
+                let assigner = getPropertyOfValue(x.assignedToUser, 'email', false, userlist);
+                let status = this.formatStatus(x.status);
                 length = x.detailInfo && x.detailInfo.length;
                 let info = (length) ? (x.detailInfo.map((item, index) => {
                     return {
@@ -277,28 +351,27 @@ class AssetManagement extends Component {
                 let infoName = info[0] ? info[0].infoName : "";
                 let value = length ? (info[0].value) : "";
 
-
-                let dataOneRow = {
+                exportThongTinChung = [...exportThongTinChung, {
                     index: index + 1,
-                    code: code,
-                    name: name,
-                    description: description,
-                    type: type,
-                    purchaseDate: purchaseDate,
-                    disposalDate: disposalDate,
-                    manager: manager,
-                    assigner: assigner,
-                    status: status,
-                    infoName: infoName,
-                    value: value
-
-                }
-                convertedData = [...convertedData, dataOneRow];
+                    code,
+                    name,
+                    group,
+                    description,
+                    type,
+                    purchaseDate,
+                    disposalDate,
+                    manager,
+                    assigner,
+                    status,
+                    infoName,
+                    value
+                }];
                 if (length > 1) {
                     for (let i = 1; i < length; i++) {
-                        dataOneRow = {
+                        exportThongTinChung = [...exportThongTinChung, {
                             index: "",
                             code: "",
+                            group: "",
                             name: "",
                             description: "",
                             type: "",
@@ -306,24 +379,104 @@ class AssetManagement extends Component {
                             disposalDate: "",
                             manager: "",
                             assigner: "",
-                            handoverFromDate: "",
-                            handoverToDate: "",
                             status: "",
                             infoName: info[i].infoName,
                             value: info[i].value
-                        }
-                        convertedData = [...convertedData, dataOneRow];
+                        }];
                     }
                 }
+
+                // Dữ liệu tab khấu hao
+                let cost = this.getCostNumber(x.cost);
+                let residualValue = this.getCostNumber(x.residualValue);
+                let usefulLife = this.getNumber(x.usefulLife);
+                let startDepreciation = getFormatDateFromTime(x.startDepreciation, 'dd-mm-yyyy')
+                let depreciationType = this.getAssetDepreciationType(x.depreciationType);
+                exportKhauHao = [...exportKhauHao, {
+                    index: index + 1,
+                    code,
+                    name,
+                    cost,
+                    residualValue,
+                    usefulLife,
+                    startDepreciation,
+                    depreciationType
+                }]
+
+                // Dữ liệu tab thông tin sử dụng
+                let dataKH = x.usageLogs ? x.usageLogs.map(use => {
+                    return {
+                        index: index + 1,
+                        code,
+                        name,
+                        usedByOrganizationalUnit: getPropertyOfValue(use.usedByOrganizationalUnit, 'name', false, organizationalUnitList),
+                        usedByUser: getPropertyOfValue(use.usedByUser, 'email', false, userlist),
+                        startDate: getFormatDateFromTime(use.startDate, 'dd-mm-yyyy'),
+                        endDate: getFormatDateFromTime(use.endDate, 'dd-mm-yyyy'),
+                        description: use.description
+                    }
+                }) : null;
+                exportSuDung = dataKH ? [...exportSuDung, ...dataKH] : [...exportSuDung];
+
+                // Dữ liệu tab sự cố
+                let dataSuCo = x.incidentLogs ? x.incidentLogs.map(incident => {
+                    return {
+                        index: index + 1,
+                        code,
+                        name,
+                        incidentCode: incident.incidentCode,
+                        incidentType: this.getIncidentType(incident.type),
+                        announcer: getPropertyOfValue(incident.reportedBy, 'email', false, userlist),
+                        incidentDate: getFormatDateFromTime(incident.dateOfIncident, 'dd-mm-yyyy'),
+                        content: incident.description,
+                        status: this.getIncidentStatus(incident.statusIncident)
+                    }
+                }) : null;
+                exportSuCo = dataSuCo ? [...exportSuCo, ...dataSuCo] : [...exportSuCo]
+
+                // Dữ liệu tab bảo trì - sửa chữa
+                let dataBTSC = x.maintainanceLogs ? x.maintainanceLogs.map(mt => {
+                    return {
+                        index: index + 1,
+                        maintainanceCode: mt.maintainanceCode,
+                        code,
+                        name,
+                        createDate: getFormatDateFromTime(mt.createDate),
+                        type: this.getIncidentType(mt.type),
+                        description: mt.description,
+                        startDate: getFormatDateFromTime(mt.startDate, 'dd-mm-yyyy'),
+                        endDate: getFormatDateFromTime(mt.endDate, 'dd-mm-yyyy'),
+                        expense: this.getCostNumber(mt.expense),
+                        status: this.getIncidentStatus(mt.status)
+                    }
+                }) : null;
+                exportBaoTriSuaChua = dataBTSC ? [...exportBaoTriSuaChua, ...dataBTSC] : [...exportBaoTriSuaChua];
+
+                // Dữ liệu tab thanh lý
+                let disposalDesc = x.disposalDesc;
+                let disposalType = x.disposalType;
+                let disposalCost = this.getCostNumber(x.disposalCost);
+
+                exportThanhLy = [...exportThanhLy, {
+                    index: index + 1,
+                    code,
+                    name,
+                    disposalDesc,
+                    disposalCost,
+                    disposalDate,
+                    disposalType: this.gettDisposalType(disposalType)
+                }]
             })
         }
 
         let exportData = {
             fileName: fileName,
             dataSheets: [
+                // 1. Sheet thông tin sử dụng
                 {
-                    sheetName: "sheet1",
-                    sheetTitle: fileName,
+                    sheetName: "Thông tin chung",
+                    sheetTitle: 'Bảng danh sách thông tin chung',
+                    sheetTitleWidth: 15,
                     tables: [
                         {
                             merges: [{
@@ -336,8 +489,9 @@ class AssetManagement extends Component {
                             columns: [
                                 { key: "index", value: "STT" },
                                 { key: "code", value: "Mã tài sản" },
-                                { key: "name", value: "Họ và tên" },
+                                { key: "name", value: "Tên tài sản" },
                                 { key: "description", value: "Mô tả" },
+                                { key: "group", value: 'Nhóm tài sản' },
                                 { key: "type", value: "Loại tài sản" },
                                 { key: "purchaseDate", value: "Ngày nhập" },
                                 { key: "disposalDate", value: "Ngày thanh lý" },
@@ -349,10 +503,128 @@ class AssetManagement extends Component {
                                 { key: "infoName", value: "Tên trường thông tin" },
                                 { key: "value", value: "Giá trị" }
                             ],
-                            data: convertedData
+                            data: exportThongTinChung
                         }
                     ]
                 },
+
+                // 2. Sheet thông tin khấu hao
+                {
+                    sheetName: "Thông tin khấu hao",
+                    sheetTitle: 'Danh sách thông tin khấu hao tài sản',
+                    sheetTitleWidth: 8,
+                    tables: [
+                        {
+                            rowHeader: 2,
+                            columns: [
+                                { key: "index", value: "STT" },
+                                { key: "code", value: "Mã tài sản" },
+                                { key: "name", value: "Tên tài sản" },
+                                { key: "cost", value: "Nguyên giá" },
+                                { key: "residualValue", value: "Giá trị thu hồi ước tính" },
+                                { key: "usefulLife", value: "Thời gian sử dụng (tháng)" },
+                                { key: "startDepreciation", value: "Thời điểm bắt đầu trích khấu khao" },
+                                { key: "depreciationType", value: "Phương pháp khấu hao" }
+                            ],
+                            data: exportKhauHao
+                        }
+                    ]
+                },
+
+                // 3. Sheet thông tin sử dụng
+                {
+                    sheetName: "Thông tin sử dụng",
+                    sheetTitle: "Bảng danh sách thông tin sử dụng",
+                    sheetTitleWidth: 8,
+                    tables: [
+                        {
+                            rowHeader: 2,
+                            columns: [
+                                { key: "index", value: "STT" },
+                                { key: "code", value: "Mã tài sản" },
+                                { key: "name", value: "Tên tài sản" },
+                                { key: "description", value: "Mô tả" },
+                                { key: "usedByUser", value: "Người sử dụng" },
+                                { key: "usedByOrganizationalUnit", value: "Đơn vị sử dụng" },
+                                { key: "startDate", value: "Ngày bắt đầu sử dụng" },
+                                { key: "endDate", value: "Ngày kết thúc sử dụng" }
+                            ],
+                            data: exportSuDung
+                        }
+                    ]
+                },
+
+                // 4. Sheet thông tin sự cố
+                {
+                    sheetName: "Thông tin sự cố",
+                    sheetTitle: "Bảng danh sách thông tin sự cố",
+                    sheetTitleWidth: 9,
+                    tables: [
+                        {
+                            rowHeader: 2,
+                            columns: [
+                                { key: "index", value: "STT" },
+                                { key: "code", value: "Mã tài sản" },
+                                { key: "name", value: "Tên tài sản" },
+                                { key: "incidentCode", value: "Mã sự cố" },
+                                { key: "incidentType", value: "Loại sự cố" },
+                                { key: "announcer", value: "Người báo cáo" },
+                                { key: "incidentDate", value: "Ngày phát hiện" },
+                                { key: "content", value: "Nội dung" },
+                                { key: "status", value: "Trạng thái" }
+                            ],
+                            data: exportSuCo
+                        }
+                    ]
+                },
+
+                // 5. Sheet thông tin bảo trì - sửa chữa
+                {
+                    sheetName: "Thông tin bảo trì",
+                    sheetTitle: "Bảng danh sách thông tin bảo trì",
+                    sheetTitleWidth: 11,
+                    tables: [
+                        {
+                            rowHeader: 2,
+                            columns: [
+                                { key: "index", value: "STT" },
+                                { key: "maintainanceCode", value: "Mã phiếu" },
+                                { key: "code", value: "Mã tài sản" },
+                                { key: "name", value: "Tên tài sản" },
+                                { key: "createDate", value: "Ngày lập" },
+                                { key: "type", value: "Phân loại" },
+                                { key: "description", value: "Nội dung" },
+                                { key: "startDate", value: "Ngày bắt đầu" },
+                                { key: "endDate", value: "Ngày hoàn thành" },
+                                { key: "expense", value: "Chi phí" },
+                                { key: "status", value: "Trạng thái" }
+                            ],
+                            data: exportBaoTriSuaChua
+                        }
+                    ]
+                },
+
+                // 6. Sheet thông tin thanh lý
+                {
+                    sheetName: "Thông tin thanh lý",
+                    sheetTitle: "Bảng danh sách thông tin thanh lý",
+                    sheetTitleWidth: 7,
+                    tables: [
+                        {
+                            rowHeader: 2,
+                            columns: [
+                                { key: "index", value: "STT" },
+                                { key: "code", value: "Mã tài sản" },
+                                { key: "name", value: "Tên tài sản" },
+                                { key: "disposalDate", value: "Thời gian thanh lý" },
+                                { key: "disposalType", value: "Hình thức thanh lý" },
+                                { key: "disposalCost", value: "Giá trị thanh lý" },
+                                { key: "disposalDesc", value: "Nội dung thanh lý" },
+                            ],
+                            data: exportThanhLy
+                        }
+                    ]
+                }
             ]
         }
         return exportData;
@@ -372,17 +644,6 @@ class AssetManagement extends Component {
         })
         return typeArr;
     }
-
-    // checkHasComponent = (name) => {
-    //     var { auth } = this.props;
-    //     var result = false;
-    //     if (auth) {
-    //         auth.components.forEach(component => {
-    //             if (component.name === name) result = true;
-    //         });
-    //     }
-    //     return result;
-    // }
 
     getDepartment = () => {
         let { department } = this.props;
@@ -452,7 +713,7 @@ class AssetManagement extends Component {
 
     render() {
         const { assetsManager, assetType, translate, user, isActive, department } = this.props;
-        const { page, limit, currentRowView, status, currentRow, purchaseDate, disposalDate, managedBy, location, typeRegisterForUse, handoverUnit, handoverUser } = this.state;
+        const { page, limit, currentRowView, status, currentRow, purchaseDate, disposalDate, managedBy, location } = this.state;
         var lists = "", exportData;
         var userlist = user.list, departmentlist = department.list;
         var assettypelist = assetType.listAssetTypes;
@@ -699,11 +960,11 @@ class AssetManagement extends Component {
                                         <td>{x.code}</td>
                                         <td>{x.assetName}</td>
                                         <td>{this.convertGroupAsset(x.group)}</td>
-                                        <td>{x.assetType && x.assetType.length ? x.assetType.map((item, index) => { let suffix = index < x.assetType.length - 1 ? ", " : ""; return item.typeName + suffix }) : ''}</td>
+                                        <td>{x.assetType.map((type, index, arr) => index !== arr.length - 1 ? type.typeName + ', ' : type.typeName)}</td>
                                         <td>{this.formatDate(x.purchaseDate)}</td>
-                                        <td>{x.managedBy && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).name : ''}</td>
-                                        <td>{x.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.assignedToUser) ? userlist.find(item => item._id === x.assignedToUser).name : '') : ''}</td>
-                                        <td>{x.assignedToOrganizationalUnit ? (departmentlist.length && departmentlist.find(item => item._id === x.assignedToOrganizationalUnit) ? departmentlist.find(item => item._id === x.assignedToOrganizationalUnit).name : '') : ''}</td>
+                                        <td>{getPropertyOfValue(x.managedBy, 'email', false, userlist)}</td>
+                                        <td>{getPropertyOfValue(x.assignedToUser, 'email', false, userlist)}</td>
+                                        <td>{getPropertyOfValue(x.assignedToOrganizationalUnit, 'name', false, departmentlist)}</td>
                                         <td>{this.formatStatus(x.status)}</td>
                                         <td>{this.formatDisposalDate(x.disposalDate, x.status)}</td>
                                         <td style={{ textAlign: "center" }}>
@@ -728,7 +989,13 @@ class AssetManagement extends Component {
                     }
 
                     {/* PaginateBar */}
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
+                    <PaginateBar
+                        display={assetsManager.listAssets ? assetsManager.listAssets.length : null}
+                        total={assetsManager.totalList ? assetsManager.totalList : null}
+                        pageTotal={pageTotal ? pageTotal : 0}
+                        currentPage={currentPage}
+                        func={this.setPage}
+                    />
                 </div>
 
                 {/* Form xem thông tin tài sản */}
@@ -744,9 +1011,9 @@ class AssetManagement extends Component {
                         group={currentRowView.group}
                         purchaseDate={currentRowView.purchaseDate}
                         warrantyExpirationDate={currentRowView.warrantyExpirationDate}
-                        managedBy={currentRowView.managedBy}
-                        assignedToUser={currentRowView.assignedToUser}
-                        assignedToOrganizationalUnit={currentRowView.assignedToOrganizationalUnit}
+                        managedBy={getPropertyOfValue(currentRowView.managedBy, '_id', true, userlist)}
+                        assignedToUser={getPropertyOfValue(currentRowView.assignedToUser, '_id', true, userlist)}
+                        assignedToOrganizationalUnit={getPropertyOfValue(currentRowView.assignedToOrganizationalUnit, '_id', true, departmentlist)}
                         handoverFromDate={currentRowView.handoverFromDate}
                         handoverToDate={currentRowView.handoverToDate}
                         location={currentRowView.location}
@@ -791,9 +1058,9 @@ class AssetManagement extends Component {
                         group={currentRow.group}
                         purchaseDate={currentRow.purchaseDate}
                         warrantyExpirationDate={currentRow.warrantyExpirationDate}
-                        managedBy={currentRow.managedBy}
-                        assignedToUser={currentRow.assignedToUser}
-                        assignedToOrganizationalUnit={currentRow.assignedToOrganizationalUnit}
+                        managedBy={getPropertyOfValue(currentRow.managedBy, '_id', true, userlist)}
+                        assignedToUser={getPropertyOfValue(currentRow.assignedToUser, '_id', true, userlist)}
+                        assignedToOrganizationalUnit={getPropertyOfValue(currentRow.assignedToOrganizationalUnit, '_id', true, departmentlist)}
                         handoverFromDate={currentRow.handoverFromDate}
                         handoverToDate={currentRow.handoverToDate}
                         location={currentRow.location}

@@ -62,7 +62,12 @@ exports.searchPurchaseRequests = async (portal, company, query) => {
     // Thêm người đề nghị vào trường tìm kiếm
     if (proponent) {
         let user = await User(connect(DB_CONNECTION, portal))
-            .find({name: {$regex: proponent, $options: "i"}})
+            .find({
+                $or: [
+                    {email: {$regex: proponent, $options: "i"}},
+                    {name: {$regex: proponent, $options: "i"}}
+                ]
+            })
             .select("_id");
         let userIds = [];
         user.map((x) => {
@@ -74,7 +79,12 @@ exports.searchPurchaseRequests = async (portal, company, query) => {
     // Thêm người phê duyệt vào trường tìm kiếm
     if (approver) {
         let user = await User(connect(DB_CONNECTION, portal))
-            .find({name: {$regex: approver, $options: "i"}})
+            .find({
+                $or: [
+                    {email: {$regex: approver, $options: "i"}},
+                    {name: {$regex: approver, $options: "i"}}
+                ]
+            })
             .select("_id");
         let userIds = [];
         user.map((x) => {
@@ -154,7 +164,7 @@ exports.updatePurchaseRequest = async (portal, id, data) => {
     var recommendProcureChange = {
         recommendNumber: data.recommendNumber,
         dateCreate: data.dateCreate,
-        proponent: data.proponent, // Người đề nghị
+        proponent: data.proponent._id, // Người đề nghị
         equipmentName: data.equipmentName,
         equipmentDescription: data.equipmentDescription,
         supplier: data.supplier,
@@ -167,15 +177,10 @@ exports.updatePurchaseRequest = async (portal, id, data) => {
     };
 
     // Cập nhật thông tin phiếu đề nghị mua sắm thiết bị vào database
-    await RecommendProcure(connect(DB_CONNECTION, portal)).findOneAndUpdate(
-        {
-            _id: id,
-        },
+    return await RecommendProcure(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
+       id,
         {
             $set: recommendProcureChange,
-        }
+        },{new:true}
     );
-    return await RecommendProcure(connect(DB_CONNECTION, portal)).findOne({
-        _id: id,
-    });
 };

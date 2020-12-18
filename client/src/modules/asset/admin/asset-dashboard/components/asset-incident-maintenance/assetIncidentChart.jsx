@@ -39,8 +39,8 @@ class AssetIncidentChart extends Component {
     }
 
     setDataColumnChartForMonth = (listAssets) => {
-        const { translate } = this.props;
-        let { incidentDateAfter, incidentDateBefore } = this.state;
+        const { translate, getIncidentData } = this.props;
+        let { incidentDateAfter, incidentDateBefore, type } = this.state;
 
         let startDate = new Date(incidentDateAfter);
         let endDate = new Date(incidentDateBefore);
@@ -97,16 +97,16 @@ class AssetIncidentChart extends Component {
             yValues: arr
         };
 
-        // if (getincidentData && listAssets) {
-        //     getincidentData(dataColumnChart);
-        // }
+        if (listAssets && dataColumnChart) {
+            getIncidentData(dataColumnChart, type);
+        }
 
         return dataColumnChart;
     }
 
     setDataColumnChartForYear = (listAssets) => {
-        const { translate } = this.props;
-        let { incidentDateAfter, incidentDateBefore } = this.state;
+        const { translate, getIncidentData } = this.props;
+        let { incidentDateAfter, incidentDateBefore, type } = this.state;
 
         let startDate = incidentDateAfter.slice(0, 4);
         let endDate = incidentDateBefore.slice(0, 4);
@@ -148,9 +148,9 @@ class AssetIncidentChart extends Component {
             yValues: arr
         };
 
-        // if (getincidentData && listAssets) {
-        //     getincidentData(dataColumnChart);
-        // }
+        if (dataColumnChart && listAssets) {
+            getIncidentData(dataColumnChart, type);
+        }
         return dataColumnChart;
     }
 

@@ -35,17 +35,19 @@
     background-image: none;
 }
 .jstree-default i.jstree-icon.jstree-themeicon::before {
-    font: normal normal normal 18px/1 "Material Icons";
-    color: #a93a3a;
-    margin-right: 4px;
+    font: normal normal normal 18px/1;
+    color: #3C8DBC;
+    font-size: 20px;
+    margin-right: 10px;
     display: inline-block;
-    content: "view_agenda";
     vertical-align: top;
-    padding-top: 5px;
+    padding-top: 2px;
+    padding-right: 2px;
 }
 .jstree-default .jstree-leaf i.jstree-icon.jstree-themeicon::before { /* Icon node lá */
-    color: #4da75b;
-    content: "eco";
+    color: #3C8DBC;
+    font-size: 20px;
+    margin-top: 2px;
 }
 
 
@@ -54,8 +56,8 @@
 @supports (-webkit-appearance: none) or (-moz-appearance: none) {
     /* Dãn dòng */
     .jstree-default .jstree-anchor {
-        line-height: 28px;
-        height: 28px;
+        line-height: 32px;
+        height: 32px;
         padding: 0 15px 0 5px;
     }
 

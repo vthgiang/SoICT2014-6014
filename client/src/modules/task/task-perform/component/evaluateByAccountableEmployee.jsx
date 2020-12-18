@@ -170,7 +170,7 @@ class EvaluateByAccountableEmployee extends Component {
             prevDate = this.formatDate(prevEval.date);
         }
         let automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : undefined;
-        let progress = evaluations ? evaluations.progress : undefined;
+        let progress = evaluations ? evaluations.progress : 0;
 
         let unit;
         if (user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) {
