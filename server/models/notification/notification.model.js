@@ -30,7 +30,15 @@ const NotificationSchema = new Schema({
     manualNotification: { // Nếu là loại thông báo tạo bởi ai đó, thì sẽ kết nối với bngr 
         type: Schema.Types.ObjectId,
         ref: 'ManualNotification',
-    }
+    },
+    files: [{ // Tài liệu đính kèm khi gửi thông báo
+        fileName: {
+            type: String,
+        },
+        url: {
+            type: String
+        }
+    }],
 },{
     timestamps: true,
     toJSON: { virtuals: true }

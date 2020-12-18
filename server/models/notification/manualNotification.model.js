@@ -34,7 +34,15 @@ const ManualNotificationSchema = new Schema({
     organizationalUnits: [{ //gửi đến cho những đơn vị nào
         type: Schema.Types.ObjectId,
         ref: 'OrganizationalUnit',
-    }]
+    }],
+    files: [{ // Tài liệu đính kèm khi gửi thông báo
+        fileName: {
+            type: String,
+        },
+        url: {
+            type: String
+        }
+    }],
 },{
     timestamps: true,
     toJSON: { virtuals: true }
