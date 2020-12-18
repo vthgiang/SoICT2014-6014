@@ -193,46 +193,37 @@ const initHumanResourceData = async () => {
     /**
      * 1. Tạo kết nối đến csdl của hệ thống và công ty VNIST
      */
-    const systemDB = mongoose.createConnection(
-        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/${
-            process.env.DB_NAME
-        }`,
-        {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true,
-            useFindAndModify: false,
-            user:
-                process.env.DB_AUTHENTICATION === "true"
-                    ? process.env.DB_USERNAME
-                    : undefined,
-            pass:
-                process.env.DB_AUTHENTICATION === "true"
-                    ? process.env.DB_PASSWORD
-                    : undefined,
-        }
-    );
+    let connectOptions = process.env.DB_AUTHENTICATION === 'true' ?
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+        user: process.env.DB_USERNAME,
+        pass: process.env.DB_PASSWORD
+    } : {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false
+    }
+    const systemDB = mongoose.createConnection(`mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/${process.env.DB_NAME}`, connectOptions);
 
-    const vnistDB = mongoose.createConnection(
-        `mongodb://${process.env.DB_HOST}:${
-            process.env.DB_PORT || "27017"
-        }/vnist`,
-        process.env.DB_AUTHENTICATION === "true"
-            ? {
-                  useNewUrlParser: true,
-                  useUnifiedTopology: true,
-                  useCreateIndex: true,
-                  useFindAndModify: false,
-                  user: process.env.DB_USERNAME,
-                  pass: process.env.DB_PASSWORD,
-              }
-            : {
-                  useNewUrlParser: true,
-                  useUnifiedTopology: true,
-                  useCreateIndex: true,
-                  useFindAndModify: false,
-              }
-    );
+    let connectVNISTOptions = process.env.DB_AUTHENTICATION === 'true' ?
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+        user: process.env.DB_USERNAME,
+        pass: process.env.DB_PASSWORD
+    } : {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false
+    }
+    const vnistDB = mongoose.createConnection(`mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/vnist`, connectVNISTOptions);
 
     if (!systemDB) throw "DB vnist cannot connect";
     console.log("DB vnist connected");

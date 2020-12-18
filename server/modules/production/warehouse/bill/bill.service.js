@@ -172,7 +172,7 @@ exports.getBillsByType = async (query, userId, portal) => {
 exports.getBillByGood = async (query, portal) => {
     const { good, limit, page } = query;
 
-    let option = { goods: { $elemMatch: { good: good } }, $or: [{ group: '1' }, { group: '2' }], type: '2' };
+    let option = { goods: { $elemMatch: { good: good } }, $or: [{ group: '1' }, { group: '2' }], status: '2' };
 
     if (query.startDate && query.endDate) {
         let date1 = query.startDate.split("-");
