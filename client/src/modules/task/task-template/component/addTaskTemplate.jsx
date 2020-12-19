@@ -474,7 +474,7 @@ class AddTaskTemplate extends Component {
 
                         {/**Đơn vị(phòng ban) của Task template*/}
                         <div className={`form-group ${this.state.newTemplate.errorOnUnit === undefined ? "" : "has-error"}`} style={{ marginLeft: 0, marginRight: 0 }}>
-                            {/* <label className="control-label">{translate('task_template.unit')} <span style={{ color: "red" }}> <span style={{ color: "red" }}>*</span></span></label> */}
+                            <label className="control-label">{translate('task_template.unit')}</label>
                             {usersInUnitsOfCompany !== undefined && newTemplate.organizationalUnit !== "" &&
                                 <SelectBox
                                     id={`unit-select-box`}
@@ -491,7 +491,6 @@ class AddTaskTemplate extends Component {
                                     value={newTemplate.organizationalUnit}
                                 />
                             }
-                            {/* <ErrorLabel content={newTemplate.errorOnUnit} /> */}
                         </div>
 
                         {/* Chọn đơn vị phối hợp công việc */}

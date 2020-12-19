@@ -60,8 +60,8 @@ class ModalAddTaskTemplate extends Component {
                 listRoles.push(listRole.employees[x]._id);
         }
         console.log('list role', listRoles);
-        await this.setState( state => {
-            if(state.newTemplate.readByEmployees.length === 0){
+        await this.setState(state => {
+            if (state.newTemplate.readByEmployees.length === 0) {
                 state.newTemplate.readByEmployees = listRoles
             }
             return {
@@ -86,9 +86,9 @@ class ModalAddTaskTemplate extends Component {
         //     this.validateTaskTemplateFormula(this.state.newTemplate.formula, false);
         // return result;
     }
-    
-    
-    validateTaskTemplateName = (value, willUpdateState=true) => {
+
+
+    validateTaskTemplateName = (value, willUpdateState = true) => {
         let msg = TaskTemplateFormValidator.validateTaskTemplateName(value);
 
         if (willUpdateState) {
@@ -100,10 +100,10 @@ class ModalAddTaskTemplate extends Component {
                 };
             });
         }
-        return msg === undefined;   
+        return msg === undefined;
     }
 
-    validateTaskTemplateDescription = (value, willUpdateState=true) => {
+    validateTaskTemplateDescription = (value, willUpdateState = true) => {
         let msg = TaskTemplateFormValidator.validateTaskTemplateDescription(value);
 
         if (willUpdateState) {
@@ -118,7 +118,7 @@ class ModalAddTaskTemplate extends Component {
         return msg === undefined;
     }
 
-    validateTaskTemplateFormula = (value, willUpdateState=true) => {
+    validateTaskTemplateFormula = (value, willUpdateState = true) => {
         let msg = TaskTemplateFormValidator.validateTaskTemplateFormula(value);
 
         if (willUpdateState) {
@@ -133,7 +133,7 @@ class ModalAddTaskTemplate extends Component {
         return msg === undefined;
     }
 
-    validateTaskTemplateUnit = (value, willUpdateState=true) => {
+    validateTaskTemplateUnit = (value, willUpdateState = true) => {
         let msg = TaskTemplateFormValidator.validateTaskTemplateUnit(value);
 
         if (willUpdateState) {
@@ -156,7 +156,7 @@ class ModalAddTaskTemplate extends Component {
         return msg === undefined;
     }
 
-    validateTaskTemplateRead = (value, willUpdateState=true) => {
+    validateTaskTemplateRead = (value, willUpdateState = true) => {
         let msg = TaskTemplateFormValidator.validateTaskTemplateRead(value);
 
         if (willUpdateState) {
@@ -176,21 +176,20 @@ class ModalAddTaskTemplate extends Component {
             newTemplate: value
         })
     }
-    
+
     render() {
         const { user, translate } = this.props;
 
-        return (                    
+        return (
             <React.Fragment>
                 <DialogModal
                     modalID="modal-add-task-template" isLoading={user.isLoading}
                     formID="form-add-task-template"
                     title={translate('task_template.add_tasktemplate')}
                     func={this.handleSubmit}
-                    disableSubmit={!this.isTaskTemplateFormValidated()}
                     size={100}
                 >
-                    <AddTaskTemplate onChangeTemplateData={this.onChangeTemplateData}/>
+                    <AddTaskTemplate onChangeTemplateData={this.onChangeTemplateData} />
                 </DialogModal>
             </React.Fragment>
         );
