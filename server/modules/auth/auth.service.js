@@ -246,7 +246,6 @@ exports.changeInformation = async (
 exports.changePassword = async (portal, id, password, new_password) => {
     const user = await User(connect(DB_CONNECTION, portal))
         .findById(id)
-        .select('-password')
         .populate([{ path: "roles", populate: { path: "roleId" } }]);
     const validPass = await bcrypt.compare(password, user.password);
     // Kiểm tra mật khẩu cũ nhập vào có đúng hay không

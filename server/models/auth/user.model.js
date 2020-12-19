@@ -47,11 +47,14 @@ const UserSchema = new Schema(
             type: String,
             default: "/upload/avatars/user.png",
         },
-        pushNotificationTokens: [
-            {
-                type: String,
-            },
-        ],
+        pushNotificationTokens: [{ type: String }],
+
+        // Câu hỏi xác thực tài khoản 
+        authQuestions: {
+            answer1: { type: String },
+            answer2: { type: String },
+            answer3: { type: String },
+        }
     },
     {
         timestamps: true,
