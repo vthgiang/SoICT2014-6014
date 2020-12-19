@@ -49,11 +49,9 @@ const UserSchema = new Schema(
         },
         pushNotificationTokens: [{ type: String }],
 
-        // Câu hỏi xác thực tài khoản 
-        authQuestions: {
-            answer1: { type: String },
-            answer2: { type: String },
-            answer3: { type: String },
+        // mật khẩu cấp 2
+        password2: {
+            type: String
         }
     },
     {

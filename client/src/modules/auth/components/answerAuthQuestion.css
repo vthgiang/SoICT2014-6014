@@ -1,27 +1,43 @@
 .one-edge-shadow {
     box-shadow: 0 8px 6px -6px black;
-    width: 50%;
-    left: 25%;
+    width: 40%;
+    left: 30%;
     background-color: #fff;
     position: absolute;
     top: 50px;
-    padding: 5px 20px 20px 20px
+    padding: 20px
 }
 
 .auth-text {
-    font-family: Sentinel SSm A,Sentinel SSm B,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;
+    font-size: 18px;
+}
+
+.auth-info-line {
+    margin-bottom: 20px;
+}
+
+.auth-input-action {
+    color: #818181
+}
+
+.auth-input-action:hover {
+    color: #c1c1c1
+}
+
+.auth-input-group {
+    margin: 5px;
 }
 
 input.auth-input {
-    width: 100%;
     border: none;
     border-bottom: 0.5px solid #d1d1d1;
     padding: 5px 12px;
     margin-bottom: 28px;
+    font-size: 16px;
+    height: 34px;
 }
 
 button.auth-button {
-    font-family: Sentinel SSm A,Sentinel SSm B,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;
     border: none;
     padding: 8px 12px;
     background-color: #605ca8;
@@ -29,7 +45,6 @@ button.auth-button {
 }
 
 button.auth-button:hover {
-    font-family: Sentinel SSm A,Sentinel SSm B,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;
     border: none;
     padding: 8px 12px;
     background-color: #4a4782;

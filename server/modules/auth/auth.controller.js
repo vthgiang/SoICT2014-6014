@@ -216,20 +216,21 @@ exports.downloadFile = async (req, res) => {
 
 exports.answerAuthQuestions = async(req, res) => {
     try {
-        const profile = await AuthService.answerAuthQuestions(req.portal, req.params.id);
-
-        await Logger.info(req.user.email, 'show_profile_success', req.portal);
+        console.log('fffffffffff')
+        const answer = await AuthService.answerAuthQuestions(req.portal, req.user._id, req.body);
+        console.log("anser", answer);
+        await Logger.info(req.user.email, 'answer_auth_question_success', req.portal);
         res.status(200).json({
             success: true,
-            messages: ['show_profile_success'],
-            content: profile
+            messages: ['answer_auth_question_success'],
+            content: answer
         });
     } catch (error) {
 
-        await Logger.info(req.user.email, 'show_profile_faile', req.portal);
+        await Logger.info(req.user.email, 'answer_auth_question_faile', req.portal);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['show_profile_faile'],
+            messages: Array.isArray(error) ? error : ['answer_auth_question_faile'],
             content: error
         });
     }

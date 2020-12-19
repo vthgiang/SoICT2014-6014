@@ -5,34 +5,29 @@ import { AuthActions } from '../redux/actions';
 import './answerAuthQuestion.css';
 import Swal from 'sweetalert2';
 
-const AnswerAuthQuestionPage = ({ answerAuthQuestion }) => {
-    const [state, setState] = useState({});
+const AnswerAuthQuestionPage = ({ auth, answerAuthQuestion }) => {
+    const [state, setState] = useState({
+        hide: true
+    });
 
-    const _handleQ1 = (e) => {
+    const _handlePassword2 = (e) => {
         setState({
             ...state,
-            q1: e.target.value
+            password2: e.target.value
         })
     }
 
-    const _handleQ2 = (e) => {
+    const _handleShowHide = (e) => {
         setState({
             ...state,
-            q2: e.target.value
-        })
-    }
-
-    const _handleQ3 = (e) => {
-        setState({
-            ...state,
-            q3: e.target.value
+            hide: !state.hide
         })
     }
 
     const _save = (e) => {
         e.preventDefault();
         Swal.fire({
-            title: 'Xác nhận ghi nhận thông tin câu hỏi?',
+            title: 'Xác nhận mật khẩu cấp 2?',
             icon: 'question',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -49,17 +44,9 @@ const AnswerAuthQuestionPage = ({ answerAuthQuestion }) => {
 
                 setTimeout(() => {
                     answerAuthQuestion({
-                        q1: state.q1,
-                        q2: state.q2,
-                        q3: state.q3,
+                        password2: state.password2,
                     }).then(res => {
-                        Swal.fire({
-                            position: 'center',
-                            icon: 'success',
-                            title: 'Lưu thông tin thành công',
-                            showConfirmButton: false,
-                            timer: 1500
-                        })
+                        Swal.close();
                     }).catch(err => {
                         Swal.fire({
                             position: 'center',
@@ -69,7 +56,7 @@ const AnswerAuthQuestionPage = ({ answerAuthQuestion }) => {
                             timer: 1500
                         })
                     })
-                }, 2000)
+                }, 1000)
             }
         })
     }
@@ -78,22 +65,27 @@ const AnswerAuthQuestionPage = ({ answerAuthQuestion }) => {
         <div style={{ width: '100vw', height: '100vh', backgroundColor: '#e1e1e1' }}>
 
             <div className="one-edge-shadow">
-                <h3 className="text-center">Câu hỏi xác thực tài khoản</h3>
-                <p className="text-center">***</p>
+                {
+                    auth.redirectToAuthQuestionPage ?
+                        <form onSubmit={_save}>
+                            <div className="auth-info-line">
+                                <label className="auth-text">Tạo mật khẩu cấp 2 để hoàn tất kích hoạt tài khoản<span className="text-red">*</span></label>
+                                <div style={{ display: 'flex' }}>
+                                    <input className="form-control auth-input" type={state.hide ? 'password' : 'text'} placeholder="Nhập ..." onChange={_handlePassword2} />
+                                    <span className="auth-input-action" style={{ position: 'absolute', top: "60px", right: '25px', cursor: 'pointer' }} onClick={_handleShowHide}><i className={state.hide ? 'fa fa-eye' : 'fa fa-eye-slash'}></i></span>
+                                </div>
+                            </div>
 
-                <form onSubmit={_save}>
-                    <label className="auth-text">Câu hỏi 1: Ngày sinh của bạn? <span className="text-red">*</span></label>
-                    <input className="auth-input" onChange={_handleQ1} />
-
-                    <label className="auth-text">Câu hỏi 2: Môn thể thao mà bạn thích nhất? <span className="text-red">*</span></label>
-                    <input className="auth-input" onChange={_handleQ2} />
-
-                    <label className="auth-text">Câu hỏi 3: Nơi bạn đang sống? <span className="text-red">*</span></label>
-                    <input className="auth-input" onChange={_handleQ3} />
-
-                    <span>(<span className="text-red">*</span>) Trường thông tin bắt buộc</span>
-                    <button type="submit" className="auth-button pull-right">Xác nhận</button>
-                </form>
+                            <span>(<span className="text-red">*</span>) Trường thông tin bắt buộc</span>
+                            <button type="submit" className="auth-button pull-right">Xác nhận</button>
+                        </form> :
+                        <div className="text-center">
+                            <h3 className="text-green">
+                                <i className="fa fa-check" style={{ fontSize: '24px' }}></i>Lưu thông tin thành công!
+                            </h3>
+                            <a href="/"><span style={{ fontSize: '16px', color: 'blue' }}><u>Chuyển đến trang chủ</u></span></a>
+                        </div>
+                }
             </div>
         </div>
     )

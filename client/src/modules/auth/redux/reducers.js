@@ -59,7 +59,6 @@ export function auth(state = initState, action) {
             };
 
         case AuthConstants.REDIRECT_AUTH_QUESTION_PAGE:
-            setStorage('jwt', action.payload);
             return {
                 ...state,
                 redirectToAuthQuestionPage: true

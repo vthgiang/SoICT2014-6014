@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { Route, Redirect} from 'react-router-dom';
 import { getStorage } from  '../config';
 import {CallApiStatus} from '../modules/auth/redux/reducers';
@@ -17,8 +16,8 @@ const checkURL = (urlName, linkArr) => {
     return result;
 }
 
-const PrivateRoute = ({ authenticate, auth, isLoading, arrPage, pageName, link, component: Component, layout: Layout, ...rest }) => {
-    const {redirectToAuthQuestionPage} = authenticate;
+const PrivateRoute = ({ auth, isLoading, arrPage, pageName, link, component: Component, layout: Layout, ...rest }) => {
+    const {redirectToAuthQuestionPage} = auth;
     
     return <Route {...rest} render={props => {
         var logged = getStorage();
@@ -38,9 +37,4 @@ const PrivateRoute = ({ authenticate, auth, isLoading, arrPage, pageName, link, 
     }} />
 }
 
-const mapStateToProps = state => {
-    return {authenticate: state.auth}
-}
-
-const PrivateRouteConnected = connect(mapStateToProps)(PrivateRoute);
-export {PrivateRouteConnected as PrivateRoute};
+export {PrivateRoute};

@@ -94,7 +94,7 @@ export async function sendRequest(options, showSuccessAlert = false, showFailAle
                 showAuthResponseAlertAndRedirectToLoginPage();
             else if (messages[0] === 'acc_log_out')
                 clearStorage();
-            else if(messages[0] === 'auth_question_not_complete') // Yêu cầu người dùng hoàn thành câu hỏi xác thực thông tin bắt buộc
+            else if(messages[0] === 'auth_password2_not_complete') // Yêu cầu người dùng hoàn thành câu hỏi xác thực thông tin bắt buộc
                 store.dispatch({ type: AuthConstants.REDIRECT_AUTH_QUESTION_PAGE, payload: err.response.data.content.token });
             else {
                 showFailAlert && toast.error(

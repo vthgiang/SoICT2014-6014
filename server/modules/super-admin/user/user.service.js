@@ -36,7 +36,7 @@ exports.getUsers = async (portal, company, query) => {
 
             let searchUses = await User(connect(DB_CONNECTION, portal))
                 .find(keySearch)
-                .select("-password -status -deleteSoft -tokens")
+                .select("-password -password2 -status -deleteSoft -tokens")
                 .populate([
                     {
                         path: "roles",
@@ -52,7 +52,7 @@ exports.getUsers = async (portal, company, query) => {
         } else {
             return await User(connect(DB_CONNECTION, portal))
                 .find()
-                .select("-password -status -deleteSoft -tokens")
+                .select("-password -password2 -status -deleteSoft -tokens")
                 .populate([
                     {
                         path: "roles",
@@ -289,7 +289,7 @@ getAllUserInUnitAndItsSubUnits = async (portal, id, unitId) => {
 exports.getUser = async (portal, id) => {
     var user = await User(connect(DB_CONNECTION, portal))
         .findById(id)
-        .select("-password -status -deleteSoft -tokens")
+        .select("-password -password2 -status -deleteSoft -tokens")
         .populate([
             {
                 path: "roles",
@@ -349,7 +349,6 @@ exports.getOrganizationalUnitsOfUser = async (portal, userId) => {
  * @portal portal của db
  */
 exports.createUser = async (portal, data, company) => {
-    console.log("User", portal, data, company);
     var salt = bcrypt.genSaltSync(10);
     var password = generator.generate({
         length: 10,
@@ -550,7 +549,7 @@ exports.checkUserExited = async (portal, email) => {
 exports.editUser = async (portal, id, data) => {
     var user = await User(connect(DB_CONNECTION, portal))
         .findById(id)
-        .select("-password -status -deleteSoft")
+        .select("-password -password2 -status -deleteSoft")
         .populate([
             {
                 path: "roles",
