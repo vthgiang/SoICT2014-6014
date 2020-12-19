@@ -48,6 +48,22 @@ exports.authFunc = (checkPage = true) => {
                 : req.user.company.shortName;
             initModels(connect(DB_CONNECTION, req.portal), Models);
 
+            const userToken = await User(
+                connect(DB_CONNECTION, req.portal)
+            ).findById(req.user._id);
+            if (userToken.numberDevice === 0) throw ["acc_log_out"];
+
+            // Kiểm tra người dùng đã trả lời câu hỏi xác thực tài khoản hay chưa?
+            let questions = userToken.authQuestions;
+            if(!questions.answer1 || !questions.answer2 || !questions.answer3)
+                res.status(400).json({
+                    success: false,
+                    messages: ['auth_question_not_complete'],
+                    content: {
+                        token
+                    }
+                })
+
             if (req.header("current-page") !== "/") {
                 const fingerprint = req.header("fingerprint"); //chữ ký của trình duyệt người dùng - fingerprint
                 const currentRole = req.header("current-role"); // role hiện tại của người dùng
@@ -67,11 +83,6 @@ exports.authFunc = (checkPage = true) => {
                  */
                 if (verified.fingerprint !== fingerprint)
                     throw ["fingerprint_invalid"]; // phát hiện lỗi client copy jwt và paste vào localstorage của trình duyệt để không phải đăng nhập
-
-                const userToken = await User(
-                    connect(DB_CONNECTION, req.portal)
-                ).findById(req.user._id);
-                if (userToken.numberDevice === 0) throw ["acc_log_out"];
 
                 /**
                  * Kiểm tra xem current role có đúng với người dùng hay không?
@@ -272,7 +283,7 @@ exports.uploadFile = (arrData, type) => {
     }
 };
 
-// Middle check quyền thay đổi thông tin tài khoản người dùng
+// Middleware check quyền thay đổi thông tin tài khoản người dùng
 exports.authCUIP = async (req, res, next) => {
     try{
         const token = req.header("auth-token"); //JWT nhận từ người dùng
@@ -308,7 +319,6 @@ exports.authCUIP = async (req, res, next) => {
     
             if(userrole.length === 0) throw ['access_denied'];
         }
-
 
         next();
     } catch(err){

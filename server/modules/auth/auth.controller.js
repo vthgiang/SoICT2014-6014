@@ -97,7 +97,7 @@ exports.resetPassword = async (req, res) => {
             content: resetPassword
         });
     } catch (error) {
-
+        console.log('error', error)
         await Logger.error(req.body.email, 'reset_password_faile');
         res.status(400).json({
             success: false,
@@ -123,7 +123,7 @@ exports.changeInformation = async (req, res) => {
             content: profile
         });
     } catch (error) {
-
+        console.log("change error", error);
         await Logger.error(req.user.email, 'change_user_information_faile', req.portal);
         res.status(400).json({
             success: false,
@@ -144,7 +144,7 @@ exports.changePassword = async (req, res) => {
             content: user
         });
     } catch (error) {
-
+        console.log(error);
         await Logger.error(req.user.email, 'change_user_password_faile', req.portal);
         res.status(400).json({
             success: false,
@@ -209,6 +209,27 @@ exports.downloadFile = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['download_file_faile'],
+            content: error
+        });
+    }
+}
+
+exports.answerAuthQuestions = async(req, res) => {
+    try {
+        const profile = await AuthService.answerAuthQuestions(req.portal, req.params.id);
+
+        await Logger.info(req.user.email, 'show_profile_success', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['show_profile_success'],
+            content: profile
+        });
+    } catch (error) {
+
+        await Logger.info(req.user.email, 'show_profile_faile', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['show_profile_faile'],
             content: error
         });
     }
