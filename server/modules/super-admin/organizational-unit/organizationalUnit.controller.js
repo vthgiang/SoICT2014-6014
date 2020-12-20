@@ -7,8 +7,8 @@ const Logger = require(`${SERVER_LOGS_DIR}`);
  */
 
 exports.getOrganizationalUnits = async (req, res) => {
-    if (req.query.deanOfOrganizationalUnit) {
-        getOrganizationalUnitsThatUserIsDean(req, res);
+    if (req.query.managerOfOrganizationalUnit) {
+        getOrganizationalUnitsThatUserIsManager(req, res);
     } else if (req.query.userId || req.query.email) {
         getOrganizationalUnitsOfUser(req, res);
     } else if (req.query.getAsTree && roleId) {
@@ -62,23 +62,23 @@ getOrganizationalUnitsOfUser = async (req, res) => {
     }
 }
 
-getOrganizationalUnitsThatUserIsDean = async (req, res) => {
+getOrganizationalUnitsThatUserIsManager = async (req, res) => {
     try {
-        const department = await OrganizationalUnitService.getOrganizationalUnitsThatUserIsDean(req.portal, req.query.deanOfOrganizationalUnit);
+        const department = await OrganizationalUnitService.getOrganizationalUnitsThatUserIsManager(req.portal, req.query.managerOfOrganizationalUnit);
 
-        await Logger.info(req.user.email, 'get_department_that_user_is_dean_success', req.portal);
+        await Logger.info(req.user.email, 'get_department_that_user_is_manager_success', req.portal);
         res.status(200).json({
             success: true,
-            messages: ['get_department_that_user_is_dean_success'],
+            messages: ['get_department_that_user_is_manager_success'],
             content: department
         });
     }
     catch (error) {
 
-        await Logger.error(req.user.email, 'get_department_that_user_is_dean_faile', req.portal);
+        await Logger.error(req.user.email, 'get_department_that_user_is_manager_faile', req.portal);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['get_department_that_user_is_dean_faile'],
+            messages: Array.isArray(error) ? error : ['get_department_that_user_is_manager_faile'],
             content: error
         });
     }
@@ -136,8 +136,8 @@ exports.createOrganizationalUnit = async (req, res) => {
         let organizationalUnit = await OrganizationalUnitService.createOrganizationalUnit(
             req.portal,
             req.body,
-            roles.deans.map(dean => dean._id),
-            roles.viceDeans.map(vice => vice._id),
+            roles.managers.map(manager => manager._id),
+            roles.deputyManagers.map(vice => vice._id),
             roles.employees.map(em => em._id)
         );
 

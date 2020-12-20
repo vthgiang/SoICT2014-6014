@@ -24,7 +24,7 @@ class ManageLeaveApplication extends Component {
     }
 
     componentDidMount() {
-        this.props.getDepartmentsThatUserIsDean();
+        this.props.getDepartmentsThatUserIsManager();
     }
 
     /**
@@ -127,13 +127,13 @@ class ManageLeaveApplication extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        let departmentsThatUserIsDean = this.props.department.departmentsThatUserIsDean;
-        if (this.state.dataStatus === 0 && departmentsThatUserIsDean && departmentsThatUserIsDean.length !== 0) {
-            departmentsThatUserIsDean = departmentsThatUserIsDean.map(x => x._id);
-            this.props.searchAnnualLeaves({ ...this.state, organizationalUnits: departmentsThatUserIsDean });
+        let departmentsThatUserIsManager = this.props.department.departmentsThatUserIsManager;
+        if (this.state.dataStatus === 0 && departmentsThatUserIsManager && departmentsThatUserIsManager.length !== 0) {
+            departmentsThatUserIsManager = departmentsThatUserIsManager.map(x => x._id);
+            this.props.searchAnnualLeaves({ ...this.state, organizationalUnits: departmentsThatUserIsManager });
             this.setState({
                 dataStatus: 1,
-                organizationalUnits: departmentsThatUserIsDean,
+                organizationalUnits: departmentsThatUserIsManager,
             })
             return false;
         }
@@ -344,7 +344,7 @@ function mapState(state) {
 const actionCreators = {
     searchAnnualLeaves: AnnualLeaveActions.searchAnnualLeaves,
     updateAnnualLeave: AnnualLeaveActions.updateAnnualLeave,
-    getDepartmentsThatUserIsDean: DepartmentActions.getDepartmentsThatUserIsDean,
+    getDepartmentsThatUserIsManager: DepartmentActions.getDepartmentsThatUserIsManager,
 };
 
 const leaveApplication = connect(mapState, actionCreators)(withTranslate(ManageLeaveApplication));

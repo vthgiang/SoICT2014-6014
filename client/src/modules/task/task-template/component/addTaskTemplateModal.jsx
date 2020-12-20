@@ -40,7 +40,7 @@ class ModalAddTaskTemplate extends Component {
         this.props.getDepartment();
         this.props.getAllUserOfCompany();
         this.props.getRoleSameDepartment(localStorage.getItem("currentRole"));
-        this.props.getDepartmentsThatUserIsDean();
+        this.props.getDepartmentsThatUserIsManager();
         this.props.getAllUserInAllUnitsOfCompany();
     }
 
@@ -208,7 +208,7 @@ const actionCreators = {
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
     getRoleSameDepartment: UserActions.getRoleSameDepartment,
-    getDepartmentsThatUserIsDean: DepartmentActions.getDepartmentsThatUserIsDean,
+    getDepartmentsThatUserIsManager: DepartmentActions.getDepartmentsThatUserIsManager,
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany
 };

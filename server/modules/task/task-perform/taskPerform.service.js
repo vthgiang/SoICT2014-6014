@@ -192,7 +192,7 @@ exports.getTaskById = async (portal, id, userId) => {
 
         let company = [];
 
-        // Tìm ra các đơn vị có role là dean
+        // Tìm ra các đơn vị có role là manager
         for (let i in listRole) {
             let roles = await Role(connect(DB_CONNECTION, portal)).findById(
                 listRole[i]
@@ -200,7 +200,7 @@ exports.getTaskById = async (portal, id, userId) => {
             company[i] = roles.company;
         }
 
-        // Tìm cây đơn vị mà đơn vị gốc có userId có role deans
+        // Tìm cây đơn vị mà đơn vị gốc có userId có role managers
         let tree = [];
         let k = 0;
         for (let i = 0; i < listRole.length; i++) {
@@ -222,9 +222,9 @@ exports.getTaskById = async (portal, id, userId) => {
             let rol = listRole[i];
             if (!flag) {
                 for (let j = 0; j < tree.length; j++) {
-                    if (tree[j].deans.indexOf(rol) !== -1) {
+                    if (tree[j].managers.indexOf(rol) !== -1) {
                         let v = tree[j];
-                        let f = await _checkDeans(
+                        let f = await _checkManagers(
                             v,
                             task.organizationalUnit._id
                         );
@@ -244,7 +244,7 @@ exports.getTaskById = async (portal, id, userId) => {
                                     task.collaboratedWithOrganizationalUnits[k]
                                         .organizationalUnit
                                 ) {
-                                    f = await _checkDeans(
+                                    f = await _checkManagers(
                                         v,
                                         task
                                             .collaboratedWithOrganizationalUnits[
@@ -275,14 +275,14 @@ exports.getTaskById = async (portal, id, userId) => {
 /**
  * Hàm duyệt cây đơn vị - kiểm tra trong cây có đơn vị của công việc được lấy ra hay không (đệ quy)
  */
-_checkDeans = async (v, id) => {
+_checkManagers = async (v, id) => {
     if (v) {
         if (JSON.stringify(v.id) === JSON.stringify(id)) {
             return 1;
         }
         if (v.children) {
             for (let k = 0; k < v.children.length; k++) {
-                return _checkDeans(v.children[k], id);
+                return _checkManagers(v.children[k], id);
             }
         }
     }
@@ -1792,10 +1792,10 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
         }
     }
 
-    let deansOfDeletedCollabID = [],
-        deansOfAdditionalCollabID = [],
-        deansOfDeletedCollab,
-        deansOfAdditionalCollab,
+    let managersOfDeletedCollabID = [],
+        managersOfAdditionalCollabID = [],
+        managersOfDeletedCollab,
+        managersOfAdditionalCollab,
         deletedCollabHtml, deletedCollabEmail,
         additionalCollabHtml, additionalCollabEmail;
 
@@ -1803,32 +1803,32 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
     for (let i = 0; i < deletedCollab.length; i++) {
         let unit = deletedCollab[i] && await OrganizationalUnit(connect(DB_CONNECTION, portal)).findById(deletedCollab[i])
 
-        unit && unit.deans.map(item => {
-            deansOfDeletedCollabID.push(item);
+        unit && unit.managers.map(item => {
+            managersOfDeletedCollabID.push(item);
         })
     }
 
     for (let i = 0; i < additionalCollab.length; i++) {
         let unit = additionalCollab[i] && await OrganizationalUnit(connect(DB_CONNECTION, portal)).findById(additionalCollab[i])
 
-        unit && unit.deans.map(item => {
-            deansOfAdditionalCollabID.push(item);
+        unit && unit.managers.map(item => {
+            managersOfAdditionalCollabID.push(item);
         })
     }
 
-    deansOfDeletedCollab = await UserRole(connect(DB_CONNECTION, portal))
+    managersOfDeletedCollab = await UserRole(connect(DB_CONNECTION, portal))
         .find({
-            roleId: { $in: deansOfDeletedCollabID }
+            roleId: { $in: managersOfDeletedCollabID }
         })
         .populate("userId")
-    deletedCollabEmail = deansOfDeletedCollab.map(item => item.userId && item.userId.email) // Lấy email trưởng đơn vị phối hợp 
+    deletedCollabEmail = managersOfDeletedCollab.map(item => item.userId && item.userId.email) // Lấy email trưởng đơn vị phối hợp 
 
-    deansOfAdditionalCollab = await UserRole(connect(DB_CONNECTION, portal))
+    managersOfAdditionalCollab = await UserRole(connect(DB_CONNECTION, portal))
         .find({
-            roleId: { $in: deansOfAdditionalCollabID }
+            roleId: { $in: managersOfAdditionalCollabID }
         })
         .populate("userId")
-    additionalCollabEmail = deansOfAdditionalCollab.map(item => item.userId && item.userId.email) // Lấy email trưởng đơn vị phối hợp 
+    additionalCollabEmail = managersOfAdditionalCollab.map(item => item.userId && item.userId.email) // Lấy email trưởng đơn vị phối hợp 
 
     let users, userIds
 
@@ -2020,10 +2020,10 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
     return {
         newTask: newTask, email: email, user: user, tasks: tasks,
         deletedCollabEmail: deletedCollabEmail, deletedCollabHtml: deletedCollabHtml,
-        deansOfDeletedCollab: deansOfDeletedCollab.map(item => item.userId && item.userId._id),
+        managersOfDeletedCollab: managersOfDeletedCollab.map(item => item.userId && item.userId._id),
 
         additionalCollabEmail: additionalCollabEmail, additionalCollabHtml: additionalCollabHtml,
-        deansOfAdditionalCollab: deansOfAdditionalCollab.map(item => item.userId && item.userId._id),
+        managersOfAdditionalCollab: managersOfAdditionalCollab.map(item => item.userId && item.userId._id),
     };
 
 }

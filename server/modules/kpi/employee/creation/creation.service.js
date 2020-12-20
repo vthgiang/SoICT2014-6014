@@ -32,8 +32,8 @@ exports.getEmployeeKpiSet = async (portal, id, role, month) => {
 
     let department = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({
         $or: [
-            { deans: role },
-            { viceDeans: role },
+            { managers: role },
+            { deputyManagers: role },
             { employees: role }
         ]
     });

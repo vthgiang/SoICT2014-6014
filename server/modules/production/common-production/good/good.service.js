@@ -174,7 +174,7 @@ exports.getGoodByManageWorksRole = async (roleId, portal) => {
     console.log("Vao day day")
     // Xử  lý các quyền trước để tìm ra các kế hoạch trong các nhà máy được phân quyền
     let role = [roleId];
-    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'deans': { $in: role } });
+    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'managers': { $in: role } });
     let organizationalUnitId = departments.map(department => department._id);
     let listManufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
         organizationalUnit: {

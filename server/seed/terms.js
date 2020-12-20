@@ -18,12 +18,12 @@ const ROOT_ROLES = {
         name: "Admin",
         description: "Admin của một doanh nghiệp/công ty. Có thể có nhiều Admin"
     },
-    DEAN: {
-        name: "Dean",
+    MANAGER: {
+        name: "Manager",
         description: "Trưởng đơn vị trong một doanh nghiệp/công ty"
     },
-    VICE_DEAN: {
-        name: "Vice Dean",
+    DEPUTY_MANAGER: {
+        name: "Deputy Manager",
         description: "Phó đơn vị trong một doanh nghiệp/công ty"
     },
     EMPLOYEE: {
@@ -116,7 +116,7 @@ const COMPONENTS = [{
     name: 'create-task-template-button',
     description: 'Button thêm mới mẫu công việc',
     roles: [
-        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.MANAGER.name,
     ],
     links: [
         '/task-template'
@@ -125,7 +125,7 @@ const COMPONENTS = [{
     name: 'create-task-process-button',
     description: 'Button thêm mới mẫu quy trình công việc',
     roles: [
-        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.MANAGER.name,
     ],
     links: [
         '/task-process-template'
@@ -134,7 +134,7 @@ const COMPONENTS = [{
     name: 'create-asset',
     description: 'Button thêm mới tài sản',
     roles: [
-        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.MANAGER.name,
     ],
     links: [
         '/employee-manage-info-asset',
@@ -176,8 +176,8 @@ const LINKS = [{
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name
     ],
     components: getComponentsInLink('/home')
@@ -189,8 +189,8 @@ const LINKS = [{
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/notifications')
@@ -284,7 +284,7 @@ const LINKS = [{
     description: 'Quản lý tài liệu biểu mẫu của đơn vị',
     category: LINK_CATEGORY.DOCUMENT.name,
     roles: [
-        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.MANAGER.name,
     ]
 },
 {
@@ -292,8 +292,8 @@ const LINKS = [{
     description: 'Tài liệu',
     category: LINK_CATEGORY.DOCUMENT.name,
     roles: [
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ]
 },
@@ -357,8 +357,8 @@ const LINKS = [{
     description: 'Cập nhật thông tin cá nhân của nhân viên',
     category: LINK_CATEGORY.HUMAN_RESOURCE.name,
     roles: [
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/hr-update-employee')
@@ -368,8 +368,8 @@ const LINKS = [{
     description: 'Thông tin cá nhân của nhân viên',
     category: LINK_CATEGORY.HUMAN_RESOURCE.name,
     roles: [
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/hr-detail-employee')
@@ -379,8 +379,8 @@ const LINKS = [{
     description: 'Nghỉ phép',
     category: LINK_CATEGORY.HUMAN_RESOURCE.name,
     roles: [
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/hr-annual-leave-personal')
@@ -390,8 +390,8 @@ const LINKS = [{
     description: 'Bảng tin cá nhân',
     category: LINK_CATEGORY.COMMON.name,
     roles: [
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/dashboard-personal')
@@ -401,7 +401,7 @@ const LINKS = [{
     description: 'Bảng tin đơn vị',
     category: LINK_CATEGORY.COMMON.name,
     roles: [
-        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.MANAGER.name,
     ],
     components: getComponentsInLink('/dashboard-unit')
 },
@@ -411,8 +411,8 @@ const LINKS = [{
     category: LINK_CATEGORY.HUMAN_RESOURCE.name,
     roles: [
         ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
     ],
     components: getComponentsInLink('/hr-manage-leave-application')
 },
@@ -542,7 +542,7 @@ const LINKS = [{
     description: 'Khởi tạo KPI đơn vị',
     category: LINK_CATEGORY.KPI.name,
     roles: [
-        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.MANAGER.name,
     ],
     components: getComponentsInLink('/kpi-units/create')
 },
@@ -551,8 +551,8 @@ const LINKS = [{
     description: 'Dashboard KPI đơn vị',
     category: LINK_CATEGORY.KPI.name,
     roles: [
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/kpi-units/dashboard')
@@ -562,7 +562,7 @@ const LINKS = [{
     description: 'Quản lý KPI đơn vị',
     category: LINK_CATEGORY.KPI.name,
     roles: [
-        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.MANAGER.name,
     ],
     components: getComponentsInLink('/kpi-units/manager')
 },
@@ -571,7 +571,7 @@ const LINKS = [{
     description: 'Thống kê KPI đơn vị',
     category: LINK_CATEGORY.KPI.name,
     roles: [
-        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.MANAGER.name,
     ],
     components: getComponentsInLink('/kpi-units/statistic')
 },
@@ -580,7 +580,7 @@ const LINKS = [{
     description: 'Quản lí kpi nhân viên',
     category: LINK_CATEGORY.KPI.name,
     roles: [
-        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.MANAGER.name,
     ],
     components: getComponentsInLink('/kpi-member/manager')
 },
@@ -589,7 +589,7 @@ const LINKS = [{
     description: 'Dashboard KPI nhân viên',
     category: LINK_CATEGORY.KPI.name,
     roles: [
-        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.MANAGER.name,
     ],
     components: getComponentsInLink('/kpi-member/dashboard')
 },
@@ -598,7 +598,7 @@ const LINKS = [{
     description: 'DashBoard Kpi cá nhân',
     category: LINK_CATEGORY.KPI.name,
     roles: [
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/kpi-personals/dashboard')
@@ -608,7 +608,7 @@ const LINKS = [{
     description: 'Khởi tạo KPI cá nhân',
     category: LINK_CATEGORY.KPI.name,
     roles: [
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/kpi-personals/create')
@@ -618,7 +618,7 @@ const LINKS = [{
     description: 'Quản lí KPI cá nhân',
     category: LINK_CATEGORY.KPI.name,
     roles: [
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/kpi-personals/manager')
@@ -633,8 +633,8 @@ const LINKS = [{
     description: 'Mẫu công việc',
     category: LINK_CATEGORY.TASK.name,
     roles: [
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/task-template')
@@ -644,8 +644,8 @@ const LINKS = [{
     description: 'Xem danh sách công việc',
     category: LINK_CATEGORY.TASK.name,
     roles: [
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/task-management')
@@ -655,7 +655,7 @@ const LINKS = [{
     description: 'Xem danh sách công việc đơn vị',
     category: LINK_CATEGORY.TASK.name,
     roles: [
-        ROOT_ROLES.DEAN.name
+        ROOT_ROLES.MANAGER.name
     ],
     components: getComponentsInLink('/task-management-unit')
 },
@@ -664,8 +664,8 @@ const LINKS = [{
     description: 'Danh sách quy trình công việc',
     category: LINK_CATEGORY.TASK.name,
     roles: [
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ]
 },
@@ -674,8 +674,8 @@ const LINKS = [{
     description: 'Mẫu quy trình công việc',
     category: LINK_CATEGORY.TASK.name,
     roles: [
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/task-process-template')
@@ -686,8 +686,8 @@ const LINKS = [{
     description: 'Dashboard công việc',
     category: LINK_CATEGORY.TASK.name,
     roles: [
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/task-management-dashboard')
@@ -697,7 +697,7 @@ const LINKS = [{
     description: 'Dashboard công việc của đơn vị',
     category: LINK_CATEGORY.TASK.name,
     roles: [
-        ROOT_ROLES.DEAN.name,
+        ROOT_ROLES.MANAGER.name,
     ],
     components: getComponentsInLink('/task-organization-management-dashboard')
 },
@@ -706,8 +706,8 @@ const LINKS = [{
     description: 'Chi tiết công việc',
     category: LINK_CATEGORY.TASK.name,
     roles: [
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/task')
@@ -804,8 +804,8 @@ const LINKS = [{
     description: 'Quản lý thông tin tài sản',
     category: LINK_CATEGORY.ASSET.name,
     roles: [
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/employee-manage-info-asset')
@@ -815,8 +815,8 @@ const LINKS = [{
     description: 'Quản lý thông tin sự cố tài sản',
     category: LINK_CATEGORY.ASSET.name,
     roles: [
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/employee-manage-incident-asset')
@@ -826,8 +826,8 @@ const LINKS = [{
     description: 'Quản lý đăng kí sử dụng tài sản',
     category: LINK_CATEGORY.ASSET.name,
     roles: [
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/employee-manage-asset-use-request')
@@ -839,8 +839,8 @@ const LINKS = [{
     description: 'Đăng ký mua sắm tài sản',
     category: LINK_CATEGORY.ASSET.name,
     roles: [
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/asset-purchase-request')
@@ -850,8 +850,8 @@ const LINKS = [{
     description: 'Đăng ký sử dụng tài sản',
     category: LINK_CATEGORY.ASSET.name,
     roles: [
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/asset-use-request')
@@ -861,8 +861,8 @@ const LINKS = [{
     description: 'Quản lý tài sản được bàn giao',
     category: LINK_CATEGORY.ASSET.name,
     roles: [
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/manage-assigned-asset')
@@ -885,8 +885,8 @@ const LINKS = [{
     description: 'Quản lý báo cáo công việc',
     category: LINK_CATEGORY.REPORT.name,
     roles: [
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/task-report')
@@ -979,8 +979,8 @@ const LINKS = [{
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/manage-sales-order'),
@@ -992,8 +992,8 @@ const LINKS = [{
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/manage-manufacturing-order'),
@@ -1005,8 +1005,8 @@ const LINKS = [{
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/manage-purchase-order'),
@@ -1018,8 +1018,8 @@ const LINKS = [{
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/manage-quote'),
@@ -1031,8 +1031,8 @@ const LINKS = [{
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/manage-sales-order-dashboard'),
@@ -1044,8 +1044,8 @@ const LINKS = [{
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/manage-manufacturing-order-dashboard'),
@@ -1057,8 +1057,8 @@ const LINKS = [{
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/manage-discount'),
@@ -1070,8 +1070,8 @@ const LINKS = [{
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
 
@@ -1084,8 +1084,8 @@ const LINKS = [{
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/manage-sla'),
@@ -1097,8 +1097,8 @@ const LINKS = [{
     roles: [
         // ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name,
-        // ROOT_ROLES.DEAN.name,
-        // ROOT_ROLES.VICE_DEAN.name,
+        // ROOT_ROLES.MANAGER.name,
+        // ROOT_ROLES.DEPUTY_MANAGER.name,
         // ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/manage-business-department'),
@@ -1110,8 +1110,8 @@ const LINKS = [{
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/manage-admin-department'),
@@ -1123,8 +1123,8 @@ const LINKS = [{
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/crm/dashboard')
@@ -1136,8 +1136,8 @@ const LINKS = [{
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/crm/customer')
@@ -1148,8 +1148,8 @@ const LINKS = [{
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/crm/lead')
@@ -1161,8 +1161,8 @@ const LINKS = [{
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/crm/group')
@@ -1174,8 +1174,8 @@ const LINKS = [{
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/crm/care')
@@ -1187,8 +1187,8 @@ const LINKS = [{
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/crm/generalConfiguration')
@@ -1200,8 +1200,8 @@ const LINKS = [{
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/manage-plans'),
@@ -1213,8 +1213,8 @@ const LINKS = [{
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/manage-examples-1'),
@@ -1226,8 +1226,8 @@ const LINKS = [{
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/manage-examples-2'),
@@ -1239,8 +1239,8 @@ const LINKS = [{
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/manage-examples-hooks-1'),
@@ -1252,8 +1252,8 @@ const LINKS = [{
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.DEAN.name,
-        ROOT_ROLES.VICE_DEAN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/manage-examples-hooks-2'),

@@ -9,46 +9,46 @@ class DepartmentCreateWithParent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            deans: [],
-            viceDeans: [],
+            managers: [],
+            deputyManagers: [],
             employees: []
         }
     }
 
-    handleAddDean = (e) => {
+    handleAddManager = (e) => {
         this.setState({
-            deans: [...this.state.deans, '']
+            managers: [...this.state.managers, '']
         });
     }
 
-    handleChangeDean = (e, index) => {
-        let { deans } = this.state;
-        deans[index] = e.target.value;
-        this.setState({ deans });
+    handleChangeManager = (e, index) => {
+        let { managers } = this.state;
+        managers[index] = e.target.value;
+        this.setState({ managers });
     }
 
-    handleRemoveDean = (index) => {
-        let { deans } = this.state;
-        deans.splice(index, 1);
-        this.setState({ deans });
+    handleRemoveManager = (index) => {
+        let { managers } = this.state;
+        managers.splice(index, 1);
+        this.setState({ managers });
     }
 
-    handleAddViceDean = (e) => {
+    handleAddDeputyManager = (e) => {
         this.setState({
-            viceDeans: [...this.state.viceDeans, '']
+            deputyManagers: [...this.state.deputyManagers, '']
         });
     }
 
-    handleChangeViceDean = (e, index) => {
-        let { viceDeans } = this.state;
-        viceDeans[index] = e.target.value;
-        this.setState({ viceDeans });
+    handleChangeDeputyManager = (e, index) => {
+        let { deputyManagers } = this.state;
+        deputyManagers[index] = e.target.value;
+        this.setState({ deputyManagers });
     }
 
-    handleRemoveViceDean = (index) => {
-        let { viceDeans } = this.state;
-        viceDeans.splice(index, 1);
-        this.setState({ viceDeans });
+    handleRemoveDeputyManager = (index) => {
+        let { deputyManagers } = this.state;
+        deputyManagers.splice(index, 1);
+        this.setState({ deputyManagers });
     }
 
     handleAddEmployee = (e) => {
@@ -78,8 +78,8 @@ class DepartmentCreateWithParent extends Component {
                 departmentParent: nextProps.departmentParent,
                 departmentNameError: undefined,
                 departmentDescriptionError: undefined,
-                departmentDeanError: undefined,
-                departmentViceDeanError: undefined,
+                departmentManagerError: undefined,
+                departmentDeputyManagerError: undefined,
                 departmentEmployeeError: undefined,
             }
         } else {
@@ -105,8 +105,8 @@ class DepartmentCreateWithParent extends Component {
             return this.props.create({
                 name: this.state.departmentName,
                 description: this.state.departmentDescription,
-                deans: this.state.deans,
-                viceDeans: this.state.viceDeans,
+                managers: this.state.managers,
+                deputyManagers: this.state.deputyManagers,
                 employees: this.state.employees,
                 parent: this.state.departmentParent
             });
@@ -203,28 +203,28 @@ class DepartmentCreateWithParent extends Component {
                                 <table className="table table-hover table-striped table-bordered">
                                     <thead>
                                         <tr>
-                                            <th><label>{translate('manage_department.dean_name')}</label></th>
-                                            <th style={{ width: '40px' }} className="text-center"><a href="#add-dean" className="text-green" onClick={this.handleAddDean}><i className="material-icons">add_box</i></a></th>
+                                            <th><label>{translate('manage_department.manager_name')}</label></th>
+                                            <th style={{ width: '40px' }} className="text-center"><a href="#add-manager" className="text-green" onClick={this.handleAddManager}><i className="material-icons">add_box</i></a></th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {
-                                            this.state.deans.length > 0 &&
-                                            this.state.deans.map((dean, index) => {
+                                            this.state.managers.length > 0 &&
+                                            this.state.managers.map((manager, index) => {
                                                 return <tr key={index}>
                                                     <td>
                                                         <input type="text"
                                                             className="form-control"
-                                                            placeholder={translate('manage_department.dean_example')}
-                                                            value={dean}
-                                                            onChange={(e) => this.handleChangeDean(e, index)}
+                                                            placeholder={translate('manage_department.manager_example')}
+                                                            value={manager}
+                                                            onChange={(e) => this.handleChangeManager(e, index)}
                                                         />
                                                     </td>
                                                     <td>
-                                                        <a href="#delete-dean"
+                                                        <a href="#delete-manager"
                                                             className="text-red"
                                                             style={{ border: 'none' }}
-                                                            onClick={() => this.handleRemoveDean(index)}><i className="fa fa-trash"></i>
+                                                            onClick={() => this.handleRemoveManager(index)}><i className="fa fa-trash"></i>
                                                         </a>
                                                     </td>
                                                 </tr>
@@ -239,28 +239,28 @@ class DepartmentCreateWithParent extends Component {
                                 <table className="table table-hover table-striped table-bordered">
                                     <thead>
                                         <tr>
-                                            <th><label>{translate('manage_department.vice_dean_name')}</label></th>
-                                            <th style={{ width: '40px' }} className="text-center"><a href="#add-vicedean" className="text-green" onClick={this.handleAddViceDean}><i className="material-icons">add_box</i></a></th>
+                                            <th><label>{translate('manage_department.deputy_manager_name')}</label></th>
+                                            <th style={{ width: '40px' }} className="text-center"><a href="#add-vicemanager" className="text-green" onClick={this.handleAddDeputyManager}><i className="material-icons">add_box</i></a></th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {
-                                            this.state.viceDeans.length > 0 &&
-                                            this.state.viceDeans.map((vicedean, index) => {
+                                            this.state.deputyManagers.length > 0 &&
+                                            this.state.deputyManagers.map((vicemanager, index) => {
                                                 return <tr key={index}>
                                                     <td>
                                                         <input type="text"
                                                             className="form-control"
-                                                            placeholder={translate('manage_department.vice_dean_example')}
-                                                            value={vicedean}
-                                                            onChange={(e) => this.handleChangeViceDean(e, index)}
+                                                            placeholder={translate('manage_department.deputy_manager_example')}
+                                                            value={vicemanager}
+                                                            onChange={(e) => this.handleChangeDeputyManager(e, index)}
                                                         />
                                                     </td>
                                                     <td>
-                                                        <a href="#delete-vice-dean"
+                                                        <a href="#delete-vice-manager"
                                                             className="text-red"
                                                             style={{ border: 'none' }}
-                                                            onClick={() => this.handleRemoveViceDean(index)}><i className="fa fa-trash"></i>
+                                                            onClick={() => this.handleRemoveDeputyManager(index)}><i className="fa fa-trash"></i>
                                                         </a>
                                                     </td>
                                                 </tr>

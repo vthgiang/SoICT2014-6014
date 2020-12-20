@@ -496,7 +496,7 @@ exports.createTask = async (req, res) => {
             level: "general",
             content: collaboratedHtml,
             sender: task.organizationalUnit.name,
-            users: tasks.deansOfOrganizationalUnitThatHasCollaborated
+            users: tasks.managersOfOrganizationalUnitThatHasCollaborated
         };
 
         await NotificationServices.createNotification(req.portal, task.organizationalUnit.company, data);

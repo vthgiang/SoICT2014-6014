@@ -142,8 +142,8 @@ exports.editCompany = async (id, data) => {
  * Tạo 5 root roles khi tạo mới 1 company
  * @SuperAdmin super admin của công ty đó
  * @Admin admin của công ty
- * @Dean trưởng đơn vị
- * @ViceDean phó đơn vị
+ * @Manager trưởng đơn vị
+ * @DeputyManager phó đơn vị
  * @Employee nhân viên đơn vị
  */
 exports.createCompanyRootRoles = async (portal, companyId) => {
@@ -173,14 +173,14 @@ exports.createCompanyRootRoles = async (portal, companyId) => {
         parents: [admin._id],
         company: companyId,
     });
-    let dean = await Role(connect(DB_CONNECTION, portal)).create({
+    let manager = await Role(connect(DB_CONNECTION, portal)).create({
         type: rootType._id,
-        name: Terms.ROOT_ROLES.DEAN.name,
+        name: Terms.ROOT_ROLES.MANAGER.name,
         company: companyId,
     });
-    let viceDean = await Role(connect(DB_CONNECTION, portal)).create({
+    let deputyManager = await Role(connect(DB_CONNECTION, portal)).create({
         type: rootType._id,
-        name: Terms.ROOT_ROLES.VICE_DEAN.name,
+        name: Terms.ROOT_ROLES.DEPUTY_MANAGER.name,
         company: companyId,
     });
     let employee = await Role(connect(DB_CONNECTION, portal)).create({
@@ -189,7 +189,7 @@ exports.createCompanyRootRoles = async (portal, companyId) => {
         company: companyId,
     });
 
-    return [admin, superAdmin, dean, viceDean, employee];
+    return [admin, superAdmin, manager, deputyManager, employee];
 };
 
 /**

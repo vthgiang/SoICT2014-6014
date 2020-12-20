@@ -451,8 +451,8 @@ export default {
                 department_not_found: "Organizational unit not found",
                 department_has_user:
                     "Cannot delete. Organizational unit had employee",
-                role_dean_exist: "Manager role name exist",
-                role_vice_dean_exist: "Deputy manager role name exist",
+                role_manager_exist: "Manager role name exist",
+                role_deputy_manager_exist: "Deputy manager role name exist",
                 role_employee_exist: "Employee role name exist",
             },
             user: {
@@ -472,8 +472,8 @@ export default {
                 delete_role_success: "Delete role successfully",
 
                 role_name_exist: "Role name exist",
-                role_dean_exist: "Manager role name exist",
-                role_vice_dean_exist: "Deputy manager role name exist",
+                role_manager_exist: "Manager role name exist",
+                role_deputy_manager_exist: "Deputy manager role name exist",
                 role_employee_exist: "Employee role name exist",
             },
             link: {
@@ -1074,10 +1074,10 @@ export default {
             no_parent: "No parent department",
             select_parent: "Select parent of department",
             roles_of_department: "Roles in Department",
-            dean_name: "Positions for Manager",
-            dean_example: "Ex: Dean of Financial Officer",
-            vice_dean_name: "Positions for Deputy Manager",
-            vice_dean_example: "Ex: Vice Dean of Financial Officer",
+            manager_name: "Positions for Manager",
+            manager_example: "Ex: Manager of Financial Officer",
+            deputy_manager_name: "Positions for Deputy Manager",
+            deputy_manager_example: "Ex: Deputy Manager of Financial Officer",
             employee_name: "Positions for Employee",
             employee_example: "Ex: Employee of Financial Officer",
             add_with_parent: "Add new department with parent is",
@@ -1939,8 +1939,8 @@ export default {
             // Quản lý nhân sự các đơn vị
             manage_department: {
                 edit_unit: "Edit units staff",
-                dean_unit: "Head of unit",
-                vice_dean_unit: "Deputy unit",
+                manager_unit: "Head of unit",
+                deputy_manager_unit: "Deputy unit",
                 employee_unit: "Unit staff",
                 email_employee: "Email",
                 add_employee_unit: "Add staff",

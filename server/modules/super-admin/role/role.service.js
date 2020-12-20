@@ -39,18 +39,18 @@ exports.getRoles = async (portal, query) => {
         const roles = await OrganizationalUnit(connect(DB_CONNECTION, portal))
             .findOne({ 
                 $or:[
-                    { 'deans': roleId }, 
-                    { 'viceDeans': roleId }, 
+                    { 'managers': roleId }, 
+                    { 'deputyManagers': roleId }, 
                     { 'employees': roleId }
                 ]  
             }).populate([
-                { path: 'deans' }, 
-                { path: 'viceDeans' }, 
+                { path: 'managers' }, 
+                { path: 'deputyManagers' }, 
                 { path: 'employees' },
             ]);
         
         if(type === 'same'){
-            let roleOrg = [...roles.deans, ...roles.viceDeans, ...roles.employees]; //mảng các role cùng phòng bạn với role truyền vào
+            let roleOrg = [...roles.managers, ...roles.deputyManagers, ...roles.employees]; //mảng các role cùng phòng bạn với role truyền vào
 
             let roleParents = await Role(connect(DB_CONNECTION, portal)).find({
                 parents: roleId
@@ -145,7 +145,7 @@ exports.createRolesForOrganizationalUnit = async(portal, data) => {
         let resArray= [];
         if (array.length > 0) {
             let checkRoleValid = await Role(connect(DB_CONNECTION, portal))
-                .findOne({name: {$in: data.deans}});
+                .findOne({name: {$in: data.managers}});
 
             if (checkRoleValid) throw ['role_name_exist'];
 
@@ -160,8 +160,8 @@ exports.createRolesForOrganizationalUnit = async(portal, data) => {
     }
 
     const roleChucDanh = await RoleType(connect(DB_CONNECTION, portal)).findOne({ name: Terms.ROLE_TYPES.POSITION });
-    const deanAb = await Role(connect(DB_CONNECTION, portal)).findOne({ name: Terms.ROOT_ROLES.DEAN.name });
-    const viceDeanAb = await Role(connect(DB_CONNECTION, portal)).findOne({ name: Terms.ROOT_ROLES.VICE_DEAN.name });
+    const managerAb = await Role(connect(DB_CONNECTION, portal)).findOne({ name: Terms.ROOT_ROLES.MANAGER.name });
+    const deputyManagerAb = await Role(connect(DB_CONNECTION, portal)).findOne({ name: Terms.ROOT_ROLES.DEPUTY_MANAGER.name });
     const employeeAb = await Role(connect(DB_CONNECTION, portal)).findOne({ name: Terms.ROOT_ROLES.EMPLOYEE.name });
 
     const employeeArr = await filterValidRoleArray(data.employees);
@@ -176,32 +176,32 @@ exports.createRolesForOrganizationalUnit = async(portal, data) => {
     const employees = dataEmployee.length > 0? 
         await Role(connect(DB_CONNECTION, portal)).insertMany(dataEmployee) : [];
 
-    const viceDeanArr = await filterValidRoleArray(data.viceDeans);
+    const deputyManagerArr = await filterValidRoleArray(data.deputyManagers);
 
-    const dataViceDean = viceDeanArr.map(vice=>{
+    const dataDeputyManager = deputyManagerArr.map(vice=>{
         return {
             name: vice,
             type: roleChucDanh._id,
-            parents: [...employees.map(em=>em._id), viceDeanAb._id]
+            parents: [...employees.map(em=>em._id), deputyManagerAb._id]
         }
     }); 
-    const viceDeans = dataViceDean.length > 0 ? 
-        await Role(connect(DB_CONNECTION, portal)).insertMany(dataViceDean) : [];
+    const deputyManagers = dataDeputyManager.length > 0 ? 
+        await Role(connect(DB_CONNECTION, portal)).insertMany(dataDeputyManager) : [];
 
-    const deanArr = await filterValidRoleArray(data.deans);
+    const managerArr = await filterValidRoleArray(data.managers);
 
-    const dataDean = deanArr.map(dean=>{
+    const dataManager = managerArr.map(manager=>{
         return {
-            name: dean,
+            name: manager,
             type: roleChucDanh._id,
-            parents: [...employees.map(em=>em._id), ...viceDeans.map(vice=>vice._id), deanAb._id]
+            parents: [...employees.map(em=>em._id), ...deputyManagers.map(vice=>vice._id), managerAb._id]
         }
     }); 
-    const deans = dataDean.length > 0 ? 
-        await Role(connect(DB_CONNECTION, portal)).insertMany(dataDean): [];
+    const managers = dataManager.length > 0 ? 
+        await Role(connect(DB_CONNECTION, portal)).insertMany(dataManager): [];
 
     return {
-        deans, viceDeans, employees // danh sách các mảng các chức danh đã tạo
+        managers, deputyManagers, employees // danh sách các mảng các chức danh đã tạo
     }
 }
 
@@ -286,15 +286,15 @@ exports.deleteRole = async(portal, id) => {
     }
     await UserRole(connect(DB_CONNECTION, portal)).deleteMany({roleId: id});
     await Privilege(connect(DB_CONNECTION, portal)).deleteMany({roleId: id});
-    const organD = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({deans: id});
+    const organD = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({managers: id});
     if (organD) {
-        organD.deans.splice(organD.deans.indexOf(id));
+        organD.managers.splice(organD.managers.indexOf(id));
         await organD.save();
     }
 
-    const organV = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({viceDeans: id});
+    const organV = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({deputyManagers: id});
     if (organV) {
-        organV.viceDeans.splice(organV.viceDeans.indexOf(id));
+        organV.deputyManagers.splice(organV.deputyManagers.indexOf(id));
         await organV.save();
     }
 

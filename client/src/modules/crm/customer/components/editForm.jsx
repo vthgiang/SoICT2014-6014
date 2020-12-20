@@ -33,8 +33,8 @@ class CrmCustomerEdit extends Component {
 
             if (user.organizationalUnitsOfUser) {
                 let getCurrentUnit = user.organizationalUnitsOfUser.find(item =>
-                    item.deans[0] === currentRole
-                    || item.viceDeans[0] === currentRole
+                    item.managers[0] === currentRole
+                    || item.deputyManagers[0] === currentRole
                     || item.employees[0] === currentRole);
 
                 // Lấy người dùng của đơn vị hiện tại và người dùng của đơn vị con

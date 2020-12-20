@@ -39,12 +39,12 @@ exports.getAllPositionRolesAndOrganizationalUnitsOfUser = async (portal, emailIn
         let newRoles = roles.map(role => role.roleId._id);
         organizationalUnits = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({
             $or: [{
-                'deans': {
+                'managers': {
                     $in: newRoles
                 }
             },
             {
-                'viceDeans': {
+                'deputyManagers': {
                     $in: newRoles
                 }
             },
@@ -57,7 +57,7 @@ exports.getAllPositionRolesAndOrganizationalUnitsOfUser = async (portal, emailIn
         });
     }
     if (roles !== []) {
-        let arrayRole = ["Admin", "Super Admin", "Employee", "Dean", "Vice Dean"];
+        let arrayRole = ["Admin", "Super Admin", "Employee", "Manager", "Deputy Manager"];
         roles = roles.filter(role => !arrayRole.includes(role.roleId.name));
     }
 
@@ -83,7 +83,7 @@ exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async (portal, orga
     }
     if (position === undefined) {
         units.forEach(u => {
-            roles = roles.concat(u.deans).concat(u.viceDeans).concat(u.employees);
+            roles = roles.concat(u.managers).concat(u.deputyManagers).concat(u.employees);
         })
     } else {
         roles = position
@@ -1275,7 +1275,7 @@ exports.createNotificationForEmployeesHaveBrithdayCurrent = async (portal) => {
         let unitId = value.organizationalUnits;
         let roles = [];
         unitId.forEach(x => {
-            roles = roles.concat(x.deans).concat(x.viceDeans).concat(x.employees);
+            roles = roles.concat(x.managers).concat(x.deputyManagers).concat(x.employees);
         })
         // Lấy danh sách nhân viên cùng phòng ban với người
         let usersArr = await UserRole(connect(DB_CONNECTION, portal)).find({

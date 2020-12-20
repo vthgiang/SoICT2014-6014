@@ -377,8 +377,8 @@ class TaskAddModal extends Component {
         if (newTask.organizationalUnit === "" && department.list.length !== 0) {
             // Tìm unit mà currentRole của user đang thuộc về
             let defaultUnit = department.list?.find(item =>
-                item.deans.find(x => x.id === this.state.currentRole)
-                || item.viceDeans.find(x => x.id === this.state.currentRole)
+                item.managers.find(x => x.id === this.state.currentRole)
+                || item.deputyManagers.find(x => x.id === this.state.currentRole)
                 || item.employees.find(x => x.id === this.state.currentRole));
             if (!defaultUnit && department.list.length > 0) { // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
                 defaultUnit = department.list[0]

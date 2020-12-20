@@ -642,7 +642,7 @@ class ModalCreateTaskProcess extends Component {
 		}
 		let listRole = [];
 		if (role && role.list.length !== 0) listRole = role.list;
-		let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Dean', 'Vice Dean', 'Employee'].indexOf(e.name) === -1)
+		let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Manager', 'Deputy Manager', 'Employee'].indexOf(e.name) === -1)
 			.map(item => { return { text: item.name, value: item._id } });
 
 		return (
