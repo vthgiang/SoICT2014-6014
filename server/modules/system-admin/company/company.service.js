@@ -17,8 +17,8 @@ const {
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const generator = require("generate-password");
-const Terms = require(`${SERVER_SEED_DIR}/terms`);
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const Terms = require('../../../helpers/config');
+const { connect } = require('../../../helpers/dbHelper');
 
 /**
  * Lấy danh sách tất cả các công ty

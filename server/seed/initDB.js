@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
-const Terms = require('./terms');
+const Terms = require('../helpers/config');
 const models = require('../models');
 const { 
     User, 
