@@ -76,9 +76,9 @@ class CreateEmployeeKpiSet extends Component {
     shouldComponentUpdate = (nextProps, nextState) => {
         const { user } = this.props;
         // Khi truy vấn API đã có kết quả
-        if (!this.state.employeeKpiSet.approver && user.userdepartments && user.userdepartments.deans) {
-            if (Object.keys(user.userdepartments.deans).length > 0) { // Nếu có trưởng đơn vị
-                let members = user.userdepartments.deans[Object.keys(user.userdepartments.deans)[0]].members;
+        if (!this.state.employeeKpiSet.approver && user.userdepartments && user.userdepartments.managers) {
+            if (Object.keys(user.userdepartments.managers).length > 0) { // Nếu có trưởng đơn vị
+                let members = user.userdepartments.managers[Object.keys(user.userdepartments.managers)[0]].members;
                 if (members.length) {
                     this.setState(state => {
                         return {
@@ -274,7 +274,7 @@ class CreateEmployeeKpiSet extends Component {
             month = '0' + month;
         if (day.length < 2)
             day = '0' + day;
-        
+
         return [month, year].join('-');
     }
 
@@ -468,9 +468,9 @@ class CreateEmployeeKpiSet extends Component {
         if (user) {
             unitList = user.organizationalUnitsOfUser;
             currentUnit = unitList && unitList.filter(item => (
-                item.deans.includes(this.state.currentRole)
+                item.managers.includes(this.state.currentRole)
                 || item.employees.includes(this.state.currentRole)
-                || item.viceDeans.includes(this.state.currentRole)));
+                || item.deputyManagers.includes(this.state.currentRole)));
         }
 
         if (createEmployeeKpiSet) {
@@ -480,10 +480,10 @@ class CreateEmployeeKpiSet extends Component {
             currentKPIUnit = createKpiUnit.currentKPI;
         }
 
-        let deans;
+        let managers;
         if (user) {
             userdepartments = user.userdepartments;
-            deans = getEmployeeSelectBoxItems([user.userdepartments], true, false, false);
+            managers = getEmployeeSelectBoxItems([user.userdepartments], true, false, false);
         }
 
         return (
@@ -534,7 +534,7 @@ class CreateEmployeeKpiSet extends Component {
                                     >
                                         <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.add_target')}
                                     </a>
-                                    
+
                                     <ModalCreateEmployeeKpi employeeKpiSet={currentKPI._id} organizationalUnit={currentUnit && currentUnit[0]} />
 
                                     {/* Yêu cầu phê duyệt tập KPI này */}
@@ -556,14 +556,14 @@ class CreateEmployeeKpiSet extends Component {
                                 </div>
 
                                 {/* Khi edit tập KPI này */}
-                                {editing ? deans &&
+                                {editing ? managers &&
                                     <div className="col-sm-6 col-xs-12 form-group">
                                         <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.approver')}</label>
                                         <SelectBox
                                             id={`createEmployeeKpiSet`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={deans}
+                                            items={managers}
                                             multiple={false}
                                             onChange={this.handleApproverChange}
                                             value={employeeKpiSet.approver}

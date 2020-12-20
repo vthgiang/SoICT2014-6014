@@ -44,7 +44,7 @@ class AddTaskTemplate extends Component {
         // this.props.getDepartment(); // => user.organizationalUnitsOfUser
         // this.props.getAllUserOfCompany(); // => user.usercompanys
         this.props.getRoleSameDepartment(localStorage.getItem("currentRole")); // => user.roledepartments
-        this.props.getDepartmentsThatUserIsDean(); // => department.departmentsThatUserIsDean
+        this.props.getDepartmentsThatUserIsManager(); // => department.departmentsThatUserIsManager
         this.props.getAllUserInAllUnitsOfCompany(); // => user.usersInUnitsOfCompany
     }
 
@@ -188,13 +188,13 @@ class AddTaskTemplate extends Component {
         let singleValue = value[0]; // SelectBox một lựa chọn
         if (this.validateTaskTemplateUnit(singleValue, true)) {
             const { department } = this.props;
-            if (department !== undefined && department.departmentsThatUserIsDean !== undefined) {
+            if (department !== undefined && department.departmentsThatUserIsManager !== undefined) {
                 // Khi đổi department, cần lấy lại dữ liệu cho các selectbox (ai được xem, các vai trò)
-                let dept = department.departmentsThatUserIsDean.find(item => item._id === singleValue);
+                let dept = department.departmentsThatUserIsManager.find(item => item._id === singleValue);
                 if (dept) {
                     console.log('oooo', dept);
                     // this.props.getChildrenOfOrganizationalUnits(singleValue);
-                    this.props.getRoleSameDepartment(dept.deans);
+                    this.props.getRoleSameDepartment(dept.managers);
                 }
             }
         }
@@ -358,8 +358,8 @@ class AddTaskTemplate extends Component {
             // let { user } = this.props;
             let defaultUnit;
             if (user && user.organizationalUnitsOfUser) defaultUnit = user.organizationalUnitsOfUser.find(item =>
-                item.dean === this.state.currentRole
-                || item.viceDean === this.state.currentRole
+                item.manager === this.state.currentRole
+                || item.deputyManager === this.state.currentRole
                 || item.employee === this.state.currentRole);
             if (!defaultUnit && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) {
                 // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
@@ -374,12 +374,12 @@ class AddTaskTemplate extends Component {
             return false;
         }
 
-        // Khi truy vấn lấy các đơn vị mà user là dean đã có kết quả, và thuộc tính đơn vị của newTemplate chưa được thiết lập
+        // Khi truy vấn lấy các đơn vị mà user là manager đã có kết quả, và thuộc tính đơn vị của newTemplate chưa được thiết lập
         if (newTemplate.organizationalUnit === "" && user.organizationalUnitsOfUser) {
             // Tìm unit mà currentRole của user đang thuộc về
             let defaultUnit = user.organizationalUnitsOfUser.find(item =>
-                item.deans.includes(this.state.currentRole)
-                || item.viceDeans.includes(this.state.currentRole)
+                item.managers.includes(this.state.currentRole)
+                || item.deputyManagers.includes(this.state.currentRole)
                 || item.employees.includes(this.state.currentRole)
             );
 
@@ -412,7 +412,7 @@ class AddTaskTemplate extends Component {
 
     render() {
 
-        var units, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsDean, listRoles = [];
+        var units, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsManager, listRoles = [];
         const { newTemplate, showMore, accountableEmployees, responsibleEmployees, id } = this.state;
         const { department, user, translate, tasktemplates, isProcess } = this.props;
         if (newTemplate.taskActions) taskActions = newTemplate.taskActions;
@@ -421,14 +421,14 @@ class AddTaskTemplate extends Component {
         if (user.organizationalUnitsOfUser) {
             units = user.organizationalUnitsOfUser;
         }
-        if (department.departmentsThatUserIsDean) {
-            departmentsThatUserIsDean = department.departmentsThatUserIsDean;
+        if (department.departmentsThatUserIsManager) {
+            departmentsThatUserIsManager = department.departmentsThatUserIsManager;
         }
         if (user.usersInUnitsOfCompany) {
             listRole = user.usersInUnitsOfCompany;
             for (let x in listRole) {
-                listRoles.push(Object.values(listRole[x].deans));
-                listRoles.push(Object.values(listRole[x].viceDeans));
+                listRoles.push(Object.values(listRole[x].managers));
+                listRoles.push(Object.values(listRole[x].deputyManagers));
                 listRoles.push(Object.values(listRole[x].employees));
             }
             listRole = [];
@@ -474,7 +474,7 @@ class AddTaskTemplate extends Component {
 
                         {/**Đơn vị(phòng ban) của Task template*/}
                         <div className={`form-group ${this.state.newTemplate.errorOnUnit === undefined ? "" : "has-error"}`} style={{ marginLeft: 0, marginRight: 0 }}>
-                            {/* <label className="control-label">{translate('task_template.unit')} <span style={{ color: "red" }}> <span style={{ color: "red" }}>*</span></span></label> */}
+                            <label className="control-label">{translate('task_template.unit')}</label>
                             {usersInUnitsOfCompany !== undefined && newTemplate.organizationalUnit !== "" &&
                                 <SelectBox
                                     id={`unit-select-box`}
@@ -491,7 +491,6 @@ class AddTaskTemplate extends Component {
                                     value={newTemplate.organizationalUnit}
                                 />
                             }
-                            {/* <ErrorLabel content={newTemplate.errorOnUnit} /> */}
                         </div>
 
                         {/* Chọn đơn vị phối hợp công việc */}
@@ -720,7 +719,7 @@ const actionCreators = {
     // getAllUserOfCompany: UserActions.getAllUserOfCompany,
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
     getRoleSameDepartment: UserActions.getRoleSameDepartment,
-    getDepartmentsThatUserIsDean: DepartmentActions.getDepartmentsThatUserIsDean,
+    getDepartmentsThatUserIsManager: DepartmentActions.getDepartmentsThatUserIsManager,
     // getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany
 };

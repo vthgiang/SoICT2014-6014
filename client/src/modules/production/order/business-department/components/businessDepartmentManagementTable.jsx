@@ -105,10 +105,10 @@ class BusinessDepartmentManagementTable extends Component {
         window.$("#modal-edit-business-department").modal("show");
     };
 
-    getDeanName = (organizationalUnit) => {
-        let deans = organizationalUnit.deans ? organizationalUnit.deans : {};
-        if (deans && deans.length && deans[0].users && deans[0].users.length && deans[0].users[0].userId) {
-            let { userId } = deans[0].users[0];
+    getManagerName = (organizationalUnit) => {
+        let managers = organizationalUnit.managers ? organizationalUnit.managers : {};
+        if (managers && managers.length && managers[0].users && managers[0].users.length && managers[0].users[0].userId) {
+            let { userId } = managers[0].users[0];
             if (userId.name) {
                 return userId.name;
             } else {
@@ -210,15 +210,15 @@ class BusinessDepartmentManagementTable extends Component {
                                         <td>{businessDepartment.organizationalUnit ? businessDepartment.organizationalUnit.name : "---"}</td>
                                         <td>{departmentNames[businessDepartment.type]}</td>
                                         <td>
-                                            {businessDepartment.organizationalUnit ? this.getDeanName(businessDepartment.organizationalUnit) : "---"}
+                                            {businessDepartment.organizationalUnit ? this.getManagerName(businessDepartment.organizationalUnit) : "---"}
                                         </td>
                                         <td>{businessDepartment.managers ? businessDepartment.managers.map((manager) => manager.name) : "---"}</td>
                                         <td>{businessDepartment.description}</td>
                                         {businessDepartment.status ? (
                                             <td style={{ color: "green" }}>{"Đang hoạt động"}</td>
                                         ) : (
-                                            <td style={{ color: "red" }}>{"Ngừng hoạt động"}</td>
-                                        )}
+                                                <td style={{ color: "red" }}>{"Ngừng hoạt động"}</td>
+                                            )}
                                         <td style={{ textAlign: "center" }}>
                                             <a
                                                 style={{ width: "5px" }}
@@ -247,10 +247,10 @@ class BusinessDepartmentManagementTable extends Component {
                     {businessDepartments.isLoading ? (
                         <div className="table-info-panel">{translate("confirm.loading")}</div>
                     ) : (
-                        (typeof listBusinessDepartments === "undefined" || listBusinessDepartments.length === 0) && (
-                            <div className="table-info-panel">{translate("confirm.no_data")}</div>
-                        )
-                    )}
+                            (typeof listBusinessDepartments === "undefined" || listBusinessDepartments.length === 0) && (
+                                <div className="table-info-panel">{translate("confirm.no_data")}</div>
+                            )
+                        )}
                     <PaginateBar pageTotal={totalPages ? totalPages : 0} currentPage={page} func={this.setPage} />
                 </div>
             </React.Fragment>

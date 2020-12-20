@@ -103,13 +103,13 @@ exports.getAllUsersInOrganizationalUnit = async (portal, departmentId) => {
         .findById(departmentId)
         .populate([
             {
-                path: "deans",
+                path: "managers",
                 populate: {
                     path: "users",
                 },
             },
             {
-                path: "viceDeans",
+                path: "deputyManagers",
                 populate: {
                     path: "users",
                 },
@@ -122,16 +122,16 @@ exports.getAllUsersInOrganizationalUnit = async (portal, departmentId) => {
             },
         ]);
     var users = [];
-    for (let i = 0; i < department.deans.length; i++) {
+    for (let i = 0; i < department.managers.length; i++) {
         users = [
             ...users,
-            ...department.deans[i].users.map((user) => user.userId),
+            ...department.managers[i].users.map((user) => user.userId),
         ];
     }
-    for (let j = 0; j < department.viceDeans.length; j++) {
+    for (let j = 0; j < department.deputyManagers.length; j++) {
         users = [
             ...users,
-            ...department.viceDeans[j].users.map((user) => user.userId),
+            ...department.deputyManagers[j].users.map((user) => user.userId),
         ];
     }
     for (let k = 0; k < department.employees.length; k++) {

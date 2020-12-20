@@ -14,7 +14,7 @@ const initState = {
     list: [],
     searchUses: [],
     listPaginate: [],
-    employeesOfUnitsUserIsDean:[],
+    employeesOfUnitsUserIsManager:[],
     totalDocs: 0,
     limit: 0,
     totalPages: 0,
@@ -100,7 +100,7 @@ export function user(state = initState, action) {
             if(action.callApi){
                 return {
                     ...state,
-                    employeesOfUnitsUserIsDean: action.payload,
+                    employeesOfUnitsUserIsManager: action.payload,
                     isLoading: false
                 };
             }

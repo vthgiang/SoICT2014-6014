@@ -766,7 +766,7 @@ editTaskByAccountableEmployees = async (req, res) => {
             level: "general",
             content: deletedCollabHtml,
             sender: task.newTask.organizationalUnit.name,
-            users: task.deansOfDeletedCollab
+            users: task.managersOfDeletedCollab
         };
 
         await NotificationServices.createNotification(req.portal, tasks.organizationalUnit.company, deletedCollabData);
@@ -781,7 +781,7 @@ editTaskByAccountableEmployees = async (req, res) => {
             level: "general",
             content: additionalCollabHtml,
             sender: task.newTask.organizationalUnit.name,
-            users: task.deansOfAdditionalCollab
+            users: task.managersOfAdditionalCollab
         };
 
         await NotificationServices.createNotification(req.portal, tasks.organizationalUnit.company, additionalCollabData);

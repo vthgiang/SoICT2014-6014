@@ -15,7 +15,8 @@ export const AuthActions = {
     getComponentOfUserInLink,
     changeInformation,
     changePassword,
-    downloadFile
+    downloadFile,
+    answerAuthQuestion
 }
 
 function login(user){
@@ -233,5 +234,26 @@ function downloadFile(path, fileName, save=true) {
                 }
             })
             .catch(err => { dispatch({ type: AuthConstants.DOWNLOAD_FILE_FAILURE }) })
+    }
+}
+
+function answerAuthQuestion(data){
+    return dispatch => {
+        dispatch({ type: AuthConstants.ANSWER_AUTH_QUESTIONS_REQUEST });
+        return new Promise((resolve, reject)=>{
+            AuthService.answerAuthQuestion(data)
+            .then(res => {
+                dispatch({
+                    type: AuthConstants.ANSWER_AUTH_QUESTIONS_SUCCESS,
+                    payload: res.data.content
+                });
+                resolve(res);
+            })
+            .catch(err => {
+                dispatch({type: AuthConstants.ANSWER_AUTH_QUESTIONS_FAILE});
+                reject(err);
+            })
+        })
+        
     }
 }

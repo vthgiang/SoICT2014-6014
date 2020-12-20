@@ -462,8 +462,8 @@ export default {
                 department_not_found: "Không tìm thấy thông tin về đơn vị",
                 department_has_user:
                     "Không thể xóa đơn vị này. Đơn vị đã có thành viên",
-                role_dean_exist: "Tên chức danh cho trưởng đơn vị đã tồn tại",
-                role_vice_dean_exist: "Tên chức danh cho phó đơn vị đã tồn tại",
+                role_manager_exist: "Tên chức danh cho trưởng đơn vị đã tồn tại",
+                role_deputy_manager_exist: "Tên chức danh cho phó đơn vị đã tồn tại",
                 role_employee_exist:
                     "Tên chức danh cho nhân viên đơn vị đã tồn tại",
             },
@@ -487,9 +487,9 @@ export default {
 
                 role_name_exist:
                     "Tên cho phân quyền đã được sử dụng cho một phân quyền khác",
-                role_dean_exist:
+                role_manager_exist:
                     "Tên cho phân quyền của trưởng đơn vị này đã được sử dụng",
-                role_vice_dean_exist:
+                role_deputy_manager_exist:
                     "Tên cho phân quyền của phó đơn vị này đã được sử dụng",
                 role_employee_exist:
                     "Tên cho phân quyền của nhân viên đơn vị này đã được sử dụng",
@@ -944,6 +944,7 @@ export default {
             close: "Đóng",
             email: "Email",
             password: "Mật khẩu",
+            password2: "Mật khẩu cấp 2",
             portal: "Portal",
             new_password: "Mật khẩu mới",
             confirm: "Xác thực mật khẩu",
@@ -1229,10 +1230,10 @@ export default {
             select_parent: "Chọn đơn vị cha",
             no_parent: "Không có đơn vị cha",
             roles_of_department: "Các chức danh của đơn vị",
-            dean_name: "Tên các chức danh trưởng đơn vị",
-            dean_example: "VD: Trưởng phòng tài chính",
-            vice_dean_name: "Tên các chức danh phó đơn vị",
-            vice_dean_example: "VD: Phó phòng tài chính",
+            manager_name: "Tên các chức danh trưởng đơn vị",
+            manager_example: "VD: Trưởng phòng tài chính",
+            deputy_manager_name: "Tên các chức danh phó đơn vị",
+            deputy_manager_example: "VD: Phó phòng tài chính",
             employee_name: "Tên các chức danh nhân viên đơn vị",
             employee_example: "VD: Nhân viên phòng tài chính",
             add_with_parent: "Tạo đơn vị mới với đơn vị cha là",
@@ -2094,6 +2095,7 @@ export default {
                 do_work: "Có đi làm",
                 total_timesheets: "Số giờ làm",
                 total_hours_off: "Số giờ nghỉ",
+                total_over_time: "Số giờ tăng ca",
                 work_date_in_month: "Công làm việc trong tháng",
                 shift_work: "Ca làm việc",
                 shifts1: "Ca 1",
@@ -2136,8 +2138,8 @@ export default {
             // Quản lý nhân sự các đơn vị
             manage_department: {
                 edit_unit: "Chỉnh sửa nhân sự đơn vị",
-                dean_unit: "Trưởng đơn vị",
-                vice_dean_unit: "Phó đơn vị",
+                manager_unit: "Trưởng đơn vị",
+                deputy_manager_unit: "Phó đơn vị",
                 employee_unit: "Nhân viên đơn vị",
                 email_employee: "Email nhân viên",
                 add_employee_unit: "Thêm nhân viên",

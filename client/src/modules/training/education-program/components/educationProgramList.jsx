@@ -130,10 +130,10 @@ class ListEducation extends Component {
             organizationalUnit.forEach(u => {
                 list.forEach(x => {
                     if (x._id === u) {
-                        let roleDeans = x.deans.map(y => { return { _id: y._id, name: y.name } });
-                        let roleViceDeans = x.viceDeans.map(y => { return { _id: y._id, name: y.name } });
+                        let roleManagers = x.managers.map(y => { return { _id: y._id, name: y.name } });
+                        let roleDeputyManagers = x.deputyManagers.map(y => { return { _id: y._id, name: y.name } });
                         let roleEmployees = x.employees.map(y => { return { _id: y._id, name: y.name } });
-                        listPosition = listPosition.concat(roleDeans).concat(roleViceDeans).concat(roleEmployees);
+                        listPosition = listPosition.concat(roleManagers).concat(roleDeputyManagers).concat(roleEmployees);
                     }
                 })
             })

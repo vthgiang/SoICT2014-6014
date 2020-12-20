@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { getStorage } from '../../../../config';
 
 import { DialogModal, ErrorLabel, DatePicker, SlimScroll } from '../../../../common-components';
 
@@ -51,6 +50,14 @@ class TimesheetsEditForm extends Component {
         })
     }
 
+    // Bắt sự kiện thay đổi số giờ nghỉ và số giờ tăng ca
+    handleChange = (e) => {
+        const { value, name } = e.target;
+        this.setState({
+            [name]: value
+        })
+    }
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps._id !== prevState._id) {
             return {
@@ -64,6 +71,8 @@ class TimesheetsEditForm extends Component {
                 timekeepingType: nextProps.timekeepingType,
                 timekeepingByHours: nextProps.timekeepingByHours,
                 allDayOfMonth: nextProps.allDayOfMonth,
+                totalHoursOff: nextProps.totalHoursOff,
+                totalOvertime: nextProps.totalOvertime
             }
         } else {
             return null;
@@ -72,27 +81,10 @@ class TimesheetsEditForm extends Component {
 
     /** Function bắt sự kiện lưu bảng chấm công */
     save = () => {
-        const { timekeepingType } = this.props;
-        const { month, _id, shift1s, shift2s, shift3s, timekeepingByHours, allDayOfMonth } = this.state;
+        const { month, _id, shift1s, shift2s, shift3s, timekeepingByHours } = this.state;
         let partMonth = month.split('-');
         let monthNew = [partMonth[1], partMonth[0]].join('-');
-        let totalHoursOff = 0;
-        if (timekeepingType === "hours") {
-            let array = [];
-            allDayOfMonth.forEach((x, index) => {
-                if (x.day !== 'CN' && x.day !== 'Sun') {
-                    array = [...array, index];
-                }
-            });
-            timekeepingByHours.forEach((y, indexs) => {
-                if (array.find(arr => arr === indexs)) {
-                    totalHoursOff = totalHoursOff + (8 - y);
-                } else {
-                    totalHoursOff = totalHoursOff - y
-                }
-            })
-        }
-        this.props.updateTimesheets(_id, { ...this.state, month: monthNew, totalHoursOff: totalHoursOff, timekeepingByHours: timekeepingByHours, timekeepingByShift: { shift1s: shift1s, shift2s: shift2s, shift3s: shift3s } });
+        this.props.updateTimesheets(_id, { ...this.state, month: monthNew, timekeepingByHours: timekeepingByHours, timekeepingByShift: { shift1s: shift1s, shift2s: shift2s, shift3s: shift3s } });
     }
 
     render() {
@@ -100,7 +92,7 @@ class TimesheetsEditForm extends Component {
 
 
         const { _id, errorOnEmployeeNumber, errorOnMonthSalary, month, employeeNumber, timekeepingType,
-            allDayOfMonth, shift1s, shift2s, shift3s, timekeepingByHours } = this.state;
+            allDayOfMonth, shift1s, shift2s, shift3s, timekeepingByHours, totalHoursOff, totalOvertime } = this.state;
 
         return (
             <React.Fragment>
@@ -130,6 +122,21 @@ class TimesheetsEditForm extends Component {
                             />
                             <ErrorLabel content={errorOnMonthSalary} />
                         </div>
+
+                        <div className="row">
+                            {/* Số giờ nghỉ phép */}
+                            <div className="col-sm-6 col-xs-12 form-group">
+                                <label>{translate('human_resource.timesheets.total_hours_off')}</label>
+                                <input type="text" className="form-control" name="totalHoursOff" value={totalHoursOff} onChange={this.handleChange} autoComplete="off" />
+                            </div>
+
+                            {/* Số giờ tăng ca */}
+                            <div className="col-sm-6 col-xs-12 form-group">
+                                <label>{translate('human_resource.timesheets.total_over_time')}</label>
+                                <input type="text" className="form-control" name="totalOvertime" value={totalOvertime} onChange={this.handleChange} autoComplete="off" />
+                            </div>
+                        </div>
+
                         {/* Công các ngày trong tháng */}
                         {
                             timekeepingType === 'shift' &&

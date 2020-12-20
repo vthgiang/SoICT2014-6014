@@ -164,9 +164,9 @@ class KPIUnitManager extends Component {
         window.$(`#copy-old-kpi-to-new-time-${id}`).modal("show")
     }
 
-    checkPermisson = (deanCurrentUnit) => {
+    checkPermisson = (managerCurrentUnit) => {
         let currentRole = localStorage.getItem("currentRole");
-        return (deanCurrentUnit && deanCurrentUnit.includes(currentRole));
+        return (managerCurrentUnit && managerCurrentUnit.includes(currentRole));
     }
 
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
@@ -240,8 +240,8 @@ class KPIUnitManager extends Component {
             organizationalUnitsOfUserLoading = user.organizationalUnitsOfUserLoading;
 
             currentUnit = unitList && unitList.filter(item =>
-                item.deans.includes(this.state.currentRole)
-                || item.viceDeans.includes(this.state.currentRole)
+                item.managers.includes(this.state.currentRole)
+                || item.deputyManagers.includes(this.state.currentRole)
                 || item.employees.includes(this.state.currentRole));
         }
 
@@ -370,7 +370,7 @@ class KPIUnitManager extends Component {
                                                             <i className="material-icons" onClick={() => this.handleShowEdit(item._id, item.organizationalUnit._id, item.date)}>view_list</i>
                                                         </a>
 
-                                                        {this.checkPermisson(currentUnit && currentUnit[0] && currentUnit[0].deans)
+                                                        {this.checkPermisson(currentUnit && currentUnit[0] && currentUnit[0].managers)
                                                             && <a href="#abc" onClick={() => this.showModalCopy(item._id)} className="copy" data-toggle="modal" data-backdrop="static" data-keyboard="false" title="Thiết lập kpi tháng mới từ kpi tháng này">
                                                                 <i className="material-icons">content_copy</i>
                                                             </a>

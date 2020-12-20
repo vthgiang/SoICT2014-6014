@@ -477,7 +477,7 @@ class EmployeeKpiManagement extends Component {
             for (let i = 0; i < listKpiUnit.length; i++) {
                 let d = new Date(listKpiUnit[i].date),
                     time = (d.getMonth() + 1) + "-" + (d.getFullYear());
-                let employeeNumber = parseInt(listKpiUnit[i].organizationalUnit.deans.length) + parseInt(listKpiUnit[i].organizationalUnit.viceDeans.length) + parseInt(listKpiUnit[i].organizationalUnit.employees.length);
+                let employeeNumber = parseInt(listKpiUnit[i].organizationalUnit.managers.length) + parseInt(listKpiUnit[i].organizationalUnit.deputyManagers.length) + parseInt(listKpiUnit[i].organizationalUnit.employees.length);
                 let kpisUnitNumber = listKpiUnit[i].kpis.length;
                 let automaticPoint = (listKpiUnit[i].automaticPoint === null) ? "Chưa đánh giá" : parseInt(listKpiUnit[i].automaticPoint);
                 let employeePoint = (listKpiUnit[i].employeePoint === null) ? "Chưa đánh giá" : parseInt(listKpiUnit[i].employeePoint);

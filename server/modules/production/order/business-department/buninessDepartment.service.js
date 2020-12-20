@@ -22,7 +22,7 @@ exports.createBusinessDepartment = async (data, portal) => {
         .populate([{
             path: "organizationalUnit",
             populate: [{
-                path: 'deans',
+                path: 'managers',
                 populate: [{
                     path: "users",
                     populate: [{
@@ -30,7 +30,7 @@ exports.createBusinessDepartment = async (data, portal) => {
                     }]
                 }]
             },
-            { path: 'viceDeans' },
+            { path: 'deputyManagers' },
             { path: 'employees' }]
         }, {
             path: 'managers'
@@ -59,7 +59,7 @@ exports.editBusinessDepartment = async (id, data, portal) => {
         .populate([{
             path: "organizationalUnit",
             populate: [{
-                path: 'deans',
+                path: 'managers',
                 populate: [{
                     path: "users",
                     populate: [{
@@ -67,7 +67,7 @@ exports.editBusinessDepartment = async (id, data, portal) => {
                     }]
                 }]
             },
-            { path: 'viceDeans' },
+            { path: 'deputyManagers' },
             { path: 'employees' }]
         }, {
             path: 'managers'
@@ -101,7 +101,7 @@ exports.getAllBusinessDepartments = async (query, portal) => {
             .populate([{
                 path: "organizationalUnit",
                 populate: [{
-                    path: 'deans',
+                    path: 'managers',
                     populate: [{
                         path: "users",
                         populate: [{
@@ -109,7 +109,7 @@ exports.getAllBusinessDepartments = async (query, portal) => {
                         }]
                     }]
                 },
-                { path: 'viceDeans' },
+                { path: 'deputyManagers' },
                 { path: 'employees' }]
             }, {
                 path: 'managers'
@@ -124,7 +124,7 @@ exports.getAllBusinessDepartments = async (query, portal) => {
                 populate: [{
                     path: "organizationalUnit",
                     populate: [{
-                        path: 'deans',
+                        path: 'managers',
                         populate: [{
                             path: "users",
                             populate: [{
@@ -132,7 +132,7 @@ exports.getAllBusinessDepartments = async (query, portal) => {
                             }]
                         }]
                     },
-                    { path: 'viceDeans' },
+                    { path: 'deputyManagers' },
                     { path: 'employees' }]
                 }, {
                     path: 'managers'

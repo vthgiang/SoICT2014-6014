@@ -25,7 +25,7 @@ exports.getDocuments = async (
 ) => {
     const og = currentRole
         ? await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({
-              deans: currentRole,
+              managers: currentRole,
           })
         : null;
     let { by, page, limit } = query;

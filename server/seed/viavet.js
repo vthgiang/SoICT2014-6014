@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
-const Terms = require("./terms");
+const Terms = require("../helpers/config");
 const { initModels } = require("../helpers/dbHelper");
 const Models = require("../models");
 const { UserRole } = require("../models");
@@ -414,12 +414,12 @@ const initSampleCompanyDB = async () => {
         type: roleAbstract._id,
         parents: [roleAdmin._id],
     });
-    const roleDean = await Role(viavetDB).create({
-        name: Terms.ROOT_ROLES.DEAN.name,
+    const roleManager = await Role(viavetDB).create({
+        name: Terms.ROOT_ROLES.MANAGER.name,
         type: roleAbstract._id,
     });
-    const roleViceDean = await Role(viavetDB).create({
-        name: Terms.ROOT_ROLES.VICE_DEAN.name,
+    const roleDeputyManager = await Role(viavetDB).create({
+        name: Terms.ROOT_ROLES.DEPUTY_MANAGER.name,
         type: roleAbstract._id,
     });
     const roleEmployee = await Role(viavetDB).create({
@@ -434,17 +434,17 @@ const initSampleCompanyDB = async () => {
         type: roleChucDanh._id,
     });
     const chutich = await Role(viavetDB).create({
-        parents: [roleDean._id, thanhVienBGĐ._id],
+        parents: [roleManager._id, thanhVienBGĐ._id],
         name: "Chủ tịch hội đồng quản trị",
         type: roleChucDanh._id,
     });
     const tdg = await Role(viavetDB).create({
-        parents: [roleDean._id, thanhVienBGĐ._id],
+        parents: [roleManager._id, thanhVienBGĐ._id],
         name: "Tổng giám đốc",
         type: roleChucDanh._id,
     });
     const gdTaiChinh = await Role(viavetDB).create({
-        parents: [roleDean._id, thanhVienBGĐ._id],
+        parents: [roleManager._id, thanhVienBGĐ._id],
         name: "Giám đốc tài chính",
         type: roleChucDanh._id,
     });
@@ -461,13 +461,13 @@ const initSampleCompanyDB = async () => {
         type: roleChucDanh._id,
     });
     const qlBanHangViavet = await Role(viavetDB).create({
-        parents: [roleViceDean._id, nvKtttViavet._id, nvKinhDoanhViavet._id],
+        parents: [roleDeputyManager._id, nvKtttViavet._id, nvKinhDoanhViavet._id],
         name: "Quản lý bán hàng",
         type: roleChucDanh._id,
     });
     const gdBanHangViavet = await Role(viavetDB).create({
         parents: [
-            roleDean._id,
+            roleManager._id,
             qlBanHangViavet._id,
             nvKinhDoanhViavet._id,
             nvKtttViavet._id,
@@ -477,7 +477,7 @@ const initSampleCompanyDB = async () => {
     });
     const gdKTTTViavet = await Role(viavetDB).create({
         parents: [
-            roleDean._id,
+            roleManager._id,
             qlBanHangViavet._id,
             nvKinhDoanhViavet._id,
             nvKtttViavet._id,
@@ -487,7 +487,7 @@ const initSampleCompanyDB = async () => {
     });
     const gdKinhDoanhViavet = await Role(viavetDB).create({
         parents: [
-            roleDean._id,
+            roleManager._id,
             qlBanHangViavet._id,
             nvKinhDoanhViavet._id,
             nvKtttViavet._id,
@@ -508,13 +508,13 @@ const initSampleCompanyDB = async () => {
         type: roleChucDanh._id,
     });
     const qlBanHangSanfovet = await Role(viavetDB).create({
-        parents: [roleViceDean._id, nvKtttSanfovet._id, nvKinhDoanhViavet._id],
+        parents: [roleDeputyManager._id, nvKtttSanfovet._id, nvKinhDoanhViavet._id],
         name: "Quản lý bán hàng SANFOVET",
         type: roleChucDanh._id,
     });
     const gdBanHangSanfovet = await Role(viavetDB).create({
         parents: [
-            roleDean._id,
+            roleManager._id,
             qlBanHangSanfovet,
             nvKinhDoanhSanfovet._id,
             nvKtttSanfovet._id,
@@ -524,7 +524,7 @@ const initSampleCompanyDB = async () => {
     });
     const gdKTTTSanfovet = await Role(viavetDB).create({
         parents: [
-            roleDean._id,
+            roleManager._id,
             qlBanHangSanfovet,
             nvKinhDoanhSanfovet._id,
             nvKtttSanfovet._id,
@@ -545,12 +545,12 @@ const initSampleCompanyDB = async () => {
         type: roleChucDanh._id,
     });
     const gdKDNL = await Role(viavetDB).create({
-        parents: [roleDean._id, canboKDNL._id, nvNhapKhau._id],
+        parents: [roleManager._id, canboKDNL._id, nvNhapKhau._id],
         name: "Giám đốc kinh doanh nguyên liệu",
         type: roleChucDanh._id,
     });
     const gdNhapKhau = await Role(viavetDB).create({
-        parents: [roleDean._id, canboKDNL._id, nvNhapKhau._id],
+        parents: [roleManager._id, canboKDNL._id, nvNhapKhau._id],
         name: "Giám đốc nhập khẩu",
         type: roleChucDanh._id,
     });
@@ -567,7 +567,7 @@ const initSampleCompanyDB = async () => {
         type: roleChucDanh._id,
     });
     const gdMarketing = await Role(viavetDB).create({
-        parents: [roleDean._id, nvThietKe._id, nvKTTTMarketing._id],
+        parents: [roleManager._id, nvThietKe._id, nvKTTTMarketing._id],
         name: "Giám đốc DufaFarm & Marketing",
         type: roleChucDanh._id,
     });
@@ -605,7 +605,7 @@ const initSampleCompanyDB = async () => {
     });
     const tpHCQT = await Role(viavetDB).create({
         parents: [
-            roleDean._id,
+            roleManager._id,
             nvHanhChinh._id,
             nvVanThu._id,
             nvVatTu._id,
@@ -618,7 +618,7 @@ const initSampleCompanyDB = async () => {
     });
     const gdHCQT = await Role(viavetDB).create({
         parents: [
-            roleDean._id,
+            roleManager._id,
             nvHanhChinh._id,
             nvVanThu._id,
             nvVatTu._id,
@@ -648,48 +648,48 @@ const initSampleCompanyDB = async () => {
         // Khởi tạo ban giám đốc công ty
         name: "Ban lãnh đạo",
         description: "Ban lãnh đạo công ty VIAVET",
-        deans: [chutich._id, tdg._id, gdTaiChinh._id],
-        viceDeans: [],
+        managers: [chutich._id, tdg._id, gdTaiChinh._id],
+        deputyManagers: [],
         employees: [thanhVienBGĐ._id],
         parent: null,
     });
     const pbKDVIAVET = await OrganizationalUnit(viavetDB).create({
         name: "Phòng kinh doanh VIAVET",
         description: "Phòng kinh doanh VIAVET",
-        deans: [gdBanHangViavet._id, gdKTTTViavet._id, gdKinhDoanhViavet._id],
-        viceDeans: [qlBanHangViavet._id],
+        managers: [gdBanHangViavet._id, gdKTTTViavet._id, gdKinhDoanhViavet._id],
+        deputyManagers: [qlBanHangViavet._id],
         employees: [nvKtttViavet._id, nvKinhDoanhViavet._id],
         parent: pbGiamDoc._id,
     });
     const pbKDSANFOVET = await OrganizationalUnit(viavetDB).create({
         name: "Phòng kinh doanh SANFOVET",
         description: "Phòng kinh doanh SANFOVET",
-        deans: [gdBanHangSanfovet._id, gdKTTTSanfovet._id],
-        viceDeans: [qlBanHangSanfovet._id],
+        managers: [gdBanHangSanfovet._id, gdKTTTSanfovet._id],
+        deputyManagers: [qlBanHangSanfovet._id],
         employees: [nvKtttSanfovet._id, nvKinhDoanhSanfovet._id],
         parent: pbGiamDoc._id,
     });
     const pbNKNL = await OrganizationalUnit(viavetDB).create({
         name: "Phòng nhập khẩu nguyên liệu",
         description: "Phòng nhập khẩu nguyên liệu",
-        deans: [gdKDNL._id, gdNhapKhau._id],
-        viceDeans: [],
+        managers: [gdKDNL._id, gdNhapKhau._id],
+        deputyManagers: [],
         employees: [nvNhapKhau._id, canboKDNL._id],
         parent: pbGiamDoc._id,
     });
     const pbMarketing = await OrganizationalUnit(viavetDB).create({
         name: "Phòng MARKETING",
         description: "Phòng MARKETING",
-        deans: [gdMarketing._id],
-        viceDeans: [],
+        managers: [gdMarketing._id],
+        deputyManagers: [],
         employees: [nvThietKe._id, nvKTTTMarketing._id],
         parent: pbGiamDoc._id,
     });
     const pbHCQT = await OrganizationalUnit(viavetDB).create({
         name: "Phòng hành chính - quản trị",
         description: "Phòng hành chính - quản trị",
-        deans: [tpHCQT._id, gdHCQT._id],
-        viceDeans: [],
+        managers: [tpHCQT._id, gdHCQT._id],
+        deputyManagers: [],
         employees: [
             nvHanhChinh._id,
             nvVanThu._id,
@@ -842,8 +842,8 @@ const initSampleCompanyDB = async () => {
     let roleArr = [
         roleSuperAdmin,
         roleAdmin,
-        roleDean,
-        roleViceDean,
+        roleManager,
+        roleDeputyManager,
         roleEmployee,
     ];
     await createCompanyLinks(linkArr, roleArr);
