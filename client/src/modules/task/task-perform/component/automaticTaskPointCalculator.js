@@ -1,8 +1,10 @@
 import Swal from 'sweetalert2';
+var mexp = require('math-expression-evaluator'); // native js package
 
 export const AutomaticTaskPointCalculator = {
     calcAutoPoint
 }
+
 
 // Replaces all instances of the given substring.
 String.prototype.replaceAll = function (
@@ -22,7 +24,23 @@ String.prototype.replaceAll = function (
 
 const calculateExpression = (expression) => {
     try{
-        let point = eval(expression);
+        // let point = eval(expression);
+
+        let token1 = {
+            type: 2,
+            token: "/",
+            show: "/",
+            value: function (f1, f2) {
+                if (f2 === 0) return 0;
+                else
+                    return f1 / f2;
+            }
+        }
+        // console.log( "m-exp", mexp.eval("2+5/ 0 ", [token1]));
+        // console.log( "m-exp", mexp.eval(expression, [token1]));
+        let point = mexp.eval(expression, [token1]);
+        console.log('point', point);
+
         return point;
     }catch(err){
         return null;
@@ -70,10 +88,10 @@ function calcAutoPoint(data) {
     let a = 0;
     a = actionRating.length;
 
-    if ((numberOfPassedActions === 0 && numberOfFailedActions === 0) || a === 0) {
-        numberOfPassedActions = 1;
-        numberOfFailedActions = 0;
-    }
+    // if ((numberOfPassedActions === 0 && numberOfFailedActions === 0) || a === 0) {
+    //     numberOfPassedActions = 1;
+    //     numberOfFailedActions = 0;
+    // }
 
     let pen = 0;
     pen = !a ? 0 : (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions));

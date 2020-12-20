@@ -474,7 +474,7 @@ class SearchEmployeeForPackage extends Component {
                         {/* Loại chứng chỉ */}
                         <div className="form-group">
                             <label className="form-control-static">Loại chứng chỉ</label>
-                            <input type="text" className="form-control" name="certificatesType" onChange={this.handleChange} placeholder={"Oracal Database"} />
+                            <input type="text" className="form-control" name="certificatesType" onChange={this.handleChange} placeholder={"Oracle Database"} />
                         </div>
                         {/* Loại hợp đồng lao động */}
                         <div className="form-group">
