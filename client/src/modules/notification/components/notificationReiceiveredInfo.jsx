@@ -3,14 +3,15 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, DateTimeConverter } from '../../../common-components';
 import parse from 'html-react-parser';
+import { AuthActions } from '../../../modules/auth/redux/actions'
 
 class NotificationReiceiverdInfo extends Component {
     constructor(props) {
         super(props);
-        this.state = {  }
+        this.state = {}
     }
 
-    static getDerivedStateFromProps(nextProps, prevState){
+    static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.notificationId !== prevState.notificationId) {
             return {
                 ...prevState,
@@ -19,35 +20,41 @@ class NotificationReiceiverdInfo extends Component {
                 notificationSender: nextProps.notificationSender,
                 notificationLevel: nextProps.notificationLevel,
                 notificationContent: nextProps.notificationContent,
-                notificationCreatedAt: nextProps.notificationCreatedAt
+                notificationCreatedAt: nextProps.notificationCreatedAt,
+                notificationFiles: nextProps.notificationFiles,
             }
         } else {
             return null;
         }
     }
 
-    render() { 
+    requestDownloadFile = (e, path, fileName) => {
+        e.preventDefault();
+        this.props.downloadFile(`.${path}`, fileName);
+    }
+
+    render() {
         const { notifications, translate } = this.props;
-        const { notificationTitle, notificationSender, notificationCreatedAt, notificationLevel, notificationContent } = this.state;
+        const { notificationTitle, notificationSender, notificationCreatedAt, notificationLevel, notificationContent, notificationFiles } = this.state;
         let content = notificationContent;
         let cssTable = " style=\"border: 1px solid black; padding-left: 3px; padding-right: 3px\"";
         while (content.indexOf("<table>") !== -1) {
             let vt = content.indexOf("<table>");
-            let str = content.slice(0,vt+6);
-            let strEnd = content.slice(vt+6);
+            let str = content.slice(0, vt + 6);
+            let strEnd = content.slice(vt + 6);
             str = str.concat(cssTable);
             str = str.concat(strEnd);
             content = str;
         }
         while (content.indexOf("<td>") !== -1) {
             let vt = content.indexOf("<td>");
-            let str = content.slice(0,vt+3);
-            let strEnd = content.slice(vt+3);
+            let str = content.slice(0, vt + 3);
+            let strEnd = content.slice(vt + 3);
             str = str.concat(cssTable);
             str = str.concat(strEnd);
             content = str;
         }
-        return ( 
+        return (
             <DialogModal
                 func={this.save} isLoading={notifications.isLoading}
                 modalID={`modal-notification-receivered`}
@@ -58,26 +65,40 @@ class NotificationReiceiverdInfo extends Component {
                     <div className="form-inline">
                         <div className="form-group">
                             {
-                            notificationLevel === 'info' ? <i className="fa fa-fw fa-info-circle text-blue"></i> :
-                            notificationLevel === 'general' ? <i className="fa fa-fw fa-bell text-green"></i> :
-                            notificationLevel === 'important' === 3 ? <i className="fa fa-fw fa-warning text-orange"></i> :
-                            <i className="fa fa-fw fa-bomb text-orange"></i> 
+                                notificationLevel === 'info' ? <i className="fa fa-fw fa-info-circle text-blue"></i> :
+                                    notificationLevel === 'general' ? <i className="fa fa-fw fa-bell text-green"></i> :
+                                        notificationLevel === 'important' === 3 ? <i className="fa fa-fw fa-warning text-orange"></i> :
+                                            <i className="fa fa-fw fa-bomb text-orange"></i>
                             }
                             <div className="inline">{translate('notification.from')}&nbsp;</div>
-                            <div className="inline"><b> {notificationSender}, <DateTimeConverter dateTime={notificationCreatedAt}/></b></div>
+                            <div className="inline"><b> {notificationSender}, <DateTimeConverter dateTime={notificationCreatedAt} /></b></div>
                         </div>
                     </div>
-                    <div style={{ margin: '20px 0px 20px 0px'}}>{parse(content)}</div>
+                    <div style={{ margin: '20px 0px 20px 0px' }}>{parse(content)}</div>
+                    {
+                        notificationFiles && notificationFiles.length > 0 &&
+                        <div>
+                            <label>{translate('human_resource.profile.attached_files')}</label>
+                            <ul>
+                                {
+                                    notificationFiles.map((obj, index) => (
+                                        <li key={index}><a href="" title="Tải xuống" onClick={(e) => this.requestDownloadFile(e, obj.url, obj.fileName)}>{obj.fileName}</a></li>
+                                    ))
+                                }
+                            </ul>
+                        </div>
+                    }
                 </div>
             </DialogModal>
-         );
+        );
     }
 }
- 
-function mapState(state){
+
+function mapState(state) {
     const { notifications } = state;
-    return { notifications } ;
+    return { notifications };
 }
 const actions = {
+    downloadFile: AuthActions.downloadFile,
 }
 export default connect(mapState, actions)(withTranslate(NotificationReiceiverdInfo));

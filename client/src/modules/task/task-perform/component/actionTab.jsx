@@ -1631,8 +1631,8 @@ class ActionTab extends Component {
 
                         {/* Chuyển qua tab Bấm giờ */}
                         <div className={selected === "logTimer" ? "active tab-pane" : "tab-pane"} id="logTimer">
-                            {logTimer && logTimer.map(item =>
-                                <React.Fragment>
+                            {logTimer && logTimer.map((item, index) =>
+                                <React.Fragment key={index}>
                                     {item.duration &&
                                         <div key={item._id} className="item-box">
                                             <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} </a>
