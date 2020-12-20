@@ -129,10 +129,16 @@ exports.logoutAllAccount = async (portal, id) => {
 /**
  * Quên mật khẩu tài khoản người dùng
  * @email: email người dùng
+ * @password2: mật khẩu cấp 2 dự phòng khi quên mật khẩu
  */
-exports.forgetPassword = async (portal, email) => {
+exports.forgetPassword = async (portal, email, password2) => {
     var user = await User(connect(DB_CONNECTION, portal)).findOne({ email });
+    if(!password2) throw ['pwd2_invalid'] 
     if (user === null) throw ["email_invalid"];
+    if(!user.password2) throw ['pwd2_not_complete'];
+    let validPass = await bcrypt.compare(String(password2), user.password2);
+    if (!validPass) throw ["pwd2_invalid"];
+    
     var code = await generator.generate({ length: 6, numbers: true });
     user.resetPasswordToken = code;
     await user.save();

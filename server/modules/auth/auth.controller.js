@@ -66,8 +66,8 @@ exports.logoutAllAccount = async (req, res) => {
 
 exports.forgetPassword = async (req, res) => {
     try {
-        const { portal, email } = req.body;
-        const forgetPassword = await AuthService.forgetPassword(portal, email);
+        const { portal, email, password2 } = req.body;
+        const forgetPassword = await AuthService.forgetPassword(portal, email, password2);
 
         await Logger.info(req.body.email, 'request_forgot_password_success');
         res.status(200).json({
@@ -76,7 +76,7 @@ exports.forgetPassword = async (req, res) => {
             content: forgetPassword
         });
     } catch (error) {
-
+        console.log(error)
         await Logger.error(req.body.email, 'request_forgot_password_faile');
         res.status(400).json({
             success: false,
