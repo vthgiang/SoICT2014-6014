@@ -66,8 +66,8 @@ exports.logoutAllAccount = async (req, res) => {
 
 exports.forgetPassword = async (req, res) => {
     try {
-        const { portal, email } = req.body;
-        const forgetPassword = await AuthService.forgetPassword(portal, email);
+        const { portal, email, password2 } = req.body;
+        const forgetPassword = await AuthService.forgetPassword(portal, email, password2);
 
         await Logger.info(req.body.email, 'request_forgot_password_success');
         res.status(200).json({
@@ -76,7 +76,7 @@ exports.forgetPassword = async (req, res) => {
             content: forgetPassword
         });
     } catch (error) {
-
+        console.log(error)
         await Logger.error(req.body.email, 'request_forgot_password_faile');
         res.status(400).json({
             success: false,
@@ -97,7 +97,7 @@ exports.resetPassword = async (req, res) => {
             content: resetPassword
         });
     } catch (error) {
-
+        console.log('error', error)
         await Logger.error(req.body.email, 'reset_password_faile');
         res.status(400).json({
             success: false,
@@ -123,7 +123,7 @@ exports.changeInformation = async (req, res) => {
             content: profile
         });
     } catch (error) {
-
+        console.log("change error", error);
         await Logger.error(req.user.email, 'change_user_information_faile', req.portal);
         res.status(400).json({
             success: false,
@@ -144,7 +144,7 @@ exports.changePassword = async (req, res) => {
             content: user
         });
     } catch (error) {
-
+        console.log(error);
         await Logger.error(req.user.email, 'change_user_password_faile', req.portal);
         res.status(400).json({
             success: false,
@@ -209,6 +209,28 @@ exports.downloadFile = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['download_file_faile'],
+            content: error
+        });
+    }
+}
+
+exports.answerAuthQuestions = async(req, res) => {
+    try {
+        console.log('fffffffffff')
+        const answer = await AuthService.answerAuthQuestions(req.portal, req.user._id, req.body);
+        console.log("anser", answer);
+        await Logger.info(req.user.email, 'answer_auth_question_success', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['answer_auth_question_success'],
+            content: answer
+        });
+    } catch (error) {
+
+        await Logger.info(req.user.email, 'answer_auth_question_faile', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['answer_auth_question_faile'],
             content: error
         });
     }

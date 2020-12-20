@@ -944,6 +944,7 @@ export default {
             close: "Đóng",
             email: "Email",
             password: "Mật khẩu",
+            password2: "Mật khẩu cấp 2",
             portal: "Portal",
             new_password: "Mật khẩu mới",
             confirm: "Xác thực mật khẩu",

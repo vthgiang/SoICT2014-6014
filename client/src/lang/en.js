@@ -799,6 +799,7 @@ export default {
             close: "Close",
             email: "Email",
             password: "Password",
+            password2: "Password level 2",
             portal: "Portal",
             new_password: "New password",
             confirm: "Confirm password",
