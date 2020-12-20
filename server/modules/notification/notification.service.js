@@ -165,7 +165,7 @@ exports.createNotification = async (
     }
 
     // Loại bỏ các giá trị trùng nhau
-    usersArr = usersArr.map((user) => user.toString());
+    usersArr = usersArr && usersArr.length !== 0 && usersArr.map((user) => user && user.toString());
     for (let i = 0, max = usersArr.length; i < max; i++) {
         if (
             usersArr.indexOf(usersArr[i]) !== usersArr.lastIndexOf(usersArr[i])

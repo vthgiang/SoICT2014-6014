@@ -68,7 +68,7 @@ class CreateEmployeeKpiSet extends Component {
     }
     componentDidMount() {
         this.props.getDepartment();
-        this.props.getEmployeeKpiSet()
+        this.props.getEmployeeKpiSet();
         this.props.getCurrentKPIUnit(localStorage.getItem('currentRole'));
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
     }

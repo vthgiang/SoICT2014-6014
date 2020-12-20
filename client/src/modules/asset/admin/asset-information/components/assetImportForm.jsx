@@ -8,7 +8,7 @@ import { AssetManagerActions } from '../redux/actions';
 
 import { AssetImportTab } from './assetImportTab';
 
-import { UploadFile, ImportFileExcel, ExportExcel } from '../../../../../common-components';
+import { UploadFile, ImportFileExcel, ExportExcel, SelectBox } from '../../../../../common-components';
 
 import {
     configurationGeneralInformationOfAssetTemplate,
@@ -50,7 +50,10 @@ class AssetImportForm extends Component {
             checkFileImportDisposalInformation: true,
             checkFileImportMaintainanceInformation: true,
             checkFileImportIncidentInformation: true,
-            checkFileImportUsageInformation: true
+            checkFileImportUsageInformation: true,
+
+            // Loai import, = "createAsset" để thêm tài sản mới, = "editAsset" để thêm thông tin cho tài sản đã tồn tại
+            importType: "createAsset"
         }
     }
 
@@ -59,6 +62,7 @@ class AssetImportForm extends Component {
     }
 
     save = () => {
+        const { type } = this.props;
         const {
             importGeneralInformationData,
             importDepreciationInformationData,
@@ -69,25 +73,80 @@ class AssetImportForm extends Component {
         } = this.state;
 
         let assets = [];
-        if (importGeneralInformationData && importGeneralInformationData.length !== 0) {
-            importGeneralInformationData.map((asset) => {
-                let importDisposalTemporary = importDisposalInformationData.filter(item => item.code === asset.code);
-                let importDepreciationTemporary = importDepreciationInformationData.filter(item => item.code === asset.code);
-                assets.push({
-                    ...asset,
-                    ...importDepreciationTemporary[0],
-                    ...importDisposalTemporary[0],
-                    maintainanceLogs: importMaintainanceInformationData.filter(item => item.code === asset.code),
-                    usageLogs: importUsageInformationData.filter(item => item.code === asset.code),
-                    incidentLogs: importIncidentInformationData.filter(item => item.code === asset.code),
+        if (type === 'add') {
+            if (importGeneralInformationData && importGeneralInformationData.length !== 0) {
+                importGeneralInformationData.map((asset) => {
+                    let importDisposalTemporary = importDisposalInformationData.filter(item => item.code === asset.code);
+                    let importDepreciationTemporary = importDepreciationInformationData.filter(item => item.code === asset.code);
+                    assets.push({
+                        ...asset,
+                        ...importDepreciationTemporary[0],
+                        ...importDisposalTemporary[0],
+                        maintainanceLogs: importMaintainanceInformationData.filter(item => item.code === asset.code),
+                        usageLogs: importUsageInformationData.filter(item => item.code === asset.code),
+                        incidentLogs: importIncidentInformationData.filter(item => item.code === asset.code),
+                    })
                 })
-            })
+            }
+        } else {
+            let assetCodes = [];
+
+            if (importGeneralInformationData && importGeneralInformationData.length !== 0) {
+                importGeneralInformationData.map(item => {
+                    assetCodes.push(item.code)
+                })
+            }
+            if (importDepreciationInformationData && importDepreciationInformationData.length !== 0) {
+                importDepreciationInformationData.map(item => {
+                    assetCodes.push(item.code)
+                })
+            }
+            if (importDisposalInformationData && importDisposalInformationData.length !== 0) {
+                importDisposalInformationData.map(item => {
+                    assetCodes.push(item.code)
+                })
+            }
+            if (importIncidentInformationData && importIncidentInformationData.length !== 0) {
+                importIncidentInformationData.map(item => {
+                    assetCodes.push(item.code)
+                })
+            }
+            if (importMaintainanceInformationData && importMaintainanceInformationData.length !== 0) {
+                importMaintainanceInformationData.map(item => {
+                    assetCodes.push(item.code)
+                })
+            }
+            if (importUsageInformationData && importUsageInformationData.length !== 0) {
+                importUsageInformationData.map(item => {
+                    assetCodes.push(item.code)
+                })
+            }
+
+            assetCodes = Array.from(new Set(assetCodes))
+
+            if (assetCodes && assetCodes.length !== 0) {
+                assetCodes.map(assetCode => {
+                    let importDisposalTemporary = importDisposalInformationData.filter(item => item.code === assetCode);
+                    let importDepreciationTemporary = importDepreciationInformationData.filter(item => item.code === assetCode);
+                    let importGeneralInformationTemporary = importGeneralInformationData.filter(item => item.code === assetCode);
+                    assets.push({
+                        ...importGeneralInformationTemporary[0],
+                        ...importDepreciationTemporary[0],
+                        ...importDisposalTemporary[0],
+                        maintainanceLogs: importMaintainanceInformationData.filter(item => item.code === assetCode),
+                        usageLogs: importUsageInformationData.filter(item => item.code === assetCode),
+                        incidentLogs: importIncidentInformationData.filter(item => item.code === assetCode),
+                    })
+                })
+            }
         }
 
         if (assets && assets.length !== 0) {
-            // assets.map(item => {
-            this.props.addNewAsset(assets)
-            // })
+            if (type === 'add') {
+                this.props.addNewAsset(assets)
+            } else {
+                this.props.updateInformationAsset(undefined, assets, true);
+            }
         }
     }
 
@@ -483,6 +542,8 @@ class AssetImportForm extends Component {
     // Xử lý file import thông tin chung
     handleImportExcelGeneralInformation = (value, checkFileImport) => {
         const { user, assetsManager, role, assetType } = this.props;
+        const { type } = this.props;
+
         let importGeneralInformationData = [];
         let managers = {}, assetTypes = {}, roles = {}, assetLocations = {};
         let rowError = [];
@@ -521,63 +582,105 @@ class AssetImportForm extends Component {
                 if (valueTemporary.code) {
                     let errorAlert = [];
 
-                    // Check lỗi dữ liệu import || !valueTemporary.group
-                    if (!valueTemporary.code || !valueTemporary.assetName || !valueTemporary.assetType || !valueTemporary.status || !valueTemporary.typeRegisterForUse
-                        || (valueTemporary.group && !assetGroups[valueTemporary.group])
-                        || (valueTemporary.assetType && !assetTypes[valueTemporary.assetType])
-                        || (valueTemporary.typeRegisterForUse && !typeRegisterForUse[valueTemporary.typeRegisterForUse])
-                        || (valueTemporary.status && !status[valueTemporary.status])
-                        || (valueTemporary.managedBy && !managers[valueTemporary.managedBy])
-                        || (valueTemporary.readByRoles && !roles[valueTemporary.readByRoles])
-                        || (valueTemporary.location && !assetLocations[valueTemporary.location])
-                    ) {
-                        rowError = [...rowError, i + 1];
-                        valueTemporary = { ...valueTemporary, error: true };
-                    }
+                    if (type === 'add') {
+                        // Check lỗi dữ liệu import || !valueTemporary.group
+                        if (!valueTemporary.code || !valueTemporary.assetName || !valueTemporary.assetType || !valueTemporary.status || !valueTemporary.typeRegisterForUse
+                            || (valueTemporary.group && !assetGroups[valueTemporary.group])
+                            || (valueTemporary.assetType && !assetTypes[valueTemporary.assetType])
+                            || (valueTemporary.typeRegisterForUse && !typeRegisterForUse[valueTemporary.typeRegisterForUse])
+                            || (valueTemporary.status && !status[valueTemporary.status])
+                            || (valueTemporary.managedBy && !managers[valueTemporary.managedBy])
+                            || (valueTemporary.readByRoles && !roles[valueTemporary.readByRoles])
+                            || (valueTemporary.location && !assetLocations[valueTemporary.location])
+                        ) {
+                            rowError = [...rowError, i + 1];
+                            valueTemporary = { ...valueTemporary, error: true };
+                        }
 
-                    if (!valueTemporary.code) {
-                        errorAlert = [...errorAlert, 'Mã tài sản không được để trống'];
-                    }
+                        if (!valueTemporary.code) {
+                            errorAlert = [...errorAlert, 'Mã tài sản không được để trống'];
+                        }
 
-                    if (!valueTemporary.assetName) {
-                        errorAlert = [...errorAlert, 'Tên tài sản không được để trống'];
-                    }
+                        if (!valueTemporary.assetName) {
+                            errorAlert = [...errorAlert, 'Tên tài sản không được để trống'];
+                        }
 
-                    // if (!valueTemporary.group) {
-                    //     errorAlert = [...errorAlert, 'Nhóm tài sản không được để trống'];
-                    // } else
-                    if (valueTemporary.group && !assetGroups[valueTemporary.group]) {
-                        errorAlert = [...errorAlert, 'Nhóm tài sản không chính xác'];
-                    }
+                        // if (!valueTemporary.group) {
+                        //     errorAlert = [...errorAlert, 'Nhóm tài sản không được để trống'];
+                        // } else
+                        if (valueTemporary.group && !assetGroups[valueTemporary.group]) {
+                            errorAlert = [...errorAlert, 'Nhóm tài sản không chính xác'];
+                        }
 
-                    if (!valueTemporary.assetType) {
-                        errorAlert = [...errorAlert, 'Loại tài sản không được để trống'];
-                    } else if (valueTemporary.assetType && !assetTypes[valueTemporary.assetType]) {
-                        errorAlert = [...errorAlert, 'Loại tài sản không chính xác'];
-                    }
+                        if (!valueTemporary.assetType) {
+                            errorAlert = [...errorAlert, 'Loại tài sản không được để trống'];
+                        } else if (valueTemporary.assetType && !assetTypes[valueTemporary.assetType]) {
+                            errorAlert = [...errorAlert, 'Loại tài sản không chính xác'];
+                        }
 
-                    if (!valueTemporary.status) {
-                        errorAlert = [...errorAlert, 'Trạng thái không được để trống'];
-                    } else if (valueTemporary.status && !status[valueTemporary.status]) {
-                        errorAlert = [...errorAlert, 'Trạng thái không chính xác'];
-                    }
+                        if (!valueTemporary.status) {
+                            errorAlert = [...errorAlert, 'Trạng thái không được để trống'];
+                        } else if (valueTemporary.status && !status[valueTemporary.status]) {
+                            errorAlert = [...errorAlert, 'Trạng thái không chính xác'];
+                        }
 
-                    if (!valueTemporary.typeRegisterForUse) {
-                        errorAlert = [...errorAlert, 'Quyền đăng ký sử dụng không được để trống'];
-                    } else if (valueTemporary.typeRegisterForUse && !typeRegisterForUse[valueTemporary.typeRegisterForUse]) {
-                        errorAlert = [...errorAlert, 'Quyền đăng ký sử dụng không chính xác'];
-                    }
+                        if (!valueTemporary.typeRegisterForUse) {
+                            errorAlert = [...errorAlert, 'Quyền đăng ký sử dụng không được để trống'];
+                        } else if (valueTemporary.typeRegisterForUse && !typeRegisterForUse[valueTemporary.typeRegisterForUse]) {
+                            errorAlert = [...errorAlert, 'Quyền đăng ký sử dụng không chính xác'];
+                        }
 
-                    if (valueTemporary.managedBy && !managers[valueTemporary.managedBy]) {
-                        errorAlert = [...errorAlert, 'Người quản lý không chính xác'];
-                    }
+                        if (valueTemporary.managedBy && !managers[valueTemporary.managedBy]) {
+                            errorAlert = [...errorAlert, 'Người quản lý không chính xác'];
+                        }
 
-                    if (valueTemporary.readByRoles && !roles[valueTemporary.readByRoles]) {
-                        errorAlert = [...errorAlert, 'Những roles có quyèn không chính xác'];
-                    }
+                        if (valueTemporary.readByRoles && !roles[valueTemporary.readByRoles]) {
+                            errorAlert = [...errorAlert, 'Những roles có quyèn không chính xác'];
+                        }
 
-                    if (valueTemporary.location && !assetLocations[valueTemporary.location]) {
-                        errorAlert = [...errorAlert, 'Vị trí tài sản không chính xác'];
+                        if (valueTemporary.location && !assetLocations[valueTemporary.location]) {
+                            errorAlert = [...errorAlert, 'Vị trí tài sản không chính xác'];
+                        }
+                    } else {
+                        if ((valueTemporary.group && !assetGroups[valueTemporary.group])
+                            || (valueTemporary.assetType && !assetTypes[valueTemporary.assetType])
+                            || (valueTemporary.typeRegisterForUse && !typeRegisterForUse[valueTemporary.typeRegisterForUse])
+                            || (valueTemporary.status && !status[valueTemporary.status])
+                            || (valueTemporary.managedBy && !managers[valueTemporary.managedBy])
+                            || (valueTemporary.readByRoles && !roles[valueTemporary.readByRoles])
+                            || (valueTemporary.location && !assetLocations[valueTemporary.location])
+                        ) {
+                            rowError = [...rowError, i + 1];
+                            valueTemporary = { ...valueTemporary, error: true };
+                        }
+
+                        if (valueTemporary.group && !assetGroups[valueTemporary.group]) {
+                            errorAlert = [...errorAlert, 'Nhóm tài sản không chính xác'];
+                        }
+
+                        if (valueTemporary.assetType && !assetTypes[valueTemporary.assetType]) {
+                            errorAlert = [...errorAlert, 'Loại tài sản không chính xác'];
+                        }
+
+                        if (valueTemporary.status && !status[valueTemporary.status]) {
+                            errorAlert = [...errorAlert, 'Trạng thái không chính xác'];
+                        }
+
+                        if (valueTemporary.typeRegisterForUse && !typeRegisterForUse[valueTemporary.typeRegisterForUse]) {
+                            errorAlert = [...errorAlert, 'Quyền đăng ký sử dụng không chính xác'];
+                        }
+
+                        if (valueTemporary.managedBy && !managers[valueTemporary.managedBy]) {
+                            errorAlert = [...errorAlert, 'Người quản lý không chính xác'];
+                        }
+
+                        if (valueTemporary.readByRoles && !roles[valueTemporary.readByRoles]) {
+                            errorAlert = [...errorAlert, 'Những roles có quyèn không chính xác'];
+                        }
+
+                        if (valueTemporary.location && !assetLocations[valueTemporary.location]) {
+                            errorAlert = [...errorAlert, 'Vị trí tài sản không chính xác'];
+                        }
                     }
 
                     // Format date
@@ -593,8 +696,8 @@ class AssetImportForm extends Component {
                     importGeneralInformationData = [...importGeneralInformationData,
                     {
                         ...valueTemporary,
-                        assetType: [assetTypes[valueTemporary.assetType]],
-                        readByRoles: [roles[valueTemporary.readByRoles]],
+                        assetType: assetTypes[valueTemporary.assetType] && [assetTypes[valueTemporary.assetType]],
+                        readByRoles: roles[valueTemporary.readByRoles] && [roles[valueTemporary.readByRoles]],
                         managedBy: managers[valueTemporary.managedBy],
                         location: assetLocations[valueTemporary.location],
                         group: assetGroups[valueTemporary.group],
@@ -668,12 +771,14 @@ class AssetImportForm extends Component {
                 }
             })
         } else {
-            this.setState(state => {
-                return {
-                    ...state,
-                    checkFileImportGeneralInformation: checkFileImport,
-                }
-            })
+            if (!(value.length === 1 && !value[0].code)) {
+                this.setState(state => {
+                    return {
+                        ...state,
+                        checkFileImportGeneralInformation: checkFileImport,
+                    }
+                })
+            }
         }
     }
 
@@ -965,7 +1070,7 @@ class AssetImportForm extends Component {
                     item = { ...item, error: true };
                 }
 
-                if (item.type && !maintainanceType.includes(item.maintainanceType)) {
+                if (item.type && !maintainanceType.includes(item.type)) {
                     errorAlert = [...errorAlert, 'Phân loại không chính xác'];
                 }
 
@@ -1114,6 +1219,8 @@ class AssetImportForm extends Component {
 
     render() {
         const { translate } = this.props;
+        const { id, type } = this.props;
+
         const {
             importGeneralInformationDataShow,
             importUsageInformationDataShow,
@@ -1134,18 +1241,17 @@ class AssetImportForm extends Component {
             checkFileImportDisposalInformation,
             checkFileImportMaintainanceInformation,
             checkFileImportIncidentInformation,
-            checkFileImportUsageInformation
+            checkFileImportUsageInformation,
         } = this.state;
 
         let importAssetTemplateData = this.convertAssetTemplate(importAssetTemplate);
-        console.log('importDisposalInformationDataShow', importDisposalInformationDataShow)
-        console.log('rowErrorDisposalInformationData', rowErrorDisposalInformationData)
+
         return (
             <React.Fragment>
                 <DialogModal
-                    size='75' modalID="modal-import-asset"
-                    formID="form-import-asset"
-                    title={translate('menu.add_asset')}
+                    size='75' modalID={id}
+                    formID={`form-${id}`}
+                    title={type === 'add' ? translate('menu.add_asset') : translate('menu.update_asset')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
@@ -1164,17 +1270,17 @@ class AssetImportForm extends Component {
 
                     <div className="nav-tabs-custom row" style={{ marginTop: '-10px' }}>
                         <ul className="nav nav-tabs">
-                            <li className="active"><a title="Thông tin chung" data-toggle="tab" href="#import_create_general">Thông tin chung</a></li>
-                            <li><a title="Thông tin khấu hao" data-toggle="tab" href="#import_depreciation">Thông tin khấu hao</a></li>
-                            <li><a title="Thông tin sử dụng" data-toggle="tab" href="#import_usage">Thông tin sử dụng</a></li>
-                            <li><a title="Thông tin sự cố" data-toggle="tab" href="#import_incident">Thông tin sự cố</a></li>
-                            <li><a title="Thông tin bảo trì" data-toggle="tab" href="#import_maintainance">Thông tin bảo trì</a></li>
-                            <li><a title="Thông tin thanh lý" data-toggle="tab" href="#import_disposal">Thông tin thanh lý</a></li>
+                            <li className="active"><a title="Thông tin chung" data-toggle="tab" href={`#import_create_general${id}`}>Thông tin chung</a></li>
+                            <li><a title="Thông tin khấu hao" data-toggle="tab" href={`#import_depreciation${id}`}>Thông tin khấu hao</a></li>
+                            <li><a title="Thông tin sử dụng" data-toggle="tab" href={`#import_usage${id}`}>Thông tin sử dụng</a></li>
+                            <li><a title="Thông tin sự cố" data-toggle="tab" href={`#import_incident${id}`}>Thông tin sự cố</a></li>
+                            <li><a title="Thông tin bảo trì" data-toggle="tab" href={`#import_maintainance${id}`}>Thông tin bảo trì</a></li>
+                            <li><a title="Thông tin thanh lý" data-toggle="tab" href={`#import_disposal${id}`}>Thông tin thanh lý</a></li>
                         </ul>
                         <div className="tab-content">
                             {/* Thông tin chung */}
                             <AssetImportTab
-                                id="import_create_general"
+                                id={`import_create_general${id}`}
                                 scrollTable={true}
                                 className="tab-pane active"
                                 configuration={configurationGeneralInformationOfAssetTemplate}
@@ -1185,7 +1291,7 @@ class AssetImportForm extends Component {
 
                             {/* Thông tin khấu hao */}
                             <AssetImportTab
-                                id="import_depreciation"
+                                id={`import_depreciation${id}`}
                                 className="tab-pane"
                                 configuration={configurationDepreciationInformationOfAssetTemplate}
                                 importData={importDepreciationInformationDataShow}
@@ -1195,7 +1301,7 @@ class AssetImportForm extends Component {
 
                             {/* Thông tin sử dụng */}
                             <AssetImportTab
-                                id="import_usage"
+                                id={`import_usage${id}`}
                                 className="tab-pane"
                                 configuration={configurationUsageInformationOfAssetTemplate}
                                 importData={importUsageInformationDataShow}
@@ -1205,7 +1311,7 @@ class AssetImportForm extends Component {
 
                             {/* Thông tin sự cố */}
                             <AssetImportTab
-                                id="import_incident"
+                                id={`import_incident${id}`}
                                 className="tab-pane"
                                 configuration={configurationIncidentInformationOfAssetTemplate}
                                 importData={importIncidentInformationDataShow}
@@ -1215,7 +1321,7 @@ class AssetImportForm extends Component {
 
                             {/* Thông tin bảo trì */}
                             <AssetImportTab
-                                id="import_maintainance"
+                                id={`import_maintainance${id}`}
                                 className="tab-pane"
                                 configuration={configurationMaintainanceInformationOfAssetTemplate}
                                 importData={importMaintainanceInformationDataShow}
@@ -1225,7 +1331,7 @@ class AssetImportForm extends Component {
 
                             {/* Thông tin thanh lý */}
                             <AssetImportTab
-                                id="import_disposal"
+                                id={`import_disposal${id}`}
                                 className="tab-pane"
                                 configuration={configurationDisposalInformationOfAssetTemplate}
                                 importData={importDisposalInformationDataShow}
@@ -1248,7 +1354,8 @@ function mapState(state) {
 const actions = {
     addNewAsset: AssetManagerActions.addNewAsset,
     searchAssetTypes: AssetTypeActions.searchAssetTypes,
-    getAllUsers: UserActions.get
+    getAllUsers: UserActions.get,
+    updateInformationAsset: AssetManagerActions.updateInformationAsset
 };
 
 const connectedAssetImportForm = connect(mapState, actions)(withTranslate(AssetImportForm));
