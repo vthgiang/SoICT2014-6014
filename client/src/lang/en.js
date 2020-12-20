@@ -871,6 +871,13 @@ export default {
                 properties: "Properties",
                 title: "Title",
             },
+
+            showmore_showless: {
+                showmore: "Show more",
+                showless: "Show less",
+                title_showmore: "Click to show more",
+                title_showless: "Click to show less"
+            }
         },
 
         menu: {
@@ -963,7 +970,10 @@ export default {
             // Quản lý tài sản
             // QUẢN LÝ
 
-            add_asset: "Add asset",
+            add_update_asset: "Add - Update asset",
+            add_asset_title: "Add new asset - Update asset",
+            add_asset: "Add new asset",
+            update_asset: "Update asset",
             manage_repair_asset: "Manage repair asset",
             manage_usage_asset: "Manage usage asset",
             manage_distribute_asset: "Manage distribute asset",
@@ -1743,6 +1753,8 @@ export default {
                     add_employee_title: "Add new staff",
                     add_by_hand: "Add a staff",
                     add_import: "Add data from file",
+                    update_import: "Update data from file",
+
                     // Thông điệp trả về từ server
                     get_list_employee_success: "Get list employee success",
                     get_list_employee_faile: "Get list employee faile",

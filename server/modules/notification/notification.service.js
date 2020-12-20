@@ -62,23 +62,25 @@ exports.paginateManualNotifications = async (portal, creator, data) => {
     );
 };
 
+exports.getUrl = (destination, filename) => {
+    let url = `${destination}/${filename}`;
+    return url.substr(1, url.length);
+}
 /**
  * Tạo thông báo manual notification
  * @company id của công ty
  * @data thông tin về thông báo muốn tạo
  */
-exports.createManualNotification = async (portal, data) => {
-    const notify = await ManualNotification(
-        connect(DB_CONNECTION, portal)
-    ).create({
-        creator: data.creator,
-        sender: data.sender,
-        title: data.title,
-        level: data.level,
-        content: data.content,
-        users: data.users,
-        organizationalUnits: data.organizationalUnits,
-    });
+exports.createManualNotification = async (portal, data, files) => {
+    if (files) {
+        files = files.map(obj => ({
+            fileName: obj.originalname,
+            url: this.getUrl(obj.destination, obj.filename),
+        }))
+        data = {...data, files }
+    }
+
+    const notify = await ManualNotification(connect(DB_CONNECTION, portal)).create(data)
 
     return await ManualNotification(connect(DB_CONNECTION, portal))
         .findById(notify._id)
@@ -165,7 +167,7 @@ exports.createNotification = async (
     }
 
     // Loại bỏ các giá trị trùng nhau
-    usersArr = usersArr.map((user) => user.toString());
+    usersArr = usersArr && usersArr.length !== 0 && usersArr.map((user) => user && user.toString());
     for (let i = 0, max = usersArr.length; i < max; i++) {
         if (
             usersArr.indexOf(usersArr[i]) !== usersArr.lastIndexOf(usersArr[i])
@@ -187,6 +189,7 @@ exports.createNotification = async (
             creator: data.creator,
             sender: data.sender,
             user: usersArr[i],
+            files: data.files,
             manualNotification,
         });
         const arr = CONNECTED_CLIENTS.filter(

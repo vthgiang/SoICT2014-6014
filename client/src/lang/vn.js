@@ -1016,6 +1016,13 @@ export default {
                 properties: "Tên các thuộc tính",
                 title: "Tiêu đề tương ứng",
             },
+
+            showmore_showless: {
+                showmore: "Xem thêm",
+                showless: "Ẩn bớt",
+                title_showmore: "Bấm để hiển thị thêm",
+                title_showless: "Bấm để hiển thị ít hơn"
+            }
         },
 
         menu: {
@@ -1120,7 +1127,10 @@ export default {
             // Quản lý tài sản
             // QUẢN LÝ
 
+            add_update_asset: "Thêm - Cập nhật tài sản",
+            add_asset_title: "Thêm mới tài sản - Cập nhật tài sản",
             add_asset: "Thêm tài sản",
+            update_asset: "Cập nhật tài sản",
             manage_repair_asset: "Quản lý sửa chữa, thay thế",
             manage_usage_asset: "Quản lý sử dụng tài sản",
             manage_distribute_asset: "Quản lý cấp phát, điều chuyển",
@@ -1914,6 +1924,7 @@ export default {
                     add_employee_title: "Thêm mới nhân viên",
                     add_by_hand: "Thêm một nhân viên",
                     add_import: "Thêm dữ liệu từ file",
+                    update_import: "Cập nhật dữ liệu từ file",
 
                     // Thông điệp trả về từ server
                     get_list_employee_success:

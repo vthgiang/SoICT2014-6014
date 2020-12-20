@@ -27,7 +27,7 @@ class AssetImportTab extends Component {
     render() {
         const { id, className = "tab-pane", configuration, scrollTable = false, importData, rowError, checkFileImport } = this.props;
         const { limit, page, configData } = this.state;
-
+    
         return (
             <React.Fragment>
                 <div id={id} className={className}>
