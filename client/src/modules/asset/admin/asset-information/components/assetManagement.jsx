@@ -1049,6 +1049,7 @@ class AssetManagement extends Component {
 
                         archivedRecordNumber={currentRowView.archivedRecordNumber}
                         files={currentRowView.documents}
+                        linkPage={"management"}
                     />
                 }
 
@@ -1099,7 +1100,7 @@ class AssetManagement extends Component {
                         incidentLogs={currentRow.incidentLogs}
                         archivedRecordNumber={currentRow.archivedRecordNumber}
                         files={currentRow.documents}
-
+                        linkPage={"management"}
                         page={page}
                     />
                 }
