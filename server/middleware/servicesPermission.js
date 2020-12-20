@@ -1,13 +1,331 @@
-const { connection } = require("mongoose");
+const { Role } = require('../models');
+const { connect } = require('../helpers/dbHelper');
 
-const { Role } = require(`${SERVER_MODELS_DIR}`);
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+exports.links = [
+    {
+        url: '/home',
+        apis: ['@all']
+    },{
+        url: '/notifications',
+        apis: ['@all']
+    },{
+        url: '/manage-configuration',
+        apis: ['@all']
+    },{
+        url: '/system-management',
+        apis: ['@all']
+    },{
+        url: '/departments-management',
+        apis: ['@all']
+    },{
+        url: '/users-management',
+        apis: ['@all']
+    },{
+        url: '/roles-management',
+        apis: ['@all']
+    },{
+        url: '/links-management',
+        apis: ['@all']
+    },{
+        url: '/components-management',
+        apis: ['@all']
+    },{
+        url: '/documents-management',
+        apis: ['@all']
+    },{
+        url: '/documents/organizational-unit',
+        apis: ['@all']
+    },{
+        url: '/documents',
+        apis: ['@all']
+    },{
+        url: '/hr-employee-capacity',
+        apis: ['@all']
+    },{
+        url: '/hr-manage-work-plan',
+        apis: ['@all']
+    },{
+        url: '/hr-add-employee',
+        apis: ['@all']
+    },{
+        url: '/hr-list-employee',
+        apis: ['@all']
+    },{
+        url: '/hr-manage-department',
+        apis: ['@all']
+    },{
+        url: '/hr-update-employee',
+        apis: ['@all']
+    },{
+        url: '/hr-detail-employee',
+        apis: ['@all']
+    },{
+        url: '/hr-annual-leave-personal',
+        apis: ['@all']
+    },{
+        url: '/dashboard-personal',
+        apis: ['@all']
+    },{
+        url: '/dashboard-unit',
+        apis: ['@all']
+    },{
+        url: '/hr-manage-leave-application',
+        apis: ['@all']
+    },{
+        url: '/hr-salary-employee',
+        apis: ['@all']
+    },{
+        url: '/hr-annual-leave',
+        apis: ['@all']
+    },{
+        url: '/hr-discipline',
+        apis: ['@all']
+    },{
+        url: '/hr-dashboard-employee',
+        apis: ['@all']
+    },{
+        url: '/hr-time-keeping',
+        apis: ['@all']
+    },{
+        url: '/hr-trainning-course',
+        apis: ['@all']
+    },{
+        url: '/hr-account',
+        apis: ['@all']
+    },{
+        url: '/hr-training-plan',
+        apis: ['@all']
+    },{
+        url: '/hr-list-education',
+        apis: ['@all']
+    },{
+        url: '/hr-list-major',
+        apis: ['@all']
+    },{
+        url: '/hr-list-career-position',
+        apis: ['@all']
+    },{
+        url: '/hr-search-for-package',
+        apis: ['@all']
+    },{
+        url: '/kpi-units/create',
+        apis: ['@all']
+    },{
+        url: '/kpi-units/dashboard',
+        apis: ['@all']
+    },{
+        url: '/kpi-units/manager',
+        apis: ['@all']
+    },{
+        url: '/kpi-units/statistic',
+        apis: ['@all']
+    },{
+        url: '/kpi-member/manager',
+        apis: ['@all']
+    },{
+        url: '/kpi-member/dashboard',
+        apis: ['@all']
+    },{
+        url: '/kpi-personals/dashboard',
+        apis: ['@all']
+    },{
+        url: '/kpi-personals/create',
+        apis: ['@all']
+    },{
+        url: '/kpi-personals/manager',
+        apis: ['@all']
+    },{
+        url: '/task-template',
+        apis: ['@all']
+    },{
+        url: '/task-management',
+        apis: ['@all']
+    },{
+        url: '/task-management-unit',
+        apis: ['@all']
+    },{
+        url: '/task-process-management',
+        apis: ['@all']
+    },{
+        url: '/task-process-template',
+        apis: ['@all']
+    },{
+        url: '/task-management-dashboard',
+        apis: ['@all']
+    },{
+        url: '/task-organization-management-dashboard',
+        apis: ['@all']
+    },{
+        url: '/task',
+        apis: ['@all']
+    },{
+        url: '/dashboard-asset',
+        apis: ['@all']
+    },{
+        url: '/manage-type-asset',
+        apis: ['@all']
+    },{
+        url: '/manage-info-asset',
+        apis: ['@all']
+    },{
+        url: '/manage-maintainance-asset',
+        apis: ['@all']
+    },{
+        url: '/manage-usage-asset',
+        apis: ['@all']
+    },{
+        url: '/manage-depreciation-asset',
+        apis: ['@all']
+    },{
+        url: '/manage-incident-asset',
+        apis: ['@all']
+    },{
+        url: '/manage-asset-purchase-request',
+        apis: ['@all']
+    },{
+        url: '/manage-asset-use-request',
+        apis: ['@all']
+    },{
+        url: '/employee-manage-info-asset',
+        apis: ['@all']
+    },{
+        url: '/employee-manage-incident-asset',
+        apis: ['@all']
+    },{
+        url: '/employee-manage-asset-use-request',
+        apis: ['@all']
+    },{
+        url: '/asset-purchase-request',
+        apis: ['@all']
+    },{
+        url: '/asset-use-request',
+        apis: ['@all']
+    },{
+        url: '/manage-assigned-asset',
+        apis: ['@all']
+    },{
+        url: '/view-building-list',
+        apis: ['@all']
+    },{
+        url: '/task-report',
+        apis: ['@all']
+    },{
+        url: '/dashboard-inventory',
+        apis: ['@all']
+    },{
+        url: '/dashboard-bill',
+        apis: ['@all']
+    },{
+        url: '/stock-management',
+        apis: ['@all']
+    },{
+        url: '/bin-location-management',
+        apis: ['@all']
+    },{
+        url: '/category-management',
+        apis: ['@all']
+    },{
+        url: '/good-management',
+        apis: ['@all']
+    },{
+        url: '/bill-management',
+        apis: ['@all']
+    },{
+        url: '/inventory-management',
+        apis: ['@all']
+    },{
+        url: '/manage-sales-order',
+        apis: ['@all']
+    },{
+        url: '/manage-manufacturing-order',
+        apis: ['@all']
+    },{
+        url: '/manage-purchase-order',
+        apis: ['@all']
+    },{
+        url: '/manage-quote',
+        apis: ['@all']
+    },{
+        url: '/manage-sales-order-dashboard',
+        apis: ['@all']
+    },{
+        url: '/manage-manufacturing-order-dashboard',
+        apis: ['@all']
+    },{
+        url: '/manage-discount',
+        apis: ['@all']
+    },{
+        url: '/manage-tax',
+        apis: ['@all']
+    },{
+        url: '/manage-sla',
+        apis: ['@all']
+    },{
+        url: '/crm/dashboard',
+        apis: ['@all']
+    },{
+        url: '/crm/customer',
+        apis: ['@all']
+    },{
+        url: '/crm/lead',
+        apis: ['@all']
+    },{
+        url: '/crm/group',
+        apis: ['@all']
+    },{
+        url: '/crm/care',
+        apis: ['@all']
+    },{
+        url: '/crm/generalConfiguration',
+        apis: ['@all']
+    },{
+        url: '/manage-plans',
+        apis: ['@all']
+    },{
+        url: '/manage-examples-1',
+        apis: ['@all']
+    },{
+        url: '/manage-examples-2',
+        apis: ['@all']
+    },{
+        url: '/manage-examples-hooks-1',
+        apis: ['@all']
+    },{
+        url: '/manage-examples-hooks-2',
+        apis: ['@all']
+    },{
+        url: '/manage-manufacturing-plan',
+        apis: ['@all']
+    },{
+        url: '/manage-manufacturing-command',
+        apis: ['@all']
+    },{
+        url: '/manage-work-schedule',
+        apis: ['@all']
+    },{
+        url: '/manage-purchasing-request',
+        apis: ['@all']
+    },{
+        url: '/manufacturing-dashboard',
+        apis: ['@all']
+    },{
+        url: '/analysis-manufacturing-performance',
+        apis: ['@all']
+    },{
+        url: '/manage-manufacturing-works',
+        apis: ['@all']
+    },{
+        url: '/manage-manufacturing-mill',
+        apis: ['@all']
+    },{
+        url: '/manage-manufacturing-lot',
+        apis: ['@all']
+    },{
+        url: '/hr-manage-field',
+        apis: ['@all']
+    }
+];
 
-/**
- * Kiểm tra vai trò hiện tại của user có được phép sử dụng service hay không?
- * 1. true : nếu có quyền dùng service
- * 2. false : ngược lại
- */
 exports.checkServicePermission = async (portal, data, path, method, currentRole) => {
     var result = false;
     var role = await Role(connect(DB_CONNECTION, portal))

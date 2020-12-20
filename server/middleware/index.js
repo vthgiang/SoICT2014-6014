@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const Models = require(`${SERVER_MODELS_DIR}`);
 const { User, Role, UserRole, Privilege, Link, Company } = Models;
 const ObjectId = require("mongoose").Types.ObjectId;
-const { data, checkServicePermission } = require("./servicesPermission");
+const { links } = require("./servicesPermission");
 const multer = require("multer");
 const fs = require("fs");
 const CryptoJS = require("crypto-js");
@@ -135,12 +135,13 @@ exports.authFunc = (checkPage = true, checkPassword2=true) => {
                 /**
                  * Kiểm tra xem user này có được gọi tới service này hay không?
                  */
-                const path =
-                    req.route.path !== "/"
-                        ? req.baseUrl + req.route.path
-                        : req.baseUrl;
-                // const checkSP = await checkServicePermission(req.portal, data, path, req.method, currentRole);
-                // if (!checkSP) throw ['service_permission_invalid'];
+                const apiCalled = req.route.path !== "/" ? req.baseUrl + req.route.path : req.baseUrl;
+                const perLink = links.find(l => l.url === url);
+                if(!perLink) throw ['url_invalid_permission']
+                if(perLink.apis[0] !== '@all'){
+                    const perAPI = perLink.apis.some(api => api.path === apiCalled && api.method === req.method);
+                    if(!perAPI) throw ['api_permission_invalid'];
+                }
             }
 
             next();
