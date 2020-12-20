@@ -84,7 +84,10 @@ const initSampleCompanyDB = async () => {
         useCreateIndex: true,
         useFindAndModify: false,
         user: process.env.DB_USERNAME,
-        pass: process.env.DB_PASSWORD
+        pass: process.env.DB_PASSWORD,
+        auth: {
+            authSource: 'admin'
+        }
     } : {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -100,7 +103,10 @@ const initSampleCompanyDB = async () => {
         useCreateIndex: true,
         useFindAndModify: false,
         user: process.env.DB_USERNAME,
-        pass: process.env.DB_PASSWORD
+        pass: process.env.DB_PASSWORD,
+        auth: {
+            authSource: 'admin'
+        }
     } : {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -198,7 +204,7 @@ const initSampleCompanyDB = async () => {
     /**
      * 2. Xóa dữ liệu db cũ của công ty vnist
      */
-    vnistDB.dropDatabase();
+    // vnistDB.dropDatabase();
 
     /**
      * 3. Khởi tạo dữ liệu về công ty VNIST trong database của hệ thống

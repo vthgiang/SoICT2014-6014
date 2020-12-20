@@ -1356,10 +1356,10 @@ const LINKS = [{
 },
 ];
 
-module.export = {
-    ROOT_ROLES,
+module.exports = {
     ROLE_TYPES,
     LINKS,
-    LINK_CATEGORY,
-    COMPONENTS
+    COMPONENTS,
+    ROOT_ROLES,
+    LINK_CATEGORY
 }
