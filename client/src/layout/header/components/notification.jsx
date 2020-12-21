@@ -35,12 +35,16 @@ class Notification extends Component {
             return null;
         }
     }
+    checkPriority = (value) => {
+        if (!value || value === "1") return "#00a65a"
+        if (value === "3") return "#ff0707"
+        if (value === "2") return "#ffa707"
+    }
 
     render() {
         const { translate } = this.props;
         const { notify } = this.state;
         const count = notify.length;
-
         return (
             <React.Fragment>
                 <li className="dropdown notifications-menu">
@@ -60,7 +64,7 @@ class Notification extends Component {
                                             <Link to="/notifications">
                                                 {
                                                     notification.level === 'info' ? <i className="fa fa-info-circle text-blue" /> :
-                                                        notification.level === 'general' ? <i className="fa fa-bell text-green" /> :
+                                                        notification.level === 'general' ? <i className="fa fa-bell " style={{ color: `${this.checkPriority(notification.associatedDataObject && notification.associatedDataObject.value)}` }} /> :
                                                             notification.level === 'important' ? <i className="fa fa-warning text-yellow" /> :
                                                                 <i className="fa fa-bomb text-red" />
                                                 }
