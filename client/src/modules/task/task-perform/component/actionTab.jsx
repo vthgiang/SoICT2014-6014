@@ -19,6 +19,9 @@ import { ViewProcess } from '../../task-process/component/task-process-managemen
 import { IncomingDataTab } from './incomingDataTab';
 import { OutgoingDataTab } from './outgoingDataTab';
 import parse from 'html-react-parser';
+import { some } from 'lodash'
+
+
 class ActionTab extends Component {
     constructor(props) {
         let idUser = getStorage("userId");
@@ -122,17 +125,38 @@ class ActionTab extends Component {
     componentDidMount = () => {
         this.props.getAllPreceedingTasks(this.props.id)
     }
-    static getDerivedStateFromProps(nextProps, prevState) {
-        let state = {}
-        if (nextProps.performtasks.task) {
-            state = Object.assign(prevState, { taskActions: nextProps.performtasks.task.taskActions })
+
+    static getDerivedStateFromProps(props, prevState) {
+        const { performtasks, notifications } = props;
+        let state = {};
+        if (notifications && notifications.dataSend && performtasks && performtasks.task && notifications.dataSend.dataType === 1 && notifications.dataSend.value.length > 0) {
+            // Kiểm tra nếu comment mới nhận từ seerver có trong danh sách comment hiện tại đang hiển thị hay chưa 
+            const check = some(performtasks.task.taskComments, ['_id', notifications.dataSend.value[0]._id])
+            let { taskComments } = performtasks.task;
+            if (!check) {
+                // Nếu tạo mới bình luận trong tab trao đổi
+                const newTaskComments = [...taskComments, notifications.dataSend.value[0]];
+                props.refreshDataAfterComment(newTaskComments);
+            } else {
+                // add thêm sub comment mới 
+                const res = taskComments.map(obj => notifications.dataSend.value.find(o => o._id === obj._id) || obj);
+                props.refreshDataAfterComment(res);
+            }
+            notifications.dataSend = {};
+        }
+
+        if (performtasks.task) {
+            state = Object.assign(prevState, { taskActions: performtasks.task.taskActions })
             return {
                 state
             }
-        } else {
+        }
+        else {
             return null;
         }
     }
+
+
     shouldComponentUpdate = (nextProps, nextState) => {
         if (nextProps.id !== this.state.id) {
             this.setState(state => {
@@ -1711,8 +1735,8 @@ class ActionTab extends Component {
 }
 
 function mapState(state) {
-    const { tasks, performtasks, user, auth } = state;
-    return { tasks, performtasks, user, auth };
+    const { tasks, performtasks, user, auth, notifications } = state;
+    return { tasks, performtasks, user, auth, notifications };
 }
 
 const actionCreators = {
@@ -1747,7 +1771,9 @@ const actionCreators = {
     deleteDocument: performTaskAction.deleteDocument,
     editDocument: performTaskAction.editDocument,
     getAllPreceedingTasks: performTaskAction.getAllPreceedingTasks,
-    sortActions: performTaskAction.sortActions
+    sortActions: performTaskAction.sortActions,
+
+    refreshDataAfterComment: performTaskAction.refreshDataAfterComment
 };
 
 const actionTab = connect(mapState, actionCreators)(withTranslate(ActionTab));

@@ -475,6 +475,10 @@ exports.createTask = async (req, res) => {
         var task = tasks.task;
         var user = tasks.user.filter(user => user !== req.user._id); //lọc thông tin người tạo ra khỏi danh sách sẽ gửi thông báo
 
+        const associatedDataObject = {
+            dataType: 2,
+            value: task.priority
+        }
         // Gửi mail cho nhân viện tham gia công việc
         var email = tasks.email;
         var html = tasks.html;
@@ -484,7 +488,8 @@ exports.createTask = async (req, res) => {
             level: "general",
             content: html,
             sender: task.organizationalUnit.name,
-            users: user
+            users: user,
+            associatedDataObject: associatedDataObject
         };
 
         // Gửi mail cho trưởng đơn vị phối hợp thực hiện công việc

@@ -299,7 +299,7 @@ exports.createTaskComment = async (req, res) => {
 
             })
         }
-        let taskComment = await PerformTaskService.createTaskComment(req.portal, req.params, req.body, files);
+        let taskComment = await PerformTaskService.createTaskComment(req.portal, req.params, req.body, files, req.user);
         await Logger.info(req.user.email, ` create task comment  `, req.portal);
         res.status(200).json({
             success: true,
@@ -399,7 +399,7 @@ exports.createCommentOfTaskComment = async (req, res) => {
 
             })
         }
-        let comment = await PerformTaskService.createCommentOfTaskComment(req.portal, req.params, req.body, files);
+        let comment = await PerformTaskService.createCommentOfTaskComment(req.portal, req.params, req.body, files, req.user);
         await Logger.info(req.user.email, ` create comment of task comment  `, req.portal);
         res.status(200).json({
             success: true,

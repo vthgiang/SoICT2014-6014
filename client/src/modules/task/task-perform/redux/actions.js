@@ -69,6 +69,7 @@ export const performTaskAction = {
     getAllPreceedingTasks,
 
     sortActions,
+    refreshDataAfterComment,
 };
 
 
@@ -1098,4 +1099,9 @@ function sortActions(taskId, data) {
                 dispatch({ type: performTaskConstants.SORT_ACTIONS_FAILURE, error });
             });
     };
+}
+
+function refreshDataAfterComment(data) {
+    return dispatch =>
+        dispatch({ type: performTaskConstants.REFRESH_DATA_SUCCESS, payload: data });
 }

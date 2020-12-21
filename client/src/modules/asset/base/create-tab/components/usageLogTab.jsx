@@ -317,6 +317,7 @@ class UsageLogTab extends Component {
                             typeRegisterForUse={typeRegisterForUse}
                             managedBy={managedBy}
                             handleChange={this.handleAddUsage}
+                            linkPage={this.props.linkPage}
                         />
                     }
                     {typeRegisterForUse !== 2 &&
