@@ -84,10 +84,9 @@ class TaskManagement extends Component {
 
         for (i = 0; i < list.length; i += 1) {
             node = list[i];
-            if (node.parent !== null) {
-
+            if (node.parent) {
                 // if you have dangling branches check that map[node.parentId] exists
-                if (map[node.parent._id] !== undefined) {
+                if (map[node.parent._id]) {
                     list[map[node.parent._id]].children.push(node);
                 }
                 else {
@@ -728,7 +727,7 @@ class TaskManagement extends Component {
                     </div>
 
                     {
-                        currentTaskId !== undefined &&
+                        currentTaskId &&
                         <ModalPerform
                             units={units}
                             id={currentTaskId}
