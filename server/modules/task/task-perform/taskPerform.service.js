@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const fs = require("fs");
 const moment = require("moment");
 const nodemailer = require("nodemailer");
-
+const NotificationServices = require(`${SERVER_MODULES_DIR}/notification/notification.service`);
 const { Task, User, UserRole, Role, OrganizationalUnit } = require(`${SERVER_MODELS_DIR}`);
 
 
@@ -802,25 +802,19 @@ exports.deleteTaskAction = async (portal, params) => {
 /**
  * Tạo bình luận công việc
  */
-exports.createTaskComment = async (portal, params, body, files) => {
-    let commentInformation = {
+exports.createTaskComment = async (portal, params, body, files, user) => {
+   const commentInformation = {
         creator: body.creator,
         description: body.description,
         files: files,
     };
-    let taskComment1 = await Task(
-        connect(DB_CONNECTION, portal)
-    ).findByIdAndUpdate(
+    const taskComment = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
         params.taskId,
         {
             $push: {
                 taskComments: commentInformation,
             },
-        },
-        { new: true }
-    );
-    let task = await Task(connect(DB_CONNECTION, portal))
-        .findOne({ _id: params.taskId })
+        },{ new: true })
         .populate([
             { path: "taskComments.creator", select: "name email avatar" },
             {
@@ -831,9 +825,31 @@ exports.createTaskComment = async (portal, params, body, files) => {
                 path: "taskActions.evaluations.creator",
                 select: "name email avatar",
             },
+            {
+                path:"organizationalUnit"
+            }
         ]);
 
-    return task.taskComments;
+    const userReceive = [...taskComment.responsibleEmployees, ...taskComment.accountableEmployees].filter(obj => JSON.stringify(obj) !== JSON.stringify(user._id))
+    
+    const dataSend = {
+        dataType: 1,
+        value: [taskComment.taskComments[taskComment.taskComments.length - 1]]
+    }
+
+    const data = {
+        organizationalUnits: taskComment.organizationalUnit._id,
+        title: "Cập nhật thông tin công việc ",
+        level: "general",
+        content:`<p><strong>${user.name}</strong> đã thêm một bình luận trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${process.env.WEBSITE}/task?taskId=${params.taskId}</a></p>` ,
+        sender: `${user.name} (${taskComment.organizationalUnit.name})`,
+        users: userReceive,
+        dataSend: dataSend,
+    };
+
+    if (userReceive && userReceive.length > 0)
+        NotificationServices.createNotification(portal, user.company._id, data)
+    return taskComment.taskComments;
 };
 /**
  * Sửa bình luận công việc
@@ -914,8 +930,8 @@ exports.deleteTaskComment = async (portal, params) => {
 /**
  * Thêm bình luận của bình luận công việc
  */
-exports.createCommentOfTaskComment = async (portal, params, body, files) => {
-    let taskcomment = await Task(connect(DB_CONNECTION, portal)).updateOne(
+exports.createCommentOfTaskComment = async (portal, params, body, files, user) => {
+    const taskcomment = await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
         { _id: params.taskId, "taskComments._id": params.commentId },
         {
             $push: {
@@ -925,11 +941,7 @@ exports.createCommentOfTaskComment = async (portal, params, body, files) => {
                     files: files,
                 },
             },
-        }
-    );
-
-    let taskComment = await Task(connect(DB_CONNECTION, portal))
-        .findOne({ _id: params.taskId, "taskComments._id": params.commentId })
+        }, { new: true })
         .populate([
             { path: "taskComments.creator", select: "name email avatar" },
             {
@@ -941,9 +953,46 @@ exports.createCommentOfTaskComment = async (portal, params, body, files) => {
                 select: "name email avatar ",
             },
         ])
-        .select("taskComments");
+   
+    const { taskComments } = taskcomment;
+    // Lấy ra bình luận cha
+    let getTaskComment = [];
+    const taskCommentLength = taskComments.length;
+    for (let i = 0; i < taskCommentLength; i++) {
+        if (JSON.stringify(taskComments[i]._id) === JSON.stringify(params.commentId)) {
+            getTaskComment = [taskComments[i]];
+            break; // Tìm thấy thì dừng vòng lặp luôn
+        }
+    }
 
-    return taskComment.taskComments;
+    // Lấy danh sách user dự tính gửi thông báo
+    let userReceive = [getTaskComment[0].creator._id];
+    // Lấy người liên quan đến trong subcomment 
+    const subCommentLength = getTaskComment[0].comments.length;
+
+    for (let index = 0; index < subCommentLength; index++) {
+        userReceive = [...userReceive, getTaskComment[0].comments[index].creator._id];
+    }
+
+    // Loại bỏ người gửi sub comment ra khỏi danh sách user dc nhận thông báo 
+    userReceive = userReceive.filter(obj => obj.toString() !== user._id.toString())
+
+    const dataSend = {
+        dataType: 1,
+        value: taskComments.filter(obj => obj._id.toString() === params.commentId.toString())
+    }
+    const data = {
+        organizationalUnits: taskcomment.organizationalUnit._id,
+        title: "Cập nhật thông tin công việc ",
+        level: "general",
+        content:`<p><strong>${user.name}</strong> đã trả lời bình luận của bạn trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${process.env.WEBSITE}/task?taskId=${params.taskId}</a></p>` ,
+        sender: `${user.name}`,
+        users: userReceive,
+        dataSend: dataSend,
+    };
+    if(userReceive && userReceive.length > 0)
+        NotificationServices.createNotification(portal, user.company._id, data)
+    return taskComments;
 };
 /**
  * Sửa bình luận của bình luận công việc

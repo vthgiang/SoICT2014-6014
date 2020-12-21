@@ -179,7 +179,7 @@ exports.createNotification = async (
 
     // Gửi thông báo cho các user - bằng socket trên web
     for (let i = 0; i < usersArr.length; i++) {
-        const notify = await Notification(
+       await Notification(
             connect(DB_CONNECTION, portal)
         ).create({
             company,
@@ -191,7 +191,9 @@ exports.createNotification = async (
             user: usersArr[i],
             files: data.files,
             manualNotification,
+            associatedDataObject: data.associatedDataObject,
         });
+        const notify = { ...data};
         const arr = CONNECTED_CLIENTS.filter(
             (client) => client.userId === usersArr[i]
         );
