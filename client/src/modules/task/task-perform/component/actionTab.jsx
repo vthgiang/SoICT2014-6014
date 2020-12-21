@@ -129,20 +129,26 @@ class ActionTab extends Component {
     static getDerivedStateFromProps(props, prevState) {
         const { performtasks, notifications } = props;
         let state = {};
-        if (notifications && notifications.dataSend && performtasks && performtasks.task && notifications.dataSend.dataType === 1 && notifications.dataSend.value.length > 0) {
-            // Kiểm tra nếu comment mới nhận từ seerver có trong danh sách comment hiện tại đang hiển thị hay chưa 
-            const check = some(performtasks.task.taskComments, ['_id', notifications.dataSend.value[0]._id])
+        if (notifications && notifications.dataSend && performtasks && performtasks.task && notifications.dataSend.value && notifications.dataSend.value.length > 0) {
             let { taskComments } = performtasks.task;
-            if (!check) {
-                // Nếu tạo mới bình luận trong tab trao đổi
-                const newTaskComments = [...taskComments, notifications.dataSend.value[0]];
-                props.refreshDataAfterComment(newTaskComments);
-            } else {
+            let { taskActions } = performtasks.task;
+            // Trường hợp thêm mới bình luận (tab trao doi)
+            if (notifications.dataSend.dataType === "createTaskComment") {
+                const res = [...taskComments, notifications.dataSend.value[0]];
+                props.refreshDataAfterComment(res);
+            }
+            // trường hợp thêm comment cho comment (tab trao doi)
+            if (notifications.dataSend.dataType === "createTaskSubComment") {
                 // add thêm sub comment mới 
                 const res = taskComments.map(obj => notifications.dataSend.value.find(o => o._id === obj._id) || obj);
                 props.refreshDataAfterComment(res);
             }
-            notifications.dataSend = {};
+            // Trường hợp thêm mới hoạt động
+            if (notifications.dataSend.dataType === "createTaskAction") {
+                const res = [...taskActions, notifications.dataSend.value[0]];
+                props.refreshDataAfterCreateAction(res)
+            }
+            notifications.dataSend = {}; // reset lại 
         }
 
         if (performtasks.task) {
@@ -1773,7 +1779,8 @@ const actionCreators = {
     getAllPreceedingTasks: performTaskAction.getAllPreceedingTasks,
     sortActions: performTaskAction.sortActions,
 
-    refreshDataAfterComment: performTaskAction.refreshDataAfterComment
+    refreshDataAfterComment: performTaskAction.refreshDataAfterComment,
+    refreshDataAfterCreateAction: performTaskAction.refreshDataAfterCreateAction,
 };
 
 const actionTab = connect(mapState, actionCreators)(withTranslate(ActionTab));

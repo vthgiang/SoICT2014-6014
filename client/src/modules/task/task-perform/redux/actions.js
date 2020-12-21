@@ -70,6 +70,7 @@ export const performTaskAction = {
 
     sortActions,
     refreshDataAfterComment,
+    refreshDataAfterCreateAction,
 };
 
 
@@ -1103,5 +1104,10 @@ function sortActions(taskId, data) {
 
 function refreshDataAfterComment(data) {
     return dispatch =>
-        dispatch({ type: performTaskConstants.REFRESH_DATA_SUCCESS, payload: data });
+        dispatch({ type: performTaskConstants.REFRESH_DATA_AFTER_COMMENT_SUCCESS, payload: data });
+}
+
+function refreshDataAfterCreateAction(data) {
+    return dispatch =>
+        dispatch({ type: performTaskConstants.REFRESH_DATA_AFTER_CREATE_ACTION_SUCCESS, payload: data });
 }

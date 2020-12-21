@@ -684,12 +684,13 @@ exports.deleteCommentOfTaskAction = async (portal, params) => {
  */
 
 exports.createTaskAction = async (portal, params, body, files) => {
+
     let actionInformation = {
         creator: body.creator,
         description: body.description,
         files: files,
     };
-    let taskAction1 = await Task(connect(DB_CONNECTION, portal))
+    const task = await Task(connect(DB_CONNECTION, portal))
         .findByIdAndUpdate(
             params.taskId,
             {
@@ -698,26 +699,25 @@ exports.createTaskAction = async (portal, params, body, files) => {
                         $each: [actionInformation],
                     },
                 },
-            },
-            { new: true }
-        )
-        .populate([
-            { path: "taskActions.creator", select: "name email avatar" },
-        ]);
+            },{ new: true })
+            .populate([
+                { path: "taskActions.creator", select: 'name email avatar company' },
+                { path: "taskActions.comments.creator", select: 'name email avatar' },
+                { path: "taskActions.evaluations.creator", select: 'name email avatar ' }])
+    
+    // let user = await User(connect(DB_CONNECTION, portal)).findOne({ _id: body.creator }); // Thừa 
+    let getUser;
+    if (task) {
+        const length = task.taskActions.length;
+        getUser = task.taskActions[length - 1].creator;
+    }
 
-    let task = await Task(connect(DB_CONNECTION, portal))
-        .findOne({ _id: params.taskId })
-        .populate([
-            { path: "taskActions.creator", select: 'name email avatar' },
-            { path: "taskActions.comments.creator", select: 'name email avatar' },
-            { path: "taskActions.evaluations.creator", select: 'name email avatar ' }])
-
-
-    let user = await User(connect(DB_CONNECTION, portal)).findOne({ _id: body.creator });
-    let tasks = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: params.taskId });
-    let userEmail = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: tasks.accountableEmployees } });
+    // let tasks = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: params.taskId }); Thừa .. giá trị trả về giống trên
+    
+    // Danh sách người phê duyệt được gửi mail
+    let userEmail = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: task.accountableEmployees } });
     let email = userEmail.map(item => item.email);
-    return { taskActions: task.taskActions, tasks: tasks, user: user, email: email };
+    return { taskActions: task.taskActions, tasks: task, userCreator: getUser, email: email };
 }
 /**
  * Sửa hoạt động của cộng việc
@@ -833,7 +833,7 @@ exports.createTaskComment = async (portal, params, body, files, user) => {
     const userReceive = [...taskComment.responsibleEmployees, ...taskComment.accountableEmployees].filter(obj => JSON.stringify(obj) !== JSON.stringify(user._id))
     
     const dataSend = {
-        dataType: 1,
+        dataType: "createTaskComment",
         value: [taskComment.taskComments[taskComment.taskComments.length - 1]]
     }
 
@@ -978,7 +978,7 @@ exports.createCommentOfTaskComment = async (portal, params, body, files, user) =
     userReceive = userReceive.filter(obj => obj.toString() !== user._id.toString())
 
     const dataSend = {
-        dataType: 1,
+        dataType: "createTaskSubComment",
         value: taskComments.filter(obj => obj._id.toString() === params.commentId.toString())
     }
     const data = {
