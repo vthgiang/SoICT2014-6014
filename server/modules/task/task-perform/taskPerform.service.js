@@ -1293,13 +1293,13 @@ exports.addTaskLog = async (portal, params, body) => {
         description: description,
     };
     let task = await Task(connect(DB_CONNECTION, portal))
-        .findByIdAndUpdate(
-            params.taskId,
+        .updateOne(
+            { '_id': params.taskId },
             { $push: { logs: log } },
             { new: true }
         )
         .populate("logs.creator");
-    let taskLog = task.logs.reverse();
+    let taskLog = task.logs && task.logs.reverse();
 
     return taskLog;
 };
@@ -2165,8 +2165,8 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
         consultedEmployees
     );
 
-    task = await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
-        { _id: taskId },
+    task = await Task(connect(DB_CONNECTION, portal)).updateOne(
+        { _id: mongoose.Types.ObjectId(taskId) },
         {
             $set: {
                 responsibleEmployees: task.responsibleEmployees,
@@ -2176,9 +2176,9 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
         { $new: true }
     );
 
-    task = await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
+    task = await Task(connect(DB_CONNECTION, portal)).updateOne(
         {
-            _id: taskId,
+            _id: mongoose.Types.ObjectId(taskId),
             "collaboratedWithOrganizationalUnits.organizationalUnit": unitId,
         },
         {
@@ -2343,13 +2343,18 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
             : ""
         }`;
 
-    newEmployees = await User(connect(DB_CONNECTION, portal)).find({
-        _id: { $in: newEmployees },
-    });
-    email = newEmployees.map((item) => item.email);
+    if (newEmployees && newEmployees.length !== 0) {
+        newEmployees = await User(connect(DB_CONNECTION, portal)).find({
+            _id: { $in: newEmployees.map(item => mongoose.Types.ObjectId(item)) },
+        });
+        email = newEmployees.map((item) => item.email);
+    }
+    
+    
+    
 
     // Update nhật ký chỉnh sửa
-    if (newEmployees.length !== 0) {
+    if (newEmployees && newEmployees.length !== 0) {
         descriptionLogs = descriptionLogs + " - Thêm mới nhân viên tham gia công việc: ";
         newEmployees.map((item, index) => {
             descriptionLogs = descriptionLogs + (index > 0 ? ", " : "") + item.name;
