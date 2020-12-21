@@ -464,6 +464,7 @@ class AssetEditForm extends Component {
                                 handleEditUsage={this.handleEditUsageLogs}
                                 handleDeleteUsage={this.handleDeleteUsageLogs}
                                 handleRecallAsset={this.handleRecallAsset}
+                                linkPage={this.props.linkPage}
                             />
 
                             {/* Thông tin sự cố */}

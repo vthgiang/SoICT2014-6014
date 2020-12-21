@@ -134,6 +134,7 @@ class AssetViewInfo extends Component {
                                 typeRegisterForUse={typeRegisterForUse}
                                 managedBy={managedBy}
                                 usageLogs={usageLogs}
+                                linkPage={this.props.linkPage}
                             />
 
                             {/* Thông tin sự cố */}
