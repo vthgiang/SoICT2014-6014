@@ -1528,15 +1528,21 @@ exports.createTask = async (portal, task) => {
         var parent = await Task(connect(DB_CONNECTION, portal)).findById(task.parent);
         if (parent) level = parent.level + 1;
     }
+    var startDate, endDate;
+    if(Date.parse(task.startDate)) startDate = new Date(task.startDate);
+    else {
+        var splitter = task.startDate.split("-");
+        startDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+    }
 
-    // convert thời gian từ string sang date
-    var splitter = task.startDate.split("-");
-    var startDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-    splitter = task.endDate.split("-");
-    var endDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+    if(Date.parse(task.endDate)) endDate = new Date(task.endDate);
+    else {
+        var splitter = task.endDate.split("-");
+        endDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+    }
 
     let taskTemplate, cloneActions = [];
-    if (task.taskTemplate !== "") {
+    if (task.taskTemplate) {
         taskTemplate = await TaskTemplate(connect(DB_CONNECTION, portal)).findById(task.taskTemplate);
         var taskActions = taskTemplate.taskActions;
 
