@@ -129,18 +129,16 @@ exports.authFunc = (checkPage = true, checkPassword2=true) => {
                         });
                         if (privilege === null) throw ["page_access_denied"];
                     }
-                
-                }
-
-                /**
-                 * Kiểm tra xem user này có được gọi tới service này hay không?
-                 */
-                const apiCalled = req.route.path !== "/" ? req.baseUrl + req.route.path : req.baseUrl;
-                const perLink = links.find(l => l.url === url);
-                if(!perLink) throw ['url_invalid_permission']
-                if(perLink.apis[0] !== '@all'){
-                    const perAPI = perLink.apis.some(api => api.path === apiCalled && api.method === req.method);
-                    if(!perAPI) throw ['api_permission_invalid'];
+                     /**
+                     * Kiểm tra xem user này có được gọi tới service này hay không?
+                     */
+                    const apiCalled = req.route.path !== "/" ? req.baseUrl + req.route.path : req.baseUrl;
+                    const perLink = links.find(l => l.url === url);
+                    if(!perLink) throw ['url_invalid_permission']
+                    if(perLink.apis[0] !== '@all'){
+                        const perAPI = perLink.apis.some(api => api.path === apiCalled && api.method === req.method);
+                        if(!perAPI) throw ['api_permission_invalid'];
+                    }
                 }
             }
 
