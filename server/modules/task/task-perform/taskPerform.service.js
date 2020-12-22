@@ -684,12 +684,13 @@ exports.deleteCommentOfTaskAction = async (portal, params) => {
  */
 
 exports.createTaskAction = async (portal, params, body, files) => {
+
     let actionInformation = {
         creator: body.creator,
         description: body.description,
         files: files,
     };
-    let taskAction1 = await Task(connect(DB_CONNECTION, portal))
+    const task = await Task(connect(DB_CONNECTION, portal))
         .findByIdAndUpdate(
             params.taskId,
             {
@@ -698,26 +699,25 @@ exports.createTaskAction = async (portal, params, body, files) => {
                         $each: [actionInformation],
                     },
                 },
-            },
-            { new: true }
-        )
-        .populate([
-            { path: "taskActions.creator", select: "name email avatar" },
-        ]);
+            },{ new: true })
+            .populate([
+                { path: "taskActions.creator", select: 'name email avatar company' },
+                { path: "taskActions.comments.creator", select: 'name email avatar' },
+                { path: "taskActions.evaluations.creator", select: 'name email avatar ' }])
+    
+    // let user = await User(connect(DB_CONNECTION, portal)).findOne({ _id: body.creator }); // Thừa 
+    let getUser;
+    if (task) {
+        const length = task.taskActions.length;
+        getUser = task.taskActions[length - 1].creator;
+    }
 
-    let task = await Task(connect(DB_CONNECTION, portal))
-        .findOne({ _id: params.taskId })
-        .populate([
-            { path: "taskActions.creator", select: 'name email avatar' },
-            { path: "taskActions.comments.creator", select: 'name email avatar' },
-            { path: "taskActions.evaluations.creator", select: 'name email avatar ' }])
-
-
-    let user = await User(connect(DB_CONNECTION, portal)).findOne({ _id: body.creator });
-    let tasks = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: params.taskId });
-    let userEmail = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: tasks.accountableEmployees } });
+    // let tasks = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: params.taskId }); Thừa .. giá trị trả về giống trên
+    
+    // Danh sách người phê duyệt được gửi mail
+    let userEmail = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: task.accountableEmployees } });
     let email = userEmail.map(item => item.email);
-    return { taskActions: task.taskActions, tasks: tasks, user: user, email: email };
+    return { taskActions: task.taskActions, tasks: task, userCreator: getUser, email: email };
 }
 /**
  * Sửa hoạt động của cộng việc
@@ -833,7 +833,7 @@ exports.createTaskComment = async (portal, params, body, files, user) => {
     const userReceive = [...taskComment.responsibleEmployees, ...taskComment.accountableEmployees].filter(obj => JSON.stringify(obj) !== JSON.stringify(user._id))
     
     const dataSend = {
-        dataType: 1,
+        dataType: "createTaskComment",
         value: [taskComment.taskComments[taskComment.taskComments.length - 1]]
     }
 
@@ -978,7 +978,7 @@ exports.createCommentOfTaskComment = async (portal, params, body, files, user) =
     userReceive = userReceive.filter(obj => obj.toString() !== user._id.toString())
 
     const dataSend = {
-        dataType: 1,
+        dataType: "createTaskSubComment",
         value: taskComments.filter(obj => obj._id.toString() === params.commentId.toString())
     }
     const data = {
@@ -1293,13 +1293,13 @@ exports.addTaskLog = async (portal, params, body) => {
         description: description,
     };
     let task = await Task(connect(DB_CONNECTION, portal))
-        .findByIdAndUpdate(
-            params.taskId,
+        .updateOne(
+            { '_id': params.taskId },
             { $push: { logs: log } },
             { new: true }
         )
         .populate("logs.creator");
-    let taskLog = task.logs.reverse();
+    let taskLog = task.logs && task.logs.reverse();
 
     return taskLog;
 };
@@ -2165,8 +2165,8 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
         consultedEmployees
     );
 
-    task = await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
-        { _id: taskId },
+    task = await Task(connect(DB_CONNECTION, portal)).updateOne(
+        { _id: mongoose.Types.ObjectId(taskId) },
         {
             $set: {
                 responsibleEmployees: task.responsibleEmployees,
@@ -2176,9 +2176,9 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
         { $new: true }
     );
 
-    task = await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
+    task = await Task(connect(DB_CONNECTION, portal)).updateOne(
         {
-            _id: taskId,
+            _id: mongoose.Types.ObjectId(taskId),
             "collaboratedWithOrganizationalUnits.organizationalUnit": unitId,
         },
         {
@@ -2343,13 +2343,18 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
             : ""
         }`;
 
-    newEmployees = await User(connect(DB_CONNECTION, portal)).find({
-        _id: { $in: newEmployees },
-    });
-    email = newEmployees.map((item) => item.email);
+    if (newEmployees && newEmployees.length !== 0) {
+        newEmployees = await User(connect(DB_CONNECTION, portal)).find({
+            _id: { $in: newEmployees.map(item => mongoose.Types.ObjectId(item)) },
+        });
+        email = newEmployees.map((item) => item.email);
+    }
+    
+    
+    
 
     // Update nhật ký chỉnh sửa
-    if (newEmployees.length !== 0) {
+    if (newEmployees && newEmployees.length !== 0) {
         descriptionLogs = descriptionLogs + " - Thêm mới nhân viên tham gia công việc: ";
         newEmployees.map((item, index) => {
             descriptionLogs = descriptionLogs + (index > 0 ? ", " : "") + item.name;
