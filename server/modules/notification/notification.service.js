@@ -1,3 +1,5 @@
+const { freshArray } = require("../../helpers/functionHelper");
+
 const {
     OrganizationalUnit,
     UserRole,
@@ -167,7 +169,9 @@ exports.createNotification = async (
     }
 
     // Loại bỏ các giá trị trùng nhau
-    usersArr = usersArr && usersArr.length !== 0 && usersArr.map((user) => user && user.toString());
+    usersArr = freshArray(usersArr); // lọc các phần tử không xác định ra khỏi mảng (null, undefined, v.v.)
+    // usersArr = usersArr && usersArr.length !== 0 && usersArr.map((user) => user && user.toString()); -- lỗi
+    usersArr = usersArr.map((user) => user.toString());
     for (let i = 0, max = usersArr.length; i < max; i++) {
         if (
             usersArr.indexOf(usersArr[i]) !== usersArr.lastIndexOf(usersArr[i])
@@ -176,10 +180,12 @@ exports.createNotification = async (
             i--;
         }
     }
+    console.log("usersArr[i]2", usersArr)
 
     // Gửi thông báo cho các user - bằng socket trên web
     for (let i = 0; i < usersArr.length; i++) {
-       await Notification(
+        console.log("usersArr[i]", usersArr[i])
+        let notito = await Notification(
             connect(DB_CONNECTION, portal)
         ).create({
             company,
@@ -193,6 +199,7 @@ exports.createNotification = async (
             manualNotification,
             associatedDataObject: data.associatedDataObject,
         });
+        console.log("notifo",notito)
         const notify = { ...data};
         const arr = CONNECTED_CLIENTS.filter(
             (client) => client.userId === usersArr[i]

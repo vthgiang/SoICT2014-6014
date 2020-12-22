@@ -40,7 +40,7 @@ const AddTaskTemplate = (props) => {
         // props.getDepartment(); // => user.organizationalUnitsOfUser
         // props.getAllUserOfCompany(); // => user.usercompanys
         props.getRoleSameDepartment(localStorage.getItem("currentRole")); // => user.roledepartments
-        props.getDepartmentsThatUserIsDean(); // => department.departmentsThatUserIsDean
+        props.getDepartmentsThatUserIsManager(); // => department.departmentsThatUserIsManager
         props.getAllUserInAllUnitsOfCompany(); // => user.usersInUnitsOfCompany
     }, [])
 
@@ -75,8 +75,8 @@ const AddTaskTemplate = (props) => {
 
             let defaultUnit;
             if (user && user.organizationalUnitsOfUser) defaultUnit = user.organizationalUnitsOfUser.find(item =>
-                item.dean === state.currentRole
-                || item.viceDean === state.currentRole
+                item.manager === state.currentRole
+                || item.deputyManager === state.currentRole
                 || item.employee === state.currentRole);
             if (!defaultUnit && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) {
                 // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
@@ -88,12 +88,12 @@ const AddTaskTemplate = (props) => {
             props.getDepartment(); // => user.organizationalUnitsOfUser
         }
 
-        // Khi truy vấn lấy các đơn vị mà user là dean đã có kết quả, và thuộc tính đơn vị của newTemplate chưa được thiết lập
+        // Khi truy vấn lấy các đơn vị mà user là manager đã có kết quả, và thuộc tính đơn vị của newTemplate chưa được thiết lập
         if (newTemplate.organizationalUnit === "" && user.organizationalUnitsOfUser) {
             // Tìm unit mà currentRole của user đang thuộc về
             let defaultUnit = user.organizationalUnitsOfUser.find(item =>
-                item.deans.includes(state.currentRole)
-                || item.viceDeans.includes(state.currentRole)
+                item.managers.includes(state.currentRole)
+                || item.deputyManagers.includes(state.currentRole)
                 || item.employees.includes(state.currentRole)
             );
 
@@ -237,13 +237,13 @@ const AddTaskTemplate = (props) => {
         let singleValue = value[0]; // SelectBox một lựa chọn
         if (validateTaskTemplateUnit(singleValue, true)) {
             const { department } = props;
-            if (department !== undefined && department.departmentsThatUserIsDean !== undefined) {
+            if (department !== undefined && department.departmentsThatUserIsManager !== undefined) {
                 // Khi đổi department, cần lấy lại dữ liệu cho các selectbox (ai được xem, các vai trò)
-                let dept = department.departmentsThatUserIsDean.find(item => item._id === singleValue);
+                let dept = department.departmentsThatUserIsManager.find(item => item._id === singleValue);
                 if (dept) {
                     console.log('oooo', dept);
                     // props.getChildrenOfOrganizationalUnits(singleValue);
-                    props.getRoleSameDepartment(dept.deans);
+                    props.getRoleSameDepartment(dept.managers);
                 }
             }
         }
@@ -380,7 +380,7 @@ const AddTaskTemplate = (props) => {
     }
 
 
-    var units, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsDean, listRoles = [];
+    var units, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsManager, listRoles = [];
     const { newTemplate, showMore, accountableEmployees, responsibleEmployees, id } = state;
     const { department, user, translate, tasktemplates, isProcess } = props;
     if (newTemplate.taskActions) taskActions = newTemplate.taskActions;
@@ -389,14 +389,14 @@ const AddTaskTemplate = (props) => {
     if (user.organizationalUnitsOfUser) {
         units = user.organizationalUnitsOfUser;
     }
-    if (department.departmentsThatUserIsDean) {
-        departmentsThatUserIsDean = department.departmentsThatUserIsDean;
+    if (department.departmentsThatUserIsManager) {
+        departmentsThatUserIsManager = department.departmentsThatUserIsManager;
     }
     if (user.usersInUnitsOfCompany) {
         listRole = user.usersInUnitsOfCompany;
         for (let x in listRole) {
-            listRoles.push(Object.values(listRole[x].deans));
-            listRoles.push(Object.values(listRole[x].viceDeans));
+            listRoles.push(Object.values(listRole[x].managers));
+            listRoles.push(Object.values(listRole[x].deputyManagers));
             listRoles.push(Object.values(listRole[x].employees));
         }
         listRole = [];
@@ -425,7 +425,6 @@ const AddTaskTemplate = (props) => {
     // let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
 
 
-    console.log('\n\n=======ADD=========\n\n');
     return (
         <React.Fragment>
 
@@ -688,7 +687,7 @@ const actionCreators = {
     // getAllUserOfCompany: UserActions.getAllUserOfCompany,
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
     getRoleSameDepartment: UserActions.getRoleSameDepartment,
-    getDepartmentsThatUserIsDean: DepartmentActions.getDepartmentsThatUserIsDean,
+    getDepartmentsThatUserIsManager: DepartmentActions.getDepartmentsThatUserIsManager,
     // getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany
 };
@@ -827,10 +826,10 @@ export { connectedAddTaskTemplate as AddTaskTemplate };
 //     }
 
 //     /** Kiểm tra quyền thêm mới,... */
-//     const checkPermisson = (deanCurrentUnit, creatorId) => {
+//     const checkPermisson = (managerCurrentUnit, creatorId) => {
 //         let currentRole = localStorage.getItem("currentRole");
-//         for (let i in deanCurrentUnit) {
-//             if (currentRole === deanCurrentUnit[i]) {
+//         for (let i in managerCurrentUnit) {
+//             if (currentRole === managerCurrentUnit[i]) {
 //                 return true;
 //             }
 //         }
@@ -1149,8 +1148,8 @@ export { connectedAddTaskTemplate as AddTaskTemplate };
 //     if (user.organizationalUnitsOfUser) {
 //         units = user.organizationalUnitsOfUser;
 //         currentUnit = units.filter(item =>
-//             item.deans.includes(localStorage.getItem("currentRole"))
-//             || item.viceDeans.includes(localStorage.getItem("currentRole"))
+//             item.managers.includes(localStorage.getItem("currentRole"))
+//             || item.deputyManagers.includes(localStorage.getItem("currentRole"))
 //             || item.employees.includes(localStorage.getItem("currentRole")));
 //     }
 
@@ -1259,11 +1258,11 @@ export { connectedAddTaskTemplate as AddTaskTemplate };
 //                                         <td title={item.organizationalUnit && item.organizationalUnit.name}>{item.organizationalUnit ? item.organizationalUnit.name : translate('task_template.error_task_template_organizational_unit_null')}</td>
 //                                         <td>
 //                                             <a href="#abc" onClick={() => handleView(item._id)} title={translate('task.task_template.view_detail_of_this_task_template')}>
-//                                                 <i className="material-icons" style={!checkPermisson(currentUnit && currentUnit[0].deans, "") ? { paddingLeft: "35px" } : { paddingLeft: "0px" }}>view_list</i>
+//                                                 <i className="material-icons" style={!checkPermisson(currentUnit && currentUnit[0].managers, "") ? { paddingLeft: "35px" } : { paddingLeft: "0px" }}>view_list</i>
 //                                             </a>
 
 //                                             {/**Check quyền xem có được xóa hay sửa mẫu công việc không */}
-//                                             {checkPermisson(item.organizationalUnit.deans, item.creator._id) &&
+//                                             {checkPermisson(item.organizationalUnit.managers, item.creator._id) &&
 //                                                 <React.Fragment>
 //                                                     <a href="cursor:{'pointer'}" onClick={() => handleEdit(item)} className="edit" title={translate('task_template.edit_this_task_template')}>
 //                                                         <i className="material-icons">edit</i>

@@ -49,7 +49,7 @@ const initDB = async() => {
 	/**
 	 * 2. Xóa dữ liệu db cũ và khởi tạo dữ liệu config 
 	 */
-    // systemDB.dropDatabase();
+    systemDB.dropDatabase();
     console.log("@Setup new database.");
 
     await Configuration(systemDB).insertMany([

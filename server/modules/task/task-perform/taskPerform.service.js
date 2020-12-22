@@ -14,7 +14,7 @@ const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
  * Lấy mẫu công việc theo Id
  */
 exports.getTaskById = async (portal, id, userId) => {
-    var task = await Task(connect(DB_CONNECTION, portal))
+    let task = await Task(connect(DB_CONNECTION, portal))
         .findById(id)
         .populate([
             { path: "parent", select: "name" },

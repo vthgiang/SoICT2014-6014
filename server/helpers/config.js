@@ -19,7 +19,7 @@ const ROOT_ROLES = {
 
     ADMIN: {
         code: '@ad',
-        name: 'System Admin',
+        name: 'Admin',
         description: 'Quản trị viên của một công ty'
     },
 

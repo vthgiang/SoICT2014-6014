@@ -279,7 +279,6 @@ exports.getPaginatedTasks = async (portal, task) => {
     var page = Number(number);
 
     let roleArr = [];
-    console.log('role', role);
     if (role) {
         for (let i in role) {
             if (role[i] === "responsible") roleArr.push({ responsibleEmployees: { $in: [user] } });
@@ -330,7 +329,6 @@ exports.getPaginatedTasks = async (portal, task) => {
     }
 
     if (special) {
-        console.log('special', special);
         for (var i = 0; i < special.length; i++) {
             if (special[i] === "Lưu trong kho") {
                 keySearch = {

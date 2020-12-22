@@ -204,7 +204,7 @@ const initSampleCompanyDB = async () => {
     /**
      * 2. Xóa dữ liệu db cũ của công ty vnist
      */
-    // vnistDB.dropDatabase();
+    vnistDB.dropDatabase();
 
     /**
      * 3. Khởi tạo dữ liệu về công ty VNIST trong database của hệ thống
@@ -4013,8 +4013,9 @@ const initSampleCompanyDB = async () => {
     ]);
 
     console.log("Cập nhật nút con của thông tin lưu trữ kho");
-    var listBin = await BinLocation(vnistDB).update({
-        _id: listBinLocations[0]._id,
+    var listBin = await BinLocation(vnistDB).updateOne({
+        _id: listBinLocations[0]._id
+    },{
         code: "T1",
         name: "Tầng 1",
         description: "Dãy nhà dùng cho việc nghiên cứu",
@@ -5305,8 +5306,9 @@ const initSampleCompanyDB = async () => {
     ]);
     console.log("Tạo xong dữ liệu mẫu các loại phiếu");
 
-    var lotUpdate = await Lot(vnistDB).update({
-        _id: listLot[0]._id,
+    var lotUpdate = await Lot(vnistDB).updateOne({
+        _id: listLot[0]._id
+    },{
         name: "LOT001",
         good: listProduct[0]._id,
         type: "product",
