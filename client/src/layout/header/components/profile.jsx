@@ -16,9 +16,9 @@ class Profile extends Component {
                 <a className="dropdown-toggle" data-toggle="dropdown" style={{ cursor: 'pointer', width: '50px', minHeight: '50px' }}>
                     <img className="user-image" alt="User Avatar" src={process.env.REACT_APP_SERVER + auth.user.avatar} />
                 </a>
-                <ul className="dropdown-menu">
+                <ul className="dropdown-menu" style={{ border: '0.2px solid #d1d1d1' }}>
                     {/* User image */}
-                    <li className="user-header">
+                    <li className="user-header" style={{ backgroundColor: '#343A40' }}>
                         <img className="img-circle" alt="User Avatar" src={process.env.REACT_APP_SERVER + auth.user.avatar} />
                         <p>
                             {auth.user.name}
