@@ -3559,7 +3559,7 @@ const initSampleCompanyDB = async () => {
             category: listCategory[3]._id,
             name: "Bình ắc quy",
             code: "EQ001",
-            type: "equipment",
+            type: "material",
             baseUnit: "Chiếc",
             unit: [],
             quantity: 10,
@@ -3570,7 +3570,7 @@ const initSampleCompanyDB = async () => {
             category: listCategory[3]._id,
             name: "Máy nén",
             code: "EQ002",
-            type: "equipment",
+            type: "material",
             baseUnit: "Chiếc",
             unit: [],
             quantity: 10,
@@ -3701,11 +3701,11 @@ const initSampleCompanyDB = async () => {
             managementLocation: [
                 {
                     role: roleSuperAdmin._id,
-                    managementGood: ["product", "material", "equipment", "waste"]
+                    managementGood: ["product", "material", "waste"]
                 },
                 {
                     role: roleAdmin._id,
-                    managementGood: ["material", "equipment"]
+                    managementGood: ["material"]
                 }
             ],
             status: "1",
@@ -3736,11 +3736,11 @@ const initSampleCompanyDB = async () => {
             managementLocation: [
                 {
                     role: roleSuperAdmin._id,
-                    managementGood: ["product", "material", "equipment", "waste"]
+                    managementGood: ["product", "material", "waste"]
                 },
                 {
                     role: roleAdmin._id,
-                    managementGood: ["material", "equipment"]
+                    managementGood: ["product"]
                 }
             ],
             status: "1",

@@ -245,7 +245,7 @@ class GoodManagement extends Component {
     }
 
     setType = () => {
-        if(this.checkManagementGood('product')){
+        if(this.checkManagementGood('product') || this.checkManagementGood('waste')){
             this.setState({ type: 'product', activeP: true});
         } else if(this.checkManagementGood('material')){
             this.setState({ type: 'material', activeM: true});
@@ -282,11 +282,11 @@ class GoodManagement extends Component {
                             {translate("manage_warehouse.good_management.equipment")}
                         </a>
                     </li>}
-                    { this.checkManagementGood('waste') && <li className={`${this.state.activeW ? "active" : ''}`}>
+                    {/* { this.checkManagementGood('waste') && <li className={`${this.state.activeW ? "active" : ''}`}>
                         <a href="#good-wastes" data-toggle="tab" onClick={() => this.handleWaste()}>
                             {translate("manage_warehouse.good_management.waste")}
                         </a>
-                    </li>}
+                    </li>} */}
                 </ul>
                 <div className="box-body qlcv">
                     <GoodCreateForm type={type} />
