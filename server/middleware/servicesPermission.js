@@ -3,6 +3,21 @@ const { connect } = require('../helpers/dbHelper');
 
 exports.links = [
     {
+        url: '/system/companies-management',
+        apis: ['@all']
+    },{
+        url: '/system/settings',
+        apis: ['@all']
+    },{
+        url: '/system/components-default-management',
+        apis: ['@all']
+    },{
+        url: '/system/roles-default-management',
+        apis: ['@all']
+    },{
+        url: '/system/links-default-management',
+        apis: ['@all']
+    },{
         url: '/home',
         apis: ['@all']
     },{
