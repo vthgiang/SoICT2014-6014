@@ -30,7 +30,7 @@ class GoodReturnCreateForm extends Component {
             status: '1',
             fromStock: '',
             qualityControlStaffs: [],
-            accountables: [], 
+            accountables: [],
             responsibles: [],
             approver: []
         }
@@ -233,10 +233,10 @@ class GoodReturnCreateForm extends Component {
     validateApprover = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
-        if(!value) {
+        if (!value) {
             msg = translate('manage_warehouse.bill_management.validate_approver')
         }
-        if(willUpdateState) {
+        if (willUpdateState) {
             let approvers = [];
             value.map(item => {
                 approvers.push({
@@ -264,10 +264,10 @@ class GoodReturnCreateForm extends Component {
     validateAccountables = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
-        if(!value) {
+        if (!value) {
             msg = translate('manage_warehouse.bill_management.validate_approver')
         }
-        if(willUpdateState) {
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
@@ -287,10 +287,10 @@ class GoodReturnCreateForm extends Component {
     validateResponsibles = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
-        if(!value) {
+        if (!value) {
             msg = translate('manage_warehouse.bill_management.validate_approver')
         }
-        if(willUpdateState) {
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
@@ -310,10 +310,10 @@ class GoodReturnCreateForm extends Component {
     validateQualityControlStaffs = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
-        if(!value) {
+        if (!value) {
             msg = translate('manage_warehouse.bill_management.validate_approver')
         }
-        if(willUpdateState) {
+        if (willUpdateState) {
             let listQualityControlStaffs = [];
             value.map(item => {
                 listQualityControlStaffs.push({
@@ -572,14 +572,14 @@ class GoodReturnCreateForm extends Component {
     }
 
     isGoodsValidated = () => {
-        if(this.state.good.good && this.state.good.quantity && this.state.good.quantity !== 0) {
+        if (this.state.good.good && this.state.good.quantity && this.state.good.quantity !== 0) {
             return true;
         }
         return false;
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        
+
         if (nextProps.bills.billDetail !== this.state.billDetail) {
             this.state.listGood = nextProps.bills.billDetail.goods;
             this.state.billDetail = nextProps.bills.billDetail;
@@ -620,7 +620,7 @@ class GoodReturnCreateForm extends Component {
 
     render() {
         const { translate, group, bills } = this.props;
-        const { lots, listGood, good, code, approver, accountables, responsibles, qualityControlStaffs, status, fromStock, type, name, phone, email, address, 
+        const { lots, listGood, good, code, approver, accountables, responsibles, qualityControlStaffs, status, fromStock, type, name, phone, email, address,
             errorStock, errorType, errorApprover, errorCustomer, errorSupplier, bill, errorQualityControlStaffs, errorAccountables, errorResponsibles } = this.state;
         const dataApprover = this.getApprover();
         const dataStock = this.getStock();
@@ -721,37 +721,37 @@ class GoodReturnCreateForm extends Component {
                             </fieldset>
                         </div>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{translate('manage_warehouse.bill_management.list_saffs')}</legend>
-                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.approved')}<span className="attention"> * </span></label>
-                                    <SelectBox
-                                        id={`select-approver-bill-return-create`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={approver}
-                                        items={dataApprover}
-                                        onChange={this.handleApproverChange}    
-                                        multiple={true}
-                                    />
-                                    <ErrorLabel content = { errorApprover } />
+                            <fieldset className="scheduler-border">
+                                <legend className="scheduler-border">{translate('manage_warehouse.bill_management.list_saffs')}</legend>
+                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
+                                        <label>{translate('manage_warehouse.bill_management.approved')}<span className="attention"> * </span></label>
+                                        <SelectBox
+                                            id={`select-approver-bill-return-create`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={approver}
+                                            items={dataApprover}
+                                            onChange={this.handleApproverChange}
+                                            multiple={true}
+                                        />
+                                        <ErrorLabel content={errorApprover} />
+                                    </div>
+                                    <div className={`form-group ${!errorResponsibles ? "" : "has-error"}`}>
+                                        <label>{translate('manage_warehouse.bill_management.users')}<span className="attention"> * </span></label>
+                                        <SelectBox
+                                            id={`select-accountables-bill-return-create`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={responsibles}
+                                            items={dataApprover}
+                                            onChange={this.handleResponsiblesChange}
+                                            multiple={true}
+                                        />
+                                        <ErrorLabel content={errorResponsibles} />
+                                    </div>
                                 </div>
-                                <div className={`form-group ${!errorResponsibles ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.users')}<span className="attention"> * </span></label>
-                                    <SelectBox
-                                        id={`select-accountables-bill-return-create`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={responsibles}
-                                        items={dataApprover}
-                                        onChange={this.handleResponsiblesChange}    
-                                        multiple={true}
-                                    />
-                                    <ErrorLabel content = { errorResponsibles } />
-                                </div>
-                            </div>
-                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className={`form-group ${!errorQualityControlStaffs ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.qualityControlStaffs')}<span className="attention"> * </span></label>
                                         <SelectBox
@@ -760,10 +760,10 @@ class GoodReturnCreateForm extends Component {
                                             style={{ width: "100%" }}
                                             value={qualityControlStaffs}
                                             items={dataApprover}
-                                            onChange={this.handleQualityControlStaffsChange}    
+                                            onChange={this.handleQualityControlStaffsChange}
                                             multiple={true}
                                         />
-                                        <ErrorLabel content = { errorQualityControlStaffs } />
+                                        <ErrorLabel content={errorQualityControlStaffs} />
                                     </div>
                                     <div className={`form-group ${!errorAccountables ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.accountables')}<span className="attention"> * </span></label>
@@ -773,10 +773,10 @@ class GoodReturnCreateForm extends Component {
                                             style={{ width: "100%" }}
                                             value={accountables}
                                             items={dataApprover}
-                                            onChange={this.handleAccountablesChange}    
+                                            onChange={this.handleAccountablesChange}
                                             multiple={true}
                                         />
-                                        <ErrorLabel content = { errorAccountables } />
+                                        <ErrorLabel content={errorAccountables} />
                                     </div>
                                 </div>
                             </fieldset>
@@ -823,7 +823,7 @@ class GoodReturnCreateForm extends Component {
                                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                                     <div className="form-group">
                                                         <label>{translate('manage_warehouse.bill_management.quantity_return')}</label>
-                                                        <div style={{ display: "flex" }}><input className="form-control" value={good.returnQuantity ? good.returnQuantity : 0} onChange={this.handleQuantityChange} type="number" /><i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: '5px', marginTop: '9px', cursor: 'pointer' }} onClick={() => this.addQuantity()}></i></div>
+                                                        <div style={{ display: "flex" }}><input className="form-control" value={good.returnQuantity ? good.returnQuantity : 0} onChange={this.handleQuantityChange} type="number" /><i className="fa fa-plus-square" style={{ color: "#28A745", marginLeft: '5px', marginTop: '9px', cursor: 'pointer' }} onClick={() => this.addQuantity()}></i></div>
                                                     </div>
                                                 </div>
                                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">

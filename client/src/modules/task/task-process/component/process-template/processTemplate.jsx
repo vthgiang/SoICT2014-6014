@@ -507,7 +507,7 @@ class ProcessTemplate extends Component {
                                                 className="text-red"
                                                 func={() => this.deleteDiagram(item._id)}
                                             />
-                                            <a className="" style={{ color: "#008D4C" }} onClick={() => { this.showModalCreateTask(item) }} title={translate('task_template.create_task_by_process')}>
+                                            <a className="" style={{ color: "#28A745" }} onClick={() => { this.showModalCreateTask(item) }} title={translate('task_template.create_task_by_process')}>
                                                 <i className="material-icons">add_box</i>
                                             </a>
                                         </td>

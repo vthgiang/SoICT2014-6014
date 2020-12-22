@@ -4,7 +4,7 @@ header.fixed-top {
     right: 0;
     left: 0;
     z-index: 1;
-    background-color: #605CA8;
+    background-color: #fff;
 }
 
 header.fixed-top > h1 {
@@ -69,7 +69,7 @@ span.dx-auth > button.signin {
     border: none;
     background-color: white;
     border-radius: 2px;
-    color: #605CA8;
+    color: #fff;
     font-size: 1.8rem;
     font-weight: bolder;
 }
@@ -170,7 +170,7 @@ li.dx-service-item > i {
 
 section#dx-intro {
     padding-top: 80px;
-    background-color: #605CA8;
+    background-color: #fff;
     color: #fff;
 }
 
@@ -179,7 +179,7 @@ section#dx-service {
 }
 
 section#dx-service > h3 {
-    color: #605CA8;
+    color: #fff;
     font-weight: 600;
     font-size: 3.5rem;
 }
@@ -248,7 +248,7 @@ form.dx-contact > button.dx-contact {
     color: #fff;
     font-weight: bolder;
     font-size: 1.6rem;
-    background-color: #605CA8;
+    background-color: #fff;
 } 
 
 ul.dx-locations {
@@ -262,7 +262,7 @@ li.dx-location-item {
 }
 
 li.dx-location-item > i {
-    color: #605CA8;
+    color: #fff;
     padding: 8px;
     line-height: 1.3;
 }
@@ -295,7 +295,7 @@ div.dx-card > .dx-card-header {
 
 div.dx-card > .dx-card-body > h4 {
     font-weight: bolder;
-    color: #605CA8;
+    color: #fff;
 }
 
 div.dx-card > .dx-card-body > p {
@@ -307,7 +307,7 @@ ul.dx-footer.care {
 }
 
 li.dx-footer.care.item > i {
-    color: #605CA8;
+    color: #fff;
     padding-right: 2px;
 }
 
@@ -336,7 +336,7 @@ form.dx-service > button.send {
     color: #fff;
     font-weight: bolder;
     font-size: 1.6rem;
-    background-color: #605CA8;
+    background-color: #fff;
 }
 
 span.p-center.media > img {
@@ -355,7 +355,7 @@ img.service-image {
     padding: 8px 12px;
     border:  none;
     border-radius: 2px;
-    color: #605CA8;
+    color: #fff;
     background-color: #fff;
     font-size: 1.5rem;
     font-weight: bolder;

@@ -216,7 +216,7 @@ class CreateAssetTypeModal extends Component {
 
                         {/* Thông tin mặc định */}
                         <div className="form-group">
-                            <label>Thông tin mặc định:<a style={{ cursor: "pointer" }} title='Thêm thông tin mặc định'><i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: 5 }}
+                            <label>Thông tin mặc định:<a style={{ cursor: "pointer" }} title='Thêm thông tin mặc định'><i className="fa fa-plus-square" style={{ color: "#28A745", marginLeft: 5 }}
                                 onClick={this.handleAddDefaultInfo} /></a></label>
                             <div className={`form-group ${(!errorOnNameField && !errorOnValue) ? "" : "has-error"}`}>
 

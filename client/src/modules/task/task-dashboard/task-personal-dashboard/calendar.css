@@ -23,7 +23,7 @@
   } 
       
   .react-calendar-timeline  .rct-dateHeader-primary { 
-        background-color: #605CA8;
+        background-color: #fff;
         border-left: 1px solid #bbb;
         border-right: 1px solid #bbb;
         color: #fff;
@@ -55,7 +55,7 @@
     padding: 20px 0px 0px 5px;
   }
   .rct-items .rct-item {
-    background: #ECF0F5 !important;
+    background: #F4F6F9 !important;
   }
   .task-background {
     background: #CCC !important;

@@ -69,13 +69,13 @@ class DiscountCreateDetail extends Component {
         let listGoods = [
             selectAll
                 ? {
-                      value: "all",
-                      text: "CHỌN TẤT CẢ",
-                  }
+                    value: "all",
+                    text: "CHỌN TẤT CẢ",
+                }
                 : {
-                      value: "unselected",
-                      text: "BỎ CHỌN TẤT CẢ",
-                  },
+                    value: "unselected",
+                    text: "BỎ CHỌN TẤT CẢ",
+                },
         ];
 
         const { listGoodsByType } = goods;
@@ -751,8 +751,8 @@ class DiscountCreateDetail extends Component {
                                     </div>
                                 </div>
                             ) : (
-                                ""
-                            )}
+                                    ""
+                                )}
                             {formality == 1 ? (
                                 <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                                     <div className={`form-group ${!discountedPercentageError ? "" : "has-error"}`}>
@@ -770,8 +770,8 @@ class DiscountCreateDetail extends Component {
                                     </div>
                                 </div>
                             ) : (
-                                ""
-                            )}
+                                    ""
+                                )}
                             {formality == 1 ? (
                                 <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                                     <div className={`form-group ${!maximumDiscountedCashError ? "" : "has-error"}`}>
@@ -790,8 +790,8 @@ class DiscountCreateDetail extends Component {
                                     </div>
                                 </div>
                             ) : (
-                                ""
-                            )}
+                                    ""
+                                )}
                             {formality == 2 ? (
                                 <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                                     <div className={`form-group ${!loyaltyCoinError ? "" : "has-error"}`}>
@@ -810,8 +810,8 @@ class DiscountCreateDetail extends Component {
                                     </div>
                                 </div>
                             ) : (
-                                ""
-                            )}
+                                    ""
+                                )}
                             {formality == 3 ? (
                                 <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                                     <div className={`form-group ${!maximumFreeShippingCostError ? "" : "has-error"}`}>
@@ -830,8 +830,8 @@ class DiscountCreateDetail extends Component {
                                     </div>
                                 </div>
                             ) : (
-                                ""
-                            )}
+                                    ""
+                                )}
                             {discountType == 1 && formality == 5 ? (
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     <div className="form-group" style={{ display: "flex", flexDirection: "column" }}>
@@ -840,7 +840,7 @@ class DiscountCreateDetail extends Component {
                                             <a style={{ cursor: "pointer" }} title="Thêm các mặt hàng áp dụng">
                                                 <i
                                                     className="fa fa-plus-square"
-                                                    style={{ color: "#00a65a", marginLeft: 5 }}
+                                                    style={{ color: "#28A745", marginLeft: 5 }}
                                                     onClick={this.handleAddDiscountOnGoods}
                                                 />
                                             </a>
@@ -848,13 +848,13 @@ class DiscountCreateDetail extends Component {
                                         {discountOnGoods && discountOnGoods.length ? (
                                             <CollapsibleShowDiscountOnGoods discountOnGoods={discountOnGoods} />
                                         ) : (
-                                            ""
-                                        )}
+                                                ""
+                                            )}
                                     </div>
                                 </div>
                             ) : (
-                                ""
-                            )}
+                                    ""
+                                )}
                             {discountType == 1 && formality != 5 ? (
                                 <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                                     <div className={`form-group ${!goodError ? "" : "has-error"}`}>
@@ -874,8 +874,8 @@ class DiscountCreateDetail extends Component {
                                     </div>
                                 </div>
                             ) : (
-                                ""
-                            )}
+                                    ""
+                                )}
                             {formality == 4 ? (
                                 <div className="col-xs-12 col-sm-12 col-md-8 col-lg-8">
                                     <div className="form-group" style={{ display: "flex", flexDirection: "column" }}>
@@ -884,7 +884,7 @@ class DiscountCreateDetail extends Component {
                                             <a style={{ cursor: "pointer" }} title="Thêm các sản phẩm tặng kèm">
                                                 <i
                                                     className="fa fa-plus-square"
-                                                    style={{ color: "#00a65a", marginLeft: 5 }}
+                                                    style={{ color: "#28A745", marginLeft: 5 }}
                                                     onClick={this.handleAddBonusGood}
                                                 />
                                             </a>
@@ -893,8 +893,8 @@ class DiscountCreateDetail extends Component {
                                     </div>
                                 </div>
                             ) : (
-                                ""
-                            )}
+                                    ""
+                                )}
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <div className={"pull-right"} style={{ padding: 10 }}>
                                     {editDiscountDetail ? (
@@ -916,15 +916,15 @@ class DiscountCreateDetail extends Component {
                                             </button>
                                         </React.Fragment>
                                     ) : (
-                                        <button
-                                            className="btn btn-success"
-                                            style={{ marginLeft: "10px" }}
-                                            disabled={!this.isValidateDiscountDeatail()}
-                                            onClick={this.handleSubmitDiscountDetail}
-                                        >
-                                            Thêm
-                                        </button>
-                                    )}
+                                            <button
+                                                className="btn btn-success"
+                                                style={{ marginLeft: "10px" }}
+                                                disabled={!this.isValidateDiscountDeatail()}
+                                                onClick={this.handleSubmitDiscountDetail}
+                                            >
+                                                Thêm
+                                            </button>
+                                        )}
                                     <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearDiscountDetail}>
                                         Xóa trắng
                                     </button>
@@ -951,53 +951,53 @@ class DiscountCreateDetail extends Component {
                                             </td>
                                         </tr>
                                     ) : (
-                                        discounts.map((item, index) => {
-                                            return (
-                                                <tr key={index}>
-                                                    <td>{index + 1}</td>
-                                                    <td>{item.customerType}</td>
-                                                    <td>
-                                                        {item.minimumThresholdToBeApplied ? formatCurrency(item.minimumThresholdToBeApplied) : ""}
-                                                    </td>
-                                                    <td>
-                                                        {item.maximumThresholdToBeApplied ? formatCurrency(item.maximumThresholdToBeApplied) : ""}
-                                                    </td>
-                                                    {discountType == "1" && item.discountOnGoods ? (
-                                                        <td className="discount-create-goods-block-td">
-                                                            <a>{"Có " + item.discountOnGoods.length + " mặt hàng"}</a>
+                                            discounts.map((item, index) => {
+                                                return (
+                                                    <tr key={index}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{item.customerType}</td>
+                                                        <td>
+                                                            {item.minimumThresholdToBeApplied ? formatCurrency(item.minimumThresholdToBeApplied) : ""}
                                                         </td>
-                                                    ) : null}
-                                                    {formality != "5" ? <td>{this.getContentDiscountTable(item)}</td> : ""}
-                                                    {formality == "1" ? <td>{item.maximumDiscountedCash}</td> : ""}
-                                                    <td>
-                                                        <a
-                                                            href="#abc"
-                                                            className="edit"
-                                                            title="Sửa"
-                                                            onClick={() => this.handleEditDiscountDetail(item, index)}
-                                                        >
-                                                            <i className="material-icons">edit</i>
-                                                        </a>
-                                                        <a
-                                                            href="#abc"
-                                                            className="delete"
-                                                            title="Xóa"
-                                                            onClick={() => this.handleDeleteDiscountDeatail(index)}
-                                                        >
-                                                            <i className="material-icons">delete</i>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            );
-                                        })
-                                    )}
+                                                        <td>
+                                                            {item.maximumThresholdToBeApplied ? formatCurrency(item.maximumThresholdToBeApplied) : ""}
+                                                        </td>
+                                                        {discountType == "1" && item.discountOnGoods ? (
+                                                            <td className="discount-create-goods-block-td">
+                                                                <a>{"Có " + item.discountOnGoods.length + " mặt hàng"}</a>
+                                                            </td>
+                                                        ) : null}
+                                                        {formality != "5" ? <td>{this.getContentDiscountTable(item)}</td> : ""}
+                                                        {formality == "1" ? <td>{item.maximumDiscountedCash}</td> : ""}
+                                                        <td>
+                                                            <a
+                                                                href="#abc"
+                                                                className="edit"
+                                                                title="Sửa"
+                                                                onClick={() => this.handleEditDiscountDetail(item, index)}
+                                                            >
+                                                                <i className="material-icons">edit</i>
+                                                            </a>
+                                                            <a
+                                                                href="#abc"
+                                                                className="delete"
+                                                                title="Xóa"
+                                                                onClick={() => this.handleDeleteDiscountDeatail(index)}
+                                                            >
+                                                                <i className="material-icons">delete</i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })
+                                        )}
                                 </tbody>
                             </table>
                         </fieldset>
                     </div>
                 ) : (
-                    ""
-                )}
+                        ""
+                    )}
             </React.Fragment>
         );
     }

@@ -664,9 +664,16 @@ class DetailTaskTab extends Component {
         // Xử lý dữ liệu biểu đồ đóng góp thời gian công việc
         if (task && task.hoursSpentOnTask) {
             hoursSpentOfEmployeeInTask = {};
-            task.hoursSpentOnTask.contributions.map(item => {
-                hoursSpentOfEmployeeInTask[item.employee.name] = item.hoursSpent;
-            });
+            for (let i = 0; i < task.timesheetLogs.length; i++) {
+                let tsheetlog = task.timesheetLogs[i];
+                if (tsheetlog.stoppedAt) {
+                    let times = hoursSpentOfEmployeeInTask[tsheetlog.creator.name] ? hoursSpentOfEmployeeInTask[tsheetlog.creator.name] : 0;
+                    hoursSpentOfEmployeeInTask[tsheetlog.creator.name] = times + tsheetlog.duration;
+                }
+            }
+            // task.hoursSpentOnTask.contributions.map(item => {
+            //     hoursSpentOfEmployeeInTask[item.employee.name] = item.hoursSpent;
+            // });
         }
         if (task && task.evaluations && task.evaluations.length !== 0) {
             task.evaluations.map(item => {

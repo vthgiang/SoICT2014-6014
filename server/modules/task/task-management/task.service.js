@@ -424,7 +424,10 @@ exports.getPaginatedTasks = async (portal, task) => {
     }
 
     taskList = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'asc' })
-        .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent responsibleEmployees" });
+        .skip(perPage * (page - 1)).limit(perPage).populate([
+            { path: "organizationalUnit creator parent responsibleEmployees" },
+            { path: "timesheetLogs.creator", select: "name" },
+        ]);
 
     var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     var totalPages = Math.ceil(totalCount / perPage);
