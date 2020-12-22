@@ -305,16 +305,13 @@ class TaskManagement extends Component {
             currentPage: 1
         })
     }
-    convertTime = (duration) => {
-        let seconds = Math.floor((duration / 1000) % 60),
-            minutes = Math.floor((duration / (1000 * 60)) % 60),
-            hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+    convertTime = (ms) => {
+        if (!ms) return null;
+        let hour = Math.floor(ms / (60 * 60 * 1000));
+        let minute = Math.floor((ms - hour * 60 * 60 * 1000) / (60 * 1000));
+        let second = Math.floor((ms - hour * 60 * 60 * 1000 - minute * 60 * 1000) / 1000);
 
-        hours = (hours < 10) ? "0" + hours : hours;
-        minutes = (minutes < 10) ? "0" + minutes : minutes;
-        seconds = (seconds < 10) ? "0" + seconds : seconds;
-
-        return hours + ":" + minutes + ":" + seconds;
+        return `${hour > 10 ? hour : `0${hour}`}:${minute > 10 ? minute : `0${minute}`}:${second > 10 ? second : `0${second}`}`;
     }
 
     handleShowModal = async (id) => {

@@ -15,7 +15,6 @@ import { getStorage } from '../../../../config';
 import { SelectFollowingTaskModal } from './selectFollowingTaskModal';
 import { withTranslate } from 'react-redux-multilingual';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
-import Swal from 'sweetalert2';
 
 class DetailTaskTab extends Component {
 
@@ -665,9 +664,8 @@ class DetailTaskTab extends Component {
         // Xử lý dữ liệu biểu đồ đóng góp thời gian công việc
         if (task && task.hoursSpentOnTask) {
             hoursSpentOfEmployeeInTask = {};
-
             task.hoursSpentOnTask.contributions.map(item => {
-                hoursSpentOfEmployeeInTask[item.employee.name] = Number.parseFloat(item.hoursSpent / (1000 * 60 * 60)).toFixed(2)
+                hoursSpentOfEmployeeInTask[item.employee.name] = item.hoursSpent;
             });
         }
         if (task && task.evaluations && task.evaluations.length !== 0) {
