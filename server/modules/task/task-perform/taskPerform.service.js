@@ -356,13 +356,14 @@ exports.stopTimesheetLog = async (portal, params, body) => {
     let stoppedAt;
 
     if (body.stoppedAt) {
-        stoppedAt = body.stoppedAt;
+        let getStoppedTime = new Date(body.stoppedAt);
+        stoppedAt = getStoppedTime.getTime();
     } else {
         stoppedAt = now;
     }
 
     // Lưu vào timeSheetLog
-    let duration = stoppedAt - body.startedAt;
+    let duration = new Date(stoppedAt).getTime() - new Date(body.startedAt).getTime();
     let timer = await Task(connect(DB_CONNECTION, portal))
         .findOneAndUpdate(
             { _id: params.taskId, "timesheetLogs._id": body.timesheetLog },
