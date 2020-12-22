@@ -1,7 +1,7 @@
 // Thêm nhiều dữ liệu mẫu để test chức năng quản lý nhân sự
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
-const Terms = require("./terms");
+const Terms = require("../helpers/config");
 
 const {
     Component,
@@ -193,46 +193,37 @@ const initHumanResourceData = async () => {
     /**
      * 1. Tạo kết nối đến csdl của hệ thống và công ty VNIST
      */
-    const systemDB = mongoose.createConnection(
-        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/${
-            process.env.DB_NAME
-        }`,
-        {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true,
-            useFindAndModify: false,
-            user:
-                process.env.DB_AUTHENTICATION === "true"
-                    ? process.env.DB_USERNAME
-                    : undefined,
-            pass:
-                process.env.DB_AUTHENTICATION === "true"
-                    ? process.env.DB_PASSWORD
-                    : undefined,
-        }
-    );
+    let connectOptions = process.env.DB_AUTHENTICATION === 'true' ?
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+        user: process.env.DB_USERNAME,
+        pass: process.env.DB_PASSWORD
+    } : {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false
+    }
+    const systemDB = mongoose.createConnection(`mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/${process.env.DB_NAME}`, connectOptions);
 
-    const vnistDB = mongoose.createConnection(
-        `mongodb://${process.env.DB_HOST}:${
-            process.env.DB_PORT || "27017"
-        }/vnist`,
-        process.env.DB_AUTHENTICATION === "true"
-            ? {
-                  useNewUrlParser: true,
-                  useUnifiedTopology: true,
-                  useCreateIndex: true,
-                  useFindAndModify: false,
-                  user: process.env.DB_USERNAME,
-                  pass: process.env.DB_PASSWORD,
-              }
-            : {
-                  useNewUrlParser: true,
-                  useUnifiedTopology: true,
-                  useCreateIndex: true,
-                  useFindAndModify: false,
-              }
-    );
+    let connectVNISTOptions = process.env.DB_AUTHENTICATION === 'true' ?
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+        user: process.env.DB_USERNAME,
+        pass: process.env.DB_PASSWORD
+    } : {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false
+    }
+    const vnistDB = mongoose.createConnection(`mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/vnist`, connectVNISTOptions);
 
     if (!systemDB) throw "DB vnist cannot connect";
     console.log("DB vnist connected");
@@ -545,11 +536,11 @@ const initHumanResourceData = async () => {
     const roleChucDanh = await RoleType(vnistDB).findOne({
         name: Terms.ROLE_TYPES.POSITION,
     });
-    const roleDean = await Role(vnistDB).findOne({
-        name: Terms.ROOT_ROLES.DEAN.name,
+    const roleManager = await Role(vnistDB).findOne({
+        name: Terms.ROOT_ROLES.MANAGER.name,
     });
-    const roleViceDean = await Role(vnistDB).findOne({
-        name: Terms.ROOT_ROLES.VICE_DEAN.name,
+    const roleDeputyManager = await Role(vnistDB).findOne({
+        name: Terms.ROOT_ROLES.DEPUTY_MANAGER.name,
     });
     const roleEmployee = await Role(vnistDB).findOne({
         name: Terms.ROOT_ROLES.EMPLOYEE.name,
@@ -561,12 +552,12 @@ const initHumanResourceData = async () => {
         type: roleChucDanh._id,
     });
     const phoPhongMaketing = await Role(vnistDB).create({
-        parents: [roleViceDean._id, nvPhongMaketing._id],
+        parents: [roleDeputyManager._id, nvPhongMaketing._id],
         name: "Phó phòng Maketing & NCPT sản phẩm",
         type: roleChucDanh._id,
     });
     const truongPhongMaketing = await Role(vnistDB).create({
-        parents: [roleDean._id, nvPhongMaketing._id, phoPhongMaketing._id],
+        parents: [roleManager._id, nvPhongMaketing._id, phoPhongMaketing._id],
         name: "Trưởng phòng Maketing & NCPT sản phẩm",
         type: roleChucDanh._id,
     });
@@ -577,12 +568,12 @@ const initHumanResourceData = async () => {
         type: roleChucDanh._id,
     });
     const phoPhongKS = await Role(vnistDB).create({
-        parents: [roleViceDean._id, nvPhongKS._id],
+        parents: [roleDeputyManager._id, nvPhongKS._id],
         name: "Phó phòng kiểm soát nội bộ",
         type: roleChucDanh._id,
     });
     const truongPhongKS = await Role(vnistDB).create({
-        parents: [roleDean._id, nvPhongKS._id, phoPhongKS._id],
+        parents: [roleManager._id, nvPhongKS._id, phoPhongKS._id],
         name: "Trưởng phòng kiểm soát nội bộ",
         type: roleChucDanh._id,
     });
@@ -593,12 +584,12 @@ const initHumanResourceData = async () => {
         type: roleChucDanh._id,
     });
     const phoPhongQTNS = await Role(vnistDB).create({
-        parents: [roleViceDean._id, nvPhongQTNS._id],
+        parents: [roleDeputyManager._id, nvPhongQTNS._id],
         name: "Phó phòng quản trị nhân sự",
         type: roleChucDanh._id,
     });
     const truongPhongQTNS = await Role(vnistDB).create({
-        parents: [roleDean._id, nvPhongQTNS._id, phoPhongQTNS._id],
+        parents: [roleManager._id, nvPhongQTNS._id, phoPhongQTNS._id],
         name: "Trưởng phòng quản trị nhân sự",
         type: roleChucDanh._id,
     });
@@ -609,12 +600,12 @@ const initHumanResourceData = async () => {
         type: roleChucDanh._id,
     });
     const phoPhongQTMT = await Role(vnistDB).create({
-        parents: [roleViceDean._id, nvPhongQTMT._id],
+        parents: [roleDeputyManager._id, nvPhongQTMT._id],
         name: "Phó phòng quản trị mục tiêu",
         type: roleChucDanh._id,
     });
     const truongPhongQTMT = await Role(vnistDB).create({
-        parents: [roleDean._id, nvPhongQTMT._id, phoPhongQTMT._id],
+        parents: [roleManager._id, nvPhongQTMT._id, phoPhongQTMT._id],
         name: "Trưởng phòng quản trị mục tiêu",
         type: roleChucDanh._id,
     });
@@ -625,12 +616,12 @@ const initHumanResourceData = async () => {
         type: roleChucDanh._id,
     });
     const phoPhongQTHCNS = await Role(vnistDB).create({
-        parents: [roleViceDean._id, nvPhongQTHCNS._id],
+        parents: [roleDeputyManager._id, nvPhongQTHCNS._id],
         name: "Phó phòng quản trị hành chính nhân sự",
         type: roleChucDanh._id,
     });
     const truongPhongQTHCNS = await Role(vnistDB).create({
-        parents: [roleDean._id, nvPhongQTHCNS._id, phoPhongQTHCNS._id],
+        parents: [roleManager._id, nvPhongQTHCNS._id, phoPhongQTHCNS._id],
         name: "Trưởng phòng quản trị hành chính nhân sự",
         type: roleChucDanh._id,
     });
@@ -641,12 +632,12 @@ const initHumanResourceData = async () => {
         type: roleChucDanh._id,
     });
     const phoPhongHCHT = await Role(vnistDB).create({
-        parents: [roleViceDean._id, nvPhongHCHT._id],
+        parents: [roleDeputyManager._id, nvPhongHCHT._id],
         name: "Phó phòng hậu cần - tư vấn",
         type: roleChucDanh._id,
     });
     const truongPhongHCHT = await Role(vnistDB).create({
-        parents: [roleDean._id, nvPhongHCHT._id, phoPhongHCHT._id],
+        parents: [roleManager._id, nvPhongHCHT._id, phoPhongHCHT._id],
         name: "Trưởng phòng hậu cần - tư vấn",
         type: roleChucDanh._id,
     });
@@ -657,12 +648,12 @@ const initHumanResourceData = async () => {
         type: roleChucDanh._id,
     });
     const phoPhongTCKT = await Role(vnistDB).create({
-        parents: [roleViceDean._id, nvPhongTCKT._id],
+        parents: [roleDeputyManager._id, nvPhongTCKT._id],
         name: "Phó phòng tài chính kế toán",
         type: roleChucDanh._id,
     });
     const truongPhongTCKT = await Role(vnistDB).create({
-        parents: [roleDean._id, nvPhongTCKT._id, phoPhongTCKT._id],
+        parents: [roleManager._id, nvPhongTCKT._id, phoPhongTCKT._id],
         name: "Trưởng phòng tài chính kế toán",
         type: roleChucDanh._id,
     });
@@ -673,12 +664,12 @@ const initHumanResourceData = async () => {
         type: roleChucDanh._id,
     });
     const phoPhongKTDN = await Role(vnistDB).create({
-        parents: [roleViceDean._id, nvPhongKTDN._id],
+        parents: [roleDeputyManager._id, nvPhongKTDN._id],
         name: "Phó phòng kế toán doanh nghiệp",
         type: roleChucDanh._id,
     });
     const truongPhongKTDN = await Role(vnistDB).create({
-        parents: [roleDean._id, nvPhongKTDN._id, phoPhongKTDN._id],
+        parents: [roleManager._id, nvPhongKTDN._id, phoPhongKTDN._id],
         name: "Trưởng phòng kế toán doanh nghiệp",
         type: roleChucDanh._id,
     });
@@ -689,12 +680,12 @@ const initHumanResourceData = async () => {
         type: roleChucDanh._id,
     });
     const phoPhongKTBH = await Role(vnistDB).create({
-        parents: [roleViceDean._id, nvPhongKTBH._id],
+        parents: [roleDeputyManager._id, nvPhongKTBH._id],
         name: "Phó phòng kế toán bán hàng",
         type: roleChucDanh._id,
     });
     const truongPhongKTBH = await Role(vnistDB).create({
-        parents: [roleDean._id, nvPhongKTBH._id, phoPhongKTBH._id],
+        parents: [roleManager._id, nvPhongKTBH._id, phoPhongKTBH._id],
         name: "Trưởng phòng kế toán bán hàng",
         type: roleChucDanh._id,
     });
@@ -885,8 +876,8 @@ const initHumanResourceData = async () => {
             name: "Phòng Maketing & NCPT sản phẩm",
             description:
                 "Phòng Maketing & NCPT sản phẩm Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
-            deans: [truongPhongMaketing._id],
-            viceDeans: [phoPhongMaketing._id],
+            managers: [truongPhongMaketing._id],
+            deputyManagers: [phoPhongMaketing._id],
             employees: [nvPhongMaketing._id],
             parent: Directorate._id,
         },
@@ -898,8 +889,8 @@ const initHumanResourceData = async () => {
             name: "Phòng kiểm soát nội bộ",
             description:
                 "Phòng kinh kiểm soát nội bộ Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
-            deans: [truongPhongKS._id],
-            viceDeans: [phoPhongKS._id],
+            managers: [truongPhongKS._id],
+            deputyManagers: [phoPhongKS._id],
             employees: [nvPhongKS._id],
             parent: Directorate._id,
         },
@@ -910,8 +901,8 @@ const initHumanResourceData = async () => {
             name: "Phòng quản trị nhân sự",
             description:
                 "Phòng quản trị nhân sự Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
-            deans: [truongPhongQTNS._id],
-            viceDeans: [phoPhongQTNS._id],
+            managers: [truongPhongQTNS._id],
+            deputyManagers: [phoPhongQTNS._id],
             employees: [nvPhongQTNS._id],
             parent: Directorate._id,
         },
@@ -922,8 +913,8 @@ const initHumanResourceData = async () => {
             name: "Phòng quản trị mục tiêu",
             description:
                 "Phòng quản trị mục tiêu Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
-            deans: [truongPhongQTMT._id],
-            viceDeans: [phoPhongQTMT._id],
+            managers: [truongPhongQTMT._id],
+            deputyManagers: [phoPhongQTMT._id],
             employees: [nvPhongQTMT._id],
             parent: phongQTNS[0]._id,
         },
@@ -934,8 +925,8 @@ const initHumanResourceData = async () => {
             name: "Phòng hành chính nhân sự",
             description:
                 "Phòng hành chính nhân sự Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
-            deans: [truongPhongQTHCNS._id],
-            viceDeans: [phoPhongQTHCNS._id],
+            managers: [truongPhongQTHCNS._id],
+            deputyManagers: [phoPhongQTHCNS._id],
             employees: [nvPhongQTHCNS._id],
             parent: phongQTNS[0]._id,
         },
@@ -946,8 +937,8 @@ const initHumanResourceData = async () => {
             name: "Phòng hậu cần - tư vấn",
             description:
                 "Phòng hậu cần - tư vấn Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
-            deans: [truongPhongHCHT._id],
-            viceDeans: [phoPhongHCHT._id],
+            managers: [truongPhongHCHT._id],
+            deputyManagers: [phoPhongHCHT._id],
             employees: [nvPhongHCHT._id],
             parent: phongQTNS[0]._id,
         },
@@ -958,8 +949,8 @@ const initHumanResourceData = async () => {
             name: "Phòng tài chính kế toán",
             description:
                 "Phòng tài chính kế toán Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
-            deans: [truongPhongTCKT._id],
-            viceDeans: [phoPhongTCKT._id],
+            managers: [truongPhongTCKT._id],
+            deputyManagers: [phoPhongTCKT._id],
             employees: [nvPhongTCKT._id],
             parent: Directorate._id,
         },
@@ -970,8 +961,8 @@ const initHumanResourceData = async () => {
             name: "Phòng kế toán doanh nghiệp",
             description:
                 "Phòng kế toán doanh nghiệp Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
-            deans: [truongPhongKTDN._id],
-            viceDeans: [phoPhongKTDN._id],
+            managers: [truongPhongKTDN._id],
+            deputyManagers: [phoPhongKTDN._id],
             employees: [nvPhongKTDN._id],
             parent: phongTCKT[0]._id,
         },
@@ -982,8 +973,8 @@ const initHumanResourceData = async () => {
             name: "Phòng kế toán bán hàng",
             description:
                 "Phòng kế toán bán hàng Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
-            deans: [truongPhongKTBH._id],
-            viceDeans: [phoPhongKTBH._id],
+            managers: [truongPhongKTBH._id],
+            deputyManagers: [phoPhongKTBH._id],
             employees: [nvPhongKTBH._id],
             parent: phongTCKT[0]._id,
         },
@@ -4521,7 +4512,8 @@ const initHumanResourceData = async () => {
             ...x,
             totalHours: totalHours,
             timekeepingByHours: timekeepingByHours,
-            totalHoursOff: 0 - totalOverTimeHours,
+            totalHoursOff: 120- totalOverTimeHours > 0 ? 120 - totalOverTimeHours : 0-(120- totalOverTimeHours),
+            totalOvertime: totalOverTimeHours,
         };
     });
     await Timesheet(vnistDB).insertMany(timesheetFake);

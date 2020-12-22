@@ -119,8 +119,8 @@ class ModalEditProcess extends Component {
             let defaultUnit;
 
             if (user && user.organizationalUnitsOfUser) defaultUnit = user.organizationalUnitsOfUser.find(item =>
-                item.dean === this.state.currentRole
-                || item.viceDean === this.state.currentRole
+                item.manager === this.state.currentRole
+                || item.deputyManager === this.state.currentRole
                 || item.employee === this.state.currentRole);
             if (!defaultUnit && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) {
                 // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên

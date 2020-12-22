@@ -19,7 +19,7 @@ exports.sendEmailToManager = async (portal, oldAsset, userId, type) => {
     let currentUser = await User(connect(DB_CONNECTION, portal)).findById(
         userId
     );
-    let email = [manager.email];
+    let email = manager ? [manager.email] : [];
     let body = `<p>Mô tả : ${currentUser.name} đã ${type} trong tài sản mã ${oldAsset.code}  </p>`;
     let html = `<p>Bạn có thông báo mới: ` + body;
 
@@ -391,7 +391,7 @@ exports.createAsset = async (portal, company, data, fileInfo) => {
                 locationLogs,
                 files,
             } = data[i];
-
+           
             files = files && this.mergeUrlFileToObject(file, files);
 
             data[i].purchaseDate =
@@ -412,13 +412,7 @@ exports.createAsset = async (portal, company, data, fileInfo) => {
                 usageLogs &&
                 usageLogs.map((item) => {
                     return {
-                        usedByUser: item.assignedToUser
-                            ? item.assignedToUser
-                            : null,
-                        usedByOrganizationalUnit: item.assignedToOrganizationalUnit
-                            ? item.assignedToOrganizationalUnit
-                            : null,
-                        description: item.description,
+                        ...item,
                         startDate: item.startDate && new Date(item.startDate),
                         endDate: item.endDate && new Date(item.endDate),
                     };
@@ -446,6 +440,7 @@ exports.createAsset = async (portal, company, data, fileInfo) => {
                         endDate: item.endDate && new Date(item.endDate),
                     };
                 });
+
             var createAsset = await Asset(
                 connect(DB_CONNECTION, portal)
             ).create({
@@ -522,6 +517,295 @@ exports.createAsset = async (portal, company, data, fileInfo) => {
     }).populate({path: 'assetType'});
     return {assets};
 };
+
+/** Cập nhật thông tin tài sản từ file */
+exports.updateAssetInformationFromFile = async (portal, company, datas) => {
+    if (datas && datas.length !== 0) {
+        for (let i = 0; i < datas.length; i++) {
+            let data = datas[i];
+
+            let {
+                maintainanceLogs,
+                usageLogs,
+                incidentLogs,
+                locationLogs
+            } = data;
+
+            data.purchaseDate =
+                data.purchaseDate && new Date(data.purchaseDate);
+
+            data.warrantyExpirationDate =
+                data.warrantyExpirationDate &&
+                new Date(data.warrantyExpirationDate);
+
+            data.startDepreciation =
+                data.startDepreciation &&
+                new Date(data.startDepreciation);
+
+            data.disposalDate =
+                data.disposalDate && new Date(data.disposalDate);
+
+            usageLogs =
+                usageLogs &&
+                usageLogs.map((item) => {
+                    return {
+                        ...item,
+                        startDate: item.startDate && new Date(item.startDate),
+                        endDate: item.endDate && new Date(item.endDate),
+                    };
+                });
+
+            incidentLogs =
+                incidentLogs &&
+                incidentLogs.map((item) => {
+                    return {
+                        ...item,
+                        dateOfIncident:
+                            item.dateOfIncident &&
+                            new Date(item.dateOfIncident),
+                    };
+                });
+
+            maintainanceLogs =
+                maintainanceLogs &&
+                maintainanceLogs.map((item) => {
+                    return {
+                        ...item,
+                        createDate:
+                            item.createDate && new Date(item.createDate),
+                        startDate: item.startDate && new Date(item.startDate),
+                        endDate: item.endDate && new Date(item.endDate),
+                    };
+                });
+            
+            let keySet = {
+                company: company
+            };
+            let keyPush = {};
+
+            if (data.assetName) {
+                keySet = {
+                    ...keySet,
+                    assetName: data.assetName
+                }
+            }
+
+            if (data.serial) {
+                keySet = {
+                    ...keySet,
+                    serial: data.serial
+                }
+            }
+
+            if (data.assetType && data.assetType.length !== 0) {
+                keySet = {
+                    ...keySet,
+                    assetType: data.assetType
+                }
+            }
+
+            if (data.readByRoles && data.readByRoles.length !== 0) {
+                keySet = {
+                    ...keySet,
+                    readByRoles: data.readByRoles
+                }
+            }
+
+            if (data.purchaseDate) {
+                keySet = {
+                    ...keySet,
+                    purchaseDate: data.purchaseDate
+                }
+            }
+
+            if (data.warrantyExpirationDate) {
+                keySet = {
+                    ...keySet,
+                    warrantyExpirationDate: data.warrantyExpirationDate
+                }
+            }
+
+            if (data.warrantyExpirationDate) {
+                keySet = {
+                    ...keySet,
+                    warrantyExpirationDate: data.warrantyExpirationDate
+                }
+            }
+
+            if (data.managedBy) {
+                keySet = {
+                    ...keySet,
+                    managedBy: data.managedBy
+                }
+            }
+
+            if (data.assignedToUser) {
+                keySet = {
+                    ...keySet,
+                    assignedToUser: data.assignedToUser
+                }
+            }
+
+            if (data.assignedToOrganizationalUnit) {
+                keySet = {
+                    ...keySet,
+                    assignedToOrganizationalUnit: data.assignedToOrganizationalUnit
+                }
+            }
+
+            if (data.location) {
+                keySet = {
+                    ...keySet,
+                    location: data.location
+                }
+            }
+
+            if (data.status) {
+                keySet = {
+                    ...keySet,
+                    status: data.status
+                }
+            }
+
+            if (data.typeRegisterForUse) {
+                keySet = {
+                    ...keySet,
+                    typeRegisterForUse: data.typeRegisterForUse
+                }
+            }
+
+            if (data.description) {
+                keySet = {
+                    ...keySet,
+                    description: data.description
+                }
+            }
+
+            if (data.detailInfo) {
+                keySet = {
+                    ...keySet,
+                    detailInfo: data.detailInfo
+                }
+            }
+
+            if (data.cost) {
+                keySet = {
+                    ...keySet,
+                    cost: data.cost
+                }
+            }
+
+            if (data.usefulLife) {
+                keySet = {
+                    ...keySet,
+                    usefulLife: data.usefulLife
+                }
+            }
+
+            if (data.residualValue) {
+                keySet = {
+                    ...keySet,
+                    residualValue: data.residualValue
+                }
+            }
+
+            if (data.startDepreciation) {
+                keySet = {
+                    ...keySet,
+                    startDepreciation: data.startDepreciation
+                }
+            }
+
+            if (data.depreciationType) {
+                keySet = {
+                    ...keySet,
+                    depreciationType: data.depreciationType
+                }
+            }
+
+            if (data.disposalDate) {
+                keySet = {
+                    ...keySet,
+                    disposalDate: data.disposalDate
+                }
+            }
+
+            if (data.disposalType) {
+                keySet = {
+                    ...keySet,
+                    disposalType: data.disposalType
+                }
+            }
+
+            if (data.disposalCost) {
+                keySet = {
+                    ...keySet,
+                    disposalCost: data.disposalCost
+                }
+            }
+
+            if (data.disposalDesc) {
+                keySet = {
+                    ...keySet,
+                    disposalDesc: data.disposalDesc
+                }
+            }
+
+            if (maintainanceLogs && maintainanceLogs.length !== 0) {
+                data.code = maintainanceLogs[0].code;
+                keyPush = {
+                    ...keyPush,
+                    maintainanceLogs: {
+                        $each: maintainanceLogs
+                    }
+                }
+            }
+
+            if (usageLogs && usageLogs.length !== 0) {
+                data.code = usageLogs[0].code;
+                keyPush = {
+                    ...keyPush,
+                    usageLogs: {
+                        $each: usageLogs
+                    }
+                }
+            }
+
+            if (incidentLogs && incidentLogs.length !== 0) {
+                data.code = incidentLogs[0].code;
+                keyPush = {
+                    ...keyPush,
+                    incidentLogs: {
+                        $each: incidentLogs
+                    }
+                }
+            }
+
+            if (locationLogs && locationLogs.length !== 0) {
+                keyPush = {
+                    ...keyPush,
+                    locationLogs: {
+                        $each: locationLogs
+                    }
+                }
+            }
+
+            var asset = await Asset(connect(DB_CONNECTION, portal)).updateOne(
+                { code: data.code },
+                {
+                    $set: keySet,
+                    $addToSet: keyPush
+                }
+            );
+        }
+    } 
+
+    // Lấy thông tin tài sản vừa thêm vào
+    let assets = await Asset(connect(DB_CONNECTION, portal)).find({
+        _id: asset._id,
+    }).populate({path: 'assetType'});
+    return {assets};
+}
 
 /**
  * Cập nhât thông tin tài sản theo id

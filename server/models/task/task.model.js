@@ -377,11 +377,11 @@ const TaskSchema = new Schema(
                 },
                 startedAt: {
                     // Lưu dạng miliseconds. Thời gian khi người dùng nhất nút bắt đầu bấm giờ
-                    type: Number,
+                    type: Date,
                 },
                 stoppedAt: {
                     // Lưu dạng miliseconds. Thời gian kết thúc bấm giờ. Khi stoppedAt-startedAt quá 4 tiếng, hỏi lại người dùng stop chính xác vào lúc nào và cập nhật lại stoppedAt.
-                    type: Number,
+                    type: Date,
                 },
                 description: {
                     // Mô tả ngắn gọn việc đã làm khi log
@@ -390,6 +390,14 @@ const TaskSchema = new Schema(
                 duration: {
                     type: Number,
                 },
+                autoStopped: {
+                    type: Boolean,
+                    default: false
+                },
+                acceptLog: {
+                    type: Boolean,
+                    default: true
+                }
             },
         ],
 

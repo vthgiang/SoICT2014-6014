@@ -9,7 +9,7 @@ const swaggerUi = require("swagger-ui-express");
 const { swaggerJsonData } = require("./api-docs/swagger.js");
 
 require("dotenv").config();
-require("./connectDatabase");
+// require("./connectDatabase");
 require("./global")(server);
 
 app.use(require("cors")());

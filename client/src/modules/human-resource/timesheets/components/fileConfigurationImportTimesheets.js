@@ -31,6 +31,22 @@ function configurationImport(translate) {
             value: translate('human_resource.timesheets.date_of_month'),
             colspan: 31
         },
+        totalHours: { // Tổng giờ làm
+            columnName: translate('human_resource.timesheets.total_timesheets'),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.timesheets.total_timesheets').toLowerCase()}`,
+            value: translate('human_resource.timesheets.total_timesheets')
+        },
+        totalHoursOff: { // Tổng giờ nghỉ
+            columnName: translate('human_resource.timesheets.total_hours_off'),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.timesheets.total_hours_off').toLowerCase()}`,
+            value: translate('human_resource.timesheets.total_hours_off')
+        },
+        totalOvertime: { // Tổng giờ tăng ca
+            columnName: translate('human_resource.timesheets.total_over_time'),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.timesheets.total_over_time').toLowerCase()}`,
+            value: translate('human_resource.timesheets.total_over_time')
+        }
+
     };
     return config;
 };
@@ -74,6 +90,11 @@ function configurationImportByHours(translate) {
             columnName: translate('human_resource.timesheets.total_hours_off'),
             description: `${translate('human_resource.title_correspond')} ${translate('human_resource.timesheets.total_hours_off').toLowerCase()}`,
             value: translate('human_resource.timesheets.total_hours_off')
+        },
+        totalOvertime: { // Tổng giờ tăng ca
+            columnName: translate('human_resource.timesheets.total_over_time'),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.timesheets.total_over_time').toLowerCase()}`,
+            value: translate('human_resource.timesheets.total_over_time')
         }
     };
     return config;
@@ -159,12 +180,18 @@ function templateImportByShift(translate) {
                     STT: 3,
                     employeeNumber: 3,
                     fullName: 3,
+                    totalHours:3,
+                    totalHoursOff:3,
+                    totalOvertime:3
                 },
                 STT: index + 1,
                 fullName: x.employee ? x.employee.fullName : "",
                 employeeNumber: x.employee ? x.employee.employeeNumber : "",
                 space: translate('human_resource.timesheets.shifts1'),
                 ...colShifts1,
+                totalHours: '180',
+                totalHoursOff: '-2',
+                totalOvertime: "0"
             }, {
                 STT: "",
                 fullName: "",
@@ -197,7 +224,7 @@ function templateImportByShift(translate) {
         dataSheets: [{
             sheetName: "Sheet1",
             sheetTitle: translate('human_resource.timesheets.file_name_export'),
-            sheetTitleWidth: 35,
+            sheetTitleWidth: 38,
             tables: [{
                 merges: [{
                     key: "other",
@@ -245,6 +272,18 @@ function templateImportByShift(translate) {
                         width: '10'
                     },
                     ...addColumns,
+                    {
+                        key: "totalHours",
+                        value: translate('human_resource.timesheets.total_timesheets'),
+                    },
+                    {
+                        key: "totalHoursOff",
+                        value: translate('human_resource.timesheets.total_hours_off'),
+                    },
+                    {
+                        key: "totalOvertime",
+                        value: translate('human_resource.timesheets.total_over_time'),
+                    }
                 ],
                 data: dataExport
             }]
@@ -295,7 +334,8 @@ function templateImportByhours(translate) {
             space: translate('human_resource.timesheets.shifts1'),
             ...colName,
             totalHours: totalHours,
-            totalHoursOff: '-2'
+            totalHoursOff: '-2',
+            totalOvertime: "0"
         }
     })
 
@@ -313,7 +353,7 @@ function templateImportByhours(translate) {
         dataSheets: [{
             sheetName: "Sheet1",
             sheetTitle: translate('human_resource.timesheets.file_name_export'),
-            sheetTitleWidth: 36,
+            sheetTitleWidth: 37,
             tables: [{
                 merges: [{
                     key: "other",
@@ -344,6 +384,10 @@ function templateImportByhours(translate) {
                     {
                         key: "totalHoursOff",
                         value: translate('human_resource.timesheets.total_hours_off'),
+                    },
+                    {
+                        key: "totalOvertime",
+                        value: translate('human_resource.timesheets.total_over_time'),
                     }
                 ],
                 data: dataExport

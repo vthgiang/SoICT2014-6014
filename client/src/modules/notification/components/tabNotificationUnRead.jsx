@@ -13,6 +13,12 @@ class TabNotificationUnRead extends Component {
             limit: 10, page: 1
         }
     }
+    checkPriority = (value) => {
+        const valueConvert = parseInt(value);
+        if (!value || valueConvert === 1) return "#00a65a"
+        if (valueConvert === 3) return "#ff0707"
+        if (valueConvert === 2) return "#ffa707"
+    }
     render() {
         const { translate, notifications } = this.props;
         const { currentRow } = this.state;
@@ -54,6 +60,7 @@ class TabNotificationUnRead extends Component {
                         notificationSender={currentRow.sender}
                         notificationReaded={currentRow.readed}
                         notificationCreatedAt={currentRow.createdAt}
+                        notificationAssociatedDataObject={currentRow.associatedDataObject}
                     />
                 }
                 <div id="tab-notification-un-read" style={{ display: 'block' }}>
@@ -61,12 +68,12 @@ class TabNotificationUnRead extends Component {
                         {
                             notifications.receivered.paginate.length > 0 ?
                                 notifications.receivered.paginate.map((notification, index) =>
-                                    <li key={notification._id} style={{ border: "none", backgroundColor: "white", cursor: "pointer", overflow: "hidden" }}>
+                                    <li key={index} style={{ border: "none", backgroundColor: "white", cursor: "pointer", overflow: "hidden" }}>
                                         <div className="row" >
                                             <div style={{ marginBottom: 5 }} className="col-sm-11" onClick={() => this.handleEdit(notification)}>
                                                 <div>{
                                                     notification.level === 'info' ? <i className="fa fa-fw fa-info-circle text-blue" /> :
-                                                        notification.level === 'general' ? <i className="fa fa-fw fa-bell text-green" /> :
+                                                        notification.level === 'general' ? <i className="fa fa-fw fa-bell" style={{ color: `${this.checkPriority(notification.associatedDataObject && notification.associatedDataObject.value)}` }} /> :
                                                             notification.level === 'important' ? <i className="fa fa-fw fa-warning text-yellow" /> :
                                                                 <i className="fa fa-fw fa-bomb text-red" />
                                                 }

@@ -263,10 +263,20 @@ class TimesheetsManagement extends Component {
                     vertical: 'middle',
                     horizontal: 'center'
                 },
+                totalHoursOff: {
+                    vertical: 'middle',
+                    horizontal: 'center'
+                },
+                totalOvertime: {
+                    vertical: 'middle',
+                    horizontal: 'center'
+                },
 
             };
             data.map((x, index) => {
                 let totalHours = x.totalHours;
+                let totalHoursOff = x.totalHoursOff;
+                let totalOvertime = x.totalOvertime;
                 let shifts1s = x.timekeepingByShift.shift1s;
                 let shifts2s = x.timekeepingByShift.shift2s;
                 let shifts3s = x.timekeepingByShift.shift3s;
@@ -295,13 +305,15 @@ class TimesheetsManagement extends Component {
 
                 let row = [
                     {
-                        merges: { STT: 3, employeeNumber: 3, fullName: 3, totalHours: 3 },
+                        merges: { STT: 3, employeeNumber: 3, fullName: 3, totalHours: 3, totalHoursOff: 3, totalOvertime: 3 },
                         STT: index + 1,
                         fullName: x.employee ? x.employee.fullName : "",
                         employeeNumber: x.employee ? x.employee.employeeNumber : "",
                         space: translate('human_resource.timesheets.shifts1'),
                         ...colShifts1,
                         totalHours: totalHours,
+                        totalHoursOff: totalHoursOff,
+                        totalOvertime: totalOvertime,
                     }, {
                         STT: "",
                         fullName: "",
@@ -325,6 +337,8 @@ class TimesheetsManagement extends Component {
         if (timekeepingType === 'hours') {
             dataExport = data.map((x, index) => {
                 let totalHours = x.totalHours;
+                let totalHoursOff = x.totalHoursOff;
+                let totalOvertime = x.totalOvertime;
                 let timekeepingByHours = x.timekeepingByHours;
                 let colName = {};
                 timekeepingByHours.forEach((y, key) => {
@@ -337,6 +351,8 @@ class TimesheetsManagement extends Component {
                     employeeNumber: x.employee ? x.employee.employeeNumber : "",
                     ...colName,
                     totalHours: totalHours,
+                    totalHoursOff: totalHoursOff,
+                    totalOvertime: totalOvertime
                 }
             })
         }
@@ -352,7 +368,7 @@ class TimesheetsManagement extends Component {
                 {
                     sheetName: "Sheet1",
                     sheetTitle: `${translate('human_resource.timesheets.file_name_export')} ${translate('human_resource.month').toLowerCase()} ${month}`,
-                    sheetTitleWidth: 35,
+                    sheetTitleWidth: timekeepingType === 'hours' ? 37 : 38,
                     tables: [
                         {
                             merges: [{
@@ -370,6 +386,8 @@ class TimesheetsManagement extends Component {
                                 ...space,
                                 ...addColumns,
                                 { key: "totalHours", value: translate('human_resource.timesheets.total_timesheets') },
+                                { key: "totalHoursOff", value: translate('human_resource.timesheets.total_hours_off') },
+                                { key: "totalOvertime", value: translate('human_resource.timesheets.total_over_time') },
                             ],
                             data: dataExport
                         }
@@ -719,6 +737,8 @@ class TimesheetsManagement extends Component {
                         shift2s={currentRow.timekeepingByShift.shift2s}
                         shift3s={currentRow.timekeepingByShift.shift3s}
                         timekeepingByHours={currentRow.timekeepingByHours}
+                        totalHoursOff={currentRow.totalHoursOff}
+                        totalOvertime={currentRow.totalOvertime}
                         allDayOfMonth={this.getAllDayOfMonth(this.formatDate(currentRow.month, true))}
                     />
                 }

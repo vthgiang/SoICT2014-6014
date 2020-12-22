@@ -279,7 +279,6 @@ exports.getPaginatedTasks = async (portal, task) => {
     var page = Number(number);
 
     let roleArr = [];
-    console.log('role', role);
     if (role) {
         for (let i in role) {
             if (role[i] === "responsible") roleArr.push({ responsibleEmployees: { $in: [user] } });
@@ -330,7 +329,6 @@ exports.getPaginatedTasks = async (portal, task) => {
     }
 
     if (special) {
-        console.log('special', special);
         for (var i = 0; i < special.length; i++) {
             if (special[i] === "Lưu trong kho") {
                 keySearch = {
@@ -1351,8 +1349,8 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
 exports.getPaginatedTasksByOrganizationalUnit = async (portal, task, type) => {
     let organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({
         $or: [
-            { 'deans': task.roleId },
-            { 'viceDeans': task.roleId },
+            { 'managers': task.roleId },
+            { 'deputyManagers': task.roleId },
             { 'employees': task.roleId }
         ]
     });
@@ -1431,7 +1429,7 @@ exports.sendEmailForCreateTask = async (portal, task) => {
     });
 
     var email, userId, user, users, userIds
-    var deansOfOrganizationalUnitThatHasCollaboratedId = [], deansOfOrganizationalUnitThatHasCollaborated, collaboratedHtml, collaboratedEmail;
+    var managersOfOrganizationalUnitThatHasCollaboratedId = [], managersOfOrganizationalUnitThatHasCollaborated, collaboratedHtml, collaboratedEmail;
 
     var resId = task.responsibleEmployees;  // lấy id người thực hiện
     var res = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: resId } });
@@ -1463,14 +1461,14 @@ exports.sendEmailForCreateTask = async (portal, task) => {
         let unit = task.collaboratedWithOrganizationalUnits[i] && await OrganizationalUnit(connect(DB_CONNECTION, portal))
             .findById(task.collaboratedWithOrganizationalUnits[i].organizationalUnit)
 
-        unit && unit.deans.map(item => {
-            deansOfOrganizationalUnitThatHasCollaboratedId.push(item);
+        unit && unit.managers.map(item => {
+            managersOfOrganizationalUnitThatHasCollaboratedId.push(item);
         })
     }
 
-    deansOfOrganizationalUnitThatHasCollaborated = await UserRole(connect(DB_CONNECTION, portal))
+    managersOfOrganizationalUnitThatHasCollaborated = await UserRole(connect(DB_CONNECTION, portal))
         .find({
-            roleId: { $in: deansOfOrganizationalUnitThatHasCollaboratedId }
+            roleId: { $in: managersOfOrganizationalUnitThatHasCollaboratedId }
         })
         .populate("userId")
     user = await User(connect(DB_CONNECTION, portal)).find({
@@ -1478,7 +1476,7 @@ exports.sendEmailForCreateTask = async (portal, task) => {
     })
 
     email = user.map(item => item.email); // Lấy ra tất cả email của người dùng
-    collaboratedEmail = deansOfOrganizationalUnitThatHasCollaborated.map(item => item.userId && item.userId.email) // Lấy email trưởng đơn vị phối hợp 
+    collaboratedEmail = managersOfOrganizationalUnitThatHasCollaborated.map(item => item.userId && item.userId.email) // Lấy email trưởng đơn vị phối hợp 
     email.push("trinhhong102@gmail.com");
 
     var body = `<a href="${process.env.WEBSITE}/task?taskId=${task._id}" target="_blank" title="${process.env.WEBSITE}/task?taskId=${task._id}"><strong>${task.name}</strong></a></p> ` +
@@ -1513,7 +1511,7 @@ exports.sendEmailForCreateTask = async (portal, task) => {
     return {
         task: task,
         user: userIds, email: email, html: html,
-        deansOfOrganizationalUnitThatHasCollaborated: deansOfOrganizationalUnitThatHasCollaborated.map(item => item.userId && item.userId._id),
+        managersOfOrganizationalUnitThatHasCollaborated: managersOfOrganizationalUnitThatHasCollaborated.map(item => item.userId && item.userId._id),
         collaboratedEmail: collaboratedEmail, collaboratedHtml: collaboratedHtml
     };
 }
@@ -1528,15 +1526,21 @@ exports.createTask = async (portal, task) => {
         var parent = await Task(connect(DB_CONNECTION, portal)).findById(task.parent);
         if (parent) level = parent.level + 1;
     }
+    var startDate, endDate;
+    if(Date.parse(task.startDate)) startDate = new Date(task.startDate);
+    else {
+        var splitter = task.startDate.split("-");
+        startDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+    }
 
-    // convert thời gian từ string sang date
-    var splitter = task.startDate.split("-");
-    var startDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-    splitter = task.endDate.split("-");
-    var endDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+    if(Date.parse(task.endDate)) endDate = new Date(task.endDate);
+    else {
+        var splitter = task.endDate.split("-");
+        endDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+    }
 
     let taskTemplate, cloneActions = [];
-    if (task.taskTemplate !== "") {
+    if (task.taskTemplate) {
         taskTemplate = await TaskTemplate(connect(DB_CONNECTION, portal)).findById(task.taskTemplate);
         var taskActions = taskTemplate.taskActions;
 
@@ -1595,7 +1599,7 @@ exports.createTask = async (portal, task) => {
     return {
         task: newTask,
         user: mail.user, email: mail.email, html: mail.html,
-        deansOfOrganizationalUnitThatHasCollaborated: mail.deansOfOrganizationalUnitThatHasCollaborated,
+        managersOfOrganizationalUnitThatHasCollaborated: mail.managersOfOrganizationalUnitThatHasCollaborated,
         collaboratedEmail: mail.collaboratedEmail, collaboratedHtml: mail.collaboratedHtml
     };
 }
@@ -1718,8 +1722,8 @@ exports.getAllTaskOfOrganizationalUnit = async (portal, roleId, organizationalUn
     if (!organizationalUnitId) {
         organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({
             $or: [
-                { 'deans': roleId },
-                { 'viceDeans': roleId },
+                { 'managers': roleId },
+                { 'deputyManagers': roleId },
                 { 'employees': roleId }
             ]
         });

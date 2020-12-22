@@ -84,10 +84,9 @@ class TaskManagement extends Component {
 
         for (i = 0; i < list.length; i += 1) {
             node = list[i];
-            if (node.parent !== null) {
-
+            if (node.parent) {
                 // if you have dangling branches check that map[node.parentId] exists
-                if (map[node.parent._id] !== undefined) {
+                if (map[node.parent._id]) {
                     list[map[node.parent._id]].children.push(node);
                 }
                 else {
@@ -306,16 +305,13 @@ class TaskManagement extends Component {
             currentPage: 1
         })
     }
-    convertTime = (duration) => {
-        let seconds = Math.floor((duration / 1000) % 60),
-            minutes = Math.floor((duration / (1000 * 60)) % 60),
-            hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+    convertTime = (ms) => {
+        if (!ms) return '00:00:00';
+        let hour = Math.floor(ms / (60 * 60 * 1000));
+        let minute = Math.floor((ms - hour * 60 * 60 * 1000) / (60 * 1000));
+        let second = Math.floor((ms - hour * 60 * 60 * 1000 - minute * 60 * 1000) / 1000);
 
-        hours = (hours < 10) ? "0" + hours : hours;
-        minutes = (minutes < 10) ? "0" + minutes : minutes;
-        seconds = (seconds < 10) ? "0" + seconds : seconds;
-
-        return hours + ":" + minutes + ":" + seconds;
+        return `${hour > 9 ? hour : `0${hour}`}:${minute > 9 ? minute : `0${minute}`}:${second > 9 ? second : `0${second}`}`;
     }
 
     handleShowModal = async (id) => {
@@ -728,7 +724,7 @@ class TaskManagement extends Component {
                     </div>
 
                     {
-                        currentTaskId !== undefined &&
+                        currentTaskId &&
                         <ModalPerform
                             units={units}
                             id={currentTaskId}

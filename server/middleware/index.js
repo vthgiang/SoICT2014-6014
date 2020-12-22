@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const Models = require(`${SERVER_MODELS_DIR}`);
 const { User, Role, UserRole, Privilege, Link, Company } = Models;
 const ObjectId = require("mongoose").Types.ObjectId;
-const { data, checkServicePermission } = require("./servicesPermission");
+const { links } = require("./servicesPermission");
 const multer = require("multer");
 const fs = require("fs");
 const CryptoJS = require("crypto-js");
@@ -18,7 +18,7 @@ const { initModels, connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
  * ****************************************
  */
 
-exports.authFunc = (checkPage = true) => {
+exports.authFunc = (checkPage = true, checkPassword2=true) => {
     return async (req, res, next) => {
         try {
             const token = req.header("auth-token"); //JWT nhận từ người dùng
@@ -48,6 +48,15 @@ exports.authFunc = (checkPage = true) => {
                 : req.user.company.shortName;
             initModels(connect(DB_CONNECTION, req.portal), Models);
 
+            const userToken = await User(
+                connect(DB_CONNECTION, req.portal)
+            ).findById(req.user._id);
+            if (userToken.numberDevice === 0) throw ["acc_log_out"];
+
+            // Kiểm tra người dùng đã nhập mật khẩu cấp 2 hay chưa?
+            let password2 = userToken.password2;
+            if(checkPassword2 && !password2) throw ['auth_password2_not_complete']
+
             if (req.header("current-page") !== "/") {
                 const fingerprint = req.header("fingerprint"); //chữ ký của trình duyệt người dùng - fingerprint
                 const currentRole = req.header("current-role"); // role hiện tại của người dùng
@@ -68,21 +77,11 @@ exports.authFunc = (checkPage = true) => {
                 if (verified.fingerprint !== fingerprint)
                     throw ["fingerprint_invalid"]; // phát hiện lỗi client copy jwt và paste vào localstorage của trình duyệt để không phải đăng nhập
 
-                const userToken = await User(
-                    connect(DB_CONNECTION, req.portal)
-                ).findById(req.user._id);
-                if (userToken.numberDevice === 0) throw ["acc_log_out"];
-
                 /**
                  * Kiểm tra xem current role có đúng với người dùng hay không?
                  */
                 const userId = req.user._id;
-                const userrole = await UserRole(
-                    connect(DB_CONNECTION, req.portal)
-                ).findOne({
-                    userId,
-                    roleId: role._id,
-                });
+                const userrole = await UserRole(connect(DB_CONNECTION, req.portal)).findOne({ userId, roleId: role._id });
                 if (userrole === null) throw ["user_role_invalid"];
                 /**
                  * Riêng đối với system admin của hệ thống thì bỏ qua bước này
@@ -91,9 +90,7 @@ exports.authFunc = (checkPage = true) => {
                     /**
                      * Kiểm tra công ty của người dùng có đang được kích hoạt hay không?
                      */
-                    const company = await Company(
-                        connect(DB_CONNECTION, process.env.DB_NAME)
-                    ).findById(req.user.company._id);
+                    const company = await Company(connect(DB_CONNECTION, process.env.DB_NAME)).findById(req.user.company._id);
                     if (!company.active) {
                         //dịch vụ của công ty người dùng đã tạm dừng
                         const resetUser = await User(
@@ -104,7 +101,6 @@ exports.authFunc = (checkPage = true) => {
                         throw ["service_off"];
                     }
                 }
-
                 /**
                  * Kiểm tra xem current-role của người dùng có được phép truy cập vào trang này hay không?
                  * Lấy đường link mà người dùng đã truy cập
@@ -116,54 +112,42 @@ exports.authFunc = (checkPage = true) => {
                 //const url = req.headers.referer.substr(req.headers.origin.length, req.headers.referer.length - req.headers.origin.length);
                 const url = req.header("current-page");
                 const device = req.header("device");
-
+                
                 if (!device) {
-                    const link =
-                        role.name !== "System Admin"
-                            ? await Link(
-                                  connect(DB_CONNECTION, req.portal)
-                              ).findOne({
-                                  url,
-                                  deleteSoft: false,
-                              })
-                            : await Link(
-                                  connect(DB_CONNECTION, req.portal)
-                              ).findOne({
-                                  url,
-                              });
-                    if (link === null) throw ["url_invalid"];
-
                     if (checkPage) {
+                    const link = role.name !== "System Admin" ? 
+                    await Link(connect(DB_CONNECTION, req.portal)).findOne({ url, deleteSoft: false }):
+                    await Link(connect(DB_CONNECTION, req.portal)).findOne({ url });
+                    if (link === null) throw ["url_invalid"];
                         const roleArr = [role._id].concat(role.parents);
-                        const privilege = await Privilege(
-                            connect(DB_CONNECTION, req.portal)
-                        ).findOne({
+                        const privilege = await Privilege(connect(DB_CONNECTION, req.portal)).findOne({
                             resourceId: link._id,
                             resourceType: "Link",
                             roleId: {
                                 $in: roleArr,
                             },
                         });
-                        if (privilege === null) throw "page_access_denied";
+                        if (privilege === null) throw ["page_access_denied"];
+                    }
+                     /**
+                     * Kiểm tra xem user này có được gọi tới service này hay không?
+                     */
+                    const apiCalled = req.route.path !== "/" ? req.baseUrl + req.route.path : req.baseUrl;
+                    const perLink = links.find(l => l.url === url);
+                    if(!perLink) throw ['url_invalid_permission']
+                    if(perLink.apis[0] !== '@all'){
+                        const perAPI = perLink.apis.some(api => api.path === apiCalled && api.method === req.method);
+                        if(!perAPI) throw ['api_permission_invalid'];
                     }
                 }
-
-                /**
-                 * Kiểm tra xem user này có được gọi tới service này hay không?
-                 */
-                const path =
-                    req.route.path !== "/"
-                        ? req.baseUrl + req.route.path
-                        : req.baseUrl;
-                // const checkSP = await checkServicePermission(req.portal, data, path, req.method, currentRole);
-                // if (!checkSP) throw ['service_permission_invalid'];
             }
 
             next();
         } catch (error) {
             res.status(400).json({
                 success: false,
-                messages: error,
+                messages: Array.isArray(error) ? error : ['auth_error'],
+                content: error
             });
         }
     };
@@ -272,7 +256,7 @@ exports.uploadFile = (arrData, type) => {
     }
 };
 
-// Middle check quyền thay đổi thông tin tài khoản người dùng
+// Middleware check quyền thay đổi thông tin tài khoản người dùng
 exports.authCUIP = async (req, res, next) => {
     try{
         const token = req.header("auth-token"); //JWT nhận từ người dùng
@@ -308,7 +292,6 @@ exports.authCUIP = async (req, res, next) => {
     
             if(userrole.length === 0) throw ['access_denied'];
         }
-
 
         next();
     } catch(err){

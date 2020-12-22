@@ -61,8 +61,8 @@ class ModalViewTaskProcess extends Component {
                 info: info,
                 processDescription: nextProps.data.processDescription ? nextProps.data.processDescription : '',
                 processName: nextProps.data.processName ? nextProps.data.processName : '',
-                viewer: nextProps.data.viewer ? nextProps.data.viewer.map(x=>x._id) : [],
-                manager: nextProps.data.manager ? nextProps.data.manager.map(x=>x._id) : [],
+                viewer: nextProps.data.viewer ? nextProps.data.viewer.map(x => x._id) : [],
+                manager: nextProps.data.manager ? nextProps.data.manager.map(x => x._id) : [],
                 xmlDiagram: nextProps.data.xmlDiagram,
             }
         } else {
@@ -156,7 +156,7 @@ class ModalViewTaskProcess extends Component {
         let listUser = user.list
         if (role && role.list.length !== 0) listRole = role.list;
 
-        let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Dean', 'Vice Dean', 'Employee'].indexOf(e.name) === -1)
+        let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Manager', 'Deputy Manager', 'Employee'].indexOf(e.name) === -1)
             .map(item => { return { text: item.name, value: item._id } });
 
         let listViewer = [];

@@ -106,8 +106,8 @@ class ViewProcess extends Component {
             let { user } = this.props;
             let defaultUnit;
             if (user && user.organizationalUnitsOfUser) defaultUnit = user.organizationalUnitsOfUser.find(item =>
-                item.dean === this.state.currentRole
-                || item.viceDean === this.state.currentRole
+                item.manager === this.state.currentRole
+                || item.deputyManager === this.state.currentRole
                 || item.employee === this.state.currentRole);
             if (!defaultUnit && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) {
                 // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
@@ -129,12 +129,12 @@ class ViewProcess extends Component {
                         let responsible = []
                         let accountable = []
                         infoTask[i].responsibleEmployees.forEach(x => {
-                           responsible.push(x.name)
+                            responsible.push(x.name)
                         })
                         console.log(responsible)
                         infoTask[i].accountableEmployees.forEach(x => {
                             accountable.push(x.name)
-                         })
+                        })
                         let element1 = (Object.keys(modeler.get('elementRegistry')).length > 0) && modeler.get('elementRegistry').get(infoTask[i].codeInProcess);
                         element1 && modeling.updateProperties(element1, {
                             progress: infoTask[i].progress,
@@ -369,7 +369,7 @@ class ViewProcess extends Component {
     render() {
         const { translate, role, user } = this.props;
         const { id, info, startDate, endDate, status,
-                processDescription, processName } = this.state;
+            processDescription, processName } = this.state;
         const { isTabPane } = this.props
 
         return (
@@ -408,7 +408,7 @@ class ViewProcess extends Component {
                             </div>
                         </div>
 
-                        <div className={`${isTabPane? "": "col-md-4"}`}>
+                        <div className={`${isTabPane ? "" : "col-md-4"}`}>
                             <div className='description-box without-border'>
                                 {/* tên quy trình */}
                                 <div>
@@ -437,7 +437,7 @@ class ViewProcess extends Component {
                                 <div>
                                     <strong>{translate("task.task_process.notice")}:</strong>
                                 </div>
-                                
+
                                 <div style={{ display: "flex", alignItems: "center" }}>
                                     <div style={{ backgroundColor: "#fff", height: "30px", width: "40px", border: "2px solid #000", borderRadius: "3px", marginRight: "5px", marginTop: 4 }}></div>{translate("task.task_process.wait_for_approval")}
                                 </div>

@@ -1,6 +1,6 @@
 const TaskManagementService = require('./task.service');
-const NotificationServices = require(`${SERVER_MODULES_DIR}/notification/notification.service`);
-const { sendEmail } = require(`${SERVER_HELPERS_DIR}/emailHelper`);
+const NotificationServices = require('../../notification/notification.service');
+const { sendEmail } = require('../../../helpers/emailHelper');
 const Logger = require(`${SERVER_LOGS_DIR}`);
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module quản lý công việc
 
@@ -470,11 +470,14 @@ getTasksThatUserHasResponsibleRoleByDate = async (req, res) => {
  */
 exports.createTask = async (req, res) => {
     try {
-        console.log("Tao moi cong viec")
         var tasks = await TaskManagementService.createTask(req.portal, req.body);
         var task = tasks.task;
         var user = tasks.user.filter(user => user !== req.user._id); //lọc thông tin người tạo ra khỏi danh sách sẽ gửi thông báo
 
+        const associatedDataObject = {
+            dataType: 2,
+            value: task.priority
+        }
         // Gửi mail cho nhân viện tham gia công việc
         var email = tasks.email;
         var html = tasks.html;
@@ -484,7 +487,8 @@ exports.createTask = async (req, res) => {
             level: "general",
             content: html,
             sender: task.organizationalUnit.name,
-            users: user
+            users: user,
+            associatedDataObject: associatedDataObject
         };
 
         // Gửi mail cho trưởng đơn vị phối hợp thực hiện công việc
@@ -496,7 +500,7 @@ exports.createTask = async (req, res) => {
             level: "general",
             content: collaboratedHtml,
             sender: task.organizationalUnit.name,
-            users: tasks.deansOfOrganizationalUnitThatHasCollaborated
+            users: tasks.managersOfOrganizationalUnitThatHasCollaborated
         };
 
         await NotificationServices.createNotification(req.portal, task.organizationalUnit.company, data);
@@ -512,6 +516,7 @@ exports.createTask = async (req, res) => {
             content: task
         });
     } catch (error) {
+        
         await Logger.error(req.user.email, 'create_task', req.portal)
         res.status(400).json({
             success: false,

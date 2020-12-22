@@ -36,7 +36,7 @@ exports.getUsers = async (portal, company, query) => {
 
             let searchUses = await User(connect(DB_CONNECTION, portal))
                 .find(keySearch)
-                .select("-password -status -deleteSoft -tokens")
+                .select("-password -password2 -status -deleteSoft -tokens")
                 .populate([
                     {
                         path: "roles",
@@ -52,7 +52,7 @@ exports.getUsers = async (portal, company, query) => {
         } else {
             return await User(connect(DB_CONNECTION, portal))
                 .find()
-                .select("-password -status -deleteSoft -tokens")
+                .select("-password -password2 -status -deleteSoft -tokens")
                 .populate([
                     {
                         path: "roles",
@@ -93,10 +93,10 @@ exports.getUsers = async (portal, company, query) => {
             ).findOne({
                 $or: [
                     {
-                        deans: userRole,
+                        managers: userRole,
                     },
                     {
-                        viceDeans: userRole,
+                        deputyManagers: userRole,
                     },
                     {
                         employees: userRole,
@@ -133,12 +133,12 @@ exports.getAllEmployeeOfUnitByRole = async (portal, role) => {
     ).findOne({
         $or: [
             {
-                deans: {
+                managers: {
                     $in: role,
                 },
             },
             {
-                viceDeans: {
+                deputyManagers: {
                     $in: role,
                 },
             },
@@ -176,8 +176,8 @@ exports.getAllEmployeeOfUnitByIds = async (portal, id) => {
         ).findById(id[i]);
         let allRoles = [
             ...organizationalUnit.employees,
-            ...organizationalUnit.deans,
-            ...organizationalUnit.viceDeans,
+            ...organizationalUnit.managers,
+            ...organizationalUnit.deputyManagers,
         ];
         let employees = await UserRole(connect(DB_CONNECTION, portal))
             .find({
@@ -231,7 +231,7 @@ getAllUserInUnitAndItsSubUnits = async (portal, id, unitId) => {
         data = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(
             portal,
             id,
-            organizationalUnit.deans[0]
+            organizationalUnit.managers[0]
         );
 
         var queue = [];
@@ -267,8 +267,8 @@ getAllUserInUnitAndItsSubUnits = async (portal, id, unitId) => {
                 id: department._id.toString(),
                 name: department.name,
                 description: department.description,
-                deans: department.deans.map((item) => item.toString()),
-                viceDeans: department.viceDeans.map((item) => item.toString()),
+                managers: department.managers.map((item) => item.toString()),
+                deputyManagers: department.deputyManagers.map((item) => item.toString()),
                 employees: department.employees.map((item) => item.toString()),
                 parent_id:
                     department.parent !== null
@@ -289,7 +289,7 @@ getAllUserInUnitAndItsSubUnits = async (portal, id, unitId) => {
 exports.getUser = async (portal, id) => {
     var user = await User(connect(DB_CONNECTION, portal))
         .findById(id)
-        .select("-password -status -deleteSoft -tokens")
+        .select("-password -password2 -status -deleteSoft -tokens")
         .populate([
             {
                 path: "roles",
@@ -323,12 +323,12 @@ exports.getOrganizationalUnitsOfUser = async (portal, userId) => {
     ).find({
         $or: [
             {
-                deans: {
+                managers: {
                     $in: newRoles,
                 },
             },
             {
-                viceDeans: {
+                deputyManagers: {
                     $in: newRoles,
                 },
             },
@@ -349,7 +349,6 @@ exports.getOrganizationalUnitsOfUser = async (portal, userId) => {
  * @portal portal của db
  */
 exports.createUser = async (portal, data, company) => {
-    console.log("User", portal, data, company);
     var salt = bcrypt.genSaltSync(10);
     var password = generator.generate({
         length: 10,
@@ -550,7 +549,7 @@ exports.checkUserExited = async (portal, email) => {
 exports.editUser = async (portal, id, data) => {
     var user = await User(connect(DB_CONNECTION, portal))
         .findById(id)
-        .select("-password -status -deleteSoft")
+        .select("-password -password2 -status -deleteSoft")
         .populate([
             {
                 path: "roles",
@@ -665,8 +664,8 @@ _getAllUsersInOrganizationalUnit = async (portal, department) => {
         .find({
             roleId: {
                 $in: [
-                    ...department.deans,
-                    ...department.viceDeans,
+                    ...department.managers,
+                    ...department.deputyManagers,
                     ...department.employees,
                 ],
             },
@@ -680,8 +679,8 @@ _getAllUsersInOrganizationalUnit = async (portal, department) => {
         {
             _id: {
                 $in: [
-                    ...department.deans,
-                    ...department.viceDeans,
+                    ...department.managers,
+                    ...department.deputyManagers,
                     ...department.employees,
                 ],
             },
@@ -691,8 +690,8 @@ _getAllUsersInOrganizationalUnit = async (portal, department) => {
         }
     );
     var users = {
-        deans: {},
-        viceDeans: {},
+        managers: {},
+        deputyManagers: {},
         employees: {},
         department: department.name,
     };
@@ -703,20 +702,20 @@ _getAllUsersInOrganizationalUnit = async (portal, department) => {
         obj.name = item.name;
         obj.members = [];
 
-        if (department.deans.includes(item._id.toString())) {
-            users.deans[item._id.toString()] = obj;
-        } else if (department.viceDeans.includes(item._id.toString())) {
-            users.viceDeans[item._id.toString()] = obj;
+        if (department.managers.includes(item._id.toString())) {
+            users.managers[item._id.toString()] = obj;
+        } else if (department.deputyManagers.includes(item._id.toString())) {
+            users.deputyManagers[item._id.toString()] = obj;
         } else if (department.employees.includes(item._id.toString())) {
             users.employees[item._id.toString()] = obj;
         }
     });
 
     userRoles.forEach((item) => {
-        if (users.deans[item.roleId.toString()] && item.userId) {
-            users.deans[item.roleId.toString()].members.push(item.userId);
-        } else if (users.viceDeans[item.roleId.toString()] && item.userId) {
-            users.viceDeans[item.roleId.toString()].members.push(item.userId);
+        if (users.managers[item.roleId.toString()] && item.userId) {
+            users.managers[item.roleId.toString()].members.push(item.userId);
+        } else if (users.deputyManagers[item.roleId.toString()] && item.userId) {
+            users.deputyManagers[item.roleId.toString()].members.push(item.userId);
         } else if (users.employees[item.roleId.toString()] && item.userId) {
             users.employees[item.roleId.toString()].members.push(item.userId);
         }
@@ -738,8 +737,8 @@ _getAllUsersInOrganizationalUnits = async (portal, data) => {
                 .find({
                     roleId: {
                         $in: [
-                            ...department.deans,
-                            ...department.viceDeans,
+                            ...department.managers,
+                            ...department.deputyManagers,
                             ...department.employees,
                         ],
                     },
@@ -753,8 +752,8 @@ _getAllUsersInOrganizationalUnits = async (portal, data) => {
                 {
                     _id: {
                         $in: [
-                            ...department.deans,
-                            ...department.viceDeans,
+                            ...department.managers,
+                            ...department.deputyManagers,
                             ...department.employees,
                         ],
                     },
@@ -764,8 +763,8 @@ _getAllUsersInOrganizationalUnits = async (portal, data) => {
                 }
             );
             var users = {
-                deans: {},
-                viceDeans: {},
+                managers: {},
+                deputyManagers: {},
                 employees: {},
                 department: department.name,
                 id: department.id,
@@ -776,20 +775,20 @@ _getAllUsersInOrganizationalUnits = async (portal, data) => {
                 obj.name = item.name;
                 obj.members = [];
 
-                if (department.deans.includes(item._id.toString())) {
-                    users.deans[item._id.toString()] = obj;
-                } else if (department.viceDeans.includes(item._id.toString())) {
-                    users.viceDeans[item._id.toString()] = obj;
+                if (department.managers.includes(item._id.toString())) {
+                    users.managers[item._id.toString()] = obj;
+                } else if (department.deputyManagers.includes(item._id.toString())) {
+                    users.deputyManagers[item._id.toString()] = obj;
                 } else if (department.employees.includes(item._id.toString())) {
                     users.employees[item._id.toString()] = obj;
                 }
             });
 
             userRoles.forEach((item) => {
-                if (users.deans[item.roleId.toString()] && item.userId) {
-                    users.deans[item.roleId.toString()].members.push(item.userId);
-                } else if (users.viceDeans[item.roleId.toString()] && item.userId) {
-                    users.viceDeans[item.roleId.toString()].members.push(
+                if (users.managers[item.roleId.toString()] && item.userId) {
+                    users.managers[item.roleId.toString()].members.push(item.userId);
+                } else if (users.deputyManagers[item.roleId.toString()] && item.userId) {
+                    users.deputyManagers[item.roleId.toString()].members.push(
                         item.userId
                     );
                 } else if (users.employees[item.roleId.toString()] && item.userId) {
@@ -837,23 +836,23 @@ exports.getUserInformByEmail = async (portal, email, company) => {
  * Lấy danh sách người dùng là trưởng phòng của đơn vị theo id đơn vị
  * @id : Id đơn vị
  */
-exports.getUserIsDeanOfOrganizationalUnit = async (portal, id) => {
+exports.getUserIsManagerOfOrganizationalUnit = async (portal, id) => {
     let organizationalUnit = await OrganizationalUnit(
         connect(DB_CONNECTION, portal)
     ).findById(id);
-    let deans = organizationalUnit.deans;
-    let userIsDean = await UserRole(connect(DB_CONNECTION, portal))
+    let managers = organizationalUnit.managers;
+    let userIsManager = await UserRole(connect(DB_CONNECTION, portal))
         .find({
             roleId: {
-                $in: deans,
+                $in: managers,
             },
         })
         .populate({
             path: "userId",
             select: "email _id",
         });
-    userIsDean = userIsDean.map((x) => x.userId);
-    return userIsDean;
+    userIsManager = userIsManager.map((x) => x.userId);
+    return userIsManager;
 };
 
 /**

@@ -1,10 +1,9 @@
 const bcrypt = require("bcryptjs");
-const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const generator = require("generate-password");
 const nodemailer = require("nodemailer");
 const Models = require(`${SERVER_MODELS_DIR}`);
-const { Privilege, Role, User, UserRole, Company } = Models;
+const { Privilege, Role, User, Company } = Models;
 const fs = require("fs");
 const { connect, initModels } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
@@ -130,10 +129,16 @@ exports.logoutAllAccount = async (portal, id) => {
 /**
  * Quên mật khẩu tài khoản người dùng
  * @email: email người dùng
+ * @password2: mật khẩu cấp 2 dự phòng khi quên mật khẩu
  */
-exports.forgetPassword = async (portal, email) => {
+exports.forgetPassword = async (portal, email, password2) => {
     var user = await User(connect(DB_CONNECTION, portal)).findOne({ email });
+    if(!password2) throw ['pwd2_invalid'] 
     if (user === null) throw ["email_invalid"];
+    if(!user.password2) throw ['pwd2_not_complete'];
+    let validPass = await bcrypt.compare(String(password2), user.password2);
+    if (!validPass) throw ["pwd2_invalid"];
+    
     var code = await generator.generate({ length: 6, numbers: true });
     user.resetPasswordToken = code;
     await user.save();
@@ -219,7 +224,7 @@ exports.changeInformation = async (
 ) => {
     let user = await User(connect(DB_CONNECTION, portal))
         .findById(id)
-        .select('-password')
+        .select('-password -password2')
         .populate([{ path: "roles", populate: { path: "roleId" } }]);
     let deleteAvatar = "." + user.avatar;
     user.email = email;
@@ -246,7 +251,6 @@ exports.changeInformation = async (
 exports.changePassword = async (portal, id, password, new_password) => {
     const user = await User(connect(DB_CONNECTION, portal))
         .findById(id)
-        .select('-password')
         .populate([{ path: "roles", populate: { path: "roleId" } }]);
     const validPass = await bcrypt.compare(password, user.password);
     // Kiểm tra mật khẩu cũ nhập vào có đúng hay không
@@ -288,9 +292,22 @@ exports.getLinksThatRoleCanAccess = async (portal, idRole) => {
 exports.getProfile = async (portal, id) => {
     let user = await User(connect(DB_CONNECTION, portal))
         .findById(id)
-        .select("-password -status -deleteSoft -tokens")
+        .select("-password -password2 -status -deleteSoft -tokens")
         .populate([{ path: "roles", populate: { path: "roleId" } }]);
     if (user === null) throw ["user_not_found"];
 
     return user;
 };
+
+exports.answerAuthQuestions = async (portal, userId, data) => {
+    let user = await User(connect(DB_CONNECTION, portal)).findById(userId);
+    if(user.password2) throw ['pwd2_existed']
+    let {password2} = data;
+    if(!password2) throw ['pwd2_invalid'];
+    var salt = bcrypt.genSaltSync(10);
+    var hash = bcrypt.hashSync(password2, salt);
+    user.password2 = hash;
+    await user.save();
+
+    return await User(connect(DB_CONNECTION, portal)).findById(userId).select("-password -password2") 
+}

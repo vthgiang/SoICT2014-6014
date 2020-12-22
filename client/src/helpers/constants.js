@@ -11,8 +11,8 @@ export const ROLE_TYPE = {
 export const ROOT_ROLE = {
     SUPER_ADMIN: 'Super Admin',
     ADMIN: 'Admin',
-    DEAN: 'Dean',
-    VICE_DEAN: 'Vice Dean',
+    MANAGER: 'Manager',
+    DEPUTY_MANAGER: 'Deputy Manager',
     EMPLOYEE: 'Employee',
 }
 

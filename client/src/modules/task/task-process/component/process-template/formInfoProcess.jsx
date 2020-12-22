@@ -18,7 +18,7 @@ class FormInfoProcess extends Component {
             taskTemplate: (info && info.taskTemplate) ? info.taskTemplate : "",
             responsible: (info && info.responsible) ? info.responsible : [],
             accountable: (info && info.accountable) ? info.accountable : [],
-            // listRoles: [...listOrganizationalUnit[0]?.deans, ...listOrganizationalUnit[0]?.viceDeans, ...listOrganizationalUnit[0]?.employees]
+            // listRoles: [...listOrganizationalUnit[0]?.managers, ...listOrganizationalUnit[0]?.deputyManagers, ...listOrganizationalUnit[0]?.employees]
         }
     }
 
@@ -44,9 +44,9 @@ class FormInfoProcess extends Component {
         } else return true;
     }
 
-    showMore =  (e) => {
+    showMore = (e) => {
         e.preventDefault()
-        this.setState({showMore: 1 });
+        this.setState({ showMore: 1 });
     }
     handleChangeName = (e) => {
         const { value } = e.target;
@@ -100,9 +100,9 @@ class FormInfoProcess extends Component {
 
         this.props.handleChangeTaskEndDate(value)
     }
-    
+
     handleChangeTaskPriority = (event) => {
-        let {value} = event.target;
+        let { value } = event.target;
         this.setState(state => {
             return {
                 ...state,
@@ -113,7 +113,7 @@ class FormInfoProcess extends Component {
     }
     render() {
         const { user, translate, role, tasktemplates } = this.props;
-        const { nameTask, description, responsible, accountable, organizationalUnit, taskTemplate,showMore } = this.state;
+        const { nameTask, description, responsible, accountable, organizationalUnit, taskTemplate, showMore } = this.state;
         const { id, info, action, listOrganizationalUnit, disabled } = this.props;
         let usersOfChildrenOrganizationalUnit, listTaskTemplate, listUserAccountable = [], listUserResponsible = [];
         if (user && user.usersOfChildrenOrganizationalUnit) {
@@ -123,7 +123,7 @@ class FormInfoProcess extends Component {
         let listRoles = [];
         listOrganizationalUnit.forEach(x => {
             if (x._id === info?.organizationalUnit) {
-                listRoles = [...x.deans, ...x.viceDeans, ...x.employees]
+                listRoles = [...x.managers, ...x.deputyManagers, ...x.employees]
             }
         })
         let listItem = listRoles.map(x => {
@@ -232,44 +232,44 @@ class FormInfoProcess extends Component {
                             />
                         }
                     </div>
-                    { showMore && 
+                    {showMore &&
                         <React.Fragment>
                             <div className="form-group">
-                        <label htmlFor="exampleFormControlSelect1" style={{ float: 'left' }} >Người thực hiện</label>
-                        {
-                            <SelectBox
-                                id={`select-responsible-employee-${id}-${action}`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                // items={unitMembers}
-                                items={listItem}
-                                onChange={this.handleChangeResponsible}
-                                multiple={true}
-                                value={responsible}
-                                disabled={disabled}
-                            />
-                        }
-                    </div>
+                                <label htmlFor="exampleFormControlSelect1" style={{ float: 'left' }} >Người thực hiện</label>
+                                {
+                                    <SelectBox
+                                        id={`select-responsible-employee-${id}-${action}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        // items={unitMembers}
+                                        items={listItem}
+                                        onChange={this.handleChangeResponsible}
+                                        multiple={true}
+                                        value={responsible}
+                                        disabled={disabled}
+                                    />
+                                }
+                            </div>
 
-                    <div className="form-group">
-                        <label htmlFor="exampleFormControlSelect2" style={{ float: 'left' }} >Người phê duyệt</label>
-                        {
-                            <SelectBox
-                                id={`select-accountable-employee-${id}-${action}`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                // items={unitMembers}
-                                items={listItem}
-                                onChange={this.handleChangeAccountable}
-                                multiple={true}
-                                value={accountable}
-                                disabled={disabled}
-                            />
-                        }
-                    </div>
+                            <div className="form-group">
+                                <label htmlFor="exampleFormControlSelect2" style={{ float: 'left' }} >Người phê duyệt</label>
+                                {
+                                    <SelectBox
+                                        id={`select-accountable-employee-${id}-${action}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        // items={unitMembers}
+                                        items={listItem}
+                                        onChange={this.handleChangeAccountable}
+                                        multiple={true}
+                                        value={accountable}
+                                        disabled={disabled}
+                                    />
+                                }
+                            </div>
                         </React.Fragment>
                     }
-                    <button className='btn btn-primary' onClick={(e)=> this.showMore(e)} >Chi tiết </button> &nbsp;
+                    <button className='btn btn-primary' onClick={(e) => this.showMore(e)} >Chi tiết </button> &nbsp;
                     <button className='btn btn-primary' onClick={this.props.done}> Hoàn thành</button>
                 </form>
             </div>

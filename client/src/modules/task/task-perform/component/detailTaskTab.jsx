@@ -15,7 +15,6 @@ import { getStorage } from '../../../../config';
 import { SelectFollowingTaskModal } from './selectFollowingTaskModal';
 import { withTranslate } from 'react-redux-multilingual';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
-import Swal from 'sweetalert2';
 
 class DetailTaskTab extends Component {
 
@@ -534,19 +533,19 @@ class DetailTaskTab extends Component {
     setSelectBoxOfUserSameDepartmentCollaborated = (task) => {
         const { user } = this.props;
         const { currentUser } = this.state;
-        let usersInUnitsOfCompany, unitThatCurrentUserIsDean, employeeSelectBox = [];
+        let usersInUnitsOfCompany, unitThatCurrentUserIsManager, employeeSelectBox = [];
 
         if (user) {
             usersInUnitsOfCompany = user.usersInUnitsOfCompany;
         }
 
         if (usersInUnitsOfCompany && usersInUnitsOfCompany.length !== 0) {
-            unitThatCurrentUserIsDean = usersInUnitsOfCompany.filter(unit => {
+            unitThatCurrentUserIsManager = usersInUnitsOfCompany.filter(unit => {
                 let check = false;
                 let unitCollaborated = task.collaboratedWithOrganizationalUnits.map(item => item.organizationalUnit && item.organizationalUnit._id);
 
-                if (unitCollaborated.includes(unit.id) && unit.deans) {
-                    let employee = Object.values(unit.deans);
+                if (unitCollaborated.includes(unit.id) && unit.managers) {
+                    let employee = Object.values(unit.managers);
                     if (employee && employee.length !== 0) {
                         employee.map(employee => {
                             employee.members && employee.members.map(item => {
@@ -560,8 +559,8 @@ class DetailTaskTab extends Component {
             })
         }
 
-        if (unitThatCurrentUserIsDean && unitThatCurrentUserIsDean.length !== 0) {
-            unitThatCurrentUserIsDean.map(item => {
+        if (unitThatCurrentUserIsManager && unitThatCurrentUserIsManager.length !== 0) {
+            unitThatCurrentUserIsManager.map(item => {
                 let temporary = [];
                 temporary = getEmployeeSelectBoxItems([item]);
                 temporary[0] = {
@@ -665,9 +664,8 @@ class DetailTaskTab extends Component {
         // Xử lý dữ liệu biểu đồ đóng góp thời gian công việc
         if (task && task.hoursSpentOnTask) {
             hoursSpentOfEmployeeInTask = {};
-
             task.hoursSpentOnTask.contributions.map(item => {
-                hoursSpentOfEmployeeInTask[item.employee.name] = Number.parseFloat(item.hoursSpent / (1000 * 60 * 60)).toFixed(2)
+                hoursSpentOfEmployeeInTask[item.employee.name] = item.hoursSpent;
             });
         }
         if (task && task.evaluations && task.evaluations.length !== 0) {

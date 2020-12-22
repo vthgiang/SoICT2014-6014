@@ -231,10 +231,10 @@ class OrganizationalUnitKpiCreate extends Component {
         })
     }
 
-    checkPermisson = (deanCurrentUnit) => {
+    checkPermisson = (managerCurrentUnit) => {
         let currentRole = localStorage.getItem("currentRole");
 
-        return (deanCurrentUnit && deanCurrentUnit.includes(currentRole));
+        return (managerCurrentUnit && managerCurrentUnit.includes(currentRole));
     }
 
     checkEdittingPermission = (currentUnit) => {
@@ -335,8 +335,8 @@ class OrganizationalUnitKpiCreate extends Component {
             organizationalUnitsOfUserLoading = user.organizationalUnitsOfUserLoading;
             unitList = user.organizationalUnitsOfUser;
             currentUnit = unitList && unitList.filter(item =>
-                item.deans.includes(currentRole)
-                || item.viceDeans.includes(currentRole)
+                item.managers.includes(currentRole)
+                || item.deputyManagers.includes(currentRole)
                 || item.employees.includes(currentRole));
         }
 
@@ -356,7 +356,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                     organizationalUnitKpi={organizationalUnitKpi}
                                     organizationalUnit={organizationalUnit}
                                 />
-                                {this.checkPermisson(currentUnit && currentUnit[0].deans) &&
+                                {this.checkPermisson(currentUnit && currentUnit[0].managers) &&
                                     <div style={{ marginLeft: "-10px" }}>
                                         {/* Form sửa KPI tháng */}
                                         {editing ?
@@ -455,7 +455,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                                 <th title="Tên mục tiêu">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.target_name')}</th>
                                                 <th title="Tiêu chí đánh giá">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.evaluation_criteria')}</th>
                                                 <th title="Trọng số" style={{ width: "100px" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.weight')}</th>
-                                                {this.checkPermisson(currentUnit && currentUnit[0].deans) && <th style={{ width: "100px" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.action')}</th>}
+                                                {this.checkPermisson(currentUnit && currentUnit[0].managers) && <th style={{ width: "100px" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.action')}</th>}
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -466,7 +466,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                                         <td title={item.name}>{item.name}</td>
                                                         <td title={item.criteria}>{item.criteria}</td>
                                                         <td title={item.weight}>{item.weight}</td>
-                                                        {this.checkPermisson(currentUnit && currentUnit[0].deans) &&
+                                                        {this.checkPermisson(currentUnit && currentUnit[0].managers) &&
                                                             <td>
                                                                 <a
                                                                     className="edit"
@@ -500,7 +500,7 @@ class OrganizationalUnitKpiCreate extends Component {
                             : organizationalUnitKpiLoading
                             && <div className="box-body">
                                 <div style={{ marginLeft: "-10px" }}>
-                                    {this.checkPermisson(currentUnit && currentUnit[0] && currentUnit[0].deans) &&
+                                    {this.checkPermisson(currentUnit && currentUnit[0] && currentUnit[0].managers) &&
                                         <div>
                                             {this.checkEdittingPermission(currentUnit) ?
                                                 <React.Fragment>

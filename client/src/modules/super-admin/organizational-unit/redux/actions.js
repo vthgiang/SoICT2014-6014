@@ -7,7 +7,7 @@ import {
 
 export const DepartmentActions = {
     get,
-    getDepartmentsThatUserIsDean,
+    getDepartmentsThatUserIsManager,
     create,
     edit,
     destroy,
@@ -40,15 +40,15 @@ function get() {
 /**
  * Lấy thông tin đơn vị mà user làm trưởng
  */
-function getDepartmentsThatUserIsDean() {
+function getDepartmentsThatUserIsManager() {
     return dispatch => {
         dispatch({
-            type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_REQUEST
+            type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_MANAGER_REQUEST
         });
-        DepartmentServices.getDepartmentsThatUserIsDean()
+        DepartmentServices.getDepartmentsThatUserIsManager()
             .then(res => {
                 dispatch({
-                    type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_SUCCESS,
+                    type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_MANAGER_SUCCESS,
                     payload: {
                         data: res.data.content
                     }
@@ -56,7 +56,7 @@ function getDepartmentsThatUserIsDean() {
             })
             .catch(err => {
                 dispatch({
-                    type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_FAILURE
+                    type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_MANAGER_FAILURE
                 });
             })
     }

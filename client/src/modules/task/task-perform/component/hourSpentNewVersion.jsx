@@ -1,14 +1,13 @@
-import React, { useState, useEffect, memo } from 'react';
+import React, { useEffect, memo } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 
 import './hoursSpentOfEmployeeChart.css';
 import c3 from 'c3';
 import 'c3/c3.css';
-import * as d3 from "d3";
 
 function HoursSpentOfEmployeeChart(props) {
     const { data, refs } = props;
-    
+
     useEffect(() => {
         if (data) {
             pieChart(refs, data);
@@ -22,16 +21,24 @@ function HoursSpentOfEmployeeChart(props) {
             while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild);
             }
-        } 
+        }
+    }
+
+    const getTimes = (ms) => {
+        if (!ms) return '00:00:00';
+        let hour = Math.floor(ms / (60 * 60 * 1000));
+        let minute = Math.floor((ms - hour * 60 * 60 * 1000) / (60 * 1000));
+        let second = Math.floor((ms - hour * 60 * 60 * 1000 - minute * 60 * 1000) / 1000);
+
+        return `${hour > 9 ? hour : `0${hour}`}:${minute > 9 ? minute : `0${minute}`}:${second > 9 ? second : `0${second}`}`;
     }
 
     const setDataPieChart = (data) => {
         let dataChart;
         dataChart = Object.entries(data);
-        
         if (dataChart && dataChart.length !== 0) {
             dataChart = dataChart.map(item => {
-                return [item[0] + " (" + item[1] + "h)", item[1]]
+                return [item[0] + " (" + getTimes(item[1]) + ")", item[1]]
             })
         }
         return dataChart;
@@ -42,7 +49,7 @@ function HoursSpentOfEmployeeChart(props) {
 
         let dataPieChart;
         dataPieChart = setDataPieChart(data);
-        
+
         const chart = c3.generate({
             bindto: document.getElementById(refs),
             size: {

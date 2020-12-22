@@ -451,8 +451,8 @@ export default {
                 department_not_found: "Organizational unit not found",
                 department_has_user:
                     "Cannot delete. Organizational unit had employee",
-                role_dean_exist: "Manager role name exist",
-                role_vice_dean_exist: "Deputy manager role name exist",
+                role_manager_exist: "Manager role name exist",
+                role_deputy_manager_exist: "Deputy manager role name exist",
                 role_employee_exist: "Employee role name exist",
             },
             user: {
@@ -472,8 +472,8 @@ export default {
                 delete_role_success: "Delete role successfully",
 
                 role_name_exist: "Role name exist",
-                role_dean_exist: "Manager role name exist",
-                role_vice_dean_exist: "Deputy manager role name exist",
+                role_manager_exist: "Manager role name exist",
+                role_deputy_manager_exist: "Deputy manager role name exist",
                 role_employee_exist: "Employee role name exist",
             },
             link: {
@@ -799,6 +799,7 @@ export default {
             close: "Close",
             email: "Email",
             password: "Password",
+            password2: "Password level 2",
             portal: "Portal",
             new_password: "New password",
             confirm: "Confirm password",
@@ -870,6 +871,13 @@ export default {
                 properties: "Properties",
                 title: "Title",
             },
+
+            showmore_showless: {
+                showmore: "Show more",
+                showless: "Show less",
+                title_showmore: "Click to show more",
+                title_showless: "Click to show less"
+            }
         },
 
         menu: {
@@ -962,7 +970,10 @@ export default {
             // Quản lý tài sản
             // QUẢN LÝ
 
-            add_asset: "Add asset",
+            add_update_asset: "Add - Update asset",
+            add_asset_title: "Add new asset - Update asset",
+            add_asset: "Add new asset",
+            update_asset: "Update asset",
             manage_repair_asset: "Manage repair asset",
             manage_usage_asset: "Manage usage asset",
             manage_distribute_asset: "Manage distribute asset",
@@ -1073,10 +1084,10 @@ export default {
             no_parent: "No parent department",
             select_parent: "Select parent of department",
             roles_of_department: "Roles in Department",
-            dean_name: "Positions for Manager",
-            dean_example: "Ex: Dean of Financial Officer",
-            vice_dean_name: "Positions for Deputy Manager",
-            vice_dean_example: "Ex: Vice Dean of Financial Officer",
+            manager_name: "Positions for Manager",
+            manager_example: "Ex: Manager of Financial Officer",
+            deputy_manager_name: "Positions for Deputy Manager",
+            deputy_manager_example: "Ex: Deputy Manager of Financial Officer",
             employee_name: "Positions for Employee",
             employee_example: "Ex: Employee of Financial Officer",
             add_with_parent: "Add new department with parent is",
@@ -1742,6 +1753,8 @@ export default {
                     add_employee_title: "Add new staff",
                     add_by_hand: "Add a staff",
                     add_import: "Add data from file",
+                    update_import: "Update data from file",
+
                     // Thông điệp trả về từ server
                     get_list_employee_success: "Get list employee success",
                     get_list_employee_faile: "Get list employee faile",
@@ -1900,6 +1913,7 @@ export default {
                 do_work: "Do work",
                 total_timesheets: "Total hours",
                 total_hours_off: "Total hours off",
+                total_over_time: "Total hours overtime",
                 work_date_in_month: "Work date in month",
                 shift_work: "Shift work",
                 shifts1: "Shifts 1",
@@ -1937,8 +1951,8 @@ export default {
             // Quản lý nhân sự các đơn vị
             manage_department: {
                 edit_unit: "Edit units staff",
-                dean_unit: "Head of unit",
-                vice_dean_unit: "Deputy unit",
+                manager_unit: "Head of unit",
+                deputy_manager_unit: "Deputy unit",
                 employee_unit: "Unit staff",
                 email_employee: "Email",
                 add_employee_unit: "Add staff",

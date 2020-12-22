@@ -13,8 +13,8 @@ exports.getEmployeeKPISets = async (portal, data) => {
     let department = await OrganizationalUnit(connect(DB_CONNECTION, portal))
         .findOne({
             $or: [
-                { 'deans': data.roleId },
-                { 'viceDeans': data.roleId },
+                { 'managers': data.roleId },
+                { 'deputyManagers': data.roleId },
                 { 'employees': data.roleId }
             ]
         });

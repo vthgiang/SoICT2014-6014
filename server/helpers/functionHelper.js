@@ -7,6 +7,29 @@ exports.freshObject = (data) => {
         else if(data[key] === 0) data[key] = 0;
         obj[key] = data[key];
     });
+
+    return obj;
+}
+
+exports.freshArray = (arr) => {
+    let newArr = arr.reduce((ar, cur) => {
+        if(cur && cur !== 'undefined' && cur !== 'null'){
+            ar.push(cur);
+        }
+        
+        return ar;
+    }, []);
+
+    return newArr;
+}
+
+exports.freshObject = (data) => {
+    let obj = {};
+    Object.keys(data).forEach(key => {
+        if(data[key] !== 0 && !data[key] || data[key] === 'undefined' || data[key] === 'null') data[key] = undefined;
+        else if(data[key] === 0) data[key] = 0;
+        obj[key] = data[key];
+    });
     return obj;
 }
 

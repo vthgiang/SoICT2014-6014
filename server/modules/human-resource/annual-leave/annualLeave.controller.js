@@ -54,7 +54,7 @@ exports.searchAnnualLeaves = async (req, res) => {
 exports.createAnnualLeave = async (req, res) => {
     try {
         if (req.body.createApplication) {
-            let users = await UserService.getUserIsDeanOfOrganizationalUnit(req.portal, req.body.organizationalUnit);
+            let users = await UserService.getUserIsManagerOfOrganizationalUnit(req.portal, req.body.organizationalUnit);
             let employee = await EmployeeService.getEmployeeInforByEmailInCompany(req.portal, req.user.email, req.user.company._id);
             if(!employee) throw ['employee_invalid']; // Thông báo lỗi không tìm thấy dữ liệu về nhân viên tương ứng
             let html = `

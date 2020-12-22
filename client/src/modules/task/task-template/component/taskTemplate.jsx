@@ -47,8 +47,8 @@ class TaskTemplate extends Component {
         if (user.organizationalUnitsOfUser) {
             units = user.organizationalUnitsOfUser;
             currentUnit = units.filter(item =>
-                item.deans.includes(localStorage.getItem("currentRole"))
-                || item.viceDeans.includes(localStorage.getItem("currentRole"))
+                item.managers.includes(localStorage.getItem("currentRole"))
+                || item.deputyManagers.includes(localStorage.getItem("currentRole"))
                 || item.employees.includes(localStorage.getItem("currentRole")));
         }
 
@@ -156,11 +156,11 @@ class TaskTemplate extends Component {
                                             <td title={item.organizationalUnit && item.organizationalUnit.name}>{item.organizationalUnit ? item.organizationalUnit.name : translate('task_template.error_task_template_organizational_unit_null')}</td>
                                             <td>
                                                 <a href="#abc" onClick={() => this.handleView(item._id)} title={translate('task.task_template.view_detail_of_this_task_template')}>
-                                                    <i className="material-icons" style={!this.checkPermisson(currentUnit && currentUnit[0].deans, "") ? { paddingLeft: "35px" } : { paddingLeft: "0px" }}>view_list</i>
+                                                    <i className="material-icons" style={!this.checkPermisson(currentUnit && currentUnit[0].managers, "") ? { paddingLeft: "35px" } : { paddingLeft: "0px" }}>view_list</i>
                                                 </a>
 
                                                 {/**Check quyền xem có được xóa hay sửa mẫu công việc không */}
-                                                {this.checkPermisson(item.organizationalUnit.deans, item.creator._id) &&
+                                                {this.checkPermisson(item.organizationalUnit.managers, item.creator._id) &&
                                                     <React.Fragment>
                                                         <a href="cursor:{'pointer'}" onClick={() => this.handleEdit(item)} className="edit" title={translate('task_template.edit_this_task_template')}>
                                                             <i className="material-icons">edit</i>
@@ -283,10 +283,10 @@ class TaskTemplate extends Component {
         }
     }
 
-    checkPermisson = (deanCurrentUnit, creatorId) => {
+    checkPermisson = (managerCurrentUnit, creatorId) => {
         let currentRole = localStorage.getItem("currentRole");
-        for (let i in deanCurrentUnit) {
-            if (currentRole === deanCurrentUnit[i]) {
+        for (let i in managerCurrentUnit) {
+            if (currentRole === managerCurrentUnit[i]) {
                 return true;
             }
         }

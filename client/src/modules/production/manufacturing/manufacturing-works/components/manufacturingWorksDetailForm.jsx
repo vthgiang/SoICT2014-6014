@@ -78,7 +78,7 @@ class ManufacturingWorksDetailForm extends Component {
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('manufacturing.manufacturing_works.list_roles')}</legend>
                                 {
-                                    currentWorks.organizationalUnit && currentWorks.organizationalUnit.deans.map((role, index) => {
+                                    currentWorks.organizationalUnit && currentWorks.organizationalUnit.managers.map((role, index) => {
                                         return (
                                             <div className={`form-group`} key={index}>
                                                 <strong>{role.name}: &emsp;</strong>

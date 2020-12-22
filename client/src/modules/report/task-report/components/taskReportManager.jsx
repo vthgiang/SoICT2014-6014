@@ -173,10 +173,10 @@ class TaskReportManager extends Component {
     }
 
 
-    checkPermissonDean = (dean) => {
+    checkPermissonManager = (manager) => {
         let currentRole = localStorage.getItem("currentRole");
-        for (let x in dean) {
-            if (currentRole === dean[x]) {
+        for (let x in manager) {
+            if (currentRole === manager[x]) {
                 return true;
             }
         }
@@ -338,7 +338,7 @@ class TaskReportManager extends Component {
 
                                             {/* Check nếu là người tạo thì có thể sửa, xóa báo cáo */}
                                             {
-                                                (this.checkPermissonDean(item.organizationalUnit.deans) || this.checkPermissonCreator(item.creator && item.creator.length > 0 && item.creator.map(o => o._id))) &&
+                                                (this.checkPermissonManager(item.organizationalUnit.managers) || this.checkPermissonCreator(item.creator && item.creator.length > 0 && item.creator.map(o => o._id))) &&
                                                 <React.Fragment>
                                                     <a onClick={() => this.handleEdit(item._id)} className="edit text-yellow" style={{ width: '5px' }} title={translate('report_manager.edit')}><i className="material-icons">edit</i></a>
                                                     <a onClick={() => this.handleDelete(item._id, item.name)} className="delete" title={translate('report_manager.title_delete')}>
