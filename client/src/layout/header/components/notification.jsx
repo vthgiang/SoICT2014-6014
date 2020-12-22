@@ -36,9 +36,10 @@ class Notification extends Component {
         }
     }
     checkPriority = (value) => {
-        if (!value || value === "1") return "#00a65a"
-        if (value === "3") return "#ff0707"
-        if (value === "2") return "#ffa707"
+        const valueConvert = parseInt(value);
+        if (!value || valueConvert === 1) return "#00a65a"
+        if (valueConvert === 3) return "#ff0707"
+        if (valueConvert === 2) return "#ffa707"
     }
 
     render() {
@@ -60,6 +61,7 @@ class Notification extends Component {
                             <ul className="menu">
                                 {
                                     notify.filter(notification => !notification.readed).map((notification, index) => {
+                                        console.log('notification', notification);
                                         return <li key={index}>
                                             <Link to="/notifications">
                                                 {

@@ -22,6 +22,7 @@ class NotificationReiceiverdInfo extends Component {
                 notificationContent: nextProps.notificationContent,
                 notificationCreatedAt: nextProps.notificationCreatedAt,
                 notificationFiles: nextProps.notificationFiles,
+                notificationAssociatedDataObject: nextProps.notificationAssociatedDataObject,
             }
         } else {
             return null;
@@ -33,9 +34,15 @@ class NotificationReiceiverdInfo extends Component {
         this.props.downloadFile(`.${path}`, fileName);
     }
 
+    checkPriority = (value) => {
+        const valueConvert = parseInt(value);
+        if (!value || valueConvert === 1) return "#00a65a"
+        if (valueConvert === 3) return "#ff0707"
+        if (valueConvert === 2) return "#ffa707"
+    }
     render() {
         const { notifications, translate } = this.props;
-        const { notificationTitle, notificationSender, notificationCreatedAt, notificationLevel, notificationContent, notificationFiles } = this.state;
+        const { notificationTitle, notificationSender, notificationCreatedAt, notificationLevel, notificationContent, notificationFiles, notificationAssociatedDataObject } = this.state;
         let content = notificationContent;
         let cssTable = " style=\"border: 1px solid black; padding-left: 3px; padding-right: 3px\"";
         while (content.indexOf("<table>") !== -1) {
@@ -66,7 +73,7 @@ class NotificationReiceiverdInfo extends Component {
                         <div className="form-group">
                             {
                                 notificationLevel === 'info' ? <i className="fa fa-fw fa-info-circle text-blue"></i> :
-                                    notificationLevel === 'general' ? <i className="fa fa-fw fa-bell text-green"></i> :
+                                    notificationLevel === 'general' ? <i className="fa fa-fw fa-bell" style={{ color: `${this.checkPriority(notificationAssociatedDataObject && notificationAssociatedDataObject.value)}` }}></i> :
                                         notificationLevel === 'important' === 3 ? <i className="fa fa-fw fa-warning text-orange"></i> :
                                             <i className="fa fa-fw fa-bomb text-orange"></i>
                             }
