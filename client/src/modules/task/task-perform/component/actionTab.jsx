@@ -933,8 +933,8 @@ class ActionTab extends Component {
                                                 <React.Fragment>
                                                     <div className="content-level1" data-width="100%">
                                                         {item.creator ?
-                                                            <a style={{ cursor: "pointer" }}>{item.creator?.name} </a> :
-                                                            item.name && <b>{item.name} </b>}
+                                                            <a style={{ cursor: "pointer" }}>{item.creator?.name} </a> : ''}
+                                                        {item.name && <b>{item.name}</b>}
                                                         {item.description.split('\n').map((item, idx) => {
                                                             return (
                                                                 <div key={idx}>
@@ -1663,7 +1663,7 @@ class ActionTab extends Component {
                         <div className={selected === "logTimer" ? "active tab-pane" : "tab-pane"} id="logTimer">
                             {logTimer && logTimer.map((item, index) =>
                                 <React.Fragment key={index}>
-                                    {item.duration &&
+                                    {item.stoppedAt &&
                                         <div key={item._id} className="item-box">
                                             <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} </a>
                                             <div>

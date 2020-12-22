@@ -61,7 +61,6 @@ class Notification extends Component {
                             <ul className="menu">
                                 {
                                     notify.filter(notification => !notification.readed).map((notification, index) => {
-                                        console.log('notification', notification);
                                         return <li key={index}>
                                             <Link to="/notifications">
                                                 {

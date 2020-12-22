@@ -34,6 +34,7 @@ function HoursSpentOfEmployeeChart(props) {
     }
 
     const setDataPieChart = (data) => {
+        console.log("data time", data);
         let dataChart;
         dataChart = Object.entries(data);
         if (dataChart && dataChart.length !== 0) {

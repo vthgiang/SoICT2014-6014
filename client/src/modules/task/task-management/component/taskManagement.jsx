@@ -308,7 +308,6 @@ class TaskManagement extends Component {
     }
 
     getTotalTimeSheetLogs = (timesheetLogs) => {
-        console.log("UT", timesheetLogs)
         let totalTime = timesheetLogs.reduce(function (tong, cur) {
             if (cur.stoppedAt) return tong + cur.duration;
             else return tong;

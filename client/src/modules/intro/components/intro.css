@@ -4,7 +4,7 @@ header.fixed-top {
     right: 0;
     left: 0;
     z-index: 1;
-    background-color: #fff;
+    background-color: #683BA4;
 }
 
 header.fixed-top > h1 {
@@ -35,7 +35,7 @@ span.dx-language-setting {
     position: absolute;
     top: 50px;
     right: 8px;
-    background-color: #fff;
+    background-color: #683BA4;
     display: none;
 }
 
@@ -67,8 +67,7 @@ span.dx-options > a {
 span.dx-auth > button.signin {
     padding: 5px 12px;
     border: none;
-    background-color: white;
-    border-radius: 2px;
+    background-color: #683BA4;
     color: #fff;
     font-size: 1.8rem;
     font-weight: bolder;
@@ -164,13 +163,13 @@ h2.dx-sologan {
 }
 
 li.dx-service-item > i {
-    color: #fff;
+    color: #28A745;
     padding: 5px;
 }
 
 section#dx-intro {
     padding-top: 80px;
-    background-color: #fff;
+    background-color: #683BA4;
     color: #fff;
 }
 
@@ -227,7 +226,6 @@ form.dx-contact > input {
     width: 100%;
     padding: 10px 20px;
     border: 0.5px solid #b1b1b1;
-    border-radius: 2px;
     margin: 3px 0px;
 }
 
@@ -235,7 +233,6 @@ form.dx-contact > textarea {
     width: 100%;
     padding: 10px 20px;
     border: 0.5px solid #b1b1b1;
-    border-radius: 2px;
     margin: 3px 0px;
 }
 
@@ -243,12 +240,11 @@ form.dx-contact > button.dx-contact {
     width: 100%;
     padding: 10px 20px;
     border: none;
-    border-radius: 15px;
     margin: 3px 0px;
     color: #fff;
     font-weight: bolder;
     font-size: 1.6rem;
-    background-color: #fff;
+    background-color: #683BA4;
 } 
 
 ul.dx-locations {
@@ -315,7 +311,6 @@ form.dx-service > input {
     width: 100%;
     padding: 10px 20px;
     border: 0.5px solid #b1b1b1;
-    border-radius: 2px;
     margin: 3px 0px;
 }
 
@@ -323,7 +318,6 @@ form.dx-service > select {
     width: 100%;
     padding: 10px 20px;
     border: 0.5px solid #b1b1b1;
-    border-radius: 2px;
     margin: 3px 0px;
 }
 
@@ -331,12 +325,11 @@ form.dx-service > button.send {
     width: 100%;
     padding: 10px 20px;
     border: none;
-    border-radius: 15px;
     margin: 3px 0px;
     color: #fff;
     font-weight: bolder;
     font-size: 1.6rem;
-    background-color: #fff;
+    background-color: #683BA4;
 }
 
 span.p-center.media > img {
@@ -354,8 +347,7 @@ img.service-image {
 .dx-workspace-button {
     padding: 8px 12px;
     border:  none;
-    border-radius: 2px;
-    color: #fff;
+    color: #683BA4;
     background-color: #fff;
     font-size: 1.5rem;
     font-weight: bolder;
