@@ -874,10 +874,15 @@ export function performtasks(state = {}, action) {
             return {
                 error: action.error
             };
-        case performTaskConstants.REFRESH_DATA_SUCCESS:
+        case performTaskConstants.REFRESH_DATA_AFTER_COMMENT_SUCCESS:
             return {
                 ...state,
                 task: {...state.task, taskComments: action.payload},
+            }
+        case performTaskConstants.REFRESH_DATA_AFTER_CREATE_ACTION_SUCCESS:
+            return {
+                ...state,
+                task: {...state.task, taskActions: action.payload},
             }
         
         default:

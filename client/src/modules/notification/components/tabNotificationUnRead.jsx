@@ -14,9 +14,10 @@ class TabNotificationUnRead extends Component {
         }
     }
     checkPriority = (value) => {
-        if (!value || value === "1") return "#00a65a"
-        if (value === "3") return "#ff0707"
-        if (value === "2") return "#ffa707"
+        const valueConvert = parseInt(value);
+        if (!value || valueConvert === 1) return "#00a65a"
+        if (valueConvert === 3) return "#ff0707"
+        if (valueConvert === 2) return "#ffa707"
     }
     render() {
         const { translate, notifications } = this.props;
@@ -59,6 +60,7 @@ class TabNotificationUnRead extends Component {
                         notificationSender={currentRow.sender}
                         notificationReaded={currentRow.readed}
                         notificationCreatedAt={currentRow.createdAt}
+                        notificationAssociatedDataObject={currentRow.associatedDataObject}
                     />
                 }
                 <div id="tab-notification-un-read" style={{ display: 'block' }}>
@@ -66,7 +68,7 @@ class TabNotificationUnRead extends Component {
                         {
                             notifications.receivered.paginate.length > 0 ?
                                 notifications.receivered.paginate.map((notification, index) =>
-                                    <li key={notification._id} style={{ border: "none", backgroundColor: "white", cursor: "pointer", overflow: "hidden" }}>
+                                    <li key={index} style={{ border: "none", backgroundColor: "white", cursor: "pointer", overflow: "hidden" }}>
                                         <div className="row" >
                                             <div style={{ marginBottom: 5 }} className="col-sm-11" onClick={() => this.handleEdit(notification)}>
                                                 <div>{
