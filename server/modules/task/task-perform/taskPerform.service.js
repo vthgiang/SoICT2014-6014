@@ -353,26 +353,30 @@ exports.startTimesheetLog = async (portal, params, body) => {
  * Dừng bấm giờ: Lưu thời gian kết thúc và số giờ chạy (endTime và time)
  */
 exports.stopTimesheetLog = async (portal, params, body) => {
-    const now = new Date().getTime();
+    const now = new Date();
     let stoppedAt;
 
     if (body.stoppedAt) {
         let getStoppedTime = new Date(body.stoppedAt);
-        stoppedAt = getStoppedTime.getTime();
+        stoppedAt = getStoppedTime;
     } else {
         stoppedAt = now;
     }
 
     // Lưu vào timeSheetLog
     let duration = new Date(stoppedAt).getTime() - new Date(body.startedAt).getTime();
+    let checkDurationValid = duration / (60*60*1000);
+
     let timer = await Task(connect(DB_CONNECTION, portal))
         .findOneAndUpdate(
             { _id: params.taskId, "timesheetLogs._id": body.timesheetLog },
             {
                 $set: {
-                    "timesheetLogs.$.stoppedAt": stoppedAt,
-                    "timesheetLogs.$.duration": duration,
+                    "timesheetLogs.$.stoppedAt": stoppedAt, // Date
+                    "timesheetLogs.$.duration": duration, // mileseconds
                     "timesheetLogs.$.description": body.description,
+                    "timesheetLogs.$.autoStopped": body.autoStopped, // ghi nhận tắt bấm giờ tự động hay không?
+                    "timesheetLogs.$.acceptLog": checkDurationValid > 24 ? false : true , // tự động check nếu thời gian quá 24 tiếng thì đánh là không hợp lệ
                 },
             },
             { new: true }

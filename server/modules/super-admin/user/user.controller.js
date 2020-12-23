@@ -1,3 +1,4 @@
+const { User } = require('../../../models');
 const UserService = require('./user.service');
 const Logger = require(`${SERVER_LOGS_DIR}`);
 
@@ -227,6 +228,27 @@ exports.importUsers = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['import_users_faile'],
+            content: error
+        });
+    }
+}
+
+exports.sendEmailResetPasswordUser = async(req, res) => {
+    try {
+        let requestReset = await UserService.sendEmailResetPasswordUser(req.portal, req.body.email);
+
+        Logger.info(req.user.email, 'reset_password_user_success', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['reset_password_user_success'],
+            content: requestReset
+        });
+    } catch (error) {
+
+        Logger.error(req.user.email, 'reset_password_user_faile', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['reset_password_user_faile'],
             content: error
         });
     }

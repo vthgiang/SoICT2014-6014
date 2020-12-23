@@ -133,8 +133,6 @@ exports.logoutAllAccount = async (portal, id) => {
  */
 exports.forgetPassword = async (portal, email, password2) => {
     var user = await User(connect(DB_CONNECTION, portal)).findOne({ email });
-    if(!password2) throw ['pwd2_invalid'] 
-    if (user === null) throw ["email_invalid"];
     if(!user.password2) throw ['pwd2_not_complete'];
     let validPass = await bcrypt.compare(String(password2), user.password2);
     if (!validPass) throw ["pwd2_invalid"];

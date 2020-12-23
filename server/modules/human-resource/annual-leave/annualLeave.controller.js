@@ -60,14 +60,14 @@ exports.createAnnualLeave = async (req, res) => {
             let html = `
                 <h3><strong>Thông báo từ hệ thống ${process.env.WEB_NAME}.</strong></h3>
                 <p>Nhân viên: ${employee.fullName} - ${employee.employeeNumber}. </p>
-                <p>Thời gian nghỉ phép: ${req.body.startTime? req.body.startTime + ":": null} ${req.body.startDate} - ${req.body.startTime? req.body.endTime + ":": null} ${req.body.endDate}.</p>
+                <p>Thời gian nghỉ phép: ${req.body.startTime? req.body.startTime + ":": ''} ${req.body.startDate} - ${req.body.startTime? req.body.endTime + ":": ''} ${req.body.endDate}.</p>
                 <p>Lý do: ${req.body.reason}<p>
                 <p>Để phê duyệt đơn xin nghỉ. Hãy click vào đây <a target="_blank" href="http://${process.env.WEBSITE}/hr-manage-leave-application">Phê duyệt</a><p>
                 <br/>
                 <br/>
                 <h3><strong>Notification from system ${process.env.WEB_NAME}.</strong></h3>
                 <p>Staff ${employee.fullName} - ${employee.employeeNumber}<p/>
-                <p>Time annual leave: ${req.body.startTime? req.body.startTime + ":": null} ${req.body.startDate} - ${req.body.startTime? req.body.endTime + ":" : null} ${req.body.endDate}.</p>
+                <p>Time annual leave: ${req.body.startTime? req.body.startTime + ":": ''} ${req.body.startDate} - ${req.body.startTime? req.body.endTime + ":" : ''} ${req.body.endDate}.</p>
                 <p>Reason: ${req.body.reason}<p>
                 <p>To approve leave application. Please click here <a target="_blank" href="http://${process.env.WEBSITE}/hr-manage-leave-application">Approved</a><p>
             `
@@ -77,12 +77,12 @@ exports.createAnnualLeave = async (req, res) => {
 
             let content = `
                 <p>Nhân viên: ${employee.fullName} - ${employee.employeeNumber}. </p>
-                <p>Thời gian nghỉ phép: ${req.body.startTime? req.body.startTime + ":": null} ${req.body.startDate} - ${req.body.startTime? req.body.endTime + ":": null} ${req.body.endDate}.</p>
+                <p>Thời gian nghỉ phép: ${req.body.startTime? req.body.startTime + ":": ''} ${req.body.startDate} - ${req.body.startTime? req.body.endTime + ":": ''} ${req.body.endDate}.</p>
                 <p>Lý do: ${req.body.reason}<p>
                 <p>Để phê duyệt đơn xin nghỉ. Hãy click vào đây <a target="_blank" href="http://${process.env.WEBSITE}/hr-manage-leave-application">Phê duyệt</a><p>
                 <br/>
                 <p>Staff ${employee.fullName} - ${employee.employeeNumber}<p/>
-                <p>Time annual leave: ${req.body.startTime? req.body.startTime+":": null} ${req.body.startDate} - ${req.body.startTime? req.body.endTime + ":": null} ${req.body.endDate}.</p>
+                <p>Time annual leave: ${req.body.startTime? req.body.startTime+":": ''} ${req.body.startDate} - ${req.body.startTime? req.body.endTime + ":": ''} ${req.body.endDate}.</p>
                 <p>Reason: ${req.body.reason}<p>
                 <p>To approve leave application. Please click here <a target="_blank" href="http://${process.env.WEBSITE}/hr-manage-leave-application">Approved</a><p>
             `
@@ -240,25 +240,25 @@ exports.updateAnnualLeave = async (req, res) => {
             if (req.body.approvedApplication) {
                 let html = `
                     <h3><strong>Thông báo từ hệ thống ${process.env.WEB_NAME}.</strong></h3>
-                    <p>Đơn xin nghỉ phép của bạn từ ${req.body.startTime? req.body.startTime + ":": null} ${req.body.startDate} đến ${req.body.startTime? req.body.endTime + ":": null} ${req.body.endDate}.</p>
+                    <p>Đơn xin nghỉ phép của bạn từ ${req.body.startTime? req.body.startTime + ":": ''} ${req.body.startDate} đến ${req.body.startTime? req.body.endTime + ":": ''} ${req.body.endDate}.</p>
                     <p>Trạng thái: ${req.body.status==='pass' ? 'Đã được chấp nhận' : 'Không được chấp nhận'}<p>
                     <p>Người phê duyệt: ${req.user.name} (${req.user.email})</>
                     <br/>
                     <br/>
                     <h3><strong>Notification from system ${process.env.WEB_NAME}.</strong></h3>
-                    <p>Your application for leave from ${req.body.startTime? req.body.startTime + ":": null} ${req.body.startDate} to ${req.body.startTime? req.body.endTime + ":": null} ${req.body.endDate}.</p>
+                    <p>Your application for leave from ${req.body.startTime? req.body.startTime + ":": ''} ${req.body.startDate} to ${req.body.startTime? req.body.endTime + ":": ''} ${req.body.endDate}.</p>
                     <p>Trạng thái: ${req.body.status==='pass' ? 'Accepted' : 'Not accepted'}<p>
                     <p>Approver:  ${req.user.name} (${req.user.email})</>
                 `
                 sendEmail(req.body.employee.emailInCompany, 'Phê duyệt đơn xin nghỉ phép', "", html);
                 let user = await UserService.getUserInformByEmail(req.portal, req.body.employee.emailInCompany, req.user.company._id);
                 let content = `
-                    <p>Đơn xin nghỉ phép của bạn từ ${req.body.startTime? req.body.startTime + ":" : null} ${req.body.startDate} đến ${req.body.startTime? req.body.endTime + ":": null} ${req.body.endDate}.</p>
+                    <p>Đơn xin nghỉ phép của bạn từ ${req.body.startTime? req.body.startTime + ":" : ''} ${req.body.startDate} đến ${req.body.startTime? req.body.endTime + ":": ''} ${req.body.endDate}.</p>
                     <p>Trạng thái: ${req.body.status==='pass' ? 'Đã được chấp nhận' : 'Không được chấp nhận'}<p>
                     <p>Người phê duyệt: ${req.user.name} (${req.user.email})</>
                     <br/>
                     <br/>
-                    <p>Your application for leave from ${req.body.startTime? req.body.startTime + ":": null} ${req.body.startDate} to ${req.body.startTime? req.body.endTime + ":": null} ${req.body.endDate}.</p>
+                    <p>Your application for leave from ${req.body.startTime? req.body.startTime + ":": ''} ${req.body.startDate} to ${req.body.startTime? req.body.endTime + ":": ''} ${req.body.endDate}.</p>
                     <p>Trạng thái: ${req.body.status==='pass' ? 'Accepted' : 'Not accepted'}<p>
                     <p>Approver:  ${req.user.name} (${req.user.email})</>
                 `
