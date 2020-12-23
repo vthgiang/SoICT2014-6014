@@ -2038,7 +2038,7 @@ export default {
             },
 
             dashboard_personal: {
-                remind_work: "Nhắc việc",
+                remind_work: "Nhắc việc tháng",
                 number_annual_leave_in_year:
                     "Số ngày nghỉ phép còn lại trong năm",
                 day: "ngày",
@@ -2052,20 +2052,20 @@ export default {
                 point: "điểm",
                 overtime_total: "Tổng thời gian tăng ca",
                 hours: "giờ",
-                total_time_annual_leave: "Tổng thời gian nghỉ phép",
+                total_time_annual_leave: "Tổng thời gian nghỉ phép tháng",
                 fullname: "Họ và tên",
                 task_total: "Số công việc",
-                general_task: "Tổng hợp công việc",
+                general_task: "Tổng hợp công việc tháng",
                 see_all: "Xem tất cả",
-                general_commendation: "Tổng hợp khen thưởng",
+                general_commendation: "Tổng hợp khen thưởng tháng",
                 reason_praise: "Lý do khen thưởng",
-                general_discipline: "Tổng hợp kỷ luật",
+                general_discipline: "Tổng hợp kỷ luật tháng",
                 reason_discipline: "Lý do kỷ luật",
 
-                general_annual_leave: "Tổng hợp tình hình nghỉ phép",
+                general_annual_leave: "Tổng hợp tình hình nghỉ phép tháng",
                 total_hours: "Tổng số giờ",
                 total_hours_works: "Tổng số giờ",
-                general_overtime: "Tổng hợp tình hình tăng ca",
+                general_overtime: "Tổng hợp tình hình tăng ca tháng",
                 not_org_unit: "Bạn chưa có đơn vị",
 
                 trend_of_work: "Xu hướng làm việc",
@@ -2364,7 +2364,7 @@ export default {
                 asset_value: "Giá trị tài sản",
                 disposal_date: "Ngày thanh lý",
                 not_disposal: "Chưa thanh lý",
-                not_disposal_date: "Chưa nhập thời gian thanh lý",
+                not_disposal_date: "Chưa nhập ngày thanh lý",
 
                 general_information: "Thông tin chung",
                 usage_information: "Thông tin sử dụng",
@@ -2402,7 +2402,7 @@ export default {
                 select_incident_type: "Chọn loại sự cố",
                 select_all_incident_type: "Chọn tất cả loại sự cố",
 
-                disposal_date: "Thời gian thanh lý",
+                disposal_date: "Ngày thanh lý",
                 disposal_type: "Hình thức thanh lý",
                 disposal_price: "Giá trị thanh lý",
                 disposal_content: "Nội dung thanh lý",

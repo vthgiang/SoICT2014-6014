@@ -260,9 +260,9 @@ class TimesheetsCreateForm extends Component {
                                     <table id="create-timesheets" className="table table-striped table-bordered table-hover">
                                         <thead>
                                             <tr>
-                                                <th className="col-fixed" style={{ width: 100 }}>{translate('human_resource.timesheets.shift_work')}</th>
+                                                <th className="col-fixed not-sort" style={{ width: 100 }}>{translate('human_resource.timesheets.shift_work')}</th>
                                                 {allDayOfMonth.map((x, index) => (
-                                                    <th className="col-fixed" style={{ width: 60 }} key={index}>{`${x.date} - ${x.day}`}</th>
+                                                    <th className="col-fixed not-sort" style={{ width: 60 }} key={index}>{`${x.date} - ${x.day}`}</th>
                                                 ))}
                                             </tr>
                                         </thead>
@@ -271,34 +271,34 @@ class TimesheetsCreateForm extends Component {
                                             <tr>
                                                 <td>{translate('human_resource.timesheets.shifts1')}</td>
                                                 {allDayOfMonth.map((x, index) => (
-                                                    <th key={index}>
+                                                    <td key={index}>
                                                         <div className="checkbox" style={{ textAlign: 'center' }}>
                                                             <input type="checkbox" onChange={() => this.handleCheckBoxChange('shift1s', index)}
                                                                 style={{ margin: 'auto', position: 'inherit', width: 17, height: 17 }} checked={shift1s[index]} />
                                                         </div>
-                                                    </th>
+                                                    </td>
                                                 ))}
                                             </tr>
                                             <tr>
                                                 <td>{translate('human_resource.timesheets.shifts2')}</td>
                                                 {allDayOfMonth.map((x, index) => (
-                                                    <th key={index}>
+                                                    <td key={index}>
                                                         <div className="checkbox" style={{ textAlign: 'center' }}>
                                                             <input type="checkbox" onChange={() => this.handleCheckBoxChange('shift2s', index)}
                                                                 style={{ margin: 'auto', position: 'inherit', width: 17, height: 17 }} checked={shift2s[index]} />
                                                         </div>
-                                                    </th>
+                                                    </td>
                                                 ))}
                                             </tr>
                                             <tr>
                                                 <td>{translate('human_resource.timesheets.shifts3')}</td>
                                                 {allDayOfMonth.map((x, index) => (
-                                                    <th key={index}>
+                                                    <td key={index}>
                                                         <div className="checkbox" style={{ textAlign: 'center' }}>
                                                             <input type="checkbox" onChange={() => this.handleCheckBoxChange('shift3s', index)}
                                                                 style={{ margin: 'auto', position: 'inherit', width: 17, height: 17 }} checked={shift3s[index]} />
                                                         </div>
-                                                    </th>
+                                                    </td>
                                                 ))}
                                             </tr>
                                         </tbody>
@@ -314,7 +314,7 @@ class TimesheetsCreateForm extends Component {
                                         <thead>
                                             <tr>
                                                 {allDayOfMonth.map((x, index) => (
-                                                    <th className="col-fixed" style={{ width: 100 }} key={index}>{`${x.date} - ${x.day}`}</th>
+                                                    <th className="col-fixed not-sort" style={{ width: 100 }} key={index}>{`${x.date} - ${x.day}`}</th>
                                                 ))}
                                             </tr>
                                         </thead>

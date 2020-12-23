@@ -35,7 +35,7 @@ class EmployeeManagement extends Component {
             employeeName: null,
             employeeNumber: null,
             organizationalUnits: organizationalUnits,
-            status: 'active',
+            status: ['active'],
             professionalSkills: null,
             careerFields: null,
             page: 0,
@@ -829,7 +829,7 @@ class EmployeeManagement extends Component {
     render() {
         const { employeesManager, translate, department, field } = this.props;
 
-        let { importEmployee, limit, page, organizationalUnits, currentRow, currentRowView } = this.state;
+        let { importEmployee, limit, page, organizationalUnits, currentRow, currentRowView, status } = this.state;
 
         let listEmployees = [];
         if (employeesManager.listEmployees) {
@@ -901,6 +901,7 @@ class EmployeeManagement extends Component {
                                     { value: 'probationary', text: translate('human_resource.profile.probationary') },
                                     { value: 'sick_leave', text: translate('human_resource.profile.sick_leave') },
                                 ]}
+                                value={status}
                                 onChange={this.handleStatusChange}>
                             </SelectMulti>
                         </div>
