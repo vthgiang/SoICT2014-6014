@@ -94,11 +94,12 @@ class TaskTimesheetLog extends Component {
     }
     stopTimer = async () => {
         const { performtasks } = this.props;
+        let stoppedAt = new Date(); // mặc định lấy thời điểm hiện tại
+        let autoStopped = false;
         if (this.state.showEndDate) {
             if (this.state.dateStop && this.state.timeStop) {
-                var stoppedAt = this.state.dateStop + " " + this.state.timeStop
-                var isoDate = new Date(stoppedAt).toISOString();
-                var milisec = new Date(isoDate).getTime();
+                stoppedAt = new Date(this.state.dateStop + " " + this.state.timeStop);
+                autoStopped = true;
             }
         }
         const timer = {
@@ -106,7 +107,8 @@ class TaskTimesheetLog extends Component {
             startedAt: performtasks.currentTimer.timesheetLogs[0].startedAt,
             description: this.state.description,
             timesheetLog: performtasks.currentTimer.timesheetLogs[0]._id,
-            stoppedAt: milisec
+            stoppedAt,
+            autoStopped
         };
         await this.props.stopTimer(performtasks.currentTimer._id, timer);
         this.setState(state => {
