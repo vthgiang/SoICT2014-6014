@@ -3,7 +3,6 @@ const {
     User,
     UserRole,
     Role,
-    Company,
 } = require(`${SERVER_MODELS_DIR}`);
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
@@ -871,4 +870,53 @@ exports.getUsersByRolesArray = async (portal, roles) => {
     });
 
     return users;
+}
+
+exports.sendEmailResetPasswordUser = async(portal, email) => {
+    let user = await User(connect(DB_CONNECTION, portal)).findOne({ email });
+    let code = await generator.generate({ length: 6, numbers: true });
+    user.resetPasswordToken = code;
+    await user.save();
+    var transporter = await nodemailer.createTransport({
+        service: "Gmail",
+        auth: { user: "vnist.qlcv@gmail.com", pass: "qlcv123@" },
+    });
+    var mainOptions = {
+        from: "vnist.qlcv@gmail.com",
+        to: email,
+        subject: `${process.env.WEB_NAME} : Thay đổi mật khẩu - Change password`,
+        html: `
+        <div style="
+            background-color:azure;
+            padding: 100px;
+            text-align: center;
+        ">
+            <h3>
+                Yêu cầu xác thực thay đổi mật khẩu
+            </h3>
+            <p>Mã xác thực: <b style="color: red">${code}</b></p>
+            <button style="
+                padding: 8px 8px 8px 8px; 
+                border: 1px solid rgb(4, 197, 30); 
+                border-radius: 5px;
+                background-color: #4CAF50"
+            >
+                <a 
+                    style="
+                        text-decoration: none;
+                        color: white;
+                        " 
+                    href="${process.env.WEBSITE}/reset-password?portal=${portal}&otp=${code}&email=${email}"
+                >
+                    Xác thực
+                </a>
+            </button>
+        </div>
+        `,
+    };
+    await transporter.sendMail(mainOptions);
+
+    return {
+        portal, email
+    }
 }

@@ -19,6 +19,7 @@ export const UserServices = {
     create,
     destroy,
     importUsers,
+    sendEmailResetPasswordUser,
 };
 
 function get(params) {
@@ -268,6 +269,20 @@ function importUsers(data, params) {
             method: "POST",
             params,
             data
+        },
+        true,
+        true,
+        "super_admin.user"
+    );
+}
+
+function sendEmailResetPasswordUser(email) {
+    console.log('FJKDJFKLSDF', email)
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/user/users/send-email-reset-password`,
+            method: "PATCH",
+            data: { email }
         },
         true,
         true,
