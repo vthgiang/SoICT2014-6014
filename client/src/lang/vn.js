@@ -2364,7 +2364,7 @@ export default {
                 asset_value: "Giá trị tài sản",
                 disposal_date: "Ngày thanh lý",
                 not_disposal: "Chưa thanh lý",
-                not_disposal_date: "Chưa nhập thời gian thanh lý",
+                not_disposal_date: "Chưa nhập ngày thanh lý",
 
                 general_information: "Thông tin chung",
                 usage_information: "Thông tin sử dụng",
@@ -2402,7 +2402,7 @@ export default {
                 select_incident_type: "Chọn loại sự cố",
                 select_all_incident_type: "Chọn tất cả loại sự cố",
 
-                disposal_date: "Thời gian thanh lý",
+                disposal_date: "Ngày thanh lý",
                 disposal_type: "Hình thức thanh lý",
                 disposal_price: "Giá trị thanh lý",
                 disposal_content: "Nội dung thanh lý",

@@ -321,7 +321,7 @@ const AssetSchema = new Schema({
      * Thông tin thanh lý
      */
     disposalDate: {
-        // thời gian thanh lý
+        //Ngày thanh lý
         type: Date,
     },
     disposalType: {
