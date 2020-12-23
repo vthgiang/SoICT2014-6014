@@ -243,25 +243,27 @@ exports.getOvertimeOfUnitsByStartDateAndEndDate = async (portal, organizationalU
                     $in: emailInCompany
                 }
             };
+            let employee = [], listOvertimeOfUnitsByStartDateAndEndDate=[];
             if (keySearchEmployee) {
                 let employeeInfo = await Employee(connect(DB_CONNECTION, portal)).find(keySearchEmployee, {
                     _id: 1
                 });
-                let employee = employeeInfo.map(x => x._id);
-                if (employee.length !== 0) {
-                    keySearch = {
-                        ...keySearch,
-                        employee: {
-                            $in: employee
-                        }
+                employee = employeeInfo.map(x => x._id);
+            }
+            if (employee.length !== 0) {
+                keySearch = {
+                    ...keySearch,
+                    employee: {
+                        $in: employee
                     }
                 }
+                listOvertimeOfUnitsByStartDateAndEndDate = await Timesheet(connect(DB_CONNECTION, portal)).find(keySearch, {
+                    totalHoursOff: 1,
+                    totalOvertime: 1,
+                    month: 1, 
+                    employee:1
+                }).populate({path:'employee', select:'employeeNumber fullName emailInCompany _id'});
             }
-            let listOvertimeOfUnitsByStartDateAndEndDate = await Timesheet(connect(DB_CONNECTION, portal)).find(keySearch, {
-                totalHoursOff: 1,
-                totalOvertime: 1,
-                month: 1
-            }).populate({path:'employee', select:'employeeNumber fullName emailInCompany _id'});
             return {
                 listOvertimeOfUnitsByStartDateAndEndDate,
                 arrMonth
