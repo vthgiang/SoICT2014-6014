@@ -365,6 +365,8 @@ exports.stopTimesheetLog = async (portal, params, body) => {
 
     // Lưu vào timeSheetLog
     let duration = new Date(stoppedAt).getTime() - new Date(body.startedAt).getTime();
+    let checkDurationValid = duration / (60*60*1000);
+
     let timer = await Task(connect(DB_CONNECTION, portal))
         .findOneAndUpdate(
             { _id: params.taskId, "timesheetLogs._id": body.timesheetLog },
@@ -374,6 +376,7 @@ exports.stopTimesheetLog = async (portal, params, body) => {
                     "timesheetLogs.$.duration": duration, // mileseconds
                     "timesheetLogs.$.description": body.description,
                     "timesheetLogs.$.autoStopped": body.autoStopped, // ghi nhận tắt bấm giờ tự động hay không?
+                    "timesheetLogs.$.acceptLog": checkDurationValid > 24 ? false : true , // tự động check nếu thời gian quá 24 tiếng thì đánh là không hợp lệ
                 },
             },
             { new: true }
