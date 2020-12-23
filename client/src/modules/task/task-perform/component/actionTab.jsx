@@ -933,8 +933,8 @@ class ActionTab extends Component {
                                                 <React.Fragment>
                                                     <div className="content-level1" data-width="100%">
                                                         {item.creator ?
-                                                            <a style={{ cursor: "pointer" }}>{item.creator?.name} </a> :
-                                                            item.name && <b>{item.name} </b>}
+                                                            <a style={{ cursor: "pointer" }}>{item.creator?.name} </a> : ''}
+                                                        {item.name && <b>{item.name}</b>}
                                                         {item.description.split('\n').map((item, idx) => {
                                                             return (
                                                                 <div key={idx}>
@@ -1663,12 +1663,20 @@ class ActionTab extends Component {
                         <div className={selected === "logTimer" ? "active tab-pane" : "tab-pane"} id="logTimer">
                             {logTimer && logTimer.map((item, index) =>
                                 <React.Fragment key={index}>
-                                    {item.duration &&
+                                    {item.stoppedAt &&
                                         <div key={item._id} className="item-box">
                                             <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} </a>
-                                            {translate("task.task_perform.total_time")} {moment.utc(item.duration, "x").format('HH:mm:ss')}&nbsp;
-                                    ({moment(item.startedAt, "x").format("HH:mm:ss DD/MM/YYYY")} - {moment(item.stoppedAt).format("HH:mm:ss DD/MM/YYYY")})
-                                    <div>{item.description ? item.description : translate("task.task_perform.none_description")}</div>
+                                            <div>
+                                                <i className="fa fa-clock-o"> </i> {moment(item.startedAt).format("HH:mm:ss DD/MM/YYYY")}{" - "}
+                                                <i className="fa fa-clock-o"> </i> {moment(item.stoppedAt).format("HH:mm:ss DD/MM/YYYY")})
+                                            </div>
+                                            <div>
+                                                <i className="fa fa-hourglass-end"></i> {moment.utc(item.duration, "x").format('HH:mm:ss')}&nbsp;<br />
+                                            </div>
+                                            <div>
+                                                <i className="fa fa-edit"></i>
+                                                {item.description ? item.description : translate("task.task_perform.none_description")}
+                                            </div>
                                         </div>
                                     }
                                 </React.Fragment>

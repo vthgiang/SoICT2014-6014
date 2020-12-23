@@ -216,7 +216,6 @@ class TaskTimesheetLog extends Component {
 
     getDiffTime = (time1, time2) => {
         if (!time1 || !time2) return 0;
-        console.log("time", time1, time2);
         let timer1 = new Date(time1);
         let timer2 = new Date(time2);
         let diff = timer1.getTime() - timer2.getTime();

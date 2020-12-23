@@ -36,7 +36,7 @@ class NotificationReiceiverdInfo extends Component {
 
     checkPriority = (value) => {
         const valueConvert = parseInt(value);
-        if (!value || valueConvert === 1) return "#00a65a"
+        if (!value || valueConvert === 1) return "#28A745"
         if (valueConvert === 3) return "#ff0707"
         if (valueConvert === 2) return "#ffa707"
     }

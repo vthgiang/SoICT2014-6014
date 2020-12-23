@@ -15,7 +15,6 @@ import { getStorage } from '../../../../config';
 import { SelectFollowingTaskModal } from './selectFollowingTaskModal';
 import { withTranslate } from 'react-redux-multilingual';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
-import Swal from 'sweetalert2';
 
 class DetailTaskTab extends Component {
 
@@ -510,18 +509,6 @@ class DetailTaskTab extends Component {
         await this.props.editHoursSpentInEvaluate(data, taskId);
     }
 
-    convertTime = (duration) => {
-        let seconds = Math.floor((duration / 1000) % 60),
-            minutes = Math.floor((duration / (1000 * 60)) % 60),
-            hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
-
-        hours = (hours < 10) ? "0" + hours : hours;
-        minutes = (minutes < 10) ? "0" + minutes : minutes;
-        seconds = (seconds < 10) ? "0" + seconds : seconds;
-
-        return hours + ":" + minutes + ":" + seconds;
-    }
-
     getTaskActionsNotPerform = (taskActions) => {
         return taskActions.filter(action => !action.creator).length;
     }
@@ -665,10 +652,18 @@ class DetailTaskTab extends Component {
         // Xử lý dữ liệu biểu đồ đóng góp thời gian công việc
         if (task && task.hoursSpentOnTask) {
             hoursSpentOfEmployeeInTask = {};
-
-            task.hoursSpentOnTask.contributions.map(item => {
-                hoursSpentOfEmployeeInTask[item.employee.name] = Number.parseFloat(item.hoursSpent / (1000 * 60 * 60)).toFixed(2)
-            });
+            for (let i = 0; i < task.timesheetLogs.length; i++) {
+                let tsheetlog = task.timesheetLogs[i];
+                console.log("tssheetlog:", tsheetlog)
+                if (tsheetlog.stoppedAt) {
+                    let times = hoursSpentOfEmployeeInTask[tsheetlog.creator.name] ? hoursSpentOfEmployeeInTask[tsheetlog.creator.name] : 0;
+                    hoursSpentOfEmployeeInTask[tsheetlog.creator.name] = times + tsheetlog.duration;
+                }
+            }
+            console.log("SPEND TIME:", hoursSpentOfEmployeeInTask)
+            // task.hoursSpentOnTask.contributions.map(item => {
+            //     hoursSpentOfEmployeeInTask[item.employee.name] = item.hoursSpent;
+            // });
         }
         if (task && task.evaluations && task.evaluations.length !== 0) {
             task.evaluations.map(item => {

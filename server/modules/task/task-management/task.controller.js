@@ -33,6 +33,7 @@ exports.getTasks = async (req, res) => {
         getPaginatedTasksByUser(req, res);
     }
     else if (req.query.type === "choose_multi_role") {
+        console.log('fsfsfsfdf')
         getPaginatedTasks(req, res);
     }
     else if (req.query.type === "paginated_task_by_unit") {

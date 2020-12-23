@@ -202,7 +202,7 @@ class CalendarOrganizationUnit extends Component {
                                 let dayFromStartDate = currentTime - startTime;
                                 let timeOver = workingDayMin - dayFromStartDate;
                                 if (timeOver >= 0) {
-                                    color = "#00A65A"; // In time or on time
+                                    color = "#28A745"; // In time or on time
                                 }
                                 else {
                                     color = "#F0D83A"; // delay

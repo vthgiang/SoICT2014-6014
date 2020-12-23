@@ -165,7 +165,7 @@ class SearchEmployeeForPackage extends Component {
 
         let majorSearch;
         let tmp = dataTreeMajor.find(e => e.id === value[0])
-        if(tmp.specialized) { // là group
+        if (tmp.specialized) { // là group
             majorSearch = tmp.id
         } else { // là specialize
             majorSearch = tmp.parent;
@@ -569,14 +569,14 @@ class SearchEmployeeForPackage extends Component {
                         <div className="form-group">
                             <label></label>
                             <button type="button" className="btn btn-primary" title={translate('general.search')} onClick={this.clickShowMore} >
-                                { showMore ?
+                                {showMore ?
                                     <span>
                                         Show less <i className="fa fa-angle-double-up"></i>
                                     </span>
                                     : <span>
                                         Show more <i className="fa fa-angle-double-down"></i>
                                     </span>
-                                }    
+                                }
                             </button>
                         </div>
                         {/* Button tìm kiếm */}
@@ -625,7 +625,7 @@ class SearchEmployeeForPackage extends Component {
                                         <td>{this.formatDate(x.birthdate)}</td>
                                         <td>{this.formatDate(x.contractEndDate)}</td>
                                         <td>{x.contractType}</td>
-                                        <td style={{ color: x.status === "active" ? "#00a65a" : '#dd4b39' }}>{translate(`human_resource.profile.${x.status}`)}</td>
+                                        <td style={{ color: x.status === "active" ? "#28A745" : '#dd4b39' }}>{translate(`human_resource.profile.${x.status}`)}</td>
                                         <td>
                                             <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('human_resource.profile.employee_management.view_employee')}><i className="material-icons">view_list</i></a>
                                             {/* <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.employee_management.edit_employee')}><i className="material-icons">edit</i></a>

@@ -336,7 +336,6 @@ function getPaginatedTasksByOrganizationalUnit(roleId, number, perPage, status, 
 function getPaginateTasks(role, unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime) {
     var user = getStorage("userId");
 
-    console.log('roleeeeeeeee', role);
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'GET',

@@ -69,6 +69,7 @@ exports.getTaskById = async (portal, id, userId) => {
                     },
                 ],
             },
+            { path: "timesheetLogs.creator", select: "name" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",

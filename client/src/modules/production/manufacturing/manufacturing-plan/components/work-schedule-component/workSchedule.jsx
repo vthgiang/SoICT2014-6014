@@ -20,7 +20,7 @@ class WorkSchedule extends Component {
                             <thead>
                                 <tr>
                                     <th rowSpan={2} style={{ backgroundColor: "#F0F0F0", width: "10%" }}>Ca</th>
-                                    <th colSpan={days.length} style={{ backgroundColor: "#605CA8", color: "#FFFFFF" }}>October 2020</th>
+                                    <th colSpan={days.length} style={{ backgroundColor: "#fff", color: "#FFFFFF" }}>October 2020</th>
                                 </tr>
                                 <tr>
                                     {

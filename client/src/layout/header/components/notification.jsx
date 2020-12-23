@@ -37,7 +37,7 @@ class Notification extends Component {
     }
     checkPriority = (value) => {
         const valueConvert = parseInt(value);
-        if (!value || valueConvert === 1) return "#00a65a"
+        if (!value || valueConvert === 1) return "#28A745"
         if (valueConvert === 3) return "#ff0707"
         if (valueConvert === 2) return "#ffa707"
     }
@@ -49,8 +49,8 @@ class Notification extends Component {
         return (
             <React.Fragment>
                 <li className="dropdown notifications-menu">
-                    <a href="#abc" className="dropdown-toggle" data-toggle="dropdown">
-                        <i className="fa fa-bell-o" />
+                    <a href="#abc" className="dropdown-toggle" data-toggle="dropdown" style={{ color: '#4C4C4C', maxHeight: '50px' }}>
+                        <i className="material-icons" style={{ fontSize: '22px' }}>notifications_none</i>
                         {
                             count > 0 && <span className="label label-warning">{count}</span>
                         }
@@ -61,7 +61,6 @@ class Notification extends Component {
                             <ul className="menu">
                                 {
                                     notify.filter(notification => !notification.readed).map((notification, index) => {
-                                        console.log('notification', notification);
                                         return <li key={index}>
                                             <Link to="/notifications">
                                                 {
