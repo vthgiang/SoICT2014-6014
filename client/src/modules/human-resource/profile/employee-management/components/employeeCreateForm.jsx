@@ -8,6 +8,7 @@ import { DialogModal } from '../../../../../common-components';
 import { GeneralTab, ContactTab, TaxTab, InsurranceTab, DisciplineTab, ExperienceTab, CertificateTab, ContractTab, SalaryTab, FileTab, CareerMajorTab } from '../../employee-create/components/combinedContent';
 
 import { EmployeeManagerActions } from '../redux/actions';
+import FamilyMemberTab from '../../employee-create/components/familyMemberTab';
 
 class EmployeeCreateForm extends Component {
     constructor(props) {
@@ -292,7 +293,7 @@ class EmployeeCreateForm extends Component {
                 commendations,
                 annualLeaves,
                 courses,
-                career, 
+                career,
                 major
             }
         })
@@ -347,7 +348,8 @@ class EmployeeCreateForm extends Component {
                             <li><a title={translate('human_resource.profile.tab_name.menu_reward_discipline_title')} data-toggle="tab" href="#reward">{translate('human_resource.profile.tab_name.menu_reward_discipline')}</a></li>
                             <li><a title={translate('menu.annual_leave_personal')} data-toggle="tab" href="#salary">{translate('menu.annual_leave_personal')}</a></li>
                             <li><a title={translate('human_resource.profile.tab_name.menu_attachments_title')} data-toggle="tab" href="#attachments">{translate('human_resource.profile.tab_name.menu_attachments')}</a></li>
-                            <li><a title={"Công việc - chuyên ngành tương đương"} data-toggle="tab" href={`#major_career`}>Công việc - chuyên ngành tương đương</a></li>
+                            <li><a title={"Công việc - chuyên ngành tương đương"} data-toggle="tab" href="#major_career">Công việc - chuyên ngành tương đương</a></li>
+                            <li><a title={"Thành viên hộ gia đình"} data-toggle="tab" href="#family_member">Thành viên hộ gia đình</a></li>
                         </ul>
                         < div className="tab-content">
                             {/* Tab thông tin chung */}
@@ -472,6 +474,10 @@ class EmployeeCreateForm extends Component {
                                 handleAddCareer={this.handleChangeCareer}
                                 handleEditCareer={this.handleChangeCareer}
                                 handleDeleteCareer={this.handleChangeCareer}
+                            />
+                            {/* Tab thành viên hộ gia đình */}
+                            <FamilyMemberTab
+                                id="family_member"
                             />
                         </div>
                     </div>
