@@ -95,10 +95,10 @@ class ManufacturingWorksEditForm extends Component {
         let listRolesArr = [];
         const { currentDepartment } = this.state;
         // Lấy ra các role trưởng đơn vị của đơn vị hiện tại
-        let currentRolesDeanIds = currentDepartment.deans.map(role => role._id);
+        let currentRolesManagerIds = currentDepartment.managers.map(role => role._id);
         if (list) {
             // Lọc các role hiện tại ra khỏi list
-            list = list.filter(role => !currentRolesDeanIds.includes(role._id));
+            list = list.filter(role => !currentRolesManagerIds.includes(role._id));
             list.map(role => {
                 listRolesArr.push({
                     value: role._id,
@@ -268,12 +268,12 @@ class ManufacturingWorksEditForm extends Component {
                             <ErrorLabel content={nameError} />
                         </div>
                         {
-                            currentDepartment && currentDepartment.deans &&
+                            currentDepartment && currentDepartment.managers &&
                             <React.Fragment>
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manufacturing.manufacturing_works.list_roles')}</legend>
                                     {
-                                        currentDepartment.deans.map((role, index) => {
+                                        currentDepartment.managers.map((role, index) => {
                                             return (
                                                 <div className={`form-group`} key={index}>
                                                     <strong>{role.name}: &emsp;</strong>

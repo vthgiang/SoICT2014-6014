@@ -17,6 +17,7 @@ class StockRotateEditForm extends Component {
             lots: []
         }
         this.state = {
+            userId: localStorage.getItem("userId"),
             list: [],
             lots: [],
             listGood: [],
@@ -175,10 +176,10 @@ class StockRotateEditForm extends Component {
     validateApprover = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
-        if(!value) {
+        if (!value) {
             msg = translate('manage_warehouse.bill_management.validate_approver')
         }
-        if(willUpdateState) {
+        if (willUpdateState) {
             let approvers = [];
             value.map(item => {
                 approvers.push({
@@ -206,10 +207,10 @@ class StockRotateEditForm extends Component {
     validateAccountables = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
-        if(!value) {
+        if (!value) {
             msg = translate('manage_warehouse.bill_management.validate_approver')
         }
-        if(willUpdateState) {
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
@@ -229,10 +230,10 @@ class StockRotateEditForm extends Component {
     validateResponsibles = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
-        if(!value) {
+        if (!value) {
             msg = translate('manage_warehouse.bill_management.validate_approver')
         }
-        if(willUpdateState) {
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
@@ -252,10 +253,10 @@ class StockRotateEditForm extends Component {
     validateQualityControlStaffs = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
-        if(!value) {
+        if (!value) {
             msg = translate('manage_warehouse.bill_management.validate_approver')
         }
-        if(willUpdateState) {
+        if (willUpdateState) {
             let listQualityControlStaffs = [];
             value.map(item => {
                 listQualityControlStaffs.push({
@@ -533,7 +534,7 @@ class StockRotateEditForm extends Component {
     }
 
     isGoodsValidated = () => {
-        if(this.state.good.good && this.state.good.quantity && this.state.good.quantity !== 0) {
+        if (this.state.good.good && this.state.good.quantity && this.state.good.quantity !== 0) {
             return true;
         }
         return false;
@@ -541,36 +542,36 @@ class StockRotateEditForm extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.billId !== prevState.billId || nextProps.oldStatus !== prevState.oldStatus) {
-            let approver = []; 
+            let approver = [];
             let qualityControlStaffs = [];
             let responsibles = [];
             let accountables = [];
-            if(nextProps.approvers && nextProps.approvers.length >  0) {
-                for(let i = 0; i < nextProps.approvers.length; i++) {
-                   approver = [ ...approver, nextProps.approvers[i].approver._id ]; 
+            if (nextProps.approvers && nextProps.approvers.length > 0) {
+                for (let i = 0; i < nextProps.approvers.length; i++) {
+                    approver = [...approver, nextProps.approvers[i].approver._id];
                 }
-                
+
             }
 
-            if(nextProps.listQualityControlStaffs && nextProps.listQualityControlStaffs.length >  0) {
-                for(let i = 0; i < nextProps.listQualityControlStaffs.length; i++) {
-                    qualityControlStaffs = [ ...qualityControlStaffs, nextProps.listQualityControlStaffs[i].staff._id ]; 
+            if (nextProps.listQualityControlStaffs && nextProps.listQualityControlStaffs.length > 0) {
+                for (let i = 0; i < nextProps.listQualityControlStaffs.length; i++) {
+                    qualityControlStaffs = [...qualityControlStaffs, nextProps.listQualityControlStaffs[i].staff._id];
                 }
-                
+
             }
 
-            if(nextProps.responsibles && nextProps.responsibles.length >  0) {
-                for(let i = 0; i < nextProps.responsibles.length; i++) {
-                    responsibles = [ ...responsibles, nextProps.responsibles[i]._id ]; 
+            if (nextProps.responsibles && nextProps.responsibles.length > 0) {
+                for (let i = 0; i < nextProps.responsibles.length; i++) {
+                    responsibles = [...responsibles, nextProps.responsibles[i]._id];
                 }
-                
+
             }
 
-            if(nextProps.accountables && nextProps.accountables.length >  0) {
-                for(let i = 0; i < nextProps.accountables.length; i++) {
-                    accountables = [ ...accountables, nextProps.accountables[i]._id ]; 
+            if (nextProps.accountables && nextProps.accountables.length > 0) {
+                for (let i = 0; i < nextProps.accountables.length; i++) {
+                    accountables = [...accountables, nextProps.accountables[i]._id];
                 }
-                
+
             }
             prevState.good.quantity = 0;
             prevState.good.good = '';
@@ -588,6 +589,7 @@ class StockRotateEditForm extends Component {
                 group: nextProps.group,
                 type: nextProps.type,
                 users: nextProps.users,
+                creator: nextProps.creator,
                 approvers: nextProps.approvers,
                 approver: approver,
                 qualityControlStaffs: qualityControlStaffs,
@@ -650,7 +652,7 @@ class StockRotateEditForm extends Component {
                 quantityApproved = 0;
             }
         });
-        if(quantityApproved === 0) {
+        if (quantityApproved === 0) {
             return true;
         }
         return false;
@@ -658,8 +660,8 @@ class StockRotateEditForm extends Component {
 
     render() {
         const { translate, group } = this.props;
-        const { lots, listGood, good, code, approvers, approver, listQualityControlStaffs, accountables, responsibles, 
-            qualityControlStaffs, status, toStock, fromStock, type, name, phone, email, address, description, 
+        const { lots, listGood, good, code, approvers, approver, listQualityControlStaffs, accountables, responsibles,
+            qualityControlStaffs, status, toStock, fromStock, type, name, phone, email, address, description,
             errorStock, errorType, errorApprover, errorToStock, quantity, errorQualityControlStaffs, errorAccountables, errorResponsibles } = this.state;
         const listGoods = this.getAllGoods();
         const dataApprover = this.getApprover();
@@ -682,7 +684,7 @@ class StockRotateEditForm extends Component {
                     func={this.save}
                     size={75}
                 >
-                        <QuantityLotStockRotateEdit group={group} good={good} stock={fromStock} initialData={lots} onDataChange={this.handleLotsChange} />
+                    <QuantityLotStockRotateEdit group={group} good={good} stock={fromStock} initialData={lots} onDataChange={this.handleLotsChange} />
                     <form id={`form-edit-bill-rotate`}>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <fieldset className="scheduler-border">
@@ -763,67 +765,69 @@ class StockRotateEditForm extends Component {
                                 </div>
                             </fieldset>
                         </div>
-                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{translate('manage_warehouse.bill_management.list_saffs')}</legend>
-                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.approved')}<span className="attention"> * </span></label>
-                                    <SelectBox
-                                        id={`select-approver-bill-rotate-edit`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={approver}
-                                        items={dataApprover}
-                                        onChange={this.handleApproverChange}    
-                                        multiple={true}
-                                    />
-                                    <ErrorLabel content = { errorApprover } />
-                                </div>
-                                <div className={`form-group ${!errorResponsibles ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.users')}<span className="attention"> * </span></label>
-                                    <SelectBox
-                                        id={`select-accountables-bill-rotate-edit`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={responsibles}
-                                        items={dataApprover}
-                                        onChange={this.handleResponsiblesChange}    
-                                        multiple={true}
-                                    />
-                                    <ErrorLabel content = { errorResponsibles } />
-                                </div>
-                            </div>
-                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className={`form-group ${!errorQualityControlStaffs ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.qualityControlStaffs')}<span className="attention"> * </span></label>
-                                        <SelectBox
-                                            id={`select-qualityControlStaffs-bill-rotate-edit`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            value={qualityControlStaffs}
-                                            items={dataApprover}
-                                            onChange={this.handleQualityControlStaffsChange}    
-                                            multiple={true}
-                                        />
-                                        <ErrorLabel content = { errorQualityControlStaffs } />
+                        {this.state.userId === this.state.creator &&
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <fieldset className="scheduler-border">
+                                    <legend className="scheduler-border">{translate('manage_warehouse.bill_management.list_saffs')}</legend>
+                                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                        <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
+                                            <label>{translate('manage_warehouse.bill_management.approved')}<span className="attention"> * </span></label>
+                                            <SelectBox
+                                                id={`select-approver-bill-rotate-edit`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                value={approver}
+                                                items={dataApprover}
+                                                onChange={this.handleApproverChange}
+                                                multiple={true}
+                                            />
+                                            <ErrorLabel content={errorApprover} />
+                                        </div>
+                                        <div className={`form-group ${!errorResponsibles ? "" : "has-error"}`}>
+                                            <label>{translate('manage_warehouse.bill_management.users')}<span className="attention"> * </span></label>
+                                            <SelectBox
+                                                id={`select-accountables-bill-rotate-edit`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                value={responsibles}
+                                                items={dataApprover}
+                                                onChange={this.handleResponsiblesChange}
+                                                multiple={true}
+                                            />
+                                            <ErrorLabel content={errorResponsibles} />
+                                        </div>
                                     </div>
-                                    <div className={`form-group ${!errorAccountables ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.accountables')}<span className="attention"> * </span></label>
-                                        <SelectBox
-                                            id={`select-responsibles-bill-rotate-edit`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            value={accountables}
-                                            items={dataApprover}
-                                            onChange={this.handleAccountablesChange}    
-                                            multiple={true}
-                                        />
-                                        <ErrorLabel content = { errorAccountables } />
+                                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                        <div className={`form-group ${!errorQualityControlStaffs ? "" : "has-error"}`}>
+                                            <label>{translate('manage_warehouse.bill_management.qualityControlStaffs')}<span className="attention"> * </span></label>
+                                            <SelectBox
+                                                id={`select-qualityControlStaffs-bill-rotate-edit`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                value={qualityControlStaffs}
+                                                items={dataApprover}
+                                                onChange={this.handleQualityControlStaffsChange}
+                                                multiple={true}
+                                            />
+                                            <ErrorLabel content={errorQualityControlStaffs} />
+                                        </div>
+                                        <div className={`form-group ${!errorAccountables ? "" : "has-error"}`}>
+                                            <label>{translate('manage_warehouse.bill_management.accountables')}<span className="attention"> * </span></label>
+                                            <SelectBox
+                                                id={`select-responsibles-bill-rotate-edit`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                value={accountables}
+                                                items={dataApprover}
+                                                onChange={this.handleAccountablesChange}
+                                                multiple={true}
+                                            />
+                                            <ErrorLabel content={errorAccountables} />
+                                        </div>
                                     </div>
+                                </fieldset>
                             </div>
-                        </fieldset>
-                        </div>
+                        }
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('manage_warehouse.bill_management.receiver')}</legend>
@@ -870,7 +874,7 @@ class StockRotateEditForm extends Component {
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className="form-group">
                                         <label>{translate('manage_warehouse.bill_management.number')}</label>
-                                        <div style={{ display: "flex" }}><input className="form-control" value={good.quantity} onChange={this.handleQuantityChange} disabled type="number" />{good.good && <i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: '5px', marginTop: '9px', cursor: 'pointer' }} onClick={() => this.addQuantity()}></i>}</div>
+                                        <div style={{ display: "flex" }}><input className="form-control" value={good.quantity} onChange={this.handleQuantityChange} disabled type="number" />{good.good && <i className="fa fa-plus-square" style={{ color: "#28A745", marginLeft: '5px', marginTop: '9px', cursor: 'pointer' }} onClick={() => this.addQuantity()}></i>}</div>
                                     </div>
                                 </div>
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">

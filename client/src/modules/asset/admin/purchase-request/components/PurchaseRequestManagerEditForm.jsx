@@ -8,6 +8,7 @@ import { PurchaseRequestFromValidator } from '../../../user/purchase-request/com
 
 import { RecommendProcureActions } from '../../../user/purchase-request/redux/actions';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
+import { getFormatDateFromTime } from '../../../../../helpers/stringMethod';
 
 class PurchaseRequestEditForm extends Component {
     constructor(props) {
@@ -186,8 +187,14 @@ class PurchaseRequestEditForm extends Component {
     };
 
     save = () => {
-        let dataToSubmit = { ...this.state, approver: this.props.auth.user._id };
+        const { dateCreate } = this.state;
+        let slitDateCreate, dateCreateConvert;
+        if (dateCreate) {
+            slitDateCreate = dateCreate.split('-');
+            dateCreateConvert = new Date([slitDateCreate[2], slitDateCreate[1], slitDateCreate[0]].join('-'))
+        }
 
+        let dataToSubmit = { ...this.state, dateCreate: dateCreateConvert, approver: this.props.auth.user._id };
         if (this.isFormValidated()) {
             return this.props.updateRecommendProcure(this.state._id, dataToSubmit);
         }
@@ -199,7 +206,7 @@ class PurchaseRequestEditForm extends Component {
                 ...prevState,
                 _id: nextProps._id,
                 recommendNumber: nextProps.recommendNumber,
-                dateCreate: nextProps.dateCreate,
+                dateCreate: getFormatDateFromTime(nextProps.dateCreate, 'dd-mm-yyyy'),
                 proponent: nextProps.proponent,
                 equipmentName: nextProps.equipmentName,
                 equipmentDescription: nextProps.equipmentDescription,
@@ -364,7 +371,7 @@ class PurchaseRequestEditForm extends Component {
                                 {/* Ghi chú */}
                                 <div className="form-group">
                                     <label>{translate('asset.usage.note')}</label>
-                                    <textarea className="form-control" rows="3" name="note" value={note} onChange={this.handleNoteChange}></textarea>
+                                    <textarea className="form-control" rows="3" name="note" value={note ? note : ''} onChange={this.handleNoteChange}></textarea>
                                 </div>
                             </div>
                         </div>

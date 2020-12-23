@@ -19,6 +19,9 @@ import { ViewProcess } from '../../task-process/component/task-process-managemen
 import { IncomingDataTab } from './incomingDataTab';
 import { OutgoingDataTab } from './outgoingDataTab';
 import parse from 'html-react-parser';
+import { some } from 'lodash'
+
+
 class ActionTab extends Component {
     constructor(props) {
         let idUser = getStorage("userId");
@@ -122,17 +125,44 @@ class ActionTab extends Component {
     componentDidMount = () => {
         this.props.getAllPreceedingTasks(this.props.id)
     }
-    static getDerivedStateFromProps(nextProps, prevState) {
-        let state = {}
-        if (nextProps.performtasks.task) {
-            state = Object.assign(prevState, { taskActions: nextProps.performtasks.task.taskActions })
+
+    static getDerivedStateFromProps(props, prevState) {
+        const { performtasks, notifications } = props;
+        let state = {};
+        if (notifications && notifications.dataSend && performtasks && performtasks.task && notifications.dataSend.value && notifications.dataSend.value.length > 0) {
+            let { taskComments } = performtasks.task;
+            let { taskActions } = performtasks.task;
+            // Trường hợp thêm mới bình luận (tab trao doi)
+            if (notifications.dataSend.dataType === "createTaskComment") {
+                const res = [...taskComments, notifications.dataSend.value[0]];
+                props.refreshDataAfterComment(res);
+            }
+            // trường hợp thêm comment cho comment (tab trao doi)
+            if (notifications.dataSend.dataType === "createTaskSubComment") {
+                // add thêm sub comment mới 
+                const res = taskComments.map(obj => notifications.dataSend.value.find(o => o._id === obj._id) || obj);
+                props.refreshDataAfterComment(res);
+            }
+            // Trường hợp thêm mới hoạt động
+            if (notifications.dataSend.dataType === "createTaskAction") {
+                const res = [...taskActions, notifications.dataSend.value[0]];
+                props.refreshDataAfterCreateAction(res)
+            }
+            notifications.dataSend = {}; // reset lại 
+        }
+
+        if (performtasks.task) {
+            state = Object.assign(prevState, { taskActions: performtasks.task.taskActions })
             return {
                 state
             }
-        } else {
+        }
+        else {
             return null;
         }
     }
+
+
     shouldComponentUpdate = (nextProps, nextState) => {
         if (nextProps.id !== this.state.id) {
             this.setState(state => {
@@ -830,8 +860,10 @@ class ActionTab extends Component {
         let i
         let arrayActions = []
         for (i = 0; i < taskActions.length; i++) {
-            arrayActions.push({ id: taskActions[i]._id, order: i })
+            arrayActions[i] = taskActions[i]
+            delete arrayActions[i]._id
         }
+
         this.props.sortActions(taskId, arrayActions)
         this.setState({ showSort: false });
     }
@@ -901,8 +933,8 @@ class ActionTab extends Component {
                                                 <React.Fragment>
                                                     <div className="content-level1" data-width="100%">
                                                         {item.creator ?
-                                                            <a style={{ cursor: "pointer" }}>{item.creator?.name} </a> :
-                                                            item.name && <b>{item.name} </b>}
+                                                            <a style={{ cursor: "pointer" }}>{item.creator?.name} </a> : ''}
+                                                        {item.name && <b>{item.name}</b>}
                                                         {item.description.split('\n').map((item, idx) => {
                                                             return (
                                                                 <div key={idx}>
@@ -939,7 +971,7 @@ class ActionTab extends Component {
                                                         <li><span className="text-sm">{<DateTimeConverter dateTime={item.createdAt} />}</span></li>
                                                         <li>{item.mandatory && !item.creator && <b className="text-sm">{translate("task.task_perform.mandatory_action")}</b>}</li>
                                                         {((item.creator === undefined || item.creator === null) && role === "responsible") &&
-                                                            <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={(e) => this.handleConfirmAction(e, item._id, currentUser, task._id)}><i className="fa fa-check-circle" aria-hidden="true"></i> {translate("task.task_perform.confirm_action")}</a></li>}
+                                                            <li><a style={{ cursor: "pointer" }} className="text-green text-sm" onClick={(e) => this.handleConfirmAction(e, item._id, currentUser, task._id)}><i className="fa fa-check-circle" aria-hidden="true"></i> {translate("task.task_perform.confirm_action")}</a></li>}
 
                                                         {/* Các chức năng tương tác với action */}
                                                         {item.creator &&
@@ -1629,13 +1661,25 @@ class ActionTab extends Component {
 
                         {/* Chuyển qua tab Bấm giờ */}
                         <div className={selected === "logTimer" ? "active tab-pane" : "tab-pane"} id="logTimer">
-                            {logTimer && logTimer.map(item =>
-                                <div key={item._id} className="item-box">
-                                    <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} </a>
-                                    {translate("task.task_perform.total_time")} {moment.utc(item.duration, "x").format('HH:mm:ss')}&nbsp;
-                                    ({moment(item.startedAt, "x").format("HH:mm:ss DD/MM/YYYY")} - {moment(item.stoppedAt).format("HH:mm:ss DD/MM/YYYY")})
-                                    <div>{item.description ? item.description : translate("task.task_perform.none_description")}</div>
-                                </div>
+                            {logTimer && logTimer.map((item, index) =>
+                                <React.Fragment key={index}>
+                                    {item.stoppedAt &&
+                                        <div key={item._id} className="item-box">
+                                            <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} </a>
+                                            <div>
+                                                <i className="fa fa-clock-o"> </i> {moment(item.startedAt).format("HH:mm:ss DD/MM/YYYY")}{" - "}
+                                                <i className="fa fa-clock-o"> </i> {moment(item.stoppedAt).format("HH:mm:ss DD/MM/YYYY")})
+                                            </div>
+                                            <div>
+                                                <i className="fa fa-hourglass-end"></i> {moment.utc(item.duration, "x").format('HH:mm:ss')}&nbsp;<br />
+                                            </div>
+                                            <div>
+                                                <i className="fa fa-edit"></i>
+                                                {item.description ? item.description : translate("task.task_perform.none_description")}
+                                            </div>
+                                        </div>
+                                    }
+                                </React.Fragment>
                             )}
                         </div>
 
@@ -1705,8 +1749,8 @@ class ActionTab extends Component {
 }
 
 function mapState(state) {
-    const { tasks, performtasks, user, auth } = state;
-    return { tasks, performtasks, user, auth };
+    const { tasks, performtasks, user, auth, notifications } = state;
+    return { tasks, performtasks, user, auth, notifications };
 }
 
 const actionCreators = {
@@ -1741,7 +1785,10 @@ const actionCreators = {
     deleteDocument: performTaskAction.deleteDocument,
     editDocument: performTaskAction.editDocument,
     getAllPreceedingTasks: performTaskAction.getAllPreceedingTasks,
-    sortActions: performTaskAction.sortActions
+    sortActions: performTaskAction.sortActions,
+
+    refreshDataAfterComment: performTaskAction.refreshDataAfterComment,
+    refreshDataAfterCreateAction: performTaskAction.refreshDataAfterCreateAction,
 };
 
 const actionTab = connect(mapState, actionCreators)(withTranslate(ActionTab));

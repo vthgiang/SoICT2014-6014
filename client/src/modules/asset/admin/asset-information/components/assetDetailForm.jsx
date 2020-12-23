@@ -68,6 +68,7 @@ class AssetDetailForm extends Component {
             unitsProducedDuringTheYears, maintainanceLogs, usageLogs, incidentLogs, disposalDate, disposalType, disposalCost,
             disposalDesc, archivedRecordNumber, files, readByRoles
         } = this.state;
+        console.log('this.state', this.state)
 
         return (
             <React.Fragment>
@@ -118,6 +119,7 @@ class AssetDetailForm extends Component {
 
                         archivedRecordNumber={archivedRecordNumber}
                         files={files}
+                        linkPage={this.props.linkPage}
                     />
                 </DialogModal>
             </React.Fragment>

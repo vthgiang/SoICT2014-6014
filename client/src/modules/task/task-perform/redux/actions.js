@@ -69,6 +69,8 @@ export const performTaskAction = {
     getAllPreceedingTasks,
 
     sortActions,
+    refreshDataAfterComment,
+    refreshDataAfterCreateAction,
 };
 
 
@@ -147,11 +149,11 @@ function getTimesheetLogs(taskId) {
 }
 
 // Get timer status task
-function getTimerStatusTask() { //param -- , user
+function getTimerStatusTask(taskId) { //param -- , user
     return dispatch => {
         dispatch({ type: performTaskConstants.GET_TIMERSTATUS_REQUEST });
         //performTaskService.getTimerStatusTask(task,user)
-        performTaskService.getTimerStatusTask()
+        performTaskService.getTimerStatusTask(taskId)
             .then(
                 payload => dispatch({ type: performTaskConstants.GET_TIMERSTATUS_SUCCESS, payload }),
                 error => dispatch({ type: performTaskConstants.GET_TIMERSTATUS_FAILURE, error })
@@ -1098,4 +1100,14 @@ function sortActions(taskId, data) {
                 dispatch({ type: performTaskConstants.SORT_ACTIONS_FAILURE, error });
             });
     };
+}
+
+function refreshDataAfterComment(data) {
+    return dispatch =>
+        dispatch({ type: performTaskConstants.REFRESH_DATA_AFTER_COMMENT_SUCCESS, payload: data });
+}
+
+function refreshDataAfterCreateAction(data) {
+    return dispatch =>
+        dispatch({ type: performTaskConstants.REFRESH_DATA_AFTER_CREATE_ACTION_SUCCESS, payload: data });
 }

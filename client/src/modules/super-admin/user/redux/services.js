@@ -18,6 +18,7 @@ export const UserServices = {
     edit,
     create,
     destroy,
+    importUsers,
 };
 
 function get(params) {
@@ -256,6 +257,20 @@ function getAllUsersWithRole() {
         },
         false,
         false,
+        "super_admin.user"
+    );
+}
+
+function importUsers(data, params) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/user/users/import`,
+            method: "POST",
+            params,
+            data
+        },
+        true,
+        true,
         "super_admin.user"
     );
 }

@@ -54,6 +54,7 @@ module.exports = {
     TimesheetLog: require('./task/timesheetLog.model'),
     TaskProcess: require("./task/taskProcess.model"),
     ProcessTemplate: require("./task/processTemplate.model"),
+    TaskProject: require('./task/taskProject.model'),
 
     Course: require('./training/course.model'),
     EducationProgram: require('./training/educationProgram.model'),
@@ -99,6 +100,8 @@ module.exports = {
     SalesOrder: require('./production/order/salesOrder.model'),
     ServiceLevelAgreement: require('./production/order/serviceLevelAgreement.model'),
     PurchaseOrder: require('./production/order/purchseOrder.model'),
+    BusinessDepartment: require('./production/order/businessDepartment.model'),
+    AdminDepartment: require('./production/order/adminDepartment.model'),
 
 
     Location: require('./common/location.model'),

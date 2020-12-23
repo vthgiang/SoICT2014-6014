@@ -67,7 +67,7 @@ class TimesheetsManagement extends Component {
     }
 
     /**
-     *  Bắt sự kiện click xem xu hướng làm việc của nhân viên
+     *  Bắt sự kiện click xem báo cáo ngày công của nhân viên
      * @param {*} id : id nhân viên
      */
     handleViewChart = async (value) => {
@@ -263,10 +263,20 @@ class TimesheetsManagement extends Component {
                     vertical: 'middle',
                     horizontal: 'center'
                 },
+                totalHoursOff: {
+                    vertical: 'middle',
+                    horizontal: 'center'
+                },
+                totalOvertime: {
+                    vertical: 'middle',
+                    horizontal: 'center'
+                },
 
             };
             data.map((x, index) => {
                 let totalHours = x.totalHours;
+                let totalHoursOff = x.totalHoursOff;
+                let totalOvertime = x.totalOvertime;
                 let shifts1s = x.timekeepingByShift.shift1s;
                 let shifts2s = x.timekeepingByShift.shift2s;
                 let shifts3s = x.timekeepingByShift.shift3s;
@@ -295,13 +305,15 @@ class TimesheetsManagement extends Component {
 
                 let row = [
                     {
-                        merges: { STT: 3, employeeNumber: 3, fullName: 3, totalHours: 3 },
+                        merges: { STT: 3, employeeNumber: 3, fullName: 3, totalHours: 3, totalHoursOff: 3, totalOvertime: 3 },
                         STT: index + 1,
                         fullName: x.employee ? x.employee.fullName : "",
                         employeeNumber: x.employee ? x.employee.employeeNumber : "",
                         space: translate('human_resource.timesheets.shifts1'),
                         ...colShifts1,
                         totalHours: totalHours,
+                        totalHoursOff: totalHoursOff,
+                        totalOvertime: totalOvertime,
                     }, {
                         STT: "",
                         fullName: "",
@@ -325,6 +337,8 @@ class TimesheetsManagement extends Component {
         if (timekeepingType === 'hours') {
             dataExport = data.map((x, index) => {
                 let totalHours = x.totalHours;
+                let totalHoursOff = x.totalHoursOff;
+                let totalOvertime = x.totalOvertime;
                 let timekeepingByHours = x.timekeepingByHours;
                 let colName = {};
                 timekeepingByHours.forEach((y, key) => {
@@ -337,6 +351,8 @@ class TimesheetsManagement extends Component {
                     employeeNumber: x.employee ? x.employee.employeeNumber : "",
                     ...colName,
                     totalHours: totalHours,
+                    totalHoursOff: totalHoursOff,
+                    totalOvertime: totalOvertime
                 }
             })
         }
@@ -352,7 +368,7 @@ class TimesheetsManagement extends Component {
                 {
                     sheetName: "Sheet1",
                     sheetTitle: `${translate('human_resource.timesheets.file_name_export')} ${translate('human_resource.month').toLowerCase()} ${month}`,
-                    sheetTitleWidth: 35,
+                    sheetTitleWidth: timekeepingType === 'hours' ? 37 : 38,
                     tables: [
                         {
                             merges: [{
@@ -370,6 +386,8 @@ class TimesheetsManagement extends Component {
                                 ...space,
                                 ...addColumns,
                                 { key: "totalHours", value: translate('human_resource.timesheets.total_timesheets') },
+                                { key: "totalHoursOff", value: translate('human_resource.timesheets.total_hours_off') },
+                                { key: "totalOvertime", value: translate('human_resource.timesheets.total_over_time') },
                             ],
                             data: dataExport
                         }
@@ -488,11 +506,11 @@ class TimesheetsManagement extends Component {
                                 <table id="table-timesheets" className="keeping table table-bordered">
                                     <thead>
                                         <tr style={{ height: 58 }}>
-                                            <th>{translate('human_resource.staff_number')}</th>
-                                            <th>{translate('human_resource.staff_name')}</th>
-                                            <th>{translate('human_resource.timesheets.total_timesheets')}</th>
-                                            <th>{translate('general.action')}</th>
-                                            <th>{translate('human_resource.timesheets.shift_work')}</th>
+                                            <th className="col-fixed not-sort">{translate('human_resource.staff_number')}</th>
+                                            <th className="col-fixed not-sort">{translate('human_resource.staff_name')}</th>
+                                            <th className="col-fixed not-sort">{translate('human_resource.timesheets.total_timesheets')}</th>
+                                            <th className="col-fixed not-sort">{translate('general.action')}</th>
+                                            <th className="col-fixed not-sort">{translate('human_resource.timesheets.shift_work')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -504,7 +522,7 @@ class TimesheetsManagement extends Component {
                                                         <td rowSpan="3" style={{ paddingTop: 22 }}>{x.employee ? x.employee.fullName : null}</td>
                                                         <td rowSpan="3" style={{ paddingTop: 22 }}> {x.totalHours}</td>
                                                         <td rowSpan="3" style={{ paddingTop: 22, textAlign: "center" }}>
-                                                            <a onClick={() => this.handleViewChart(x.employee)} style={{ width: '5px' }} title={`Xu hướng làm việc của ${x.employee ? x.employee.fullName : null}`}><i className="material-icons">insert_chart_outlined</i></a>
+                                                            <a onClick={() => this.handleViewChart(x.employee)} style={{ width: '5px' }} title={`Báo cáo ngày công của ${x.employee ? x.employee.fullName : null}`}><i className="material-icons">insert_chart_outlined</i></a>
                                                             <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.timesheets.edit_timesheets')}><i className="material-icons">edit</i></a>
                                                             <DeleteNotification
                                                                 content={translate('human_resource.timesheets.delete_timesheets')}
@@ -534,11 +552,11 @@ class TimesheetsManagement extends Component {
                                 </table>
                             </div>
                             <div className="col-lg-6 col-md-6 col-sm-5 col-xs-4" style={{ padding: 0 }}>
-                                <table id="timesheets" className="timekeeping table table-striped table-bordered" style={{ marginLeft: -1 }}>
+                                <table id="timesheets" className="timekeeping table table-bordered" style={{ marginLeft: -1 }}>
                                     <thead>
                                         <tr style={{ height: 58 }}>
                                             {allDayOfMonth.map((x, index) => (
-                                                <th key={index}>{x.day}&nbsp; {x.date}</th>
+                                                <th className="col-fixed not-sort" key={index}>{x.day}&nbsp; {x.date}</th>
                                             ))}
                                         </tr>
                                     </thead>
@@ -563,7 +581,7 @@ class TimesheetsManagement extends Component {
                                                                     }
                                                                 })
                                                                 return (
-                                                                    <td key={indexs} title={check ? data[0].reason : ""} style={{ backgroundColor: check ? "#D49E11" : "none", borderBottomColor: check ? "#D49E11" : "none" }}>
+                                                                    <td key={indexs} title={check ? data[0].reason : ""} style={{ backgroundColor: check ? "#e0e0e0" : "none", borderBottomColor: check ? "#e0e0e0" : "none" }}>
                                                                         {shift1s[indexs] && indexs < dayNow ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
                                                                             (indexs < dayNow ? <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i> : null)}
                                                                     </td>
@@ -585,8 +603,8 @@ class TimesheetsManagement extends Component {
                                                                 })
                                                                 return (
                                                                     <td key={indexs} title={check ? data[0].reason : ""} style={{
-                                                                        backgroundColor: check ? "#D49E11" : "none",
-                                                                        borderTopColor: check ? "#D49E11" : "none", borderBottomColor: check ? "#D49E11" : "none"
+                                                                        backgroundColor: check ? "#e0e0e0" : "none",
+                                                                        borderTopColor: check ? "#e0e0e0" : "none", borderBottomColor: check ? "#e0e0e0" : "none"
                                                                     }} >
                                                                         {shift2s[indexs] === true && indexs < dayNow ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
                                                                             (indexs < dayNow ? <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i> : null)}
@@ -608,7 +626,7 @@ class TimesheetsManagement extends Component {
                                                                     }
                                                                 })
                                                                 return (
-                                                                    <td key={indexs} title={check ? data[0].reason : ""} style={{ backgroundColor: check ? "#D49E11" : "none", borderTopColor: check ? "#D49E11" : "none" }} >
+                                                                    <td key={indexs} title={check ? data[0].reason : ""} style={{ backgroundColor: check ? "#e0e0e0" : "none", borderTopColor: check ? "#e0e0e0" : "none" }} >
                                                                         {shift3s[indexs] === true && indexs < dayNow ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
                                                                             (indexs < dayNow ? <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i> : null)}
                                                                     </td>
@@ -629,18 +647,18 @@ class TimesheetsManagement extends Component {
                         timekeepingType === 'hours' &&
                         <div id="croll-table" className="row-equal-height form-inline">
                             {/* <div className="sticky" style={{ padding: 0 }}> */}
-                            <table id="timesheets" className="table table-striped table-bordered table-hover">
+                            <table id="timesheets" className="table table-striped table-bordered">
                                 <thead>
                                     <tr>
-                                        <th rowSpan="2" className="col-fixed" style={{ width: 120 }}>{translate('human_resource.staff_number')}</th>
-                                        <th rowSpan="2" className="col-fixed" style={{ width: 150 }}>{translate('human_resource.staff_name')}</th>
-                                        <th rowSpan="2" className="col-fixed" style={{ width: 100 }}>{translate('human_resource.timesheets.total_timesheets')}</th>
-                                        <th rowSpan="2" className="col-fixed" style={{ width: 120, textAlign: "center" }}>{translate('general.action')}</th>
-                                        <th colSpan={allDayOfMonth.length} className="col-fixed" style={{ width: 70 * allDayOfMonth.length, textAlign: 'left' }} >{translate('human_resource.timesheets.date_of_month')}</th>
+                                        <th rowSpan="2" className="col-fixed not-sort" style={{ width: 120 }}>{translate('human_resource.staff_number')}</th>
+                                        <th rowSpan="2" className="col-fixed not-sort" style={{ width: 150 }}>{translate('human_resource.staff_name')}</th>
+                                        <th rowSpan="2" className="col-fixed not-sort" style={{ width: 100 }}>{translate('human_resource.timesheets.total_timesheets')}</th>
+                                        <th rowSpan="2" className="col-fixed not-sort" style={{ width: 120, textAlign: "center" }}>{translate('general.action')}</th>
+                                        <th colSpan={allDayOfMonth.length} className="col-fixed not-sort" style={{ width: 70 * allDayOfMonth.length, textAlign: 'left' }} >{translate('human_resource.timesheets.date_of_month')}</th>
                                     </tr>
                                     <tr>
                                         {allDayOfMonth.map((x, index) => (
-                                            <th className="col-fixed" style={{ width: 70 }} key={index}>{`${x.date} - ${x.day}`}</th>
+                                            <th className="col-fixed not-sort" style={{ width: 70 }} key={index}>{`${x.date} - ${x.day}`}</th>
                                         ))}
                                     </tr>
                                 </thead>
@@ -655,7 +673,7 @@ class TimesheetsManagement extends Component {
                                                     <td>{x.employee ? x.employee.fullName : null}</td>
                                                     <td>{x.totalHours}</td>
                                                     <td style={{ textAlign: "center" }}>
-                                                        <a onClick={() => this.handleViewChart(x.employee)} style={{ width: '5px' }} title={`Xu hướng làm việc của ${x.employee ? x.employee.fullName : null}`}><i className="material-icons">insert_chart_outlined</i></a>
+                                                        <a onClick={() => this.handleViewChart(x.employee)} style={{ width: '5px' }} title={`Báo cáo ngày công của ${x.employee ? x.employee.fullName : null}`}><i className="material-icons">insert_chart_outlined</i></a>
                                                         <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.timesheets.edit_timesheets')}><i className="material-icons">edit</i></a>
                                                         <DeleteNotification
                                                             content={translate('human_resource.timesheets.delete_timesheets')}
@@ -680,7 +698,7 @@ class TimesheetsManagement extends Component {
                                                                 }
                                                             })
                                                             return (
-                                                                <td key={indexs} title={check ? data[0].reason : ""} style={{ backgroundColor: check ? "#D49E11" : "none" }}>
+                                                                <td key={indexs} title={check ? data[0].reason : ""} style={{ backgroundColor: check ? "#e0e0e0" : "none" }}>
                                                                     {timekeepingByHours[indexs] !== 0 ? timekeepingByHours[indexs] : null}
                                                                 </td>
                                                             )
@@ -719,6 +737,8 @@ class TimesheetsManagement extends Component {
                         shift2s={currentRow.timekeepingByShift.shift2s}
                         shift3s={currentRow.timekeepingByShift.shift3s}
                         timekeepingByHours={currentRow.timekeepingByHours}
+                        totalHoursOff={currentRow.totalHoursOff}
+                        totalOvertime={currentRow.totalOvertime}
                         allDayOfMonth={this.getAllDayOfMonth(this.formatDate(currentRow.month, true))}
                     />
                 }
@@ -729,7 +749,7 @@ class TimesheetsManagement extends Component {
                 }
                 {
                     currentRowViewChart &&
-                    <TrendWorkOfEmployeeChart employeeId={currentRowViewChart ? currentRowViewChart._id : 'null'} nameChart={`Xu hướng làm việc của ${currentRowViewChart.fullName}`} nameData1='Tổng giờ làm' nameData2='Số giờ tăng ca' />
+                    <TrendWorkOfEmployeeChart employeeId={currentRowViewChart ? currentRowViewChart._id : 'null'} nameChart={`Báo cáo ngày công của ${currentRowViewChart.fullName}`} nameData1='Tổng giờ làm' nameData2='Số giờ tăng ca' />
                 }
             </div>
         );

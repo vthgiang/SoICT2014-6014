@@ -116,10 +116,12 @@ class GeneralTab extends Component {
         let assetbuildinglist = assetbuilding && assetbuilding.list;
 
         const {
-            avatar, defaultAvatar, code, assetName, serial, assetTypes, group, purchaseDate, warrantyExpirationDate,
+            avatar, code, assetName, serial, assetTypes, group, purchaseDate, warrantyExpirationDate,
             managedBy, assignedToUser, assignedToOrganizationalUnit, location,
             description, status, typeRegisterForUse, detailInfo, usageLogs, readByRoles
         } = this.state;
+
+        console.log("FFFFFFF", userlist, assignedToUser)
 
         return (
             <div id={id} className="tab-pane active">

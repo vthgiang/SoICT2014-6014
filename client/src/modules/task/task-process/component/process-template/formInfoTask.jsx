@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { SelectBox,  } from '../../../../../common-components/index';
+import { SelectBox, } from '../../../../../common-components/index';
 import { withTranslate } from "react-redux-multilingual";
 import getEmployeeSelectBoxItems from '../../../organizationalUnitHelper';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
@@ -85,7 +85,7 @@ class FormInfoTask extends Component {
     handleChangeAccountable = (value) => {
         this.setState({
             accountable: value,
-        },()=> console.log(this.state))
+        }, () => console.log(this.state))
         this.props.handleChangeAccountable(value);
     }
 
@@ -103,9 +103,9 @@ class FormInfoTask extends Component {
 
         this.props.handleChangeTaskEndDate(value)
     }
-    
+
     handleChangeTaskPriority = (event) => {
-        let {value} = event.target;
+        let { value } = event.target;
         this.setState(state => {
             return {
                 ...state,
@@ -120,7 +120,7 @@ class FormInfoTask extends Component {
         const { user, translate, role, tasktemplates } = this.props;
         const { id, info, action, listOrganizationalUnit, disabled, template, listUser, task, } = this.props;
 
-        const { nameTask, description, organizationalUnit, taskTemplate, startDate, endDate, priority,responsible,accountable } = this.state;
+        const { nameTask, description, organizationalUnit, taskTemplate, startDate, endDate, priority, responsible, accountable } = this.state;
         console.log(info)
         let usersOfChildrenOrganizationalUnit, listTaskTemplate, listUserAccountable = [], listUserResponsible = [];
         if (user && user.usersOfChildrenOrganizationalUnit) {
@@ -132,7 +132,7 @@ class FormInfoTask extends Component {
         let listItem = [];
         listOrganizationalUnit.forEach(x => {
             if (x._id === info?.organizationalUnit) {
-                listRoles = [...x.deans, ...x.viceDeans, ...x.employees]
+                listRoles = [...x.managers, ...x.deputyManagers, ...x.employees]
             }
         })
         listItem = listRoles.map(x => {
@@ -250,7 +250,7 @@ class FormInfoTask extends Component {
                         }
                     </div>
 
-    
+
                     <button className='btn btn-primary' onClick={this.props.done}> Hoàn thành</button>
                 </form>
             </div>

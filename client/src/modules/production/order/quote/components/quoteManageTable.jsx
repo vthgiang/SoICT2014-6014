@@ -2,9 +2,13 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { QuoteActions } from "../redux/actions";
+import { DiscountActions } from "../../discount/redux/actions";
+import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
+import { DepartmentActions } from "../../../../super-admin/organizational-unit/redux/actions";
+import { RoleActions } from "../../../../super-admin/role/redux/actions";
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import { formatDate } from "../../../../../helpers/formatDate";
-import { PaginateBar, DataTableSetting, SelectBox } from "../../../../../common-components";
+import { PaginateBar, DataTableSetting, SelectMulti, SelectBox, DeleteNotification } from "../../../../../common-components";
 import QuoteDetailForm from "./quoteDetailForm";
 import QuoteCreateForm from "./quoteCreateForm";
 import QuoteEditForm from "./quoteEditForm";
@@ -24,6 +28,10 @@ class QuoteManageTable extends Component {
     componentDidMount = () => {
         const { page, limit } = this.state;
         this.props.getAllQuotes({ page, limit });
+        this.props.getDiscountForOrderValue();
+        this.props.getCustomers();
+        this.props.getAllDepartments();
+        this.props.getAllRoles();
     };
 
     setPage = async (page) => {
@@ -44,6 +52,44 @@ class QuoteManageTable extends Component {
         const data = {
             limit: limit,
             page: this.state.page,
+        };
+        this.props.getAllQuotes(data);
+    };
+
+    handleStatusChange = (value) => {
+        this.setState({
+            status: value,
+        });
+    };
+
+    handleOrderCodeChange = (e) => {
+        let { value } = e.target;
+        this.setState({
+            code: value,
+        });
+    };
+
+    handleCustomerSearchChange = (value) => {
+        //Tìm kiếm theo khách hàng
+        this.setState({
+            customer: value,
+        });
+    };
+    handleQueryDateChange = (value) => {
+        this.setState({
+            queryDate: value[0],
+        });
+    };
+
+    handleSubmitSearch = () => {
+        let { limit, page, code, status, customer, queryDate } = this.state;
+        const data = {
+            limit,
+            page,
+            code,
+            status,
+            customer,
+            queryDate,
         };
         this.props.getAllQuotes(data);
     };
@@ -73,6 +119,20 @@ class QuoteManageTable extends Component {
         window.$("#modal-edit-quote").modal("show");
     };
 
+    deleteQuote = async (id) => {
+        this.props.deleteQuote(id);
+    };
+
+    // checkHasComponent = (name) => {
+    //     let { auth } = this.props;
+    //     let result = false;
+    //     auth.components.forEach(component => {
+    //         if (component.name === name) result = true;
+    //     });
+
+    //     return result;
+    // }
+
     render() {
         let { limit, quoteDetail, quoteEdit } = this.state;
         const { translate, quotes } = this.props;
@@ -86,11 +146,11 @@ class QuoteManageTable extends Component {
         const dataStatus = [
             {
                 className: "text-primary",
-                text: "Gửi yêu cầu",
+                text: "Chờ phê duyệt",
             },
             {
                 className: "text-warning",
-                text: "chờ phản hồi",
+                text: "Đã duyệt",
             },
             {
                 className: "text-success",
@@ -102,6 +162,10 @@ class QuoteManageTable extends Component {
             },
         ];
 
+        const { department, role, auth } = this.props;
+
+        console.log("auth", auth);
+
         return (
             <React.Fragment>
                 <div className="nav-tabs-custom">
@@ -111,7 +175,7 @@ class QuoteManageTable extends Component {
                         {quoteEdit && <QuoteEditForm quoteEdit={quoteEdit} />}
                         <div className="form-inline">
                             <div className="form-group">
-                                <label className="form-control-static">Tìm mã đơn mua</label>
+                                <label className="form-control-static">Mã đơn</label>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -122,29 +186,71 @@ class QuoteManageTable extends Component {
                                 />
                             </div>
                             <div className="form-group">
+                                <label className="form-control-static">Khách hàng</label>
+                                <SelectMulti
+                                    id={`selectMulti-filter-customer-quote`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={
+                                        this.props.customers.list
+                                            ? this.props.customers.list.map((customerItem) => {
+                                                  return {
+                                                      value: customerItem._id,
+                                                      text: customerItem.name,
+                                                  };
+                                              })
+                                            : []
+                                    }
+                                    multiple="multiple"
+                                    options={{ nonSelectedText: "Chọn khách hàng", allSelectedText: "Đã chọn tất cả" }}
+                                    onChange={this.handleCustomerSearchChange}
+                                />
+                            </div>
+                            <div className="form-group">
                                 <label className="form-control-static">Trạng thái đơn</label>
-                                <SelectBox
-                                    id={`select-filter-status-quote`}
+
+                                <SelectMulti
+                                    id={`selectMulti-filter-status-quote`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={[
                                         {
-                                            value: "Gửi yêu cầu",
-                                            text: "Gửi yêu cầu",
+                                            value: 0,
+                                            text: "Chờ phê duyệt",
                                         },
                                         {
-                                            value: "Chờ phản hồi",
-                                            text: "Chờ phản hồi",
+                                            value: 1,
+                                            text: "Đã duyệt",
                                         },
                                         {
-                                            value: "Đạt thỏa thuận",
-                                            text: "Đạt thỏa thuận",
+                                            value: 2,
+                                            text: "Đã chốt đơn",
                                         },
-                                        { value: "Hủy đơn", text: "Hủy đơn" },
+                                        {
+                                            value: 3,
+                                            text: "Hủy đơn",
+                                        },
                                     ]}
+                                    multiple="multiple"
+                                    options={{ nonSelectedText: "Chọn trạng thái đơn", allSelectedText: "Đã chọn tất cả" }}
                                     onChange={this.handleStatusChange}
                                 />
                             </div>
+                            <div className="form-group">
+                                <label className="form-control-static">Thời hạn áp dụng</label>
+                                <SelectBox
+                                    id={`select-filter-status-discounts`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={[
+                                        { value: "effective", text: "Đang hiệu lực" },
+                                        { value: "expire", text: "Đã quá hạn" },
+                                        { value: "all", text: "Tất cả" },
+                                    ]}
+                                    onChange={this.handleQueryDateChange}
+                                />
+                            </div>
+
                             <div className="form-group">
                                 <button type="button" className="btn btn-success" title="Lọc" onClick={this.handleSubmitSearch}>
                                     Tìm kiếm
@@ -224,6 +330,14 @@ class QuoteManageTable extends Component {
                                                     >
                                                         <i className="material-icons">edit</i>
                                                     </a>
+                                                    <DeleteNotification
+                                                        content={"Bạn có chắc chắn muốn xóa báo giá này"}
+                                                        data={{
+                                                            id: item._id,
+                                                            info: item.code,
+                                                        }}
+                                                        func={() => this.deleteQuote(item._id)}
+                                                    />
                                                 </td>
                                             )}
                                         </tr>
@@ -246,12 +360,18 @@ class QuoteManageTable extends Component {
 }
 
 function mapStateToProps(state) {
-    const { quotes } = state;
-    return { quotes };
+    const { customers } = state.crm;
+    const { quotes, department, role, auth } = state;
+    return { quotes, customers, department, role, auth };
 }
 
 const mapDispatchToProps = {
     getAllQuotes: QuoteActions.getAllQuotes,
+    deleteQuote: QuoteActions.deleteQuote,
+    getDiscountForOrderValue: DiscountActions.getDiscountForOrderValue,
+    getCustomers: CrmCustomerActions.getCustomers,
+    getAllDepartments: DepartmentActions.get,
+    getAllRoles: RoleActions.get,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuoteManageTable));

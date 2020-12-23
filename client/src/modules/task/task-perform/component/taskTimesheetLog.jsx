@@ -13,6 +13,8 @@ class TaskTimesheetLog extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            currentUser: getStorage("userId"),
+            time: new Date(),
             showModal: '',
             description: '',
             showEndDate: false,
@@ -99,7 +101,6 @@ class TaskTimesheetLog extends Component {
                 var milisec = new Date(isoDate).getTime();
             }
         }
-        console.log(this.state.timeStop)
         const timer = {
             employee: getStorage("userId"),
             startedAt: performtasks.currentTimer.timesheetLogs[0].startedAt,
@@ -213,23 +214,41 @@ class TaskTimesheetLog extends Component {
         return [day, month, year].join('-');
     }
 
+    getDiffTime = (time1, time2) => {
+        if (!time1 || !time2) return 0;
+        let timer1 = new Date(time1);
+        let timer2 = new Date(time2);
+        let diff = timer1.getTime() - timer2.getTime();
+
+        return diff;
+    }
+
+    showTiming = (time) => {
+        if (time <= 0) {
+            return '__:__:__'
+        } else {
+            return moment.utc(time).format('HH:mm:ss')
+        }
+    }
+
     render() {
 
         const { translate, performtasks, auth } = this.props;
-        const { showEndDate, disabled, errorOnEndDate } = this.state
+        const { showEndDate, disabled, errorOnEndDate, currentUser, time } = this.state
         const currentTimer = performtasks.currentTimer;
-        const a = (this.state.time - currentTimer?.timesheetLogs[0].startedAt > 0) ? this.state.time - currentTimer?.timesheetLogs[0].startedAt : 0
+        const a = this.getDiffTime(this.state.time, currentTimer?.timesheetLogs[0].startedAt);
+
         return (
             <React.Fragment>
                 {
                     currentTimer &&
                     <React.Fragment>
-                        <div className="timesheet-box">
+                        <div className="timesheet-box" id={currentUser} >
                             <div className="time">
                                 <span>
                                     <i className="fa fa-stop-circle-o fa-lg" style={{ color: "red", cursor: "pointer" }} aria-hidden="true" title="Dừng bấm giờ" onClick={this.handleStopTimer}></i>
                                 </span>
-                                <span>&nbsp; {moment.utc(a).format('HH:mm:ss')}</span>
+                                <span>&nbsp; {this.showTiming(a)}</span>
                                 <a style={{ position: 'absolute', right: '10px' }} href={`/task?taskId=${currentTimer._id}`}><i className="fa fa-arrow-circle-right"></i></a>
                             </div>
                             {this.state.showModal === auth.user.id &&

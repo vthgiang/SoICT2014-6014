@@ -45,7 +45,6 @@ class QuoteCreateInfo extends Component {
             customerEmail,
             effectiveDate,
             expirationDate,
-            dateError,
             isUseForeignCurrency,
             foreignCurrency,
         } = this.props;

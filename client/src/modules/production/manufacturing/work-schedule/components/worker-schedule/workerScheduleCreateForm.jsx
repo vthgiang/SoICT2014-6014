@@ -52,11 +52,11 @@ class WorkerScheduleCreateForm extends Component {
         const { listWorks } = manufacturingWorks;
         console.log(employees);
         console.log(listWorks);
-        let arrayRoleIdDeans = [];
+        let arrayRoleIdManagers = [];
         listWorks.map(works => {
-            arrayRoleIdDeans = [...arrayRoleIdDeans, ...works.organizationalUnit.deans]
+            arrayRoleIdManagers = [...arrayRoleIdManagers, ...works.organizationalUnit.managers]
         });
-        arrayRoleIdDeans = arrayRoleIdDeans.map(role => role._id);
+        arrayRoleIdManagers = arrayRoleIdManagers.map(role => role._id);
 
         // Lấy ra tất cả các nhân viên trong 2 nhà máy đó
         // Lấy ra các roleId của các trưởng phòng
@@ -67,7 +67,7 @@ class WorkerScheduleCreateForm extends Component {
         }];
 
         if (employees) {
-            let arrayEmployees = employees.filter((employee) => !arrayRoleIdDeans.includes(employee.roleId._id))
+            let arrayEmployees = employees.filter((employee) => !arrayRoleIdManagers.includes(employee.roleId._id))
             console.log(arrayEmployees);
             arrayEmployees.map((e) => {
                 listUserArray.push({
@@ -214,11 +214,11 @@ class WorkerScheduleCreateForm extends Component {
                                                     <td>{translate(`manufacturing.work_schedule.turn_${turn}`)}</td>
                                                     {
                                                         allDaysOfMonth.map((day, index2) =>
-                                                            (
-                                                                <td key={index2}>
-                                                                    <input type="checkbox" disabled={true} />
-                                                                </td>
-                                                            )
+                                                        (
+                                                            <td key={index2}>
+                                                                <input type="checkbox" disabled={true} />
+                                                            </td>
+                                                        )
                                                         )
                                                     }
                                                 </tr>

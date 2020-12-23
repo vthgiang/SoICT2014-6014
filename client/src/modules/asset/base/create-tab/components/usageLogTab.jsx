@@ -246,6 +246,10 @@ class UsageLogTab extends Component {
                     <UsageLogAddModal handleChange={this.handleAddUsage} typeRegisterForUse={typeRegisterForUse} id={`addUsage${id}`} />
 
                     <div className="form-inline">
+                        {
+                            !this.props.assetId &&
+                            <div><span style={{ color: "red" }}>Cần thêm tài sản trước khi thêm sử dụng theo giờ</span></div>
+                        }
                         <div className="form-group">
                             <label style={{ width: "auto" }} className="form-control-static"> Đối tượng đang sử dụng:</label>
                             <div style={{ width: "auto" }} className="form-control-static">
@@ -302,7 +306,7 @@ class UsageLogTab extends Component {
                         </table>
                     }
                     {
-                        typeRegisterForUse == 2 &&
+                        typeRegisterForUse == 2 && this.props.assetId &&
 
                         <CalendarUsage
                             id={`edit-calendar-create-tab-${assetId}`}
@@ -313,6 +317,7 @@ class UsageLogTab extends Component {
                             typeRegisterForUse={typeRegisterForUse}
                             managedBy={managedBy}
                             handleChange={this.handleAddUsage}
+                            linkPage={this.props.linkPage}
                         />
                     }
                     {typeRegisterForUse !== 2 &&

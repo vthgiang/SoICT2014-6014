@@ -10,7 +10,7 @@ class ViewAllOverTime extends Component {
     };
 
     render() {
-        const { title, dataView, id, showCheck = false } = this.props;
+        const { title, dataView, id, showCheck = false, hideEmployee = false } = this.props;
         console.log(dataView);
         return (
             <React.Fragment>
@@ -25,7 +25,7 @@ class ViewAllOverTime extends Component {
                         <table className="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    <th>STT</th>
+                                    <th className="col-fixed" style={{ width: 80 }}>STT</th>
                                     <th>Họ và tên</th>
                                     <th>Tổng số giờ</th>
                                 </tr>
@@ -33,9 +33,9 @@ class ViewAllOverTime extends Component {
                             <tbody>
                                 {dataView.length !== 0 &&
                                     dataView.map((x, index) => (
-                                        <tr key={index} style={{ color: (x._id === localStorage.getItem('userId') && showCheck) ? "#00a65a" : "none" }}>
+                                        <tr key={index} style={{ color: (x._id === localStorage.getItem('userId') && showCheck) ? "#28A745" : "none" }}>
                                             <td>{index + 1}</td>
-                                            <td>{x.name}</td>
+                                            <td>{hideEmployee ? `Nhân viên ${index + 1}` : x.name}</td>
                                             <td>{x.totalHours}</td>
                                         </tr>
                                     ))

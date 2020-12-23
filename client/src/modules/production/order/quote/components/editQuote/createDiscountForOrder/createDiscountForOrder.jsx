@@ -57,6 +57,7 @@ class CreateDiscountsForOrder extends Component {
 
     handleDiscountChange = (e) => {
         let { discountsChecked } = this.props;
+        console.log("discountsOfOrderValueChecked---------------------------", discountsChecked);
         const { handleDiscountsChange } = this.props;
         let { discountsProps } = this.props;
         let { id, checked } = e.target;
@@ -143,6 +144,7 @@ class CreateDiscountsForOrder extends Component {
     getDiscountOptions = (item) => {
         let { paymentAmount } = this.props;
         let { discountsChecked } = this.props;
+        console.log("discountsOfOrderValueChecked---------------------------", discountsChecked);
 
         const { discounts, formality } = item;
         return (
@@ -181,7 +183,7 @@ class CreateDiscountsForOrder extends Component {
                                 className={`form-check-input`}
                                 id={`${item._id}-${index}`}
                                 disabled={disabled}
-                                checked={discountsChecked[`${item._id}-${index}`]}
+                                checked={discountsChecked[`${item._id}-${index}`] ? discountsChecked[`${item._id}-${index}`] : false} // Nếu có thì check, k thì k check
                                 onChange={this.handleDiscountChange}
                                 style={{ minWidth: "20px" }}
                                 key={index}

@@ -1,7 +1,7 @@
 const { Bill, Lot, Stock } = require(`${SERVER_MODELS_DIR}`);
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
-exports.getBillsByType = async (query, portal) => {
+exports.getBillsByType = async (query, userId, portal) => {
     var { page, limit, group, managementLocation } = query;
 
     if (!managementLocation) throw new Error("roles not avaiable");
@@ -40,7 +40,26 @@ exports.getBillsByType = async (query, portal) => {
             ])
             .sort({ 'updatedAt': 'desc' })
     } else {
-        let option = { fromStock: arrayStock };
+        let option = { 
+            fromStock: arrayStock,  
+            $or: [
+                {
+                    creator: userId,
+                },
+                {
+                    approvers: { $elemMatch: { approver: userId } }
+                },
+                {
+                    qualityControlStaffs: { $elemMatch: { staff: userId } }
+                },
+                {
+                    responsibles: { $in: userId }
+                },
+                {
+                    accountables: { $in: userId }
+                }
+            ]
+         };
 
             if(query.group) {
                 option.group = query.group;
@@ -153,7 +172,7 @@ exports.getBillsByType = async (query, portal) => {
 exports.getBillByGood = async (query, portal) => {
     const { good, limit, page } = query;
 
-    let option = { goods: { $elemMatch: { good: good } }, $or: [{ group: '1' }, { group: '2' }] };
+    let option = { goods: { $elemMatch: { good: good } }, $or: [{ group: '1' }, { group: '2' }], status: '2' };
 
     if (query.startDate && query.endDate) {
         let date1 = query.startDate.split("-");

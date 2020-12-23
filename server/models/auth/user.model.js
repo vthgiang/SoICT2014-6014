@@ -47,11 +47,12 @@ const UserSchema = new Schema(
             type: String,
             default: "/upload/avatars/user.png",
         },
-        pushNotificationTokens: [
-            {
-                type: String,
-            },
-        ],
+        pushNotificationTokens: [{ type: String }],
+
+        // mật khẩu cấp 2
+        password2: {
+            type: String
+        }
     },
     {
         timestamps: true,

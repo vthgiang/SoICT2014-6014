@@ -35,13 +35,13 @@ class Roles extends Component {
         const { auth } = this.props;
         const { currentRole } = this.state;
         return (
-            <li>
+            <li style={{ marginRight: '16px' }}>
                 {
                     auth.user.roles && auth.user.roles.length > 0 &&
                     <select
                         className="form-control"
-                        style={{ marginTop: '9px' }}
                         onChange={this.selectRole}
+                        style={{ height: '34px', marginTop: '8px' }}
                         name="currentRole"
                         defaultValue={currentRole}>
                         {

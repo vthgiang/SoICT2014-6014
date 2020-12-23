@@ -649,10 +649,10 @@ class TaskReportEditForm extends Component {
 
         if (user.roledepartments) {
             listRole = user.roledepartments;
-            for (let x in listRole.deans)
-                listRoles[x] = listRole.deans[x];
-            for (let x in listRole.viceDeans)
-                listRoles = [...listRoles, listRole.viceDeans[x]];
+            for (let x in listRole.managers)
+                listRoles[x] = listRole.managers[x];
+            for (let x in listRole.deputyManagers)
+                listRoles = [...listRoles, listRole.deputyManagers[x]];
             for (let x in listRole.employees)
                 listRoles = [...listRoles, listRole.employees[x]];
         }

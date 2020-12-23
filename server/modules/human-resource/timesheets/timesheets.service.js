@@ -149,7 +149,6 @@ exports.getTimesheetsByEmployeeIdOrEmailInCompanyAndTime = async (portal, employ
         } else {
             employee = await Employee(connect(DB_CONNECTION, portal)).findOne({emailInCompany: employeeId }, {_id: 1});
         };
-        console.log(employee);
 
         if (employee) {
             let listTimesheetsByEmployeeIdAndTime = await Timesheet(connect(DB_CONNECTION, portal)).find({
@@ -159,7 +158,8 @@ exports.getTimesheetsByEmployeeIdOrEmailInCompanyAndTime = async (portal, employ
                 }
             }, {
                 totalHoursOff: 1,
-                totalHours:1,
+                totalHours: 1,
+                totalOvertime: 1,
                 month: 1
             });
             return {
@@ -259,6 +259,7 @@ exports.getOvertimeOfUnitsByStartDateAndEndDate = async (portal, organizationalU
             }
             let listOvertimeOfUnitsByStartDateAndEndDate = await Timesheet(connect(DB_CONNECTION, portal)).find(keySearch, {
                 totalHoursOff: 1,
+                totalOvertime: 1,
                 month: 1
             }).populate({path:'employee', select:'employeeNumber fullName emailInCompany _id'});
             return {
@@ -272,6 +273,7 @@ exports.getOvertimeOfUnitsByStartDateAndEndDate = async (portal, organizationalU
                 }
             }, {
                 totalHoursOff: 1,
+                totalOvertime: 1,
                 month: 1
             }).populate({path:'employee', select:'employeeNumber fullName emailInCompany _id'});
             return {
@@ -324,23 +326,19 @@ exports.createTimesheets = async (portal, data, company) => {
             let shift2s = timekeepingByShift.shift2s.map(x => x ? timeShift2 : 0);
             let shift3s = timekeepingByShift.shift3s.map(x => x ? timeShift3 : 0);
             let timekeepingByHours = shift1s.map((x, index) => x + shift2s[index] + shift3s[index]);
-            let totalHours = 0,
-                totalOverTimeHours = 0;
-            timekeepingByShift.shift3s.forEach(x => {
-                if (x) {
-                    totalOverTimeHours = totalOverTimeHours + timeShift3;
-                }
-            });
+            let totalHours = 0;
             timekeepingByHours.forEach(x => {
                 totalHours = totalHours + x;
             })
+
             // Thêm thông tin chấm công
             createTimesheets = await Timesheet(connect(DB_CONNECTION, portal)).create({
                 employee: data.employee,
                 company: company,
                 month: month,
                 totalHours: totalHours,
-                totalHoursOff: 0 - totalOverTimeHours,
+                totalHoursOff: data.totalHoursOff,
+                totalOvertime: data.totalOvertime,
                 timekeepingByHours: timekeepingByHours,
                 timekeepingByShift: data.timekeepingByShift,
 
@@ -358,6 +356,7 @@ exports.createTimesheets = async (portal, data, company) => {
                 month: month,
                 totalHours: totalHours,
                 totalHoursOff: data.totalHoursOff,
+                totalOvertime: data.totalOvertime,
                 timekeepingByHours: data.timekeepingByHours,
             });
         }
@@ -413,21 +412,16 @@ exports.updateTimesheets = async (portal, id, data) => {
         let shift2s = timekeepingByShift.shift2s.map(x => x ? timeShift2 : 0);
         let shift3s = timekeepingByShift.shift3s.map(x => x ? timeShift3 : 0);
         let timekeepingByHours = shift1s.map((x, index) => x + shift2s[index] + shift3s[index]);
-        let totalHours = 0,
-            totalOverTimeHours = 0;
+        let totalHours = 0;
         timekeepingByHours.forEach(x => {
             totalHours = totalHours + x;
-        });
-        timekeepingByShift.shift3s.forEach(x => {
-            if (x) {
-                totalOverTimeHours = totalOverTimeHours + timeShift3;
-            }
         });
 
         // Cập nhật thông tin chấm công
         let infoTimesheets = await Timesheet(connect(DB_CONNECTION, portal)).findById(id);
         infoTimesheets.totalHours = totalHours;
-        infoTimesheets.totalHoursOff = 0 - totalOverTimeHours;
+        infoTimesheets.totalHoursOff = data.totalHoursOff;
+        infoTimesheets.totalOvertime = data.totalOvertime;
         infoTimesheets.timekeepingByShift = data.timekeepingByShift;
         infoTimesheets.timekeepingByHours = timekeepingByHours;
         await infoTimesheets.save();
@@ -441,6 +435,7 @@ exports.updateTimesheets = async (portal, id, data) => {
         let infoTimesheets = await Timesheet(connect(DB_CONNECTION, portal)).findById(id);
         infoTimesheets.totalHours = totalHours;
         infoTimesheets.totalHoursOff = data.totalHoursOff;
+        infoTimesheets.totalOvertime = data.totalOvertime;
         infoTimesheets.timekeepingByHours = data.timekeepingByHours;
         await infoTimesheets.save();
     }
@@ -531,21 +526,20 @@ exports.importTimesheets = async (portal, data, company) => {
                 let shift2s = timekeepingByShift.shift2s.map(x => x ? timeShift2 : 0);
                 let shift3s = timekeepingByShift.shift3s.map(x => x ? timeShift3 : 0);
                 let timekeepingByHours = shift1s.map((x, index) => x + shift2s[index] + shift3s[index]);
-                let totalHours = 0,
-                    totalOverTimeHours = 0;
-                timekeepingByHours.forEach(x => {
-                    totalHours = totalHours + x;
-                });
-                timekeepingByShift.shift3s.forEach(x => {
-                    if (x) {
-                        totalOverTimeHours = totalOverTimeHours + timeShift3;
+                let totalHours = 0;
+                    if(y.totalHours){
+                        totalHours
+                    } else {
+                        timekeepingByHours.forEach(x => {
+                            totalHours = totalHours + x;
+                        });
                     }
-                });
 
                 return {
                     ...y,
                     totalHours: totalHours,
-                    totalHoursOff: 0 - totalOverTimeHours,
+                    totalHoursOff: y.totalHoursOff,
+                    totalOvertime: y.totalOvertime,
                     timekeepingByHours: timekeepingByHours
                 }
             })

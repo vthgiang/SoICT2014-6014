@@ -14,6 +14,7 @@ class SocialInsuranceAddModal extends Component {
             startDate: this.formatDate(Date.now()),
             endDate: this.formatDate(Date.now()),
             position: "",
+            money: null
         }
     }
 
@@ -79,6 +80,26 @@ class SocialInsuranceAddModal extends Component {
         return msg === undefined;
     }
 
+    /** Bắt sự kiện thay đổi mức lương đóng */
+    handleMoneyChange = (e) => {
+        let { value } = e.target;
+        this.validateMoney(value, true)
+    }
+    validateMoney = (value, willUpdateState = true) => {
+        const { translate } = this.props;
+        let msg = EmployeeCreateValidator.validateMoney(value, translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnMoney: msg,
+                    money: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
     /**
      * Function lưu thay đổi "từ tháng/năm" vào state
      * @param {*} value : Từ tháng
@@ -137,10 +158,10 @@ class SocialInsuranceAddModal extends Component {
 
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     isFormValidated = () => {
-        const { company, startDate, endDate, position } = this.state;
+        const { company, startDate, endDate, position, money } = this.state;
 
-        let result = this.validateExperienceUnit(company, false) && this.validateExperiencePosition(position, false);
-
+        let result = this.validateExperienceUnit(company, false) && this.validateExperiencePosition(position, false) &&
+            this.validateMoney(money, false);
         let partStart = startDate.split('-');
         let startDateNew = [partStart[1], partStart[0]].join('-');
         let partEnd = endDate.split('-');
@@ -170,7 +191,7 @@ class SocialInsuranceAddModal extends Component {
 
         const { id } = this.props;
 
-        const { company, position, startDate, endDate, errorOnStartDate, errorOnEndDate, errorOnUnit, errorOnPosition } = this.state;
+        const { company, position, startDate, endDate, money, errorOnMoney, errorOnStartDate, errorOnEndDate, errorOnUnit, errorOnPosition } = this.state;
 
         return (
             <React.Fragment>
@@ -218,8 +239,14 @@ class SocialInsuranceAddModal extends Component {
                         {/* Chức vụ */}
                         <div className={`form-group ${errorOnPosition && "has-error"}`}>
                             <label>{translate('table.position')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="position" value={position} onChange={this.handlePositionChange} autoComplete="off" />
+                            <input type="text" className="form-control" name="position" value={position ? position : ''} onChange={this.handlePositionChange} autoComplete="off" />
                             <ErrorLabel content={errorOnPosition} />
+                        </div>
+                        {/* Mức lương đóng */}
+                        <div className={`form-group ${errorOnMoney && "has-error"}`}>
+                            <label>{translate('human_resource.profile.money')}<span className="text-red">*</span></label>
+                            <input type="Number" className="form-control" name="money" value={money ? money : ''} onChange={this.handleMoneyChange} autoComplete="off" />
+                            <ErrorLabel content={errorOnMoney} />
                         </div>
                     </form>
                 </DialogModal>

@@ -222,7 +222,7 @@ class EditForm extends Component {
 
                 {/* Thông tin mặc định */}
                 <div className="form-group">
-                    <label>Các thuộc tính mặc định:<a style={{ cursor: "pointer" }} title='Thêm thuộc tính mặc định'><i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: 5 }}
+                    <label>Các thuộc tính mặc định:<a style={{ cursor: "pointer" }} title='Thêm thuộc tính mặc định'><i className="fa fa-plus-square" style={{ color: "#28A745", marginLeft: 5 }}
                         onClick={this.handleAddDefaultInfo} /></a></label>
 
                     {/* Bảng thông tin chi tiết */}

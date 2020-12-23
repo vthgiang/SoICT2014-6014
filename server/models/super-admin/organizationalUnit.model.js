@@ -10,13 +10,13 @@ const OrganizationalUnitSchema = new Schema(
         description: {
             type: String,
         },
-        deans: [
+        managers: [
             {
                 type: Schema.Types.ObjectId,
                 ref: "Role",
             },
         ],
-        viceDeans: [
+        deputyManagers: [
             {
                 type: Schema.Types.ObjectId,
                 ref: "Role",

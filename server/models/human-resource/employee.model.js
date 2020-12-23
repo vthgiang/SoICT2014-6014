@@ -183,7 +183,8 @@ const EmployeeSchema = new Schema({
         startDate: Date,
         endDate: Date,
         position: String,
-        company: String
+        company: String,
+        money: Number,
     }],
     taxNumber: { // Mã số thuế thu nhập cá nhân
         type: String,
@@ -200,7 +201,7 @@ const EmployeeSchema = new Schema({
     degrees: [{ // Bằng cấp
         name: String,
         issuedBy: String,
-        year: String,
+        year: Number,
         degreeType: {
             type: String,
             enum: ['excellent', 'very_good', 'good', 'average_good', 'ordinary'] //excellent-Xuất sắc, very_good-Giỏi, good-Khá, average_good-Trung bình khá, ordinary-Trung bình
@@ -269,21 +270,20 @@ const EmployeeSchema = new Schema({
         urlFile: String
     }],
     career: [{
-        package: String,
+        package: [{
+            type: String,
+        }],
         field: {
-            name: String,
-            id: String,
-            code: String
+            type: Schema.Types.ObjectId,
+            ref: 'CareerField',
         },
         position: {
-            name: String,
-            id: String,
-            code: String
+            type: Schema.Types.ObjectId,
+            ref: "CareerPosition",
         },
         action: [{
-            name: String,
-            id: String,
-            code: String
+            type: Schema.Types.ObjectId,
+            ref: "CareerAction",
         }],
         startDate: Date,
         endDate: Date,

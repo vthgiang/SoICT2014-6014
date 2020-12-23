@@ -1,6 +1,6 @@
 const Models = require(`${SERVER_MODELS_DIR}`);
 const { Link, Privilege, Role } = Models;
-const { LINK_CATEGORY } = require(`${SERVER_SEED_DIR}/terms.js`);
+const { LINK_CATEGORY } = require('../../../helpers/config');
 const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 /**

@@ -29,3 +29,98 @@ export const compareTime = (time1, time2, type='dmy') => {
             return time1 > time2 ? 1 : -1;
     }
 }
+
+/**
+ * Hàm lấy ra một thuộc tính của một giá trị đầu vào cho trước
+ * Giá trị có thể có hoặc không phụ thuộc vào một mảng các giá trị mà giá trị đầu vào có hoặc không thuộc trong mảng
+ * @param {*} value 
+ * @param {*} property 
+ * @param {*} getValue 
+ * @param {*} arr 
+ */
+export const getPropertyOfValue = (value, property = "name", getValue = true, arr) => {
+    if (!value) return '';
+    if (!arr) {
+        if (typeof (value) !== 'object') return getValue ? value : '';
+        else return value[property];
+    } else {
+        if (typeof (value) === 'object') {
+            return value[property];
+        } else {
+            let findValue = arr.find(item => item._id === value);
+            if (!findValue) return '';
+            else return findValue[property];
+        }
+    }
+}
+
+/**
+ * Hàm lấy định dạng thời gian theo format
+ * @param {*} time 
+ * @param {*} type 
+ */
+export const getFormatDateFromTime = (time, format='date') => {
+    if(!time) return null;
+
+    let d = new Date(time);
+    if(!d) return null;
+    
+    let day = d.getDate();
+    day =  day < 10 ? `0${day}` : day;
+    
+    let month = d.getMonth() + 1;
+    month = month < 10 ? `0${month}` : month; 
+    
+    let year = d.getFullYear();
+
+    switch(format) {
+        case 'mm-yyyy': 
+            return [month, year].join('-');
+        case 'dd-mm-yyyy': 
+            return [day, month, year].join('-');
+        default:
+            return d;
+    }
+}
+
+/**
+ * Hàm lấy giá trị thời gian theo format
+ * @param {*} time 
+ * @param {*} format 
+ */
+export const getTimeFromFormatDate = (time, format='date', subTime=null) => {
+    if(!time) return null;
+
+    let formatedTime, dataTime, year, month, day, hour;
+    switch(format) {
+        case 'mm-yyyy':
+            dataTime = time.split('-');
+            month = dataTime[0];
+            year = dataTime[1];
+            formatedTime = new Date(`${year}-${month}`);
+            break;
+
+        case 'dd-mm-yyyy': 
+            dataTime = time.split('-');
+            day = dataTime[0];
+            month = dataTime[1];
+            year = dataTime[2];
+            formatedTime = new Date(`${year}-${month}-${day}`);
+            break;
+
+        case 'hour dd-mm-yyyy': 
+            dataTime = time.split('-');
+            day = dataTime[0];
+            month = dataTime[1];
+            year = dataTime[2];
+            hour = subTime ? subTime : '00:00:00';
+            formatedTime = new Date(`${year}-${month}-${day} ${hour}`);
+            break;
+
+        default:
+            formatedTime = new Date(time);
+    }
+
+    if(!formatedTime) return null;
+    return formatedTime;
+}

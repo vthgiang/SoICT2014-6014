@@ -433,8 +433,11 @@ export default {
         },
         super_admin: {
             system: {
-                restore_backup: "Restore backup",
-                delete_backup: "Delete backup",
+                edit_backup_info: "Chỉnh sửa thông tin phiên bản dữ liệu",
+                download_backup_version: "Tải xuống phiên bản dữ liệu",
+                backup_description: "Mô tả về phiên bản dữ liệu",
+                restore_backup: "Khôi phục phiên bản dữ liệu",
+                delete_backup: "Xóa phiên bản dữ liệu",
 
                 get_backup_list_success: "Lấy dữ liệu sao lưu thành công",
                 get_backup_list_faile: "Lấy dữ liệu sao lưu thất bại",
@@ -444,6 +447,9 @@ export default {
                 delete_backup_faile: "Xóa sao lưu thất bại",
                 restore_data_success: "Khôi phục dữ liệu thành công",
                 restore_data_faile: "Khôi phục dữ liệu thất bại",
+                edit_backup_info_success: "Chỉnh sửa thông tin phiên bản sao lưu thành công",
+                edit_backup_info_faile: "Chỉnh sửa thông tin phiên bản sao lưu thất bại",
+                backup_version_deleted: 'Phiên bản sao lưu dữ liệu này đã bị xóa, Không thể chính sửa thông tin phiên bản',
             },
 
             organization_unit: {
@@ -456,8 +462,8 @@ export default {
                 department_not_found: "Không tìm thấy thông tin về đơn vị",
                 department_has_user:
                     "Không thể xóa đơn vị này. Đơn vị đã có thành viên",
-                role_dean_exist: "Tên chức danh cho trưởng đơn vị đã tồn tại",
-                role_vice_dean_exist: "Tên chức danh cho phó đơn vị đã tồn tại",
+                role_manager_exist: "Tên chức danh cho trưởng đơn vị đã tồn tại",
+                role_deputy_manager_exist: "Tên chức danh cho phó đơn vị đã tồn tại",
                 role_employee_exist:
                     "Tên chức danh cho nhân viên đơn vị đã tồn tại",
             },
@@ -481,9 +487,9 @@ export default {
 
                 role_name_exist:
                     "Tên cho phân quyền đã được sử dụng cho một phân quyền khác",
-                role_dean_exist:
+                role_manager_exist:
                     "Tên cho phân quyền của trưởng đơn vị này đã được sử dụng",
-                role_vice_dean_exist:
+                role_deputy_manager_exist:
                     "Tên cho phân quyền của phó đơn vị này đã được sử dụng",
                 role_employee_exist:
                     "Tên cho phân quyền của nhân viên đơn vị này đã được sử dụng",
@@ -938,6 +944,7 @@ export default {
             close: "Đóng",
             email: "Email",
             password: "Mật khẩu",
+            password2: "Mật khẩu cấp 2",
             portal: "Portal",
             new_password: "Mật khẩu mới",
             confirm: "Xác thực mật khẩu",
@@ -1009,6 +1016,13 @@ export default {
                 properties: "Tên các thuộc tính",
                 title: "Tiêu đề tương ứng",
             },
+
+            showmore_showless: {
+                showmore: "Xem thêm",
+                showless: "Ẩn bớt",
+                title_showmore: "Bấm để hiển thị thêm",
+                title_showless: "Bấm để hiển thị ít hơn"
+            }
         },
 
         menu: {
@@ -1019,7 +1033,7 @@ export default {
             manage_company: "Doanh nghiệp",
             manage_role: "Quản lý phân quyền",
             manage_link: "Quản lý trang",
-            manage_component: "Quản lý UI-Component",
+            manage_component: "Quản lý phân quyền trên các trang",
 
             manage_department: "Quản lý cơ cấu tổ chức",
             manage_user: "Quản lý người dùng",
@@ -1113,7 +1127,10 @@ export default {
             // Quản lý tài sản
             // QUẢN LÝ
 
+            add_update_asset: "Thêm - Cập nhật tài sản",
+            add_asset_title: "Thêm mới tài sản - Cập nhật tài sản",
             add_asset: "Thêm tài sản",
+            update_asset: "Cập nhật tài sản",
             manage_repair_asset: "Quản lý sửa chữa, thay thế",
             manage_usage_asset: "Quản lý sử dụng tài sản",
             manage_distribute_asset: "Quản lý cấp phát, điều chuyển",
@@ -1154,6 +1171,8 @@ export default {
             manage_discount: "Giảm giá",
             manage_tax: "Thuế",
             manage_sla: "Cam kết chất lượng",
+            manage_business_department: "Quản lý phòng ban",
+            manage_admin_department: "Phòng kế toán bán hàng",
 
             // Quản lý kế hoạch sản xuất
             manage_plans: "Quản lý kế hoạch sản xuất",
@@ -1221,10 +1240,10 @@ export default {
             select_parent: "Chọn đơn vị cha",
             no_parent: "Không có đơn vị cha",
             roles_of_department: "Các chức danh của đơn vị",
-            dean_name: "Tên các chức danh trưởng đơn vị",
-            dean_example: "VD: Trưởng phòng tài chính",
-            vice_dean_name: "Tên các chức danh phó đơn vị",
-            vice_dean_example: "VD: Phó phòng tài chính",
+            manager_name: "Tên các chức danh trưởng đơn vị",
+            manager_example: "VD: Trưởng phòng tài chính",
+            deputy_manager_name: "Tên các chức danh phó đơn vị",
+            deputy_manager_example: "VD: Phó phòng tài chính",
             employee_name: "Tên các chức danh nhân viên đơn vị",
             employee_example: "VD: Nhân viên phòng tài chính",
             add_with_parent: "Tạo đơn vị mới với đơn vị cha là",
@@ -1254,6 +1273,9 @@ export default {
         manage_user: {
             add: "Thêm",
             add_title: "Thêm tài khoản người dùng mới",
+            add_common: 'Nhập tay',
+            import: 'Thêm dữ liệu từ file',
+            import_title: 'Thêm dữ liệu người dùng từ file',
             info: "Thông tin về tài khoản người dùng",
             edit: "Chỉnh sửa thông tin tài khoản người dùng",
             disable: "Ngưng hoạt động",
@@ -1377,7 +1399,7 @@ export default {
                     other_salary: "Các loại lương thưởng khác",
                     name_salary: "Tên lương thưởng",
                     money_salary: "Số tiền",
-                    total_salary: "Tổng lương",
+                    total_salary: "Tổng thu nhập",
                     action: "Hành động",
                 },
 
@@ -1472,6 +1494,8 @@ export default {
                 aplication_annual_leave_success: "Thêm đơn xin nghỉ thành công",
                 import_annual_leave_success: "Thêm dữ liệu từ file thành công",
                 import_annual_leave_faile: "Thêm dữ liệu từ file thất bại",
+
+                employee_invalid: 'Tài khoản chưa đăng ký thông tin nhân viên. Vui lòng kiểm tra lại',
             },
 
             // Quản lý khen thưởng kỷ luật
@@ -1617,6 +1641,7 @@ export default {
                     menu_attachments_title: "Tài liệu đính kèm",
                 },
 
+                money:'Mức lương đóng',
                 staff_number: "Mã nhân viên",
                 full_name: "Họ và tên",
                 attendance_code: "Mã số chấm công",
@@ -1673,6 +1698,8 @@ export default {
                 colleges: "Cao đẳng",
                 university: "Đại học",
                 master_degree: "Thạc sỹ",
+                engineer: 'Kỹ sư',
+                bachelor: 'Cử nhân',
                 phd: "Tiến sỹ",
                 unavailable: "Khác",
                 work_experience: "Kinh nghiệm làm việc",
@@ -1763,6 +1790,7 @@ export default {
                 disc_commitment: "Giấy cam kết làm việc",
                 temporary_residence_card: "Tạm trú tạm vắng",
                 disc_temporary_residence_card: "Giấy xác nhận tạm trú tạm vắng",
+                registration_book:'Sổ hộ khẩu',
                 add_staff: "Thêm nhân viên",
 
                 reward: "Khen thưởng",
@@ -1896,6 +1924,7 @@ export default {
                     add_employee_title: "Thêm mới nhân viên",
                     add_by_hand: "Thêm một nhân viên",
                     add_import: "Thêm dữ liệu từ file",
+                    update_import: "Cập nhật dữ liệu từ file",
 
                     // Thông điệp trả về từ server
                     get_list_employee_success:
@@ -2077,6 +2106,7 @@ export default {
                 do_work: "Có đi làm",
                 total_timesheets: "Số giờ làm",
                 total_hours_off: "Số giờ nghỉ",
+                total_over_time: "Số giờ tăng ca",
                 work_date_in_month: "Công làm việc trong tháng",
                 shift_work: "Ca làm việc",
                 shifts1: "Ca 1",
@@ -2119,8 +2149,8 @@ export default {
             // Quản lý nhân sự các đơn vị
             manage_department: {
                 edit_unit: "Chỉnh sửa nhân sự đơn vị",
-                dean_unit: "Trưởng đơn vị",
-                vice_dean_unit: "Phó đơn vị",
+                manager_unit: "Trưởng đơn vị",
+                deputy_manager_unit: "Phó đơn vị",
                 employee_unit: "Nhân viên đơn vị",
                 email_employee: "Email nhân viên",
                 add_employee_unit: "Thêm nhân viên",
@@ -2283,6 +2313,7 @@ export default {
                 view_more: "Xem thêm",
                 asset: "Tài sản",
                 choose_asset: "Chọn tài sản",
+                choose_all: "Chọn tất cả",
                 asset_list: "Danh sách tài sản",
                 search: "Tìm kiếm",
                 add: "Thêm",
@@ -2299,7 +2330,7 @@ export default {
 
                 select_asset_type: "Chọn loại tài sản",
                 select_asset_status: "Chọn trạng thái tài sản",
-                asset_status:"Trạng thái tài sản",
+                asset_status: "Trạng thái tài sản",
                 select_all_asset_type: "Chọn tất cả loại tài sản",
                 select_all_status: "Chọn tất cả trạng thái",
                 select_all_group: "Chọn tất cả nhóm tài sản",
@@ -2675,6 +2706,8 @@ export default {
                 edit_use_request_success:
                     "Chỉnh sửa thông tin phiếu thành công",
                 edit_use_request_faile: "Chỉnh sửa thông tin phiếu thất bại",
+                recommendNumber_exists: "Mã phiếu đăng kí sử dụng tài sản đã tồn tại",
+                dayUse_exists: "Thời gian sử dụng tài sản đã tồn tại",
             },
         },
 
@@ -2796,7 +2829,7 @@ export default {
 
                 responsible_role: "Thực hiện",
                 accountable_role: "Phê duyệt",
-                consulted_role: "Hỗ trợ",
+                consulted_role: "Tư vấn",
                 informed_role: "Quan sát",
                 distribution_Of_Employee: "Đóng góp công việc",
                 employees_each_chart: "Số nhân viên tối đa mỗi biểu đồ",
@@ -2845,17 +2878,17 @@ export default {
                 stored: "Lưu trong kho",
                 current_month: "Tháng hiện tại",
 
-                assigned_collaborate: "Trạng thái phân công công việc",
-                not_assigned: "Chưa sắp xếp nhân viên",
-                assigned: "Đã sắp xếp nhân viên",
+                assigned_collaborate: "Sắp xếp nhân viên cho công việc liên đơn vị",
+                not_assigned: "Chưa xác nhận sắp xếp nhân viên",
+                assigned: "Đã xác nhận sắp xếp nhân viên",
                 none_select_assigned: "Không phân loại",
-                role_in_collaborated_unit: "Vai trò của nhân viên thuộc",
-                confirm_assigned: "Xác nhận đã phân công công việc",
-                confirm_assigned_success: "Bạn đã xác nhận phân công công việc",
+                role_in_collaborated_unit: "Phân công phối hợp thực hiện công việc cho",
+                confirm_assigned: "Xác nhận đã sắp xếp nhân viên tham gia phối hợp",
+                confirm_assigned_success: "Bạn đã xác nhận sắp xếp nhân viên tham gia phối hợp",
                 confirm_assigned_failure:
-                    "Bạn chưa xác nhận phân công công việc",
+                    "Bạn chưa xác nhận sắp xếp nhân viên tham gia phối hợp",
                 unit_not_confirm_assigned_task:
-                    "Đơn vị chưa xác nhận phân công công việc",
+                    "Đơn vị chưa xác nhận sắp xếp nhân viên tham gia phối hợp",
 
                 name: "Tên công việc",
                 search_by_name: "Tìm kiếm theo tên",
@@ -2905,7 +2938,7 @@ export default {
                 err_total_log_time: "Thời gian thực hiện công việc bị xóa",
 
                 detail_refresh: "Làm mới",
-                detail_edit: "Chỉnh sửa",
+                detail_edit: "Cập nhật công việc",
                 detail_end: "Kết thúc",
                 detail_evaluate: "Đánh giá",
                 detail_start_timer: "Bấm giờ",
@@ -2987,6 +3020,7 @@ export default {
                 add_template: "Mẫu công việc",
                 add_template_notice: "Hãy chọn mẫu công việc",
                 add_parent_task: "Công việc liên quan",
+                search_task_by_typing: "Nhập để tìm kiếm công việc liên quan",
                 add_parent_task_notice: "Hãy chọn công việc liên quan",
                 add_raci: "Phân định trách nhiệm",
                 add_resp: "Chọn người thực hiện",
@@ -3095,7 +3129,7 @@ export default {
                     "Đơn vị phối hợp thực hiện công việc",
                 not_collaborated_with_organizational_units:
                     "Không có đơn vị phối hợp",
-                task_empty_employee: "Đơn vị bạn chưa có người tham gia",
+                task_empty_employee: "Chưa có người tham gia phối hợp",
                 delete_eval: "Xóa đánh giá tháng này",
                 delete_eval_title: "Bạn có chắc chắn muốn xóa đánh giá này?",
                 delete_evaluation_success: "Xóa đánh giá thành công",
@@ -3122,6 +3156,8 @@ export default {
                 warning_days: "ngày",
                 warning_hours: "giờ",
                 warning_minutes: "phút",
+
+                project: 'Tên dự án (nếu có)',
             },
             task_perform: {
                 actions: "Hoạt động",
@@ -3136,7 +3172,7 @@ export default {
                 edit_action: "Sửa hành động",
                 delete_action: "Xóa hành động",
                 mandatory_action: "Hành động bắt buộc",
-                confirm_action: "Xác nhận hoàn thành",
+                confirm_action: "Xác nhận thực hiện",
                 evaluation: "Đánh giá",
                 attach_file: "Đính kèm file",
                 comment: "Bình luận",
@@ -4292,6 +4328,7 @@ export default {
                 detail_title: "Chi tiết khu vực lưu trữ",
             },
             bill_management: {
+                text: "Chưa đánh lô cho hàng hóa",
                 billType: {
                     1: "Nhập nguyên vật liệu",
                     2: "Nhập thành phẩm",
@@ -4537,6 +4574,7 @@ export default {
                 edit_faile: "Chỉnh sửa lô hàng thất bại",
                 get_lot_failed: "Lấy lô hàng thất bại",
                 push_lot: "Lô chưa được xếp vào kho",
+                text: "Hàng hóa chưa xếp hết vào kho",
             },
         },
 
@@ -4926,7 +4964,7 @@ export default {
                 choose_good: "Chọn sản phẩm",
                 base_unit: "Đơn vị tính tiêu chuẩn",
                 quantity_good_inventory: "Số lượng tồn kho",
-                quantity: "Số lượng sản xuất",
+                quantity: "Số lượng cần sản xuất",
                 choose_good_input: "---Chọn sản phẩm---",
                 error_good: "Vui lòng chọn sản phẩm",
                 error_quantity: "Vui lòng nhập số lượng",
@@ -4937,10 +4975,25 @@ export default {
                 manufacturing_good_info: "Thông tin các sản phẩm cần sản xuất",
                 productivity_mill: "Thông tin năng xuất của phân xưởng sản xuất",
                 divide_command: "Phân chia các lệnh sản xuất",
-                quantity_commmanded: "Số lượng đã tạo lệnh",
+                quantity_not_commmanded: "Số lượng chưa tạo lệnh",
                 mill: "Xưởng sản xuất",
-                productity: "Năng xuất / ca",
-                number_workers: "Số nhân công / ca"
+                productity: "Số sản phẩm sản xuất / ca",
+                person_number: "Số công nhân / ca",
+                approvers: "Người phê duyệt",
+                qualityControlStaffs: "Người đảm bảo chất lượng",
+                accountables: "Người giám sát",
+                command_code: "Mã lệnh",
+                created_all_command: "Vui lòng phân hết số lượng các sản phẩm vào lệnh sản xuất",
+                command_quantity: "Số lượng",
+                choose_quality_control_staffs: "Vui lòng chọn người kiểm định chất lượng",
+                error_quantity_input_remaining: "Số lượng không thể lớn hơn số lượng chưa tạo lệnh sản xuất",
+                error_quantity_input_good: "Vui lòng chọn sản phẩm cần sản xuất trước",
+                choose_approvers: "Vui lòng chọn người phê duyệt",
+                choose_accountables: "Vui lòng chọn người giám sát",
+                quantity_order: "Số lượng trong đơn",
+                quantity_need_planned: "Số lượng cần lập kế hoạch"
+
+
 
 
 

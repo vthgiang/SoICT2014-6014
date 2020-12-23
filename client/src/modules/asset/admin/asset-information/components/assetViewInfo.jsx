@@ -67,7 +67,7 @@ class AssetViewInfo extends Component {
             unitsProducedDuringTheYears, maintainanceLogs, usageLogs, incidentLogs, disposalDate, disposalType, disposalCost,
             disposalDesc, archivedRecordNumber, files, readByRoles
         } = this.state;
-
+        console.log("GGG", this.state)
         return (
             <React.Fragment>
                 <form className="form-group" id="form-view-asset" >
@@ -134,6 +134,7 @@ class AssetViewInfo extends Component {
                                 typeRegisterForUse={typeRegisterForUse}
                                 managedBy={managedBy}
                                 usageLogs={usageLogs}
+                                linkPage={this.props.linkPage}
                             />
 
                             {/* Thông tin sự cố */}

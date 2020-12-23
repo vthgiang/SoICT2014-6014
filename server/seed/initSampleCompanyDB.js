@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
-const Terms = require("./terms");
+const Terms = require("../helpers/config");
 
 const {
     Component,
@@ -50,6 +50,7 @@ const {
     BankAccount,
     CoinRule,
     Quote,
+    BusinessDepartment,
 
     Customer,
     Care,
@@ -76,26 +77,43 @@ const initSampleCompanyDB = async () => {
     /**
      * 1. Tạo kết nối đến csdl của hệ thống và công ty VNIST
      */
-    const systemDB = mongoose.createConnection(
-        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/${process.env.DB_NAME
-        }`,
-        {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true,
-            useFindAndModify: false,
-            user:
-                process.env.DB_AUTHENTICATION === "true"
-                    ? process.env.DB_USERNAME
-                    : undefined,
-            pass:
-                process.env.DB_AUTHENTICATION === "true"
-                    ? process.env.DB_PASSWORD
-                    : undefined,
+    let connectOptions = process.env.DB_AUTHENTICATION === 'true' ?
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+        user: process.env.DB_USERNAME,
+        pass: process.env.DB_PASSWORD,
+        auth: {
+            authSource: 'admin'
         }
-    );
-    if (!systemDB) throw "DB system cannot connect";
-    console.log("DB system connected");
+    } : {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false
+    }
+    const systemDB = mongoose.createConnection(`mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/${process.env.DB_NAME}`, connectOptions);
+
+    let connectVNISTOptions = process.env.DB_AUTHENTICATION === 'true' ?
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+        user: process.env.DB_USERNAME,
+        pass: process.env.DB_PASSWORD,
+        auth: {
+            authSource: 'admin'
+        }
+    } : {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false
+    }
+    const vnistDB = mongoose.createConnection(`mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/vnist`, connectVNISTOptions);
     await Configuration(systemDB).insertMany([
         {
             name: "vnist",
@@ -112,28 +130,6 @@ const initSampleCompanyDB = async () => {
             },
         },
     ]);
-
-    const vnistDB = mongoose.createConnection(
-        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"
-        }/vnist`,
-        process.env.DB_AUTHENTICATION === "true"
-            ? {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-                useCreateIndex: true,
-                useFindAndModify: false,
-                user: process.env.DB_USERNAME,
-                pass: process.env.DB_PASSWORD,
-            }
-            : {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-                useCreateIndex: true,
-                useFindAndModify: false,
-            }
-    );
-    if (!systemDB) throw "DB vnist cannot connect";
-    console.log("DB vnist connected");
 
     /**
      * 1.1 Khởi tạo model cho db
@@ -364,12 +360,12 @@ const initSampleCompanyDB = async () => {
         type: roleAbstract._id,
         parents: [roleAdmin._id],
     });
-    const roleDean = await Role(vnistDB).create({
-        name: Terms.ROOT_ROLES.DEAN.name,
+    const roleManager = await Role(vnistDB).create({
+        name: Terms.ROOT_ROLES.MANAGER.name,
         type: roleAbstract._id,
     });
-    const roleViceDean = await Role(vnistDB).create({
-        name: Terms.ROOT_ROLES.VICE_DEAN.name,
+    const roleDeputyManager = await Role(vnistDB).create({
+        name: Terms.ROOT_ROLES.DEPUTY_MANAGER.name,
         type: roleAbstract._id,
     });
     const roleEmployee = await Role(vnistDB).create({
@@ -383,12 +379,12 @@ const initSampleCompanyDB = async () => {
         type: roleChucDanh._id,
     });
     const phoGiamDoc = await Role(vnistDB).create({
-        parents: [roleViceDean._id, thanhVienBGĐ._id],
+        parents: [roleDeputyManager._id, thanhVienBGĐ._id],
         name: "Phó giám đốc",
         type: roleChucDanh._id,
     });
     const giamDoc = await Role(vnistDB).create({
-        parents: [roleDean._id, thanhVienBGĐ._id, phoGiamDoc._id],
+        parents: [roleManager._id, thanhVienBGĐ._id, phoGiamDoc._id],
         name: "Giám đốc",
         type: roleChucDanh._id,
     });
@@ -398,12 +394,12 @@ const initSampleCompanyDB = async () => {
         type: roleChucDanh._id,
     });
     const phoPhongHC = await Role(vnistDB).create({
-        parents: [roleViceDean._id, nvPhongHC._id],
+        parents: [roleDeputyManager._id, nvPhongHC._id],
         name: "Phó phòng kinh doanh",
         type: roleChucDanh._id,
     });
     const truongPhongHC = await Role(vnistDB).create({
-        parents: [roleDean._id, nvPhongHC._id, phoPhongHC._id],
+        parents: [roleManager._id, nvPhongHC._id, phoPhongHC._id],
         name: "Trưởng phòng kinh doanh",
         type: roleChucDanh._id,
     });
@@ -416,12 +412,12 @@ const initSampleCompanyDB = async () => {
         type: roleChucDanh._id,
     });
     const phoPhongKH = await Role(vnistDB).create({
-        parents: [roleViceDean._id, nvPhongKH._id],
+        parents: [roleDeputyManager._id, nvPhongKH._id],
         name: "Phó phòng kế hoạch",
         type: roleChucDanh._id,
     });
     const truongPhongKH = await Role(vnistDB).create({
-        parents: [roleDean._id, nvPhongKH._id, phoPhongKH._id],
+        parents: [roleManager._id, nvPhongKH._id, phoPhongKH._id],
         name: "Trưởng phòng kế hoạch",
         type: roleChucDanh._id,
     });
@@ -435,7 +431,7 @@ const initSampleCompanyDB = async () => {
     });
 
     const quanDocNhaMayThuocBot = await Role(vnistDB).create({
-        parents: [roleDean._id, nvNhaMayThuocBot._id],
+        parents: [roleManager._id, nvNhaMayThuocBot._id],
         name: "Quản đốc nhà máy thuốc bột",
         type: roleChucDanh._id,
     });
@@ -447,7 +443,7 @@ const initSampleCompanyDB = async () => {
     });
 
     const quanDocNhaMayThuocNuoc = await Role(vnistDB).create({
-        parents: [roleDean._id, nvNhaMayThuocNuoc._id],
+        parents: [roleManager._id, nvNhaMayThuocNuoc._id],
         name: "Quản đốc nhà máy thuốc nước",
         type: roleChucDanh._id,
     });
@@ -459,7 +455,7 @@ const initSampleCompanyDB = async () => {
     });
 
     const quanDocNhaMayTPCN = await Role(vnistDB).create({
-        parents: [roleDean._id, nvNhaMayTPCN._id],
+        parents: [roleManager._id, nvNhaMayTPCN._id],
         name: "Quản đốc nhà máy thực phẩm chức năng",
         type: roleChucDanh._id,
     });
@@ -609,8 +605,8 @@ const initSampleCompanyDB = async () => {
         name: "Ban giám đốc",
         description:
             "Ban giám đốc Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
-        deans: [giamDoc._id],
-        viceDeans: [phoGiamDoc._id],
+        managers: [giamDoc._id],
+        deputyManagers: [phoGiamDoc._id],
         employees: [thanhVienBGĐ._id],
         parent: null,
     });
@@ -619,8 +615,8 @@ const initSampleCompanyDB = async () => {
             name: "Phòng kinh doanh",
             description:
                 "Phòng kinh doanh Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
-            deans: [truongPhongHC._id],
-            viceDeans: [phoPhongHC._id],
+            managers: [truongPhongHC._id],
+            deputyManagers: [phoPhongHC._id],
             employees: [nvPhongHC._id],
             parent: Directorate._id,
         },
@@ -631,8 +627,8 @@ const initSampleCompanyDB = async () => {
         name: "Nhà máy sản xuất thuốc bột",
         description:
             "Nhà máy sản xuất thuốc bột của Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
-        deans: [quanDocNhaMayThuocBot._id],
-        viceDeans: [],
+        managers: [quanDocNhaMayThuocBot._id],
+        deputyManagers: [],
         employees: [nvNhaMayThuocBot._id],
         parent: Directorate._id,
     });
@@ -640,8 +636,8 @@ const initSampleCompanyDB = async () => {
         name: "Nhà máy sản xuất thuốc nước",
         description:
             "Nhà máy sản xuất thuốc nước của Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
-        deans: [quanDocNhaMayThuocNuoc._id],
-        viceDeans: [],
+        managers: [quanDocNhaMayThuocNuoc._id],
+        deputyManagers: [],
         employees: [nvNhaMayThuocNuoc._id],
         parent: Directorate._id,
     });
@@ -649,8 +645,8 @@ const initSampleCompanyDB = async () => {
         name: "Nhà máy sản xuất thực phẩm chức năng",
         description:
             "Nhà máy sản xuất thực phẩm chức năng của Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
-        deans: [quanDocNhaMayTPCN._id],
-        viceDeans: [],
+        managers: [quanDocNhaMayTPCN._id],
+        deputyManagers: [],
         employees: [nvNhaMayTPCN._id],
         parent: Directorate._id,
     });
@@ -659,8 +655,8 @@ const initSampleCompanyDB = async () => {
         name: "Phòng kế hoạch",
         description:
             "Phòng kế hoạch của Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
-        deans: [truongPhongKH._id],
-        viceDeans: [phoPhongKH._id],
+        managers: [truongPhongKH._id],
+        deputyManagers: [phoPhongKH._id],
         employees: [nvPhongKH._id],
         parent: Directorate._id,
     });
@@ -813,8 +809,8 @@ const initSampleCompanyDB = async () => {
     let roleArr = [
         roleSuperAdmin,
         roleAdmin,
-        roleDean,
-        roleViceDean,
+        roleManager,
+        roleDeputyManager,
         roleEmployee,
     ];
     await createCompanyLinks(linkArr, roleArr);
@@ -892,7 +888,7 @@ const initSampleCompanyDB = async () => {
                 {
                     name: "Bằng tốt nghiệp",
                     issuedBy: "Đại học Bách Khoa",
-                    year: "2020",
+                    year: 2020,
                     degreeType: "good",
                     urlFile:
                         "lib/fileEmployee/1582031878169-quản-trị-hành-chính-việt-anh.xlsm",
@@ -997,7 +993,7 @@ const initSampleCompanyDB = async () => {
                 {
                     name: "Bằng tốt nghiệp",
                     issuedBy: "Đại học Bách Khoa",
-                    year: "2020",
+                    year: 2020,
                     degreeType: "good",
                     urlFile:
                         "lib/fileEmployee/1582031878169-quản-trị-hành-chính-việt-anh.xlsm",
@@ -1104,7 +1100,7 @@ const initSampleCompanyDB = async () => {
             {
                 name: "Bằng tốt nghiệp",
                 issuedBy: "Đại học Bách Khoa",
-                year: "2020",
+                year: 2020,
                 degreeType: "good",
                 urlFile:
                     "lib/fileEmployee/1582031878169-quản-trị-hành-chính-việt-anh.xlsm",
@@ -1683,7 +1679,7 @@ const initSampleCompanyDB = async () => {
                     expiredDate: "2020-08-16",
                 },
             ],
-            roles: [roleAdmin._id, roleDean._id],
+            roles: [roleAdmin._id, roleManager._id],
             officialNumber: "VN001",
         },
         {
@@ -1700,7 +1696,7 @@ const initSampleCompanyDB = async () => {
                     expiredDate: "2020-08-16",
                 },
             ],
-            roles: [roleAdmin._id, roleDean._id],
+            roles: [roleAdmin._id, roleManager._id],
             officialNumber: "VN002",
         },
         {
@@ -1718,7 +1714,7 @@ const initSampleCompanyDB = async () => {
                     expiredDate: "2020-08-16",
                 },
             ],
-            roles: [roleAdmin._id, roleDean._id],
+            roles: [roleAdmin._id, roleManager._id],
             officialNumber: "VN003",
         },
         {
@@ -2101,7 +2097,7 @@ const initSampleCompanyDB = async () => {
                 giamDoc._id,
                 roleAdmin._id,
                 roleSuperAdmin._id,
-                roleDean._id,
+                roleManager._id,
                 thanhVienBGĐ._id,
                 nvPhongHC._id,
                 truongPhongHC._id,
@@ -2176,7 +2172,7 @@ const initSampleCompanyDB = async () => {
                 giamDoc._id,
                 roleAdmin._id,
                 roleSuperAdmin._id,
-                roleDean._id,
+                roleManager._id,
                 thanhVienBGĐ._id,
             ],
             usageLogs: [],
@@ -2246,7 +2242,7 @@ const initSampleCompanyDB = async () => {
             readByRoles: [
                 roleAdmin._id,
                 roleSuperAdmin._id,
-                roleDean._id,
+                roleManager._id,
                 thanhVienBGĐ._id,
                 truongPhongHC._id,
                 phoPhongHC._id,
@@ -2318,7 +2314,7 @@ const initSampleCompanyDB = async () => {
             readByRoles: [
                 roleAdmin._id,
                 roleSuperAdmin._id,
-                roleDean._id,
+                roleManager._id,
                 nvPhongHC._id,
                 truongPhongHC._id,
                 phoPhongHC._id,
@@ -2389,7 +2385,7 @@ const initSampleCompanyDB = async () => {
             detailInfo: [],
             readByRoles: [
                 roleAdmin._id,
-                roleDean._id,
+                roleManager._id,
                 nvPhongHC._id,
                 truongPhongHC._id,
                 phoPhongHC._id,
@@ -2462,7 +2458,7 @@ const initSampleCompanyDB = async () => {
                 giamDoc._id,
                 roleAdmin._id,
                 roleSuperAdmin._id,
-                roleDean._id,
+                roleManager._id,
                 thanhVienBGĐ._id,
             ],
             usageLogs: [],
@@ -2528,7 +2524,7 @@ const initSampleCompanyDB = async () => {
             giamDoc._id,
             roleAdmin._id,
             roleSuperAdmin._id,
-            roleDean._id,
+            roleManager._id,
             truongPhongHC._id,
             phoPhongHC._id,
         ],
@@ -2646,7 +2642,7 @@ const initSampleCompanyDB = async () => {
             giamDoc._id,
             roleAdmin._id,
             roleSuperAdmin._id,
-            roleDean._id,
+            roleManager._id,
             thanhVienBGĐ._id,
             nvPhongHC._id,
             truongPhongHC._id,
@@ -2715,7 +2711,7 @@ const initSampleCompanyDB = async () => {
                 giamDoc._id,
                 roleAdmin._id,
                 roleSuperAdmin._id,
-                roleDean._id,
+                roleManager._id,
                 thanhVienBGĐ._id,
                 nvPhongHC._id,
                 truongPhongHC._id,
@@ -2773,7 +2769,7 @@ const initSampleCompanyDB = async () => {
                 giamDoc._id,
                 roleAdmin._id,
                 roleSuperAdmin._id,
-                roleDean._id,
+                roleManager._id,
                 thanhVienBGĐ._id,
                 nvPhongHC._id,
                 truongPhongHC._id,
@@ -2827,7 +2823,7 @@ const initSampleCompanyDB = async () => {
                 giamDoc._id,
                 roleAdmin._id,
                 roleSuperAdmin._id,
-                roleDean._id,
+                roleManager._id,
                 thanhVienBGĐ._id,
                 nvPhongHC._id,
                 truongPhongHC._id,
@@ -2884,7 +2880,7 @@ const initSampleCompanyDB = async () => {
                 giamDoc._id,
                 roleAdmin._id,
                 roleSuperAdmin._id,
-                roleDean._id,
+                roleManager._id,
                 thanhVienBGĐ._id,
                 nvPhongHC._id,
                 truongPhongHC._id,
@@ -2941,7 +2937,7 @@ const initSampleCompanyDB = async () => {
                 giamDoc._id,
                 roleAdmin._id,
                 roleSuperAdmin._id,
-                roleDean._id,
+                roleManager._id,
                 thanhVienBGĐ._id,
                 nvPhongHC._id,
                 truongPhongHC._id,
@@ -3004,7 +3000,7 @@ const initSampleCompanyDB = async () => {
                 giamDoc._id,
                 roleAdmin._id,
                 roleSuperAdmin._id,
-                roleDean._id,
+                roleManager._id,
                 thanhVienBGĐ._id,
                 nvPhongHC._id,
                 truongPhongHC._id,
@@ -3081,7 +3077,7 @@ const initSampleCompanyDB = async () => {
                 giamDoc._id,
                 roleAdmin._id,
                 roleSuperAdmin._id,
-                roleDean._id,
+                roleManager._id,
                 thanhVienBGĐ._id,
                 nvPhongHC._id,
                 truongPhongHC._id,
@@ -3157,7 +3153,7 @@ const initSampleCompanyDB = async () => {
                 giamDoc._id,
                 roleAdmin._id,
                 roleSuperAdmin._id,
-                roleDean._id,
+                roleManager._id,
                 thanhVienBGĐ._id,
                 nvPhongHC._id,
                 truongPhongHC._id,
@@ -3558,7 +3554,7 @@ const initSampleCompanyDB = async () => {
             category: listCategory[3]._id,
             name: "Bình ắc quy",
             code: "EQ001",
-            type: "equipment",
+            type: "material",
             baseUnit: "Chiếc",
             unit: [],
             quantity: 10,
@@ -3569,7 +3565,7 @@ const initSampleCompanyDB = async () => {
             category: listCategory[3]._id,
             name: "Máy nén",
             code: "EQ002",
-            type: "equipment",
+            type: "material",
             baseUnit: "Chiếc",
             unit: [],
             quantity: 10,
@@ -3665,21 +3661,21 @@ const initSampleCompanyDB = async () => {
             ],
             numberExpirationDate: 1000,
             description: "Sản phẩm trị cảm cúm",
-            manufacturingMills: [{
-                manufacturingMill: manufacturingMills[0]._id,
-                productivity: 100,
-                personNumber: 3
-            }, {
-                manufacturingMill: manufacturingMills[1]._id,
-                productivity: 100,
-                personNumber: 2
-            }, {
-                manufacturingMill: manufacturingMills[2]._id,
-                productivity: 50,
-                personNumber: 1
-            }],
-            pricePerBaseUnit: 100000,
-            salesPriceVariance: 10000
+            // manufacturingMills: [{
+            //     manufacturingMill: manufacturingMills[0]._id,
+            //     productivity: 100,
+            //     personNumber: 3
+            // }, {
+            //     manufacturingMill: manufacturingMills[1]._id,
+            //     productivity: 100,
+            //     personNumber: 2
+            // }, {
+            //     manufacturingMill: manufacturingMills[2]._id,
+            //     productivity: 50,
+            //     personNumber: 1
+            // }],
+            // pricePerBaseUnit: 100000,
+            // salesPriceVariance: 10000
         },
     ]);
     console.log("Khởi tạo xong danh sách hàng hóa");
@@ -3700,11 +3696,11 @@ const initSampleCompanyDB = async () => {
             managementLocation: [
                 {
                     role: roleSuperAdmin._id,
-                    managementGood: ["product", "material", "equipment", "waste"]
+                    managementGood: ["product", "material", "waste"]
                 },
                 {
                     role: roleAdmin._id,
-                    managementGood: ["material", "equipment"]
+                    managementGood: ["material"]
                 }
             ],
             status: "1",
@@ -3735,11 +3731,11 @@ const initSampleCompanyDB = async () => {
             managementLocation: [
                 {
                     role: roleSuperAdmin._id,
-                    managementGood: ["product", "material", "equipment", "waste"]
+                    managementGood: ["product", "material", "waste"]
                 },
                 {
                     role: roleAdmin._id,
-                    managementGood: ["material", "equipment"]
+                    managementGood: ["product"]
                 }
             ],
             status: "1",
@@ -4017,8 +4013,9 @@ const initSampleCompanyDB = async () => {
     ]);
 
     console.log("Cập nhật nút con của thông tin lưu trữ kho");
-    var listBin = await BinLocation(vnistDB).update({
-        _id: listBinLocations[0]._id,
+    var listBin = await BinLocation(vnistDB).updateOne({
+        _id: listBinLocations[0]._id
+    },{
         code: "T1",
         name: "Tầng 1",
         description: "Dãy nhà dùng cho việc nghiên cứu",
@@ -4621,7 +4618,7 @@ const initSampleCompanyDB = async () => {
                 {
                     quantity: 200,
                     description: "Nhập hàng lần đầu",
-                    type: "Nhập kho thành phẩm",
+                    type: "2",
                     createdAt: new Date("05-06-2020"),
                     stock: listStock[1]._id,
                     binLocations: [
@@ -4638,7 +4635,7 @@ const initSampleCompanyDB = async () => {
                 {
                     quantity: 100,
                     description: "Nhập hàng lần hai",
-                    type: "Nhập kho thành phẩm",
+                    type: "2",
                     createdAt: new Date("05-10-2020"),
                     stock: listStock[0]._id,
                     binLocations: [
@@ -4697,7 +4694,7 @@ const initSampleCompanyDB = async () => {
                 {
                     quantity: 200,
                     description: "Nhập hàng",
-                    type: "Nhập kho thành phẩm",
+                    type: "2",
                     createdAt: new Date("11-12-2019"),
                     stock: listStock[0]._id,
                     binLocations: [
@@ -4714,7 +4711,7 @@ const initSampleCompanyDB = async () => {
                 {
                     quantity: 250,
                     description: "Nhập hàng",
-                    type: "Nhập kho thành phẩm",
+                    type: "2",
                     createdAt: new Date("07-10-2020"),
                     stock: listStock[1]._id,
                     binLocations: [
@@ -4773,7 +4770,7 @@ const initSampleCompanyDB = async () => {
                 {
                     quantity: 200,
                     description: "Nhập hàng lần đầu",
-                    type: "Nhập kho thành phẩm",
+                    type: "2",
                     createdAt: new Date("09-11-2020"),
                     stock: listStock[1]._id,
                     binLocations: [
@@ -4790,7 +4787,7 @@ const initSampleCompanyDB = async () => {
                 {
                     quantity: 120,
                     description: "Nhập hàng lần đầu",
-                    type: "Nhập kho thành phẩm",
+                    type: "2",
                     createdAt: new Date("05-06-2020"),
                     stock: listStock[0]._id,
                     binLocations: [
@@ -4849,7 +4846,7 @@ const initSampleCompanyDB = async () => {
                 {
                     quantity: 100,
                     description: "Nhập hàng lần đầu",
-                    type: "Nhập kho thành phẩm",
+                    type: "2",
                     createdAt: new Date("07-09-2020"),
                     stock: listStock[0]._id,
                     binLocations: [
@@ -4866,7 +4863,7 @@ const initSampleCompanyDB = async () => {
                 {
                     quantity: 200,
                     description: "Nhập hàng lần đầu",
-                    type: "Nhập kho thành phẩm",
+                    type: "2",
                     createdAt: new Date("08-10-2020"),
                     stock: listStock[1]._id,
                     binLocations: [
@@ -4925,7 +4922,7 @@ const initSampleCompanyDB = async () => {
                 {
                     quantity: 100,
                     description: "Nhập hàng lần đầu",
-                    type: "Nhập kho thành phẩm",
+                    type: "2",
                     createdAt: new Date("08-10-2020"),
                     stock: listStock[0]._id,
                     binLocations: [
@@ -4942,7 +4939,7 @@ const initSampleCompanyDB = async () => {
                 {
                     quantity: 200,
                     description: "Nhập hàng lần đầu",
-                    type: "Nhập kho thành phẩm",
+                    type: "2",
                     createdAt: new Date("09-10-2020"),
                     stock: listStock[1]._id,
                     binLocations: [
@@ -5001,7 +4998,7 @@ const initSampleCompanyDB = async () => {
                 {
                     quantity: 200,
                     description: "Nhập hàng lần đầu",
-                    type: "Nhập kho thành phẩm",
+                    type: "2",
                     createdAt: new Date("10-10-2020"),
                     stock: listStock[1]._id,
                     binLocations: [
@@ -5018,7 +5015,7 @@ const initSampleCompanyDB = async () => {
                 {
                     quantity: 100,
                     description: "Nhập hàng lần đầu",
-                    type: "Nhập kho thành phẩm",
+                    type: "2",
                     createdAt: new Date("11-10-2020"),
                     stock: listStock[0]._id,
                     binLocations: [
@@ -5102,7 +5099,7 @@ const initSampleCompanyDB = async () => {
             group: "1",
             fromStock: listStock[0]._id,
             users: [],
-            creator: users[7]._id,
+            creator: users[1]._id,
             partner: {
                 customer: null,
                 supplier: null,
@@ -5309,8 +5306,9 @@ const initSampleCompanyDB = async () => {
     ]);
     console.log("Tạo xong dữ liệu mẫu các loại phiếu");
 
-    var lotUpdate = await Lot(vnistDB).update({
-        _id: listLot[0]._id,
+    var lotUpdate = await Lot(vnistDB).updateOne({
+        _id: listLot[0]._id
+    },{
         name: "LOT001",
         good: listProduct[0]._id,
         type: "product",

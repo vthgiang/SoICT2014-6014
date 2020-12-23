@@ -365,7 +365,7 @@ class SalaryCreateForm extends Component {
                         {/* Các loại lương thưởng khác */}
                         <div className={`form-group ${(errorOnNameSalary || errorOnMoreMoneySalary) && "has-error"}`}>
                             <label>{translate('human_resource.salary.table.other_salary')}<a title={translate('human_resource.salary.table.add_more_salary')}>
-                                <i className="fa fa-plus-square" style={{ color: "#008d4c", marginLeft: 5 }} onClick={this.handleAddBonus} /></a></label>
+                                <i className="fa fa-plus-square" style={{ color: "#28A745", marginLeft: 5 }} onClick={this.handleAddBonus} /></a></label>
                             <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                                 <thead>
                                     <tr>

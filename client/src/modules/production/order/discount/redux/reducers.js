@@ -1,14 +1,15 @@
 import { DiscountConstants } from './constants';
 
-var findIndex = (array, id) => {
+var findIndex = (array, code) => {
     var result = -1;
     array.forEach((value, index) => {
-        if (value._id === id) {
+        if (value.code === code) {
             result = index;
         }
     });
     return result;
 }
+
 
 const initState = {
     isLoading: false,
@@ -77,6 +78,7 @@ export function discounts(state = initState, action) {
                 isLoading: false
             }
         case DiscountConstants.EDIT_DISCOUNT_SUCCESS:
+            console.log("action.payload", action.payload.discount);
             index = findIndex(state.listDiscounts, action.payload.discount.code);
                 if (index !== -1) {
                     state.listDiscounts[index] = action.payload.discount
@@ -86,7 +88,7 @@ export function discounts(state = initState, action) {
                     isLoading: false
             }
         case DiscountConstants.CHANGE_DISCOUNT_STATUS_SUCCESS:
-            index = findIndex(state.listDiscounts, action.payload);
+            index = findIndex(state.listDiscounts, action.payload.code);
 
             if(index !== -1){
                 state.listDiscounts.splice(index, 1);
@@ -96,7 +98,10 @@ export function discounts(state = initState, action) {
                 isLoading: false
             }
         case DiscountConstants.DELETE_DISCOUNT_SUCCESS:
-            index = findIndex(state.listDiscounts, action.payload);
+            console.log("action.payload", action.payload[0]);
+            index = findIndex(state.listDiscounts, action.payload[0].code);
+            console.log(" state.listDiscounts",  state.listDiscounts);
+            console.log("index", index);
 
             if(index !== -1){
                 state.listDiscounts.splice(index, 1);

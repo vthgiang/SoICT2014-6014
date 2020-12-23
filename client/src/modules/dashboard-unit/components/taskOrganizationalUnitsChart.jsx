@@ -62,7 +62,7 @@ class TaskOrganizationalUnitsChart extends Component {
         const { startDate, endDate } = this.state;
         let { childOrganizationalUnit } = this.props;
         childOrganizationalUnit = childOrganizationalUnit.map(x => x.id);
-        this.props.getAllEmployeeOfUnitByIds(childOrganizationalUnit, "employeesOfUnistsUserIsDean");
+        this.props.getAllEmployeeOfUnitByIds(childOrganizationalUnit, "employeesOfUnistsUserIsManager");
         this.props.getTaskInOrganizationUnitByMonth(childOrganizationalUnit, this.formatString(startDate), this.formatString(endDate));
     }
 
@@ -83,7 +83,7 @@ class TaskOrganizationalUnitsChart extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         if (nextProps.tasks.organizationUnitTasks && !this.isEqual(nextProps.tasks.organizationUnitTasks.tasks, this.state.taskOfUnists) &&
-            nextProps.user.employeesOfUnitsUserIsDean.length !== 0) {
+            nextProps.user.employeesOfUnitsUserIsManager.length !== 0) {
             this.setState({
                 taskOfUnists: nextProps.tasks.organizationUnitTasks.tasks
             })
@@ -263,11 +263,11 @@ class TaskOrganizationalUnitsChart extends Component {
             }
         };
         let listTask = tasks.organizationUnitTasks ? tasks.organizationUnitTasks.tasks : [];
-        let employeesOfUnitsUserIsDean = user.employeesOfUnitsUserIsDean;
+        let employeesOfUnitsUserIsManager = user.employeesOfUnitsUserIsManager;
         let employeeOfUnits = [];
         if (totalTask) {
             childOrganizationalUnit.forEach(x => {
-                let count = employeesOfUnitsUserIsDean.filter(e => e.idUnit.toString() === x.id.toString())
+                let count = employeesOfUnitsUserIsManager.filter(e => e.idUnit.toString() === x.id.toString())
                 employeeOfUnits = [...employeeOfUnits, count.length ? count.length : 1]
             })
         }

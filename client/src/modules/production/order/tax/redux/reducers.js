@@ -1,9 +1,9 @@
 import { TaxConstants } from './constants';
 
-var findIndex = (array, id) => {
+var findIndex = (array, code) => {
     var result = -1;
     array.forEach((value, index) => {
-        if (value._id === id) {
+        if (value.code === code) {
             result = index;
         }
     });
@@ -93,18 +93,18 @@ export function taxs(state = initState, action) {
                     ...state,
                     isLoading: false
                 }
-            case TaxConstants.DISABLE_TAX_SUCCESS:
-                index = findIndex(state.listTaxs, action.payload);
+        case TaxConstants.DISABLE_TAX_SUCCESS:
+                index = findIndex(state.listTaxs, action.payload.tax.code);
 
                 if(index !== -1){
-                    state.listTaxs.splice(index, 1);
+                    state.listTaxs[index] = action.payload.tax
                 }
                 return {
                     ...state,
                     isLoading: false
             }
             case TaxConstants.DELETE_TAX_BY_CODE_SUCCESS:
-                index = findIndex(state.listTaxs, action.payload);
+                index = findIndex(state.listTaxs, action.payload[0].code);
 
                 if(index !== -1){
                     state.listTaxs.splice(index, 1);

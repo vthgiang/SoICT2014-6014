@@ -21,29 +21,29 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
         this.props.getUser();
     }
 
-    handleDeansChange = (value, id) => {
-        let { roleDeans } = this.state;
-        roleDeans = roleDeans.map(x => {
+    handleManagersChange = (value, id) => {
+        let { roleManagers } = this.state;
+        roleManagers = roleManagers.map(x => {
             if (x.id === id) {
                 x.users = value
             }
             return x;
         });
         this.setState({
-            roleDeans: roleDeans
+            roleManagers: roleManagers
         });
     }
 
-    handleViceDeansChange = (value, id) => {
-        let { roleViceDeans } = this.state;
-        roleViceDeans = roleViceDeans.map(x => {
+    handleDeputyManagersChange = (value, id) => {
+        let { roleDeputyManagers } = this.state;
+        roleDeputyManagers = roleDeputyManagers.map(x => {
             if (x.id === id) {
                 x.users = value
             }
             return x;
         });
         this.setState({
-            roleViceDeans: roleViceDeans
+            roleDeputyManagers: roleDeputyManagers
         });
     }
 
@@ -80,21 +80,21 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
 
     /** Function bắt sự lưu thay đổi cơ cấu tổ chức*/
     save = () => {
-        let { roleDeans, roleViceDeans, roleEmployees } = this.state;
-        roleDeans.forEach(x => {
-            x = { ...x, showAlert: false, editRoleInfo: false }
+        let { roleManagers, roleDeputyManagers, roleEmployees } = this.state;
+        roleManagers.forEach(x => {
+            x = { ...x, showAlert: false, notEditRoleInfo: true }
             this.props.edit(x);
         });
-        roleViceDeans.forEach(x => {
-            x = { ...x, showAlert: false, editRoleInfo: false }
+        roleDeputyManagers.forEach(x => {
+            x = { ...x, showAlert: false, notEditRoleInfo: true }
             this.props.edit(x);
         });
         roleEmployees.forEach((x, index) => {
             let users = this.refs[`employees${x.id}`].getValue();
             if (roleEmployees.length - 1 === index) {
-                x = { ...x, users: x.users.concat(users), editRoleInfo: false }
+                x = { ...x, users: x.users.concat(users), notEditRoleInfo: true }
             } else {
-                x = { ...x, users: x.users.concat(users), showAlert: false, editRoleInfo: false }
+                x = { ...x, users: x.users.concat(users), showAlert: false, notEditRoleInfo: true }
             }
             this.props.edit(x);
         });
@@ -102,11 +102,11 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps._id !== prevState._id) {
-            let roleDeans = nextProps.department[0].deans.map(x => {
+            let roleManagers = nextProps.department[0].managers.map(x => {
                 let infoRole = nextProps.role.find(y => y._id === x._id);
                 return { id: x._id, name: x.name, parents: x.parents, users: infoRole.users.map(y => y.userId._id) }
             }),
-                roleViceDeans = nextProps.department[0].viceDeans.map(x => {
+                roleDeputyManagers = nextProps.department[0].deputyManagers.map(x => {
                     let infoRole = nextProps.role.find(y => y._id === x._id);
                     return { id: x._id, name: x.name, parents: x.parents, users: infoRole.users.map(y => y.userId._id) }
                 }),
@@ -117,8 +117,8 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
             return {
                 ...prevState,
                 _id: nextProps._id,
-                roleDeans: roleDeans,
-                roleViceDeans: roleViceDeans,
+                roleManagers: roleManagers,
+                roleDeputyManagers: roleDeputyManagers,
                 roleEmployees: roleEmployees,
             }
         } else {
@@ -129,7 +129,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
     render() {
         let { translate, user } = this.props;
 
-        const { _id, roleEmployees, roleDeans, roleViceDeans, textSearch } = this.state;
+        const { _id, roleEmployees, roleManagers, roleDeputyManagers, textSearch } = this.state;
 
         let userlist = user.list;
 
@@ -144,20 +144,20 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                 >
                     <form className="form-group" id={`form-edit-unit${_id}`}>
                         {/* Trưởng đơn vị */}
-                        {roleDeans && roleDeans.length !== 0 &&
+                        {roleManagers && roleManagers.length !== 0 &&
                             <fieldset className="scheduler-border" style={{ marginBottom: 10, paddingBottom: 10 }}>
-                                <legend className="scheduler-border" style={{ marginBottom: 0 }}><h4 className="box-title">{translate('human_resource.manage_department.dean_unit')}</h4></legend>
-                                {roleDeans && roleDeans.map((x) => (
+                                <legend className="scheduler-border" style={{ marginBottom: 0 }}><h4 className="box-title">{translate('human_resource.manage_department.manager_unit')}</h4></legend>
+                                {roleManagers && roleManagers.map((x) => (
                                     < div className="form-group" key={x.id} style={{ marginBottom: 0 }}>
                                         <label>{x.name}</label>
                                         <SelectBox
-                                            id={`dean-unit-${x.id}`}
+                                            id={`manager-unit-${x.id}`}
                                             multiple={true}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={x.users}
                                             items={user.list.map(y => { return { value: y._id, text: `${y.name} (${y.email})` } })}
-                                            onChange={(e) => this.handleDeansChange(e, x.id)}
+                                            onChange={(e) => this.handleManagersChange(e, x.id)}
                                         />
                                     </div>
                                 ))}
@@ -165,20 +165,20 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                         }
 
                         {/* Phó đơn vị */}
-                        {roleViceDeans && roleViceDeans.length !== 0 &&
+                        {roleDeputyManagers && roleDeputyManagers.length !== 0 &&
                             <fieldset className="scheduler-border" style={{ marginBottom: 10, paddingBottom: 10 }}>
-                                <legend className="scheduler-border" style={{ marginBottom: 0 }}><h4 className="box-title">{translate('human_resource.manage_department.vice_dean_unit')}</h4></legend>
-                                {roleViceDeans && roleViceDeans.map((x) => (
+                                <legend className="scheduler-border" style={{ marginBottom: 0 }}><h4 className="box-title">{translate('human_resource.manage_department.deputy_manager_unit')}</h4></legend>
+                                {roleDeputyManagers && roleDeputyManagers.map((x) => (
                                     < div className="form-group" key={x.id} style={{ marginBottom: 0 }}>
                                         <label>{x.name}</label>
                                         <SelectBox
-                                            id={`vice_dean-unit-${x.id}`}
+                                            id={`deputy_manager-unit-${x.id}`}
                                             className="form-control select2"
                                             multiple={true}
                                             style={{ width: "100%" }}
                                             value={x.users}
                                             items={user.list.map(y => { return { value: y._id, text: `${y.name} (${y.email})` } })}
-                                            onChange={(e) => this.handleViceDeansChange(e, x.id)}
+                                            onChange={(e) => this.handleDeputyManagersChange(e, x.id)}
                                         />
                                     </div>
                                 ))}

@@ -335,7 +335,7 @@ exports.getAllManufacturingLot = async (query, user, portal) => {
     option.type = "product";
     // Xử  lý các quyền trước để tìm ra các kế hoạch trong các nhà máy được phân quyền
     let role = [currentRole];
-    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'deans': { $in: role } });
+    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'managers': { $in: role } });
     let organizationalUnitId = departments.map(department => department._id);
     let listManufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
         organizationalUnit: {
@@ -461,7 +461,10 @@ exports.getAllManufacturingLot = async (query, user, portal) => {
                     select: "code manufacturingMill",
                 }, {
                     path: "creator"
-                }]
+                }],
+                sort: {
+                    "updatedAt": "desc"
+                }
             });
 
         return { lots }
@@ -537,7 +540,7 @@ exports.getInventoryByGoods = async (data, portal) => {
             const good = await Good(connect(DB_CONNECTION, portal)).findById({ _id: array[i] });
             goodInventory.good = good;
             goodInventory.inventory = 0;
-            arrayGoods = [ ...arrayGoods, goodInventory ];
+            arrayGoods = [...arrayGoods, goodInventory];
         }
     }
 

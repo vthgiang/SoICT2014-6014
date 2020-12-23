@@ -25,8 +25,13 @@ exports.getDocuments = async (
 ) => {
     const og = currentRole
         ? await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({
+<<<<<<< HEAD
             deans: currentRole,
         })
+=======
+              managers: currentRole,
+          })
+>>>>>>> ec391c37e46c9faaadeef18cf595b0ff8122507f
         : null;
     let { by, page, limit } = query;
     if (!(page || limit)) {

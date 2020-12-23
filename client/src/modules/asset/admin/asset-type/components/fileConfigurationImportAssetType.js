@@ -17,6 +17,11 @@ export const configAssetType = {
         description: "Tên tiêu đề ứng với tên loại tài sản",
         value: "Tên loại tài sản"
     },
+    parent: {
+        columnName: "Tên loại tài sản cha",
+        description: "Tên tiêu đề ứng với tên loại tài sản cha",
+        value: "Tên loại tài sản cha"
+    },
     description: {
         columnName: "Mô tả",
         description: "Tên tiêu đề ứng với mô tả",
@@ -40,6 +45,7 @@ export const importAssetTypeTemplate = {
             columns: [
                 { key: "code", value: "Mã loại tài sản" },
                 { key: "name", value: "Tên loại tài sản" },
+                { key: "parent", value:"Tên loại tài sản cha"},
                 { key: "description", value: "Mô tả" },
                 { key: "information", value: "Thuộc tính mặc định" }
             ],
@@ -47,18 +53,21 @@ export const importAssetTypeTemplate = {
                 {
                     code: "BA",
                     name: "Bàn",
+                    parent: null,
                     description: "Các loại bàn",
                     information: "Chiều dài"
                 },
                 {
                     code: null,
                     name: null,
+                    parent:null,
                     description: null,
                     information: "Chiều rộng"
                 },
                 {
-                    code: null,
-                    name: null,
+                    code: "GH",
+                    name: "Ghế",
+                    parent:"Bàn",
                     description: null,
                     information: "Chiều cao"
                 }

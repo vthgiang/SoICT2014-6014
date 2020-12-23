@@ -242,9 +242,9 @@ class SlaEditForm extends Component {
                 title,
             };
             await this.props.updateSLA(slaId, data);
-            await this.setState({
-                slaId: "",
-            });
+            // await this.setState({
+            //     slaId: "",
+            // });
         }
     };
 
@@ -305,11 +305,11 @@ class SlaEditForm extends Component {
                                 items={
                                     isAllGoodsSelected
                                         ? [
-                                              {
-                                                  value: "disSelectAll",
-                                                  text: `Đã chọn tất cả (${this.getLengthOfAllGoods()} mặt hàng)`,
-                                              },
-                                          ]
+                                            {
+                                                value: "disSelectAll",
+                                                text: `Đã chọn tất cả (${this.getLengthOfAllGoods()} mặt hàng)`,
+                                            },
+                                        ]
                                         : this.getAllGoods()
                                 }
                                 onChange={this.handleGoodsChange}
@@ -325,7 +325,7 @@ class SlaEditForm extends Component {
                                 <a style={{ cursor: "pointer" }} title={"Các điều khoản"}>
                                     <i
                                         className="fa fa-plus-square"
-                                        style={{ color: "#00a65a", marginLeft: 5 }}
+                                        style={{ color: "#28A745", marginLeft: 5 }}
                                         onClick={this.handleAddDescription}
                                     />
                                 </a>
@@ -347,45 +347,44 @@ class SlaEditForm extends Component {
                                             </td>
                                         </tr>
                                     ) : (
-                                        descriptions.map((item, index) => {
-                                            return (
-                                                <tr key={index}>
-                                                    <td style={{ paddingLeft: "0px" }}>
-                                                        <div
-                                                            className={`form-group ${
-                                                                parseInt(errorOnDescriptionPosition) === index && errorOnDescription
-                                                                    ? "has-error"
-                                                                    : ""
-                                                            }`}
-                                                        >
-                                                            <textarea
-                                                                className="form-control"
-                                                                type="text"
-                                                                value={item}
-                                                                name="value"
-                                                                style={{ width: "100%" }}
-                                                                onChange={(e) => this.handleDescriptionChange(e, index)}
-                                                            />
-                                                            {parseInt(errorOnDescriptionPosition) === index && errorOnDescription && (
-                                                                <ErrorLabel content={errorOnDescription} />
-                                                            )}
-                                                        </div>
-                                                    </td>
+                                            descriptions.map((item, index) => {
+                                                return (
+                                                    <tr key={index}>
+                                                        <td style={{ paddingLeft: "0px" }}>
+                                                            <div
+                                                                className={`form-group ${parseInt(errorOnDescriptionPosition) === index && errorOnDescription
+                                                                        ? "has-error"
+                                                                        : ""
+                                                                    }`}
+                                                            >
+                                                                <textarea
+                                                                    className="form-control"
+                                                                    type="text"
+                                                                    value={item}
+                                                                    name="value"
+                                                                    style={{ width: "100%" }}
+                                                                    onChange={(e) => this.handleDescriptionChange(e, index)}
+                                                                />
+                                                                {parseInt(errorOnDescriptionPosition) === index && errorOnDescription && (
+                                                                    <ErrorLabel content={errorOnDescription} />
+                                                                )}
+                                                            </div>
+                                                        </td>
 
-                                                    <td style={{ width: "100px", textAlign: "center" }}>
-                                                        <a
-                                                            className="delete"
-                                                            title="Delete"
-                                                            data-toggle="tooltip"
-                                                            onClick={() => this.deleteDescription(index)}
-                                                        >
-                                                            <i className="material-icons"></i>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            );
-                                        })
-                                    )}
+                                                        <td style={{ width: "100px", textAlign: "center" }}>
+                                                            <a
+                                                                className="delete"
+                                                                title="Delete"
+                                                                data-toggle="tooltip"
+                                                                onClick={() => this.deleteDescription(index)}
+                                                            >
+                                                                <i className="material-icons"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })
+                                        )}
                                 </tbody>
                             </table>
                             {/* </div> */}
