@@ -49,11 +49,25 @@ class AgePyramidChart extends Component {
     };
 
     /**
+     * Hàm tiện ích tìm giá trị nhỏ nhất của mảng
+     * @param {*} data : Array dữ liệu truyền vào
+     */
+    findMinOfArray = (data) => {
+        let min = data[1];
+        for (let i = 2; i < data.length - 1; i++) {
+            if (data[i] < min) {
+                min = data[i];
+            }
+        }
+        return min;
+    };
+
+    /**
      * Render chart
      * @param {*} data : Dữ liệu của Chart
      */
     renderChart = (data) => {
-        let maxData1 = this.findMaxOfArray(data.data1), maxData2 = this.findMaxOfArray(data.data2);
+        let maxData1 = 0 - this.findMinOfArray(data.data1), maxData2 = this.findMaxOfArray(data.data2);
         let qty_max = maxData1 >= maxData2 ? maxData1 : maxData2;
         data.data1.shift(); data.data2.shift();
 
