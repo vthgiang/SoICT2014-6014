@@ -616,7 +616,7 @@ class AssetManagement extends Component {
                                 { key: "index", value: "STT" },
                                 { key: "code", value: "Mã tài sản" },
                                 { key: "name", value: "Tên tài sản" },
-                                { key: "disposalDate", value: "Thời gian thanh lý" },
+                                { key: "disposalDate", value: "Ngày thanh lý" },
                                 { key: "disposalType", value: "Hình thức thanh lý" },
                                 { key: "disposalCost", value: "Giá trị thanh lý" },
                                 { key: "disposalDesc", value: "Nội dung thanh lý" },

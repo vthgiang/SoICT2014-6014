@@ -274,9 +274,9 @@ export const configurationDisposalInformationOfAssetTemplate = {
         value: "Mã tài sản"
     },
     disposalDate: {
-        columnName: "Thời gian thanh lý",
-        description: "Tên tiêu đề ứng với thời gian thanh lý",
-        value: "Thời gian thanh lý"
+        columnName: "Ngày thanh lý",
+        description: "Tên tiêu đề ứng với ngày thanh lý",
+        value: "Ngày thanh lý"
     },
     disposalType: {
         columnName: "Hình thức thanh lý",
@@ -501,7 +501,7 @@ const importDisposalInformationOfAssetTemplate = {
         rowHeader: 1,
         columns: [
             { key: "code", value: "Mã tài sản" },
-            { key: "disposalDate", value: "Thời gian thanh lý" },
+            { key: "disposalDate", value: "Ngày thanh lý" },
             { key: "disposalType", value: "Hình thức thanh lý" },
             { key: "disposalCost", value: "Giá trị thanh lý (VNĐ)" },
             { key: "disposalDesc", value: "Nội dung thanh lý" }

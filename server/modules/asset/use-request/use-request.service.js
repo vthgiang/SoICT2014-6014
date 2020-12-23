@@ -98,16 +98,16 @@ exports.getUseRequestByAsset = async (portal, data) => {
  */
 exports.createUseRequest = async (portal, company, data) => {
     // check trùng mã dki sử dụng
-    const getUseRequest = await RecommendDistribute(connect(DB_CONNECTION, portal)).findOne({ recommendNumber: data.recommendNumber });
-    if (getUseRequest) throw ['recommendNumber_exists'];
+    // const getUseRequest = await RecommendDistribute(connect(DB_CONNECTION, portal)).findOne({ recommendNumber: data.recommendNumber });
+    // if (getUseRequest) throw ['recommendNumber_exists'];
 
     const dateStartUse = new Date(data.dateStartUse);
     const dateEndUse = new Date(data.dateEndUse);
 
     // check trùng thời gian đăng kí sử dụng cho từng tài sản
-    const checkDayUse = await RecommendDistribute(connect(DB_CONNECTION, portal)).find({asset:mongoose.Types.ObjectId(data.asset) ,dateEndUse: { $gt: dateStartUse } })
+    // const checkDayUse = await RecommendDistribute(connect(DB_CONNECTION, portal)).find({asset:mongoose.Types.ObjectId(data.asset) , dateEndUse: { $gt: dateStartUse } })
    
-    if (checkDayUse && checkDayUse.length > 0) throw ['dayUse_exists'];
+    // if (checkDayUse && checkDayUse.length > 0) throw ['dayUse_exists'];
 
     const createRecommendDistribute = await RecommendDistribute(connect(DB_CONNECTION, portal)).create({
         company: company,
