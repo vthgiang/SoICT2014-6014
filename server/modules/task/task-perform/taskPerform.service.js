@@ -353,12 +353,12 @@ exports.startTimesheetLog = async (portal, params, body) => {
  * Dừng bấm giờ: Lưu thời gian kết thúc và số giờ chạy (endTime và time)
  */
 exports.stopTimesheetLog = async (portal, params, body) => {
-    const now = new Date().getTime();
+    const now = new Date();
     let stoppedAt;
 
     if (body.stoppedAt) {
         let getStoppedTime = new Date(body.stoppedAt);
-        stoppedAt = getStoppedTime.getTime();
+        stoppedAt = getStoppedTime;
     } else {
         stoppedAt = now;
     }
@@ -370,9 +370,10 @@ exports.stopTimesheetLog = async (portal, params, body) => {
             { _id: params.taskId, "timesheetLogs._id": body.timesheetLog },
             {
                 $set: {
-                    "timesheetLogs.$.stoppedAt": stoppedAt,
-                    "timesheetLogs.$.duration": duration,
+                    "timesheetLogs.$.stoppedAt": stoppedAt, // Date
+                    "timesheetLogs.$.duration": duration, // mileseconds
                     "timesheetLogs.$.description": body.description,
+                    "timesheetLogs.$.autoStopped": body.autoStopped, // ghi nhận tắt bấm giờ tự động hay không?
                 },
             },
             { new: true }
