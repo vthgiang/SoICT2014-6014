@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal } from '../../../../../common-components';
 import { getFormatDateFromTime } from '../../../../../helpers/stringMethod';
-
+import { AuthActions } from '../../../../auth/redux/actions';
 class PurchaseRequestDetailForm extends Component {
     constructor(props) {
         super(props);
@@ -28,6 +28,8 @@ class PurchaseRequestDetailForm extends Component {
                 approver: nextProps.approver,
                 status: nextProps.status,
                 note: nextProps.note,
+                files: nextProps.files,
+                recommendUnits: nextProps.recommendUnits,
             }
         } else {
             return null;
@@ -45,12 +47,17 @@ class PurchaseRequestDetailForm extends Component {
         }
     }
 
+    requestDownloadFile = (e, path, fileName) => {
+        e.preventDefault();
+        this.props.downloadFile(`.${path}`, fileName);
+    }
+
     render() {
         const { translate, recommendProcure } = this.props;
-        const { recommendNumber, dateCreate, proponent, equipmentName, equipmentDescription, supplier, total, unit, estimatePrice, approver, status, note } = this.state;
+        const { recommendNumber, dateCreate, proponent, equipmentName, equipmentDescription, supplier, total, unit, estimatePrice, approver, status, note, files, recommendUnits } = this.state;
 
         var formater = new Intl.NumberFormat();
-
+        console.log('files', files);
         return (
             <React.Fragment>
                 <DialogModal
@@ -82,17 +89,22 @@ class PurchaseRequestDetailForm extends Component {
                                     {proponent ? proponent.name : ''}
                                 </div>
 
+                                {/* Đơn vị đề nghị */}
+                                <div className="form-group">
+                                    <strong>{translate('asset.usage.recommend_units')}&emsp; </strong>
+                                    <ul>
+                                        {recommendUnits && recommendUnits.map((obj, index) => (
+                                            <li key={index}>{obj.name}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+
                                 {/* Thiết bị đề nghị mua */}
                                 <div className={`form-group`}>
                                     <strong>{translate('asset.manage_recommend_procure.asset_recommend')}&emsp; </strong>
                                     {equipmentName}
                                 </div>
 
-                                {/* Mô tả thiết bị đề nghị mua */}
-                                <div className={`form-group`}>
-                                    <strong>{translate('asset.manage_recommend_procure.equipment_description')}&emsp; </strong>
-                                    {equipmentDescription}
-                                </div>
 
                                 {/* Nhà cung cấp */}
                                 <div className="form-group">
@@ -137,6 +149,27 @@ class PurchaseRequestDetailForm extends Component {
                                     <strong>{translate('asset.usage.note')}&emsp; </strong>
                                     {note}
                                 </div>
+
+                                {/* Mô tả thiết bị đề nghị mua */}
+                                <div className={`form-group`}>
+                                    <strong>{translate('asset.manage_recommend_procure.equipment_description')}&emsp; </strong>
+                                    {equipmentDescription}
+                                </div>
+
+                                {/* Tài liệu đính kèm */}
+                                <div className="form-group">
+                                    <strong>{translate('human_resource.profile.attached_files')}&emsp; </strong>
+                                    {
+                                        files && files.length > 0 &&
+                                        <ul>
+                                            {
+                                                files.map((obj, index) => (
+                                                    <li key={index}><a href="" title="Tải xuống" onClick={(e) => this.requestDownloadFile(e, obj.url, obj.fileName)}>{obj.fileName}</a></li>
+                                                ))
+                                            }
+                                        </ul>
+                                    }
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -152,8 +185,8 @@ function mapState(state) {
 };
 
 const actionCreators = {
-
+    downloadFile: AuthActions.downloadFile,
 };
 
-const detailRecommendProcure = connect(null, null)(withTranslate(PurchaseRequestDetailForm));
+const detailRecommendProcure = connect(mapState, actionCreators)(withTranslate(PurchaseRequestDetailForm));
 export { detailRecommendProcure as PurchaseRequestDetailForm };

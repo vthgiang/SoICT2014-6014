@@ -11,7 +11,6 @@ const AssetPurchaseRequestSchema = new Schema({
     recommendNumber: {
         //mã phiếu
         type: String,
-        required: true,
     },
     dateCreate: {
         //ngày lập
@@ -23,6 +22,18 @@ const AssetPurchaseRequestSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User",
     },
+    recommendUnits: [{ // Đơn vị đề nghị
+        type: Schema.Types.ObjectId,
+        ref: "OrganizationalUnit"
+    }],
+    files: [{ // Tài liệu đính kèm phiếu đăng kí mua sắm
+        fileName: {
+            type: String,
+        },
+        url: {
+            type: String
+        }
+    }],
     equipmentName: {
         //Tên thiết bị đề nghị mua sắm
         type: String,

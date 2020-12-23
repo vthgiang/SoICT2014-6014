@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components';
+import { DialogModal, ErrorLabel, DatePicker, SelectBox, UploadFile } from '../../../../../common-components';
 
 import { PurchaseRequestFromValidator } from './PurchaseRequestFromValidator';
 
 import { RecommendProcureActions } from '../redux/actions';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
-
+import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter';
 class PurchaseRequestEditForm extends Component {
     constructor(props) {
         super(props);
@@ -148,20 +148,53 @@ class PurchaseRequestEditForm extends Component {
         })
     }
 
+    handleRecommendUnits = (value) => {
+        this.setState({
+            ...this.state,
+            recommendUnits: value
+        })
+    }
+
+    handleChangeFile = (file) => {
+        let newFiles = [], oldFiles = [], recommendFiles;
+        if (file) {
+            file.forEach(obj => {
+                if (obj.urlFile) {
+                    newFiles = [...newFiles, obj]
+                } else {
+                    oldFiles = [...oldFiles, obj]
+                }
+            })
+        }
+
+        if (newFiles && newFiles.length > 0) {
+            recommendFiles = newFiles.map(x => ({
+                url: x.urlFile,
+                fileUpload: x.fileUpload
+            }))
+        }
+
+        this.setState({
+            recommendFiles,
+            oldFiles,
+        });
+    }
+
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
         const { equipmentName, total, unit, recommendNumber } = this.state;
         let result =
             this.validateEquipment(equipmentName, false) &&
             this.validateTotal(total, false) &&
-            this.validateUnit(unit, false) &&
-            this.validateRecommendNumber(recommendNumber, false);
+            this.validateUnit(unit, false)
+        // &&this.validateRecommendNumber(recommendNumber, false);
 
         return result;
     }
 
     save = () => {
         if (this.isFormValidated()) {
+            const { recommendFiles } = this.state;
             let data = this.state;
             if (data.dateCreate) {
                 let dateData = data.dateCreate.split("-");
@@ -170,7 +203,13 @@ class PurchaseRequestEditForm extends Component {
                     dateCreate: new Date(`${dateData[2]}-${dateData[1]}-${dateData[0]}`)
                 }
             }
-            return this.props.updateRecommendProcure(this.state._id, data);
+            let formData = convertJsonObjectToFormData(data);
+            if (recommendFiles) {
+                recommendFiles.forEach(obj => {
+                    formData.append('recommendFiles', obj.fileUpload)
+                })
+            }
+            return this.props.updateRecommendProcure(this.state._id, formData);
         }
     }
 
@@ -191,6 +230,8 @@ class PurchaseRequestEditForm extends Component {
                 approver: nextProps.approver,
                 status: nextProps.status,
                 note: nextProps.note,
+                files: nextProps.files,
+                recommendUnits: nextProps.recommendUnits ? nextProps.recommendUnits.map(obj => obj._id) : [],
                 errorOnEquipment: undefined,
                 errorOnTotal: undefined,
                 errorOnUnit: undefined,
@@ -219,12 +260,13 @@ class PurchaseRequestEditForm extends Component {
     }
 
     render() {
-        const { _id } = this.props;
+        const { _id, department } = this.props;
         const { translate, recommendProcure, user } = this.props;
-        const { recommendNumber, dateCreate, proponent, equipmentName, equipmentDescription, supplier, total, unit, estimatePrice,
+        const { recommendNumber, dateCreate, proponent, equipmentName, equipmentDescription, supplier, total, unit, estimatePrice, recommendUnits, files,
             errorOnEquipment, errorOnEquipmentDescription, errorOnTotal, errorOnUnit, errorOnRecommendNumber } = this.state;
 
         var userlist = user.list;
+        const departmentlist = department.list && department.list.map(obj => ({ value: obj._id, text: obj.name }));
 
         return (
             <React.Fragment>
@@ -241,10 +283,10 @@ class PurchaseRequestEditForm extends Component {
 
                             <div className="col-sm-6">
                                 {/* Mã phiếu */}
-                                <div className={`form-group ${!errorOnRecommendNumber ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.form_code')}<span className="text-red">*</span></label>
+                                <div className={`form-group `}>
+                                    <label>{translate('asset.general_information.form_code')}</label>
                                     <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={this.handleRecommendNumberChange} />
-                                    <ErrorLabel content={errorOnRecommendNumber} />
+                                    {/* <ErrorLabel content={errorOnRecommendNumber} /> */}
                                 </div>
 
                                 {/* Ngày lập */}
@@ -274,6 +316,26 @@ class PurchaseRequestEditForm extends Component {
                                                 multiple={false}
                                                 disabled
                                             />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Đơn vị đề nghị */}
+                                <div className={`form-group`}>
+                                    <label>{translate('asset.usage.recommend_units')}</label>
+                                    <div>
+                                        <div id="recommend_units">
+                                            {recommendUnits &&
+                                                <SelectBox
+                                                    id={`add-recommend_units${_id}`}
+                                                    className="form-control select2"
+                                                    style={{ width: "100%" }}
+                                                    items={departmentlist}
+                                                    onChange={this.handleRecommendUnits}
+                                                    value={recommendUnits}
+                                                    multiple={true}
+                                                />
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -321,6 +383,11 @@ class PurchaseRequestEditForm extends Component {
                                     <label>{translate('asset.manage_recommend_procure.expected_value')} (VNĐ)</label>
                                     <input type="number" className="form-control" name="estimatePrice" value={estimatePrice ? estimatePrice : ""} onChange={this.handleEstimatePriceChange} />
                                 </div>
+
+                                <div className="form-group">
+                                    <label>{translate('human_resource.profile.attached_files')}</label>
+                                    <UploadFile multiple={true} onChange={this.handleChangeFile} files={files} sendDataAfterDelete={true} />
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -331,8 +398,8 @@ class PurchaseRequestEditForm extends Component {
 };
 
 function mapState(state) {
-    const { recommendProcure, user } = state;
-    return { recommendProcure, user };
+    const { recommendProcure, user, department } = state;
+    return { recommendProcure, user, department };
 };
 
 const actionCreators = {
