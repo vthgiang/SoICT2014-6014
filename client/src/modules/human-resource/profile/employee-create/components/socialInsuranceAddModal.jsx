@@ -239,13 +239,13 @@ class SocialInsuranceAddModal extends Component {
                         {/* Chức vụ */}
                         <div className={`form-group ${errorOnPosition && "has-error"}`}>
                             <label>{translate('table.position')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="position" value={position} onChange={this.handlePositionChange} autoComplete="off" />
+                            <input type="text" className="form-control" name="position" value={position ? position : ''} onChange={this.handlePositionChange} autoComplete="off" />
                             <ErrorLabel content={errorOnPosition} />
                         </div>
                         {/* Mức lương đóng */}
                         <div className={`form-group ${errorOnMoney && "has-error"}`}>
                             <label>{translate('human_resource.profile.money')}<span className="text-red">*</span></label>
-                            <input type="Number" className="form-control" name="money" value={money} onChange={this.handleMoneyChange} autoComplete="off" />
+                            <input type="Number" className="form-control" name="money" value={money ? money : ''} onChange={this.handleMoneyChange} autoComplete="off" />
                             <ErrorLabel content={errorOnMoney} />
                         </div>
                     </form>
