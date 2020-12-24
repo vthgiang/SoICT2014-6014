@@ -52,7 +52,7 @@ class EmployeeImportTab extends Component {
     render() {
         const { translate } = this.props;
 
-        const { id, className = "tab-pane", teamplateImport, configuration, rowErrorOfReducer, dataOfReducer, configTableWidth, showTableWidth, handleImport, textareaRow } = this.props;
+        const { id, className = "tab-pane", listFields = [], teamplateImport, configuration, rowErrorOfReducer, dataOfReducer, configTableWidth, showTableWidth, handleImport, textareaRow } = this.props;
 
         let { limit, page, importData, rowError, configData, checkFileImport } = this.state;
 
@@ -78,7 +78,8 @@ class EmployeeImportTab extends Component {
         if (importData && id === "import_employee_degree") {
             importData = importData.map(x => {
                 let degreeType = x.degreeType ? translate(`human_resource.profile.${x.degreeType}`) : x.degreeType;
-                return { ...x, degreeType: degreeType }
+                let field = x.field ? listFields.find(y => y._id === x.field).name : ''
+                return { ...x, degreeType: degreeType, field: field }
             });
         };
         if (importData && id === "import_employee_file") {
