@@ -158,16 +158,16 @@ class Content extends Component {
                             if (k !== j) {
                                 let thNotChoice = window.$(tableHeadings[k]);
                                 let listdiv = thNotChoice.find("div.sort")
-                                window.$(listdiv[0]).find("i.fa.fa-caret-up")[0].style.color = "#cac6c6"
-                                window.$(listdiv[0]).find("i.fa.fa-caret-down")[0].style.color = "#cac6c6"
+                                window.$(listdiv[0]).find("i.fa.fa-caret-up")[0].style.color = "rgb(226 222 222)"
+                                window.$(listdiv[0]).find("i.fa.fa-caret-down")[0].style.color = "rgb(226 222 222)"
                             } else {
                                 let thNotChoice = window.$(tableHeadings[k]);
                                 let listdiv = thNotChoice.find("div.sort")
                                 if (ascOrder) {
                                     window.$(listdiv[0]).find("i.fa.fa-caret-up")[0].style.color = "black"
-                                    window.$(listdiv[0]).find("i.fa.fa-caret-down")[0].style.color = "#cac6c6"
+                                    window.$(listdiv[0]).find("i.fa.fa-caret-down")[0].style.color = "rgb(226 222 222)"
                                 } else {
-                                    window.$(listdiv[0]).find("i.fa.fa-caret-up")[0].style.color = "#cac6c6"
+                                    window.$(listdiv[0]).find("i.fa.fa-caret-up")[0].style.color = "rgb(226 222 222)"
                                     window.$(listdiv[0]).find("i.fa.fa-caret-down")[0].style.color = "black"
                                 }
                             }
@@ -186,8 +186,8 @@ class Content extends Component {
                         });
                     }
 
-                    let up = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer', class: 'fa fa-caret-up' });
-                    let down = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer; margin-top: -5px', class: 'fa fa-caret-down' });
+                    let up = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer; color: rgb(226 222 222) ', class: 'fa fa-caret-up' });
+                    let down = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer; margin-top: -5px; color: rgb(226 222 222)', class: 'fa fa-caret-down' });
                     up.click(() => {
                         sort(true);
                     })

@@ -1116,7 +1116,7 @@ export default {
 
         manage_user: {
             add: "Add",
-            add_title: "Add new user/account",            
+            add_title: "Add new user/account",
             add_common: 'Add common',
             import: 'Import from file',
             import_title: 'Import users data from file',
@@ -1463,7 +1463,7 @@ export default {
                     menu_attachments_title: "Attachments",
                 },
 
-                money:'Wage',
+                money: 'Wage',
                 staff_number: "Staff code",
                 full_name: "Full name",
                 attendance_code: "Attendance code",
@@ -1614,7 +1614,7 @@ export default {
                 temporary_residence_card: "Temporary residence card",
                 disc_temporary_residence_card:
                     "Certificate of temporary absence",
-                registration_book:'Registration book',
+                registration_book: 'Registration book',
                 add_staff: "Add new staffs",
 
                 reward: "Commendation",
@@ -2554,7 +2554,7 @@ export default {
                 edit_status_of_task_fail: "Can't edit status of task",
                 edit_status_archived_of_task_fail:
                     "Can't edit archived status of task",
-                task_status_error:"Status of task doesn't allow archive",
+                task_status_error: "Status of task doesn't allow archive",
                 confirm_delete:
                     "This task cannot be deleted because it is in progress!",
 
@@ -2635,6 +2635,7 @@ export default {
 
                 start_date: "Start date",
                 end_date: "End date",
+                task_additional_info: "Additional Information",
 
                 search: "Search",
 
