@@ -4,6 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { EmployeeImportTab } from './combinedContent';
 import { DialogModal } from '../../../../../common-components';
+import { FieldsActions } from '../../../field/redux/actions';
 
 import {
     configurationEmployee,
@@ -275,7 +276,9 @@ class EmployeeImportForm extends Component {
      * @param {*} value : dữ liệu cần import
      */
     handleCheckImportDataOfDegree = (value) => {
-        const { translate } = this.props;
+        console.log(value)
+        const { translate, field } = this.props;
+        const listFields = field.listFields
         value = value.map(x => {
             let degreeType;
             switch (x.degreeType) {
@@ -297,7 +300,9 @@ class EmployeeImportForm extends Component {
                 default:
                     degreeType = null;
             }
-            return { ...x, degreeType: degreeType }
+            let find = listFields.find(field => field.name === x.field)
+
+            return { ...x, degreeType: degreeType, field: find ? find._id : null }
         })
 
 
@@ -612,7 +617,7 @@ class EmployeeImportForm extends Component {
 
 
     render() {
-        const { employeesManager, translate } = this.props;
+        const { employeesManager, translate, field } = this.props;
         let configurationEmployeeInfo = configurationEmployee.configurationEmployeeInfo(translate),
             configurationExperience = configurationEmployee.configurationExperience(translate),
             configurationSocialInsuranceDetails = configurationEmployee.configurationSocialInsuranceDetails(translate),
@@ -621,7 +626,7 @@ class EmployeeImportForm extends Component {
             configurationContract = configurationEmployee.configurationContract(translate),
             configurationFile = configurationEmployee.configurationFile(translate),
             teamplateImport = configurationEmployee.templateImport(translate);
-
+        let listFields = field.listFields
         return (
             <React.Fragment>
                 <DialogModal
@@ -675,10 +680,12 @@ class EmployeeImportForm extends Component {
                                     textareaRow={10}
                                     configTableWidth={1000}
                                     showTableWidth={1000}
+                                    fil
                                     rowErrorOfReducer={employeesManager.error.rowErrorOfDegree}
                                     dataOfReducer={employeesManager.error.degrees}
                                     configuration={configurationDegree}
                                     teamplateImport={teamplateImport}
+                                    listFields={listFields}
                                     handleCheckImportData={this.handleCheckImportDataOfDegree}
                                     handleImport={this.handleImportDegree}
                                 />
@@ -741,12 +748,13 @@ class EmployeeImportForm extends Component {
 }
 
 function mapState(state) {
-    const { employeesManager } = state;
-    return { employeesManager };
+    const { employeesManager, field } = state;
+    return { employeesManager, field };
 };
 
 const actionCreators = {
     importEmployees: EmployeeManagerActions.importEmployees,
+    getListFields: FieldsActions.getListFields,
 };
 
 const importExcel = connect(mapState, actionCreators)(withTranslate(EmployeeImportForm));
