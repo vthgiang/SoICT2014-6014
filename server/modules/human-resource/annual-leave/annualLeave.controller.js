@@ -62,14 +62,14 @@ exports.createAnnualLeave = async (req, res) => {
                 <p>Nhân viên: ${employee.fullName} - ${employee.employeeNumber}. </p>
                 <p>Thời gian nghỉ phép: ${req.body.startTime? req.body.startTime + ":": ''} ${req.body.startDate} - ${req.body.startTime? req.body.endTime + ":": ''} ${req.body.endDate}.</p>
                 <p>Lý do: ${req.body.reason}<p>
-                <p>Để phê duyệt đơn xin nghỉ. Hãy click vào đây <a target="_blank" href="http://${process.env.WEBSITE}/hr-manage-leave-application">Phê duyệt</a><p>
+                <p>Để phê duyệt đơn xin nghỉ. Hãy click vào đây <a target="_blank" href="${process.env.WEBSITE}/hr-manage-leave-application">Phê duyệt</a><p>
                 <br/>
                 <br/>
                 <h3><strong>Notification from system ${process.env.WEB_NAME}.</strong></h3>
                 <p>Staff ${employee.fullName} - ${employee.employeeNumber}<p/>
                 <p>Time annual leave: ${req.body.startTime? req.body.startTime + ":": ''} ${req.body.startDate} - ${req.body.startTime? req.body.endTime + ":" : ''} ${req.body.endDate}.</p>
                 <p>Reason: ${req.body.reason}<p>
-                <p>To approve leave application. Please click here <a target="_blank" href="http://${process.env.WEBSITE}/hr-manage-leave-application">Approved</a><p>
+                <p>To approve leave application. Please click here <a target="_blank" href="${process.env.WEBSITE}/hr-manage-leave-application">Approved</a><p>
             `
             users.forEach(x => {
                 sendEmail(x.email, 'Đơn xin nghỉ phép', "", html);
@@ -79,12 +79,12 @@ exports.createAnnualLeave = async (req, res) => {
                 <p>Nhân viên: ${employee.fullName} - ${employee.employeeNumber}. </p>
                 <p>Thời gian nghỉ phép: ${req.body.startTime? req.body.startTime + ":": ''} ${req.body.startDate} - ${req.body.startTime? req.body.endTime + ":": ''} ${req.body.endDate}.</p>
                 <p>Lý do: ${req.body.reason}<p>
-                <p>Để phê duyệt đơn xin nghỉ. Hãy click vào đây <a target="_blank" href="http://${process.env.WEBSITE}/hr-manage-leave-application">Phê duyệt</a><p>
+                <p>Để phê duyệt đơn xin nghỉ. Hãy click vào đây <a target="_blank" href="${process.env.WEBSITE}/hr-manage-leave-application">Phê duyệt</a><p>
                 <br/>
                 <p>Staff ${employee.fullName} - ${employee.employeeNumber}<p/>
                 <p>Time annual leave: ${req.body.startTime? req.body.startTime+":": ''} ${req.body.startDate} - ${req.body.startTime? req.body.endTime + ":": ''} ${req.body.endDate}.</p>
                 <p>Reason: ${req.body.reason}<p>
-                <p>To approve leave application. Please click here <a target="_blank" href="http://${process.env.WEBSITE}/hr-manage-leave-application">Approved</a><p>
+                <p>To approve leave application. Please click here <a target="_blank" href="${process.env.WEBSITE}/hr-manage-leave-application">Approved</a><p>
             `
             users = users.map(x => x._id);
             let notification = {

@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
+import { DataTableSetting } from '../../../../../common-components';
 
 const FamilyMemberTab = ({ id }) => {
     return (
@@ -65,26 +66,50 @@ const FamilyMemberTab = ({ id }) => {
                     <legend className="scheduler-border" >
                         <h4 className="box-title">Kê khai đầy đủ thành viên hộ gia đình trong sổ hộ khẩu hoặc sổ tạm trú</h4>
                     </legend>
-                    <div className="row">
+                    <div id="container-employee-family-member" className="row">
                         <table className="table table-hover table-striped table-bordered" id="table-employee-family-member">
                             <thead>
                                 <tr>
-                                    <th rowSpan={2}>STT</th>
-                                    <th rowSpan={2}>Họ và tên</th>
-                                    <th rowSpan={2}>Mã số BHXH</th>
-                                    <th rowSpan={2}>Ngày sinh</th>
-                                    <th rowSpan={2}>Giới tính</th>
-                                    <th rowSpan={2}>Quốc tịch</th>
-                                    <th rowSpan={2}>Dân tộc</th>
-                                    <th colSpan={3} style={{ width: '300px' }}>Nơi cấp GKS</th>
-                                    <th rowSpan={2}>Hành động</th>
-                                </tr>
-                                <tr>
-                                    <th>Tỉnh/TP</th>
-                                    <th>Quận/Huyện</th>
-                                    <th>Địa chỉ</th>
+                                    <th>STT</th>
+                                    <th>Họ và tên</th>
+                                    <th>Mã số BHXH</th>
+                                    <th>Số sổ BHXH</th>
+                                    <th>Giới tính</th>
+                                    <th>Là chủ hộ</th>
+                                    <th>Quan hệ với chủ hộ</th>
+                                    <th>CNSS</th>
+                                    <th>Ngày sinh</th>
+                                    <th>Nơi cấp giấy khai sinh</th>
+                                    <th>Quốc tịch</th>
+                                    <th>Dân tộc</th>
+                                    <th>Số CMND/Hộ chiếu</th>
+                                    <th>Ghi chú
+                                        <DataTableSetting
+                                            tableId="table-employee-family-member"
+                                            tableContainerId="container-employee-family-member"
+                                            tableWidt={1500}
+                                        />
+                                    </th>
                                 </tr>
                             </thead>
+                            <tbody>
+                                <tr>
+                                    <td>STT</td>
+                                    <td>Họ và tên</td>
+                                    <td>Mã số BHXH</td>
+                                    <td>Số sổ BHXH</td>
+                                    <td>Giới tính</td>
+                                    <td>Là chủ hộ</td>
+                                    <td>Quan hệ với chủ hộ</td>
+                                    <td>CNSS</td>
+                                    <td>Ngày sinh</td>
+                                    <td>Nơi cấp giấy khai sinh</td>
+                                    <td>Quốc tịch</td>
+                                    <td>Dân tộc</td>
+                                    <td>Số CMND/Hộ chiếu</td>
+                                    <td>Ghi chú</td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                 </fieldset>

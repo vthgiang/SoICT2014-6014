@@ -290,6 +290,21 @@ const EmployeeSchema = new Schema({
         file: String,
         urlFile: String
     }],
+    familyMembers: [{
+        name: { type: String },
+        codeSocialInsurance: { type: String },
+        bookNumberSocialInsurance: { type: String },
+        gender: { type: String, enum: ['male', 'female'] },
+        isHeadHousehold: { type: Boolean, default: false },
+        relationshipWithHeadHousehold: { type: String },
+        birth: { type: Date },
+        ccns: { type: String },
+        placeOfBirthCertificate: { type: String },
+        nationality: { type: String },
+        nation: { type: String },
+        numberPassport: { type: String },
+        note: { type: String }
+    }]
 }, {
     timestamps: true,
 });

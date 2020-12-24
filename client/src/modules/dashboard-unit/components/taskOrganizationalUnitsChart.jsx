@@ -214,7 +214,8 @@ class TaskOrganizationalUnitsChart extends Component {
             childOrganizationalUnit = childOrganizationalUnit.map(x => x.id);
             this.setState({
                 startDateShow: startDate,
-                endDateShow: endDate
+                endDateShow: endDate,
+                taskOfUnists: []
             })
             this.props.getTaskInOrganizationUnitByMonth(childOrganizationalUnit, this.formatString(startDate), this.formatString(endDate));
         }
