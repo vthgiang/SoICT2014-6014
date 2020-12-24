@@ -51,7 +51,6 @@ class IncidentLogTab extends Component {
                 ...data
             }]
         })
-        console.log('add', this.state.incidentLogs, data);
         this.props.handleAddIncident(this.state.incidentLogs, data)
     }
 

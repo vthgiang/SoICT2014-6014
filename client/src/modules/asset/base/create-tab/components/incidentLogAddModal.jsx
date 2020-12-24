@@ -7,6 +7,8 @@ import { ButtonModal, DatePicker, DialogModal, ErrorLabel, SelectBox } from '../
 import { AssetCreateValidator } from './combinedContent';
 
 import { UserActions } from '../../../../super-admin/user/redux/actions';
+import { generateCode } from "../../../../../helpers/generateCode";
+
 
 class IncidentLogAddModal extends Component {
     constructor(props) {
@@ -19,6 +21,27 @@ class IncidentLogAddModal extends Component {
             statusIncident: "1",
             reportedBy: localStorage.getItem('userId'),
         };
+    }
+
+    regenerateCode = () => {
+        let code = generateCode("IC");
+        this.setState((state) => ({
+            ...state,
+            incidentCode: code,
+        }));
+        this.validateIncidentCode(code);
+    }
+
+    componentDidMount = () => {
+        // Mỗi khi modal mở, cần sinh lại code
+        let { id } = this.props;
+        id && window.$(`#modal-create-incident-${id}`).on('shown.bs.modal', this.regenerateCode);
+    }
+
+    componentWillUnmount = () => {
+        // Unsuscribe event
+        let { id } = this.props;
+        id && window.$(`#modal-create-incident-${id}`).unbind('shown.bs.modal', this.regenerateCode)
     }
 
     // Function format ngày hiện tại thành dạnh mm-yyyy

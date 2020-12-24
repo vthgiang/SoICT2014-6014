@@ -73,7 +73,7 @@ exports.searchUseRequests = async (portal, company, query) => {
         .skip(page ? parseInt(page) : 0)
         .limit(limit ? parseInt(limit) : 0);
     if (managedBy) {
-        let tempListRecommendDistributes = listRecommendDistributes.filter(item => item.asset?.managedBy && item.asset?.managedBy.toString() === managedBy);
+        let tempListRecommendDistributes = listRecommendDistributes.filter(item => item.asset.managedBy && item.asset.managedBy.toString() === managedBy);
         listRecommendDistributes = tempListRecommendDistributes;
     }
 
