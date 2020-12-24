@@ -2561,6 +2561,7 @@ export default {
                 waiting_approval: "Chờ phê duyệt",
                 not_approved: "Không phê duyệt",
                 proponent: "Người đề nghị",
+                recommend_units: "Đơn vị đề nghị",
                 accountable: "Người phê duyệt",
                 note: "Ghi chú",
 

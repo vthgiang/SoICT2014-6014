@@ -31,3 +31,5 @@ package-lock.json
 /src/env.js
 
 yarn.lock
+
+.cert

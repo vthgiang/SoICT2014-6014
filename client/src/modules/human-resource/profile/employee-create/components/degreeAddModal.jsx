@@ -129,8 +129,9 @@ class DegreeAddModal extends Component {
     /** Bắt sự kiện submit form */
     save = () => {
         let { field } = this.state;
+        let valueField = this.props.field;
         if (this.isFormValidated()) {
-            if (!field) {
+            if (!field && valueField && valueField.listFields && valueField.listFields[0]) {
                 field = this.props.field.listFields[0]._id
             }
             return this.props.handleChange({ ...this.state, field: field });

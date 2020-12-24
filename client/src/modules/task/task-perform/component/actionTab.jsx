@@ -1710,14 +1710,15 @@ class ActionTab extends Component {
                                 <React.Fragment key={index}>
                                     {item.stoppedAt &&
                                         <div key={item._id} className="item-box">
-                                            <h3 className="pull-right">{this.convertTime(item.duration)}</h3>
+                                            <h3 className={`pull-right ${item.acceptLog ? 'text-green' : 'text-red'}`}>{this.convertTime(item.duration)}</h3>
                                             <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} </a>
                                             <div>
                                                 <i className="fa fa-clock-o"> </i> {moment(item.startedAt).format("HH:mm:ss DD/MM/YYYY")}{" - "}
                                                 <i className="fa fa-clock-o"> </i> {moment(item.stoppedAt).format("HH:mm:ss DD/MM/YYYY")})
                                             </div>
                                             <div>
-                                                <i className={`${item.autoStopped ? 'text-red fa fa-clock-o' : 'text-green fa fa-hand-pointer-o'}`}> {item.autoStopped ? 'Tự động' : 'Tắt bằng tay'}</i>
+                                                <i className={`${item.autoStopped ? 'text-red fa fa-clock-o' : 'text-green fa fa-hand-pointer-o'}`}> {item.autoStopped ? 'Tự động' : 'Tắt bằng tay'}</i><br />
+                                                <i className={`${item.acceptLog ? 'text-green fa fa-check' : 'text-red fa fa-close'}`}> {item.acceptLog ? 'Được chấp nhận' : 'Không được chấp nhận (quá 24 giờ)'}</i>
                                             </div>
                                             <div>
                                                 <i className="fa fa-edit"></i>

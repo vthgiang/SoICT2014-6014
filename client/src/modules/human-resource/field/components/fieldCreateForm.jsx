@@ -39,7 +39,7 @@ class FieldCreateForm extends Component {
     isFormValidated = () => {
         let { name } = this.state;
         let { translate } = this.props;
-        if (!ValidationHelper.validateName(translate, name, 6, 255).status) return false;
+        if (!ValidationHelper.validateName(translate, name, 3, 255).status) return false;
         return true;
     }
 
