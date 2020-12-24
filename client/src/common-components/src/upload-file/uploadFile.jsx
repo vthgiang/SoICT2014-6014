@@ -49,12 +49,15 @@ class UploadFile extends Component {
      */
     handleDeleteFile = (index) => {
         let { files } = this.state;
-        let { deleteValue = true } = this.props;
+        let { deleteValue = true, sendDataAfterDelete = true } = this.props;
 
         if (deleteValue) {
             files.splice(index, 1);
             this.setState({
                 files: files
+            }, () => {
+                if (sendDataAfterDelete)
+                    this.props.onChange(this.state.files)
             })
         }
 

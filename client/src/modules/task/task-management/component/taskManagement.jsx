@@ -14,6 +14,7 @@ import TaskProjectAction from '../../task-project/redux/action';
 
 import { TaskAddModal } from './taskAddModal';
 import { ModalPerform } from '../../task-perform/component/modalPerform';
+import { duration } from 'moment';
 
 class TaskManagement extends Component {
     constructor(props) {
@@ -309,10 +310,12 @@ class TaskManagement extends Component {
 
     getTotalTimeSheetLogs = (timesheetLogs) => {
         let totalTime = timesheetLogs.reduce(function (tong, cur) {
-            if (cur.stoppedAt) return tong + cur.duration;
+            if (cur.stoppedAt && cur.acceptLog) return tong + cur.duration;
             else return tong;
         }, 0);
-        return this.convertTime(totalTime);
+        let tt = this.convertTime(totalTime);
+
+        return tt;
     }
 
     convertTime = (ms) => {
@@ -765,7 +768,8 @@ class TaskManagement extends Component {
                         <Tree id="tasks-list-treeview"
                             plugins={false}
                             onChanged={this.handleShowTask}
-                            data={dataTree} />
+                            data={dataTree}
+                        />
                     </div>
 
                     <PaginateBar
