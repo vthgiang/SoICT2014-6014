@@ -1063,7 +1063,7 @@ export default {
             manage_work_plan: "Quản lý kế hoạch làm việc",
             manage_training: "Quản lý đào tạo",
             account: "Tài khoản",
-            annual_leave_personal: "Nghỉ phép",
+            annual_leave_personal: "Xin nghỉ phép",
             manage_unit: "Quản lý nhân sự các đơn vị",
             add_employee: "Thêm nhân viên",
             list_employee: "Quản lý thông tin nhân viên",

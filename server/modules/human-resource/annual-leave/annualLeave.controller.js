@@ -263,7 +263,7 @@ exports.updateAnnualLeave = async (req, res) => {
                     <p>Approver:  ${req.user.name} (${req.user.email})</>
                 `
                 let notification = {
-                    users: [user._id],
+                    users: user ? [user._id] : [],
                     organizationalUnits: [],
                     title: 'Phê duyệt đơn xin nghỉ phép',
                     level: "important",
