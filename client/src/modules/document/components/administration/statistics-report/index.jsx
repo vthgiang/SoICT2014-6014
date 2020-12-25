@@ -582,30 +582,7 @@ class AdministrationStatisticsReport extends Component {
 
         return <React.Fragment>
             <ExportExcel id="export-document-archive" exportData={exportData} style={{ marginRight: 5 }} buttonName={translate('document.export')} />
-            <div className="row">
-                <div className="col-xs-12" >
-                    <div className="box box-solid">
-                        <div className="box-header">
-                            <div className="box-title">{translate('document.statistical_document')}</div>
-                        </div>
-                        <div className="box-body qlcv" style={{ minHeight: "400px" }}>
-                            <div ref="piechart"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className="row">
-                <div className="col-xs-12" >
-                    <div className="box box-solid">
-                        <div className="box-header">
-                            <div className="box-title">{translate('document.statistical_view_down')}</div>
-                        </div>
-                        <div className="box-body qlcv" style={{ minHeight: "400px" }}>
-                            <div ref="barchart"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {/* Thống kê số lượng tài liệu theo lĩnh vực, Thống kê số lượng tài liệu theo vị trí lưu trữ */}
             <div className="row">
                 <div className="col-xs-6" >
                     <div className="box box-solid">
@@ -621,6 +598,7 @@ class AdministrationStatisticsReport extends Component {
                         </div>
                     </div>
                 </div>
+                {/* Thống kê số lượng xem và download các loại tài liệu */}
                 <div className="col-xs-6" >
                     <div className="box box-solid">
                         <div className="box-header">
@@ -635,6 +613,33 @@ class AdministrationStatisticsReport extends Component {
                     </div>
                 </div>
             </div>
+            {/* Thống kê các loại tài liệu */}
+            <div className="row">
+                <div className="col-xs-12" >
+                    <div className="box box-solid">
+                        <div className="box-header">
+                            <div className="box-title">{translate('document.statistical_view_down')}</div>
+                        </div>
+                        <div className="box-body qlcv" style={{ minHeight: "400px" }}>
+                            <div ref="barchart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="col-xs-12" >
+                    <div className="box box-solid">
+                        <div className="box-header">
+                            <div className="box-title">{translate('document.statistical_document')}</div>
+                        </div>
+                        <div className="box-body qlcv" style={{ minHeight: "400px" }}>
+                            <div ref="piechart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
 
         </React.Fragment>;
