@@ -82,6 +82,10 @@ exports.getDocuments = async (
         if (query.name) {
             option.name = new RegExp(query.name, "i");
         }
+        if (query.issuingBody) {
+            option.issuingBody = new RegExp(query.issuingBody, "i");
+        }
+
         return await Document(connect(DB_CONNECTION, portal)).paginate(option, {
             page,
             limit,
@@ -721,6 +725,10 @@ exports.getDocumentsThatRoleCanView = async (portal, query, company) => {
         }
         if (query.name) {
             option.name = new RegExp(query.name, "i");
+        }
+
+        if (query.issuingBody) {
+            option.issuingBody = new RegExp(query.issuingBody, "i");
         }
 
         return await Document(connect(DB_CONNECTION, portal)).paginate(option, {

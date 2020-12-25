@@ -669,13 +669,11 @@ class DetailTaskTab extends Component {
                 console.log("tssheetlog:", tsheetlog)
                 if (tsheetlog.stoppedAt) {
                     let times = hoursSpentOfEmployeeInTask[tsheetlog.creator.name] ? hoursSpentOfEmployeeInTask[tsheetlog.creator.name] : 0;
-                    hoursSpentOfEmployeeInTask[tsheetlog.creator.name] = times + tsheetlog.duration;
+                    if (tsheetlog.acceptLog) {
+                        hoursSpentOfEmployeeInTask[tsheetlog.creator.name] = times + tsheetlog.duration;
+                    }
                 }
             }
-            console.log("SPEND TIME:", hoursSpentOfEmployeeInTask)
-            // task.hoursSpentOnTask.contributions.map(item => {
-            //     hoursSpentOfEmployeeInTask[item.employee.name] = item.hoursSpent;
-            // });
         }
         if (task && task.evaluations && task.evaluations.length !== 0) {
             task.evaluations.map(item => {

@@ -353,26 +353,30 @@ exports.startTimesheetLog = async (portal, params, body) => {
  * Dừng bấm giờ: Lưu thời gian kết thúc và số giờ chạy (endTime và time)
  */
 exports.stopTimesheetLog = async (portal, params, body) => {
-    const now = new Date().getTime();
+    const now = new Date();
     let stoppedAt;
 
     if (body.stoppedAt) {
         let getStoppedTime = new Date(body.stoppedAt);
-        stoppedAt = getStoppedTime.getTime();
+        stoppedAt = getStoppedTime;
     } else {
         stoppedAt = now;
     }
 
     // Lưu vào timeSheetLog
     let duration = new Date(stoppedAt).getTime() - new Date(body.startedAt).getTime();
+    let checkDurationValid = duration / (60*60*1000);
+
     let timer = await Task(connect(DB_CONNECTION, portal))
         .findOneAndUpdate(
             { _id: params.taskId, "timesheetLogs._id": body.timesheetLog },
             {
                 $set: {
-                    "timesheetLogs.$.stoppedAt": stoppedAt,
-                    "timesheetLogs.$.duration": duration,
+                    "timesheetLogs.$.stoppedAt": stoppedAt, // Date
+                    "timesheetLogs.$.duration": duration, // mileseconds
                     "timesheetLogs.$.description": body.description,
+                    "timesheetLogs.$.autoStopped": body.autoStopped, // ghi nhận tắt bấm giờ tự động hay không?
+                    "timesheetLogs.$.acceptLog": checkDurationValid > 24 ? false : true , // tự động check nếu thời gian quá 24 tiếng thì đánh là không hợp lệ
                 },
             },
             { new: true }
@@ -542,8 +546,8 @@ exports.stopTimesheetLog = async (portal, params, body) => {
 /**
  * Thêm bình luận của hoạt động
  */
-exports.createCommentOfTaskAction = async (portal, params, body, files) => {
-    let commenttasks = await Task(connect(DB_CONNECTION, portal)).updateOne(
+exports.createCommentOfTaskAction = async (portal, params, body, files, user) => {
+    let commentOfTaskAction = await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
         { _id: params.taskId, "taskActions._id": params.actionId },
         {
             $push: {
@@ -553,23 +557,60 @@ exports.createCommentOfTaskAction = async (portal, params, body, files) => {
                     files: files,
                 },
             },
+        },{ new: true }
+    ).populate([
+        { path: "taskActions.creator", select: "name email avatar" },
+        {
+            path: "taskActions.comments.creator",
+            select: "name email avatar",
+        },
+        {
+            path: "taskActions.evaluations.creator",
+            select: "name email avatar",
+        }])
+    const { taskActions } = commentOfTaskAction;
+    
+     // Lấy ra hoạt động cha
+    let getTaskAction = [];
+    const taskActionsLength = taskActions.length;
+    for (let i = 0; i < taskActionsLength; i++) {
+        if (JSON.stringify(taskActions[i]._id) === JSON.stringify(params.actionId)) {
+            getTaskAction = [taskActions[i]];
+            break; // Tìm thấy thì dừng vòng lặp luôn
         }
-    );
-    let task = await Task(connect(DB_CONNECTION, portal))
-        .findOne({ _id: params.taskId, "taskActions._id": params.actionId })
-        .populate([
-            { path: "taskActions.creator", select: "name email avatar" },
-            {
-                path: "taskActions.comments.creator",
-                select: "name email avatar",
-            },
-            {
-                path: "taskActions.evaluations.creator",
-                select: "name email avatar",
-            },
-        ])
-        .select("taskActions");
-    return task.taskActions;
+    }
+
+    // Lấy danh sách user dự tính gửi thông báo
+    let userReceive = [getTaskAction[0].creator._id]; // Người tạo hoạt động cha
+
+    // Lấy người liên quan đến trong subcomment 
+    const subCommentOfTaskActionsLength = getTaskAction[0].comments.length;
+
+    for (let index = 0; index < subCommentOfTaskActionsLength; index++) {
+        userReceive = [...userReceive, getTaskAction[0].comments[index].creator._id];
+    }
+
+    // Loại bỏ người gửi sub comment ra khỏi danh sách user dc nhận thông báo 
+    userReceive = userReceive.filter(obj => obj.toString() !== user._id.toString())
+
+    const associatedData = {
+        dataType: "createCommentOfTaskactions",
+        value: taskActions.filter(obj => obj._id.toString() === params.actionId.toString())
+    }
+
+    const data = {
+        organizationalUnits: commentOfTaskAction.organizationalUnit._id,
+        title: "Cập nhật thông tin công việc ",
+        level: "general",
+        content:`<p><strong>${user.name}</strong> đã bình luận về hoạt động trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${process.env.WEBSITE}/task?taskId=${params.taskId}</a></p>` ,
+        sender: `${user.name}`,
+        users: userReceive,
+        associatedData: associatedData,
+    };
+
+    if (userReceive && userReceive.length > 0)
+        NotificationServices.createNotification(portal, user.company._id, data)
+    return taskActions;
 };
 /**
  * Sửa nội dung bình luận hoạt động
@@ -834,7 +875,7 @@ exports.createTaskComment = async (portal, params, body, files, user) => {
 
     const userReceive = [...taskComment.responsibleEmployees, ...taskComment.accountableEmployees].filter(obj => JSON.stringify(obj) !== JSON.stringify(user._id))
     
-    const dataSend = {
+    const associatedData = {
         dataType: "createTaskComment",
         value: [taskComment.taskComments[taskComment.taskComments.length - 1]]
     }
@@ -846,7 +887,7 @@ exports.createTaskComment = async (portal, params, body, files, user) => {
         content:`<p><strong>${user.name}</strong> đã thêm một bình luận trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${process.env.WEBSITE}/task?taskId=${params.taskId}</a></p>` ,
         sender: `${user.name} (${taskComment.organizationalUnit.name})`,
         users: userReceive,
-        dataSend: dataSend,
+        associatedData: associatedData,
     };
 
     if (userReceive && userReceive.length > 0)
@@ -979,7 +1020,7 @@ exports.createCommentOfTaskComment = async (portal, params, body, files, user) =
     // Loại bỏ người gửi sub comment ra khỏi danh sách user dc nhận thông báo 
     userReceive = userReceive.filter(obj => obj.toString() !== user._id.toString())
 
-    const dataSend = {
+    const associatedData = {
         dataType: "createTaskSubComment",
         value: taskComments.filter(obj => obj._id.toString() === params.commentId.toString())
     }
@@ -990,7 +1031,7 @@ exports.createCommentOfTaskComment = async (portal, params, body, files, user) =
         content:`<p><strong>${user.name}</strong> đã trả lời bình luận của bạn trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${process.env.WEBSITE}/task?taskId=${params.taskId}</a></p>` ,
         sender: `${user.name}`,
         users: userReceive,
-        dataSend: dataSend,
+        associatedData: associatedData,
     };
     if(userReceive && userReceive.length > 0)
         NotificationServices.createNotification(portal, user.company._id, data)

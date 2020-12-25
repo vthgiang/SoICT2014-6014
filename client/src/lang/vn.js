@@ -1063,7 +1063,7 @@ export default {
             manage_work_plan: "Quản lý kế hoạch làm việc",
             manage_training: "Quản lý đào tạo",
             account: "Tài khoản",
-            annual_leave_personal: "Nghỉ phép",
+            annual_leave_personal: "Xin nghỉ phép",
             manage_unit: "Quản lý nhân sự các đơn vị",
             add_employee: "Thêm nhân viên",
             list_employee: "Quản lý thông tin nhân viên",
@@ -1641,7 +1641,7 @@ export default {
                     menu_attachments_title: "Tài liệu đính kèm",
                 },
 
-                money:'Mức lương đóng',
+                money: 'Mức lương đóng',
                 staff_number: "Mã nhân viên",
                 full_name: "Họ và tên",
                 attendance_code: "Mã số chấm công",
@@ -1649,7 +1649,7 @@ export default {
                 male: "Nam",
                 female: "Nữ",
                 date_birth: "Ngày sinh",
-                place_birth: "Nơi sinh",
+                place_birth: "Nguyên quán",
                 email: "Email",
                 email_company: "Email công ty",
                 starting_date: "Ngày bắt đầu làm việc",
@@ -1790,7 +1790,7 @@ export default {
                 disc_commitment: "Giấy cam kết làm việc",
                 temporary_residence_card: "Tạm trú tạm vắng",
                 disc_temporary_residence_card: "Giấy xác nhận tạm trú tạm vắng",
-                registration_book:'Sổ hộ khẩu',
+                registration_book: 'Sổ hộ khẩu',
                 add_staff: "Thêm nhân viên",
 
                 reward: "Khen thưởng",
@@ -1987,6 +1987,7 @@ export default {
                 list_holiday: "Thời gian nghỉ lễ, nghỉ tết",
                 list_no_leave: "Thời gian không được xin nghỉ phép",
                 list_auto_leave: "Thời gian được xin nghỉ phép",
+                other: "Thời gian nghỉ khác",
 
                 // Nhóm dành cho table
                 table: {
@@ -2561,6 +2562,7 @@ export default {
                 waiting_approval: "Chờ phê duyệt",
                 not_approved: "Không phê duyệt",
                 proponent: "Người đề nghị",
+                recommend_units: "Đơn vị đề nghị",
                 accountable: "Người phê duyệt",
                 note: "Ghi chú",
 
@@ -2895,6 +2897,7 @@ export default {
 
                 start_date: "Ngày bắt đầu",
                 end_date: "Ngày kết thúc",
+                task_additional_info: "Tùy chọn thêm",
 
                 search: "Tìm kiếm",
 
@@ -3157,7 +3160,7 @@ export default {
                 warning_hours: "giờ",
                 warning_minutes: "phút",
 
-                project: 'Tên dự án (nếu có)',
+                project: 'Thuộc dự án (nếu có)',
             },
             task_perform: {
                 actions: "Hoạt động",
@@ -3471,6 +3474,7 @@ export default {
                 view_task_process_template: "Xem mẫu quy trình công việc",
                 import_task_template_success: "Thêm mẫu công việc thành công",
                 import_task_template_faile: "Thêm mẫu công việc thất bại !",
+                task_template_name_exist:"Tên mẫu công việc đã tồn tại",
             },
         },
 

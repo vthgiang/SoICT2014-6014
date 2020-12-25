@@ -326,6 +326,16 @@ function configurationDegree(translate) {
             description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.diploma_issued_by`).toLowerCase()}`,
             value: translate(`human_resource.profile.diploma_issued_by`)
         },
+        issuedBy: { // Nơi đào tạo
+            columnName: translate(`human_resource.profile.diploma_issued_by`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.diploma_issued_by`).toLowerCase()}`,
+            value: translate(`human_resource.profile.diploma_issued_by`)
+        },
+        field:{ // Ngành nghề/ lĩnh vực
+            columnName: translate(`human_resource.profile.career_fields`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.career_fields`).toLowerCase()}`,
+            value: translate(`human_resource.profile.career_fields`)
+        },
         year: { // Năm tốt nghiệp
             columnName: translate(`human_resource.profile.graduation_year`),
             description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.graduation_year`).toLowerCase()}`,
@@ -734,6 +744,7 @@ function templateImport(translate) {
                                 { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
                                 { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
                                 { key: "name", value: translate(`human_resource.profile.name_diploma`), width: 25 },
+                                { key: "field", value: translate(`human_resource.profile.career_fields`), width: 30 },
                                 { key: "issuedBy", value: translate(`human_resource.profile.diploma_issued_by`), width: 35 },
                                 { key: "year", value: translate(`human_resource.profile.graduation_year`) },
                                 { key: "degreeType", value: translate(`human_resource.profile.ranking_learning`) },
@@ -745,6 +756,7 @@ function templateImport(translate) {
                                 fullName: "Nguyễn Văn An",
                                 issuedBy: "Đại học Bách Khoa",
                                 name: "Bằng tốt nghiệp",
+                                field: 'Công nghệ thông tin',
                                 year: "2020"
                             },{
                                 STT: 2,
@@ -753,6 +765,7 @@ function templateImport(translate) {
                                 fullName: "Trần Văn Bình",
                                 issuedBy: "Đại học Bách Khoa",
                                 name: "Bằng tốt nghiệp",
+                                field: 'Công nghệ thông tin',
                                 year: "2020"
                             }]
                         }

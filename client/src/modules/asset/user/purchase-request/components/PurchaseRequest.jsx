@@ -302,6 +302,8 @@ class PurchaseRequest extends Component {
                         approver={currentRowView.approver}
                         note={currentRowView.note}
                         status={currentRowView.status}
+                        files={currentRowView.files}
+                        recommendUnits={currentRowView.recommendUnits}
                     />
                 }
 
@@ -322,6 +324,8 @@ class PurchaseRequest extends Component {
                         status={currentRow.status}
                         approver={currentRow.approver}
                         note={currentRow.note}
+                        files={currentRow.files}
+                        recommendUnits={currentRow.recommendUnits}
                     />
                 }
             </div >

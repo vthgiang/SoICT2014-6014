@@ -30,7 +30,7 @@ class GeneralTab extends Component {
     }
     componentDidMount = () => {
         // Mỗi khi modal mở, cần sinh lại code
-        window.$('#modal-add-asset').on('shown.bs.modal', this.regenerateCode)
+        window.$('#modal-add-asset').on('shown.bs.modal', this.regenerateCode);
     }
     componentWillUnmount = () => {
         // Unsuscribe event
@@ -195,7 +195,7 @@ class GeneralTab extends Component {
         await this.setState(state => {
             return {
                 ...state,
-                assetTypes: value,
+                assetType: value,
                 detailInfo: arr,
                 isObj: false
             }
@@ -490,7 +490,7 @@ class GeneralTab extends Component {
                 code: nextProps.code,
                 assetName: nextProps.assetName,
                 serial: nextProps.serial,
-                assetTypes: nextProps.assetTypes,
+                assetType: nextProps.assetType,
                 group: nextProps.group,
                 location: nextProps.location,
                 purchaseDate: nextProps.purchaseDate,
@@ -541,7 +541,7 @@ class GeneralTab extends Component {
     render() {
         const { id, translate, user, assetsManager, role, department } = this.props;
         const {
-            img, defaultAvatar, code, assetName, assetTypes, group, serial, purchaseDate, warrantyExpirationDate, managedBy, isObj,
+            img, defaultAvatar, code, assetName, assetType, group, serial, purchaseDate, warrantyExpirationDate, managedBy, isObj,
             assignedToUser, assignedToOrganizationalUnit, location, description, status, typeRegisterForUse, detailInfo,
             errorOnCode, errorOnAssetName, errorOnSerial, errorOnAssetType, errorOnLocation, errorOnPurchaseDate,
             errorOnWarrantyExpirationDate, errorOnManagedBy, errorOnNameField, errorOnValue, usageLogs, readByRoles, errorOnNameFieldPosition, errorOnValuePosition
@@ -551,11 +551,17 @@ class GeneralTab extends Component {
         let startDate = status == "in_use" && usageLogs && usageLogs.length ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : '';
         let endDate = status == "in_use" && usageLogs && usageLogs.length ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : '';
         let typeInTreeSelect = [];
+        let listtypes = this.props.assetType.listAssetTypes;
 
-        if (assetTypes) {
-            isObj ? assetTypes.map(item => {
-                typeInTreeSelect.push(item._id)
-            }) : typeInTreeSelect = assetTypes;
+        if (assetType && listtypes.length) {
+            for (let i in assetType) {
+                for (let j in listtypes) {
+                    assetType[i] === listtypes[j]._id && typeInTreeSelect.push(listtypes[j]);
+                }
+            }
+        }
+        else {
+            typeInTreeSelect = listtypes;
         }
 
         let assetbuilding = assetsManager && assetsManager.buildingAssets;
