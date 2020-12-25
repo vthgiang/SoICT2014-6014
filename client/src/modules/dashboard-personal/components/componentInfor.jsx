@@ -67,8 +67,8 @@ class ComponentInfor extends Component {
         /* Lấy dữ liệu kết quả kpi của nhân viên */
         this.props.getAllEmployeeKpiSetByMonth(undefined, localStorage.getItem("userId"), monthNew, monthNew);
 
-        /* Lấy dữ liệu nghỉ phép tăng ca của nhân viên trong công ty */
-        this.props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: monthNew, endDate: monthNew });
+        /* Lấy dữ liệu tăng ca của nhân viên trong công ty */
+        this.props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: monthNew, endDate: monthNew, trendOvertime: true });
 
         /* Lấy số ngày nghỉ phép còn lại của nhân viên */
         this.props.getNumberAnnaulLeave({ numberAnnulLeave: true, year: partMonth[1] });
@@ -117,7 +117,7 @@ class ComponentInfor extends Component {
         this.props.getAllEmployeeKpiSetByMonth(undefined, localStorage.getItem("userId"), monthNew, monthNew);
 
         /* Lấy dữ liệu nghỉ phép tăng ca của nhân viên */
-        this.props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: monthNew, endDate: monthNew });
+        this.props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: monthNew, endDate: monthNew, trendOvertime: true });
 
         /* Lấy số ngày nghỉ phép còn lại của nhân viên */
         this.props.getNumberAnnaulLeave({ numberAnnulLeave: true, year: partMonth[1] });
@@ -165,8 +165,9 @@ class ComponentInfor extends Component {
 
         let partMonth = monthShow.split('-');
         let year = partMonth[1];
+        const employeeKpiSetByMonth = createEmployeeKpiSet.employeeKpiSetByMonth
 
-        console.log('employeeKpiSetByMonth', createEmployeeKpiSet.employeeKpiSetByMonth);
+        console.log('employeeKpiSetByMonth', createEmployeeKpiSet.employeeKpiSetByMonth)
 
         /* Lấy số ngày nghỉ phép còn lại của nhân viên */
         let numberAnnualLeave = 0;
@@ -202,9 +203,11 @@ class ComponentInfor extends Component {
                         informedEmployees = [...informedEmployees, task.accountableEmployees[j]];
             });
             tasks = tasks.concat(accountableEmployees).concat(consultedEmployees).concat(responsibleEmployees).concat(informedEmployees);
+            console.log(tasks)
             let totalTask = tasks.filter(function (item, pos) {
-                return tasks.indexOf(item) == pos;
+                return tasks.indexOf(item) !== pos;
             })
+            console.log(totalTask)
             if (totalTask.length > totalTask) {
                 maxTask = totalTask
             };
@@ -317,7 +320,7 @@ class ComponentInfor extends Component {
                                     <div className="box-header with-border">
                                         <h3 className="box-title">{translate('human_resource.dashboard_personal.remind_work')} {monthShow}</h3>
                                     </div>
-                                    <div className="box-body">
+                                    <div className="box-body" style={{ paddingBottom: 53 }}>
                                         <ul className="todo-list">
                                             <li>
                                                 <span className="handle">
@@ -353,7 +356,7 @@ class ComponentInfor extends Component {
                                                     <i className="fa fa-ellipsis-v"></i>
                                                 </span>
                                                 <span className="text"><a target="_blank">{translate('human_resource.dashboard_personal.kpi_results')}</a></span>
-                                                <small className="label label-success">{`80 ${translate('human_resource.dashboard_personal.point')}/ 90 ${translate('human_resource.dashboard_personal.point')}/95 ${translate('human_resource.dashboard_personal.point')}`}</small>
+                                                <small className="label label-success">{`${employeeKpiSetByMonth && employeeKpiSetByMonth.length ? employeeKpiSetByMonth[0].automaticPoint : 0} ${translate('human_resource.dashboard_personal.point')}/ ${employeeKpiSetByMonth && employeeKpiSetByMonth.length ? employeeKpiSetByMonth[0].employeePoint : 0} ${translate('human_resource.dashboard_personal.point')}/ ${employeeKpiSetByMonth && employeeKpiSetByMonth.length ? employeeKpiSetByMonth[0].approvedPoint : 0} ${translate('human_resource.dashboard_personal.point')}`}</small>
                                             </li>
                                             <li>
                                                 <span className="handle">

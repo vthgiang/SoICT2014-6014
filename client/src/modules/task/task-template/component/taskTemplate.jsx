@@ -156,7 +156,7 @@ class TaskTemplate extends Component {
                                             <td title={item.organizationalUnit && item.organizationalUnit.name}>{item.organizationalUnit ? item.organizationalUnit.name : translate('task_template.error_task_template_organizational_unit_null')}</td>
                                             <td>
                                                 <a href="#abc" onClick={() => this.handleView(item._id)} title={translate('task.task_template.view_detail_of_this_task_template')}>
-                                                    <i className="material-icons" style={!this.checkPermisson(currentUnit && currentUnit[0].managers, "") ? { paddingLeft: "35px" } : { paddingLeft: "0px" }}>view_list</i>
+                                                    <i className="material-icons" style={!this.checkPermisson(currentUnit && currentUnit[0] ? currentUnit[0].managers : "", "") ? { paddingLeft: "35px" } : { paddingLeft: "0px" }}>view_list</i>
                                                 </a>
 
                                                 {/**Check quyền xem có được xóa hay sửa mẫu công việc không */}
@@ -284,6 +284,7 @@ class TaskTemplate extends Component {
     }
 
     checkPermisson = (managerCurrentUnit, creatorId) => {
+        if (!managerCurrentUnit || !creatorId) return false;
         let currentRole = localStorage.getItem("currentRole");
         for (let i in managerCurrentUnit) {
             if (currentRole === managerCurrentUnit[i]) {
@@ -373,34 +374,6 @@ class TaskTemplate extends Component {
                             mandatory[i] = "Không bắt buộc";
                         }
                     }
-                    for (let i in x.taskActions) {
-                        if (x.taskActions[i].description) {
-                            let str = x.taskActions[i].description;
-                            let vt = str.indexOf("&nbsp;");
-                            let st;
-                            while (vt >= 0) {
-                                if (vt == 0) {
-                                    st = str.slice(vt + 6);
-                                } else {
-                                    st = str.slice(0, vt - 1) + str.slice(vt + 6);
-                                }
-                                str = st;
-                                vt = str.indexOf("&nbsp;");
-                            }
-                            vt = str.indexOf("<");
-                            while (vt >= 0) {
-                                let vt2 = str.indexOf(">");
-                                if (vt == 0) {
-                                    st = str.slice(vt2 + 1);
-                                } else {
-                                    st = str.slice(0, vt - 1) + str.slice(vt2 + 1);
-                                }
-                                str = st;
-                                vt = str.indexOf("<");
-                            }
-                            x.taskActions[i].description = str;
-                        }
-                    }
                 }
                 let infomationName = [], type = [], infomationDescription = [], filledByAccountableEmployeesOnly = [];
                 if (x.taskInformations) {
@@ -415,35 +388,6 @@ class TaskTemplate extends Component {
                             filledByAccountableEmployeesOnly[i] = "true";
                         } else {
                             filledByAccountableEmployeesOnly[i] = "false";
-                        }
-
-                    }
-                    for (let i in x.taskInformations) {
-                        if (x.taskInformations[i].description) {
-                            let str = x.taskInformations[i].description;
-                            let vt = str.indexOf("&nbsp;");
-                            let st;
-                            while (vt >= 0) {
-                                if (vt == 0) {
-                                    st = str.slice(vt + 6);
-                                } else {
-                                    st = str.slice(0, vt - 1) + str.slice(vt + 6);
-                                }
-                                str = st;
-                                vt = str.indexOf("&nbsp;");
-                            }
-                            vt = str.indexOf("<");
-                            while (vt >= 0) {
-                                let vt2 = str.indexOf(">");
-                                if (vt == 0) {
-                                    st = str.slice(vt2 + 1);
-                                } else {
-                                    st = str.slice(0, vt - 1) + str.slice(vt2 + 1);
-                                }
-                                str = st;
-                                vt = str.indexOf("<");
-                            }
-                            x.taskInformations[i].description = str;
                         }
                     }
                 }

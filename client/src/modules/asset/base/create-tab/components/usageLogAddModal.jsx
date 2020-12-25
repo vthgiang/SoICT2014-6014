@@ -112,10 +112,11 @@ class UsageLogAddModal extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        const { usedByUser, startDate, endDate } = this.state;
+        const { usedByOrganizationalUnit, usedByUser, startDate, endDate } = this.state;
         const { translate } = this.props;
 
-        if (!ValidationHelper.validateName(translate, usedByUser).status
+        if ((!ValidationHelper.validateName(translate, usedByUser).status &&
+            !ValidationHelper.validateName(translate, usedByOrganizationalUnit).status)
             || !ValidationHelper.validateName(translate, startDate).status
             || !ValidationHelper.validateName(translate, endDate).status)
             return false;
@@ -185,10 +186,10 @@ class UsageLogAddModal extends Component {
                     {/* Form thêm thông tin sử dụng */}
                     <form className="form-group" id={`form-create-usage-${id}`}>
                         <div className="col-md-12">
-
+                            <span className="text-red">Cần chọn người sử dụng hoặc đơn vị sử dụng</span>
                             {/* Người sử dụng */}
-                            <div className={`form-group ${!errorOnUser ? "" : "has-error"}`}>
-                                <label>{translate('asset.general_information.user')}<span className="text-red">*</span></label>
+                            <div className={`form-group`}>
+                                <label>{translate('asset.general_information.user')}</label>
                                 <div>
                                     <div id="usedByUserBox">
                                         <SelectBox
@@ -200,7 +201,6 @@ class UsageLogAddModal extends Component {
                                             value={usedByUser}
                                             multiple={false}
                                         />
-                                        <ErrorLabel content={errorOnUser} />
                                     </div>
                                 </div>
                             </div>

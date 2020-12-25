@@ -583,6 +583,23 @@ class AdministrationStatisticsReport extends Component {
         return <React.Fragment>
             <ExportExcel id="export-document-archive" exportData={exportData} style={{ marginRight: 5 }} buttonName={translate('document.export')} />
 
+            {/* Thống kê số lượng tài liệu theo lĩnh vực, Thống kê số lượng tài liệu theo vị trí lưu trữ */}
+            <div className="row">
+                <div className="col-xs-12" >
+                    <div className="box box-solid">
+                        <div className="box-header">
+                            <div className="box-title">{translate('document.statistical_document_by_archive')}</div>
+                        </div>
+                        <div className="box-body qlcv" style={{ minHeight: "400px" }}>
+                            <TreeArchive
+                                archives={listArchives}
+                                documents={docs}
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {/* Thống kê các loại tài liệu */}
             <div className="row">
                 <div className="col-xs-12" >
                     <div className="box box-solid">
@@ -595,31 +612,15 @@ class AdministrationStatisticsReport extends Component {
                     </div>
                 </div>
             </div>
-            <div className="row">
-                <div className="col-xs-6" >
-                    <div className="box box-solid">
-                        <div className="box-header">
-                            <div className="box-title">{translate('document.statistical_document_by_domain')}</div>
-                        </div>
-                        <div className="box-body qlcv" style={{ minHeight: "400px" }}>
-                            <TreeDomain
-                                domains={list}
-                                documents={docs}
-                            />
 
-                        </div>
-                    </div>
-                </div>
-                <div className="col-xs-6" >
+            <div className="row">
+                <div className="col-xs-12" >
                     <div className="box box-solid">
                         <div className="box-header">
-                            <div className="box-title">{translate('document.statistical_document_by_archive')}</div>
+                            <div className="box-title">{translate('document.statistical_document')}</div>
                         </div>
                         <div className="box-body qlcv" style={{ minHeight: "400px" }}>
-                            <TreeArchive
-                                archives={listArchives}
-                                documents={docs}
-                            />
+                            <div ref="piechart"></div>
                         </div>
                     </div>
                 </div>
@@ -636,6 +637,7 @@ class AdministrationStatisticsReport extends Component {
                     </div>
                 </div>
             </div>
+
 
 
         </React.Fragment>;

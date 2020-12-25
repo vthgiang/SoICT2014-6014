@@ -332,6 +332,14 @@ class UserDocumentsData extends Component {
             }
         })
     }
+
+    handleIssuingBodyChange = (e) => {
+        const { value } = e.target;
+        this.setState({
+            issuingBody: value,
+        })
+    }
+
     setPage = async (page) => {
         this.setState({ page });
         let path = this.state.archive ? this.findPath(this.state.archive) : "";
@@ -530,6 +538,7 @@ class UserDocumentsData extends Component {
                     <table className="table table-hover table-striped table-bordered" id="table-manage-document">
                         <thead>
                             <tr>
+                                <th>{translate('document.doc_version.issuing_body')}</th>
                                 <th>{translate('document.name')}</th>
                                 <th>{translate('document.description')}</th>
                                 <th>{translate('document.issuing_date')}</th>
@@ -564,6 +573,7 @@ class UserDocumentsData extends Component {
                                 paginate.length > 0 ?
                                     paginate.map(doc =>
                                         <tr key={doc._id}>
+                                            <td>{doc.issuingBody}</td>
                                             <td>{doc.name}</td>
                                             <td>{doc.description ? doc.description : ""}</td>
                                             <td>{doc.versions.length ? this.formatDate(doc.versions[doc.versions.length - 1].issuingDate) : null}</td>
@@ -595,7 +605,7 @@ class UserDocumentsData extends Component {
 
                     <PaginateBar pageTotal={docs.totalPages} currentPage={docs.page} func={this.setPage} />
                 </React.Fragment>
-            </div>
+            </div >
         );
     }
 

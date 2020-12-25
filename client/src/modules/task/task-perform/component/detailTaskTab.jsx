@@ -48,11 +48,14 @@ class DetailTaskTab extends Component {
             highestIndex: 0,
             currentUser: idUser,
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
+            showMore: {},
 
             currentMonth: currentYear + '-' + (currentMonth + 1),
             nextMonth: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2)),
             dueForEvaluationOfTask: currentYear + '-' + (currentMonth + 1) + '-' + 7
         }
+
+
 
         this.props.getAllUserInAllUnitsOfCompany();
     }
@@ -138,6 +141,15 @@ class DetailTaskTab extends Component {
             return {
                 ...state,
                 collapseInfo: !state.collapseInfo
+            }
+        });
+    }
+
+    handleChangeShowMoreEvalItem = async (id) => {
+        await this.setState(state => {
+            state.showMore[id] = !state.showMore[id];
+            return {
+                ...state,
             }
         });
     }
@@ -566,7 +578,7 @@ class DetailTaskTab extends Component {
     render() {
         const { tasks, performtasks, user, translate } = this.props;
         const { showToolbar, id, isProcess } = this.props; // props form parent component ( task, id, showToolbar, onChangeTaskRole() )
-        const { currentUser, roles, currentRole, collapseInfo, showEdit, showEndTask, showEvaluate } = this.state
+        const { currentUser, roles, currentRole, collapseInfo, showEdit, showEndTask, showEvaluate, showMore } = this.state
 
         let task;
         let codeInProcess, typeOfTask, statusTask, checkInactive = true, evaluations, evalList = [];
@@ -657,13 +669,11 @@ class DetailTaskTab extends Component {
                 console.log("tssheetlog:", tsheetlog)
                 if (tsheetlog.stoppedAt) {
                     let times = hoursSpentOfEmployeeInTask[tsheetlog.creator.name] ? hoursSpentOfEmployeeInTask[tsheetlog.creator.name] : 0;
-                    hoursSpentOfEmployeeInTask[tsheetlog.creator.name] = times + tsheetlog.duration;
+                    if (tsheetlog.acceptLog) {
+                        hoursSpentOfEmployeeInTask[tsheetlog.creator.name] = times + tsheetlog.duration;
+                    }
                 }
             }
-            console.log("SPEND TIME:", hoursSpentOfEmployeeInTask)
-            // task.hoursSpentOnTask.contributions.map(item => {
-            //     hoursSpentOfEmployeeInTask[item.employee.name] = item.hoursSpent;
-            // });
         }
         if (task && task.evaluations && task.evaluations.length !== 0) {
             task.evaluations.map(item => {
@@ -1031,81 +1041,86 @@ class DetailTaskTab extends Component {
                                     evalList.map((eva, keyEva) => {
                                         return (
                                             <div key={keyEva} className="description-box">
-                                                <h4>{translate('task.task_management.detail_eval')}&nbsp;{this.formatDate(eva.prevDate)} <i className="fa fa-fw fa-caret-right"></i> {this.formatDate(eva.date)}</h4>
-
-                                                {
-                                                    eva.results.length !== 0 &&
+                                                <h4>
+                                                    {translate('task.task_management.detail_eval')}&nbsp;{this.formatDate(eva.prevDate)} <i className="fa fa-fw fa-caret-right"></i> {this.formatDate(eva.date)}
+                                                </h4>
+                                                <a style={{ cursor: "pointer" }} onClick={() => this.handleChangeShowMoreEvalItem(eva._id)}>{showMore[eva._id] ? <p>Nhấn chuột để ẩn chi tiết&nbsp;&nbsp;<i className="fa fa-angle-double-up"></i></p> : <p>Nhấn chuột để xem chi tiết&nbsp;&nbsp;<i className="fa fa-angle-double-down"></i></p>}</a>
+                                                { showMore[eva._id] &&
                                                     <div>
-                                                        <div><strong>{translate('task.task_management.detail_point')}</strong> ({translate('task.task_management.detail_auto_point')} - {translate('task.task_management.detail_emp_point')} - {translate('task.task_management.detail_acc_point')})</div>
-                                                        <ul>
-                                                            {(eva.results.length !== 0) ?
-                                                                eva.results.map((res, index) => {
-                                                                    if (res.employee && task.inactiveEmployees.indexOf(res.employee._id) !== -1) {
-                                                                        return <li key={index}><strike>{res.employee.name}</strike>: &nbsp;&nbsp; {(res.automaticPoint !== null && res.automaticPoint !== undefined) ? res.automaticPoint : translate('task.task_management.detail_not_auto')} - {res.employeePoint ? res.employeePoint : translate('task.task_management.detail_not_emp')} - {res.approvedPoint ? res.approvedPoint : translate('task.task_management.detail_not_acc')}</li>
+                                                        {
+                                                            eva.results.length !== 0 &&
+                                                            <div>
+                                                                <div><strong>{translate('task.task_management.detail_point')}</strong> ({translate('task.task_management.detail_auto_point')} - {translate('task.task_management.detail_emp_point')} - {translate('task.task_management.detail_acc_point')})</div>
+                                                                <ul>
+                                                                    {(eva.results.length !== 0) ?
+                                                                        eva.results.map((res, index) => {
+                                                                            if (res.employee && task.inactiveEmployees.indexOf(res.employee._id) !== -1) {
+                                                                                return <li key={index}><strike>{res.employee.name}</strike>: &nbsp;&nbsp; {(res.automaticPoint !== null && res.automaticPoint !== undefined) ? res.automaticPoint : translate('task.task_management.detail_not_auto')} - {res.employeePoint ? res.employeePoint : translate('task.task_management.detail_not_emp')} - {res.approvedPoint ? res.approvedPoint : translate('task.task_management.detail_not_acc')}</li>
+                                                                            }
+                                                                            else {
+                                                                                return <li key={index}>{res.employee && res.employee.name}: &nbsp;&nbsp; {(res.automaticPoint !== null && res.automaticPoint !== undefined) ? res.automaticPoint : translate('task.task_management.detail_not_auto')} - {res.employeePoint ? res.employeePoint : translate('task.task_management.detail_not_emp')} - {res.approvedPoint ? res.approvedPoint : translate('task.task_management.detail_not_acc')}</li>
+                                                                            }
+                                                                        }) : <li>{translate('task.task_management.detail_not_eval')}</li>
                                                                     }
-                                                                    else {
-                                                                        return <li key={index}>{res.employee && res.employee.name}: &nbsp;&nbsp; {(res.automaticPoint !== null && res.automaticPoint !== undefined) ? res.automaticPoint : translate('task.task_management.detail_not_auto')} - {res.employeePoint ? res.employeePoint : translate('task.task_management.detail_not_emp')} - {res.approvedPoint ? res.approvedPoint : translate('task.task_management.detail_not_acc')}</li>
-                                                                    }
-                                                                }) : <li>{translate('task.task_management.detail_not_eval')}</li>
-                                                            }
-                                                        </ul>
+                                                                </ul>
+                                                            </div>
+                                                        }
+                                                        <div>
+                                                            <div><strong>{translate('task.task_management.detail_info')}</strong></div>
+                                                            <ul>
+                                                                <li>{translate('task.task_management.detail_progress')}: &nbsp;&nbsp; {(eva.progress !== null && eva.progress !== undefined) ? `${eva.progress}%` : translate('task.task_management.detail_not_eval_on_month')}</li>
+                                                                {
+                                                                    eva.taskInformations.map((info, key) => {
+                                                                        if (info.type === "date") {
+                                                                            return <li key={key}>{info.name}: &nbsp;&nbsp; {info.value ? this.formatDate(info.value) : translate('task.task_management.detail_not_eval_on_month')}</li>
+                                                                        }
+                                                                        return <li key={key}>{info.name}: &nbsp;&nbsp; {
+                                                                            info.value ?
+                                                                                info.value : Number(info.value) === 0 ? info.value :
+                                                                                    translate('task.task_management.detail_not_eval_on_month')}</li>
+                                                                    })
+                                                                }
+                                                            </ul>
+                                                        </div>
+
+                                                        {/* KPI */}
+                                                        {(eva.results.length !== 0) ?
+                                                            (
+                                                                eva.results.map((item, key) => {
+                                                                    return (
+                                                                        <div key={key}>
+                                                                            <strong>KPI {item.employee && item.employee.name}:</strong>
+                                                                            {(item.kpis.length !== 0) ?
+                                                                                <ul>
+                                                                                    {
+                                                                                        item.kpis.map((kpi, keyKpi) => {
+                                                                                            return <li key={keyKpi}>{kpi.name}</li>
+                                                                                        })
+                                                                                    }
+                                                                                </ul>
+                                                                                : <span>{translate('task.task_management.detail_not_kpi')}</span>
+                                                                            }
+                                                                        </div>)
+                                                                })
+                                                            ) : <div><strong>{translate('task.task_management.detail_all_not_kpi')}</strong></div>
+                                                        }
+
+
+                                                        {/* Thời gian bấm giờ */}
+                                                        <strong>Thời gian đóng góp:</strong>
+                                                        {showToolbar && <a style={{ cursor: "pointer" }} onClick={() => this.calculateHoursSpentOnTask(task._id, task.timesheetLogs, eva, eva.prevDate, eva.date)} title="Cập nhật thời gian bấm giờ">Nhấn chuột để cập nhật dữ liệu <i className="fa fa-fw fa-clock-o"></i></a>}
+                                                        {
+                                                            eva.results.length !== 0 && hoursSpentOfEmployeeInEvaluation[eva.date] && JSON.stringify(hoursSpentOfEmployeeInEvaluation[eva.date]) !== '{}'
+                                                            &&
+                                                            <React.Fragment>
+                                                                <HoursSpentOfEmployeeChart
+                                                                    refs={"evaluationBox" + eva.date}
+                                                                    data={hoursSpentOfEmployeeInEvaluation[eva.date]}
+                                                                />
+                                                            </React.Fragment>
+                                                        }
                                                     </div>
                                                 }
-                                                <div>
-                                                    <div><strong>{translate('task.task_management.detail_info')}</strong></div>
-                                                    <ul>
-                                                        <li>{translate('task.task_management.detail_progress')}: &nbsp;&nbsp; {(eva.progress !== null && eva.progress !== undefined) ? `${eva.progress}%` : translate('task.task_management.detail_not_eval_on_month')}</li>
-                                                        {
-                                                            eva.taskInformations.map((info, key) => {
-                                                                if (info.type === "date") {
-                                                                    return <li key={key}>{info.name}: &nbsp;&nbsp; {info.value ? this.formatDate(info.value) : translate('task.task_management.detail_not_eval_on_month')}</li>
-                                                                }
-                                                                return <li key={key}>{info.name}: &nbsp;&nbsp; {
-                                                                    info.value ?
-                                                                        info.value : Number(info.value) === 0 ? info.value :
-                                                                            translate('task.task_management.detail_not_eval_on_month')}</li>
-                                                            })
-                                                        }
-                                                    </ul>
-                                                </div>
-
-                                                {/* KPI */}
-                                                {(eva.results.length !== 0) ?
-                                                    (
-                                                        eva.results.map((item, key) => {
-                                                            return (
-                                                                <div key={key}>
-                                                                    <strong>KPI {item.employee && item.employee.name}:</strong>
-                                                                    {(item.kpis.length !== 0) ?
-                                                                        <ul>
-                                                                            {
-                                                                                item.kpis.map((kpi, keyKpi) => {
-                                                                                    return <li key={keyKpi}>{kpi.name}</li>
-                                                                                })
-                                                                            }
-                                                                        </ul>
-                                                                        : <span>{translate('task.task_management.detail_not_kpi')}</span>
-                                                                    }
-                                                                </div>)
-                                                        })
-                                                    ) : <div><strong>{translate('task.task_management.detail_all_not_kpi')}</strong></div>
-                                                }
-
-
-                                                {/* Thời gian bấm giờ */}
-                                                <strong>Thời gian đóng góp:</strong>
-                                                {showToolbar && <a style={{ cursor: "pointer" }} onClick={() => this.calculateHoursSpentOnTask(task._id, task.timesheetLogs, eva, eva.prevDate, eva.date)} title="Cập nhật thời gian bấm giờ">Nhấn chuột để cập nhật dữ liệu <i className="fa fa-fw fa-clock-o"></i></a>}
-                                                {
-                                                    eva.results.length !== 0 && hoursSpentOfEmployeeInEvaluation[eva.date] && JSON.stringify(hoursSpentOfEmployeeInEvaluation[eva.date]) !== '{}'
-                                                    &&
-                                                    <React.Fragment>
-                                                        <HoursSpentOfEmployeeChart
-                                                            refs={"evaluationBox" + eva.date}
-                                                            data={hoursSpentOfEmployeeInEvaluation[eva.date]}
-                                                        />
-                                                    </React.Fragment>
-                                                }
-
                                             </div>
                                         );
                                     })

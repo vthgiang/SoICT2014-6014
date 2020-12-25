@@ -180,12 +180,10 @@ exports.createNotification = async (
             i--;
         }
     }
-    console.log("usersArr[i]2", usersArr)
 
     // Gửi thông báo cho các user - bằng socket trên web
     for (let i = 0; i < usersArr.length; i++) {
-        console.log("usersArr[i]", usersArr[i])
-        let notito = await Notification(
+        let noti = await Notification(
             connect(DB_CONNECTION, portal)
         ).create({
             company,
@@ -199,8 +197,8 @@ exports.createNotification = async (
             manualNotification,
             associatedDataObject: data.associatedDataObject,
         });
-        console.log("notifo",notito)
-        const notify = { ...data};
+
+        const notify = { ...data, _id: noti._id };
         const arr = CONNECTED_CLIENTS.filter(
             (client) => client.userId === usersArr[i]
         );

@@ -1557,12 +1557,12 @@ class EvaluateByAccountableEmployee extends Component {
                                                 <th><div className="form-group"><label>{translate('task.task_management.role_employee')}</label></div></th>
                                                 <th><div className="form-group"><label>{translate('task.task_management.detail_emp_point')}</label></div></th>
                                                 <th>
-                                                    <label>% {translate('task.task_management.contribution')}</label>
+                                                    <label>% {translate('task.task_management.contribution')} (0 - 100)</label>
                                                     <div style={{ fontWeight: "normal" }} className={`form-group ${errSumContribution === undefined ? "" : "has-error"}`}>
                                                         <ErrorLabel content={errSumContribution ? errSumContribution : ''} />
                                                     </div>
                                                 </th>
-                                                <th><div className="form-group"><label>{translate('task.task_management.acc_evaluate')}</label></div></th>
+                                                <th><div className="form-group"><label>{translate('task.task_management.acc_evaluate')} (0 - 100)</label></div></th>
                                             </tr>
 
                                             { // Chấm điểm phê duyệt cho người thực hiện

@@ -30,6 +30,7 @@ function searchTimesheets(data) {
                     payload: res.data.content,
                     callApiByEmployeeId: data.callApiByEmployeeId,
                     trendHoursOff: data.trendHoursOff,
+                    trendOvertime: data.trendOvertime,
                 })
             })
             .catch(err => {

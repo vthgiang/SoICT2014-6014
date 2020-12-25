@@ -6,6 +6,8 @@ import { DialogModal, ButtonModal, ErrorLabel, DatePicker } from '../../../../..
 
 import { AssetCreateValidator } from './combinedContent';
 
+import { generateCode } from "../../../../../helpers/generateCode";
+
 class MaintainanceLogAddModal extends Component {
     constructor(props) {
         super(props);
@@ -19,6 +21,27 @@ class MaintainanceLogAddModal extends Component {
             expense: "",
             status: "2",
         };
+    }
+
+    regenerateCode = () => {
+        let code = generateCode("MT");
+        this.setState((state) => ({
+            ...state,
+            maintainanceCode: code,
+        }));
+        this.validateMaintainanceCode(code);
+    }
+
+    componentDidMount = () => {
+        // Mỗi khi modal mở, cần sinh lại code
+        let { id } = this.props;
+        id && window.$(`#modal-create-maintainance-${id}`).on('shown.bs.modal', this.regenerateCode);
+    }
+
+    componentWillUnmount = () => {
+        // Unsuscribe event
+        let { id } = this.props;
+        id && window.$(`#modal-create-incident-${id}`).unbind('shown.bs.modal', this.regenerateCode)
     }
 
     // Function format ngày hiện tại thành dạnh mm-yyyy

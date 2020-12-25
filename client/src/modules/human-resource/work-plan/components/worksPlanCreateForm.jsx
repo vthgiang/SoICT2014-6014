@@ -176,9 +176,12 @@ class WorkPlanCreateForm extends Component {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 value={type}
-                                items={[{ value: "time_for_holiday", text: translate('human_resource.work_plan.time_for_holiday') },
-                                { value: 'time_allow_to_leave', text: translate('human_resource.work_plan.time_allow_to_leave') },
-                                { value: 'time_not_allow_to_leave', text: translate('human_resource.work_plan.time_not_allow_to_leave') }]}
+                                items={[
+                                    { value: "time_for_holiday", text: translate('human_resource.work_plan.time_for_holiday') },
+                                    { value: 'time_allow_to_leave', text: translate('human_resource.work_plan.time_allow_to_leave') },
+                                    { value: 'time_not_allow_to_leave', text: translate('human_resource.work_plan.time_not_allow_to_leave') },
+                                    { value: 'other', text: translate('human_resource.work_plan.other') },
+                                ]}
                                 onChange={this.handleTypetChange}
                             />
                         </div>

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import parse from 'html-react-parser';
 
-import { PaginateBar, DataTableSetting, SearchBar, DeleteNotification, ToolTip } from '../../../../common-components';
+import { PaginateBar, DataTableSetting, SearchBar, DeleteNotification, ToolTip, ConfirmNotification } from '../../../../common-components';
 
 import { UserActions } from '../redux/actions';
 
@@ -90,6 +90,10 @@ class ManageUserTable extends Component {
         this.props.getUser({ limit: this.state.limit, page: this.state.page });
     }
 
+    sendEmailResetPasswordUser = (email) => {
+        this.props.sendEmailResetPasswordUser(email);
+    }
+
     render() {
         const { user, translate } = this.props;
         const { limit } = this.state;
@@ -171,6 +175,14 @@ class ManageUserTable extends Component {
                                         : <p><i className="fa fa-circle text-danger" style={{ fontSize: "1em", marginRight: "0.25em" }} /> {translate('manage_user.disable')} </p>}</td>
                                     <td style={{ textAlign: 'center' }}>
                                         <a onClick={() => this.handleEdit(u)} className="edit text-yellow" href={`#${u._id}`} style={{ width: '5px' }} title={translate('manage_user.edit')}><i className="material-icons">edit</i></a>
+                                        <ConfirmNotification
+                                            className="text-blue"
+                                            title="Gửi email thay đổi mật khẩu"
+                                            name="contact_mail"
+                                            content={`Gửi email thay đổi mật khẩu đến tài khoản [ ${u.email} ]`}
+                                            icon="question"
+                                            func={() => this.sendEmailResetPasswordUser(u.email)}
+                                        />
                                         {
                                             !this.checkSuperRole(u.roles) &&
                                             <DeleteNotification
@@ -206,7 +218,8 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
     getUser: UserActions.get,
     edit: UserActions.edit,
-    destroy: UserActions.destroy
+    destroy: UserActions.destroy,
+    sendEmailResetPasswordUser: UserActions.sendEmailResetPasswordUser,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManageUserTable));
