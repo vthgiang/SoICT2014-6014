@@ -1987,6 +1987,7 @@ export default {
                 list_holiday: "Thời gian nghỉ lễ, nghỉ tết",
                 list_no_leave: "Thời gian không được xin nghỉ phép",
                 list_auto_leave: "Thời gian được xin nghỉ phép",
+                other: "Thời gian nghỉ khác",
 
                 // Nhóm dành cho table
                 table: {
