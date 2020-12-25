@@ -307,37 +307,6 @@ class InsurranceTab extends Component {
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
-                    {/* Thông tin bảo hiểm y tế */}
-                    <fieldset className="scheduler-border">
-                        <legend className="scheduler-border" ><h4 className="box-title">{translate('human_resource.profile.bhyt')}</h4></legend>
-                        <div className="row">
-                            {/* Mã số bảo hiểm y tế */}
-                            <div className="form-group col-md-4">
-                                <label>{translate('human_resource.profile.number_BHYT')}</label>
-                                <input type="text" className="form-control" name="healthInsuranceNumber" value={healthInsuranceNumber ? healthInsuranceNumber : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.number_BHYT')} autoComplete="off" />
-                            </div>
-                            {/* Ngày có hiệu lực */}
-                            <div className={`form-group col-md-4 ${errorOnHealthInsuranceStartDate && "has-error"}`}>
-                                <label >{translate('human_resource.profile.start_date')}</label>
-                                <DatePicker
-                                    id={`startDateBHYT${id}`}
-                                    value={healthInsuranceStartDate !== undefined ? this.formatDate(healthInsuranceStartDate) : undefined}
-                                    onChange={this.handleStartDateBHYTChange}
-                                />
-                                <ErrorLabel content={errorOnHealthInsuranceStartDate} />
-                            </div>
-                            {/* Ngày hết hiệu lực */}
-                            <div className={`form-group col-md-4 ${errorOnHealthInsuranceEndDate && "has-error"}`}>
-                                <label>{translate('human_resource.commendation_discipline.discipline.table.end_date')}</label>
-                                <DatePicker
-                                    id={`endDateBHYT${id}`}
-                                    value={healthInsuranceEndDate !== undefined ? this.formatDate(healthInsuranceEndDate) : undefined}
-                                    onChange={this.handleEndDateBHYTChange}
-                                />
-                                <ErrorLabel content={errorOnHealthInsuranceEndDate} />
-                            </div>
-                        </div>
-                    </fieldset>
                     {/* Thông tin bảo hiểm xã hội */}
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border" ><h4 className="box-title">{translate('human_resource.profile.bhxh')}</h4></legend>
@@ -383,6 +352,38 @@ class InsurranceTab extends Component {
                                 {
                                     (!socialInsuranceDetails || socialInsuranceDetails.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                                 }
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    {/* Thông tin bảo hiểm y tế */}
+                    <fieldset className="scheduler-border">
+                        <legend className="scheduler-border" ><h4 className="box-title">{translate('human_resource.profile.bhyt')}</h4></legend>
+                        <div className="row">
+                            {/* Mã số bảo hiểm y tế */}
+                            <div className="form-group col-md-4">
+                                <label>{translate('human_resource.profile.number_BHYT')}</label>
+                                <input type="text" className="form-control" name="healthInsuranceNumber" value={healthInsuranceNumber ? healthInsuranceNumber : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.number_BHYT')} autoComplete="off" />
+                            </div>
+                            {/* Ngày có hiệu lực */}
+                            <div className={`form-group col-md-4 ${errorOnHealthInsuranceStartDate && "has-error"}`}>
+                                <label >{translate('human_resource.profile.start_date')}</label>
+                                <DatePicker
+                                    id={`startDateBHYT${id}`}
+                                    value={healthInsuranceStartDate !== undefined ? this.formatDate(healthInsuranceStartDate) : undefined}
+                                    onChange={this.handleStartDateBHYTChange}
+                                />
+                                <ErrorLabel content={errorOnHealthInsuranceStartDate} />
+                            </div>
+                            {/* Ngày hết hiệu lực */}
+                            <div className={`form-group col-md-4 ${errorOnHealthInsuranceEndDate && "has-error"}`}>
+                                <label>{translate('human_resource.commendation_discipline.discipline.table.end_date')}</label>
+                                <DatePicker
+                                    id={`endDateBHYT${id}`}
+                                    value={healthInsuranceEndDate !== undefined ? this.formatDate(healthInsuranceEndDate) : undefined}
+                                    onChange={this.handleEndDateBHYTChange}
+                                />
+                                <ErrorLabel content={errorOnHealthInsuranceEndDate} />
                             </div>
                         </div>
                     </fieldset>
