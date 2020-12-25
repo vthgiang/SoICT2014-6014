@@ -582,18 +582,7 @@ class AdministrationStatisticsReport extends Component {
 
         return <React.Fragment>
             <ExportExcel id="export-document-archive" exportData={exportData} style={{ marginRight: 5 }} buttonName={translate('document.export')} />
-            <div className="row">
-                <div className="col-xs-12" >
-                    <div className="box box-solid">
-                        <div className="box-header">
-                            <div className="box-title">{translate('document.statistical_document')}</div>
-                        </div>
-                        <div className="box-body qlcv" style={{ minHeight: "400px" }}>
-                            <div ref="piechart"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
             <div className="row">
                 <div className="col-xs-12" >
                     <div className="box box-solid">
@@ -631,6 +620,18 @@ class AdministrationStatisticsReport extends Component {
                                 archives={listArchives}
                                 documents={docs}
                             />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="row">
+                <div className="col-xs-12" >
+                    <div className="box box-solid">
+                        <div className="box-header">
+                            <div className="box-title">{translate('document.statistical_document')}</div>
+                        </div>
+                        <div className="box-body qlcv" style={{ minHeight: "400px" }}>
+                            <div ref="piechart"></div>
                         </div>
                     </div>
                 </div>

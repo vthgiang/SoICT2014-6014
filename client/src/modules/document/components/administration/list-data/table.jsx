@@ -14,6 +14,7 @@ import CreateForm from './createForm';
 import EditForm from './editForm';
 import ListView from './listView';
 import ListDownload from './listDownload';
+import FilePreview from './FilePreview';
 
 const getIndex = (array, id) => {
     let index = -1;
@@ -47,6 +48,7 @@ class Table extends Component {
         const currentPage = window.location.pathname;
         this.props.getAllDocuments({ calledId: "all", by: currentPage === '/documents/organizational-unit' ? 'organizational-unit' : undefined });
         this.props.getAllDocuments({ page: this.state.page, limit: this.state.limit, calledId: "paginate", by: currentPage === '/documents/organizational-unit' ? 'organizational-unit' : undefined });
+
         this.props.getAllDocuments({ page: this.state.page, limit: this.state.limit, calledId: "relationshipDocs", by: currentPage === '/documents/organizational-unit' ? 'organizational-unit' : undefined });
         this.props.getAllRoles();
         this.props.getAllDepartments();
@@ -124,6 +126,13 @@ class Table extends Component {
         })
         window.$('#modal-list-download').modal('show');
     }
+
+    showFilePreview = async (data) => {
+        await this.setState({
+            currentFile: data,
+        });
+        window.$('#modal-file-preview').modal('show');
+    }
     checkHasComponent = (name) => {
         let { auth } = this.props;
         let result = false;
@@ -156,6 +165,23 @@ class Table extends Component {
             return {
                 ...state,
                 name: value.trim(),
+            }
+        })
+    }
+    handleIssuingBodyChange = (e) => {
+        const value = e.target.value;
+        this.setState(state => {
+            return {
+                ...state,
+                issuingBody: value.trim(),
+            }
+        })
+    }
+    handleArchivedRecordPlaceOrganizationalUnit = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                organizationUnit: value,
             }
         })
     }
@@ -426,18 +452,20 @@ class Table extends Component {
             category: this.state.category ? this.state.category[0] : "",
             domains: this.state.domain ? this.state.domain : "",
             archives: path && path.length ? path : "",
+            issuingBody: this.state.issuingBody ? this.state.issuingBody : "",
+            organizationUnit: this.state.organizationUnit ? this.state.organizationUnit : "",
             calledId: "paginate", by: currentPage === '/documents/organizational-unit' ? 'organizational-unit' : undefined
         };
         await this.props.getAllDocuments(data);
     }
 
     render() {
-        const { translate, documents } = this.props;
+        const { translate, documents, department } = this.props;
         const { domains, categories, archives } = this.props.documents.administration;
         const { isLoading } = this.props.documents;
         const docs = this.props.documents.administration.data;
 
-        const { currentRow, archive, domain, category } = this.state;
+        const { currentRow, archive, domain, category, currentFile } = this.state;
         const { paginate } = docs;
 
         const listDomain = domains.list
@@ -463,6 +491,12 @@ class Table extends Component {
                         docs={currentRow}
                     />
                 }
+                {/* {
+                    currentFile &&
+                    <FilePreview
+                        file={currentFile}
+                    />
+                } */}
                 {
                     currentRow &&
                     <EditForm
@@ -483,7 +517,7 @@ class Table extends Component {
                         documentRoles={currentRow.roles}
 
                         documentArchivedRecordPlaceInfo={currentRow.archivedRecordPlaceInfo}
-                        documentArchivedRecordPlaceOrganizationalUnit={currentRow.archivedRecordPlaceOrganizationalUnit ? currentRow.archivedRecordPlaceOrganizationalUnit._id : ""}
+                        organizationUnit={currentRow.archivedRecordPlaceOrganizationalUnit ? currentRow.archivedRecordPlaceOrganizationalUnit._id : ""}
                         documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
 
                     />
@@ -509,7 +543,7 @@ class Table extends Component {
                         documentRoles={currentRow.roles}
 
                         documentArchivedRecordPlaceInfo={currentRow.archivedRecordPlaceInfo}
-                        documentArchivedRecordPlaceOrganizationalUnit={currentRow.archivedRecordPlaceOrganizationalUnit}
+                        organizationUnit={currentRow.archivedRecordPlaceOrganizationalUnit}
                         documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
                         documentLogs={currentRow.logs}
                     />
@@ -561,14 +595,35 @@ class Table extends Component {
                     </div>
 
                 </div>
+
                 <div className="form-inline">
                     <div className="form-group">
+                        <label>{translate('document.store.organizational_unit_manage')}</label>
+                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                            id="select-documents-organizational-unit-manage-table"
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            items={department.list.map(organ => { return { value: organ._id, text: organ.name } })}
+                            onChange={this.handleArchivedRecordPlaceOrganizationalUnit}
+                            options={{ placeholder: translate('document.store.select_organizational') }}
+                            multiple={false}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>{translate('document.doc_version.issuing_body')}</label>
+                        <input type="text" className="form-control" onChange={this.handleIssuingBodyChange} />
+                    </div>
+                    <div className="form-group" style={{ marginLeft: 0 }}>
                         <label></label>
                         <button type="button" className="btn btn-success" onClick={() => this.searchWithOption()}>{
                             translate('kpi.organizational_unit.management.over_view.search')}</button>
                     </div>
+
                 </div>
-                <table className="data-table table table-hover table-striped table-bordered" id="table-manage-document-list" style={{ marginBottom: 0 }}>
+                {/* <div className="form-inline">
+
+                </div> */}
+                <table className="data-table table table-hover table-striped table-bordered" id="table-manage-document-list" style={{ marginBottom: 0, marginTop: 20 }}>
                     <thead>
                         <tr>
                             <th>{translate('document.name')}</th>
@@ -617,6 +672,9 @@ class Table extends Component {
                                         <a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}>
                                             <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u>
                                         </a>
+                                        {/* <a href="#" onClick={() => this.showFilePreview(doc.versions.length && doc.versions[doc.versions.length - 1].file)}>
+                                            <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u>
+                                        </a> */}
                                     </td>
                                     <td>
                                         <a href="#" onClick={() => this.requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}>
@@ -624,7 +682,7 @@ class Table extends Component {
                                         </a>
                                     </td>
                                     <td>
-                                        <a href="#modal-list-view" onClick={() => this.showDetailListView(doc)}>{doc.numberOfView}</a>
+                                        <a href="#modal-file-preview`" onClick={() => this.showDetailListView(doc)}>{doc.numberOfView}</a>
                                     </td>
                                     <td>
                                         <a href="#modal-list-download" onClick={() => this.showDetailListDownload(doc)}>{doc.numberOfDownload}</a>
