@@ -129,26 +129,32 @@ class ActionTab extends Component {
     static getDerivedStateFromProps(props, prevState) {
         const { performtasks, notifications } = props;
         let state = {};
-        if (notifications && notifications.dataSend && performtasks && performtasks.task && notifications.dataSend.value && notifications.dataSend.value.length > 0) {
+        if (notifications && notifications.associatedData && performtasks && performtasks.task && notifications.associatedData.value && notifications.associatedData.value.length > 0) {
             let { taskComments } = performtasks.task;
             let { taskActions } = performtasks.task;
             // Trường hợp thêm mới bình luận (tab trao doi)
-            if (notifications.dataSend.dataType === "createTaskComment") {
-                const res = [...taskComments, notifications.dataSend.value[0]];
+            if (notifications.associatedData.dataType === "createTaskComment") {
+                const res = [...taskComments, notifications.associatedData.value[0]];
                 props.refreshDataAfterComment(res);
             }
             // trường hợp thêm comment cho comment (tab trao doi)
-            if (notifications.dataSend.dataType === "createTaskSubComment") {
+            if (notifications.associatedData.dataType === "createTaskSubComment") {
                 // add thêm sub comment mới 
-                const res = taskComments.map(obj => notifications.dataSend.value.find(o => o._id === obj._id) || obj);
+                const res = taskComments.map(obj => notifications.associatedData.value.find(o => o._id === obj._id) || obj);
                 props.refreshDataAfterComment(res);
             }
             // Trường hợp thêm mới hoạt động
-            if (notifications.dataSend.dataType === "createTaskAction") {
-                const res = [...taskActions, notifications.dataSend.value[0]];
+            if (notifications.associatedData.dataType === "createTaskAction") {
+                const res = [...taskActions, notifications.associatedData.value[0]];
                 props.refreshDataAfterCreateAction(res)
             }
-            notifications.dataSend = {}; // reset lại 
+
+            // Thêm bình luạn cho hoạt động
+            if (notifications.associatedData.dataType === "createCommentOfTaskactions") {
+                const res = taskActions.map(obj => notifications.associatedData.value.find(o => o._id === obj._id) || obj)
+                props.refreshDataAfterCreateAction(res);
+            }
+            notifications.associatedData = {}; // reset lại ... 
         }
 
         if (performtasks.task) {
