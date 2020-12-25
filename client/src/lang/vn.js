@@ -3474,6 +3474,7 @@ export default {
                 view_task_process_template: "Xem mẫu quy trình công việc",
                 import_task_template_success: "Thêm mẫu công việc thành công",
                 import_task_template_faile: "Thêm mẫu công việc thất bại !",
+                task_template_name_exist:"Tên mẫu công việc đã tồn tại",
             },
         },
 
