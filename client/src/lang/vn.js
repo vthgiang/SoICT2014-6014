@@ -1641,7 +1641,7 @@ export default {
                     menu_attachments_title: "Tài liệu đính kèm",
                 },
 
-                money:'Mức lương đóng',
+                money: 'Mức lương đóng',
                 staff_number: "Mã nhân viên",
                 full_name: "Họ và tên",
                 attendance_code: "Mã số chấm công",
@@ -1790,7 +1790,7 @@ export default {
                 disc_commitment: "Giấy cam kết làm việc",
                 temporary_residence_card: "Tạm trú tạm vắng",
                 disc_temporary_residence_card: "Giấy xác nhận tạm trú tạm vắng",
-                registration_book:'Sổ hộ khẩu',
+                registration_book: 'Sổ hộ khẩu',
                 add_staff: "Thêm nhân viên",
 
                 reward: "Khen thưởng",
@@ -2896,6 +2896,7 @@ export default {
 
                 start_date: "Ngày bắt đầu",
                 end_date: "Ngày kết thúc",
+                task_additional_info: "Tùy chọn thêm",
 
                 search: "Tìm kiếm",
 
@@ -3158,7 +3159,7 @@ export default {
                 warning_hours: "giờ",
                 warning_minutes: "phút",
 
-                project: 'Tên dự án (nếu có)',
+                project: 'Thuộc dự án (nếu có)',
             },
             task_perform: {
                 actions: "Hoạt động",

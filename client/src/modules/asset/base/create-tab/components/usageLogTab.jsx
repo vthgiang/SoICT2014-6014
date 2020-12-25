@@ -243,11 +243,15 @@ class UsageLogTab extends Component {
                         <legend className="scheduler-border"><h4 className="box-title">{translate('asset.asset_info.usage_logs')}</h4></legend> */}
 
                     {/* Form thêm thông tin sử dụng */}
-                    <UsageLogAddModal handleChange={this.handleAddUsage} typeRegisterForUse={typeRegisterForUse} id={`addUsage${id}`} />
+                    {
+                        !this.props.assetId && this.props.typeRegisterForUse != 2 &&
+                        <UsageLogAddModal handleChange={this.handleAddUsage} typeRegisterForUse={typeRegisterForUse} id={`addUsage${id}`} />
+
+                    }
 
                     <div className="form-inline">
                         {
-                            !this.props.assetId &&
+                            !this.props.assetId && this.props.typeRegisterForUse == 2 &&
                             <div><span style={{ color: "red" }}>Cần thêm tài sản trước khi thêm sử dụng theo giờ</span></div>
                         }
                         <div className="form-group">

@@ -7,6 +7,7 @@ import { AssetManagerActions } from '../../asset-information/redux/actions';
 import { MaintainanceActions } from '../redux/actions';
 
 import ValidationHelper from '../../../../../helpers/validationHelper';
+import { generateCode } from "../../../../../helpers/generateCode";
 
 class MaintainanceCreateForm extends Component {
     constructor(props) {
@@ -24,6 +25,32 @@ class MaintainanceCreateForm extends Component {
                 status: "",
             }
         };
+    }
+
+    regenerateCode = () => {
+        let code = generateCode("MT");
+        const { newMaintainance } = this.state;
+
+        this.setState(state => {
+            return {
+                ...state,
+                newMaintainance: {
+                    ...newMaintainance,
+                    maintainanceCode: code,
+                }
+            }
+        })
+    }
+
+    componentDidMount = () => {
+        // Mỗi khi modal mở, cần sinh lại code
+        window.$('#modal-create-maintainance').on('shown.bs.modal', this.regenerateCode);
+        this.props.getAllAsset({ page: 0, limit: 20 })
+
+    }
+    componentWillUnmount = () => {
+        // Unsuscribe event
+        window.$('#modal-create-maintainance').unbind('shown.bs.modal', this.regenerateCode)
     }
 
     // Function format dữ liệu Date thành string
@@ -51,17 +78,13 @@ class MaintainanceCreateForm extends Component {
     // Bắt sự kiện thay đổi mã phiếu
     handleMaintainanceCodeChange = (e) => {
         const { newMaintainance } = this.state;
-        const { translate } = this.props;
         let { value } = e.target;
-
-        let { message } = ValidationHelper.validateName(translate, value, 4, 255);
 
         this.setState({
             newMaintainance: {
                 ...newMaintainance,
                 maintainanceCode: value,
-            },
-            errorOnMaintainanceCode: message
+            }
         })
     }
 
@@ -182,8 +205,10 @@ class MaintainanceCreateForm extends Component {
         const { maintainanceCode, asset, startDate } = this.state.newMaintainance;
         const { translate } = this.props;
 
-        if (!ValidationHelper.validateName(translate, maintainanceCode).status
-            || !ValidationHelper.validateName(translate, asset).status
+        if (
+            // !ValidationHelper.validateName(translate, maintainanceCode).status
+            // || 
+            !ValidationHelper.validateName(translate, asset).status
             || !ValidationHelper.validateName(translate, startDate).status)
             return false;
         return true;
@@ -224,9 +249,7 @@ class MaintainanceCreateForm extends Component {
         this.props.getAllAsset({ assetName: value, page: 0, limit: 10 });
     }
 
-    componentDidMount() {
-        this.props.getAllAsset({ page: 0, limit: 20 })
-    }
+
 
     render() {
         const { id, translate, assetsManager } = this.props;

@@ -60,6 +60,7 @@ class TabNotificationUnRead extends Component {
                         notificationSender={currentRow.sender}
                         notificationReaded={currentRow.readed}
                         notificationCreatedAt={currentRow.createdAt}
+                        notificationFiles={currentRow.files}
                         notificationAssociatedDataObject={currentRow.associatedDataObject}
                     />
                 }

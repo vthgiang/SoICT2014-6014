@@ -240,7 +240,7 @@ class ViewTaskTemplate extends Component {
                                                     <li><strong>{translate('task_template.code')}:</strong> {item.code}</li>
                                                     <li><strong>{translate('task_template.datatypes')}:</strong> {this.formatTypeInfo(item.type)}</li>
                                                     {item.filledByAccountableEmployeesOnly && <li>{translate('task_template.manager_fill')}</li>}
-                                                    <li><strong>{translate('task_template.description')}:</strong> <div style={{ display: "inline-block" }}>{parse(item.description)}</div></li>
+                                                    <li><strong>{translate('task_template.description')}:</strong>{parse(item.description)}</li>
                                                 </ul>
                                             </div>
                                         )
