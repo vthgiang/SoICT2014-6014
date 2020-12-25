@@ -1649,7 +1649,7 @@ export default {
                 male: "Nam",
                 female: "Nữ",
                 date_birth: "Ngày sinh",
-                place_birth: "Nơi sinh",
+                place_birth: "Nguyên quán",
                 email: "Email",
                 email_company: "Email công ty",
                 starting_date: "Ngày bắt đầu làm việc",
