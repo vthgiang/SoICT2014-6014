@@ -167,6 +167,14 @@ class Table extends Component {
             }
         })
     }
+
+    handleIssuingBodyChange = (e) => {
+        const { value } = e.target;
+        this.setState({
+            issuingBody: value,
+        })
+    }
+
     formatDate(date, monthYear = false) {
         if (date) {
             let d = new Date(date),
@@ -426,7 +434,8 @@ class Table extends Component {
             category: this.state.category ? this.state.category[0] : "",
             domains: this.state.domain ? this.state.domain : "",
             archives: path && path.length ? path : "",
-            calledId: "paginate", by: currentPage === '/documents/organizational-unit' ? 'organizational-unit' : undefined
+            calledId: "paginate", by: currentPage === '/documents/organizational-unit' ? 'organizational-unit' : undefined,
+            issuingBody: this.state.issuingBody,
         };
         await this.props.getAllDocuments(data);
     }
@@ -563,14 +572,20 @@ class Table extends Component {
                 </div>
                 <div className="form-inline">
                     <div className="form-group">
+                        <label>{translate('document.doc_version.issuing_body')}</label>
+                        <input type="text" className="form-control" onChange={this.handleIssuingBodyChange} />
+                    </div>
+
+                    <div className="form-group">
                         <label></label>
                         <button type="button" className="btn btn-success" onClick={() => this.searchWithOption()}>{
                             translate('kpi.organizational_unit.management.over_view.search')}</button>
                     </div>
                 </div>
-                <table className="data-table table table-hover table-striped table-bordered" id="table-manage-document-list" style={{ marginBottom: 0 }}>
+                <table className="table table-hover table-striped table-bordered" id="table-manage-document-list" style={{ marginBottom: 0 }}>
                     <thead>
                         <tr>
+                            <th>{translate('document.doc_version.issuing_body')}</th>
                             <th>{translate('document.name')}</th>
                             <th>{translate('document.description')}</th>
                             <th>{translate('document.issuing_date')}</th>
@@ -608,6 +623,7 @@ class Table extends Component {
                             paginate.map(doc =>
 
                                 <tr key={doc._id}>
+                                    <td>{doc.issuingBody}</td>
                                     <td>{doc.name}</td>
                                     <td>{doc.description ? doc.description : ""}</td>
                                     <td>{doc.versions.length ? this.formatDate(doc.versions[doc.versions.length - 1].issuingDate) : null}</td>

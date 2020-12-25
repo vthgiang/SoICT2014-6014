@@ -332,6 +332,14 @@ class UserDocumentsData extends Component {
             }
         })
     }
+
+    handleIssuingBodyChange = (e) => {
+        const { value } = e.target;
+        this.setState({
+            issuingBody: value,
+        })
+    }
+
     setPage = async (page) => {
         this.setState({ page });
         let path = this.state.archive ? this.findPath(this.state.archive) : "";
@@ -378,6 +386,7 @@ class UserDocumentsData extends Component {
             category: this.state.category ? this.state.category[0] : "",
             domains: this.state.domain ? this.state.domain : "",
             archives: path && path.length ? path : "",
+            issuingBody: this.state.issuingBody,
         };
         await this.props.getAllDocuments(getStorage('currentRole'), data);
     }
@@ -485,6 +494,11 @@ class UserDocumentsData extends Component {
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
+                            <label>{translate('document.doc_version.issuing_body')}</label>
+                            <input type="text" className="form-control" onChange={this.handleIssuingBodyChange} />
+                        </div>
+
+                        <div className="form-group">
                             <label></label>
                             <button type="button" className="btn btn-success" onClick={() => this.searchWithOption()}>{
                                 translate('kpi.organizational_unit.management.over_view.search')}</button>
@@ -494,6 +508,7 @@ class UserDocumentsData extends Component {
                     <table className="table table-hover table-striped table-bordered" id="table-manage-document">
                         <thead>
                             <tr>
+                                <th>{translate('document.doc_version.issuing_body')}</th>
                                 <th>{translate('document.name')}</th>
                                 <th>{translate('document.description')}</th>
                                 <th>{translate('document.issuing_date')}</th>
@@ -528,6 +543,7 @@ class UserDocumentsData extends Component {
                                 paginate.length > 0 ?
                                     paginate.map(doc =>
                                         <tr key={doc._id}>
+                                            <td>{doc.issuingBody}</td>
                                             <td>{doc.name}</td>
                                             <td>{doc.description ? doc.description : ""}</td>
                                             <td>{doc.versions.length ? this.formatDate(doc.versions[doc.versions.length - 1].issuingDate) : null}</td>
@@ -563,7 +579,7 @@ class UserDocumentsData extends Component {
         );
     }
 
-    
+
 }
 
 const mapStateToProps = state => state;
