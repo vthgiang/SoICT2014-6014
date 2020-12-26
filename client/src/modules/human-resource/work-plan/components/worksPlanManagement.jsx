@@ -177,6 +177,7 @@ class ManageWorkPlan extends Component {
         let listNoLeave = workPlans.filter(x => x.type === 'time_not_allow_to_leave');
         let listAutoLeave = workPlans.filter(x => x.type === 'time_allow_to_leave');
         let listWorkPlan = workPlans.filter(x => x.type === 'time_for_holiday');
+        let listWorkPlanOther = workPlans.filter(x => x.type === 'other');
 
         return (
             <div className="box">
@@ -256,53 +257,9 @@ class ManageWorkPlan extends Component {
                                 }
                             </div>
                         </div>
-
-
                         <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                            {/* Danh sách thời gian không được xin nghỉ phép*/}
-                            <div className="description-box " style={{ paddingRight: 10 }}>
-                                <h4>{translate('human_resource.work_plan.list_no_leave')}</h4>
-                                <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
-                                    <thead>
-                                        <tr>
-                                            <th style={{ width: 40 }}>{translate('human_resource.stt')}</th>
-                                            <th >{translate('human_resource.work_plan.table.timeline')}</th>
-                                            <th>{translate('human_resource.work_plan.table.describe_timeline')}</th>
-                                            <th style={{ width: 100 }}>{translate('general.action')}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {listNoLeave && listNoLeave.length !== 0 &&
-                                            listNoLeave.map((x, index) => (
-                                                <tr key={index}>
-                                                    <td>{index + 1}</td>
-                                                    <td>{(this.formatDate(x.startDate) === this.formatDate(x.endDate)) ? this.formatDate(x.startDate) : this.formatDate(x.startDate) + " - " + this.formatDate(x.endDate)}</td>
-                                                    <td>{x.description}</td>
-                                                    <td>
-                                                        <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa nghỉ phép"><i className="material-icons">edit</i></a>
-                                                        <DeleteNotification
-                                                            content="Xoá ngày nghỉ lễ (tết)"
-                                                            data={{
-                                                                id: x._id,
-                                                                info: (this.formatDate(x.startDate) === this.formatDate(x.endDate)) ? this.formatDate(x.startDate) : this.formatDate(x.startDate) + " - " + this.formatDate(x.endDate)
-                                                            }}
-                                                            func={this.props.deleteWorkPlan}
-                                                        />
-                                                    </td>
-                                                </tr>)
-                                            )}
-                                    </tbody>
-                                </table>
-                                {
-                                    workPlan.isLoading ?
-                                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                                        (!listNoLeave || listNoLeave.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                                }
-                            </div>
-
-
                             {/* Danh sách thời gian được nghỉ*/}
-                            <div className="box-solid description description-box" style={{ paddingRight: 10, marginTop: 25 }}>
+                            <div className="box-solid description description-box" style={{ paddingRight: 10 }}>
                                 <h4>{translate('human_resource.work_plan.list_auto_leave')}</h4>
                                 {/* Số ngày nghỉ phép trong một năm */}
                                 <div style={{ marginBottom: 10 }}>
@@ -347,6 +304,93 @@ class ManageWorkPlan extends Component {
                                     workPlan.isLoading ?
                                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
                                         (!listAutoLeave || listAutoLeave.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="row row-equal-height">
+                        <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            {/* Danh sách thời gian không được xin nghỉ phép*/}
+                            <div className="description-box " style={{ paddingRight: 10 }}>
+                                <h4>{translate('human_resource.work_plan.list_no_leave')}</h4>
+                                <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
+                                    <thead>
+                                        <tr>
+                                            <th style={{ width: 40 }}>{translate('human_resource.stt')}</th>
+                                            <th >{translate('human_resource.work_plan.table.timeline')}</th>
+                                            <th>{translate('human_resource.work_plan.table.describe_timeline')}</th>
+                                            <th style={{ width: 100 }}>{translate('general.action')}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {listNoLeave && listNoLeave.length !== 0 &&
+                                            listNoLeave.map((x, index) => (
+                                                <tr key={index}>
+                                                    <td>{index + 1}</td>
+                                                    <td>{(this.formatDate(x.startDate) === this.formatDate(x.endDate)) ? this.formatDate(x.startDate) : this.formatDate(x.startDate) + " - " + this.formatDate(x.endDate)}</td>
+                                                    <td>{x.description}</td>
+                                                    <td>
+                                                        <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa nghỉ phép"><i className="material-icons">edit</i></a>
+                                                        <DeleteNotification
+                                                            content="Xoá ngày nghỉ lễ (tết)"
+                                                            data={{
+                                                                id: x._id,
+                                                                info: (this.formatDate(x.startDate) === this.formatDate(x.endDate)) ? this.formatDate(x.startDate) : this.formatDate(x.startDate) + " - " + this.formatDate(x.endDate)
+                                                            }}
+                                                            func={this.props.deleteWorkPlan}
+                                                        />
+                                                    </td>
+                                                </tr>)
+                                            )}
+                                    </tbody>
+                                </table>
+                                {
+                                    workPlan.isLoading ?
+                                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                                        (!listNoLeave || listNoLeave.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                }
+                            </div>
+                        </div>
+                        <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            {/* Thời gian nghỉ khác */}
+                            <div className="description-box" style={{ paddingRight: 10 }}>
+                                <h4>{translate('human_resource.work_plan.other')}</h4>
+                                <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
+                                    <thead>
+                                        <tr>
+                                            <th style={{ width: 40 }}>{translate('human_resource.stt')}</th>
+                                            <th>{translate('human_resource.work_plan.table.timeline')}</th>
+                                            <th>{translate('human_resource.work_plan.table.describe_timeline')}</th>
+                                            <th style={{ width: 100 }}>{translate('general.action')}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {listWorkPlanOther && listWorkPlanOther.length !== 0 &&
+                                            listWorkPlanOther.map((x, index) => (
+                                                <tr key={index}>
+                                                    <td>{index + 1}</td>
+                                                    <td>{(this.formatDate(x.startDate) === this.formatDate(x.endDate)) ? this.formatDate(x.startDate) : this.formatDate(x.startDate) + " - " + this.formatDate(x.endDate)}</td>
+                                                    <td>{x.description}</td>
+                                                    <td>
+                                                        <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.work_plan.edit_work_plan')}><i className="material-icons">edit</i></a>
+                                                        <DeleteNotification
+                                                            content={translate('human_resource.work_plan.delete_work_plan')}
+                                                            data={{
+                                                                id: x._id,
+                                                                info: (this.formatDate(x.startDate) === this.formatDate(x.endDate)) ? this.formatDate(x.startDate) : this.formatDate(x.startDate) + " - " + this.formatDate(x.endDate)
+                                                            }}
+                                                            func={this.props.deleteWorkPlan}
+                                                        />
+                                                    </td>
+                                                </tr>)
+                                            )}
+                                    </tbody>
+                                </table>
+                                {
+                                    workPlan.isLoading ?
+                                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                                        (!listWorkPlanOther || listWorkPlanOther.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                                 }
                             </div>
                         </div>

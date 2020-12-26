@@ -16,7 +16,7 @@ const WorkPlanSchema = new Schema({
         type: {
             type: String,
             required: true,
-            enum: ['time_for_holiday', 'time_not_allow_to_leave', 'time_allow_to_leave'],
+            enum: ['time_for_holiday', 'time_not_allow_to_leave', 'time_allow_to_leave', 'other'],
         },
         startDate: {
             type: Date,

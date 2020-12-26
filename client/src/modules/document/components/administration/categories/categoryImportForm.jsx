@@ -31,25 +31,29 @@ class CategoryImportForm extends Component {
     handleImportExcel = (value, checkFileImport) => {
         let values = [];
         let showValues = [];
-        let k = -1;
+        let k = 0;
         for (let i in value) {
             let x = value[i];
+
             if (x.name) {
-                values = [...value, {
-                    "STT": k + 1,
+                k++
+                values = [...values, {
+                    "STT": k,
                     "name": x.name,
                     "description": x.description,
 
                 }];
                 showValues = [...showValues, {
-                    "STT": k + 1,
+                    "STT": k,
                     "name": x.name,
                     "description": x.description,
 
-                }]
+                }];
+                //  k++;
             }
         }
         value = values;
+        console.log('vaaaaaaleeeeee', values, showValues);
         if (checkFileImport) {
             let rowError = [];
             for (let i in value) {
@@ -65,6 +69,7 @@ class CategoryImportForm extends Component {
                 x = { ...x, errorAlert: errorAlert };
                 value[i] = x;
             }
+
             this.setState({
                 importData: value,
                 importShowData: showValues,

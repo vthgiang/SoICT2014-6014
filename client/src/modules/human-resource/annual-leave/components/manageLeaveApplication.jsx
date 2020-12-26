@@ -5,6 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
 import { EmployeeViewForm } from '../../profile/employee-management/components/combinedContent';
+import { AnnualLeaveImportForm, AnnualLeaveCreateForm } from './combinedContent';
 
 import { AnnualLeaveActions } from '../redux/actions';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
@@ -25,6 +26,8 @@ class ManageLeaveApplication extends Component {
 
     componentDidMount() {
         this.props.getDepartmentsThatUserIsManager();
+        this.props.getDepartment();
+        this.props.searchAnnualLeaves(this.state);
     }
 
     /**
@@ -215,7 +218,7 @@ class ManageLeaveApplication extends Component {
 
     render() {
         const { translate, annualLeave } = this.props;
-        const { month, status, limit, page, currentRow, currentRowView } = this.state;
+        const { month, status, limit, page, currentRow, currentRowView, importAnnualLeave } = this.state;
 
         let listAnnualLeaves = [];
         if (annualLeave.isLoading === false) {
@@ -240,6 +243,14 @@ class ManageLeaveApplication extends Component {
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.staff_name')}</label>
                             <input type="text" className="form-control" name="employeeName" onChange={this.handleChange} placeholder={translate('human_resource.staff_name')} autoComplete="off" />
+                        </div>
+
+                        <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
+                            <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.annual_leave.add_annual_leave_title')} >{translate('human_resource.annual_leave.add_annual_leave')}</button>
+                            <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
+                                <li><a style={{ cursor: 'pointer' }} onClick={() => window.$(`#modal-create-annual-leave`).modal('show')}>{translate('human_resource.salary.add_by_hand')}</a></li>
+                                <li><a style={{ cursor: 'pointer' }} onClick={() => this.setState({ importAnnualLeave: true }, () => window.$(`#modal_import_file`).modal('show'))}>{translate('human_resource.salary.add_import')}</a></li>
+                            </ul>
                         </div>
                     </div>
 
@@ -272,6 +283,9 @@ class ManageLeaveApplication extends Component {
                         {/* Button tìm kiếm */}
                         <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} >{translate('general.search')}</button>
                     </div>
+                    <AnnualLeaveCreateForm />
+                    {importAnnualLeave && <AnnualLeaveImportForm />}
+
                     <table className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
@@ -342,6 +356,7 @@ function mapState(state) {
 };
 
 const actionCreators = {
+    getDepartment: DepartmentActions.get,
     searchAnnualLeaves: AnnualLeaveActions.searchAnnualLeaves,
     updateAnnualLeave: AnnualLeaveActions.updateAnnualLeave,
     getDepartmentsThatUserIsManager: DepartmentActions.getDepartmentsThatUserIsManager,

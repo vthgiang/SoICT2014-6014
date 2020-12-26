@@ -29,7 +29,7 @@ const initState = {
         prevPage: 0,
         nextPage: 0,
     },
-    dataSend:{},
+    associatedData:{},
     
     isLoading: true
 }
@@ -209,7 +209,7 @@ export function notifications(state = initState, action) {
                     list: [action.payload, ...state.receivered.list],
                     paginate: [action.payload, ...state.receivered.paginate],
                 },
-                dataSend: (action.payload && action.payload.dataSend) ? action.payload.dataSend : state.dataSend,
+                associatedData: (action.payload && action.payload.associatedData) ? action.payload.associatedData : state.associatedData,
                 isLoading: false
             }
 

@@ -132,20 +132,20 @@ exports.createTaskAction = async (req, res) => {
         let userCreator = task.userCreator;
         // message gửi cho người phê duyệt
 
-        const dataSend = {
+        const associatedData = {
             dataType: "createTaskAction",
             value: [taskAction[taskAction.length - 1]]
         }
 
-        const  dataSendforAccountable = { "organizationalUnits": tasks.organizationalUnit, "title": "Phê duyệt hoạt động", "level": "general", "content": `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động cho công việc <strong>${tasks.name}</strong>, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`, "sender": userCreator.name, "users": [tasks.accountableEmployees],"dataSend":dataSend };
-        NotificationServices.createNotification(req.portal, tasks.organizationalUnit, dataSendforAccountable,);
+        const  associatedDataforAccountable = { "organizationalUnits": tasks.organizationalUnit, "title": "Phê duyệt hoạt động", "level": "general", "content": `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động cho công việc <strong>${tasks.name}</strong>, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`, "sender": userCreator.name, "users": [tasks.accountableEmployees],"associatedData":associatedData };
+        NotificationServices.createNotification(req.portal, tasks.organizationalUnit, associatedDataforAccountable,);
        
         // message gửi cho người thực hiện
         // Loại người tạo hoặt động khỏi danh sách người nhận thông báo
         const userReceive = [...tasks.responsibleEmployees].filter(obj => JSON.stringify(obj) !== JSON.stringify(req.user._id));
-        const dataSendforResponsible = { "organizationalUnits": tasks.organizationalUnit, "title": "Thêm mới hoạt động", "level": "general", "content": `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động cho công việc <strong>${tasks.name}</strong>, chi tiết công việc: <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`, "sender": userCreator.name, "users": userReceive, "dataSend": dataSend };
+        const associatedDataforResponsible = { "organizationalUnits": tasks.organizationalUnit, "title": "Thêm mới hoạt động", "level": "general", "content": `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động cho công việc <strong>${tasks.name}</strong>, chi tiết công việc: <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`, "sender": userCreator.name, "users": userReceive, "associatedData": associatedData };
                
-        NotificationServices.createNotification(req.portal, tasks.organizationalUnit, dataSendforResponsible,);
+        NotificationServices.createNotification(req.portal, tasks.organizationalUnit, associatedDataforResponsible,);
         sendEmail(task.email, "Phê duyệt hoạt động", '', `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`);
         
         await Logger.info(req.user.email, ` create task action  `, req.portal)
@@ -232,7 +232,7 @@ exports.createCommentOfTaskAction = async (req, res) => {
 
             })
         }
-        let actionComment = await PerformTaskService.createCommentOfTaskAction(req.portal, req.params, req.body, files);
+        let actionComment = await PerformTaskService.createCommentOfTaskAction(req.portal, req.params, req.body, files, req.user);
         await Logger.info(req.user.email, ` create  action comment  `, req.portal);
         res.status(200).json({
             success: true,

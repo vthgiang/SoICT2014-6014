@@ -86,12 +86,12 @@ export function performtasks(state = {}, action) {
                 loading: true
             };
         case performTaskConstants.STOP_TIMER_SUCCESS:
-            return {
+            return state.task._id === action.payload._id ? {
                 ...state,
                 task: action.payload,
                 logtimer: action.payload.timesheetLogs,
-                currentTimer: null,
-            };
+                currentTimer: null
+            } : { ...state, currentTimer: null };
         case performTaskConstants.STOP_TIMER_FAILURE:
             return {
                 error: action.error
