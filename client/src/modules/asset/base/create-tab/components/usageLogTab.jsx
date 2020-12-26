@@ -244,7 +244,7 @@ class UsageLogTab extends Component {
 
                     {/* Form thêm thông tin sử dụng */}
                     {
-                        !this.props.assetId && this.props.typeRegisterForUse != 2 &&
+                        this.props.assetId && this.props.typeRegisterForUse != 2 &&
                         <UsageLogAddModal handleChange={this.handleAddUsage} typeRegisterForUse={typeRegisterForUse} id={`addUsage${id}`} />
 
                     }

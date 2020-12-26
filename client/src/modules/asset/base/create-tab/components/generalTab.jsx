@@ -762,7 +762,7 @@ class GeneralTab extends Component {
                                     <label>{translate('asset.general_information.user')}</label>
                                     <div id="assignedToUserBox">
                                         <SelectBox
-                                            id={`assignedToUserBox${id}`}
+                                            id={`assignedToUserBox${assignedToUser}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={assignedToUser ? assignedToUser : ""}
@@ -778,7 +778,7 @@ class GeneralTab extends Component {
                                     <label>{translate('asset.general_information.organization_unit')}</label>
                                     <div id="assignedToOrganizationalUnitBox">
                                         <SelectBox
-                                            id={`assignedToOrganizationalUnitBox${id}`}
+                                            id={`assignedToOrganizationalUnitBox${assignedToOrganizationalUnit}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={[{ value: 'null', text: 'Chưa có đơn vị được giao sử dụng' }, ...departmentlist.map(x => { return { value: x._id, text: x.name } })]}
