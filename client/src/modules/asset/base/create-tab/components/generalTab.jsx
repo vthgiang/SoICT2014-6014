@@ -169,39 +169,39 @@ class GeneralTab extends Component {
         let { detailInfo } = this.state;
         let arr = [...detailInfo];
 
-        if (value && value.length !== 0) {
-            let assetTypeList = assetType.listAssetTypes;
-            let currentAssetType = assetTypeList.filter((element) => element._id === value[0])[0];
-            let defaultInformation = currentAssetType ? currentAssetType.defaultInformation : [];
+        // if (value && value.length !== 0) {
+        //     let assetTypeList = assetType.listAssetTypes;
+        //     let currentAssetType = assetTypeList.filter((element) => element._id === value[0])[0];
+        //     let defaultInformation = currentAssetType ? currentAssetType.defaultInformation : [];
 
-            // Thêm trường thông tin mặc định ở nhóm tài sản vào thông tin chi tiết
-            for (let i in defaultInformation) {
-                let check = true;
-                for (let j in detailInfo) {
-                    if (defaultInformation[i].nameField === detailInfo[j].nameField) {
-                        check = false;
-                    }
-                }
+        //     // Thêm trường thông tin mặc định ở nhóm tài sản vào thông tin chi tiết
+        //     for (let i in defaultInformation) {
+        //         let check = true;
+        //         for (let j in detailInfo) {
+        //             if (defaultInformation[i].nameField === detailInfo[j].nameField) {
+        //                 check = false;
+        //             }
+        //         }
 
-                if (check) {
-                    arr.push({
-                        ...defaultInformation[i],
-                        value: '',
-                    });
-                }
-            }
-        }
+        //         if (check) {
+        //             arr.push({
+        //                 ...defaultInformation[i],
+        //                 value: '',
+        //             });
+        //         }
+        //     }
+        // }
 
         await this.setState(state => {
             return {
                 ...state,
                 assetType: value,
-                detailInfo: arr,
+                // detailInfo: arr,
                 isObj: false
             }
         });
         this.props.handleChange("assetType", value);
-        this.props.handleChange("detailInfo", this.state.detailInfo);
+        // this.props.handleChange("detailInfo", this.state.detailInfo);
     }
 
     /**
@@ -551,12 +551,15 @@ class GeneralTab extends Component {
         let startDate = status == "in_use" && usageLogs && usageLogs.length ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : '';
         let endDate = status == "in_use" && usageLogs && usageLogs.length ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : '';
         let typeInTreeSelect = [];
+        let types = this.state.assetType;
         let listtypes = this.props.assetType.listAssetTypes;
 
-        if (assetType && listtypes.length) {
-            for (let i in assetType) {
+        if (types && listtypes.length) {
+            for (let i in types) {
                 for (let j in listtypes) {
-                    assetType[i] === listtypes[j]._id && typeInTreeSelect.push(listtypes[j]);
+                    if (types[i] === listtypes[j]._id) {
+                        typeInTreeSelect.push(listtypes[j]._id);
+                    }
                 }
             }
         }
