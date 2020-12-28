@@ -14,7 +14,7 @@ class TaskManagementOfUnit extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            roleId: getStorage("currentRole"),
+            organizationalUnit: [],
             perPage: 20,
             currentPage: 1,
 
@@ -33,7 +33,7 @@ class TaskManagementOfUnit extends Component {
     componentDidMount() {
         this.props.getDepartment();
         this.props.getAllDepartment();
-        this.props.getPaginatedTasksByOrganizationalUnit(this.state.roleId, 1, 20, this.state.status, [], [], null, null, null, this.state.isAssigned);
+        this.props.getPaginatedTasksByOrganizationalUnit(this.state.organizationalUnit, 1, 20, this.state.status, [], [], null, null, null, this.state.isAssigned);
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -124,7 +124,7 @@ class TaskManagementOfUnit extends Component {
     }
 
     handleGetDataPagination = async (index) => {
-        let { roleId, status, priority, special, name, startDate, endDate, isAssigned } = this.state;
+        let { organizationalUnit, status, priority, special, name, startDate, endDate, isAssigned } = this.state;
 
         let oldCurrentPage = this.state.currentPage;
         let perPage = this.state.perPage;
@@ -137,12 +137,12 @@ class TaskManagementOfUnit extends Component {
         })
         let newCurrentPage = this.state.currentPage;
         if (oldCurrentPage !== index) {
-            this.props.getPaginatedTasksByOrganizationalUnit(roleId, newCurrentPage, perPage, status, priority, special, name, startDate, endDate, isAssigned);
+            this.props.getPaginatedTasksByOrganizationalUnit(organizationalUnit, newCurrentPage, perPage, status, priority, special, name, startDate, endDate, isAssigned);
         };
     }
 
     nextPage = async (pageTotal) => {
-        let { roleId, status, priority, special, name, startDate, endDate, isAssigned } = this.state;
+        let { organizationalUnit, status, priority, special, name, startDate, endDate, isAssigned } = this.state;
 
         let oldCurrentPage = this.state.currentPage;
         await this.setState(state => {
@@ -153,12 +153,12 @@ class TaskManagementOfUnit extends Component {
         })
         let newCurrentPage = this.state.currentPage;
         if (oldCurrentPage !== newCurrentPage) {
-            this.props.getPaginatedTasksByOrganizationalUnit(roleId, newCurrentPage, 20, status, priority, special, name, startDate, endDate, isAssigned);
+            this.props.getPaginatedTasksByOrganizationalUnit(organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate, isAssigned);
         };
     }
 
     backPage = async () => {
-        let { roleId, status, priority, special, name, startDate, endDate, isAssigned } = this.state;
+        let { organizationalUnit, status, priority, special, name, startDate, endDate, isAssigned } = this.state;
 
         let oldCurrentPage = this.state.currentPage;
         await this.setState(state => {
@@ -169,14 +169,14 @@ class TaskManagementOfUnit extends Component {
         })
         let newCurrentPage = this.state.currentPage;
         if (oldCurrentPage !== newCurrentPage) {
-            this.props.getPaginatedTasksByOrganizationalUnit(roleId, newCurrentPage, 20, status, priority, special, name, startDate, endDate, isAssigned);
+            this.props.getPaginatedTasksByOrganizationalUnit(organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate, isAssigned);
         };
     }
 
     handleGetDataPerPage = (perPage) => {
-        let { roleId, status, priority, special, name, startDate, endDate, isAssigned } = this.state;
+        let { organizationalUnit, status, priority, special, name, startDate, endDate, isAssigned } = this.state;
 
-        this.props.getPaginatedTasksByOrganizationalUnit(roleId, 1, perPage, status, priority, special, name, startDate, endDate, isAssigned);
+        this.props.getPaginatedTasksByOrganizationalUnit(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate, isAssigned);
 
         this.setState(state => {
             return {
@@ -187,9 +187,9 @@ class TaskManagementOfUnit extends Component {
     }
 
     handleUpdateData = () => {
-        let { roleId, status, priority, special, name, startDate, endDate, perPage, isAssigned } = this.state;
-
-        this.props.getPaginatedTasksByOrganizationalUnit(roleId, 1, perPage, status, priority, special, name, startDate, endDate, isAssigned);
+        let { organizationalUnit, status, priority, special, name, startDate, endDate, perPage, isAssigned } = this.state;
+        console.log(organizationalUnit)
+        this.props.getPaginatedTasksByOrganizationalUnit(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate, isAssigned);
 
         this.setState(state => {
             return {
@@ -381,6 +381,18 @@ class TaskManagementOfUnit extends Component {
             <div className="box">
                 <div className="box-body qlcv">
                     <div className="form-inline">
+                        {/* Đợn vị tham gia công việc */}
+                        <div className="form-group">
+                            <label>{translate('task.task_management.department')}</label>
+                            {units &&
+                                <SelectMulti id="multiSelectUnit1"
+                                    defaultValue={units.map(item => item._id)}
+                                    items={units.map(item => { return { value: item._id, text: item.name } })}
+                                    onChange={this.handleSelectOrganizationalUnit}
+                                    options={{ nonSelectedText: units.length !== 0 ? translate('task.task_management.select_department') : "Bạn chưa có đơn vị", allSelectedText: translate(`task.task_management.select_all_department`) }}>
+                                </SelectMulti>
+                            }
+                        </div>
 
                         {/* Trạng thái công việc */}
                         <div className="form-group">
@@ -443,6 +455,26 @@ class TaskManagementOfUnit extends Component {
                             <input className="form-control" type="text" placeholder={translate('task.task_management.search_by_name')} name="name" onChange={(e) => this.handleChangeName(e)} />
                         </div>
 
+                        {/* Công việc chưa phân công nhân viên */}
+                        <div className="form-group">
+                            <label>{translate('task.task_management.assigned_collaborate')}</label>
+                            <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                id={`select-task-employee`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={
+                                    [
+                                        { value: -1, text: translate('task.task_management.none_select_assigned') },
+                                        { value: 1, text: translate('task.task_management.assigned') },
+                                        { value: 0, text: translate('task.task_management.not_assigned') }
+
+                                    ]
+                                }
+                                onChange={this.handleChangeIsAssigned}
+                                value={isAssigned}
+                                multiple={false}
+                            />
+                        </div>
 
                         {/* Ngày bắt đầu */}
                         <div className="form-group">
@@ -467,29 +499,6 @@ class TaskManagementOfUnit extends Component {
                                 disabled={false}                     // sử dụng khi muốn disabled, mặc định là false
                             />
                         </div>
-
-
-                        {/* Công việc chưa phân công nhân viên */}
-                        <div className="form-group">
-                            <label>{translate('task.task_management.assigned_collaborate')}</label>
-                            <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                id={`select-task-employee`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={
-                                    [
-                                        { value: -1, text: translate('task.task_management.none_select_assigned') },
-                                        { value: 1, text: translate('task.task_management.assigned') },
-                                        { value: 0, text: translate('task.task_management.not_assigned') }
-
-                                    ]
-                                }
-                                onChange={this.handleChangeIsAssigned}
-                                value={isAssigned}
-                                multiple={false}
-                            />
-                        </div>
-
                     </div>
 
                     <div className="form-inline">
