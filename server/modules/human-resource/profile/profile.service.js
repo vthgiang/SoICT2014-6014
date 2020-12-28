@@ -17,6 +17,7 @@ const {
 } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
 
 const fs = require('fs');
+const mongoose = require("mongoose");
 
 /**
  * Lấy thông tin phòng ban, chức vụ của nhân viên theo emailCompany
@@ -1820,198 +1821,317 @@ exports.calcSumOfExp = (data) => {
  * @company : Id công ty người tìm kiếm
  */
 exports.searchEmployeeForPackage = async (portal, params, company) => {
-    let keySearch = {
-        company: company
-    };
-
-    // Bắt sựu kiện theo đơn vị
-    if (params.organizationalUnits) {
-        let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(portal, params.organizationalUnits, undefined);
-        keySearch = {
-            ...keySearch,
-            emailInCompany: {
-                $in: emailInCompany
-            }
-        }
-    }
+    let noResultsPerPage = parseInt(params.limit);
+    let pageNumber = parseInt(params.page);
+    let keySearch = [
+        { $match: { status: "active" } },
+        // {
+        //     $match: {
+        //         "fullName": {
+        //             $regex: "",
+        //             $options: "i"
+        //         }
+        //     }
+        // },
+    ];
 
     // Bắt sựu kiện theo trình độ chuyên môn
-    if (params.professionalSkill) {
-        keySearch = {
+    if (params.professionalSkill && params.professionalSkill !== "") {
+        console.log('params.professionalSkill[0]', params.professionalSkill);
+        keySearch = [
             ...keySearch,
-            professionalSkill: params.professionalSkill,
-        }
+            { $match: { professionalSkill: params.professionalSkill } },
+        ]
     };
 
     // Bắt sựu kiện theo chhuyeen ngành
     if (params.major) {
-        keySearch = {
+        keySearch = [
             ...keySearch,
-            "major.group.id": params.major
-        }
+            { $match: { "major.group.id": (params.major) } }
+        ]
     };
 
     // Bắt sựu kiện theo loại chứng chỉ
     if (params.certificatesType) {
-        keySearch = {
+        keySearch = [
             ...keySearch,
-            "certificates.issueBy": {
-                $regex: params.certificatesType,
-                $options: "i"
+            {
+                $match: {
+                    "certificates.issuedBy": {
+                        $regex: params.certificatesType,
+                        $options: "i"
+                    }
+                }
             }
-        }
+        ]
     };
     // Bắt sựu kiện theo tên chứng chỉ
     if (params.certificatesName) {
-        keySearch = {
+        keySearch = [
             ...keySearch,
-            "certificates.name": {
-                $regex: params.certificatesName,
-                $options: "i"
+            {
+                $match: {
+                    "certificates.name": {
+                        $regex: params.certificatesName,
+                        $options: "i"
+                    }
+                }
             }
-        }
+        ]
     };
     // Bắt sựu kiện theo ngày hết hạn chứng chỉ
     if (params.certificatesEndDate) {
-        let date = new Date(params.certificatesEndDate);
-        keySearch = {
+        console.log('params.certificatesEndDate', params.certificatesEndDate);
+        let splitter = params.certificatesEndDate.split("-");
+        let date = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+        keySearch = [
             ...keySearch,
-            "certificates.endDate": {
-                "$lte": date,
+            {
+                $match: {
+                    "certificates.endDate": {
+                        "$lte": date,
+                    }
+                }
             }
-        }
-    };
+        ]
+    }
 
     // Bắt sựu kiện tìm kiếm gói thầu
     if (params.package) {
-        keySearch = {
+        keySearch = [
             ...keySearch,
-            "career.package": {
-                $regex: params.package,
-                $options: "i"
-            },
-        };
+            {
+                $match: {
+                    "career.package": {
+                        $regex: params.package,
+                        $options: "i"
+                    }
+                }
+            }
+        ]
+
     };
 
     // Bắt sựu kiện tìm kiếm field
     if (params.field) {
-        keySearch = {
+        keySearch = [
             ...keySearch,
-            "career.field": params.field,
-        };
+            { $match: { "career.field": mongoose.Types.ObjectId(params.field), } }
+        ]
     };
 
     // Bắt sựu kiện tìm kiếm vị trí cv
     if (params.position) {
-        keySearch = {
+        keySearch = [
             ...keySearch,
-            "career.position": params.position,
-        };
+            { $match: { "career.position": mongoose.Types.ObjectId(params.position), } }
+        ];
     };
 
     // Bắt sự kiện tìm kiếm theo action
     if (params.action) {
-        keySearch = {
+        keySearch = [
             ...keySearch,
-            "career.action": {
-                $in: params.action
+            {
+                $match: {
+                    "career.action": {
+                        $in: params.action.map(e => mongoose.Types.ObjectId(e))
+                    }
+                }
             }
-        };
+        ];
     };
 
     // Bắt sự kiện tìm kiếm theo số năm kinh nghiệm
     if (params.exp) {
-        let now = new Date().getTime();
-        let date = new Date(now - params.exp * 24 * 60 * 60 * 1000);
-
-        keySearch = {
+        let year = new Date().getFullYear();
+        let yearOfExp = year - params.exp;
+        console.log('yearOfExp', yearOfExp);
+        keySearch = [
             ...keySearch,
-            "career.startDate": {
-                "$lte": date,
-            },
-            // "degrees.year": {
-            //     "$lte": date,
-            // }
-        };
+            {
+                $match: {
+                    "degrees.year": {
+                        "$lte": yearOfExp,
+                    }
+                }
+            }
+        ];
     };
 
-    // // Thêm key tìm kiếm nhân viên theo ngày hết hạn hợp đồng vào keySearch
-    // if (params.endDateOfContract) {
-    //     let month = new Date(params.endDateOfContract);
-    //     let firstDay = new Date(month.getFullYear(), month.getMonth(), 1);
-    //     let lastDay = new Date(month.getFullYear(), month.getMonth() + 1, 1);
-    //     keySearch = {
-    //         ...keySearch,
-    //         contractEndDate: {
-    //             "$gt": firstDay,
-    //             "$lte": lastDay
-    //         }
-    //     }
-    // }
-
-    // // Bắt sựu kiện theo Loại hợp đồng lao động
-    // if (params.typeOfContract) {
-    //     keySearch = {
-    //         ...keySearch,
-    //         contractType: {
-    //             $regex: params.typeOfContract,
-    //             $options: "i"
-    //         }
-    //     }
-    // };
-
-    // // Bắt sựu kiện theo tháng sinh
-    // if (params.birthdate) {
-    //     let month = new Date(params.birthdate).getMonth() + 1;
-    //     keySearch = {
-    //         ...keySearch,
-    //         "$expr": {
-    //             "$eq": [{
-    //                 "$month": "$birthdate"
-    //             }, month]
-    //         }
-    //     }
-    // }
-
-
-    console.log('key', keySearch);
-    // Lấy danh sách nhân viên
-    let listData = await Employee(connect(DB_CONNECTION, portal)).find(keySearch, {
-        field: 1,
-        employeeNumber: 1,
-        emailInCompany: 1,
-        birthdate: 1,
-        contracts: 1,
-        fullName: 1,
-        gender: 1,
-        contractEndDate: 1,
-        contractType: 1,
-        status: 1,
-        degrees: 1,
-        career: 1,
-        major: 1,
-    })
-        .populate([
-            { path: "career.field" },
-            { path: "career.position" },
-            { path: "career.action" },
-        ])
-        .sort({
-            'createdAt': 'desc'
-        }).skip(params.page).limit(params.limit);
-
-    let listEmployees = listData;
-    let totalList = await Employee(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
-    console.log('list', totalList);
     if (params.sameExp) {
-        let timeOfSameExp = params.sameExp * (24 * 60 * 60 * 1000 * 365);
-        listEmployees = listData.filter(e => this.calcSumOfExp(e.career) >= timeOfSameExp);
-        totalList = listEmployees.length;
+
+        // Đổi sameExp về miliseconds
+
+        // let now = new Date();
+        // let day = now.getDate();
+        // let month = now.getMonth();
+        // let yearOfNow = now.getFullYear();
+        // let prevYear = yearOfNow - params.sameExp;
+        // let prevExpTime = new Date(month, day - 1, yearOfExp).getTime();
+
+        let expInMiliseconds = params.sameExp * 86400000 * 365
+
+        keySearch = [
+            ...keySearch,
+            {
+                "$unwind": "$career"
+            },
+            {
+                $addFields: {
+                    "career.empId": "$_id"
+                }
+            },
+            {
+                $replaceRoot: {
+                    newRoot: "$career"
+                }
+            },
+            {
+                $project: {
+                    position: 1,
+                    action: 1,
+                    field: 1,
+                    package: 1,
+                    empId: 1,
+                    dateDifference: {
+                        $subtract: [
+                            "$endDate",
+                            "$startDate"
+                        ]
+                    },
+                    id: "$_id",
+                }
+            },
+        ];
+
+        // kiểm tra thêm điều kiện để dùng group
+        let groupCondition = {
+            employee: "$empId",
+        }
+        if (params.positions) {
+            groupCondition = { ...groupCondition, position: "$position" }
+        }
+        if (params.field) {
+            groupCondition = { ...groupCondition, field: "$field" }
+        }
+        if (params.package) {
+            groupCondition = { ...groupCondition, package: "$package" }
+        }
+        if (params.action) {
+            groupCondition = { ...groupCondition, action: "$action" }
+        }
+
+        keySearch = [
+            ...keySearch,
+            {
+                $group: {
+                    _id: groupCondition,
+                    totalExp: {
+                        $sum: "$dateDifference"
+                        // {
+                        //     "$divide": [
+                        //         "$dateDifference",
+                        //         86400000
+                        //     ]
+                        // }
+                    },
+                    count: {
+                        $sum: 1
+                    }
+                }
+            },
+            {
+                "$match": {
+                    totalExp: {
+                        "$gte": expInMiliseconds
+                    }
+                }
+            }
+        ]
     }
 
 
-    // let expiresContract = await this.getEmployeeNumberExpiresContractInCurrentMonth(portal, company, new Date());
-    // let employeesHaveBirthdateInCurrentMonth = await this.getEmployeeNumberHaveBirthdateInCurrentMonth(portal, company, new Date())
+    // Lấy danh sách nhân viên
+    let listData, listEmployees = [];
+    let totalList = 1000;
+
+    console.log('key_search\n', keySearch);
+
+    if (params.sameExp) {
+
+        listData = await Employee(connect(DB_CONNECTION, portal)).aggregate(keySearch)
+        let listEmpId = listData.map(e => e._id.employee);
+        console.log('\n\nlistemp\n\n', listEmpId);
+
+        listEmployees = await Employee(connect(DB_CONNECTION, portal)).find(
+            {
+                _id: {
+                    $in: listEmpId,
+                }
+            },
+            {
+                field: 1,
+                employeeNumber: 1,
+                emailInCompany: 1,
+                birthdate: 1,
+                contracts: 1,
+                fullName: 1,
+                gender: 1,
+                contractEndDate: 1,
+                contractType: 1,
+                certificates: 1,
+                professionalSkill: 1,
+                status: 1,
+                degrees: 1,
+                career: 1,
+                major: 1,
+            }).populate([
+                { path: "career.field" },
+                { path: "career.position" },
+                { path: "career.action" },
+            ]).sort({
+                'createdAt': 1
+            }).skip(params.page).limit(params.limit);
+
+        totalList = await Employee(connect(DB_CONNECTION, portal)).countDocuments({
+            _id: {
+                $in: listEmpId,
+            }
+        });
+    }
+    else {
+        console.log('không có KN tương đương');
+        // phân trang
+        keySearch.push(
+            {
+                $facet: {
+                    listEmployee: [{ $sort: { 'createdAt': 1 } },
+                    ...noResultsPerPage === 0 ? [] : [{ $limit: noResultsPerPage * (pageNumber + 1) }],
+                    ...noResultsPerPage === 0 ? [] : [{ $skip: noResultsPerPage * pageNumber }]
+                    ],
+                    totalCount: [
+                        {
+                            $count: 'count'
+                        }
+                    ]
+                }
+            }
+        );
+        
+        listData = await Employee(connect(DB_CONNECTION, portal)).aggregate(keySearch)
+        
+        listEmployees = listData[0].listEmployee;
+        await Employee(connect(DB_CONNECTION, portal)).populate(listEmployees, { path: "career.field career.position career.action" });
+
+        if(listData[0].totalCount[0]) {
+            totalList = listData[0].totalCount[0].count;
+        } else {
+            totalList = 1;
+        }
+    }
+
     return {
         listEmployees,
         totalList,

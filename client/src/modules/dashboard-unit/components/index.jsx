@@ -62,12 +62,13 @@ class DashboardUnit extends Component {
 
         return (
             <React.Fragment>
-                {childrenOrganizationalUnitLoading &&
-                    childrenOrganizationalUnit.length !== 0 ?
-                    <MainDashboardUnit childOrganizationalUnit={childOrganizationalUnit} /> :
-                    <div className="box box-body">
-                        <h4>Bạn chưa có đơn vị</h4>
-                    </div>
+                {
+                    childrenOrganizationalUnit && childrenOrganizationalUnit.length !== 0
+                    ? <MainDashboardUnit childOrganizationalUnit={childOrganizationalUnit} />
+                    : childrenOrganizationalUnitLoading &&
+                        <div className="box box-body">
+                            <h4>Bạn chưa có đơn vị</h4>
+                        </div>
                 }
             </React.Fragment>
         );

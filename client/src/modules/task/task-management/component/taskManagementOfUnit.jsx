@@ -224,8 +224,10 @@ class TaskManagementOfUnit extends Component {
     formatPriority = (data) => {
         const { translate } = this.props;
         if (data === 1) return translate('task.task_management.low');
-        if (data === 2) return translate('task.task_management.normal');
-        if (data === 3) return translate('task.task_management.high');
+        if (data === 2) return translate('task.task_management.average');
+        if (data === 3) return translate('task.task_management.standard');
+        if (data === 4) return translate('task.task_management.high');
+        if (data === 5) return translate('task.task_management.urgent');
     }
 
     formatStatus = (data) => {
@@ -401,14 +403,18 @@ class TaskManagementOfUnit extends Component {
                         <div className="form-group">
                             <label>{translate('task.task_management.priority')}</label>
                             <SelectMulti id="multiSelectPriority" defaultValue={[
+                                translate('task.task_management.urgent'),
                                 translate('task.task_management.high'),
-                                translate('task.task_management.normal'),
-                                translate('task.task_management.low')
+                                translate('task.task_management.standard'),
+                                translate('task.task_management.average'),
+                                translate('task.task_management.low'),
                             ]}
                                 items={[
-                                    { value: "3", text: translate('task.task_management.high') },
-                                    { value: "2", text: translate('task.task_management.normal') },
-                                    { value: "1", text: translate('task.task_management.low') }
+                                    { value: "5", text: translate('task.task_management.urgent') },
+                                    { value: "4", text: translate('task.task_management.high') },
+                                    { value: "3", text: translate('task.task_management.standard') },
+                                    { value: "2", text: translate('task.task_management.average') },
+                                    { value: "1", text: translate('task.task_management.low') },
                                 ]}
                                 onChange={this.handleSelectPriority}
                                 options={{ nonSelectedText: translate('task.task_management.select_priority'), allSelectedText: translate('task.task_management.select_all_priority') }}>

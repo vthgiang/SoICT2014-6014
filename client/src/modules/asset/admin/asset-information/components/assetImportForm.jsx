@@ -61,8 +61,8 @@ class AssetImportForm extends Component {
         this.props.getAllUsers();
     }
 
-    save = () => {
-        const { type } = this.props;
+    save = async () => {
+        const { type, page, limit } = this.props;
         const {
             importGeneralInformationData,
             importDepreciationInformationData,
@@ -143,10 +143,26 @@ class AssetImportForm extends Component {
 
         if (assets && assets.length !== 0) {
             if (type === 'add') {
-                this.props.addNewAsset(assets)
+                await this.props.addNewAsset(assets)
             } else {
-                this.props.updateInformationAsset(undefined, assets, true);
+                await this.props.updateInformationAsset(undefined, assets, true);
             }
+
+            await this.props.getAllAsset({
+                code: "",
+                assetName: "",
+                assetType: "",
+                purchaseDate: null,
+                disposalDate: null,
+                status: '',
+                group: "",
+                handoverUnit: "",
+                handoverUser: "",
+                typeRegisterForUse: "",
+                page: page,
+                limit: limit,
+                managedBy: ''
+            });
         }
     }
 
@@ -734,20 +750,22 @@ class AssetImportForm extends Component {
                         };
                         value[i] = valueTemporary;
 
-                        importGeneralInformationData[importGeneralInformationData.length - 1] = {
-                            ...importGeneralInformationData[importGeneralInformationData.length - 1],
-                            assetType: valueTemporary && valueTemporary.assetType
-                                ? [
-                                    ...importGeneralInformationData[importGeneralInformationData.length - 1].assetType,
-                                    valueTemporary.assetType && assetTypes[valueTemporary.assetType]
-                                ]
-                                : importGeneralInformationData[importGeneralInformationData.length - 1].assetType,
-                            readByRoles: valueTemporary.readByRoles
-                                ? [
-                                    ...importGeneralInformationData[importGeneralInformationData.length - 1].readByRoles,
-                                    valueTemporary.readByRoles && roles[valueTemporary.readByRoles]
-                                ]
-                                : importGeneralInformationData[importGeneralInformationData.length - 1].readByRoles
+                        if (importGeneralInformationData && (importGeneralInformationData.length - 1 >= 0)) {
+                            importGeneralInformationData[importGeneralInformationData.length - 1] = {
+                                ...importGeneralInformationData[importGeneralInformationData.length - 1],
+                                assetType: valueTemporary && valueTemporary.assetType && importGeneralInformationData[importGeneralInformationData.length - 1].assetType
+                                    ? [
+                                        ...importGeneralInformationData[importGeneralInformationData.length - 1].assetType,
+                                        valueTemporary.assetType && assetTypes[valueTemporary.assetType]
+                                    ]
+                                    : importGeneralInformationData[importGeneralInformationData.length - 1].assetType,
+                                readByRoles: valueTemporary && valueTemporary.readByRoles && importGeneralInformationData[importGeneralInformationData.length - 1].readByRoles
+                                    ? [
+                                        ...importGeneralInformationData[importGeneralInformationData.length - 1].readByRoles,
+                                        valueTemporary.readByRoles && roles[valueTemporary.readByRoles]
+                                    ]
+                                    : importGeneralInformationData[importGeneralInformationData.length - 1].readByRoles
+                            }
                         }
                     } else {
                         let errorAlert = ['Mã tài sản không được để trống'];
@@ -1352,6 +1370,7 @@ function mapState(state) {
 };
 
 const actions = {
+    getAllAsset: AssetManagerActions.getAllAsset,
     addNewAsset: AssetManagerActions.addNewAsset,
     searchAssetTypes: AssetTypeActions.searchAssetTypes,
     getAllUsers: UserActions.get,

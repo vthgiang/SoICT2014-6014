@@ -286,8 +286,12 @@ class AssetPurchaseChart extends Component {
         if (value.length === 0) {
             value = []
         }
-        this.INFO_SEARCH.type = value;
-        this.forceUpdate();
+        this.setState(state => {
+            return {
+                ...state,
+                type: value,
+            }
+        })
     }
 
     handleChangeViewChart = async (value) => {
@@ -317,7 +321,7 @@ class AssetPurchaseChart extends Component {
                     ...state,
                     purchaseDateAfter: this.INFO_SEARCH.purchaseDateAfter,
                     purchaseDateBefore: this.INFO_SEARCH.purchaseDateBefore,
-                    type: this.INFO_SEARCH.type,
+                    // type: this.INFO_SEARCH.type,
                 }
             })
         }
@@ -339,8 +343,8 @@ class AssetPurchaseChart extends Component {
 
     render() {
         const { translate } = this.props;
-        let { year } = this.state;
-        let { purchaseDateAfter, purchaseDateBefore, type } = this.INFO_SEARCH;
+        let { year, type } = this.state;
+        let { purchaseDateAfter, purchaseDateBefore } = this.INFO_SEARCH;
         let typeArr = this.getAssetTypes();
 
         let format = year == "true" ? "year" : "month-year";

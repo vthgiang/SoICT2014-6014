@@ -760,10 +760,14 @@ class AssetManagement extends Component {
                     <AssetImportForm
                         id='modal-import-asset-add'
                         type="add"
+                        page={0}
+                        limit={5}
                     />
                     <AssetImportForm
                         id='modal-import-asset-update'
                         type="update"
+                        page={0}
+                        limit={5}
                     />
 
                     {/* Thanh tìm kiếm */}

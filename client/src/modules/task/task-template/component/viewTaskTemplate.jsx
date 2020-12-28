@@ -61,9 +61,11 @@ class ViewTaskTemplate extends Component {
         let responsibleEmployees = isProcess ? listUserResponsible : taskTemplate?.responsibleEmployees
 
         switch (taskTemplate?.priority) {
-            case 1: priority = translate('task_template.low'); break;
-            case 2: priority = translate('task_template.medium'); break;
-            case 3: priority = translate('task_template.high'); break;
+            case 1: priority = translate('task.task_management.low'); break;
+            case 2: priority = translate('task.task_management.average'); break;
+            case 3: priority = translate('task.task_management.standard'); break;
+            case 4: priority = translate('task.task_management.high'); break;
+            case 5: priority = translate('task.task_management.urgent'); break;
         }
 
         return (
@@ -88,7 +90,7 @@ class ViewTaskTemplate extends Component {
                             }
                             <div><strong>{translate('task_template.description')}:</strong><span>{taskTemplate?.description}</span></div>
 
-                            <div><strong>{translate('task_template.priority')}:</strong><span>{taskTemplate && priority}</span></div>
+                            <div><strong>{translate('task.task_management.priority')}:</strong><span>{taskTemplate && priority}</span></div>
 
                             <div>
                                 <strong>{translate('task_template.formula')}:</strong>
