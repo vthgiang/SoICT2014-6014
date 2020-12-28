@@ -1,4 +1,6 @@
 const uuid = require('uuid');
+const {key} = require("./pri.json");
+const crypto = require('crypto');
 
 exports.freshObject = (data) => {
     let obj = {};
@@ -52,4 +54,21 @@ exports.generateUniqueCode = (code='dx', type='v1') => {
         default: 
             return code+uuid.v1();
     }
+}
+
+exports.decryptMessage = (encryptedMessage) => {
+    if(!encryptedMessage) throw ['request_invalid'];
+    const privateKey = key;
+    const rsaPrivateKey = {
+        key: privateKey,
+        passphrase: '',
+        padding: crypto.constants.RSA_PKCS1_PADDING,
+    };
+
+    const decryptedMessage = crypto.privateDecrypt(
+        rsaPrivateKey,
+        Buffer.from(encryptedMessage, 'base64'),
+    );
+
+    return decryptedMessage.toString('utf-8');
 }

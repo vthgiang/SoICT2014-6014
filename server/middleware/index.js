@@ -7,8 +7,7 @@ const multer = require("multer");
 const fs = require("fs");
 const CryptoJS = require("crypto-js");
 const { initModels, connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
-const {key} = require("./pri.json");
-const crypto = require('crypto');
+const { decryptMessage } = require('../helpers/functionHelper');
 
 /**
  * ****************************************
@@ -18,24 +17,7 @@ const crypto = require('crypto');
  * 3.Kiểm tra xem người dùng có role hợp lệ hay không?
  * 4.Kiểm tra người dùng có được phép truy cập vào link hay không?
  * ****************************************
- */
-
-function decryptMessage(encryptedMessage) {
-    if(!encryptedMessage) throw ['request_invalid'];
-    const privateKey = key;
-    const rsaPrivateKey = {
-        key: privateKey,
-        passphrase: '',
-        padding: crypto.constants.RSA_PKCS1_PADDING,
-    };
-
-    const decryptedMessage = crypto.privateDecrypt(
-        rsaPrivateKey,
-        Buffer.from(encryptedMessage, 'base64'),
-    );
-
-    return decryptedMessage.toString('utf-8');
-} 
+ */ 
 
 exports.authFunc = (checkPage = true, checkPassword2=true) => {
     return async (req, res, next) => {
