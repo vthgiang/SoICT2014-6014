@@ -792,6 +792,7 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
         temporaryResidenceCity: data.temporaryResidenceCity,
         temporaryResidenceDistrict: data.temporaryResidenceDistrict,
         temporaryResidenceWard: data.temporaryResidenceWard,
+        houseHold: data.houseHold
     });
     if (data.disciplines !== undefined) {
         let disciplines = data.disciplines;

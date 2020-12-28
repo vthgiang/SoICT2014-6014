@@ -302,6 +302,7 @@ exports.createEmployee = async (req, res) => {
             }
         }
     } catch (error) {
+        console.log("errror", error),
         await Log.error(req.user.email, 'CREATE_EMPLOYEE', req.portal);
         res.status(400).json({
             success: false,

@@ -290,21 +290,34 @@ const EmployeeSchema = new Schema({
         file: String,
         urlFile: String
     }],
-    familyMembers: [{
-        name: { type: String },
-        codeSocialInsurance: { type: String },
-        bookNumberSocialInsurance: { type: String },
-        gender: { type: String, enum: ['male', 'female'] },
-        isHeadHousehold: { type: Boolean, default: false },
-        relationshipWithHeadHousehold: { type: String },
-        birth: { type: Date },
-        ccns: { type: String },
-        placeOfBirthCertificate: { type: String },
-        nationality: { type: String },
-        nation: { type: String },
-        numberPassport: { type: String },
-        note: { type: String }
-    }]
+    houseHold: {
+        headHouseHoldName: { type: String }, // tên chủ hộ
+        documentType: { type: String }, // loại giấy tờ
+        houseHoldNumber: { type: String }, // số hộ khẩu
+        city: { type: String }, // thành phố, tỉnh
+        district: { type: String }, // quận, huyện
+        ward: { type: String }, // phường ,xã
+        houseHoldAddress: { type: String }, // Địa chỉ hộ khẩu
+        phone: { type: String }, // Số điện thoại
+        houseHoldCode: { type: String }, // mã sổ hộ khẩu
+
+        // Thông tin các thành viên trong hộ gia đình
+        familyMembers: [{
+            name: { type: String }, // tên
+            codeSocialInsurance: { type: String }, // mã số BHXH
+            bookNumberSocialInsurance: { type: String }, // Số sổ BHXH
+            gender: { type: String, enum: ['male', 'female'] }, // Giới tính
+            isHeadHousehold: { type: Boolean, default: false }, // Là chủ hộ
+            relationshipWithHeadHousehold: { type: String }, // Quan hệ với chủ hộ
+            birth: { type: Date }, // Ngày sinh
+            ccns: { type: String }, // CNSS
+            placeOfBirthCertificate: { type: String }, // Nơi cấp giấy khai sinh
+            nationality: { type: String }, // Quốc tịch
+            nation: { type: String }, // Dân tộc
+            numberPassport: { type: String }, // Số CMND, Hộ chiếu
+            note: { type: String } // Ghi chú
+        }]
+    }
 }, {
     timestamps: true,
 });
