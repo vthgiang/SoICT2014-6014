@@ -1,24 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { DataTableSetting, DialogModal, ButtonModal } from '../../../../../common-components';
+import { DataTableSetting, DialogModal, ButtonModal, DateTimeConverter, ConfirmNotification } from '../../../../../common-components';
+import FamilyMemberEdit from './familyMemberEdit';
 import FamilyMemberInfo from './familyMemberInfo';
-
-const initHouseHold = {
-    headHouseHoldName: '',
-    documentType: '',
-    houseHoldNumber: '',
-    city: '',
-    district: '',
-    ward: '',
-    houseHoldAddress: '',
-    phone: '',
-    houseHoldCode: '',
-    familyMembers: []
-}
 
 const FamilyMemberTab = ({
     houseHold,
+    editMember,
+    _fm_openEditFamilyMemberModal,
+    _fm_deleteMember,
     id, translate,
     _fm_handleHeadHouseHoldName,
     _fm_handleDocumentType,
@@ -30,61 +21,81 @@ const FamilyMemberTab = ({
     _fm_handlePhone,
     _fm_handleHouseHoldCode,
     _fm_saveMember,
+    _fm_editMember
 }) => {
+    const _showMemberGender = (gender) => {
+        switch (gender) {
+            case 'male': return "Nam";
+            case 'female': return "Nữ";
+            default: return "";
+        }
+    }
+
+    const _showIsHeadHouseHold = (headHouseHold) => {
+        switch (headHouseHold) {
+            case 'yes': return "Có";
+            case 'no': return "Không";
+            default: return "";
+        }
+    }
+
+    const _deleteMember = (index) => {
+        _fm_deleteMember(index);
+    }
 
     return (
         <div id={id} className="tab-pane">
             <div className="box-body">
                 <fieldset className="scheduler-border" style={{ margin: '10px 20px' }}>
                     <legend className="scheduler-border" >
-                        <h4 className="box-title">Phụ luc: Thành viên hộ gia đình của NLĐ</h4>
+                        <h4 className="box-title">{translate('human_resource.profile.house_hold.appendix.title')}</h4>
                     </legend>
                     <div className="row">
                         {/* họ và tên chủ hộ */}
                         <div className="form-group col-md-4">
-                            <label >Họ và tên chủ hộ <span className="text-red">*</span></label>
+                            <label >{translate('human_resource.profile.house_hold.appendix.head_house_hold_name')}</label>
                             <input type="text" className="form-control" onChange={_fm_handleHeadHouseHoldName} />
                         </div>
                         {/* Loại giấy tờ */}
                         <div className="form-group col-md-4">
-                            <label >Loại giấy tờ</label>
+                            <label >{translate('human_resource.profile.house_hold.appendix.document_type')}</label>
                             <input type="text" className="form-control" onChange={_fm_handleDocumentType} />
                         </div>
                         {/* Số sổ hộ khẩu */}
                         <div className="form-group col-md-4">
-                            <label >Số sổ hộ khẩu</label>
+                            <label >{translate('human_resource.profile.house_hold.appendix.house_hold_number')}</label>
                             <input type="text" className="form-control" onChange={_fm_handleHouseHoldNumber} />
                         </div>
 
                         {/* Tỉnh/TP */}
                         <div className="form-group col-md-4">
-                            <label >Tỉnh/TP <span className="text-red">*</span></label>
+                            <label >{translate('human_resource.profile.house_hold.appendix.city')}</label>
                             <input type="text" className="form-control" onChange={_fm_handleCity} />
                         </div>
                         {/* Loại giấy tờ */}
                         <div className="form-group col-md-4">
-                            <label >Quận/huyện <span className="text-red">*</span></label>
+                            <label >{translate('human_resource.profile.house_hold.appendix.district')}</label>
                             <input type="text" className="form-control" onChange={_fm_handleDistrict} />
                         </div>
                         {/* Số sổ hộ khẩu */}
                         <div className="form-group col-md-4">
-                            <label >Phường/xã <span className="text-red">*</span></label>
+                            <label >{translate('human_resource.profile.house_hold.appendix.ward')}</label>
                             <input type="text" className="form-control" onChange={_fm_handleWard} />
                         </div>
 
                         {/* Địa chỉ hộ khẩu */}
                         <div className="form-group col-md-4">
-                            <label >Địa chỉ hộ khẩu</label>
+                            <label >{translate('human_resource.profile.house_hold.appendix.house_hold_address')}</label>
                             <input type="text" className="form-control" onChange={_fm_handleHouseHoldAddress} />
                         </div>
                         {/* Số điện thoại */}
                         <div className="form-group col-md-4">
-                            <label >Số điện thoại</label>
+                            <label >{translate('human_resource.profile.house_hold.appendix.phone')}</label>
                             <input type="text" className="form-control" onChange={_fm_handlePhone} />
                         </div>
                         {/* Số sổ hộ khẩu */}
                         <div className="form-group col-md-4">
-                            <label >Mã số hộ gia đình</label>
+                            <label >{translate('human_resource.profile.house_hold.appendix.house_hold_code')}</label>
                             <input type="text" className="form-control" onChange={_fm_handleHouseHoldCode} />
                         </div>
                     </div>
@@ -92,11 +103,16 @@ const FamilyMemberTab = ({
 
                 <fieldset className="scheduler-border" style={{ margin: '10px 20px' }}>
                     <legend className="scheduler-border" >
-                        <h4 className="box-title">Kê khai đầy đủ thành viên hộ gia đình trong sổ hộ khẩu hoặc sổ tạm trú</h4>
+                        <h4 className="box-title">{translate('human_resource.profile.house_hold.members.title')}</h4>
                     </legend>
 
                     <FamilyMemberInfo
                         _save={_fm_saveMember}
+                    />
+
+                    <FamilyMemberEdit
+                        editMember={editMember}
+                        _save={_fm_editMember}
                     />
 
                     {/* Bảng danh sách thông tin các thành viên trong hộ gia đình */}
@@ -104,21 +120,21 @@ const FamilyMemberTab = ({
                         <table className="table table-hover table-striped table-bordered" id="table-employee-family-member" style={{ marginBottom: 0 }}>
                             <thead>
                                 <tr>
-                                    <th style={{ width: 20 }}>STT</th>
-                                    <th>Họ và tên</th>
-                                    <th>Mã số BHXH</th>
-                                    <th>Số sổ BHXH</th>
-                                    <th>Giới tính</th>
-                                    <th>Là chủ hộ</th>
-                                    <th>Quan hệ với chủ hộ</th>
-                                    <th>CNSS</th>
-                                    <th>Ngày sinh</th>
-                                    <th>Nơi cấp giấy khai sinh</th>
-                                    <th>Quốc tịch</th>
-                                    <th>Dân tộc</th>
-                                    <th>Số CMND/Hộ chiếu</th>
-                                    <th>Ghi chú</th>
-                                    <th>Hành động
+                                    <th style={{ width: 20 }}>{translate('human_resource.profile.house_hold.members.stt')}</th>
+                                    <th>{translate('human_resource.profile.house_hold.members.name')}</th>
+                                    <th>{translate('human_resource.profile.house_hold.members.code_social_insurance')}</th>
+                                    <th>{translate('human_resource.profile.house_hold.members.book_nci')}</th>
+                                    <th>{translate('human_resource.profile.house_hold.members.gender')}</th>
+                                    <th>{translate('human_resource.profile.house_hold.members.is_hh')}</th>
+                                    <th>{translate('human_resource.profile.house_hold.members.rwhh')}</th>
+                                    <th>{translate('human_resource.profile.house_hold.members.cnss')}</th>
+                                    <th>{translate('human_resource.profile.house_hold.members.birth')}</th>
+                                    <th>{translate('human_resource.profile.house_hold.members.pob')}</th>
+                                    <th>{translate('human_resource.profile.house_hold.members.nationality')}</th>
+                                    <th>{translate('human_resource.profile.house_hold.members.nation')}</th>
+                                    <th>{translate('human_resource.profile.house_hold.members.npp')}</th>
+                                    <th>{translate('human_resource.profile.house_hold.members.note')}</th>
+                                    <th>{translate('general.action')}
                                         <DataTableSetting
                                             tableId="table-employee-family-member"
                                             tableContainerId="container-employee-family-member"
@@ -135,19 +151,26 @@ const FamilyMemberTab = ({
                                             <td>{member.name}</td>
                                             <td>{member.codeSocialInsurance}</td>
                                             <td>{member.bookNumberSocialInsurance}</td>
-                                            <td>{member.gender}</td>
-                                            <td>{member.isHeadHousehold}</td>
+                                            <td>{_showMemberGender(member.gender)}</td>
+                                            <td>{_showIsHeadHouseHold(member.isHeadHousehold)}</td>
                                             <td>{member.relationshipWithHeadHousehold}</td>
                                             <td>{member.cnss}</td>
-                                            <td>{member.birth}</td>
+                                            <td><DateTimeConverter dateTime={member.birth} type="DD-MM-YYYY" /></td>
                                             <td>{member.placeOfBirthCertificate}</td>
                                             <td>{member.nationality}</td>
                                             <td>{member.nation}</td>
                                             <td>{member.numberPassport}</td>
                                             <td>{member.note}</td>
                                             <td>
-                                                <a className="text-orange" onClick={() => { }}><i className="material-icons">edit</i></a>
-                                                <a className="text-red"><i className="material-icons">delete</i></a>
+                                                <a className="text-orange" onClick={() => _fm_openEditFamilyMemberModal(index)}><i className="material-icons">edit</i></a>
+                                                <ConfirmNotification
+                                                    icon="question"
+                                                    title={translate('human_resource.profile.house_hold.delete')}
+                                                    content={translate('human_resource.profile.house_hold.delete')}
+                                                    name="delete"
+                                                    className="text-red"
+                                                    func={() => _deleteMember(index)}
+                                                />
                                             </td>
                                         </tr>
                                     ))

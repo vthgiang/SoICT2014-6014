@@ -723,7 +723,7 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
     contracts = this.mergeUrlFileToObject(fileContract, contracts);
     files = this.mergeUrlFileToObject(file, files);
 
-    console.log('mcmcmcmcmcmcm\n\n', major);
+    console.log('mcmcmcmcmcmcm\n\n', data.houseHold.familyMembers);
     let createEmployee = await Employee(connect(DB_CONNECTION, portal)).create({
         avatar: avatar,
         fullName: data.fullName,
