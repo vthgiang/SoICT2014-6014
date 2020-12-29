@@ -1259,8 +1259,8 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
             keySearch = {
                 ...keySearch,
                 $or: [
-                    { organizationalUnit: { $in: [organizationalUnit] } },
-                    { "collaboratedWithOrganizationalUnits.organizationalUnit": { $in: [organizationalUnit] } },
+                    { organizationalUnit: { $in: organizationalUnit } },
+                    { "collaboratedWithOrganizationalUnits.organizationalUnit": { $in: organizationalUnit } },
                 ],
             };
         } else {
@@ -1422,15 +1422,6 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
 
 /** Tìm kiếm đơn vị theo 1 roleId */
 exports.getPaginatedTasksByOrganizationalUnit = async (portal, task, type) => {
-    let organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({
-        $or: [
-            { 'managers': task.roleId },
-            { 'deputyManagers': task.roleId },
-            { 'employees': task.roleId }
-        ]
-    });
-
-    task.organizationalUnit = organizationalUnit._id;
     return await this.getPaginatedTasksByUser(portal, task, type);
 }
 
@@ -1482,10 +1473,8 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (portal, task) => {
             }
         }
     }
-    console.log('keySearch',keySearch)
     organizationUnitTasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'asc' })
         .populate({ path: "organizationalUnit creator parent responsibleEmployees" });
-    console.log('organizationUnitTasks',organizationUnitTasks.length)
     return {
         "tasks": organizationUnitTasks
     };
