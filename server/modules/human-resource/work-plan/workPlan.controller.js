@@ -1,5 +1,5 @@
 const WorkPlanService = require('./workPlan.service');
-const Log = require(`${SERVER_LOGS_DIR}`);
+const Log = require(`../../../logs`);
 
 
 /**

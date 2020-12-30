@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-const { Status } = require(`${SERVER_MODELS_DIR}`);
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { Status } = require('../../../models');
+const { connect } = require(`../../../helpers/dbHelper`);
 
 exports.getStatus = async (portal, companyId, query) => {
     const { limit, page } = query;

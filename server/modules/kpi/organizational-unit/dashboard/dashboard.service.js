@@ -1,8 +1,8 @@
-const Models = require(`${SERVER_MODELS_DIR}`);
+const Models = require(`../../../../modules`);
 const { OrganizationalUnit, OrganizationalUnitKpiSet } = Models;
 const arrayToTree = require('array-to-tree');
 const EvaluationDashboardService = require('../../evaluation/dashboard/dashboard.service');
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { connect } = require(`../../../../helpers/dbHelper`);
  
 /**
  * Lấy các đơn vị con của một đơn vị và đơn vị đó

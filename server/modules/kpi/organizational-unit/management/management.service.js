@@ -1,11 +1,10 @@
-const Models = require(`${SERVER_MODELS_DIR}`);
+const Models = require(`../../../../models`);
 const { OrganizationalUnitKpiSet, OrganizationalUnitKpi, } = Models;
 
 const mongoose = require("mongoose");
 const { EmployeeKpi } = require("../../../../models");
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
-const EmployeeKpiService = require(`${SERVER_MODULES_DIR}/kpi/employee/management/management.service`);
-
+const { connect } = require(`../../../../helpers/dbHelper`);
+const EmployeeKpiService = require(`../../employee/management/management.service`);
 
 
 /**

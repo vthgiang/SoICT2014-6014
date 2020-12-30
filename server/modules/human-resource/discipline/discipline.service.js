@@ -1,11 +1,11 @@
 const {
     Discipline,
     Employee
-} = require(`${SERVER_MODELS_DIR}`);
+} = require('../../../models');
 
 const {
     connect
-} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+} = require(`../../../helpers/dbHelper`);
 
 /**
  * Lấy tổng số thông tin khen thường theo đơn vị (phòng ban) và tháng 

@@ -306,8 +306,8 @@ const EmployeeSchema = new Schema({
             name: { type: String }, // tên
             codeSocialInsurance: { type: String }, // mã số BHXH
             bookNumberSocialInsurance: { type: String }, // Số sổ BHXH
-            gender: { type: String, enum: ['male', 'female'] }, // Giới tính
-            isHeadHousehold: { type: Boolean, default: false }, // Là chủ hộ
+            gender: { type: String, enum: ['male', 'female'], default: 'male' }, // Giới tính
+            isHeadHousehold: { type: String, enum: ['yes', 'no'], default: 'no' }, // Là chủ hộ
             relationshipWithHeadHousehold: { type: String }, // Quan hệ với chủ hộ
             birth: { type: Date }, // Ngày sinh
             ccns: { type: String }, // CNSS

@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { DatePicker, DialogModal } from '../../../../../common-components';
-import { getTimeFromFormatDate } from '../../../../../helpers/stringMethod';
+import { getFormatDateFromTime, getTimeFromFormatDate } from '../../../../../helpers/stringMethod';
 
-const FamilyMemberModal = ({
+const FamilyMemberEdit = ({
+    editMember,
     _save,
     translate
 }) => {
@@ -87,11 +88,7 @@ const FamilyMemberModal = ({
         setNote(value)
     }
 
-    const _openModalAddFamilyMember = () => {
-        window.$('#modal-add-family-members').modal({ backdrop: 'static', display: 'show' }); // hiển thị form thành viên hộ gia đình
-    }
-
-    const _addFamilyMember = () => {
+    const _editMember = () => {
         const member = {
             name,
             codeSocialInsurance,
@@ -107,30 +104,32 @@ const FamilyMemberModal = ({
             numberPassport,
             note
         }
-        _save(member);
-        setName('')
-        setCodeSocialInsurance('')
-        setBookNumberSocialInsurance('')
-        setGender('male')
-        setIsHeadHousehold('no')
-        setRelationshipWithHeadHousehold('')
-        setCnss('')
-        setBirth('')
-        setPlaceOfBirthCertificate('')
-        setNationality('')
-        setNation('')
-        setNumberPassport('')
-        setNote('')
+        _save(editMember.index, member);
     }
+
+    useEffect(() => {
+        setName(editMember.name)
+        setCodeSocialInsurance(editMember.codeSocialInsurance)
+        setBookNumberSocialInsurance(editMember.bookNumberSocialInsurance)
+        setGender(editMember.gender)
+        setIsHeadHousehold(editMember.isHeadHousehold)
+        setRelationshipWithHeadHousehold(editMember.relationshipWithHeadHousehold)
+        setCnss(editMember.cnss)
+        setBirth(getFormatDateFromTime(editMember.birth, 'dd-mm-yyyy'))
+        setPlaceOfBirthCertificate(editMember.placeOfBirthCertificate)
+        setNationality(editMember.nationality)
+        setNation(editMember.nation)
+        setNumberPassport(editMember.numberPassport)
+        setNote(editMember.note)
+    }, [editMember.index])
 
     return (
         <React.Fragment>
-            <button className="btn btn-success pull-right" style={{ cursor: 'pointer' }} onClick={_openModalAddFamilyMember}>{translate('general.add')}</button>
             <DialogModal
-                modalID="modal-add-family-members"
-                formID="form-add-family-members"
-                title={translate('human_resource.profile.house_hold.add')}
-                func={_addFamilyMember} size={100}
+                modalID="modal-edit-family-members"
+                formID="form-edit-family-members"
+                title={translate('human_resource.profile.house_hold.edit')}
+                func={_editMember} size={100}
             >
                 <form id="form-add-family-members">
                     <div className="row">
@@ -257,4 +256,4 @@ const FamilyMemberModal = ({
     )
 }
 
-export default connect()(withTranslate(FamilyMemberModal));
+export default connect()(withTranslate(FamilyMemberEdit));

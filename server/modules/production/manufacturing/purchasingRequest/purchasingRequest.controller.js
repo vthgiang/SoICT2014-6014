@@ -1,4 +1,4 @@
-const Log = require(`${SERVER_LOGS_DIR}`);
+const Log = require(`../../../../logs`);
 const PurchasingRequestService = require('./purchasingRequest.service');
 
 exports.createPurchasingRequest = async (req, res) => {

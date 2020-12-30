@@ -1,6 +1,6 @@
 const ManufacturingCommandServices = require('./manufacturingCommand.service');
 
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../../../logs`);
 
 exports.createManufacturingCommand = async (req, res) => {
     try {

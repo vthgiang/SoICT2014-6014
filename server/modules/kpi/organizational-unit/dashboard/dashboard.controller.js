@@ -1,4 +1,4 @@
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../../../logs`);
 const DashboardOrganizationalUnitService = require('./dashboard.service');
 
 exports.getChildrenOfOrganizationalUnitsAsTree = async (req, res) => {

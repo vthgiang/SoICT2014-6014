@@ -29,15 +29,51 @@ class ModalCreateEmployeeKpiSet extends Component {
         };
     }
 
+    static getDerivedStateFromProps = (nextProps, prevState) => {
+        if (nextProps.organizationalUnit !== prevState.organizationalUnit) {
+            return {
+                ...prevState,
+                employeeKpiSet: {
+                    ...prevState.employeeKpiSet,
+                    organizationalUnit: nextProps.organizationalUnit
+                }
+            }
+        } else {
+            return null;
+        }
+    }
+
     componentDidMount() {
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
+
+        let d = new Date(),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+        let defaultTime = [month, year].join('-');
+
+        this.setState(state => {
+            return {
+                ...state,
+                employeeKpiSet: {
+                    ...state.employeeKpiSet,
+                    date: defaultTime
+                }
+            }
+        })
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
         const { user } = this.props;
+        const { employeeKpiSet } = this.state;
 
         // Khi truy vấn API đã có kết quả
-        if (!this.state.employeeKpiSet.approver && user.userdepartments && user.userdepartments.managers) {
+        if (!employeeKpiSet.approver && user.userdepartments && user.userdepartments.managers) {
             if (Object.keys(user.userdepartments.managers).length > 0) { // Nếu có trưởng đơn vị
                 let members = user.userdepartments.managers[Object.keys(user.userdepartments.managers)[0]].members;
                 if (members.length) {
@@ -45,8 +81,8 @@ class ModalCreateEmployeeKpiSet extends Component {
                         return {
                             ...state,
                             employeeKpiSet: {
-                                ...this.state.employeeKpiSet,
-                                approver: members[0]
+                                ...state.employeeKpiSet,
+                                approver: members[0] && members[0]._id
                             }
                         };
                     });
@@ -58,8 +94,8 @@ class ModalCreateEmployeeKpiSet extends Component {
         return true;
     }
 
-    formatDate = async (value) => {
-        await this.setState(state => {
+    formatDate = (value) => {
+        this.setState(state => {
             return {
                 ...state,
                 employeeKpiSet: {
@@ -85,6 +121,8 @@ class ModalCreateEmployeeKpiSet extends Component {
 
     /**Gửi request khởi tạo tập KPI cá nhân mới */
     handleCreateEmployeeKpiSet = async () => {
+        const { organizationalUnit } = this.props;
+        const { employeeKpiSet } = this.state;
 
         let d = new Date(),
             month = '' + (d.getMonth() + 1),
@@ -96,8 +134,8 @@ class ModalCreateEmployeeKpiSet extends Component {
             day = '0' + day;
         let defaultTime = [month, year].join('-');
 
-        if (this.state.employeeKpiSet.date === "") {
-            await this.setState(state => {
+        if (employeeKpiSet.date === "") {
+            this.setState(state => {
                 return {
                     ...state,
                     employeeKpiSet: {
@@ -108,18 +146,6 @@ class ModalCreateEmployeeKpiSet extends Component {
             })
         }
 
-        await this.setState(state => {
-            return {
-                ...state,
-                employeeKpiSet: {
-                    ...state.employeeKpiSet,
-                    organizationalUnit: this.props.organizationalUnit
-                }
-            }
-        })
-
-        let { employeeKpiSet } = this.state;
-
         if (employeeKpiSet.organizationalUnit && employeeKpiSet.date && employeeKpiSet.approver) {//&& employeeKpiSet.creator
             this.props.createEmployeeKpiSet(employeeKpiSet);
             window.$("#createEmployeeKpiSet").modal("hide");
@@ -129,22 +155,11 @@ class ModalCreateEmployeeKpiSet extends Component {
     render() {
         let managers;
         const { organizationalUnit, user, translate } = this.props;
-        const { _id } = this.state;
+        const { _id, employeeKpiSet } = this.state;
 
         if (user.userdepartments) {
             managers = getEmployeeSelectBoxItems([user.userdepartments], true, false, false);
         }
-
-        let d = new Date(),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-        let defaultTime = [month, year].join('-');
 
         return (
             <React.Fragment>
@@ -172,7 +187,7 @@ class ModalCreateEmployeeKpiSet extends Component {
                                 <DatePicker
                                     id="month"
                                     dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                    value={defaultTime}                 // giá trị mặc định cho datePicker    
+                                    value={employeeKpiSet.date}                 // giá trị mặc định cho datePicker    
                                     onChange={this.formatDate}
                                     disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
                                 />
@@ -189,7 +204,7 @@ class ModalCreateEmployeeKpiSet extends Component {
                                         items={managers}
                                         multiple={false}
                                         onChange={this.handleApproverChange}
-                                        value={this.state.employeeKpiSet ? this.state.employeeKpiSet.approver : ""}
+                                        value={employeeKpiSet ? employeeKpiSet.approver : ""}
                                     />
                                 </div>
                             }

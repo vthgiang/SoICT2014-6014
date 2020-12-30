@@ -1,7 +1,7 @@
 const TaskManagementService = require('./task.service');
-const NotificationServices = require('../../notification/notification.service');
-const { sendEmail } = require('../../../helpers/emailHelper');
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const NotificationServices = require(`../../notification/notification.service`);
+const { sendEmail } = require(`../../../helpers/emailHelper`);
+const Logger = require(`../../../logs`);
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module quản lý công việc
 
 
@@ -782,6 +782,30 @@ getAllTaskOfOrganizationalUnitByMonth = async (req, res) => {
     }
 }
 
+exports.getTaskAnalysOfUser = async(req, res) => {
+    try {
+        let portal = req.portal;
+        let {userId} = req.params;
+        let {type} = req.query;
+        let taskAnalys = await TaskManagementService.getTaskAnalysOfUser(portal, userId, type);
+
+        await Logger.info(req.user.email, 'get_task_analys_of_user_success', req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['get_task_analys_of_user_success'],
+            content: taskAnalys
+        })
+    } catch (error) {
+
+        await Logger.error(req.user.email, 'get_task_analys_of_user_faile', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_task_analys_of_user_faile'],
+            content: error
+        })
+    }
+}
+
 getAllTaskByPriorityOfOrganizationalUnit = async (req, res) => {
     try {
         let task = {
@@ -804,3 +828,4 @@ getAllTaskByPriorityOfOrganizationalUnit = async (req, res) => {
         })
     }
 }
+

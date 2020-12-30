@@ -1,5 +1,5 @@
 const CoinRuleService = require('./coinRule.service');
-const Log = require(`${SERVER_LOGS_DIR}`);
+const Log = require(`../../../../logs`);
 
 exports.createNewCoinRule = async (req, res) => {
     try {

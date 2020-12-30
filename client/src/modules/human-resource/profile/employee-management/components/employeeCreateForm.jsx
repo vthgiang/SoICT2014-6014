@@ -10,6 +10,21 @@ import { GeneralTab, ContactTab, TaxTab, InsurranceTab, DisciplineTab, Experienc
 import { EmployeeManagerActions } from '../redux/actions';
 import FamilyMemberTab from '../../employee-create/components/familyMemberTab';
 
+const initMember = {
+    name: '',
+    codeSocialInsurance: '',
+    bookNumberSocialInsurance: '',
+    gender: 'male',
+    isHeadHousehold: 'no',
+    relationshipWithHeadHousehold: '',
+    cnss: '',
+    birth: '',
+    placeOfBirthCertificate: '',
+    nationality: '',
+    nation: '',
+    numberPassport: '',
+    note: ''
+}
 class EmployeeCreateForm extends Component {
     constructor(props) {
         super(props);
@@ -49,7 +64,8 @@ class EmployeeCreateForm extends Component {
                 phone: '',
                 houseHoldCode: '',
                 familyMembers: []
-            }
+            },
+            editMember: initMember
         };
         this.handleChangeCourse = this.handleChangeCourse.bind(this);
     }
@@ -425,11 +441,42 @@ class EmployeeCreateForm extends Component {
         });
     }
 
+    _fm_openEditFamilyMemberModal = (index) => {
+        this.setState({
+            editMember: {
+                index,
+                ...this.state.houseHold.familyMembers[index]
+            }
+        });
+        window.$('#modal-edit-family-members').modal({ backdrop: 'static', display: 'show' });
+    }
+
+    _fm_editMember = (index, data) => {
+        let familyMembers = this.state.houseHold.familyMembers;
+        familyMembers[index] = data;
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                familyMembers
+            }
+        })
+    }
+
+    _fm_deleteMember = (index) => {
+        let familyMembers = this.state.houseHold.familyMembers;
+        familyMembers = familyMembers.filter((node, i) => i !== index);
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                familyMembers
+            }
+        })
+    }
+
     render() {
         const { translate, employeesManager } = this.props;
+        const { img, employee, degrees, certificates, contracts, courses, commendations, disciplines, annualLeaves, files, major, career, editMember } = this.state;
 
-        const { img, employee, degrees, certificates, contracts, courses, commendations, disciplines, annualLeaves, files, major, career } = this.state;
-        console.log("EMPLOYLEE", this.state)
         return (
             <React.Fragment>
                 <DialogModal
@@ -582,6 +629,10 @@ class EmployeeCreateForm extends Component {
                             {/* Tab thành viên hộ gia đình */}
                             <FamilyMemberTab
                                 id="family_member"
+                                editMember={editMember}
+                                _fm_openEditFamilyMemberModal={this._fm_openEditFamilyMemberModal}
+                                _fm_editMember={this._fm_editMember}
+                                _fm_deleteMember={this._fm_deleteMember}
                                 houseHold={this.state.houseHold}
                                 _fm_handleHeadHouseHoldName={this._fm_handleHeadHouseHoldName}
                                 _fm_handleDocumentType={this._fm_handleDocumentType}

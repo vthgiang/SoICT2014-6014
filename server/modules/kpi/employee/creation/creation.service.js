@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
-const Models = require(`${SERVER_MODELS_DIR}`);
+const Models = require('../../../../models');
 const fs = require('fs');
 const { EmployeeKpi, EmployeeKpiSet, OrganizationalUnit, OrganizationalUnitKpiSet, User, taskCommentModel } = Models;
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { connect } = require(`../../../../helpers/dbHelper`);
 
 // File này làm nhiệm vụ thao tác với cơ sở dữ liệu của module quản lý kpi cá nhân
 

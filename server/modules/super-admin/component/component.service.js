@@ -1,5 +1,5 @@
-const { Privilege, Role, Link, Component } = require(`${SERVER_MODELS_DIR}`);
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { Privilege, Role, Link, Component } = require(`../../../models`);
+const { connect } = require(`../../../helpers/dbHelper`);
 /**
  * Lấy danh sách các component của công ty
  * @id id của công ty

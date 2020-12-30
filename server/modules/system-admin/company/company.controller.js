@@ -1,6 +1,6 @@
 const CompanyServices = require('./company.service');
-const ConfigurationServices = require(`${SERVER_MODULES_DIR}/super-admin/module-configuration/moduleConfiguration.service`);
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const ConfigurationServices = require(`../../super-admin/module-configuration/moduleConfiguration.service`);
+const Logger = require(`../../../logs`);
 
 /**
  * Lấy danh sách tất cả các công ty

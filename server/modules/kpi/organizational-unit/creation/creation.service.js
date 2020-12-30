@@ -1,8 +1,8 @@
-const Models = require(`${SERVER_MODELS_DIR}`);
+const Models = require(`../../../../models`);
 const { OrganizationalUnitKpi, OrganizationalUnit, OrganizationalUnitKpiSet } = Models;
 
 const overviewService = require('../../employee/management/management.service');
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { connect } = require(`../../../../helpers/dbHelper`);
 
 /**
  * Get organizational unit kpi set

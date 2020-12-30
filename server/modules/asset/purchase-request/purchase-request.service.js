@@ -1,6 +1,6 @@
-const Models = require(`${SERVER_MODELS_DIR}`);
-const {connect} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
-const {freshObject} = require(`${SERVER_HELPERS_DIR}/functionHelper`);
+const Models = require('../../../models');
+const {connect} = require(`../../../helpers/dbHelper`);
+const {freshObject} = require(`../../../helpers/functionHelper`);
 const {RecommendProcure, User} = Models;
 
 /**

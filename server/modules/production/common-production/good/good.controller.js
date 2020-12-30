@@ -1,5 +1,5 @@
 const GoodService = require('./good.service');
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../../../logs`);
 
 exports.getGoodsByType = async (req, res) => {
     try {

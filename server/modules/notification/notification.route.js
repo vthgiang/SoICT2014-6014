@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const NotificationController = require('./notification.controller');
-const { auth, uploadFile } = require(`${SERVER_MIDDLEWARE_DIR}`);
+const { auth, uploadFile  } = require(`../../middleware`);
 
 router.get("/get", auth, NotificationController.getAllManualNotifications);
 router.post("/paginate", auth, NotificationController.paginateManualNotifications);
