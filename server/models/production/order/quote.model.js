@@ -32,9 +32,6 @@ const QuoteSchema = Schema({
         ref: 'Customer',
         required: true
     },
-    // customerName: {
-    //     type: String
-    // },
     customerPhone: {
         type: String,
         required: true
@@ -52,10 +49,17 @@ const QuoteSchema = Schema({
     customerEmail: {
         type: String
     },
-    approver: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-    },
+    approvers: [{
+        approver: {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
+        },
+        approveAt: {
+            type: Date,
+            default: new Date()
+        }
+    }],
     goods: [{
         good: {
             type: Schema.Types.ObjectId,

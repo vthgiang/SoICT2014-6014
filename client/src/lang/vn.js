@@ -1162,17 +1162,14 @@ export default {
 
             //QUẢN LÝ ĐƠN HÀNG
             manage_orders: "Quản lý đơn hàng",
-            manage_sales_order: "Đơn hàng kinh doanh",
-            manage_manufacturing_order: "Đơn hàng sản xuất",
-            manage_purchase_order: "Đơn mua hàng",
-            manage_sales_order_dashboard: "Dashboard kinh doanh",
-            manage_manufacturing_order_dashboard: "Dashboard sản xuất",
+            manage_sales_order: "Đơn bán hàng",
+            manage_purchase_order: "Đơn mua NVL",
+            manage_sales_order_dashboard: "Thống kê bán hàng",
             manage_quote: "Báo giá",
             manage_discount: "Giảm giá",
             manage_tax: "Thuế",
             manage_sla: "Cam kết chất lượng",
-            manage_business_department: "Quản lý phòng ban",
-            manage_admin_department: "Phòng kế toán bán hàng",
+            manage_business_department: "Phòng ban kinh doanh",
 
             // Quản lý kế hoạch sản xuất
             manage_plans: "Quản lý kế hoạch sản xuất",
