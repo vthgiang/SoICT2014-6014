@@ -2213,7 +2213,7 @@ exports.sendEmailCheckTaskLastMonth = async () => {
  * @param {*} userId 
  * @param {*} roleId 
  */
-exports.getTaskAnalysOfUser = async(portal, userId, type="priority") => {
+exports.getTaskAnalysOfUser = async(portal, userId, type) => {
 
     let tasks = await Task(connect(DB_CONNECTION, portal)).find({
         $or: [
