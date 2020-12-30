@@ -1,5 +1,5 @@
 const AdminDepartmentService = require('./adminDepartment.service');
-const Log = require(`${SERVER_LOGS_DIR}`);
+const Log = require(`../../../../logs`);
 
 exports.createAdminDepartment = async (req, res) => {
     try {

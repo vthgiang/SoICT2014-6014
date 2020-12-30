@@ -107,7 +107,7 @@ class QualificationChart extends Component {
         const { translate, field } = this.props;
         const { typeChart } = this.state;
         let listFields = field.listFields;
-        let intermediate_degree = 0, colleges = 0, university = 0, bachelor = 0, engineer = 0, master_degree = 0, phd = 0, unavailable = 0;
+        let intermediate_degree = 0, colleges = 0, university = 0, master_degree = 0, phd = 0, unavailable = 0;
 
         if (typeChart) {
             let degrees = [];
@@ -132,12 +132,6 @@ class QualificationChart extends Component {
                     case 'university':
                         university = university + 1;
                         break;
-                    case 'bachelor':
-                        bachelor = bachelor + 1;
-                        break;
-                    case 'engineer':
-                        engineer = engineer + 1;
-                        break;
                     case 'master_degree':
                         master_degree = master_degree + 1;
                         break;
@@ -152,8 +146,6 @@ class QualificationChart extends Component {
                 [translate(`human_resource.profile.intermediate_degree`), intermediate_degree],
                 [translate(`human_resource.profile.colleges`), colleges],
                 [translate(`human_resource.profile.university`), university],
-                [translate(`human_resource.profile.bachelor`), bachelor],
-                [translate(`human_resource.profile.engineer`), engineer],
                 [translate(`human_resource.profile.master_degree`), master_degree],
                 [translate(`human_resource.profile.phd`), phd],
                 [translate(`human_resource.profile.unavailable`), unavailable]

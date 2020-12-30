@@ -1,5 +1,5 @@
 const StatusService = require('./status.service');
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../../logs`);
 
 /**
  * Lấy thông tin tất cả trạng thái khách hàng

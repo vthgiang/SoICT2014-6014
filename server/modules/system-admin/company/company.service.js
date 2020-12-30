@@ -12,7 +12,7 @@ const {
     UserRole,
     ImportConfiguraion,
     Configuration,
-} = require(`${SERVER_MODELS_DIR}`);
+} = require(`../../../models`);
 
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");

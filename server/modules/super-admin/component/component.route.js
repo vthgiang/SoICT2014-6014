@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const ComponentController = require('./component.controller');
-const { auth } = require(`${SERVER_MIDDLEWARE_DIR}`);
+const { auth } = require(`../../../middleware`);
 
 
 router.get("/components", auth, ComponentController.getComponents);

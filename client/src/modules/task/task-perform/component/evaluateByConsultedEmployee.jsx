@@ -420,7 +420,7 @@ class EvaluateByConsultedEmployee extends Component {
                             </div>
                             {/* Điểm tự đánh giá */}
                             <div className={`form-group ${errorOnPoint === undefined ? "" : "has-error"}`}>
-                                <label>{translate('task.task_management.detail_emp_point')} (<span style={{ color: "red" }}>*</span>)</label>
+                                <label>{translate('task.task_management.detail_emp_point')}  (0 - 100) <span style={{ color: "red" }}>*</span></label>
                                 <input
                                     className="form-control"
                                     type="number"

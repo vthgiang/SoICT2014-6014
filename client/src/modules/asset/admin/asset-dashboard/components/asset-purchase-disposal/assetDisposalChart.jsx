@@ -296,8 +296,12 @@ class AssetDisposalChart extends Component {
         if (value.length === 0) {
             value = []
         }
-        this.INFO_SEARCH.type = value;
-        this.forceUpdate();
+        this.setState(state => {
+            return {
+                ...state,
+                type: value,
+            }
+        })
     }
 
     //Bắt sự kiện tìm kiếm
@@ -319,7 +323,7 @@ class AssetDisposalChart extends Component {
                     ...state,
                     disposalDateAfter: this.INFO_SEARCH.disposalDateAfter,
                     disposalDateBefore: this.INFO_SEARCH.disposalDateBefore,
-                    type: this.INFO_SEARCH.type
+                    // type: this.INFO_SEARCH.type
                 }
             })
         }
@@ -351,8 +355,8 @@ class AssetDisposalChart extends Component {
 
     render() {
         const { translate } = this.props;
-        let { year } = this.state;
-        let { disposalDateAfter, disposalDateBefore, type } = this.INFO_SEARCH;
+        let { year, type } = this.state;
+        let { disposalDateAfter, disposalDateBefore } = this.INFO_SEARCH;
         let typeArr = this.getAssetTypes();
 
         let dateFormat = year === "true" ? "year" : "month-year";

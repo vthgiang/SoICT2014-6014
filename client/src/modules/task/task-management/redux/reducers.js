@@ -518,6 +518,29 @@ export function tasks(state = {}, action) {
                 error: action.error,
 
             }
+        
+        
+        case taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_PRIORITY_FAILURE:
+            return {
+                ...state,
+                isLoading: false
+            }
+        
+        case taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_PRIORITY_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            }
+        
+        case taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_PRIORITY_SUCCESS:
+            return {
+                ...state,
+                organizationUnitTasksChart: {
+                    urgent: action.payload.urgent,
+                    taskNeedToDo: action.payload.taskNeedToDo
+                },
+                isLoading: false,
+            }
         default:
             return state
     }

@@ -80,7 +80,7 @@ class EmployeeManagement extends Component {
 
     // Function bắt sự kiện thêm lương nhân viên bằng tay
     createEmployee = () => {
-        window.$('#modal-create-employee').modal('show');
+        window.$('#modal-create-employee').modal({ backdrop: 'static', display: 'show' });
     }
 
     // Function bắt sự kiện thêm lương nhân viên bằng import file
@@ -844,8 +844,6 @@ class EmployeeManagement extends Component {
             { value: "intermediate_degree", text: translate('human_resource.profile.intermediate_degree') },
             { value: "colleges", text: translate('human_resource.profile.colleges') },
             { value: "university", text: translate('human_resource.profile.university') },
-            { value: "bachelor", text: translate('human_resource.profile.bachelor') },
-            { value: "engineer", text: translate('human_resource.profile.engineer') },
             { value: "master_degree", text: translate('human_resource.profile.master_degree') },
             { value: "phd", text: translate('human_resource.profile.phd') },
             { value: "unavailable", text: translate('human_resource.profile.unavailable') },

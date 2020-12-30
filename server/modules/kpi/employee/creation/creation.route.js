@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const EmployeeKpiSetController = require("./creation.controller");
-const { auth, uploadFile } = require(`${SERVER_MIDDLEWARE_DIR}`);
+const { auth, uploadFile } = require(`../../../../middleware`);
 
 /** 
  * Lấy tập KPI cá hiện hiện tại

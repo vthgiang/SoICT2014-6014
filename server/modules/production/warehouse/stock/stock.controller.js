@@ -1,5 +1,5 @@
 const StockService = require('./stock.service');
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../../../logs`);
 
 exports.getAllStocks = async (req, res) => {
     try {

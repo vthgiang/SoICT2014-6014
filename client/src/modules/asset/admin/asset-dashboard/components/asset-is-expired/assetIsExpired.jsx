@@ -88,8 +88,12 @@ class AssetIsExpired extends Component {
         if (value.length === 0) {
             value = []
         }
-        this.INFO_SEARCH.type = value;
-        this.forceUpdate();
+        this.setState(state => {
+            return {
+                ...state,
+                type: value,
+            }
+        })
     }
 
     getAssetTypes = () => {
@@ -119,13 +123,12 @@ class AssetIsExpired extends Component {
     render() {
         const { translate } = this.props;
         const { user, assetType, setAssetIsExpiredExportData } = this.props;
-        const { listAssets, } = this.state;
+        const { listAssets, type } = this.state;
         const typeAsset = this.state.type;
         var userlist = user && user.list;
         var ExpiryDateAssets = [], willExpiryDateAssets = [];
         let nowDate = new Date();
         let typeArr = this.getAssetTypes();
-        let { type } = this.INFO_SEARCH;
         let filterAsset = [];
         if (typeAsset && typeAsset.length) {
             listAssets.map(x => {
@@ -142,16 +145,16 @@ class AssetIsExpired extends Component {
             filterAsset = listAssets;
         }
 
-        if (listAssets && !ExpiryDateAssets.length && !willExpiryDateAssets.length) {
-            for (let i in listAssets) {
-                if (listAssets[i].purchaseDate && listAssets[i].usefulLife) {
-                    let date = listAssets[i].purchaseDate.split("-")
-                    if ((Number(date[1]) + listAssets[i].usefulLife) % 12 == 0) {
-                        date[0] = String(Math.floor((Number(date[1]) + listAssets[i].usefulLife) / 12 - 1) + Number(date[0]));
+        if (filterAsset && !ExpiryDateAssets.length && !willExpiryDateAssets.length) {
+            for (let i in filterAsset) {
+                if (filterAsset[i].purchaseDate && filterAsset[i].usefulLife) {
+                    let date = filterAsset[i].purchaseDate.split("-")
+                    if ((Number(date[1]) + filterAsset[i].usefulLife) % 12 == 0) {
+                        date[0] = String(Math.floor((Number(date[1]) + filterAsset[i].usefulLife) / 12 - 1) + Number(date[0]));
                     } else {
-                        date[0] = String(Math.floor((Number(date[1]) + listAssets[i].usefulLife) / 12) + Number(date[0]));
+                        date[0] = String(Math.floor((Number(date[1]) + filterAsset[i].usefulLife) / 12) + Number(date[0]));
                     }
-                    let month = String((Number(date[1]) + listAssets[i].usefulLife) % 12);
+                    let month = String((Number(date[1]) + filterAsset[i].usefulLife) % 12);
 
 
                     date[1] = month != '0' ? month : '12';
@@ -165,7 +168,7 @@ class AssetIsExpired extends Component {
                     if (day < 0) {
                         day = nowDate - ExpiryDateAssets;
                         let data = {
-                            asset: listAssets[i],
+                            asset: filterAsset[i],
                             day: translate('asset.dashboard.expired')
                         }
                         ExpiryDateAssets.push(data);
@@ -173,7 +176,7 @@ class AssetIsExpired extends Component {
                         expiry = Math.round(day / 1000 / 60 / 60 / 24);
                         if (expiry < 16) {
                             let data = {
-                                asset: listAssets[i],
+                                asset: filterAsset[i],
                                 day: expiry
                             }
                             willExpiryDateAssets.push(data);
@@ -209,9 +212,9 @@ class AssetIsExpired extends Component {
                             />
                         </div>
                         {/* Tim kiem */}
-                        <div className="form-group">
+                        {/* <div className="form-group">
                             <button className="btn btn-success" onClick={this.handleSearchData}>{translate('task.task_management.search')}</button>
-                        </div>
+                        </div> */}
                     </div>
                     {/* Bảng các tài sản */}
                     {(ExpiryDateAssets && ExpiryDateAssets.length !== 0) || (willExpiryDateAssets && willExpiryDateAssets.length !== 0) ?

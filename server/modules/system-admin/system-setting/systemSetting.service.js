@@ -1,9 +1,9 @@
-const {backup, restore} = require(SERVER_HELPERS_DIR+'/dbHelper');
-const {connect} = require(SERVER_HELPERS_DIR+'/dbHelper');
+const {backup, restore} = require("../../../helpers/dbHelper");
+const {connect} = require("../../../helpers/dbHelper");
 const {time} = require('cron');
 const fs = require('fs');
 const exec = require('child_process').exec;
-const {Configuration} = require(`${SERVER_MODELS_DIR}`);
+const {Configuration} = require(`../../../models`);
 
 exports.getBackups = async() => {
     if (!fs.existsSync(`${SERVER_BACKUP_DIR}/all`)) {

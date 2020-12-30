@@ -1,5 +1,5 @@
 const AssetTypeService = require('./asset-type.service');
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../../logs`);
 
 /**
  * Các controller cho phần quản lý danh mục tài liệu văn bản

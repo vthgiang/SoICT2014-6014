@@ -489,8 +489,10 @@ class TaskAddModal extends Component {
                                     <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group">
                                         <label className="control-label">{translate('task.task_management.detail_priority')}<span className="text-red">*</span></label>
                                         <select className="form-control" value={newTask.priority} onChange={this.handleChangeTaskPriority}>
-                                            <option value={3}>{translate('task.task_management.high')}</option>
-                                            <option value={2}>{translate('task.task_management.normal')}</option>
+                                            <option value={5}>{translate('task.task_management.urgent')}</option>
+                                            <option value={4}>{translate('task.task_management.high')}</option>
+                                            <option value={3}>{translate('task.task_management.standard')}</option>
+                                            <option value={2}>{translate('task.task_management.average')}</option>
                                             <option value={1}>{translate('task.task_management.low')}</option>
                                         </select>
                                     </div>

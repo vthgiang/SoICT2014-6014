@@ -1,13 +1,13 @@
 const jwt = require("jsonwebtoken");
-const Models = require(`${SERVER_MODELS_DIR}`);
+const Models = require('../models');
 const { User, Role, UserRole, Privilege, Link, Company } = Models;
 const ObjectId = require("mongoose").Types.ObjectId;
 const { links } = require("./servicesPermission");
 const multer = require("multer");
 const fs = require("fs");
 const CryptoJS = require("crypto-js");
-const { initModels, connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
-
+const { initModels, connect } = require(`../helpers/dbHelper`);
+const { decryptMessage } = require('../helpers/functionHelper');
 /**
  * ****************************************
  * Middleware xác thực truy cập người dùng
@@ -16,12 +16,15 @@ const { initModels, connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
  * 3.Kiểm tra xem người dùng có role hợp lệ hay không?
  * 4.Kiểm tra người dùng có được phép truy cập vào link hay không?
  * ****************************************
- */
+ */ 
 
 exports.authFunc = (checkPage = true, checkPassword2=true) => {
     return async (req, res, next) => {
         try {
-            const token = req.header("auth-token"); //JWT nhận từ người dùng
+            const crtp = decryptMessage(req.header("crtp")); // trang hiện tại
+            const crtr = decryptMessage(req.header("crtr")); // role hiện tại
+            const fgp = decryptMessage(req.header("fgp")); // fingerprint
+            const token = req.header("utk"); //JWT nhận từ người dùng
             /**
              * Nếu không có JWT được gửi lên -> người dùng chưa đăng nhập
              */
@@ -57,9 +60,9 @@ exports.authFunc = (checkPage = true, checkPassword2=true) => {
             let password2 = userToken.password2;
             if(checkPassword2 && !password2) throw ['auth_password2_not_complete']
 
-            if (req.header("current-page") !== "/") {
-                const fingerprint = req.header("fingerprint"); //chữ ký của trình duyệt người dùng - fingerprint
-                const currentRole = req.header("current-role"); // role hiện tại của người dùng
+            if (crtp !== "/") {
+                const fingerprint = fgp; //chữ ký của trình duyệt người dùng - fingerprint
+                const currentRole = crtr; // role hiện tại của người dùng
                 if (!ObjectId.isValid(currentRole)) {
                     throw ["role_invalid"]; //trả về lỗi nếu current role là một giá trị không xác định
                 }
@@ -110,7 +113,7 @@ exports.authFunc = (checkPage = true, checkPassword2=true) => {
                  */
 
                 //const url = req.headers.referer.substr(req.headers.origin.length, req.headers.referer.length - req.headers.origin.length);
-                const url = req.header("current-page");
+                const url = crtp;
                 const device = req.header("device");
                 
                 if (!device) {

@@ -1,5 +1,5 @@
 const LinkService = require('./link.service');
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../../logs`);
 
 /**
  * Chú ý: tất cả các phương thức đều xét trong ngữ cảnh một công ty
