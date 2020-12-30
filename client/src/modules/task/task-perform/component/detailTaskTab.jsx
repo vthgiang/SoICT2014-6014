@@ -878,6 +878,7 @@ class DetailTaskTab extends Component {
                         {employeeCollaboratedWithUnitSelectBox && employeeCollaboratedWithUnitSelectBox.length !== 0
                             && employeeCollaboratedWithUnitSelectBox.map(item =>
                                 <CollaboratedWithOrganizationalUnits
+                                    key={item.id}
                                     task={task}
                                     employeeSelectBox={item}
                                     unitId={item.id}
