@@ -36,10 +36,13 @@ class NotificationReiceiverdInfo extends Component {
 
     checkPriority = (value) => {
         const valueConvert = parseInt(value);
-        if (!value || valueConvert === 1) return "#28A745"
-        if (valueConvert === 3) return "#ff0707"
+        if (!value || valueConvert === 1) return "#808080"
         if (valueConvert === 2) return "#ffa707"
+        if (valueConvert === 3) return "#28A745"
+        if (valueConvert === 4) return "#ff5707"
+        if (valueConvert === 5) return "#ff0707"
     }
+
     render() {
         const { notifications, translate } = this.props;
         const { notificationTitle, notificationSender, notificationCreatedAt, notificationLevel, notificationContent, notificationFiles, notificationAssociatedDataObject } = this.state;

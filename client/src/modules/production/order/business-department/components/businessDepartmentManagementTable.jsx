@@ -58,15 +58,19 @@ class BusinessDepartmentManagementTable extends Component {
     };
 
     handleChangeType = (value) => {
-        this.setState({
-            type: value[0],
-        });
+        if (value[0] !== "title") {
+            this.setState({
+                type: value[0],
+            });
+        }
     };
 
     handleChangeStatus = (value) => {
-        this.setState({
-            status: value[0],
-        });
+        if (value[0] !== "title") {
+            this.setState({
+                status: value[0],
+            });
+        }
     };
 
     handleSubmitSearch = async () => {
@@ -184,10 +188,10 @@ class BusinessDepartmentManagementTable extends Component {
                                 <th>{"Mã phòng"}</th>
                                 <th>{"Tên phòng"}</th>
                                 <th>{"Bộ phận"}</th>
-                                <th>{"Trưởng phòng"}</th>
+                                <th>{"Trưởng đơn vị"}</th>
                                 <th>{"giám đốc phụ trách"}</th>
-                                <th>{"Mô tả"}</th>
                                 <th>{"Trạng thái"}</th>
+                                <th>{"Mô tả"}</th>
                                 <th style={{ width: "120px", textAlign: "center" }}>
                                     {translate("table.action")}
                                     <DataTableSetting

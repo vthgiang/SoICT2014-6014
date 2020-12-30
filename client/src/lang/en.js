@@ -1005,17 +1005,13 @@ export default {
             //QUẢN LÝ ĐƠN HÀNG
             manage_orders: "Manage Order",
             manage_sales_order: "Sales Order",
-            manage_manufacturing_order: "Manufacturing Order",
             manage_purchase_order: "Purchase Order",
             manage_quote: "Quote",
-            manage_sales_order_dashboard: "Sales Order Dashboard",
-            manage_manufacturing_order_dashboard:
-                "Manufacturing Order Dashboard",
+            manage_sales_order_dashboard: "Sales Order Statistics",
             manage_discount: "Discount",
             manage_tax: "Tax",
             manage_sla: "Service Level Agreement",
-            manage_business_department: "Manage Department",
-            manage_admin_department: "Sales Accounting Department",
+            manage_business_department: "Business Department",
 
             //QUẢN LÝ KẾ HOẠCH SẢN XUẤT
             manage_plans: "Manage Plans",

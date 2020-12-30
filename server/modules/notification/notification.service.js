@@ -7,7 +7,7 @@ const {
     ManualNotification,
     Role,
     User,
-} = require(`../../modules`);
+} = require(`../../models`);
 
 const { connect } = require(`../../helpers/dbHelper`);
 

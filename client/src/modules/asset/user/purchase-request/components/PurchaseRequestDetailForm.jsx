@@ -5,6 +5,8 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../../common-components';
 import { getFormatDateFromTime } from '../../../../../helpers/stringMethod';
 import { AuthActions } from '../../../../auth/redux/actions';
+import { isEqual } from 'lodash';
+
 class PurchaseRequestDetailForm extends Component {
     constructor(props) {
         super(props);
@@ -12,10 +14,11 @@ class PurchaseRequestDetailForm extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps._id !== prevState._id) {
+        if (isEqual(prevState.oldData, nextProps) === false) {
             return {
                 ...prevState,
                 _id: nextProps._id,
+                oldData: nextProps,
                 recommendNumber: nextProps.recommendNumber,
                 dateCreate: nextProps.dateCreate,
                 proponent: nextProps.proponent,
