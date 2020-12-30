@@ -4402,6 +4402,16 @@ const initSampleCompanyDB = async () => {
     const manufacturingPlansNumber0 = await ManufacturingPlan(vnistDB).findById(manufacturingPlans[0]._id);
     manufacturingPlansNumber0.manufacturingCommands.push(manufacturingCommands[0]._id);
     await manufacturingPlansNumber0.save();
+    const manufacturingPlansNumber2 = await ManufacturingPlan(vnistDB).findById(manufacturingPlans[2]._id);
+    manufacturingPlansNumber2.manufacturingCommands.push(manufacturingCommands[1]._id);
+    await manufacturingPlansNumber2.save();
+    const manufacturingPlansNumber3 = await ManufacturingPlan(vnistDB).findById(manufacturingPlans[3]._id);
+    manufacturingPlansNumber3.manufacturingCommands.push(manufacturingCommands[2]._id);
+    await manufacturingPlansNumber3.save();
+    const manufacturingPlansNumber4 = await ManufacturingPlan(vnistDB).findById(manufacturingPlans[4]._id);
+    manufacturingPlansNumber4.manufacturingCommands.push(manufacturingCommands[3]._id);
+    await manufacturingPlansNumber4.save();
+
 
 
     // ****************** Tạo mẫu dữ liệu mẫu lịch làm việc cho xưởng và công nhân********************
