@@ -2135,3 +2135,53 @@ exports.sendEmailCheckTaskLastMonth = async () => {
     }
     // }
 }
+
+/**
+ * Lấy thông tin thống kê công việc của người dùng theo vai trò
+ * @param {*} portal 
+ * @param {*} userId 
+ * @param {*} roleId 
+ */
+exports.getTaskAnalysOfUser = async(portal, userId, type="priority") => {
+
+    let tasks = await Task(connect(DB_CONNECTION, portal)).find({
+        $or: [
+            { responsibleEmployees: userId }, // người thực hiện
+            { accountableEmployees: userId }, // người phê duyệt
+            { consultedEmployees: userId }, // người tư vấn
+            { informedEmployees: userId }, // người quan sát
+        ]
+    });
+    switch(type){
+        case 'priority':
+            let urgent = tasks.filter(task => task.priority === 5); // các cv khẩn cấp
+            let high = tasks.filter(task => task.priority === 4); // các cv cao 
+            let standard = tasks.filter(task => task.priority === 3); // các cv tiêu chuẩn
+            let average = tasks.filter(task => task.priority === 2); // các cv trung bình
+            let low = tasks.filter(task => task.priority === 1); // các cv thấp
+        
+            return {
+                urgent,
+                high,
+                standard,
+                average,
+                low
+            };
+        case 'status':
+            let inprocess = tasks.filter(task => task.status === 'inprocess'); // các cv khẩn cấp
+            let wait_for_approval = tasks.filter(task => task.status === 'wait_for_approval'); // các cv cao 
+            let finished = tasks.filter(task => task.status === 'finished'); // các cv tiêu chuẩn
+            let delayed = tasks.filter(task => task.status === 'delayed'); // các cv trung bình
+            let canceled = tasks.filter(task => task.status === 'canceled'); // các cv thấp
+        
+            return {
+                inprocess,
+                wait_for_approval,
+                finished,
+                delayed,
+                canceled
+            }
+        default: 
+            return tasks;
+    }
+}
