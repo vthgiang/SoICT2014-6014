@@ -273,7 +273,6 @@ exports.getTasksCreatedByUser = async (portal, id) => {
  */
 exports.getPaginatedTasks = async (portal, task) => {
     var { perPage, number, role, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime } = task;
-
     var taskList;
     var perPage = Number(perPage);
     var page = Number(number);
@@ -295,11 +294,11 @@ exports.getPaginatedTasks = async (portal, task) => {
     }
 
 
-    var keySearch = {
+    let keySearch = {
         $or: roleArr,
         isArchived: false
     };
-
+    let keySearchSpecial = {}, keySearchPeriod = {};
 
     if (organizationalUnit) {
         keySearch = {
@@ -343,14 +342,13 @@ exports.getPaginatedTasks = async (portal, task) => {
                 let endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
                 let endOfLastMonth = new Date(currentYear, currentMonth);
                 
-                keySearch = {
-                    ...keySearch,
+                keySearchSpecial = {
                     $or: [
                         { 'endDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
                         { 'startDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
                         { $and: [{ 'endDate': { $gte: endOfCurrentMonth } }, { 'startDate': { $lte: endOfLastMonth } }] }
                     ]
-                };
+                }
             }
         }
     }
@@ -366,8 +364,7 @@ exports.getPaginatedTasks = async (portal, task) => {
     };
 
     if (JSON.parse(aPeriodOfTime)) {
-        keySearch = {
-            ...keySearch,
+        keySearchPeriod = {
             $or: [
                 { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
                 { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
@@ -375,32 +372,34 @@ exports.getPaginatedTasks = async (portal, task) => {
             ]
         }
     } else {
+        
         if (startDate) {
             let startTime = startDate.split("-");
             let start = new Date(startTime[1], startTime[0] - 1, 1);
-            let end = new Date(startTime[1], startTime[0], 1);
+            // let end = new Date(startTime[1], startTime[0], 1);
 
             keySearch = {
                 ...keySearch,
                 startDate: {
-                    $gte: start,
-                    $lt: end
+                    $gt: start,
+                    // $lt: end
                 }
             }
         }
         if (endDate) {
             let endTime = endDate.split("-");
-            let start = new Date(endTime[1], endTime[0] - 1, 1);
+            // let start = new Date(endTime[1], endTime[0] - 1, 1);
             let end = new Date(endTime[1], endTime[0], 1);
 
             keySearch = {
                 ...keySearch,
                 endDate: {
-                    $gte: start,
-                    $lt: end
+                    // $gte: start,
+                    $lte: end
                 }
             }
-        }
+        } 
+        
     }
 
     if (startDateAfter) {
@@ -433,14 +432,25 @@ exports.getPaginatedTasks = async (portal, task) => {
         }
     }
 
-
-    taskList = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'asc' })
+    taskList = await Task(connect(DB_CONNECTION, portal)).find({
+        $and: [
+            keySearch,
+            keySearchSpecial,
+            keySearchPeriod
+        ]
+    }).sort({ 'createdAt': 'asc' })
         .skip(perPage * (page - 1)).limit(perPage).populate([
             { path: "organizationalUnit creator parent responsibleEmployees" },
             { path: "timesheetLogs.creator", select: "name" },
         ]);
 
-    var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
+        $and: [
+            keySearch,
+            keySearchSpecial,
+            keySearchPeriod
+        ]
+    });
     var totalPages = Math.ceil(totalCount / perPage);
 
     return {
@@ -466,6 +476,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
         },
         isArchived: false
     };
+    let keySearchSpecial = {}, keySearchPeriod = {};
 
     if (organizationalUnit) {
         keySearch = {
@@ -509,14 +520,13 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
                 let endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
                 let endOfLastMonth = new Date(currentYear, currentMonth);
                 
-                keySearch = {
-                    ...keySearch,
+                keySearchSpecial = {
                     $or: [
                         { 'endDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
                         { 'startDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
                         { $and: [{ 'endDate': { $gte: endOfCurrentMonth } }, { 'startDate': { $lte: endOfLastMonth } }] }
                     ]
-                };
+                }
             }
         }
     }
@@ -532,8 +542,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
     };
 
     if (JSON.parse(aPeriodOfTime)) {
-        keySearch = {
-            ...keySearch,
+        keySearchPeriod = {
             $or: [
                 { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
                 { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
@@ -599,10 +608,22 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
         }
     }
 
-    responsibleTasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'asc' })
+    responsibleTasks = await Task(connect(DB_CONNECTION, portal)).find({
+        $and: [
+            keySearch,
+            keySearchSpecial,
+            keySearchPeriod
+        ]
+    }).sort({ 'createdAt': 'asc' })
         .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent responsibleEmployees" });
 
-    var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
+        $and: [
+            keySearch,
+            keySearchSpecial,
+            keySearchPeriod
+        ]
+    });
     var totalPages = Math.ceil(totalCount / perPage);
 
     return {
@@ -628,6 +649,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
         },
         isArchived: false
     };
+    let keySearchSpecial = {}, keySearchPeriod = {};
 
     if (organizationalUnit) {
         keySearch = {
@@ -671,14 +693,13 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
                 let endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
                 let endOfLastMonth = new Date(currentYear, currentMonth);
                 
-                keySearch = {
-                    ...keySearch,
+                keySearchSpecial = {
                     $or: [
                         { 'endDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
                         { 'startDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
                         { $and: [{ 'endDate': { $gte: endOfCurrentMonth } }, { 'startDate': { $lte: endOfLastMonth } }] }
                     ]
-                };
+                }
             }
         }
     }
@@ -694,13 +715,11 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
     };
 
     if (JSON.parse(aPeriodOfTime)) {
-
-        keySearch = {
-            ...keySearch,
+        keySearchPeriod = {
             $or: [
-                { 'endDate': { $lte: new Date(endDate), $gt: new Date(startDate) } },
-                { 'startDate': { $lte: new Date(endDate), $gt: new Date(startDate) } },
-                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lte: new Date(startDate) } }] }
+                { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
             ]
         }
     } else {
@@ -761,10 +780,22 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
             }
         }
     }
-    accountableTasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'asc' })
+    accountableTasks = await Task(connect(DB_CONNECTION, portal)).find({
+        $and: [
+            keySearch,
+            keySearchSpecial,
+            keySearchPeriod
+        ]
+    }).sort({ 'createdAt': 'asc' })
         .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
 
-    var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
+        $and: [
+            keySearch,
+            keySearchSpecial,
+            keySearchPeriod
+        ]
+    });
     var totalPages = Math.ceil(totalCount / perPage);
     return {
         "tasks": accountableTasks,
@@ -788,6 +819,7 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
         },
         isArchived: false
     };
+    let keySearchSpecial = {}, keySearchPeriod = {};
 
     if (organizationalUnit) {
         keySearch = {
@@ -831,14 +863,13 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
                 let endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
                 let endOfLastMonth = new Date(currentYear, currentMonth);
                 
-                keySearch = {
-                    ...keySearch,
+                keySearchSpecial = {
                     $or: [
                         { 'endDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
                         { 'startDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
                         { $and: [{ 'endDate': { $gte: endOfCurrentMonth } }, { 'startDate': { $lte: endOfLastMonth } }] }
                     ]
-                };
+                }
             }
         }
     }
@@ -854,13 +885,11 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
     };
 
     if (JSON.parse(aPeriodOfTime)) {
-
-        keySearch = {
-            ...keySearch,
+        keySearchPeriod = {
             $or: [
-                { 'endDate': { $lte: new Date(endDate), $gt: new Date(startDate) } },
-                { 'startDate': { $lte: new Date(endDate), $gt: new Date(startDate) } },
-                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lte: new Date(startDate) } }] }
+                { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
             ]
         }
     } else {
@@ -921,10 +950,22 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
             }
         }
     }
-    consultedTasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'asc' })
+    consultedTasks = await Task(connect(DB_CONNECTION, portal)).find({
+        $and: [
+            keySearch,
+            keySearchSpecial,
+            keySearchPeriod
+        ]
+    }).sort({ 'createdAt': 'asc' })
         .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
 
-    var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
+        $and: [
+            keySearch,
+            keySearchSpecial,
+            keySearchPeriod
+        ]
+    });
     var totalPages = Math.ceil(totalCount / perPage);
     return {
         "tasks": consultedTasks,
@@ -948,6 +989,7 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
         },
         isArchived: false
     };
+    let keySearchSpecial = {}, keySearchPeriod = {};
 
     if (organizationalUnit) {
         keySearch = {
@@ -991,14 +1033,13 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
                 let endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
                 let endOfLastMonth = new Date(currentYear, currentMonth);
                 
-                keySearch = {
-                    ...keySearch,
+                keySearchSpecial = {
                     $or: [
                         { 'endDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
                         { 'startDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
                         { $and: [{ 'endDate': { $gte: endOfCurrentMonth } }, { 'startDate': { $lte: endOfLastMonth } }] }
                     ]
-                };
+                }
             }
         }
     }
@@ -1014,13 +1055,11 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
     };
 
     if (JSON.parse(aPeriodOfTime)) {
-
-        keySearch = {
-            ...keySearch,
+        keySearchPeriod = {
             $or: [
-                { 'endDate': { $lte: new Date(endDate), $gt: new Date(startDate) } },
-                { 'startDate': { $lte: new Date(endDate), $gt: new Date(startDate) } },
-                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lte: new Date(startDate) } }] }
+                { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
             ]
         }
     } else {
@@ -1053,11 +1092,24 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
         }
     }
 
-    creatorTasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'asc' })
+    creatorTasks = await Task(connect(DB_CONNECTION, portal)).find({
+        $and: [
+            keySearch,
+            keySearchSpecial,
+            keySearchPeriod
+        ]
+    }).sort({ 'createdAt': 'asc' })
         .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
 
-    var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
+        $and: [
+            keySearch,
+            keySearchSpecial,
+            keySearchPeriod
+        ]
+    });
     var totalPages = Math.ceil(totalCount / perPage);
+
     return {
         "tasks": creatorTasks,
         "totalPage": totalPages
@@ -1080,6 +1132,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
         },
         isArchived: false
     };
+    let keySearchSpecial = {}, keySearchPeriod = {};
 
     if (organizationalUnit) {
         keySearch = {
@@ -1123,14 +1176,13 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
                 let endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
                 let endOfLastMonth = new Date(currentYear, currentMonth);
                 
-                keySearch = {
-                    ...keySearch,
+                keySearchSpecial = {
                     $or: [
                         { 'endDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
                         { 'startDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
                         { $and: [{ 'endDate': { $gte: endOfCurrentMonth } }, { 'startDate': { $lte: endOfLastMonth } }] }
                     ]
-                };
+                }
             }
         }
     }
@@ -1146,13 +1198,11 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
     };
 
     if (JSON.parse(aPeriodOfTime)) {
-
-        keySearch = {
-            ...keySearch,
+        keySearchPeriod = {
             $or: [
-                { 'endDate': { $lte: new Date(endDate), $gt: new Date(startDate) } },
-                { 'startDate': { $lte: new Date(endDate), $gt: new Date(startDate) } },
-                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lte: new Date(startDate) } }] }
+                { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
             ]
         }
     } else {
@@ -1213,11 +1263,23 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
             }
         }
     }
-    informedTasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'asc' })
+    informedTasks = await Task(connect(DB_CONNECTION, portal)).find({
+        $and: [
+            keySearch,
+            keySearchSpecial,
+            keySearchPeriod
+        ]
+    }).sort({ 'createdAt': 'asc' })
         .skip(perPage * (page - 1)).limit(perPage)
         .populate({ path: "organizationalUnit creator parent" });
 
-    var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
+        $and: [
+            keySearch,
+            keySearchSpecial,
+            keySearchPeriod
+        ]
+    });
     var totalPages = Math.ceil(totalCount / perPage);
     return {
         "tasks": informedTasks,
@@ -1230,7 +1292,6 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
  */
 exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by_user") => {
     var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime, isAssigned } = task;
-
     var tasks;
     var perPage = Number(perPage);
     var page = Number(number);
@@ -1252,6 +1313,7 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
             isArchived: false
         };
     }
+    let keySearchSpecial = {}, keySearchPeriod = {};
 
     if (organizationalUnit) {
         if (type === "paginated_task_by_unit") {
@@ -1317,14 +1379,13 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
                 let endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
                 let endOfLastMonth = new Date(currentYear, currentMonth);
                 
-                keySearch = {
-                    ...keySearch,
+                keySearchSpecial = {
                     $or: [
                         { 'endDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
                         { 'startDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
                         { $and: [{ 'endDate': { $gte: endOfCurrentMonth } }, { 'startDate': { $lte: endOfLastMonth } }] }
                     ]
-                };
+                }
             }
         }
     }
@@ -1340,12 +1401,11 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
     };
 
     if (aPeriodOfTime && JSON.parse(aPeriodOfTime)) {
-        keySearch = {
-            ...keySearch,
+        keySearchPeriod = {
             $or: [
-                { 'endDate': { $lte: new Date(endDate), $gt: new Date(startDate) } },
-                { 'startDate': { $lte: new Date(endDate), $gt: new Date(startDate) } },
-                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lte: new Date(startDate) } }] }
+                { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
             ]
         }
     } else {
@@ -1407,11 +1467,23 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
         }
     }
     
-    tasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'asc' })
+    tasks = await Task(connect(DB_CONNECTION, portal)).find({
+        $and: [
+            keySearch,
+            keySearchSpecial,
+            keySearchPeriod
+        ]
+    }).sort({ 'createdAt': 'asc' })
         .skip(perPage * (page - 1)).limit(perPage)
         .populate({ path: "organizationalUnit creator parent" });
 
-    var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
+        $and: [
+            keySearch,
+            keySearchSpecial,
+            keySearchPeriod
+        ]
+    });
     var totalPages = Math.ceil(totalCount / perPage);
     return {
         "tasks": tasks,
@@ -1419,7 +1491,7 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
     };
 }
 
-/** Tìm kiếm đơn vị theo 1 roleId */
+/** Tìm kiếm công việc theo đơn vị */
 exports.getPaginatedTasksByOrganizationalUnit = async (portal, task, type) => {
     return await this.getPaginatedTasksByUser(portal, task, type);
 }
@@ -1474,7 +1546,6 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (portal, task) => {
     }
     organizationUnitTasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'asc' })
         .populate({ path: "organizationalUnit creator parent responsibleEmployees" });
-
     return {
         "tasks": organizationUnitTasks
     };
