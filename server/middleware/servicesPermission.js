@@ -1,7 +1,7 @@
 const { connection } = require("mongoose");
 
-const { Role } = require(`${SERVER_MODELS_DIR}`);
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { Role } = require('../models');
+const { connect } = require(`../helpers/dbHelper`);
 
 /**
  * Kiểm tra vai trò hiện tại của user có được phép sử dụng service hay không?

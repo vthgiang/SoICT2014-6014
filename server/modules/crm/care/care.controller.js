@@ -1,5 +1,5 @@
 const CareService = require('./care.service');
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../../logs`);
 
 exports.getCares = async (req, res) => {
     try {

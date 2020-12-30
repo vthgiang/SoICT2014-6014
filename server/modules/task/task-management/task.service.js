@@ -2,13 +2,12 @@ const mongoose = require("mongoose");
 const moment = require("moment");
 const nodemailer = require("nodemailer");
 
-const { Task, TaskTemplate, OrganizationalUnit, User, Company, UserRole } = require(`${SERVER_MODELS_DIR}`);
+const { Task, TaskTemplate, OrganizationalUnit, User, Company, UserRole } = require('../../../models');
+const OrganizationalUnitService = require(`../../super-admin/organizational-unit/organizationalUnit.service`);
+const overviewService = require(`../../kpi/employee/management/management.service`);
 
-const OrganizationalUnitService = require(`${SERVER_MODULES_DIR}/super-admin/organizational-unit/organizationalUnit.service`);
-const overviewService = require(`${SERVER_MODULES_DIR}/kpi/employee/management/management.service`);
-
-const { sendEmail } = require(`${SERVER_HELPERS_DIR}/emailHelper`);
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { sendEmail } = require(`../../../helpers/emailHelper`);
+const { connect } = require(`../../../helpers/dbHelper`);
 
 /**
  * Lấy tất cả các công việc

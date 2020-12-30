@@ -92,15 +92,15 @@ module.exports = async (server) => {
         if (BACKUP[db].auto) BACKUP[db].job.start();
     }
 
-    global.AUTO_SENDEMAIL_TASK = require(SERVER_MODULES_DIR +
+    global.AUTO_SENDEMAIL_TASK = require("./modules" +
         "/scheduler/scheduler.service").sendEmailTaskAutomatic;
     AUTO_SENDEMAIL_TASK.start();
 
-    global.AUTO_CREATE_NOTIFICATION_BIRTHDAY = require(SERVER_MODULES_DIR +
+    global.AUTO_CREATE_NOTIFICATION_BIRTHDAY = require("./modules" +
         "/scheduler/scheduler.service").createNotificationForEmployeesHaveBrithdayCurrent;
     AUTO_CREATE_NOTIFICATION_BIRTHDAY.start();
 
-    global.AUTO_CREATE_NOTIFICATION_END_CONTRACT = require(SERVER_MODULES_DIR +
+    global.AUTO_CREATE_NOTIFICATION_END_CONTRACT = require("./modules" +
         "/scheduler/scheduler.service").createNotificationEndOfContract;
     AUTO_CREATE_NOTIFICATION_END_CONTRACT.start();
 

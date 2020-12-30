@@ -1,5 +1,5 @@
 const TaskTemplateService = require('./taskTemplate.service');
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../../logs`);
 
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module quản lý mẫu công việc
 

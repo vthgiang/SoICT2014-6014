@@ -1,8 +1,8 @@
 const EmployeeService = require('./profile.service');
-const UserService = require(`${SERVER_MODULES_DIR}/super-admin/user/user.service`);
-const CompanyServices = require(`${SERVER_MODULES_DIR}/system-admin/company/company.service`);
+const UserService = require(`../../super-admin/user/user.service`);
+const CompanyServices = require(`../../system-admin/company/company.service`);
 
-const Log = require(`${SERVER_LOGS_DIR}`);
+const Log = require(`../../../logs`);
 
 /**
  * Lấy thông tin cá nhân của nhân viên theo userId (id người dùng) hoặc emplyeeId (id nhân viên);

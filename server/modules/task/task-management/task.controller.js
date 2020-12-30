@@ -1,7 +1,7 @@
 const TaskManagementService = require('./task.service');
-const NotificationServices = require(`${SERVER_MODULES_DIR}/notification/notification.service`);
-const { sendEmail } = require(`${SERVER_HELPERS_DIR}/emailHelper`);
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const NotificationServices = require(`../../notification/notification.service`);
+const { sendEmail } = require(`../../../helpers/emailHelper`);
+const Logger = require(`../../../logs`);
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module quản lý công việc
 
 

@@ -1,11 +1,11 @@
 const {
     Employee,
     Commendation
-} = require(`${SERVER_MODELS_DIR}`);
+} = require('../../../models');
 
 const {
     connect
-} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+} = require(`../../../helpers/dbHelper`);
 
 
 

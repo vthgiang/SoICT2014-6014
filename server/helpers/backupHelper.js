@@ -7,7 +7,7 @@ const option = {
     host: process.env.DB_HOST,
     dbName: process.env.DB_NAME,
     dbPort: process.env.DB_PORT || '27017',
-    store: SERVER_BACKUP_DIR,
+    store: "../../backup",
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD
 };

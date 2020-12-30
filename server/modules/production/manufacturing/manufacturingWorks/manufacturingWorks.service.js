@@ -2,11 +2,11 @@ const {
     ManufacturingWorks,
     ManufacturingMill,
     OrganizationalUnit
-} = require(`${SERVER_MODELS_DIR}`);
+} = require(`../../../../models`);
 
 const {
     connect
-} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+} = require(`../../../../helpers/dbHelper`);
 
 // Thêm mới nhà máy sản xuất
 exports.createManufacturingWorks = async (data, portal) => {

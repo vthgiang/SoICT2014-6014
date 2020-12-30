@@ -1,5 +1,5 @@
 const CareTypeService = require('./careType.service');
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../../logs`);
 
 exports.getCareTypes = async (req, res) => {
     try {

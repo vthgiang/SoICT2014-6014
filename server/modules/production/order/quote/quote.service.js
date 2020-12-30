@@ -1,10 +1,10 @@
 const {
     Quote
-} = require(`${SERVER_MODELS_DIR}`);
+} = require(`../../../../models`);
 
 const {
     connect
-} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+} = require(`../../../../helpers/dbHelper`);
 
 exports.createNewQuote = async (userId, data, portal) => {
     console.log("data", data);

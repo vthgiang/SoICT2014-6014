@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const SLAController = require('./sla.controller');
-const { auth } = require(`${SERVER_MIDDLEWARE_DIR}`);
+const { auth } = require(`../../../../middleware`);
 
 router.post('/', auth, SLAController.createNewSLA);
 router.patch('/:id', auth, SLAController.editSLAByCode);

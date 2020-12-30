@@ -1,9 +1,9 @@
 const arrayToTree = require('array-to-tree');
 const ObjectId = require('mongoose').Types.ObjectId;
-const RoleService = require(`${SERVER_MODULES_DIR}/super-admin/role/role.service`);
-const Terms = require(`${SERVER_SEED_DIR}/terms`);
-const { OrganizationalUnit, UserRole, Role, RoleType, User } = require(`${SERVER_MODELS_DIR}`);
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const RoleService = require(`../../super-admin/role/role.service`);
+const Terms = require(`../../../seed/terms`);
+const { OrganizationalUnit, UserRole, Role, RoleType, User } = require(`../../../models`);
+const { connect } = require(`../../../helpers/dbHelper`);
 
 /**
  * Lấy danh sách các đơn vị trong công ty

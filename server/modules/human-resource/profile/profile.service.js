@@ -10,11 +10,11 @@ const {
     EmployeeCourse,
     Notification,
     Timesheet,
-} = require(`${SERVER_MODELS_DIR}`);
+} = require('../../../models');
 
 const {
     connect
-} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+} = require(`../../../helpers/dbHelper`);
 
 const fs = require('fs');
 

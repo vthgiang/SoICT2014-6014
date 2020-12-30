@@ -1,5 +1,5 @@
 const UserService = require('./user.service');
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../../logs`);
 
 exports.getUsers = async (req, res) => {
     if (req.query.role) {

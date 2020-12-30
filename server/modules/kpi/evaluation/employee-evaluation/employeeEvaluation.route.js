@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const KPIPersonalController = require("./employeeEvaluation.controller");
-const { auth } = require(`${SERVER_MIDDLEWARE_DIR}`);
+const { auth } = require(`../../../../middleware`);
 
 router.get('/employee-kpi-sets', auth, KPIPersonalController.getEmployeeKPISets);
 

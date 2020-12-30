@@ -4,12 +4,12 @@ const {
     UserRole,
     Role,
     Company,
-} = require(`${SERVER_MODELS_DIR}`);
+} = require(`../../../models`);
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const generator = require("generate-password");
-const OrganizationalUnitService = require(`${SERVER_MODULES_DIR}/super-admin/organizational-unit/organizationalUnit.service`);
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const OrganizationalUnitService = require(`../../super-admin/organizational-unit/organizationalUnit.service`);
+const { connect } = require(`../../../helpers/dbHelper`);
 /**
  * Lấy danh sách tất cả user trong 1 công ty
  * @company id của công ty

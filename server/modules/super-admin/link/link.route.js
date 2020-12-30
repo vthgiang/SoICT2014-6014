@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const LinkController = require('./link.controller');
-const { auth } = require(`${SERVER_MIDDLEWARE_DIR}`);
+const { auth } = require(`../../../middleware`);
 
 
 router.get("/links", auth, LinkController.getLinks);

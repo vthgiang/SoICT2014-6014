@@ -1,6 +1,6 @@
 
-const { Lot, Good, Bill, BinLocation, Stock, ManufacturingCommand, OrganizationalUnit, ManufacturingWorks, ManufacturingMill } = require(`${SERVER_MODELS_DIR}`);
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { Lot, Good, Bill, BinLocation, Stock, ManufacturingCommand, OrganizationalUnit, ManufacturingWorks, ManufacturingMill } = require(`../../../../models`);
+const { connect } = require(`../../../../helpers/dbHelper`);
 
 exports.getAllLots = async (query, portal) => {
     let { page, limit, type, managementLocation } = query;

@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const MajorController = require("./major.controller");
-const { auth } = require(`${SERVER_MIDDLEWARE_DIR}`);
+const { auth } = require(`../../../middleware`);
 
 
 router.get('/major', auth, MajorController.searchMajor);

@@ -1,5 +1,5 @@
-const { Bill, Lot, Stock } = require(`${SERVER_MODELS_DIR}`);
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { Bill, Lot, Stock } = require(`../../../../models`);
+const { connect } = require(`../../../../helpers/dbHelper`);
 
 exports.getBillsByType = async (query, userId, portal) => {
     var { page, limit, group, managementLocation } = query;

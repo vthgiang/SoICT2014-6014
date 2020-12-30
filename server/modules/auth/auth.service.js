@@ -3,10 +3,10 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const generator = require("generate-password");
 const nodemailer = require("nodemailer");
-const Models = require(`${SERVER_MODELS_DIR}`);
+const Models = require('../../models');
 const { Privilege, Role, User, UserRole, Company } = Models;
 const fs = require("fs");
-const { connect, initModels } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { connect, initModels } = require(`../../helpers/dbHelper`);
 
 /**
  * Phương thức đăng nhập

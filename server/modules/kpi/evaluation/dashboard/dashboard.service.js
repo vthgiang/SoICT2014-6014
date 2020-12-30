@@ -1,6 +1,6 @@
-const Models = require(`${SERVER_MODELS_DIR}`);
+const Models = require(`../../../../models`);
 const { OrganizationalUnit, EmployeeKpiSet } = Models;
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { connect } = require(`../../../../helpers/dbHelper`);
 
 
 /**

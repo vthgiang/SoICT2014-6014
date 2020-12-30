@@ -3,13 +3,11 @@ const fs = require("fs");
 const moment = require("moment");
 const nodemailer = require("nodemailer");
 
-const { Task, User, UserRole, Role, OrganizationalUnit } = require(`${SERVER_MODELS_DIR}`);
+const { Task, User, UserRole, Role, OrganizationalUnit } = require(`../../../models`);
+const OrganizationalUnitService = require(`../../super-admin/organizational-unit/organizationalUnit.service`);
 
-
-const OrganizationalUnitService = require(`${SERVER_MODULES_DIR}/super-admin/organizational-unit/organizationalUnit.service`);
-
-const { sendEmail } = require(`${SERVER_HELPERS_DIR}/emailHelper`);
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { sendEmail } = require(`../../../helpers/emailHelper`);
+const { connect } = require(`../../../helpers/dbHelper`);
 /**
  * Lấy mẫu công việc theo Id
  */
@@ -685,7 +683,6 @@ exports.deleteCommentOfTaskAction = async (portal, params) => {
  */
 
 exports.createTaskAction = async (portal, params, body, files) => {
-    console.log(SERVER_MODELS_DIR)
     let actionInformation = {
         creator: body.creator,
         description: body.description,

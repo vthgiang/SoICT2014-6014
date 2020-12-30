@@ -1,5 +1,5 @@
 const AuthService = require('./auth.service');
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../logs`);
 
 exports.login = async (req, res) => {
     try {

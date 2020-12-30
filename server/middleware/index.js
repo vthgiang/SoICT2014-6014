@@ -1,12 +1,12 @@
 const jwt = require("jsonwebtoken");
-const Models = require(`${SERVER_MODELS_DIR}`);
+const Models = require('../models');
 const { User, Role, UserRole, Privilege, Link, Company } = Models;
 const ObjectId = require("mongoose").Types.ObjectId;
 const { data, checkServicePermission } = require("./servicesPermission");
 const multer = require("multer");
 const fs = require("fs");
 const CryptoJS = require("crypto-js");
-const { initModels, connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { initModels, connect } = require(`../helpers/dbHelper`);
 
 /**
  * ****************************************

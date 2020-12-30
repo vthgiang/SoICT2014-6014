@@ -1,4 +1,4 @@
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../../../logs`);
 const ManufacturingMillService = require('./manufacturingMill.service');
 
 exports.createManufacturingMill = async (req, res) => {

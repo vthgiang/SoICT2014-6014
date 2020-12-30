@@ -1,11 +1,11 @@
 const moment = require('moment');
 const {
     ManufacturingPlan, OrganizationalUnit, ManufacturingWorks, ManufacturingCommand, ManufacturingOrder, SalesOrder
-} = require(`${SERVER_MODELS_DIR}`);
+} = require(`../../../../models`);
 
 const {
     connect
-} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+} = require(`../../../../helpers/dbHelper`);
 
 const UserService = require('../../../super-admin/user/user.service');
 

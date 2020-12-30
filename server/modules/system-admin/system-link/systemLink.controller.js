@@ -1,5 +1,5 @@
 const SystemLinkServices = require('./systemLink.service');
-const Logger =  require(`${SERVER_LOGS_DIR}`);
+const Logger =  require(`../../../logs`);
 
 exports.getAllSystemLinks = async (req, res) => {
     try {

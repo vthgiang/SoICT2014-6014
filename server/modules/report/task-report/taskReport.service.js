@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-const { TaskReport } = require(`${SERVER_MODELS_DIR}`);
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { TaskReport } = require(`../../../models`);
+const { connect } = require(`../../../helpers/dbHelper`);
 
 
 /**

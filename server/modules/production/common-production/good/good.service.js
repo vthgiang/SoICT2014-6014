@@ -1,5 +1,5 @@
-const { Good } = require(`${SERVER_MODELS_DIR}`);
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { Good } = require(`../../../../models`);
+const { connect } = require(`../../../../helpers/dbHelper`);
 
 exports.getGoodsByType = async (company, query, portal) => {
     var { page, limit, type } = query;

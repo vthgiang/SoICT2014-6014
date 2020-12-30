@@ -1,5 +1,5 @@
 const EducationProgramService = require('./educationProgram.service');
-const Log = require(`${SERVER_LOGS_DIR}`);
+const Log = require(`../../../logs`);
 
 /**
  * Lấy danh sách chương trình đào tạo

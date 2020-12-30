@@ -12,13 +12,13 @@ const {
     UserRole,
     ImportConfiguraion,
     Configuration,
-} = require(`${SERVER_MODELS_DIR}`);
+} = require(`../../../models`);
 
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const generator = require("generate-password");
-const Terms = require(`${SERVER_SEED_DIR}/terms`);
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const Terms = require(`../../../seed/terms`);
+const { connect } = require(`../../../helpers/dbHelper`);
 
 /**
  * Lấy danh sách tất cả các công ty

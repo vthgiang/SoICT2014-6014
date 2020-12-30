@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
-const Models = require(`${SERVER_MODELS_DIR}`);
+const Models = require('../../../../models');
 const { EmployeeKpiSet, EmployeeKpi, OrganizationalUnit, OrganizationalUnitKpiSet, OrganizationalUnitKpi, } = Models;
-const OrganizationalUnitService = require(`${SERVER_MODULES_DIR}/super-admin/organizational-unit/organizationalUnit.service`);
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const OrganizationalUnitService = require(`../../../super-admin/organizational-unit/organizationalUnit.service`);
+const { connect } = require(`../../../../helpers/dbHelper`);
 
 /**
  * get all kpi set in Organizational Unit by month

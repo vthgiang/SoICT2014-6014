@@ -4,7 +4,7 @@ const router = express.Router();
 const {
     auth,
     uploadFile
-} = require(`${SERVER_MIDDLEWARE_DIR}`);
+} = require(`../../../middleware`);
 
 const EmployeeController = require("./profile.controller");
 

@@ -1,6 +1,6 @@
-const Terms = require(`${SERVER_SEED_DIR}/terms`);
-const { OrganizationalUnit, Role, RoleType, UserRole, Privilege } = require(`${SERVER_MODELS_DIR}`);
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const Terms = require(`../../../seed/terms`);
+const { OrganizationalUnit, Role, RoleType, UserRole, Privilege } = require(`../../../models`);
+const { connect } = require(`../../../helpers/dbHelper`);
 
 /**
  * Lấy danh sách tất cả các role của 1 công ty

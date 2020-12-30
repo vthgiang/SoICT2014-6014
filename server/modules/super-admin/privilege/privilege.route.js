@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const PrivilegeController = require('./privilege.controller');
-const { auth } = require('../../../../middleware');
+const { auth } = require('../../../middleware');
 
 
 router.get("/privileges", auth, PrivilegeController.getPriveleges);

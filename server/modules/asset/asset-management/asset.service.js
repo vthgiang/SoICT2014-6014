@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
-const Models = require(`${SERVER_MODELS_DIR}`);
-const {connect} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const Models = require('../../../models');
+const {connect} = require(`../../../helpers/dbHelper`);
 const arrayToTree = require("array-to-tree");
-const {freshObject} = require(`${SERVER_HELPERS_DIR}/functionHelper`);
+const {freshObject} = require(`../../../helpers/functionHelper`);
 
 const {Asset, User, Role} = Models;
 

@@ -1,5 +1,5 @@
-const { TaskTemplate, Privilege, Role, UserRole, OrganizationalUnit, User } = require(`${SERVER_MODELS_DIR}`);
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { TaskTemplate, Privilege, Role, UserRole, OrganizationalUnit, User } = require(`../../../models`);
+const { connect } = require(`../../../helpers/dbHelper`);
 const mongoose = require('mongoose');
 
 /**

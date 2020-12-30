@@ -5,9 +5,9 @@ const {
     ManualNotification,
     Role,
     User,
-} = require(`${SERVER_MODELS_DIR}`);
+} = require(`../../modules`);
 
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { connect } = require(`../../helpers/dbHelper`);
 
 /**
  * Lấy tất cả thông báo mà admin, giám đốc... đã tạo - get manual notification
