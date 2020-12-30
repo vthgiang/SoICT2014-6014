@@ -111,12 +111,12 @@ class GoodIssueEditForm extends Component {
     }
 
     getType = () => {
-        const { group, translate} = this.props;
+        const { group, translate } = this.props;
         let typeArr = [];
         typeArr = [
-            { value: '0', text: translate('manage_warehouse.bill_management.choose_type')},
-            { value: '3', text: translate('manage_warehouse.bill_management.billType.3')},
-            { value: '4', text: translate('manage_warehouse.bill_management.billType.4')},
+            { value: '0', text: translate('manage_warehouse.bill_management.choose_type') },
+            { value: '3', text: translate('manage_warehouse.bill_management.billType.3') },
+            { value: '4', text: translate('manage_warehouse.bill_management.billType.4') },
         ]
         return typeArr;
     }
@@ -129,10 +129,10 @@ class GoodIssueEditForm extends Component {
     validateType = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
-        if(!value) {
+        if (!value) {
             msg = translate('manage_warehouse.bill_management.validate_type')
         }
-        if(willUpdateState) {
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
@@ -152,10 +152,10 @@ class GoodIssueEditForm extends Component {
     validateStock = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
-        if(!value) {
+        if (!value) {
             msg = translate('manage_warehouse.bill_management.validate_stock')
         }
-        if(willUpdateState) {
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
@@ -175,10 +175,10 @@ class GoodIssueEditForm extends Component {
     validateApprover = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
-        if(!value) {
+        if (!value) {
             msg = translate('manage_warehouse.bill_management.validate_approver')
         }
-        if(willUpdateState) {
+        if (willUpdateState) {
             let approvers = [];
             value.map(item => {
                 approvers.push({
@@ -206,10 +206,10 @@ class GoodIssueEditForm extends Component {
     validateAccountables = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
-        if(!value) {
+        if (!value) {
             msg = translate('manage_warehouse.bill_management.validate_approver')
         }
-        if(willUpdateState) {
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
@@ -229,10 +229,10 @@ class GoodIssueEditForm extends Component {
     validateResponsibles = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
-        if(!value) {
+        if (!value) {
             msg = translate('manage_warehouse.bill_management.validate_approver')
         }
-        if(willUpdateState) {
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
@@ -252,10 +252,10 @@ class GoodIssueEditForm extends Component {
     validateQualityControlStaffs = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
-        if(!value) {
+        if (!value) {
             msg = translate('manage_warehouse.bill_management.validate_approver')
         }
-        if(willUpdateState) {
+        if (willUpdateState) {
             let listQualityControlStaffs = [];
             value.map(item => {
                 listQualityControlStaffs.push({
@@ -283,10 +283,10 @@ class GoodIssueEditForm extends Component {
     validatePartner = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
-        if(!value) {
+        if (!value) {
             msg = translate('manage_warehouse.bill_management.validate_customer')
         }
-        if(willUpdateState) {
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
@@ -372,7 +372,7 @@ class GoodIssueEditForm extends Component {
     handleLotsChange = (data) => {
         let totalQuantity = data.length > 0 ? data.reduce(function (accumulator, currentValue) {
             return Number(accumulator) + Number(currentValue.quantity);
-          }, 0) : 0;
+        }, 0) : 0;
         this.state.good.quantity = totalQuantity;
         this.state.good.lots = data;
         this.setState(state => {
@@ -397,7 +397,7 @@ class GoodIssueEditForm extends Component {
     handleAddGood = async (e) => {
         e.preventDefault();
         await this.setState(state => {
-            let listGood = [ ...(this.state.listGood), state.good];
+            let listGood = [...(this.state.listGood), state.good];
             return {
                 ...state,
                 listGood: listGood,
@@ -422,7 +422,7 @@ class GoodIssueEditForm extends Component {
         e.preventDefault();
         const { indexInfo, listGood } = this.state;
         let newListGood;
-        if(listGood){
+        if (listGood) {
             newListGood = listGood.map((item, index) => {
                 return (index === indexInfo) ? this.state.good : item;
             })
@@ -453,7 +453,7 @@ class GoodIssueEditForm extends Component {
     handleEditGood = async (good, index) => {
         let lots = good.lots ? good.lots : [];
         this.setState(state => {
-            return{
+            return {
                 ...state,
                 editInfo: true,
                 indexInfo: index,
@@ -470,7 +470,7 @@ class GoodIssueEditForm extends Component {
     handleDeleteGood = async (index) => {
         let { listGood } = this.state;
         let newListGood;
-        if(listGood){
+        if (listGood) {
             newListGood = listGood.filter((item, x) => index !== x);
         }
         await this.setState(state => {
@@ -495,37 +495,37 @@ class GoodIssueEditForm extends Component {
         const { translate } = this.props;
         const { oldStatus } = this.state;
         let statusArr = [];
-        if(oldStatus === '1') {
+        if (oldStatus === '1') {
             statusArr = [
-                { value: '1', text: translate('manage_warehouse.bill_management.bill_status.1')},
-                { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3')},
-                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4')}
+                { value: '1', text: translate('manage_warehouse.bill_management.bill_status.1') },
+                { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3') },
+                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') }
             ]
         }
-        if(oldStatus === '2') {
+        if (oldStatus === '2') {
             statusArr = [
-                { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2')},
-                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4')}
+                { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2') },
+                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') }
             ]
         }
-        if(oldStatus === '3') {
+        if (oldStatus === '3') {
             statusArr = [
-                { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3')},
-                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4')},
-                { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5')}
+                { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3') },
+                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') },
+                { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5') }
             ]
         }
-        if(oldStatus === '5') {
+        if (oldStatus === '5') {
             statusArr = [
-                { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2')},
-                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4')},
-                { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5')}
+                { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2') },
+                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') },
+                { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5') }
             ]
         }
 
-        if(oldStatus === '4') {
+        if (oldStatus === '4') {
             statusArr = [
-                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4')}
+                { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') }
             ]
         }
 
@@ -533,44 +533,44 @@ class GoodIssueEditForm extends Component {
     }
 
     isGoodsValidated = () => {
-        if(this.state.good.good && this.state.good.quantity && this.state.good.quantity !== 0) {
+        if (this.state.good.good && this.state.good.quantity && this.state.good.quantity !== 0) {
             return true;
         }
         return false;
     }
 
-    static getDerivedStateFromProps(nextProps, prevState){
-        if(nextProps.billId !== prevState.billId || nextProps.oldStatus !== prevState.oldStatus){
-            let approver = []; 
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.billId !== prevState.billId || nextProps.oldStatus !== prevState.oldStatus) {
+            let approver = [];
             let qualityControlStaffs = [];
             let responsibles = [];
             let accountables = [];
-            if(nextProps.approvers && nextProps.approvers.length >  0) {
-                for(let i = 0; i < nextProps.approvers.length; i++) {
-                   approver = [ ...approver, nextProps.approvers[i].approver._id ]; 
+            if (nextProps.approvers && nextProps.approvers.length > 0) {
+                for (let i = 0; i < nextProps.approvers.length; i++) {
+                    approver = [...approver, nextProps.approvers[i].approver._id];
                 }
-                
+
             }
 
-            if(nextProps.listQualityControlStaffs && nextProps.listQualityControlStaffs.length >  0) {
-                for(let i = 0; i < nextProps.listQualityControlStaffs.length; i++) {
-                    qualityControlStaffs = [ ...qualityControlStaffs, nextProps.listQualityControlStaffs[i].staff._id ]; 
+            if (nextProps.listQualityControlStaffs && nextProps.listQualityControlStaffs.length > 0) {
+                for (let i = 0; i < nextProps.listQualityControlStaffs.length; i++) {
+                    qualityControlStaffs = [...qualityControlStaffs, nextProps.listQualityControlStaffs[i].staff._id];
                 }
-                
+
             }
 
-            if(nextProps.responsibles && nextProps.responsibles.length >  0) {
-                for(let i = 0; i < nextProps.responsibles.length; i++) {
-                    responsibles = [ ...responsibles, nextProps.responsibles[i]._id ]; 
+            if (nextProps.responsibles && nextProps.responsibles.length > 0) {
+                for (let i = 0; i < nextProps.responsibles.length; i++) {
+                    responsibles = [...responsibles, nextProps.responsibles[i]._id];
                 }
-                
+
             }
 
-            if(nextProps.accountables && nextProps.accountables.length >  0) {
-                for(let i = 0; i < nextProps.accountables.length; i++) {
-                    accountables = [ ...accountables, nextProps.accountables[i]._id ]; 
+            if (nextProps.accountables && nextProps.accountables.length > 0) {
+                for (let i = 0; i < nextProps.accountables.length; i++) {
+                    accountables = [...accountables, nextProps.accountables[i]._id];
                 }
-                
+
             }
             prevState.good.quantity = 0;
             prevState.good.good = '';
@@ -602,12 +602,12 @@ class GoodIssueEditForm extends Component {
                 listGood: nextProps.listGood,
                 oldGoods: nextProps.listGood,
                 editInfo: false,
-                errorStock: undefined, 
-                errorType: undefined, 
-                errorApprover: undefined, 
+                errorStock: undefined,
+                errorType: undefined,
+                errorApprover: undefined,
                 errorCustomer: undefined,
-                errorQualityControlStaffs: undefined, 
-                errorAccountables: undefined, 
+                errorQualityControlStaffs: undefined,
+                errorAccountables: undefined,
                 errorResponsibles: undefined
 
             }
@@ -618,7 +618,7 @@ class GoodIssueEditForm extends Component {
     }
 
     save = async () => {
-        const { billId, fromStock, code, toStock, type, status, oldStatus, users, approvers, customer, supplier, 
+        const { billId, fromStock, code, toStock, type, status, oldStatus, users, approvers, customer, supplier,
             name, phone, email, address, description, listGood, oldGoods, listQualityControlStaffs, responsibles, accountables } = this.state;
         const { group } = this.props;
         await this.props.editBill(billId, {
@@ -651,7 +651,7 @@ class GoodIssueEditForm extends Component {
                 quantityApproved = 0;
             }
         });
-        if(quantityApproved === 0) {
+        if (quantityApproved === 0) {
             return true;
         }
         return false;
@@ -670,7 +670,7 @@ class GoodIssueEditForm extends Component {
 
         return (
             <React.Fragment>
-        
+
                 <DialogModal
                     modalID={`modal-edit-bill-issue`}
                     formID={`form-edit-bill-issue`}
@@ -683,13 +683,13 @@ class GoodIssueEditForm extends Component {
                 >
                     <QuantityLotGoodIssueEdit group={group} good={good} stock={fromStock} initialData={lots} onDataChange={this.handleLotsChange} />
                     <form id={`form-edit-bill-issue`}>
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{translate('manage_warehouse.bill_management.infor')}</legend>
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <fieldset className="scheduler-border">
+                                <legend className="scheduler-border">{translate('manage_warehouse.bill_management.infor')}</legend>
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className={`form-group`}>
                                         <label>{translate('manage_warehouse.bill_management.code')}</label>
-                                        <input type="text" className="form-control" value={code} disabled/>
+                                        <input type="text" className="form-control" value={code} disabled />
                                     </div>
                                     <div className={`form-group ${!errorType ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.type')}<span className="attention"> * </span></label>
@@ -699,11 +699,11 @@ class GoodIssueEditForm extends Component {
                                             style={{ width: "100%" }}
                                             value={type}
                                             items={dataType}
-                                            onChange={this.handleTypeChange}    
+                                            onChange={this.handleTypeChange}
                                             multiple={false}
                                             disabled={true}
                                         />
-                                        <ErrorLabel content = { errorType } />
+                                        <ErrorLabel content={errorType} />
                                     </div>
                                     <div className={`form-group`}>
                                         <label>{translate('manage_warehouse.bill_management.status')}</label>
@@ -713,7 +713,7 @@ class GoodIssueEditForm extends Component {
                                             style={{ width: "100%" }}
                                             value={status}
                                             items={dataStatus}
-                                            onChange={this.handleStatusChange}    
+                                            onChange={this.handleStatusChange}
                                             multiple={false}
                                             disabled={checkApproved}
                                         />
@@ -728,11 +728,11 @@ class GoodIssueEditForm extends Component {
                                             style={{ width: "100%" }}
                                             value={fromStock}
                                             items={dataStock}
-                                            onChange={this.handleStockChange}    
+                                            onChange={this.handleStockChange}
                                             multiple={false}
                                             disabled={true}
                                         />
-                                        <ErrorLabel content = { errorStock } />
+                                        <ErrorLabel content={errorStock} />
                                     </div>
                                     <div className={`form-group ${!errorCustomer ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.customer')}<span className="attention"> * </span></label>
@@ -742,10 +742,10 @@ class GoodIssueEditForm extends Component {
                                             style={{ width: "100%" }}
                                             value={customer}
                                             items={dataCustomer}
-                                            onChange={this.handlePartnerChange}    
+                                            onChange={this.handlePartnerChange}
                                             multiple={false}
                                         />
-                                        <ErrorLabel content = { errorCustomer } />
+                                        <ErrorLabel content={errorCustomer} />
                                     </div>
                                 </div>
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -756,68 +756,68 @@ class GoodIssueEditForm extends Component {
                                 </div>
                             </fieldset>
                         </div>
-                        { this.state.userId === this.state.creator &&
-                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{translate('manage_warehouse.bill_management.list_saffs')}</legend>
-                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.approved')}<span className="attention"> * </span></label>
-                                    <SelectBox
-                                        id={`select-approver-bill-issue-edit`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={approver}
-                                        items={dataApprover}
-                                        onChange={this.handleApproverChange}    
-                                        multiple={true}
-                                    />
-                                    <ErrorLabel content = { errorApprover } />
-                                </div>
-                                <div className={`form-group ${!errorResponsibles ? "" : "has-error"}`}>
-                                    <label>{translate('manage_warehouse.bill_management.users')}<span className="attention"> * </span></label>
-                                    <SelectBox
-                                        id={`select-accountables-bill-issue-edit`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={responsibles}
-                                        items={dataApprover}
-                                        onChange={this.handleResponsiblesChange}    
-                                        multiple={true}
-                                    />
-                                    <ErrorLabel content = { errorResponsibles } />
-                                </div>
-                            </div>
-                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className={`form-group ${!errorQualityControlStaffs ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.qualityControlStaffs')}<span className="attention"> * </span></label>
-                                        <SelectBox
-                                            id={`select-qualityControlStaffs-bill-issue-edit`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            value={qualityControlStaffs}
-                                            items={dataApprover}
-                                            onChange={this.handleQualityControlStaffsChange}    
-                                            multiple={true}
-                                        />
-                                        <ErrorLabel content = { errorQualityControlStaffs } />
+                        {this.state.userId === this.state.creator &&
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <fieldset className="scheduler-border">
+                                    <legend className="scheduler-border">{translate('manage_warehouse.bill_management.list_saffs')}</legend>
+                                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                        <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
+                                            <label>{translate('manage_warehouse.bill_management.approved')}<span className="attention"> * </span></label>
+                                            <SelectBox
+                                                id={`select-approver-bill-issue-edit`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                value={approver}
+                                                items={dataApprover}
+                                                onChange={this.handleApproverChange}
+                                                multiple={true}
+                                            />
+                                            <ErrorLabel content={errorApprover} />
+                                        </div>
+                                        <div className={`form-group ${!errorResponsibles ? "" : "has-error"}`}>
+                                            <label>{translate('manage_warehouse.bill_management.users')}<span className="attention"> * </span></label>
+                                            <SelectBox
+                                                id={`select-accountables-bill-issue-edit`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                value={responsibles}
+                                                items={dataApprover}
+                                                onChange={this.handleResponsiblesChange}
+                                                multiple={true}
+                                            />
+                                            <ErrorLabel content={errorResponsibles} />
+                                        </div>
                                     </div>
-                                    <div className={`form-group ${!errorAccountables ? "" : "has-error"}`}>
-                                        <label>{translate('manage_warehouse.bill_management.accountables')}<span className="attention"> * </span></label>
-                                        <SelectBox
-                                            id={`select-responsibles-bill-issue-edit`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            value={accountables}
-                                            items={dataApprover}
-                                            onChange={this.handleAccountablesChange}    
-                                            multiple={true}
-                                        />
-                                        <ErrorLabel content = { errorAccountables } />
+                                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                        <div className={`form-group ${!errorQualityControlStaffs ? "" : "has-error"}`}>
+                                            <label>{translate('manage_warehouse.bill_management.qualityControlStaffs')}<span className="attention"> * </span></label>
+                                            <SelectBox
+                                                id={`select-qualityControlStaffs-bill-issue-edit`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                value={qualityControlStaffs}
+                                                items={dataApprover}
+                                                onChange={this.handleQualityControlStaffsChange}
+                                                multiple={true}
+                                            />
+                                            <ErrorLabel content={errorQualityControlStaffs} />
+                                        </div>
+                                        <div className={`form-group ${!errorAccountables ? "" : "has-error"}`}>
+                                            <label>{translate('manage_warehouse.bill_management.accountables')}<span className="attention"> * </span></label>
+                                            <SelectBox
+                                                id={`select-responsibles-bill-issue-edit`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                value={accountables}
+                                                items={dataApprover}
+                                                onChange={this.handleAccountablesChange}
+                                                multiple={true}
+                                            />
+                                            <ErrorLabel content={errorAccountables} />
+                                        </div>
                                     </div>
+                                </fieldset>
                             </div>
-                        </fieldset>
-                        </div>
                         }
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <fieldset className="scheduler-border">
@@ -844,83 +844,83 @@ class GoodIssueEditForm extends Component {
                                 </div>
                             </fieldset>
                         </div>
-                        
-                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <fieldset className="scheduler-border">
-                                    <legend className="scheduler-border">{translate('manage_warehouse.bill_management.goods')}</legend>
-                                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                        <div className="form-group">
-                                            <label>{translate('manage_warehouse.bill_management.choose_good')}</label>
-                                            <SelectBox
-                                                id={`select-good-issue-edit`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                value={good.good ? good.good._id : '1'}
-                                                items={listGoods}
-                                                onChange={this.handleGoodChange}    
-                                                multiple={false}
-                                            />
-                                        </div>
+
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <fieldset className="scheduler-border">
+                                <legend className="scheduler-border">{translate('manage_warehouse.bill_management.goods')}</legend>
+                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div className="form-group">
+                                        <label>{translate('manage_warehouse.bill_management.choose_good')}</label>
+                                        <SelectBox
+                                            id={`select-good-issue-edit`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={good.good ? good.good._id : '1'}
+                                            items={listGoods}
+                                            onChange={this.handleGoodChange}
+                                            multiple={false}
+                                        />
                                     </div>
-                                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                        <div className="form-group">
-                                            <label>{translate('manage_warehouse.bill_management.number')}</label>
-                                            <div style={{display: "flex"}}><input className="form-control" value={good.quantity} onChange={this.handleQuantityChange} disabled type="number" />{ good.good && <i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: '5px', marginTop: '9px', cursor:'pointer' }} onClick={() => this.addQuantity()}></i>}</div>
-                                        </div>
+                                </div>
+                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div className="form-group">
+                                        <label>{translate('manage_warehouse.bill_management.number')}</label>
+                                        <div style={{ display: "flex" }}><input className="form-control" value={good.quantity} onChange={this.handleQuantityChange} disabled type="number" />{good.good && <i className="fa fa-plus-square" style={{ color: "#28A745", marginLeft: '5px', marginTop: '9px', cursor: 'pointer' }} onClick={() => this.addQuantity()}></i>}</div>
                                     </div>
-                                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <div className="form-group">
-                                            <label>{translate('manage_warehouse.bill_management.description')}</label>
-                                            <textarea type="text" className="form-control" value={good.description} onChange={this.handleGoodDescriptionChange} />
-                                        </div>
+                                </div>
+                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div className="form-group">
+                                        <label>{translate('manage_warehouse.bill_management.description')}</label>
+                                        <textarea type="text" className="form-control" value={good.description} onChange={this.handleGoodDescriptionChange} />
                                     </div>
-                                    <div className="pull-right" style={{marginBottom: "10px"}}>
-                                        {this.state.editInfo ?
-                                            <React.Fragment>
-                                                <button className="btn btn-success" onClick={this.handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
-                                                <button className="btn btn-success" disabled={!this.isGoodsValidated()} onClick={this.handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
-                                            </React.Fragment>:
-                                            <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isGoodsValidated()} onClick={this.handleAddGood}>{translate('task_template.add')}</button>
-                                        }
-                                        <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearGood}>{translate('task_template.delete')}</button>
-                                    </div>
-                                    <div className={`form-group`}>
-                                        {/* Bảng thông tin chi tiết */}
-                                        <table className="table">
-                                            <thead>
-                                                <tr>
-                                                    <th style={{width: "5%"}} title={translate('manage_warehouse.bill_management.index')}>{translate('manage_warehouse.bill_management.index')}</th>
-                                                    <th title={translate('manage_warehouse.bill_management.good_code')}>{translate('manage_warehouse.bill_management.good_code')}</th>
-                                                    <th title={translate('manage_warehouse.bill_management.good_name')}>{translate('manage_warehouse.bill_management.good_name')}</th>
-                                                    <th title={translate('manage_warehouse.bill_management.unit')}>{translate('manage_warehouse.bill_management.unit')}</th>
-                                                    <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
-                                                    <th title={translate('manage_warehouse.bill_management.note')}>{translate('manage_warehouse.bill_management.note')}</th>
-                                                    <th>{translate('task_template.action')}</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id={`good-bill-edit`}>
+                                </div>
+                                <div className="pull-right" style={{ marginBottom: "10px" }}>
+                                    {this.state.editInfo ?
+                                        <React.Fragment>
+                                            <button className="btn btn-success" onClick={this.handleCancelEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
+                                            <button className="btn btn-success" disabled={!this.isGoodsValidated()} onClick={this.handleSaveEditGood} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
+                                        </React.Fragment> :
+                                        <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isGoodsValidated()} onClick={this.handleAddGood}>{translate('task_template.add')}</button>
+                                    }
+                                    <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearGood}>{translate('task_template.delete')}</button>
+                                </div>
+                                <div className={`form-group`}>
+                                    {/* Bảng thông tin chi tiết */}
+                                    <table className="table">
+                                        <thead>
+                                            <tr>
+                                                <th style={{ width: "5%" }} title={translate('manage_warehouse.bill_management.index')}>{translate('manage_warehouse.bill_management.index')}</th>
+                                                <th title={translate('manage_warehouse.bill_management.good_code')}>{translate('manage_warehouse.bill_management.good_code')}</th>
+                                                <th title={translate('manage_warehouse.bill_management.good_name')}>{translate('manage_warehouse.bill_management.good_name')}</th>
+                                                <th title={translate('manage_warehouse.bill_management.unit')}>{translate('manage_warehouse.bill_management.unit')}</th>
+                                                <th title={translate('manage_warehouse.bill_management.number')}>{translate('manage_warehouse.bill_management.number')}</th>
+                                                <th title={translate('manage_warehouse.bill_management.note')}>{translate('manage_warehouse.bill_management.note')}</th>
+                                                <th>{translate('task_template.action')}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id={`good-bill-edit`}>
                                             {
                                                 (typeof listGood === 'undefined' || listGood.length === 0) ? <tr><td colSpan={7}><center>{translate('task_template.no_data')}</center></td></tr> :
-                                                listGood.map((x, index) =>
-                                                    <tr key={index}>
-                                                        <td>{index + 1}</td>
-                                                        <td>{x.good.code}</td>
-                                                        <td>{x.good.name}</td>
-                                                        <td>{x.good.baseUnit}</td>
-                                                        <td>{x.quantity}</td>
-                                                        <td>{x.description}</td>
-                                                        <td>
-                                                            <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => this.handleEditGood(x, index)}><i className="material-icons"></i></a>
-                                                            <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => this.handleDeleteGood(index)}><i className="material-icons"></i></a>
-                                                        </td>
-                                                    </tr>
-                                                )
+                                                    listGood.map((x, index) =>
+                                                        <tr key={index}>
+                                                            <td>{index + 1}</td>
+                                                            <td>{x.good.code}</td>
+                                                            <td>{x.good.name}</td>
+                                                            <td>{x.good.baseUnit}</td>
+                                                            <td>{x.quantity}</td>
+                                                            <td>{x.description}</td>
+                                                            <td>
+                                                                <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => this.handleEditGood(x, index)}><i className="material-icons"></i></a>
+                                                                <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => this.handleDeleteGood(index)}><i className="material-icons"></i></a>
+                                                            </td>
+                                                        </tr>
+                                                    )
                                             }
                                         </tbody>
-                                        </table>
-                                    </div>
-                                </fieldset>
-                            </div>
+                                    </table>
+                                </div>
+                            </fieldset>
+                        </div>
                     </form>
                 </DialogModal>
             </React.Fragment>

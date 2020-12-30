@@ -11,17 +11,18 @@ const {
 exports.createBusinessDepartment = async (data, portal) => {
     let newBusinessDepartment = await BusinessDepartment(connect(DB_CONNECTION, portal)).create({
         code: data.code,
-        manager: data.manager,
+        managers: data.managers,
         organizationalUnit: data.organizationalUnit,
         status: data.status,
         description: data.description,
+        type: data.type
     })
 
     let businessDepartment = await BusinessDepartment(connect(DB_CONNECTION, portal)).findById({ _id: newBusinessDepartment._id })
         .populate([{
             path: "organizationalUnit",
             populate: [{
-                path: 'deans',
+                path: 'managers',
                 populate: [{
                     path: "users",
                     populate: [{
@@ -29,10 +30,10 @@ exports.createBusinessDepartment = async (data, portal) => {
                     }]
                 }]
             },
-            { path: 'viceDeans' },
+            { path: 'deputyManagers' },
             { path: 'employees' }]
         }, {
-            path: 'manager'
+            path: 'managers'
         }]);
 
     return {businessDepartment};
@@ -46,10 +47,11 @@ exports.editBusinessDepartment = async (id, data, portal) => {
     }
 
     oldBusinessDepartment.code = data.code;
-    oldBusinessDepartment.manager = data.manager;
+    oldBusinessDepartment.managers = data.managers;
     oldBusinessDepartment.organizationalUnit = data.organizationalUnit;
     oldBusinessDepartment.status = data.status;
     oldBusinessDepartment.description = data.description;
+    oldBusinessDepartment.type = data.type;
 
     await oldBusinessDepartment.save();
 
@@ -57,7 +59,7 @@ exports.editBusinessDepartment = async (id, data, portal) => {
         .populate([{
             path: "organizationalUnit",
             populate: [{
-                path: 'deans',
+                path: 'managers',
                 populate: [{
                     path: "users",
                     populate: [{
@@ -65,10 +67,10 @@ exports.editBusinessDepartment = async (id, data, portal) => {
                     }]
                 }]
             },
-            { path: 'viceDeans' },
+            { path: 'deputyManagers' },
             { path: 'employees' }]
         }, {
-            path: 'manager'
+            path: 'managers'
         }]);
 
     return {businessDepartment};
@@ -89,13 +91,17 @@ exports.getAllBusinessDepartments = async (query, portal) => {
         option.status = query.status
     }
 
+    if (query.type) {
+        option.type = query.type
+    }
+
     if (!page || !limit) {
         let allBusinessDepartments = await BusinessDepartment(connect(DB_CONNECTION, portal))
             .find(option)
             .populate([{
                 path: "organizationalUnit",
                 populate: [{
-                    path: 'deans',
+                    path: 'managers',
                     populate: [{
                         path: "users",
                         populate: [{
@@ -103,10 +109,10 @@ exports.getAllBusinessDepartments = async (query, portal) => {
                         }]
                     }]
                 },
-                { path: 'viceDeans' },
+                { path: 'deputyManagers' },
                 { path: 'employees' }]
             }, {
-                path: 'manager'
+                path: 'managers'
             }]);
 
         return { allBusinessDepartments }
@@ -118,7 +124,7 @@ exports.getAllBusinessDepartments = async (query, portal) => {
                 populate: [{
                     path: "organizationalUnit",
                     populate: [{
-                        path: 'deans',
+                        path: 'managers',
                         populate: [{
                             path: "users",
                             populate: [{
@@ -126,10 +132,10 @@ exports.getAllBusinessDepartments = async (query, portal) => {
                             }]
                         }]
                     },
-                    { path: 'viceDeans' },
+                    { path: 'deputyManagers' },
                     { path: 'employees' }]
                 }, {
-                    path: 'manager'
+                    path: 'managers'
                 }]
             })
         return { allBusinessDepartments }

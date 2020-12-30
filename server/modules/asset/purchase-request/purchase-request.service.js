@@ -105,7 +105,7 @@ exports.searchPurchaseRequests = async (portal, company, query) => {
         connect(DB_CONNECTION, portal)
     )
         .find(keySearch)
-        .populate({path: "proponent approver"})
+        .populate({path: "proponent approver recommendUnits"})
         .sort({createdAt: "desc"})
         .skip(page ? parseInt(page) : 0)
         .limit(limit ? parseInt(limit) : 0);
@@ -113,17 +113,27 @@ exports.searchPurchaseRequests = async (portal, company, query) => {
     return {totalList, listRecommendProcures};
 };
 
+exports.getUrl = (destination, filename) => {
+    let url = `${destination}/${filename}`;
+    return url.substr(1, url.length);
+}
 /**
  * Thêm mới thông tin phiếu đề nghị mua sắm thiết bị
  * @data: dữ liệu phiếu đề nghị mua sắm thiết bị
  */
-exports.createPurchaseRequest = async (portal, company, data) => {
+exports.createPurchaseRequest = async (portal, company, data, files) => {
     const checkPur = await RecommendProcure(
         connect(DB_CONNECTION, portal)
     ).findOne({recommendNumber: data.recommendNumber});
     if (checkPur) throw ["recommend_number_exist"];
     data = freshObject(data);
 
+    if (files) {
+        filesConvert = files.map(obj => ({
+            fileName: obj.originalname,
+            url: this.getUrl(obj.destination, obj.filename),
+        }))
+    }
     var createRecommendProcure = await RecommendProcure(
         connect(DB_CONNECTION, portal)
     ).create({
@@ -140,6 +150,8 @@ exports.createPurchaseRequest = async (portal, company, data) => {
         estimatePrice: data.estimatePrice,
         note: data.note,
         status: data.status,
+        files: filesConvert,
+        recommendUnits: data.recommendUnits,
     });
     return createRecommendProcure;
 };
@@ -160,11 +172,23 @@ exports.deletePurchaseRequest = async (portal, id) => {
  * Update thông tin phiếu đề nghị mua sắm thiết bị
  * @id: id phiếu đề nghị mua sắm thiết bị muốn update
  */
-exports.updatePurchaseRequest = async (portal, id, data) => {
+exports.updatePurchaseRequest = async (portal, id, data, files) => {
+    let filesConvert = [];
+    console.log('data',data)
+    if (files) {
+        filesConvert = files.map(obj => ({
+            fileName: obj.originalname,
+            url: this.getUrl(obj.destination, obj.filename),
+        }))
+    }
+    if (data.oldFiles && filesConvert) {
+        filesConvert = [...data.oldFiles, ...filesConvert]
+    }
+    console.log('filesConvert', filesConvert);
     var recommendProcureChange = {
         recommendNumber: data.recommendNumber,
         dateCreate: data.dateCreate,
-        proponent: data.proponent, // Người đề nghị
+        proponent: data.proponent._id, // Người đề nghị
         equipmentName: data.equipmentName,
         equipmentDescription: data.equipmentDescription,
         supplier: data.supplier,
@@ -174,18 +198,15 @@ exports.updatePurchaseRequest = async (portal, id, data) => {
         estimatePrice: data.estimatePrice,
         note: data.note,
         status: data.status,
+        recommendUnits: data.recommendUnits,
+        files: filesConvert,
     };
 
     // Cập nhật thông tin phiếu đề nghị mua sắm thiết bị vào database
-    await RecommendProcure(connect(DB_CONNECTION, portal)).findOneAndUpdate(
-        {
-            _id: id,
-        },
+    return await RecommendProcure(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
+       id,
         {
             $set: recommendProcureChange,
-        }
+        },{new:true}
     );
-    return await RecommendProcure(connect(DB_CONNECTION, portal)).findOne({
-        _id: id,
-    });
 };

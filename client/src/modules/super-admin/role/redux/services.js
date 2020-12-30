@@ -34,6 +34,10 @@ function create(role) {
 }
 
 function edit(role) {
+    let showAlert = true;
+    if(role.showAlert!==undefined){
+        showAlert = role.showAlert
+    };
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/role/roles/${role.id}`,
         method: 'PATCH',
@@ -41,7 +45,7 @@ function edit(role) {
         params:{
             notEditRoleInfo: role.notEditRoleInfo
         }
-    }, true, true, 'super_admin.role');
+    }, showAlert, true, 'super_admin.role');
 }
 
 function destroy(roleId) {

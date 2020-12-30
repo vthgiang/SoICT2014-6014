@@ -191,7 +191,7 @@ class EvaluateByResponsibleEmployee extends Component {
         }
 
         // let progress = task.progress;
-        let progress;
+        let progress = 0;
         if (evaluation) {
             progress = evaluation.progress;
             if (evaluation.results.length !== 0) {
@@ -412,21 +412,6 @@ class EvaluateByResponsibleEmployee extends Component {
                 indexReRender: state.indexReRender + 1,
             }
         });
-    }
-
-    // Function format ngày hiện tại thành dạnh dd-mm-yyyy
-    formatDate = (date) => {
-        let d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-
-        return [day, month, year].join('-');
     }
 
     // Function format ngày hiện tại thành dạnh dd-mm-yyyy
@@ -1001,7 +986,7 @@ class EvaluateByResponsibleEmployee extends Component {
 
                                 {/* Điểm tự đánh giá */}
                                 <div className={`form-group ${errorOnPoint === undefined ? "" : "has-error"}`}>
-                                    <label>{translate('task.task_management.detail_emp_point')} (<span style={{ color: "red" }}>*</span>)</label>
+                                    <label>{translate('task.task_management.detail_emp_point')} (0 - 100) <span style={{ color: "red" }}>*</span></label>
                                     <input
                                         className="form-control"
                                         type="number"

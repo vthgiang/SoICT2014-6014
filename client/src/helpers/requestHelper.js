@@ -4,20 +4,29 @@ import ServerResponseAlert from '../modules/alert/components/serverResponseAlert
 import { toast } from 'react-toastify';
 import React from 'react';
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
+import store from '../redux/store'
+import { AuthConstants } from '../modules/auth/redux/constants';
+import JSEncrypt from 'jsencrypt';
+import {key} from './pub.json'
+
+function encryptMessage(message) {
+    const publicKey = key;
+    const jsEncrypt = new JSEncrypt();
+    jsEncrypt.setPublicKey(publicKey);
+
+    return jsEncrypt.encrypt(message);
+}
 
 const AuthenticateHeader = async() => {
-    const token = getStorage('jwt');
-    const currentRole = getStorage('currentRole');
     const fpAgent = await FingerprintJS.load();
     const result = await fpAgent.get();
     const fingerprint = result.visitorId;
 
     return {
-        'current-page': window.location.pathname,
-        'auth-token': token,
-        'current-role': currentRole,
-        'fingerprint': fingerprint.toString(),
-        'Content-Type': 'application/json'
+        "crtp": encryptMessage(window.location.pathname),
+        "fgp": encryptMessage(fingerprint.toString()),
+        "utk": getStorage('jwt'),
+        "crtr": encryptMessage(getStorage('currentRole'))
     }
 }
 
@@ -90,9 +99,10 @@ export async function sendRequest(options, showSuccessAlert = false, showFailAle
         if (messages) {
             if (checkErrorAuth(messages[0]))
                 showAuthResponseAlertAndRedirectToLoginPage();
-            else if (messages[0] === 'acc_log_out') {
+            else if (messages[0] === 'acc_log_out')
                 clearStorage();
-            }
+            else if(messages[0] === 'auth_password2_not_complete') // Yêu cầu người dùng hoàn thành câu hỏi xác thực thông tin bắt buộc
+                store.dispatch({ type: AuthConstants.REDIRECT_AUTH_QUESTION_PAGE, payload: err.response.data.content.token });
             else {
                 showFailAlert && toast.error(
                     <ServerResponseAlert

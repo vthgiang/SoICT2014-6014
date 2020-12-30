@@ -4,20 +4,21 @@ header.fixed-top {
     right: 0;
     left: 0;
     z-index: 1;
-    background-color: #605CA8;
+    background-color: #683BA4;
 }
 
-header.fixed-top > h3 {
+header.fixed-top > h1 {
+    font-family: 'Trebuchet MS', sans-serif;
     margin: 0;
     color: white;
-    font-size: 2.5rem;
-    font-weight: 600;
-    padding: 10px 20px;
+    font-size: 3.0rem;
+    font-weight: bold;
+    padding: 12px 24px 12px 24px;
 }
 
 span.dx-language {
     position: absolute;
-    top: 4px;
+    top: 10px;
     right: 10px;
 }
 
@@ -34,7 +35,7 @@ span.dx-language-setting {
     position: absolute;
     top: 50px;
     right: 8px;
-    background-color: #fff;
+    background-color: #683BA4;
     display: none;
 }
 
@@ -46,17 +47,29 @@ span.dx-language-setting > a > img {
 
 span.dx-auth {
     position: absolute;
-    top: 13px;
+    top: 20px;
     right: 50px;
+}
+
+span.dx-options {
+    position: absolute;
+    top: 20px;
+    right: 180px;
+    font-weight: bold;
+}
+
+span.dx-options > a {
+    padding-left: 12px;
+    font-size: 1.6rem;
+    color: #fff;
 }
 
 span.dx-auth > button.signin {
     padding: 5px 12px;
     border: none;
-    background-color: white;
-    border-radius: 2px;
-    color: #605CA8;
-    font-size: 1.5rem;
+    background-color: #683BA4;
+    color: #fff;
+    font-size: 1.8rem;
     font-weight: bolder;
 }
 
@@ -76,18 +89,22 @@ div.row.dx-footer {
 
 section.dx-container {
     background-color: #fff;
-    padding: 60px 400px;
+    padding: 140px 400px;
+}
+
+section#dx-intro.dx-container {
+    min-height: 100vh;
 }
 
 @media (max-width: 1400px) {
     section.dx-container {
-        padding: 60px 120px;
+        padding: 80px 120px;
     }    
 }
 
 @media (max-width: 900px) {
     section.dx-container {
-        padding: 60px 120px;
+        padding: 90px 120px;
     }    
 }
 
@@ -95,6 +112,15 @@ section.dx-container {
     section.dx-container {
         padding: 60px 10px 0px 10px;
     }    
+}
+
+.dx-intro-container {
+    display: flex;
+    align-items: center;
+    /* justify-content: center; */
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
 }
 
 .p-center-h {
@@ -122,26 +148,28 @@ section.dx-container {
 
 ul.dx-services {
     margin-top: 20px;
-    font-size: 14px;
+    font-size: 16px;
     list-style-type: none;
 }
 
 li.dx-service-item {
     font-weight: 400;
+    font-size: 18px;
 }
 
 h2.dx-sologan {
-    font-size: 4rem;
+    font-size: 5rem;
+    font-weight: bold;
 }
 
 li.dx-service-item > i {
-    color: #fff;
+    color: #28A745;
     padding: 5px;
 }
 
 section#dx-intro {
     padding-top: 80px;
-    background-color: #605CA8;
+    background-color: #683BA4;
     color: #fff;
 }
 
@@ -150,7 +178,7 @@ section#dx-service {
 }
 
 section#dx-service > h3 {
-    color: #605CA8;
+    color: #fff;
     font-weight: 600;
     font-size: 3.5rem;
 }
@@ -198,7 +226,6 @@ form.dx-contact > input {
     width: 100%;
     padding: 10px 20px;
     border: 0.5px solid #b1b1b1;
-    border-radius: 2px;
     margin: 3px 0px;
 }
 
@@ -206,7 +233,6 @@ form.dx-contact > textarea {
     width: 100%;
     padding: 10px 20px;
     border: 0.5px solid #b1b1b1;
-    border-radius: 2px;
     margin: 3px 0px;
 }
 
@@ -214,12 +240,11 @@ form.dx-contact > button.dx-contact {
     width: 100%;
     padding: 10px 20px;
     border: none;
-    border-radius: 15px;
     margin: 3px 0px;
     color: #fff;
     font-weight: bolder;
     font-size: 1.6rem;
-    background-color: #605CA8;
+    background-color: #683BA4;
 } 
 
 ul.dx-locations {
@@ -233,7 +258,7 @@ li.dx-location-item {
 }
 
 li.dx-location-item > i {
-    color: #605CA8;
+    color: #fff;
     padding: 8px;
     line-height: 1.3;
 }
@@ -266,7 +291,7 @@ div.dx-card > .dx-card-header {
 
 div.dx-card > .dx-card-body > h4 {
     font-weight: bolder;
-    color: #605CA8;
+    color: #fff;
 }
 
 div.dx-card > .dx-card-body > p {
@@ -278,7 +303,7 @@ ul.dx-footer.care {
 }
 
 li.dx-footer.care.item > i {
-    color: #605CA8;
+    color: #fff;
     padding-right: 2px;
 }
 
@@ -286,7 +311,6 @@ form.dx-service > input {
     width: 100%;
     padding: 10px 20px;
     border: 0.5px solid #b1b1b1;
-    border-radius: 2px;
     margin: 3px 0px;
 }
 
@@ -294,7 +318,6 @@ form.dx-service > select {
     width: 100%;
     padding: 10px 20px;
     border: 0.5px solid #b1b1b1;
-    border-radius: 2px;
     margin: 3px 0px;
 }
 
@@ -302,12 +325,11 @@ form.dx-service > button.send {
     width: 100%;
     padding: 10px 20px;
     border: none;
-    border-radius: 15px;
     margin: 3px 0px;
     color: #fff;
     font-weight: bolder;
     font-size: 1.6rem;
-    background-color: #605CA8;
+    background-color: #683BA4;
 }
 
 span.p-center.media > img {
@@ -325,8 +347,7 @@ img.service-image {
 .dx-workspace-button {
     padding: 8px 12px;
     border:  none;
-    border-radius: 2px;
-    color: #605CA8;
+    color: #683BA4;
     background-color: #fff;
     font-size: 1.5rem;
     font-weight: bolder;

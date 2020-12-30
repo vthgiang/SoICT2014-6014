@@ -307,6 +307,55 @@ class InsurranceTab extends Component {
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
+                    {/* Thông tin bảo hiểm xã hội */}
+                    <fieldset className="scheduler-border">
+                        <legend className="scheduler-border" ><h4 className="box-title">{translate('human_resource.profile.bhxh')}</h4></legend>
+                        <div className="row">
+                            {/* Mã số bảo hiểm xã hội */}
+                            <div className="form-group col-md-4">
+                                <label>{translate('human_resource.profile.number_BHXH')}</label>
+                                <input type="text" className="form-control" name="socialInsuranceNumber" value={socialInsuranceNumber ? socialInsuranceNumber : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.number_BHXH')} autoComplete="off" />
+                            </div>
+                            {/* Quá trình đóng bảo hiểm xã hội */}
+                            <div className="col-md-12">
+                                <h4 className="row col-md-6">{translate('human_resource.profile.bhxh_process')}:</h4>
+                                <SocialInsuranceAddModal handleChange={this.handleAddBHXH} id={`addBHXH${id}`} />
+                                {!pageCreate && <ExportExcel id={`edit-create-export-bhxh${id}`} buttonName={translate('human_resource.name_button_export')} exportData={exportData} style={{ marginTop: 2, marginRight: 15 }} />}
+                                <table className="table table-striped table-bordered table-hover " style={{ marginBottom: 0 }} >
+                                    <thead>
+                                        <tr>
+                                            <th>{translate('human_resource.profile.from_month_year')}</th>
+                                            <th>{translate('human_resource.profile.to_month_year')}</th>
+                                            <th>{translate('human_resource.profile.unit')}</th>
+                                            <th>{translate('table.position')}</th>
+                                            <th>{translate('human_resource.profile.money')}</th>
+                                            <th style={{ width: '120px' }}>{translate('table.action')}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {socialInsuranceDetails && socialInsuranceDetails.length !== 0 &&
+                                            socialInsuranceDetails.map((x, index) => (
+                                                <tr key={index}>
+                                                    <td>{this.formatDate(x.startDate, true)}</td>
+                                                    <td>{this.formatDate(x.endDate, true)}</td>
+                                                    <td>{x.company}</td>
+                                                    <td>{x.position}</td>
+                                                    <td>{x.money}</td>
+                                                    <td>
+                                                        <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.edit_bhxh')}><i className="material-icons">edit</i></a>
+                                                        <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                    </tbody>
+                                </table>
+                                {
+                                    (!socialInsuranceDetails || socialInsuranceDetails.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                }
+                            </div>
+                        </div>
+                    </fieldset>
+
                     {/* Thông tin bảo hiểm y tế */}
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border" ><h4 className="box-title">{translate('human_resource.profile.bhyt')}</h4></legend>
@@ -338,52 +387,6 @@ class InsurranceTab extends Component {
                             </div>
                         </div>
                     </fieldset>
-                    {/* Thông tin bảo hiểm xã hội */}
-                    <fieldset className="scheduler-border">
-                        <legend className="scheduler-border" ><h4 className="box-title">{translate('human_resource.profile.bhxh')}</h4></legend>
-                        <div className="row">
-                            {/* Mã số bảo hiểm xã hội */}
-                            <div className="form-group col-md-4">
-                                <label>{translate('human_resource.profile.number_BHXH')}</label>
-                                <input type="text" className="form-control" name="socialInsuranceNumber" value={socialInsuranceNumber ? socialInsuranceNumber : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.number_BHXH')} autoComplete="off" />
-                            </div>
-                            {/* Quá trình đóng bảo hiểm xã hội */}
-                            <div className="col-md-12">
-                                <h4 className="row col-md-6">{translate('human_resource.profile.bhxh_process')}:</h4>
-                                <SocialInsuranceAddModal handleChange={this.handleAddBHXH} id={`addBHXH${id}`} />
-                                {!pageCreate && <ExportExcel id={`edit-create-export-bhxh${id}`} buttonName={translate('human_resource.name_button_export')} exportData={exportData} style={{ marginTop: 2, marginRight: 15 }} />}
-                                <table className="table table-striped table-bordered table-hover " style={{ marginBottom: 0 }} >
-                                    <thead>
-                                        <tr>
-                                            <th>{translate('human_resource.profile.from_month_year')}</th>
-                                            <th>{translate('human_resource.profile.to_month_year')}</th>
-                                            <th>{translate('human_resource.profile.unit')}</th>
-                                            <th>{translate('table.position')}</th>
-                                            <th style={{ width: '120px' }}>{translate('table.action')}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {socialInsuranceDetails && socialInsuranceDetails.length !== 0 &&
-                                            socialInsuranceDetails.map((x, index) => (
-                                                <tr key={index}>
-                                                    <td>{this.formatDate(x.startDate, true)}</td>
-                                                    <td>{this.formatDate(x.endDate, true)}</td>
-                                                    <td>{x.company}</td>
-                                                    <td>{x.position}</td>
-                                                    <td>
-                                                        <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.edit_bhxh')}><i className="material-icons">edit</i></a>
-                                                        <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                    </tbody>
-                                </table>
-                                {
-                                    (!socialInsuranceDetails || socialInsuranceDetails.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                                }
-                            </div>
-                        </div>
-                    </fieldset>
                 </div>
                 {   /** Form chỉnh sửa quá trình đóng bảo hiểm xã hội */
                     currentRow !== undefined &&
@@ -395,6 +398,7 @@ class InsurranceTab extends Component {
                         startDate={this.formatDate(currentRow.startDate, true)}
                         endDate={this.formatDate(currentRow.endDate, true)}
                         position={currentRow.position}
+                        money={currentRow.money}
                         handleChange={this.handleEditBHXH}
                     />
                 }

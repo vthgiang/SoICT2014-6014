@@ -353,13 +353,13 @@ function getPaginateTasks(role, unit, number, perPage, status, priority, special
  * @param {*} aPeriodOfTime 
  * @param {*} calledId 
  */
-function getPaginatedTasksByOrganizationalUnit(roleId, number, perPage, status, priority, special, name, startDate, endDate, isAssigned) {
+function getPaginatedTasksByOrganizationalUnit(unit, number, perPage, status, priority, special, name, startDate, endDate, isAssigned) {
     return dispatch => {
         dispatch({
             type: taskManagementConstants.GET_PAGINATE_TASK_BY_ORGANIZATIONALUNIT_REQUEST
         });
 
-        taskManagementService.getPaginatedTasksByOrganizationalUnit(roleId, number, perPage, status, priority, special, name, startDate, endDate, isAssigned)
+        taskManagementService.getPaginatedTasksByOrganizationalUnit(unit, number, perPage, status, priority, special, name, startDate, endDate, isAssigned)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GET_PAGINATE_TASK_BY_ORGANIZATIONALUNIT_SUCCESS,

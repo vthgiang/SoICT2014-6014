@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { ButtonModal, DatePicker, DialogModal, ErrorLabel, SelectBox, UploadFile } from '../../../../../common-components';
+import { generateCode } from "../../../../../helpers/generateCode";
+import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter';
 
-import { ButtonModal, DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
+import { UserActions } from '../../../../super-admin/user/redux/actions';
+import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
+import { RecommendProcureActions } from '../redux/actions';
 
 import { PurchaseRequestFromValidator } from './PurchaseRequestFromValidator';
-
-import { RecommendProcureActions } from '../redux/actions';
-import { UserActions } from '../../../../super-admin/user/redux/actions';
-
 class PurchaseRequestCreateForm extends Component {
     constructor(props) {
         super(props);
@@ -23,6 +24,7 @@ class PurchaseRequestCreateForm extends Component {
             status: "waiting_for_approval",
             approver: null,
             note: "",
+            recommendUnits: "",
         };
     }
 
@@ -47,18 +49,18 @@ class PurchaseRequestCreateForm extends Component {
 
     // Bắt sự kiện thay đổi mã phiếu
     handleRecommendNumberChange = (e) => {
-        let value = e.target.value;
-        this.validateRecommendNumber(value, true);
+        const { value } = e.target;
+        this.setState({
+            recommendNumber: value,
+        })
     }
-    validateRecommendNumber = (value, willUpdateState = true) => {
-        let msg = PurchaseRequestFromValidator.validateRecommendNumber(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState({
-                errorOnRecommendNumber: msg,
-                recommendNumber: value
-            });
-        }
-        return msg === undefined;
+
+    regenerateCode = () => {
+        let code = generateCode("DNMS");
+        this.setState((state) => ({
+            ...state,
+            recommendNumber: code,
+        }));
     }
 
     // Bắt sự kiện thay đổi "Ngày lập"
@@ -184,36 +186,86 @@ class PurchaseRequestCreateForm extends Component {
         const { equipmentName, total, unit, recommendNumber } = this.state;
         let result = this.validateEquipment(equipmentName, false) &&
             this.validateTotal(total, false) &&
-            this.validateUnit(unit, false) &&
-            this.validateRecommendNumber(recommendNumber, false);
-
+            this.validateUnit(unit, false)
         return result;
+    }
+
+    componentDidMount = () => {
+        this.props.getAllDepartments();
+        this.props.getRoleSameDepartment(localStorage.getItem("currentRole"));
+
+        // Mỗi khi modal mở, cần sinh lại code
+        window.$('#modal-create-recommendprocure').on('shown.bs.modal', this.regenerateCode)
+    }
+
+    componentWillUnmount = () => {
+        // Unsuscribe event
+        window.$('#modal-create-recommendprocure').unbind('shown.bs.modal', this.regenerateCode)
+    }
+
+    handleChangeFile = (file) => {
+        const recommendFiles = file.map(x => ({
+            url: x.urlFile,
+            fileUpload: x.fileUpload
+        }))
+
+        this.setState({
+            recommendFiles,
+        });
+    }
+
+    handleRecommendUnits = (value) => {
+        this.setState({
+            recommendUnits: value
+        })
     }
 
     // Bắt sự kiện submit form
     save = () => {
+        const { recommendFiles } = this.state;
         let dataToSubmit = { ...this.state, proponent: this.props.auth.user._id }
         let { dateCreate } = this.state;
         let dateData = dateCreate.split("-");
+        let formData;
+
         dataToSubmit = {
             ...dataToSubmit,
             dateCreate: new Date(`${dateData[2]}-${dateData[1]}-${dateData[0]}`)
         }
-        console.log('dataSubmit', dataToSubmit)
+        formData = convertJsonObjectToFormData(dataToSubmit);
+        if (recommendFiles) {
+            recommendFiles.forEach(obj => {
+                formData.append('recommendFiles', obj.fileUpload)
+            })
+        }
         if (this.isFormValidated()) {
-            return this.props.createRecommendProcure(dataToSubmit);
+            return this.props.createRecommendProcure(formData);
+        }
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        const { user } = props;
+        let { recommendUnits } = state;
+        if (!recommendUnits && user && user.roledepartments) {
+            const recommendUnits = [user.roledepartments._id];
+            return {
+                ...state,
+                recommendUnits,
+            }
+        } else {
+            return null;
         }
     }
 
     render() {
-        const { _id, translate, recommendProcure, user, auth } = this.props;
+        const { _id, translate, recommendProcure, user, auth, department } = this.props;
         const {
-            recommendNumber, dateCreate, equipmentName, equipmentDescription, supplier, total, unit, estimatePrice,
-            errorOnRecommendNumber, errorOnEquipment, errorOnEquipmentDescription, errorOnTotal, errorOnUnit
+            recommendNumber, dateCreate, equipmentName, equipmentDescription, supplier, total, unit, estimatePrice, recommendUnits,
+            errorOnEquipment, errorOnEquipmentDescription, errorOnTotal, errorOnUnit
         } = this.state;
 
         var userlist = user.list;
-
+        const departmentlist = department.list && department.list.map(obj => ({ value: obj._id, text: obj.name }));
         return (
             <React.Fragment>
                 <ButtonModal modalID="modal-create-recommendprocure" button_name={translate('asset.general_information.add')} title={translate('asset.manage_recommend_procure.add_recommend_card')} />
@@ -230,12 +282,10 @@ class PurchaseRequestCreateForm extends Component {
 
                             <div className="col-sm-6">
                                 {/* Mã phiếu */}
-                                <div className={`form-group ${!errorOnRecommendNumber ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.form_code')}<span className="text-red">*</span></label>
+                                <div className={`form-group`}>
+                                    <label>{translate('asset.general_information.form_code')}</label>
                                     <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={this.handleRecommendNumberChange} autoComplete="off"
                                         placeholder="Mã phiếu" />
-                                    <ErrorLabel content={errorOnRecommendNumber} />
-                                    {/* <ErrorLabel content={this.validateExitsRecommendNumber(recommendNumber) ? <span className="text-red">Mã phiếu đã tồn tại</span> : ''} /> */}
                                 </div>
 
                                 {/* Ngày lập */}
@@ -265,6 +315,25 @@ class PurchaseRequestCreateForm extends Component {
                                                 multiple={false}
                                                 disabled
                                             />
+                                        </div>
+                                    </div>
+                                </div>
+                                {/* Đơn vị đề nghị */}
+                                <div className={`form-group`}>
+                                    <label>{translate('asset.usage.recommend_units')}</label>
+                                    <div>
+                                        <div id="recommend_units">
+                                            {recommendUnits &&
+                                                <SelectBox
+                                                    id={`add-recommend_units${_id}`}
+                                                    className="form-control select2"
+                                                    style={{ width: "100%" }}
+                                                    items={departmentlist}
+                                                    onChange={this.handleRecommendUnits}
+                                                    value={recommendUnits}
+                                                    multiple={true}
+                                                />
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -312,6 +381,11 @@ class PurchaseRequestCreateForm extends Component {
                                     <input type="number" className="form-control" name="estimatePrice" value={estimatePrice}
                                         onChange={this.handleEstimatePriceChange} autoComplete="off" placeholder="Giá trị dự tính" />
                                 </div>
+
+                                <div className="form-group">
+                                    <label>{translate('human_resource.profile.attached_files')}</label>
+                                    <UploadFile multiple={true} onChange={this.handleChangeFile} />
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -322,14 +396,17 @@ class PurchaseRequestCreateForm extends Component {
 };
 
 function mapState(state) {
-    const { recommendProcure, auth, user } = state;
-    return { recommendProcure, auth, user };
+    const { recommendProcure, auth, user, department } = state;
+    return { recommendProcure, auth, user, department };
 };
 
 const actionCreators = {
     getUser: UserActions.get,
     createRecommendProcure: RecommendProcureActions.createRecommendProcure,
+    getAllDepartments: DepartmentActions.get,
+    getRoleSameDepartment: UserActions.getRoleSameDepartment,
 };
 
 const createForm = connect(mapState, actionCreators)(withTranslate(PurchaseRequestCreateForm));
 export { createForm as PurchaseRequestCreateForm };
+

@@ -129,7 +129,7 @@ class Content extends Component {
 
         for (let i = 0; i < tables.length; ++i) {
             let table = window.$(tables[i]);
-            let tableHeadings = table.find("th");
+            let tableHeadings = table.find("th:not(:last-child)").not(".not-sort");
             for (let j = 0; j < tableHeadings.length; ++j) {
                 let th = window.$(tableHeadings[j]);
 
@@ -153,6 +153,26 @@ class Content extends Component {
 
                     let sort = (ascOrder) => {
                         let rows = table.find("tbody>tr");
+
+                        for (let k = 0; k < tableHeadings.length; ++k) {
+                            if (k !== j) {
+                                let thNotChoice = window.$(tableHeadings[k]);
+                                let listdiv = thNotChoice.find("div.sort")
+                                window.$(listdiv[0]).find("i.fa.fa-caret-up")[0].style.color = "rgb(226 222 222)"
+                                window.$(listdiv[0]).find("i.fa.fa-caret-down")[0].style.color = "rgb(226 222 222)"
+                            } else {
+                                let thNotChoice = window.$(tableHeadings[k]);
+                                let listdiv = thNotChoice.find("div.sort")
+                                if (ascOrder) {
+                                    window.$(listdiv[0]).find("i.fa.fa-caret-up")[0].style.color = "black"
+                                    window.$(listdiv[0]).find("i.fa.fa-caret-down")[0].style.color = "rgb(226 222 222)"
+                                } else {
+                                    window.$(listdiv[0]).find("i.fa.fa-caret-up")[0].style.color = "rgb(226 222 222)"
+                                    window.$(listdiv[0]).find("i.fa.fa-caret-down")[0].style.color = "black"
+                                }
+                            }
+                        }
+
                         rows.sort((a, b) => {
                             let keyA = nonAccentVietnamese(window.$(window.$(a).find("td")[j]).text());
                             let keyB = nonAccentVietnamese(window.$(window.$(b).find("td")[j]).text());
@@ -160,13 +180,14 @@ class Content extends Component {
                             if (keyA > keyB) return ascOrder ? 1 : -1;
                             return 0;
                         });
+
                         window.$.each(rows, function (index, row) {
                             table.children('tbody').append(row);
                         });
                     }
 
-                    let up = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer', class: 'fa fa-caret-up' });
-                    let down = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer', class: 'fa fa-caret-down' });
+                    let up = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer; color: rgb(226 222 222) ', class: 'fa fa-caret-up' });
+                    let down = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer; margin-top: -5px; color: rgb(226 222 222)', class: 'fa fa-caret-down' });
                     up.click(() => {
                         sort(true);
                     })
@@ -175,7 +196,7 @@ class Content extends Component {
                     })
 
 
-                    let div = window.$("<div>", { style: 'float: left', class: 'sort' });
+                    let div = window.$("<div>", { style: 'float: left; margin-top: -2px', class: 'sort' });
                     div.append(up, down);
                     th.prepend(div);
                 }

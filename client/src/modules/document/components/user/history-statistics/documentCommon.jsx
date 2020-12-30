@@ -108,6 +108,23 @@ class DocumentCommon extends Component {
             return role[0].name;
         else return "";
     }
+    handleIssuingBodyChange = (e) => {
+        const value = e.target.value;
+        this.setState(state => {
+            return {
+                ...state,
+                issuingBody: value.trim(),
+            }
+        })
+    }
+    handleArchivedRecordPlaceOrganizationalUnit = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                organizationUnit: value,
+            }
+        })
+    }
     searchWithOption = async () => {
         let path = this.state.archive ? this.findPath(this.state.archive) : "";
         const data = {
@@ -117,6 +134,8 @@ class DocumentCommon extends Component {
             category: this.state.category ? this.state.category[0] : "",
             domains: this.state.domain ? this.state.domain : "",
             archives: path && path.length ? path : "",
+            issuingBody: this.state.issuingBody ? this.state.issuingBody : "",
+            organizationUnit: this.state.organizationUnit ? this.state.organizationUnit : "",
         };
         await this.props.getUserDocumentStatistics('common', data);
     }
@@ -320,7 +339,7 @@ class DocumentCommon extends Component {
 
     render() {
 
-        const { translate } = this.props;
+        const { translate, department } = this.props;
         const { user } = this.props.documents;
         const { common } = user;
         let paginate = common.paginate;
@@ -331,7 +350,6 @@ class DocumentCommon extends Component {
         const listDomain = domains.list
         const listCategory = this.convertData(categories.list)
         const listArchive = archives.list;
-        console.log('commmmmmmmmmmmmmm', paginate)
         let list = [];
         if (isLoading === false) {
             list = docs.totalDocs;
@@ -417,10 +435,27 @@ class DocumentCommon extends Component {
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
+                            <label>{translate('document.store.organizational_unit_manage')}</label>
+                            <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                id="select-documents-organizational-unit-manage-table"
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={department.list.map(organ => { return { value: organ._id, text: organ.name } })}
+                                onChange={this.handleArchivedRecordPlaceOrganizationalUnit}
+                                options={{ placeholder: translate('document.store.select_organizational') }}
+                                multiple={false}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>{translate('document.doc_version.issuing_body')}</label>
+                            <input type="text" className="form-control" onChange={this.handleIssuingBodyChange} />
+                        </div>
+                        <div className="form-group" style={{ marginLeft: 0 }}>
                             <label></label>
                             <button type="button" className="btn btn-success" onClick={() => this.searchWithOption()}>{
                                 translate('kpi.organizational_unit.management.over_view.search')}</button>
                         </div>
+
                     </div>
                     <table className="table table-hover table-striped table-bordered" id="table-manage-user-document-downloaded">
                         <thead>

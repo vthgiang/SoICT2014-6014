@@ -466,7 +466,7 @@ class DepreciationEditForm extends Component {
                                 depreciationType == 'units_of_production' &&
                                 <div className="col-md-12" style={{ paddingLeft: '0px' }}>
                                     <label>{translate('asset.depreciation.months_production')}:
-                                        <a style={{ cursor: "pointer" }} title={translate('asset.general_information.asset_properties')}><i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: 5 }}
+                                        <a style={{ cursor: "pointer" }} title={translate('asset.general_information.asset_properties')}><i className="fa fa-plus-square" style={{ color: "#28A745", marginLeft: 5 }}
                                             onClick={this.handleAddUnitsProduced} /></a>
                                     </label>
                                     <div className={`form-group ${(!errorOnMonth && !errorOnValue) ? "" : "has-error"}`}>

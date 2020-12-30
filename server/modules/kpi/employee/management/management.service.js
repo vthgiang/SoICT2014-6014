@@ -91,8 +91,8 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (portal, roleId, organizat
         organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal))
             .findOne({
                 $or: [
-                    { 'deans': roleId },
-                    { 'viceDeans': roleId },
+                    { 'managers': roleId },
+                    { 'deputyManagers': roleId },
                     { 'employees': roleId }
                 ]
             });
@@ -228,8 +228,8 @@ exports.getAllEmployeeKpiSetInOrganizationalUnit = async (portal, query) => {
         organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal))
             .findOne({
                 $or: [
-                    { 'deans': query.roleId },
-                    { 'viceDeans': query.roleId },
+                    { 'managers': query.roleId },
+                    { 'deputyManagers': query.roleId },
                     { 'employees': query.roleId }
                 ]
             });
@@ -245,7 +245,7 @@ exports.getAllEmployeeKpiSetInOrganizationalUnit = async (portal, query) => {
                 {
                     $lookup: {
                         from: 'userroles',
-                        let: { viceDeans: '$viceDeans', employees: '$employees' },
+                        let: { deputyManagers: '$deputyManagers', employees: '$employees' },
                         pipeline: [
                             {
                                 $match:
@@ -253,7 +253,7 @@ exports.getAllEmployeeKpiSetInOrganizationalUnit = async (portal, query) => {
                                     $expr:
                                     {
                                         $or: [
-                                            { $in: ["$roleId", "$$viceDeans"] },
+                                            { $in: ["$roleId", "$$deputyManagers"] },
                                             { $in: ["$roleId", "$$employees"] }
                                         ]
                                     }

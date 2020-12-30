@@ -17,6 +17,7 @@ const {
 } = require(`../../../helpers/dbHelper`);
 
 const fs = require('fs');
+const mongoose = require("mongoose");
 
 /**
  * Lấy thông tin phòng ban, chức vụ của nhân viên theo emailCompany
@@ -39,25 +40,25 @@ exports.getAllPositionRolesAndOrganizationalUnitsOfUser = async (portal, emailIn
         let newRoles = roles.map(role => role.roleId._id);
         organizationalUnits = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({
             $or: [{
-                    'deans': {
-                        $in: newRoles
-                    }
-                },
-                {
-                    'viceDeans': {
-                        $in: newRoles
-                    }
-                },
-                {
-                    'employees': {
-                        $in: newRoles
-                    }
+                'managers': {
+                    $in: newRoles
                 }
+            },
+            {
+                'deputyManagers': {
+                    $in: newRoles
+                }
+            },
+            {
+                'employees': {
+                    $in: newRoles
+                }
+            }
             ]
         });
     }
     if (roles !== []) {
-        let arrayRole = ["Admin", "Super Admin", "Employee", "Dean", "Vice Dean"];
+        let arrayRole = ["Admin", "Super Admin", "Employee", "Manager", "Deputy Manager"];
         roles = roles.filter(role => !arrayRole.includes(role.roleId.name));
     }
 
@@ -83,7 +84,7 @@ exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async (portal, orga
     }
     if (position === undefined) {
         units.forEach(u => {
-            roles = roles.concat(u.deans).concat(u.viceDeans).concat(u.employees);
+            roles = roles.concat(u.managers).concat(u.deputyManagers).concat(u.employees);
         })
     } else {
         roles = position
@@ -117,7 +118,11 @@ exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async (portal, orga
 exports.getEmployeeProfile = async (portal, email) => {
     let employees = await Employee(connect(DB_CONNECTION, portal)).find({
         emailInCompany: email
-    });
+    }).populate([
+        { path: "career.field" },
+        { path: "career.position" },
+        { path: "career.action" },
+    ]);
     if (employees.length === 0) {
         return {
             employees: employees
@@ -276,15 +281,15 @@ exports.getEmployees = async (portal, company, organizationalUnits, positions, a
         }
     } else {
         if (organizationalUnits !== undefined) {
-            let emailInCompany=[];
-            if(organizationalUnits==='allUnist'){
+            let emailInCompany = [];
+            if (organizationalUnits === 'allUnist') {
                 let units = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find();
-                units =units.map(x=>x._id);
+                units = units.map(x => x._id);
                 emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(portal, units, undefined);
             } else {
                 emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(portal, organizationalUnits, positions);
             }
-            
+
             keySearch = {
                 ...keySearch,
                 emailInCompany: {
@@ -302,8 +307,8 @@ exports.getEmployees = async (portal, company, organizationalUnits, positions, a
                 startingDate: 1,
                 leavingDate: 1,
                 professionalSkill: 1,
-                status:1,
-                degrees:1
+                status: 1,
+                degrees: 1
 
             });
             let totalEmployee = listEmployeesOfOrganizationalUnits.length;
@@ -323,8 +328,8 @@ exports.getEmployees = async (portal, company, organizationalUnits, positions, a
             startingDate: 1,
             leavingDate: 1,
             professionalSkill: 1,
-            status:1,
-            degrees:1
+            status: 1,
+            degrees: 1
         });
         return {
             totalAllEmployee,
@@ -390,7 +395,7 @@ exports.getEmployeesByStartingAndLeaving = async (portal, organizationalUnits, s
         let endYear = new Date(endDate).getFullYear();
         endMonth = endMonth + 1;
         let arrMonth = [];
-        for (let i = 0;; i++) {
+        for (let i = 0; ; i++) {
             let month = endMonth - i;
             if (month > 0) {
                 if (month.toString().length === 1) {
@@ -405,17 +410,17 @@ exports.getEmployeesByStartingAndLeaving = async (portal, organizationalUnits, s
                 }
             } else {
                 let j = 1;
-                for (j;; j++) {
+                for (j; ; j++) {
                     month = month + 12;
                     if (month > 0) {
                         break;
                     }
                 }
                 if (month.toString().length === 1) {
-                    month = `${endYear-j}-0${month}-01`;
+                    month = `${endYear - j}-0${month}-01`;
                     arrMonth = [...arrMonth, month];
                 } else {
-                    month = `${endYear-j}-${month}-01`;
+                    month = `${endYear - j}-${month}-01`;
                     arrMonth = [...arrMonth, month];
                 }
                 if (`${startDate}-01` === month) {
@@ -431,11 +436,11 @@ exports.getEmployeesByStartingAndLeaving = async (portal, organizationalUnits, s
             let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
             let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
             querysStartingDate = [...querysStartingDate, {
-                    startingDate: {
-                        "$gt": firstDay,
-                        "$lte": lastDay
-                    }
-                }],
+                startingDate: {
+                    "$gt": firstDay,
+                    "$lte": lastDay
+                }
+            }],
                 querysLeavingDate = [...querysLeavingDate, {
                     leavingDate: {
                         "$gt": firstDay,
@@ -563,13 +568,32 @@ exports.searchEmployeeProfiles = async (portal, params, company) => {
             }
         };
     };
-
+    
     // Bắt sự kiện tìm kiếm theo trạng thái
     if (params.status) {
         keySearch = {
             ...keySearch,
             status: {
                 $in: params.status
+            }
+        };
+    };
+
+    // Bắt sự kiện tìm kiếm theo chuyên môn
+    if (params.professionalSkills) {
+        keySearch = {
+            ...keySearch,
+            professionalSkill: {
+                $in: params.professionalSkills
+            }
+        };
+    };
+    // Bắt sự kiện tìm kiếm theo chuyên ngành
+    if (params.careerFields) {
+        keySearch = {
+            ...keySearch,
+            "degrees.field": {
+                $in: params.careerFields
             }
         };
     };
@@ -614,18 +638,23 @@ exports.searchEmployeeProfiles = async (portal, params, company) => {
 
     // Lấy danh sách nhân viên
     let listEmployees = await Employee(connect(DB_CONNECTION, portal)).find(keySearch, {
-            field1: 1,
-            employeeNumber: 1,
-            emailInCompany: 1,
-            birthdate: 1,
-            contracts: 1,
-            fullName: 1,
-            gender: 1,
-            contractEndDate: 1,
-            contractType: 1,
-            status: 1,
-            degrees:1
-        })
+        field1: 1,
+        employeeNumber: 1,
+        emailInCompany: 1,
+        birthdate: 1,
+        contracts: 1,
+        fullName: 1,
+        gender: 1,
+        contractEndDate: 1,
+        contractType: 1,
+        status: 1,
+        degrees: 1
+    })
+        .populate([
+            { path: "career.field" },
+            { path: "career.position" },
+            { path: "career.action" },
+        ])
         .sort({
             'createdAt': 'desc'
         }).skip(params.page).limit(params.limit);
@@ -694,7 +723,7 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
     contracts = this.mergeUrlFileToObject(fileContract, contracts);
     files = this.mergeUrlFileToObject(file, files);
 
-    console.log('mcmcmcmcmcmcm\n\n', major);
+    console.log('mcmcmcmcmcmcm\n\n', data.houseHold.familyMembers);
     let createEmployee = await Employee(connect(DB_CONNECTION, portal)).create({
         avatar: avatar,
         fullName: data.fullName,
@@ -763,6 +792,7 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
         temporaryResidenceCity: data.temporaryResidenceCity,
         temporaryResidenceDistrict: data.temporaryResidenceDistrict,
         temporaryResidenceWard: data.temporaryResidenceWard,
+        houseHold: data.houseHold
     });
     if (data.disciplines !== undefined) {
         let disciplines = data.disciplines;
@@ -839,7 +869,6 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
  * Cập nhât thông tin nhân viên theo id
  */
 exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company) => {
-    console.log('quququq\n\n\n', data);
     let {
         employee,
         createExperiences,
@@ -879,6 +908,7 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
         editSocialInsuranceDetails,
         deleteSocialInsuranceDetails
     } = data;
+    console.log('dataatatatta\n\n\n\n', data.createCareer, data.editCareer, data.deleteCareer);
     let avatar = employee.avatar,
         fileDegree = fileInfor.fileDegree,
         fileCertificate = fileInfor.fileCertificate,
@@ -946,6 +976,19 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
     oldEmployee.certificates = deleteEditCreateObjectInArrayObject(oldEmployee.certificates, deleteCertificates, editCertificates, createCertificates, fileCertificate);
     oldEmployee.contracts = deleteEditCreateObjectInArrayObject(oldEmployee.contracts, deleteContracts, editContracts, createContracts, fileContract);
     oldEmployee.files = deleteEditCreateObjectInArrayObject(oldEmployee.files, deleteFiles, editFiles, createFiles, file);
+
+    let x = oldEmployee.career;
+    console.log('xxxx', x);
+    let careerEdit = {
+        ...x,
+        package: x.position && x.position.package,
+        field: x.field && x.field._id,
+        position: x.position && x.position._id,
+        action: x.action && x.action.length > 0 && x.action.map(e => e._id),
+    }
+
+    // oldEmployee.career = careerEdit;
+    console.log("====\n\n", oldEmployee.career);
 
     oldEmployee.avatar = avatar;
     oldEmployee.fullName = employee.fullName;
@@ -1234,7 +1277,7 @@ exports.createNotificationForEmployeesHaveBrithdayCurrent = async (portal) => {
         let unitId = value.organizationalUnits;
         let roles = [];
         unitId.forEach(x => {
-            roles = roles.concat(x.deans).concat(x.viceDeans).concat(x.employees);
+            roles = roles.concat(x.managers).concat(x.deputyManagers).concat(x.employees);
         })
         // Lấy danh sách nhân viên cùng phòng ban với người
         let usersArr = await UserRole(connect(DB_CONNECTION, portal)).find({
@@ -1288,10 +1331,10 @@ exports.createNotificationEndOfContract = async (portal) => {
         // Lấy thời gian phải gia hạn hợp đồng do được học các khoá đào tạo có thời gian cam kết
         for (let i in employees) {
             let infoCourses = await EmployeeCourse(connect(DB_CONNECTION, portal)).find({
-                    employee: employees[i]._id
-                }, {
-                    course: 1
-                })
+                employee: employees[i]._id
+            }, {
+                course: 1
+            })
                 .populate({
                     path: 'course',
                     select: "endDate employeeCommitmentTime"
@@ -1335,8 +1378,8 @@ exports.createNotificationEndOfContract = async (portal) => {
                 title: "Thông báo hết hạn hợp đồng lao động",
                 level: "important",
                 content: `Hợp đồng lao động của bạn sẽ hết hiệu lực sau ${arrayTime[n]} ngày.` +
-                    `${employees[index].endDateCommitmentTime? " Tuy nhiên bạn phải làm thêm đến ngày "+
-                        this.formatDate(employees[index].endDateCommitmentTime, false) + " do bạn tham gia các khoá học có thời gian cam kết làm việc sau khi học xong khoá đào tạo.": ""}`,
+                    `${employees[index].endDateCommitmentTime ? " Tuy nhiên bạn phải làm thêm đến ngày " +
+                        this.formatDate(employees[index].endDateCommitmentTime, false) + " do bạn tham gia các khoá học có thời gian cam kết làm việc sau khi học xong khoá đào tạo." : ""}`,
                 sender: process.env.WEB_NAME,
                 user: user._id,
                 manualNotification: undefined
@@ -1747,5 +1790,351 @@ exports.importFile = async (portal, company, data) => {
             editEmployee.save();
         }
         return data;
+    }
+}
+
+
+/**
+ * Hàm tính tổng số năm kinh nghiệm tương đương
+ * @param {*} params 
+ */
+exports.calcSumOfExp = (data) => {
+    let sum = 0;
+    console.log('data', data);
+    for (let i in data) {
+        console.log('oo1', data[i].startDate, data[i].endDate);
+        let start = new Date(data[i].startDate).getTime();
+        let end = new Date(data[i].endDate).getTime();
+
+        console.log('oo2', start, end);
+
+        sum = sum + (end - start);
+    }
+
+    console.log("sum Exp", sum);
+
+    return sum;
+}
+
+/**
+ * Lấy danh sách nhân viên theo key tìm kiếm
+ * @params : Dữ liệu key tìm kiếm
+ * @company : Id công ty người tìm kiếm
+ */
+exports.searchEmployeeForPackage = async (portal, params, company) => {
+    let noResultsPerPage = parseInt(params.limit);
+    let pageNumber = parseInt(params.page);
+    let keySearch = [
+        { $match: { status: "active" } },
+        // {
+        //     $match: {
+        //         "fullName": {
+        //             $regex: "",
+        //             $options: "i"
+        //         }
+        //     }
+        // },
+    ];
+
+    // Bắt sựu kiện theo trình độ chuyên môn
+    if (params.professionalSkill && params.professionalSkill !== "") {
+        console.log('params.professionalSkill[0]', params.professionalSkill);
+        keySearch = [
+            ...keySearch,
+            { $match: { professionalSkill: params.professionalSkill } },
+        ]
+    };
+
+    // Bắt sựu kiện theo chhuyeen ngành
+    if (params.major) {
+        keySearch = [
+            ...keySearch,
+            { $match: { "major.group.id": (params.major) } }
+        ]
+    };
+
+    // Bắt sựu kiện theo loại chứng chỉ
+    if (params.certificatesType) {
+        keySearch = [
+            ...keySearch,
+            {
+                $match: {
+                    "certificates.issuedBy": {
+                        $regex: params.certificatesType,
+                        $options: "i"
+                    }
+                }
+            }
+        ]
+    };
+    // Bắt sựu kiện theo tên chứng chỉ
+    if (params.certificatesName) {
+        keySearch = [
+            ...keySearch,
+            {
+                $match: {
+                    "certificates.name": {
+                        $regex: params.certificatesName,
+                        $options: "i"
+                    }
+                }
+            }
+        ]
+    };
+    // Bắt sựu kiện theo ngày hết hạn chứng chỉ
+    if (params.certificatesEndDate) {
+        console.log('params.certificatesEndDate', params.certificatesEndDate);
+        let splitter = params.certificatesEndDate.split("-");
+        let date = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+        keySearch = [
+            ...keySearch,
+            {
+                $match: {
+                    "certificates.endDate": {
+                        "$lte": date,
+                    }
+                }
+            }
+        ]
+    }
+
+    // Bắt sựu kiện tìm kiếm gói thầu
+    if (params.package) {
+        keySearch = [
+            ...keySearch,
+            {
+                $match: {
+                    "career.package": {
+                        $regex: params.package,
+                        $options: "i"
+                    }
+                }
+            }
+        ]
+
+    };
+
+    // Bắt sựu kiện tìm kiếm field
+    if (params.field) {
+        keySearch = [
+            ...keySearch,
+            { $match: { "career.field": mongoose.Types.ObjectId(params.field), } }
+        ]
+    };
+
+    // Bắt sựu kiện tìm kiếm vị trí cv
+    if (params.position) {
+        keySearch = [
+            ...keySearch,
+            { $match: { "career.position": mongoose.Types.ObjectId(params.position), } }
+        ];
+    };
+
+    // Bắt sự kiện tìm kiếm theo action
+    if (params.action) {
+        keySearch = [
+            ...keySearch,
+            {
+                $match: {
+                    "career.action": {
+                        $in: params.action.map(e => mongoose.Types.ObjectId(e))
+                    }
+                }
+            }
+        ];
+    };
+
+    // Bắt sự kiện tìm kiếm theo số năm kinh nghiệm
+    if (params.exp) {
+        let year = new Date().getFullYear();
+        let yearOfExp = year - params.exp;
+        console.log('yearOfExp', yearOfExp);
+        keySearch = [
+            ...keySearch,
+            {
+                $match: {
+                    "degrees.year": {
+                        "$lte": yearOfExp,
+                    }
+                }
+            }
+        ];
+    };
+
+    if (params.sameExp) {
+
+        // Đổi sameExp về miliseconds
+
+        // let now = new Date();
+        // let day = now.getDate();
+        // let month = now.getMonth();
+        // let yearOfNow = now.getFullYear();
+        // let prevYear = yearOfNow - params.sameExp;
+        // let prevExpTime = new Date(month, day - 1, yearOfExp).getTime();
+
+        let expInMiliseconds = params.sameExp * 86400000 * 365
+
+        keySearch = [
+            ...keySearch,
+            {
+                "$unwind": "$career"
+            },
+            {
+                $addFields: {
+                    "career.empId": "$_id"
+                }
+            },
+            {
+                $replaceRoot: {
+                    newRoot: "$career"
+                }
+            },
+            {
+                $project: {
+                    position: 1,
+                    action: 1,
+                    field: 1,
+                    package: 1,
+                    empId: 1,
+                    dateDifference: {
+                        $subtract: [
+                            "$endDate",
+                            "$startDate"
+                        ]
+                    },
+                    id: "$_id",
+                }
+            },
+        ];
+
+        // kiểm tra thêm điều kiện để dùng group
+        let groupCondition = {
+            employee: "$empId",
+        }
+        if (params.positions) {
+            groupCondition = { ...groupCondition, position: "$position" }
+        }
+        if (params.field) {
+            groupCondition = { ...groupCondition, field: "$field" }
+        }
+        if (params.package) {
+            groupCondition = { ...groupCondition, package: "$package" }
+        }
+        if (params.action) {
+            groupCondition = { ...groupCondition, action: "$action" }
+        }
+
+        keySearch = [
+            ...keySearch,
+            {
+                $group: {
+                    _id: groupCondition,
+                    totalExp: {
+                        $sum: "$dateDifference"
+                        // {
+                        //     "$divide": [
+                        //         "$dateDifference",
+                        //         86400000
+                        //     ]
+                        // }
+                    },
+                    count: {
+                        $sum: 1
+                    }
+                }
+            },
+            {
+                "$match": {
+                    totalExp: {
+                        "$gte": expInMiliseconds
+                    }
+                }
+            }
+        ]
+    }
+
+
+    // Lấy danh sách nhân viên
+    let listData, listEmployees = [];
+    let totalList = 1000;
+
+    console.log('key_search\n', keySearch);
+
+    if (params.sameExp) {
+
+        listData = await Employee(connect(DB_CONNECTION, portal)).aggregate(keySearch)
+        let listEmpId = listData.map(e => e._id.employee);
+        console.log('\n\nlistemp\n\n', listEmpId);
+
+        listEmployees = await Employee(connect(DB_CONNECTION, portal)).find(
+            {
+                _id: {
+                    $in: listEmpId,
+                }
+            },
+            {
+                field: 1,
+                employeeNumber: 1,
+                emailInCompany: 1,
+                birthdate: 1,
+                contracts: 1,
+                fullName: 1,
+                gender: 1,
+                contractEndDate: 1,
+                contractType: 1,
+                certificates: 1,
+                professionalSkill: 1,
+                status: 1,
+                degrees: 1,
+                career: 1,
+                major: 1,
+            }).populate([
+                { path: "career.field" },
+                { path: "career.position" },
+                { path: "career.action" },
+            ]).sort({
+                'createdAt': 1
+            }).skip(params.page).limit(params.limit);
+
+        totalList = await Employee(connect(DB_CONNECTION, portal)).countDocuments({
+            _id: {
+                $in: listEmpId,
+            }
+        });
+    }
+    else {
+        console.log('không có KN tương đương');
+        // phân trang
+        keySearch.push(
+            {
+                $facet: {
+                    listEmployee: [{ $sort: { 'createdAt': 1 } },
+                    ...noResultsPerPage === 0 ? [] : [{ $limit: noResultsPerPage * (pageNumber + 1) }],
+                    ...noResultsPerPage === 0 ? [] : [{ $skip: noResultsPerPage * pageNumber }]
+                    ],
+                    totalCount: [
+                        {
+                            $count: 'count'
+                        }
+                    ]
+                }
+            }
+        );
+        
+        listData = await Employee(connect(DB_CONNECTION, portal)).aggregate(keySearch)
+        
+        listEmployees = listData[0].listEmployee;
+        await Employee(connect(DB_CONNECTION, portal)).populate(listEmployees, { path: "career.field career.position career.action" });
+
+        if(listData[0].totalCount[0]) {
+            totalList = listData[0].totalCount[0].count;
+        } else {
+            totalList = 1;
+        }
+    }
+
+    return {
+        listEmployees,
+        totalList,
     }
 }

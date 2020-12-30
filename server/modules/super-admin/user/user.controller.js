@@ -1,3 +1,4 @@
+const { User } = require('../../../models');
 const UserService = require('./user.service');
 const Logger = require(`../../../logs`);
 
@@ -203,3 +204,53 @@ exports.getAllUsersWithRole = async (req, res) => {
         });
     }
 }
+
+exports.importUsers = async (req, res) => {
+    try {
+        if(Array.isArray(req.body.data)) {
+            for(let i=0; i<req.body.data.length; i++) {
+                let dataUser = req.body.data[i];
+                let user = await UserService.createUser(req.portal, dataUser, req.user.company._id);
+                await UserService.addRolesForUser(req.portal, user._id, dataUser.roles);
+            }
+        }
+        let userlist = await UserService.getUsers(req.portal, req.user.company._id, {limit: req.query.limit ? req.query.limit : 5, page: 1});
+
+        Logger.info(req.user.email, 'import_users_success', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['import_users_success'],
+            content: userlist
+        });
+    } catch (error) {
+
+        Logger.error(req.user.email, 'import_users_faile', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['import_users_faile'],
+            content: error
+        });
+    }
+}
+
+exports.sendEmailResetPasswordUser = async(req, res) => {
+    try {
+        let requestReset = await UserService.sendEmailResetPasswordUser(req.portal, req.body.email);
+
+        Logger.info(req.user.email, 'reset_password_user_success', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['reset_password_user_success'],
+            content: requestReset
+        });
+    } catch (error) {
+
+        Logger.error(req.user.email, 'reset_password_user_faile', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['reset_password_user_faile'],
+            content: error
+        });
+    }
+}
+

@@ -30,16 +30,20 @@ class CareerField extends Component {
     checkNode = (e, data) => {
         this.setState({
             careerParent: [...data.selected],
-            deleteNode: [...data.selected, ...data.node.children_d]
+            // deleteNode: [...data.selected, ...data.node.children_d]
+            deleteNode: [...data.selected]
         })
+        console.log("quang123", data, this.state);
     }
 
     unCheckNode = (e, data) => {
         this.setState({
             careerParent: [...data.selected],
-            deleteNode: [...data.selected, ...data.node.children_d],
+            // deleteNode: [...data.selected, ...data.node.children_d],
+            deleteNode: [...data.selected],
 
         })
+        console.log("quang", data, this.state);
     }
     handleAddCareerField = (event) => {
         event.preventDefault();
@@ -63,17 +67,18 @@ class CareerField extends Component {
             confirmButtonText: translate('general.yes'),
         }).then(result => {
             console.log('Confirm delete');
-            if (result.value && careerParent.length > 1) {
-                // this.props.deleteDocumentArchive(careerParent, "many");
-                // this.setState({
-                //     deleteNode: []
-                // });
-            } else if (result.value && careerParent.length === 1) {
-                // this.props.deleteDocumentArchive(careerParent, 'single');
-                // this.setState({
-                //     deleteNode: []
-                // });
-            }
+            this.props.deleteCareerField(deleteNode);
+            // if (result.value && careerParent.length > 1) {
+            //     // this.props.deleteDocumentArchive(careerParent, "many");
+            //     // this.setState({
+            //     //     deleteNode: []
+            //     // });
+            // } else if (result.value && careerParent.length === 1) {
+            //     // this.props.deleteDocumentArchive(careerParent, 'single');
+            //     // this.setState({
+            //     //     deleteNode: []
+            //     // });
+            // }
         })
     }
 
@@ -103,6 +108,7 @@ class CareerField extends Component {
                 ...elm,
                 id: elm._id,
                 text: elm.name,
+                code: elm.code,
                 state: { "opened": true },
                 parent: "#",
             }
@@ -112,7 +118,8 @@ class CareerField extends Component {
                 return {
                     ...elm,
                     id: elm._id,
-                    text: elm.name,
+                    text: elm.position.name,
+                    code: elm.position.code,
                     // state: { "opened": true },
                     parent: list[i]._id.toString(),
                 }
@@ -120,7 +127,7 @@ class CareerField extends Component {
             dataTree = [...dataTree, ...position];
         }
         let unChooseNode = currentNode ? this.findChildrenNode(list, currentNode) : [];
-        console.log('dataTree', dataTree);
+        // console.log('dataTree', dataTree);
         return (
             <React.Fragment>
                 <div className="box box-body">
@@ -140,7 +147,7 @@ class CareerField extends Component {
                         careerParent.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteCareer}>{translate('general.delete')}</button>
                     }
                     {/* <ExportExcel id="export-career-field" exportData={exportData} style={{ marginRight: 5 }} buttonName={translate('document.export')} /> */}
-                    <CreateForm list={dataTree}/>
+                    <CreateForm list={list} />
                     {/* <ArchiveImportForm /> */}
                     <div className="row"
                     >
@@ -163,9 +170,9 @@ class CareerField extends Component {
                                     careerId={currentNode.id}
                                     careerName={currentNode.text}
                                     careerCode={currentNode.original.code}
-                                    careerParent={currentNode.parent}
+                                    careerParent={(currentNode.parent !== "#") ? currentNode.parent : undefined}
 
-                                    listData={dataTree}
+                                    listData={list}
                                     unChooseNode={unChooseNode}
                                 />
                             }
@@ -181,8 +188,7 @@ const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
     getListCareerField: CareerReduxAction.getListCareerField,
-    // editDocumentArchive: DocumentActions.editDocumentArchive,
-    // deleteDocumentArchive: DocumentActions.deleteDocumentArchive,
+    deleteCareerField: CareerReduxAction.deleteCareerField,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CareerField));

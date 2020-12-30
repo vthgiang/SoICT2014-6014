@@ -187,8 +187,8 @@ class TaskReportCreateForm extends Component {
 
         if (newReport.organizationalUnit === '' && user.organizationalUnitsOfUser) {
             let defaultUnit = await user.organizationalUnitsOfUser.find(item =>
-                item.deans.toString() === currentRole
-                || item.viceDeans.toString() === currentRole
+                item.managers.toString() === currentRole
+                || item.deputyManagers.toString() === currentRole
                 || item.employees.toString() === currentRole);
 
             // Lấy người dùng của đơn vị hiện tại và người dùng của đơn vị con
@@ -673,8 +673,8 @@ class TaskReportCreateForm extends Component {
         if (user.usersInUnitsOfCompany) {
             listRole = user.usersInUnitsOfCompany;
             listRole.forEach(item => {
-                listRoles.push(Object.values(item.deans));
-                listRoles.push(Object.values(item.viceDeans));
+                listRoles.push(Object.values(item.managers));
+                listRoles.push(Object.values(item.deputyManagers));
                 listRoles.push(Object.values(item.employees));
             })
             listRoles = listRoles.flat(1);

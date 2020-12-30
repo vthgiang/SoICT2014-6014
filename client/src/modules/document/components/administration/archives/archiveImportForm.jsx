@@ -36,19 +36,20 @@ class ArchiveImportForm extends Component {
     handleImportExcel = (value, checkFileImport) => {
         let values = [];
         let showValues = [];
-        let k = -1;
+        let k = 0;
         for (let i in value) {
             let x = value[i];
             if (x.name) {
-                values = [...value, {
-                    "STT": k + 1,
+                k++;
+                values = [...values, {
+                    "STT": k,
                     "name": x.name,
                     "description": x.description,
                     "pathParent": x.pathParent,
 
                 }];
                 showValues = [...showValues, {
-                    "STT": k + 1,
+                    "STT": k,
                     "name": x.name,
                     "description": x.description,
                     "pathParent": x.pathParent,

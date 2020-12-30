@@ -1,6 +1,6 @@
-const { SystemLink, Link, Component, Role, Privilege, Company } = require(`../../../models`);
-const {LINK_CATEGORY} = require("../../../seed/terms");
-const {connect} = require(`../../../helpers/dbHelper`);
+const { SystemLink, Link, Component, Role, Privilege, Company } = require('../../../models');
+const {LINK_CATEGORY} = require('../../../helpers/config');
+const {connect} = require('../../../helpers/dbHelper');
 
 /**
  * Lấy danh sách tất cả các system link 

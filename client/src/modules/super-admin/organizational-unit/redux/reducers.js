@@ -90,22 +90,22 @@ export function department(state = initState, action) {
             };
 
         
-        case DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_REQUEST:
+        case DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_MANAGER_REQUEST:
 
             return {
                 ...state,
                 isLoading: true
             };
 
-        case DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_SUCCESS:
+        case DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_MANAGER_SUCCESS:
 
             return {
                 ...state,
-                departmentsThatUserIsDean: action.payload.data,
+                departmentsThatUserIsManager: action.payload.data,
                 isLoading: false
             };
 
-        case DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_FAILURE:
+        case DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_MANAGER_FAILURE:
 
             return { 
                 ...state,

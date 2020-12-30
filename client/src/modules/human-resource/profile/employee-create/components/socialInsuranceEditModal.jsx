@@ -55,6 +55,26 @@ class SocialInsuranceEditModal extends Component {
         return msg === undefined;
     }
 
+    /** Bắt sự kiện thay đổi mức lương đóng */
+    handleMoneyChange = (e) => {
+        let { value } = e.target;
+        this.validateMoney(value, true)
+    }
+    validateMoney = (value, willUpdateState = true) => {
+        const { translate } = this.props;
+        let msg = EmployeeCreateValidator.validateMoney(value, translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnMoney: msg,
+                    money: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
     /**
      * Function lưu thay đổi "từ tháng/năm" vào state
      * @param {*} value : Từ tháng/năm 
@@ -114,9 +134,10 @@ class SocialInsuranceEditModal extends Component {
 
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     isFormValidated = () => {
-        const { company, position, startDate, endDate } = this.state;
+        const { company, position, startDate, endDate, money } = this.state;
 
-        let result = this.validateExperienceUnit(company, false) && this.validateExperiencePosition(position, false);
+        let result = this.validateExperienceUnit(company, false) && this.validateExperiencePosition(position, false) &&
+            this.validateMoney(money, false);;
 
         let partStart = startDate.split('-');
         let startDateNew = [partStart[1], partStart[0]].join('-');
@@ -132,13 +153,18 @@ class SocialInsuranceEditModal extends Component {
 
     /** Bắt sự kiện submit form */
     save = async () => {
-        const { startDate, endDate } = this.state;
+        const { startDate, endDate, position, money, company, index } = this.state;
         let partStart = startDate.split('-');
         let startDateNew = [partStart[1], partStart[0]].join('-');
         let partEnd = endDate.split('-');
         let endDateNew = [partEnd[1], partEnd[0]].join('-');
         if (this.isFormValidated()) {
-            return this.props.handleChange({ ...this.state, startDate: startDateNew, endDate: endDateNew });
+            if (this.state._id) {
+                return this.props.handleChange({ ...this.state, startDate: startDateNew, endDate: endDateNew });
+            } else {
+                return this.props.handleChange({ company: company, position: position, money: money, index: index, startDate: startDateNew, endDate: endDateNew });
+            }
+
         }
     }
 
@@ -153,6 +179,8 @@ class SocialInsuranceEditModal extends Component {
                 endDate: nextProps.endDate,
                 position: nextProps.position,
                 index: nextProps.index,
+                money: nextProps.money,
+                errorOnMoney: undefined,
                 errorOnPosition: undefined,
                 errorOnUnit: undefined,
                 errorOnStartDate: undefined,
@@ -168,7 +196,7 @@ class SocialInsuranceEditModal extends Component {
 
         const { id } = this.props;
 
-        const { company, position, startDate, endDate, errorOnStartDate, errorOnEndDate, errorOnUnit, errorOnPosition } = this.state;
+        const { company, position, startDate, endDate, money, errorOnMoney, errorOnStartDate, errorOnEndDate, errorOnUnit, errorOnPosition } = this.state;
 
         return (
             <React.Fragment>
@@ -217,6 +245,12 @@ class SocialInsuranceEditModal extends Component {
                             <label>{translate('table.position')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="position" value={position} onChange={this.handlePositionChange} autoComplete="off" />
                             <ErrorLabel content={errorOnPosition} />
+                        </div>
+                        {/* Mức lương đóng */}
+                        <div className={`form-group ${errorOnMoney && "has-error"}`}>
+                            <label>{translate('human_resource.profile.money')}<span className="text-red">*</span></label>
+                            <input type="Number" className="form-control" name="money" value={money} onChange={this.handleMoneyChange} autoComplete="off" />
+                            <ErrorLabel content={errorOnMoney} />
                         </div>
                     </form>
                 </DialogModal>

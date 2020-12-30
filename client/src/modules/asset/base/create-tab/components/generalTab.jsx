@@ -30,7 +30,7 @@ class GeneralTab extends Component {
     }
     componentDidMount = () => {
         // Mỗi khi modal mở, cần sinh lại code
-        window.$('#modal-add-asset').on('shown.bs.modal', this.regenerateCode)
+        window.$('#modal-add-asset').on('shown.bs.modal', this.regenerateCode);
     }
     componentWillUnmount = () => {
         // Unsuscribe event
@@ -169,39 +169,39 @@ class GeneralTab extends Component {
         let { detailInfo } = this.state;
         let arr = [...detailInfo];
 
-        if (value && value.length !== 0) {
-            let assetTypeList = assetType.listAssetTypes;
-            let currentAssetType = assetTypeList.filter((element) => element._id === value[0])[0];
-            let defaultInformation = currentAssetType ? currentAssetType.defaultInformation : [];
+        // if (value && value.length !== 0) {
+        //     let assetTypeList = assetType.listAssetTypes;
+        //     let currentAssetType = assetTypeList.filter((element) => element._id === value[0])[0];
+        //     let defaultInformation = currentAssetType ? currentAssetType.defaultInformation : [];
 
-            // Thêm trường thông tin mặc định ở nhóm tài sản vào thông tin chi tiết
-            for (let i in defaultInformation) {
-                let check = true;
-                for (let j in detailInfo) {
-                    if (defaultInformation[i].nameField === detailInfo[j].nameField) {
-                        check = false;
-                    }
-                }
+        //     // Thêm trường thông tin mặc định ở nhóm tài sản vào thông tin chi tiết
+        //     for (let i in defaultInformation) {
+        //         let check = true;
+        //         for (let j in detailInfo) {
+        //             if (defaultInformation[i].nameField === detailInfo[j].nameField) {
+        //                 check = false;
+        //             }
+        //         }
 
-                if (check) {
-                    arr.push({
-                        ...defaultInformation[i],
-                        value: '',
-                    });
-                }
-            }
-        }
+        //         if (check) {
+        //             arr.push({
+        //                 ...defaultInformation[i],
+        //                 value: '',
+        //             });
+        //         }
+        //     }
+        // }
 
         await this.setState(state => {
             return {
                 ...state,
-                assetTypes: value,
-                detailInfo: arr,
+                assetType: value,
+                // detailInfo: arr,
                 isObj: false
             }
         });
         this.props.handleChange("assetType", value);
-        this.props.handleChange("detailInfo", this.state.detailInfo);
+        // this.props.handleChange("detailInfo", this.state.detailInfo);
     }
 
     /**
@@ -490,7 +490,7 @@ class GeneralTab extends Component {
                 code: nextProps.code,
                 assetName: nextProps.assetName,
                 serial: nextProps.serial,
-                assetTypes: nextProps.assetTypes,
+                assetType: nextProps.assetType,
                 group: nextProps.group,
                 location: nextProps.location,
                 purchaseDate: nextProps.purchaseDate,
@@ -541,7 +541,7 @@ class GeneralTab extends Component {
     render() {
         const { id, translate, user, assetsManager, role, department } = this.props;
         const {
-            img, defaultAvatar, code, assetName, assetTypes, group, serial, purchaseDate, warrantyExpirationDate, managedBy, isObj,
+            img, defaultAvatar, code, assetName, assetType, group, serial, purchaseDate, warrantyExpirationDate, managedBy, isObj,
             assignedToUser, assignedToOrganizationalUnit, location, description, status, typeRegisterForUse, detailInfo,
             errorOnCode, errorOnAssetName, errorOnSerial, errorOnAssetType, errorOnLocation, errorOnPurchaseDate,
             errorOnWarrantyExpirationDate, errorOnManagedBy, errorOnNameField, errorOnValue, usageLogs, readByRoles, errorOnNameFieldPosition, errorOnValuePosition
@@ -551,11 +551,20 @@ class GeneralTab extends Component {
         let startDate = status == "in_use" && usageLogs && usageLogs.length ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : '';
         let endDate = status == "in_use" && usageLogs && usageLogs.length ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : '';
         let typeInTreeSelect = [];
+        let types = this.state.assetType;
+        let listtypes = this.props.assetType.listAssetTypes;
 
-        if (assetTypes) {
-            isObj ? assetTypes.map(item => {
-                typeInTreeSelect.push(item._id)
-            }) : typeInTreeSelect = assetTypes;
+        if (types && listtypes.length) {
+            for (let i in types) {
+                for (let j in listtypes) {
+                    if (types[i] === listtypes[j]._id) {
+                        typeInTreeSelect.push(listtypes[j]._id);
+                    }
+                }
+            }
+        }
+        else {
+            typeInTreeSelect = listtypes;
         }
 
         let assetbuilding = assetsManager && assetsManager.buildingAssets;
@@ -756,7 +765,7 @@ class GeneralTab extends Component {
                                     <label>{translate('asset.general_information.user')}</label>
                                     <div id="assignedToUserBox">
                                         <SelectBox
-                                            id={`assignedToUserBox${id}`}
+                                            id={`assignedToUserBox${assignedToUser}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={assignedToUser ? assignedToUser : ""}
@@ -772,7 +781,7 @@ class GeneralTab extends Component {
                                     <label>{translate('asset.general_information.organization_unit')}</label>
                                     <div id="assignedToOrganizationalUnitBox">
                                         <SelectBox
-                                            id={`assignedToOrganizationalUnitBox${id}`}
+                                            id={`assignedToOrganizationalUnitBox${assignedToOrganizationalUnit}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={[{ value: 'null', text: 'Chưa có đơn vị được giao sử dụng' }, ...departmentlist.map(x => { return { value: x._id, text: x.name } })]}
@@ -814,7 +823,7 @@ class GeneralTab extends Component {
 
                         {/* Thông tin chi tiết */}
                         <div className="col-md-12">
-                            <label>{translate('asset.general_information.asset_properties')}:<a style={{ cursor: "pointer" }} title={translate('asset.general_information.asset_properties')}><i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: 5 }}
+                            <label>{translate('asset.general_information.asset_properties')}:<a style={{ cursor: "pointer" }} title={translate('asset.general_information.asset_properties')}><i className="fa fa-plus-square" style={{ color: "#28A745", marginLeft: 5 }}
                                 onClick={this.handleAddDetailInfo} /></a></label>
 
                             {/* Bảng thông tin chi tiết */}

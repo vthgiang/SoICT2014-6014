@@ -12,7 +12,7 @@ class ModalApproveTask extends Component {
         this.save = this.save.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() { // sửa lại phương thức UNSAFE của Quang
         this.props.getTaskById(this.props.taskID);
     }
 

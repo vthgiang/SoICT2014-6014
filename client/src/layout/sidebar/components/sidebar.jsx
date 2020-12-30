@@ -33,7 +33,7 @@ class SideBar extends Component {
             <React.Fragment>
                 <aside className="main-sidebar" style={{ minHeight: "100vh" }}>
                     <section className="sidebar">
-                        <div className="user-panel">
+                        <div className="user-panel" style={{ borderBottom: '0.2px solid #4B545C' }}>
                             <div className="pull-left image">
                                 <img src={process.env.REACT_APP_SERVER + auth.user.avatar} className="img-circle" alt="User avatar" />
                             </div>
@@ -55,10 +55,10 @@ class SideBar extends Component {
                                         </Link>
                                     </React.Fragment>
                                 ) : (
-                                    <p style={{ fontSize: "10px" }}>
-                                        <i className="fa fa-circle text-success"></i> Online{" "}
-                                    </p>
-                                )}
+                                        <p style={{ fontSize: "10px" }}>
+                                            <i className="fa fa-circle text-success"></i> Online{" "}
+                                        </p>
+                                    )}
                             </div>
                         </div>
                         <ul className="sidebar-menu" data-widget="tree" ref="sideBarMenu">
@@ -513,13 +513,6 @@ class SideBar extends Component {
                                             icon: "fa fa-dashboard",
                                             path: "/manage-sales-order-dashboard",
                                         },
-                                        // {
-                                        //     name:
-                                        //         "menu.manage_manufacturing_order_dashboard",
-                                        //     icon: "fa  fa-dashboard",
-                                        //     path:
-                                        //         "/manage-manufacturing-order-dashboard",
-                                        // },
                                         {
                                             name: "menu.manage_quote",
                                             icon: "fa fa-tablet",
@@ -530,12 +523,6 @@ class SideBar extends Component {
                                             icon: "fa fa-dollar",
                                             path: "/manage-sales-order",
                                         },
-                                        // {
-                                        //     name:
-                                        //         "menu.manage_manufacturing_order",
-                                        //     icon: "fa  fa-flask",
-                                        //     path: "/manage-manufacturing-order",
-                                        // },
                                         {
                                             name: "menu.manage_purchase_order",
                                             icon: "fa fa-shopping-cart",
@@ -561,11 +548,11 @@ class SideBar extends Component {
                                             icon: "fa fa-sitemap",
                                             path: "/manage-business-department",
                                         },
-                                        {
-                                            name: "menu.manage_admin_department",
-                                            icon: "fa fa-sitemap",
-                                            path: "/manage-admin-department",
-                                        },
+                                        // {
+                                        //     name: "menu.manage_admin_department",
+                                        //     icon: "fa fa-sitemap",
+                                        //     path: "/manage-admin-department",
+                                        // },
                                     ],
                                 }}
                             />

@@ -81,7 +81,7 @@ exports.getTaskTemplate = async (portal, id) => {
     return await TaskTemplate(connect(DB_CONNECTION, portal))
         .findById(id)
         .populate([
-            { path: "organizationalUnit collaboratedWithOrganizationalUnits", select: "name deans" },
+            { path: "organizationalUnit collaboratedWithOrganizationalUnits", select: "name managers" },
             { path: "readByEmployees", select: "name" },
             { path: "creator responsibleEmployees accountableEmployees consultedEmployees informedEmployees", select: "name email" }]);
 }
@@ -97,18 +97,18 @@ exports.createTaskTemplate = async (portal, body) => {
 
     // thêm quyền xem mẫu công việc cho trưởng đơn vị của công việc
     let units = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findById(body.organizationalUnit);
-    let roleDeans = units.deans;
+    let roleManagers = units.managers;
     let readByEmployee = body.readByEmployees;
-    for (let i in roleDeans) {
+    for (let i in roleManagers) {
         let flag = true;
         for (let x in readByEmployee) {
-            if (JSON.stringify(readByEmployee[x]) === JSON.stringify(roleDeans[i])) {
+            if (JSON.stringify(readByEmployee[x]) === JSON.stringify(roleManagers[i])) {
                 flag = false;
                 break;
             }
         }
         if (flag) {
-            readByEmployee.push(roleDeans[i]);
+            readByEmployee.push(roleManagers[i]);
         }
     }
     readByEmployee = readByEmployee.map(x => String(x));
@@ -243,7 +243,7 @@ exports.createTaskTemplate = async (portal, body) => {
         });
     }
     tasktemplate = await tasktemplate.populate([
-        { path: "organizationalUnit collaboratedWithOrganizationalUnits", select: "name deans" },
+        { path: "organizationalUnit collaboratedWithOrganizationalUnits", select: "name managers" },
         { path: "readByEmployees", select: "name" },
         { path: "creator responsibleEmployees accountableEmployees consultedEmployees informedEmployees", select: "name email" }]).execPopulate();
     return tasktemplate;
@@ -297,7 +297,7 @@ exports.editTaskTemplate = async (portal, data, id) => {
         },
         { new: true },
     ).populate([
-        { path: "organizationalUnit collaboratedWithOrganizationalUnits", select: "name deans" },
+        { path: "organizationalUnit collaboratedWithOrganizationalUnits", select: "name managers" },
         { path: "readByEmployees", select: "name" },
         { path: "creator responsibleEmployees accountableEmployees consultedEmployees informedEmployees", select: "name email" }]);
 

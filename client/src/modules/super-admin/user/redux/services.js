@@ -18,6 +18,8 @@ export const UserServices = {
     edit,
     create,
     destroy,
+    importUsers,
+    sendEmailResetPasswordUser,
 };
 
 function get(params) {
@@ -256,6 +258,34 @@ function getAllUsersWithRole() {
         },
         false,
         false,
+        "super_admin.user"
+    );
+}
+
+function importUsers(data, params) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/user/users/import`,
+            method: "POST",
+            params,
+            data
+        },
+        true,
+        true,
+        "super_admin.user"
+    );
+}
+
+function sendEmailResetPasswordUser(email) {
+    console.log('FJKDJFKLSDF', email)
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/user/users/send-email-reset-password`,
+            method: "PATCH",
+            data: { email }
+        },
+        true,
+        true,
         "super_admin.user"
     );
 }

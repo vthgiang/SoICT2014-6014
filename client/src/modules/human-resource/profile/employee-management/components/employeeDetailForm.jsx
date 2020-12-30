@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal } from '../../../../../common-components';
+import { CareerMajorTab } from '../../employee-create/components/careerMajorTab';
 
 import {
     GeneralTab, ContactTab, TaxTab, InsurranceTab, SalaryTab,
@@ -42,7 +43,9 @@ class EmployeeDetailForm extends Component {
                 commendations: [],
                 disciplines: [],
                 courses: [],
-                roles: []
+                roles: [],
+                career: [],
+                major: [],
             })
             return false;
         };
@@ -55,6 +58,8 @@ class EmployeeDetailForm extends Component {
                 disciplines: nextProps.employeesInfo.disciplines,
                 courses: nextProps.employeesInfo.courses,
                 roles: nextProps.employeesInfo.roles,
+                career: nextProps.employeesInfo.employees[0].career,
+                major: nextProps.employeesInfo.employees[0].major,
 
             });
             return true;
@@ -65,7 +70,7 @@ class EmployeeDetailForm extends Component {
     render() {
         const { employeesInfo, translate } = this.props;
 
-        let { _id, employees, annualLeaves, commendations, disciplines, courses, roles = [] } = this.state;
+        let { _id, employees, annualLeaves, commendations, disciplines, courses, roles = [], career, major } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
@@ -90,6 +95,7 @@ class EmployeeDetailForm extends Component {
                                         <li><a title={translate('human_resource.profile.tab_name.menu_reward_discipline_title')} data-toggle="tab" href={`#view_reward${_id}`}>{translate('human_resource.profile.tab_name.menu_reward_discipline')}</a></li>
                                         <li><a title={translate('menu.annual_leave_personal')} data-toggle="tab" href={`#view_salary${_id}`}>{translate('menu.annual_leave_personal')}</a></li>
                                         <li><a title={translate('human_resource.profile.tab_name.menu_attachments_title')} data-toggle="tab" href={`#view_attachments${_id}`}>{translate('human_resource.profile.tab_name.menu_attachments')}</a></li>
+                                        <li><a title={"Công việc - chuyên ngành tương đương"} data-toggle="tab" href={`#view_major_career${_id}`}>Công việc - chuyên ngành tương đương</a></li>
                                     </ul>
                                     <div className="tab-content">
                                         {/* Thông tin chung */}
@@ -148,6 +154,13 @@ class EmployeeDetailForm extends Component {
                                             id={`view_attachments${_id}`}
                                             employee={x}
                                             files={x.files}
+                                        />
+                                        {/* Tab công việc - chuyên ngành tương đương */}
+                                        <CareerMajorTab
+                                            id={`view_major_career${_id}`}
+                                            major={major}
+                                            career={career}
+                                            type={"view"}
                                         />
                                     </div>
                                 </div>

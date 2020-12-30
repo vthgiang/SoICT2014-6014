@@ -387,7 +387,7 @@ class AnnualLeaveManagement extends Component {
                                             <td><p>{this.formatDate(x.endDate)}</p>{x.endTime ? x.endTime : null}</td>
                                             <td>{organizationalUnit ? organizationalUnit.name : null}</td>
                                             <td>{x.reason}</td>
-                                            <td style={{ color: x.status === "approved" ? "#00a65a" : (x.status === "waiting_for_approval" ? '#ff7f0e' : '#dd4b39') }}>{translate(`human_resource.annual_leave.status.${x.status}`)}</td>
+                                            <td style={{ color: x.status === "approved" ? "#28A745" : (x.status === "waiting_for_approval" ? '#ff7f0e' : '#dd4b39') }}>{translate(`human_resource.annual_leave.status.${x.status}`)}</td>
                                             <td style={{ textAlign: "center" }}>
                                                 <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.annual_leave.edit_annual_leave')}><i className="material-icons">edit</i></a>
                                                 <DeleteNotification

@@ -46,7 +46,8 @@ class FileTab extends Component {
             { name: translate('human_resource.profile.birth_certificate'), description: translate('human_resource.profile.disc_birth_certificate'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: "" },
             { name: translate('human_resource.profile.job_application'), description: translate('human_resource.profile.disc_job_application'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: "" },
             { name: translate('human_resource.profile.commitment'), description: translate('human_resource.profile.disc_commitment'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: "" },
-            { name: translate('human_resource.profile.temporary_residence_card'), description: translate('human_resource.profile.disc_temporary_residence_card'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: "" }
+            { name: translate('human_resource.profile.temporary_residence_card'), description: translate('human_resource.profile.disc_temporary_residence_card'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: "" },
+            { name: translate('human_resource.profile.registration_book'), description: translate('human_resource.profile.registration_book'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: "" }
         ]
 
         await this.setState({

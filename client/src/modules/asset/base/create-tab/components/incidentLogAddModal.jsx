@@ -7,18 +7,41 @@ import { ButtonModal, DatePicker, DialogModal, ErrorLabel, SelectBox } from '../
 import { AssetCreateValidator } from './combinedContent';
 
 import { UserActions } from '../../../../super-admin/user/redux/actions';
+import { generateCode } from "../../../../../helpers/generateCode";
+
 
 class IncidentLogAddModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
             incidentCode: "",
-            type: "broken",
+            // type: "broken",
             dateOfIncident: this.formatDate(Date.now()),
             description: "",
             statusIncident: "1",
             reportedBy: localStorage.getItem('userId'),
         };
+    }
+
+    regenerateCode = () => {
+        let code = generateCode("IC");
+        this.setState((state) => ({
+            ...state,
+            incidentCode: code,
+        }));
+        this.validateIncidentCode(code);
+    }
+
+    componentDidMount = () => {
+        // Mỗi khi modal mở, cần sinh lại code
+        let { id } = this.props;
+        id && window.$(`#modal-create-incident-${id}`).on('shown.bs.modal', this.regenerateCode);
+    }
+
+    componentWillUnmount = () => {
+        // Unsuscribe event
+        let { id } = this.props;
+        id && window.$(`#modal-create-incident-${id}`).unbind('shown.bs.modal', this.regenerateCode)
     }
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
@@ -175,8 +198,9 @@ class IncidentLogAddModal extends Component {
                             <div className="form-group">
                                 <label>{translate('asset.general_information.incident_type')}</label>
                                 <select className="form-control" value={type} name="type" onChange={this.handleTypeChange}>
-                                    <option value="broken">{translate('asset.general_information.damaged')}</option>
-                                    <option value="lost">{translate('asset.general_information.lost')}</option>
+                                    <option value="">{`---${translate('asset.general_information.select_incident_type')}---`} </option>
+                                    <option value="1">{translate('asset.general_information.damaged')}</option>
+                                    <option value="2">{translate('asset.general_information.lost')}</option>
                                 </select>
                             </div>
 

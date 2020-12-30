@@ -140,7 +140,7 @@ class UseRequestCreateForm extends Component {
         let { recommendNumber, dateCreate, reqContent, dateStartUse } = this.state;
         let { translate } = this.props;
         if (
-            !ValidationHelper.validateEmpty(translate, recommendNumber).status ||
+            // !ValidationHelper.validateEmpty(translate, recommendNumber).status ||
             !ValidationHelper.validateEmpty(translate, dateCreate).status ||
             !ValidationHelper.validateEmpty(translate, reqContent).status ||
             !ValidationHelper.validateEmpty(translate, dateStartUse).status
@@ -150,7 +150,31 @@ class UseRequestCreateForm extends Component {
 
     // Bắt sự kiện submit form
     save = async () => {
-        let dataToSubmit = { ...this.state, proponent: this.props.auth.user._id }
+        let { dateStartUse, dateEndUse, dateCreate, date, partStart, partEnd, partCreate, startTime, stopTime } = this.state;
+
+        partStart = dateStartUse.split('-');
+        partEnd = dateEndUse.split('-');
+        partCreate = dateCreate.split('-');
+
+        if (startTime) {
+            date = [partStart[2], partStart[1], partStart[0]].join('-') + ' ' + startTime;
+            dateStartUse = new Date(date);
+        } else {
+            date = [partStart[2], partStart[1], partStart[0]].join('-')
+            dateStartUse = new Date(date);
+        }
+        if (stopTime) {
+            date = [partEnd[2], partEnd[1], partEnd[0]].join('-') + ' ' + stopTime;
+            dateEndUse = new Date(date);
+        } else {
+            date = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+            dateEndUse = new Date(date);
+        }
+
+        date = [partCreate[2], partCreate[1], partCreate[0]].join('-');
+        dateCreate = new Date(date);
+
+        let dataToSubmit = { ...this.state, dateCreate, dateStartUse, dateEndUse, proponent: this.props.auth.user._id }
         if (this.isFormValidated()) {
             let nowDate = new Date();
             let dateStartUse, date;
@@ -214,10 +238,10 @@ class UseRequestCreateForm extends Component {
 
                             <div className="col-sm-6">
                                 {/* Mã phiếu */}
-                                <div className={`form-group ${!errorOnRecommendNumber ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.form_code')}<span className="text-red">*</span></label>
+                                <div className={`form-group`}>
+                                    <label>{translate('asset.general_information.form_code')}</label>
                                     <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={this.handleRecommendNumberChange} autoComplete="off" placeholder="Mã phiếu" />
-                                    <ErrorLabel content={errorOnRecommendNumber} />
+                                    {/* <ErrorLabel content={errorOnRecommendNumber} /> */}
                                 </div>
 
                                 {/* Ngày lập */}

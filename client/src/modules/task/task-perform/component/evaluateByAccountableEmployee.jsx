@@ -170,7 +170,7 @@ class EvaluateByAccountableEmployee extends Component {
             prevDate = this.formatDate(prevEval.date);
         }
         let automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : undefined;
-        let progress = evaluations ? evaluations.progress : undefined;
+        let progress = evaluations ? evaluations.progress : 0;
 
         let unit;
         if (user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) {
@@ -1557,12 +1557,12 @@ class EvaluateByAccountableEmployee extends Component {
                                                 <th><div className="form-group"><label>{translate('task.task_management.role_employee')}</label></div></th>
                                                 <th><div className="form-group"><label>{translate('task.task_management.detail_emp_point')}</label></div></th>
                                                 <th>
-                                                    <label>% {translate('task.task_management.contribution')}</label>
+                                                    <label>% {translate('task.task_management.contribution')} (0 - 100)</label>
                                                     <div style={{ fontWeight: "normal" }} className={`form-group ${errSumContribution === undefined ? "" : "has-error"}`}>
                                                         <ErrorLabel content={errSumContribution ? errSumContribution : ''} />
                                                     </div>
                                                 </th>
-                                                <th><div className="form-group"><label>{translate('task.task_management.acc_evaluate')}</label></div></th>
+                                                <th><div className="form-group"><label>{translate('task.task_management.acc_evaluate')} (0 - 100)</label></div></th>
                                             </tr>
 
                                             { // Chấm điểm phê duyệt cho người thực hiện

@@ -85,8 +85,8 @@ class ModalEditTaskProcess extends Component {
         this.props.getDepartment();
         let { user } = this.props;
         let defaultUnit = user && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.find(item =>
-            item.dean === this.state.currentRole
-            || item.viceDean === this.state.currentRole
+            item.manager === this.state.currentRole
+            || item.deputyManager === this.state.currentRole
             || item.employee === this.state.currentRole);
         if (!defaultUnit && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) { // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
             defaultUnit = user.organizationalUnitsOfUser[0]
@@ -259,36 +259,36 @@ class ModalEditTaskProcess extends Component {
     // Cập nhật người thực hiện công việc trong quy trình
     handleChangeResponsible = async (value) => {
         const modeling = this.modeler.get('modeling');
-		let element1 = this.modeler.get('elementRegistry').get(this.state.id);
-		let { user } = this.props
-		let responsibleName
-		let responsible = []
-		user.usercompanys.forEach(x => {
-			if (value.some(y => y === x._id)) {
-				responsible.push(x.name)
-			}
-		})
-		modeling.updateProperties(element1, {
-			responsibleName: responsible
-		});
+        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+        let { user } = this.props
+        let responsibleName
+        let responsible = []
+        user.usercompanys.forEach(x => {
+            if (value.some(y => y === x._id)) {
+                responsible.push(x.name)
+            }
+        })
+        modeling.updateProperties(element1, {
+            responsibleName: responsible
+        });
     }
 
     // Cập nhật người phê duyệt công việc trong quy trình
     handleChangeAccountable = async (value) => {
         const modeling = this.modeler.get('modeling');
-		let element1 = this.modeler.get('elementRegistry').get(this.state.id);
-		let { user } = this.props
-		let accountableName
-		let accountable = []
+        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+        let { user } = this.props
+        let accountableName
+        let accountable = []
 
-		user.usercompanys.forEach(x => {
-			if (value.some(y => y === x._id)) {
-				accountable.push(x.name)
-			}
-		})
-		modeling.updateProperties(element1, {
-			accountableName: accountable
-		});
+        user.usercompanys.forEach(x => {
+            if (value.some(y => y === x._id)) {
+                accountable.push(x.name)
+            }
+        })
+        modeling.updateProperties(element1, {
+            accountableName: accountable
+        });
     }
 
     // Các hàm  xử lý sự kiện của bpmn
@@ -540,16 +540,16 @@ class ModalEditTaskProcess extends Component {
         let check = true; // valid
         let hasStart = false, hasEnd = false;
 
-		let validateTasks = true;
-		let { info } = this.state;
+        let validateTasks = true;
+        let { info } = this.state;
 
-		for (let i in info) {
-			let taskItem = info[i];
-			if (!taskItem.name || ( taskItem.name?.trim() === '')) {//taskItem.organizationalUnit.trim() === '' ||
+        for (let i in info) {
+            let taskItem = info[i];
+            if (!taskItem.name || (taskItem.name?.trim() === '')) {//taskItem.organizationalUnit.trim() === '' ||
                 console.log('-------');
-				validateTasks = false;
-			}
-		}
+                validateTasks = false;
+            }
+        }
 
         for (let i in elementList) {
             let e = elementList[i].element;
@@ -653,7 +653,7 @@ class ModalEditTaskProcess extends Component {
 
         let listRole = [];
         if (role && role.list.length !== 0) listRole = role.list;
-        let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Dean', 'Vice Dean', 'Employee'].indexOf(e.name) === -1)
+        let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Manager', 'Deputy Manager', 'Employee'].indexOf(e.name) === -1)
             .map(item => { return { text: item.name, value: item._id } });
 
         return (

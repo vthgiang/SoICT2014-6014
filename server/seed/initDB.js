@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
-const Terms = require('./terms');
+const Terms = require('../helpers/config');
 const models = require('../models');
 const { 
     User, 
@@ -23,16 +23,26 @@ const initDB = async() => {
     /**
      * 1. Tạo kết nối đến cơ sở dữ liệu
      */
-    const systemDB = mongoose.createConnection(
-        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/${process.env.DB_NAME}`,
-        {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true,
-            useFindAndModify: false,
-            user: process.env.DB_AUTHENTICATION === "true" ? process.env.DB_USERNAME : undefined,
-            pass: process.env.DB_AUTHENTICATION === "true" ? process.env.DB_PASSWORD : undefined,
+    let connectOptions = process.env.DB_AUTHENTICATION === 'true' ?
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+        user:process.env.DB_USERNAME,
+        pass:process.env.DB_PASSWORD,
+        auth: {
+            authSource: 'admin'
         }
+    } : {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+    }
+    const systemDB = mongoose.createConnection(
+        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/${process.env.DB_NAME}`, 
+        connectOptions
     );
     if(!systemDB) throw('Error! Cannot connect to MongoDB. Please check connection. :(');
 
@@ -166,13 +176,13 @@ const initDB = async() => {
         name: Terms.ROOT_ROLES.ADMIN.name,
         description: Terms.ROOT_ROLES.ADMIN.description
     });
-    const roleDean = await RootRole(systemDB).create({
-        name: Terms.ROOT_ROLES.DEAN.name,
-        description: Terms.ROOT_ROLES.DEAN.description
+    const roleManager = await RootRole(systemDB).create({
+        name: Terms.ROOT_ROLES.MANAGER.name,
+        description: Terms.ROOT_ROLES.MANAGER.description
     });
-    const roleViceDean = await RootRole(systemDB).create({
-        name: Terms.ROOT_ROLES.VICE_DEAN.name,
-        description: Terms.ROOT_ROLES.VICE_DEAN.description
+    const roleDeputyManager = await RootRole(systemDB).create({
+        name: Terms.ROOT_ROLES.DEPUTY_MANAGER.name,
+        description: Terms.ROOT_ROLES.DEPUTY_MANAGER.description
     });
     const roleEmployee = await RootRole(systemDB).create({
         name: Terms.ROOT_ROLES.EMPLOYEE.name,
@@ -188,10 +198,10 @@ const initDB = async() => {
             return roleSuperAdmin._id;
         } else if (roleName === Terms.ROOT_ROLES.ADMIN.name){
             return roleAdmin._id;
-        } else if (roleName === Terms.ROOT_ROLES.DEAN.name){
-            return roleDean._id;
-        } else if (roleName === Terms.ROOT_ROLES.VICE_DEAN.name){
-            return roleViceDean._id;
+        } else if (roleName === Terms.ROOT_ROLES.MANAGER.name){
+            return roleManager._id;
+        } else if (roleName === Terms.ROOT_ROLES.DEPUTY_MANAGER.name){
+            return roleDeputyManager._id;
         } else if (roleName === Terms.ROOT_ROLES.EMPLOYEE.name){
             return roleEmployee._id;
         }

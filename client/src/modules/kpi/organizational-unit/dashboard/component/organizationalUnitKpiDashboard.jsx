@@ -88,7 +88,7 @@ class OrganizationalUnitKpiDashboard extends Component {
 
         return false;
     }
-    
+
     handleSelectTypeChildUnit = (value) => {
         this.setState(state => {
             return {
@@ -112,9 +112,9 @@ class OrganizationalUnitKpiDashboard extends Component {
         return [month, year].join('-');
     }
 
-    checkPermisson = (deanCurrentUnit) => {
+    checkPermisson = (managerCurrentUnit) => {
         let currentRole = localStorage.getItem("currentRole");
-        return (currentRole === deanCurrentUnit);
+        return (currentRole === managerCurrentUnit);
 
     }
 
@@ -139,8 +139,8 @@ class OrganizationalUnitKpiDashboard extends Component {
         })
     }
 
-    handleResultsOfOrganizationalUnitKpiChartDataAvailable = (data)=>{
-        this.setState( state => {
+    handleResultsOfOrganizationalUnitKpiChartDataAvailable = (data) => {
+        this.setState(state => {
             return {
                 ...state,
                 resultsOfOrganizationalUnitKpiChartData: data
@@ -148,8 +148,8 @@ class OrganizationalUnitKpiDashboard extends Component {
         })
     }
 
-    handleResultsOfAllOrganizationalUnitsKpiChartDataAvailable = (data)=>{
-        this.setState( state => {
+    handleResultsOfAllOrganizationalUnitsKpiChartDataAvailable = (data) => {
+        this.setState(state => {
             return {
                 ...state,
                 resultsOfAllOrganizationalUnitsKpiChartData: data
@@ -157,8 +157,8 @@ class OrganizationalUnitKpiDashboard extends Component {
         })
     }
 
-    handleStatisticsOfOrganizationalUnitKpiResultChartDataAvailable = (data)=>{
-        this.setState( state => {
+    handleStatisticsOfOrganizationalUnitKpiResultChartDataAvailable = (data) => {
+        this.setState(state => {
             return {
                 ...state,
                 statisticsOfOrganizationalUnitKpiResultChartData: data
@@ -168,11 +168,11 @@ class OrganizationalUnitKpiDashboard extends Component {
 
     render() {
         const { dashboardEvaluationEmployeeKpiSet, translate } = this.props;
-        const { childUnitChart, organizationalUnitId, month, resultsOfOrganizationalUnitKpiChartData,resultsOfAllOrganizationalUnitsKpiChartData,statisticsOfOrganizationalUnitKpiResultChartData } = this.state;
+        const { childUnitChart, organizationalUnitId, month, resultsOfOrganizationalUnitKpiChartData, resultsOfAllOrganizationalUnitsKpiChartData, statisticsOfOrganizationalUnitKpiResultChartData } = this.state;
 
         let childOrganizationalUnit, childrenOrganizationalUnit, childrenOrganizationalUnitLoading;
         let organizationalUnitSelectBox, typeChartSelectBox;
-        
+
         if (dashboardEvaluationEmployeeKpiSet) {
             childrenOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
             childrenOrganizationalUnitLoading = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnitLoading
@@ -184,7 +184,7 @@ class OrganizationalUnitKpiDashboard extends Component {
             childOrganizationalUnit = [{
                 'name': childrenOrganizationalUnit.name,
                 'id': childrenOrganizationalUnit.id,
-                'viceDean': childrenOrganizationalUnit.viceDean
+                'deputyManager': childrenOrganizationalUnit.deputyManager
             }]
 
             temporaryChild = childrenOrganizationalUnit.children;
@@ -194,7 +194,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                     childOrganizationalUnit = childOrganizationalUnit.concat({
                         'name': x.name,
                         'id': x.id,
-                        'viceDean': x.viceDean
+                        'deputyManager': x.deputyManager
                     });
                 })
 
@@ -215,7 +215,7 @@ class OrganizationalUnitKpiDashboard extends Component {
 
         // Tạo các select box
         if (childOrganizationalUnit) {
-            
+
             organizationalUnitSelectBox = childOrganizationalUnit.map(x => { return { 'text': x.name, 'value': x.id } });
         }
         typeChartSelectBox = [
@@ -320,15 +320,15 @@ class OrganizationalUnitKpiDashboard extends Component {
                                                 <div className="box-header with-border">
                                                     <div className="box-title">{translate('kpi.organizational_unit.dashboard.distributive')}{this.state.date}</div>
                                                 </div>
-                                                { childOrganizationalUnit && (this.state.dataStatus === this.DATA_STATUS.AVAILABLE)
-                                                    && 
-                                                        <DistributionOfOrganizationalUnitKpiChart
-                                                            organizationalUnitId={organizationalUnitId}
-                                                            month={month}
-                                                        />
+                                                {childOrganizationalUnit && (this.state.dataStatus === this.DATA_STATUS.AVAILABLE)
+                                                    &&
+                                                    <DistributionOfOrganizationalUnitKpiChart
+                                                        organizationalUnitId={organizationalUnitId}
+                                                        month={month}
+                                                    />
                                                 }
-                                            </div>  
-                                            
+                                            </div>
+
                                             {/* Thống kê kết quả KPI */}
                                             <div className="col-xs-6">
                                                 <div className="box-header with-border">
@@ -348,7 +348,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                             </div>
                         </LazyLoadComponent>
 
-                        
+
                         {/* Kết quả KPI đơn vị */}
                         <LazyLoadComponent
                             key="resultsOfOrganizationalUnitKpiChart"
@@ -376,7 +376,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                             }
                         </LazyLoadComponent>
 
-                        
+
                         {/* Kết quả KPI các đơn vị */}
                         <LazyLoadComponent
                             key="resultsOfAllOrganizationalUnitKpiChart"

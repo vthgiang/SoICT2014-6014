@@ -126,13 +126,28 @@ exports.createTaskAction = async (req, res) => {
             })
         }
 
-        var task = await PerformTaskService.createTaskAction(req.portal, req.params, req.body, files);
-        var taskAction = task.taskActions;
-        var tasks = task.tasks;
-        var user = task.user;
-        var data = { "organizationalUnits": tasks.organizationalUnit, "title": "Phê duyệt hoạt động", "level": "general", "content": `<p><strong>${user.name}</strong> đã thêm mới hoạt động cho công việc <strong>${tasks.name}</strong>, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`, "sender": user.name, "users": [tasks.accountableEmployees] };
-        NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data,);
-        sendEmail(task.email, "Phê duyệt hoạt động", '', `<p><strong>${user.name}</strong> đã thêm mới hoạt động, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`);
+        let  task = await PerformTaskService.createTaskAction(req.portal, req.params, req.body, files);
+        let taskAction = task.taskActions;
+        let tasks = task.tasks;
+        let userCreator = task.userCreator;
+        // message gửi cho người phê duyệt
+
+        const associatedData = {
+            dataType: "createTaskAction",
+            value: [taskAction[taskAction.length - 1]]
+        }
+
+        const  associatedDataforAccountable = { "organizationalUnits": tasks.organizationalUnit, "title": "Phê duyệt hoạt động", "level": "general", "content": `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động cho công việc <strong>${tasks.name}</strong>, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`, "sender": userCreator.name, "users": [tasks.accountableEmployees],"associatedData":associatedData };
+        NotificationServices.createNotification(req.portal, tasks.organizationalUnit, associatedDataforAccountable,);
+       
+        // message gửi cho người thực hiện
+        // Loại người tạo hoặt động khỏi danh sách người nhận thông báo
+        const userReceive = [...tasks.responsibleEmployees].filter(obj => JSON.stringify(obj) !== JSON.stringify(req.user._id));
+        const associatedDataforResponsible = { "organizationalUnits": tasks.organizationalUnit, "title": "Thêm mới hoạt động", "level": "general", "content": `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động cho công việc <strong>${tasks.name}</strong>, chi tiết công việc: <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`, "sender": userCreator.name, "users": userReceive, "associatedData": associatedData };
+               
+        NotificationServices.createNotification(req.portal, tasks.organizationalUnit, associatedDataforResponsible,);
+        sendEmail(task.email, "Phê duyệt hoạt động", '', `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`);
+        
         await Logger.info(req.user.email, ` create task action  `, req.portal)
         res.status(200).json({
             success: true,
@@ -217,7 +232,7 @@ exports.createCommentOfTaskAction = async (req, res) => {
 
             })
         }
-        let actionComment = await PerformTaskService.createCommentOfTaskAction(req.portal, req.params, req.body, files);
+        let actionComment = await PerformTaskService.createCommentOfTaskAction(req.portal, req.params, req.body, files, req.user);
         await Logger.info(req.user.email, ` create  action comment  `, req.portal);
         res.status(200).json({
             success: true,
@@ -299,7 +314,7 @@ exports.createTaskComment = async (req, res) => {
 
             })
         }
-        let taskComment = await PerformTaskService.createTaskComment(req.portal, req.params, req.body, files);
+        let taskComment = await PerformTaskService.createTaskComment(req.portal, req.params, req.body, files, req.user);
         await Logger.info(req.user.email, ` create task comment  `, req.portal);
         res.status(200).json({
             success: true,
@@ -399,7 +414,7 @@ exports.createCommentOfTaskComment = async (req, res) => {
 
             })
         }
-        let comment = await PerformTaskService.createCommentOfTaskComment(req.portal, req.params, req.body, files);
+        let comment = await PerformTaskService.createCommentOfTaskComment(req.portal, req.params, req.body, files, req.user);
         await Logger.info(req.user.email, ` create comment of task comment  `, req.portal);
         res.status(200).json({
             success: true,
@@ -766,7 +781,7 @@ editTaskByAccountableEmployees = async (req, res) => {
             level: "general",
             content: deletedCollabHtml,
             sender: task.newTask.organizationalUnit.name,
-            users: task.deansOfDeletedCollab
+            users: task.managersOfDeletedCollab
         };
 
         await NotificationServices.createNotification(req.portal, tasks.organizationalUnit.company, deletedCollabData);
@@ -781,7 +796,7 @@ editTaskByAccountableEmployees = async (req, res) => {
             level: "general",
             content: additionalCollabHtml,
             sender: task.newTask.organizationalUnit.name,
-            users: task.deansOfAdditionalCollab
+            users: task.managersOfAdditionalCollab
         };
 
         await NotificationServices.createNotification(req.portal, tasks.organizationalUnit.company, additionalCollabData);

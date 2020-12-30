@@ -10,6 +10,7 @@ import { EmployeeManagerActions } from '../redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { CareerReduxAction } from "../../../career/redux/actions";
 import { MajorActions } from "../../../major/redux/actions";
+import { FieldsActions } from '../../../field/redux/actions';
 
 class EmployeeManagement extends Component {
     constructor(props) {
@@ -34,13 +35,16 @@ class EmployeeManagement extends Component {
             employeeName: null,
             employeeNumber: null,
             organizationalUnits: organizationalUnits,
-            status: 'active',
+            status: ['active'],
+            professionalSkills: null,
+            careerFields: null,
             page: 0,
             limit: 5,
         }
     }
 
     componentDidMount() {
+        this.props.getListFields({ page: 0, limit: 10000 })
         this.props.getAllEmployee(this.state);
         this.props.getDepartment();
         this.props.getListMajor({ name: '', page: 1, limit: 1000 });
@@ -76,7 +80,7 @@ class EmployeeManagement extends Component {
 
     // Function bắt sự kiện thêm lương nhân viên bằng tay
     createEmployee = () => {
-        window.$('#modal-create-employee').modal('show');
+        window.$('#modal-create-employee').modal({ backdrop: 'static', display: 'show' });
     }
 
     // Function bắt sự kiện thêm lương nhân viên bằng import file
@@ -169,6 +173,34 @@ class EmployeeManagement extends Component {
         this.setState({
             ...this.state,
             status: value
+        })
+    }
+
+    /**
+     * Function lưu giá trị chuyên môn vào state khi thay đổi
+     * @param {*} value : Giá trị chuyên môn
+     */
+    handleProfessionalSkillChange = (value) => {
+        if (value.length === 0) {
+            value = null
+        };
+        this.setState({
+            ...this.state,
+            professionalSkills: value
+        })
+    };
+    /**
+     * Function lưu giá trị chuyên ngành vào state khi thay đổi
+     * @param {*} value : Giá trị chuyên ngành
+     */
+    handleCareerFieldChange = (value) => {
+        console.log(value)
+        if (value.length === 0) {
+            value = null
+        };
+        this.setState({
+            ...this.state,
+            careerFields: value
         })
     }
 
@@ -795,9 +827,9 @@ class EmployeeManagement extends Component {
     }
 
     render() {
-        const { employeesManager, translate, department } = this.props;
+        const { employeesManager, translate, department, field } = this.props;
 
-        let { importEmployee, limit, page, organizationalUnits, currentRow, currentRowView } = this.state;
+        let { importEmployee, limit, page, organizationalUnits, currentRow, currentRowView, status } = this.state;
 
         let listEmployees = [];
         if (employeesManager.listEmployees) {
@@ -808,6 +840,14 @@ class EmployeeManagement extends Component {
             parseInt(employeesManager.totalList / limit) :
             parseInt((employeesManager.totalList / limit) + 1);
         let currentPage = parseInt((page / limit) + 1);
+        let professionalSkills = [
+            { value: "intermediate_degree", text: translate('human_resource.profile.intermediate_degree') },
+            { value: "colleges", text: translate('human_resource.profile.colleges') },
+            { value: "university", text: translate('human_resource.profile.university') },
+            { value: "master_degree", text: translate('human_resource.profile.master_degree') },
+            { value: "phd", text: translate('human_resource.profile.phd') },
+            { value: "unavailable", text: translate('human_resource.profile.unavailable') },
+        ];
 
         return (
             <div className="box">
@@ -859,6 +899,7 @@ class EmployeeManagement extends Component {
                                     { value: 'probationary', text: translate('human_resource.profile.probationary') },
                                     { value: 'sick_leave', text: translate('human_resource.profile.sick_leave') },
                                 ]}
+                                value={status}
                                 onChange={this.handleStatusChange}>
                             </SelectMulti>
                         </div>
@@ -885,7 +926,7 @@ class EmployeeManagement extends Component {
                         </div>
                     </div>
 
-                    <div className="form-inline" style={{ marginBottom: 15 }}>
+                    <div className="form-inline">
                         {/* Loại hợp đồng lao động */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.profile.type_contract')}</label>
@@ -900,6 +941,27 @@ class EmployeeManagement extends Component {
                                 value=""
                                 onChange={this.handleEndDateOfContractChange}
                             />
+                        </div>
+
+                    </div>
+                    <div className="form-inline" style={{ marginBottom: 15 }}>
+                        {/* Trình độ chuyên môn */}
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('human_resource.profile.qualification')}</label>
+                            <SelectMulti id={`multiSelectProfessionalSkill`} multiple="multiple"
+                                options={{ nonSelectedText: 'Chọn chuyên môn', allSelectedText: 'Chọn tất cả chuyên môn' }}
+                                items={professionalSkills}
+                                onChange={this.handleProfessionalSkillChange}>
+                            </SelectMulti>
+                        </div>
+                        {/* Trình độ chuyên ngành */}
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('human_resource.profile.career_fields')}</label>
+                            <SelectMulti id={`multiSelectCareerFields`} multiple="multiple"
+                                options={{ nonSelectedText: 'Chọn chuyên ngành', allSelectedText: 'Chọn tất cả chuyên ngành' }}
+                                items={field.listFields.map(x => { return { value: x._id, text: x.name } })}
+                                onChange={this.handleCareerFieldChange}>
+                            </SelectMulti>
                         </div>
                         {/* Button tìm kiếm */}
                         <div className="form-group">
@@ -971,7 +1033,7 @@ class EmployeeManagement extends Component {
                                         <td>{this.formatDate(x.birthdate)}</td>
                                         <td>{this.formatDate(x.contractEndDate)}</td>
                                         <td>{x.contractType}</td>
-                                        <td style={{ color: x.status === "active" ? "#00a65a" : (x.status === "active" ? '#dd4b39' : null) }}>{translate(`human_resource.profile.${x.status}`)}</td>
+                                        <td style={{ color: x.status === "active" ? "#28A745" : (x.status === "active" ? '#dd4b39' : null) }}>{translate(`human_resource.profile.${x.status}`)}</td>
                                         <td>
                                             <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('human_resource.profile.employee_management.view_employee')}><i className="material-icons">view_list</i></a>
                                             <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.employee_management.edit_employee')}><i className="material-icons">edit</i></a>
@@ -1020,11 +1082,12 @@ class EmployeeManagement extends Component {
 }
 
 function mapState(state) {
-    const { employeesManager, department } = state;
-    return { employeesManager, department };
+    const { employeesManager, department, field } = state;
+    return { employeesManager, department, field };
 }
 
 const actionCreators = {
+    getListFields: FieldsActions.getListFields,
     getDepartment: DepartmentActions.get,
     getAllEmployee: EmployeeManagerActions.getAllEmployee,
     deleteEmployee: EmployeeManagerActions.deleteEmployee,

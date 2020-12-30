@@ -2,22 +2,26 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
-import { DataTableSetting, DatePicker, PaginateBar, SelectMulti, TreeTable } from '../../../../common-components';
+import { DataTableSetting, DatePicker, PaginateBar, SelectMulti, Tree, TreeTable } from '../../../../common-components';
+import { getFormatDateFromTime } from '../../../../helpers/stringMethod';
 import { getStorage } from '../../../../config';
 
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { performTaskAction } from "../../task-perform/redux/actions";
 import { taskManagementActions } from '../redux/actions';
+import TaskProjectAction from '../../task-project/redux/action';
 
 import { TaskAddModal } from './taskAddModal';
 import { ModalPerform } from '../../task-perform/component/modalPerform';
+import { duration } from 'moment';
 
 class TaskManagement extends Component {
     constructor(props) {
         let userId = getStorage("userId");
         super(props);
         this.state = {
+            displayType: 'table',
             perPage: 20,
             currentPage: 1,
 
@@ -45,7 +49,7 @@ class TaskManagement extends Component {
         this.props.getDepartment();
         this.props.getAllDepartment();
         this.props.getPaginateTasks(this.state.currentTab, [], '1', '20', this.state.status, null, null, null, null, null);
-        // this.props.getResponsibleTaskByUser([], "1", "20", this.state.status, [], [], null, null, null, null, null);
+        this.props.getAllTaskProject();
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -72,20 +76,6 @@ class TaskManagement extends Component {
         }
     }
 
-    formatDate(date) {
-        let d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-
-        return [day, month, year].join('-');
-    }
-
     list_to_tree = (list) => {
         let map = {}, node, roots = [], i, newarr = [];
         for (i = 0; i < list.length; i += 1) {
@@ -95,10 +85,9 @@ class TaskManagement extends Component {
 
         for (i = 0; i < list.length; i += 1) {
             node = list[i];
-            if (node.parent !== null) {
-
+            if (node.parent) {
                 // if you have dangling branches check that map[node.parentId] exists
-                if (map[node.parent._id] !== undefined) {
+                if (map[node.parent._id]) {
                     list[map[node.parent._id]].children.push(node);
                 }
                 else {
@@ -123,15 +112,10 @@ class TaskManagement extends Component {
 
     setLimit = async (limit) => {
         if (Number(limit) !== this.state.perPage) {
-            // Cập nhật số dòng trang trên một trang hiển thị
-            await this.setState(state => {
-                return {
-                    ...state,
-                    perPage: Number(limit)
-                }
+            await this.setState({
+                perPage: Number(limit)
             })
-            // TODO: send query
-            this.handleGetDataPerPage(this.state.perPage);
+            this.handleGetDataPerPage(Number(limit));
         }
     }
 
@@ -152,9 +136,6 @@ class TaskManagement extends Component {
     handleDelete = async (id) => {
         const { tasks, translate } = this.props;
         let currentTasks = tasks.tasks.find(task => task._id === id);
-
-        console.log('task', currentTasks);
-
         let progress = currentTasks.progress;
         let action = currentTasks.taskActions.filter(item => item.creator); // Nếu công việc theo mẫu, chưa hoạt động nào được xác nhận => cho xóa
 
@@ -190,11 +171,8 @@ class TaskManagement extends Component {
         let oldCurrentPage = this.state.currentPage;
         let perPage = this.state.perPage;
 
-        await this.setState(state => {
-            return {
-                ...state,
-                currentPage: index
-            }
+        await this.setState({
+            currentPage: index
         })
         let newCurrentPage = this.state.currentPage;
         if (oldCurrentPage !== index) {
@@ -298,11 +276,8 @@ class TaskManagement extends Component {
         // } else {
         //     this.props.getPaginateTasksByUser(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate);
         // }
-        this.setState(state => {
-            return {
-                ...state,
-                currentPage: 1
-            }
+        this.setState({
+            currentPage: 1
         })
     }
 
@@ -327,31 +302,34 @@ class TaskManagement extends Component {
         // } else {
         //     this.props.getPaginateTasksByUser(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate);
         // }
-        this.setState(state => {
-            return {
-                ...state,
-                currentPage: 1
-            }
+
+        this.setState({
+            currentPage: 1
         })
     }
-    convertTime = (duration) => {
-        let seconds = Math.floor((duration / 1000) % 60),
-            minutes = Math.floor((duration / (1000 * 60)) % 60),
-            hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
 
-        hours = (hours < 10) ? "0" + hours : hours;
-        minutes = (minutes < 10) ? "0" + minutes : minutes;
-        seconds = (seconds < 10) ? "0" + seconds : seconds;
+    getTotalTimeSheetLogs = (timesheetLogs) => {
+        let totalTime = timesheetLogs.reduce(function (tong, cur) {
+            if (cur.stoppedAt && cur.acceptLog) return tong + cur.duration;
+            else return tong;
+        }, 0);
+        let tt = this.convertTime(totalTime);
 
-        return hours + ":" + minutes + ":" + seconds;
+        return tt;
+    }
+
+    convertTime = (ms) => {
+        if (!ms) return '00:00:00';
+        let hour = Math.floor(ms / (60 * 60 * 1000));
+        let minute = Math.floor((ms - hour * 60 * 60 * 1000) / (60 * 1000));
+        let second = Math.floor((ms - hour * 60 * 60 * 1000 - minute * 60 * 1000) / 1000);
+
+        return `${hour > 9 ? hour : `0${hour}`}:${minute > 9 ? minute : `0${minute}`}:${second > 9 ? second : `0${second}`}`;
     }
 
     handleShowModal = async (id) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                currentTaskId: id
-            }
+        await this.setState({
+            currentTaskId: id
         })
         window.$(`#modelPerformTask${id}`).modal('show');
     }
@@ -361,11 +339,8 @@ class TaskManagement extends Component {
      * @id task cha của task sẽ thêm (là "" nếu không có cha)
      */
     handleAddTask = async (id) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                parentTask: id
-            }
+        await this.setState({
+            parentTask: id
         });
         window.$(`#addNewTask`).modal('show')
     }
@@ -374,8 +349,10 @@ class TaskManagement extends Component {
     formatPriority = (data) => {
         const { translate } = this.props;
         if (data === 1) return translate('task.task_management.low');
-        if (data === 2) return translate('task.task_management.normal');
-        if (data === 3) return translate('task.task_management.high');
+        if (data === 2) return translate('task.task_management.average');
+        if (data === 3) return translate('task.task_management.standard');
+        if (data === 4) return translate('task.task_management.high');
+        if (data === 5) return translate('task.task_management.urgent');
     }
 
     formatStatus = (data) => {
@@ -388,65 +365,32 @@ class TaskManagement extends Component {
     }
 
     handleRoleChange = (value) => {
-        console.log('tatet', this.state)
-        this.setState(state => {
-            return {
-                ...state,
-                currentTab: value
-            }
+        this.setState({
+            currentTab: value
         });
     }
 
     handleSelectOrganizationalUnit = (value) => {
-        // if (value.length === 0) {
-        //     value = '[]';
-        // }
-
-        this.setState(state => {
-            return {
-                ...state,
-                organizationalUnit: value
-            }
+        this.setState({
+            organizationalUnit: value
         });
     }
 
     handleSelectStatus = (value) => {
-        // if (value.length === 0) {
-        //     value = '[]';
-        // }
-
-        this.setState(state => {
-            console.log('val-status', value);
-            return {
-                ...state,
-                status: value
-            }
+        this.setState({
+            status: value
         });
     }
 
     handleSelectPriority = (value) => {
-        // if (value.length === 0) {
-        //     value = '[]';
-        // }
-
-        this.setState(state => {
-            return {
-                ...state,
-                priority: value
-            }
+        this.setState({
+            priority: value
         });
     }
 
     handleSelectSpecial = (value) => {
-        // if (value.length === 0) {
-        //     value = '[]';
-        // }
-
-        this.setState(state => {
-            return {
-                ...state,
-                special: value
-            }
+        this.setState({
+            special: value
         });
     }
 
@@ -456,11 +400,8 @@ class TaskManagement extends Component {
             name = null;
         }
 
-        this.setState(state => {
-            return {
-                ...state,
-                name: name
-            }
+        this.setState({
+            name
         });
     }
 
@@ -469,11 +410,8 @@ class TaskManagement extends Component {
             value = null;
         }
 
-        this.setState(state => {
-            return {
-                ...state,
-                startDate: value
-            }
+        this.setState({
+            startDate: value
         });
     }
 
@@ -482,17 +420,41 @@ class TaskManagement extends Component {
             value = null;
         }
 
-        this.setState(state => {
-            return {
-                ...state,
-                endDate: value
-            }
+        this.setState({
+            endDate: value
         });
     }
 
+    handleDisplayType = (displayType) => {
+        this.setState({
+            displayType
+        });
+        switch (displayType) {
+            case 'table':
+                window.$('#tree-table-container').show();
+                window.$('#tasks-list-tree').hide();
+                break;
+            default:
+                window.$('#tree-table-container').hide();
+                window.$('#tasks-list-tree').show();
+                break;
+        }
+    }
+
+    handleShowTask = (e, data) => {
+        const { tasks } = this.props;
+        let id = data && data.node && data.node.original ? data.node.original._id : '';
+        let idValid = tasks.tasks ? tasks.tasks.some(t => t._id === id) : null;
+        if (id && idValid) {
+            this.setState({
+                currentTaskId: id
+            }, () => { window.$(`#modelPerformTask${id}`).modal('show') })
+        }
+    }
+
     render() {
-        const { tasks, user, translate } = this.props;
-        const { currentTaskId, currentPage, currentTab, parentTask, startDate, endDate, perPage, status } = this.state;
+        const { tasks, user, translate, taskProject } = this.props;
+        const { currentTaskId, currentPage, currentTab, parentTask, startDate, endDate, perPage, status, displayType } = this.state;
         let currentTasks, units = [];
         if (tasks) {
             currentTasks = tasks.tasks;
@@ -513,21 +475,21 @@ class TaskManagement extends Component {
             { name: translate('task.task_management.col_progress'), key: "progress" },
             { name: translate('task.task_management.col_logged_time'), key: "totalLoggedTime" }
         ];
-        let data = [];
+        let data = [], dataTree = [];;
         if (currentTasks && currentTasks.length !== 0) {
             let dataTemp = currentTasks;
-
+            let idTaskProjectRoot = 'task-project-root';
             for (let n in dataTemp) {
                 data[n] = {
                     ...dataTemp[n],
                     name: dataTemp[n].name,
                     organization: dataTemp[n].organizationalUnit ? dataTemp[n].organizationalUnit.name : translate('task.task_management.err_organizational_unit'),
                     priority: this.formatPriority(dataTemp[n].priority),
-                    startDate: this.formatDate(dataTemp[n].startDate),
-                    endDate: this.formatDate(dataTemp[n].endDate),
+                    startDate: getFormatDateFromTime(dataTemp[n].startDate, 'dd-mm-yyyy'),
+                    endDate: getFormatDateFromTime(dataTemp[n].endDate, 'dd-mm-yyyy'),
                     status: this.formatStatus(dataTemp[n].status),
                     progress: dataTemp[n].progress ? dataTemp[n].progress + "%" : "0%",
-                    totalLoggedTime: this.convertTime(dataTemp[n].hoursSpentOnTask.totalHoursSpent),
+                    totalLoggedTime: this.getTotalTimeSheetLogs(dataTemp[n].timesheetLogs),
                     parent: dataTemp[n].parent ? dataTemp[n].parent._id : null
                 }
                 let archived = "store";
@@ -549,24 +511,110 @@ class TaskManagement extends Component {
                 }
 
             }
+
+            let getId = (data) => {
+                if (data && typeof (data) === 'object') return data._id;
+                else return data;
+            }
+
+            let isIdValiInArr = (id, arr) => {
+                if (!arr) return false;
+                let result = arr.some(n => n.id === id);
+                return result;
+            }
+
+            let convertDataProject = taskProject.list.map(p => {
+                return {
+                    ...p,
+                    id: 'pj' + p._id,
+                    parent: 'pj' + getId(p.parent),
+                    isTask: false
+                }
+            });
+
+            let convertDataTask = currentTasks.map(t => {
+                return {
+                    ...t,
+                    id: 't' + t._id,
+                    parent: 't' + getId(t.parent),
+                    taskProject: 'pj' + getId(t.taskProject),
+                    isTask: true
+                }
+            });
+
+            let getDataTree = [...convertDataProject, ...convertDataTask];
+            let idProjectNull = 'project_null';
+            dataTree = [...dataTree, {
+                _id: idProjectNull,
+                id: idProjectNull,
+                icon: 'glyphicon glyphicon-folder-open',
+                text: 'Không có chủ đề',
+                state: { "opened": true },
+                parent: '#'
+            }]
+            for (let i = 0; i < getDataTree.length; i++) {
+                let node = getDataTree[i];
+                if (node.parent || node.taskProject)//Có thông tin về dự án cha/công việc cha
+                {
+                    dataTree = [...dataTree, {
+                        ...node,
+                        id: node.id,
+                        icon: node.isTask ? 'fa fa-file-text-o' : 'glyphicon glyphicon-folder-open',
+                        text: node.name,
+                        state: { "opened": true },
+                        parent: isIdValiInArr(getId(node.parent), getDataTree) ?
+                            getId(node.parent) :
+                            isIdValiInArr(getId(node.taskProject), getDataTree) ?
+                                getId(node.taskProject) :
+                                !node.code ? idProjectNull : '#'
+                    }]
+                }
+                else //Không có cả thông tin về dự án or công việc cha
+                {
+                    if (!node.code) //node này là một công việc - tại thời điểm này (17/12/2020) chỉ có dự án mới có mã code
+                    {
+                        dataTree = [...dataTree, {
+                            ...node,
+                            id: node.id,
+                            icon: 'fa fa-file-text-o',
+                            text: node.name,
+                            state: { "opened": true },
+                            parent: '#'
+                        }]
+                    }
+                    else { //node này là một dự án
+                        dataTree = [...dataTree, {
+                            ...node,
+                            id: node.id,
+                            icon: 'glyphicon glyphicon-folder-open',
+                            text: node.name,
+                            state: { "opened": true },
+                            parent: '#'
+                        }]
+                    }
+                }
+            }
         }
 
         return (
             <div className="box">
                 <div className="box-body qlcv">
                     <div style={{ height: "40px" }}>
+                        <button type="button" style={{ borderRadius: 0, marginLeft: 10 }} className="btn btn-default" title="Dạng bảng" onClick={() => this.handleDisplayType('table')}><i className="fa fa-list"></i> Dạng bảng</button>
+                        <button type="button" style={{ borderRadius: 0, marginLeft: 10 }} className="btn btn-default" title="Dạng cây" onClick={() => this.handleDisplayType('tree')}><i className="fa fa-sitemap"></i> Dạng cây</button>
+                        <button type="button" style={{ borderRadius: 0, marginLeft: 10 }} className="btn btn-default" onClick={() => { window.$('#tasks-filter').slideToggle() }}><i className="fa fa-filter"></i> Lọc</button>
                         {currentTab !== "informed" &&
                             <button type="button" onClick={() => { this.handleAddTask("") }} className="btn btn-success pull-right" title={translate('task.task_management.add_title')}>{translate('task.task_management.add_task')}</button>
                         }
                         <TaskAddModal currentTasks={(currentTasks && currentTasks.length !== 0) && this.list_to_tree(currentTasks)} parentTask={parentTask} />
                     </div>
 
-                    <div className="form-inline">
+                    <div id="tasks-filter" className="form-inline" style={{ display: 'none' }}>
                         <div className="form-group">
                             <label>{translate('task.task_management.department')}</label>
                             {units &&
                                 <SelectMulti id="multiSelectUnit1"
-                                    defaultValue={units.map(item => { return item._id })}
+                                    defaultValue={units.map(item => item._id)}
                                     items={units.map(item => { return { value: item._id, text: item.name } })}
                                     onChange={this.handleSelectOrganizationalUnit}
                                     options={{ nonSelectedText: units.length !== 0 ? translate('task.task_management.select_department') : "Bạn chưa có đơn vị", allSelectedText: translate(`task.task_management.select_all_department`) }}>
@@ -591,14 +639,18 @@ class TaskManagement extends Component {
                         <div className="form-group">
                             <label>{translate('task.task_management.priority')}</label>
                             <SelectMulti id="multiSelectPriority" defaultValue={[
+                                translate('task.task_management.urgent'),
                                 translate('task.task_management.high'),
-                                translate('task.task_management.normal'),
-                                translate('task.task_management.low')
+                                translate('task.task_management.standard'),
+                                translate('task.task_management.average'),
+                                translate('task.task_management.low'),
                             ]}
                                 items={[
-                                    { value: "3", text: translate('task.task_management.high') },
-                                    { value: "2", text: translate('task.task_management.normal') },
-                                    { value: "1", text: translate('task.task_management.low') }
+                                    { value: "5", text: translate('task.task_management.urgent') },
+                                    { value: "4", text: translate('task.task_management.high') },
+                                    { value: "3", text: translate('task.task_management.standard') },
+                                    { value: "2", text: translate('task.task_management.average') },
+                                    { value: "1", text: translate('task.task_management.low') },
                                 ]}
                                 onChange={this.handleSelectPriority}
                                 options={{ nonSelectedText: translate('task.task_management.select_priority'), allSelectedText: translate('task.task_management.select_all_priority') }}>
@@ -644,10 +696,10 @@ class TaskManagement extends Component {
                             <label>{translate('task.task_management.start_date')}</label>
                             <DatePicker
                                 id="start-date"
-                                dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                value={startDate} // giá trị mặc định cho datePicker    
+                                dateFormat="month-year"
+                                value={startDate}
                                 onChange={this.handleChangeStartDate}
-                                disabled={false}                     // sử dụng khi muốn disabled, mặc định là false
+                                disabled={false}
                             />
                         </div>
 
@@ -655,41 +707,50 @@ class TaskManagement extends Component {
                             <label>{translate('task.task_management.end_date')}</label>
                             <DatePicker
                                 id="end-date"
-                                dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                value={endDate} // giá trị mặc định cho datePicker    
+                                dateFormat="month-year"
+                                value={endDate}
                                 onChange={this.handleChangeEndDate}
-                                disabled={false}                     // sử dụng khi muốn disabled, mặc định là false
+                                disabled={false}
                             />
                         </div>
-                    </div>
 
-                    <div className="form-inline">
                         <div className="form-group">
                             <label></label>
                             <button type="button" className="btn btn-success" onClick={this.handleUpdateData}>{translate('task.task_management.search')}</button>
                         </div>
+
+                        <DataTableSetting
+                            tableId="tree-table"
+                            tableContainerId="tree-table-container"
+                            columnArr={[
+                                translate('task.task_management.col_name'),
+                                translate('task.task_management.col_organization'),
+                                translate('task.task_management.col_priority'),
+                                translate('task.task_management.col_start_date'),
+                                translate('task.task_management.col_end_date'),
+                                translate('task.task_management.col_status'),
+                                translate('task.task_management.col_progress'),
+                                translate('task.task_management.col_logged_time')
+                            ]}
+                            limit={perPage}
+                            setLimit={this.setLimit}
+                            hideColumnOption={true}
+                            className="pull-right btn btn-default"
+                            style={{ borderRadius: 0 }}
+                            fontSize={16}
+                            text="Thiết lập"
+                        />
                     </div>
 
-                    <DataTableSetting
-                        tableId="tree-table"
-                        tableContainerId="tree-table-container"
-                        tableWidth="1300px"
-                        columnArr={[
-                            translate('task.task_management.col_name'),
-                            translate('task.task_management.col_organization'),
-                            translate('task.task_management.col_priority'),
-                            translate('task.task_management.col_start_date'),
-                            translate('task.task_management.col_end_date'),
-                            translate('task.task_management.col_status'),
-                            translate('task.task_management.col_progress'),
-                            translate('task.task_management.col_logged_time')
-                        ]}
-                        limit={perPage}
-                        setLimit={this.setLimit}
-                        hideColumnOption={true}
-                    />
+                    {
+                        currentTaskId &&
+                        <ModalPerform
+                            units={units}
+                            id={currentTaskId}
+                        />
+                    }
 
-                    <div id="tree-table-container">
+                    <div id="tree-table-container" style={{ marginTop: '30px' }}>
                         <TreeTable
                             behaviour="show-children"
                             column={column}
@@ -708,15 +769,14 @@ class TaskManagement extends Component {
                             funcStore={this.handleStore}
                             funcDelete={this.handleDelete}
                         />
-
                     </div>
-                    {
-                        currentTaskId !== undefined &&
-                        <ModalPerform
-                            units={units}
-                            id={currentTaskId}
+                    <div id="tasks-list-tree" style={{ display: 'none', marginTop: '30px' }}>
+                        <Tree id="tasks-list-treeview"
+                            plugins={false}
+                            onChanged={this.handleShowTask}
+                            data={dataTree}
                         />
-                    }
+                    </div>
 
                     <PaginateBar
                         pageTotal={tasks.pages}
@@ -725,14 +785,14 @@ class TaskManagement extends Component {
                     />
 
                 </div>
-            </div>
+            </div >
         );
     }
 }
 
 function mapState(state) {
-    const { tasks, user, department } = state;
-    return { tasks, user, department };
+    const { tasks, user, department, taskProject } = state;
+    return { tasks, user, department, taskProject };
 }
 
 const actionCreators = {
@@ -749,6 +809,7 @@ const actionCreators = {
     startTimer: performTaskAction.startTimerTask,
     deleteTaskById: taskManagementActions._delete,
     getAllDepartment: DepartmentActions.get,
+    getAllTaskProject: TaskProjectAction.get,
 };
 const translateTaskManagement = connect(mapState, actionCreators)(withTranslate(TaskManagement));
 export { translateTaskManagement as TaskManagement };

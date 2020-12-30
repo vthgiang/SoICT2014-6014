@@ -12,4 +12,6 @@ router.post('/tasks', auth, TaskManagementController.createTask);
 
 router.delete('/tasks/:taskId', auth, TaskManagementController.deleteTask);
 
+router.get('/analys/user/:userId', auth, TaskManagementController.getTaskAnalysOfUser);
+
 module.exports = router;

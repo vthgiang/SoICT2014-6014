@@ -34,13 +34,13 @@ class AssetIncidentChart extends Component {
             defaultStartMonth: '0' + (month - 3) + '-' + year,
             defaultEndMonth: [month, year].join('-'),
             year: "false",
-            type: this.INFO_SEARCH.type,
+            type: [],
         }
     }
 
     setDataColumnChartForMonth = (listAssets) => {
-        const { translate } = this.props;
-        let { incidentDateAfter, incidentDateBefore } = this.state;
+        const { translate, getIncidentData } = this.props;
+        let { incidentDateAfter, incidentDateBefore, type } = this.state;
 
         let startDate = new Date(incidentDateAfter);
         let endDate = new Date(incidentDateBefore);
@@ -97,16 +97,16 @@ class AssetIncidentChart extends Component {
             yValues: arr
         };
 
-        // if (getincidentData && listAssets) {
-        //     getincidentData(dataColumnChart);
-        // }
+        if (listAssets && dataColumnChart) {
+            getIncidentData(dataColumnChart, type);
+        }
 
         return dataColumnChart;
     }
 
     setDataColumnChartForYear = (listAssets) => {
-        const { translate } = this.props;
-        let { incidentDateAfter, incidentDateBefore } = this.state;
+        const { translate, getIncidentData } = this.props;
+        let { incidentDateAfter, incidentDateBefore, type } = this.state;
 
         let startDate = incidentDateAfter.slice(0, 4);
         let endDate = incidentDateBefore.slice(0, 4);
@@ -148,9 +148,9 @@ class AssetIncidentChart extends Component {
             yValues: arr
         };
 
-        // if (getincidentData && listAssets) {
-        //     getincidentData(dataColumnChart);
-        // }
+        if (dataColumnChart && listAssets) {
+            getIncidentData(dataColumnChart, type);
+        }
         return dataColumnChart;
     }
 
@@ -225,6 +225,12 @@ class AssetIncidentChart extends Component {
             value = []
         }
         this.INFO_SEARCH.type = value;
+        this.setState(state => {
+            return {
+                ...state,
+                type: value
+            }
+        })
         this.forceUpdate();
     }
 
@@ -246,7 +252,7 @@ class AssetIncidentChart extends Component {
                     ...state,
                     incidentDateAfter: this.INFO_SEARCH.incidentDateAfter,
                     incidentDateBefore: this.INFO_SEARCH.incidentDateBefore,
-                    type: this.INFO_SEARCH.type
+                    // type: this.INFO_SEARCH.type
                 }
             })
         }
@@ -277,10 +283,9 @@ class AssetIncidentChart extends Component {
 
     render() {
         const { translate } = this.props;
-        let { year } = this.state;
-        let { incidentDateAfter, incidentDateBefore, type } = this.INFO_SEARCH;
+        let { year, type } = this.state;
+        let { incidentDateAfter, incidentDateBefore } = this.INFO_SEARCH;
         let typeArr = this.getAssetTypes();
-
         let dateFormat = year == "true" ? "year" : "month-year";
         let startValue = year == "true" ? incidentDateAfter.slice(0, 4) : incidentDateAfter.slice(5, 7) + ' - ' + incidentDateAfter.slice(0, 4);
         let endValue = year == "true" ? incidentDateBefore.slice(0, 4) : incidentDateBefore.slice(5, 7) + ' - ' + incidentDateBefore.slice(0, 4);

@@ -39,8 +39,8 @@ class AssetMaintenanceChart extends Component {
     }
 
     setDataColumnChartForMonth = (listAssets) => {
-        const { translate } = this.props;
-        let { maintenanceDateAfter, maintenanceDateBefore } = this.state;
+        const { translate, getMaintenanceData } = this.props;
+        let { maintenanceDateAfter, maintenanceDateBefore, type } = this.state;
 
         let startDate = new Date(maintenanceDateAfter);
         let endDate = new Date(maintenanceDateBefore);
@@ -103,15 +103,15 @@ class AssetMaintenanceChart extends Component {
             yValues: arr
         };
 
-        // if (getmaintenanceData && listAssets) {
-        //     getmaintenanceData(dataColumnChart);
-        // }
+        if (dataColumnChart && listAssets) {
+            getMaintenanceData(dataColumnChart, type);
+        }
         return dataColumnChart;
     }
 
     setDataColumnChartForYear = (listAssets) => {
-        const { translate } = this.props;
-        let { maintenanceDateAfter, maintenanceDateBefore } = this.state;
+        const { translate, getMaintenanceData } = this.props;
+        let { maintenanceDateAfter, maintenanceDateBefore, type } = this.state;
 
         let startDate = maintenanceDateAfter.slice(0, 4);
         let endDate = maintenanceDateBefore.slice(0, 4);
@@ -159,9 +159,9 @@ class AssetMaintenanceChart extends Component {
             yValues: arr
         };
 
-        // if (getmaintenanceData && listAssets) {
-        //     getmaintenanceData(dataColumnChart);
-        // }
+        if (dataColumnChart && listAssets) {
+            getMaintenanceData(dataColumnChart, type);
+        }
         return dataColumnChart;
     }
 
@@ -298,8 +298,12 @@ class AssetMaintenanceChart extends Component {
         if (value.length === 0) {
             value = []
         }
-        this.INFO_SEARCH.type = value;
-        this.forceUpdate();
+        this.setState(state => {
+            return {
+                ...state,
+                type: value,
+            }
+        })
     }
 
     handleSearchData = async () => {
@@ -320,7 +324,7 @@ class AssetMaintenanceChart extends Component {
                     ...state,
                     maintenanceDateAfter: this.INFO_SEARCH.maintenanceDateAfter,
                     maintenanceDateBefore: this.INFO_SEARCH.maintenanceDateBefore,
-                    type: this.INFO_SEARCH.type,
+                    // type: this.INFO_SEARCH.type,
                 }
             })
         }
@@ -352,8 +356,8 @@ class AssetMaintenanceChart extends Component {
 
     render() {
         const { translate } = this.props;
-        let { year } = this.state;
-        let { maintenanceDateAfter, maintenanceDateBefore, type } = this.INFO_SEARCH;
+        let { year, type } = this.state;
+        let { maintenanceDateAfter, maintenanceDateBefore } = this.INFO_SEARCH;
         let typeArr = this.getAssetTypes();
 
         let dateFormat = year === "true" ? "year" : "month-year";

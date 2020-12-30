@@ -233,7 +233,7 @@ div.table-info-panel {
 
 /* Fieldset */
 fieldset.scheduler-border {
-    border: 1px groove #000 !important;
+    border: 1px groove #c2c7ca !important;
     padding: 0 1.4em 1.4em 1.4em !important;
     margin: 0 0 1.5em 0 !important;
 

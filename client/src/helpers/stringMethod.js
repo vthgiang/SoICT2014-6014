@@ -88,10 +88,10 @@ export const getFormatDateFromTime = (time, format='date') => {
  * @param {*} time 
  * @param {*} format 
  */
-export const getTimeFromFormatDate = (time, format='date') => {
+export const getTimeFromFormatDate = (time, format='date', subTime=null) => {
     if(!time) return null;
 
-    let formatedTime, dataTime, year, month, day;
+    let formatedTime, dataTime, year, month, day, hour;
     switch(format) {
         case 'mm-yyyy':
             dataTime = time.split('-');
@@ -106,6 +106,15 @@ export const getTimeFromFormatDate = (time, format='date') => {
             month = dataTime[1];
             year = dataTime[2];
             formatedTime = new Date(`${year}-${month}-${day}`);
+            break;
+
+        case 'hour dd-mm-yyyy': 
+            dataTime = time.split('-');
+            day = dataTime[0];
+            month = dataTime[1];
+            year = dataTime[2];
+            hour = subTime ? subTime : '00:00:00';
+            formatedTime = new Date(`${year}-${month}-${day} ${hour}`);
             break;
 
         default:

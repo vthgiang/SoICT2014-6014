@@ -326,6 +326,16 @@ function configurationDegree(translate) {
             description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.diploma_issued_by`).toLowerCase()}`,
             value: translate(`human_resource.profile.diploma_issued_by`)
         },
+        issuedBy: { // Nơi đào tạo
+            columnName: translate(`human_resource.profile.diploma_issued_by`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.diploma_issued_by`).toLowerCase()}`,
+            value: translate(`human_resource.profile.diploma_issued_by`)
+        },
+        field:{ // Ngành nghề/ lĩnh vực
+            columnName: translate(`human_resource.profile.career_fields`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.career_fields`).toLowerCase()}`,
+            value: translate(`human_resource.profile.career_fields`)
+        },
         year: { // Năm tốt nghiệp
             columnName: translate(`human_resource.profile.graduation_year`),
             description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.graduation_year`).toLowerCase()}`,
@@ -537,8 +547,8 @@ function templateImport(translate) {
                                 { key: "STT", value: translate(`human_resource.stt`), width: 7 },
                                 { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
                                 { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
-                                { key: "organizationalUnits", value: translate(`human_resource.unit`), width: 25 },
-                                { key: "position", value: translate(`human_resource.position`), width: 25 },
+                                // { key: "organizationalUnits", value: translate(`human_resource.unit`), width: 25 },
+                                // { key: "position", value: translate(`human_resource.position`), width: 25 },
                                 { key: "birthdate", value: translate(`human_resource.profile.date_birth`) },
                                 { key: "gender", value: translate(`human_resource.profile.gender`) },
                                 { key: "employeeTimesheetId", value: translate(`human_resource.profile.attendance_code`) },
@@ -615,13 +625,13 @@ function templateImport(translate) {
                                     leavingDate: undefined,
                                     maritalStatus: translate(`human_resource.profile.single`),
                                     nationality: "Việt Nam",
-                                    organizationalUnits: "Ban giám đốc",
+                                    // organizationalUnits: "Ban giám đốc",
                                     permanentResidence: "Hải Phương - Hải Hậu - Nam Định",
                                     personalEmail: "tranhungcuong703@gmail.com",
                                     personalEmail2: "hungkaratedo03101998@gmail.com",
                                     phoneNumber: 962586290,
                                     phoneNumber2: 9625845,
-                                    position: "Giám đốc",
+                                    // position: "Giám đốc",
                                     professionalSkill: translate(`human_resource.profile.university`),
                                     relationWithEmergencyContactPerson: "Em trai",
                                     religion: "Không",
@@ -666,13 +676,13 @@ function templateImport(translate) {
                                     leavingDate: undefined,
                                     maritalStatus: translate(`human_resource.profile.single`),
                                     nationality: "Việt Nam",
-                                    organizationalUnits: "Ban giám đốc",
+                                    // organizationalUnits: "Ban giám đốc",
                                     permanentResidence: "Hải Phương - Hải Hậu - Nam Định",
                                     personalEmail: "tranhungcuong703@gmail.com",
                                     personalEmail2: "hungkaratedo03101998@gmail.com",
                                     phoneNumber: 962586290,
                                     phoneNumber2: 9625845,
-                                    position: "Phó giám đốc",
+                                    // position: "Phó giám đốc",
                                     professionalSkill: translate(`human_resource.profile.university`),
                                     relationWithEmergencyContactPerson: "Em trai",
                                     religion: "Không",
@@ -734,6 +744,7 @@ function templateImport(translate) {
                                 { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
                                 { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
                                 { key: "name", value: translate(`human_resource.profile.name_diploma`), width: 25 },
+                                { key: "field", value: translate(`human_resource.profile.career_fields`), width: 30 },
                                 { key: "issuedBy", value: translate(`human_resource.profile.diploma_issued_by`), width: 35 },
                                 { key: "year", value: translate(`human_resource.profile.graduation_year`) },
                                 { key: "degreeType", value: translate(`human_resource.profile.ranking_learning`) },
@@ -745,6 +756,7 @@ function templateImport(translate) {
                                 fullName: "Nguyễn Văn An",
                                 issuedBy: "Đại học Bách Khoa",
                                 name: "Bằng tốt nghiệp",
+                                field: 'Công nghệ thông tin',
                                 year: "2020"
                             },{
                                 STT: 2,
@@ -753,6 +765,7 @@ function templateImport(translate) {
                                 fullName: "Trần Văn Bình",
                                 issuedBy: "Đại học Bách Khoa",
                                 name: "Bằng tốt nghiệp",
+                                field: 'Công nghệ thông tin',
                                 year: "2020"
                             }]
                         }

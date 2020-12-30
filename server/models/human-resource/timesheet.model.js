@@ -24,6 +24,9 @@ const TimesheetSchema = new Schema({
     totalHoursOff: { // Số giờ nghỉ
         type: Number,
     },
+    totalOvertime:{ // Số giờ tăng ca
+        type:Number
+    },
 
     // Chấm công theo giờ làm Việc
     timekeepingByHours: [{

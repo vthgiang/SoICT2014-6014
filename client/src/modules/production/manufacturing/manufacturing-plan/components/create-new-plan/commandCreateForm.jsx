@@ -15,8 +15,8 @@ class CommandCreateForm extends Component {
             inventory: "",
             baseUnit: "",
             quantity: "",
-            approvers: this.props.approvers,
-            accountables: [localStorage.getItem("userId")],
+            approvers: [],
+            accountables: [],
             qualityControlStaffs: [],
             description: "",
         }
@@ -37,10 +37,6 @@ class CommandCreateForm extends Component {
             }
         });
         return result;
-    }
-
-    componentDidMount = () => {
-        this.props.getAllUserOfCompany();
     }
 
     getAllGoodArr = () => {
@@ -93,31 +89,31 @@ class CommandCreateForm extends Component {
         return msg;
     }
 
-    getListApproversArr = () => {
-        const { manufacturingPlan } = this.props;
-        let listUsersArr = [];
-        const { listApprovers } = manufacturingPlan;
-        if (listApprovers) {
-            listApprovers.map(approver => {
-                listUsersArr.push({
-                    value: approver._id,
-                    text: approver.userId.name + " - " + approver.userId.email
-                })
-            })
-        }
+    // getListApproversArr = () => {
+    //     const { manufacturingPlan } = this.props;
+    //     let listUsersArr = [];
+    //     const { listApprovers } = manufacturingPlan;
+    //     if (listApprovers) {
+    //         listApprovers.map(approver => {
+    //             listUsersArr.push({
+    //                 value: approver._id,
+    //                 text: approver.userId.name + " - " + approver.userId.email
+    //             })
+    //         })
+    //     }
 
-        return listUsersArr;
-    }
+    //     return listUsersArr;
+    // }
 
-    getListAccoutablesArr = () => {
-        const { auth } = this.props;
-        let accountablesArr = [];
-        accountablesArr.push({
-            value: auth.user._id,
-            text: auth.user.name + " - " + auth.user.email
-        });
-        return accountablesArr;
-    }
+    // getListAccoutablesArr = () => {
+    //     const { auth } = this.props;
+    //     let accountablesArr = [];
+    //     accountablesArr.push({
+    //         value: auth.user._id,
+    //         text: auth.user.name + " - " + auth.user.email
+    //     });
+    //     return accountablesArr;
+    // }
 
     getUserArray = () => {
         const { user } = this.props;
@@ -160,6 +156,62 @@ class CommandCreateForm extends Component {
         return msg;
 
     }
+
+    handleApproversChange = (value) => {
+        if (value.length === 0) {
+            value = undefined
+        }
+        this.validateApproversChange(value, true);
+    }
+
+    validateApproversChange = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = this.props;
+        if (!value || !value.length) {
+            msg = translate('manufacturing.plan.choose_approvers')
+        }
+        if (willUpdateState) {
+            const { command } = this.state;
+            command.approvers = value;
+            this.setState((state) => ({
+                ...state,
+                command: { ...command },
+                errorApprovers: msg
+            }));
+        }
+
+        return msg;
+
+    }
+
+    handleAccountablesChange = (value) => {
+        if (value.length === 0) {
+            value = undefined
+        }
+        this.validateAccountablesChange(value, true);
+    }
+
+    validateAccountablesChange = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = this.props;
+        if (!value || !value.length) {
+            msg = translate('manufacturing.plan.choose_accountables')
+        }
+        if (willUpdateState) {
+            const { command } = this.state;
+            command.accountables = value;
+            this.setState((state) => ({
+                ...state,
+                command: { ...command },
+                errorAccountables: msg
+            }));
+        }
+
+        return msg;
+
+    }
+
+
 
     handleDescriptionChange = (e) => {
         const { value } = e.target;
@@ -211,6 +263,8 @@ class CommandCreateForm extends Component {
             this.validateGoodChange(this.state.command.goodId, false)
             || this.validateQuantityChange(this.state.command.quantity, false)
             || this.validateQualityControlStaffsChange(this.state.command.qualityControlStaffs, false)
+            || this.validateApproversChange(this.state.command.approvers, false)
+            || this.validateAccountablesChange(this.state.command.accountables, false)
         ) {
             return false;
         }
@@ -365,7 +419,7 @@ class CommandCreateForm extends Component {
 
     render() {
         const { translate, listGoods, manufacturingCommands } = this.props;
-        const { command, errorGood, errorQualityControlStaffs, errorQuantity } = this.state;
+        const { command, errorGood, errorQualityControlStaffs, errorQuantity, errorApprovers, errorAccountables } = this.state;
         return (
             <React.Fragment>
                 <div className="row">
@@ -381,7 +435,7 @@ class CommandCreateForm extends Component {
                                         <th>{translate('manufacturing.plan.base_unit')}</th>
                                         <th>{translate('manufacturing.plan.quantity_good_inventory')}</th>
                                         <th>{translate('manufacturing.plan.quantity')}</th>
-                                        <th>{translate('manufacturing.plan.quantity_not_commmanded')}</th>
+                                        <th>{translate('manufacturing.plan.quantity_need_planned')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -520,17 +574,19 @@ class CommandCreateForm extends Component {
                             </div>
                             <div className="row">
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className={`form-group`}>
+                                    <div className={`form-group ${!errorApprovers ? "" : "has-error"}`}>
                                         <label>{translate('manufacturing.plan.approvers')}<span className="attention"> * </span></label>
                                         <SelectBox
                                             id={`select-approvers-command-create`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={command.approvers}
-                                            items={this.getListApproversArr()}
-                                            disabled={true}
+                                            items={this.getUserArray()}
+                                            onChange={this.handleApproversChange}
+                                            disabled={false}
                                             multiple={true}
                                         />
+                                        <ErrorLabel content={errorApprovers} />
                                     </div>
                                     <div className={`form-group ${!errorQualityControlStaffs ? "" : "has-error"}`}>
                                         <label>{translate('manufacturing.plan.qualityControlStaffs')}<span className="attention"> * </span></label>
@@ -547,17 +603,19 @@ class CommandCreateForm extends Component {
                                     </div>
                                 </div>
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className={`form-group`}>
+                                    <div className={`form-group ${!errorAccountables ? "" : "has-error"}`}>
                                         <label>{translate('manufacturing.plan.accountables')}<span className="attention"> * </span></label>
                                         <SelectBox
                                             id={`select-accoutables-command-create`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={command.accountables}
-                                            items={this.getListAccoutablesArr()}
-                                            disabled={true}
+                                            items={this.getUserArray()}
+                                            onChange={this.handleAccountablesChange}
+                                            disabled={false}
                                             multiple={true}
                                         />
+                                        <ErrorLabel content={errorAccountables} />
                                     </div>
                                 </div>
                             </div>
@@ -635,8 +693,4 @@ function mapStateToProps(state) {
     return { manufacturingPlan, auth, user }
 }
 
-const mapDispatchToProps = {
-    getAllUserOfCompany: UserActions.getAllUserOfCompany,
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CommandCreateForm));
+export default connect(mapStateToProps, null)(withTranslate(CommandCreateForm));

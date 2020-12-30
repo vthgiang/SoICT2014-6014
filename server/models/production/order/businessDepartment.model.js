@@ -8,10 +8,10 @@ const BusinessDepartmentSchema = new Schema({
         type: String,
         required: true
     },
-    manager: { // Giám đốc kinh doanh (nếu có)
+    managers: [{ // Người phụ trách (tổng giám đốc, giám đốc, phó giám đốc...) (nếu có)
         type: Schema.Types.ObjectId,
         ref: "Role"
-    },
+    }],
     organizationalUnit: {// Phòng kinh doanh thuộc cơ cấu tổ chức nào
         type: Schema.Types.ObjectId,
         ref: "OrganizationalUnit"
@@ -23,6 +23,10 @@ const BusinessDepartmentSchema = new Schema({
     description: { // Mô tả phòng kinh doanh
         type: String
     },
+    type: {//1: Bộ phận kinh doanh, 2: Bộ phận kế toán, 3: Bộ phận thu mua nguyên vật liệu
+        type: Number,
+        enum: [1, 2, 3]
+    }
 }, {
     timestamps: true
 });

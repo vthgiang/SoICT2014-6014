@@ -123,6 +123,16 @@ class QuoteManageTable extends Component {
         this.props.deleteQuote(id);
     };
 
+    // checkHasComponent = (name) => {
+    //     let { auth } = this.props;
+    //     let result = false;
+    //     auth.components.forEach(component => {
+    //         if (component.name === name) result = true;
+    //     });
+
+    //     return result;
+    // }
+
     render() {
         let { limit, quoteDetail, quoteEdit } = this.state;
         const { translate, quotes } = this.props;
@@ -152,9 +162,9 @@ class QuoteManageTable extends Component {
             },
         ];
 
-        const { department, role } = this.props;
+        const { department, role, auth } = this.props;
 
-        console.log("department", department, role);
+        console.log("auth", auth);
 
         return (
             <React.Fragment>
@@ -351,8 +361,8 @@ class QuoteManageTable extends Component {
 
 function mapStateToProps(state) {
     const { customers } = state.crm;
-    const { quotes, department, role } = state;
-    return { quotes, customers, department, role };
+    const { quotes, department, role, auth } = state;
+    return { quotes, customers, department, role, auth };
 }
 
 const mapDispatchToProps = {

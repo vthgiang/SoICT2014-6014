@@ -121,7 +121,13 @@ class TimesheetsByShiftImportForm extends Component {
                     let shift1s = row1.dateOfMonth.map(x => x ? true : false);
                     let shift2s = row2.dateOfMonth.map(x => x ? true : false);
                     let shift3s = row3.dateOfMonth.map(x => x ? true : false);
-                    importData = [...importData, { employeeNumber: row1.employeeNumber, employeeName: row1.employeeName, shift1s: shift1s, shift2s: shift2s, shift3s: shift3s }]
+                    let totalHours = row1.totalHours ? parseInt(row1.totalHours) : 0;
+                    let totalHoursOff = row1.totalHoursOff ? parseInt(row1.totalHoursOff) : 0;
+                    let totalOvertime = row1.totalOvertime ? parseInt(row1.totalOvertime) : 0;
+                    importData = [...importData, {
+                        employeeNumber: row1.employeeNumber, employeeName: row1.employeeName,
+                        totalHours: totalHours, totalHoursOff: totalHoursOff, totalOvertime: totalOvertime, shift1s: shift1s, shift2s: shift2s, shift3s: shift3s
+                    }]
                 }
             } else if (timekeepingType === 'hours') {
                 let array = [];
@@ -132,28 +138,17 @@ class TimesheetsByShiftImportForm extends Component {
                 });
                 importData = value.map(x => {
                     let timekeepingByHours = x.dateOfMonth.map(y => y ? parseInt(y) : 0);
-                    let totalHours = 0;
-                    let totalHoursOff = 0;
-                    if (x.totalHours) {
-                        totalHours = parseInt(x.totalHours);
-                    } else {
+                    let totalHours = x.totalHours ? parseInt(x.totalHours) : 0;
+                    let totalHoursOff = x.totalHoursOff ? parseInt(x.totalHoursOff) : 0;
+                    let totalOvertime = x.totalOvertime ? parseInt(x.totalOvertime) : 0;
+
+                    if (totalHours === 0) {
                         timekeepingByHours.forEach(y => {
                             totalHours = totalHours + y;
                         })
-                    };
-                    if (x.totalHoursOff) {
-                        totalHoursOff = (x.totalHoursOff);
-                    } else {
-                        timekeepingByHours.forEach((y, indexs) => {
-                            if (array.find(arr => arr === indexs)) {
-                                totalHoursOff = totalHoursOff + (8 - y);
-                            } else {
-                                totalHoursOff = totalHoursOff - y
-                            }
-                        })
                     }
 
-                    return { ...x, totalHours: totalHours, totalHoursOff: totalHoursOff, timekeepingByHours: timekeepingByHours }
+                    return { ...x, totalHours: totalHours, totalHoursOff: totalHoursOff, totalOvertime: totalOvertime, timekeepingByHours: timekeepingByHours }
                 })
             }
             if (checkFileImport) {
@@ -362,6 +357,9 @@ class TimesheetsByShiftImportForm extends Component {
                                                                 {allDayOfMonth.map((x, index) => (
                                                                     <th key={index}>{x.day}&nbsp; {x.date}</th>
                                                                 ))}
+                                                                <th className="col-fixed" style={{ width: 100 }}>{translate('human_resource.timesheets.total_timesheets')}</th>
+                                                                <th className="col-fixed" style={{ width: 100 }}>{translate('human_resource.timesheets.total_hours_off')}</th>
+                                                                <th className="col-fixed" style={{ width: 100 }}>{translate('human_resource.timesheets.total_over_time')}</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -382,6 +380,9 @@ class TimesheetsByShiftImportForm extends Component {
                                                                                         </td>
                                                                                     ))
                                                                                 }
+                                                                                <td rowSpan="3">{x.totalHours}</td>
+                                                                                <td rowSpan="3">{x.totalHoursOff}</td>
+                                                                                <td rowSpan="3">{x.totalOvertime}</td>
                                                                             </tr>
                                                                             <tr>{
                                                                                 allDayOfMonth.map((y, indexs) => (
@@ -419,6 +420,7 @@ class TimesheetsByShiftImportForm extends Component {
                                                                 <th colSpan={allDayOfMonth.length} className="col-fixed" style={{ width: 70 * allDayOfMonth.length, textAlign: 'left' }} >{translate('human_resource.timesheets.date_of_month')}</th>
                                                                 <th rowSpan="2" className="col-fixed" style={{ width: 100 }}>{translate('human_resource.timesheets.total_timesheets')}</th>
                                                                 <th rowSpan="2" className="col-fixed" style={{ width: 100 }}>{translate('human_resource.timesheets.total_hours_off')}</th>
+                                                                <th rowSpan="2" className="col-fixed" style={{ width: 100 }}>{translate('human_resource.timesheets.total_over_time')}</th>
                                                             </tr>
                                                             <tr>
                                                                 {allDayOfMonth.map((x, index) => (
@@ -444,6 +446,7 @@ class TimesheetsByShiftImportForm extends Component {
                                                                             }
                                                                             <td>{x.totalHours}</td>
                                                                             <td>{x.totalHoursOff}</td>
+                                                                            <td>{x.totalOvertime}</td>
                                                                         </tr>
                                                                     )
                                                                 })}

@@ -67,8 +67,8 @@ class ComponentInfor extends Component {
         /* Lấy dữ liệu kết quả kpi của nhân viên */
         this.props.getAllEmployeeKpiSetByMonth(undefined, localStorage.getItem("userId"), monthNew, monthNew);
 
-        /* Lấy dữ liệu nghỉ phép tăng ca của nhân viên trong công ty */
-        this.props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: monthNew, endDate: monthNew });
+        /* Lấy dữ liệu tăng ca của nhân viên trong công ty */
+        this.props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: monthNew, endDate: monthNew, trendOvertime: true });
 
         /* Lấy số ngày nghỉ phép còn lại của nhân viên */
         this.props.getNumberAnnaulLeave({ numberAnnulLeave: true, year: partMonth[1] });
@@ -117,7 +117,7 @@ class ComponentInfor extends Component {
         this.props.getAllEmployeeKpiSetByMonth(undefined, localStorage.getItem("userId"), monthNew, monthNew);
 
         /* Lấy dữ liệu nghỉ phép tăng ca của nhân viên */
-        this.props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: monthNew, endDate: monthNew });
+        this.props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: monthNew, endDate: monthNew, trendOvertime: true });
 
         /* Lấy số ngày nghỉ phép còn lại của nhân viên */
         this.props.getNumberAnnaulLeave({ numberAnnulLeave: true, year: partMonth[1] });
@@ -165,8 +165,9 @@ class ComponentInfor extends Component {
 
         let partMonth = monthShow.split('-');
         let year = partMonth[1];
+        const employeeKpiSetByMonth = createEmployeeKpiSet.employeeKpiSetByMonth
 
-        console.log('employeeKpiSetByMonth', createEmployeeKpiSet.employeeKpiSetByMonth);
+        console.log('employeeKpiSetByMonth', createEmployeeKpiSet.employeeKpiSetByMonth)
 
         /* Lấy số ngày nghỉ phép còn lại của nhân viên */
         let numberAnnualLeave = 0;
@@ -202,9 +203,11 @@ class ComponentInfor extends Component {
                         informedEmployees = [...informedEmployees, task.accountableEmployees[j]];
             });
             tasks = tasks.concat(accountableEmployees).concat(consultedEmployees).concat(responsibleEmployees).concat(informedEmployees);
+            console.log(tasks)
             let totalTask = tasks.filter(function (item, pos) {
-                return tasks.indexOf(item) == pos;
+                return tasks.indexOf(item) !== pos;
             })
+            console.log(totalTask)
             if (totalTask.length > totalTask) {
                 maxTask = totalTask
             };
@@ -240,14 +243,10 @@ class ComponentInfor extends Component {
         for (let i in listEmployee) {
             let totalOvertime = 0, totalHoursOff = 0;
             listOvertimeOfUnitsByStartDateAndEndDate && listOvertimeOfUnitsByStartDateAndEndDate.forEach(x => {
-                if (listEmployee[i].userId.email === x.employee.emailInCompany && x.totalHoursOff < 0) {
-                    totalOvertime = 0 - x.totalHoursOff;
-
+                if (listEmployee[i].userId.email === x.employee.emailInCompany) {
+                    totalOvertime = x.totalOvertime ? x.totalOvertime : 0;
+                    totalHoursOff = x.totalHoursOff ? x.totalHoursOff : 0;
                 };
-                if (listEmployee[i].userId.email === x.employee.emailInCompany && x.totalHoursOff > 0) {
-                    totalHoursOff = x.totalHoursOff;
-
-                }
             });
             employeeOvertime = [...employeeOvertime, { _id: listEmployee[i].userId._id, name: listEmployee[i].userId.name, totalHours: totalOvertime }];
             employeeHoursOff = [...employeeHoursOff, { _id: listEmployee[i].userId._id, name: listEmployee[i].userId.name, totalHours: totalHoursOff }];
@@ -259,6 +258,18 @@ class ComponentInfor extends Component {
         if (employeeHoursOff.length !== 0) {
             employeeHoursOff = employeeHoursOff.sort((a, b) => b.totalHours - a.totalHours);
         };
+        let maxHoursOff = 1, maxOverTime = 1;
+        employeeHoursOff.forEach(x => {
+            if (x.totalHours > maxHoursOff) {
+                maxHoursOff = x.totalHours
+            }
+        })
+
+        employeeOvertime.forEach(x => {
+            if (x.totalHours > maxHoursOff) {
+                maxOverTime = x.totalHours
+            }
+        })
 
         /* Lấy tổng thời gian nghỉ phép của nhân viên */
         let totalOvertime = 0, totalHoursOff = 0;
@@ -309,7 +320,7 @@ class ComponentInfor extends Component {
                                     <div className="box-header with-border">
                                         <h3 className="box-title">{translate('human_resource.dashboard_personal.remind_work')} {monthShow}</h3>
                                     </div>
-                                    <div className="box-body">
+                                    <div className="box-body" style={{ paddingBottom: 53 }}>
                                         <ul className="todo-list">
                                             <li>
                                                 <span className="handle">
@@ -345,7 +356,7 @@ class ComponentInfor extends Component {
                                                     <i className="fa fa-ellipsis-v"></i>
                                                 </span>
                                                 <span className="text"><a target="_blank">{translate('human_resource.dashboard_personal.kpi_results')}</a></span>
-                                                <small className="label label-success">{`80 ${translate('human_resource.dashboard_personal.point')}/ 90 ${translate('human_resource.dashboard_personal.point')}/95 ${translate('human_resource.dashboard_personal.point')}`}</small>
+                                                <small className="label label-success">{`${employeeKpiSetByMonth && employeeKpiSetByMonth.length ? employeeKpiSetByMonth[0].automaticPoint : 0} ${translate('human_resource.dashboard_personal.point')}/ ${employeeKpiSetByMonth && employeeKpiSetByMonth.length ? employeeKpiSetByMonth[0].employeePoint : 0} ${translate('human_resource.dashboard_personal.point')}/ ${employeeKpiSetByMonth && employeeKpiSetByMonth.length ? employeeKpiSetByMonth[0].approvedPoint : 0} ${translate('human_resource.dashboard_personal.point')}`}</small>
                                             </li>
                                             <li>
                                                 <span className="handle">
@@ -378,7 +389,7 @@ class ComponentInfor extends Component {
                                         <table className="table table-striped table-bordered table-hover">
                                             <thead>
                                                 <tr>
-                                                    <th>STT</th>
+                                                    <th className="col-fixed" style={{ width: 80 }}>STT</th>
                                                     <th>{translate('human_resource.dashboard_personal.fullname')}</th>
                                                     <th>{translate('human_resource.dashboard_personal.task_total')}</th>
                                                 </tr>
@@ -419,7 +430,7 @@ class ComponentInfor extends Component {
                                         <table className="table table-striped table-bordered table-hover">
                                             <thead>
                                                 <tr>
-                                                    <th>STT</th>
+                                                    <th className="col-fixed" style={{ width: 80 }}>STT</th>
                                                     <th>{translate('human_resource.dashboard_personal.fullname')}</th>
                                                     <th>{translate('human_resource.dashboard_personal.reason_praise')}</th>
                                                 </tr>
@@ -455,7 +466,7 @@ class ComponentInfor extends Component {
                                         <table className="table table-striped table-bordered table-hover">
                                             <thead>
                                                 <tr>
-                                                    <th>STT</th>
+                                                    <th className="col-fixed" style={{ width: 80 }}>STT</th>
                                                     <th>{translate('human_resource.dashboard_personal.fullname')}</th>
                                                     <th>{translate('human_resource.dashboard_personal.reason_discipline')}</th>
                                                 </tr>
@@ -504,8 +515,15 @@ class ComponentInfor extends Component {
                                                     employeeHoursOff.map((x, index) => index < 5 ? (
                                                         <tr key={index}>
                                                             <td>{index + 1}</td>
-                                                            <td>{x.name}</td>
-                                                            <td>{x.totalHours}</td>
+                                                            <td>Nhân viên {index + 1}</td>
+                                                            {/* <td>{x.totalHours}</td> */}
+                                                            <td>
+                                                                <div className="clearfix"> <small className="pull-right">{x.totalHours}</small> </div>
+                                                                <div className="progress xs">
+                                                                    <div style={{ width: `${(x.totalHours / maxHoursOff).toFixed(2) * 100}%` }} className="progress-bar progress-bar-green">
+                                                                    </div>
+                                                                </div>
+                                                            </td>
                                                         </tr>
                                                     ) : null)
                                                 }
@@ -538,8 +556,15 @@ class ComponentInfor extends Component {
                                                     employeeOvertime.map((x, index) => index < 5 ? (
                                                         <tr key={index}>
                                                             <td>{index + 1}</td>
-                                                            <td>{x.name}</td>
-                                                            <td>{x.totalHours}</td>
+                                                            <td>Nhân viên {index + 1}</td>
+                                                            {/* <td>{x.totalHours}</td> */}
+                                                            <td>
+                                                                <div className="clearfix"> <small className="pull-right">{x.totalHours}</small> </div>
+                                                                <div className="progress xs">
+                                                                    <div style={{ width: `${(x.totalHours / maxOverTime).toFixed(2) * 100}%` }} className="progress-bar progress-bar-green">
+                                                                    </div>
+                                                                </div>
+                                                            </td>
                                                         </tr>
                                                     ) : null)
                                                 }
@@ -567,11 +592,11 @@ class ComponentInfor extends Component {
                 <ViewAllDiscipline dataDiscipline={discipline.totalListDiscipline} title={`${translate('human_resource.dashboard_personal.general_discipline')} ${monthShow}`} />
                 {
                     viewOverTime &&
-                    <ViewAllOverTime dataView={employeeOvertime} title={`${translate('human_resource.dashboard_personal.general_overtime')} ${monthShow}`} id={viewOverTime} showCheck={true} />
+                    <ViewAllOverTime dataView={employeeOvertime} hideEmployee={true} title={`${translate('human_resource.dashboard_personal.general_overtime')} ${monthShow}`} id={viewOverTime} showCheck={true} />
                 }
                 {
                     viewHoursOff &&
-                    <ViewAllOverTime dataView={employeeHoursOff} title={`${translate('human_resource.dashboard_personal.general_annual_leave')} ${monthShow}`} id={viewHoursOff} showCheck={true} />
+                    <ViewAllOverTime dataView={employeeHoursOff} hideEmployee={true} title={`${translate('human_resource.dashboard_personal.general_annual_leave')} ${monthShow}`} id={viewHoursOff} showCheck={true} />
                 }
 
             </React.Fragment>

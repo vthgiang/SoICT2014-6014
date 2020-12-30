@@ -3,13 +3,13 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import parse from 'html-react-parser';
 
-import { PaginateBar, DataTableSetting, SearchBar, DeleteNotification, ToolTip } from '../../../../common-components';
+import { PaginateBar, DataTableSetting, SearchBar, DeleteNotification, ToolTip, ConfirmNotification } from '../../../../common-components';
 
 import { UserActions } from '../redux/actions';
 
 import UserEditForm from './userEditForm';
 import UserCreateForm from './userCreateForm';
-
+import ModalImportUser from './modalImportUser';
 
 class ManageUserTable extends Component {
     constructor(props) {
@@ -90,13 +90,27 @@ class ManageUserTable extends Component {
         this.props.getUser({ limit: this.state.limit, page: this.state.page });
     }
 
+    sendEmailResetPasswordUser = (email) => {
+        this.props.sendEmailResetPasswordUser(email);
+    }
+
     render() {
         const { user, translate } = this.props;
-
+        const { limit } = this.state;
         return (
             <React.Fragment>
-                {/* Button thêm tài khoản người dùng mới */}
+                <div className="dropdown pull-right">
+                    <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_user.add_title')} >{translate('manage_user.add')}</button>
+                    <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
+                        <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-create-user').modal('show')}>{translate('manage_user.add_common')}</a></li>
+                        <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-user').modal('show')}>{translate('manage_user.import')}</a></li>
+                    </ul>
+                </div>
+
+                {/* Form thêm mới người dùng */}
                 <UserCreateForm />
+                {/* Form import thông tin người dùng */}
+                <ModalImportUser limit={limit} />
 
                 {/* Thanh tìm kiếm */}
                 <SearchBar
@@ -161,6 +175,14 @@ class ManageUserTable extends Component {
                                         : <p><i className="fa fa-circle text-danger" style={{ fontSize: "1em", marginRight: "0.25em" }} /> {translate('manage_user.disable')} </p>}</td>
                                     <td style={{ textAlign: 'center' }}>
                                         <a onClick={() => this.handleEdit(u)} className="edit text-yellow" href={`#${u._id}`} style={{ width: '5px' }} title={translate('manage_user.edit')}><i className="material-icons">edit</i></a>
+                                        <ConfirmNotification
+                                            className="text-blue"
+                                            title="Gửi email thay đổi mật khẩu"
+                                            name="contact_mail"
+                                            content={`Gửi email thay đổi mật khẩu đến tài khoản [ ${u.email} ]`}
+                                            icon="question"
+                                            func={() => this.sendEmailResetPasswordUser(u.email)}
+                                        />
                                         {
                                             !this.checkSuperRole(u.roles) &&
                                             <DeleteNotification
@@ -196,7 +218,8 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
     getUser: UserActions.get,
     edit: UserActions.edit,
-    destroy: UserActions.destroy
+    destroy: UserActions.destroy,
+    sendEmailResetPasswordUser: UserActions.sendEmailResetPasswordUser,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManageUserTable));

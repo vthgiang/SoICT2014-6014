@@ -14,7 +14,7 @@ const initState = {
     list: [],
     searchUses: [],
     listPaginate: [],
-    employeesOfUnitsUserIsDean:[],
+    employeesOfUnitsUserIsManager:[],
     totalDocs: 0,
     limit: 0,
     totalPages: 0,
@@ -39,6 +39,8 @@ export function user(state = initState, action) {
         case UserConstants.EDIT_USER_REQUEST:
         case UserConstants.DELETE_USER_REQUEST:
         case UserConstants.SEARCH_USER_BY_NAME_REQUEST:
+        case UserConstants.IMPORT_USERS_REQUEST:
+        case UserConstants.SEND_EMAIL_RESET_PASSWORD_USER_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -50,6 +52,9 @@ export function user(state = initState, action) {
         case UserConstants.EDIT_USER_FAILE:
         case UserConstants.DELETE_USER_FAILE:
         case UserConstants.SEARCH_USER_BY_NAME_FAILE:
+        case UserConstants.IMPORT_USERS_FAILE:       
+        case UserConstants.SEND_EMAIL_RESET_PASSWORD_USER_FAILE:      
+        case UserConstants.SEND_EMAIL_RESET_PASSWORD_USER_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
@@ -61,6 +66,7 @@ export function user(state = initState, action) {
                 list: action.payload,
                 isLoading: false
             };
+
         case UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ROLE_REQUEST:
             return {
                 loading: true,
@@ -97,7 +103,7 @@ export function user(state = initState, action) {
             if(action.callApi){
                 return {
                     ...state,
-                    employeesOfUnitsUserIsDean: action.payload,
+                    employeesOfUnitsUserIsManager: action.payload,
                     isLoading: false
                 };
             }
@@ -189,6 +195,23 @@ export function user(state = initState, action) {
             };
 
         case UserConstants.SEARCH_USER_BY_NAME_SUCCESS:
+            return {
+                ...state,
+                listPaginate: action.payload.docs,
+                totalDocs: action.payload.totalDocs,
+                limit: action.payload.limit,
+                totalPages: action.payload.totalPages,
+                page: action.payload.page,
+                pagingCounter: action.payload.pagingCounter,
+                hasPrevPage: action.payload.hasPrevPage,
+                hasNextPage: action.payload.hasNextPage,
+                prevPage: action.payload.prevPage,
+                nextPage: action.payload.nextPage,
+                isLoading: false
+            };
+
+        case UserConstants.IMPORT_USERS_SUCCESS:
+            console.log('list', action.payload)
             return {
                 ...state,
                 listPaginate: action.payload.docs,

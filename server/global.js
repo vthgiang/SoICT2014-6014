@@ -40,28 +40,32 @@ module.exports = async (server) => {
     global.SERVER_SEED_DIR = SERVER_DIR + "/seed";
     global.SERVER_LOGS_DIR = SERVER_DIR + "/logs";
 
-    global.DB_CONNECTION = mongoose.createConnection(
-        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/${
-            process.env.DB_NAME
-        }`,
-        {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true,
-            useFindAndModify: false,
-            user:
-                process.env.DB_AUTHENTICATION === "true"
-                    ? process.env.DB_USERNAME
-                    : undefined,
-            pass:
-                process.env.DB_AUTHENTICATION === "true"
-                    ? process.env.DB_PASSWORD
-                    : undefined,
+    
+    let connectOptions = process.env.DB_AUTHENTICATION === 'true' ?
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+        user:process.env.DB_USERNAME,
+        pass:process.env.DB_PASSWORD,
+        auth: {
+            authSource: 'admin'
         }
+    } : {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+    }
+
+    global.DB_CONNECTION = mongoose.createConnection(
+        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/${process.env.DB_NAME}`, 
+        connectOptions
     );
     initModels(DB_CONNECTION, models);
 
-    // Init backupt for many company
+    // Init backup for many company
     const backupMongo = await Configuration(
         connect(DB_CONNECTION, process.env.DB_NAME)
     ).find();

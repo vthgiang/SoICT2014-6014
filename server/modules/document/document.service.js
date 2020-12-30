@@ -25,8 +25,8 @@ exports.getDocuments = async (
 ) => {
     const og = currentRole
         ? await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({
-              deans: currentRole,
-          })
+            managers: currentRole,
+        })
         : null;
     let { by, page, limit } = query;
     if (!(page || limit)) {
@@ -42,7 +42,7 @@ exports.getDocuments = async (
             }
         } else {
             return await Document(connect(DB_CONNECTION, portal))
-                .find({ })
+                .find({})
                 .select(
                     "id name archives category domains numberOfDownload numberOfView "
                 );
@@ -51,13 +51,20 @@ exports.getDocuments = async (
         let option =
             by === "organizational-unit" && og
                 ? {
-                      archivedRecordPlaceOrganizationalUnit: og._id,
-                  }
-                : { };
+                    archivedRecordPlaceOrganizationalUnit: og._id,
+                }
+                : {};
 
         if (query.category) {
             option.category = query.category;
         }
+        if (query.issuingBody) {
+            option.issuingBody = new RegExp(query.issuingBody, "i");
+        }
+        if (query.organizationUnit && query.organizationUnit.length) {
+            option.archivedRecordPlaceOrganizationalUnit = query.organizationUnit[0];
+        }
+
         if (query.domains && query.domains.length) {
             option.domains = { $in: query.domains };
         }
@@ -82,23 +89,70 @@ exports.getDocuments = async (
         if (query.name) {
             option.name = new RegExp(query.name, "i");
         }
-        return await Document(connect(DB_CONNECTION, portal)).paginate(option, {
-            page,
-            limit,
-            populate: [
-                { path: "category", select: "name id" },
-                { path: "domains", select: "name id" },
-                { path: "archives", select: "name id path" },
-                { path: "views.viewer", select: "name id" },
-                { path: "downloads.downloader", select: "name id" },
-                {
-                    path: "archivedRecordPlaceOrganizationalUnit",
-                    select: "name id",
-                },
-                { path: "logs.creator", select: "name id" },
-                { path: "relationshipDocuments", select: "name id" },
-            ],
+        //   console.log('aaaaa', option)
+        // let list = await Document(connect(DB_CONNECTION, portal)).paginate(option, {
+        //     page,
+        //     limit,
+        //     populate: [
+        //         { path: "category", select: "name id" },
+        //         { path: "domains", select: "name id" },
+        //         { path: "archives", select: "name id path" },
+        //         { path: "views.viewer", select: "name id" },
+        //         { path: "downloads.downloader", select: "name id" },
+        //         {
+        //             path: "archivedRecordPlaceOrganizationalUnit",
+        //             select: "name id",
+        //         },
+        //         { path: "logs.creator", select: "name id" },
+        //         { path: "relationshipDocuments", select: "name id" },
+        //     ],
+        // });
+        let allDocs = await Document(connect(DB_CONNECTION, portal)).find(option).populate([
+            { path: "category", select: "name id" },
+            { path: "domains", select: "name id" },
+            { path: "archives", select: "name id path" },
+            { path: "views.viewer", select: "name id" },
+            { path: "downloads.downloader", select: "name id" },
+            {
+                path: "archivedRecordPlaceOrganizationalUnit",
+                select: "name id",
+            },
+            { path: "logs.creator", select: "name id" },
+            { path: "relationshipDocuments", select: "name id" }]);
+
+        page = parseInt(page);
+        let totalDocs = allDocs.length;
+        let totalPage = Math.ceil(totalDocs / limit);
+        let pagingCounter = (page - 1) * limit + 1;
+        let hasPrevPage = page > 1 ? true : false;
+        let hasNextPage = totalDocs > page * limit ? true : false;
+        let prevPage = page > 1 ? page - 1 : null;
+        let nextPage = totalDocs > page * limit ? page + 1 : null;
+        allDocs.sort((a, b) => {
+            let tmpA = a.versions.length && a.versions[a.versions.length - 1].issuingDate ?
+                a.versions[a.versions.length - 1].issuingDate : new Date(1900, 1, 1, 0, 3, 3, 0);
+            let tmpB = b.versions.length && b.versions[b.versions.length - 1].issuingDate ?
+                b.versions[b.versions.length - 1].issuingDate : new Date(1900, 1, 1, 0, 3, 3, 0);;
+
+            return new Date(tmpB) - new Date(tmpA);
         });
+        let doc = allDocs.slice((page - 1) * limit, page * limit > allDocs.length ? allDocs.length : page * limit);
+        //list.docs = doc;
+
+        let res = {
+            docs: doc,
+            totalDocs: totalDocs,
+            limit: parseInt(limit),
+            totalPages: parseInt(totalPage),
+            page: parseInt(page),
+            pagingCounter: pagingCounter,
+            hasPrevPage: hasPrevPage,
+            hasNextPage: hasNextPage,
+            prevPage: prevPage,
+            nextPage: parseInt(nextPage),
+        };
+        // console.log('listt', res)
+        return res;
     }
 };
 
@@ -158,11 +212,13 @@ exports.increaseNumberView = async (id, viewer, portal) => {
  * Tạo một tài liệu văn bản mới
  */
 exports.createDocument = async (portal, data, company) => {
+    // console.log('dtaaaaaaaa', data);
     let numberFile = 0,
         numberFileScan = 0;
     const existedName = await Document(connect(DB_CONNECTION, portal)).findOne({
         name: data.name,
     });
+    console.log('exxx', existedName)
     if (existedName) throw ["document_exist"];
     const existedNumber = await Document(
         connect(DB_CONNECTION, portal)
@@ -187,17 +243,17 @@ exports.createDocument = async (portal, data, company) => {
         archivedRecordPlaceOrganizationalUnit: data.archivedRecordPlaceOrganizationalUnit,
     };
     let versions = [];
-    if(data.versionName && data.scannedFileOfSignedDocument){
+    if (data.versionName) {
         if (!Array.isArray(data.versionName)) {
             versions = [
                 {
                     versionName: data.versionName,
-             
+
                     issuingDate: dateParse(data.issuingDate),
                     effectiveDate: dateParse(data.effectiveDate),
                     expiredDate: dateParse(data.expiredDate),
                     file: data.file,
-                    scannedFileOfSignedDocument: data.scannedFileOfSignedDocument[0],
+                    scannedFileOfSignedDocument: data.scannedFileOfSignedDocument,
                 },
             ];
         } else {
@@ -213,7 +269,7 @@ exports.createDocument = async (portal, data, company) => {
                             : "",
                     scannedFileOfSignedDocument:
                         data.numberFileScan[i] == 1 &&
-                        data.scannedFileOfSignedDocument
+                            data.scannedFileOfSignedDocument
                             ? data.scannedFileOfSignedDocument[numberFileScan++]
                             : "",
                 };
@@ -221,7 +277,7 @@ exports.createDocument = async (portal, data, company) => {
             }
         }
     }
-    console.log('ser', versions)
+    // console.log('ser', versions)
     newDoc.versions = versions;
 
     const doc = await Document(connect(DB_CONNECTION, portal)).create(newDoc);
@@ -353,7 +409,7 @@ exports.editDocument = async (id, data, query = undefined, portal) => {
             data.archivedRecordPlaceOrganizationalUnit &&
             data.archivedRecordPlaceOrganizationalUnit !== "[object Object]"
         ) {
-            console.log('type:', typeof(data.archivedRecordPlaceOrganizationalUnit))
+            console.log('type:', typeof (data.archivedRecordPlaceOrganizationalUnit))
             doc.archivedRecordPlaceOrganizationalUnit =
                 data.archivedRecordPlaceOrganizationalUnit;
         }
@@ -512,16 +568,20 @@ exports.importDocument = async (portal, data, company) => {
         }
 
         // file role
-
+        console.log('rrroddddddddd', data[i].roles)
         if (data[i].roles && data[i].roles.length && data[i].roles[0]) {
             let roles = [];
             for (let j in data[i].roles) {
+
                 const role = await Role(connect(DB_CONNECTION, portal)).findOne(
                     {
                         name: data[i].roles[j],
                     }
                 );
-                roles.push(role._id);
+                console.log('rrrrrr', role);
+                if (role) {
+                    roles.push(role._id);
+                }
             }
             document.roles = roles;
         }
@@ -563,9 +623,9 @@ exports.getDocumentCategories = async (portal, query, company) => {
         const option =
             query.key !== undefined && query.value !== undefined
                 ? Object.assign(
-                      { company },
-                      { [`${query.key}`]: new RegExp(query.value, "i") }
-                  )
+                    { company },
+                    { [`${query.key}`]: new RegExp(query.value, "i") }
+                )
                 : { company };
         return await DocumentCategory(
             connect(DB_CONNECTION, portal)
@@ -699,6 +759,12 @@ exports.getDocumentsThatRoleCanView = async (portal, query, company) => {
         if (query.category) {
             option.category = query.category;
         }
+        if (query.issuingBody) {
+            option.issuingBody = new RegExp(query.issuingBody, "i");
+        }
+        if (query.organizationUnit && query.organizationUnit.length) {
+            option.archivedRecordPlaceOrganizationalUnit = query.organizationUnit[0];
+        }
         if (query.domains && query.domains.length) {
             option.domains = { $in: query.domains };
         }
@@ -723,24 +789,66 @@ exports.getDocumentsThatRoleCanView = async (portal, query, company) => {
             option.name = new RegExp(query.name, "i");
         }
 
-        return await Document(connect(DB_CONNECTION, portal)).paginate(option, {
-            page,
-            limit,
-            populate: [
-                { path: "category", select: "name id" },
-                { path: "domains", select: "name id" },
-                { path: "archives", select: "name id path" },
-                { path: "relationshipDocuments", select: "name id" },
-                { path: "views.viewer", select: "name id" },
-                { path: "downloads.downloader", select: "name id" },
-                {
-                    path: "archivedRecordPlaceOrganizationalUnit",
-                    select: "name id",
-                },
-                { path: "logs.creator", select: "name id" },
-                { path: "relationshipDocuments", select: "name id" },
-            ],
+        // let list = await Document(connect(DB_CONNECTION, portal)).paginate(option, {
+        //     page,
+        //     limit,
+        //     populate: [
+        //         { path: "category", select: "name id" },
+        //         { path: "domains", select: "name id" },
+        //         { path: "archives", select: "name id path" },
+        //         { path: "views.viewer", select: "name id" },
+        //         { path: "downloads.downloader", select: "name id" },
+        //         {
+        //             path: "archivedRecordPlaceOrganizationalUnit",
+        //             select: "name id",
+        //         },
+        //         { path: "logs.creator", select: "name id" },
+        //         { path: "relationshipDocuments", select: "name id" },
+        //     ],
+        // });
+        let allDocs = await Document(connect(DB_CONNECTION, portal)).find(option).populate([
+            { path: "category", select: "name id" },
+            { path: "domains", select: "name id" },
+            { path: "archives", select: "name id path" },
+            { path: "views.viewer", select: "name id" },
+            { path: "downloads.downloader", select: "name id" },
+            {
+                path: "archivedRecordPlaceOrganizationalUnit",
+                select: "name id",
+            },
+            { path: "logs.creator", select: "name id" },
+            { path: "relationshipDocuments", select: "name id" }]);
+        //console.log('aaaa', allDocs);
+        page = parseInt(page);
+        let totalDocs = allDocs.length;
+        let totalPage = Math.ceil(totalDocs / limit);
+        let pagingCounter = (page - 1) * limit + 1;
+        let hasPrevPage = page > 1 ? true : false;
+        let hasNextPage = totalDocs > page * limit ? true : false;
+        let prevPage = page > 1 ? page - 1 : null;
+        let nextPage = totalDocs > page * limit ? page + 1 : null;
+        allDocs.sort((a, b) => {
+            let tmpA = a.versions[a.versions.length - 1].issuingDate ? a.versions[a.versions.length - 1].issuingDate : new Date(1900, 1, 1, 0, 3, 3, 0);
+            let tmpB = b.versions[b.versions.length - 1].issuingDate ? b.versions[b.versions.length - 1].issuingDate : new Date(1900, 1, 1, 0, 3, 3, 0);;
+
+            return new Date(tmpB) - new Date(tmpA);
         });
+        let doc = allDocs.slice((page - 1) * limit, page * limit > allDocs.length ? allDocs.length : page * limit);
+        //list.docs = doc;
+
+        let res = {
+            docs: doc,
+            totalDocs: totalDocs,
+            limit: parseInt(limit),
+            totalPages: parseInt(totalPage),
+            page: parseInt(page),
+            pagingCounter: pagingCounter,
+            hasPrevPage: hasPrevPage,
+            hasNextPage: hasNextPage,
+            prevPage: prevPage,
+            nextPage: parseInt(nextPage),
+        };
+        return res;
     }
 };
 
@@ -763,6 +871,12 @@ exports.getDocumentsUserStatistical = async (userId, query, portal) => {
     }
     if (query.domains && query.domains.length) {
         condition.domains = { $in: query.domains };
+    }
+    if (query.issuingBody) {
+        condition.issuingBody = new RegExp(query.issuingBody, "i");
+    }
+    if (query.organizationUnit && query.organizationUnit.length) {
+        option.archivedRecordPlaceOrganizationalUnit = query.organizationUnit[0];
     }
     if (query.archives && query.archives.length) {
         let allArchive = [];
@@ -788,30 +902,52 @@ exports.getDocumentsUserStatistical = async (userId, query, portal) => {
     switch (option) {
         case "downloaded": //những tài liệu văn bản mà người dùng đã tải xuống
             condition = { ...condition, "downloads.downloader": userId };
-            return await Document(connect(DB_CONNECTION, portal)).paginate(
-                condition,
+
+            let allDocsDown = await Document(connect(DB_CONNECTION, portal)).find(condition).populate([
+                { path: "category", select: "name id" },
+                { path: "domains", select: "name id" },
+                { path: "archives", select: "name id path" },
+                { path: "views.viewer", select: "name id" },
+                { path: "downloads.downloader", select: "name id" },
                 {
-                    page,
-                    limit,
-                    populate: [
-                        { path: "category", select: "name id" },
-                        { path: "domains", select: "name id" },
-                        { path: "archives", select: "name id path" },
-                        { path: "relationshipDocuments", select: "name id" },
-                        { path: "views.viewer", select: "name id" },
-                        { path: "downloads.downloader", select: "name id" },
-                        {
-                            path: "archivedRecordPlaceOrganizationalUnit",
-                            select: "name id",
-                        },
-                        { path: "logs.creator", select: "name id" },
-                        { path: "relationshipDocuments", select: "name id" },
-                    ],
-                }
-            );
+                    path: "archivedRecordPlaceOrganizationalUnit",
+                    select: "name id",
+                },
+                { path: "logs.creator", select: "name id" },
+                { path: "relationshipDocuments", select: "name id" }]);
+            page = parseInt(page);
+            let totalDocsDown = allDocsDown.length;
+            let totalPageDown = Math.ceil(totalDocsDown / limit);
+            let pagingCounterDown = (page - 1) * limit + 1;
+            let hasPrevPageDown = page > 1 ? true : false;
+            let hasNextPageDown = totalDocsDown > page * limit ? true : false;
+            let prevPageDown = page > 1 ? page - 1 : null;
+            let nextPageDown = totalDocsDown > page * limit ? page + 1 : null;
+            allDocsDown.sort((a, b) => {
+                let tmpA = a.versions[a.versions.length - 1].issuingDate ? a.versions[a.versions.length - 1].issuingDate : new Date(1900, 1, 1, 0, 3, 3, 0);
+                let tmpB = b.versions[b.versions.length - 1].issuingDate ? b.versions[b.versions.length - 1].issuingDate : new Date(1900, 1, 1, 0, 3, 3, 0);;
+
+                return new Date(tmpB) - new Date(tmpA);
+            });
+            let doc = allDocsDown.slice((page - 1) * limit, page * limit > allDocsDown.length ? allDocsDown.length : page * limit);
+
+
+            let listDownload = {
+                docs: doc,
+                totalDocs: totalDocsDown,
+                limit: parseInt(limit),
+                totalPage: parseInt(totalPageDown),
+                page: parseInt(page),
+                pagingCounter: pagingCounterDown,
+                hasPrevPage: hasPrevPageDown,
+                hasNextPage: hasNextPageDown,
+                prevPage: prevPageDown,
+                nextPage: parseInt(nextPageDown),
+            };
+            return listDownload;
         case "common": //những tài liệu phổ biến - được xem và tải nhiều nhất gần đây
             condition = { ...condition, roles: { $in: userRole } };
-            const list = await Document(
+            let listCommon = await Document(
                 connect(DB_CONNECTION, portal)
             ).paginate(condition, {
                 page,
@@ -831,39 +967,63 @@ exports.getDocumentsUserStatistical = async (userId, query, portal) => {
                     { path: "relationshipDocuments", select: "name id" },
                 ],
             });
-            list.docs.sort((a, b) => {
+            listCommon.docs.sort((a, b) => {
                 if (a.numberOfView > b.numberOfView) return -1;
                 else if (a.numberOfView < b.numberOfView) return 1;
                 else return 0;
             });
-            return list;
+            return listCommon;
         case "latest": //những tài liệu văn bản mà người dùng chưa xem qua lần nào
             condition = {
                 ...condition,
                 roles: { $in: userRole },
                 "views.viewer": { $ne: userId },
             };
-            return await Document(connect(DB_CONNECTION, portal)).paginate(
-                condition,
+
+            let allDocsLast = await Document(connect(DB_CONNECTION, portal)).find(condition).populate([
+                { path: "category", select: "name id" },
+                { path: "domains", select: "name id" },
+                { path: "archives", select: "name id path" },
+                { path: "views.viewer", select: "name id" },
+                { path: "downloads.downloader", select: "name id" },
                 {
-                    page,
-                    limit,
-                    populate: [
-                        { path: "category", select: "name id" },
-                        { path: "domains", select: "name id" },
-                        { path: "archives", select: "name id path" },
-                        { path: "relationshipDocuments", select: "name id" },
-                        { path: "views.viewer", select: "name id" },
-                        { path: "downloads.downloader", select: "name id" },
-                        {
-                            path: "archivedRecordPlaceOrganizationalUnit",
-                            select: "name id",
-                        },
-                        { path: "logs.creator", select: "name id" },
-                        { path: "relationshipDocuments", select: "name id" },
-                    ],
-                }
-            );
+                    path: "archivedRecordPlaceOrganizationalUnit",
+                    select: "name id",
+                },
+                { path: "logs.creator", select: "name id" },
+                { path: "relationshipDocuments", select: "name id" }]);
+            //console.log('aaaa', allDocs);
+            page = parseInt(page);
+            let totalDocsLast = allDocsLast.length;
+            let totalPageLast = Math.ceil(totalDocsLast / limit);
+            let pagingCounterLast = (page - 1) * limit + 1;
+            let hasPrevPageLast = page > 1 ? true : false;
+            let hasNextPageLast = totalDocsLast > page * limit ? true : false;
+            let prevPageLast = page > 1 ? page - 1 : null;
+            let nextPageLast = totalDocsLast > page * limit ? page + 1 : null;
+
+            allDocsLast.sort((a, b) => {
+                let tmpA = a.versions[a.versions.length - 1].issuingDate ? a.versions[a.versions.length - 1].issuingDate : new Date(1900, 1, 1, 0, 3, 3, 0);
+                let tmpB = b.versions[b.versions.length - 1].issuingDate ? b.versions[b.versions.length - 1].issuingDate : new Date(1900, 1, 1, 0, 3, 3, 0);;
+
+                return new Date(tmpB) - new Date(tmpA);
+            });
+            let docLast = allDocsLast.slice((page - 1) * limit, page * limit > allDocsLast.length ? allDocsLast.length : page * limit);
+
+            let listLast = {
+                docs: docLast,
+                totalDocs: totalDocsLast,
+                limit: parseInt(limit),
+                totalPages: parseInt(totalPageLast),
+                page: parseInt(page),
+                pagingCounter: pagingCounterLast,
+                hasPrevPage: hasPrevPageLast,
+                hasNextPage: hasNextPageLast,
+                prevPage: prevPageLast,
+                nextPage: parseInt(nextPageLast),
+            };
+            //  console.log('listt', res)
+            return listLast;
         default:
             return null;
     }

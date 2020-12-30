@@ -22,12 +22,12 @@ export const configDepartment = {
         description: "Tên tiêu đề ứng với đơn vị cha",
         value: "Đơn vị cha"
     },
-    deans: {
+    managers: {
         columnName: "Tên các chức danh trưởng đơn vị",
         description: "Tên tiêu đề ứng với tên các chức danh trưởng đơn vị",
         value: "Tên các chức danh trưởng đơn vị"
     },
-    viceDeans: {
+    deputyManagers: {
         columnName: "Tên các chức danh phó đơn vị",
         description: "Tên tiêu đề ứng với tên các chức danh phó đơn vị",
         value: "Tên các chức danh phó đơn vị"
@@ -50,8 +50,8 @@ export const templateImportDepartment = {
                 { key: "name", value: "Tên đơn vị" },
                 { key: "description", value: "Mô tả đơn vị" },
                 { key: "parent", value: "Đơn vị cha"},
-                { key: "deans", value: "Tên các chức danh trưởng đơn vị" },
-                { key: "viceDeans", value: "Tên các chức danh phó đơn vị"},
+                { key: "managers", value: "Tên các chức danh trưởng đơn vị" },
+                { key: "deputyManagers", value: "Tên các chức danh phó đơn vị"},
                 { key: "employees", value: "Tên các chức danh nhân viên đơn vị"}
             ],
             data: [
@@ -59,15 +59,15 @@ export const templateImportDepartment = {
                     name: "Phòng nhân sự",
                     description: "Phòng nhân sự Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
                     parent: "Ban giám đốc",
-                    deans: ["Trưởng phòng nhân sự"],
-                    viceDeans: ["Phó phòng nhân sự", "Quản lý nhân viên"],
+                    managers: ["Trưởng phòng nhân sự"],
+                    deputyManagers: ["Phó phòng nhân sự", "Quản lý nhân viên"],
                     employees: ["Nhân viên phòng nhân sự"],
                 }, {
                     name: "Ban tuyển dụng",
                     description: "Ban tuyển dụng Phòng nhân sự Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
                     parent: "Phòng nhân sự",
-                    deans: ["Trưởng ban tuyển dụng"],
-                    viceDeans: ["Phó ban tuyển dụng"],
+                    managers: ["Trưởng ban tuyển dụng"],
+                    deputyManagers: ["Phó ban tuyển dụng"],
                     employees: ["Thành viên ban tuyển dụng"],
                 }
             ]

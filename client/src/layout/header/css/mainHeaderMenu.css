@@ -1,11 +1,11 @@
 .selectRole{
     padding: 15px 15px;
-    background-color: #605ca8;
+    background-color: #fff;
     border: none;
     color: white;
 }
 
 select.selectRole optgroup:hover {
-    background-color: #605ca8 !important;
+    background-color: #fff !important;
 }
 

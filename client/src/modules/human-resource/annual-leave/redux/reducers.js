@@ -60,6 +60,7 @@ export function annualLeave(state = initState, action) {
                 ...state,
                 isLoading: false,
                 listAnnualLeaves: [...state.listAnnualLeaves, action.payload],
+                listAnnualLeavesOfOneYear: [...state.listAnnualLeavesOfOneYear, action.payload]
             };
         case AnnualLeaveConstants.DELETE_ANNUAL_LEAVE_SUCCESS:
             return {

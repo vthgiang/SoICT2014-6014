@@ -16,10 +16,14 @@ const checkURL = (urlName, linkArr) => {
     return result;
 }
 
-export const PrivateRoute = ({ auth, isLoading, arrPage, pageName, link, component: Component, layout: Layout, ...rest }) => {
+const PrivateRoute = ({ auth, isLoading, arrPage, pageName, link, component: Component, layout: Layout, ...rest }) => {
+    const {redirectToAuthQuestionPage} = auth;
+    
     return <Route {...rest} render={props => {
         var logged = getStorage();
-        if(logged !== null){
+        if(redirectToAuthQuestionPage)
+            return <Redirect to='/answer-auth-questions'/>
+        else if(logged !== null){
             if(auth.calledAPI !== CallApiStatus.FINISHED)
                 return <Layout></Layout>
             
@@ -32,3 +36,5 @@ export const PrivateRoute = ({ auth, isLoading, arrPage, pageName, link, compone
         }
     }} />
 }
+
+export {PrivateRoute};

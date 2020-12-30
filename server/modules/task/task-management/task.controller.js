@@ -407,7 +407,6 @@ getPaginatedTasksByOrganizationalUnit = async (req, res) => {
             name: req.query.name,
             startDate: req.query.startDate,
             endDate: req.query.endDate,
-            roleId: req.query.roleId,
             isAssigned: req.query.isAssigned
         };
 
@@ -470,11 +469,14 @@ getTasksThatUserHasResponsibleRoleByDate = async (req, res) => {
  */
 exports.createTask = async (req, res) => {
     try {
-        console.log("Tao moi cong viec")
         var tasks = await TaskManagementService.createTask(req.portal, req.body);
         var task = tasks.task;
         var user = tasks.user.filter(user => user !== req.user._id); //lọc thông tin người tạo ra khỏi danh sách sẽ gửi thông báo
 
+        const associatedDataObject = {
+            dataType: 2,
+            value: task.priority
+        }
         // Gửi mail cho nhân viện tham gia công việc
         var email = tasks.email;
         var html = tasks.html;
@@ -484,7 +486,8 @@ exports.createTask = async (req, res) => {
             level: "general",
             content: html,
             sender: task.organizationalUnit.name,
-            users: user
+            users: user,
+            associatedDataObject: associatedDataObject
         };
 
         // Gửi mail cho trưởng đơn vị phối hợp thực hiện công việc
@@ -496,7 +499,7 @@ exports.createTask = async (req, res) => {
             level: "general",
             content: collaboratedHtml,
             sender: task.organizationalUnit.name,
-            users: tasks.deansOfOrganizationalUnitThatHasCollaborated
+            users: tasks.managersOfOrganizationalUnitThatHasCollaborated
         };
 
         await NotificationServices.createNotification(req.portal, task.organizationalUnit.company, data);
@@ -512,6 +515,7 @@ exports.createTask = async (req, res) => {
             content: task
         });
     } catch (error) {
+        
         await Logger.error(req.user.email, 'create_task', req.portal)
         res.status(400).json({
             success: false,
@@ -771,6 +775,30 @@ getAllTaskOfOrganizationalUnitByMonth = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['get_all_task_of_organizational_unit_failure'],
+            content: error
+        })
+    }
+}
+
+exports.getTaskAnalysOfUser = async(req, res) => {
+    try {
+        let portal = req.portal;
+        let {userId} = req.params;
+        let {type} = req.query;
+        let taskAnalys = await TaskManagementService.getTaskAnalysOfUser(portal, userId, type);
+
+        await Logger.info(req.user.email, 'get_task_analys_of_user_success', req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['get_task_analys_of_user_success'],
+            content: taskAnalys
+        })
+    } catch (error) {
+
+        await Logger.error(req.user.email, 'get_task_analys_of_user_faile', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_task_analys_of_user_faile'],
             content: error
         })
     }

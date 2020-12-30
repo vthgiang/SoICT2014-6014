@@ -49,7 +49,7 @@ class TaskInformationForm extends Component {
                         }
 
                         <div className={`form-group ${value.errorOnProgress === undefined ? "" : "has-error"}`}>
-                            <label>{translate('task.task_management.detail_progress')}</label>
+                            <label>{translate('task.task_management.detail_progress')} (1-100)</label>
                             <input
                                 className="form-control"
                                 type="number"
@@ -87,7 +87,7 @@ class TaskInformationForm extends Component {
                                 {
                                     if (info.type === 'number') {
                                         return <div className={`form-group ${value.errorInfo && value.errorInfo[info.code] === undefined ? "" : "has-error"}`} key={index}>
-                                            <label>{info.name}</label>
+                                            <label>{info.name} (0 - 100)</label>
                                             <input
                                                 className="form-control"
                                                 type="number"

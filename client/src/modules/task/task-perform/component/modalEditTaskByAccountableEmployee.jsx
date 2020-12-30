@@ -977,8 +977,10 @@ class ModalEditTaskByAccountableEmployee extends Component {
     formatPriority = (data) => {
         const { translate } = this.props;
         if (data === 1) return translate('task.task_management.low');
-        if (data === 2) return translate('task.task_management.normal');
-        if (data === 3) return translate('task.task_management.high');
+        if (data === 2) return translate('task.task_management.average');
+        if (data === 3) return translate('task.task_management.standard');
+        if (data === 4) return translate('task.task_management.high');
+        if (data === 5) return translate('task.task_management.urgent');
     }
 
     formatRole = (data) => {
@@ -1039,8 +1041,10 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
         let priorityArr = [
             { value: 1, text: translate('task.task_management.low') },
-            { value: 2, text: translate('task.task_management.normal') },
-            { value: 3, text: translate('task.task_management.high') }
+            { value: 2, text: translate('task.task_management.average') },
+            { value: 3, text: translate('task.task_management.standard') },
+            { value: 4, text: translate('task.task_management.high') },
+            { value: 5, text: translate('task.task_management.urgent') },
         ];
         let statusArr = [
             { value: "inprocess", text: translate('task.task_management.inprocess') },
@@ -1177,7 +1181,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                 {/* </div> */}
                                 <div className="row form-group">
                                     <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
-                                        <label className="control-label">{translate('task.task_management.start_date')}*</label>
+                                        <label className="control-label">{translate('task.task_management.start_date')}<span className="text-red">*</span></label>
                                         <DatePicker
                                             id={`datepicker2-startdate-${id}`}
                                             value={startDate}
@@ -1186,7 +1190,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                         <ErrorLabel content={errorOnStartDate} />
                                     </div>
                                     <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
-                                        <label className="control-label">{translate('task.task_management.end_date')}*</label>
+                                        <label className="control-label">{translate('task.task_management.end_date')}<span className="text-red">*</span></label>
                                         <DatePicker
                                             id={`datepicker2-enddate-${id}`}
                                             value={endDate}
@@ -1197,7 +1201,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                 </div>
                                 {/**Công thức tính của mẫu công việc */}
                                 <div className={` form-group ${errorOnFormula === undefined ? "" : "has-error"}`} >
-                                    <label className="control-label" htmlFor="inputFormula">{translate('task_template.formula')}*</label>
+                                    <label className="control-label" htmlFor="inputFormula">{translate('task_template.formula')}<span className="text-red">*</span></label>
                                     <input type="text" className="form-control" id="inputFormula" placeholder="progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100"
                                         value={formula} onChange={this.handleChangeTaskFormula}
                                     />
