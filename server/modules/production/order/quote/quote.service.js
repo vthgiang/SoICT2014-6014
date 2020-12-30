@@ -291,7 +291,7 @@ exports.approveQuote = async (approverId, quoteId, data, portal) => {
     }
 
     quote.status = data.status;
-    quote.approver = approverId;
+    quote.approver = approverId; //Lưu ý approver
         
     quote.save();
     

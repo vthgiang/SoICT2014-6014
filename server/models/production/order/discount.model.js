@@ -31,7 +31,7 @@ const DiscountSchema = new Schema({
         required: true
     },
     formality: {// Hình thức giảm giá
-        type: String,
+        type: Number,
         enum: [0, 1, 2, 3, 4, 5], //0. discounted cash, 1. discounted percentage, 2. loyalty coin,
         // 3. maximum free shipping cost, 4. bonus goods, 5. clear inventory
         required: true

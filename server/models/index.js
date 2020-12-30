@@ -91,16 +91,13 @@ module.exports = {
     //order
     BankAccount: require('./production/order/bankAccount.model'),
     Discount: require('./production/order/discount.model'),
-    ProposalOrder: require('./production/order/proposalOrder.model'),
     CoinRule: require('./production/order/coinRule.model'),
-    ManufacturingOrder: require('./production/order/manufacturingOrder.model'),
     Quote: require('./production/order/quote.model'),
     Tax: require('./production/order/tax.model'),
     SalesOrder: require('./production/order/salesOrder.model'),
     ServiceLevelAgreement: require('./production/order/serviceLevelAgreement.model'),
     PurchaseOrder: require('./production/order/purchseOrder.model'),
     BusinessDepartment: require('./production/order/businessDepartment.model'),
-    AdminDepartment: require('./production/order/adminDepartment.model'),
 
 
     Location: require('./common/location.model'),
