@@ -17,7 +17,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
 
     constructor(props) {
         super(props);
-        
+
         translate = this.props.translate;
 
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
@@ -28,7 +28,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
             organizationalUnitId: null,
             month: this.today.getFullYear() + '-' + (this.today.getMonth() + 1)
         }
-                 
+
         this.state = {
             currentRole: localStorage.getItem("currentRole"),
             dataStatus: this.DATA_STATUS.QUERYING,
@@ -77,19 +77,19 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
         }
 
         if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-            if(!nextProps.createKpiUnit.currentKPI) {
-                return false            
+            if (!nextProps.createKpiUnit.currentKPI) {
+                return false
             }
 
-            if(!nextProps.dashboardOrganizationalUnitKpi.employeeKpisOfChildUnit) {
-                return false           
+            if (!nextProps.dashboardOrganizationalUnitKpi.employeeKpisOfChildUnit) {
+                return false
             }
 
             if (!nextProps.dashboardOrganizationalUnitKpi.tasksOfChildrenOrganizationalUnit) {
-                return false           
+                return false
             }
-            
-            this.setState(state =>{
+
+            this.setState(state => {
                 return {
                     ...state,
                     dataStatus: this.DATA_STATUS.AVAILABLE,
@@ -98,7 +98,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
 
             return false;
         } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE) {
-            this.setState(state =>{
+            this.setState(state => {
                 return {
                     ...state,
                     dataStatus: this.DATA_STATUS.FINISHED,
@@ -131,7 +131,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                 let listChildTargetSameParent = [];
 
                 while (index <= maxDeg) {
-                    
+
                     let listChildTargetSameDeg = listChildTarget.filter(item => item[0].deg === index);
 
                     if (listChildTargetSameDeg) {
@@ -152,7 +152,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                                     return kpi[0]._id;
                                 }
                             })
-                            
+
                             listChildTargetSameParent[index] = listChildTargetSameDeg.map(item => {
                                 let organizationalUnit = {
                                     organizationalUnit: item[0].name
@@ -194,7 +194,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
             listTask = dashboardOrganizationalUnitKpi.tasksOfChildrenOrganizationalUnit;
         }
 
-        if(listOrganizationalUnitKpi && listTask) {
+        if (listOrganizationalUnitKpi && listTask) {
             arrayListTaskSameOrganizationUnitKpi = listOrganizationalUnitKpi.map(parent => {
                 let temporaryArrayListTaskSameOrganizationUnitKpi = [];
 
@@ -244,7 +244,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                                     }
                                 })
                             }
-                        })    
+                        })
                     }
                 }
 
@@ -290,7 +290,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                                     kpi.employeeKpi.map(item => {
                                         listEmployeeKpi = listEmployeeKpi.concat(item);
                                     })
-                                } 
+                                }
                             }
 
                             // Lọc task có kpi hiện tại
@@ -390,7 +390,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                         }
                     })
                 }
-                
+
             })
         }
 
@@ -447,7 +447,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
             childOrganizationalUnit = [{
                 'name': childrenOrganizationalUnit.name,
                 'id': childrenOrganizationalUnit.id,
-                'viceDean': childrenOrganizationalUnit.viceDean
+                'deputyManager': childrenOrganizationalUnit.deputyManager
             }]
 
             temporaryChild = childrenOrganizationalUnit.children;
@@ -457,7 +457,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                     childOrganizationalUnit = childOrganizationalUnit.concat({
                         'name': x.name,
                         'id': x.id,
-                        'viceDean': x.viceDean
+                        'deputyManager': x.deputyManager
                     });
                 })
 
@@ -491,7 +491,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                 details: data.node && data.node.original,
             }
         })
-        
+
         window.$(`#details-of-organizational-unit-kpi-form`).slideDown();
     }
 
@@ -549,7 +549,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
         if (day.length < 2)
             day = '0' + day;
         let defaultDate = [monthDate, year].join('-');
-        
+
         return (
             <React.Fragment>
                 <div className="box">
@@ -577,10 +577,10 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                                     <label>{translate('kpi.organizational_unit.dashboard.month')}</label>
                                     <DatePicker
                                         id="monthInOrganizationalUnitKpiDashboard"
-                                        dateFormat="month-year"             
-                                        value={defaultDate}                     
+                                        dateFormat="month-year"
+                                        value={defaultDate}
                                         onChange={this.handleSelectMonth}
-                                        disabled={false}                   
+                                        disabled={false}
                                     />
                                 </div>
                                 <div className="form-group">
@@ -590,15 +590,15 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
 
 
                             <div className="row row-equal-height">
-                                <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{padding: 10}}>
+                                <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: 10 }}>
                                     <div className="description-box" style={{ height: "100%" }}>
                                         {currentKPI
                                             ? <React.Fragment>
                                                 <h4 className="box-title">Cây KPI đơn vị tháng {month.slice(5, 7) + "-" + month.slice(0, 4)}</h4>
                                                 <div className="details-tree" id="details-tree">
-                                                    <Tree 
+                                                    <Tree
                                                         id="tree-qlcv-document"
-                                                        onChanged={this.onChanged} 
+                                                        onChanged={this.onChanged}
                                                         data={dataTree}
                                                         plugins={false}
                                                     />
@@ -626,7 +626,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                             <h4>Bạn chưa có đơn vị</h4>
                         </div>
                     }
-                </div>  
+                </div>
             </React.Fragment>
         )
     }
@@ -638,7 +638,7 @@ function mapState(state) {
 }
 const actions = {
     getCurrentKPIUnit: createUnitKpiActions.getCurrentKPIUnit,
-    
+
     getAllEmployeeKpiInChildrenOrganizationalUnit: dashboardOrganizationalUnitKpiActions.getAllEmployeeKpiInChildrenOrganizationalUnit,
     getAllTaskOfChildrenOrganizationalUnit: dashboardOrganizationalUnitKpiActions.getAllTaskOfChildrenOrganizationalUnit,
 

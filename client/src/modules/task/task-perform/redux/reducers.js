@@ -86,12 +86,14 @@ export function performtasks(state = {}, action) {
                 loading: true
             };
         case performTaskConstants.STOP_TIMER_SUCCESS:
-            return {
+            return (state.task && action.payload && state.task._id && action.payload._id && state.task._id === action.payload._id)
+            ? {
                 ...state,
                 task: action.payload,
                 logtimer: action.payload.timesheetLogs,
-                currentTimer: null,
-            };
+                currentTimer: null
+            }
+            :{ ...state, currentTimer: null };
         case performTaskConstants.STOP_TIMER_FAILURE:
             return {
                 error: action.error
@@ -874,6 +876,17 @@ export function performtasks(state = {}, action) {
             return {
                 error: action.error
             };
+        case performTaskConstants.REFRESH_DATA_AFTER_COMMENT_SUCCESS:
+            return {
+                ...state,
+                task: {...state.task, taskComments: action.payload},
+            }
+        case performTaskConstants.REFRESH_DATA_AFTER_CREATE_ACTION_SUCCESS:
+            return {
+                ...state,
+                task: {...state.task, taskActions: action.payload},
+            }
+        
         default:
             return state
     }

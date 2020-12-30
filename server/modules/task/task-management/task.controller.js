@@ -1,7 +1,7 @@
 const TaskManagementService = require('./task.service');
-const NotificationServices = require(`${SERVER_MODULES_DIR}/notification/notification.service`);
-const { sendEmail } = require(`${SERVER_HELPERS_DIR}/emailHelper`);
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const NotificationServices = require(`../../notification/notification.service`);
+const { sendEmail } = require(`../../../helpers/emailHelper`);
+const Logger = require(`../../../logs`);
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module quản lý công việc
 
 
@@ -49,6 +49,8 @@ exports.getTasks = async (req, res) => {
     }
     else if (req.query.type === "get_all_task_of_children_organizational_unit") {
         getAllTaskOfChildrenOrganizationalUnit(req, res)
+    } else if (req.query.type === "priority") {
+        getAllTaskByPriorityOfOrganizationalUnit(req, res)
     }
 }
 
@@ -407,7 +409,6 @@ getPaginatedTasksByOrganizationalUnit = async (req, res) => {
             name: req.query.name,
             startDate: req.query.startDate,
             endDate: req.query.endDate,
-            roleId: req.query.roleId,
             isAssigned: req.query.isAssigned
         };
 
@@ -470,11 +471,14 @@ getTasksThatUserHasResponsibleRoleByDate = async (req, res) => {
  */
 exports.createTask = async (req, res) => {
     try {
-        console.log("Tao moi cong viec")
         var tasks = await TaskManagementService.createTask(req.portal, req.body);
         var task = tasks.task;
         var user = tasks.user.filter(user => user !== req.user._id); //lọc thông tin người tạo ra khỏi danh sách sẽ gửi thông báo
 
+        const associatedDataObject = {
+            dataType: 2,
+            value: task.priority
+        }
         // Gửi mail cho nhân viện tham gia công việc
         var email = tasks.email;
         var html = tasks.html;
@@ -484,7 +488,8 @@ exports.createTask = async (req, res) => {
             level: "general",
             content: html,
             sender: task.organizationalUnit.name,
-            users: user
+            users: user,
+            associatedDataObject: associatedDataObject
         };
 
         // Gửi mail cho trưởng đơn vị phối hợp thực hiện công việc
@@ -496,7 +501,7 @@ exports.createTask = async (req, res) => {
             level: "general",
             content: collaboratedHtml,
             sender: task.organizationalUnit.name,
-            users: tasks.deansOfOrganizationalUnitThatHasCollaborated
+            users: tasks.managersOfOrganizationalUnitThatHasCollaborated
         };
 
         await NotificationServices.createNotification(req.portal, task.organizationalUnit.company, data);
@@ -512,6 +517,7 @@ exports.createTask = async (req, res) => {
             content: task
         });
     } catch (error) {
+        
         await Logger.error(req.user.email, 'create_task', req.portal)
         res.status(400).json({
             success: false,
@@ -775,3 +781,51 @@ getAllTaskOfOrganizationalUnitByMonth = async (req, res) => {
         })
     }
 }
+
+exports.getTaskAnalysOfUser = async(req, res) => {
+    try {
+        let portal = req.portal;
+        let {userId} = req.params;
+        let {type} = req.query;
+        let taskAnalys = await TaskManagementService.getTaskAnalysOfUser(portal, userId, type);
+
+        await Logger.info(req.user.email, 'get_task_analys_of_user_success', req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['get_task_analys_of_user_success'],
+            content: taskAnalys
+        })
+    } catch (error) {
+
+        await Logger.error(req.user.email, 'get_task_analys_of_user_faile', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_task_analys_of_user_faile'],
+            content: error
+        })
+    }
+}
+
+getAllTaskByPriorityOfOrganizationalUnit = async (req, res) => {
+    try {
+        let task = {
+            organizationalUnitId: req.query.organizationUnitId,
+            date: req.query.date,
+        };
+        const data = await TaskManagementService.getAllTaskByPriorityOfOrganizationalUnit(req.portal, task);
+        await Logger.info(req.user.email, 'get_all_task_by_priority_of_organizational_unit', req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['get_all_task_by_priority_of_organizational_unit_success'],
+            content: data
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, 'get_all_task_by_priority_of_organizational_unit', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['get_all_task_by_priority_of_organizational_unit_failure'],
+            content: error
+        })
+    }
+}
+

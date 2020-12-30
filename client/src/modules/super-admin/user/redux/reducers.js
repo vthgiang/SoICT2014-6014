@@ -14,7 +14,7 @@ const initState = {
     list: [],
     searchUses: [],
     listPaginate: [],
-    employeesOfUnitsUserIsDean:[],
+    employeesOfUnitsUserIsManager:[],
     totalDocs: 0,
     limit: 0,
     totalPages: 0,
@@ -40,6 +40,7 @@ export function user(state = initState, action) {
         case UserConstants.DELETE_USER_REQUEST:
         case UserConstants.SEARCH_USER_BY_NAME_REQUEST:
         case UserConstants.IMPORT_USERS_REQUEST:
+        case UserConstants.SEND_EMAIL_RESET_PASSWORD_USER_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -51,7 +52,9 @@ export function user(state = initState, action) {
         case UserConstants.EDIT_USER_FAILE:
         case UserConstants.DELETE_USER_FAILE:
         case UserConstants.SEARCH_USER_BY_NAME_FAILE:
-        case UserConstants.IMPORT_USERS_FAILE:
+        case UserConstants.IMPORT_USERS_FAILE:       
+        case UserConstants.SEND_EMAIL_RESET_PASSWORD_USER_FAILE:      
+        case UserConstants.SEND_EMAIL_RESET_PASSWORD_USER_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
@@ -100,7 +103,7 @@ export function user(state = initState, action) {
             if(action.callApi){
                 return {
                     ...state,
-                    employeesOfUnitsUserIsDean: action.payload,
+                    employeesOfUnitsUserIsManager: action.payload,
                     isLoading: false
                 };
             }

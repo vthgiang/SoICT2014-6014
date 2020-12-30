@@ -266,3 +266,11 @@ span.node-label {
 }
 
 /*# sourceMappingURL=styles.css.map*/
+
+a.tree-select-action {
+  color: rgb(133, 133, 133);
+}
+
+a.tree-select-action:hover {
+  color: rgb(47, 184, 47);
+}

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { DepartmentActions } from '../redux/actions';
 import { DialogModal, ImportFileExcel, ShowImportData, ConFigImportFile, ExportExcel } from '../../../../common-components';
 import { connect } from 'react-redux';
@@ -19,7 +19,7 @@ class DepartmentImportForm extends Component {
         };
     };
 
-    handleChangeConfig = (value) =>{
+    handleChangeConfig = (value) => {
         this.setState({
             configData: value,
             importData: [],
@@ -31,7 +31,7 @@ class DepartmentImportForm extends Component {
         let valueShow = [];
         let k = -1;
         for (let i = 0; i < value.length; i++) {
-            let deans, viceDeans, employees;
+            let managers, deputyManagers, employees;
             let x = value[i];
             if (x.name) {
                 k++;
@@ -39,17 +39,17 @@ class DepartmentImportForm extends Component {
                     "name": x.name,
                     "description": x.description,
                     "parent": x.parent,
-                    "deans": [x.deans],
-                    "viceDeans": [x.viceDeans],
+                    "managers": [x.managers],
+                    "deputyManagers": [x.deputyManagers],
                     "employees": [x.employees],
                 }];
                 valueShow = [...valueShow, {
-                    "STT": k+1,
+                    "STT": k + 1,
                     "name": x.name,
                     "description": x.description,
                     "parent": x.parent,
-                    "deans": [x.deans],
-                    "viceDeans": [x.viceDeans],
+                    "managers": [x.managers],
+                    "deputyManagers": [x.deputyManagers],
                     "employees": [x.employees],
                 }]
             } else {
@@ -58,17 +58,17 @@ class DepartmentImportForm extends Component {
                     "name": "",
                     "description": "",
                     "parent": "",
-                    "deans": "",
-                    "viceDeans": "",
+                    "managers": "",
+                    "deputyManagers": "",
                     "employees": "",
                 };
-                if (x.deans) {
-                    values[k].deans = [...values[k].deans, x.deans];
-                    out.deans = x.deans;
+                if (x.managers) {
+                    values[k].managers = [...values[k].managers, x.managers];
+                    out.managers = x.managers;
                 }
-                if (x.viceDeans) {
-                    values[k].viceDeans = [...values[k].viceDeans, x.viceDeans];
-                    out.viceDeans = x.viceDeans;
+                if (x.deputyManagers) {
+                    values[k].deputyManagers = [...values[k].deputyManagers, x.deputyManagers];
+                    out.deputyManagers = x.deputyManagers;
                 }
                 if (x.employees) {
                     values[k].employees = [...values[k].employees, x.employees];
@@ -83,23 +83,23 @@ class DepartmentImportForm extends Component {
             let checkImportData = value;
             value = value.map((x, index) => {
                 let errorAlert = [];
-                if (x.name === null || x.description === null || x.deans === null || x.viceDeans === null || x.employees === null) {
-                    rowError = [...rowError, index+1];
-                    x = {...x, error: true}
+                if (x.name === null || x.description === null || x.managers === null || x.deputyManagers === null || x.employees === null) {
+                    rowError = [...rowError, index + 1];
+                    x = { ...x, error: true }
                 }
-                if (x.name === null){
+                if (x.name === null) {
                     errorAlert = [...errorAlert, "Tên đơn vị không được để trống"];
                 }
-                if (x.description === null){
+                if (x.description === null) {
                     errorAlert = [...errorAlert, "Tên mô tả đơn vị không được để trống"];
                 }
-                if (x.deans === null){
+                if (x.managers === null) {
                     errorAlert = [...errorAlert, "Tên các chức danh đơn vị không được để trống"];
                 }
-                if (x.viceDeans === null){
+                if (x.deputyManagers === null) {
                     errorAlert = [...errorAlert, "Tên các chức danh phó đơn vị không được để trống"];
                 }
-                if (x.employees === null){
+                if (x.employees === null) {
                     errorAlert = [...errorAlert, "Tên các chức dnah nhân viên đơn vị không được để trống"];
                 }
                 x = { ...x, errorAlert: errorAlert };
@@ -126,20 +126,20 @@ class DepartmentImportForm extends Component {
     }
 
     convertExportData = (dataExport) => {
-        for (let va = 0; va < dataExport.dataSheets.length; va++ ) {
+        for (let va = 0; va < dataExport.dataSheets.length; va++) {
             for (let val = 0; val < dataExport.dataSheets[va].tables.length; val++) {
                 let datas = [];
                 let data = dataExport.dataSheets[va].tables[val].data;
-                if (data[0] && Array.isArray(data[0].deans)) {
+                if (data[0] && Array.isArray(data[0].managers)) {
                     for (let i = 0; i < data.length; i++) {
                         let x = data[i];
-                        let deans, viceDeans, employees;
+                        let managers, deputyManagers, employees;
                         let length = 0;
-                        if (x.deans.length > length) {
-                            length = x.deans.length;
+                        if (x.managers.length > length) {
+                            length = x.managers.length;
                         }
-                        if (x.viceDeans.length > length) {
-                            length = x.viceDeans.length;
+                        if (x.deputyManagers.length > length) {
+                            length = x.deputyManagers.length;
                         }
                         if (x.employees.length > length) {
                             length = x.employees.length;
@@ -148,18 +148,18 @@ class DepartmentImportForm extends Component {
                             name: x.name,
                             description: x.description,
                             parent: x.parent,
-                            deans: x.deans[0],
-                            viceDeans: x.viceDeans[0],
+                            managers: x.managers[0],
+                            deputyManagers: x.deputyManagers[0],
                             employees: x.employees[0],
                         }
                         datas = [...datas, out];
-                        for ( let k = 1; k < length ; k++) {
+                        for (let k = 1; k < length; k++) {
                             out = {
                                 name: "",
                                 description: "",
                                 parent: "",
-                                deans: x.deans[k],
-                                viceDeans: x.viceDeans[k],
+                                managers: x.managers[k],
+                                deputyManagers: x.deputyManagers[k],
                                 employees: x.employees[k],
                             }
                             datas = [...datas, out];
@@ -167,19 +167,19 @@ class DepartmentImportForm extends Component {
                     }
                     dataExport.dataSheets[va].tables[val].data = datas;
                 }
-                
+
             }
         }
         return dataExport;
     }
 
     render() {
-        const { translate} = this.props;
+        const { translate } = this.props;
         let { limit, page, configData, checkFileImport, rowError, importDataShow } = this.state;
         let templateImportDepartment2 = this.convertExportData(templateImportDepartment);
         return (
             <React.Fragment>
-                <DialogModal 
+                <DialogModal
                     modalID={`modal_import_file`} isLoading={false}
                     formID={`form_import_file`}
                     title="Thêm cơ cấu tổ chức bằng import file excel"
@@ -219,7 +219,7 @@ class DepartmentImportForm extends Component {
                                     limit={limit}
                                     page={page}
                                 />
-                            </div> 
+                            </div>
                         </div>
                     </form>
                 </DialogModal>
@@ -232,7 +232,7 @@ function mapState(state) {
     return { department };
 };
 const actionCreators = {
-    importDepartment : DepartmentActions.importDepartment,
+    importDepartment: DepartmentActions.importDepartment,
 }
 const importFileExcel = connect(mapState, actionCreators)(withTranslate(DepartmentImportForm));
-export { importFileExcel as DepartmentImportForm}
+export { importFileExcel as DepartmentImportForm }

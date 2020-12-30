@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const BinLocationControllers = require('./binLocation.controller');
-const { auth } = require(`${SERVER_MIDDLEWARE_DIR}`);
+const { auth } = require(`../../../../middleware`);
 
 router.get('/', auth, BinLocationControllers.getBinLocations);
 router.get('/get-child', auth, BinLocationControllers.getChildBinLocations);

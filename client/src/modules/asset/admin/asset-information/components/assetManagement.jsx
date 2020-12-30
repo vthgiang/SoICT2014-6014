@@ -616,7 +616,7 @@ class AssetManagement extends Component {
                                 { key: "index", value: "STT" },
                                 { key: "code", value: "Mã tài sản" },
                                 { key: "name", value: "Tên tài sản" },
-                                { key: "disposalDate", value: "Thời gian thanh lý" },
+                                { key: "disposalDate", value: "Ngày thanh lý" },
                                 { key: "disposalType", value: "Hình thức thanh lý" },
                                 { key: "disposalCost", value: "Giá trị thanh lý" },
                                 { key: "disposalDesc", value: "Nội dung thanh lý" },
@@ -749,14 +749,26 @@ class AssetManagement extends Component {
                 <div className="box-body qlcv">
                     {/* Form thêm tài sản mới */}
                     <div className="dropdown pull-right">
-                        <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.profile.employee_management.add_employee_title')} >{translate('menu.add_asset')}</button>
+                        <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('menu.add_asset_title')} >{translate('menu.add_update_asset')}</button>
                         <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
                             <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-add-asset').modal('show')}>{translate('menu.add_asset')}</a></li>
-                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-asset').modal('show')}>{translate('human_resource.profile.employee_management.add_import')}</a></li>
+                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-asset-add').modal('show')}>{translate('human_resource.profile.employee_management.add_import')}</a></li>
+                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-asset-update').modal('show')}>{translate('human_resource.profile.employee_management.update_import')}</a></li>
                         </ul>
                     </div>
                     <AssetCreateForm />
-                    <AssetImportForm />
+                    <AssetImportForm
+                        id='modal-import-asset-add'
+                        type="add"
+                        page={0}
+                        limit={5}
+                    />
+                    <AssetImportForm
+                        id='modal-import-asset-update'
+                        type="update"
+                        page={0}
+                        limit={5}
+                    />
 
                     {/* Thanh tìm kiếm */}
                     <div className="form-inline">
@@ -907,7 +919,7 @@ class AssetManagement extends Component {
                     {/* Báo lỗi khi thêm mới tài sản */}
                     {assetsManager && assetsManager.assetCodeError && assetsManager.assetCodeError.length !== 0
                         && <div style={{ color: 'red' }}>
-                            <strong style={{ 'font-weight': 600, 'padding-right': 10 }}>{translate('asset.asset_info.asset_code_exist')}:</strong>
+                            <strong style={{ 'fontWeight': 600, 'paddingRight': 10 }}>{translate('asset.asset_info.asset_code_exist')}:</strong>
                             {
                                 assetsManager.assetCodeError.map((item, index) => {
                                     let seperator = index !== 0 ? ", " : "";
@@ -960,7 +972,7 @@ class AssetManagement extends Component {
                                         <td>{x.code}</td>
                                         <td>{x.assetName}</td>
                                         <td>{this.convertGroupAsset(x.group)}</td>
-                                        <td>{x.assetType.map((type, index, arr) => index !== arr.length - 1 ? type.typeName + ', ' : type.typeName)}</td>
+                                        <td>{x.assetType && x.assetType.length !== 0 && x.assetType.map((type, index, arr) => index !== arr.length - 1 ? type.typeName + ', ' : type.typeName)}</td>
                                         <td>{this.formatDate(x.purchaseDate)}</td>
                                         <td>{getPropertyOfValue(x.managedBy, 'email', false, userlist)}</td>
                                         <td>{getPropertyOfValue(x.assignedToUser, 'email', false, userlist)}</td>
@@ -1041,6 +1053,7 @@ class AssetManagement extends Component {
 
                         archivedRecordNumber={currentRowView.archivedRecordNumber}
                         files={currentRowView.documents}
+                        linkPage={"management"}
                     />
                 }
 
@@ -1091,7 +1104,7 @@ class AssetManagement extends Component {
                         incidentLogs={currentRow.incidentLogs}
                         archivedRecordNumber={currentRow.archivedRecordNumber}
                         files={currentRow.documents}
-
+                        linkPage={"management"}
                         page={page}
                     />
                 }

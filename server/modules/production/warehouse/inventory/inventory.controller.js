@@ -1,5 +1,5 @@
 const LotService = require('./inventory.service');
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../../../logs`);
 
 exports.getAllLots = async (req, res) => {
     try {

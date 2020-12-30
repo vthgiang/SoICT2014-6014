@@ -40,28 +40,32 @@ module.exports = async (server) => {
     global.SERVER_SEED_DIR = SERVER_DIR + "/seed";
     global.SERVER_LOGS_DIR = SERVER_DIR + "/logs";
 
-    global.DB_CONNECTION = mongoose.createConnection(
-        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/${
-            process.env.DB_NAME
-        }`,
-        {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true,
-            useFindAndModify: false,
-            user:
-                process.env.DB_AUTHENTICATION === "true"
-                    ? process.env.DB_USERNAME
-                    : undefined,
-            pass:
-                process.env.DB_AUTHENTICATION === "true"
-                    ? process.env.DB_PASSWORD
-                    : undefined,
+    
+    let connectOptions = process.env.DB_AUTHENTICATION === 'true' ?
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+        user:process.env.DB_USERNAME,
+        pass:process.env.DB_PASSWORD,
+        auth: {
+            authSource: 'admin'
         }
+    } : {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+    }
+
+    global.DB_CONNECTION = mongoose.createConnection(
+        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/${process.env.DB_NAME}`, 
+        connectOptions
     );
     initModels(DB_CONNECTION, models);
 
-    // Init backupt for many company
+    // Init backup for many company
     const backupMongo = await Configuration(
         connect(DB_CONNECTION, process.env.DB_NAME)
     ).find();
@@ -92,15 +96,15 @@ module.exports = async (server) => {
         if (BACKUP[db].auto) BACKUP[db].job.start();
     }
 
-    global.AUTO_SENDEMAIL_TASK = require(SERVER_MODULES_DIR +
+    global.AUTO_SENDEMAIL_TASK = require("./modules" +
         "/scheduler/scheduler.service").sendEmailTaskAutomatic;
     AUTO_SENDEMAIL_TASK.start();
 
-    global.AUTO_CREATE_NOTIFICATION_BIRTHDAY = require(SERVER_MODULES_DIR +
+    global.AUTO_CREATE_NOTIFICATION_BIRTHDAY = require("./modules" +
         "/scheduler/scheduler.service").createNotificationForEmployeesHaveBrithdayCurrent;
     AUTO_CREATE_NOTIFICATION_BIRTHDAY.start();
 
-    global.AUTO_CREATE_NOTIFICATION_END_CONTRACT = require(SERVER_MODULES_DIR +
+    global.AUTO_CREATE_NOTIFICATION_END_CONTRACT = require("./modules" +
         "/scheduler/scheduler.service").createNotificationEndOfContract;
     AUTO_CREATE_NOTIFICATION_END_CONTRACT.start();
 

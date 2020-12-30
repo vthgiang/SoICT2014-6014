@@ -135,7 +135,9 @@ const TaskSchema = new Schema(
             type: Date,
         },
         priority: {
-            // 1: Thấp, 2: Trung Bình, 3: Cao
+            //
+            // 1: Thấp, 2: Trung Bình, 3: Tiêu chuẩn, 4: Cao, 5: Khẩn cấp
+            // Low, Average, Standard, High, Urgent
             type: Number,
         },
         isArchived: {
@@ -377,11 +379,11 @@ const TaskSchema = new Schema(
                 },
                 startedAt: {
                     // Lưu dạng miliseconds. Thời gian khi người dùng nhất nút bắt đầu bấm giờ
-                    type: Number,
+                    type: Date,
                 },
                 stoppedAt: {
                     // Lưu dạng miliseconds. Thời gian kết thúc bấm giờ. Khi stoppedAt-startedAt quá 4 tiếng, hỏi lại người dùng stop chính xác vào lúc nào và cập nhật lại stoppedAt.
-                    type: Number,
+                    type: Date,
                 },
                 description: {
                     // Mô tả ngắn gọn việc đã làm khi log
@@ -390,6 +392,14 @@ const TaskSchema = new Schema(
                 duration: {
                     type: Number,
                 },
+                autoStopped: {
+                    type: Boolean,
+                    default: false
+                },
+                acceptLog: {
+                    type: Boolean,
+                    default: true
+                }
             },
         ],
 
@@ -624,7 +634,8 @@ const TaskSchema = new Schema(
         ],
 
         taskProject: { //tên dự án công việc thuộc về
-            type: String
+            type: Schema.Types.ObjectId,
+            ref: 'TaskProject'
         },
     },
     {

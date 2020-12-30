@@ -78,7 +78,7 @@ function createEmployeeKpiSet(newKPI) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/kpi/employee/creation/employee-kpi-sets`,
         method: 'POST',
-        data: JSON.stringify(newKPI)
+        data: newKPI
     }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server');
 }
 
@@ -87,7 +87,7 @@ function createEmployeeKpi(newTarget) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/kpi/employee/creation/employee-kpis`,
         method: 'POST',
-        data: JSON.stringify(newTarget)
+        data: newTarget
     }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server');
 }
 

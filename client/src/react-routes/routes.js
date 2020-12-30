@@ -151,6 +151,8 @@ import ManufacturingWorks from "../modules/production/manufacturing/manufacturin
 import PurchasingRequest from "../modules/production/manufacturing/purchasing-request/components";
 import ManufacturingDashboard from "../modules/production/manufacturing/manufacturing-dashboard/components";
 import ManufacturingLot from "../modules/production/manufacturing/manufacturing-lot/components";
+
+import AnswerAuthQuestionPage from '../modules/auth/components/answerAuthQuestion';
 class Routes extends Component {
     render() {
         const {
@@ -166,6 +168,11 @@ class Routes extends Component {
         return (
             <React.Fragment>
                 <Switch>
+                    <Route
+                        exact
+                        path="/answer-auth-questions"
+                        component={AnswerAuthQuestionPage}
+                    />
                     <AuthRoute
                         exact
                         auth={auth}

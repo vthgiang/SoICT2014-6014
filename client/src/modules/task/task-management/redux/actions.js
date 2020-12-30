@@ -27,6 +27,7 @@ export const taskManagementActions = {
     getTasksByUser,
     getTaskInOrganizationUnitByMonth,
     getTaskEvaluations,
+    getTaskByPriorityInOrganizationUnit,
 };
 
 /**
@@ -353,13 +354,13 @@ function getPaginateTasks(role, unit, number, perPage, status, priority, special
  * @param {*} aPeriodOfTime 
  * @param {*} calledId 
  */
-function getPaginatedTasksByOrganizationalUnit(roleId, number, perPage, status, priority, special, name, startDate, endDate, isAssigned) {
+function getPaginatedTasksByOrganizationalUnit(unit, number, perPage, status, priority, special, name, startDate, endDate, isAssigned) {
     return dispatch => {
         dispatch({
             type: taskManagementConstants.GET_PAGINATE_TASK_BY_ORGANIZATIONALUNIT_REQUEST
         });
 
-        taskManagementService.getPaginatedTasksByOrganizationalUnit(roleId, number, perPage, status, priority, special, name, startDate, endDate, isAssigned)
+        taskManagementService.getPaginatedTasksByOrganizationalUnit(unit, number, perPage, status, priority, special, name, startDate, endDate, isAssigned)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GET_PAGINATE_TASK_BY_ORGANIZATIONALUNIT_SUCCESS,
@@ -626,6 +627,22 @@ function getTaskInOrganizationUnitByMonth(organizationUnitId, startDateAfter, en
             })
             .catch(error => {
                 dispatch({ type: taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_FAILURE, error });
+            });
+    };
+}
+
+function getTaskByPriorityInOrganizationUnit(organizationUnitId, date) {
+    return dispatch => {
+        dispatch({ type: taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_PRIORITY_REQUEST });
+        taskManagementService.getTaskByPriorityInOrganizationUnit(organizationUnitId, date)
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_PRIORITY_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_PRIORITY_FAILURE });
             });
     };
 }

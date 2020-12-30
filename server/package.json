@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "(webpack) && (nodemon dist/backend.js)",
+    "build": "(webpack) && (nodemon build/backend.js)",
     "watch": "webpack --watch",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
@@ -47,6 +47,7 @@
     "glob": "^7.1.6",
     "imprintjs": "^1.0.0",
     "javascript-obfuscator": "^2.9.4",
+    "jsencrypt": "^3.0.0-rc.1",
     "jsonwebtoken": "^8.5.1",
     "list-to-tree": "^2.2.3",
     "lodash": "^4.17.19",
@@ -60,6 +61,7 @@
     "socket.io": "^2.3.0",
     "swagger-ui-express": "^4.1.4",
     "unique-random": "^2.1.0",
+    "uuid": "^8.3.2",
     "webpack": "^5.9.0",
     "winston": "^3.2.1"
   },

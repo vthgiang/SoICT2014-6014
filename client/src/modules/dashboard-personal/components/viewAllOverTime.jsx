@@ -33,7 +33,7 @@ class ViewAllOverTime extends Component {
                             <tbody>
                                 {dataView.length !== 0 &&
                                     dataView.map((x, index) => (
-                                        <tr key={index} style={{ color: (x._id === localStorage.getItem('userId') && showCheck) ? "#00a65a" : "none" }}>
+                                        <tr key={index} style={{ color: (x._id === localStorage.getItem('userId') && showCheck) ? "#28A745" : "none" }}>
                                             <td>{index + 1}</td>
                                             <td>{hideEmployee ? `Nhân viên ${index + 1}` : x.name}</td>
                                             <td>{x.totalHours}</td>

@@ -79,6 +79,7 @@ function addNewAsset(asset) {
                 dispatch({
                     type: AssetConstants.ADDASSET_FAILURE,
                     error: err,
+                    payload: err.response.data.content
                 });
             });
     };
@@ -90,13 +91,13 @@ function addNewAsset(asset) {
  * @param {*} data
  * @param {*} managedBy khi manageBy !="", role gọi service này không phải là admin
  */
-function updateInformationAsset(id, data) {
+function updateInformationAsset(id, data, isImport = undefined) {
     return (dispatch) => {
         dispatch({
             type: AssetConstants.UPDATE_INFOR_ASSET_REQUEST,
         });
 
-        AssetService.updateInformationAsset(id, data)
+        AssetService.updateInformationAsset(id, data, isImport)
             .then((res) => {
                 dispatch({
                     type: AssetConstants.UPDATE_INFOR_ASSET_SUCCESS,

@@ -1,5 +1,5 @@
 const QuoteService = require('./quote.service');
-const Log = require(`${SERVER_LOGS_DIR}`);
+const Log = require(`../../../../logs`);
 
 exports.createNewQuote = async (req, res) => {
     try {

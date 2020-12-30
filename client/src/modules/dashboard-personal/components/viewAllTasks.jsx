@@ -32,7 +32,7 @@ class ViewAllTasks extends Component {
                             <tbody>
                                 {employeeTasks.length !== 0 &&
                                     employeeTasks.map((x, index) => (
-                                        <tr key={index} style={{ color: (x._id === localStorage.getItem('userId') && showCheck) ? "#00a65a" : "none" }}>
+                                        <tr key={index} style={{ color: (x._id === localStorage.getItem('userId') && showCheck) ? "#28A745" : "none" }}>
                                             <td>{index + 1}</td>
                                             <td>{x.name}</td>
                                             <td>{x.totalTask}</td>

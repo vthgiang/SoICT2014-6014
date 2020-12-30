@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const PurchasingRequestController = require('./purchasingRequest.controller');
-const { auth } = require(`${SERVER_MIDDLEWARE_DIR}`);
+const { auth } = require(`../../../../middleware`);
 
 router.post('/', auth, PurchasingRequestController.createPurchasingRequest);
 router.get('/', auth, PurchasingRequestController.getAllPurchasingRequest);

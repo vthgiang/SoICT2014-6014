@@ -1,11 +1,11 @@
 const moment = require('moment');
 const {
     ManufacturingPlan, OrganizationalUnit, ManufacturingWorks, ManufacturingCommand, ManufacturingOrder, SalesOrder
-} = require(`${SERVER_MODELS_DIR}`);
+} = require(`../../../../models`);
 
 const {
     connect
-} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+} = require(`../../../../helpers/dbHelper`);
 
 const UserService = require('../../../super-admin/user/user.service');
 
@@ -112,7 +112,7 @@ exports.getAllManufacturingPlans = async (query, portal) => {
     // Lấy ra list các nhà máy là currentRole là trưởng phòng hoặc currentRole là role quản lý khác
     // Lấy ra list nhà máy mà currentRole là quản đốc nhà máy
     let role = [currentRole];
-    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'deans': { $in: role } });
+    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'managers': { $in: role } });
     let organizationalUnitId = departments.map(department => department._id);
     let listManufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
         organizationalUnit: {
@@ -275,7 +275,7 @@ exports.getApproversOfPlan = async (portal, currentRole) => {
     // Lấy ra list các nhà máy là currentRole là trưởng phòng hoặc currentRole là role quản lý khác
     // Lấy ra list nhà máy mà currentRole là quản đốc nhà máy
     let role = [currentRole];
-    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'deans': { $in: role } });
+    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'managers': { $in: role } });
     let organizationalUnitId = departments.map(department => department._id);
     let listManufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
         organizationalUnit: {

@@ -50,7 +50,7 @@ const ProcessTemplateSchema = new Schema({
                 ref: "User",
             },
             priority: {
-                // 1: Thấp, 2: Trung Bình, 3: Cao
+                // 1: Thấp, 2: Trung Bình, 3: tiêu chuẩn, 4: Cao, 5: Khẩn cấp
                 type: Number,
             },
             numberOfDaysTaken: {

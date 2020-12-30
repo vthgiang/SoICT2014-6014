@@ -9,7 +9,7 @@ const swaggerUi = require("swagger-ui-express");
 const { swaggerJsonData } = require("./api-docs/swagger.js");
 
 require("dotenv").config();
-require("./connectDatabase");
+// require("./connectDatabase");
 require("./global")(server);
 
 app.use(require("cors")());
@@ -144,6 +144,12 @@ router.use(
     "/task/task-templates",
     require("./modules/task/task-template/taskTemplate.route")
 );
+
+router.use(
+    "/task",
+    require("./modules/task/task-project/taskProject.route")
+);
+
 router.use(
     "/process",
     require("./modules/task/tasks-process/taskProcess.route")

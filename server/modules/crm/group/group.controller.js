@@ -1,5 +1,5 @@
 const GroupService = require('./group.service');
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../../logs`);
 
 /**
  * Lấy thông tin của tất cả nhóm khách hàng

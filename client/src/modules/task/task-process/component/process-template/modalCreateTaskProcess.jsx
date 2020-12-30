@@ -237,12 +237,9 @@ class ModalCreateTaskProcess extends Component {
 		let { user } = this.props
 		let responsibleName
 		let responsible = []
-		user.usercompanys.forEach(x => {
-			if (value.some(y => y === x._id)) {
-				responsible.push(x.name)
-			}
+		value.forEach(x => {
+			responsible.push(user.list.find(y => y._id == x).name)
 		})
-		console.log(responsible)
 		modeling.updateProperties(element1, {
 			responsibleName: responsible
 		});
@@ -256,11 +253,8 @@ class ModalCreateTaskProcess extends Component {
 		let { user } = this.props
 		let accountableName
 		let accountable = []
-		console.log(accountable)
-		user.usercompanys.forEach(x => {
-			if (value.some(y => y === x._id)) {
-				accountable.push(x.name)
-			}
+		value.forEach(x => {
+			accountable.push(user.list.find(y => y._id == x).name)
 		})
 		modeling.updateProperties(element1, {
 			accountableName: accountable
@@ -642,7 +636,7 @@ class ModalCreateTaskProcess extends Component {
 		}
 		let listRole = [];
 		if (role && role.list.length !== 0) listRole = role.list;
-		let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Dean', 'Vice Dean', 'Employee'].indexOf(e.name) === -1)
+		let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Manager', 'Deputy Manager', 'Employee'].indexOf(e.name) === -1)
 			.map(item => { return { text: item.name, value: item._id } });
 
 		return (

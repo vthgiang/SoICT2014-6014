@@ -20,7 +20,8 @@ export const taskManagementService = {
     getTaskInOrganizationUnitByMonth,
     getPaginateTasksByUser,
     getPaginateTasks,
-    getPaginatedTasksByOrganizationalUnit
+    getPaginatedTasksByOrganizationalUnit,
+    getTaskByPriorityInOrganizationUnit,
 };
 
 /**
@@ -298,13 +299,13 @@ function getPaginateTasksByUser(unit, number, perPage, status, priority, special
  * @param {*} endDateBefore 
  * @param {*} aPeriodOfTime 
  */
-function getPaginatedTasksByOrganizationalUnit(roleId, number, perPage, status, priority, special, name, startDate, endDate, isAssigned) {
+function getPaginatedTasksByOrganizationalUnit(unit, number, perPage, status, priority, special, name, startDate, endDate, isAssigned) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'GET',
         params: {
             type: 'paginated_task_by_unit',
-            roleId: roleId,
+            unit: unit,
             number: number,
             perPage: perPage,
             status: status,
@@ -336,7 +337,6 @@ function getPaginatedTasksByOrganizationalUnit(roleId, number, perPage, status, 
 function getPaginateTasks(role, unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime) {
     var user = getStorage("userId");
 
-    console.log('roleeeeeeeee', role);
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'GET',
@@ -445,6 +445,18 @@ function getTaskInOrganizationUnitByMonth(organizationUnitId, startDateAfter, en
             organizationUnitId: organizationUnitId,
             startDateAfter: startDateAfter,
             endDateBefore: endDateBefore,
+        }
+    }, false, true, 'task.task_management');
+}
+
+function getTaskByPriorityInOrganizationUnit(organizationUnitId, date) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/task/tasks`,
+        method: 'GET',
+        params: {
+            type: 'priority',
+            organizationUnitId: organizationUnitId,
+            date: date,
         }
     }, false, true, 'task.task_management');
 }

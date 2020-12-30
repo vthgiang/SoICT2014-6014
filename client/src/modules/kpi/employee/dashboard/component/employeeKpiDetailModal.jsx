@@ -76,7 +76,7 @@ class ModalDetailEmployeeKpiSet extends Component {
                 <div className="modal-dialog-full modal-tasktemplate">
                     <div className="modal-content">
                         {/* Modal Header */}
-                        <div className="modal-header" style={{ textAlign: "center", background: "#605ca8", color: "white" }}>
+                        <div className="modal-header" style={{ textAlign: "center", background: "#fff", color: "white" }}>
                             <button type="button" className="close" data-dismiss="modal">
                                 <span aria-hidden="true">×</span>
                                 <span className="sr-only">Close</span>

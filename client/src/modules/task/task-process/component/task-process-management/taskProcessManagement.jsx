@@ -188,7 +188,7 @@ class TaskProcessManagement extends Component {
 											{/* <a className="delete" onClick={() => { this.deleteDiagram(item._id) }} title={translate('task_template.delete_this_task_template')}>
 												<i className="material-icons"></i>
 											</a>
-											<a className="" style={{ color: "#008D4C" }} onClick={() => { this.showModalCreateTask(item) }} title={translate('task_template.delete_this_task_template')}>
+											<a className="" style={{ color: "#28A745" }} onClick={() => { this.showModalCreateTask(item) }} title={translate('task_template.delete_this_task_template')}>
 												<i className="material-icons">add_box</i>
 											</a> */}
 										</td>

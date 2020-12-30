@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const EducationProgramController = require("./educationProgram.controller");
-const { auth } = require(`${SERVER_MIDDLEWARE_DIR}`);
+const { auth } = require(`../../../middleware`);
 
 
 router.get('/educationPrograms', auth, EducationProgramController.searchEducationPrograms);

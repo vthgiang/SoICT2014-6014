@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const SalaryController = require("./salary.controller");
-const { auth } = require(`${SERVER_MIDDLEWARE_DIR}`);
+const { auth } = require(`../../../middleware`);
 
 
 router.get('/salaries', auth, SalaryController.searchSalaries);

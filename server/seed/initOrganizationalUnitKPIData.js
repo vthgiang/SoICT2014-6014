@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
-const Terms = require('./terms');
+const Terms = require('../helpers/config');
 
 const {
     EmployeeKpi,
@@ -21,23 +21,21 @@ const initSampleCompanyDB = async () => {
      * 1. Tạo kết nối đến csdl của hệ thống và công ty VNIST
      */
 
-    const vnistDB = mongoose.createConnection(
-        `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/vnist`,
-        process.env.DB_AUTHENTICATION === 'true' ?
-            {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-                useCreateIndex: true,
-                useFindAndModify: false,
-                user: process.env.DB_USERNAME,
-                pass: process.env.DB_PASSWORD
-            } : {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-                useCreateIndex: true,
-                useFindAndModify: false,
-            }
-    );
+    let connectOptions = process.env.DB_AUTHENTICATION === 'true' ?
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+        user: process.env.DB_USERNAME,
+        pass: process.env.DB_PASSWORD
+    } : {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false
+    }
+    const vnistDB = mongoose.createConnection(`mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/vnist`, connectOptions);
     if (!vnistDB) throw ('DB vnist cannot connect');
     console.log("DB vnist connected");
 
@@ -63,15 +61,15 @@ const initSampleCompanyDB = async () => {
     /**
      * Tạo dữ liệu cho ban giám đốc
      * @organizationalUnit Ban giám đốc
-     * @dean Nguyễn Văn An
-     * @viceDean Trần Văn Bình
+     * @manager Nguyễn Văn An
+     * @deputyManager Trần Văn Bình
      * @employee_1 Vũ Thị Cúc
      * @employee_2 Nguyễn Văn Danh
      * @currentYear Năm hiện tại
      * @currentMonth Tháng hiện tại
      */
-    var dean = await User(vnistDB).findOne({ name: "Nguyễn Văn An" });
-    var viceDean = await User(vnistDB).findOne({ name: "Trần Văn Bình" });
+    var manager = await User(vnistDB).findOne({ name: "Nguyễn Văn An" });
+    var deputyManager = await User(vnistDB).findOne({ name: "Trần Văn Bình" });
     var employee_1 = await User(vnistDB).findOne({ name: "Vũ Thị Cúc" });
     var employee_2 = await User(vnistDB).findOne({ name: "Nguyễn Văn Danh" });
     var employee_3 = await User(vnistDB).findOne({ name: "Phạm Đình Phúc" });
@@ -93,7 +91,7 @@ const initSampleCompanyDB = async () => {
     var organizationalUnitKpiSet = await OrganizationalUnitKpiSet(vnistDB).insertMany([
         {
             organizationalUnit: organizationalUnit_1,
-            creator: dean,
+            creator: manager,
             date: new Date(currentYear, currentMonth - 1 + 1, 0),
             kpis: [],
             automaticPoint: 85,
@@ -102,7 +100,7 @@ const initSampleCompanyDB = async () => {
             status: 1
         }, {
             organizationalUnit: organizationalUnit_1,
-            creator: dean,
+            creator: manager,
             date: new Date(currentYear, currentMonth + 1, 0),
             kpis: [],
             automaticPoint: 86,
@@ -222,7 +220,7 @@ const initSampleCompanyDB = async () => {
         {
             organizationalUnit: organizationalUnit_1,
             creator: employee_1,
-            approver: viceDean,
+            approver: deputyManager,
             date: new Date(currentYear, currentMonth - 1 + 1, 0),
             kpis: [],
             automaticPoint: 86,
@@ -232,7 +230,7 @@ const initSampleCompanyDB = async () => {
         }, {
             organizationalUnit: organizationalUnit_1,
             creator: employee_1,
-            approver: viceDean,
+            approver: deputyManager,
             date: new Date(currentYear, currentMonth + 1, 0),
             kpis: [],
             automaticPoint: 93,
@@ -246,7 +244,7 @@ const initSampleCompanyDB = async () => {
         {
             organizationalUnit: organizationalUnit_1,
             creator: employee_2,
-            approver: dean,
+            approver: manager,
             date: new Date(currentYear, currentMonth - 1 + 1, 0),
             kpis: [],
             automaticPoint: 86,
@@ -256,7 +254,7 @@ const initSampleCompanyDB = async () => {
         }, {
             organizationalUnit: organizationalUnit_1,
             creator: employee_2,
-            approver: dean,
+            approver: manager,
             date: new Date(currentYear, currentMonth + 1, 0),
             kpis: [],
             automaticPoint: 82,
@@ -270,7 +268,7 @@ const initSampleCompanyDB = async () => {
         {
             organizationalUnit: organizationalUnit_1,
             creator: employee_3,
-            approver: dean,
+            approver: manager,
             date: new Date(currentYear, currentMonth - 1 + 1, 0),
             kpis: [],
             automaticPoint: 75,
@@ -280,7 +278,7 @@ const initSampleCompanyDB = async () => {
         }, {
             organizationalUnit: organizationalUnit_1,
             creator: employee_3,
-            approver: dean,
+            approver: manager,
             date: new Date(currentYear, currentMonth + 1, 0),
             kpis: [],
             automaticPoint: 82,
@@ -597,7 +595,7 @@ const initSampleCompanyDB = async () => {
         // Tháng trước
         {
             organizationalUnit: organizationalUnit_1,
-            creator: dean,
+            creator: manager,
             name: "Mở rộng việc bán hàng ở các khu vực trong Hà Nội",
             description: "Doanh thu thu được từ hoạt động bán hàng so với kế hoạch đã xây dựng",
             startDate: new Date(currentYear, currentMonth - 1, 1, 12),
@@ -612,8 +610,8 @@ const initSampleCompanyDB = async () => {
             responsibleEmployees: [employee_1], // Người thực hiện
             accountableEmployees: [employee_2], // Người phê duyệt
             consultedEmployees: [employee_2], // Người tư vấn
-            informedEmployees: [viceDean], // Người quan sát
-            confirmedByEmployees: [employee_1].concat([employee_2]).concat([employee_2]).includes(dean) ? dean : [],
+            informedEmployees: [deputyManager], // Người quan sát
+            confirmedByEmployees: [employee_1].concat([employee_2]).concat([employee_2]).includes(manager) ? manager : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth - 1, 30),
                 results: [
@@ -658,7 +656,7 @@ const initSampleCompanyDB = async () => {
 
         {
             organizationalUnit: organizationalUnit_1,
-            creator: dean,
+            creator: manager,
             name: "Tham gia vào đội ngũ xây dựng kế hoạch ban hàng",
             description: "KHBH tháng. Cần có vào 25 tháng trước. Yêu cầu kịp thời và sát nhu cầu thị trường",
             startDate: new Date(currentYear, currentMonth - 1, 1, 12),
@@ -673,8 +671,8 @@ const initSampleCompanyDB = async () => {
             responsibleEmployees: [employee_1], // Người thực hiện
             accountableEmployees: [employee_2], // Người phê duyệt
             consultedEmployees: [employee_2], // Người tư vấn
-            informedEmployees: [viceDean], // Người quan sát
-            confirmedByEmployees: [employee_1].concat([employee_2]).concat([employee_2]).includes(dean) ? dean : [],
+            informedEmployees: [deputyManager], // Người quan sát
+            confirmedByEmployees: [employee_1].concat([employee_2]).concat([employee_2]).includes(manager) ? manager : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth - 1, 30),
                 results: [
@@ -717,7 +715,7 @@ const initSampleCompanyDB = async () => {
 
         {
             organizationalUnit: organizationalUnit_1,
-            creator: dean,
+            creator: manager,
             name: "Tăng doanh số bán hàng",
             description: "Doanh số bán hàng",
             startDate: new Date(currentYear, currentMonth - 1, 1, 12),
@@ -732,8 +730,8 @@ const initSampleCompanyDB = async () => {
             responsibleEmployees: [employee_1], // Người thực hiện
             accountableEmployees: [employee_2], // Người phê duyệt
             consultedEmployees: [employee_2], // Người tư vấn
-            informedEmployees: [dean], // Người quan sát
-            confirmedByEmployees: [employee_1].concat([employee_2]).concat([employee_2]).includes(dean) ? dean : [],
+            informedEmployees: [manager], // Người quan sát
+            confirmedByEmployees: [employee_1].concat([employee_2]).concat([employee_2]).includes(manager) ? manager : [],
             evaluations: [
                 { // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                     date: new Date(currentYear, currentMonth - 1, 30),
@@ -816,7 +814,7 @@ const initSampleCompanyDB = async () => {
         // Tháng hiện tại
         {
             organizationalUnit: organizationalUnit_1,
-            creator: dean,
+            creator: manager,
             name: "Ký kết các hợp đồng với các đối tác nước ngoài",
             description: "Đánh giá theo các bản hợp đồng ký kết thành công",
             startDate: new Date(currentYear, currentMonth, 1, 12),
@@ -831,8 +829,8 @@ const initSampleCompanyDB = async () => {
             responsibleEmployees: [employee_1], // Người thực hiện
             accountableEmployees: [employee_2], // Người phê duyệt
             consultedEmployees: [employee_2], // Người tư vấn
-            informedEmployees: [viceDean], // Người quan sát
-            confirmedByEmployees: [employee_1].concat([employee_2]).concat([employee_2]).includes(dean) ? dean : [],
+            informedEmployees: [deputyManager], // Người quan sát
+            confirmedByEmployees: [employee_1].concat([employee_2]).concat([employee_2]).includes(manager) ? manager : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth, 30),
                 results: [
@@ -875,7 +873,7 @@ const initSampleCompanyDB = async () => {
 
         {
             organizationalUnit: organizationalUnit_1,
-            creator: dean,
+            creator: manager,
             name: "Tiến hành các cuộc khảo sát nhanh",
             description: "Đánh giá theo các cuộc khảo sát được tiến hành",
             startDate: new Date(currentYear, currentMonth, 1, 12),
@@ -890,8 +888,8 @@ const initSampleCompanyDB = async () => {
             responsibleEmployees: [employee_1], // Người thực hiện
             accountableEmployees: [employee_2], // Người phê duyệt
             consultedEmployees: [employee_2], // Người tư vấn
-            informedEmployees: [dean], // Người quan sát
-            confirmedByEmployees: [employee_1].concat([employee_2]).concat([employee_2]).includes(dean) ? dean : [],
+            informedEmployees: [manager], // Người quan sát
+            confirmedByEmployees: [employee_1].concat([employee_2]).concat([employee_2]).includes(manager) ? manager : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth, 30),
                 results: [
@@ -940,7 +938,7 @@ const initSampleCompanyDB = async () => {
         // Tháng trước
         {
             organizationalUnit: organizationalUnit_1,
-            creator: dean,
+            creator: manager,
             name: "Tiến hành các cuộc khảo sát chuỗi bán hàng",
             description: "Đánh giá theo các cuộc khảo sát được tiến hành",
             startDate: new Date(currentYear, currentMonth - 1, 1, 12),
@@ -955,8 +953,8 @@ const initSampleCompanyDB = async () => {
             responsibleEmployees: [employee_2], // Người thực hiện
             accountableEmployees: [employee_1], // Người phê duyệt
             consultedEmployees: [employee_1], // Người tư vấn
-            informedEmployees: [dean], // Người quan sát
-            confirmedByEmployees: [employee_2].concat([employee_1]).concat([employee_1]).includes(dean) ? dean : [],
+            informedEmployees: [manager], // Người quan sát
+            confirmedByEmployees: [employee_2].concat([employee_1]).concat([employee_1]).includes(manager) ? manager : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth - 1, 30),
                 results: [
@@ -999,7 +997,7 @@ const initSampleCompanyDB = async () => {
 
         {
             organizationalUnit: organizationalUnit_1,
-            creator: dean,
+            creator: manager,
             name: "Tham gia vào đội ngũ xây dựng kế hoạch ban hàng",
             description: "KHBH tháng. Cần có vào 25 tháng trước. Yêu cầu kịp thời và sát nhu cầu thị trường",
             startDate: new Date(currentYear, currentMonth - 1, 1, 12),
@@ -1014,8 +1012,8 @@ const initSampleCompanyDB = async () => {
             responsibleEmployees: [employee_2], // Người thực hiện
             accountableEmployees: [employee_1], // Người phê duyệt
             consultedEmployees: [employee_1], // Người tư vấn
-            informedEmployees: [viceDean], // Người quan sát
-            confirmedByEmployees: [employee_2].concat([employee_1]).concat([employee_1]).includes(dean) ? dean : [],
+            informedEmployees: [deputyManager], // Người quan sát
+            confirmedByEmployees: [employee_2].concat([employee_1]).concat([employee_1]).includes(manager) ? manager : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth - 1, 30),
                 results: [
@@ -1058,7 +1056,7 @@ const initSampleCompanyDB = async () => {
 
         {
             organizationalUnit: organizationalUnit_1,
-            creator: dean,
+            creator: manager,
             name: "Tăng doanh số bán hàng ở trong nước",
             description: "Doanh số bán hàng trong nước",
             startDate: new Date(currentYear, currentMonth - 1, 1, 12),
@@ -1073,8 +1071,8 @@ const initSampleCompanyDB = async () => {
             responsibleEmployees: [employee_2], // Người thực hiện
             accountableEmployees: [employee_1], // Người phê duyệt
             consultedEmployees: [employee_1], // Người tư vấn
-            informedEmployees: [dean], // Người quan sát
-            confirmedByEmployees: [employee_2].concat([employee_1]).concat([employee_1]).includes(dean) ? dean : [],
+            informedEmployees: [manager], // Người quan sát
+            confirmedByEmployees: [employee_2].concat([employee_1]).concat([employee_1]).includes(manager) ? manager : [],
             evaluations: [
                 { // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                     date: new Date(currentYear, currentMonth - 1, 30),
@@ -1157,7 +1155,7 @@ const initSampleCompanyDB = async () => {
         // Tháng hiện tại
         {
             organizationalUnit: organizationalUnit_1,
-            creator: dean,
+            creator: manager,
             name: "Tiến hành các khảo sát về nguồn nhân lực",
             description: "Đánh giá theo các cuộc khảo sát thực hiện được",
             startDate: new Date(currentYear, currentMonth, 1, 12),
@@ -1172,8 +1170,8 @@ const initSampleCompanyDB = async () => {
             responsibleEmployees: [employee_2], // Người thực hiện
             accountableEmployees: [employee_1], // Người phê duyệt
             consultedEmployees: [employee_1], // Người tư vấn
-            informedEmployees: [viceDean], // Người quan sát
-            confirmedByEmployees: [employee_2].concat([employee_1]).concat([employee_1]).includes(dean) ? dean : [],
+            informedEmployees: [deputyManager], // Người quan sát
+            confirmedByEmployees: [employee_2].concat([employee_1]).concat([employee_1]).includes(manager) ? manager : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth, 30),
                 results: [
@@ -1216,7 +1214,7 @@ const initSampleCompanyDB = async () => {
 
         {
             organizationalUnit: organizationalUnit_1,
-            creator: dean,
+            creator: manager,
             name: "Tìm kiếm nguồn nhân lực ở các trường đại học",
             description: "Thông qua thống kê khảo sát. Đánh giá theo số lần chậm do lỗi chủ quan. Không chậm: 100%. Chậm 3 lần: 95%. Chậm 5 lần : 90%. Chậm 7 lần: 85%. Chậm >7 lần: 80%",
             startDate: new Date(currentYear, currentMonth, 1, 12),
@@ -1231,8 +1229,8 @@ const initSampleCompanyDB = async () => {
             responsibleEmployees: [employee_2], // Người thực hiện
             accountableEmployees: [employee_1], // Người phê duyệt
             consultedEmployees: [employee_1], // Người tư vấn
-            informedEmployees: [dean], // Người quan sát
-            confirmedByEmployees: [employee_2].concat([employee_1]).concat([employee_1]).includes(dean) ? dean : [],
+            informedEmployees: [manager], // Người quan sát
+            confirmedByEmployees: [employee_2].concat([employee_1]).concat([employee_1]).includes(manager) ? manager : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth, 30),
                 results: [
@@ -1287,14 +1285,14 @@ const initSampleCompanyDB = async () => {
     /**
      * Tạo dữ liệu cho phòng kinh doanh
      * @organizationalUnit Phòng kinh doanh
-     * @dean Nguyễn Văn Danh
-     * @viceDean Trần Thị Én
+     * @manager Nguyễn Văn Danh
+     * @deputyManager Trần Thị Én
      * @employee Phạm Đình Phúc
      * @currentYear Năm hiện tại
      * @currentMonth Tháng hiện tại
      */
-    dean = await User(vnistDB).findOne({ name: "Nguyễn Văn Danh" });
-    viceDean = await User(vnistDB).findOne({ name: "Trần Thị Én" });
+    manager = await User(vnistDB).findOne({ name: "Nguyễn Văn Danh" });
+    deputyManager = await User(vnistDB).findOne({ name: "Trần Thị Én" });
     employee = await User(vnistDB).findOne({ name: "Phạm Đình Phúc" });
     var organizationalUnit_2 = await OrganizationalUnit(vnistDB).findOne({ name: "Phòng kinh doanh" });
     now = new Date();
@@ -1312,7 +1310,7 @@ const initSampleCompanyDB = async () => {
     organizationalUnitKpiSet = await OrganizationalUnitKpiSet(vnistDB).insertMany([
         {
             organizationalUnit: organizationalUnit_2,
-            creator: dean,
+            creator: manager,
             date: new Date(currentYear, currentMonth - 1 + 1, 0),
             kpis: [],
             automaticPoint: 88,
@@ -1321,7 +1319,7 @@ const initSampleCompanyDB = async () => {
             status: 1
         }, {
             organizationalUnit: organizationalUnit_2,
-            creator: dean,
+            creator: manager,
             date: new Date(currentYear, currentMonth + 1, 0),
             kpis: [],
             automaticPoint: 89,
@@ -1440,7 +1438,7 @@ const initSampleCompanyDB = async () => {
         {
             organizationalUnit: organizationalUnit_2,
             creator: employee,
-            approver: viceDean,
+            approver: deputyManager,
             date: new Date(currentYear, currentMonth - 1 + 1, 0),
             kpis: [],
             automaticPoint: 90,
@@ -1450,7 +1448,7 @@ const initSampleCompanyDB = async () => {
         }, {
             organizationalUnit: organizationalUnit_2,
             creator: employee,
-            approver: viceDean,
+            approver: deputyManager,
             date: new Date(currentYear, currentMonth + 1, 0),
             kpis: [],
             automaticPoint: 89,
@@ -1578,7 +1576,7 @@ const initSampleCompanyDB = async () => {
         // Tháng trước
         {
             organizationalUnit: organizationalUnit_2,
-            creator: dean,
+            creator: manager,
             name: "Giảm chi phí bán hàng, tăng doanh số bán hàng trong nước",
             description: "Doanh thu thu được từ hoạt động bán hàng so với kế hoạch đã xây dựng",
             startDate: new Date(currentYear, currentMonth - 1, 1, 12),
@@ -1593,8 +1591,8 @@ const initSampleCompanyDB = async () => {
             responsibleEmployees: [employee], // Người thực hiện
             accountableEmployees: [employee], // Người phê duyệt
             consultedEmployees: [employee], // Người tư vấn
-            informedEmployees: [viceDean], // Người quan sát
-            confirmedByEmployees: [employee].concat([employee]).concat([employee]).includes(dean) ? dean : [],
+            informedEmployees: [deputyManager], // Người quan sát
+            confirmedByEmployees: [employee].concat([employee]).concat([employee]).includes(manager) ? manager : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth - 1, 30),
                 results: [
@@ -1637,7 +1635,7 @@ const initSampleCompanyDB = async () => {
 
         {
             organizationalUnit: organizationalUnit_2,
-            creator: dean,
+            creator: manager,
             name: "Thực hiện các biện pháp để tăng lợi nhận từ việc bán hàng",
             description: "Đánh giá theo lợi nhuận bán hàng",
             startDate: new Date(currentYear, currentMonth - 1, 1, 12),
@@ -1652,8 +1650,8 @@ const initSampleCompanyDB = async () => {
             responsibleEmployees: [employee], // Người thực hiện
             accountableEmployees: [employee], // Người phê duyệt
             consultedEmployees: [employee], // Người tư vấn
-            informedEmployees: [viceDean], // Người quan sát
-            confirmedByEmployees: [employee].concat([employee]).concat([employee]).includes(dean) ? dean : [],
+            informedEmployees: [deputyManager], // Người quan sát
+            confirmedByEmployees: [employee].concat([employee]).concat([employee]).includes(manager) ? manager : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth - 1, 30),
                 results: [
@@ -1695,7 +1693,7 @@ const initSampleCompanyDB = async () => {
         },
         {
             organizationalUnit: organizationalUnit_2,
-            creator: dean,
+            creator: manager,
             name: "Tăng doanh số bán hàng",
             description: "Doanh số bán hàng",
             startDate: new Date(currentYear, currentMonth - 1, 1, 12),
@@ -1710,8 +1708,8 @@ const initSampleCompanyDB = async () => {
             responsibleEmployees: [employee], // Người thực hiện
             accountableEmployees: [employee], // Người phê duyệt
             consultedEmployees: [employee], // Người tư vấn
-            informedEmployees: [dean], // Người quan sát
-            confirmedByEmployees: [employee].concat([employee]).concat([employee]).includes(dean) ? dean : [],
+            informedEmployees: [manager], // Người quan sát
+            confirmedByEmployees: [employee].concat([employee]).concat([employee]).includes(manager) ? manager : [],
             evaluations: [
                 { // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                     date: new Date(currentYear, currentMonth - 1, 30),
@@ -1795,7 +1793,7 @@ const initSampleCompanyDB = async () => {
         // Tháng hiện tại
         {
             organizationalUnit: organizationalUnit_2,
-            creator: dean,
+            creator: manager,
             name: "Tiến hành các cuộc nghiên cứu thị trường",
             description: "Đánh giá theo các cuộc nghiên cứu thị trường",
             startDate: new Date(currentYear, currentMonth, 1, 12),
@@ -1810,8 +1808,8 @@ const initSampleCompanyDB = async () => {
             responsibleEmployees: [employee], // Người thực hiện
             accountableEmployees: [employee], // Người phê duyệt
             consultedEmployees: [employee], // Người tư vấn
-            informedEmployees: [viceDean], // Người quan sát
-            confirmedByEmployees: [employee].concat([employee]).concat([employee]).includes(dean) ? dean : [],
+            informedEmployees: [deputyManager], // Người quan sát
+            confirmedByEmployees: [employee].concat([employee]).concat([employee]).includes(manager) ? manager : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth, 30),
                 results: [
@@ -1854,7 +1852,7 @@ const initSampleCompanyDB = async () => {
 
         {
             organizationalUnit: organizationalUnit_2,
-            creator: dean,
+            creator: manager,
             name: "Tăng doanh số bán hàng",
             description: "Doanh số bán hàng",
             startDate: new Date(currentYear, currentMonth, 1, 12),
@@ -1869,8 +1867,8 @@ const initSampleCompanyDB = async () => {
             responsibleEmployees: [employee], // Người thực hiện
             accountableEmployees: [employee], // Người phê duyệt
             consultedEmployees: [employee], // Người tư vấn
-            informedEmployees: [dean], // Người quan sát
-            confirmedByEmployees: [employee].concat([employee]).concat([employee]).includes(dean) ? dean : [],
+            informedEmployees: [manager], // Người quan sát
+            confirmedByEmployees: [employee].concat([employee]).concat([employee]).includes(manager) ? manager : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth, 30),
                 results: [

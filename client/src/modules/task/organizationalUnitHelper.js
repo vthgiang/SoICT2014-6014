@@ -1,4 +1,4 @@
-var getEmployeeSelectBoxItems = (usersOfChildrenOrganizationalUnit, includeDean=true, includeViceDean=true, includeEmployee=true)=>{
+var getEmployeeSelectBoxItems = (usersOfChildrenOrganizationalUnit, includeManager=true, includeDeputyManager=true, includeEmployee=true)=>{
     let unitMembers;
     let structEmployee=[];
 
@@ -10,9 +10,9 @@ var getEmployeeSelectBoxItems = (usersOfChildrenOrganizationalUnit, includeDean=
         for (let  i=0;i< usersOfChildrenOrganizationalUnit.length;i++){
             var unit = usersOfChildrenOrganizationalUnit[i];
 
-            if (includeDean && unit){
-                for (let key in unit.deans){ // Xử lý deans
-                    let value = unit.deans[key];
+            if (includeManager && unit){
+                for (let key in unit.managers){ // Xử lý managers
+                    let value = unit.managers[key];
                     for (let j=0; j<value.members.length; j++){
                         let member = value.members[j];
                         if(employees[member._id]){
@@ -26,9 +26,9 @@ var getEmployeeSelectBoxItems = (usersOfChildrenOrganizationalUnit, includeDean=
                 }
             }
 
-            if (includeViceDean){
-                for (let key in unit.viceDeans){ // Xử lý viceDeans
-                    let value = unit.viceDeans[key];
+            if (includeDeputyManager){
+                for (let key in unit.deputyManagers){ // Xử lý deputyManagers
+                    let value = unit.deputyManagers[key];
                     for (let j=0; j<value.members.length; j++){
                         let member = value.members[j];
                         if(employees[member._id]){

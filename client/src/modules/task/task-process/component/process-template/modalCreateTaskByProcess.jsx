@@ -23,22 +23,22 @@ import getEmployeeSelectBoxItems from "../../../organizationalUnitHelper";
 // custom element
 ElementFactory.prototype._getDefaultSize = function (semantic) {
 
-	if (is(semantic, 'bpmn:Task')) {
-		return { width: 160, height: 130 };
-	}
+    if (is(semantic, 'bpmn:Task')) {
+        return { width: 160, height: 130 };
+    }
 
-	if (is(semantic, 'bpmn:Gateway')) {
-		return { width: 50, height: 50 };
-	}
+    if (is(semantic, 'bpmn:Gateway')) {
+        return { width: 50, height: 50 };
+    }
 
-	if (is(semantic, 'bpmn:Event')) {
-		return { width: 36, height: 36 };
-	}
+    if (is(semantic, 'bpmn:Event')) {
+        return { width: 36, height: 36 };
+    }
 
-	if (is(semantic, 'bpmn:TextAnnotation')) {
-		return { width: 100, height: 30 };
-	}
-	return { width: 100, height: 80 };
+    if (is(semantic, 'bpmn:TextAnnotation')) {
+        return { width: 100, height: 30 };
+    }
+    return { width: 100, height: 80 };
 
 };
 //Xóa element khỏi pallette theo data-action
@@ -93,8 +93,8 @@ class ModalCreateTaskByProcess extends Component {
         this.props.getAllUsersWithRole();
         let { user } = this.props;
         let defaultUnit = user && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.find(item =>
-            item.dean === this.state.currentRole
-            || item.viceDean === this.state.currentRole
+            item.manager === this.state.currentRole
+            || item.deputyManager === this.state.currentRole
             || item.employee === this.state.currentRole);
         if (!defaultUnit && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) { // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
             defaultUnit = user.organizationalUnitsOfUser[0]
@@ -149,8 +149,8 @@ class ModalCreateTaskByProcess extends Component {
             let { user } = this.props;
             let defaultUnit;
             if (user && user.organizationalUnitsOfUser) defaultUnit = user.organizationalUnitsOfUser.find(item =>
-                item.dean === this.state.currentRole
-                || item.viceDean === this.state.currentRole
+                item.manager === this.state.currentRole
+                || item.deputyManager === this.state.currentRole
                 || item.employee === this.state.currentRole);
             if (!defaultUnit && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) {
                 // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
@@ -642,7 +642,7 @@ class ModalCreateTaskByProcess extends Component {
                                         <div className='col-md-6'>
                                             {/* Tên quy trình */}
                                             <div className={`form-group ${errorOnProcessName === undefined ? "" : "has-error"}`}>
-                                                <label>{translate("task.task_process.process_name")} <span style={{color: "red"}}>*</span></label>
+                                                <label>{translate("task.task_process.process_name")} <span style={{ color: "red" }}>*</span></label>
                                                 <input type="text"
                                                     value={processName}
                                                     className="form-control" placeholder={translate("task.task_process.process_name")}
@@ -653,7 +653,7 @@ class ModalCreateTaskByProcess extends Component {
 
                                             {/* Mô tả quy trình */}
                                             <div className={`form-group ${errorOnProcessDescription === undefined ? "" : "has-error"}`}>
-                                                <label>{translate("task.task_process.process_description")} <span style={{color: "red"}}>*</span></label>
+                                                <label>{translate("task.task_process.process_description")} <span style={{ color: "red" }}>*</span></label>
                                                 <textarea type="text" rows={4} style={{ minHeight: '103.5px' }}
                                                     value={processDescription}
                                                     className="form-control" placeholder={translate("task.task_process.process_description")}
@@ -667,7 +667,7 @@ class ModalCreateTaskByProcess extends Component {
                                             {/* Ngày bắt đầu - kết thúc quy trình */}
                                             <div className="row form-group">
                                                 <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
-                                                    <label className="control-label">{translate('task.task_management.start_date')} <span style={{color: "red"}}>*</span></label>
+                                                    <label className="control-label">{translate('task.task_management.start_date')} <span style={{ color: "red" }}>*</span></label>
                                                     <DatePicker
                                                         id={`datepicker1-process-${idProcess}`}
                                                         dateFormat="day-month-year"
@@ -677,7 +677,7 @@ class ModalCreateTaskByProcess extends Component {
                                                     <ErrorLabel content={errorOnStartDate} />
                                                 </div>
                                                 <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
-                                                    <label className="control-label">{translate('task.task_management.end_date')} <span style={{color: "red"}}>*</span></label>
+                                                    <label className="control-label">{translate('task.task_management.end_date')} <span style={{ color: "red" }}>*</span></label>
                                                     <DatePicker
                                                         id={`datepicker2-process-${idProcess}`}
                                                         value={endDate}
@@ -689,7 +689,7 @@ class ModalCreateTaskByProcess extends Component {
 
                                             <div className={`form-group ${errorOnViewer === undefined ? "" : "has-error"}`}>
                                                 {/* Người được xem quy trình */}
-                                                <label className="control-label">{translate("task.task_process.viewer")} <span style={{color: "red"}}>*</span></label>
+                                                <label className="control-label">{translate("task.task_process.viewer")} <span style={{ color: "red" }}>*</span></label>
                                                 {allUnitsMember &&
                                                     <SelectBox
                                                         id={`select-viewer-employee-create-task-by-process-${indexRenderer}-${idProcess}`}
@@ -705,7 +705,7 @@ class ModalCreateTaskByProcess extends Component {
                                             </div>
                                             <div className={`form-group ${errorOnManager === undefined ? "" : "has-error"}`}>
                                                 {/* Người quản lý quy trình */}
-                                                <label className="control-label" >{translate("task.task_process.manager")} <span style={{color: "red"}}>*</span></label>
+                                                <label className="control-label" >{translate("task.task_process.manager")} <span style={{ color: "red" }}>*</span></label>
                                                 {allUnitsMember &&
                                                     <SelectBox
                                                         id={`select-manager-employee-create-task-by-process-${indexRenderer}-${idProcess}`}

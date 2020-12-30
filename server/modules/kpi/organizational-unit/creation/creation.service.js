@@ -1,8 +1,8 @@
-const Models = require(`${SERVER_MODELS_DIR}`);
+const Models = require(`../../../../models`);
 const { OrganizationalUnitKpi, OrganizationalUnit, OrganizationalUnitKpiSet } = Models;
 
 const overviewService = require('../../employee/management/management.service');
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { connect } = require(`../../../../helpers/dbHelper`);
 
 /**
  * Get organizational unit kpi set
@@ -29,8 +29,8 @@ exports.getOrganizationalUnitKpiSet = async (portal, query) => {
         department = await OrganizationalUnit(connect(DB_CONNECTION, portal))
             .findOne({
                 $or: [
-                    { 'deans': query.roleId },
-                    { 'viceDeans': query.roleId },
+                    { 'managers': query.roleId },
+                    { 'deputyManagers': query.roleId },
                     { 'employees': query.roleId }
                 ]
             });
@@ -63,8 +63,8 @@ exports.getParentOrganizationalUnitKpiSet = async (portal, id) => {
     department = await OrganizationalUnit(connect(DB_CONNECTION, portal))
         .findOne({
             $or: [
-                { 'deans': id },
-                { 'viceDeans': id },
+                { 'managers': id },
+                { 'deputyManagers': id },
                 { 'employees': id }
             ]
         });
@@ -102,8 +102,8 @@ exports.getAllOrganizationalUnitKpiSetByTime = async (portal, roleId, organizati
         organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal))
             .findOne({
                 $or: [
-                    { 'deans': roleId },
-                    { 'viceDeans': roleId },
+                    { 'managers': roleId },
+                    { 'deputyManagers': roleId },
                     { 'employees': roleId }
                 ]
             });
@@ -163,8 +163,8 @@ exports.getAllOrganizationalUnitKpiSet = async (portal, data) => {
     organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal))
         .findOne({
             $or: [
-                { 'deans': data.roleId },
-                { 'viceDeans': data.roleId },
+                { 'managers': data.roleId },
+                { 'deputyManagers': data.roleId },
                 { 'employees': data.roleId }
             ]
         });

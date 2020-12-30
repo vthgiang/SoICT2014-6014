@@ -1,7 +1,7 @@
-const Models = require(`${SERVER_MODELS_DIR}`);
+const Models = require(`../../../models`);
 const { Link, Privilege, Role } = Models;
-const { LINK_CATEGORY } = require(`${SERVER_SEED_DIR}/terms.js`);
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { LINK_CATEGORY } = require(`../../../seed/terms`);
+const { connect } = require(`../../../helpers/dbHelper`);
 
 /**
  * Lấy danh sách tất cả các link của 1 công ty

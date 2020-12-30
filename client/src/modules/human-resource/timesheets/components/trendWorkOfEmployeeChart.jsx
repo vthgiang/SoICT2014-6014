@@ -222,7 +222,7 @@ class TrendWorkOfEmployeeChart extends Component {
                 let data = listTimesheetsByEmployeeIdAndTime.find(x => `${new Date(x.month).getFullYear()}-${new Date(x.month).getMonth()}` === month);
                 if (data) {
                     data1 = [...data1, data.totalHours];
-                    data2 = [...data2, data.totalHoursOff < 0 ? -data.totalHoursOff : 0];
+                    data2 = [...data2, data.totalOvertime ? data.totalOvertime : 0];
                 } else {
                     data1 = [...data1, 0];
                     data2 = [...data2, 0];

@@ -18,6 +18,7 @@ class PlanInfoForm extends Component {
         this.state = {
             good: Object.assign({}, this.EMPTY_GOOD),
             currentGoodId: '1',
+            approvers: this.props.approvers
         };
     }
 
@@ -28,8 +29,6 @@ class PlanInfoForm extends Component {
     handleEndDateChange = (value) => {
         this.props.onEndDateChange(value);
     }
-
-
 
     handleDescriptionChange = (e) => {
         const { value } = e.target;
@@ -65,21 +64,63 @@ class PlanInfoForm extends Component {
         return result;
     }
 
-    getListApproversArr = () => {
-        const { manufacturingPlan } = this.props;
-        let listUsersArr = [];
-        const { listApprovers } = manufacturingPlan;
-        if (listApprovers) {
-            listApprovers.map(approver => {
-                listUsersArr.push({
-                    value: approver._id,
-                    text: approver.userId.name + " - " + approver.userId.email
-                })
-            })
-        }
+    // getListApproversArr = () => {
+    //     const { manufacturingPlan } = this.props;
+    //     let listUsersArr = [];
+    //     const { listApprovers } = manufacturingPlan;
+    //     if (listApprovers) {
+    //         listApprovers.map(approver => {
+    //             listUsersArr.push({
+    //                 value: approver._id,
+    //                 text: approver.userId.name + " - " + approver.userId.email
+    //             })
+    //         })
+    //     }
 
-        return listUsersArr;
+    //     return listUsersArr;
+    // }
+
+    getUserArray = () => {
+        const { user } = this.props;
+        const { usercompanys } = user;
+        let userArray = [];
+        if (usercompanys) {
+            usercompanys.map(user => {
+                userArray.push({
+                    value: user._id,
+                    text: user.name + " - " + user.email
+                });
+            });
+        }
+        return userArray;
     }
+
+    handleApproversChange = (value) => {
+        if (value.length === 0) {
+            value = undefined
+        }
+        this.validateApproversChange(value, true);
+    }
+
+    validateApproversChange = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = this.props;
+        if (!value || !value.length) {
+            msg = translate('manufacturing.plan.choose_approvers')
+        }
+        if (willUpdateState) {
+            this.setState((state) => ({
+                ...state,
+                approvers: value,
+                errorApprovers: msg
+            }));
+        }
+        this.props.onApproversChange(this.state.approvers);
+        return msg;
+
+    }
+
+
 
     getAllGoods = () => {
         const { translate, goods } = this.props;
@@ -87,10 +128,10 @@ class PlanInfoForm extends Component {
             value: "1",
             text: translate('manufacturing.plan.choose_good_input')
         }];
-        const { listGoodsByType } = goods;
+        const { listGoodsByRole } = goods;
 
-        if (listGoodsByType) {
-            listGoodsByType.map((item) => {
+        if (listGoodsByRole) {
+            listGoodsByRole.map((item) => {
                 listGoods.push({
                     value: item._id,
                     text: item.code + " - " + item.name
@@ -118,8 +159,9 @@ class PlanInfoForm extends Component {
             good.goodId = value
 
             const { goods } = this.props;
-            const { listGoodsByType } = goods;
-            let goodArrFilter = listGoodsByType.filter(x => x._id === good.goodId);
+            const { listGoodsByRole } = goods;
+            let goodArrFilter = listGoodsByRole.filter(x => x._id === good.goodId);
+
             if (goodArrFilter.length) {
                 good.baseUnit = goodArrFilter[0].baseUnit
                 const { lots } = this.props;
@@ -262,8 +304,8 @@ class PlanInfoForm extends Component {
 
 
     render() {
-        const { translate, code, salesOrders, approvers, startDate, endDate, description, listGoodsSalesOrders, addedAllGoods, listGoods } = this.props;
-        const { good, errorGood, errorQuantity } = this.state;
+        const { translate, code, salesOrders, startDate, endDate, description, listGoodsSalesOrders, addedAllGoods, listGoods } = this.props;
+        const { good, errorGood, errorQuantity, approvers, errorApprovers } = this.state;
         return (
             <React.Fragment>
                 <div className="row">
@@ -284,18 +326,19 @@ class PlanInfoForm extends Component {
                                 multiple={true}
                             />
                         </div>
-                        <div className="form-group">
+                        <div className={`form-group ${!errorApprovers ? "" : "has-error"}`}>
                             <label>{translate('manufacturing.plan.approvers')}<span className="text-red">*</span></label>
                             <SelectBox
                                 id="select-approvers-of-plan"
                                 className="form-control select"
                                 style={{ width: "100%" }}
-                                items={this.getListApproversArr()}
-                                disabled={true}
-                                onChange={this.handleChangeValue}
+                                items={this.getUserArray()}
+                                disabled={false}
+                                onChange={this.handleApproversChange}
                                 value={approvers}
                                 multiple={true}
                             />
+                            <ErrorLabel content={errorApprovers} />
                         </div>
                     </div>
                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -339,7 +382,7 @@ class PlanInfoForm extends Component {
                                             <th>{translate('manufacturing.plan.good_name')}</th>
                                             <th>{translate('manufacturing.plan.base_unit')}</th>
                                             <th>{translate('manufacturing.plan.quantity_good_inventory')}</th>
-                                            <th>{translate('manufacturing.plan.quantity')}</th>
+                                            <th>{translate('manufacturing.plan.quantity_order')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -470,8 +513,8 @@ class PlanInfoForm extends Component {
 }
 
 function mapStateToProps(state) {
-    const { salesOrder, manufacturingPlan, goods, lots } = state;
-    return { salesOrder, manufacturingPlan, goods, lots }
+    const { salesOrder, manufacturingPlan, goods, lots, user } = state;
+    return { salesOrder, manufacturingPlan, goods, lots, user }
 }
 
 const mapDispatchToProps = {

@@ -16,11 +16,6 @@ class QualificationChart extends Component {
         }
     }
 
-    componentDidMount() {
-        console.log("háhdawd")
-
-    }
-
     static isEqual = (items1, items2) => {
         if (!items1 || !items2) {
             return false;

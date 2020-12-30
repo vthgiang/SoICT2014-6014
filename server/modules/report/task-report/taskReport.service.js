@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-const { TaskReport } = require(`${SERVER_MODELS_DIR}`);
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { TaskReport } = require(`../../../models`);
+const { connect } = require(`../../../helpers/dbHelper`);
 
 
 /**
@@ -113,7 +113,7 @@ exports.getTaskReportById = async (portal, id) => {
         .populate({ path: 'responsibleEmployees', select: '_id name company' })
         .populate({ path: 'accountableEmployees', select: '_id name company' })
         .populate({ path: 'readByEmployees', select: '_id name company' })
-        .populate({ path: 'organizationalUnit', select: 'deans viceDeans employees _id name company parent' })
+        .populate({ path: 'organizationalUnit', select: 'managers deputyManagers employees _id name company parent' })
         .populate({ path: 'readByEmployees' })
     return taskReportById;
 }
@@ -277,7 +277,7 @@ exports.editTaskReport = async (portal, id, data, user) => {
         .populate({ path: 'responsibleEmployees', select: '_id name company' })
         .populate({ path: 'accountableEmployees', select: '_id name company' })
         .populate({ path: 'readByEmployees', select: '_id name company' })
-        .populate({ path: 'organizationalUnit', select: 'deans viceDeans employees _id name company parent' })
+        .populate({ path: 'organizationalUnit', select: 'managers deputyManagers employees _id name company parent' })
         .populate({ path: 'readByEmployees' });
 }
 

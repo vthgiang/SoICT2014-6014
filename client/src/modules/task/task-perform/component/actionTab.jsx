@@ -19,6 +19,9 @@ import { ViewProcess } from '../../task-process/component/task-process-managemen
 import { IncomingDataTab } from './incomingDataTab';
 import { OutgoingDataTab } from './outgoingDataTab';
 import parse from 'html-react-parser';
+import { some } from 'lodash'
+
+
 class ActionTab extends Component {
     constructor(props) {
         let idUser = getStorage("userId");
@@ -122,17 +125,50 @@ class ActionTab extends Component {
     componentDidMount = () => {
         this.props.getAllPreceedingTasks(this.props.id)
     }
-    static getDerivedStateFromProps(nextProps, prevState) {
-        let state = {}
-        if (nextProps.performtasks.task) {
-            state = Object.assign(prevState, { taskActions: nextProps.performtasks.task.taskActions })
+
+    static getDerivedStateFromProps(props, prevState) {
+        const { performtasks, notifications } = props;
+        let state = {};
+        if (notifications && notifications.associatedData && performtasks && performtasks.task && notifications.associatedData.value && notifications.associatedData.value.length > 0) {
+            let { taskComments } = performtasks.task;
+            let { taskActions } = performtasks.task;
+            // Trường hợp thêm mới bình luận (tab trao doi)
+            if (notifications.associatedData.dataType === "createTaskComment") {
+                const res = [...taskComments, notifications.associatedData.value[0]];
+                props.refreshDataAfterComment(res);
+            }
+            // trường hợp thêm comment cho comment (tab trao doi)
+            if (notifications.associatedData.dataType === "createTaskSubComment") {
+                // add thêm sub comment mới 
+                const res = taskComments.map(obj => notifications.associatedData.value.find(o => o._id === obj._id) || obj);
+                props.refreshDataAfterComment(res);
+            }
+            // Trường hợp thêm mới hoạt động
+            if (notifications.associatedData.dataType === "createTaskAction") {
+                const res = [...taskActions, notifications.associatedData.value[0]];
+                props.refreshDataAfterCreateAction(res)
+            }
+
+            // Thêm bình luạn cho hoạt động
+            if (notifications.associatedData.dataType === "createCommentOfTaskactions") {
+                const res = taskActions.map(obj => notifications.associatedData.value.find(o => o._id === obj._id) || obj)
+                props.refreshDataAfterCreateAction(res);
+            }
+            notifications.associatedData = {}; // reset lại ... 
+        }
+
+        if (performtasks.task) {
+            state = Object.assign(prevState, { taskActions: performtasks.task.taskActions })
             return {
                 state
             }
-        } else {
+        }
+        else {
             return null;
         }
     }
+
+
     shouldComponentUpdate = (nextProps, nextState) => {
         if (nextProps.id !== this.state.id) {
             this.setState(state => {
@@ -348,6 +384,7 @@ class ActionTab extends Component {
             }
         })
     }
+
     handleUploadFile = async (taskId, creator) => {
         const data = new FormData();
         let { taskFiles } = this.state;
@@ -373,6 +410,7 @@ class ActionTab extends Component {
 
 
     }
+
     handleEditFileTask = (fileId) => {
         this.setState(state => {
             return {
@@ -381,6 +419,7 @@ class ActionTab extends Component {
             }
         });
     }
+
     handleEditActionComment = async (id) => {
         await this.setState(state => {
             return {
@@ -389,6 +428,7 @@ class ActionTab extends Component {
             }
         })
     }
+
     handleEditAction = async (id) => {
 
         await this.setState(state => {
@@ -398,6 +438,7 @@ class ActionTab extends Component {
             }
         })
     }
+
     handleEditTaskComment = async (id) => {
         await this.setState(state => {
             return {
@@ -436,6 +477,7 @@ class ActionTab extends Component {
             }
         })
     }
+
     handleSaveEditTaskComment = async (e, taskId, commentId, description) => {
         e.preventDefault();
         let { newTaskCommentEdited } = this.state;
@@ -464,6 +506,7 @@ class ActionTab extends Component {
             }
         })
     }
+
     //Lưu hoạt động
     handleSaveEditActionComment = async (e, taskId, actionId, commentId, description) => {
         e.preventDefault();
@@ -493,6 +536,7 @@ class ActionTab extends Component {
             }
         })
     }
+
     handleSaveEditCommentOfTaskComment = async (e, commentId, taskId, description) => {
         e.preventDefault();
         let { newCommentOfTaskCommentEdited } = this.state;
@@ -522,6 +566,7 @@ class ActionTab extends Component {
             }
         })
     }
+
     handleSaveEditTaskFile = async (e, description, documentId, taskId) => {
         e.preventDefault();
         let { fileTaskEdited } = this.state;
@@ -551,13 +596,16 @@ class ActionTab extends Component {
             }
         })
     }
+
     onEditCommentOfTaskCommentFilesChange = async (files) => {
 
     }
+
     handleConfirmAction = async (e, actionId, userId, taskId) => {
         e.preventDefault();
         this.props.confirmAction(userId, actionId, taskId)
     }
+
     handleChange = (event) => {
 
         const textareaLineHeight = 13;
@@ -577,7 +625,8 @@ class ActionTab extends Component {
             value: event.target.value,
             rows: currentRows < maxRows ? currentRows : maxRows,
         });
-    };
+    }
+
     onActionFilesChange = (files) => {
         this.setState(state => {
             return {
@@ -589,6 +638,7 @@ class ActionTab extends Component {
             }
         })
     }
+
     onEditActionFilesChange = (files) => {
         this.setState(state => {
             return {
@@ -600,6 +650,7 @@ class ActionTab extends Component {
             }
         })
     }
+
     onEditCommentOfActionFilesChange = (files) => {
         this.setState(state => {
             return {
@@ -611,6 +662,7 @@ class ActionTab extends Component {
             }
         })
     }
+
     onEditCommentOfTaskCommentFilesChange = async (files) => {
         this.setState(state => {
             return {
@@ -622,6 +674,7 @@ class ActionTab extends Component {
             }
         });
     }
+
     onEditTaskCommentFilesChange = (files) => {
         this.setState(state => {
             return {
@@ -633,6 +686,7 @@ class ActionTab extends Component {
             }
         });
     }
+
     onTaskCommentFilesChange = (files) => {
         this.setState(state => {
             return {
@@ -644,6 +698,7 @@ class ActionTab extends Component {
             }
         })
     }
+
     onCommentFilesChange = (files, actionId) => {
         this.setState(state => {
             state.newCommentOfAction[`${actionId}`] = {
@@ -655,6 +710,7 @@ class ActionTab extends Component {
             }
         })
     }
+
     onCommentOfTaskCommentFilesChange = (commentId, files) => {
         this.setState(state => {
             state.newCommentOfTaskComment[`${commentId}`] = {
@@ -676,18 +732,23 @@ class ActionTab extends Component {
             }
         })
     }
+
     onFilesError = (error, file) => {
     }
+
     filesRemoveOne = (file) => {
         this.refs.filesAddAction.removeFile(file)
     }
+
     filesRemoveAll = () => {
         this.refs.filesAddAction.removeFiles()
     }
+
     requestDownloadFile = (e, path, fileName) => {
         e.preventDefault();
         this.props.downloadFile(path, fileName);
     }
+
     handleShowFile = (id) => {
         let a;
         let { showFile } = this.state
@@ -708,6 +769,7 @@ class ActionTab extends Component {
             })
         }
     }
+
     handleShowEvaluations = (id) => {
         let a;
         let { showEvaluations } = this.state;
@@ -728,6 +790,7 @@ class ActionTab extends Component {
             })
         }
     }
+
     handleDeleteFile = async (fileId, fileName, actionId, type) => {
         let { performtasks, translate } = this.props
         Swal.fire({
@@ -752,6 +815,7 @@ class ActionTab extends Component {
             }
         });
     }
+
     save = (taskId) => {
         let { deleteFile } = this.state
         if (deleteFile.type === "action") {
@@ -766,6 +830,7 @@ class ActionTab extends Component {
             this.props.deleteFileTask(deleteFile.fileId, deleteFile.actionId, taskId)
         }
     }
+
     pressEnter = (event, taskId, index) => {
         let code = event.keyCode || event.which;
         if (code === 13 && !event.shiftKey) {
@@ -787,6 +852,7 @@ class ActionTab extends Component {
             }
         });
     }
+
     isImage = (src) => {
         let string = src.split(".")
         let image = ['jpg', 'jpeg', 'png', 'tiff', 'gif']
@@ -796,6 +862,7 @@ class ActionTab extends Component {
             return false;
         }
     }
+
     showSort = async () => {
         let { taskActions, showSort } = this.state
         if (showSort) {
@@ -805,6 +872,7 @@ class ActionTab extends Component {
         }
 
     }
+
     sort = (index, type) => {
         let a = []
         let { taskActions } = this.state
@@ -818,6 +886,7 @@ class ActionTab extends Component {
             }
         });
     }
+
     cancelSort = () => {
         let { taskActions } = this.state
         taskActions.sort(function (a, b) {
@@ -825,6 +894,7 @@ class ActionTab extends Component {
         });
         this.setState({ taskActions: taskActions, showSort: false });
     }
+
     saveSort = async (taskId) => {
         let { taskActions } = this.state
         let i
@@ -837,9 +907,20 @@ class ActionTab extends Component {
         this.props.sortActions(taskId, arrayActions)
         this.setState({ showSort: false });
     }
+
     setSrc = (src) => {
         this.setState({ src: src });
     }
+
+    convertTime = (ms) => {
+        if (!ms) return '00:00:00';
+        let hour = Math.floor(ms / (60 * 60 * 1000));
+        let minute = Math.floor((ms - hour * 60 * 60 * 1000) / (60 * 1000));
+        let second = Math.floor((ms - hour * 60 * 60 * 1000 - minute * 60 * 1000) / 1000);
+
+        return `${hour > 9 ? hour : `0${hour}`}:${minute > 9 ? minute : `0${minute}`}:${second > 9 ? second : `0${second}`}`;
+    }
+
     render() {
         let task, informations, statusTask, documents, actionComments, taskComments, logTimer, logs;
         let idUser = getStorage("userId");
@@ -903,8 +984,8 @@ class ActionTab extends Component {
                                                 <React.Fragment>
                                                     <div className="content-level1" data-width="100%">
                                                         {item.creator ?
-                                                            <a style={{ cursor: "pointer" }}>{item.creator?.name} </a> :
-                                                            item.name && <b>{item.name} </b>}
+                                                            <a style={{ cursor: "pointer" }}>{item.creator?.name} </a> : ''}
+                                                        {item.name && <b>{item.name}</b>}
                                                         {item.description.split('\n').map((item, idx) => {
                                                             return (
                                                                 <div key={idx}>
@@ -1631,14 +1712,24 @@ class ActionTab extends Component {
 
                         {/* Chuyển qua tab Bấm giờ */}
                         <div className={selected === "logTimer" ? "active tab-pane" : "tab-pane"} id="logTimer">
-                            {logTimer && logTimer.map(item =>
-                                <React.Fragment>
-                                    {item.duration &&
+                            {logTimer && logTimer.map((item, index) =>
+                                <React.Fragment key={index}>
+                                    {item.stoppedAt &&
                                         <div key={item._id} className="item-box">
+                                            <h3 className={`pull-right ${item.acceptLog ? 'text-green' : 'text-red'}`}>{this.convertTime(item.duration)}</h3>
                                             <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} </a>
-                                            {translate("task.task_perform.total_time")} {moment.utc(item.duration, "x").format('HH:mm:ss')}&nbsp;
-                                    ({moment(item.startedAt, "x").format("HH:mm:ss DD/MM/YYYY")} - {moment(item.stoppedAt).format("HH:mm:ss DD/MM/YYYY")})
-                                    <div>{item.description ? item.description : translate("task.task_perform.none_description")}</div>
+                                            <div>
+                                                <i className="fa fa-clock-o"> </i> {moment(item.startedAt).format("HH:mm:ss DD/MM/YYYY")}{" - "}
+                                                <i className="fa fa-clock-o"> </i> {moment(item.stoppedAt).format("HH:mm:ss DD/MM/YYYY")})
+                                            </div>
+                                            <div>
+                                                <i className={`${item.autoStopped ? 'text-red fa fa-clock-o' : 'text-green fa fa-hand-pointer-o'}`}> {item.autoStopped ? 'Tự động' : 'Tắt bằng tay'}</i><br />
+                                                <i className={`${item.acceptLog ? 'text-green fa fa-check' : 'text-red fa fa-close'}`}> {item.acceptLog ? 'Được chấp nhận' : 'Không được chấp nhận (quá 24 giờ)'}</i>
+                                            </div>
+                                            <div>
+                                                <i className="fa fa-edit"></i>
+                                                {item.description ? item.description : translate("task.task_perform.none_description")}
+                                            </div>
                                         </div>
                                     }
                                 </React.Fragment>
@@ -1711,8 +1802,8 @@ class ActionTab extends Component {
 }
 
 function mapState(state) {
-    const { tasks, performtasks, user, auth } = state;
-    return { tasks, performtasks, user, auth };
+    const { tasks, performtasks, user, auth, notifications } = state;
+    return { tasks, performtasks, user, auth, notifications };
 }
 
 const actionCreators = {
@@ -1747,7 +1838,10 @@ const actionCreators = {
     deleteDocument: performTaskAction.deleteDocument,
     editDocument: performTaskAction.editDocument,
     getAllPreceedingTasks: performTaskAction.getAllPreceedingTasks,
-    sortActions: performTaskAction.sortActions
+    sortActions: performTaskAction.sortActions,
+
+    refreshDataAfterComment: performTaskAction.refreshDataAfterComment,
+    refreshDataAfterCreateAction: performTaskAction.refreshDataAfterCreateAction,
 };
 
 const actionTab = connect(mapState, actionCreators)(withTranslate(ActionTab));

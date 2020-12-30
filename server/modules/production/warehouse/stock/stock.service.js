@@ -1,5 +1,5 @@
-const { Stock } = require(`${SERVER_MODELS_DIR}`);
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { Stock } = require(`../../../../models`);
+const { connect } = require(`../../../../helpers/dbHelper`);
 
 exports.getAllStocks = async (company, query, portal) => {
     var { page, limit, managementLocation } = query;

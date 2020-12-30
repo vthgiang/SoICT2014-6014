@@ -1,7 +1,7 @@
-const Models = require(`${SERVER_MODELS_DIR}`);
+const Models = require(`../../../../models`);
 const { EmployeeKpiSet, OrganizationalUnit, Task, EmployeeKpi, User } = Models;
 const mongoose = require("mongoose");
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { connect } = require(`../../../../helpers/dbHelper`);
 
 
 /**
@@ -13,8 +13,8 @@ exports.getEmployeeKPISets = async (portal, data) => {
     let department = await OrganizationalUnit(connect(DB_CONNECTION, portal))
         .findOne({
             $or: [
-                { 'deans': data.roleId },
-                { 'viceDeans': data.roleId },
+                { 'managers': data.roleId },
+                { 'deputyManagers': data.roleId },
                 { 'employees': data.roleId }
             ]
         });
