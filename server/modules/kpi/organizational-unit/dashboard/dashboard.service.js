@@ -1,4 +1,4 @@
-const Models = require(`../../../../modules`);
+const Models = require(`../../../../models`);
 const { OrganizationalUnit, OrganizationalUnitKpiSet } = Models;
 const arrayToTree = require('array-to-tree');
 const EvaluationDashboardService = require('../../evaluation/dashboard/dashboard.service');
