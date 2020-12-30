@@ -27,6 +27,7 @@ export const taskManagementActions = {
     getTasksByUser,
     getTaskInOrganizationUnitByMonth,
     getTaskEvaluations,
+    getTaskByPriorityInOrganizationUnit,
 };
 
 /**
@@ -626,6 +627,22 @@ function getTaskInOrganizationUnitByMonth(organizationUnitId, startDateAfter, en
             })
             .catch(error => {
                 dispatch({ type: taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_FAILURE, error });
+            });
+    };
+}
+
+function getTaskByPriorityInOrganizationUnit(organizationUnitId, date) {
+    return dispatch => {
+        dispatch({ type: taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_PRIORITY_REQUEST });
+        taskManagementService.getTaskByPriorityInOrganizationUnit(organizationUnitId, date)
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_PRIORITY_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_PRIORITY_FAILURE });
             });
     };
 }

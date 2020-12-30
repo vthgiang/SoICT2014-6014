@@ -1479,6 +1479,71 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (portal, task) => {
         "tasks": organizationUnitTasks
     };
 }
+exports.getAllTaskByPriorityOfOrganizationalUnit = async (portal, task) => {
+    const { organizationalUnitId, date } = task;
+    console.log('task',task)
+    let keySearch = {
+        status: "inprocess",
+        isArchived: false
+    };
+    if (organizationalUnitId) {
+        keySearch = {
+            ...keySearch,
+            organizationalUnit: {
+                $in: organizationalUnitId,
+            }
+        };
+    }
+    const data = await Task(connect(DB_CONNECTION, portal)).find({ ...keySearch, endDate: { $gte: new Date(date) } })
+        .populate({ path: "organizationalUnit creator parent responsibleEmployees" }).lean();
+
+    let taskUrgent = [], taskNeedToDo = [], deadline;
+    const nowDate = new Date();
+
+    data.forEach((obj, index) => {
+        let endDate = new Date(obj.endDate);
+        deadline = Math.round((endDate - nowDate) / 1000 / 60 / 60 / 24);
+        if (deadline < 3) {
+            if (obj.priority === 3 && obj.progress < 50) {
+                taskUrgent = [...taskUrgent, obj]
+            }
+            if (obj.priority === 4 && obj.progress < 30) {
+                taskUrgent = [...taskUrgent, obj]
+            }
+            if (obj.priority === 5 && obj.progress < 20) {
+                taskUrgent = [...taskUrgent, obj]
+            }
+
+            if (obj.priority === 5 && obj.progress >= 20) {
+                taskNeedToDo = [...taskNeedToDo, obj];
+            }
+            if (obj.priority === 4 && obj.progress >= 70) {
+                taskNeedToDo = [...taskNeedToDo, obj];
+            }
+        }
+    })
+
+    
+    if (date) {
+        keySearch = {
+            ...keySearch,
+            endDate: {
+                $lt: new Date(date)
+            }
+        }
+    }
+
+    const tasksExpire = await Task(connect(DB_CONNECTION, portal)).find(keySearch)
+        .populate({ path: "organizationalUnit creator parent responsibleEmployees" });
+    taskUrgent = [...taskUrgent, ...tasksExpire];
+    
+    console.log('taskUrgent', taskUrgent.map(x=>x.name));
+    console.log('toddo', taskNeedToDo.map(x=>x.name));
+    return {
+        "urgent": taskUrgent,
+        "taskNeedToDo": taskNeedToDo,
+    };
+}
 
 /**
  * Gửi email khi tạo mới công việc
@@ -2135,3 +2200,5 @@ exports.sendEmailCheckTaskLastMonth = async () => {
     }
     // }
 }
+
+

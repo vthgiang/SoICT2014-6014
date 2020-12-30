@@ -20,7 +20,8 @@ export const taskManagementService = {
     getTaskInOrganizationUnitByMonth,
     getPaginateTasksByUser,
     getPaginateTasks,
-    getPaginatedTasksByOrganizationalUnit
+    getPaginatedTasksByOrganizationalUnit,
+    getTaskByPriorityInOrganizationUnit,
 };
 
 /**
@@ -444,6 +445,18 @@ function getTaskInOrganizationUnitByMonth(organizationUnitId, startDateAfter, en
             organizationUnitId: organizationUnitId,
             startDateAfter: startDateAfter,
             endDateBefore: endDateBefore,
+        }
+    }, false, true, 'task.task_management');
+}
+
+function getTaskByPriorityInOrganizationUnit(organizationUnitId, date) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/task/tasks`,
+        method: 'GET',
+        params: {
+            type: 'priority',
+            organizationUnitId: organizationUnitId,
+            date: date,
         }
     }, false, true, 'task.task_management');
 }

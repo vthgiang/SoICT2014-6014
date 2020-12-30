@@ -49,6 +49,8 @@ exports.getTasks = async (req, res) => {
     }
     else if (req.query.type === "get_all_task_of_children_organizational_unit") {
         getAllTaskOfChildrenOrganizationalUnit(req, res)
+    } else if (req.query.type === "priority") {
+        getAllTaskByPriorityOfOrganizationalUnit(req, res)
     }
 }
 
@@ -775,6 +777,29 @@ getAllTaskOfOrganizationalUnitByMonth = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['get_all_task_of_organizational_unit_failure'],
+            content: error
+        })
+    }
+}
+
+getAllTaskByPriorityOfOrganizationalUnit = async (req, res) => {
+    try {
+        let task = {
+            organizationalUnitId: req.query.organizationUnitId,
+            date: req.query.date,
+        };
+        const data = await TaskManagementService.getAllTaskByPriorityOfOrganizationalUnit(req.portal, task);
+        await Logger.info(req.user.email, 'get_all_task_by_priority_of_organizational_unit', req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['get_all_task_by_priority_of_organizational_unit_success'],
+            content: data
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, 'get_all_task_by_priority_of_organizational_unit', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['get_all_task_by_priority_of_organizational_unit_failure'],
             content: error
         })
     }
