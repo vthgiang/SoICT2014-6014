@@ -504,8 +504,8 @@ exports.createTask = async (req, res) => {
             users: tasks.managersOfOrganizationalUnitThatHasCollaborated
         };
 
-        await NotificationServices.createNotification(req.portal, task.organizationalUnit.company, data);
-        await NotificationServices.createNotification(req.portal, task.organizationalUnit.company, collaboratedData);
+        await NotificationServices.createNotification(req.portal, req.user.company._id, data);
+        await NotificationServices.createNotification(req.portal, req.user.company._id, collaboratedData);
         await sendEmail(email, "Bạn có công việc mới", '', html);
         collaboratedEmail && collaboratedEmail.length !== 0
             && await sendEmail(collaboratedEmail, "Đơn vị bạn được phối hợp thực hiện công việc mới", '', collaboratedHtml);
