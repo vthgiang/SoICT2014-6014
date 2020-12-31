@@ -8,8 +8,9 @@ const OrganizationalUnitService = require(`../../super-admin/organizational-unit
 const NotificationServices = require(`../../notification/notification.service`);
 const { sendEmail } = require(`../../../helpers/emailHelper`);
 const { connect } = require(`../../../helpers/dbHelper`);
+
 /*
- * Lấy mẫu công việc theo Id
+ * Lấy công việc theo Id
  */
 exports.getTaskById = async (portal, id, userId) => {
     let task = await Task(connect(DB_CONNECTION, portal))
