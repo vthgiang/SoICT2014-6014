@@ -176,7 +176,7 @@ exports.links = [
             { path: '/majors/major', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Manager', 'Deputy Manager', 'Employee'] },
             { path: '/majors/major', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Manager', 'Deputy Manager', 'Employee'] },
             { path: '/majors/major/:id', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Manager', 'Deputy Manager', 'Employee'] },
-            { path: '/majors/major/:id', method: 'DELETE', roles: ['System Admin', 'Super Admin', 'Admin', 'Manager', 'Deputy Manager', 'Employee'] },
+            { path: '/majors/major', method: 'DELETE', roles: ['System Admin', 'Super Admin', 'Admin', 'Manager', 'Deputy Manager', 'Employee'] },
 
             { path: '/career-positions/career-positions', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Manager', 'Deputy Manager', 'Employee'] },
             { path: '/career-positions/career-fields', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Manager', 'Deputy Manager', 'Employee'] },
