@@ -1,5 +1,5 @@
 const RootRoleServices = require('./rootRole.service');
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../../logs`);
 
 exports.getAllRootRoles = async (req, res) => {
     try {

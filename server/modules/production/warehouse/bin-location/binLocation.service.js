@@ -2,8 +2,8 @@ const arrayToTree = require("array-to-tree");
 const fs = require('fs');
 const ObjectId = require('mongoose').Types.ObjectId;
 
-const { BinLocation, Stock } = require(`${SERVER_MODELS_DIR}`);
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { BinLocation, Stock } = require(`../../../../models`);
+const { connect } = require(`../../../../helpers/dbHelper`);
 
 async function getBin(portal) {
     const list = await BinLocation(connect(DB_CONNECTION, portal)).find()

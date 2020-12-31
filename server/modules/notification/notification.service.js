@@ -7,9 +7,9 @@ const {
     ManualNotification,
     Role,
     User,
-} = require(`${SERVER_MODELS_DIR}`);
+} = require(`../../models`);
 
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { connect } = require(`../../helpers/dbHelper`);
 
 /**
  * Lấy tất cả thông báo mà admin, giám đốc... đã tạo - get manual notification
@@ -168,10 +168,13 @@ exports.createNotification = async (
         usersArr = await usersArr.concat(userArr);
     }
 
-    // Loại bỏ các giá trị trùng nhau
-    usersArr = freshArray(usersArr); // lọc các phần tử không xác định ra khỏi mảng (null, undefined, v.v.)
-    // usersArr = usersArr && usersArr.length !== 0 && usersArr.map((user) => user && user.toString()); -- lỗi
-    usersArr = usersArr.map((user) => user.toString());
+    
+    if (usersArr && usersArr.length !== 0) {
+        // Loại bỏ các giá trị trùng nhau
+        usersArr = freshArray(usersArr);
+        usersArr = usersArr.map((user) => user && user.toString());
+    }
+    
     for (let i = 0, max = usersArr.length; i < max; i++) {
         if (
             usersArr.indexOf(usersArr[i]) !== usersArr.lastIndexOf(usersArr[i])
@@ -180,7 +183,6 @@ exports.createNotification = async (
             i--;
         }
     }
-
     // Gửi thông báo cho các user - bằng socket trên web
     for (let i = 0; i < usersArr.length; i++) {
         let noti = await Notification(

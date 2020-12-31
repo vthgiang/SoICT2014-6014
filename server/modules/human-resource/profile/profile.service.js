@@ -10,11 +10,11 @@ const {
     EmployeeCourse,
     Notification,
     Timesheet,
-} = require(`${SERVER_MODELS_DIR}`);
+} = require('../../../models');
 
 const {
     connect
-} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+} = require(`../../../helpers/dbHelper`);
 
 const fs = require('fs');
 const mongoose = require("mongoose");
@@ -723,7 +723,7 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
     contracts = this.mergeUrlFileToObject(fileContract, contracts);
     files = this.mergeUrlFileToObject(file, files);
 
-    console.log('mcmcmcmcmcmcm\n\n', major);
+    console.log('mcmcmcmcmcmcm\n\n', data.houseHold.familyMembers);
     let createEmployee = await Employee(connect(DB_CONNECTION, portal)).create({
         avatar: avatar,
         fullName: data.fullName,
@@ -792,6 +792,7 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
         temporaryResidenceCity: data.temporaryResidenceCity,
         temporaryResidenceDistrict: data.temporaryResidenceDistrict,
         temporaryResidenceWard: data.temporaryResidenceWard,
+        houseHold: data.houseHold
     });
     if (data.disciplines !== undefined) {
         let disciplines = data.disciplines;

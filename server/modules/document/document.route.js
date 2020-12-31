@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const DocumentController = require('./document.controller');
-const { auth, uploadFile } = require(`${SERVER_MIDDLEWARE_DIR}`);
+const { auth, uploadFile } = require(`../../middleware`);
 
 const data = [
     {

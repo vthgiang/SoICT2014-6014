@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { auth } = require(`${SERVER_MIDDLEWARE_DIR}`);
+const { auth } = require(`../../../../middleware`);
 const ManufacturingPlanController = require('./manufacturingPlan.controller');
 
 router.post('/', auth, ManufacturingPlanController.createManufacturingPlan);

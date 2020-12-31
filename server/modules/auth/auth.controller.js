@@ -1,9 +1,10 @@
 const AuthService = require('./auth.service');
-const Logger = require(`${SERVER_LOGS_DIR}`);
-
+const Logger = require(`../../logs`);
+const {decryptMessage} = require('../../helpers/functionHelper');
 exports.login = async (req, res) => {
     try {
-        const loginUser = await AuthService.login(req.header('fingerprint'), req.body);
+        const fingerprint = decryptMessage(req.header('fgp'));
+        const loginUser = await AuthService.login(fingerprint, req.body);
 
         await Logger.info(req.body.email, 'login_success', req.body.portal);
         res.status(200).json({

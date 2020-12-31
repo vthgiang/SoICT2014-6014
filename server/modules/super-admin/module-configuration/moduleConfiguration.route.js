@@ -4,7 +4,7 @@ const ModuleConfigurationController = require('./moduleConfiguration.controller'
 
 const {
     auth
-} = require(`${SERVER_MIDDLEWARE_DIR}`);
+} = require(`../../../middleware`);
 
 router.get("/configurations", auth, ModuleConfigurationController.getConfiguration);
 

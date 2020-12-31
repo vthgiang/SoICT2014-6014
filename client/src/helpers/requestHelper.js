@@ -6,20 +6,27 @@ import React from 'react';
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
 import store from '../redux/store'
 import { AuthConstants } from '../modules/auth/redux/constants';
+import JSEncrypt from 'jsencrypt';
+import {key} from './pub.json'
+
+function encryptMessage(message) {
+    const publicKey = key;
+    const jsEncrypt = new JSEncrypt();
+    jsEncrypt.setPublicKey(publicKey);
+
+    return jsEncrypt.encrypt(message);
+}
 
 const AuthenticateHeader = async() => {
-    const token = getStorage('jwt');
-    const currentRole = getStorage('currentRole');
     const fpAgent = await FingerprintJS.load();
     const result = await fpAgent.get();
     const fingerprint = result.visitorId;
 
     return {
-        'current-page': window.location.pathname,
-        'auth-token': token,
-        'current-role': currentRole,
-        'fingerprint': fingerprint.toString(),
-        'Content-Type': 'application/json'
+        "crtp": encryptMessage(window.location.pathname),
+        "fgp": encryptMessage(fingerprint.toString()),
+        "utk": getStorage('jwt'),
+        "crtr": encryptMessage(getStorage('currentRole'))
     }
 }
 

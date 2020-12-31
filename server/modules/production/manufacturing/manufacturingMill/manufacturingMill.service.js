@@ -1,12 +1,12 @@
 const {
     ManufacturingMill,
     ManufacturingWorks
-} = require(`${SERVER_MODELS_DIR}`);
+} = require(`../../../../models`);
 
 const {
     connect
-} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
-const { getYearDay } = require(`${SERVER_HELPERS_DIR}/getYearDayHelper`)
+} = require(`../../../../helpers/dbHelper`);
+const { getYearDay } = require(`../../../../helpers/getYearDayHelper`)
 
 exports.createManufacturingMill = async (data, portal) => {
     let newManufacturingMill = await ManufacturingMill(connect(DB_CONNECTION, portal)).create({

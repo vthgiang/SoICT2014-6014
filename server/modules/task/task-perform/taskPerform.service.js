@@ -2,16 +2,15 @@ const mongoose = require("mongoose");
 const fs = require("fs");
 const moment = require("moment");
 const nodemailer = require("nodemailer");
-const NotificationServices = require(`${SERVER_MODULES_DIR}/notification/notification.service`);
-const { Task, User, UserRole, Role, OrganizationalUnit } = require(`${SERVER_MODELS_DIR}`);
 
+const { Task, User, UserRole, Role, OrganizationalUnit } = require(`../../../models`);
+const OrganizationalUnitService = require(`../../super-admin/organizational-unit/organizationalUnit.service`);
+const NotificationServices = require(`../../notification/notification.service`);
+const { sendEmail } = require(`../../../helpers/emailHelper`);
+const { connect } = require(`../../../helpers/dbHelper`);
 
-const OrganizationalUnitService = require(`${SERVER_MODULES_DIR}/super-admin/organizational-unit/organizationalUnit.service`);
-
-const { sendEmail } = require(`${SERVER_HELPERS_DIR}/emailHelper`);
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
-/**
- * Lấy mẫu công việc theo Id
+/*
+ * Lấy công việc theo Id
  */
 exports.getTaskById = async (portal, id, userId) => {
     let task = await Task(connect(DB_CONNECTION, portal))
@@ -727,7 +726,6 @@ exports.deleteCommentOfTaskAction = async (portal, params) => {
  */
 
 exports.createTaskAction = async (portal, params, body, files) => {
-
     let actionInformation = {
         creator: body.creator,
         description: body.description,

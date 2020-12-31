@@ -1,4 +1,4 @@
-const {Privilege, Link, Role} = require(`${SERVER_MODELS_DIR}`);
+const {Privilege, Link, Role} = require(`../../../models`);
 
 /**
  * Thêm quyền truy cập tới Link cho một Role truyền vào

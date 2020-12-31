@@ -1,6 +1,6 @@
 const ComponentService = require('./component.service');
-const LinkServices = require(`${SERVER_MODULES_DIR}/super-admin/link/link.service`);
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const LinkServices = require(`../../super-admin/link/link.service`);
+const Logger = require(`../../../logs`);
 
 /**
  * Chú ý: tất cả các phương thức đều xét trong ngữ cảnh một công ty
