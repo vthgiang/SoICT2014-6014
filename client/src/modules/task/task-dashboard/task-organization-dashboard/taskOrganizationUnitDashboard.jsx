@@ -153,12 +153,19 @@ class TaskOrganizationUnitDashboard extends Component {
     handleSelectMonthEnd = async (value) => {
         let month;
         let endMonthTitle;
-        if (value.slice(0, 2) < 12) {
-            month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
-            endMonthTitle = value.slice(0, 2) + '-' + value.slice(3, 7);
+        // if (value.slice(0, 2) < 12) {
+        //     month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
+        //     endMonthTitle = value.slice(0, 2) + '-' + value.slice(3, 7);
+        // } else {
+        //     month = (new Number(value.slice(3, 7))) + '-' + '1';
+        // }
+        if (value.slice(0, 2) < 9) {
+            month = value.slice(3, 7) + '-0' + (new Number(value.slice(0, 2)));
         } else {
-            month = (new Number(value.slice(3, 7))) + '-' + '1';
+            month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
         }
+        endMonthTitle = value.slice(0, 2) + '-' + value.slice(3, 7);
+
         this.INFO_SEARCH.endMonth = month;
         this.INFO_SEARCH.endMonthTitle = endMonthTitle;
 

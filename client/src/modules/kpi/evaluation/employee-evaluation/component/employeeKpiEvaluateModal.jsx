@@ -353,17 +353,16 @@ class EmployeeKpiEvaluateModal extends Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {
-                                        (kpimembers.tasks !== undefined && Array.isArray(kpimembers.tasks)) ?
+                                    {console.log(kpimembers.tasks)
+                                        (kpimembers.tasks && Array.isArray(kpimembers.tasks)) ?
                                             (kpimembers.tasks.map((itemTask, index) =>
-
                                                 <tr key={index}>
                                                     <td>{index + 1}</td>
                                                     <td><a style={{ cursor: 'pointer' }} onClick={() => this.handleClickTaskName(itemTask.taskId)}>{itemTask.name}</a></td>
                                                     <td>{this.formatDate(itemTask.startDate)}<br /> <i className="fa fa-angle-double-down"></i><br /> {this.formatDate(itemTask.endDate)}</td>
                                                     <td>{this.formatDate(itemTask.preEvaDate)}<br /> <i className="fa fa-angle-double-down"></i><br /> {this.formatDate(itemTask.date)}</td>
                                                     <td>{this.formatTaskStatus(translate, itemTask.status)}</td>
-                                                    <td>{itemTask.results.contribution}%</td>
+                                                    <td>{itemTask.results.contribution ? itemTask.results.contribution : 0}%</td>
                                                     <td>{itemTask.results.automaticPoint + '-' + itemTask.results.employeePoint + '-' + itemTask.results.approvedPoint}</td>
                                                     <td>
                                                         {points && tasks &&

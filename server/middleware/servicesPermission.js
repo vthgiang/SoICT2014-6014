@@ -176,7 +176,7 @@ exports.links = [
             { path: '/majors/major', method: 'GET' },
             { path: '/majors/major', method: 'POST' },
             { path: '/majors/major/:id', method: 'PATCH' },
-            { path: '/majors/major/:id', method: 'DELETE' },
+            { path: '/majors/major', method: 'DELETE' },
 
             { path: '/career-positions/career-positions', method: 'GET' },
             { path: '/career-positions/career-fields', method: 'GET' },
@@ -904,4 +904,3 @@ exports.links = [
         apis: ['@all']
     }
 ];
-

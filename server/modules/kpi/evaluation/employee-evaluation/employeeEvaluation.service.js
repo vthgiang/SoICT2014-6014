@@ -254,18 +254,26 @@ exports.getTasksByKpiId = async (portal, data) => {
     let task = await getResultTaskByMonth(portal, data);
 
     for (let i = 0; i < task.length; i++) {
-        let date1 = await task[i].preEvaDate;
-        let date2 = await task[i].date;
-        let difference_In_Time = await date2.getTime() - date1.getTime();
-        let daykpi = await Math.ceil(difference_In_Time / (1000 * 3600 * 24));
+        let date1 = task[i].preEvaDate;
+        let date2 = task[i].date;
+        let difference_In_Time, daykpi;
 
-        if (daykpi > 30)
+        if (date1) {
+            difference_In_Time = date2.getTime() - date1.getTime();
+            daykpi = Math.ceil(difference_In_Time / (1000 * 3600 * 24));
+        }
+        
+        if (daykpi && daykpi > 30) {
             daykpi = 30;
-        task[i].taskImportanceLevelCal = await Math.round(3 * (task[i].priority / 3) + 3 * (task[i].results.contribution / 100) + 4 * (daykpi / 30));
+        } else if (!daykpi) {
+            daykpi = 0;
+        }
+           
+        task[i].taskImportanceLevelCal = Math.round(3 * (task[i].priority / 3) + 3 * (task[i].results.contribution / 100) + 4 * (daykpi / 30));
 
         if (task[i].results.taskImportanceLevel === -1 || task[i].results.taskImportanceLevel === null)
-            task[i].results.taskImportanceLevel = await task[i].taskImportanceLevelCal;
-        task[i].daykpi = await daykpi;
+            task[i].results.taskImportanceLevel = task[i].taskImportanceLevelCal;
+        task[i].daykpi = daykpi;
     }
     return task;
 }
@@ -490,6 +498,7 @@ async function getResultTaskByMonth(portal, data) {
         if (month === startMonth) {
             task[i].preEvaDate = startDate;
         } else {
+            console.log(x)
             let preEval = await Task(connect(DB_CONNECTION, portal))
                 .aggregate([
                     {
@@ -505,7 +514,9 @@ async function getResultTaskByMonth(portal, data) {
                     { $match: { "month": month - 1 } },
                     { $match: { "year": year } },
                 ]);
-            task[i].preEvaDate = await preEval[0].date;
+            if (preEval && preEval.length !== 0 && preEval[0]) {
+                task[i].preEvaDate = await preEval[0].date;
+            }
         }
     }
     return task;
