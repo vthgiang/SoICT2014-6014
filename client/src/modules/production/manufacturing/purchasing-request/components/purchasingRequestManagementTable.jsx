@@ -214,7 +214,7 @@ class PurchasingRequestManagementTable extends Component {
                             <tr>
                                 <th>{translate('manufacturing.purchasing_request.index')}</th>
                                 <th>{translate('manufacturing.purchasing_request.code')}</th>
-                                <th>{translate('manufacturing.purchasing_request.planCode')}</th>
+                                <th>{translate('manufacturing.purchasing_request.command_code')}</th>
                                 <th>{translate('manufacturing.purchasing_request.creator')}</th>
                                 <th>{translate('manufacturing.purchasing_request.createdAt')}</th>
                                 <th>{translate('manufacturing.purchasing_request.receiveTime')}</th>
@@ -225,7 +225,7 @@ class PurchasingRequestManagementTable extends Component {
                                         columnArr={[
                                             translate('manufacturing.purchasing_request.index'),
                                             translate('manufacturing.purchasing_request.code'),
-                                            translate('manufacturing.purchasing_request.planCode'),
+                                            translate('manufacturing.purchasing_request.command_code'),
                                             translate('manufacturing.purchasing_request.creator'),
                                             translate('manufacturing.purchasing_request.createdAt'),
                                             translate('manufacturing.purchasing_request.receiveTime'),

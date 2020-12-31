@@ -291,7 +291,7 @@ class ManufacturingLotDetailForm extends Component {
                                                         <tr key={index}>
                                                             <td>{index + 1}</td>
                                                             {x.bill ? <td><a href="#" onClick={() => this.handleShowDetailInfo(x.bill._id)}>{x.bill.code}</a></td> : <td></td>}
-                                                            <td>{this.formatDate(x.createdAt)}</td>
+                                                            <td>{formatDate(x.createdAt)}</td>
                                                             <td>{x.bill ? translate(`manage_warehouse.bill_management.billType.${x.bill.type}`) : ''}</td>
                                                             <td>{x.quantity ? x.quantity : 0}</td>
                                                             <td>{x.stock ? x.stock.name : ""}</td>

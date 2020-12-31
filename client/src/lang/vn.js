@@ -4775,6 +4775,7 @@ export default {
                 code: "Mã phiếu đề nghị",
                 createdAt: "Ngày tạo",
                 planCode: "Mã kế hoạch",
+                command_code: "Mã lệnh sản xuất",
                 receiveTime: "Ngày dự kiến nhận",
                 status: "Trạng thái",
                 creator: "Người tạo",
