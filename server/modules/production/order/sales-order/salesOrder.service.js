@@ -20,7 +20,7 @@ exports.createNewSalesOrder = async (userId, data, portal) => {
         // customerTaxNumber: data.customerTaxNumber,
         customerEmail: data.customerEmail,
         approvers: data.approvers.map((approver) => {
-            return {approver}
+            return { approver }
         }),
         priority: data.priority,
         goods: data.goods ? data.goods.map((item) => {
@@ -28,7 +28,7 @@ exports.createNewSalesOrder = async (userId, data, portal) => {
                 good: item.good,
                 returnRule: item.returnRule ? item.returnRule.map((rr) => {
                     return rr;
-                }): undefined,
+                }) : undefined,
                 pricePerBaseUnit: item.pricePerBaseUnit,
                 pricePerBaseUnitOrigin: item.pricePerBaseUnitOrigin,
                 salesPriceVariance: item.salesPriceVariance,
@@ -42,7 +42,7 @@ exports.createNewSalesOrder = async (userId, data, portal) => {
                         descriptions: sla.descriptions ? sla.descriptions.map(des => des) : undefined
                     };
                 }) : undefined,
-                taxs: item.taxs ? item.taxs.map((tax)=> {
+                taxs: item.taxs ? item.taxs.map((tax) => {
                     return {
                         _id: tax._id,
                         code: tax.code,
@@ -70,12 +70,12 @@ exports.createNewSalesOrder = async (userId, data, portal) => {
                                 quantityOfBonusGood: bonus.quantityOfBonusGood
                             }
                         }) : undefined,
-                        discountOnGoods: dis.discountOnGoods ?  
-                           {
+                        discountOnGoods: dis.discountOnGoods ?
+                            {
                                 good: dis.discountOnGoods.good,
                                 expirationDate: dis.discountOnGoods.expirationDate,
                                 discountedPrice: dis.discountOnGoods.discountedPrice
-                            }: undefined
+                            } : undefined
                     };
                 }) : undefined,
                 note: item.note,
@@ -83,7 +83,7 @@ exports.createNewSalesOrder = async (userId, data, portal) => {
                 amountAfterDiscount: item.amountAfterDiscount,
                 amountAfterTax: item.amountAfterTax
             }
-        }) :  null,
+        }) : null,
         discounts: data.discounts ? data.discounts.map((dis) => {
             return {
                 _id: dis._id,
@@ -130,22 +130,22 @@ exports.createNewSalesOrder = async (userId, data, portal) => {
         path: 'customer', select: 'name taxNumber'
     }, {
         path: 'goods.good', select: 'code name baseUnit'
-    },{
+    }, {
         path: 'goods.manufacturingWorks', select: 'code name'
-    },, {
+    }, , {
         path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
     }, {
         path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
     }, {
         path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
-    },{
+    }, {
         path: 'payments.receiver', select: 'code name'
     }]);;
     return { salesOrder }
 }
 
 exports.getAllQuotes = async (query, portal) => {
-    let { page, limit, code, status, customer} = query;
+    let { page, limit, code, status, customer } = query;
     let option = {};
     if (code) {
         option.code = new RegExp(code, "i")
@@ -162,10 +162,10 @@ exports.getAllQuotes = async (query, portal) => {
             case "expire": option.expirationDate = { $lt: new Date(), $exists: true }; break;
             case "effective":
                 option.expirationDate = { $gte: new Date(), $exists: true }
-                
+
                 break;
             case "all": break;
-            default: 
+            default:
         }
     }
 
@@ -174,19 +174,19 @@ exports.getAllQuotes = async (query, portal) => {
 
     if (!page || !limit) {
         let allQuotes = await Quote(connect(DB_CONNECTION, portal)).find(option)
-        .populate([{
-            path: 'creator', select: 'name'
-        }, {
-            path: 'customer', select: 'name taxNumber'
-        }, {
-            path: 'goods.good', select: 'code name baseUnit'
-        },{
-            path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
-        },{
-            path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
-        }, {
-            path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
-        }]);
+            .populate([{
+                path: 'creator', select: 'name'
+            }, {
+                path: 'customer', select: 'name taxNumber'
+            }, {
+                path: 'goods.good', select: 'code name baseUnit'
+            }, {
+                path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
+            }, {
+                path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
+            }, {
+                path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
+            }]);
         return { allQuotes }
     } else {
         let allQuotes = await Quote(connect(DB_CONNECTION, portal)).paginate(option, {
@@ -205,8 +205,8 @@ exports.getAllQuotes = async (query, portal) => {
             }, {
                 path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
             }]
-            })
-        return { allQuotes }    
+        })
+        return { allQuotes }
     }
 }
 
@@ -218,7 +218,7 @@ exports.editQuote = async (userId, id, data, portal) => {
                 good: item.good,
                 returnRule: item.returnRule ? item.returnRule.map((rr) => {
                     return rr;
-                }): undefined,
+                }) : undefined,
                 pricePerBaseUnit: item.pricePerBaseUnit,
                 pricePerBaseUnitOrigin: item.pricePerBaseUnitOrigin,
                 salesPriceVariance: item.salesPriceVariance,
@@ -230,7 +230,7 @@ exports.editQuote = async (userId, id, data, portal) => {
                         descriptions: sla.descriptions ? sla.descriptions.map(des => des) : undefined
                     };
                 }) : undefined,
-                taxs: item.taxs ? item.taxs.map((tax)=> {
+                taxs: item.taxs ? item.taxs.map((tax) => {
                     return {
                         _id: tax._id,
                         code: tax.code,
@@ -258,12 +258,12 @@ exports.editQuote = async (userId, id, data, portal) => {
                                 quantityOfBonusGood: bonus.quantityOfBonusGood
                             }
                         }) : undefined,
-                        discountOnGoods: dis.discountOnGoods ?  
+                        discountOnGoods: dis.discountOnGoods ?
                             {
                                 good: dis.discountOnGoods.good,
                                 expirationDate: dis.discountOnGoods.expirationDate,
                                 discountedPrice: dis.discountOnGoods.discountedPrice
-                            }: undefined
+                            } : undefined
                     };
                 }) : undefined,
                 note: item.note,
@@ -276,11 +276,11 @@ exports.editQuote = async (userId, id, data, portal) => {
     }
 
     console.log("data", data);
-    
+
     await Quote(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
         $set: data
     }, { new: true });
-    
+
     let quoteUpdated = await Quote(connect(DB_CONNECTION, portal)).findById(id)
         .populate([{
             path: 'creator', select: 'name'
@@ -288,16 +288,16 @@ exports.editQuote = async (userId, id, data, portal) => {
             path: 'customer', select: 'name taxNumber'
         }, {
             path: 'goods.good', select: 'code name baseUnit'
-        },{
+        }, {
             path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
-        },{
+        }, {
             path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
         }, {
-        path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
+            path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
         }]);
-    
+
     console.log("quoteUpdated", quoteUpdated);
-    
+
     return { quote: quoteUpdated }
 }
 
@@ -310,8 +310,20 @@ exports.approveQuote = async (approverId, quoteId, data, portal) => {
 
     quote.status = data.status;
     quote.approver = approverId;
-        
+
     quote.save();
-    
-    return {quote}
+
+    return { quote }
+}
+
+// fake sales order lam KHSX
+exports.getAllSalesOrders = async (portal) => {
+    let salesOrders = await SalesOrder(connect(DB_CONNECTION, portal)).find()
+        .populate([{
+            path: 'goods.good',
+            populate: [{
+                path: 'manufacturingMills.manufacturingMill'
+            }]
+        }]);
+    return { salesOrders };
 }

@@ -5,6 +5,7 @@ import { DialogModal } from '../../../../../common-components';
 import { formatDate, formatFullDate } from '../../../../../helpers/formatDate';
 import BillDetailForm from '../../../warehouse/bill-management/components/genaral/billDetailForm';
 import { BillActions } from '../../../warehouse/bill-management/redux/actions';
+import LogLots from '../../../warehouse/inventory-management/components/logLots';
 import { LotActions } from '../../../warehouse/inventory-management/redux/actions';
 
 class ManufacturingLotDetailForm extends Component {
@@ -267,7 +268,7 @@ class ManufacturingLotDetailForm extends Component {
                         </div>
                         <div className="row">
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <fieldset className="scheduler-border">
+                                {/* <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manufacturing.lot.lot_diary')}</legend>
                                     <div className={`form-group`}>
                                         <table className="table table-bordered">
@@ -278,9 +279,7 @@ class ManufacturingLotDetailForm extends Component {
                                                     <th title={translate('manage_warehouse.inventory_management.date_month')}>{translate('manage_warehouse.inventory_management.date_month')}</th>
                                                     <th title={translate('manage_warehouse.inventory_management.status')}>{translate('manage_warehouse.inventory_management.status')}</th>
                                                     <th title={translate('manage_warehouse.inventory_management.number')}>{translate('manage_warehouse.inventory_management.number')}</th>
-                                                    {/* <th title={translate('manage_warehouse.inventory_management.quantity')}>{translate('manage_warehouse.inventory_management.quantity')}</th> */}
                                                     <th title={translate('manage_warehouse.inventory_management.stock')}>{translate('manage_warehouse.inventory_management.stock')}</th>
-                                                    {/* <th style={{width: "16%"}} title={translate('manage_warehouse.inventory_management.bin')}>{translate('manage_warehouse.inventory_management.bin')}</th> */}
                                                     <th title={translate('manage_warehouse.inventory_management.partner')}>{translate('manage_warehouse.inventory_management.partner')}</th>
                                                     <th title={translate('manage_warehouse.inventory_management.note')}>{translate('manage_warehouse.inventory_management.note')}</th>
                                                 </tr>
@@ -295,7 +294,6 @@ class ManufacturingLotDetailForm extends Component {
                                                             <td>{x.bill ? translate(`manage_warehouse.bill_management.billType.${x.bill.type}`) : ''}</td>
                                                             <td>{x.quantity ? x.quantity : 0}</td>
                                                             <td>{x.stock ? x.stock.name : ""}</td>
-                                                            {/* <td>{x.binLocations ? x.binLocations.map((item, index) => <p key={index}>{item.binLocation.path} ({item.quantity})</p>) : ""}</td> */}
                                                             <td></td>
                                                             <td>{x.description}</td>
                                                         </tr>
@@ -304,7 +302,8 @@ class ManufacturingLotDetailForm extends Component {
                                             </tbody>
                                         </table>
                                     </div>
-                                </fieldset>
+                                </fieldset> */}
+                                <LogLots logs={currentLot.lotLogs} />
                             </div>
                         </div>
                     </form>

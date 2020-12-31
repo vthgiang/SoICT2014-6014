@@ -15,6 +15,7 @@ exports.create = async (req, res) => {
     }
 }
 
+// fale sales order lam KHSX
 exports.getAllSalesOrders = async (req, res) => {
     try {
         let salesOrders = await SalesOrderServices.getAllSalesOrders(req.portal);
