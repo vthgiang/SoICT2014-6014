@@ -47,8 +47,8 @@ class TaskTemplate extends Component {
         if (user.organizationalUnitsOfUser) {
             units = user.organizationalUnitsOfUser;
             currentUnit = units.filter(item =>
-                item.deans.includes(localStorage.getItem("currentRole"))
-                || item.viceDeans.includes(localStorage.getItem("currentRole"))
+                item.managers.includes(localStorage.getItem("currentRole"))
+                || item.deputyManagers.includes(localStorage.getItem("currentRole"))
                 || item.employees.includes(localStorage.getItem("currentRole")));
         }
 
@@ -156,11 +156,11 @@ class TaskTemplate extends Component {
                                             <td title={item.organizationalUnit && item.organizationalUnit.name}>{item.organizationalUnit ? item.organizationalUnit.name : translate('task_template.error_task_template_organizational_unit_null')}</td>
                                             <td>
                                                 <a href="#abc" onClick={() => this.handleView(item._id)} title={translate('task.task_template.view_detail_of_this_task_template')}>
-                                                    <i className="material-icons" style={!this.checkPermisson(currentUnit && currentUnit[0].deans, "") ? { paddingLeft: "35px" } : { paddingLeft: "0px" }}>view_list</i>
+                                                    <i className="material-icons" style={!this.checkPermisson(currentUnit && currentUnit[0] ? currentUnit[0].managers : "", "") ? { paddingLeft: "35px" } : { paddingLeft: "0px" }}>view_list</i>
                                                 </a>
 
                                                 {/**Check quyền xem có được xóa hay sửa mẫu công việc không */}
-                                                {this.checkPermisson(item.organizationalUnit.deans, item.creator._id) &&
+                                                {this.checkPermisson(item.organizationalUnit.managers, item.creator._id) &&
                                                     <React.Fragment>
                                                         <a href="cursor:{'pointer'}" onClick={() => this.handleEdit(item)} className="edit" title={translate('task_template.edit_this_task_template')}>
                                                             <i className="material-icons">edit</i>
@@ -187,9 +187,11 @@ class TaskTemplate extends Component {
         let priority = Number(value);
         let { translate } = this.props;
         switch (priority) {
-            case 1: return translate('task_template.low');
-            case 2: return translate('task_template.medium');
-            case 3: return translate('task_template.high');
+            case 1: return translate('task.task_management.low');
+            case 2: return translate('task.task_management.average');
+            case 3: return translate('task.task_management.standard');
+            case 4: return translate('task.task_management.high');
+            case 5: return translate('task.task_management.urgent');
             default: return '';
         }
     }
@@ -283,10 +285,11 @@ class TaskTemplate extends Component {
         }
     }
 
-    checkPermisson = (deanCurrentUnit, creatorId) => {
+    checkPermisson = (managerCurrentUnit, creatorId) => {
+        if (!managerCurrentUnit || !creatorId) return false;
         let currentRole = localStorage.getItem("currentRole");
-        for (let i in deanCurrentUnit) {
-            if (currentRole === deanCurrentUnit[i]) {
+        for (let i in managerCurrentUnit) {
+            if (currentRole === managerCurrentUnit[i]) {
                 return true;
             }
         }
@@ -373,34 +376,6 @@ class TaskTemplate extends Component {
                             mandatory[i] = "Không bắt buộc";
                         }
                     }
-                    for (let i in x.taskActions) {
-                        if (x.taskActions[i].description) {
-                            let str = x.taskActions[i].description;
-                            let vt = str.indexOf("&nbsp;");
-                            let st;
-                            while (vt >= 0) {
-                                if (vt == 0) {
-                                    st = str.slice(vt + 6);
-                                } else {
-                                    st = str.slice(0, vt - 1) + str.slice(vt + 6);
-                                }
-                                str = st;
-                                vt = str.indexOf("&nbsp;");
-                            }
-                            vt = str.indexOf("<");
-                            while (vt >= 0) {
-                                let vt2 = str.indexOf(">");
-                                if (vt == 0) {
-                                    st = str.slice(vt2 + 1);
-                                } else {
-                                    st = str.slice(0, vt - 1) + str.slice(vt2 + 1);
-                                }
-                                str = st;
-                                vt = str.indexOf("<");
-                            }
-                            x.taskActions[i].description = str;
-                        }
-                    }
                 }
                 let infomationName = [], type = [], infomationDescription = [], filledByAccountableEmployeesOnly = [];
                 if (x.taskInformations) {
@@ -415,35 +390,6 @@ class TaskTemplate extends Component {
                             filledByAccountableEmployeesOnly[i] = "true";
                         } else {
                             filledByAccountableEmployeesOnly[i] = "false";
-                        }
-
-                    }
-                    for (let i in x.taskInformations) {
-                        if (x.taskInformations[i].description) {
-                            let str = x.taskInformations[i].description;
-                            let vt = str.indexOf("&nbsp;");
-                            let st;
-                            while (vt >= 0) {
-                                if (vt == 0) {
-                                    st = str.slice(vt + 6);
-                                } else {
-                                    st = str.slice(0, vt - 1) + str.slice(vt + 6);
-                                }
-                                str = st;
-                                vt = str.indexOf("&nbsp;");
-                            }
-                            vt = str.indexOf("<");
-                            while (vt >= 0) {
-                                let vt2 = str.indexOf(">");
-                                if (vt == 0) {
-                                    st = str.slice(vt2 + 1);
-                                } else {
-                                    st = str.slice(0, vt - 1) + str.slice(vt2 + 1);
-                                }
-                                str = st;
-                                vt = str.indexOf("<");
-                            }
-                            x.taskInformations[i].description = str;
                         }
                     }
                 }

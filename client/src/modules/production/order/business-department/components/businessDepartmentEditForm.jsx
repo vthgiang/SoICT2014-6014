@@ -108,10 +108,10 @@ class BusinessDepartmentEditForm extends Component {
         let listRolesArr = [];
         const { currentDepartment } = this.state;
         // Lấy ra các role trưởng đơn vị của đơn vị hiện tại
-        let currentRolesDeanIds = currentDepartment.deans.map((role) => role._id);
+        let currentRolesManagerIds = currentDepartment.managers.map((role) => role._id);
         if (list) {
             // Lọc các role hiện tại ra khỏi list
-            list = list.filter((role) => !currentRolesDeanIds.includes(role._id));
+            list = list.filter((role) => !currentRolesManagerIds.includes(role._id));
             list.map((role) => {
                 listRolesArr.push({
                     value: role._id,
@@ -265,11 +265,11 @@ class BusinessDepartmentEditForm extends Component {
                             />
                             <ErrorLabel content={organizationalUnitError} />
                         </div>
-                        {currentDepartment && currentDepartment.deans && (
+                        {currentDepartment && currentDepartment.managers && (
                             <React.Fragment>
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate("Trưởng đơn vị")}</legend>
-                                    {currentDepartment.deans.map((role, index) => {
+                                    {currentDepartment.managers.map((role, index) => {
                                         return (
                                             <div className={`form-group`} key={index}>
                                                 <strong>{role.name}: &emsp;</strong>
@@ -309,7 +309,7 @@ class BusinessDepartmentEditForm extends Component {
                                             style={{ width: "100%" }}
                                             value={type}
                                             items={[
-                                                { value: "", text: "---Chọn bộ phận---" },
+                                                { value: "title", text: "---Chọn bộ phận---" },
                                                 { value: "1", text: "Bộ phận kinh doanh" },
                                                 { value: "2", text: "Bộ phận kế toán" },
                                                 { value: "3", text: "Bộ phận thu mua nguyên vật liệu" },

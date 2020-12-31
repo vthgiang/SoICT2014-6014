@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { SelectMulti, SelectBox, DatePicker } from '../../../../common-components';
+import { SelectMulti, DatePicker } from '../../../../common-components';
 import { TimesheetsActions } from '../../timesheets/redux/actions';
 
 import c3 from 'c3';
@@ -56,7 +56,7 @@ class TrendOfOvertime extends Component {
         let arrEnd = endDate.split('-');
         let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
 
-        this.props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew })
+        this.props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew, trendOvertime: true })
     }
 
     /**
@@ -111,7 +111,7 @@ class TrendOfOvertime extends Component {
             return false;
         }
         for (let i = 0; i < items1.length; ++i) {
-            if (items1[i].startDate !== items2[i].startDate) {
+            if (items1[i]._id !== items2[i]._id) {
                 return false;
             }
         }
@@ -217,9 +217,9 @@ class TrendOfOvertime extends Component {
 
         let arrEnd = endDate.split('-');
         let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
-
-        this.props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew, })
-
+        if (new Date(startDateNew).getTime() < new Date(endDateNew).getTime()) {
+            this.props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew, trendOvertime: true })
+        }
     }
 
     render() {
@@ -240,9 +240,7 @@ class TrendOfOvertime extends Component {
                 let overtime = 0;
                 listOvertimeOfUnitsByStartDateAndEndDate.forEach(y => {
                     if (new Date(y.month).getTime() === new Date(x).getTime()) {
-                        if (y.totalHoursOff <= 0) {
-                            overtime = overtime + (0 - y.totalHoursOff);
-                        }
+                        overtime = overtime + y.totalOvertime ? y.totalOvertime : 0
                     };
                 })
                 data1 = [...data1, overtime]

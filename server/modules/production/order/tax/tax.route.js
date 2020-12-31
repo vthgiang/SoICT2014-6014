@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const TaxController = require('./tax.controller');
-const { auth } = require(`${SERVER_MIDDLEWARE_DIR}`);
+const { auth } = require(`../../../../middleware`);
 
 router.post('/', auth, TaxController.createNewTax);
 router.patch('/:id', auth, TaxController.editTaxByCode);

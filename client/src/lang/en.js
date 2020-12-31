@@ -451,8 +451,8 @@ export default {
                 department_not_found: "Organizational unit not found",
                 department_has_user:
                     "Cannot delete. Organizational unit had employee",
-                role_dean_exist: "Manager role name exist",
-                role_vice_dean_exist: "Deputy manager role name exist",
+                role_manager_exist: "Manager role name exist",
+                role_deputy_manager_exist: "Deputy manager role name exist",
                 role_employee_exist: "Employee role name exist",
             },
             user: {
@@ -472,8 +472,8 @@ export default {
                 delete_role_success: "Delete role successfully",
 
                 role_name_exist: "Role name exist",
-                role_dean_exist: "Manager role name exist",
-                role_vice_dean_exist: "Deputy manager role name exist",
+                role_manager_exist: "Manager role name exist",
+                role_deputy_manager_exist: "Deputy manager role name exist",
                 role_employee_exist: "Employee role name exist",
             },
             link: {
@@ -799,6 +799,7 @@ export default {
             close: "Close",
             email: "Email",
             password: "Password",
+            password2: "Password level 2",
             portal: "Portal",
             new_password: "New password",
             confirm: "Confirm password",
@@ -826,7 +827,7 @@ export default {
             short_name: "Short Name",
             employee_name: "Staff name",
             employee_number: "Staff code",
-            total_salary: "Total salary",
+            total_salary: "Total income",
             month: "Month",
             unit: "Unit",
             position: "Position",
@@ -870,6 +871,13 @@ export default {
                 properties: "Properties",
                 title: "Title",
             },
+
+            showmore_showless: {
+                showmore: "Show more",
+                showless: "Show less",
+                title_showmore: "Click to show more",
+                title_showless: "Click to show less"
+            }
         },
 
         menu: {
@@ -880,7 +888,7 @@ export default {
             manage_company: "Manage Company",
             manage_role: "Manage Roles",
             manage_link: "Manage Pages",
-            manage_component: "Manage UI-Component",
+            manage_component: "Manage permissions on page",
 
             manage_department: "Manage Departments",
             manage_user: "Manage Users",
@@ -962,7 +970,10 @@ export default {
             // Quản lý tài sản
             // QUẢN LÝ
 
-            add_asset: "Add asset",
+            add_update_asset: "Add - Update asset",
+            add_asset_title: "Add new asset - Update asset",
+            add_asset: "Add new asset",
+            update_asset: "Update asset",
             manage_repair_asset: "Manage repair asset",
             manage_usage_asset: "Manage usage asset",
             manage_distribute_asset: "Manage distribute asset",
@@ -994,17 +1005,13 @@ export default {
             //QUẢN LÝ ĐƠN HÀNG
             manage_orders: "Manage Order",
             manage_sales_order: "Sales Order",
-            manage_manufacturing_order: "Manufacturing Order",
             manage_purchase_order: "Purchase Order",
             manage_quote: "Quote",
-            manage_sales_order_dashboard: "Sales Order Dashboard",
-            manage_manufacturing_order_dashboard:
-                "Manufacturing Order Dashboard",
+            manage_sales_order_dashboard: "Sales Order Statistics",
             manage_discount: "Discount",
             manage_tax: "Tax",
             manage_sla: "Service Level Agreement",
-            manage_business_department: "Manage Department",
-            manage_admin_department: "Sales Accounting Department",
+            manage_business_department: "Business Department",
 
             //QUẢN LÝ KẾ HOẠCH SẢN XUẤT
             manage_plans: "Manage Plans",
@@ -1073,10 +1080,10 @@ export default {
             no_parent: "No parent department",
             select_parent: "Select parent of department",
             roles_of_department: "Roles in Department",
-            dean_name: "Positions for Manager",
-            dean_example: "Ex: Dean of Financial Officer",
-            vice_dean_name: "Positions for Deputy Manager",
-            vice_dean_example: "Ex: Vice Dean of Financial Officer",
+            manager_name: "Positions for Manager",
+            manager_example: "Ex: Manager of Financial Officer",
+            deputy_manager_name: "Positions for Deputy Manager",
+            deputy_manager_example: "Ex: Deputy Manager of Financial Officer",
             employee_name: "Positions for Employee",
             employee_example: "Ex: Employee of Financial Officer",
             add_with_parent: "Add new department with parent is",
@@ -1105,7 +1112,7 @@ export default {
 
         manage_user: {
             add: "Add",
-            add_title: "Add new user/account",            
+            add_title: "Add new user/account",
             add_common: 'Add common',
             import: 'Import from file',
             import_title: 'Import users data from file',
@@ -1236,7 +1243,7 @@ export default {
                     other_salary: "Other salary",
                     name_salary: "Name salary",
                     money_salary: "Money",
-                    total_salary: "Total Salary",
+                    total_salary: "Total income",
                     action: "action",
                 },
                 // Nhóm dành cho action
@@ -1452,6 +1459,46 @@ export default {
                     menu_attachments_title: "Attachments",
                 },
 
+                house_hold: {
+                    appendix: {
+                        title: 'Phụ lục - Thành viên hộ gia đình người lao động',
+                        head_house_hold_name: 'Họ và tên chủ hộ',
+                        document_type: 'Loại giấy tờ',
+                        house_hold_number: 'Số sổ hộ khẩu',
+                        city: 'Tỉnh/Thành phố',
+                        district: 'Quận/Huyện',
+                        ward: 'Phường/Xã',
+                        house_hold_address: 'Địa chỉ hộ khẩu',
+                        phone: 'Số điện thoại',
+                        house_hold_code: 'Mã số hộ gia đình'
+                    },
+                    members: {
+                        title: 'Kê khai đầy đủ thông tin thành viên hộ gia đình trong sổ hộ khẩu',
+                        stt: 'STT',
+                        name: 'Họ và tên',
+                        code_social_insurance: 'Mã sổ BHXH',
+                        book_nci: 'Số sổ BHXH',
+                        gender: 'Giới tính',
+                        is_hh: 'Là chủ hộ',
+                        cnss: 'CNSS',
+                        rwhh: 'Quan hệ với chủ hộ',
+                        birth: 'Ngày sinh',
+                        pob: 'Nơi cấp giấy khai sinh',
+                        nationality: 'Quốc tịch',
+                        nation: 'Dân tộc',
+                        npp: 'Số CMND, Hộ chiếu',
+                        note: 'Ghi chú',
+                        male: "Nam",
+                        female: 'Nữ',
+                        yes: 'Có',
+                        no: 'Không',
+                    },
+                    add: 'Thêm thành viên hộ gia đình',
+                    edit: 'Chỉnh sửa thành viên hộ gia đình',
+                    delete: 'Xóa thành viên hộ gia đình',
+                },
+
+                money: 'Wage',
                 staff_number: "Staff code",
                 full_name: "Full name",
                 attendance_code: "Attendance code",
@@ -1509,6 +1556,8 @@ export default {
                 colleges: "Colleges",
                 university: "University",
                 master_degree: "Maste degree",
+                engineer: 'Engineer',
+                bachelor: 'Bachelor',
                 phd: "Ph.D",
                 unavailable: "Other",
                 work_experience: "Work experience",
@@ -1600,6 +1649,7 @@ export default {
                 temporary_residence_card: "Temporary residence card",
                 disc_temporary_residence_card:
                     "Certificate of temporary absence",
+                registration_book: 'Registration book',
                 add_staff: "Add new staffs",
 
                 reward: "Commendation",
@@ -1738,6 +1788,8 @@ export default {
                     add_employee_title: "Add new staff",
                     add_by_hand: "Add a staff",
                     add_import: "Add data from file",
+                    update_import: "Update data from file",
+
                     // Thông điệp trả về từ server
                     get_list_employee_success: "Get list employee success",
                     get_list_employee_faile: "Get list employee faile",
@@ -1896,6 +1948,7 @@ export default {
                 do_work: "Do work",
                 total_timesheets: "Total hours",
                 total_hours_off: "Total hours off",
+                total_over_time: "Total hours overtime",
                 work_date_in_month: "Work date in month",
                 shift_work: "Shift work",
                 shifts1: "Shifts 1",
@@ -1933,8 +1986,8 @@ export default {
             // Quản lý nhân sự các đơn vị
             manage_department: {
                 edit_unit: "Edit units staff",
-                dean_unit: "Head of unit",
-                vice_dean_unit: "Deputy unit",
+                manager_unit: "Head of unit",
+                deputy_manager_unit: "Deputy unit",
                 employee_unit: "Unit staff",
                 email_employee: "Email",
                 add_employee_unit: "Add staff",
@@ -2467,7 +2520,6 @@ export default {
             count: "Number of uses",
             creator: "Creator",
             action: "Action",
-            priority: "Priority",
             general_information: "General information",
             parameters: "Parameters",
             roles: "Roles",
@@ -2480,9 +2532,6 @@ export default {
             infor_name: "Information name",
             datatypes: "Datatypes",
             manager_fill: "Only manager fill",
-            high: "High",
-            low: "Low",
-            medium: "Medium",
             text: "Text",
             number: "Number",
             date: "Date",
@@ -2536,7 +2585,7 @@ export default {
                 edit_status_of_task_fail: "Can't edit status of task",
                 edit_status_archived_of_task_fail:
                     "Can't edit archived status of task",
-                task_status_error:"Status of task doesn't allow archive",
+                task_status_error: "Status of task doesn't allow archive",
                 confirm_delete:
                     "This task cannot be deleted because it is in progress!",
 
@@ -2588,8 +2637,10 @@ export default {
                 priority: "Priority",
                 select_priority: "Select priority",
                 select_all_priority: "Selected all",
+                urgent: "Urgent",
                 high: "High",
-                normal: "Normal",
+                standard: "Standard",
+                average: "Normal",
                 low: "Low",
 
                 special: "Special",
@@ -2617,6 +2668,7 @@ export default {
 
                 start_date: "Start date",
                 end_date: "End date",
+                task_additional_info: "Additional Information",
 
                 search: "Search",
 

@@ -9,7 +9,7 @@ const swaggerUi = require("swagger-ui-express");
 const { swaggerJsonData } = require("./api-docs/swagger.js");
 
 require("dotenv").config();
-require("./connectDatabase");
+// require("./connectDatabase");
 require("./global")(server);
 
 app.use(require("cors")());
@@ -254,14 +254,6 @@ app.use(
     require("./modules/production/order/discount/discount.route")
 );
 app.use(
-    "/manufacturing-order",
-    require("./modules/production/order/manufacturing-order/manufacturingOrder.route")
-);
-app.use(
-    "/proposal-order",
-    require("./modules/production/order/proposal-order/proposalOrder.route")
-);
-app.use(
     "/purchase-order",
     require("./modules/production/order/purchase-order/purchaseOrder.route")
 );
@@ -272,7 +264,6 @@ app.use(
 app.use("/sla", require("./modules/production/order/sla/sla.route"));
 app.use("/tax", require("./modules/production/order/tax/tax.route"));
 app.use("/business-department", require("./modules/production/order/business-department/businessDepartment.route"));
-app.use("/admin-department", require("./modules/production/order/admin-department/adminDepartment.route"));
 
 app.use(router);
 

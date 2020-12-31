@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const CompanyControllers = require('./company.controller');
-const { auth,uploadFile } = require(`${SERVER_MIDDLEWARE_DIR}`);
+const { auth,uploadFile } = require(`../../../middleware`);
 
 // Các route về thêm sửa xóa công ty
 router.get("/companies", auth, CompanyControllers.getAllCompanies);

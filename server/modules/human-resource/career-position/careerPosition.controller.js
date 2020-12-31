@@ -1,13 +1,13 @@
 const careerPositionService = require('./careerPosition.service');
-const UserService = require(`${SERVER_MODULES_DIR}/super-admin/user/user.service`);
-const NotificationServices = require(`${SERVER_MODULES_DIR}/notification/notification.service`);
+const UserService = require(`../../super-admin/user/user.service`);
+const NotificationServices = require(`../../notification/notification.service`);
 const EmployeeService = require('../profile/profile.service');
 
 const {
     sendEmail
-} = require(`${SERVER_HELPERS_DIR}/emailHelper`);
+} = require(`../../../helpers/emailHelper`);
 
-const Log = require(`${SERVER_LOGS_DIR}`);
+const Log = require(`../../../logs`);
 
 /** Lấy danh sách vị trí công việc */
 exports.searchCareerPosition = async (req, res) => {

@@ -52,8 +52,8 @@ class BusinessDepartmentDetailForm extends Component {
                                 {businessDepartmentDetail.status ? (
                                     <span style={{ color: "green" }}>{"Đang hoạt động"}</span>
                                 ) : (
-                                    <span style={{ color: "red" }}>{"Ngừng hoạt động"}</span>
-                                )}
+                                        <span style={{ color: "red" }}>{"Ngừng hoạt động"}</span>
+                                    )}
                             </div>
                             <div className={`form-group`}>
                                 <strong>{"Ngày thành lập"}:&emsp;</strong>
@@ -68,7 +68,7 @@ class BusinessDepartmentDetailForm extends Component {
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{"Trưởng đơn vị"}</legend>
                                 {businessDepartmentDetail.organizationalUnit &&
-                                    businessDepartmentDetail.organizationalUnit.deans.map((role, index) => {
+                                    businessDepartmentDetail.organizationalUnit.managers.map((role, index) => {
                                         return (
                                             <div className={`form-group`} key={index}>
                                                 <strong>{role.name}: &emsp;</strong>
@@ -85,7 +85,7 @@ class BusinessDepartmentDetailForm extends Component {
                         </div>
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">{"Người phụ trách"}</legend>
+                                <legend className="scheduler-border">{"Người quản lý"}</legend>
                                 {businessDepartmentDetail.managers && businessDepartmentDetail.managers.length ? (
                                     <div>
                                         {businessDepartmentDetail.managers.map((role, index) => (
@@ -93,8 +93,8 @@ class BusinessDepartmentDetailForm extends Component {
                                         ))}
                                     </div>
                                 ) : (
-                                    "Chưa có vai trò"
-                                )}
+                                        "Chưa có vai trò"
+                                    )}
                             </fieldset>
                         </div>
                     </form>

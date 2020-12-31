@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const SystemLinkControllers = require('./systemLink.controller');
-const { auth } = require(`${SERVER_MIDDLEWARE_DIR}`);
+const { auth } = require(`../../../middleware`);
 
 router.get("/system-links", auth, SystemLinkControllers.getAllSystemLinks);
 router.post("/system-links", auth, SystemLinkControllers.createSystemLink);

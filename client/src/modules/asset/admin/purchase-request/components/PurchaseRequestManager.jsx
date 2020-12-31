@@ -373,6 +373,8 @@ class PurchaseRequestManager extends Component {
                         approver={currentRowView.approver}
                         note={currentRowView.note}
                         status={currentRowView.status}
+                        files={currentRowView.files}
+                        recommendUnits={currentRowView.recommendUnits}
                     />
                 }
 
@@ -393,6 +395,8 @@ class PurchaseRequestManager extends Component {
                         approver={currentRow.approver}
                         note={currentRow.note}
                         status={currentRow.status}
+                        files={currentRow.files}
+                        recommendUnits={currentRow.recommendUnits}
                     />
                 }
             </div >

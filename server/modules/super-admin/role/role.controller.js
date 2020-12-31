@@ -1,5 +1,5 @@
 const RoleService = require('./role.service');
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../../logs`);
 
 exports.getRoles = async (req, res) => {
     try {

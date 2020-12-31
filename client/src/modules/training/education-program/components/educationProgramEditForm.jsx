@@ -26,10 +26,10 @@ class EducationProgramEditForm extends Component {
             if (check === -1) {
                 this.props.department.list.forEach(x => {
                     if (x._id === u) {
-                        let roleDeans = x.deans.map(y => y._id);
-                        let roleViceDeans = x.viceDeans.map(y => y._id);
+                        let roleManagers = x.managers.map(y => y._id);
+                        let roleDeputyManagers = x.deputyManagers.map(y => y._id);
                         let roleEmployees = x.employees.map(y => y._id);
-                        let roleDepartment = roleDeans.concat(roleViceDeans).concat(roleEmployees);
+                        let roleDepartment = roleManagers.concat(roleDeputyManagers).concat(roleEmployees);
                         position = this.state.position.filter(p => roleDepartment.includes(p));
                     }
                 })
@@ -144,10 +144,10 @@ class EducationProgramEditForm extends Component {
             organizationalUnit.forEach(u => {
                 department.list.forEach(x => {
                     if (x._id === u) {
-                        let roleDeans = x.deans.map(y => { return { _id: y._id, name: y.name } });
-                        let roleViceDeans = x.viceDeans.map(y => { return { _id: y._id, name: y.name } });
+                        let roleManagers = x.managers.map(y => { return { _id: y._id, name: y.name } });
+                        let roleDeputyManagers = x.deputyManagers.map(y => { return { _id: y._id, name: y.name } });
                         let roleEmployees = x.employees.map(y => { return { _id: y._id, name: y.name } });
-                        listPosition = listPosition.concat(roleDeans).concat(roleViceDeans).concat(roleEmployees);
+                        listPosition = listPosition.concat(roleManagers).concat(roleDeputyManagers).concat(roleEmployees);
                     }
                 })
             })

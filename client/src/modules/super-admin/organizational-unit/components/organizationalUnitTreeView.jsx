@@ -57,13 +57,13 @@ class DepartmentTreeView extends Component {
                 let length = 1;
                 let name = x.name;
                 let description = x.description;
-                let deans = x.deans.map(item => item.name);
-                if (deans.length > length) {
-                    length = deans.length;
+                let managers = x.managers.map(item => item.name);
+                if (managers.length > length) {
+                    length = managers.length;
                 }
-                let viceDeans = x.viceDeans.map(item => item.name);
-                if (viceDeans.length > length) {
-                    length = viceDeans.length;
+                let deputyManagers = x.deputyManagers.map(item => item.name);
+                if (deputyManagers.length > length) {
+                    length = deputyManagers.length;
                 }
                 let employees = x.employees.map(item => item.name);
                 if (employees.length > length) {
@@ -78,8 +78,8 @@ class DepartmentTreeView extends Component {
                     name: name,
                     description: description,
                     parent: parent,
-                    deans: deans[0],
-                    viceDeans: viceDeans[0],
+                    managers: managers[0],
+                    deputyManagers: deputyManagers[0],
                     employees: employees[0]
                 };
                 datas = [...datas, out];
@@ -90,8 +90,8 @@ class DepartmentTreeView extends Component {
                             name: "",
                             description: "",
                             parent: "",
-                            deans: deans[i],
-                            viceDeans: viceDeans[i],
+                            managers: managers[i],
+                            deputyManagers: deputyManagers[i],
                             employees: employees[i]
                         };
                         datas = [...datas, out];
@@ -112,8 +112,8 @@ class DepartmentTreeView extends Component {
                             { key: "name", value: "Tên đơn vị" },
                             { key: "description", value: "Mô tả đơn vị" },
                             { key: "parent", value: "Đơn vị cha" },
-                            { key: "deans", value: "Tên các chức danh trưởng đơn vị" },
-                            { key: "viceDeans", value: "Tên các chức danh phó đơn vị" },
+                            { key: "managers", value: "Tên các chức danh trưởng đơn vị" },
+                            { key: "deputyManagers", value: "Tên các chức danh phó đơn vị" },
                             { key: "employees", value: "Tên các chức danh nhân viên đơn vị" }
                         ],
                         data: datas
@@ -377,8 +377,8 @@ class DepartmentTreeView extends Component {
                             departmentName={currentRow.name}
                             departmentDescription={currentRow.description}
                             departmentParent={currentRow.parent_id}
-                            deans={currentRow.deans}
-                            viceDeans={currentRow.viceDeans}
+                            managers={currentRow.managers}
+                            deputyManagers={currentRow.deputyManagers}
                             employees={currentRow.employees}
                         />
                     </React.Fragment>

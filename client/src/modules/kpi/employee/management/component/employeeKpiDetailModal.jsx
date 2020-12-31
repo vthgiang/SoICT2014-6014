@@ -90,6 +90,22 @@ class ModalDetailKPIPersonal extends Component {
         return [month, year].join('-');
     }
 
+    formatTaskStatus = (translate, status) => {
+        console.log(status)
+        switch (status) {
+            case "inprocess":
+                return translate('task.task_management.inprocess');
+            case "wait_for_approval":
+                return translate('task.task_management.wait_for_approval');
+            case "finished":
+                return translate('task.task_management.finished');
+            case "delayed":
+                return translate('task.task_management.delayed');
+            case "canceled":
+                return translate('task.task_management.canceled');
+        }
+    }
+
     /**Hiển thị nội dung 1 mục tiêu KPI mới khi click vào tên mục tiêu đó */
     handleChangeContent = (id, employeeId, kpiType) => {
         let date = this.props.employeeKpiSet.date;
@@ -349,8 +365,8 @@ class ModalDetailKPIPersonal extends Component {
                                                             <td><a style={{ cursor: 'pointer' }} onClick={() => this.handleClickTaskName(itemTask.taskId)}>{itemTask.name}</a></td>
                                                             <td>{this.formatDate(itemTask.startDate)}<br /> <i className="fa fa-angle-double-down"></i><br /> {this.formatDate(itemTask.endDate)}</td>
                                                             <td>{this.formatDate(itemTask.preEvaDate)}<br /> <i className="fa fa-angle-double-down"></i><br /> {this.formatDate(itemTask.date)}</td>
-                                                            <td>{itemTask.status}</td>
-                                                            <td>{itemTask.results.contribution}%</td>
+                                                            <td>{this.formatTaskStatus(translate, itemTask.status)}</td>
+                                                            <td>{itemTask.results.contribution ? itemTask.results.contribution : 0}%</td>
                                                             <td>{itemTask.results.automaticPoint + '-' + itemTask.results.employeePoint + '-' + itemTask.results.approvedPoint}</td>
                                                             <td>
                                                                 <div>

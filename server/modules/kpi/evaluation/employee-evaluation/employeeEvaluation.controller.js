@@ -1,5 +1,5 @@
 const KPIMemberService = require('./employeeEvaluation.service');
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../../../logs`);
 
 /**
  * lấy tất cả kpi nhân viên

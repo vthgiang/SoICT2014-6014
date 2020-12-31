@@ -1,5 +1,5 @@
-const Models = require(`${SERVER_MODELS_DIR}`);
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const Models = require('../../../models');
+const { connect } = require(`../../../helpers/dbHelper`);
 const { RecommendDistribute, User } = Models;
 const mongoose = require("mongoose");
 /**
@@ -23,8 +23,8 @@ exports.searchUseRequests = async (portal, company, query) => {
     if (reqUseEmployee) {
         let user = await User(connect(DB_CONNECTION, portal)).find({
             $or: [
-                {email: {$regex: reqUseEmployee, $options: "i"}},
-                {name: {$regex: reqUseEmployee, $options: "i"}}
+                { email: { $regex: reqUseEmployee, $options: "i" } },
+                { name: { $regex: reqUseEmployee, $options: "i" } }
             ]
         }).select('_id');
         let userIds = [];
@@ -38,8 +38,8 @@ exports.searchUseRequests = async (portal, company, query) => {
     if (approver) {
         let user = await User(connect(DB_CONNECTION, portal)).find({
             $or: [
-                {email: {$regex: approver, $options: "i"}},
-                {name: {$regex: approver, $options: "i"}}
+                { email: { $regex: approver, $options: "i" } },
+                { name: { $regex: approver, $options: "i" } }
             ]
         }).select('_id');
         let userIds = [];
@@ -72,7 +72,6 @@ exports.searchUseRequests = async (portal, company, query) => {
         .populate({ path: 'asset proponent approver' }).sort({ 'createdAt': 'desc' })
         .skip(page ? parseInt(page) : 0)
         .limit(limit ? parseInt(limit) : 0);
-
     if (managedBy) {
         let tempListRecommendDistributes = listRecommendDistributes.filter(item => item.asset.managedBy && item.asset.managedBy.toString() === managedBy);
         listRecommendDistributes = tempListRecommendDistributes;
@@ -98,16 +97,16 @@ exports.getUseRequestByAsset = async (portal, data) => {
  */
 exports.createUseRequest = async (portal, company, data) => {
     // check trùng mã dki sử dụng
-    const getUseRequest = await RecommendDistribute(connect(DB_CONNECTION, portal)).findOne({ recommendNumber: data.recommendNumber });
-    if (getUseRequest) throw ['recommendNumber_exists'];
+    // const getUseRequest = await RecommendDistribute(connect(DB_CONNECTION, portal)).findOne({ recommendNumber: data.recommendNumber });
+    // if (getUseRequest) throw ['recommendNumber_exists'];
 
     const dateStartUse = new Date(data.dateStartUse);
     const dateEndUse = new Date(data.dateEndUse);
 
     // check trùng thời gian đăng kí sử dụng cho từng tài sản
-    const checkDayUse = await RecommendDistribute(connect(DB_CONNECTION, portal)).find({asset:mongoose.Types.ObjectId(data.asset) ,dateEndUse: { $gt: dateStartUse } })
-   
-    if (checkDayUse && checkDayUse.length > 0) throw ['dayUse_exists'];
+    // const checkDayUse = await RecommendDistribute(connect(DB_CONNECTION, portal)).find({asset:mongoose.Types.ObjectId(data.asset) , dateEndUse: { $gt: dateStartUse } })
+
+    // if (checkDayUse && checkDayUse.length > 0) throw ['dayUse_exists'];
 
     const createRecommendDistribute = await RecommendDistribute(connect(DB_CONNECTION, portal)).create({
         company: company,

@@ -163,7 +163,7 @@ class CalendarUsage extends Component {
         let startTime = [selectInfo.start.getHours(), selectInfo.start.getMinutes()].join(':');
         let stopTime = [selectInfo.end.getHours(), selectInfo.end.getMinutes()].join(':');
 
-        if (this.props.managedBy == this.state.userId) {
+        if (this.props.managedBy == this.state.userId || this.props.linkPage == "management") {
             await this.setState(state => {
                 return {
                     ...state,
@@ -177,7 +177,11 @@ class CalendarUsage extends Component {
 
             window.$(`#modal-create-usage-calendar-${this.props.assetId}`).modal('show');
         } else {
-            if (selectInfo.start < this.state.nowDate) {
+            let date = this.state.nowDate
+            date.setDate(date.getDate() - 1);
+            date = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + "23:59"
+
+            if (selectInfo.start < new Date(date)) {
                 Swal.fire({
                     title: 'Ngày đã qua không thể tạo đăng ký sử dụng',
                     type: 'warning',
@@ -375,13 +379,8 @@ class CalendarUsage extends Component {
         const { user } = this.props;
         let userlist = user.list, startDate, endDate, partStart, partEnd;
 
-        partStart = data.dateStartUse.split('-');
-        startDate = [partStart[2], partStart[1], partStart[0]].join("-") + " " + data.startTime;
-
-        partEnd = data.dateEndUse.split('-');
-        endDate = [partEnd[2], partEnd[1], partEnd[0]].join("-") + " " + data.stopTime;
-        startDate = new Date(startDate);
-        endDate = new Date(endDate);
+        startDate = new Date(data.dateStartUse);
+        endDate = new Date(data.dateEndUse);
 
         let calendarApi = currentRowAdd.view.calendar;
         if (data) {
@@ -534,7 +533,7 @@ class CalendarUsage extends Component {
                         }}><i className="material-icons" id="display-event">view_list</i></a>
                     </div>
 
-                    {(eventInfo.event.borderColor != "#337ab7" && this.props.managedBy == this.state.userId) &&
+                    {(eventInfo.event.borderColor != "#337ab7" && (this.props.managedBy == this.state.userId || this.props.linkPage == "management")) &&
                         <div className="form-group">
                             <a className="edit" title="Approve" style={{ color: "whitesmoke", cursor: "pointer" }} data-toggle="tooltip" onClick={async () => {
                                 await this.setState({
@@ -555,7 +554,7 @@ class CalendarUsage extends Component {
                         </div>
 
                     }
-                    {((this.props.managedBy == this.state.userId) ||
+                    {((this.props.managedBy == this.state.userId) || this.props.linkPage == "management" ||
                         (this.checkEvent(eventInfo.event.borderColor, eventInfo.event._def.publicId)))
                         &&
                         <div className="form-group">

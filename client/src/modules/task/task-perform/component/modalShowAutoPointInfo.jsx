@@ -4,6 +4,8 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../common-components';
 import { AutomaticTaskPointCalculator } from './automaticTaskPointCalculator';
 
+var mexp = require('math-expression-evaluator');
+
 class ModalShowAutoPointInfo extends Component {
     constructor(props) {
         super(props);
@@ -64,11 +66,11 @@ class ModalShowAutoPointInfo extends Component {
         let a = actionRating.length;
 
         let noteNotHasFailedAndPassedAction = '';
-        if ((numberOfPassedActions === 0 && numberOfFailedActions === 0) || a === 0) {
-            numberOfPassedActions = 1;
-            numberOfFailedActions = 0;
-            noteNotHasFailedAndPassedAction = translate('task.task_management.explain_not_has_failed_and_passed_action');
-        }
+        // if ((numberOfPassedActions === 0 && numberOfFailedActions === 0) || a === 0) {
+        //     numberOfPassedActions = 1;
+        //     numberOfFailedActions = 0;
+        //     noteNotHasFailedAndPassedAction = translate('task.task_management.explain_not_has_failed_and_passed_action');
+        // }
 
         // Tổng số điểm của các hoạt động
         let reduceAction = actionRating.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
@@ -155,6 +157,7 @@ class ModalShowAutoPointInfo extends Component {
         };
 
         let automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
+        console.log('auto', automaticPoint);
         if (isNaN(automaticPoint)) automaticPoint = undefined
         let calcAuto = automaticPoint;
 

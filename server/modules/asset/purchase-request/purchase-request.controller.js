@@ -1,5 +1,5 @@
 const RecommendProcureService = require('./purchase-request.service');
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../../logs`);
 
 /**
  * Lấy danh sách phiếu đề nghị mua sắm thiết bị
@@ -31,7 +31,7 @@ exports.searchPurchaseRequests = async (req, res) => {
  */
 exports.createPurchaseRequest = async (req, res) => {
     try {
-        var newRecommendProcure = await RecommendProcureService.createPurchaseRequest(req.portal, req.user.company._id, req.body);
+        var newRecommendProcure = await RecommendProcureService.createPurchaseRequest(req.portal, req.user.company._id, req.body, req.files);
         await Logger.info(req.user.email, 'CREATE_PURCHASE_REQUEST', req.portal);
         res.status(200).json({
             success: true,
@@ -80,7 +80,7 @@ exports.deletePurchaseRequest = async (req, res) => {
  */
 exports.updatePurchaseRequest = async (req, res) => {
     try {
-        var recommendprocureUpdate = await RecommendProcureService.updatePurchaseRequest(req.portal, req.params.id, req.body);
+        var recommendprocureUpdate = await RecommendProcureService.updatePurchaseRequest(req.portal, req.params.id, req.body, req.files);
         await Logger.info(req.user.email, 'EDIT_PURCHASE_REQUEST', req.portal);
         res.status(200).json({
             success: true,

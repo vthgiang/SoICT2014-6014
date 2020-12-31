@@ -1,7 +1,8 @@
-const Models = require(`${SERVER_MODELS_DIR}`);
-const {connect} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
-const {freshObject} = require(`${SERVER_HELPERS_DIR}/functionHelper`);
-const {RecommendProcure, User} = Models;
+const Models = require('../../../models');
+const {connect} = require(`../../../helpers/dbHelper`);
+const {freshObject} = require(`../../../helpers/functionHelper`);
+const { RecommendProcure, User } = Models;
+const { freshArray } = require("../../../helpers/functionHelper");
 
 /**
  * Lấy danh sách phiếu đề nghị mua sắm thiết bị
@@ -105,7 +106,7 @@ exports.searchPurchaseRequests = async (portal, company, query) => {
         connect(DB_CONNECTION, portal)
     )
         .find(keySearch)
-        .populate({path: "proponent approver"})
+        .populate({path: "proponent approver recommendUnits"})
         .sort({createdAt: "desc"})
         .skip(page ? parseInt(page) : 0)
         .limit(limit ? parseInt(limit) : 0);
@@ -113,17 +114,27 @@ exports.searchPurchaseRequests = async (portal, company, query) => {
     return {totalList, listRecommendProcures};
 };
 
+exports.getUrl = (destination, filename) => {
+    let url = `${destination}/${filename}`;
+    return url.substr(1, url.length);
+}
 /**
  * Thêm mới thông tin phiếu đề nghị mua sắm thiết bị
  * @data: dữ liệu phiếu đề nghị mua sắm thiết bị
  */
-exports.createPurchaseRequest = async (portal, company, data) => {
+exports.createPurchaseRequest = async (portal, company, data, files) => {
     const checkPur = await RecommendProcure(
         connect(DB_CONNECTION, portal)
     ).findOne({recommendNumber: data.recommendNumber});
     if (checkPur) throw ["recommend_number_exist"];
     data = freshObject(data);
 
+    if (files) {
+        filesConvert = files.map(obj => ({
+            fileName: obj.originalname,
+            url: this.getUrl(obj.destination, obj.filename),
+        }))
+    }
     var createRecommendProcure = await RecommendProcure(
         connect(DB_CONNECTION, portal)
     ).create({
@@ -140,6 +151,8 @@ exports.createPurchaseRequest = async (portal, company, data) => {
         estimatePrice: data.estimatePrice,
         note: data.note,
         status: data.status,
+        files: filesConvert,
+        recommendUnits: data.recommendUnits,
     });
     return createRecommendProcure;
 };
@@ -160,8 +173,20 @@ exports.deletePurchaseRequest = async (portal, id) => {
  * Update thông tin phiếu đề nghị mua sắm thiết bị
  * @id: id phiếu đề nghị mua sắm thiết bị muốn update
  */
-exports.updatePurchaseRequest = async (portal, id, data) => {
-    var recommendProcureChange = {
+exports.updatePurchaseRequest = async (portal, id, data, files) => {
+    let filesConvert = [];
+    console.log('data',data)
+    if (files) {
+        filesConvert = files.map(obj => ({
+            fileName: obj.originalname,
+            url: this.getUrl(obj.destination, obj.filename),
+        }))
+    }
+    if (data.oldFiles && filesConvert) {
+        filesConvert = [...data.oldFiles, ...filesConvert]
+    }
+
+    let recommendProcureChange = {
         recommendNumber: data.recommendNumber,
         dateCreate: data.dateCreate,
         proponent: data.proponent._id, // Người đề nghị
@@ -174,8 +199,11 @@ exports.updatePurchaseRequest = async (portal, id, data) => {
         estimatePrice: data.estimatePrice,
         note: data.note,
         status: data.status,
+        recommendUnits: data.recommendUnits,
+        files: filesConvert,
     };
 
+    recommendProcureChange = freshObject(recommendProcureChange)
     // Cập nhật thông tin phiếu đề nghị mua sắm thiết bị vào database
     return await RecommendProcure(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
        id,

@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
+import { DatePicker, DialogModal, ErrorLabel, SelectBox, UploadFile } from '../../../../../common-components';
 
 import { PurchaseRequestFromValidator } from '../../../user/purchase-request/components/PurchaseRequestFromValidator';
 
 import { RecommendProcureActions } from '../../../user/purchase-request/redux/actions';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
+import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
+import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter';
 import { getFormatDateFromTime } from '../../../../../helpers/stringMethod';
 
 class PurchaseRequestEditForm extends Component {
@@ -174,20 +176,51 @@ class PurchaseRequestEditForm extends Component {
         })
     }
 
+    handleRecommendUnits = (value) => {
+        this.setState({
+            ...this.state,
+            recommendUnits: value
+        })
+    }
+
+    handleChangeFile = (file) => {
+        let newFiles = [], oldFiles = [], recommendFiles;
+        if (file) {
+            file.forEach(obj => {
+                if (obj.urlFile) {
+                    newFiles = [...newFiles, obj]
+                } else {
+                    oldFiles = [...oldFiles, obj]
+                }
+            })
+        }
+
+        if (newFiles && newFiles.length > 0) {
+            recommendFiles = newFiles.map(x => ({
+                url: x.urlFile,
+                fileUpload: x.fileUpload
+            }))
+        }
+
+        this.setState({
+            recommendFiles,
+            oldFiles,
+        });
+    }
+
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
         const { recommendNumber, equipmentName, total, unit } = this.state;
 
         let result = this.validateEquipment(equipmentName, false) &&
             this.validateTotal(total, false) &&
-            this.validateUnit(unit, false) &&
-            this.validateRecommendNumber(recommendNumber, false);
+            this.validateUnit(unit, false)
 
         return result;
     };
 
     save = () => {
-        const { dateCreate } = this.state;
+        const { dateCreate, recommendFiles } = this.state;
         let slitDateCreate, dateCreateConvert;
         if (dateCreate) {
             slitDateCreate = dateCreate.split('-');
@@ -196,7 +229,13 @@ class PurchaseRequestEditForm extends Component {
 
         let dataToSubmit = { ...this.state, dateCreate: dateCreateConvert, approver: this.props.auth.user._id };
         if (this.isFormValidated()) {
-            return this.props.updateRecommendProcure(this.state._id, dataToSubmit);
+            let formData = convertJsonObjectToFormData(dataToSubmit);
+            if (recommendFiles) {
+                recommendFiles.forEach(obj => {
+                    formData.append('recommendFiles', obj.fileUpload)
+                })
+            }
+            return this.props.updateRecommendProcure(this.state._id, formData);
         }
     };
 
@@ -217,6 +256,8 @@ class PurchaseRequestEditForm extends Component {
                 approver: nextProps.approver,
                 status: nextProps.status,
                 note: nextProps.note,
+                files: nextProps.files,
+                recommendUnits: nextProps.recommendUnits ? nextProps.recommendUnits.map(obj => obj._id) : [],
                 errorOnEquipment: undefined,
                 errorOnTotal: undefined,
                 errorOnUnit: undefined,
@@ -226,15 +267,20 @@ class PurchaseRequestEditForm extends Component {
         }
     }
 
+    componentDidMount = () => {
+        this.props.getRoleSameDepartment(localStorage.getItem("currentRole"));
+        this.props.getAllDepartments();
+    }
+
     render() {
-        const { _id, translate, recommendProcure, user, auth } = this.props;
+        const { _id, translate, recommendProcure, user, auth, department } = this.props;
         const {
-            recommendNumber, dateCreate, proponent, equipmentName, equipmentDescription, supplier, total, unit, estimatePrice, approver, status, note,
+            recommendNumber, dateCreate, proponent, equipmentName, equipmentDescription, supplier, total, unit, estimatePrice, approver, status, note, recommendUnits, files,
             errorOnEquipment, errorOnEquipmentDescription, errorOnTotal, errorOnUnit, errorOnRecommendNumber
         } = this.state;
 
         var userlist = user.list;
-
+        const departmentlist = department.list && department.list.map(obj => ({ value: obj._id, text: obj.name }));
         return (
             <React.Fragment>
                 <DialogModal
@@ -250,10 +296,9 @@ class PurchaseRequestEditForm extends Component {
 
                             <div className="col-sm-6">
                                 {/* Mã phiếu */}
-                                <div className={`form-group ${!errorOnRecommendNumber ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.form_code')}<span className="text-red">*</span></label>
+                                <div className={`form-group`}>
+                                    <label>{translate('asset.general_information.form_code')}</label>
                                     <input type="text" className="form-control" name="recommendNumber" value={recommendNumber ? recommendNumber : ''} onChange={this.handleRecommendNumberChange} />
-                                    <ErrorLabel content={errorOnRecommendNumber} />
                                 </div>
 
                                 {/* Ngày lập */}
@@ -283,6 +328,26 @@ class PurchaseRequestEditForm extends Component {
                                                 multiple={false}
                                                 disabled
                                             />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Đơn vị đề nghị */}
+                                <div className={`form-group`}>
+                                    <label>{translate('asset.usage.recommend_units')}</label>
+                                    <div>
+                                        <div id="recommend_units">
+                                            {recommendUnits &&
+                                                <SelectBox
+                                                    id={`add-recommend_units${_id}`}
+                                                    className="form-control select2"
+                                                    style={{ width: "100%" }}
+                                                    items={departmentlist}
+                                                    onChange={this.handleRecommendUnits}
+                                                    value={recommendUnits}
+                                                    multiple={true}
+                                                />
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -327,7 +392,7 @@ class PurchaseRequestEditForm extends Component {
                                 {/* Giá trị dự tính */}
                                 <div className="form-group">
                                     <label>{translate('asset.manage_recommend_procure.expected_value')} (VNĐ)</label>
-                                    <input type="number" className="form-control" name="estimatePrice" value={estimatePrice} onChange={this.handleEstimatePriceChange} />
+                                    <input type="number" className="form-control" name="estimatePrice" value={estimatePrice ? estimatePrice : ""} onChange={this.handleEstimatePriceChange} />
                                 </div>
 
                                 {/* Người phê duyệt */}
@@ -373,6 +438,12 @@ class PurchaseRequestEditForm extends Component {
                                     <label>{translate('asset.usage.note')}</label>
                                     <textarea className="form-control" rows="3" name="note" value={note ? note : ''} onChange={this.handleNoteChange}></textarea>
                                 </div>
+
+                                {/* tài liệu đính kèm */}
+                                <div className="form-group">
+                                    <label>{translate('human_resource.profile.attached_files')}</label>
+                                    <UploadFile multiple={true} onChange={this.handleChangeFile} files={files} sendDataAfterDelete={true} />
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -383,13 +454,15 @@ class PurchaseRequestEditForm extends Component {
 };
 
 function mapState(state) {
-    const { recommendProcure, user, auth } = state;
-    return { recommendProcure, user, auth };
+    const { recommendProcure, user, auth, department } = state;
+    return { recommendProcure, user, auth, department };
 };
 
 const actionCreators = {
     getUser: UserActions.get,
     updateRecommendProcure: RecommendProcureActions.updateRecommendProcure,
+    getRoleSameDepartment: UserActions.getRoleSameDepartment,
+    getAllDepartments: DepartmentActions.get,
 };
 
 const editRecommendProcureManager = connect(mapState, actionCreators)(withTranslate(PurchaseRequestEditForm));

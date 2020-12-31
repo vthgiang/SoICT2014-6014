@@ -7,7 +7,7 @@ import {
 
 export const DepartmentServices = {
     get,
-    getDepartmentsThatUserIsDean,
+    getDepartmentsThatUserIsManager,
     create,
     edit,
     destroy,
@@ -21,14 +21,14 @@ function get() {
     }, false, true, 'super_admin.organization_unit');
 }
 
-function getDepartmentsThatUserIsDean(currentRole) {
+function getDepartmentsThatUserIsManager(currentRole) {
     var id = getStorage("userId");
 
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/organizational-units/organizational-units`,
         method: 'GET',
         params: {
-            deanOfOrganizationalUnit: id
+            managerOfOrganizationalUnit: id
         }
     }, false, true, 'super_admin.organization_unit');
 }

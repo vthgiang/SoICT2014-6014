@@ -85,14 +85,10 @@ class TabIntegratedStatistics extends Component {
         for (let i in listEmployee) {
             let totalOvertime = 0, totalHoursOff = 0;
             listOvertimeOfUnitsByStartDateAndEndDate && listOvertimeOfUnitsByStartDateAndEndDate.forEach(x => {
-                if (listEmployee[i].userId.email === x.employee.emailInCompany && x.totalHoursOff < 0) {
-                    totalOvertime = 0 - x.totalHoursOff;
-
+                if (listEmployee[i].userId.email === x.employee.emailInCompany) {
+                    totalOvertime = x.totalOvertime ? x.totalOvertime : 0;
+                    totalHoursOff = x.totalHoursOff ? x.totalHoursOff : 0;
                 };
-                if (listEmployee[i].userId.email === x.employee.emailInCompany && x.totalHoursOff > 0) {
-                    totalHoursOff = x.totalHoursOff;
-
-                }
             });
             employeeOvertime = [...employeeOvertime, { _id: listEmployee[i].userId._id, name: listEmployee[i].userId.name, totalHours: totalOvertime }];
             employeeHoursOff = [...employeeHoursOff, { _id: listEmployee[i].userId._id, name: listEmployee[i].userId.name, totalHours: totalHoursOff }];
@@ -159,7 +155,7 @@ class TabIntegratedStatistics extends Component {
                         <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <div className="box box-solid">
                                 <div className="box-header with-border">
-                                    <h3 className="box-title">Tổng hợp khen thưởng {month}</h3>
+                                    <h3 className="box-title">Tổng hợp khen thưởng tháng{month}</h3>
                                 </div>
                                 <div className="box-body">
                                     <table className="table table-striped table-bordered table-hover">
@@ -195,7 +191,7 @@ class TabIntegratedStatistics extends Component {
                         <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <div className="box box-solid">
                                 <div className="box-header with-border">
-                                    <h3 className="box-title">Tổng hợp kỷ luật {month}</h3>
+                                    <h3 className="box-title">Tổng hợp kỷ luật tháng {month}</h3>
                                 </div>
                                 <div className="box-body">
                                     <table className="table table-striped table-bordered table-hover">
@@ -235,7 +231,7 @@ class TabIntegratedStatistics extends Component {
                         <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <div className="box box-solid">
                                 <div className="box-header with-border">
-                                    <h3 className="box-title">Tổng hợp tình hình nghỉ phép {month}</h3>
+                                    <h3 className="box-title">Tổng hợp tình hình nghỉ phép tháng {month}</h3>
                                 </div>
                                 <div className="box-body">
                                     <table className="table table-striped table-bordered table-hover">
@@ -271,7 +267,7 @@ class TabIntegratedStatistics extends Component {
                         <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <div className="box box-solid">
                                 <div className="box-header with-border">
-                                    <h3 className="box-title">Tổng hợp tình hình tăng ca {month}</h3>
+                                    <h3 className="box-title">Tổng hợp tình hình tăng ca tháng {month}</h3>
                                 </div>
                                 <div className="box-body">
                                     <table className="table table-striped table-bordered table-hover">
@@ -305,16 +301,16 @@ class TabIntegratedStatistics extends Component {
                         </div>
                     </div>
                 </div>
-                <ViewAllEmployee dataEmployee={listAllEmployees} title={`Tổng hợp nhân viên`} viewAll={true} />
-                <ViewAllCommendation dataCommendation={discipline.totalListCommendation} title={`Tổng hợp khen thưởng ${month}`} />
+                <ViewAllEmployee dataEmployee={listAllEmployees} title={`Tổng hợp nhân viên `} viewAll={true} />
+                <ViewAllCommendation dataCommendation={discipline.totalListCommendation} title={`Tổng hợp khen thưởng tháng ${month}`} />
                 <ViewAllDiscipline dataDiscipline={discipline.totalListDiscipline} title={`Tổng hợp kỷ luật ${month}`} />
                 {
                     viewOverTime &&
-                    <ViewAllOverTime dataView={employeeOvertime} title={`Tổng hợp tình hình tăng ca ${month}`} id={viewOverTime} />
+                    <ViewAllOverTime dataView={employeeOvertime} title={`Tổng hợp tình hình tăng ca tháng ${month}`} id={viewOverTime} />
                 }
                 {
                     viewHoursOff &&
-                    <ViewAllOverTime dataView={employeeHoursOff} title={`Tổng hợp tình hình nghỉ phép ${month}`} id={viewHoursOff} />
+                    <ViewAllOverTime dataView={employeeHoursOff} title={`Tổng hợp tình hình nghỉ phép tháng ${month}`} id={viewHoursOff} />
                 }
             </div >
         );

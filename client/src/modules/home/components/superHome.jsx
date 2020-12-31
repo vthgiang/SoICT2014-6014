@@ -16,7 +16,7 @@ class SuperHome extends Component {
 
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
         let d = new Date(),
-            month = '' + (d.getMonth() + 2),
+            month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear();
         if (month.length < 2)
@@ -47,11 +47,13 @@ class SuperHome extends Component {
     }
 
     componentDidMount = async () => {
-        await this.props.getResponsibleTaskByUser([], 1, 1000, [], [], [], null, null, null, null, null, false);
-        await this.props.getAccountableTaskByUser([], 1, 1000, [], [], [], null, null, null, null, null, false);
-        await this.props.getConsultedTaskByUser([], 1, 1000, [], [], [], null, null, null, null, null, false);
-        await this.props.getInformedTaskByUser([], 1, 1000, [], [], [], null, null, null, null, null, false);
-        await this.props.getCreatorTaskByUser([], 1, 1000, [], [], [], null, null, null, null, null, false);
+        let { startMonth, endMonth } = this.INFO_SEARCH;
+
+        await this.props.getResponsibleTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
+        await this.props.getAccountableTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
+        await this.props.getConsultedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
+        await this.props.getInformedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
+        await this.props.getCreatorTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
 
         let data = {
             type: "user"
@@ -89,18 +91,12 @@ class SuperHome extends Component {
     handleSelectMonthEnd = (value) => {
         let month, monthtitle;
 
-        if (value.slice(0, 2) < 12) {
-            if (value.slice(0, 2) < 9) {
-                month = value.slice(3, 7) + '-0' + (new Number(value.slice(0, 2)) + 1);
-            } else {
-                month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)) + 1);
-            }
-
-            monthtitle = value.slice(0, 2) + '-' + value.slice(3, 7);
+        if (value.slice(0, 2) < 9) {
+            month = value.slice(3, 7) + '-0' + (new Number(value.slice(0, 2)));
         } else {
-            month = (new Number(value.slice(3, 7)) + 1) + '-' + '01';
-            monthtitle = '12' + '-' + (new Number(value.slice(3, 7)));
+            month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
         }
+        monthtitle = value.slice(0, 2) + '-' + value.slice(3, 7);
 
         this.INFO_SEARCH.endMonth = month;
         this.INFO_SEARCH.endMonthTitle = monthtitle;

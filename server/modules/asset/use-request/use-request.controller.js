@@ -1,5 +1,5 @@
 const RecommendDistributeService = require('./use-request.service');
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../../logs`);
 const { read } = require('fs');
 
 /**
@@ -68,7 +68,7 @@ exports.createUseRequest = async (req, res) => {
         await Logger.error(req.user.email, 'CREATE_USE_REQUEST', req.portal);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error: ["create_use_request_faile"],
+            messages: Array.isArray(error) ? error : ["create_use_request_faile"],
             content: {
                 inputData: req.body
             }

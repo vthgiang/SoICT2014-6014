@@ -1,5 +1,5 @@
 const SystemSettingServices = require('./systemSetting.service');
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../../logs`);
 
 exports.getBackups = async(req, res) => {
     try {

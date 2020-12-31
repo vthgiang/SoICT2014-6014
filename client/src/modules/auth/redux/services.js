@@ -17,7 +17,8 @@ export const AuthService = {
     getComponentOfUserInLink,
     changeInformation,
     changePassword,
-    downloadFile
+    downloadFile,
+    answerAuthQuestion
 };
 
 async function login(data) {
@@ -126,5 +127,13 @@ function downloadFile(path, type) {
             path: path,
             type: type
         }
+    }, false, false, 'auth');
+}
+
+function answerAuthQuestion(data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/auth/answer-questions`,
+        method: 'PATCH',
+        data
     }, false, false, 'auth');
 }

@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
-const Models = require(`${SERVER_MODELS_DIR}`);
-const {connect} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const Models = require('../../../models');
+const {connect} = require(`../../../helpers/dbHelper`);
 const arrayToTree = require("array-to-tree");
-const {freshObject} = require(`${SERVER_HELPERS_DIR}/functionHelper`);
+const {freshObject} = require(`../../../helpers/functionHelper`);
 
-const {Asset, User, Role} = Models;
+const { Asset, User, Role } = Models;
 
 /**
  * Gửi email khi báo cáo sự cố
@@ -19,7 +19,7 @@ exports.sendEmailToManager = async (portal, oldAsset, userId, type) => {
     let currentUser = await User(connect(DB_CONNECTION, portal)).findById(
         userId
     );
-    let email = [manager.email];
+    let email = manager ? [manager.email] : [];
     let body = `<p>Mô tả : ${currentUser.name} đã ${type} trong tài sản mã ${oldAsset.code}  </p>`;
     let html = `<p>Bạn có thông báo mới: ` + body;
 
@@ -44,55 +44,55 @@ exports.getAssetInforById = async (portal, id) => {
  * @params : dữ liệu key tìm kiếm
  */
 exports.searchAssetProfiles = async (portal, company, params) => {
-    let {getType} = params;
+    let { getType } = params;
     let keySearch = {};
 
     // Bắt sựu kiện MSTS tìm kiếm khác ""
     if (params.code) {
-        keySearch = {...keySearch, code: {$regex: params.code, $options: "i"}};
+        keySearch = { ...keySearch, code: { $regex: params.code, $options: "i" } };
     }
 
     // Bắt sựu kiện Tên tài sản tìm kiếm khác ""
     if (params.assetName) {
         keySearch = {
             ...keySearch,
-            assetName: {$regex: params.assetName, $options: "i"},
+            assetName: { $regex: params.assetName, $options: "i" },
         };
     }
 
     // Thêm key tìm kiếm tài sản theo trạng thái hoạt động vào keySearch
     if (params.status) {
-        keySearch = {...keySearch, status: {$in: params.status}};
+        keySearch = { ...keySearch, status: { $in: params.status } };
     }
 
     // Thêm key tìm kiếm tài sản theo nhóm vào keySearch
     if (params.group) {
-        keySearch = {...keySearch, group: {$in: params.group}};
+        keySearch = { ...keySearch, group: { $in: params.group } };
     }
 
     // Thêm key tìm kiếm theo loại tài sản vào keySearch
     if (params.assetType) {
-        keySearch = {...keySearch, assetType: {$in: params.assetType}};
+        keySearch = { ...keySearch, assetType: { $in: params.assetType } };
     }
 
     // Thêm key tìm kiếm tài sản theo trạng thái hoạt động vào keySearch
     if (params.typeRegisterForUse) {
         keySearch = {
             ...keySearch,
-            typeRegisterForUse: {$in: params.typeRegisterForUse},
+            typeRegisterForUse: { $in: params.typeRegisterForUse },
         };
     }
 
     // Thêm key tìm kiếm tài sản theo nhóm tài sản
     if (params.group) {
-        keySearch = {...keySearch, group: {$in: params.group}};
+        keySearch = { ...keySearch, group: { $in: params.group } };
     }
 
     // Thêm key tìm kiếm tài sản theo đơn vị
     if (params.handoverUnit) {
         keySearch = {
             ...keySearch,
-            assignedToOrganizationalUnit: {$in: params.handoverUnit},
+            assignedToOrganizationalUnit: { $in: params.handoverUnit },
         };
     }
 
@@ -101,12 +101,12 @@ exports.searchAssetProfiles = async (portal, company, params) => {
         let arr = Array.isArray(params.managedBy)
             ? params.managedBy
             : [params.managedBy];
-        keySearch = {...keySearch, managedBy: {$in: arr}};
+        keySearch = { ...keySearch, managedBy: { $in: arr } };
     }
 
     // Thêm key tìm kiếm tài sản theo vị trí
     if (params.location) {
-        keySearch = {...keySearch, location: params.location};
+        keySearch = { ...keySearch, location: params.location };
     }
 
     // Thêm key tìm kiếm tài sản theo người sử dụng (email hoặc name) -> handoverUser ?? không thấy thuộc tính này trong model Asset - thuộc tính cũ nhưng chưa sửa tên lại cho khớp (assignedToUser) với model?
@@ -114,8 +114,8 @@ exports.searchAssetProfiles = async (portal, company, params) => {
         let user = await User(connect(DB_CONNECTION, portal))
             .find({
                 $or: [
-                    {email: {$regex: params.handoverUser, $options: "i"}},
-                    {name: {$regex: params.handoverUser, $options: "i"}}
+                    { email: { $regex: params.handoverUser, $options: "i" } },
+                    { name: { $regex: params.handoverUser, $options: "i" } }
                 ]
             })
             .select("_id");
@@ -123,14 +123,14 @@ exports.searchAssetProfiles = async (portal, company, params) => {
         user.map((x) => {
             userIds.push(x._id);
         });
-        keySearch = {...keySearch, assignedToUser: {$in: userIds}};
+        keySearch = { ...keySearch, assignedToUser: { $in: userIds } };
     }
 
     // Thêm key tìm kiếm tài sản theo loại khấu hao
     if (params.depreciationType) {
         keySearch = {
             ...keySearch,
-            depreciationType: {$in: params.depreciationType},
+            depreciationType: { $in: params.depreciationType },
         };
     }
 
@@ -141,9 +141,9 @@ exports.searchAssetProfiles = async (portal, company, params) => {
                 params.currentRole
             );
             let arr = role ? [role._id, ...role.parents] : [params.currentRole];
-            keySearch = {...keySearch, readByRoles: {$in: arr}};
+            keySearch = { ...keySearch, readByRoles: { $in: arr } };
         } else {
-            keySearch = {...keySearch, readByRoles: {$in: params.currentRole}};
+            keySearch = { ...keySearch, readByRoles: { $in: params.currentRole } };
         }
     }
 
@@ -152,7 +152,7 @@ exports.searchAssetProfiles = async (portal, company, params) => {
         let date = params.startDepreciation.split("-");
         let start = new Date(date[1], date[0] - 1, 1);
         let end = new Date(date[1], date[0], 1);
-        
+
         keySearch = {
             ...keySearch,
             startDepreciation: {
@@ -209,7 +209,7 @@ exports.searchAssetProfiles = async (portal, company, params) => {
     if (params.maintainType) {
         keySearch = {
             ...keySearch,
-            "maintainanceLogs.type": {$in: params.maintainType},
+            "maintainanceLogs.type": { $in: params.maintainType },
         };
     }
 
@@ -217,7 +217,7 @@ exports.searchAssetProfiles = async (portal, company, params) => {
     if (params.maintainStatus) {
         keySearch = {
             ...keySearch,
-            "maintainanceLogs.status": {$in: params.maintainStatus},
+            "maintainanceLogs.status": { $in: params.maintainStatus },
         };
     }
 
@@ -252,7 +252,7 @@ exports.searchAssetProfiles = async (portal, company, params) => {
     if (params.incidentType) {
         keySearch = {
             ...keySearch,
-            "incidentLogs.type": {$in: params.incidentType},
+            "incidentLogs.type": { $in: params.incidentType },
         };
     }
 
@@ -260,7 +260,7 @@ exports.searchAssetProfiles = async (portal, company, params) => {
     if (params.incidentStatus) {
         keySearch = {
             ...keySearch,
-            "incidentLogs.statusIncident": {$in: params.incidentStatus},
+            "incidentLogs.statusIncident": { $in: params.incidentStatus },
         };
     }
 
@@ -271,13 +271,13 @@ exports.searchAssetProfiles = async (portal, company, params) => {
         keySearch = {
             ...keySearch,
             $or: [
-                {depreciationType: {$ne: "none"}},
-                {cost: {$gt: 0}},
-                {usefulLife: {$gt: 0}},
-                {residualValue: {$gt: 0}},
-                {rate: {$gt: 0}},
-                {estimatedTotalProduction: {$gt: 0}},
-                {startDepreciation: {$ne: null}},
+                { depreciationType: { $ne: "none" } },
+                { cost: { $gt: 0 } },
+                { usefulLife: { $gt: 0 } },
+                { residualValue: { $gt: 0 } },
+                { rate: { $gt: 0 } },
+                { estimatedTotalProduction: { $gt: 0 } },
+                { startDepreciation: { $ne: null } },
             ],
         };
         totalList = await Asset(connect(DB_CONNECTION, portal)).countDocuments(
@@ -286,7 +286,7 @@ exports.searchAssetProfiles = async (portal, company, params) => {
         listAssets = await Asset(connect(DB_CONNECTION, portal))
             .find(keySearch)
             .populate("assetType assignedToOrganizationalUnit managedBy")
-            .sort({createdAt: "desc"})
+            .sort({ createdAt: "desc" })
             .skip(params.page)
             .limit(params.limit);
     } else {
@@ -296,26 +296,26 @@ exports.searchAssetProfiles = async (portal, company, params) => {
         listAssets = await Asset(connect(DB_CONNECTION, portal))
             .find(keySearch)
             .populate("assetType assignedToOrganizationalUnit managedBy")
-            .sort({createdAt: "desc"})
+            .sort({ createdAt: "desc" })
             .skip(params.page)
             .limit(params.limit);
     }
-    return {data: listAssets, totalList};
+    return { data: listAssets, totalList };
 };
 
 /**
  * Danh sách mặt bằng dạng cây
  */
 exports.getListBuildingAsTree = async (portal, company) => {
-    let keySearch = {group: "building"};
+    let keySearch = { group: "building" };
 
     if (company) {
-        keySearch = {...keySearch, company: company};
+        keySearch = { ...keySearch, company: company };
     }
 
     const list = await Asset(connect(DB_CONNECTION, portal))
         .find(keySearch)
-        .populate({path: "assetType"});
+        .populate({ path: "assetType" });
     const dataConverted = list.map((building) => {
         return {
             id: building._id.toString(),
@@ -327,7 +327,7 @@ exports.getListBuildingAsTree = async (portal, company) => {
         };
     });
     const tree = await arrayToTree(dataConverted, {});
-    return {list, tree};
+    return { list, tree };
 };
 
 /**
@@ -380,9 +380,9 @@ exports.createAsset = async (portal, company, data, fileInfo) => {
     if (checkAsset.length === 0) {
         for (let i = 0; i < data.length; i++) {
             let avatar =
-                    fileInfo && fileInfo.avatar === ""
-                        ? data[i].avatar
-                        : fileInfo.avatar,
+                fileInfo && fileInfo.avatar === ""
+                    ? data[i].avatar
+                    : fileInfo.avatar,
                 file = fileInfo && fileInfo.file;
             let {
                 maintainanceLogs,
@@ -412,13 +412,7 @@ exports.createAsset = async (portal, company, data, fileInfo) => {
                 usageLogs &&
                 usageLogs.map((item) => {
                     return {
-                        usedByUser: item.assignedToUser
-                            ? item.assignedToUser
-                            : null,
-                        usedByOrganizationalUnit: item.assignedToOrganizationalUnit
-                            ? item.assignedToOrganizationalUnit
-                            : null,
-                        description: item.description,
+                        ...item,
                         startDate: item.startDate && new Date(item.startDate),
                         endDate: item.endDate && new Date(item.endDate),
                     };
@@ -446,6 +440,7 @@ exports.createAsset = async (portal, company, data, fileInfo) => {
                         endDate: item.endDate && new Date(item.endDate),
                     };
                 });
+
             var createAsset = await Asset(
                 connect(DB_CONNECTION, portal)
             ).create({
@@ -519,9 +514,298 @@ exports.createAsset = async (portal, company, data, fileInfo) => {
     // Lấy thông tin tài sản vừa thêm vào
     let assets = await Asset(connect(DB_CONNECTION, portal)).find({
         _id: createAsset._id,
-    }).populate({path: 'assetType'});
-    return {assets};
+    }).populate({ path: 'assetType' });
+    return { assets };
 };
+
+/** Cập nhật thông tin tài sản từ file */
+exports.updateAssetInformationFromFile = async (portal, company, datas) => {
+    if (datas && datas.length !== 0) {
+        for (let i = 0; i < datas.length; i++) {
+            let data = datas[i];
+
+            let {
+                maintainanceLogs,
+                usageLogs,
+                incidentLogs,
+                locationLogs
+            } = data;
+
+            data.purchaseDate =
+                data.purchaseDate && new Date(data.purchaseDate);
+
+            data.warrantyExpirationDate =
+                data.warrantyExpirationDate &&
+                new Date(data.warrantyExpirationDate);
+
+            data.startDepreciation =
+                data.startDepreciation &&
+                new Date(data.startDepreciation);
+
+            data.disposalDate =
+                data.disposalDate && new Date(data.disposalDate);
+
+            usageLogs =
+                usageLogs &&
+                usageLogs.map((item) => {
+                    return {
+                        ...item,
+                        startDate: item.startDate && new Date(item.startDate),
+                        endDate: item.endDate && new Date(item.endDate),
+                    };
+                });
+
+            incidentLogs =
+                incidentLogs &&
+                incidentLogs.map((item) => {
+                    return {
+                        ...item,
+                        dateOfIncident:
+                            item.dateOfIncident &&
+                            new Date(item.dateOfIncident),
+                    };
+                });
+
+            maintainanceLogs =
+                maintainanceLogs &&
+                maintainanceLogs.map((item) => {
+                    return {
+                        ...item,
+                        createDate:
+                            item.createDate && new Date(item.createDate),
+                        startDate: item.startDate && new Date(item.startDate),
+                        endDate: item.endDate && new Date(item.endDate),
+                    };
+                });
+
+            let keySet = {
+                company: company
+            };
+            let keyPush = {};
+
+            if (data.assetName) {
+                keySet = {
+                    ...keySet,
+                    assetName: data.assetName
+                }
+            }
+
+            if (data.serial) {
+                keySet = {
+                    ...keySet,
+                    serial: data.serial
+                }
+            }
+
+            if (data.assetType && data.assetType.length !== 0) {
+                keySet = {
+                    ...keySet,
+                    assetType: data.assetType
+                }
+            }
+
+            if (data.readByRoles && data.readByRoles.length !== 0) {
+                keySet = {
+                    ...keySet,
+                    readByRoles: data.readByRoles
+                }
+            }
+
+            if (data.purchaseDate) {
+                keySet = {
+                    ...keySet,
+                    purchaseDate: data.purchaseDate
+                }
+            }
+
+            if (data.warrantyExpirationDate) {
+                keySet = {
+                    ...keySet,
+                    warrantyExpirationDate: data.warrantyExpirationDate
+                }
+            }
+
+            if (data.warrantyExpirationDate) {
+                keySet = {
+                    ...keySet,
+                    warrantyExpirationDate: data.warrantyExpirationDate
+                }
+            }
+
+            if (data.managedBy) {
+                keySet = {
+                    ...keySet,
+                    managedBy: data.managedBy
+                }
+            }
+
+            if (data.assignedToUser) {
+                keySet = {
+                    ...keySet,
+                    assignedToUser: data.assignedToUser
+                }
+            }
+
+            if (data.assignedToOrganizationalUnit) {
+                keySet = {
+                    ...keySet,
+                    assignedToOrganizationalUnit: data.assignedToOrganizationalUnit
+                }
+            }
+
+            if (data.location) {
+                keySet = {
+                    ...keySet,
+                    location: data.location
+                }
+            }
+
+            if (data.status) {
+                keySet = {
+                    ...keySet,
+                    status: data.status
+                }
+            }
+
+            if (data.typeRegisterForUse) {
+                keySet = {
+                    ...keySet,
+                    typeRegisterForUse: data.typeRegisterForUse
+                }
+            }
+
+            if (data.description) {
+                keySet = {
+                    ...keySet,
+                    description: data.description
+                }
+            }
+
+            if (data.detailInfo) {
+                keySet = {
+                    ...keySet,
+                    detailInfo: data.detailInfo
+                }
+            }
+
+            if (data.cost) {
+                keySet = {
+                    ...keySet,
+                    cost: data.cost
+                }
+            }
+
+            if (data.usefulLife) {
+                keySet = {
+                    ...keySet,
+                    usefulLife: data.usefulLife
+                }
+            }
+
+            if (data.residualValue) {
+                keySet = {
+                    ...keySet,
+                    residualValue: data.residualValue
+                }
+            }
+
+            if (data.startDepreciation) {
+                keySet = {
+                    ...keySet,
+                    startDepreciation: data.startDepreciation
+                }
+            }
+
+            if (data.depreciationType) {
+                keySet = {
+                    ...keySet,
+                    depreciationType: data.depreciationType
+                }
+            }
+
+            if (data.disposalDate) {
+                keySet = {
+                    ...keySet,
+                    disposalDate: data.disposalDate
+                }
+            }
+
+            if (data.disposalType) {
+                keySet = {
+                    ...keySet,
+                    disposalType: data.disposalType
+                }
+            }
+
+            if (data.disposalCost) {
+                keySet = {
+                    ...keySet,
+                    disposalCost: data.disposalCost
+                }
+            }
+
+            if (data.disposalDesc) {
+                keySet = {
+                    ...keySet,
+                    disposalDesc: data.disposalDesc
+                }
+            }
+
+            if (maintainanceLogs && maintainanceLogs.length !== 0) {
+                data.code = maintainanceLogs[0].code;
+                keyPush = {
+                    ...keyPush,
+                    maintainanceLogs: {
+                        $each: maintainanceLogs
+                    }
+                }
+            }
+
+            if (usageLogs && usageLogs.length !== 0) {
+                data.code = usageLogs[0].code;
+                keyPush = {
+                    ...keyPush,
+                    usageLogs: {
+                        $each: usageLogs
+                    }
+                }
+            }
+
+            if (incidentLogs && incidentLogs.length !== 0) {
+                data.code = incidentLogs[0].code;
+                keyPush = {
+                    ...keyPush,
+                    incidentLogs: {
+                        $each: incidentLogs
+                    }
+                }
+            }
+
+            if (locationLogs && locationLogs.length !== 0) {
+                keyPush = {
+                    ...keyPush,
+                    locationLogs: {
+                        $each: locationLogs
+                    }
+                }
+            }
+
+            var asset = await Asset(connect(DB_CONNECTION, portal)).updateOne(
+                { code: data.code },
+                {
+                    $set: keySet,
+                    $addToSet: keyPush
+                }
+            );
+        }
+    }
+
+    // Lấy thông tin tài sản vừa thêm vào
+    let assets = await Asset(connect(DB_CONNECTION, portal)).find({
+        _id: asset._id,
+    }).populate({ path: 'assetType' });
+    return { assets };
+}
 
 /**
  * Cập nhât thông tin tài sản theo id
@@ -599,7 +883,7 @@ exports.updateAssetInformation = async (
                 arrCreate = this.mergeUrlFileToObject(fileInfor, arrCreate);
             }
             arrCreate.forEach((x) => {
-                if(x.incidentCode && arrObject.some(curNode => curNode.incidentCode === x.incidentCode ))
+                if (x.incidentCode && arrObject.some(curNode => curNode.incidentCode === x.incidentCode))
                     throw ['incident_code_exist'];
                 arrObject.push(x)
             });
@@ -691,22 +975,22 @@ exports.updateAssetInformation = async (
     ) => {
         let queryDelete = arrDelete
             ? arrDelete.map((x) => {
-                  return {deleteOne: {filter: {_id: x._id}}};
-              })
+                return { deleteOne: { filter: { _id: x._id } } };
+            })
             : [];
         let queryEdit = arrEdit
             ? arrEdit.map((x) => {
-                  return {updateOne: {filter: {_id: x._id}, update: {$set: x}}};
-              })
+                return { updateOne: { filter: { _id: x._id }, update: { $set: x } } };
+            })
             : [];
         let queryCrete = arrCreate
             ? arrCreate.map((x) => {
-                  return {
-                      insertOne: {
-                          document: {...x, asset: assetId, company: company},
-                      },
-                  };
-              })
+                return {
+                    insertOne: {
+                        document: { ...x, asset: assetId, company: company },
+                    },
+                };
+            })
             : [];
         let query = [...queryDelete, ...queryEdit, ...queryCrete];
         if (query.length !== 0) {
@@ -717,7 +1001,7 @@ exports.updateAssetInformation = async (
     // Lấy thông tin tài sản vừa thêm vào
     let assets = await Asset(connect(DB_CONNECTION, portal)).find({
         _id: oldAsset._id,
-    }).populate({path: 'assetType'});
+    }).populate({ path: 'assetType' });
 
     if (createIncidentLogs || editIncidentLogs || deleteIncidentLogs) {
         let type;
@@ -765,7 +1049,7 @@ exports.deleteAsset = async (portal, id) => {
  */
 exports.updateDepreciation = async (portal, id, data) => {
     return await Asset(connect(DB_CONNECTION, portal)).updateOne(
-        {_id: id},
+        { _id: id },
         {
             cost: data.cost,
             residualValue: data.residualValue,
@@ -794,9 +1078,9 @@ exports.updateDepreciation = async (portal, id, data) => {
  */
 exports.createMaintainanceForIncident = async (portal, incidentId, data) => {
     return await Asset(connect(DB_CONNECTION, portal)).updateOne(
-        {_id: data.assetId, "incidentLogs._id": incidentId},
+        { _id: data.assetId, "incidentLogs._id": incidentId },
         {
-            $addToSet: {maintainanceLogs: data},
+            $addToSet: { maintainanceLogs: data },
             $set: {
                 "incidentLogs.$.statusIncident": data.statusIncident,
             },
@@ -809,27 +1093,27 @@ exports.createMaintainanceForIncident = async (portal, incidentId, data) => {
 /*
  * Lấy danh sách tất cả các phiếu bảo trì của tất cả tài sản hoặc có thể lấy ra danh sách các phiếu bảo trì gần nhất của tất cả tài sản
  */
-exports.searchMaintainances = async (portal, company, id, data) => {};
+exports.searchMaintainances = async (portal, company, id, data) => { };
 
 /**
  * Lấy danh sách thông tin bảo trì tài sản
  */
 exports.getMaintainances = async (portal, params) => {
     let maintainances;
-    let {code, maintainanceCode, maintainCreateDate, type, status} = params;
+    let { code, maintainanceCode, maintainCreateDate, type, status } = params;
     let page = parseInt(params.page);
     let limit = parseInt(params.limit);
 
     let assetSearch = [];
     if (code) {
-        assetSearch = [...assetSearch, {code: {$regex: code, $options: "i"}}];
+        assetSearch = [...assetSearch, { code: { $regex: code, $options: "i" } }];
     }
 
     let maintainanceSearch = [];
     if (maintainanceCode) {
         maintainanceSearch = [
             ...maintainanceSearch,
-            {maintainanceCode: {$regex: maintainanceCode, $options: "i"}},
+            { maintainanceCode: { $regex: maintainanceCode, $options: "i" } },
         ];
     }
 
@@ -840,32 +1124,32 @@ exports.getMaintainances = async (portal, params) => {
 
         maintainanceSearch = [
             ...maintainanceSearch,
-            {createDate: {$gt: start, $lte: end}},
+            { createDate: { $gt: start, $lte: end } },
         ];
     }
 
     if (type) {
-        maintainanceSearch = [...maintainanceSearch, {type: {$in: type}}];
+        maintainanceSearch = [...maintainanceSearch, { type: { $in: type } }];
     }
 
     if (status) {
-        maintainanceSearch = [...maintainanceSearch, {status: {$in: status}}];
+        maintainanceSearch = [...maintainanceSearch, { status: { $in: status } }];
     }
 
     let aggregateQuery = [];
     if (assetSearch && assetSearch.length !== 0) {
-        aggregateQuery = [...aggregateQuery, {$match: {$and: assetSearch}}];
+        aggregateQuery = [...aggregateQuery, { $match: { $and: assetSearch } }];
     }
     aggregateQuery = [
         ...aggregateQuery,
-        {$unwind: "$maintainanceLogs"},
-        {$replaceRoot: {newRoot: "$maintainanceLogs"}},
+        { $unwind: "$maintainanceLogs" },
+        { $replaceRoot: { newRoot: "$maintainanceLogs" } },
     ];
 
     if (maintainanceSearch && maintainanceSearch.length !== 0) {
         aggregateQuery = [
             ...aggregateQuery,
-            {$match: {$and: maintainanceSearch}},
+            { $match: { $and: maintainanceSearch } },
         ];
     }
 
@@ -873,7 +1157,7 @@ exports.getMaintainances = async (portal, params) => {
     let mintainanceLength = 0;
     let aggregateLengthQuery = [
         ...aggregateQuery,
-        {$count: "mintainance_Length"},
+        { $count: "mintainance_Length" },
     ];
     let count = await Asset(connect(DB_CONNECTION, portal)).aggregate(
         aggregateLengthQuery
@@ -886,9 +1170,9 @@ exports.getMaintainances = async (portal, params) => {
     // Tìm kiếm câc danh sách sự cố
     aggregateListQuery = [
         ...aggregateQuery,
-        {$sort: {createdAt: -1}},
-        {$skip: (page - 1) * limit},
-        {$limit: limit},
+        { $sort: { createdAt: -1 } },
+        { $skip: (page - 1) * limit },
+        { $limit: limit },
     ];
     maintainances = await Asset(connect(DB_CONNECTION, portal)).aggregate(
         aggregateListQuery
@@ -900,7 +1184,7 @@ exports.getMaintainances = async (portal, params) => {
 
         let asset = await Asset(connect(DB_CONNECTION, portal)).findOne({
             maintainanceLogs: {
-                $elemMatch: {_id: mongoose.Types.ObjectId(item._id)},
+                $elemMatch: { _id: mongoose.Types.ObjectId(item._id) },
             },
         });
 
@@ -929,19 +1213,19 @@ exports.createMaintainance = async (portal, id, data, incident_id) => {
 
     if (incident_id) {
         await Asset(connect(DB_CONNECTION, portal)).updateOne(
-            {_id: id, "incidentLogs._id": incident_id},
+            { _id: id, "incidentLogs._id": incident_id },
             {
                 $set: {
                     "incidentLogs.$.statusIncident": "Đã xử lý",
                 },
-                $addToSet: {maintainanceLogs: data},
+                $addToSet: { maintainanceLogs: data },
             }
         );
     } else {
         await Asset(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
             id,
-            {$addToSet: {maintainanceLogs: data}},
-            {new: true}
+            { $addToSet: { maintainanceLogs: data } },
+            { new: true }
         );
         return await this.getMaintainances(portal, params);
     }
@@ -951,11 +1235,11 @@ exports.createMaintainance = async (portal, id, data, incident_id) => {
  * Chỉnh sửa phiếu bảo trì
  */
 exports.updateMaintainance = async (portal, maintainanceId, data) => {
-    const {assetId} = data;
+    const { assetId } = data;
 
     const maintainances = await Asset(connect(DB_CONNECTION, portal))
         .findOneAndUpdate(
-            {_id: assetId, "maintainanceLogs._id": maintainanceId},
+            { _id: assetId, "maintainanceLogs._id": maintainanceId },
             {
                 $set: {
                     "maintainanceLogs.$.maintainanceCode":
@@ -969,7 +1253,7 @@ exports.updateMaintainance = async (portal, maintainanceId, data) => {
                     "maintainanceLogs.$.status": data.status,
                 },
             },
-            {new: true}
+            { new: true }
         )
         .lean();
 
@@ -977,7 +1261,7 @@ exports.updateMaintainance = async (portal, maintainanceId, data) => {
     if (maintainances) {
         maintainances.maintainanceLogs.map((obj) => {
             if (JSON.stringify(obj._id) === JSON.stringify(maintainanceId)) {
-                newMaintainances = {...obj, asset: maintainances};
+                newMaintainances = { ...obj, asset: maintainances };
             }
         });
     }
@@ -990,8 +1274,8 @@ exports.updateMaintainance = async (portal, maintainanceId, data) => {
  */
 exports.deleteMaintainance = async (portal, assetId, maintainanceId) => {
     return await Asset(connect(DB_CONNECTION, portal)).updateOne(
-        {_id: assetId},
-        {$pull: {maintainanceLogs: {_id: maintainanceId}}}
+        { _id: assetId },
+        { $pull: { maintainanceLogs: { _id: maintainanceId } } }
     );
 };
 
@@ -999,7 +1283,7 @@ exports.deleteMaintainance = async (portal, assetId, maintainanceId) => {
 /*
  * Lấy danh sách tất cả lịch sử sử dụng của tất cả tài sản hoặc có thể lấy ra danh sách các lịch sử sử dụng gần nhất của tất cả tài sản
  */
-exports.searchUsages = async (portal, company, id, data) => {};
+exports.searchUsages = async (portal, company, id, data) => { };
 
 /**
  * Thêm mới thông tin sử dụng
@@ -1011,13 +1295,13 @@ exports.createUsage = async (portal, id, data) => {
             : null;
     let assignedToOrganizationalUnit =
         data.assignedToOrganizationalUnit &&
-        data.assignedToOrganizationalUnit !== "null"
+            data.assignedToOrganizationalUnit !== "null"
             ? data.assignedToOrganizationalUnit
             : null;
     await Asset(connect(DB_CONNECTION, portal)).updateOne(
-        {_id: id},
+        { _id: id },
         {
-            $addToSet: {usageLogs: data.usageLogs},
+            $addToSet: { usageLogs: data.usageLogs },
             assignedToUser: assignedToUser,
             assignedToOrganizationalUnit: assignedToOrganizationalUnit,
             status: data.status,
@@ -1033,18 +1317,17 @@ exports.createUsage = async (portal, id, data) => {
  * Chỉnh sửa thông tin sử dụng
  */
 exports.updateUsage = async (portal, assetId, data) => {
+    let test = await Asset(connect(DB_CONNECTION, portal)).find({ _id: assetId })
     let asset = await Asset(connect(DB_CONNECTION, portal)).updateOne(
-        {_id: assetId},
+        { _id: assetId },
         {
-            $set: {
-                assignedToUser: data.assignedToUser,
-                assignedToOrganizationalUnit: data.assignedToOrganizationalUnit,
-            },
+            assignedToUser: data.assignedToUser,
+            assignedToOrganizationalUnit: data.assignedToOrganizationalUnit == "" ? null : data.assignedToOrganizationalUnit,
+
         }
     );
-
-    return await Asset(connect(DB_CONNECTION, portal)).updatePme(
-        {_id: assetId, "usageLogs._id": data._id},
+    return await Asset(connect(DB_CONNECTION, portal)).updateOne(
+        { _id: assetId, "usageLogs._id": data._id },
         {
             $set: {
                 "usageLogs.$.usedByUser": data.usedByUser,
@@ -1066,7 +1349,7 @@ exports.recallAsset = async (portal, assetId, data) => {
     let asset = await Asset(connect(DB_CONNECTION, portal)).findById(assetId);
     let usageLogs = asset.usageLogs[asset.usageLogs.length - 1];
     let updateUsageLogs = await Asset(connect(DB_CONNECTION, portal)).updateOne(
-        {_id: assetId, "usageLogs.usedByUser": usageLogs._id},
+        { _id: assetId, "usageLogs.usedByUser": usageLogs._id },
         {
             $set: {
                 "usageLogs.$.endDate": nowDate,
@@ -1074,7 +1357,7 @@ exports.recallAsset = async (portal, assetId, data) => {
         }
     );
     let updateAsset = await Asset(connect(DB_CONNECTION, portal)).updateOne(
-        {_id: assetId},
+        { _id: assetId },
         {
             $set: {
                 assignedToUser: null,
@@ -1090,8 +1373,8 @@ exports.recallAsset = async (portal, assetId, data) => {
  */
 exports.deleteUsage = async (portal, assetId, usageId) => {
     return await Asset(connect(DB_CONNECTION, portal)).updateOne(
-        {_id: assetId},
-        {$pull: {usageLogs: {_id: usageId}}}
+        { _id: assetId },
+        { $pull: { usageLogs: { _id: usageId } } }
     );
 };
 
@@ -1100,17 +1383,17 @@ exports.deleteUsage = async (portal, assetId, usageId) => {
  */
 exports.getIncidents = async (portal, params) => {
     let incidents;
-    let {code, assetName, incidentCode, incidentType, incidentStatus} = params;
+    let { code, assetName, incidentCode, incidentType, incidentStatus } = params;
     let page = parseInt(params.page);
     let limit = parseInt(params.limit);
     let assetSearch = [];
     if (code) {
-        assetSearch = [...assetSearch, {code: {$regex: code, $options: "i"}}];
+        assetSearch = [...assetSearch, { code: { $regex: code, $options: "i" } }];
     }
     if (assetName) {
         assetSearch = [
             ...assetSearch,
-            {assetName: {$regex: assetName, $options: "i"}},
+            { assetName: { $regex: assetName, $options: "i" } },
         ];
     }
 
@@ -1118,37 +1401,37 @@ exports.getIncidents = async (portal, params) => {
     if (incidentCode) {
         incidentSearch = [
             ...incidentSearch,
-            {incidentCode: {$regex: incidentCode, $options: "i"}},
+            { incidentCode: { $regex: incidentCode, $options: "i" } },
         ];
     }
     if (incidentType) {
-        incidentSearch = [...incidentSearch, {type: {$in: incidentType}}];
+        incidentSearch = [...incidentSearch, { type: { $in: incidentType } }];
     }
 
     if (incidentStatus) {
         incidentSearch = [
             ...incidentSearch,
-            {statusIncident: {$in: incidentStatus}},
+            { statusIncident: { $in: incidentStatus } },
         ];
     }
 
     let aggregateQuery = [];
     if (assetSearch && assetSearch.length !== 0) {
-        aggregateQuery = [...aggregateQuery, {$match: {$and: assetSearch}}];
+        aggregateQuery = [...aggregateQuery, { $match: { $and: assetSearch } }];
     }
     aggregateQuery = [
         ...aggregateQuery,
-        {$unwind: "$incidentLogs"},
-        {$replaceRoot: {newRoot: "$incidentLogs"}},
+        { $unwind: "$incidentLogs" },
+        { $replaceRoot: { newRoot: "$incidentLogs" } },
     ];
 
     if (incidentSearch && incidentSearch.length !== 0) {
-        aggregateQuery = [...aggregateQuery, {$match: {$and: incidentSearch}}];
+        aggregateQuery = [...aggregateQuery, { $match: { $and: incidentSearch } }];
     }
 
     // Đếm số sự cố
     let incidentLength = 0;
-    let aggregateLengthQuery = [...aggregateQuery, {$count: "incident_length"}];
+    let aggregateLengthQuery = [...aggregateQuery, { $count: "incident_length" }];
     let count = await Asset(connect(DB_CONNECTION, portal)).aggregate(
         aggregateLengthQuery
     );
@@ -1158,9 +1441,9 @@ exports.getIncidents = async (portal, params) => {
         // Tìm kiếm câc danh sách sự cố
         let aggregateListQuery = [
             ...aggregateQuery,
-            {$sort: {createdAt: 1}},
-            {$skip: (page - 1) * limit},
-            {$limit: limit},
+            { $sort: { createdAt: 1 } },
+            { $skip: (page - 1) * limit },
+            { $limit: limit },
         ];
         incidents = await Asset(connect(DB_CONNECTION, portal)).aggregate(
             aggregateListQuery
@@ -1171,7 +1454,7 @@ exports.getIncidents = async (portal, params) => {
 
             let asset = await Asset(connect(DB_CONNECTION, portal)).findOne({
                 incidentLogs: {
-                    $elemMatch: {_id: mongoose.Types.ObjectId(item._id)},
+                    $elemMatch: { _id: mongoose.Types.ObjectId(item._id) },
                 },
             });
 
@@ -1190,10 +1473,10 @@ exports.getIncidents = async (portal, params) => {
  */
 exports.createIncident = async (portal, id, data) => {
     let assetIncident = await Asset(connect(DB_CONNECTION, portal)).updateOne(
-        {_id: id},
+        { _id: id },
         {
             status: data.assetStatus,
-            $addToSet: {incidentLogs: data},
+            $addToSet: { incidentLogs: data },
         }
     );
     return assetIncident;
@@ -1232,7 +1515,7 @@ exports.updateIncident = async (portal, incidentId, data) => {
  */
 exports.deleteIncident = async (portal, assetId, incidentId) => {
     return await Asset(connect(DB_CONNECTION, portal)).updateOne(
-        {_id: assetId},
-        {$pull: {incidentLogs: {_id: incidentId}}}
+        { _id: assetId },
+        { $pull: { incidentLogs: { _id: incidentId } } }
     );
 };

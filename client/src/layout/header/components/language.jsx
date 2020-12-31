@@ -10,31 +10,31 @@ import vnIcon from './vn.png';
 class Language extends Component {
     constructor(props) {
         super(props);
-        this.state = {  }
+        this.state = {}
     }
-    render() { 
-        const {translate} = this.props;
-        return ( 
+    render() {
+        const { translate } = this.props;
+        return (
             <React.Fragment>
                 <li>
-                    <a  
-                        href="#abc"
-                        className="btn"
+                    <a
+                        href="#abc" className="dropdown-toggle"
                         data-toggle="control-sidebar"
                         title={translate('language')}
+                        style={{ color: '#4C4C4C', maxHeight: '50px' }}
                     >
-                        <i className="fa fa-language"></i>
+                        <i className="material-icons" style={{ fontSize: '22px' }}>language</i>
                     </a>
                 </li>
                 <div className="control-sidebar control-sidebar-light" style={{ display: 'none', marginTop: '52px', width: '158px' }}>
                     <div style={{ marginTop: '-40px' }}>
-                        <button onClick={this.props.setLanguageEnglish} style={{border: 'none', backgroundColor: '#F9FAFC'}}>
+                        <button onClick={this.props.setLanguageEnglish} style={{ border: 'none', backgroundColor: '#F9FAFC' }}>
                             <i>
                                 <img src={enIcon} className="img-circle" alt="img" style={{ width: '30px', height: '30px', marginLeft: '5px' }} />
                                 <span className="badge">EN</span>
                             </i>
                         </button>
-                        <button onClick={this.props.setLanguageVietNam} style={{border: 'none', backgroundColor: '#F9FAFC'}}>
+                        <button onClick={this.props.setLanguageVietNam} style={{ border: 'none', backgroundColor: '#F9FAFC' }}>
                             <i>
                                 <img src={vnIcon} className="img-circle" alt="img" style={{ width: '30px', height: '30px', marginLeft: '5px' }} />
                                 <span className="badge">VN</span>
@@ -43,10 +43,10 @@ class Language extends Component {
                     </div>
                 </div>
             </React.Fragment>
-         );
+        );
     }
 }
- 
+
 const mapStateToProps = state => {
     return state;
 }

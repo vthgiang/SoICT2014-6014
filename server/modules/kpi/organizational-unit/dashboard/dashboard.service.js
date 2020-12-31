@@ -1,8 +1,8 @@
-const Models = require(`${SERVER_MODELS_DIR}`);
+const Models = require(`../../../../models`);
 const { OrganizationalUnit, OrganizationalUnitKpiSet } = Models;
 const arrayToTree = require('array-to-tree');
 const EvaluationDashboardService = require('../../evaluation/dashboard/dashboard.service');
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { connect } = require(`../../../../helpers/dbHelper`);
  
 /**
  * Lấy các đơn vị con của một đơn vị và đơn vị đó
@@ -13,8 +13,8 @@ exports.getChildrenOfOrganizationalUnitsAsTree = async (portal, company, role) =
     let organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal))
         .findOne({
             $or: [
-                {'deans': { $in: role }}, 
-                {'viceDeans':{ $in: role }}, 
+                {'managers': { $in: role }}, 
+                {'deputyManagers':{ $in: role }}, 
                 {'employees':{ $in: role }}
             ]
         });
@@ -24,8 +24,8 @@ exports.getChildrenOfOrganizationalUnitsAsTree = async (portal, company, role) =
             id: department._id.toString(),
             name: department.name,
             description: department.description,
-            deans: department.deans.map(item => item.toString()),
-            viceDeans: department.viceDeans.map(item => item.toString()),
+            managers: department.managers.map(item => item.toString()),
+            deputyManagers: department.deputyManagers.map(item => item.toString()),
             employees: department.employees.map(item => item.toString()),
             parent_id: department.parent !== null ? department.parent.toString() : null
         }

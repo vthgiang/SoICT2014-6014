@@ -119,6 +119,7 @@ class AssetDetailForm extends Component {
 
                         archivedRecordNumber={archivedRecordNumber}
                         files={files}
+                        linkPage={this.props.linkPage}
                     />
                 </DialogModal>
             </React.Fragment>

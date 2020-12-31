@@ -1,6 +1,6 @@
 
-const { Lot, Good, Bill, BinLocation, Stock, ManufacturingCommand, OrganizationalUnit, ManufacturingWorks, ManufacturingMill } = require(`${SERVER_MODELS_DIR}`);
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { Lot, Good, Bill, BinLocation, Stock, ManufacturingCommand, OrganizationalUnit, ManufacturingWorks, ManufacturingMill } = require(`../../../../models`);
+const { connect } = require(`../../../../helpers/dbHelper`);
 
 exports.getAllLots = async (query, portal) => {
     let { page, limit, type, managementLocation } = query;
@@ -335,7 +335,7 @@ exports.getAllManufacturingLot = async (query, user, portal) => {
     option.type = "product";
     // Xử  lý các quyền trước để tìm ra các kế hoạch trong các nhà máy được phân quyền
     let role = [currentRole];
-    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'deans': { $in: role } });
+    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'managers': { $in: role } });
     let organizationalUnitId = departments.map(department => department._id);
     let listManufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
         organizationalUnit: {

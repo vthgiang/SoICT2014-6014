@@ -2,11 +2,11 @@ const {
     ManufacturingWorks,
     ManufacturingMill,
     OrganizationalUnit
-} = require(`${SERVER_MODELS_DIR}`);
+} = require(`../../../../models`);
 
 const {
     connect
-} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+} = require(`../../../../helpers/dbHelper`);
 
 // Thêm mới nhà máy sản xuất
 exports.createManufacturingWorks = async (data, portal) => {
@@ -32,7 +32,7 @@ exports.createManufacturingWorks = async (data, portal) => {
             path: "organizationalUnit",
             populate: [
                 {
-                    path: 'deans',
+                    path: 'managers',
                     populate: [{
                         path: "users",
                         populate: [{
@@ -40,7 +40,7 @@ exports.createManufacturingWorks = async (data, portal) => {
                         }]
                     }]
                 },
-                { path: 'viceDeans' },
+                { path: 'deputyManagers' },
                 { path: 'employees' }
             ]
         }]);
@@ -80,7 +80,7 @@ exports.getAllManufacturingWorks = async (query, portal) => {
     if (query.currentRole) {
         // Nếu truyền vào currentRole thì sẽ lấy ra tất cả các nhà máy mà role đó có quyền quản lý
         let role = [query.currentRole];
-        const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'deans': { $in: role } });
+        const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'managers': { $in: role } });
         let organizationalUnitId = departments.map(department => department._id);
         let listManufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
             organizationalUnit: {
@@ -110,7 +110,7 @@ exports.getAllManufacturingWorks = async (query, portal) => {
                 path: "organizationalUnit",
                 populate: [
                     {
-                        path: 'deans',
+                        path: 'managers',
                         populate: [{
                             path: "users",
                             populate: [{
@@ -118,7 +118,7 @@ exports.getAllManufacturingWorks = async (query, portal) => {
                             }]
                         }]
                     },
-                    { path: 'viceDeans' },
+                    { path: 'deputyManagers' },
                     { path: 'employees' }
                 ]
             }]);
@@ -135,7 +135,7 @@ exports.getAllManufacturingWorks = async (query, portal) => {
                 }, {
                     path: "organizationalUnit",
                     populate: [{
-                        path: 'deans',
+                        path: 'managers',
                         populate: [{
                             path: "users",
                             populate: [{
@@ -143,7 +143,7 @@ exports.getAllManufacturingWorks = async (query, portal) => {
                             }]
                         }]
                     },
-                    { path: 'viceDeans' },
+                    { path: 'deputyManagers' },
                     { path: 'employees' }]
                 }]
             })
@@ -160,7 +160,7 @@ exports.getManufacturingWorksById = async (id, portal) => {
         }, {
             path: "organizationalUnit",
             populate: [{
-                path: 'deans',
+                path: 'managers',
                 populate: [{
                     path: "users",
                     populate: [{
@@ -168,7 +168,7 @@ exports.getManufacturingWorksById = async (id, portal) => {
                     }]
                 }]
             },
-            { path: 'viceDeans' },
+            { path: 'deputyManagers' },
             { path: 'employees' }]
         }, {
             path: 'manageRoles'
@@ -229,7 +229,7 @@ exports.editManufacturingWorks = async (id, data, portal) => {
         .populate([{
             path: "organizationalUnit",
             populate: [{
-                path: 'deans',
+                path: 'managers',
                 populate: [{
                     path: "users",
                     populate: [{
@@ -237,7 +237,7 @@ exports.editManufacturingWorks = async (id, data, portal) => {
                     }]
                 }]
             },
-            { path: 'viceDeans' },
+            { path: 'deputyManagers' },
             { path: 'employees' }]
         }, {
             path: "manufacturingMills", select: "code teamLeader name"

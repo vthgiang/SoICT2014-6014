@@ -462,8 +462,8 @@ export default {
                 department_not_found: "Không tìm thấy thông tin về đơn vị",
                 department_has_user:
                     "Không thể xóa đơn vị này. Đơn vị đã có thành viên",
-                role_dean_exist: "Tên chức danh cho trưởng đơn vị đã tồn tại",
-                role_vice_dean_exist: "Tên chức danh cho phó đơn vị đã tồn tại",
+                role_manager_exist: "Tên chức danh cho trưởng đơn vị đã tồn tại",
+                role_deputy_manager_exist: "Tên chức danh cho phó đơn vị đã tồn tại",
                 role_employee_exist:
                     "Tên chức danh cho nhân viên đơn vị đã tồn tại",
             },
@@ -487,9 +487,9 @@ export default {
 
                 role_name_exist:
                     "Tên cho phân quyền đã được sử dụng cho một phân quyền khác",
-                role_dean_exist:
+                role_manager_exist:
                     "Tên cho phân quyền của trưởng đơn vị này đã được sử dụng",
-                role_vice_dean_exist:
+                role_deputy_manager_exist:
                     "Tên cho phân quyền của phó đơn vị này đã được sử dụng",
                 role_employee_exist:
                     "Tên cho phân quyền của nhân viên đơn vị này đã được sử dụng",
@@ -944,6 +944,7 @@ export default {
             close: "Đóng",
             email: "Email",
             password: "Mật khẩu",
+            password2: "Mật khẩu cấp 2",
             portal: "Portal",
             new_password: "Mật khẩu mới",
             confirm: "Xác thực mật khẩu",
@@ -1015,6 +1016,13 @@ export default {
                 properties: "Tên các thuộc tính",
                 title: "Tiêu đề tương ứng",
             },
+
+            showmore_showless: {
+                showmore: "Xem thêm",
+                showless: "Ẩn bớt",
+                title_showmore: "Bấm để hiển thị thêm",
+                title_showless: "Bấm để hiển thị ít hơn"
+            }
         },
 
         menu: {
@@ -1025,7 +1033,7 @@ export default {
             manage_company: "Doanh nghiệp",
             manage_role: "Quản lý phân quyền",
             manage_link: "Quản lý trang",
-            manage_component: "Quản lý UI-Component",
+            manage_component: "Quản lý phân quyền trên các trang",
 
             manage_department: "Quản lý cơ cấu tổ chức",
             manage_user: "Quản lý người dùng",
@@ -1055,7 +1063,7 @@ export default {
             manage_work_plan: "Quản lý kế hoạch làm việc",
             manage_training: "Quản lý đào tạo",
             account: "Tài khoản",
-            annual_leave_personal: "Nghỉ phép",
+            annual_leave_personal: "Xin nghỉ phép",
             manage_unit: "Quản lý nhân sự các đơn vị",
             add_employee: "Thêm nhân viên",
             list_employee: "Quản lý thông tin nhân viên",
@@ -1119,7 +1127,10 @@ export default {
             // Quản lý tài sản
             // QUẢN LÝ
 
+            add_update_asset: "Thêm - Cập nhật tài sản",
+            add_asset_title: "Thêm mới tài sản - Cập nhật tài sản",
             add_asset: "Thêm tài sản",
+            update_asset: "Cập nhật tài sản",
             manage_repair_asset: "Quản lý sửa chữa, thay thế",
             manage_usage_asset: "Quản lý sử dụng tài sản",
             manage_distribute_asset: "Quản lý cấp phát, điều chuyển",
@@ -1151,17 +1162,14 @@ export default {
 
             //QUẢN LÝ ĐƠN HÀNG
             manage_orders: "Quản lý đơn hàng",
-            manage_sales_order: "Đơn hàng kinh doanh",
-            manage_manufacturing_order: "Đơn hàng sản xuất",
-            manage_purchase_order: "Đơn mua hàng",
-            manage_sales_order_dashboard: "Dashboard kinh doanh",
-            manage_manufacturing_order_dashboard: "Dashboard sản xuất",
+            manage_sales_order: "Đơn bán hàng",
+            manage_purchase_order: "Đơn mua NVL",
+            manage_sales_order_dashboard: "Thống kê bán hàng",
             manage_quote: "Báo giá",
             manage_discount: "Giảm giá",
             manage_tax: "Thuế",
             manage_sla: "Cam kết chất lượng",
-            manage_business_department: "Quản lý phòng ban",
-            manage_admin_department: "Phòng kế toán bán hàng",
+            manage_business_department: "Phòng ban kinh doanh",
 
             // Quản lý kế hoạch sản xuất
             manage_plans: "Quản lý kế hoạch sản xuất",
@@ -1178,7 +1186,7 @@ export default {
             manage_manufacturing_command: "Quản lý lệnh sản xuất",
             manage_work_schedule: "Quản lý lịch sản xuất",
             manage_purchasing_request:
-                "Quản lý phiếu đề nghị mua nguyên vật liệu",
+                "Quản lý phiếu đề nghị mua hàng",
             manufacturing_dashboard: "Dashboard Quản lý sản xuất",
             analysis_manufacturing_performance: "Phân tích hiệu suất sản xuất",
             manage_manufacturing_works: "Quản lý nhà máy sản xuất",
@@ -1229,10 +1237,10 @@ export default {
             select_parent: "Chọn đơn vị cha",
             no_parent: "Không có đơn vị cha",
             roles_of_department: "Các chức danh của đơn vị",
-            dean_name: "Tên các chức danh trưởng đơn vị",
-            dean_example: "VD: Trưởng phòng tài chính",
-            vice_dean_name: "Tên các chức danh phó đơn vị",
-            vice_dean_example: "VD: Phó phòng tài chính",
+            manager_name: "Tên các chức danh trưởng đơn vị",
+            manager_example: "VD: Trưởng phòng tài chính",
+            deputy_manager_name: "Tên các chức danh phó đơn vị",
+            deputy_manager_example: "VD: Phó phòng tài chính",
             employee_name: "Tên các chức danh nhân viên đơn vị",
             employee_example: "VD: Nhân viên phòng tài chính",
             add_with_parent: "Tạo đơn vị mới với đơn vị cha là",
@@ -1388,7 +1396,7 @@ export default {
                     other_salary: "Các loại lương thưởng khác",
                     name_salary: "Tên lương thưởng",
                     money_salary: "Số tiền",
-                    total_salary: "Tổng lương",
+                    total_salary: "Tổng thu nhập",
                     action: "Hành động",
                 },
 
@@ -1629,7 +1637,46 @@ export default {
                         "Lịch sử tăng giảm lương - Thông tin nghỉ phép",
                     menu_attachments_title: "Tài liệu đính kèm",
                 },
+                house_hold: {
+                    appendix: {
+                        title: 'Phụ lục - Thành viên hộ gia đình người lao động',
+                        head_house_hold_name: 'Họ và tên chủ hộ',
+                        document_type: 'Loại giấy tờ',
+                        house_hold_number: 'Số sổ hộ khẩu',
+                        city: 'Tỉnh/Thành phố',
+                        district: 'Quận/Huyện',
+                        ward: 'Phường/Xã',
+                        house_hold_address: 'Địa chỉ hộ khẩu',
+                        phone: 'Số điện thoại',
+                        house_hold_code: 'Mã số hộ gia đình'
+                    },
+                    members: {
+                        title: 'Kê khai đầy đủ thông tin thành viên hộ gia đình trong sổ hộ khẩu',
+                        stt: 'STT',
+                        name: 'Họ và tên',
+                        code_social_insurance: 'Mã sổ BHXH',
+                        book_nci: 'Số sổ BHXH',
+                        gender: 'Giới tính',
+                        is_hh: 'Là chủ hộ',
+                        cnss: 'CNSS',
+                        rwhh: 'Quan hệ với chủ hộ',
+                        birth: 'Ngày sinh',
+                        pob: 'Nơi cấp giấy khai sinh',
+                        nationality: 'Quốc tịch',
+                        nation: 'Dân tộc',
+                        npp: 'Số CMND, Hộ chiếu',
+                        note: 'Ghi chú',
+                        male: "Nam",
+                        female: 'Nữ',
+                        yes: 'Có',
+                        no: 'Không',
+                    },
+                    add: 'Thêm thành viên hộ gia đình',
+                    edit: 'Chỉnh sửa thành viên hộ gia đình',
+                    delete: 'Xóa thành viên hộ gia đình',
+                },
 
+                money: 'Mức lương đóng',
                 staff_number: "Mã nhân viên",
                 full_name: "Họ và tên",
                 attendance_code: "Mã số chấm công",
@@ -1637,7 +1684,7 @@ export default {
                 male: "Nam",
                 female: "Nữ",
                 date_birth: "Ngày sinh",
-                place_birth: "Nơi sinh",
+                place_birth: "Nguyên quán",
                 email: "Email",
                 email_company: "Email công ty",
                 starting_date: "Ngày bắt đầu làm việc",
@@ -1686,6 +1733,8 @@ export default {
                 colleges: "Cao đẳng",
                 university: "Đại học",
                 master_degree: "Thạc sỹ",
+                engineer: 'Kỹ sư',
+                bachelor: 'Cử nhân',
                 phd: "Tiến sỹ",
                 unavailable: "Khác",
                 work_experience: "Kinh nghiệm làm việc",
@@ -1776,6 +1825,7 @@ export default {
                 disc_commitment: "Giấy cam kết làm việc",
                 temporary_residence_card: "Tạm trú tạm vắng",
                 disc_temporary_residence_card: "Giấy xác nhận tạm trú tạm vắng",
+                registration_book: 'Sổ hộ khẩu',
                 add_staff: "Thêm nhân viên",
 
                 reward: "Khen thưởng",
@@ -1909,6 +1959,7 @@ export default {
                     add_employee_title: "Thêm mới nhân viên",
                     add_by_hand: "Thêm một nhân viên",
                     add_import: "Thêm dữ liệu từ file",
+                    update_import: "Cập nhật dữ liệu từ file",
 
                     // Thông điệp trả về từ server
                     get_list_employee_success:
@@ -1971,6 +2022,7 @@ export default {
                 list_holiday: "Thời gian nghỉ lễ, nghỉ tết",
                 list_no_leave: "Thời gian không được xin nghỉ phép",
                 list_auto_leave: "Thời gian được xin nghỉ phép",
+                other: "Thời gian nghỉ khác",
 
                 // Nhóm dành cho table
                 table: {
@@ -2022,7 +2074,7 @@ export default {
             },
 
             dashboard_personal: {
-                remind_work: "Nhắc việc",
+                remind_work: "Nhắc việc tháng",
                 number_annual_leave_in_year:
                     "Số ngày nghỉ phép còn lại trong năm",
                 day: "ngày",
@@ -2036,20 +2088,20 @@ export default {
                 point: "điểm",
                 overtime_total: "Tổng thời gian tăng ca",
                 hours: "giờ",
-                total_time_annual_leave: "Tổng thời gian nghỉ phép",
+                total_time_annual_leave: "Tổng thời gian nghỉ phép tháng",
                 fullname: "Họ và tên",
                 task_total: "Số công việc",
-                general_task: "Tổng hợp công việc",
+                general_task: "Tổng hợp công việc tháng",
                 see_all: "Xem tất cả",
-                general_commendation: "Tổng hợp khen thưởng",
+                general_commendation: "Tổng hợp khen thưởng tháng",
                 reason_praise: "Lý do khen thưởng",
-                general_discipline: "Tổng hợp kỷ luật",
+                general_discipline: "Tổng hợp kỷ luật tháng",
                 reason_discipline: "Lý do kỷ luật",
 
-                general_annual_leave: "Tổng hợp tình hình nghỉ phép",
+                general_annual_leave: "Tổng hợp tình hình nghỉ phép tháng",
                 total_hours: "Tổng số giờ",
                 total_hours_works: "Tổng số giờ",
-                general_overtime: "Tổng hợp tình hình tăng ca",
+                general_overtime: "Tổng hợp tình hình tăng ca tháng",
                 not_org_unit: "Bạn chưa có đơn vị",
 
                 trend_of_work: "Xu hướng làm việc",
@@ -2090,6 +2142,7 @@ export default {
                 do_work: "Có đi làm",
                 total_timesheets: "Số giờ làm",
                 total_hours_off: "Số giờ nghỉ",
+                total_over_time: "Số giờ tăng ca",
                 work_date_in_month: "Công làm việc trong tháng",
                 shift_work: "Ca làm việc",
                 shifts1: "Ca 1",
@@ -2132,8 +2185,8 @@ export default {
             // Quản lý nhân sự các đơn vị
             manage_department: {
                 edit_unit: "Chỉnh sửa nhân sự đơn vị",
-                dean_unit: "Trưởng đơn vị",
-                vice_dean_unit: "Phó đơn vị",
+                manager_unit: "Trưởng đơn vị",
+                deputy_manager_unit: "Phó đơn vị",
                 employee_unit: "Nhân viên đơn vị",
                 email_employee: "Email nhân viên",
                 add_employee_unit: "Thêm nhân viên",
@@ -2347,7 +2400,7 @@ export default {
                 asset_value: "Giá trị tài sản",
                 disposal_date: "Ngày thanh lý",
                 not_disposal: "Chưa thanh lý",
-                not_disposal_date: "Chưa nhập thời gian thanh lý",
+                not_disposal_date: "Chưa nhập ngày thanh lý",
 
                 general_information: "Thông tin chung",
                 usage_information: "Thông tin sử dụng",
@@ -2385,7 +2438,7 @@ export default {
                 select_incident_type: "Chọn loại sự cố",
                 select_all_incident_type: "Chọn tất cả loại sự cố",
 
-                disposal_date: "Thời gian thanh lý",
+                disposal_date: "Ngày thanh lý",
                 disposal_type: "Hình thức thanh lý",
                 disposal_price: "Giá trị thanh lý",
                 disposal_content: "Nội dung thanh lý",
@@ -2544,6 +2597,7 @@ export default {
                 waiting_approval: "Chờ phê duyệt",
                 not_approved: "Không phê duyệt",
                 proponent: "Người đề nghị",
+                recommend_units: "Đơn vị đề nghị",
                 accountable: "Người phê duyệt",
                 note: "Ghi chú",
 
@@ -2723,7 +2777,6 @@ export default {
             count: "Số lần sử dụng",
             creator: "Người tạo mẫu",
             action: "Hành động",
-            priority: "Độ ưu tiên",
             general_information: "Thông tin chung",
             parameters: "Tham số",
             roles: "Các vai trò",
@@ -2736,9 +2789,6 @@ export default {
             infor_name: "Tên thông tin",
             datatypes: "Kiểu dữ liệu",
             manager_fill: "Chỉ quản lý được điền",
-            high: "Cao",
-            low: "Thấp",
-            medium: "Trung bình",
             text: "Văn bản",
             number: "Số",
             date: "Ngày tháng",
@@ -2849,8 +2899,10 @@ export default {
                 priority: "Độ ưu tiên",
                 select_priority: "Chọn mức độ ưu tiên",
                 select_all_priority: "Chọn tất cả các mức",
+                urgent: "Khẩn cấp",
                 high: "Cao",
-                normal: "Trung bình",
+                standard: "Tiêu chuẩn",
+                average: "Trung bình",
                 low: "Thấp",
 
                 special: "Đặc tính",
@@ -2878,6 +2930,7 @@ export default {
 
                 start_date: "Ngày bắt đầu",
                 end_date: "Ngày kết thúc",
+                task_additional_info: "Tùy chọn thêm",
 
                 search: "Tìm kiếm",
 
@@ -3140,7 +3193,7 @@ export default {
                 warning_hours: "giờ",
                 warning_minutes: "phút",
 
-                project: 'Tên dự án (nếu có)',
+                project: 'Thuộc dự án (nếu có)',
             },
             task_perform: {
                 actions: "Hoạt động",
@@ -3454,6 +3507,7 @@ export default {
                 view_task_process_template: "Xem mẫu quy trình công việc",
                 import_task_template_success: "Thêm mẫu công việc thành công",
                 import_task_template_faile: "Thêm mẫu công việc thất bại !",
+                task_template_name_exist:"Tên mẫu công việc đã tồn tại",
             },
         },
 
@@ -4788,7 +4842,7 @@ export default {
                 select_status: "Chọn trạng thái",
                 add_purchasing_request_button: "Thêm phiếu",
                 add_purchasing_request:
-                    "Thêm phiếu đề nghị mua nguyên vật liệu",
+                    "Thêm phiếu đề nghị mua hàng",
                 create_successfully: "Thêm phiếu đề nghị thành công",
                 create_failed: "Thêm phiếu đề nghị thất bại",
                 description: "Mô tả",
@@ -4797,10 +4851,10 @@ export default {
                 good_base_unit: "Đơn vị tính",
                 quantity: "Số lượng",
                 delete_good: "Xóa",
-                material_info: "Thông tin nguyên vật liệu",
-                choose_material: "---Chọn nguyên vật liệu---",
-                material_code: "Mã nguyên vật liệu",
-                error_good: "Vui lòng chọn nguyên vật liệu",
+                material_info: "Thông tin hàng",
+                choose_material: "---Chọn mặt hàng---",
+                material_code: "Mã mặt hàng",
+                error_good: "Vui lòng chọn mặt hàng",
                 error_description: "Mô tả không được để trống",
                 error_quantity: "Vui lòng nhập số lượng",
                 cancel_editing_good: "Hủy chỉnh sửa",
@@ -4809,7 +4863,7 @@ export default {
                 delete_good: "Xóa trắng",
                 error_quantity_input: "Số lượng không hợp lệ",
                 purchasing_request_detail: "Chi tiết phiếu đề nghị",
-                material_detail: "Chi tiết nguyên vật liệu",
+                material_detail: "Chi tiết mặt hàng",
                 purchasing_request_edit: "Sửa phiếu đề nghị",
                 edit_successfully: "Sửa phiếu dề nghị thành công",
                 edit_failed: "Sửa phiếu đề nghị thất bại",

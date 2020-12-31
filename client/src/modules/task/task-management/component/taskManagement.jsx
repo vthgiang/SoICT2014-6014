@@ -14,6 +14,7 @@ import TaskProjectAction from '../../task-project/redux/action';
 
 import { TaskAddModal } from './taskAddModal';
 import { ModalPerform } from '../../task-perform/component/modalPerform';
+import { duration } from 'moment';
 
 class TaskManagement extends Component {
     constructor(props) {
@@ -84,10 +85,9 @@ class TaskManagement extends Component {
 
         for (i = 0; i < list.length; i += 1) {
             node = list[i];
-            if (node.parent !== null) {
-
+            if (node.parent) {
                 // if you have dangling branches check that map[node.parentId] exists
-                if (map[node.parent._id] !== undefined) {
+                if (map[node.parent._id]) {
                     list[map[node.parent._id]].children.push(node);
                 }
                 else {
@@ -302,20 +302,29 @@ class TaskManagement extends Component {
         // } else {
         //     this.props.getPaginateTasksByUser(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate);
         // }
+
         this.setState({
             currentPage: 1
         })
     }
-    convertTime = (duration) => {
-        let seconds = Math.floor((duration / 1000) % 60),
-            minutes = Math.floor((duration / (1000 * 60)) % 60),
-            hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
 
-        hours = (hours < 10) ? "0" + hours : hours;
-        minutes = (minutes < 10) ? "0" + minutes : minutes;
-        seconds = (seconds < 10) ? "0" + seconds : seconds;
+    getTotalTimeSheetLogs = (timesheetLogs) => {
+        let totalTime = timesheetLogs.reduce(function (tong, cur) {
+            if (cur.stoppedAt && cur.acceptLog) return tong + cur.duration;
+            else return tong;
+        }, 0);
+        let tt = this.convertTime(totalTime);
 
-        return hours + ":" + minutes + ":" + seconds;
+        return tt;
+    }
+
+    convertTime = (ms) => {
+        if (!ms) return '00:00:00';
+        let hour = Math.floor(ms / (60 * 60 * 1000));
+        let minute = Math.floor((ms - hour * 60 * 60 * 1000) / (60 * 1000));
+        let second = Math.floor((ms - hour * 60 * 60 * 1000 - minute * 60 * 1000) / 1000);
+
+        return `${hour > 9 ? hour : `0${hour}`}:${minute > 9 ? minute : `0${minute}`}:${second > 9 ? second : `0${second}`}`;
     }
 
     handleShowModal = async (id) => {
@@ -340,8 +349,10 @@ class TaskManagement extends Component {
     formatPriority = (data) => {
         const { translate } = this.props;
         if (data === 1) return translate('task.task_management.low');
-        if (data === 2) return translate('task.task_management.normal');
-        if (data === 3) return translate('task.task_management.high');
+        if (data === 2) return translate('task.task_management.average');
+        if (data === 3) return translate('task.task_management.standard');
+        if (data === 4) return translate('task.task_management.high');
+        if (data === 5) return translate('task.task_management.urgent');
     }
 
     formatStatus = (data) => {
@@ -478,7 +489,7 @@ class TaskManagement extends Component {
                     endDate: getFormatDateFromTime(dataTemp[n].endDate, 'dd-mm-yyyy'),
                     status: this.formatStatus(dataTemp[n].status),
                     progress: dataTemp[n].progress ? dataTemp[n].progress + "%" : "0%",
-                    totalLoggedTime: this.convertTime(dataTemp[n].hoursSpentOnTask.totalHoursSpent),
+                    totalLoggedTime: this.getTotalTimeSheetLogs(dataTemp[n].timesheetLogs),
                     parent: dataTemp[n].parent ? dataTemp[n].parent._id : null
                 }
                 let archived = "store";
@@ -628,14 +639,18 @@ class TaskManagement extends Component {
                         <div className="form-group">
                             <label>{translate('task.task_management.priority')}</label>
                             <SelectMulti id="multiSelectPriority" defaultValue={[
+                                translate('task.task_management.urgent'),
                                 translate('task.task_management.high'),
-                                translate('task.task_management.normal'),
-                                translate('task.task_management.low')
+                                translate('task.task_management.standard'),
+                                translate('task.task_management.average'),
+                                translate('task.task_management.low'),
                             ]}
                                 items={[
-                                    { value: "3", text: translate('task.task_management.high') },
-                                    { value: "2", text: translate('task.task_management.normal') },
-                                    { value: "1", text: translate('task.task_management.low') }
+                                    { value: "5", text: translate('task.task_management.urgent') },
+                                    { value: "4", text: translate('task.task_management.high') },
+                                    { value: "3", text: translate('task.task_management.standard') },
+                                    { value: "2", text: translate('task.task_management.average') },
+                                    { value: "1", text: translate('task.task_management.low') },
                                 ]}
                                 onChange={this.handleSelectPriority}
                                 options={{ nonSelectedText: translate('task.task_management.select_priority'), allSelectedText: translate('task.task_management.select_all_priority') }}>
@@ -728,7 +743,7 @@ class TaskManagement extends Component {
                     </div>
 
                     {
-                        currentTaskId !== undefined &&
+                        currentTaskId &&
                         <ModalPerform
                             units={units}
                             id={currentTaskId}
@@ -759,7 +774,8 @@ class TaskManagement extends Component {
                         <Tree id="tasks-list-treeview"
                             plugins={false}
                             onChanged={this.handleShowTask}
-                            data={dataTree} />
+                            data={dataTree}
+                        />
                     </div>
 
                     <PaginateBar

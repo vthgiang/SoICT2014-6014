@@ -41,7 +41,7 @@ class DisposalTab extends Component {
     }
 
     /**
-     * Bắt sự kiện thay đổi Thời gian thanh lý
+     * Bắt sự kiện thay đổi Ngày thanh lý
      */
     handleDisposalDateChange = (value) => {
         this.setState(state => {
@@ -118,7 +118,7 @@ class DisposalTab extends Component {
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">{translate('asset.general_information.disposal_information')}</h4></legend>
 
-                        {/* Thời gian thanh lý */}
+                        {/* Ngày thanh lý */}
                         <div className={`form-group`}>
                             <label htmlFor="disposalDate">{translate('asset.general_information.disposal_date')}</label>
                             <DatePicker

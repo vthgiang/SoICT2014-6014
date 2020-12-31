@@ -1,5 +1,5 @@
 const TaskTemplateService = require('./taskTemplate.service');
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../../logs`);
 
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module quản lý mẫu công việc
 
@@ -70,11 +70,10 @@ exports.createTaskTemplate = async (req, res) => {
             content: data
         });
     } catch (error) {
-
         await Logger.error(req.user.email, 'create_task_template', req.portal);
         res.status(400).json({
             success: false,
-            messages: ['create_task_template_faile'],
+            messages: Array.isArray(error) ? error : ['create_task_template_faile'],
             content: error
         });
     }

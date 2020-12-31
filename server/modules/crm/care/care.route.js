@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { auth } = require(`${SERVER_MIDDLEWARE_DIR}`);
+const { auth } = require(`../../../middleware`);
 
 const CareController = require('./care.controller');
 

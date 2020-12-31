@@ -7,6 +7,8 @@ const initState = {
     listTimesheets: [],
     totalList: 0,
     arrMonth: [],
+    arrMonthHoursOff:[],
+    listHoursOffOfUnitsByStartDateAndEndDate:[],
     listOvertimeOfUnitsByStartDateAndEndDate: [],
     arrMonthById: [],
     listTimesheetsByEmployeeIdAndTime: [],
@@ -19,14 +21,33 @@ const initState = {
 export function timesheets(state = initState, action) {
     switch (action.type) {
         case TimesheetsConstants.GET_TIMESHEETS_REQUEST:
+            if (action.trendOvertime){
+                return {
+                    ...state,
+                    isLoading: true,
+                    listOvertimeOfUnitsByStartDateAndEndDate:[]
+                };
+            } else if(action.trendHoursOff){
+                return {
+                ...state,
+                    isLoading: true,
+                    listHoursOffOfUnitsByStartDateAndEndDate:[]
+                }
+            }
+            else {
+                return {
+                    ...state,
+                    isLoading: true
+                };
+            };
         case TimesheetsConstants.CREATE_TIMESHEETS_REQUEST:
         case TimesheetsConstants.UPDATE_TIMESHEETS_REQUEST:
         case TimesheetsConstants.DELETE_TIMESHEETS_REQUEST:
         case TimesheetsConstants.IMPORT_TIMESHEETS_REQUEST:
-            return {
-                ...state,
-                isLoading: true
-            };
+                return {
+                    ...state,
+                    isLoading: true
+                };
         case TimesheetsConstants.GET_TIMESHEETS_SUCCESS:
             if(action.callApiByEmployeeId){
                 return {
@@ -36,12 +57,19 @@ export function timesheets(state = initState, action) {
                     listTimesheetsByEmployeeIdAndTime: action.payload.listTimesheetsByEmployeeIdAndTime,
                 }
 
-            } else if (action.payload.arrMonth) {
+            } else if (action.trendOvertime) {
                 return {
                     ...state,
                     isLoading: false,
                     arrMonth: action.payload.arrMonth,
                     listOvertimeOfUnitsByStartDateAndEndDate: action.payload.listOvertimeOfUnitsByStartDateAndEndDate,
+                }
+            }else if (action.trendHoursOff) {
+                return {
+                    ...state,
+                    isLoading: false,
+                    arrMonthHoursOff: action.payload.arrMonth,
+                    listHoursOffOfUnitsByStartDateAndEndDate: action.payload.listOvertimeOfUnitsByStartDateAndEndDate,
                 }
             } else {
                 return {

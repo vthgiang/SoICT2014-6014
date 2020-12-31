@@ -132,7 +132,7 @@ export const exportDocument = {
                     category: "Văn bản",
                     relationshipDescription: "",
                     documentRelationshipList: ["Kết quả khảo sát định kỳ"],
-                    roles: ["Admin", "Dean"],
+                    roles: ["Admin", "Manager"],
                     organizationUnitManagement: "Ban giám đốc",
 
                 },

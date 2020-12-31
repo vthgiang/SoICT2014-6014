@@ -1,3 +1,5 @@
+const { freshArray } = require("../../helpers/functionHelper");
+
 const {
     OrganizationalUnit,
     UserRole,
@@ -5,9 +7,9 @@ const {
     ManualNotification,
     Role,
     User,
-} = require(`${SERVER_MODELS_DIR}`);
+} = require(`../../models`);
 
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { connect } = require(`../../helpers/dbHelper`);
 
 /**
  * Lấy tất cả thông báo mà admin, giám đốc... đã tạo - get manual notification
@@ -62,23 +64,25 @@ exports.paginateManualNotifications = async (portal, creator, data) => {
     );
 };
 
+exports.getUrl = (destination, filename) => {
+    let url = `${destination}/${filename}`;
+    return url.substr(1, url.length);
+}
 /**
  * Tạo thông báo manual notification
  * @company id của công ty
  * @data thông tin về thông báo muốn tạo
  */
-exports.createManualNotification = async (portal, data) => {
-    const notify = await ManualNotification(
-        connect(DB_CONNECTION, portal)
-    ).create({
-        creator: data.creator,
-        sender: data.sender,
-        title: data.title,
-        level: data.level,
-        content: data.content,
-        users: data.users,
-        organizationalUnits: data.organizationalUnits,
-    });
+exports.createManualNotification = async (portal, data, files) => {
+    if (files) {
+        files = files.map(obj => ({
+            fileName: obj.originalname,
+            url: this.getUrl(obj.destination, obj.filename),
+        }))
+        data = {...data, files }
+    }
+
+    const notify = await ManualNotification(connect(DB_CONNECTION, portal)).create(data)
 
     return await ManualNotification(connect(DB_CONNECTION, portal))
         .findById(notify._id)
@@ -101,13 +105,13 @@ exports.getAllUsersInOrganizationalUnit = async (portal, departmentId) => {
         .findById(departmentId)
         .populate([
             {
-                path: "deans",
+                path: "managers",
                 populate: {
                     path: "users",
                 },
             },
             {
-                path: "viceDeans",
+                path: "deputyManagers",
                 populate: {
                     path: "users",
                 },
@@ -120,16 +124,16 @@ exports.getAllUsersInOrganizationalUnit = async (portal, departmentId) => {
             },
         ]);
     var users = [];
-    for (let i = 0; i < department.deans.length; i++) {
+    for (let i = 0; i < department.managers.length; i++) {
         users = [
             ...users,
-            ...department.deans[i].users.map((user) => user.userId),
+            ...department.managers[i].users.map((user) => user.userId),
         ];
     }
-    for (let j = 0; j < department.viceDeans.length; j++) {
+    for (let j = 0; j < department.deputyManagers.length; j++) {
         users = [
             ...users,
-            ...department.viceDeans[j].users.map((user) => user.userId),
+            ...department.deputyManagers[j].users.map((user) => user.userId),
         ];
     }
     for (let k = 0; k < department.employees.length; k++) {
@@ -164,8 +168,13 @@ exports.createNotification = async (
         usersArr = await usersArr.concat(userArr);
     }
 
-    // Loại bỏ các giá trị trùng nhau
-    usersArr = usersArr.map((user) => user.toString());
+    
+    if (usersArr && usersArr.length !== 0) {
+        // Loại bỏ các giá trị trùng nhau
+        usersArr = freshArray(usersArr);
+        usersArr = usersArr.map((user) => user && user.toString());
+    }
+    
     for (let i = 0, max = usersArr.length; i < max; i++) {
         if (
             usersArr.indexOf(usersArr[i]) !== usersArr.lastIndexOf(usersArr[i])
@@ -174,10 +183,9 @@ exports.createNotification = async (
             i--;
         }
     }
-
     // Gửi thông báo cho các user - bằng socket trên web
     for (let i = 0; i < usersArr.length; i++) {
-        const notify = await Notification(
+        let noti = await Notification(
             connect(DB_CONNECTION, portal)
         ).create({
             company,
@@ -187,8 +195,12 @@ exports.createNotification = async (
             creator: data.creator,
             sender: data.sender,
             user: usersArr[i],
+            files: data.files,
             manualNotification,
+            associatedDataObject: data.associatedDataObject,
         });
+
+        const notify = { ...data, _id: noti._id };
         const arr = CONNECTED_CLIENTS.filter(
             (client) => client.userId === usersArr[i]
         );

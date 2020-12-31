@@ -86,7 +86,7 @@ class KPIPersonalManager extends Component {
         window.$(`#copy-old-kpi-to-new-time-${id}`).modal("show")
     }
 
-    /**Dịch trạng thái của tập KPI */
+    /** Dịch trạng thái của tập KPI */
     checkStatusKPI = (status) => {
         if (status === 0) {
             return translate('kpi.evaluation.employee_evaluation.establishing');

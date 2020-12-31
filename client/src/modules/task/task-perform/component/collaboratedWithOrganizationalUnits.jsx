@@ -256,7 +256,8 @@ class CollaboratedWithOrganizationalUnits extends Component {
                                     (employeeCollaboratedWithUnit && employeeCollaboratedWithUnit.responsibleEmployees && employeeCollaboratedWithUnit.responsibleEmployees.length !== 0)
                                         ? <span>
                                             {
-                                                responsibleEmployeesOfUnit.map((item, index) => {
+                                                responsibleEmployeesOfUnit && responsibleEmployeesOfUnit.length !== 0
+                                                && responsibleEmployeesOfUnit.map((item, index) => {
                                                     let seperator = index !== 0 ? ", " : "";
                                                     if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
                                                         return <span key={index}><strike>{seperator}{item.name}</strike></span>
@@ -275,7 +276,8 @@ class CollaboratedWithOrganizationalUnits extends Component {
                                     (employeeCollaboratedWithUnit && employeeCollaboratedWithUnit.consultedEmployees && employeeCollaboratedWithUnit.consultedEmployees.length !== 0)
                                         ? <span>
                                             {
-                                                consultedEmployeesOfUnit.map((item, index) => {
+                                                consultedEmployeesOfUnit && consultedEmployeesOfUnit.length !== 0
+                                                && consultedEmployeesOfUnit.map((item, index) => {
                                                     let seperator = index !== 0 ? ", " : "";
                                                     if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
                                                         return <span key={index}><strike>{seperator}{item.name}</strike></span>

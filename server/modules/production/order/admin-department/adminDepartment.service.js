@@ -1,10 +1,10 @@
 const {
     AdminDepartment
-} = require(`${SERVER_MODELS_DIR}`);
+} = require(`../../../../models`);
 
 const {
     connect
-} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+} = require(`../../../../helpers/dbHelper`);
 
 
 //Tạo phòng kinh doanh
@@ -20,7 +20,7 @@ exports.createAdminDepartment = async (data, portal) => {
         .populate([{
             path: "organizationalUnit",
             populate: [{
-                path: 'deans',
+                path: 'managers',
                 populate: [{
                     path: "users",
                     populate: [{
@@ -28,7 +28,7 @@ exports.createAdminDepartment = async (data, portal) => {
                     }]
                 }]
             },
-            { path: 'viceDeans' },
+            { path: 'deputyManagers' },
             { path: 'employees' }]
         }]);
 
@@ -53,7 +53,7 @@ exports.editAdminDepartment = async (id, data, portal) => {
         .populate([{
             path: "organizationalUnit",
             populate: [{
-                path: 'deans',
+                path: 'managers',
                 populate: [{
                     path: "users",
                     populate: [{
@@ -61,7 +61,7 @@ exports.editAdminDepartment = async (id, data, portal) => {
                     }]
                 }]
             },
-            { path: 'viceDeans' },
+            { path: 'deputyManagers' },
             { path: 'employees' }]
         }]);
 
@@ -89,7 +89,7 @@ exports.getAllAdminDepartments = async (query, portal) => {
             .populate([{
                 path: "organizationalUnit",
                 populate: [{
-                    path: 'deans',
+                    path: 'managers',
                     populate: [{
                         path: "users",
                         populate: [{
@@ -97,7 +97,7 @@ exports.getAllAdminDepartments = async (query, portal) => {
                         }]
                     }]
                 },
-                { path: 'viceDeans' },
+                { path: 'deputyManagers' },
                 { path: 'employees' }]
             }]);
 
@@ -110,7 +110,7 @@ exports.getAllAdminDepartments = async (query, portal) => {
                 populate: [{
                     path: "organizationalUnit",
                     populate: [{
-                        path: 'deans',
+                        path: 'managers',
                         populate: [{
                             path: "users",
                             populate: [{
@@ -118,7 +118,7 @@ exports.getAllAdminDepartments = async (query, portal) => {
                             }]
                         }]
                     },
-                    { path: 'viceDeans' },
+                    { path: 'deputyManagers' },
                     { path: 'employees' }]
                 }]
             })

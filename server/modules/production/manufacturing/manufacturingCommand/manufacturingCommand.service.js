@@ -1,10 +1,10 @@
 const {
     ManufacturingCommand, ManufacturingPlan, ManufacturingWorks, OrganizationalUnit,
     ManufacturingOrder, SalesOrder, Lot, ManufacturingMill
-} = require(`${SERVER_MODELS_DIR}`);
+} = require(`../../../../models`);
 const {
     connect
-} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+} = require(`../../../../helpers/dbHelper`);
 
 function getArrayTimeFromString(stringDate) {
     arrayDate = stringDate.split('-');
@@ -80,7 +80,7 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
 
     // Xử  lý các quyền trước để tìm ra các kế hoạch trong các nhà máy được phân quyền
     let role = [currentRole];
-    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'deans': { $in: role } });
+    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'managers': { $in: role } });
     let organizationalUnitId = departments.map(department => department._id);
     let listManufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
         organizationalUnit: {

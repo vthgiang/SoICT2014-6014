@@ -1,5 +1,5 @@
 const SalesOrderServices = require('./salesOrder.service');
-const Log = require(`${SERVER_LOGS_DIR}`);
+const Log = require(`../../../../logs`);
 
 exports.create = async (req, res) => {
     try {

@@ -682,12 +682,12 @@ class CreateForm extends Component {
                                                                     <td>{this.formatDate(version.expiredDate)}</td>
                                                                     <td>
                                                                         <a href="#" >
-                                                                            <u>{version.documentFile && version.documentFile.length && version.documentFile[0].file ? translate('document.download') : ""}</u>
+                                                                            <u>{version.documentFile && version.documentFile.length && version.documentFile[0].file ? version.documentFile[0].file : ""}</u>
                                                                         </a>
                                                                     </td>
                                                                     <td>
                                                                         <a href="#" >
-                                                                            <u>{version.documentFileScan && version.documentFileScan.length && version.documentFileScan[0].file ? translate('document.download') : ""}</u>
+                                                                            <u>{version.documentFileScan && version.documentFileScan.length && version.documentFileScan[0].file ? version.documentFileScan[0].file : ""}</u>
                                                                         </a>
                                                                     </td>
                                                                     <td>

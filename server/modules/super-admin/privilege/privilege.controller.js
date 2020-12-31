@@ -1,5 +1,5 @@
 const PrivilegeService = require('./privilege.service');
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../../logs`);
 
 
 // TODO: Xóa bớt các phương thức không dùng???

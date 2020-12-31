@@ -1,5 +1,5 @@
 const KPIUnitService = require('./creation.service');
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../../../logs`);
 
 /**
  * Get organizational unit kpi set

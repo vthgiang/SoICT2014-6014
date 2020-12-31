@@ -203,7 +203,6 @@ class CareerAddModal extends Component {
         //         return field.position.filter(e => e.code.indexOf(i.code));
         //     }
         // });
-        console.log('listposition', listPosition);
         listAction = career?.listAction.map(elm => { return { ...elm, id: elm._id } });
 
         return (

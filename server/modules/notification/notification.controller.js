@@ -1,5 +1,5 @@
 const NotificationServices = require("./notification.service");
-const Log = require(`${SERVER_LOGS_DIR}`);
+const Log = require(`../../logs`);
 
 exports.getAllManualNotifications = async (req, res) => {
     try {
@@ -63,12 +63,20 @@ exports.createNotification = async (req, res) => {
     try {
         const notification = await NotificationServices.createManualNotification(
             req.portal,
-            req.body
+            req.body,
+            req.files,
         );
+        const data = {
+            ...req.body,
+            users: notification.users ? notification.users.map(o => o._id) : [],
+            organizationalUnits: notification.organizationalUnits ? notification.organizationalUnits.map(o => o._id) : [],
+            files: notification.files,
+        }
+
         await NotificationServices.createNotification(
             req.portal,
             req.user.company._id,
-            req.body,
+            data,
             notification._id
         );
 

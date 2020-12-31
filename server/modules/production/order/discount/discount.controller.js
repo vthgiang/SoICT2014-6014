@@ -1,5 +1,5 @@
 const DiscountService = require('./discount.service');
-const Log = require(`${SERVER_LOGS_DIR}`);
+const Log = require(`../../../../logs`);
 
 exports.createNewDiscount = async (req, res) => {
     try {

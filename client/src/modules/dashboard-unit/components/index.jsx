@@ -32,7 +32,7 @@ class DashboardUnit extends Component {
             childOrganizationalUnit = [{
                 'name': childrenOrganizationalUnit.name,
                 'id': childrenOrganizationalUnit.id,
-                'viceDean': childrenOrganizationalUnit.viceDean
+                'deputyManager': childrenOrganizationalUnit.deputyManager
             }]
             temporaryChild = childrenOrganizationalUnit.children;
 
@@ -41,7 +41,7 @@ class DashboardUnit extends Component {
                     childOrganizationalUnit = childOrganizationalUnit.concat({
                         'name': x.name,
                         'id': x.id,
-                        'viceDean': x.viceDean
+                        'deputyManager': x.deputyManager
                     });
                 })
 
@@ -62,12 +62,13 @@ class DashboardUnit extends Component {
 
         return (
             <React.Fragment>
-                {childrenOrganizationalUnitLoading &&
-                    childrenOrganizationalUnit.length !== 0 ?
-                    <MainDashboardUnit childOrganizationalUnit={childOrganizationalUnit} /> :
-                    <div className="box box-body">
-                        <h4>Bạn chưa có đơn vị</h4>
-                    </div>
+                {
+                    childrenOrganizationalUnit && childrenOrganizationalUnit.length !== 0
+                    ? <MainDashboardUnit childOrganizationalUnit={childOrganizationalUnit} />
+                    : childrenOrganizationalUnitLoading &&
+                        <div className="box box-body">
+                            <h4>Bạn chưa có đơn vị</h4>
+                        </div>
                 }
             </React.Fragment>
         );

@@ -1,5 +1,5 @@
 const FieldService = require('./field.service');
-const Log = require(`${SERVER_LOGS_DIR}`);
+const Log = require(`../../../logs`);
 
 /** Lấy danh sách ngành nghề/ lĩnh vực */
 exports.getAllFields = async (req, res) => {
