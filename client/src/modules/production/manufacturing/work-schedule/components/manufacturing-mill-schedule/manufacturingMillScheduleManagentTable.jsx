@@ -186,7 +186,7 @@ class ManufacturingMillScheduleManagentTable extends Component {
                 />
                 <div id="croll-table" className="form-inline">
                     <div className="col-lg-6 col-md-6 col-sm-7 col-xs-8" style={{ padding: 0 }}>
-                        <table id="info-mill-table" className="table table-bordered">
+                        <table id="info-mill-table" className="table table-bordered not-sort">
                             <thead>
                                 <tr>
                                     <th>{translate('manufacturing.work_schedule.mill_code')}</th>
@@ -229,7 +229,7 @@ class ManufacturingMillScheduleManagentTable extends Component {
                         </table>
                     </div>
                     <div className="col-lg-6 col-md-6 col-sm-5 col-xs-4" style={{ padding: 0 }}>
-                        <table id="work-schedule-table" className="table table-striped table-bordered table-hover">
+                        <table id="work-schedule-table" className="table table-striped table-bordered table-hover not-sort">
                             <thead>
                                 <tr>
                                     {
@@ -243,33 +243,33 @@ class ManufacturingMillScheduleManagentTable extends Component {
                             <tbody>
                                 {
                                     listWorkSchedules.length !== 0 && listWorkSchedules.map((schedule, index1) =>
-                                        (
-                                            schedule.turns.map((turn, index2) => (
-                                                <tr key={index2}>
-                                                    {
-                                                        turn.map((command, index3) => {
-                                                            if (command !== null)
-                                                                return (
-                                                                    <td key={index3} className="tooltip-checkbox">
-                                                                        {/* <input type="checkbox" disabled={true} style={{ backgroundColor: translate(`manufacturing.work_schedule.${command.status}.color`) }}>
-                                                                        </input> */}
-                                                                        <span className="icon" title={translate(`manufacturing.work_schedule.${command.status}.content`)} style={{ backgroundColor: translate(`manufacturing.work_schedule.${command.status}.color`) }}></span>
-                                                                        <span className="tooltiptext"><a style={{ color: "white" }} onClick={() => this.handleShowDetailManufacturingCommand(command)}>{command.code}</a></span>
-                                                                    </td>
-                                                                )
-
+                                    (
+                                        schedule.turns.map((turn, index2) => (
+                                            <tr key={index2}>
+                                                {
+                                                    turn.map((command, index3) => {
+                                                        if (command !== null)
                                                             return (
-                                                                <td key={index3}>
-                                                                    {/* <input type="checkbox" disabled={true} /> */}
-                                                                    <span className="icon" style={{ backgroundColor: "white" }}></span>
+                                                                <td key={index3} className="tooltip-checkbox">
+                                                                    {/* <input type="checkbox" disabled={true} style={{ backgroundColor: translate(`manufacturing.work_schedule.${command.status}.color`) }}>
+                                                                        </input> */}
+                                                                    <span className="icon" title={translate(`manufacturing.work_schedule.${command.status}.content`)} style={{ backgroundColor: translate(`manufacturing.work_schedule.${command.status}.color`) }}></span>
+                                                                    <span className="tooltiptext"><a style={{ color: "white" }} onClick={() => this.handleShowDetailManufacturingCommand(command)}>{command.code}</a></span>
                                                                 </td>
-                                                            );
-                                                        })
-                                                    }
-                                                </tr>
+                                                            )
 
-                                            ))
-                                        )
+                                                        return (
+                                                            <td key={index3}>
+                                                                {/* <input type="checkbox" disabled={true} /> */}
+                                                                <span className="icon" style={{ backgroundColor: "white" }}></span>
+                                                            </td>
+                                                        );
+                                                    })
+                                                }
+                                            </tr>
+
+                                        ))
+                                    )
                                     )
                                 }
                             </tbody>
