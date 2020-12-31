@@ -15,6 +15,7 @@ import { getStorage } from '../../../../config';
 import { SelectFollowingTaskModal } from './selectFollowingTaskModal';
 import { withTranslate } from 'react-redux-multilingual';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
+import { ShowMoreShowLess } from '../../../../common-components';
 
 class DetailTaskTab extends Component {
 
@@ -932,10 +933,12 @@ class DetailTaskTab extends Component {
 
                                 {/* Mô tả công việc */}
                                 <div>
-                                    <strong>{translate('task.task_management.detail_description')}:</strong>
-                                    <span>
-                                        {task && task.description}
-                                    </span>
+                                <strong>{translate('task.task_management.detail_description')}:</strong>
+                                    <ShowMoreShowLess
+                                        id={"statistic"}
+                                        characterLimit={210}
+                                        value={task && task.description}
+                                    />
                                     <br />
                                 </div>
                             </div>
