@@ -245,7 +245,7 @@ class TaskOrganizationUnitDashboard extends Component {
         
         let defaultStartMonth = [startMonthDefault, startYear].join('-');
         let defaultEndMonth = month < 10 ? ['0' + month, year].join('-') : [month, year].join('-');
-        console.log(defaultStartMonth)
+
         return (
             <React.Fragment>
                 {currentOrganizationalUnit
