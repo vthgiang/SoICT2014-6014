@@ -203,18 +203,6 @@ class TaskOrganizationUnitDashboard extends Component {
         let childrenOrganizationalUnit = [];
         let currentOrganizationalUnit, currentOrganizationalUnitLoading;
 
-        let d = new Date(),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-        let defaultEndMonth = [month, year].join('-');
-        let defaultStartMonth = '0' + (month - 3) + '-' + year;
-
         if (dashboardEvaluationEmployeeKpiSet) {
             currentOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
             currentOrganizationalUnitLoading = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnitLoading;
@@ -233,6 +221,31 @@ class TaskOrganizationUnitDashboard extends Component {
                 }
             }
         }
+        
+        // Config ngày mặc định cho datePiker
+        let d = new Date(),
+            month = d.getMonth() + 1,
+            year = d.getFullYear();
+        let startMonthDefault, endMonthDefault, startYear;
+
+        if (month > 3) {
+            startMonthDefault = month - 3;
+            startYear = year;
+            if (month < 9) {
+                endMonthDefault = '0' + (month + 1);
+            } else {
+                endMonthDefault = month + 1;
+            }
+        } else {
+            startMonthDefault = month - 3 + 12;
+            startYear = year - 1;
+        }
+        if (startMonthDefault < 10)
+            startMonthDefault = '0' + startMonthDefault;
+        
+        let defaultStartMonth = [startMonthDefault, startYear].join('-');
+        let defaultEndMonth = month < 10 ? ['0' + month, year].join('-') : [month, year].join('-');
+        console.log(defaultStartMonth)
         return (
             <React.Fragment>
                 {currentOrganizationalUnit
