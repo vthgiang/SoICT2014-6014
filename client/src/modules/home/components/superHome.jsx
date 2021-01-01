@@ -15,22 +15,34 @@ class SuperHome extends Component {
         super(props);
 
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
-        let d = new Date(),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-        if (month.length < 2)
-            month = '0' + month;
 
-        if (day.length < 2)
-            day = '0' + day;
+        let d = new Date(),
+            month = d.getMonth() + 1,
+            year = d.getFullYear();
+        let startMonth, endMonth, startYear;
+
+        if (month > 3) {
+            startMonth = month - 3;
+            startYear = year;
+            if (month < 9) {
+                endMonth = '0' + (month + 1);
+            } else {
+                endMonth = month + 1;
+            }
+        } else {
+            startMonth = month - 3 + 12;
+            startYear = year - 1;
+        }
+        if (startMonth < 10)
+            startMonth = '0' + startMonth;
 
         this.INFO_SEARCH = {
             startMonth: [year, month - 3].join('-'),
-            endMonth: [year, month].join('-'),
+            startMonth: [startYear, startMonth].join('-'),
+            endMonth: month === 12 ? [year + 1, '01'].join('-') : [year, endMonth].join('-'),
 
-            startMonthTitle: `0${month - 4}-${year}`,
-            endMonthTitle: [month - 1, year].join('-')
+            startMonthTitle: [startMonth, startYear].join('-'),
+            endMonthTitle: month < 10 ? ['0' + month, year].join('-') : [month, year].join('-'),
         }
 
         this.state = {
@@ -139,17 +151,29 @@ class SuperHome extends Component {
         const { tasks, translate } = this.props;
         const { startMonth, endMonth } = this.state;
 
+        // Config ngày mặc định cho datePiker
         let d = new Date(),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
+            month = d.getMonth() + 1,
             year = d.getFullYear();
+        let startMonthDefault, endMonthDefault, startYear;
 
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-        let defaultEndMonth = [month, year].join('-');
-        let defaultStartMonth = '0' + (month - 3) + '-' + year;
+        if (month > 3) {
+            startMonthDefault = month - 3;
+            startYear = year;
+            if (month < 9) {
+                endMonthDefault = '0' + (month + 1);
+            } else {
+                endMonthDefault = month + 1;
+            }
+        } else {
+            startMonthDefault = month - 3 + 12;
+            startYear = year - 1;
+        }
+        if (startMonthDefault < 10)
+            startMonthDefault = '0' + startMonthDefault;
+        
+        let defaultStartMonth = [startMonthDefault, startYear].join('-');
+        let defaultEndMonth = month < 10 ? ['0' + month, year].join('-') : [month, year].join('-');
 
         let { startMonthTitle, endMonthTitle } = this.INFO_SEARCH;
 
