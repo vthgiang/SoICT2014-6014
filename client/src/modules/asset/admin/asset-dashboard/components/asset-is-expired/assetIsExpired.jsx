@@ -200,22 +200,20 @@ class AssetIsExpired extends Component {
         return (
             <React.Fragment>
                 <div className="qlcv">
-                    <div className="form-inline pull-right">
-                        {/* Chọn loại tài sản */}
-                        <div className="form-group  ">
-                            <label >{translate('asset.general_information.asset_type')}</label>
-                            <TreeSelect
-                                data={typeArr}
-                                value={type}
-                                handleChange={this.handleChangeTypeAsset}
-                                mode="hierarchical"
-                            />
-                        </div>
-                        {/* Tim kiem */}
-                        {/* <div className="form-group">
+                    {/* Chọn loại tài sản */}
+                    <div className="form-group" style={{ width: "100%" }}>
+                        <label style={{ width: 90 }}>{translate('asset.general_information.asset_type')}</label>
+                        <TreeSelect
+                            data={typeArr}
+                            value={type}
+                            handleChange={this.handleChangeTypeAsset}
+                            mode="hierarchical"
+                        />
+                    </div>
+                    {/* Tim kiem */}
+                    {/* <div className="form-group">
                             <button className="btn btn-success" onClick={this.handleSearchData}>{translate('task.task_management.search')}</button>
                         </div> */}
-                    </div>
                     {/* Bảng các tài sản */}
                     {(ExpiryDateAssets && ExpiryDateAssets.length !== 0) || (willExpiryDateAssets && willExpiryDateAssets.length !== 0) ?
                         <table id="asset-table" className="table table-striped table-bordered table-hover">
