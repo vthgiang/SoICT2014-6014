@@ -52,19 +52,20 @@ export function salesOrders(state = initState, action) {
             }
     
         case SalesOrderConstants.GET_ALL_SALES_ORDERS_SUCCESS:
+            console.log("action.payload.allSalesOrders.docs", action.payload.allSalesOrders.docs);
             return {
                 ...state,
                 isLoading: false,
                 listSalesOrders: action.payload.allSalesOrders.docs,
-                totalDocs: action.payload.allQuotes.totalDocs,
-                limit: action.payload.allQuotes.limit,
-                totalPages: action.payload.allQuotes.totalPages,
-                page: action.payload.allQuotes.page,
-                pagingCounter: action.payload.allQuotes.pagingCounter,
-                hasPrevPage: action.payload.allQuotes.hasPrevPage,
-                hasNextPage: action.payload.allQuotes.hasNextPage,
-                prevPage: action.payload.allQuotes.prevPage,
-                nextPage: action.payload.allQuotes.nextPage
+                totalDocs: action.payload.allSalesOrders.totalDocs,
+                limit: action.payload.allSalesOrders.limit,
+                totalPages: action.payload.allSalesOrders.totalPages,
+                page: action.payload.allSalesOrders.page,
+                pagingCounter: action.payload.allSalesOrders.pagingCounter,
+                hasPrevPage: action.payload.allSalesOrders.hasPrevPage,
+                hasNextPage: action.payload.allSalesOrders.hasNextPage,
+                prevPage: action.payload.allSalesOrders.prevPage,
+                nextPage: action.payload.allSalesOrders.nextPage
             }
         
         case SalesOrderConstants.CREATE_SALES_ORDER_SUCCESS:

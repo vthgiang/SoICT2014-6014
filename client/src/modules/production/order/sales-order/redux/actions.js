@@ -31,13 +31,13 @@ function createNewSalesOrder (data) {
     }
 }
 
-function getAllSalesOrders (queryData) {
+function getAllSalesOrders(queryData) {
     return (dispatch) => {
         dispatch({
             type: SalesOrderConstants.GET_ALL_SALES_ORDERS_REQUEST
         })
         SalesOrderSevices.getAllSalesOrders(queryData)
-        .then((res)=> {
+            .then((res) => {
             dispatch({
                 type: SalesOrderConstants.GET_ALL_SALES_ORDERS_SUCCESS,
                 payload: res.data.content

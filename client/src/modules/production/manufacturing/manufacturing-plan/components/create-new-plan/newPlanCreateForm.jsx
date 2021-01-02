@@ -59,7 +59,7 @@ class NewPlanCreateForm extends Component {
     }
 
     componentDidMount = () => {
-        this.props.getAllSalesOrder();
+        this.props.getAllSalesOrder({ page: 1, limit: 1000 });
         this.props.getAllUserOfCompany();
         const currentRole = localStorage.getItem("currentRole");
         this.props.getAllApproversOfPlan(currentRole);
@@ -120,8 +120,9 @@ class NewPlanCreateForm extends Component {
         this.setState({
             salesOrders: value,
         });
-        const { salesOrder } = this.props;
-        const { listSalesOrders } = salesOrder;
+
+        const { listSalesOrders } = this.props.salesOrders;
+
         let listOrders = [];
         if (listSalesOrders.length) {
             listOrders = listSalesOrders.filter((x) => value.includes(x._id));
@@ -332,6 +333,8 @@ class NewPlanCreateForm extends Component {
             addedAllGoods,
             manufacturingCommands,
         } = this.state;
+
+        console.log("sales order", this.props.salesOrders);
         return (
             <React.Fragment>
                 <ButtonModal
@@ -416,8 +419,8 @@ class NewPlanCreateForm extends Component {
 }
 
 function mapStateToProps(state) {
-    const { listSalesOrders, manufacturingPlan, lots, goods } = state;
-    return { salesOrder: listSalesOrders, manufacturingPlan, lots, goods };
+    const { salesOrders, manufacturingPlan, lots, goods } = state;
+    return { salesOrders, manufacturingPlan, lots, goods };
 }
 
 const mapDispatchToProps = {
