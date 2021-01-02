@@ -8,34 +8,33 @@ const {
 
 exports.createNewSalesOrder = async (userId, data, portal) => {
     console.log("data", data);
-    let newSalesOrder = await createNewSalesOrder(connect(DB_CONNECTION, portal)).create({
+    let newSalesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).create({
         code: data.code,
         status: data.status,
         creator: userId,
         customer: data.customer,
-        // customerName: data.customerName,
         customerPhone: data.customerPhone,
         customerAddress: data.customerAddress,
         customerRepresent: data.customerRepresent,
-        // customerTaxNumber: data.customerTaxNumber,
         customerEmail: data.customerEmail,
-        approvers: data.approvers.map((approver) => {
-            return {approver}
-        }),
+        approvers:  data.approvers ? data.approvers.map((approver) => {
+            return {
+                approver: approver.approver,
+                approverRole: approver.approverRole,
+            }
+        }) : undefined,
         priority: data.priority,
         goods: data.goods ? data.goods.map((item) => {
             return {
                 good: item.good,
-                returnRule: item.returnRule ? item.returnRule.map((rr) => {
-                    return rr;
-                }): undefined,
                 pricePerBaseUnit: item.pricePerBaseUnit,
                 pricePerBaseUnitOrigin: item.pricePerBaseUnitOrigin,
                 salesPriceVariance: item.salesPriceVariance,
                 quantity: item.quantity,
                 manufacturingWorks: data.manufacturingWorks,
-                planningStatus: data.planningStatus,
+                manufacturingPlan: data.manufacturingPlan,
                 serviceLevelAgreements: item.serviceLevelAgreements ? item.serviceLevelAgreements.map((sla) => {
+                    console.log("serviceLevelAgreements", sla._id);
                     return {
                         _id: sla._id,
                         title: sla.title,
@@ -124,6 +123,8 @@ exports.createNewSalesOrder = async (userId, data, portal) => {
         bill: data.bill
     });
 
+    console.log("new ", newSalesOrder);
+
     let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findById({ _id: newSalesOrder._id }).populate([{
         path: 'creator', select: 'name'
     }, {
@@ -144,9 +145,9 @@ exports.createNewSalesOrder = async (userId, data, portal) => {
     return { salesOrder }
 }
 
-exports.getAllQuotes = async (query, portal) => {
+exports.getAllSalesOrders = async (query, portal) => {
     let { page, limit, code, status, customer} = query;
-    let option = {};
+    let option = {}; 
     if (code) {
         option.code = new RegExp(code, "i")
     }
@@ -173,7 +174,7 @@ exports.getAllQuotes = async (query, portal) => {
     limit = Number(limit);
 
     if (!page || !limit) {
-        let allQuotes = await Quote(connect(DB_CONNECTION, portal)).find(option)
+        let allSalesOrders = await SalesOrder(connect(DB_CONNECTION, portal)).find(option)
         .populate([{
             path: 'creator', select: 'name'
         }, {
@@ -181,15 +182,19 @@ exports.getAllQuotes = async (query, portal) => {
         }, {
             path: 'goods.good', select: 'code name baseUnit'
         },{
+            path: 'goods.manufacturingWorks', select: 'code name'
+        },, {
             path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
-        },{
+        }, {
             path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
         }, {
             path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
+        },{
+            path: 'payments.receiver', select: 'code name'
         }]);
-        return { allQuotes }
+        return { allSalesOrders }
     } else {
-        let allQuotes = await Quote(connect(DB_CONNECTION, portal)).paginate(option, {
+        let allSalesOrders = await SalesOrder(connect(DB_CONNECTION, portal)).paginate(option, {
             page,
             limit,
             populate: [{
@@ -198,19 +203,23 @@ exports.getAllQuotes = async (query, portal) => {
                 path: 'customer', select: 'name taxNumber'
             }, {
                 path: 'goods.good', select: 'code name baseUnit'
-            }, {
+            },{
+                path: 'goods.manufacturingWorks', select: 'code name'
+            },, {
                 path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
             }, {
                 path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
             }, {
                 path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
+            },{
+                path: 'payments.receiver', select: 'code name'
             }]
             })
-        return { allQuotes }    
+        return { allSalesOrders }
     }
 }
 
-exports.editQuote = async (userId, id, data, portal) => {
+exports.editSalesOrder = async (userId, id, data, portal) => {
 
     if (data.goods) {
         let goods = data.goods.map((item) => {
@@ -223,6 +232,8 @@ exports.editQuote = async (userId, id, data, portal) => {
                 pricePerBaseUnitOrigin: item.pricePerBaseUnitOrigin,
                 salesPriceVariance: item.salesPriceVariance,
                 quantity: item.quantity,
+                manufacturingWorks: item.manufacturingWorks,
+                manufacturingPlan: item.manufacturingPlan,
                 serviceLevelAgreements: item.serviceLevelAgreements ? item.serviceLevelAgreements.map((sla) => {
                     return {
                         _id: sla._id,
@@ -274,14 +285,12 @@ exports.editQuote = async (userId, id, data, portal) => {
         })
         data = { ...data, goods };
     }
-
-    console.log("data", data);
-    
-    await Quote(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
+        
+    await SalesOrder(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
         $set: data
     }, { new: true });
     
-    let quoteUpdated = await Quote(connect(DB_CONNECTION, portal)).findById(id)
+    let salesOrderUpdated = await SalesOrder(connect(DB_CONNECTION, portal)).findById(id)
         .populate([{
             path: 'creator', select: 'name'
         }, {
@@ -289,29 +298,62 @@ exports.editQuote = async (userId, id, data, portal) => {
         }, {
             path: 'goods.good', select: 'code name baseUnit'
         },{
+            path: 'goods.manufacturingWorks', select: 'code name'
+        },, {
             path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
-        },{
+        }, {
             path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
         }, {
-        path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
+            path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
+        },{
+            path: 'payments.receiver', select: 'code name'
         }]);
     
-    console.log("quoteUpdated", quoteUpdated);
+    console.log("salesOrderUpdated", salesOrderUpdated);
     
-    return { quote: quoteUpdated }
+    return { quote: salesOrderUpdated }
 }
 
-exports.approveQuote = async (approverId, quoteId, data, portal) => {
-    let quote = await Quote(connect(DB_CONNECTION, portal)).findById(quoteId)
+exports.approveSalesOrder = async (approverId, salesOrderId, approver, portal) => {
+    let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findById(salesOrderId)
 
-    if (!quote) {
-        throw Error("Quote is not existing")
+    if (!salesOrder) {
+        throw Error("Sales Order is not existing")
     }
 
-    quote.status = data.status;
-    quote.approver = approverId;
+    salesOrder.approvers.push({
+        approver: approver.approver,
+        approverRole: approver.approverRole,
+        approveAt: new Date(),
+        status: approver.status
+    });
         
-    quote.save();
+    salesOrder.save();
     
-    return {quote}
+    return {salesOrder}
+}
+
+exports.addManufacturingPlanForGood = async (salesOrderId, data, portal) => {
+    //data: [{goodId, manufacturingPlanId}] 
+
+    let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findById(salesOrderId);
+    if (!salesOrder) {
+        throw Error("Sales Order is not existing")
+    }
+
+    let goodsOfSalesOrder = salesOrder.goods.map((good) => {
+        for (let index = 0; index < data.length; index++) {
+            if (data[index].goodId === good.good) {
+                good.manufacturingPlan = data[index].manufacturingPlanId;
+                return good;
+            }
+        }
+        return good;
+    })
+
+    salesOrder.goods = goodsOfSalesOrder;
+
+    salesOrder.save();
+
+    return {salesOrder}
 }

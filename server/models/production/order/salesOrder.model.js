@@ -48,9 +48,17 @@ const SalesOrderSchema = new Schema({
             ref: 'User',
             required: true
         },
+        approverRole: {
+            type: Number,
+            enum: [1, 2] //1. Sales Admin, 2. Kế toán
+        },
         approveAt: {
             type: Date,
             default: new Date()
+        },
+        status: {
+            type: Boolean,
+            default: false
         }
     }],
     priority: { // 1: Thấp, 2: Trung bình, 3: Cao, 4: Đặc biệt
@@ -82,9 +90,9 @@ const SalesOrderSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'ManufacturingWorks'
         },
-        planningStatus: {//1: Yêu cầu sản xuất, 2: Đã lập kế hoạch sản xuất, 3: Hoàn thành sản xuất, 4: Sẵn trong kho
-            type: Number,
-            enum: [1, 2, 3, 4]
+        manufacturingPlan: {//Lấy trạng thái từ kế hoạch SX
+            type: Schema.Types.ObjectId,
+            ref: 'ManufacturingPlan'
         },
         //service level agreement
         serviceLevelAgreements: [{

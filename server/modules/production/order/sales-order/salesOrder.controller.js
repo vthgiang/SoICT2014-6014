@@ -1,12 +1,22 @@
 const SalesOrderServices = require('./salesOrder.service');
 const Log = require(`../../../../logs`);
 
-exports.create = async (req, res) => {
+exports.createNewSalesOrder = async (req, res) => {
     try {
+        let data = req.body;
 
+        let salesOrder = await SalesOrderServices.createNewSalesOrder(req.user._id, data, req.portal)
+
+        await Log.info(req.user.email, "CREATED_NEW_SALES_ORDER", req.portal);
+
+
+        res.status(201).json({
+            success: true,
+            messages: ["create_successfully"],
+            content: salesOrder
+        });
     } catch (error) {
-        await Log.error(req.user.email, "CREATED_NEW_COIN_RULE", req.portal);
-
+        await Log.error(req.user.email, "CREATED_NEW_SALES_ORDER", req.portal);
         res.status(400).json({
             success: false,
             messages: ["create_failed"],
@@ -17,7 +27,8 @@ exports.create = async (req, res) => {
 
 exports.getAllSalesOrders = async (req, res) => {
     try {
-        let salesOrders = await SalesOrderServices.getAllSalesOrders(req.portal);
+        let query = req.query;
+        let salesOrders = await SalesOrderServices.getAllSalesOrders(query, req.portal);
 
         await Log.info(req.user.email, "GET_ALL_SALES_ORDERS", req.portal);
 
@@ -34,5 +45,80 @@ exports.getAllSalesOrders = async (req, res) => {
             messages: ["get_sales_orders_failed"],
             content: error.message
         })
+    }
+}
+
+exports.editSalesOrder = async (req, res) => {
+    try {
+        let data = req.body;
+        let id = req.params.id;
+
+        let salesOrder = await SalesOrderServices.editSalesOrder(req.user._id, id, data, req.portal)
+
+        await Log.info(req.user.email, "EDIT_SALES_ORDER", req.portal);
+
+
+        res.status(201).json({
+            success: true,
+            messages: ["edit_successfully"],
+            content: salesOrder
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "EDIT_SALES_ORDER", req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["edit_failed"],
+            content: error.message
+        });
+    }
+}
+
+exports.approveSalesOrder = async (req, res) => {
+    try {
+        let data = req.body;
+        let id = req.params.id;
+
+        let salesOrder = await SalesOrderServices.approveSalesOrder(id, data, req.portal)
+
+        await Log.info(req.user.email, "APPROVE_SALES_ORDER", req.portal);
+
+
+        res.status(201).json({
+            success: true,
+            messages: ["approve_successfully"],
+            content: salesOrder
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "APPROVE_SALES_ORDER", req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["approve_failed"],
+            content: error.message
+        });
+    }
+}
+
+exports.addManufacturingPlanForGood = async (req, res) => {
+    try {
+        let data = req.body;
+        let id = req.params.id;
+
+        let salesOrder = await SalesOrderServices.addManufacturingPlanForGood(id, data, req.portal)
+
+        await Log.info(req.user.email, "ADD_MANUFACTURING_PLAN_FOR_SALES_ORDER", req.portal);
+
+
+        res.status(201).json({
+            success: true,
+            messages: ["add_manufacturing_for_sales_order_successfully"],
+            content: salesOrder
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "ADD_MANUFACTURING_PLAN_FOR_SALES_ORDER", req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["add_manufacturing_for_sales_order_failed"],
+            content: error.message
+        });
     }
 }
