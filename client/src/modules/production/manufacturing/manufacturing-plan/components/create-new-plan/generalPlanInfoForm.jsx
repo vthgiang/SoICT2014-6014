@@ -199,7 +199,7 @@ class PlanInfoForm extends Component {
         }
         if (willUpdateState) {
             let { good } = this.state;
-            good.quantity = value;
+            good.quantity = value === "" ? value : Number(value);
             this.setState((state) => ({
                 ...state,
                 good: { ...good },
@@ -302,10 +302,25 @@ class PlanInfoForm extends Component {
         return null;
     }
 
+    // Hàm trả về danh sách đơn hàng đã chọn
+    getListSalesOrdersChoosed = (salesOrders) => {
+        const { salesOrder } = this.props;
+        let listSalesOrderChoosed = [];
+        const { listSalesOrders } = salesOrder;
+        listSalesOrders.map(x => {
+            if (salesOrders.includes(x._id)) {
+                listSalesOrderChoosed.push(x);
+            }
+        });
+        return listSalesOrderChoosed;
+    }
+
 
     render() {
         const { translate, code, salesOrders, startDate, endDate, description, listGoodsSalesOrders, addedAllGoods, listGoods } = this.props;
         const { good, errorGood, errorQuantity, approvers, errorApprovers } = this.state;
+        let listSalesOrdersChoosed = [];
+        listSalesOrdersChoosed = this.getListSalesOrdersChoosed(salesOrders);
         return (
             <React.Fragment>
                 <div className="row">
@@ -368,6 +383,42 @@ class PlanInfoForm extends Component {
                         </div>
                     </div>
                 </div>
+                {
+                    listSalesOrdersChoosed && listSalesOrdersChoosed.length > 0 &&
+                    <div className="row">
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <fieldset className="scheduler-border">
+                                <legend className="scheduler-border">{translate('manufacturing.plan.list_order')}</legend>
+                                <table className="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>{translate('manufacturing.plan.index')}</th>
+                                            <th>{translate('manufacturing.plan.sales_order.code')}</th>
+                                            <th>{translate('manufacturing.plan.sales_order.priority')}</th>
+                                            <th style={{ width: "120px", textAlign: "center" }}>
+                                                {translate("table.action")}
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            listSalesOrdersChoosed.map((x, index) => (
+                                                <tr>
+                                                    <td>{index + 1}</td>
+                                                    <td>{x.code}</td>
+                                                    <td>{translate(`manufacturing.plan.sales_order.${x.priority}.content`)}</td>
+                                                    <td>
+                                                        <a style={{ width: '5px' }} title={translate('manufacturing.plan.sales_order.detail_sales_order')} onClick={() => { this.handleShowDetailSalesOrder(x) }}><i className="material-icons">view_list</i></a>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        }
+                                    </tbody>
+                                </table>
+                            </fieldset>
+                        </div>
+                    </div>
+                }
                 {
                     listGoodsSalesOrders.length > 0 &&
                     <div className="row">
