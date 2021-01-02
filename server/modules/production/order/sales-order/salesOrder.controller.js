@@ -25,6 +25,7 @@ exports.createNewSalesOrder = async (req, res) => {
     }
 }
 
+// fale sales order lam KHSX
 exports.getAllSalesOrders = async (req, res) => {
     try {
         let query = req.query;

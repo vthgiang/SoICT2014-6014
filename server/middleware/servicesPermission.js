@@ -18,41 +18,41 @@ exports.links = [
             { path: '/auth/download-file', method: 'GET' },
 
             // Service của riêng Systemadmin
-            { path: '/system-admin/company/companies', method: 'GET', roles: ['System Admin'] },
-            { path: '/system-admin/company/companies', method: 'POST', roles: ['System Admin'] },
-            { path: '/system-admin/company/paginate', method: 'POST', roles: ['System Admin'] },
-            { path: '/system-admin/company/companies/:companyId', method: 'GET', roles: ['System Admin'] },
-            { path: '/system-admin/company/companies/:companyId', method: 'PATCH', roles: ['System Admin'] },
-            { path: '/system-admin/company/companies/:companyId', method: 'DELETE', roles: ['System Admin'] },
+            { path: '/system-admin/company/companies', method: 'GET' },
+            { path: '/system-admin/company/companies', method: 'POST' },
+            { path: '/system-admin/company/paginate', method: 'POST' },
+            { path: '/system-admin/company/companies/:companyId', method: 'GET' },
+            { path: '/system-admin/company/companies/:companyId', method: 'PATCH' },
+            { path: '/system-admin/company/companies/:companyId', method: 'DELETE' },
 
-            { path: '/system-admin/company/companies/:companyId/links', method: 'POST', roles: ['System Admin'] },
-            { path: '/system-admin/company/companies/:companyId/links', method: 'GET', roles: ['System Admin'] },
-            { path: '/system-admin/company/companies/:companyId/links/:linkId', method: 'DELETE', roles: ['System Admin'] },
+            { path: '/system-admin/company/companies/:companyId/links', method: 'POST' },
+            { path: '/system-admin/company/companies/:companyId/links', method: 'GET' },
+            { path: '/system-admin/company/companies/:companyId/links/:linkId', method: 'DELETE' },
 
-            { path: '/system-admin/company/companies/:companyId/components', method: 'GET', roles: ['System Admin'] },
-            { path: '/system-admin/company/companies/:companyId/components', method: 'POST', roles: ['System Admin'] },
-            { path: '/system-admin/company/companies/:companyId/components/:componentId', method: 'DELETE', roles: ['System Admin'] },
+            { path: '/system-admin/company/companies/:companyId/components', method: 'GET' },
+            { path: '/system-admin/company/companies/:companyId/components', method: 'POST' },
+            { path: '/system-admin/company/companies/:companyId/components/:componentId', method: 'DELETE' },
             
-            { path: '/system-admin/company/organizationalUnitImage', method: 'PATCH', roles: ['System Admin'] },
-            { path: '/system-admin/company/organizationalUnitImage', method: 'get', roles: ['System Admin'] },
+            { path: '/system-admin/company/organizationalUnitImage', method: 'PATCH' },
+            { path: '/system-admin/company/organizationalUnitImage', method: 'get' },
 
-            { path: '/system-admin/company/:id/links-paginate/:page/:limit', method: 'POST', roles: ['System Admin'] },
-            { path: '/system-admin/company/:id/components-paginate/:page/:limit', method: 'POST', roles: ['System Admin'] },
+            { path: '/system-admin/company/:id/links-paginate/:page/:limit', method: 'POST' },
+            { path: '/system-admin/company/:id/components-paginate/:page/:limit', method: 'POST' },
 
             { path: '/system-admin/company/data-import-configurations', method: 'GET' },
             { path: '/system-admin/company/data-import-configurations', method: 'POST' },
             { path: '/system-admin/company/data-import-configurations/:id', method: 'PATCH' },
 
-            { path: '/system-admin/root-role/root-roles', method: 'GET', roles: ['System Admin'] },
+            { path: '/system-admin/root-role/root-roles', method: 'GET' },
 
-            { path: '/system-admin/system-link/system-links-categories', method: 'GET', roles: ['System Admin'] },
-            { path: '/system-admin/system-link/system-links', method: 'GET', roles: ['System Admin'] },
-            { path: '/system-admin/system-link/system-links', method: 'POST', roles: ['System Admin'] },
+            { path: '/system-admin/system-link/system-links-categories', method: 'GET' },
+            { path: '/system-admin/system-link/system-links', method: 'GET' },
+            { path: '/system-admin/system-link/system-links', method: 'POST' },
 
-            { path: '/links-default-management/paginate', method: 'POST', roles: ['System Admin'] },
-            { path: '/system-admin/system-link/system-links/:systemLinkId', method: 'GET', roles: ['System Admin'] },
-            { path: '/system-admin/system-link/system-links/:systemLinkId', method: 'PATCH', roles: ['System Admin'] },
-            { path: '/system-admin/system-link/system-links/:systemLinkId', method: 'DELETE', roles: ['System Admin'] },
+            { path: '/links-default-management/paginate', method: 'POST' },
+            { path: '/system-admin/system-link/system-links/:systemLinkId', method: 'GET' },
+            { path: '/system-admin/system-link/system-links/:systemLinkId', method: 'PATCH' },
+            { path: '/system-admin/system-link/system-links/:systemLinkId', method: 'DELETE' },
 
             { path: '/system-admin/log/logs', method: 'GET' },
             { path: '/system-admin/log/logs', method: 'PATCH' },
@@ -72,11 +72,11 @@ exports.links = [
             { path: '/system-admin/system-component/system-components/:systemComponentId', method: 'DELETE' },
             { path: '/components-default-management/role/:roleId/link/:linkId', method: 'GET' },
 
-            { path: '/system-admin/system-setting/backup', method: 'PATCH', roles: ['System Admin'] },
-            { path: '/system-admin/system-setting/restore', method: 'PATCH', roles: ['System Admin'] },
+            { path: '/system-admin/system-setting/backup', method: 'PATCH' },
+            { path: '/system-admin/system-setting/restore', method: 'PATCH' },
 
-            { path: '/configuration/configurations', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin',] },
-            { path: '/configuration/configurations', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin',] },
+            { path: '/configuration/configurations', method: 'GET' },
+            { path: '/configuration/configurations', method: 'PATCH' },
 
 
             { path: '/system/backup', method: 'GET' },
@@ -176,7 +176,7 @@ exports.links = [
             { path: '/majors/major', method: 'GET' },
             { path: '/majors/major', method: 'POST' },
             { path: '/majors/major/:id', method: 'PATCH' },
-            { path: '/majors/major/:id', method: 'DELETE' },
+            { path: '/majors/major', method: 'DELETE' },
 
             { path: '/career-positions/career-positions', method: 'GET' },
             { path: '/career-positions/career-fields', method: 'GET' },
@@ -400,7 +400,7 @@ exports.links = [
             { path: '/task/task-templates', method: 'GET' },
             { path: '/task/task-templates/:id', method: 'GET' },
             { path: '/task/task-templates', method: 'POST' },
-            { path: '/task/task-templates/:id', method: 'DELETE', roles: ['Manager'] },
+            { path: '/task/task-templates/:id', method: 'DELETE'},
             { path: '/task/task-templates/:id', method: 'PATCH' },
             { path: '/task/task-templates/import', method: 'POST' },
 
@@ -904,4 +904,3 @@ exports.links = [
         apis: ['@all']
     }
 ];
-

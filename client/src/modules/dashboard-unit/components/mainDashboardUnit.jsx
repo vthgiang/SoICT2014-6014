@@ -230,7 +230,7 @@ class MainDashboardUnit extends Component {
                         </div>
                         <button type="button" className="btn btn-success" onClick={this.handleUpdateData}>{translate('kpi.evaluation.dashboard.analyze')}</button>
                     </div>
-                    <div className="row">
+                    {/* <div className="row">
                         <div className="col-md-3 col-sm-6 col-xs-6">
                             <div className="info-box with-border">
                                 <span className="info-box-icon bg-aqua"><i className="fa fa-users"></i></span>
@@ -277,7 +277,7 @@ class MainDashboardUnit extends Component {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                     <div className="nav-tabs-custom">
                         <ul className="nav nav-tabs">
                             <li className="active"><a href="#task" data-toggle="tab" onClick={() => this.handleNavTabs()}>Công việc</a></li>
@@ -300,6 +300,54 @@ class MainDashboardUnit extends Component {
 
                             {/* Tab tổng quan nhân sự*/}
                             <div className="tab-pane" id="human-resourse">
+                                <div className="row qlcv" style={{ marginTop: '10px' }}>
+                                    <div className="col-md-3 col-sm-6 col-xs-6">
+                                        <div className="info-box with-border">
+                                            <span className="info-box-icon bg-aqua"><i className="fa fa-users"></i></span>
+                                            <div className="info-box-content">
+                                                <span className="info-box-text">Số nhân viên</span>
+                                                <span className="info-box-number">
+                                                    {listAllEmployees.length}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+                                        <div className="info-box with-border">
+                                            <span className="info-box-icon bg-yellow"><i className="fa fa-tasks"></i></span>
+                                            <div className="info-box-content">
+                                                <span className="info-box-text">Số sinh nhật</span>
+                                                <span className="info-box-number">
+                                                    {employeesManager.listEmployees ? employeesManager.listEmployees.length : 0}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+                                        <div className="info-box with-border">
+                                            <span className="info-box-icon bg-green"><i className="fa fa-gift"></i></span>
+                                            <div className="info-box-content">
+                                                <span className="info-box-text">Số khen thưởng</span>
+                                                <span className="info-box-number">
+                                                    {discipline.totalListCommendation ? discipline.totalListCommendation.length : 0}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+                                        <div className="info-box with-border">
+                                            <span className="info-box-icon bg-red"><i className="fa fa-balance-scale"></i></span>
+                                            <div className="info-box-content">
+                                                <span className="info-box-text">Số kỷ luật</span>
+                                                <span className="info-box-number">
+                                                    {discipline.totalListDiscipline ? discipline.totalListDiscipline.length : 0}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <TabHumanResource childOrganizationalUnit={childOrganizationalUnit} defaultUnit={true} organizationalUnits={organizationalUnits} monthShow={monthShow} />
                             </div>
 

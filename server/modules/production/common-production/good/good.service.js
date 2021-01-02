@@ -1,4 +1,4 @@
-const { Good, OrganizationalUnit, ManufacturingWorks, ManufacturingMill  } = require(`../../../../models`);
+const { Good, OrganizationalUnit, ManufacturingWorks, ManufacturingMill } = require(`../../../../models`);
 const { connect } = require(`../../../../helpers/dbHelper`);
 
 exports.getGoodsByType = async (company, query, portal) => {
@@ -171,7 +171,6 @@ exports.getAllGoods = async (company, portal) => {
 }
 
 exports.getGoodByManageWorksRole = async (roleId, portal) => {
-    console.log("Vao day day")
     // Xử  lý các quyền trước để tìm ra các kế hoạch trong các nhà máy được phân quyền
     let role = [roleId];
     const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'managers': { $in: role } });
@@ -182,13 +181,13 @@ exports.getGoodByManageWorksRole = async (roleId, portal) => {
         }
     });
     let listWorksId = listManufacturingWorks.map(x => x._id);
+
     let listManufacturingMills = await ManufacturingMill(connect(DB_CONNECTION, portal)).find({
         manufacturingWorks: {
             $in: listWorksId
         }
     });
     let listMillsId = listManufacturingMills.map(x => x._id);
-
     let goods = await Good(connect(DB_CONNECTION, portal))
         .find({
             manufacturingMills: {

@@ -34,12 +34,10 @@ const AssetUseRequestSchema = new Schema({
     dateStartUse: {
         //thời gian đăng ký sử dụng từ ngày
         type: Date,
-        defaut: Date.now,
     },
     dateEndUse: {
         //thời gian đăng ký sử dụng đến ngày
         type: Date,
-        defaut: Date.now,
     },
     approver: {
         //người phê duyệt

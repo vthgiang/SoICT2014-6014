@@ -34,7 +34,6 @@ exports.createNewSalesOrder = async (userId, data, portal) => {
                 manufacturingWorks: data.manufacturingWorks,
                 manufacturingPlan: data.manufacturingPlan,
                 serviceLevelAgreements: item.serviceLevelAgreements ? item.serviceLevelAgreements.map((sla) => {
-                    console.log("serviceLevelAgreements", sla._id);
                     return {
                         _id: sla._id,
                         title: sla.title,
@@ -314,7 +313,7 @@ exports.editSalesOrder = async (userId, id, data, portal) => {
     return { quote: salesOrderUpdated }
 }
 
-exports.approveSalesOrder = async (approverId, salesOrderId, approver, portal) => {
+exports.approveSalesOrder = async (salesOrderId, approver, portal) => {
     let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findById(salesOrderId)
 
     if (!salesOrder) {

@@ -8,8 +8,9 @@ const OrganizationalUnitService = require(`../../super-admin/organizational-unit
 const NotificationServices = require(`../../notification/notification.service`);
 const { sendEmail } = require(`../../../helpers/emailHelper`);
 const { connect } = require(`../../../helpers/dbHelper`);
+
 /*
- * Lấy mẫu công việc theo Id
+ * Lấy công việc theo Id
  */
 exports.getTaskById = async (portal, id, userId) => {
     let task = await Task(connect(DB_CONNECTION, portal))
@@ -363,7 +364,7 @@ exports.stopTimesheetLog = async (portal, params, body) => {
 
     // Lưu vào timeSheetLog
     let duration = new Date(stoppedAt).getTime() - new Date(body.startedAt).getTime();
-    let checkDurationValid = duration / (60*60*1000);
+    let checkDurationValid = duration / (60 * 60 * 1000);
 
     let timer = await Task(connect(DB_CONNECTION, portal))
         .findOneAndUpdate(
@@ -374,7 +375,7 @@ exports.stopTimesheetLog = async (portal, params, body) => {
                     "timesheetLogs.$.duration": duration, // mileseconds
                     "timesheetLogs.$.description": body.description,
                     "timesheetLogs.$.autoStopped": body.autoStopped, // ghi nhận tắt bấm giờ tự động hay không?
-                    "timesheetLogs.$.acceptLog": checkDurationValid > 24 ? false : true , // tự động check nếu thời gian quá 24 tiếng thì đánh là không hợp lệ
+                    "timesheetLogs.$.acceptLog": checkDurationValid > 24 ? false : true, // tự động check nếu thời gian quá 24 tiếng thì đánh là không hợp lệ
                 },
             },
             { new: true }
@@ -555,7 +556,7 @@ exports.createCommentOfTaskAction = async (portal, params, body, files, user) =>
                     files: files,
                 },
             },
-        },{ new: true }
+        }, { new: true }
     ).populate([
         { path: "taskActions.creator", select: "name email avatar" },
         {
@@ -567,8 +568,8 @@ exports.createCommentOfTaskAction = async (portal, params, body, files, user) =>
             select: "name email avatar",
         }])
     const { taskActions } = commentOfTaskAction;
-    
-     // Lấy ra hoạt động cha
+
+    // Lấy ra hoạt động cha
     let getTaskAction = [];
     const taskActionsLength = taskActions.length;
     for (let i = 0; i < taskActionsLength; i++) {
@@ -600,7 +601,7 @@ exports.createCommentOfTaskAction = async (portal, params, body, files, user) =>
         organizationalUnits: commentOfTaskAction.organizationalUnit._id,
         title: "Cập nhật thông tin công việc ",
         level: "general",
-        content:`<p><strong>${user.name}</strong> đã bình luận về hoạt động trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${process.env.WEBSITE}/task?taskId=${params.taskId}</a></p>` ,
+        content: `<p><strong>${user.name}</strong> đã bình luận về hoạt động trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${process.env.WEBSITE}/task?taskId=${params.taskId}</a></p>`,
         sender: `${user.name}`,
         users: userReceive,
         associatedData: associatedData,
@@ -739,12 +740,12 @@ exports.createTaskAction = async (portal, params, body, files) => {
                         $each: [actionInformation],
                     },
                 },
-            },{ new: true })
-            .populate([
-                { path: "taskActions.creator", select: 'name email avatar company' },
-                { path: "taskActions.comments.creator", select: 'name email avatar' },
-                { path: "taskActions.evaluations.creator", select: 'name email avatar ' }])
-    
+            }, { new: true })
+        .populate([
+            { path: "taskActions.creator", select: 'name email avatar company' },
+            { path: "taskActions.comments.creator", select: 'name email avatar' },
+            { path: "taskActions.evaluations.creator", select: 'name email avatar ' }])
+
     // let user = await User(connect(DB_CONNECTION, portal)).findOne({ _id: body.creator }); // Thừa 
     let getUser;
     if (task) {
@@ -753,7 +754,7 @@ exports.createTaskAction = async (portal, params, body, files) => {
     }
 
     // let tasks = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: params.taskId }); Thừa .. giá trị trả về giống trên
-    
+
     // Danh sách người phê duyệt được gửi mail
     let userEmail = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: task.accountableEmployees } });
     let email = userEmail.map(item => item.email);
@@ -843,7 +844,7 @@ exports.deleteTaskAction = async (portal, params) => {
  * Tạo bình luận công việc
  */
 exports.createTaskComment = async (portal, params, body, files, user) => {
-   const commentInformation = {
+    const commentInformation = {
         creator: body.creator,
         description: body.description,
         files: files,
@@ -854,7 +855,7 @@ exports.createTaskComment = async (portal, params, body, files, user) => {
             $push: {
                 taskComments: commentInformation,
             },
-        },{ new: true })
+        }, { new: true })
         .populate([
             { path: "taskComments.creator", select: "name email avatar" },
             {
@@ -866,12 +867,12 @@ exports.createTaskComment = async (portal, params, body, files, user) => {
                 select: "name email avatar",
             },
             {
-                path:"organizationalUnit"
+                path: "organizationalUnit"
             }
         ]);
 
     const userReceive = [...taskComment.responsibleEmployees, ...taskComment.accountableEmployees].filter(obj => JSON.stringify(obj) !== JSON.stringify(user._id))
-    
+
     const associatedData = {
         dataType: "createTaskComment",
         value: [taskComment.taskComments[taskComment.taskComments.length - 1]]
@@ -881,7 +882,7 @@ exports.createTaskComment = async (portal, params, body, files, user) => {
         organizationalUnits: taskComment.organizationalUnit._id,
         title: "Cập nhật thông tin công việc ",
         level: "general",
-        content:`<p><strong>${user.name}</strong> đã thêm một bình luận trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${process.env.WEBSITE}/task?taskId=${params.taskId}</a></p>` ,
+        content: `<p><strong>${user.name}</strong> đã thêm một bình luận trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${process.env.WEBSITE}/task?taskId=${params.taskId}</a></p>`,
         sender: `${user.name} (${taskComment.organizationalUnit.name})`,
         users: userReceive,
         associatedData: associatedData,
@@ -993,7 +994,7 @@ exports.createCommentOfTaskComment = async (portal, params, body, files, user) =
                 select: "name email avatar ",
             },
         ])
-   
+
     const { taskComments } = taskcomment;
     // Lấy ra bình luận cha
     let getTaskComment = [];
@@ -1025,12 +1026,12 @@ exports.createCommentOfTaskComment = async (portal, params, body, files, user) =
         organizationalUnits: taskcomment.organizationalUnit._id,
         title: "Cập nhật thông tin công việc ",
         level: "general",
-        content:`<p><strong>${user.name}</strong> đã trả lời bình luận của bạn trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${process.env.WEBSITE}/task?taskId=${params.taskId}</a></p>` ,
+        content: `<p><strong>${user.name}</strong> đã trả lời bình luận của bạn trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${process.env.WEBSITE}/task?taskId=${params.taskId}</a></p>`,
         sender: `${user.name}`,
         users: userReceive,
         associatedData: associatedData,
     };
-    if(userReceive && userReceive.length > 0)
+    if (userReceive && userReceive.length > 0)
         NotificationServices.createNotification(portal, user.company._id, data)
     return taskComments;
 };
@@ -1498,8 +1499,13 @@ async function checkEvaluations(portal, date, taskId, storeDate) {
  * edit task by responsible employee
  */
 exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
-    let { name, description, kpi, user, progress, info, date } = data;
+    let { name, description, kpi, user, progress, info, date, listInfo } = data;
     let evaluateId;
+
+    let listInfoTask = [];
+    if (listInfo) {
+        listInfoTask = listInfo;
+    }
 
     const endOfMonth = moment().endOf("month").format("DD-MM-YYYY");
 
@@ -1538,6 +1544,57 @@ exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
     );
 
     // let task = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
+
+    // cập nhật task infomation
+    for (let i in listInfoTask) {
+        await Task(connect(DB_CONNECTION, portal)).updateOne(
+            {
+                _id: taskId,
+                "taskInformations._id": listInfoTask[i]._id,
+            },
+            {
+                $set: {
+                    "taskInformations.$.name": listInfoTask[i].name,
+                    "taskInformations.$.filledByAccountableEmployeesOnly": listInfoTask[i].filledByAccountableEmployeesOnly,
+                    "taskInformations.$.description": listInfoTask[i].description,
+                    "taskInformations.$.extra": listInfoTask[i].extra,
+                },
+            },
+            {
+                $new: true,
+            }
+        );
+    }
+
+    let evalList = task.evaluations;
+    for (let x in evalList) {
+        for (let i in listInfoTask) {
+            await Task(connect(DB_CONNECTION, portal)).updateOne(
+                {
+                    _id: taskId,
+                    "evaluations._id": evalList[x],
+                },
+                {
+                    $set: {
+                        "evaluations.$.taskInformations.$[elem].name": listInfoTask[i].name,
+                        "evaluations.$.taskInformations.$[elem].filledByAccountableEmployeesOnly": listInfoTask[i].filledByAccountableEmployeesOnly,
+                        "evaluations.$.taskInformations.$[elem].description": listInfoTask[i].description,
+                        "evaluations.$.taskInformations.$[elem].extra": listInfoTask[i].extra,
+                    },
+                },
+                {
+                    arrayFilters: [
+                        {
+                            "elem._id": listInfoTask[i]._id,
+                        },
+                    ],
+                }
+            );
+        }
+    }
+
+
+    // cập nhật giá trị info
     for (let item in info) {
         for (let i in task.taskInformations) {
             if (info[item].code === task.taskInformations[i].code) {
@@ -1732,6 +1789,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
         informedEmployees,
         inactiveEmployees,
         collaboratedWithOrganizationalUnits,
+        listInfo
     } = data;
 
     // Chuẩn hóa parent
@@ -1829,6 +1887,61 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
     );
     let task = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
 
+    // list info
+    let listInfoTask = [];
+    if (listInfo) {
+        listInfoTask = listInfo;
+    }
+
+    // cập nhật task infomation
+    for (let i in listInfoTask) {
+        await Task(connect(DB_CONNECTION, portal)).updateOne(
+            {
+                _id: taskId,
+                "taskInformations._id": listInfoTask[i]._id,
+            },
+            {
+                $set: {
+                    "taskInformations.$.name": listInfoTask[i].name,
+                    "taskInformations.$.filledByAccountableEmployeesOnly": listInfoTask[i].filledByAccountableEmployeesOnly,
+                    "taskInformations.$.description": listInfoTask[i].description,
+                    "taskInformations.$.extra": listInfoTask[i].extra,
+                },
+            },
+            {
+                $new: true,
+            }
+        );
+    }
+
+    let evalList = task.evaluations;
+    for (let x in evalList) {
+        for (let i in listInfoTask) {
+            await Task(connect(DB_CONNECTION, portal)).updateOne(
+                {
+                    _id: taskId,
+                    "evaluations._id": evalList[x],
+                },
+                {
+                    $set: {
+                        "evaluations.$.taskInformations.$[elem].name": listInfoTask[i].name,
+                        "evaluations.$.taskInformations.$[elem].filledByAccountableEmployeesOnly": listInfoTask[i].filledByAccountableEmployeesOnly,
+                        "evaluations.$.taskInformations.$[elem].description": listInfoTask[i].description,
+                        "evaluations.$.taskInformations.$[elem].extra": listInfoTask[i].extra,
+                    },
+                },
+                {
+                    arrayFilters: [
+                        {
+                            "elem._id": listInfoTask[i]._id,
+                        },
+                    ],
+                }
+            );
+        }
+    }
+
+    // cập nhật value cho info
     for (let item in info) {
         for (let i in task.taskInformations) {
             if (info[item].code === task.taskInformations[i].code) {
@@ -2389,9 +2502,9 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
         });
         email = newEmployees.map((item) => item.email);
     }
-    
-    
-    
+
+
+
 
     // Update nhật ký chỉnh sửa
     if (newEmployees && newEmployees.length !== 0) {
@@ -4243,9 +4356,9 @@ exports.editArchivedOfTask = async (portal, taskID) => {
     let isArchived = t.isArchived;
     if (t.status === 'finished' || t.status === 'delayed' || t.status === 'canceled') {
         task = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
-        taskID,
-        { $set: { isArchived: !isArchived } },
-        { new: true }
+            taskID,
+            { $set: { isArchived: !isArchived } },
+            { new: true }
         );
     } else {
         throw ['task_status_error']
@@ -5167,11 +5280,11 @@ exports.sortActions = async (portal, params, body) => {
     let taskId = params.taskId;
     let i;
     await Task(connect(DB_CONNECTION, portal)).update(
-        { _id: taskId},
-        { $set: {"taskActions" : []} }
+        { _id: taskId },
+        { $set: { "taskActions": [] } }
     )
     await Task(connect(DB_CONNECTION, portal)).update(
-        { _id: taskId},
+        { _id: taskId },
         {
             $set: {
                 "taskActions": body
