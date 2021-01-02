@@ -7,17 +7,17 @@ const {
 } = require(`../../../../helpers/dbHelper`);
 
 exports.createNewSalesOrder = async (userId, data, portal) => {
-    console.log("data", data);
+    console.log("data", userId);
     let newSalesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).create({
         code: data.code,
-        status: data.status,
+        status: data.status ?  data.status : 1, //Nếu k có thì mặc định bằng 1 (chờ phê duyệt)
         creator: userId,
         customer: data.customer,
         customerPhone: data.customerPhone,
         customerAddress: data.customerAddress,
         customerRepresent: data.customerRepresent, 
         customerEmail: data.customerEmail,
-        approvers:  data.approvers ? data.approvers.map((approver) => {
+        approvers: data.approvers ? data.approvers.map((approver) => {
             return {
                 approver: approver.approver,
                 approverRole: approver.approverRole,

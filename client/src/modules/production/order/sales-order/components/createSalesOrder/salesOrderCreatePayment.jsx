@@ -5,10 +5,10 @@ import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { DiscountActions } from "../../../discount/redux/actions";
 import { CrmCustomerActions } from "../../../../../crm/customer/redux/actions";
-import "../quote.css";
+import "../salesOrder.css";
 import CreateDiscountForOrder from "./createDiscountForOrder/createDiscountForOrder";
 
-class QuoteCreatePayment extends Component {
+class SalesOrderCreatePayment extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -194,7 +194,7 @@ class QuoteCreatePayment extends Component {
             setCurrentSlasOfGood,
             setCurrentDiscountsOfGood,
             handleCoinChange,
-            saveQuote,
+            saveSalesOrder,
         } = this.props;
         const {
             customerPhone,
@@ -203,8 +203,6 @@ class QuoteCreatePayment extends Component {
             customerRepresent,
             customerTaxNumber,
             customerEmail,
-            effectiveDate,
-            expirationDate,
             code,
             shippingFee,
             deliveryTime,
@@ -230,7 +228,7 @@ class QuoteCreatePayment extends Component {
         return (
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <fieldset className="scheduler-border" style={{ background: "#f5f5f5" }}>
-                    <legend className="scheduler-border">Chốt đơn báo giá</legend>
+                    <legend className="scheduler-border">Chốt đơn bán hàng</legend>
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 quote-address">
                         <div className="shopping-border-delivery"></div>
                         <div className="shopping-address-title">
@@ -283,12 +281,6 @@ class QuoteCreatePayment extends Component {
                             <div style={{ fontWeight: 600 }}>Mã báo giá &ensp;</div>
                             <div style={{ color: "#888", fontSize: "13px" }}>{code}</div>
                         </div>
-                        <div className="shopping-quote-info-element">
-                            <div style={{ fontWeight: 600 }}>Thời gian hiệu lực &ensp;</div>
-                            <div style={{ color: "#888", fontSize: "13px" }}>{effectiveDate}</div>
-                            <span>&ensp;-&ensp;</span>
-                            <div style={{ color: "#888", fontSize: "13px" }}>{expirationDate}</div>
-                        </div>
                     </div>
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 shopping-products">
                         <div className="shopping-products-title">Các sản phẩm</div>
@@ -311,7 +303,7 @@ class QuoteCreatePayment extends Component {
                                     <th title={"Ghi chú"}>Ghi chú</th>
                                 </tr>
                             </thead>
-                            <tbody id={`quote-show-goods`}>
+                            <tbody id={`sales-order-show-goods`}>
                                 {listGoods &&
                                     listGoods.length !== 0 &&
                                     listGoods.map((item, index) => (
@@ -333,7 +325,7 @@ class QuoteCreatePayment extends Component {
                                                     }}
                                                     data-toggle="modal"
                                                     data-backdrop="static"
-                                                    href={"#modal-create-quote-discounts-of-good-detail"}
+                                                    href={"#modal-create-sales-order-discounts-of-good-detail"}
                                                     title="Click để xem chi tiết"
                                                 >
                                                     {item.amount && item.amountAfterDiscount
@@ -361,7 +353,7 @@ class QuoteCreatePayment extends Component {
                                                         }}
                                                         data-toggle="modal"
                                                         data-backdrop="static"
-                                                        href={"#modal-create-quote-slas-of-good-detail"}
+                                                        href={"#modal-create-sales-order-slas-of-good-detail"}
                                                         onClick={() => setCurrentSlasOfGood(item.slasOfGood)}
                                                     >
                                                         Chi tiết &ensp;
@@ -424,7 +416,7 @@ class QuoteCreatePayment extends Component {
                             <div className="shopping-shipping-time">
                                 <div className="shopping-shipping-time-title">Thời gian giao hàng dự kiến &ensp;</div>
                                 <DatePicker
-                                    id="date_picker_create_quote_delivery-time"
+                                    id="date_picker_create_sales_order_delivery-time"
                                     value={deliveryTime}
                                     onChange={handleDeliveryTimeChange}
                                     disabled={false}
@@ -495,11 +487,6 @@ class QuoteCreatePayment extends Component {
                                     )}
                                 </div>
                             ))}
-                            {/* <div className="shopping-bonus-good-element">
-                            <div className="shopping-bonus-good-element-info">HAB - Bún chả </div>
-                            <div className="shopping-bonus-good-element-quantity">5 tô</div>
-                            <div className="shopping-bonus-good-element-date">Hạn sử dụng:&ensp; 10-11-2021</div>
-                        </div> */}
                         </div>
                     ) : (
                         ""
@@ -568,9 +555,9 @@ class QuoteCreatePayment extends Component {
                             <button
                                 style={{ cursor: "pointer" }}
                                 className={`${enableFormSubmit ? "" : "disable-onclick-prevent"}`}
-                                onClick={saveQuote}
+                                onClick={saveSalesOrder}
                             >
-                                Lưu báo giá
+                                Lưu đơn bán hàng
                             </button>
                         </div>
                     </div>
@@ -592,4 +579,4 @@ const mapDispatchToProps = {
     editCustomerPoint: CrmCustomerActions.editCustomerPoint,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuoteCreatePayment));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(SalesOrderCreatePayment));

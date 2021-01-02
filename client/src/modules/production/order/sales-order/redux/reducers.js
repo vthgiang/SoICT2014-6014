@@ -52,7 +52,6 @@ export function salesOrders(state = initState, action) {
             }
     
         case SalesOrderConstants.GET_ALL_SALES_ORDERS_SUCCESS:
-            console.log("action.payload.allSalesOrders.docs", action.payload.allSalesOrders.docs);
             return {
                 ...state,
                 isLoading: false,

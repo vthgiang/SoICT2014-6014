@@ -41,7 +41,7 @@ class GoodSelected extends Component {
                             <span className="attention"> * </span>
                         </label>
                         <SelectBox
-                            id={`select-good-code-quote`}
+                            id={`select-good-code-sales-order`}
                             className="form-control select2"
                             style={{ width: "100%" }}
                             value={good}

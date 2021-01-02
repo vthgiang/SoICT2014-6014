@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { QuoteActions } from "../../quote/redux/actions";
+import { SalesOrderActions } from "../redux/actions";
 import { DiscountActions } from "../../discount/redux/actions";
 import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
 import { DepartmentActions } from "../../../../super-admin/organizational-unit/redux/actions";
@@ -10,7 +10,7 @@ import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import { formatDate } from "../../../../../helpers/formatDate";
 import { PaginateBar, DataTableSetting, SelectMulti, SelectBox, DeleteNotification } from "../../../../../common-components";
 // import QuoteDetailForm from "./quoteDetailForm";
-// import QuoteCreateForm from "./quoteCreateForm";
+import SalesOrderCreateForm from "./salesOrderCreateForm";
 // import QuoteEditForm from "./quoteEditForm";
 
 class SalesOrderTable extends Component {
@@ -27,7 +27,7 @@ class SalesOrderTable extends Component {
 
     componentDidMount = () => {
         const { page, limit } = this.state;
-        this.props.getAllQuotes({ page, limit });
+        this.props.getAllSalesOrders({ page, limit });
         this.props.getDiscountForOrderValue();
         this.props.getCustomers();
         this.props.getAllDepartments();
@@ -42,7 +42,7 @@ class SalesOrderTable extends Component {
             limit: this.state.limit,
             page: page,
         };
-        this.props.getAllQuotes(data);
+        this.props.getAllSalesOrders(data);
     };
 
     setLimit = async (limit) => {
@@ -53,7 +53,7 @@ class SalesOrderTable extends Component {
             limit: limit,
             page: this.state.page,
         };
-        this.props.getAllQuotes(data);
+        this.props.getAllSalesOrders(data);
     };
 
     handleStatusChange = (value) => {
@@ -91,7 +91,7 @@ class SalesOrderTable extends Component {
             customer,
             queryDate,
         };
-        this.props.getAllQuotes(data);
+        this.props.getAllSalesOrders(data);
     };
 
     handleShowDetailInfo = (data) => {
@@ -105,7 +105,7 @@ class SalesOrderTable extends Component {
     };
 
     handleCreate = () => {
-        window.$("#modal-add-quote").modal("show");
+        window.$("#modal-add-sales-order").modal("show");
     };
 
     handleEditQuote = async (quoteEdit) => {
@@ -135,13 +135,15 @@ class SalesOrderTable extends Component {
 
     render() {
         let { limit, quoteDetail, quoteEdit } = this.state;
-        const { translate, quotes } = this.props;
-        const { totalPages, page } = quotes;
+        const { translate, salesOrders } = this.props;
+        const { totalPages, page } = salesOrders;
 
-        let listQuotes = [];
-        if (quotes.isLoading === false) {
-            listQuotes = quotes.listQuotes;
+        let listSalesOrders = [];
+        if (salesOrders.isLoading === false) {
+            listSalesOrders = salesOrders.listSalesOrders;
         }
+
+        console.log("listSalesOrders", listSalesOrders);
 
         const dataStatus = [
             {
@@ -150,11 +152,11 @@ class SalesOrderTable extends Component {
             },
             {
                 className: "text-warning",
-                text: "Đã duyệt",
+                text: "Yêu cầu sản xuất",
             },
             {
                 className: "text-success",
-                text: "Đã chốt đơn",
+                text: "Sẵn hàng trong kho",
             },
             {
                 className: "text-danger",
@@ -170,8 +172,8 @@ class SalesOrderTable extends Component {
             <React.Fragment>
                 <div className="nav-tabs-custom">
                     <div className="box-body qlcv">
+                        <SalesOrderCreateForm />
                         {/* <QuoteDetailForm quoteDetail={quoteDetail} />
-                        <QuoteCreateForm />
                         {quoteEdit && <QuoteEditForm quoteEdit={quoteEdit} />} */}
                         <div className="form-inline">
                             <div className="form-group">
@@ -264,10 +266,10 @@ class SalesOrderTable extends Component {
                                     <th>Mã đơn</th>
                                     <th>Người tạo</th>
                                     <th>Khách hàng</th>
-                                    <th>Ngày có hiệu lực</th>
-                                    <th>Ngày hết hiệu lực</th>
-                                    <th>Tổng tiền (vnđ)</th>
+                                    <th>Tổng tiền</th>
                                     <th>Trạng thái</th>
+                                    <th>Độ ưu tiên</th>
+                                    <th>T/g giao hàng dự kiến</th>
                                     <th
                                         style={{
                                             width: "120px",
@@ -295,18 +297,18 @@ class SalesOrderTable extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {typeof listQuotes !== "undefined" &&
-                                    listQuotes.length !== 0 &&
-                                    listQuotes.map((item, index) => (
+                                {typeof listSalesOrders !== "undefined" &&
+                                    listSalesOrders.length !== 0 &&
+                                    listSalesOrders.map((item, index) => (
                                         <tr key={index}>
                                             <td>{index + 1 + (page - 1) * limit}</td>
                                             <td>{item.code ? item.code : ""}</td>
                                             <td>{item.creator ? item.creator.name : ""}</td>
                                             <td>{item.customer ? item.customer.name : ""}</td>
-                                            <td>{item.effectiveDate ? formatDate(item.effectiveDate) : "---"}</td>
-                                            <td>{item.expirationDate ? formatDate(item.expirationDate) : "---"}</td>
                                             <td>{item.paymentAmount ? formatCurrency(item.paymentAmount) : "---"}</td>
                                             <td className={dataStatus[item.status].className}>{dataStatus[item.status].text}</td>
+                                            <td>{item.priority}</td>
+                                            <td>{item.deliveryTime ? formatDate(item.deliveryTime) : "---"}</td>
                                             {item.status === -1 ? (
                                                 <td>
                                                     <a onClick={this.handleCreate}>
@@ -344,10 +346,10 @@ class SalesOrderTable extends Component {
                                     ))}
                             </tbody>
                         </table>
-                        {quotes.isLoading ? (
+                        {salesOrders.isLoading ? (
                             <div className="table-info-panel">{translate("confirm.loading")}</div>
                         ) : (
-                            (typeof listQuotes === "undefined" || listQuotes.length === 0) && (
+                            (typeof listSalesOrders === "undefined" || listSalesOrders.length === 0) && (
                                 <div className="table-info-panel">{translate("confirm.no_data")}</div>
                             )
                         )}
@@ -361,13 +363,12 @@ class SalesOrderTable extends Component {
 
 function mapStateToProps(state) {
     const { customers } = state.crm;
-    const { quotes, department, role, auth } = state;
-    return { quotes, customers, department, role, auth };
+    const { salesOrders, department, role, auth } = state;
+    return { salesOrders, customers, department, role, auth };
 }
 
 const mapDispatchToProps = {
-    getAllQuotes: QuoteActions.getAllQuotes,
-    deleteQuote: QuoteActions.deleteQuote,
+    getAllSalesOrders: SalesOrderActions.getAllSalesOrders,
     getDiscountForOrderValue: DiscountActions.getDiscountForOrderValue,
     getCustomers: CrmCustomerActions.getCustomers,
     getAllDepartments: DepartmentActions.get,
