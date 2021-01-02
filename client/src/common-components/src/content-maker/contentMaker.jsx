@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
+import { QuillEditor } from '../quill-editor/quillEditor';
+
 import Files from 'react-files';
 import TextareaAutosize from 'react-textarea-autosize';
 
@@ -82,6 +84,15 @@ class ContentMaker extends Component {
                         </div>
                         }
                     </div>
+                    {/* <QuillEditor
+                        id={"item"}
+                        font={false}
+                        embeds={false}
+                        table={false}
+                        getTextData={ ()=>{}}
+                        height={100}
+                        quillValueDefault={text}
+                    /> */}
                 </Files>
                 <div className={controlCssClass}>
                     <div className="" style={{ textAlign: "right" }}>

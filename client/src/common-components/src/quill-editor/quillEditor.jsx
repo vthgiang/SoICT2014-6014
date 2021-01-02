@@ -16,7 +16,77 @@ class QuillEditor extends Component {
         }
 
     }
-    
+  
+    componentDidMount = () => {
+        const { id, isText = false, quillValueDefault, fileUrls, toolbar = true, enableEdit = true } = this.props;
+        if (!isText) {
+            // Khởi tạo Quill Editor trong thẻ có id = id truyền vào
+            const quill = window.initializationQuill(`#editor-container${id}`, configQuillEditor(id, toolbar, enableEdit));
+
+            // Insert value ban đầu
+            if (quillValueDefault || quillValueDefault === '') {
+                if (quill && quill.container && quill.container.firstChild) {
+                    quill.container.firstChild.innerHTML = quillValueDefault;
+                } 
+                if (fileUrls) {
+                    let imgs = Array.from(
+                        quill.container.querySelectorAll('img[src]')
+                    );
+                    if (imgs && imgs.length !== 0) {
+                        imgs = imgs.map((item, index) => {
+                            item.src = fileUrls[index];
+                            return item;
+                        })
+                    }
+                }
+            }
+
+            if (enableEdit) {
+                // Bắt sự kiện text-change
+                quill.on('text-change', () => {
+                    let imgs, imageSources = [];
+
+                    imgs = Array.from(
+                        quill.container.querySelectorAll('img[src^="data:"]:not(.loading)')
+                    );
+
+                    if (imgs && imgs.length !== 0) {
+                        imgs = imgs.map((item, index) => {
+                            imageSources.push(item.getAttribute("src"));
+                            item.src = "image" + index;
+                            return item;
+                        })
+                    }
+                    console.log(quill.root.innerHTML)
+                    this.props.getTextData(quill.root.innerHTML, imgs);
+                    if (imgs && imgs.length !== 0) {
+                        imgs = imgs.map((item, index) => {
+                            item.src = imageSources[index];
+                            return item;
+                        })
+                    }
+                });
+
+                // Custom insert table
+                window.$(`#insert-tabletoolbar${id}`).click(() => {
+                    let table = quill.getModule('table');
+                    table.insertTable(3, 3);
+                });
+            } else {
+                // Disable edit
+                quill.enable(enableEdit);
+            }
+
+            this.setState(state => {
+                return {
+                    ...state,
+                    quill: quill
+                }
+            })
+        }
+        
+    }
+
     componentDidUpdate = () => {
         const { quillValueDefault, fileUrls } = this.props;
         const { quill } = this.state;
@@ -41,68 +111,11 @@ class QuillEditor extends Component {
         }
     }
 
-    componentDidMount = () => {
-        const { id, edit = true, quillValueDefault, fileUrls } = this.props;
-        if (edit) {
-            // Khởi tạo Quill Editor trong thẻ có id = id truyền vào
-            const quill = window.initializationQuill(`#editor-container${id}`, configQuillEditor(id));
-            
-            // Insert value ban đầu
-            if (quillValueDefault || quillValueDefault === '') {
-                if (quill && quill.container && quill.container.firstChild) {
-                    quill.container.firstChild.innerHTML = quillValueDefault;
-                } 
-                if (fileUrls) {
-                    let imgs = Array.from(
-                        quill.container.querySelectorAll('img[src]')
-                    );
-                    if (imgs && imgs.length !== 0) {
-                        imgs = imgs.map((item, index) => {
-                            item.src = fileUrls[index];
-                            return item;
-                        })
-                    }
-                }
-            }
-
-            // Bắt sự kiện text-change
-            quill.on('text-change', () => {
-                let imgs, imageSources = [];
-
-                imgs = Array.from(
-                    quill.container.querySelectorAll('img[src^="data:"]:not(.loading)')
-                );
-
-                if (imgs && imgs.length !== 0) {
-                    imgs = imgs.map((item, index) => {
-                        imageSources.push(item.getAttribute("src"));
-                        item.src = "image" + index;
-                        return item;
-                    })
-                }
-                this.props.getTextData(quill.root.innerHTML, imgs);
-                if (imgs && imgs.length !== 0) {
-                    imgs = imgs.map((item, index) => {
-                        item.src = imageSources[index];
-                        return item;
-                    })
-                }
-            });
-
-            // Custom insert table
-            window.$(`#insert-tabletoolbar${id}`).click(() => {
-                let table = quill.getModule('table');
-                table.insertTable(3, 3);
-            });
-            
-            this.setState(state => {
-                return {
-                    ...state,
-                    quill: quill
-                }
-            })
+    shouldComponentUpdate = (nextProps, nextState) => {
+        if (nextProps.quillValueDefault === this.props.quillValueDefault) {
+            return false;
         }
-        
+        return true;
     }
 
     /** 
@@ -145,26 +158,29 @@ class QuillEditor extends Component {
     }
 
     render() {
-        const { id, edit = true, quillValueDefault, height = 200,
+        const { id, isText = false, quillValueDefault, height = 200, toolbar = true, inputCssClass = "",
             font = true, header = true, typography = true, fontColor = true, alignAndList = true, embeds = true, table = true
         } = this.props;
 
         return (
             <React.Fragment>
                 {
-                    edit
+                    !isText
                         ? <React.Fragment>
-                            <ToolbarQuillEditor
-                                id={`toolbar${id}`}
-                                font={font}
-                                header={header}
-                                typography={typography}
-                                fontColor={fontColor}
-                                alignAndList={alignAndList}
-                                embeds={embeds}
-                                table={table}
-                            />
-                            <div id={`editor-container${id}`} style={{ height: height }} />
+                            {
+                                toolbar &&
+                                <ToolbarQuillEditor
+                                    id={`toolbar${id}`}
+                                    font={font}
+                                    header={header}
+                                    typography={typography}
+                                    fontColor={fontColor}
+                                    alignAndList={alignAndList}
+                                    embeds={embeds}
+                                    table={table}
+                                />
+                            }
+                            <div id={`editor-container${id}`} style={{ height: height }} className={inputCssClass}/>
                         </React.Fragment>
                         : parse(quillValueDefault)
                 }

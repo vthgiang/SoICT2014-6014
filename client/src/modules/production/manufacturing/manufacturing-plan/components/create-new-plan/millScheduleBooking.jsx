@@ -56,7 +56,7 @@ class MillScheduleBooking extends Component {
                 </div>
                 <div className="row">
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <MillProductivity listGoods={listGoods} />
+                        {/* <MillProductivity listGoods={listGoods} /> */}
                     </div>
                 </div>
             </React.Fragment>

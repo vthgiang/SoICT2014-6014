@@ -68,22 +68,30 @@ class EmployeeKpiEvaluationDashboard extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        if (!this.state.ids && this.props.dashboardEvaluationEmployeeKpiSet && this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
-            await this.setState((state) => {
+        const { dashboardEvaluationEmployeeKpiSet } = this.props;
+        const { ids } = this.state;
+
+        if (!ids && dashboardEvaluationEmployeeKpiSet && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
+            this.setState((state) => {
                 return {
                     ...state,
-                    ids: [this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id],
+                    ids: [dashboardEvaluationEmployeeKpiSet && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id],
                     infosearch: {
                         ...state.infosearch
                     },
-                    organizationalUnitIds: [this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id]
+                    organizationalUnitIds: [dashboardEvaluationEmployeeKpiSet && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id]
                 }
             });
-            this.props.getAllEmployeeOfUnitByIds(this.state.ids);
-            this.props.getAllEmployeeKpiSetOfUnitByIds(this.state.ids);
+
+            if (dashboardEvaluationEmployeeKpiSet && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id) {
+                this.props.getAllEmployeeOfUnitByIds([dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id]);
+                this.props.getAllEmployeeKpiSetOfUnitByIds([dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id]);
+            }
+            
             return false;
         }
 
+        
         if (nextProps.user.userdepartments !== this.props.user.userdepartments) {
             let userdepartments;
             userdepartments = nextProps.user.userdepartments;

@@ -79,7 +79,7 @@ class ToolbarQuillEditor extends Component {
 
                     {/* table */
                         table &&
-                            <button id={`insert-table${id}`}><a className="fa fa-table insert-table-icon-quill"></a></button>
+                            <button id={`insert-table${id}`}><i className="fa fa-table insert-table-icon-quill"></i></button>
                     }
                 </div>
             </React.Fragment>

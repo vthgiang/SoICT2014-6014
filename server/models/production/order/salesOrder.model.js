@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-
 const mongoosePaginate = require('mongoose-paginate-v2')
 
 const SalesOrderSchema = new Schema({
@@ -8,12 +7,12 @@ const SalesOrderSchema = new Schema({
         type: String,
         // required: true
     },
-    status: { //0: Chờ xác nhận, 1: Quản lý bán hàng đã xác nhận, 2: Bộ phận toán đã xác nhận
-        //3: Yêu cầu sản xuất, 4: Đã lập kế hoạch sản xuất, 5: Hoàn thành sản xuất,
-        //6: Yêu cầu xuất kho, 7: Xuất kho
-        //8: Đang giao hàng , 9: Đã giao hàng, 10: Đã hủy
+    status: { //1: Chờ xác nhận (bộ phận Sales Admin và bộ phận kế toán xác nhận)
+        //2: Yêu cầu sản xuất, 
+        //3:Sẵn hàng trong kho, 4: Xuất kho
+        //5: Đang giao hàng , 6: Đã giao hàng, 7: Đã hủy
         type: Number,
-        enum: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        enum: [ 1, 2, 3, 4, 5, 6, 7 ],
         // required: true,
         default: 0
     },
@@ -48,9 +47,17 @@ const SalesOrderSchema = new Schema({
             ref: 'User',
             // required: true
         },
+        approverRole: {
+            type: Number,
+            enum: [1, 2] //1. Sales Admin, 2. Kế toán
+        },
         approveAt: {
             type: Date,
             default: new Date()
+        },
+        status: {
+            type: Boolean,
+            default: false
         }
     }],
     priority: { // 1: Thấp, 2: Trung bình, 3: Cao, 4: Đặc biệt
@@ -82,9 +89,9 @@ const SalesOrderSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'ManufacturingWorks'
         },
-        planningStatus: {//1: Yêu cầu sản xuất, 2: Đã lập kế hoạch sản xuất, 3: Hoàn thành sản xuất, 4: Sẵn trong kho
-            type: Number,
-            enum: [1, 2, 3, 4]
+        manufacturingPlan: {//Lấy trạng thái từ kế hoạch SX
+            type: Schema.Types.ObjectId,
+            ref: 'ManufacturingPlan'
         },
         //service level agreement
         serviceLevelAgreements: [{
