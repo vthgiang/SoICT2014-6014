@@ -15,7 +15,7 @@ exports.createNewSalesOrder = async (userId, data, portal) => {
         customer: data.customer,
         customerPhone: data.customerPhone,
         customerAddress: data.customerAddress,
-        customerRepresent: data.customerRepresent,
+        customerRepresent: data.customerRepresent, 
         customerEmail: data.customerEmail,
         approvers:  data.approvers ? data.approvers.map((approver) => {
             return {
@@ -310,7 +310,7 @@ exports.editSalesOrder = async (userId, id, data, portal) => {
     
     console.log("salesOrderUpdated", salesOrderUpdated);
     
-    return { quote: salesOrderUpdated }
+    return { salesOrder: salesOrderUpdated }
 }
 
 exports.approveSalesOrder = async (salesOrderId, approver, portal) => {
@@ -332,6 +332,11 @@ exports.approveSalesOrder = async (salesOrderId, approver, portal) => {
     return {salesOrder}
 }
 
+/**
+ * Lên kế hoạch sản xuất cho từng hàng hóa trong đơn
+ * @param {*} salesOrderId id đơn hàng
+ * @param {*} data là 1 array: [{goodId: ObjecId, manufacturingPlanId: ObjectId}] 
+ */
 exports.addManufacturingPlanForGood = async (salesOrderId, data, portal) => {
     //data: [{goodId, manufacturingPlanId}] 
 
@@ -355,4 +360,33 @@ exports.addManufacturingPlanForGood = async (salesOrderId, data, portal) => {
     salesOrder.save();
 
     return {salesOrder}
+}
+
+/**
+ * Lấy các đơn hàng cần lập kế hoạch sản xuất theo nhà máy (chỉ lấy những mặt hàng nhà máy có thể sản xuất)
+ * @param {*} manufacturingWorksId id nhà máy
+ */
+exports.getSalesOrdersByManufacturingWorks = async (manufacturingWorksId, portal) => {
+    //Lấy những đơn hàng có trạng thái là "yêu cầu sản xuất"
+    let salesOrdersWithStatus = await SalesOrder(connect(DB_CONNECTION, portal)).find({ status: 2 });
+
+    //Lọc đơn hàng theo nhà máy
+    let salesOrders = [];
+
+    for (let index = 0; index < salesOrdersWithStatus.length; index++) {
+        //Lấy các mặt hàng theo nhà máy mà chưa được lập kế hoạch
+        let goodsForManufacturingPlan = salesOrdersWithStatus[index].goods.filter((good) => {
+            if (good.manufacturingWorks === manufacturingWorksId && !good.manufacturingPlan) {
+                return good
+            }
+        })
+        
+        //Thêm vào danh sách các đơn hàng cho nhà máy
+        if (goodsForManufacturingPlan.length) {
+            salesOrdersWithStatus[index].goods = goodsForManufacturingPlan;
+            salesOrders.push(salesOrdersWithStatus[index]);
+        }
+    }
+
+    return {salesOrders}
 }
