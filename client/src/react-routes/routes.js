@@ -1908,7 +1908,7 @@ class Routes extends Component {
                     {/* Orders Management */}
 
                     <PrivateRoute
-                        isLoading={this.props.salesOrder.isLoading}
+                        isLoading={this.props.salesOrders.isLoading}
                         key={"/manage-sales-order"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },

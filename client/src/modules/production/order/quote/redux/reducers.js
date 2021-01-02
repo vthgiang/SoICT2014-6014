@@ -22,7 +22,6 @@ const initState = {
     hasNextPage: false,
     prevPage: 0,
     nextPage: 0,
-    detailQuote: {},
 }
 
 export function quotes(state = initState, action) {
@@ -49,40 +48,40 @@ export function quotes(state = initState, action) {
                     isLoading: false,
                     error: action.error
                 }
-            case QuoteConstants.GET_ALL_QUOTES_SUCCESS:
-                return {
-                    ...state,
-                    isLoading: false,
-                    listQuotes: action.payload.allQuotes.docs,
-                    totalDocs: action.payload.allQuotes.totalDocs,
-                    limit: action.payload.allQuotes.limit,
-                    totalPages: action.payload.allQuotes.totalPages,
-                    page: action.payload.allQuotes.page,
-                    pagingCounter: action.payload.allQuotes.pagingCounter,
-                    hasPrevPage: action.payload.allQuotes.hasPrevPage,
-                    hasNextPage: action.payload.allQuotes.hasNextPage,
-                    prevPage: action.payload.allQuotes.prevPage,
-                    nextPage: action.payload.allQuotes.nextPage
-                }
-            case QuoteConstants.CREATE_QUOTE_SUCCESS:
-                return {
-                    ...state,
-                    listQuotes: [
-                        ...state.listQuotes,
-                        action.payload.quote
-                    ],
-                    isLoading: false
-                }
-            
-            case QuoteConstants.EDIT_QUOTE_SUCCESS:
-                index = findIndex(state.listQuotes, action.payload.quote._id);
-                if (index !== -1) {
-                    state.listQuotes[index] = action.payload.quote
-                }
-                return {
-                    ...state,
-                    isLoading: false
+        case QuoteConstants.GET_ALL_QUOTES_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                listQuotes: action.payload.allQuotes.docs,
+                totalDocs: action.payload.allQuotes.totalDocs,
+                limit: action.payload.allQuotes.limit,
+                totalPages: action.payload.allQuotes.totalPages,
+                page: action.payload.allQuotes.page,
+                pagingCounter: action.payload.allQuotes.pagingCounter,
+                hasPrevPage: action.payload.allQuotes.hasPrevPage,
+                hasNextPage: action.payload.allQuotes.hasNextPage,
+                prevPage: action.payload.allQuotes.prevPage,
+                nextPage: action.payload.allQuotes.nextPage
             }
+        case QuoteConstants.CREATE_QUOTE_SUCCESS:
+            return {
+                ...state,
+                listQuotes: [
+                    ...state.listQuotes,
+                    action.payload.quote
+                ],
+                isLoading: false
+            }
+        
+        case QuoteConstants.EDIT_QUOTE_SUCCESS:
+            index = findIndex(state.listQuotes, action.payload.quote._id);
+            if (index !== -1) {
+                state.listQuotes[index] = action.payload.quote
+            }
+            return {
+                ...state,
+                isLoading: false
+        }
             
         case QuoteConstants.DELETE_QUOTE_SUCCESS:
                 index = findIndex(state.listQuotes, action.payload.quote._id);
