@@ -12,7 +12,6 @@ import { SalesOrderActions } from "../../../../order/sales-order/redux/actions";
 import { manufacturingPlanActions } from "../../redux/actions";
 import { GoodActions } from "../../../../common-production/good-management/redux/actions";
 import { LotActions } from "../../../../warehouse/inventory-management/redux/actions";
-import { isValidDate } from "@fullcalendar/react";
 import { UserActions } from "../../../../../super-admin/user/redux/actions";
 
 class NewPlanCreateForm extends Component {
@@ -128,7 +127,8 @@ class NewPlanCreateForm extends Component {
             listOrders = listSalesOrders.filter((x) => value.includes(x._id));
         }
         let goods = [];
-        let goodIds = goods.map((x) => x.good._id);
+        // let goodIds = goods.map(x => x.good._id);
+        let goodIds = [];
         for (let i = 0; i < listOrders.length; i++) {
             listOrders[i].goods.map((x) => {
                 if (!goodIds.includes(x.good._id)) {
@@ -180,17 +180,20 @@ class NewPlanCreateForm extends Component {
             goods: [...goods],
             // State đánh dấu đã add tất cả các good của sales order để tạo KH => Không được sửa lại nữa
             addedAllGoods: true,
+
+            // Thay đổi số lượng sản phẩm thì lệnh phải về rỗng
+            manufacturingCommands: []
         });
     };
 
-    getListApproverIds = () => {
-        const { manufacturingPlan } = this.props;
-        let approvers = [];
-        if (manufacturingPlan.listApprovers && manufacturingPlan.isLoading === false) {
-            approvers = manufacturingPlan.listApprovers.map((x) => x._id);
-        }
-        return approvers;
-    };
+    // getListApproverIds = () => {
+    //     const { manufacturingPlan } = this.props;
+    //     let approvers = [];
+    //     if (manufacturingPlan.listApprovers && manufacturingPlan.isLoading === false) {
+    //         approvers = manufacturingPlan.listApprovers.map(x => x._id);
+    //     }
+    //     return approvers;
+    // }
 
     handleListGoodsChange = (goods) => {
         this.setState({
@@ -212,6 +215,8 @@ class NewPlanCreateForm extends Component {
         this.setState((state) => ({
             ...state,
             goods: [...goods],
+            // Thay đổi phải cho lệnh về rỗng
+            manufacturingCommands: []
         }));
     };
 
@@ -235,8 +240,10 @@ class NewPlanCreateForm extends Component {
         this.setState((state) => ({
             ...state,
             goods: [...goods],
-        }));
-    };
+            // Thay đổi phải cho lệnh về rỗng
+            manufacturingCommands: []
+        }))
+    }
 
     handleDeleteGood = (index) => {
         const { goods } = this.state;
@@ -244,8 +251,10 @@ class NewPlanCreateForm extends Component {
         this.setState((state) => ({
             ...state,
             goods: [...goods],
-        }));
-    };
+            // Thay đổi phải cho lệnh về rỗng
+            manufacturingCommands: []
+        }))
+    }
 
     // Phần chia lệnh sản xuất
 
@@ -302,13 +311,14 @@ class NewPlanCreateForm extends Component {
             if (this.state.goods.length === 0 || this.state.startDate === "" || this.state.endDate === "" || this.state.approvers === undefined) {
                 return false;
             }
-            return true;
-        } else if (index == 2) {
-            if (
-                this.state.goods.length === 0 ||
-                this.state.startDate === "" ||
-                this.state.endDate === "" ||
-                !this.checkValidateListRemainingGoods()
+            return true
+        }
+        else if (index == 2) {
+            if (this.state.goods.length === 0
+                || this.state.startDate === ""
+                || this.state.endDate === ""
+                || this.state.manufacturingCommands.length === 0
+                || !this.checkValidateListRemainingGoods()
             ) {
                 return false;
             }
@@ -333,8 +343,6 @@ class NewPlanCreateForm extends Component {
             addedAllGoods,
             manufacturingCommands,
         } = this.state;
-
-        console.log("sales order", this.props.salesOrders);
         return (
             <React.Fragment>
                 <ButtonModal
@@ -362,9 +370,8 @@ class NewPlanCreateForm extends Component {
                                 {steps.map((item, index) => (
                                     <div className={`timeline-item ${item.active ? "active" : ""}`} key={index}>
                                         <div
-                                            className={`timeline-contain ${
-                                                !this.isValidateStep(index) && index > 0 ? "disable-timeline-contain" : ""
-                                            }`}
+                                            className={`timeline-contain ${!this.isValidateStep(index) && index > 0 ? "disable-timeline-contain" : ""
+                                                }`}
                                             onClick={(e) => this.setCurrentStep(e, index)}
                                         >
                                             {item.label}
@@ -374,10 +381,10 @@ class NewPlanCreateForm extends Component {
                             </div>
                         </div>
                         <div>
-                            {step === 0 && (
+                            {step === 0 &&
                                 <PlanInfoForm
                                     code={code}
-                                    salesOrders={salesOrders}
+                                    salesOrderIds={salesOrders}
                                     startDate={startDate}
                                     endDate={endDate}
                                     approvers={approvers}
@@ -396,19 +403,28 @@ class NewPlanCreateForm extends Component {
                                     onSaveEditGood={this.handleSaveEditGood}
                                     onDeleteGood={this.handleDeleteGood}
                                 />
-                            )}
-                            {step === 1 && (
+                            }
+                            {step === 1 &&
                                 <CommandCreateForm
                                     listGoods={goods}
                                     commandCode={generateCode("LSX")}
-                                    approvers={this.getListApproverIds()}
+                                    // approvers={this.getListApproverIds()}
                                     onChangeListCommands={this.handleChangeListCommands}
                                     manufacturingCommands={manufacturingCommands}
                                     onListRemainingGoodsChange={this.handleRemainingGoodsChange}
                                 />
-                            )}
-                            {step === 2 && <MillScheduleBooking />}
-                            {step === 3 && <WorkerBooking />}
+                            }
+                            {
+                                step === 2 &&
+                                <MillScheduleBooking
+                                    listGoods={goods}
+                                    manufacturingCommands={manufacturingCommands}
+                                />
+                            }
+                            {
+                                step === 3 &&
+                                <WorkerBooking />
+                            }
                         </div>
                         <div style={{ textAlign: "center" }}>{`${step + 1} / ${steps.length}`}</div>
                     </form>
@@ -432,4 +448,3 @@ const mapDispatchToProps = {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(NewPlanCreateForm));
-// export default NewPlanCreateForm;

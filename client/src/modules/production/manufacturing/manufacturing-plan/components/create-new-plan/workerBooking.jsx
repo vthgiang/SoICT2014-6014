@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import WorkSchedule from '../work-schedule-component/workSchedule';
+import WorkSchedule from '../plan-component/workSchedule';
 class WorkerBooking extends Component {
     constructor(props) {
         super(props);

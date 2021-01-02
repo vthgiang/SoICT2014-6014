@@ -3507,7 +3507,7 @@ export default {
                 view_task_process_template: "Xem mẫu quy trình công việc",
                 import_task_template_success: "Thêm mẫu công việc thành công",
                 import_task_template_faile: "Thêm mẫu công việc thất bại !",
-                task_template_name_exist:"Tên mẫu công việc đã tồn tại",
+                task_template_name_exist: "Tên mẫu công việc đã tồn tại",
             },
         },
 
@@ -4993,7 +4993,10 @@ export default {
                     },
                     "4": {
                         content: "Đặc biệt"
-                    }
+                    },
+                    detail_sales_order: "Xem chi tiết đơn hàng kinh doanh",
+                    code: "Mã đơn",
+                    priority: "Độ ưu tiên"
                 },
                 add_good_info: "Thêm thông tin các sản phẩm sản xuất",
                 good: "Sản phẩm",
@@ -5029,7 +5032,10 @@ export default {
                 choose_approvers: "Vui lòng chọn người phê duyệt",
                 choose_accountables: "Vui lòng chọn người giám sát",
                 quantity_order: "Số lượng trong đơn",
-                quantity_need_planned: "Số lượng cần lập kế hoạch"
+                quantity_need_planned: "Số lượng cần lập kế hoạch",
+                list_order: "Danh sách đơn hàng",
+                manufacturing_command_info: "Thông tin lệnh sản xuất",
+                history_info: "Lịch sử sản xuất theo mặt hàng"
 
 
 

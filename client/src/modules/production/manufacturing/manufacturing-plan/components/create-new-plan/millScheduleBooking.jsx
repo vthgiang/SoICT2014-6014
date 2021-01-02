@@ -1,19 +1,64 @@
 import React, { Component } from 'react';
-import WorkSchedule from '../work-schedule-component/workSchedule';
+import withTranslate from 'react-redux-multilingual/lib/withTranslate';
+import MillProductivity from '../plan-component/millProductivity';
+
 class MillScheduleBooking extends Component {
     constructor(props) {
         super(props);
         this.state = {}
     }
     render() {
+        const { translate, listGoods, manufacturingCommands } = this.props;
         return (
             <React.Fragment>
-                <div>
-                    <WorkSchedule />
-                </div >
-                <div>
-                    <WorkSchedule />
-                </div >
+                <div className="row">
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">{translate('manufacturing.plan.manufacturing_command_info')}</legend>
+                            <table className="table">
+                                <thead>
+                                    <tr>
+                                        <th>{translate('manufacturing.plan.index')}</th>
+                                        <th>{translate('manufacturing.plan.command_code')}</th>
+                                        <th>{translate('manufacturing.plan.good_code')}</th>
+                                        <th>{translate('manufacturing.plan.good_name')}</th>
+                                        <th>{translate('manufacturing.plan.base_unit')}</th>
+                                        <th>{translate('manufacturing.plan.quantity')}</th>
+                                        <th>{translate('manufacturing.plan.history_info')}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        manufacturingCommands && manufacturingCommands.length === 0
+                                            ?
+                                            <tr><td colSpan={7}>{translate('general.no_data')}</td></tr>
+                                            :
+                                            manufacturingCommands.map((command, index) => (
+                                                <tr key={index}>
+                                                    <td>{index + 1}</td>
+                                                    <td>{command.code}</td>
+                                                    <td>{command.good.code}</td>
+                                                    <td>{command.good.name}</td>
+                                                    <td>{command.good.baseUnit}</td>
+                                                    <td>{command.quantity}</td>
+                                                    <td>
+                                                        <a className="text-green" title={translate('manufacturing.plan.history_info')} onClick={() => this.handleShowCommandHistory(command.good._id)}>
+                                                            <i className="material-icons">visibility</i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                    }
+                                </tbody>
+                            </table>
+                        </fieldset>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        {/* <MillProductivity listGoods={listGoods} /> */}
+                    </div>
+                </div>
             </React.Fragment>
 
 
@@ -21,4 +66,4 @@ class MillScheduleBooking extends Component {
     }
 }
 
-export default MillScheduleBooking;
+export default withTranslate(MillScheduleBooking);
