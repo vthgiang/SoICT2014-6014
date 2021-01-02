@@ -45,16 +45,23 @@
   .react-calendar-timeline .rct-vertical-lines .rct-vl.rct-vl-first {
     border-left-width: 1px;
   }
+
   .react-calendar-timeline .rct-vertical-lines .rct-vl {
     position: absolute;
     border-right: 0.1px solid #bbb;
     z-index: 30;
   }
+
   .react-calendar-timeline .rct-vertical-lines .rct-vl.rct-day-6, 
   .react-calendar-timeline .rct-vertical-lines .rct-vl.rct-day-0 {
     background:rgba(171, 245, 169, 0.3);
   }
-  /* .react-calendar-timeline  */
+
+  .react-calendar-timeline .rct-item .rct-item-content {
+    width: inherit;
+    text-overflow: ellipsis;
+  }
+  
   .rct-header-root {
     background: #bbb;
     border-bottom: 1px solid #bbb;

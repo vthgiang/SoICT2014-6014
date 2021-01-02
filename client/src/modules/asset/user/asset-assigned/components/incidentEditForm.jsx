@@ -107,8 +107,7 @@ class IncidentEditForm extends Component {
         const { incidentCode, type, dateOfIncident, description } = this.state;
         const { translate } = this.props;
 
-        if (!ValidationHelper.validateName(translate, incidentCode).status
-            || !ValidationHelper.validateEmpty(translate, type).status
+        if (!ValidationHelper.validateEmpty(translate, type).status
             || !ValidationHelper.validateEmpty(translate, dateOfIncident).status
             || !ValidationHelper.validateEmpty(translate, description).status)
             return false;
@@ -203,7 +202,7 @@ class IncidentEditForm extends Component {
                         <div className="col-md-12">
                             {/* Mã sự cố */}
                             <div className={`form-group ${!errorOnIncidentCode ? "" : "has-error"}`}>
-                                <label>{translate('asset.general_information.incident_code')}<span className="text-red">*</span></label>
+                                <label>{translate('asset.general_information.incident_code')}</label>
                                 <input type="text" className="form-control" name="incidentCode" value={incidentCode} onChange={this.handleIncidentCodeChange} autoComplete="off" placeholder={translate('asset.general_information.incident_code')} />
                                 <ErrorLabel content={errorOnIncidentCode} />
                             </div>
