@@ -13,6 +13,7 @@ import { DatePicker } from '../../../../common-components';
 import Swal from 'sweetalert2';
 import { TasksIsNotLinked } from './tasksIsNotLinked';
 import { TaskHasActionNotEvaluated } from './taskHasActionNotEvaluated';
+import { InprocessTask } from './inprocessTask';
 
 class TaskDashboard extends Component {
 
@@ -109,7 +110,7 @@ class TaskDashboard extends Component {
             });
         } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && nextState.willUpdate) {
             this.setState(state => {
-                
+
                 return {
                     ...state,
                     dataStatus: this.DATA_STATUS.FINISHED,
@@ -283,7 +284,7 @@ class TaskDashboard extends Component {
         }
         if (startMonthDefault < 10)
             startMonthDefault = '0' + startMonthDefault;
-        
+
         let defaultStartMonth = [startMonthDefault, startYear].join('-');
         let defaultEndMonth = month < 10 ? ['0' + month, year].join('-') : [month, year].join('-');
 
@@ -393,7 +394,9 @@ class TaskDashboard extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col-xs-12">
+                </div>
+                <div class="row">
+                    <div className="col-xs-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.detail_status')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
@@ -406,6 +409,20 @@ class TaskDashboard extends Component {
                                         endMonth={endMonth}
                                     />
                                 }
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-xs-6">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">{translate('task.task_management.calc_progress')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+                            </div>
+                            <div className="box-body qlcv">
+                                <InprocessTask
+                                    startMonth={startMonth}
+                                    endMonth={endMonth}
+                                    tasks={tasks}
+                                />
                             </div>
                         </div>
                     </div>

@@ -5035,7 +5035,7 @@ export default {
                 quantity_need_planned: "Số lượng cần lập kế hoạch",
                 list_order: "Danh sách đơn hàng",
                 manufacturing_command_info: "Thông tin lệnh sản xuất",
-                history_info: "Lịch sử sản xuất theo mặt hàng"
+                history_info: "Lịch sử sản xuất theo mặt hàng",
 
 
 
@@ -5086,7 +5086,6 @@ export default {
                 start_turn: "Ca bắt đầu",
                 end_turn: "Ca kết thúc",
                 creator: "Người tạo",
-                good_name: "Tên mặt hàng",
                 quantity: "Số lượng",
                 description: "Mô tả",
                 approvers: "Người phê duyệt lệnh sản xuất",
@@ -5132,6 +5131,8 @@ export default {
                 },
                 qc_name: "Tên người kiểm định",
                 qc_email: "email",
+                mills: "Xưởng sản xuất",
+                choose_mills: "Chọn xưởng",
                 qc_status_command: "Trạng thái kiểm định",
                 quality_control_content: "Nội dung kiểm định",
                 rateFinishedProductQuantity: "Tỷ lệ thành phẩm",
@@ -5162,6 +5163,8 @@ export default {
                     },
                 },
                 status_bill: "Trạng thái phiếu xuất",
+                quantity_gt: "Số lượng lớn hơn",
+                quantity_lt: "Số lượng bé hơn"
             },
             lot: {
                 index: "STT",

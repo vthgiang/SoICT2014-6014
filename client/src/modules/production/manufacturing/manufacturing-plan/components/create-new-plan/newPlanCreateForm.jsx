@@ -184,6 +184,7 @@ class NewPlanCreateForm extends Component {
             // Thay đổi số lượng sản phẩm thì lệnh phải về rỗng
             manufacturingCommands: []
         });
+        console.log(this.state.goods);
     };
 
     // getListApproverIds = () => {
@@ -308,7 +309,11 @@ class NewPlanCreateForm extends Component {
 
     isValidateStep = (index) => {
         if (index == 1) {
-            if (this.state.goods.length === 0 || this.state.startDate === "" || this.state.endDate === "" || this.state.approvers === undefined) {
+            if (this.state.goods.length === 0
+                || this.state.startDate === ""
+                || this.state.endDate === ""
+                || this.state.approvers === undefined
+                || (this.state.approvers && this.state.approvers.length === 0)) {
                 return false;
             }
             return true
