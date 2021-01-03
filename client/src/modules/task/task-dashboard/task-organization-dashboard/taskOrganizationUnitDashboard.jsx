@@ -13,6 +13,7 @@ import { CalendarOrganizationUnit } from './calendarOrganizationUnit';
 import { withTranslate } from 'react-redux-multilingual';
 import { SelectMulti, DatePicker } from '../../../../common-components/index';
 import Swal from 'sweetalert2';
+import { InprocessOfUnitTask } from './processOfUnitTasks';
 
 class TaskOrganizationUnitDashboard extends Component {
     constructor(props) {
@@ -221,7 +222,7 @@ class TaskOrganizationUnitDashboard extends Component {
                 }
             }
         }
-        
+
         // Config ngày mặc định cho datePiker
         let d = new Date(),
             month = d.getMonth() + 1,
@@ -242,7 +243,7 @@ class TaskOrganizationUnitDashboard extends Component {
         }
         if (startMonthDefault < 10)
             startMonthDefault = '0' + startMonthDefault;
-        
+
         let defaultStartMonth = [startMonthDefault, startYear].join('-');
         let defaultEndMonth = month < 10 ? ['0' + month, year].join('-') : [month, year].join('-');
 
@@ -319,6 +320,24 @@ class TaskOrganizationUnitDashboard extends Component {
                                                 tasks={tasks.organizationUnitTasks}
                                                 listEmployee={user && user.employees}
                                                 units={idsUnit}
+                                            />
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-xs-12">
+                                <div className="box box-primary">
+                                    <div className="box-header with-border">
+                                        <div className="box-title">{translate('task.task_management.calc_progress')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+                                    </div>
+                                    <div className="box-body qlcv">
+                                        {this.state.callAction && tasks && tasks.organizationUnitTasks &&
+                                            <InprocessOfUnitTask
+                                                tasks={tasks.organizationUnitTasks}
+                                                listEmployee={user && user.employees}
+                                                units={childrenOrganizationalUnit}
                                             />
                                         }
                                     </div>
