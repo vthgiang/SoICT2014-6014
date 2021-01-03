@@ -125,7 +125,7 @@ class ManufacturingCommandManagementTable extends Component {
         });
     }
 
-    handleLotCodoChange = (e) => {
+    handleLotCodeChange = (e) => {
         const { value } = e.target;
         this.setState({
             lotCode: value
@@ -316,7 +316,7 @@ class ManufacturingCommandManagementTable extends Component {
                         <div className="form-group">
                             <label className="form-control-static">{translate('manufacturing.command.from_date')}</label>
                             <DatePicker
-                                id={`start-date-command-managemet-table`}
+                                id={`start-date-command-management-table`}
                                 value={fromDate}
                                 onChange={this.handleStartDateChange}
                                 disabled={false}
@@ -326,12 +326,12 @@ class ManufacturingCommandManagementTable extends Component {
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('manufacturing.command.lot_code')}</label>
-                            <input type="text" className="form-control" value={lotCode} onChange={this.handleLotCodoChange} placeholder="LOSX202031233" autoComplete="off" />
+                            <input type="text" className="form-control" value={lotCode} onChange={this.handleLotCodeChange} placeholder="LOSX202031233" autoComplete="off" />
                         </div>
                         <div className="form-group">
                             <label className="form-control-static">{translate('manufacturing.command.to_date')}</label>
                             <DatePicker
-                                id={`end-date-command-managemet-table`}
+                                id={`end-date-command-management-table`}
                                 value={toDate}
                                 onChange={this.handleEndDateChange}
                                 disabled={false}
@@ -362,7 +362,7 @@ class ManufacturingCommandManagementTable extends Component {
                             <button type="button" className="btn btn-success" title={translate('manufacturing.command.search')} onClick={this.handleSubmitSearch}>{translate('manufacturing.command.search')}</button>
                         </div>
                     </div>
-                    <table id="manufacturing-plan-table" className="table table-striped table-bordered table-hover">
+                    <table id="manufacturing-command-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>{translate('manufacturing.command.index')}</th>
@@ -377,7 +377,7 @@ class ManufacturingCommandManagementTable extends Component {
                                 <th>{translate('manufacturing.command.status')}</th>
                                 <th style={{ width: "120px", textAlign: "center" }}>{translate('general.action')}
                                     <DataTableSetting
-                                        tableId="manufacturing-plan-table"
+                                        tableId="manufacturing-command-table"
                                         columnArr={[
                                             translate('manufacturing.command.index'),
                                             translate('manufacturing.command.code'),

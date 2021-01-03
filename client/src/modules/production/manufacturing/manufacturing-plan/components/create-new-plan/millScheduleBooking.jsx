@@ -1,16 +1,26 @@
 import React, { Component } from 'react';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import MillProductivity from '../plan-component/millProductivity';
+import HistoryCommandTable from './historyCommandTable';
 
 class MillScheduleBooking extends Component {
     constructor(props) {
         super(props);
         this.state = {}
     }
+    handleShowCommandHistory = async (goodId) => {
+        await this.setState({
+            goodId: goodId
+        })
+        window.$('#history-command-table').modal('show');
+    }
     render() {
         const { translate, listGoods, manufacturingCommands } = this.props;
         return (
             <React.Fragment>
+                {
+                    <HistoryCommandTable goodId={this.state.goodId} />
+                }
                 <div className="row">
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <fieldset className="scheduler-border">

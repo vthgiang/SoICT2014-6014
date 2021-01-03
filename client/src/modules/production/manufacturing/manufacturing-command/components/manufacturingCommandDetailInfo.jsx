@@ -46,7 +46,7 @@ class ManufacturingCommandDetailInfo extends Component {
                     modalID={`modal-detail-info-manufacturing-command-${idModal}`} isLoading={manufacturingCommand.isLoading}
                     title={translate('manufacturing.command.command_detail')}
                     formID={`form-detail-manufacturing-command`}
-                    size={75}
+                    size={idModal === 3 ? 100 : 75}
                     maxWidth={600}
                     hasSaveButton={false}
                     hasNote={false}
