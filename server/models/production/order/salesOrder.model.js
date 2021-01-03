@@ -12,9 +12,9 @@ const SalesOrderSchema = new Schema({
         //3:Sẵn hàng trong kho, 4: Xuất kho
         //5: Đang giao hàng , 6: Đã giao hàng, 7: Đã hủy
         type: Number,
-        enum: [ 1, 2, 3, 4, 5, 6, 7 ],
+        enum: [1, 2, 3, 4, 5, 6, 7],
         // required: true,
-        default: 0
+        default: 1
     },
     creator: {
         type: Schema.Types.ObjectId,
