@@ -1,5 +1,5 @@
 const {
-    SalesOrder
+    SalesOrder, Quote
 } = require(`../../../../models`);
 
 const {
@@ -119,8 +119,17 @@ exports.createNewSalesOrder = async (userId, data, portal) => {
                 paymentAt: new Date()
             }
         }) : undefined,
-        bill: data.bill
+        bill: data.bill,
+        quote: data.quote
     });
+
+    //Tạo đơn từ báo giá thì lưu các trường sau vào báo giá
+    if (data.quote) {//Nếu được tạo từ báo giá
+        let quote = await Quote(connect(DB_CONNECTION, portal)).findById({ _id: data.quote });
+        quote.status = 3; //Đã chốt đơn
+        quote.salesOrder = newSalesOrder._id;
+        quote.save();
+    }
 
     console.log("new ", newSalesOrder);
 

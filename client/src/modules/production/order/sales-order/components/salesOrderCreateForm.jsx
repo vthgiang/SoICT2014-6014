@@ -22,7 +22,7 @@ class SalesOrderCreateForm extends Component {
             currentSlasOfGood: [],
             currentDiscountsOfGood: [],
             paymentAmount: 0,
-            code: "",
+            code: generateCode("SALES_ORDER_"),
             note: "",
             customer: "",
             customerName: "",
@@ -455,15 +455,11 @@ class SalesOrderCreateForm extends Component {
         if (this.isValidateForm()) {
             let {
                 customer,
-                // customerName,
                 customerAddress,
                 customerPhone,
                 customerRepresent,
-                // customerTaxNumber,
                 customerEmail,
                 code,
-                effectiveDate,
-                expirationDate,
                 shippingFee,
                 deliveryTime,
                 coin,
@@ -475,8 +471,6 @@ class SalesOrderCreateForm extends Component {
 
             let data = {
                 code,
-                effectiveDate: effectiveDate ? new Date(formatToTimeZoneDate(effectiveDate)) : undefined,
-                expirationDate: expirationDate ? new Date(formatToTimeZoneDate(expirationDate)) : undefined,
                 customer,
                 customerPhone,
                 customerAddress,
@@ -508,8 +502,6 @@ class SalesOrderCreateForm extends Component {
                     customerEmail: "",
                     priority: "",
                     code: "",
-                    effectiveDate: "",
-                    expirationDate: "",
                     shippingFee: "",
                     deliveryTime: "",
                     coin: "",
@@ -562,12 +554,12 @@ class SalesOrderCreateForm extends Component {
 
         return (
             <React.Fragment>
-                <ButtonModal
+                {/* <ButtonModal
                     onButtonCallBack={this.handleClickCreateCode}
                     modalID={`modal-add-sales-order`}
                     button_name={"Đơn hàng mới"}
                     title={"Đơn hàng mới"}
-                />
+                /> */}
                 <DialogModal
                     modalID={`modal-add-sales-order`}
                     isLoading={false}

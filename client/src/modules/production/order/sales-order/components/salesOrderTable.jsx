@@ -6,11 +6,13 @@ import { DiscountActions } from "../../discount/redux/actions";
 import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
 import { DepartmentActions } from "../../../../super-admin/organizational-unit/redux/actions";
 import { RoleActions } from "../../../../super-admin/role/redux/actions";
+import { QuoteActions } from "../../quote/redux/actions";
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import { formatDate } from "../../../../../helpers/formatDate";
 import { PaginateBar, DataTableSetting, SelectMulti, SelectBox, DeleteNotification } from "../../../../../common-components";
 import SalesOrderDetailForm from "./salesOrderDetailForm";
 import SalesOrderCreateForm from "./salesOrderCreateForm";
+import SalesOrderCreateFormFromQuote from "./salesOrderCreateFormFromQuote";
 import SalesOrderEditForm from "./salesOrderEditForm";
 
 class SalesOrderTable extends Component {
@@ -32,6 +34,7 @@ class SalesOrderTable extends Component {
         this.props.getCustomers();
         this.props.getAllDepartments();
         this.props.getAllRoles();
+        this.props.getQuotesToMakeOrder();
     };
 
     setPage = async (page) => {
@@ -118,6 +121,14 @@ class SalesOrderTable extends Component {
         window.$("#modal-edit-sales-order").modal("show");
     };
 
+    createDirectly = () => {
+        window.$("#modal-add-sales-order").modal("show");
+    };
+
+    createFromQuote = () => {
+        window.$("#modal-add-sales-order-from-quote").modal("show");
+    };
+
     // checkHasComponent = (name) => {
     //     let { auth } = this.props;
     //     let result = false;
@@ -167,7 +178,36 @@ class SalesOrderTable extends Component {
             <React.Fragment>
                 <div className="nav-tabs-custom">
                     <div className="box-body qlcv">
+                        <div className="form-inline">
+                            {/*Chọn cách thêm đơn hàng*/}
+                            {/* Button dropdown thêm mới đơn bán hàng */}
+                            <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
+                                <button
+                                    type="button"
+                                    className="btn btn-success dropdown-toggle pull-right"
+                                    data-toggle="dropdown"
+                                    aria-expanded="true"
+                                    title={"Đơn hàng mới"}
+                                >
+                                    Thêm đơn hàng
+                                </button>
+                                <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
+                                    <li>
+                                        <a style={{ cursor: "pointer" }} title={`Tạo từ báo giá`} onClick={this.createFromQuote}>
+                                            Thêm từ báo giá
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a style={{ cursor: "pointer" }} title={`Tạo trực tiếp`} onClick={this.createDirectly}>
+                                            Thêm trực tiếp
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
                         <SalesOrderCreateForm />
+                        <SalesOrderCreateFormFromQuote />
                         <SalesOrderDetailForm salesOrderDetail={salesOrderDetail} />
                         {salesOrderEdit && <SalesOrderEditForm salesOrderEdit={salesOrderEdit} />}
                         <div className="form-inline">
@@ -360,6 +400,7 @@ const mapDispatchToProps = {
     getCustomers: CrmCustomerActions.getCustomers,
     getAllDepartments: DepartmentActions.get,
     getAllRoles: RoleActions.get,
+    getQuotesToMakeOrder: QuoteActions.getQuotesToMakeOrder,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(SalesOrderTable));

@@ -75,7 +75,6 @@ class SalesOrderCreateInfo extends Component {
                                             Khách hàng
                                             <span className="attention"> * </span>
                                         </label>
-                                        {console.log("customer", customer)}
                                         <SelectBox
                                             id={`select-sales-order-customer-edit`}
                                             className="form-control select2"

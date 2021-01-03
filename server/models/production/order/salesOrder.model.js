@@ -309,6 +309,10 @@ const SalesOrderSchema = new Schema({
             default: false,
             require: true
         }
+    },
+    quote: { //Được lập từ báo giá nếu có
+        type: Schema.Types.ObjectId,
+        ref: 'Quote',
     }
 }, {
     timestamps: true,

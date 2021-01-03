@@ -126,3 +126,26 @@ exports.deleteQuote = async (req, res) => {
         });
     }
 }
+
+exports.getQuotesToMakeOrder = async (req, res) => {
+    try {
+        let quotes = await QuoteService.getQuotesToMakeOrder(req.portal);
+
+        await Log.info(req.user.email, "GET_QUOTES_TO_MAKE_ORDER", req.portal);
+
+        res.status(200).json({
+            success: true,
+            message: ["get_quotes_to_make_order_successfully"],
+            content: quotes
+        })
+        
+    } catch (error) {
+        await Log.error(req.user.email, "GET_QUOTES_TO_MAKE_ORDER", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["get_quotes_to_make_order_failed"],
+            content: error.message
+        });
+    }
+}
