@@ -496,33 +496,33 @@ class SalesOrderCreateForm extends Component {
 
             console.log("data", data);
 
-            // this.setState((state) => {
-            //     return {
-            //         ...state,
-            //         customer: "",
-            //         customerName: "",
-            //         customerAddress: "",
-            //         customerPhone: "",
-            //         customerRepresent: "",
-            //         customerTaxNumbe: "",
-            //         customerEmail: "",
-            //         priority: "",
-            //         code: "",
-            //         effectiveDate: "",
-            //         expirationDate: "",
-            //         shippingFee: "",
-            //         deliveryTime: "",
-            //         coin: "",
-            //         goods: [],
-            //         discountsOfOrderValue: [],
-            //         paymentAmount: "",
-            //         note: "",
-            //         paymentAmount: "",
-            //         step: 0,
-            //     };
-            // });
+            this.setState((state) => {
+                return {
+                    ...state,
+                    customer: "",
+                    customerName: "",
+                    customerAddress: "",
+                    customerPhone: "",
+                    customerRepresent: "",
+                    customerTaxNumbe: "",
+                    customerEmail: "",
+                    priority: "",
+                    code: "",
+                    effectiveDate: "",
+                    expirationDate: "",
+                    shippingFee: "",
+                    deliveryTime: "",
+                    coin: "",
+                    goods: [],
+                    discountsOfOrderValue: [],
+                    paymentAmount: "",
+                    note: "",
+                    paymentAmount: "",
+                    step: 0,
+                };
+            });
 
-            // window.$(`#modal-add-sales-order`).modal("hide");
+            window.$(`#modal-add-sales-order`).modal("hide");
         }
     };
 
@@ -697,6 +697,7 @@ class SalesOrderCreateForm extends Component {
                                     customerRepresent={customerRepresent}
                                     customerTaxNumber={customerTaxNumber}
                                     customerEmail={customerEmail}
+                                    priority={priority}
                                     code={code}
                                     shippingFee={shippingFee}
                                     deliveryTime={deliveryTime}

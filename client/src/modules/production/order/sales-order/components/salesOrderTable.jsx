@@ -9,9 +9,9 @@ import { RoleActions } from "../../../../super-admin/role/redux/actions";
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import { formatDate } from "../../../../../helpers/formatDate";
 import { PaginateBar, DataTableSetting, SelectMulti, SelectBox, DeleteNotification } from "../../../../../common-components";
-// import QuoteDetailForm from "./quoteDetailForm";
+import SalesOrderDetailForm from "./salesOrderDetailForm";
 import SalesOrderCreateForm from "./salesOrderCreateForm";
-// import QuoteEditForm from "./quoteEditForm";
+import SalesOrderEditForm from "./salesOrderEditForm";
 
 class SalesOrderTable extends Component {
     constructor(props) {
@@ -21,7 +21,7 @@ class SalesOrderTable extends Component {
             limit: 5,
             code: "",
             status: null,
-            quoteDetail: {},
+            salesOrderDetail: {},
         };
     }
 
@@ -98,29 +98,24 @@ class SalesOrderTable extends Component {
         this.setState((state) => {
             return {
                 ...state,
-                quoteDetail: data,
+                salesOrderDetail: data,
             };
         });
-        window.$("#modal-detail-quote").modal("show");
+        window.$("#modal-detail-sales-order").modal("show");
     };
 
     handleCreate = () => {
         window.$("#modal-add-sales-order").modal("show");
     };
 
-    handleEditQuote = async (quoteEdit) => {
-        console.log("quoteEdit", quoteEdit);
+    handleEditSalesOrder = async (salesOrderEdit) => {
         await this.setState((state) => {
             return {
                 ...state,
-                quoteEdit,
+                salesOrderEdit,
             };
         });
-        window.$("#modal-edit-quote").modal("show");
-    };
-
-    deleteQuote = async (id) => {
-        this.props.deleteQuote(id);
+        window.$("#modal-edit-sales-order").modal("show");
     };
 
     // checkHasComponent = (name) => {
@@ -134,7 +129,7 @@ class SalesOrderTable extends Component {
     // }
 
     render() {
-        let { limit, quoteDetail, quoteEdit } = this.state;
+        let { limit, salesOrderDetail, salesOrderEdit } = this.state;
         const { translate, salesOrders } = this.props;
         const { totalPages, page } = salesOrders;
 
@@ -173,8 +168,8 @@ class SalesOrderTable extends Component {
                 <div className="nav-tabs-custom">
                     <div className="box-body qlcv">
                         <SalesOrderCreateForm />
-                        {/* <QuoteDetailForm quoteDetail={quoteDetail} />
-                        {quoteEdit && <QuoteEditForm quoteEdit={quoteEdit} />} */}
+                        <SalesOrderDetailForm salesOrderDetail={salesOrderDetail} />
+                        {salesOrderEdit && <SalesOrderEditForm salesOrderEdit={salesOrderEdit} />}
                         <div className="form-inline">
                             <div className="form-group">
                                 <label className="form-control-static">Mã đơn</label>
@@ -190,7 +185,7 @@ class SalesOrderTable extends Component {
                             <div className="form-group">
                                 <label className="form-control-static">Khách hàng</label>
                                 <SelectMulti
-                                    id={`selectMulti-filter-customer-quote`}
+                                    id={`selectMulti-filter-customer-sales-order`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={
@@ -212,7 +207,7 @@ class SalesOrderTable extends Component {
                                 <label className="form-control-static">Trạng thái đơn</label>
 
                                 <SelectMulti
-                                    id={`selectMulti-filter-status-quote`}
+                                    id={`selectMulti-filter-status-sales-order`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={[
@@ -259,7 +254,7 @@ class SalesOrderTable extends Component {
                                 </button>
                             </div>
                         </div>
-                        <table id={`quote-table`} className="table table-striped table-bordered table-hover" style={{ marginTop: 20 }}>
+                        <table id={`sales-order-table`} className="table table-striped table-bordered table-hover" style={{ marginTop: 20 }}>
                             <thead>
                                 <tr>
                                     <th>STT</th>
@@ -325,21 +320,13 @@ class SalesOrderTable extends Component {
                                                         <i className="material-icons">view_list</i>
                                                     </a>
                                                     <a
-                                                        onClick={() => this.handleEditQuote(item)}
+                                                        onClick={() => this.handleEditSalesOrder(item)}
                                                         className="edit text-yellow"
                                                         style={{ width: "5px" }}
                                                         title="Sửa đơn"
                                                     >
                                                         <i className="material-icons">edit</i>
                                                     </a>
-                                                    <DeleteNotification
-                                                        content={"Bạn có chắc chắn muốn xóa báo giá này"}
-                                                        data={{
-                                                            id: item._id,
-                                                            info: item.code,
-                                                        }}
-                                                        func={() => this.deleteQuote(item._id)}
-                                                    />
                                                 </td>
                                             )}
                                         </tr>

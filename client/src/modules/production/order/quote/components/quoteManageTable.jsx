@@ -95,6 +95,7 @@ class QuoteManageTable extends Component {
     };
 
     handleShowDetailInfo = (data) => {
+        console.log("DATA", data);
         this.setState((state) => {
             return {
                 ...state,

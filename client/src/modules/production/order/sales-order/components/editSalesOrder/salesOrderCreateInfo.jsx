@@ -75,8 +75,9 @@ class SalesOrderCreateInfo extends Component {
                                             Khách hàng
                                             <span className="attention"> * </span>
                                         </label>
+                                        {console.log("customer", customer)}
                                         <SelectBox
-                                            id={`select-sales-order-customer`}
+                                            id={`select-sales-order-customer-edit`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={customer}
@@ -161,14 +162,13 @@ class SalesOrderCreateInfo extends Component {
                                 </label>
                                 <input type="text" className="form-control" value={code} disabled={true} />
                             </div>
-
                             <div className={`form-group ${!priorityError ? "" : "has-error"}`}>
                                 <label>
                                     Độ ưu tiên
                                     <span className="attention"> * </span>
                                 </label>
                                 <SelectBox
-                                    id={`select-create-sales-order-priority`}
+                                    id={`select-edit-sales-order-priority`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={priority}
@@ -199,7 +199,7 @@ class SalesOrderCreateInfo extends Component {
                                 <input
                                     type="checkbox"
                                     className={`form-check-input`}
-                                    id={`checkbox-use-foreign-currency`}
+                                    id={`checkbox-use-foreign-currency-edit`}
                                     value={isUseForeignCurrency}
                                     checked={isUseForeignCurrency}
                                     onChange={handleUseForeignCurrencyChange}
@@ -257,14 +257,6 @@ class SalesOrderCreateInfo extends Component {
                             ) : (
                                 ""
                             )}
-
-                            {/* <div className="form-group">
-                                        <label>
-                                            Nhân viên bán hàng
-                                            <span className="attention"> * </span>
-                                        </label>
-                                        <input type="text" className="form-control" value={"Phạm Đại Tài"} disabled={true} />
-                                    </div> */}
                         </fieldset>
                     </div>
                 </div>

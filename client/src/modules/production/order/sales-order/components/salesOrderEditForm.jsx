@@ -1,18 +1,17 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
-import { QuoteActions } from "../redux/actions";
+import { SalesOrderActions } from "../redux/actions";
 import { DiscountActions } from "../../discount/redux/actions";
 import { formatToTimeZoneDate, formatDate } from "../../../../../helpers/formatDate";
 import { DialogModal, SelectBox } from "../../../../../common-components";
 import ValidationHelper from "../../../../../helpers/validationHelper";
-import QuoteCreateGood from "./editQuote/quoteCreateGood";
-import QuoteCreateInfo from "./editQuote/quoteCreateInfo";
-import QuoteCreatePayment from "./editQuote/quoteCreatePayment";
-import SlasOfGoodDetail from "./editQuote/viewDetailOnCreate/slasOfGoodDetail";
-import DiscountOfGoodDetail from "./editQuote/viewDetailOnCreate/discountOfGoodDetail";
-class QuoteEditForm extends Component {
+import SalesOrderCreateGood from "./editSalesOrder/salesOrderCreateGood";
+import SalesOrderCreateInfo from "./editSalesOrder/salesOrderCreateInfo";
+import SalesOrderCreatePayment from "./editSalesOrder/salesOrderCreatePayment";
+import SlasOfGoodDetail from "./editSalesOrder/viewDetailOnCreate/slasOfGoodDetail";
+import DiscountOfGoodDetail from "./editSalesOrder/viewDetailOnCreate/discountOfGoodDetail";
+class SalesOrderEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -29,8 +28,7 @@ class QuoteEditForm extends Component {
             customerAddress: "",
             customerPhone: "",
             customerRepresent: "",
-            effectiveDate: "",
-            expirationDate: "",
+            priority: "",
             shippingFee: "",
             deliveryTime: "",
             coin: "",
@@ -53,30 +51,29 @@ class QuoteEditForm extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.quoteEdit._id !== prevState.quoteId) {
+        if (nextProps.salesOrderEdit._id !== prevState.salesOrderId) {
             return {
                 ...prevState,
-                quoteId: nextProps.quoteEdit._id,
-                code: nextProps.quoteEdit.code,
-                effectiveDate: nextProps.quoteEdit.effectiveDate ? formatDate(nextProps.quoteEdit.effectiveDate) : "",
-                expirationDate: nextProps.quoteEdit.expirationDate ? formatDate(nextProps.quoteEdit.expirationDate) : "",
-                customer: nextProps.quoteEdit.customer._id,
-                customerName: nextProps.quoteEdit.customer.name,
-                customerPhone: nextProps.quoteEdit.customerPhone,
-                customerTaxNumber: nextProps.quoteEdit.customer.taxNumber,
-                customerRepresent: nextProps.quoteEdit.customerRepresent,
-                customerAddress: nextProps.quoteEdit.customerAddress,
-                customerEmail: nextProps.quoteEdit.customerEmail,
-                deliveryTime: nextProps.quoteEdit.deliveryTime ? formatDate(nextProps.quoteEdit.deliveryTime) : "",
-                discountsOfOrderValue: nextProps.quoteEdit.discounts,
+                salesOrderId: nextProps.salesOrderEdit._id,
+                code: nextProps.salesOrderEdit.code,
+                customer: nextProps.salesOrderEdit.customer._id,
+                customerName: nextProps.salesOrderEdit.customer.name,
+                customerPhone: nextProps.salesOrderEdit.customerPhone,
+                customerTaxNumber: nextProps.salesOrderEdit.customer.taxNumber,
+                customerRepresent: nextProps.salesOrderEdit.customerRepresent,
+                customerAddress: nextProps.salesOrderEdit.customerAddress,
+                customerEmail: nextProps.salesOrderEdit.customerEmail,
+                priority: nextProps.salesOrderEdit.priority,
+                deliveryTime: nextProps.salesOrderEdit.deliveryTime ? formatDate(nextProps.salesOrderEdit.deliveryTime) : "",
+                discountsOfOrderValue: nextProps.salesOrderEdit.discounts,
                 discountsOfOrderValueChecked: Object.assign({}),
-                note: nextProps.quoteEdit.note,
-                paymentAmount: nextProps.quoteEdit.paymentAmount,
-                shippingFee: nextProps.quoteEdit.shippingFee,
-                coin: nextProps.quoteEdit.coin,
-                status: nextProps.quoteEdit.status,
-                goods: nextProps.quoteEdit.goods
-                    ? nextProps.quoteEdit.goods.map((item) => {
+                note: nextProps.salesOrderEdit.note,
+                paymentAmount: nextProps.salesOrderEdit.paymentAmount,
+                shippingFee: nextProps.salesOrderEdit.shippingFee,
+                coin: nextProps.salesOrderEdit.coin,
+                status: nextProps.salesOrderEdit.status,
+                goods: nextProps.salesOrderEdit.goods
+                    ? nextProps.salesOrderEdit.goods.map((item) => {
                           return {
                               good: item.good,
                               pricePerBaseUnit: item.pricePerBaseUnit,
@@ -134,44 +131,39 @@ class QuoteEditForm extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        console.log("nextState", nextState.code, this.state.quoteCode);
-        if (nextState.code !== this.state.quoteCode) {
+        console.log("nextState", nextState.code, this.state.salesOrderCode);
+        if (nextState.code !== this.state.salesOrderCode) {
             this.getDiscountOfOrderValueChecked();
             this.setState({
-                quoteCode: nextState.code,
+                salesOrderCode: nextState.code,
             });
             return false;
         }
         return true;
     }
 
-    componentDidMount() {
-        // this.props.getCustomers();
-        // this.props.getDiscountForOrderValue();
-    }
-
     getDiscountOfOrderValueChecked = () => {
         const { listDiscountsByOrderValue } = this.props.discounts;
         let { discountsOfOrderValue, discountsOfOrderValueChecked } = this.state;
-        console.log("discountsOfOrderValueChecked", discountsOfOrderValueChecked);
         let amountAfterApplyTax = this.getAmountAfterApplyTax();
+
         if (discountsOfOrderValue) {
             discountsOfOrderValue.forEach((element) => {
                 //checked các khuyến mãi đã có trong danh mục
                 let discount = listDiscountsByOrderValue.find((dis) => dis._id === element._id);
                 if (discount) {
-                    let checked = this.getDiscountsCheckedForEditQuote(discount, amountAfterApplyTax);
+                    let checked = this.getDiscountsCheckedForEditSalesOrder(discount, amountAfterApplyTax);
                     discountsOfOrderValueChecked[`${checked.id}`] = checked.status;
                 }
             });
-            console.log("discountsOfOrderValueChecked", discountsOfOrderValueChecked);
+
             this.setState({
                 discountsOfOrderValueChecked,
             });
         }
     };
 
-    getDiscountsCheckedForEditQuote = (item, orderValue) => {
+    getDiscountsCheckedForEditSalesOrder = (item, orderValue) => {
         let checked = { id: "", status: false };
         item.discounts.forEach((discount, index) => {
             let disabled = false;
@@ -315,60 +307,32 @@ class QuoteEditForm extends Component {
         });
     };
 
-    validateDateStage = (effectiveDate, expirationDate, willUpdateState = true) => {
+    validatePriority = (value, willUpdateState = true) => {
         let msg = undefined;
-        let {} = this.state;
-        if (effectiveDate && expirationDate) {
-            let effDate = new Date(formatToTimeZoneDate(effectiveDate));
-            let expDate = new Date(formatToTimeZoneDate(expirationDate));
-            if (effDate.getTime() >= expDate.getTime()) {
-                msg = "Ngày bắt đầu phải trước ngày kết thúc";
-            } else {
-                msg = undefined;
-            }
+        if (!value) {
+            msg = "Giá trị không được để trống";
+        } else if (value === "title") {
+            msg = "Giá trị không được để trống";
         }
-
         if (willUpdateState) {
             this.setState((state) => {
                 return {
                     ...state,
-                    effectiveDate: effectiveDate,
-                    expirationDate: expirationDate,
-                    effectiveDateError: msg,
-                    expirationDateError: msg,
+                    priorityError: msg,
                 };
             });
         }
         return msg;
     };
 
-    handleChangeEffectiveDate = (value) => {
-        const { expirationDate } = this.state;
-        if (!value) {
-            value = null;
-        }
-
-        let { translate } = this.props;
-        let { message } = ValidationHelper.validateEmpty(translate, value);
-        this.setState({ effectiveDateError: message, expirationDateError: undefined });
-
-        if (value) {
-            this.validateDateStage(value, expirationDate, true);
-        }
-    };
-
-    handleChangeExpirationDate = (value) => {
-        const { effectiveDate } = this.state;
-        if (!value) {
-            value = null;
-        }
-        let { translate } = this.props;
-        let { message } = ValidationHelper.validateEmpty(translate, value);
-        this.setState({ expirationDateError: message, effectiveDateError: undefined });
-
-        if (value) {
-            this.validateDateStage(effectiveDate, value, true);
-        }
+    handlePriorityChange = (value) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                priority: value[0],
+            };
+        });
+        this.validatePriority(value[0], true);
     };
 
     setCurrentStep = (e, step) => {
@@ -528,18 +492,16 @@ class QuoteEditForm extends Component {
         });
     };
 
-    isValidateQuoteCreateInfo = () => {
-        let { customer, customerEmail, customerPhone, customerAddress, effectiveDate, expirationDate } = this.state;
+    isValidateSalesOrderCreateInfo = () => {
+        let { customer, customerEmail, customerPhone, customerAddress, priority } = this.state;
         let { translate } = this.props;
 
         if (
             this.validateCustomer(customer, false) ||
+            this.validatePriority(priority, false) ||
             !ValidationHelper.validateEmail(translate, customerEmail).status ||
             !ValidationHelper.validateEmpty(translate, customerPhone).status ||
-            !ValidationHelper.validateEmpty(translate, customerAddress).status ||
-            this.validateDateStage(effectiveDate, expirationDate, false) ||
-            !ValidationHelper.validateEmpty(translate, effectiveDate).status ||
-            !ValidationHelper.validateEmpty(translate, expirationDate).status
+            !ValidationHelper.validateEmpty(translate, customerAddress).status
         ) {
             return false;
         } else {
@@ -547,7 +509,7 @@ class QuoteEditForm extends Component {
         }
     };
 
-    isValidateQuoteCreateGood = () => {
+    isValidateSalesOrderCreateGood = () => {
         let { goods } = this.state;
         if (goods && goods.length) {
             return true;
@@ -557,7 +519,7 @@ class QuoteEditForm extends Component {
     };
 
     isValidateForm = () => {
-        if (this.isValidateQuoteCreateInfo() && this.isValidateQuoteCreateGood()) {
+        if (this.isValidateSalesOrderCreateInfo() && this.isValidateSalesOrderCreateGood()) {
             return true;
         } else {
             return false;
@@ -625,7 +587,8 @@ class QuoteEditForm extends Component {
         return goodMap;
     };
 
-    save = async () => {
+    save = async (e) => {
+        e.preventDefault();
         if (this.isValidateForm()) {
             let {
                 customer,
@@ -633,27 +596,25 @@ class QuoteEditForm extends Component {
                 customerPhone,
                 customerRepresent,
                 customerEmail,
+                priority,
                 code,
-                effectiveDate,
-                expirationDate,
                 shippingFee,
                 deliveryTime,
                 coin,
                 discountsOfOrderValue,
                 paymentAmount,
                 note,
-                quoteId,
+                salesOrderId,
             } = this.state;
 
             let data = {
                 code,
-                effectiveDate: effectiveDate ? new Date(formatToTimeZoneDate(effectiveDate)) : undefined,
-                expirationDate: expirationDate ? new Date(formatToTimeZoneDate(expirationDate)) : undefined,
                 customer,
                 customerPhone,
                 customerAddress,
                 customerRepresent,
                 customerEmail,
+                priority,
                 goods: this.formatGoodForSubmit(),
                 discounts: discountsOfOrderValue.length ? this.formatDiscountForSubmit(discountsOfOrderValue) : [],
                 shippingFee,
@@ -663,7 +624,7 @@ class QuoteEditForm extends Component {
                 note,
             };
 
-            await this.props.editQuote(quoteId, data);
+            await this.props.editSalesOrder(salesOrderId, data);
 
             this.setState((state) => {
                 return {
@@ -672,7 +633,7 @@ class QuoteEditForm extends Component {
                 };
             });
 
-            window.$(`#modal-edit-quote`).modal("hide");
+            window.$(`#modal-edit-sales-order`).modal("hide");
         }
     };
 
@@ -687,8 +648,7 @@ class QuoteEditForm extends Component {
             customerRepresent,
             customerTaxNumber,
             customerEmail,
-            effectiveDate,
-            expirationDate,
+            priority,
             step,
             goods,
             shippingFee,
@@ -705,21 +665,19 @@ class QuoteEditForm extends Component {
             paymentAmount,
         } = this.state;
 
-        let { customerError, customerEmailError, customerPhoneError, customerAddressError, effectiveDateError, expirationDateError } = this.state;
+        let { customerError, customerEmailError, customerPhoneError, customerAddressError, priorityError } = this.state;
 
-        let enableStepOne = this.isValidateQuoteCreateInfo();
-        let enableStepTwo = this.isValidateQuoteCreateGood();
+        let enableStepOne = this.isValidateSalesOrderCreateInfo();
+        let enableStepTwo = this.isValidateSalesOrderCreateGood();
         let enableFormSubmit = enableStepOne && enableStepTwo;
-
-        console.log("discountsOfOrderValueChecked", discountsOfOrderValueChecked);
 
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID={`modal-edit-quote`}
+                    modalID={`modal-edit-sales-order`}
                     isLoading={false}
-                    formID={`form-add-quote`}
-                    title={"Chỉnh sửa báo giá"}
+                    formID={`form-add-sales-order`}
+                    title={"Chỉnh sửa đơn bán hàng"}
                     size="100"
                     style={{ backgroundColor: "green" }}
                     hasSaveButton={false}
@@ -752,14 +710,14 @@ class QuoteEditForm extends Component {
                                     onClick={(e) => this.setCurrentStep(e, 2)}
                                     style={{ cursor: "pointer" }}
                                 >
-                                    <span>Chốt báo giá</span>
+                                    <span>Chốt đơn</span>
                                 </a>
                             </li>
                         </ul>
                         {foreignCurrency.ratio && foreignCurrency.symbol ? (
                             <div className="form-group select-currency">
                                 <SelectBox
-                                    id={`select-quote-currency-${foreignCurrency.symbol.replace(" ")}`}
+                                    id={`select-sales-order-currency-${foreignCurrency.symbol.replace(" ")}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={currency.type}
@@ -777,10 +735,10 @@ class QuoteEditForm extends Component {
                     </div>
                     <SlasOfGoodDetail currentSlasOfGood={currentSlasOfGood} />
                     <DiscountOfGoodDetail currentDiscounts={currentDiscountsOfGood} />
-                    <form id={`form-add-quote`}>
+                    <form id={`form-add-sales-order`}>
                         <div className="row row-equal-height" style={{ marginTop: 0 }}>
                             {step === 0 && (
-                                <QuoteCreateInfo
+                                <SalesOrderCreateInfo
                                     //state
                                     code={code}
                                     note={note}
@@ -791,8 +749,7 @@ class QuoteEditForm extends Component {
                                     customerRepresent={customerRepresent}
                                     customerTaxNumber={customerTaxNumber}
                                     customerEmail={customerEmail}
-                                    effectiveDate={effectiveDate}
-                                    expirationDate={expirationDate}
+                                    priority={priority}
                                     isUseForeignCurrency={isUseForeignCurrency}
                                     foreignCurrency={foreignCurrency}
                                     //handle
@@ -802,22 +759,20 @@ class QuoteEditForm extends Component {
                                     handleCustomerPhoneChange={this.handleCustomerPhoneChange}
                                     handleCustomerRepresentChange={this.handleCustomerRepresentChange}
                                     handleNoteChange={this.handleNoteChange}
-                                    handleChangeEffectiveDate={this.handleChangeEffectiveDate}
-                                    handleChangeExpirationDate={this.handleChangeExpirationDate}
                                     handleUseForeignCurrencyChange={this.handleUseForeignCurrencyChange}
                                     handleRatioOfCurrencyChange={this.handleRatioOfCurrencyChange}
                                     handleSymbolOfForreignCurrencyChange={this.handleSymbolOfForreignCurrencyChange}
+                                    handlePriorityChange={this.handlePriorityChange}
                                     //Error Status
                                     customerError={customerError}
                                     customerEmailError={customerEmailError}
                                     customerPhoneError={customerPhoneError}
                                     customerAddressError={customerAddressError}
-                                    effectiveDateError={effectiveDateError}
-                                    expirationDateError={expirationDateError}
+                                    priorityError={priorityError}
                                 />
                             )}
                             {step === 1 && (
-                                <QuoteCreateGood
+                                <SalesOrderCreateGood
                                     listGoods={goods}
                                     setGoods={this.setGoods}
                                     isUseForeignCurrency={isUseForeignCurrency}
@@ -833,7 +788,7 @@ class QuoteEditForm extends Component {
                                 />
                             )}
                             {step === 2 && (
-                                <QuoteCreatePayment
+                                <SalesOrderCreatePayment
                                     paymentAmount={paymentAmount}
                                     listGoods={goods}
                                     customer={customer}
@@ -843,8 +798,7 @@ class QuoteEditForm extends Component {
                                     customerRepresent={customerRepresent}
                                     customerTaxNumber={customerTaxNumber}
                                     customerEmail={customerEmail}
-                                    effectiveDate={effectiveDate}
-                                    expirationDate={expirationDate}
+                                    priority={priority}
                                     code={code}
                                     shippingFee={shippingFee}
                                     deliveryTime={deliveryTime}
@@ -865,36 +819,10 @@ class QuoteEditForm extends Component {
                                         this.setCurrentDiscountsOfGood(data);
                                     }}
                                     setPaymentAmount={(data) => this.setPaymentAmount(data)}
-                                    saveQuote={this.save}
+                                    saveSalesOrder={this.save}
                                 />
                             )}
                         </div>
-                        {/* <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <div className={"pull-right"} style={{ padding: 10 }}>
-                                <div>
-                                    <div>
-                                        {step + 1} / {3}
-                                    </div>
-                                    <div>
-                                        {step !== 0 ? (
-                                            <button className="btn" onClick={this.preStep}>
-                                                Quay lại
-                                            </button>
-                                        ) : (
-                                            ""
-                                        )}
-                                        {step === 2 ? (
-                                            ""
-                                        ) : (
-                                            <button className="btn btn-success" onClick={this.nextStep}>
-                                                Tiếp
-                                            </button>
-                                        )}
-                                        {step === 2 ? <button className="btn btn-success">Lưu</button> : ""}
-                                    </div>
-                                </div>
-                            </div>
-                        </div> */}
                     </form>
                 </DialogModal>
             </React.Fragment>
@@ -910,8 +838,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     getDiscountForOrderValue: DiscountActions.getDiscountForOrderValue,
-    // getCustomers: CrmCustomerActions.getCustomers,
-    editQuote: QuoteActions.editQuote,
+    editSalesOrder: SalesOrderActions.editSalesOrder,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuoteEditForm));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(SalesOrderEditForm));
