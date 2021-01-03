@@ -3,12 +3,12 @@ const router = express.Router();
 const SalesOrderController = require('./salesOrder.controller');
 const { auth } = require(`../../../../middleware`);
 
-router.post('/', SalesOrderController.createNewSalesOrder);
-router.patch('/:id', SalesOrderController.editSalesOrder);
-router.patch('/approve/:id', SalesOrderController.approveSalesOrder);
-router.patch('/add-manufacturing-plan/:id', SalesOrderController.addManufacturingPlanForGood)
+router.post('/', auth,  SalesOrderController.createNewSalesOrder);
+router.patch('/:id', auth, SalesOrderController.editSalesOrder);
+router.patch('/approve/:id', auth,  SalesOrderController.approveSalesOrder);
+router.patch('/add-manufacturing-plan/:id', auth,  SalesOrderController.addManufacturingPlanForGood)
 
 // API get all đơn kinh doanh phục vụ việc lập kế hoạch
-router.get('/', SalesOrderController.getAllSalesOrders);
-router.get('/get-by-manufacturing-works', SalesOrderController.getSalesOrdersByManufacturingWorks)
+router.get('/', auth,  SalesOrderController.getAllSalesOrders);
+router.get('/get-by-manufacturing-works', auth,  SalesOrderController.getSalesOrdersByManufacturingWorks)
 module.exports = router;

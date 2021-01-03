@@ -8,8 +8,9 @@ import ValidationHelper from "../../../../../../helpers/validationHelper";
 import GoodSelected from "./goodCreateSteps/goodSelected";
 import ApplyDiscount from "./goodCreateSteps/applyDiscount";
 import Payment from "./goodCreateSteps/payment";
-import "../quote.css";
-class QuoteCreateGood extends Component {
+import "../salesOrder.css";
+
+class SalesOrderCreateGood extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -943,7 +944,7 @@ class QuoteCreateGood extends Component {
                                 <th title={"Hành động"}>Hành động</th>
                             </tr>
                         </thead>
-                        <tbody id={`quote-goods-table`}>
+                        <tbody id={`sales-order-goods-table`}>
                             {listGoods &&
                                 listGoods.length !== 0 &&
                                 listGoods.map((item, index) => (
@@ -971,7 +972,7 @@ class QuoteCreateGood extends Component {
                                                 }}
                                                 data-toggle="modal"
                                                 data-backdrop="static"
-                                                href={"#modal-create-quote-discounts-of-good-detail"}
+                                                href={"#modal-create-sales-order-discounts-of-good-detail"}
                                                 title="Click để xem chi tiết"
                                             >
                                                 {item.amount && item.amountAfterDiscount
@@ -1003,7 +1004,7 @@ class QuoteCreateGood extends Component {
                                                     }}
                                                     data-toggle="modal"
                                                     data-backdrop="static"
-                                                    href={"#modal-create-quote-slas-of-good-detail"}
+                                                    href={"#modal-create-sales-order-slas-of-good-detail"}
                                                     onClick={() => setCurrentSlasOfGood(item.slasOfGood)}
                                                 >
                                                     Chi tiết &ensp;
@@ -1081,4 +1082,4 @@ const mapDispatchToProps = {
     getDiscountForOrderValue: DiscountActions.getDiscountForOrderValue,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuoteCreateGood));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(SalesOrderCreateGood));

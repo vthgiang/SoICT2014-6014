@@ -210,12 +210,12 @@ class CreateDiscountsForOrder extends Component {
                     }}
                     data-toggle="modal"
                     data-backdrop="static"
-                    href={"#modal-add-quote-discount-for-order"}
+                    href={"#modal-add-sales-order-discount-for-order"}
                 >
                     Chọn khuyến mãi
                 </a>
                 <DialogModal
-                    modalID={`modal-add-quote-discount-for-order`}
+                    modalID={`modal-add-sales-order-discount-for-order`}
                     isLoading={false}
                     title={"Chọn khuyến mãi"}
                     hasSaveButton={false}
