@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { DatePicker, SelectBox, ErrorLabel } from "../../../../../../common-components";
 
-class QuoteCreateInfo extends Component {
+class SalesOrderCreateInfo extends Component {
     constructor(props) {
         super(props);
     }
@@ -43,14 +43,12 @@ class QuoteCreateInfo extends Component {
             customerRepresent,
             customerTaxNumber,
             customerEmail,
-            effectiveDate,
-            expirationDate,
-            dateError,
+            priority,
             isUseForeignCurrency,
             foreignCurrency,
         } = this.props;
 
-        let { customerError, customerEmailError, customerPhoneError, customerAddressError, effectiveDateError, expirationDateError } = this.props;
+        let { customerError, customerEmailError, customerPhoneError, customerAddressError, priorityError } = this.props;
 
         const {
             handleCustomerChange,
@@ -58,19 +56,18 @@ class QuoteCreateInfo extends Component {
             handleCustomerPhoneChange,
             handleCustomerRepresentChange,
             handleNoteChange,
-            handleChangeEffectiveDate,
-            handleChangeExpirationDate,
             handleUseForeignCurrencyChange,
             handleRatioOfCurrencyChange,
             handleSymbolOfForreignCurrencyChange,
             handleCustomerEmailChange,
+            handlePriorityChange,
         } = this.props;
         return (
             <React.Fragment>
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8" style={{ padding: 10, height: "100%" }}>
                         <fieldset className="scheduler-border" style={{ height: "100%" }}>
-                            <legend className="scheduler-border">Thông tin chung</legend>
+                            <legend className="scheduler-border">Thông tin khách hàng</legend>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 0 }}>
                                 <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                                     <div className={`form-group ${!customerError ? "" : "has-error"}`}>
@@ -79,7 +76,7 @@ class QuoteCreateInfo extends Component {
                                             <span className="attention"> * </span>
                                         </label>
                                         <SelectBox
-                                            id={`select-quote-customer`}
+                                            id={`select-sales-order-customer`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={customer}
@@ -152,16 +149,6 @@ class QuoteCreateInfo extends Component {
                                     <ErrorLabel content={customerAddressError} />
                                 </div>
                             </div>
-
-                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <div className="form-group">
-                                    <label>
-                                        Ghi chú
-                                        <span className="attention"> </span>
-                                    </label>
-                                    <textarea type="text" className="form-control" value={note} onChange={handleNoteChange} />
-                                </div>
-                            </div>
                         </fieldset>
                     </div>
                     <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4" style={{ padding: 10, height: "100%" }}>
@@ -174,32 +161,38 @@ class QuoteCreateInfo extends Component {
                                 </label>
                                 <input type="text" className="form-control" value={code} disabled={true} />
                             </div>
-                            <div className={`form-group ${!effectiveDateError ? "" : "has-error"}`}>
+
+                            <div className={`form-group ${!priorityError ? "" : "has-error"}`}>
                                 <label>
-                                    Ngày báo giá
+                                    Độ ưu tiên
                                     <span className="attention"> * </span>
                                 </label>
-                                <DatePicker
-                                    id="date_picker_create_discount_effectiveDate"
-                                    value={effectiveDate}
-                                    onChange={handleChangeEffectiveDate}
-                                    disabled={false}
+                                <SelectBox
+                                    id={`select-create-sales-order-priority`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={priority}
+                                    items={[
+                                        { value: "title", text: "---Chọn độ ưu tiên---" },
+                                        { value: 1, text: "Thấp" },
+                                        { value: 2, text: "Trung bình" },
+                                        { value: 3, text: "Cao" },
+                                        { value: 4, text: "Đặc biệt" },
+                                    ]}
+                                    onChange={handlePriorityChange}
+                                    multiple={false}
                                 />
-                                <ErrorLabel content={effectiveDateError} />
+                                <ErrorLabel content={priorityError} />
                             </div>
 
-                            <div className={`form-group ${!expirationDateError ? "" : "has-error"}`}>
-                                <label>
-                                    Hiệu lực đến
-                                    <span className="attention"> * </span>
-                                </label>
-                                <DatePicker
-                                    id="date_picker_create_discount_expirationDate"
-                                    value={expirationDate}
-                                    onChange={handleChangeExpirationDate}
-                                    disabled={false}
-                                />
-                                <ErrorLabel content={expirationDateError} />
+                            <div className="form-group">
+                                <div className="form-group">
+                                    <label>
+                                        Ghi chú
+                                        <span className="attention"> </span>
+                                    </label>
+                                    <textarea type="text" className="form-control" value={note} onChange={handleNoteChange} />
+                                </div>
                             </div>
 
                             <div className="form-group ">
@@ -287,4 +280,4 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuoteCreateInfo));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(SalesOrderCreateInfo));

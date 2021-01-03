@@ -2,9 +2,8 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import CreateDiscountsForGood from "./createDiscountsForGood";
-import { ErrorLabel } from "../../../../../../../common-components";
 import { formatCurrency } from "../../../../../../../helpers/formatCurrency";
-import "../../quote.css";
+import "../../salesOrder.css";
 import CreateSlaForGood from "./createSlaForGood";
 
 class ApplyDiscount extends Component {

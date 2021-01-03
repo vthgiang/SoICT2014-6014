@@ -60,7 +60,7 @@ class Payment extends Component {
                             <i className="fa  fa-money"></i> Thuế &ensp;
                         </span>
                         <SelectBox
-                            id={`select-quote-taxs-${this.getSelectTaxsId()}`}
+                            id={`select-sales-order-taxs-${this.getSelectTaxsId()}`}
                             className="form-control select2"
                             style={{ width: "100%" }}
                             value={taxs}

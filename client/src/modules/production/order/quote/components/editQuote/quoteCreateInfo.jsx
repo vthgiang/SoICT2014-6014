@@ -69,7 +69,7 @@ class QuoteCreateInfo extends Component {
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8" style={{ padding: 10, height: "100%" }}>
                         <fieldset className="scheduler-border" style={{ height: "100%" }}>
-                            <legend className="scheduler-border">Thông tin chung</legend>
+                            <legend className="scheduler-border">Thông tin khách hàng</legend>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ padding: 0 }}>
                                 <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                                     <div className={`form-group ${!customerError ? "" : "has-error"}`}>
@@ -151,16 +151,6 @@ class QuoteCreateInfo extends Component {
                                     <ErrorLabel content={customerAddressError} />
                                 </div>
                             </div>
-
-                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <div className="form-group">
-                                    <label>
-                                        Ghi chú
-                                        <span className="attention"> </span>
-                                    </label>
-                                    <textarea type="text" className="form-control" value={note} onChange={handleNoteChange} />
-                                </div>
-                            </div>
                         </fieldset>
                     </div>
                     <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4" style={{ padding: 10, height: "100%" }}>
@@ -199,6 +189,16 @@ class QuoteCreateInfo extends Component {
                                     disabled={false}
                                 />
                                 <ErrorLabel content={expirationDateError} />
+                            </div>
+
+                            <div className="form-group">
+                                <div className="form-group">
+                                    <label>
+                                        Ghi chú
+                                        <span className="attention"> </span>
+                                    </label>
+                                    <textarea type="text" className="form-control" value={note} onChange={handleNoteChange} />
+                                </div>
                             </div>
 
                             <div className="form-group ">

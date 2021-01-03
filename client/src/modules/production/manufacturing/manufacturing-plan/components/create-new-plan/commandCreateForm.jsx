@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { ErrorLabel, SelectBox } from '../../../../../../common-components';
 import { generateCode } from '../../../../../../helpers/generateCode';
-import { UserActions } from '../../../../../super-admin/user/redux/actions';
-import sampleData from '../../../sampleData';
+import MillProductivity from '../plan-component/millProductivity';
 class CommandCreateForm extends Component {
     constructor(props) {
         super(props);
@@ -389,13 +388,13 @@ class CommandCreateForm extends Component {
                 });
             });
         }
-        this.props.onListRemainingGoodsChange(listRemainingGoods);
         return listRemainingGoods;
     }
 
 
     calculateRemainingQuantityGood = () => {
         let listRemainingGoods = this.getRemainingQuantityOfGood();
+        this.props.onListRemainingGoodsChange(listRemainingGoods);
         this.setState((state) => ({
             ...state,
             listRemainingGoods: [...listRemainingGoods]
@@ -460,60 +459,7 @@ class CommandCreateForm extends Component {
                 </div>
                 <div className="row">
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{translate('manufacturing.plan.productivity_mill')}</legend>
-                            <table className="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>{translate('manufacturing.plan.index')}</th>
-                                        <th>{translate('manufacturing.plan.good_code')}</th>
-                                        <th>{translate('manufacturing.plan.good_name')}</th>
-                                        <th>{translate('manufacturing.plan.base_unit')}</th>
-                                        <th>{translate('manufacturing.plan.mill')}</th>
-                                        <th>{translate('manufacturing.plan.productity')}</th>
-                                        <th>{translate('manufacturing.plan.person_number')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        listGoods && listGoods.length &&
-                                        listGoods.map((x, index) => (
-                                            x.good.manufacturingMills.length
-                                                ?
-                                                x.good.manufacturingMills.map((y, index1) => (
-                                                    index1 === 0
-                                                        ?
-                                                        <tr key={x.good._id}>
-                                                            <td rowSpan={x.good.manufacturingMills.length}>{index + 1}</td>
-                                                            <td rowSpan={x.good.manufacturingMills.length}>{x.good.code}</td>
-                                                            <td rowSpan={x.good.manufacturingMills.length}>{x.good.name}</td>
-                                                            <td rowSpan={x.good.manufacturingMills.length}>{x.good.baseUnit}</td>
-                                                            <td>{y.manufacturingMill.name}</td>
-                                                            <td>{y.productivity}</td>
-                                                            <td>{y.personNumber}</td>
-                                                        </tr>
-                                                        :
-                                                        <tr key={index1}>
-                                                            <td>{y.manufacturingMill.name}</td>
-                                                            <td>{y.productivity}</td>
-                                                            <td>{y.personNumber}</td>
-                                                        </tr>
-                                                ))
-                                                :
-                                                <tr key={x.good._id}>
-                                                    <td>{index + 1}</td>
-                                                    <td>{x.good.code}</td>
-                                                    <td>{x.good.name}</td>
-                                                    <td>{x.good.baseUnit}</td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                </tr>
-                                        ))
-                                    }
-                                </tbody>
-                            </table>
-                        </fieldset>
+                        <MillProductivity listGoods={listGoods} />
                     </div>
                 </div >
                 <div className="row">
