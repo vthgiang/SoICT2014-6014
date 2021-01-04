@@ -72,10 +72,7 @@ class TaskDashboard extends Component {
 
             willUpdate: false,       // Khi true sẽ cập nhật dữ liệu vào props từ redux
             callAction: false,
-
-            taskStartMonth: this.SEARCH_FOR_WEIGHT_TASK.taskStartMonth,
-            taskEndMonth: this.SEARCH_FOR_WEIGHT_TASK.taskEndMonth,
-
+            type: 'status'
         };
     }
 
@@ -91,7 +88,6 @@ class TaskDashboard extends Component {
             type: "user"
         }
         await this.props.getTaskByUser(data);
-
         await this.setState(state => {
             return {
                 ...state,
@@ -209,7 +205,7 @@ class TaskDashboard extends Component {
 
     render() {
         const { tasks, translate } = this.props;
-        const { startMonth, endMonth, willUpdate, callAction, taskStartMonth, taskEndMonth } = this.state;
+        const { startMonth, endMonth, willUpdate, callAction, taskAnalys } = this.state;
 
         let amountResponsibleTask = 0, amountTaskCreated = 0, amountAccountableTasks = 0, amountConsultedTasks = 0;
         let numTask = [];
@@ -377,6 +373,7 @@ class TaskDashboard extends Component {
                         </div>
                     </div>
                 </div>
+
                 {/* Lịch công việc chi tiết */}
                 <div className="row">
                     <div className="col-xs-12">
@@ -509,38 +506,13 @@ class TaskDashboard extends Component {
                         <div className="box-header with-border">
                             <div className="box-title">Dashboard tải công việc</div>
                         </div>
-                        <div className="form-inline">
-                            <div className="col-sm-6 col-xs-12 form-group" >
-                                <label>{translate('kpi.evaluation.employee_evaluation.from')}</label>
-                                <DatePicker
-                                    id="month-start-amount-of-task"
-                                    dateFormat="month-year"
-                                    value={taskStartMonth}
-                                    onChange={this.handleSelectMonthTaskStart}
-                                    disabled={false}
-                                />
-                            </div>
-                            <div className="col-sm-6 col-xs-12 form-group" >
-                                <label>{translate('kpi.evaluation.employee_evaluation.to')}</label>
-                                <DatePicker
-                                    id="month-end-amount-of-task"
-                                    dateFormat="month-year"
-                                    value={taskEndMonth}
-                                    onChange={this.handleSelectMonthTaskEnd}
-                                    disabled={false}
-                                />
-                            </div>
-                        </div>
-                        <div className="col-sm-6 col-xs-12 form-group">
-                            <label></label>
-                            <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
-                        </div>
+
                         <div className="box-body qlcv">
                             {callAction &&
                                 <WeightTaskChart
                                     callAction={!willUpdate}
-                                    startMonth={taskStartMonth}
-                                    endMonth={taskEndMonth}
+                                    startMonth={startMonth}
+                                    endMonth={endMonth}
                                 />
                             }
                         </div>
@@ -565,7 +537,6 @@ const actionCreators = {
     getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
     getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
     getTaskByUser: taskManagementActions.getTasksByUser,
-
 };
 
 const connectedTaskDashboard = connect(mapState, actionCreators)(withTranslate(TaskDashboard));

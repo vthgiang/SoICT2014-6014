@@ -361,37 +361,37 @@ getPaginatedTasksByUser = async (req, res) => {
  * Lấy công việc chọn nhiều role
  */
 getPaginatedTasks = async (req, res) => {
-    // try {
-    var task = {
-        perPage: req.query.perPage,
-        number: req.query.number,
-        user: req.query.user,
-        role: req.query.role,
-        organizationalUnit: req.query.unit,
-        status: req.query.status,
-        priority: req.query.priority,
-        special: req.query.special,
-        name: req.query.name,
-        startDate: req.query.startDate,
-        endDate: req.query.endDate,
-        aPeriodOfTime: req.query.aPeriodOfTime
-    };
+    try {
+        var task = {
+            perPage: req.query.perPage,
+            number: req.query.number,
+            user: req.query.user,
+            role: req.query.role,
+            organizationalUnit: req.query.unit,
+            status: req.query.status,
+            priority: req.query.priority,
+            special: req.query.special,
+            name: req.query.name,
+            startDate: req.query.startDate,
+            endDate: req.query.endDate,
+            aPeriodOfTime: req.query.aPeriodOfTime
+        };
 
-    var tasks = await TaskManagementService.getPaginatedTasks(req.portal, task);
-    await Logger.info(req.user.email, ` get task informed by user `, req.portal)
-    res.status(200).json({
-        success: true,
-        messages: ['get_task_success'],
-        content: tasks
-    })
-    // } catch (error) {
-    //     await Logger.error(req.user.email, ` get task informed by user  `, req.portal)
-    //     res.status(400).json({
-    //         success: false,
-    //         messages: ['get_task_fail'],
-    //         content: error
-    //     })
-    // }
+        let tasks = await TaskManagementService.getPaginatedTasks(req.portal, task);
+        await Logger.info(req.user.email, ` get task informed by user `, req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['get_task_success'],
+            content: tasks
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` get task informed by user  `, req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['get_task_fail'],
+            content: error
+        })
+    }
 }
 
 /**

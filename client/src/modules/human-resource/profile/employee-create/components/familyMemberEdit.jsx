@@ -5,6 +5,7 @@ import { DatePicker, DialogModal } from '../../../../../common-components';
 import { getFormatDateFromTime, getTimeFromFormatDate } from '../../../../../helpers/stringMethod';
 
 const FamilyMemberEdit = ({
+    tabEditMember,
     editMember,
     _save,
     translate
@@ -126,7 +127,7 @@ const FamilyMemberEdit = ({
     return (
         <React.Fragment>
             <DialogModal
-                modalID="modal-edit-family-members"
+                modalID={tabEditMember}
                 formID="form-edit-family-members"
                 title={translate('human_resource.profile.house_hold.edit')}
                 func={_editMember} size={100}

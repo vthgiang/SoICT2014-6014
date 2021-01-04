@@ -172,6 +172,7 @@ class SalesOrderCreateGood extends Component {
             }
 
             await this.props.getItemsForGood(value[0]);
+            await this.props.getManufacturingWorksByProductId(value[0]);
         } else {
             this.setState((state) => {
                 return {
@@ -196,6 +197,24 @@ class SalesOrderCreateGood extends Component {
         }
 
         this.validateGood(value, true);
+    };
+
+    handleManufacturingWorkChange = (value) => {
+        if (value[0] !== "title") {
+            this.setState((state) => {
+                return {
+                    ...state,
+                    manufacturingWorks: value[0],
+                };
+            });
+        } else {
+            this.setState((state) => {
+                return {
+                    ...state,
+                    manufacturingWorks: "",
+                };
+            });
+        }
     };
 
     hasDiscountsOnGoodChecker = () => {
@@ -394,6 +413,7 @@ class SalesOrderCreateGood extends Component {
                 note,
                 steps,
                 salesPriceVariance,
+                manufacturingWorks,
             } = this.state;
 
             let { listGoods } = this.props;
@@ -438,6 +458,7 @@ class SalesOrderCreateGood extends Component {
                 amountAfterDiscount,
                 amountAfterTax,
                 salesPriceVariance,
+                manufacturingWorks,
             };
 
             listGoods.push(additionGood);
@@ -465,6 +486,7 @@ class SalesOrderCreateGood extends Component {
                     good: "",
                     code: "",
                     goodName: "",
+                    manufacturingWorks: "",
                     step: 0,
                     steps,
                 };
@@ -581,6 +603,7 @@ class SalesOrderCreateGood extends Component {
             code: item.good.code,
             discountsOfGood: item.discountsOfGood,
             slasOfGood: slasForEdit,
+            manufacturingWorks: item.manufacturingWorks,
         });
 
         this.getCheckedForGood(this.props.goods.goodItems); //gọi để checked trong trường hợp không thay đổi goodId
@@ -614,6 +637,7 @@ class SalesOrderCreateGood extends Component {
                 good: "",
                 code: "",
                 goodName: "",
+                manufacturingWorks: "",
                 step: 0,
                 steps,
             };
@@ -639,6 +663,7 @@ class SalesOrderCreateGood extends Component {
                 steps,
                 salesPriceVariance,
                 indexEditting,
+                manufacturingWorks,
             } = this.state;
 
             let { listGoods } = this.props;
@@ -683,6 +708,7 @@ class SalesOrderCreateGood extends Component {
                 amountAfterDiscount,
                 amountAfterTax,
                 salesPriceVariance,
+                manufacturingWorks,
             };
 
             listGoods[indexEditting] = additionGood;
@@ -712,6 +738,7 @@ class SalesOrderCreateGood extends Component {
                     good: "",
                     code: "",
                     goodName: "",
+                    manufacturingWorks: "",
                     step: 0,
                     steps,
                 };
@@ -737,6 +764,7 @@ class SalesOrderCreateGood extends Component {
             steps,
             step,
             editGood,
+            manufacturingWorks,
         } = this.state;
 
         let { goodError, pricePerBaseUnitError, quantityError } = this.state;
@@ -751,6 +779,8 @@ class SalesOrderCreateGood extends Component {
         let amountAfterApplyTax = this.getAmountAfterApplyTax();
 
         let isGoodValidate = this.isValidateGoodSelected();
+
+        console.log("GOODS", this.props.goods);
         return (
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <fieldset className="scheduler-border" style={{ padding: 10 }}>
@@ -787,9 +817,11 @@ class SalesOrderCreateGood extends Component {
                                         baseUnit={baseUnit}
                                         inventory={inventory}
                                         quantity={quantity}
+                                        manufacturingWorks={manufacturingWorks}
                                         handleGoodChange={this.handleGoodChange}
                                         handlePriceChange={this.handlePriceChange}
                                         handleQuantityChange={this.handleQuantityChange}
+                                        handleManufacturingWorkChange={this.handleManufacturingWorkChange}
                                         //log error
                                         pricePerBaseUnitError={pricePerBaseUnitError}
                                         goodError={goodError}
@@ -1079,6 +1111,7 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
     getAllGoodsByType: GoodActions.getAllGoodsByType,
     getItemsForGood: GoodActions.getItemsForGood,
+    getManufacturingWorksByProductId: GoodActions.getManufacturingWorksByProductId,
     getDiscountForOrderValue: DiscountActions.getDiscountForOrderValue,
 };
 

@@ -21,6 +21,7 @@ export const taskManagementService = {
     getPaginateTasksByUser,
     getPaginateTasks,
     getPaginatedTasksByOrganizationalUnit,
+    getTaskAnalysOfUser,
     getTaskByPriorityInOrganizationUnit,
 };
 
@@ -446,6 +447,14 @@ function getTaskInOrganizationUnitByMonth(organizationUnitId, startDateAfter, en
             startDateAfter: startDateAfter,
             endDateBefore: endDateBefore,
         }
+    }, false, true, 'task.task_management');
+}
+
+function getTaskAnalysOfUser(userId, type){
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/task/analys/user/${userId}`,
+        method: 'GET',
+        params: { type }
     }, false, true, 'task.task_management');
 }
 

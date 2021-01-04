@@ -3,9 +3,10 @@ import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { DataTableSetting, DialogModal, ButtonModal, DateTimeConverter, ConfirmNotification } from '../../../../../common-components';
 import FamilyMemberEdit from './familyMemberEdit';
-import FamilyMemberInfo from './familyMemberInfo';
+import FamilyMemberCreate from './familyMemberCreate';
 
 const FamilyMemberTab = ({
+    tabType = "create",
     houseHold,
     editMember,
     _fm_openEditFamilyMemberModal,
@@ -23,6 +24,10 @@ const FamilyMemberTab = ({
     _fm_saveMember,
     _fm_editMember
 }) => {
+    const [employeeHouseHold, setEmployeeHoldHouse] = useState({
+
+    });
+
     const _showMemberGender = (gender) => {
         switch (gender) {
             case 'male': return "Nam";
@@ -43,6 +48,10 @@ const FamilyMemberTab = ({
         _fm_deleteMember(index);
     }
 
+    useEffect(() => {
+        setEmployeeHoldHouse(houseHold)
+    }, [JSON.stringify(houseHold)])
+
     return (
         <div id={id} className="tab-pane">
             <div className="box-body">
@@ -54,49 +63,49 @@ const FamilyMemberTab = ({
                         {/* họ và tên chủ hộ */}
                         <div className="form-group col-md-4">
                             <label >{translate('human_resource.profile.house_hold.appendix.head_house_hold_name')}</label>
-                            <input type="text" className="form-control" onChange={_fm_handleHeadHouseHoldName} />
+                            <input type="text" className="form-control" onChange={_fm_handleHeadHouseHoldName} value={employeeHouseHold.headHouseHoldName} />
                         </div>
                         {/* Loại giấy tờ */}
                         <div className="form-group col-md-4">
                             <label >{translate('human_resource.profile.house_hold.appendix.document_type')}</label>
-                            <input type="text" className="form-control" onChange={_fm_handleDocumentType} />
+                            <input type="text" className="form-control" onChange={_fm_handleDocumentType} value={employeeHouseHold.documentType} />
                         </div>
                         {/* Số sổ hộ khẩu */}
                         <div className="form-group col-md-4">
                             <label >{translate('human_resource.profile.house_hold.appendix.house_hold_number')}</label>
-                            <input type="text" className="form-control" onChange={_fm_handleHouseHoldNumber} />
+                            <input type="text" className="form-control" onChange={_fm_handleHouseHoldNumber} value={employeeHouseHold.houseHoldNumber} />
                         </div>
 
                         {/* Tỉnh/TP */}
                         <div className="form-group col-md-4">
                             <label >{translate('human_resource.profile.house_hold.appendix.city')}</label>
-                            <input type="text" className="form-control" onChange={_fm_handleCity} />
+                            <input type="text" className="form-control" onChange={_fm_handleCity} value={employeeHouseHold.city} />
                         </div>
                         {/* Loại giấy tờ */}
                         <div className="form-group col-md-4">
                             <label >{translate('human_resource.profile.house_hold.appendix.district')}</label>
-                            <input type="text" className="form-control" onChange={_fm_handleDistrict} />
+                            <input type="text" className="form-control" onChange={_fm_handleDistrict} value={employeeHouseHold.district} />
                         </div>
                         {/* Số sổ hộ khẩu */}
                         <div className="form-group col-md-4">
                             <label >{translate('human_resource.profile.house_hold.appendix.ward')}</label>
-                            <input type="text" className="form-control" onChange={_fm_handleWard} />
+                            <input type="text" className="form-control" onChange={_fm_handleWard} value={employeeHouseHold.ward} />
                         </div>
 
                         {/* Địa chỉ hộ khẩu */}
                         <div className="form-group col-md-4">
                             <label >{translate('human_resource.profile.house_hold.appendix.house_hold_address')}</label>
-                            <input type="text" className="form-control" onChange={_fm_handleHouseHoldAddress} />
+                            <input type="text" className="form-control" onChange={_fm_handleHouseHoldAddress} value={employeeHouseHold.houseHoldAddress} />
                         </div>
                         {/* Số điện thoại */}
                         <div className="form-group col-md-4">
                             <label >{translate('human_resource.profile.house_hold.appendix.phone')}</label>
-                            <input type="text" className="form-control" onChange={_fm_handlePhone} />
+                            <input type="text" className="form-control" onChange={_fm_handlePhone} value={employeeHouseHold.phone} />
                         </div>
                         {/* Số sổ hộ khẩu */}
                         <div className="form-group col-md-4">
                             <label >{translate('human_resource.profile.house_hold.appendix.house_hold_code')}</label>
-                            <input type="text" className="form-control" onChange={_fm_handleHouseHoldCode} />
+                            <input type="text" className="form-control" onChange={_fm_handleHouseHoldCode} value={employeeHouseHold.houseHoldCode} />
                         </div>
                     </div>
                 </fieldset>
@@ -106,11 +115,13 @@ const FamilyMemberTab = ({
                         <h4 className="box-title">{translate('human_resource.profile.house_hold.members.title')}</h4>
                     </legend>
 
-                    <FamilyMemberInfo
+                    <FamilyMemberCreate
+                        tabId={tabType + "family-member-create"}
                         _save={_fm_saveMember}
                     />
 
                     <FamilyMemberEdit
+                        tabId={tabType + "family-member-edit"}
                         editMember={editMember}
                         _save={_fm_editMember}
                     />

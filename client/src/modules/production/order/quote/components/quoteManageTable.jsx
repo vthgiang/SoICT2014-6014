@@ -147,6 +147,10 @@ class QuoteManageTable extends Component {
         const dataStatus = [
             {
                 className: "text-primary",
+                text: "no status",
+            },
+            {
+                className: "text-primary",
                 text: "Chờ phê duyệt",
             },
             {
