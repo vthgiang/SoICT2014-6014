@@ -9,6 +9,8 @@ import { AssetManagerActions } from '../../../admin/asset-information/redux/acti
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import Swal from 'sweetalert2';
 import ValidationHelper from '../../../../../helpers/validationHelper';
+import { generateCode } from "../../../../../helpers/generateCode";
+
 class UseRequestCreateForm extends Component {
     constructor(props) {
         super(props);
@@ -25,7 +27,17 @@ class UseRequestCreateForm extends Component {
             asset: "",
         };
     }
+    componentDidMount = () => {
+        // Mỗi khi modal mở, cần sinh lại code
+        let { _id } = this.props;
+        _id && window.$(`#modal-create-recommenddistribute-${_id}`).on('shown.bs.modal', this.regenerateCode);
+    }
 
+    componentWillUnmount = () => {
+        // Unsuscribe event
+        let { _id } = this.props;
+        _id && window.$(`#modal-create-recommenddistribute-${_id}`).unbind('shown.bs.modal', this.regenerateCode)
+    }
     // Function format ngày hiện tại thành dạnh dd-mm-yyyy
     formatDate = (date) => {
         if (!date) return null;
@@ -43,6 +55,14 @@ class UseRequestCreateForm extends Component {
         }
 
         return [day, month, year].join('-');
+    }
+
+    regenerateCode = () => {
+        let code = generateCode("UR");
+        this.setState((state) => ({
+            ...state,
+            recommendNumber: code,
+        }));
     }
 
     // Bắt sự kiện thay đổi mã phiếu

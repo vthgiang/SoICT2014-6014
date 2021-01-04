@@ -684,11 +684,11 @@ class SideBar extends Component {
                                             icon: "fa fa-file-text-o",
                                             path: "/manage-purchasing-request",
                                         },
-                                        {
-                                            name: "menu.analysis_manufacturing_performance",
-                                            icon: "fa fa-bar-chart",
-                                            path: "/analysis-manufacturing-performance",
-                                        },
+                                        // {
+                                        //     name: "menu.analysis_manufacturing_performance",
+                                        //     icon: "fa fa-bar-chart",
+                                        //     path: "/analysis-manufacturing-performance",
+                                        // },
                                         {
                                             name: "menu.manage_manufacturing_works",
                                             icon: "fa fa-university",

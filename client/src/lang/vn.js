@@ -3507,7 +3507,7 @@ export default {
                 view_task_process_template: "Xem mẫu quy trình công việc",
                 import_task_template_success: "Thêm mẫu công việc thành công",
                 import_task_template_faile: "Thêm mẫu công việc thất bại !",
-                task_template_name_exist:"Tên mẫu công việc đã tồn tại",
+                task_template_name_exist: "Tên mẫu công việc đã tồn tại",
             },
         },
 
@@ -4829,6 +4829,7 @@ export default {
                 code: "Mã phiếu đề nghị",
                 createdAt: "Ngày tạo",
                 planCode: "Mã kế hoạch",
+                command_code: "Mã lệnh sản xuất",
                 receiveTime: "Ngày dự kiến nhận",
                 status: "Trạng thái",
                 creator: "Người tạo",
@@ -4992,7 +4993,10 @@ export default {
                     },
                     "4": {
                         content: "Đặc biệt"
-                    }
+                    },
+                    detail_sales_order: "Xem chi tiết đơn hàng kinh doanh",
+                    code: "Mã đơn",
+                    priority: "Độ ưu tiên"
                 },
                 add_good_info: "Thêm thông tin các sản phẩm sản xuất",
                 good: "Sản phẩm",
@@ -5028,7 +5032,10 @@ export default {
                 choose_approvers: "Vui lòng chọn người phê duyệt",
                 choose_accountables: "Vui lòng chọn người giám sát",
                 quantity_order: "Số lượng trong đơn",
-                quantity_need_planned: "Số lượng cần lập kế hoạch"
+                quantity_need_planned: "Số lượng cần lập kế hoạch",
+                list_order: "Danh sách đơn hàng",
+                manufacturing_command_info: "Thông tin lệnh sản xuất",
+                history_info: "Lịch sử sản xuất theo mặt hàng",
 
 
 
@@ -5079,7 +5086,6 @@ export default {
                 start_turn: "Ca bắt đầu",
                 end_turn: "Ca kết thúc",
                 creator: "Người tạo",
-                good_name: "Tên mặt hàng",
                 quantity: "Số lượng",
                 description: "Mô tả",
                 approvers: "Người phê duyệt lệnh sản xuất",
@@ -5125,6 +5131,8 @@ export default {
                 },
                 qc_name: "Tên người kiểm định",
                 qc_email: "email",
+                mills: "Xưởng sản xuất",
+                choose_mills: "Chọn xưởng",
                 qc_status_command: "Trạng thái kiểm định",
                 quality_control_content: "Nội dung kiểm định",
                 rateFinishedProductQuantity: "Tỷ lệ thành phẩm",
@@ -5155,6 +5163,8 @@ export default {
                     },
                 },
                 status_bill: "Trạng thái phiếu xuất",
+                quantity_gt: "Số lượng lớn hơn",
+                quantity_lt: "Số lượng bé hơn"
             },
             lot: {
                 index: "STT",

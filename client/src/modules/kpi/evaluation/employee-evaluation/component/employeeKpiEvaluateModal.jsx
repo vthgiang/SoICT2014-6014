@@ -353,7 +353,7 @@ class EmployeeKpiEvaluateModal extends Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {console.log(kpimembers.tasks)
+                                    {
                                         (kpimembers.tasks && Array.isArray(kpimembers.tasks)) ?
                                             (kpimembers.tasks.map((itemTask, index) =>
                                                 <tr key={index}>
@@ -367,7 +367,6 @@ class EmployeeKpiEvaluateModal extends Component {
                                                     <td>
                                                         {points && tasks &&
                                                             <React.Fragment>
-                                                                {console.log("task", itemTask)}
                                                                 <input type="range"
                                                                     min='0'
                                                                     max='10'

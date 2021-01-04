@@ -67,7 +67,7 @@ class QuoteEditForm extends Component {
                 customerRepresent: nextProps.quoteEdit.customerRepresent,
                 customerAddress: nextProps.quoteEdit.customerAddress,
                 customerEmail: nextProps.quoteEdit.customerEmail,
-                deliveryTime: nextProps.quoteEdit.deliveryTime ? formatDate(nextProps.quoteEdit.effectiveDate) : "",
+                deliveryTime: nextProps.quoteEdit.deliveryTime ? formatDate(nextProps.quoteEdit.deliveryTime) : "",
                 discountsOfOrderValue: nextProps.quoteEdit.discounts,
                 discountsOfOrderValueChecked: Object.assign({}),
                 note: nextProps.quoteEdit.note,

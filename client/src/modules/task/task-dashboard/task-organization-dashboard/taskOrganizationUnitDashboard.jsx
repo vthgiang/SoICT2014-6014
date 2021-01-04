@@ -13,6 +13,7 @@ import { CalendarOrganizationUnit } from './calendarOrganizationUnit';
 import { withTranslate } from 'react-redux-multilingual';
 import { SelectMulti, DatePicker } from '../../../../common-components/index';
 import Swal from 'sweetalert2';
+import { InprocessOfUnitTask } from './processOfUnitTasks';
 
 class TaskOrganizationUnitDashboard extends Component {
     constructor(props) {
@@ -203,18 +204,6 @@ class TaskOrganizationUnitDashboard extends Component {
         let childrenOrganizationalUnit = [];
         let currentOrganizationalUnit, currentOrganizationalUnitLoading;
 
-        let d = new Date(),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-        let defaultEndMonth = [month, year].join('-');
-        let defaultStartMonth = '0' + (month - 3) + '-' + year;
-
         if (dashboardEvaluationEmployeeKpiSet) {
             currentOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
             currentOrganizationalUnitLoading = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnitLoading;
@@ -233,6 +222,31 @@ class TaskOrganizationUnitDashboard extends Component {
                 }
             }
         }
+
+        // Config ngày mặc định cho datePiker
+        let d = new Date(),
+            month = d.getMonth() + 1,
+            year = d.getFullYear();
+        let startMonthDefault, endMonthDefault, startYear;
+
+        if (month > 3) {
+            startMonthDefault = month - 3;
+            startYear = year;
+            if (month < 9) {
+                endMonthDefault = '0' + (month + 1);
+            } else {
+                endMonthDefault = month + 1;
+            }
+        } else {
+            startMonthDefault = month - 3 + 12;
+            startYear = year - 1;
+        }
+        if (startMonthDefault < 10)
+            startMonthDefault = '0' + startMonthDefault;
+
+        let defaultStartMonth = [startMonthDefault, startYear].join('-');
+        let defaultEndMonth = month < 10 ? ['0' + month, year].join('-') : [month, year].join('-');
+
         return (
             <React.Fragment>
                 {currentOrganizationalUnit
@@ -306,6 +320,24 @@ class TaskOrganizationUnitDashboard extends Component {
                                                 tasks={tasks.organizationUnitTasks}
                                                 listEmployee={user && user.employees}
                                                 units={idsUnit}
+                                            />
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-xs-12">
+                                <div className="box box-primary">
+                                    <div className="box-header with-border">
+                                        <div className="box-title">{translate('task.task_management.calc_progress')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+                                    </div>
+                                    <div className="box-body qlcv">
+                                        {this.state.callAction && tasks && tasks.organizationUnitTasks &&
+                                            <InprocessOfUnitTask
+                                                tasks={tasks.organizationUnitTasks}
+                                                listEmployee={user && user.employees}
+                                                units={childrenOrganizationalUnit}
                                             />
                                         }
                                     </div>

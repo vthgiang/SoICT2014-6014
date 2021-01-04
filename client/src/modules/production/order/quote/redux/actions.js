@@ -6,7 +6,8 @@ export const QuoteActions = {
     getAllQuotes,
     editQuote,
     deleteQuote,
-    approveQuote
+    approveQuote,
+    getQuotesToMakeOrder
 }
 
 function createNewQuote (data) {
@@ -111,6 +112,28 @@ function approveQuote(id, data) {
         .catch((error) => {
             dispatch({
                 type: QuoteConstants.APPROVE_QUOTE_FAILURE,
+                error
+            })
+        })
+    }
+}
+
+//Lấy các báo giá đã được duyệt để tạo đơn hàng
+function getQuotesToMakeOrder() {
+    return (dispatch) => {
+        dispatch({
+            type: QuoteConstants.GET_QUOTES_TO_MAKE_ORDER_REQUEST
+        })
+        QuoteServices.getQuotesToMakeOrder()
+            .then((res) => {
+            dispatch({
+                type: QuoteConstants.GET_QUOTES_TO_MAKE_ORDER_SUCCESS,
+                payload: res.data.content
+            })
+        })
+        .catch((error) => {
+            dispatch({
+                type: QuoteConstants.GET_QUOTES_TO_MAKE_ORDER_FAILURE,
                 error
             })
         })
