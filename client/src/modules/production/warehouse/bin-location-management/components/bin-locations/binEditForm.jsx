@@ -397,7 +397,7 @@ class BinEditForm extends Component {
                             multiple={false}
                         />
                     </div>
-                    <div className={`form-group`}>
+                    {/* <div className={`form-group`}>
                         <label>{translate('manage_warehouse.bin_location_management.department')}<span className="attention"> * </span></label>
                         <SelectBox
                             id={`select-department-bin`}
@@ -408,7 +408,7 @@ class BinEditForm extends Component {
                             onChange={this.handleDepartmentChange}    
                             multiple={false}
                         />
-                    </div>
+                    </div> */}
                     <div className={`form-group`}>
                         <label>{translate('manage_warehouse.bin_location_management.unit')}<span className="attention"> * </span></label>
                         <input type="text" className="form-control" value={binUnit} onChange={this.handleUnitChange} />
@@ -424,7 +424,7 @@ class BinEditForm extends Component {
                         <label>{translate('manage_warehouse.bin_location_management.capacity')}<span className="attention"> * </span></label>
                         <input type="number" className="form-control" value={binCapacity ? binCapacity : ""} onChange={this.handleCapacityTotalChange} />
                     </div>
-                    <div className={`form-group`}>
+                    {/* <div className={`form-group`}>
                         <label>{translate('manage_warehouse.bin_location_management.management_location')}<span className="attention"> * </span></label>
                         <SelectBox
                             id={`select-management-location-stock`}
@@ -435,7 +435,7 @@ class BinEditForm extends Component {
                             onChange={this.handleManagementLocationtChange}    
                             multiple={true}
                         />
-                    </div>
+                    </div> */}
                     <div className={`form-group`}>
                         <label>{translate('manage_warehouse.bin_location_management.parent')}</label>
                         <TreeSelect data={list} value={binParent ? [binParent] : ""} handleChange={this.handleParent} mode="radioSelect" />

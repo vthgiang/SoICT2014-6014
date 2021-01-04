@@ -103,7 +103,6 @@ class TabTask extends Component {
     pieChartNeedTodo = (data) => {
         this.removePreviousNeedToDoPieChart();
         let dataChart = this.convertDataTaskNeedToDoPieChart(data);
-
         this.chart = c3.generate({
             bindto: this.refs.pieCharTaskNeedToDo,
             data: { // Dữ liệu biểu đồ
@@ -195,7 +194,6 @@ class TabTask extends Component {
         const { arrayUnitShow, urgent, taskNeedToDo } = state;
 
         if (tasks && tasks.organizationUnitTasksChart && props.childOrganizationalUnit) {
-            console.log('shhsgdhgsd')
             return {
                 ...state,
                 listUnit: props.childOrganizationalUnit,
@@ -267,18 +265,23 @@ class TabTask extends Component {
                                         <div className="col-md-6">
                                             <p className="pull-left" style={{ marginTop: '10px' }}> < b > Số công việc khẩn cấp </b></p >
                                             {
-                                                urgent && urgent.length > 0 ?
-                                                    <div ref="pieCharUrgent" /> :
-                                                    <p style={{ marginTop: '60px', textAlign: "center" }}>không có dữ liệu</p>
+                                                tasks.isLoading ? <p style={{ marginTop: '60px', textAlign: "center" }}>Đang tải dữ liệu</p>
+                                                    : urgent && urgent.length > 0 ?
+                                                        <div ref="pieCharUrgent" /> :
+                                                        <p style={{ marginTop: '60px', textAlign: "center" }}>không có công việc nào khẩn cấp</p>
                                             }
+
 
                                         </div>
                                         <div className="col-md-6">
                                             <p className="pull-left" style={{ marginTop: '10px' }}> < b > Số công việc cần làm </b></p >
                                             {
-                                                taskNeedToDo && taskNeedToDo.length > 0 ?
-                                                    <div ref="pieCharTaskNeedToDo" /> :
-                                                    <p style={{ marginTop: '60px', textAlign: "center" }}>không có dữ liệu</p>
+                                                tasks.isLoading ?
+                                                    <p style={{ marginTop: '60px', textAlign: "center" }}>Đang tải dữ liệu</p>
+                                                    :
+                                                    taskNeedToDo && taskNeedToDo.length > 0 ?
+                                                        <div ref="pieCharTaskNeedToDo" /> :
+                                                        <p style={{ marginTop: '60px', textAlign: "center" }}>không có công việc nào cần làm</p>
                                             }
                                         </div>
                                     </div>

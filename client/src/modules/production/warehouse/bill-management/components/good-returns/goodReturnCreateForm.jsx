@@ -32,7 +32,8 @@ class GoodReturnCreateForm extends Component {
             qualityControlStaffs: [],
             accountables: [],
             responsibles: [],
-            approver: []
+            approver: [],
+            type: '7'
         }
     }
 
