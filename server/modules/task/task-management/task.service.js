@@ -271,6 +271,7 @@ exports.getTasksCreatedByUser = async (portal, id) => {
  * @task dữ liệu trong params
  */
 exports.getPaginatedTasks = async (portal, task) => {
+    console.log('taskkkkkkkkkk', task);
     var { perPage, number, role, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime } = task;
     var taskList;
     var perPage = Number(perPage);

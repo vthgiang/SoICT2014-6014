@@ -14,7 +14,7 @@ import Swal from 'sweetalert2';
 import { TasksIsNotLinked } from './tasksIsNotLinked';
 import { TaskHasActionNotEvaluated } from './taskHasActionNotEvaluated';
 import { InprocessTask } from './inprocessTask';
-
+import { WeightTaskChart } from './weightTaskChart';
 class TaskDashboard extends Component {
 
     constructor(props) {
@@ -51,6 +51,14 @@ class TaskDashboard extends Component {
             endMonthTitle: month < 10 ? ['0' + month, year].join('-') : [month, year].join('-'),
         }
 
+        this.SEARCH_FOR_WEIGHT_TASK = {
+            taskStartMonth: [startYear, startMonth].join('-'),
+            taskEndMonth: month === 12 ? [year + 1, '01'].join('-') : [year, endMonth].join('-'),
+
+            startMonthTitle: [startMonth, startYear].join('-'),
+            endMonthTitle: month < 10 ? ['0' + month, year].join('-') : [month, year].join('-'),
+        }
+
         this.state = {
             userID: "",
 
@@ -63,7 +71,11 @@ class TaskDashboard extends Component {
             endMonthTitle: this.INFO_SEARCH.endMonthTitle,
 
             willUpdate: false,       // Khi true sẽ cập nhật dữ liệu vào props từ redux
-            callAction: false
+            callAction: false,
+
+            taskStartMonth: this.SEARCH_FOR_WEIGHT_TASK.taskStartMonth,
+            taskEndMonth: this.SEARCH_FOR_WEIGHT_TASK.taskEndMonth,
+
         };
     }
 
@@ -170,6 +182,8 @@ class TaskDashboard extends Component {
         this.INFO_SEARCH.endMonthTitle = monthtitle;
     }
 
+
+
     handleSearchData = async () => {
         let startMonth = new Date(this.INFO_SEARCH.startMonth);
         let endMonth = new Date(this.INFO_SEARCH.endMonth);
@@ -195,12 +209,12 @@ class TaskDashboard extends Component {
 
     render() {
         const { tasks, translate } = this.props;
-        const { startMonth, endMonth, willUpdate, callAction } = this.state;
+        const { startMonth, endMonth, willUpdate, callAction, taskStartMonth, taskEndMonth } = this.state;
 
         let amountResponsibleTask = 0, amountTaskCreated = 0, amountAccountableTasks = 0, amountConsultedTasks = 0;
         let numTask = [];
         let totalTasks = 0;
-
+        console.log('taskkkkkkkkkkk', tasks);
         // Tinh so luong tat ca cac task 
         if (tasks && tasks.responsibleTasks) {
             let task = tasks.responsibleTasks;
@@ -489,6 +503,50 @@ class TaskDashboard extends Component {
                     <TaskHasActionNotEvaluated />
 
                 </div>
+                {/* <div className="row"> */}
+                <div className="col-xs-12">
+                    <div className="box box-primary">
+                        <div className="box-header with-border">
+                            <div className="box-title">Dashboard tải công việc</div>
+                        </div>
+                        <div className="form-inline">
+                            <div className="col-sm-6 col-xs-12 form-group" >
+                                <label>{translate('kpi.evaluation.employee_evaluation.from')}</label>
+                                <DatePicker
+                                    id="month-start-amount-of-task"
+                                    dateFormat="month-year"
+                                    value={taskStartMonth}
+                                    onChange={this.handleSelectMonthTaskStart}
+                                    disabled={false}
+                                />
+                            </div>
+                            <div className="col-sm-6 col-xs-12 form-group" >
+                                <label>{translate('kpi.evaluation.employee_evaluation.to')}</label>
+                                <DatePicker
+                                    id="month-end-amount-of-task"
+                                    dateFormat="month-year"
+                                    value={taskEndMonth}
+                                    onChange={this.handleSelectMonthTaskEnd}
+                                    disabled={false}
+                                />
+                            </div>
+                        </div>
+                        <div className="col-sm-6 col-xs-12 form-group">
+                            <label></label>
+                            <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
+                        </div>
+                        <div className="box-body qlcv">
+                            {callAction &&
+                                <WeightTaskChart
+                                    callAction={!willUpdate}
+                                    startMonth={taskStartMonth}
+                                    endMonth={taskEndMonth}
+                                />
+                            }
+                        </div>
+                    </div>
+                </div>
+                {/* </div> */}
 
             </React.Fragment>
         );
