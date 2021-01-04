@@ -214,7 +214,7 @@ class ActionForm extends Component {
     render() {
         const { translate } = this.props;
         var { action, taskActions, quillValueDefault } = this.state;
-        const { initialData } = this.props;
+        const { initialData, type } = this.props;
 
         taskActions = initialData;
 
@@ -236,7 +236,7 @@ class ActionForm extends Component {
                 <div className={`form-group ${this.state.action.errorOnDescription === undefined ? "" : "has-error"}`} >
                     <label className="control-label">{translate('task_template.description')}</label>
                     <QuillEditor
-                        id={'actionsTemplate'}
+                        id={`actionsTemplate${type}`}
                         getTextData={this.handleChangeActionDesc}
                         quillValueDefault={quillValueDefault}
                     />
