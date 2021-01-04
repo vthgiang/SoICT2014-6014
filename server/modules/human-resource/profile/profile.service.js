@@ -906,7 +906,8 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
         deleteFiles,
         createSocialInsuranceDetails,
         editSocialInsuranceDetails,
-        deleteSocialInsuranceDetails
+        deleteSocialInsuranceDetails,
+        houseHold // dữ liệu về hộ khẩu - thành viên hộ gia đình
     } = data;
     console.log('dataatatatta\n\n\n\n', data.createCareer, data.editCareer, data.deleteCareer);
     let avatar = employee.avatar,
@@ -1047,6 +1048,7 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
     oldEmployee.temporaryResidenceWard = employee.temporaryResidenceWard;
     oldEmployee.contractEndDate = employee.contractEndDate ? employee.contractEndDate : null;
     oldEmployee.contractType = employee.contractType;
+    oldEmployee.houseHold = houseHold;
 
     // Edit  thông tin nhân viên
     oldEmployee.save();
@@ -1110,6 +1112,7 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
         contractEndDate: 1,
         contractType: 1,
         status: 1,
+        houseHold: 1
     });
 }
 

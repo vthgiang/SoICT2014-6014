@@ -13,6 +13,7 @@ import { DatePicker } from '../../../../common-components';
 import Swal from 'sweetalert2';
 import { TasksIsNotLinked } from './tasksIsNotLinked';
 import { TaskHasActionNotEvaluated } from './taskHasActionNotEvaluated';
+import { getStorage } from '../../../../config';
 
 class TaskDashboard extends Component {
 
@@ -62,7 +63,20 @@ class TaskDashboard extends Component {
             endMonthTitle: this.INFO_SEARCH.endMonthTitle,
 
             willUpdate: false,       // Khi true sẽ cập nhật dữ liệu vào props từ redux
-            callAction: false
+            callAction: false,
+            type: 'status',
+            taskAnalys: {
+                urgent: [],
+                high: [],
+                standard: [],
+                average: [],
+                low: [],
+                inprocess: [],
+                wait_for_approval: [],
+                finished: [],
+                delayed: [],
+                canceled: []
+            }
         };
     }
 
@@ -78,7 +92,6 @@ class TaskDashboard extends Component {
             type: "user"
         }
         await this.props.getTaskByUser(data);
-
         await this.setState(state => {
             return {
                 ...state,
@@ -86,6 +99,14 @@ class TaskDashboard extends Component {
                 willUpdate: true       // Khi true sẽ cập nhật dữ liệu vào props từ redux
             };
         });
+        let userId = getStorage('userId');
+        this.props.getTaskAnalysOfUser(userId)
+            .then(res => {
+                let taskAnalys = res.data.content;
+                this.setState({
+                    taskAnalys
+                });
+            })
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
@@ -109,7 +130,7 @@ class TaskDashboard extends Component {
             });
         } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && nextState.willUpdate) {
             this.setState(state => {
-                
+
                 return {
                     ...state,
                     dataStatus: this.DATA_STATUS.FINISHED,
@@ -194,7 +215,7 @@ class TaskDashboard extends Component {
 
     render() {
         const { tasks, translate } = this.props;
-        const { startMonth, endMonth, willUpdate, callAction } = this.state;
+        const { startMonth, endMonth, willUpdate, callAction, taskAnalys } = this.state;
 
         let amountResponsibleTask = 0, amountTaskCreated = 0, amountAccountableTasks = 0, amountConsultedTasks = 0;
         let numTask = [];
@@ -350,6 +371,61 @@ class TaskDashboard extends Component {
                         </div>
                     </div>
                 </div>
+
+                <div style={{ marginTop: 20, borderTop: '0.5px solid #fff' }}>
+                    <h4>Thống kê công việc</h4>
+                </div>
+                <div className="row">
+                    <div className="col-md-3 col-sm-6 col-xs-12">
+                        <div className="info-box">
+                            <span className="info-box-icon bg-red"><i className="fa fa-plus" /></span>
+                            <div className="info-box-content">
+                                <span className="info-box-text">Khẩn cấp</span>
+                                <span className="info-box-number">{taskAnalys.inprocess.length}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-md-3 col-sm-6 col-xs-12">
+                        <div className="info-box">
+                            <span className="info-box-icon bg-orange"><i className="fa fa-spinner" /></span>
+                            <div className="info-box-content">
+                                <span className="info-box-text">Cao</span>
+                                <span className="info-box-number">{taskAnalys.wait_for_approval.length}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-md-3 col-sm-6 col-xs-12">
+                        <div className="info-box">
+                            <span className="info-box-icon bg-green"><i className="fa fa-check-square-o" /></span>
+                            <div className="info-box-content">
+                                <span className="info-box-text">Tiêu chuẩn</span>
+                                <span className="info-box-number">{taskAnalys.finished.length}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="clearfix visible-sm-block" />
+                    <div className="col-md-3 col-sm-6 col-xs-12">
+                        <div className="info-box">
+                            <span className="info-box-icon bg-aqua"><i className="fa fa-comments-o" /></span>
+                            <div className="info-box-content">
+                                <span className="info-box-text">Trung bình</span>
+                                <span className="info-box-number">{taskAnalys.delayed.length}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-md-3 col-sm-6 col-xs-12">
+                        <div className="info-box">
+                            <span className="info-box-icon bg-gray"><i className="fa fa-comments-o" /></span>
+                            <div className="info-box-content">
+                                <span className="info-box-text">Thấp</span>
+                                <span className="info-box-number">{taskAnalys.canceled.length}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 {/* Lịch công việc chi tiết */}
                 <div className="row">
                     <div className="col-xs-12">
@@ -478,7 +554,7 @@ const actionCreators = {
     getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
     getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
     getTaskByUser: taskManagementActions.getTasksByUser,
-
+    getTaskAnalysOfUser: taskManagementActions.getTaskAnalysOfUser,
 };
 
 const connectedTaskDashboard = connect(mapState, actionCreators)(withTranslate(TaskDashboard));
