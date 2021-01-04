@@ -335,10 +335,11 @@ exports.startTimesheetLog = async (portal, params, body) => {
         startedAt: now,
         creator: body.creator,
     };
+    // Kiểm tra người dùng có đang bấm giờ một công việc nào đó không?
     let check = await Task(connect(DB_CONNECTION, portal))
         .findOne({ 
             "timesheetLogs.creator": timerUpdate.creator,
-            "timesheetLogs.stoppedAt": undefined
+            "timesheetLogs.stoppedAt": { $exists: false }
         });
     if(check) throw ['task_dif_logging'];
 
