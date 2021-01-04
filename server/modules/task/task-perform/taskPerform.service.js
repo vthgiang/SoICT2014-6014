@@ -335,6 +335,13 @@ exports.startTimesheetLog = async (portal, params, body) => {
         startedAt: now,
         creator: body.creator,
     };
+    let check = await Task(connect(DB_CONNECTION, portal))
+        .findOne({ 
+            "timesheetLogs.creator": timerUpdate.creator,
+            "timesheetLogs.stoppedAt": undefined
+        });
+    if(check) throw ['task_dif_logging'];
+
     let timer = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
         params.taskId,
         { $push: { timesheetLogs: timerUpdate } },

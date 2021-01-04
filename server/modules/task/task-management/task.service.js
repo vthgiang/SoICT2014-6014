@@ -271,6 +271,7 @@ exports.getTasksCreatedByUser = async (portal, id) => {
  * @task dữ liệu trong params
  */
 exports.getPaginatedTasks = async (portal, task) => {
+    console.log("tasks", task)
     var { perPage, number, role, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime } = task;
     var taskList;
     var perPage = Number(perPage);
@@ -372,28 +373,42 @@ exports.getPaginatedTasks = async (portal, task) => {
     } else {
 
         if (startDate) {
-            let startTime = startDate.split("-");
-            let start = new Date(startTime[1], startTime[0] - 1, 1);
-            // let end = new Date(startTime[1], startTime[0], 1);
-
-            keySearch = {
-                ...keySearch,
-                startDate: {
-                    $gt: start,
-                    // $lt: end
+            let checkDate = Date.parse(endDate);
+            if(checkDate) {
+                keySearch = {
+                    ...keySearch,
+                    startDate: {
+                        $gt: new Date(startDate)
+                    }
+                }
+            } else {
+                let startTime = startDate.split("-");
+                let start = new Date(startTime[1], startTime[0] - 1, 1);
+                keySearch = {
+                    ...keySearch,
+                    startDate: {
+                        $gt: start
+                    }
                 }
             }
         }
         if (endDate) {
-            let endTime = endDate.split("-");
-            // let start = new Date(endTime[1], endTime[0] - 1, 1);
-            let end = new Date(endTime[1], endTime[0], 1);
-
-            keySearch = {
-                ...keySearch,
-                endDate: {
-                    // $gte: start,
-                    $lte: end
+            let checkDate = Date.parse(endDate);
+            if(checkDate) {
+                keySearch = {
+                    ...keySearch,
+                    endDate: {
+                        $lte: new Date(endDate)
+                    }
+                }
+            } else {
+                let endTime = endDate.split("-");
+                let end = new Date(endTime[1], endTime[0], 1);
+                keySearch = {
+                    ...keySearch,
+                    endDate: {
+                        $lte: end
+                    }
                 }
             }
         }

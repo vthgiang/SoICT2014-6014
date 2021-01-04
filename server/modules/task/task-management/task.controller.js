@@ -377,7 +377,7 @@ getPaginatedTasks = async (req, res) => {
             aPeriodOfTime: req.query.aPeriodOfTime
         };
 
-        var tasks = await TaskManagementService.getPaginatedTasks(req.portal, task);
+        let tasks = await TaskManagementService.getPaginatedTasks(req.portal, task);
         await Logger.info(req.user.email, ` get task informed by user `, req.portal)
         res.status(200).json({
             success: true,
