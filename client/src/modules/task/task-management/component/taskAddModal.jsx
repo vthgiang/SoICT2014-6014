@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { getStorage } from '../../../../config';
+import { getTimeFromFormatDate } from '../../../../helpers/stringMethod';
 
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions'
@@ -14,6 +15,7 @@ import { DialogModal, DatePicker, SelectBox, ErrorLabel, ToolTip, TreeSelect } f
 import { TaskFormValidator } from './taskFormValidator';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import ModalAddTaskProject from '../../task-project/component/modalAddTaskProject';
+
 
 class TaskAddModal extends Component {
 
@@ -54,7 +56,16 @@ class TaskAddModal extends Component {
 
     handleSubmit = async (event) => {
         const { newTask } = this.state;
-        this.props.addTask(newTask);
+        let startDate = newTask.startDate;
+        let endDate = newTask.endDate;
+
+        startDate = new Date(getTimeFromFormatDate(startDate, 'dd-mm-yyyy'));
+        endDate = new Date(getTimeFromFormatDate(endDate, 'dd-mm-yyyy'));
+        this.props.addTask({
+            ...newTask,
+            startDate: startDate,
+            endDate: endDate
+        });
     }
 
     isTaskFormValidated = () => {
@@ -145,14 +156,19 @@ class TaskAddModal extends Component {
     }
     validateTaskEndDate = (value, willUpdateState = true) => {
         let { translate } = this.props;
-        let msg = TaskFormValidator.validateTaskEndDate(this.state.newTask.startDate, value, translate);
+        const { newTask } = this.state;
+
+        let msg = TaskFormValidator.validateTaskEndDate(newTask.startDate, value, translate);
 
         if (willUpdateState) {
-            this.state.newTask.endDate = value;
-            this.state.newTask.errorOnEndDate = msg;
             this.setState(state => {
                 return {
                     ...state,
+                    newTask: {
+                        ...state.newTask,
+                        endDate: value,
+                        errorOnEndDate: msg
+                    }
                 };
             });
         }

@@ -235,7 +235,7 @@ function getItemsForGood(goodId) {
         Promise.all([
             getTaxByGoodsId(goodId),
             getSlaByGoodsId(goodId),
-            getDiscountByGoodsId(goodId)
+            getDiscountByGoodsId(goodId),
         ])
             .then(res => {
                 dispatch({

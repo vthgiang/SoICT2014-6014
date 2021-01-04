@@ -1,14 +1,18 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
+//Actions
 import { SalesOrderActions } from "../redux/actions";
 import { DiscountActions } from "../../discount/redux/actions";
 import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
 import { DepartmentActions } from "../../../../super-admin/organizational-unit/redux/actions";
 import { RoleActions } from "../../../../super-admin/role/redux/actions";
 import { QuoteActions } from "../../quote/redux/actions";
+//Helper Function
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import { formatDate } from "../../../../../helpers/formatDate";
+import { generateCode } from "../../../../../helpers/generateCode";
+//Components Import
 import { PaginateBar, DataTableSetting, SelectMulti, SelectBox, DeleteNotification } from "../../../../../common-components";
 import SalesOrderDetailForm from "./salesOrderDetailForm";
 import SalesOrderCreateForm from "./salesOrderCreateForm";
@@ -35,6 +39,12 @@ class SalesOrderTable extends Component {
         this.props.getAllDepartments();
         this.props.getAllRoles();
         this.props.getQuotesToMakeOrder();
+    };
+
+    handleClickCreateCode = () => {
+        this.setState((state) => {
+            return { ...state, code: generateCode("SALES_ORDER_") };
+        });
     };
 
     setPage = async (page) => {
@@ -140,7 +150,7 @@ class SalesOrderTable extends Component {
     // }
 
     render() {
-        let { limit, salesOrderDetail, salesOrderEdit } = this.state;
+        let { limit, salesOrderDetail, salesOrderEdit, code } = this.state;
         const { translate, salesOrders } = this.props;
         const { totalPages, page } = salesOrders;
 
@@ -152,6 +162,10 @@ class SalesOrderTable extends Component {
         console.log("listSalesOrders", listSalesOrders);
 
         const dataStatus = [
+            {
+                className: "text-primary",
+                text: "no status",
+            },
             {
                 className: "text-primary",
                 text: "Chờ phê duyệt",
@@ -167,6 +181,29 @@ class SalesOrderTable extends Component {
             {
                 className: "text-danger",
                 text: "Đã hủy",
+            },
+        ];
+
+        const dataPriority = [
+            {
+                className: "text-primary",
+                text: "default",
+            },
+            {
+                className: "text-muted",
+                text: "Thấp",
+            },
+            {
+                className: "text-primary",
+                text: "Trung bình",
+            },
+            {
+                className: "text-success",
+                text: "Cao",
+            },
+            {
+                className: "text-danger",
+                text: "Đặc biệt",
             },
         ];
 
@@ -188,6 +225,7 @@ class SalesOrderTable extends Component {
                                     data-toggle="dropdown"
                                     aria-expanded="true"
                                     title={"Đơn hàng mới"}
+                                    onClick={this.handleClickCreateCode}
                                 >
                                     Thêm đơn hàng
                                 </button>
@@ -206,8 +244,8 @@ class SalesOrderTable extends Component {
                             </div>
                         </div>
 
-                        <SalesOrderCreateForm />
-                        <SalesOrderCreateFormFromQuote />
+                        <SalesOrderCreateForm code={code} />
+                        <SalesOrderCreateFormFromQuote code={code} />
                         <SalesOrderDetailForm salesOrderDetail={salesOrderDetail} />
                         {salesOrderEdit && <SalesOrderEditForm salesOrderEdit={salesOrderEdit} />}
                         <div className="form-inline">
@@ -342,7 +380,7 @@ class SalesOrderTable extends Component {
                                             <td>{item.customer ? item.customer.name : ""}</td>
                                             <td>{item.paymentAmount ? formatCurrency(item.paymentAmount) : "---"}</td>
                                             <td className={dataStatus[item.status].className}>{dataStatus[item.status].text}</td>
-                                            <td>{item.priority}</td>
+                                            <td className={dataPriority[item.priority].className}>{dataPriority[item.priority].text}</td>
                                             <td>{item.deliveryTime ? formatDate(item.deliveryTime) : "---"}</td>
                                             {item.status === -1 ? (
                                                 <td>

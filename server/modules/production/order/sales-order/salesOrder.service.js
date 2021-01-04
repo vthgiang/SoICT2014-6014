@@ -7,7 +7,7 @@ const {
 } = require(`../../../../helpers/dbHelper`);
 
 exports.createNewSalesOrder = async (userId, data, portal) => {
-    console.log("data", userId);
+    console.log("data", data);
     let newSalesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).create({
         code: data.code,
         status: data.status ?  data.status : 1, //Nếu k có thì mặc định bằng 1 (chờ phê duyệt)
@@ -25,14 +25,15 @@ exports.createNewSalesOrder = async (userId, data, portal) => {
         }) : undefined,
         priority: data.priority,
         goods: data.goods ? data.goods.map((item) => {
+            console.log("data--work", item.manufacturingWorks);
             return {
                 good: item.good,
                 pricePerBaseUnit: item.pricePerBaseUnit,
                 pricePerBaseUnitOrigin: item.pricePerBaseUnitOrigin,
                 salesPriceVariance: item.salesPriceVariance,
                 quantity: item.quantity,
-                manufacturingWorks: data.manufacturingWorks,
-                manufacturingPlan: data.manufacturingPlan,
+                manufacturingWorks: item.manufacturingWorks,
+                manufacturingPlan: item.manufacturingPlan,
                 serviceLevelAgreements: item.serviceLevelAgreements ? item.serviceLevelAgreements.map((sla) => {
                     return {
                         _id: sla._id,
@@ -130,8 +131,6 @@ exports.createNewSalesOrder = async (userId, data, portal) => {
         quote.salesOrder = newSalesOrder._id;
         quote.save();
     }
-
-    console.log("new ", newSalesOrder);
 
     let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findById({ _id: newSalesOrder._id }).populate([{
         path: 'creator', select: 'name'
