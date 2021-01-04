@@ -1,24 +1,25 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
 import { SalesOrderActions } from "../redux/actions";
 import { generateCode } from "../../../../../helpers/generateCode";
-import { formatToTimeZoneDate } from "../../../../../helpers/formatDate";
 import { DialogModal, SelectBox, ErrorLabel } from "../../../../../common-components";
 import ValidationHelper from "../../../../../helpers/validationHelper";
-import SalesOrderCreateGood from "./createSalesOrder/salesOrderCreateGood";
-import SalesOrderCreateInfo from "./createSalesOrder/salesOrderCreateInfo";
-import SalesOrderCreatePayment from "./createSalesOrder/salesOrderCreatePayment";
-import SlasOfGoodDetail from "./createSalesOrder/viewDetailOnCreate/slasOfGoodDetail";
-import DiscountOfGoodDetail from "./createSalesOrder/viewDetailOnCreate/discountOfGoodDetail";
 
 class SalesOrderCreateFormFromQuote extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            code: generateCode("SALES_ORDER_"),
+            code: "",
         };
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.code !== prevState.code) {
+            return {
+                code: nextProps.code,
+            };
+        }
     }
 
     getQuoteOptions = () => {

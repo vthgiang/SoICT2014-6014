@@ -13,7 +13,7 @@ class GoodSelected extends Component {
         let options = [];
         let { listGoodsByType } = this.props.goods;
         if (listGoodsByType) {
-            options = [{ value: "title", text: "---Chọn mặt hàng---" }];
+            options = [{ value: "", text: "---Chọn mặt hàng---" }];
 
             let mapOptions = listGoodsByType.map((item) => {
                 return {
@@ -27,10 +27,28 @@ class GoodSelected extends Component {
         return options;
     };
 
+    getManufacturingWorksOptions = () => {
+        let options = [];
+        let { listManufacturingWorks } = this.props.goods;
+        if (listManufacturingWorks) {
+            options = [{ value: "title", text: "---Chọn nhà máy---" }];
+
+            let mapOptions = listManufacturingWorks.map((item) => {
+                return {
+                    value: item._id,
+                    text: item.code + " - " + item.name,
+                };
+            });
+
+            options = options.concat(mapOptions);
+        }
+        return options;
+    };
+
     render() {
-        let { good, goodName, pricePerBaseUnit, baseUnit, inventory, quantity } = this.props;
+        let { good, goodName, pricePerBaseUnit, baseUnit, inventory, quantity, manufacturingWorks } = this.props;
         let { pricePerBaseUnitError, goodError, quantityError } = this.props;
-        const { handleGoodChange, handlePriceChange, handleQuantityChange } = this.props;
+        const { handleGoodChange, handlePriceChange, handleQuantityChange, handleManufacturingWorkChange } = this.props;
 
         return (
             <React.Fragment>
@@ -97,6 +115,20 @@ class GoodSelected extends Component {
                         </label>
                         <input type="number" className="form-control" value={quantity} onChange={handleQuantityChange} />
                         <ErrorLabel content={quantityError} />
+                    </div>
+                </div>
+                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: "0px 10px", height: "100%" }}>
+                    <div className={`form-group`}>
+                        <label>Yêu cầu sản xuất</label>
+                        <SelectBox
+                            id={`select-manufacturing-works-code-sales-order`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            value={manufacturingWorks}
+                            items={this.getManufacturingWorksOptions()}
+                            onChange={handleManufacturingWorkChange}
+                            multiple={false}
+                        />
                     </div>
                 </div>
             </React.Fragment>

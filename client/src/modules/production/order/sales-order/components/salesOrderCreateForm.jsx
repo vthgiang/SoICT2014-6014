@@ -22,7 +22,7 @@ class SalesOrderCreateForm extends Component {
             currentSlasOfGood: [],
             currentDiscountsOfGood: [],
             paymentAmount: 0,
-            code: generateCode("SALES_ORDER_"),
+            code: "",
             note: "",
             customer: "",
             customerName: "",
@@ -51,15 +51,17 @@ class SalesOrderCreateForm extends Component {
         };
     }
 
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.code !== prevState.code) {
+            return {
+                code: nextProps.code,
+            };
+        }
+    }
+
     componentDidMount() {
         this.props.getCustomers();
     }
-
-    handleClickCreateCode = () => {
-        this.setState((state) => {
-            return { ...state, code: generateCode("SALES_ORDER_") };
-        });
-    };
 
     validateCustomer = (value, willUpdateState = true) => {
         let msg = undefined;
@@ -444,6 +446,7 @@ class SalesOrderCreateForm extends Component {
                 amount: item.amount,
                 amountAfterDiscount: item.amountAfterDiscount,
                 amountAfterTax: item.amountAfterTax,
+                manufacturingWorks: item.manufacturingWorks,
             };
         });
         return goodMap;
@@ -451,7 +454,6 @@ class SalesOrderCreateForm extends Component {
 
     save = async (e) => {
         e.preventDefault();
-        console.log("this.isValidateForm()", this.isValidateForm());
         if (this.isValidateForm()) {
             let {
                 customer,
