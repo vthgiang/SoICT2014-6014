@@ -309,7 +309,7 @@ class BusinessDepartmentEditForm extends Component {
                                             style={{ width: "100%" }}
                                             value={type}
                                             items={[
-                                                { value: "", text: "---Chọn bộ phận---" },
+                                                { value: "title", text: "---Chọn bộ phận---" },
                                                 { value: "1", text: "Bộ phận kinh doanh" },
                                                 { value: "2", text: "Bộ phận kế toán" },
                                                 { value: "3", text: "Bộ phận thu mua nguyên vật liệu" },

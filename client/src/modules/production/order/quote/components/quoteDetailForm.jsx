@@ -196,8 +196,8 @@ class QuoteDetailForm extends Component {
     render() {
         const {
             customerPhone,
+            customer,
             customerAddress,
-            customerName,
             customerRepresent,
             customerTaxNumber,
             customerEmail,
@@ -250,7 +250,7 @@ class QuoteDetailForm extends Component {
                                     <span> Địa chỉ nhận hàng</span>
                                 </div>
                                 <div className="shopping-address-info">
-                                    <div style={{ fontWeight: 600 }}>{`${customerName} (${customerPhone})`} &ensp;</div>
+                                    <div style={{ fontWeight: 600 }}>{`${customer ? customer.name : ""} (${customerPhone})`} &ensp;</div>
                                     <div>{customerAddress}</div>
                                 </div>
                                 {customerTaxNumber ? (

@@ -1,4 +1,4 @@
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../../../logs`);
 const DashboardService = require('./dashboard.service');
 const EmployeeKpi = require('../../employee/management/management.controller');
 const { query } = require('express');

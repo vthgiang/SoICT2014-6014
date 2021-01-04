@@ -1,5 +1,5 @@
 const DisciplineService = require('./discipline.service');
-const Log = require(`${SERVER_LOGS_DIR}`);
+const Log = require(`../../../logs`);
 
 /** Lấy danh sách kỷ luật */
 exports.searchDisciplines = async (req, res) => {

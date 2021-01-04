@@ -392,7 +392,7 @@ class PurchaseRequestEditForm extends Component {
                                 {/* Giá trị dự tính */}
                                 <div className="form-group">
                                     <label>{translate('asset.manage_recommend_procure.expected_value')} (VNĐ)</label>
-                                    <input type="number" className="form-control" name="estimatePrice" value={estimatePrice} onChange={this.handleEstimatePriceChange} />
+                                    <input type="number" className="form-control" name="estimatePrice" value={estimatePrice ? estimatePrice : ""} onChange={this.handleEstimatePriceChange} />
                                 </div>
 
                                 {/* Người phê duyệt */}

@@ -1,204 +1,151 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { DataTableSetting, DialogModal, ButtonModal } from '../../../../../common-components';
+import { DataTableSetting, DialogModal, ButtonModal, DateTimeConverter, ConfirmNotification } from '../../../../../common-components';
+import FamilyMemberEdit from './familyMemberEdit';
+import FamilyMemberCreate from './familyMemberCreate';
 
-const FamilyMemberTab = ({ id }) => {
-    let [familyMembers, setFamilyMembers] = useState([]);
+const FamilyMemberTab = ({
+    tabType = "create",
+    houseHold,
+    editMember,
+    _fm_openEditFamilyMemberModal,
+    _fm_deleteMember,
+    id, translate,
+    _fm_handleHeadHouseHoldName,
+    _fm_handleDocumentType,
+    _fm_handleHouseHoldNumber,
+    _fm_handleCity,
+    _fm_handleDistrict,
+    _fm_handleWard,
+    _fm_handleHouseHoldAddress,
+    _fm_handlePhone,
+    _fm_handleHouseHoldCode,
+    _fm_saveMember,
+    _fm_editMember
+}) => {
+    const [employeeHouseHold, setEmployeeHoldHouse] = useState({
 
-    const _save = () => {
+    });
 
+    const _showMemberGender = (gender) => {
+        switch (gender) {
+            case 'male': return "Nam";
+            case 'female': return "Nữ";
+            default: return "";
+        }
     }
 
-    const _openModalAddNewFamilyMembers = () => {
-        setFamilyMembers([...familyMembers, {}]);
-        window.$('#modal-add-family-members').modal('show');
+    const _showIsHeadHouseHold = (headHouseHold) => {
+        switch (headHouseHold) {
+            case 'yes': return "Có";
+            case 'no': return "Không";
+            default: return "";
+        }
     }
 
-    const _handleChange = (e) => {
-        let index = familyMembers.length - 1;
-        console.log("length", index)
-        let { name, value } = e.target;
-        familyMembers[index][name] = value;
-        setFamilyMembers(familyMembers);
+    const _deleteMember = (index) => {
+        _fm_deleteMember(index);
     }
 
-    console.log("familyMembers", familyMembers)
+    useEffect(() => {
+        setEmployeeHoldHouse(houseHold)
+    }, [JSON.stringify(houseHold)])
 
     return (
         <div id={id} className="tab-pane">
             <div className="box-body">
                 <fieldset className="scheduler-border" style={{ margin: '10px 20px' }}>
                     <legend className="scheduler-border" >
-                        <h4 className="box-title">Phụ luc: Thành viên hộ gia đình của NLĐ</h4>
+                        <h4 className="box-title">{translate('human_resource.profile.house_hold.appendix.title')}</h4>
                     </legend>
                     <div className="row">
                         {/* họ và tên chủ hộ */}
                         <div className="form-group col-md-4">
-                            <label >Họ và tên chủ hộ <span className="text-red">*</span></label>
-                            <input type="text" className="form-control" />
+                            <label >{translate('human_resource.profile.house_hold.appendix.head_house_hold_name')}</label>
+                            <input type="text" className="form-control" onChange={_fm_handleHeadHouseHoldName} value={employeeHouseHold.headHouseHoldName} />
                         </div>
                         {/* Loại giấy tờ */}
                         <div className="form-group col-md-4">
-                            <label >Loại giấy tờ</label>
-                            <input type="text" className="form-control" />
+                            <label >{translate('human_resource.profile.house_hold.appendix.document_type')}</label>
+                            <input type="text" className="form-control" onChange={_fm_handleDocumentType} value={employeeHouseHold.documentType} />
                         </div>
                         {/* Số sổ hộ khẩu */}
                         <div className="form-group col-md-4">
-                            <label >Số sổ hộ khẩu</label>
-                            <input type="text" className="form-control" />
+                            <label >{translate('human_resource.profile.house_hold.appendix.house_hold_number')}</label>
+                            <input type="text" className="form-control" onChange={_fm_handleHouseHoldNumber} value={employeeHouseHold.houseHoldNumber} />
                         </div>
 
                         {/* Tỉnh/TP */}
                         <div className="form-group col-md-4">
-                            <label >Tỉnh/TP <span className="text-red">*</span></label>
-                            <input type="text" className="form-control" />
+                            <label >{translate('human_resource.profile.house_hold.appendix.city')}</label>
+                            <input type="text" className="form-control" onChange={_fm_handleCity} value={employeeHouseHold.city} />
                         </div>
                         {/* Loại giấy tờ */}
                         <div className="form-group col-md-4">
-                            <label >Quận/huyện <span className="text-red">*</span></label>
-                            <input type="text" className="form-control" />
+                            <label >{translate('human_resource.profile.house_hold.appendix.district')}</label>
+                            <input type="text" className="form-control" onChange={_fm_handleDistrict} value={employeeHouseHold.district} />
                         </div>
                         {/* Số sổ hộ khẩu */}
                         <div className="form-group col-md-4">
-                            <label >Phường/xã <span className="text-red">*</span></label>
-                            <input type="text" className="form-control" />
+                            <label >{translate('human_resource.profile.house_hold.appendix.ward')}</label>
+                            <input type="text" className="form-control" onChange={_fm_handleWard} value={employeeHouseHold.ward} />
                         </div>
 
                         {/* Địa chỉ hộ khẩu */}
                         <div className="form-group col-md-4">
-                            <label >Địa chỉ hộ khẩu</label>
-                            <input type="text" className="form-control" />
+                            <label >{translate('human_resource.profile.house_hold.appendix.house_hold_address')}</label>
+                            <input type="text" className="form-control" onChange={_fm_handleHouseHoldAddress} value={employeeHouseHold.houseHoldAddress} />
                         </div>
                         {/* Số điện thoại */}
                         <div className="form-group col-md-4">
-                            <label >Số điện thoại</label>
-                            <input type="text" className="form-control" />
+                            <label >{translate('human_resource.profile.house_hold.appendix.phone')}</label>
+                            <input type="text" className="form-control" onChange={_fm_handlePhone} value={employeeHouseHold.phone} />
                         </div>
                         {/* Số sổ hộ khẩu */}
                         <div className="form-group col-md-4">
-                            <label >Mã số hộ gia đình</label>
-                            <input type="text" className="form-control" />
+                            <label >{translate('human_resource.profile.house_hold.appendix.house_hold_code')}</label>
+                            <input type="text" className="form-control" onChange={_fm_handleHouseHoldCode} value={employeeHouseHold.houseHoldCode} />
                         </div>
                     </div>
                 </fieldset>
 
                 <fieldset className="scheduler-border" style={{ margin: '10px 20px' }}>
                     <legend className="scheduler-border" >
-                        <h4 className="box-title">Kê khai đầy đủ thành viên hộ gia đình trong sổ hộ khẩu hoặc sổ tạm trú</h4>
+                        <h4 className="box-title">{translate('human_resource.profile.house_hold.members.title')}</h4>
                     </legend>
 
-                    {/* Thêm mới thông tin thành viên hộ gia đình của chủ hộ */}
-                    <button className="btn btn-success" style={{ cursor: 'pointer' }} onClick={_openModalAddNewFamilyMembers}>Thêm mới</button>
-                    <DialogModal
-                        modalID="modal-add-family-members"
-                        formID="form-add-family-members"
-                        title="Thêm thành viên trong hộ gia đình"
-                        func={_save} size={75}
-                    >
-                        <form id="form-add-family-members">
-                            <div className="row">
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className="form-group">
-                                        <label>Họ và tên</label>
-                                        <input className="form-control" name="name" onChange={_handleChange} />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className="form-group">
-                                        <label>Mã số BHXH</label>
-                                        <input className="form-control" name="codeSocialInsurance" onChange={_handleChange} />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className="form-group">
-                                        <label>Số sổ BHXH</label>
-                                        <input className="form-control" name="bookNumberSocialInsurance" onChange={_handleChange} />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className="form-group">
-                                        <label>Giới tính</label>
-                                        <input className="form-control" name="gender" onChange={_handleChange} />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className="form-group">
-                                        <label>Là chủ hộ</label>
-                                        <input className="form-control" name="isHeadHousehold" onChange={_handleChange} />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className="form-group">
-                                        <label>Quan hệ với chủ hộ</label>
-                                        <input className="form-control" name="relationshipWithHeadHousehold" onChange={_handleChange} />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className="form-group">
-                                        <label>Ngày sinh</label>
-                                        <input className="form-control" name="birth" onChange={_handleChange} />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className="form-group">
-                                        <label>CNSS</label>
-                                        <input className="form-control" name="cnss" onChange={_handleChange} />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className="form-group">
-                                        <label>Nơi cấp giấy khai sinh</label>
-                                        <input className="form-control" name="placeOfBirthCertificate" onChange={_handleChange} />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className="form-group">
-                                        <label>Quốc tịch</label>
-                                        <input className="form-control" name="nationality" onChange={_handleChange} />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className="form-group">
-                                        <label>Dân tộc</label>
-                                        <input className="form-control" name="nation" onChange={_handleChange} />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className="form-group">
-                                        <label>Số CMND/Hộ chiếu</label>
-                                        <input className="form-control" name="numberPassport" onChange={_handleChange} />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                    <div className="form-group">
-                                        <label>Ghi chú</label>
-                                        <textarea className="form-control" name="note" onChange={_handleChange} />
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </DialogModal>
+                    <FamilyMemberCreate
+                        tabId={tabType + "family-member-create"}
+                        _save={_fm_saveMember}
+                    />
+
+                    <FamilyMemberEdit
+                        tabId={tabType + "family-member-edit"}
+                        editMember={editMember}
+                        _save={_fm_editMember}
+                    />
 
                     {/* Bảng danh sách thông tin các thành viên trong hộ gia đình */}
                     <div id="container-employee-family-member" className="row">
-                        <table className="table table-hover table-striped table-bordered" id="table-employee-family-member">
+                        <table className="table table-hover table-striped table-bordered" id="table-employee-family-member" style={{ marginBottom: 0 }}>
                             <thead>
                                 <tr>
-                                    <th>STT</th>
-                                    <th>Họ và tên</th>
-                                    <th>Mã số BHXH</th>
-                                    <th>Số sổ BHXH</th>
-                                    <th>Giới tính</th>
-                                    <th>Là chủ hộ</th>
-                                    <th>Quan hệ với chủ hộ</th>
-                                    <th>CNSS</th>
-                                    <th>Ngày sinh</th>
-                                    <th>Nơi cấp giấy khai sinh</th>
-                                    <th>Quốc tịch</th>
-                                    <th>Dân tộc</th>
-                                    <th>Số CMND/Hộ chiếu</th>
-                                    <th>Ghi chú
+                                    <th style={{ width: 20 }}>{translate('human_resource.profile.house_hold.members.stt')}</th>
+                                    <th>{translate('human_resource.profile.house_hold.members.name')}</th>
+                                    <th>{translate('human_resource.profile.house_hold.members.code_social_insurance')}</th>
+                                    <th>{translate('human_resource.profile.house_hold.members.book_nci')}</th>
+                                    <th>{translate('human_resource.profile.house_hold.members.gender')}</th>
+                                    <th>{translate('human_resource.profile.house_hold.members.is_hh')}</th>
+                                    <th>{translate('human_resource.profile.house_hold.members.rwhh')}</th>
+                                    <th>{translate('human_resource.profile.house_hold.members.cnss')}</th>
+                                    <th>{translate('human_resource.profile.house_hold.members.birth')}</th>
+                                    <th>{translate('human_resource.profile.house_hold.members.pob')}</th>
+                                    <th>{translate('human_resource.profile.house_hold.members.nationality')}</th>
+                                    <th>{translate('human_resource.profile.house_hold.members.nation')}</th>
+                                    <th>{translate('human_resource.profile.house_hold.members.npp')}</th>
+                                    <th>{translate('human_resource.profile.house_hold.members.note')}</th>
+                                    <th>{translate('general.action')}
                                         <DataTableSetting
                                             tableId="table-employee-family-member"
                                             tableContainerId="container-employee-family-member"
@@ -208,24 +155,42 @@ const FamilyMemberTab = ({ id }) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>STT</td>
-                                    <td>Họ và tên</td>
-                                    <td>Mã số BHXH</td>
-                                    <td>Số sổ BHXH</td>
-                                    <td>Giới tính</td>
-                                    <td>Là chủ hộ</td>
-                                    <td>Quan hệ với chủ hộ</td>
-                                    <td>CNSS</td>
-                                    <td>Ngày sinh</td>
-                                    <td>Nơi cấp giấy khai sinh</td>
-                                    <td>Quốc tịch</td>
-                                    <td>Dân tộc</td>
-                                    <td>Số CMND/Hộ chiếu</td>
-                                    <td>Ghi chú</td>
-                                </tr>
+                                {
+                                    houseHold.familyMembers.map((member, index) => (
+                                        <tr key={index}>
+                                            <td>{index + 1}</td>
+                                            <td>{member.name}</td>
+                                            <td>{member.codeSocialInsurance}</td>
+                                            <td>{member.bookNumberSocialInsurance}</td>
+                                            <td>{_showMemberGender(member.gender)}</td>
+                                            <td>{_showIsHeadHouseHold(member.isHeadHousehold)}</td>
+                                            <td>{member.relationshipWithHeadHousehold}</td>
+                                            <td>{member.cnss}</td>
+                                            <td><DateTimeConverter dateTime={member.birth} type="DD-MM-YYYY" /></td>
+                                            <td>{member.placeOfBirthCertificate}</td>
+                                            <td>{member.nationality}</td>
+                                            <td>{member.nation}</td>
+                                            <td>{member.numberPassport}</td>
+                                            <td>{member.note}</td>
+                                            <td>
+                                                <a className="text-orange" onClick={() => _fm_openEditFamilyMemberModal(index)}><i className="material-icons">edit</i></a>
+                                                <ConfirmNotification
+                                                    icon="question"
+                                                    title={translate('human_resource.profile.house_hold.delete')}
+                                                    content={translate('human_resource.profile.house_hold.delete')}
+                                                    name="delete"
+                                                    className="text-red"
+                                                    func={() => _deleteMember(index)}
+                                                />
+                                            </td>
+                                        </tr>
+                                    ))
+                                }
                             </tbody>
                         </table>
+                        {
+                            houseHold.familyMembers.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        }
                     </div>
                 </fieldset>
             </div>

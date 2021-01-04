@@ -696,7 +696,7 @@ class CreateEmployeeKpiSet extends Component {
                                             <a className="btn btn-app" data-toggle="modal" data-target="#createEmployeeKpiSet" data-backdrop="static" data-keyboard="false">
                                                 <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')}
                                             </a>
-                                            <ModalCreateEmployeeKpiSet organizationalUnit={currentUnit && currentUnit[0]} />
+                                            <ModalCreateEmployeeKpiSet organizationalUnit={currentUnit && currentUnit[0] && currentUnit[0]._id} />
                                         </div>
                                         : <a className="btn btn-app" data-toggle="modal" data-target="#startKPIPersonal" data-backdrop="static" data-keyboard="false" onClick={() => this.handleStartOrganizationalUnitKpi()}>
                                             <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')}

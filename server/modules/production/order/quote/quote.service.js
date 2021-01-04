@@ -1,10 +1,10 @@
 const {
     Quote
-} = require(`${SERVER_MODELS_DIR}`);
+} = require(`../../../../models`);
 
 const {
     connect
-} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+} = require(`../../../../helpers/dbHelper`);
 
 exports.createNewQuote = async (userId, data, portal) => {
     console.log("data", data);
@@ -15,11 +15,9 @@ exports.createNewQuote = async (userId, data, portal) => {
         effectiveDate: data.effectiveDate,
         expirationDate: data.expirationDate,
         customer: data.customer,
-        // customerName: data.customerName,
         customerPhone: data.customerPhone,
         customerAddress: data.customerAddress,
         customerRepresent: data.customerRepresent,
-        // customerTaxNumber: data.customerTaxNumber,
         customerEmail: data.customerEmail,
         goods: data.goods ? data.goods.map((item) => {
             return {
@@ -291,7 +289,7 @@ exports.approveQuote = async (approverId, quoteId, data, portal) => {
     }
 
     quote.status = data.status;
-    quote.approver = approverId;
+    quote.approver = approverId; //Lưu ý approver
         
     quote.save();
     
@@ -301,4 +299,10 @@ exports.approveQuote = async (approverId, quoteId, data, portal) => {
 exports.deleteQuote = async (id, portal) => {
     let quote = await Quote(connect(DB_CONNECTION, portal)).findOneAndDelete({ _id: id });
     return {quote};
+}
+
+//Lấy các báo giá để lập đơn hàng
+exports.getQuotesToMakeOrder = async (portal) => {
+    let quotes = await Quote(connect(DB_CONNECTION, portal)).find({ status: 2 });//Lấy các báo giá đã được duyệt
+    return {quotes};
 }

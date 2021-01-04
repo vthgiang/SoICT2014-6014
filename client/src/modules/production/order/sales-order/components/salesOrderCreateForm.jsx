@@ -1,148 +1,565 @@
 import React, { Component } from "react";
-import {
-    DatePicker,
-    DialogModal,
-    SelectBox,
-    ButtonModal,
-} from "../../../../../common-components";
-
+import { connect } from "react-redux";
+import { withTranslate } from "react-redux-multilingual";
+import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
+import { SalesOrderActions } from "../redux/actions";
+import { generateCode } from "../../../../../helpers/generateCode";
+import { formatToTimeZoneDate } from "../../../../../helpers/formatDate";
+import { DialogModal, SelectBox, ButtonModal } from "../../../../../common-components";
+import ValidationHelper from "../../../../../helpers/validationHelper";
+import SalesOrderCreateGood from "./createSalesOrder/salesOrderCreateGood";
+import SalesOrderCreateInfo from "./createSalesOrder/salesOrderCreateInfo";
+import SalesOrderCreatePayment from "./createSalesOrder/salesOrderCreatePayment";
+import SlasOfGoodDetail from "./createSalesOrder/viewDetailOnCreate/slasOfGoodDetail";
+import DiscountOfGoodDetail from "./createSalesOrder/viewDetailOnCreate/discountOfGoodDetail";
 class SalesOrderCreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            description: "",
-            stock: "",
-            responsible: "",
             goods: [],
-            returnRule: "",
-            serviceLevelAgreement: "",
-
-            customerCode: "",
+            discountsOfOrderValue: [],
+            discountsOfOrderValueChecked: {},
+            currentSlasOfGood: [],
+            currentDiscountsOfGood: [],
+            paymentAmount: 0,
+            code: generateCode("SALES_ORDER_"),
+            note: "",
+            customer: "",
             customerName: "",
             customerAddress: "",
             customerPhone: "",
-            customerEmployee: "",
-
-            goodCode: "",
-            goodName: "",
-            baseUnit: "",
-            goodPrice: "",
-            goodTax: "",
-
-            type: "quotation",
-            note: "",
-            returnRuleOfGood: "",
-            serviceLevelAgreementOfGood: "",
-            nameOfGood: "",
-            baseUnitOfGood: "",
-            priceOfGood: null,
-            quantityOfGood: null,
+            customerRepresent: "",
+            shippingFee: "",
+            deliveryTime: "",
+            coin: "",
+            priority: "",
+            step: 0,
+            isUseForeignCurrency: false,
+            foreignCurrency: {
+                symbol: "", // ký hiệu viết tắt
+                ratio: "", // tỷ lệ chuyển đổi
+            },
+            standardCurrency: {
+                symbol: "vnđ", // ký hiệu viết tắt
+                ratio: "1", // tỷ lệ chuyển đổi
+            },
+            currency: {
+                type: "standard",
+                symbol: "vnđ",
+                ratio: "1",
+            },
         };
     }
 
-    handleChangeDate = () => {};
+    componentDidMount() {
+        this.props.getCustomers();
+    }
 
-    isGoodsValidated = () => {};
-
-    handleCustomerChange = (value) => {
-        const customer = [
-            {
-                customerCode: "NVA_1875",
-                customerName: "Công ty XYZ",
-                customerAddress: "Hoàng Mai, Hà Nội",
-                customerEmployee: "Nguyễn Văn A",
-                customerPhone: "0937985739",
-            },
-            {
-                customerCode: "NVB_1789",
-                customerName: "Công ty ABC",
-                customerAddress: "Bạch Mai, Hà Nội",
-                customerEmployee: "Nguyễn Văn B",
-                customerPhone: "0359687930",
-            },
-        ];
-
-        const customerInfo = customer.filter(
-            (item) => item.customerCode === value[0]
-        );
-
-        this.setState({
-            customerCode: customerInfo[0].customerCode,
-            customerName: customerInfo[0].customerName,
-            customerAddress: customerInfo[0].customerAddress,
-            customerPhone: customerInfo[0].customerPhone,
-            customerEmployee: customerInfo[0].customerEmployee,
+    handleClickCreateCode = () => {
+        this.setState((state) => {
+            return { ...state, code: generateCode("SALES_ORDER_") };
         });
     };
 
-    handleGoodCodeChange = (value) => {
-        const goods = [
-            {
-                goodCode: "SP_0943",
-                goodName: "Thuốc gà rù",
-                baseUnit: "Hộp",
-                goodPrice: "250,000 vnđ",
-                goodTax: "25,000 vnđ (10%)",
-            },
-            {
-                goodCode: "SP_0349",
-                goodName: "Thuốc trị ghẻ",
-                baseUnit: "kg",
-                goodPrice: "100,000 vnđ",
-                goodTax: "10,000 vnđ (10%)",
-            },
-            {
-                goodCode: "SP_0344",
-                goodName: "Kháng sinh bê con",
-                baseUnit: "Hộp",
-                goodPrice: "150,000 vnđ",
-                goodTax: "15,000 vnđ (10%)",
-            },
-        ];
-        const goodInfo = goods.filter((item) => item.goodCode === value[0]);
-        this.setState({
-            goodCode: goodInfo[0].goodCode,
-            goodName: goodInfo[0].goodName,
-            baseUnit: goodInfo[0].baseUnit,
-            goodPrice: goodInfo[0].goodPrice,
-            goodTax: goodInfo[0].goodTax,
+    validateCustomer = (value, willUpdateState = true) => {
+        let msg = undefined;
+        if (!value) {
+            msg = "Giá trị không được để trống";
+        } else if (value[0] === "title") {
+            msg = "Giá trị không được để trống";
+        }
+        if (willUpdateState) {
+            this.setState((state) => {
+                return {
+                    ...state,
+                    customerError: msg,
+                };
+            });
+        }
+        return msg;
+    };
+
+    handleCustomerChange = (value) => {
+        if (value[0] !== "title") {
+            let customerInfo = this.props.customers.list.filter((item) => item._id === value[0]);
+            if (customerInfo.length) {
+                this.setState({
+                    customer: customerInfo[0]._id,
+                    customerName: customerInfo[0].name,
+                    customerAddress: customerInfo[0].address,
+                    customerPhone: customerInfo[0].mobilephoneNumber,
+                    customerRepresent: customerInfo[0].represent,
+                    customerTaxNumber: customerInfo[0].taxNumber,
+                    customerEmail: customerInfo[0].email,
+                });
+            }
+        } else {
+            this.setState((state) => {
+                return {
+                    ...state,
+                    customer: value[0],
+                    customerName: "",
+                    customerAddress: "",
+                    customerPhone: "",
+                    customerRepresent: "",
+                    customerTaxNumber: "",
+                    customerEmail: "",
+                };
+            });
+        }
+
+        this.validateCustomer(value, true);
+    };
+
+    handleCustomerEmailChange = (e) => {
+        let { value } = e.target;
+        this.setState((state) => {
+            return {
+                ...state,
+                customerEmail: value,
+            };
         });
+
+        let { translate } = this.props;
+        let { message } = ValidationHelper.validateEmail(translate, value);
+        this.setState({ customerEmailError: message });
+    };
+
+    handleCustomerPhoneChange = (e) => {
+        let { value } = e.target;
+        this.setState((state) => {
+            return {
+                ...state,
+                customerPhone: value,
+            };
+        });
+
+        let { translate } = this.props;
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+        this.setState({ customerPhoneError: message });
+    };
+
+    handleCustomerAddressChange = (e) => {
+        let { value } = e.target;
+        this.setState((state) => {
+            return {
+                ...state,
+                customerAddress: value,
+            };
+        });
+
+        let { translate } = this.props;
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+        this.setState({ customerAddressError: message });
+    };
+
+    handleCustomerRepresentChange = (e) => {
+        let { value } = e.target;
+        this.setState((state) => {
+            return {
+                ...state,
+                customerRepresent: value,
+            };
+        });
+    };
+
+    handleNoteChange = (e) => {
+        let { value } = e.target;
+        this.setState((state) => {
+            return {
+                ...state,
+                note: value,
+            };
+        });
+    };
+
+    validatePriority = (value, willUpdateState = true) => {
+        let msg = undefined;
+        if (!value) {
+            msg = "Giá trị không được để trống";
+        } else if (value === "title") {
+            msg = "Giá trị không được để trống";
+        }
+        if (willUpdateState) {
+            this.setState((state) => {
+                return {
+                    ...state,
+                    priorityError: msg,
+                };
+            });
+        }
+        return msg;
+    };
+
+    handlePriorityChange = (value) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                priority: value[0],
+            };
+        });
+        this.validatePriority(value[0], true);
+    };
+
+    setCurrentStep = (e, step) => {
+        e.preventDefault();
+        this.setState({
+            step,
+        });
+    };
+
+    setGoods = (goods) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                goods,
+            };
+        });
+    };
+
+    handleUseForeignCurrencyChange = (e) => {
+        const { checked } = e.target;
+        this.setState((state) => {
+            return {
+                ...state,
+                isUseForeignCurrency: checked,
+            };
+        });
+        if (!checked) {
+            this.setState((state) => {
+                return {
+                    ...state,
+                    foreignCurrency: {
+                        ratio: "",
+                        symbol: "",
+                    },
+                    currency: {
+                        type: "standard",
+                        symbol: "vnđ",
+                        ratio: "1",
+                    },
+                };
+            });
+        }
+    };
+
+    handleRatioOfCurrencyChange = (e) => {
+        let { foreignCurrency } = this.state;
+        let { value } = e.target;
+        this.setState((state) => {
+            return {
+                ...state,
+                foreignCurrency: {
+                    ratio: value,
+                    symbol: foreignCurrency.symbol,
+                },
+            };
+        });
+    };
+
+    handleSymbolOfForreignCurrencyChange = (e) => {
+        let { foreignCurrency } = this.state;
+        let { value } = e.target;
+        this.setState((state) => {
+            return {
+                ...state,
+                foreignCurrency: {
+                    ratio: foreignCurrency.ratio,
+                    symbol: value,
+                },
+            };
+        });
+    };
+
+    handleChangeCurrency = (value) => {
+        let { foreignCurrency, standardCurrency } = this.state;
+        this.setState((state) => {
+            return {
+                ...state,
+                currency: {
+                    type: value[0],
+                    symbol: value[0] === "standard" ? standardCurrency.symbol : foreignCurrency.symbol,
+                    ratio: foreignCurrency.ratio,
+                },
+            };
+        });
+    };
+
+    handleDiscountsOfOrderValueChange = (data) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                discountsOfOrderValue: data,
+            };
+        });
+    };
+
+    setDiscountsOfOrderValueChecked = (discountsOfOrderValueChecked) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                discountsOfOrderValueChecked,
+            };
+        });
+    };
+
+    handleShippingFeeChange = (e) => {
+        const { value } = e.target;
+        this.setState((state) => {
+            return {
+                ...state,
+                shippingFee: value,
+            };
+        });
+    };
+
+    handleDeliveryTimeChange = (value) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                deliveryTime: value,
+            };
+        });
+    };
+
+    setCurrentSlasOfGood = (data) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                currentSlasOfGood: data,
+            };
+        });
+    };
+
+    setCurrentDiscountsOfGood = (data) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                currentDiscountsOfGood: data,
+            };
+        });
+    };
+
+    handleCoinChange = (coin) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                coin: this.state.coin ? "" : coin, //Nếu đang checked thì bỏ checked
+            };
+        });
+    };
+
+    setPaymentAmount = (paymentAmount) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                paymentAmount,
+            };
+        });
+    };
+
+    isValidateSalesOrderCreateInfo = () => {
+        let { customer, customerEmail, customerPhone, customerAddress, priority } = this.state;
+        let { translate } = this.props;
+
+        if (
+            this.validateCustomer(customer, false) ||
+            this.validatePriority(priority, false) ||
+            !ValidationHelper.validateEmail(translate, customerEmail).status ||
+            !ValidationHelper.validateEmpty(translate, customerPhone).status ||
+            !ValidationHelper.validateEmpty(translate, customerAddress).status
+        ) {
+            return false;
+        } else {
+            return true;
+        }
+    };
+
+    isValidateSalesOrderCreateGood = () => {
+        let { goods } = this.state;
+        if (goods && goods.length) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+    isValidateForm = () => {
+        if (this.isValidateSalesOrderCreateInfo() && this.isValidateSalesOrderCreateGood()) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+    formatDiscountForSubmit = (discounts) => {
+        let discountsMap = discounts.map((dis) => {
+            return {
+                _id: dis._id,
+                code: dis.code,
+                type: dis.type,
+                formality: dis.formality,
+                name: dis.name,
+                effectiveDate: dis.effectiveDate,
+                expirationDate: dis.expirationDate,
+                discountedCash: dis.discountedCash,
+                discountedPercentage: dis.discountedPercentage,
+                maximumFreeShippingCost: dis.maximumFreeShippingCost,
+                loyaltyCoin: dis.loyaltyCoin,
+                bonusGoods: dis.bonusGoods
+                    ? dis.bonusGoods.map((bonus) => {
+                          return {
+                              good: bonus.good._id,
+                              expirationDateOfGoodBonus: bonus.expirationDateOfGoodBonus,
+                              quantityOfBonusGood: bonus.quantityOfBonusGood,
+                          };
+                      })
+                    : undefined,
+                discountOnGoods: dis.discountOnGoods
+                    ? {
+                          good: dis.discountOnGoods.good._id,
+                          expirationDate: dis.discountOnGoods.expirationDate,
+                          discountedPrice: dis.discountOnGoods.discountedPrice,
+                      }
+                    : undefined,
+            };
+        });
+
+        return discountsMap;
+    };
+
+    formatGoodForSubmit = () => {
+        let { goods } = this.state;
+        let goodMap = goods.map((item) => {
+            return {
+                good: item.good._id,
+                pricePerBaseUnit: item.pricePerBaseUnit,
+                pricePerBaseUnitOrigin: item.pricePerBaseUnitOrigin,
+                salesPriceVariance: item.salesPriceVariance,
+                quantity: item.quantity,
+                serviceLevelAgreements: item.slasOfGood,
+                taxs: item.taxs,
+                discounts: item.discountsOfGood.length ? this.formatDiscountForSubmit(item.discountsOfGood) : [],
+                note: item.note,
+                amount: item.amount,
+                amountAfterDiscount: item.amountAfterDiscount,
+                amountAfterTax: item.amountAfterTax,
+            };
+        });
+        return goodMap;
+    };
+
+    save = async (e) => {
+        e.preventDefault();
+        console.log("this.isValidateForm()", this.isValidateForm());
+        if (this.isValidateForm()) {
+            let {
+                customer,
+                customerAddress,
+                customerPhone,
+                customerRepresent,
+                customerEmail,
+                code,
+                shippingFee,
+                deliveryTime,
+                coin,
+                discountsOfOrderValue,
+                paymentAmount,
+                note,
+                priority,
+            } = this.state;
+
+            let data = {
+                code,
+                customer,
+                customerPhone,
+                customerAddress,
+                customerRepresent,
+                customerEmail,
+                priority,
+                goods: this.formatGoodForSubmit(),
+                discounts: discountsOfOrderValue.length ? this.formatDiscountForSubmit(discountsOfOrderValue) : [],
+                shippingFee,
+                deliveryTime: deliveryTime ? new Date(formatToTimeZoneDate(deliveryTime)) : undefined,
+                coin,
+                paymentAmount,
+                note,
+            };
+
+            await this.props.createNewSalesOrder(data);
+
+            console.log("data", data);
+
+            this.setState((state) => {
+                return {
+                    ...state,
+                    customer: "",
+                    customerName: "",
+                    customerAddress: "",
+                    customerPhone: "",
+                    customerRepresent: "",
+                    customerTaxNumbe: "",
+                    customerEmail: "",
+                    priority: "",
+                    code: "",
+                    shippingFee: "",
+                    deliveryTime: "",
+                    coin: "",
+                    goods: [],
+                    discountsOfOrderValue: [],
+                    paymentAmount: "",
+                    note: "",
+                    paymentAmount: "",
+                    step: 0,
+                };
+            });
+
+            window.$(`#modal-add-sales-order`).modal("hide");
+        }
     };
 
     render() {
         let {
-            description,
+            code,
             note,
-            responsible,
-            goods,
-            returnRule,
-            serviceLevelAgreement,
-            customerCode,
+            customer,
             customerName,
             customerAddress,
             customerPhone,
-            customerEmployee,
-            returnRuleOfGood,
-            serviceLevelAgreementOfGood,
-            nameOfGood,
-            baseUnitOfGood,
-            priceOfGood,
-            quantityOfGood,
-            year,
-            goodCode,
-            goodName,
-            goodPrice,
-            baseUnit,
-            goodTax,
+            customerRepresent,
+            customerTaxNumber,
+            customerEmail,
+            priority,
+            step,
+            goods,
+            shippingFee,
+            coin,
+            deliveryTime,
+            isUseForeignCurrency,
+            foreignCurrency,
+            currency,
+            standardCurrency,
+            discountsOfOrderValue,
+            discountsOfOrderValueChecked,
+            currentSlasOfGood,
+            currentDiscountsOfGood,
+            paymentAmount,
         } = this.state;
-        console.log(goodName);
+
+        let { customerError, customerEmailError, customerPhoneError, customerAddressError, priorityError } = this.state;
+
+        let enableStepOne = this.isValidateSalesOrderCreateInfo();
+        let enableStepTwo = this.isValidateSalesOrderCreateGood();
+        let enableFormSubmit = enableStepOne && enableStepTwo;
+
         return (
             <React.Fragment>
-                <ButtonModal
+                {/* <ButtonModal
+                    onButtonCallBack={this.handleClickCreateCode}
                     modalID={`modal-add-sales-order`}
                     button_name={"Đơn hàng mới"}
                     title={"Đơn hàng mới"}
-                />
+                /> */}
                 <DialogModal
                     modalID={`modal-add-sales-order`}
                     isLoading={false}
@@ -151,659 +568,151 @@ class SalesOrderCreateForm extends Component {
                     msg_success={"Thêm đơn thành công"}
                     msg_faile={"Thêm đơn không thành công"}
                     // disableSubmit={!this.isFormValidated()}
-                    func={this.save}
-                    size="75"
+                    // func={this.save}
+                    size="100"
                     style={{ backgroundColor: "green" }}
+                    hasSaveButton={false}
                 >
-                    <DialogModal
-                        modalID="modal-create-sales-order-sla"
-                        isLoading={false}
-                        formID="form-create-sales-order-sla"
-                        title={"Chi tiết cam kết chất lượng"}
-                        size="50"
-                        hasSaveButton={false}
-                        hasNote={false}
-                    >
-                        <form id="form-create-sales-order-sla">
-                            <div
-                                style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                }}
-                            >
-                                <i className="fa fa-check-square-o text-success"></i>
-                                <div>
-                                    Sản phẩm được sản xuất 100% đảm bảo tiêu
-                                    chuẩn an toàn
-                                </div>
-                            </div>
-                            <div
-                                style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                }}
-                            >
-                                <i className="fa fa-check-square-o text-success"></i>
-                                <div>Sản phẩm đúng với cam kết trên bao bì</div>
-                            </div>
-                        </form>
-                    </DialogModal>
-                    <form id={`form-create-sales-order`}>
-                        <div
-                            className="row row-equal-height"
-                            style={{ marginTop: -25 }}
-                        >
-                            <div
-                                className="col-xs-12 col-sm-8 col-md-8 col-lg-8"
-                                style={{ padding: 10 }}
-                            >
-                                <fieldset
-                                    className="scheduler-border"
-                                    style={{ borderRadius: "4px" }}
+                    <div className="nav-tabs-custom">
+                        <ul className="breadcrumbs">
+                            <li key="1">
+                                <a
+                                    className={`${step >= 0 ? "quote-active-tab" : "quote-defaul-tab"}`}
+                                    onClick={(e) => this.setCurrentStep(e, 0)}
+                                    style={{ cursor: "pointer" }}
                                 >
-                                    <legend className="scheduler-border">
-                                        Thông tin chung
-                                    </legend>
-                                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                        <div className="form-group">
-                                            <label>
-                                                Khách hàng
-                                                <span className="attention">
-                                                    {" "}
-                                                    *{" "}
-                                                </span>
-                                            </label>
-                                            <SelectBox
-                                                id={`select-customer-code-quote`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                value={customerCode}
-                                                items={[
-                                                    {
-                                                        value: "NVA_1875",
-                                                        text: "NVA_1875",
-                                                    },
-                                                    {
-                                                        value: "NVB_1789",
-                                                        text: "NVB_1789",
-                                                    },
-                                                ]}
-                                                onChange={
-                                                    this.handleCustomerChange
-                                                }
-                                                multiple={false}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-                                        <div className="form-group">
-                                            <label>
-                                                Tên khách hàng{" "}
-                                                <span className="attention">
-                                                    {" "}
-                                                </span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={customerName}
-                                                disabled={true}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <div className="form-group">
-                                            <label>
-                                                Địa chỉ
-                                                <span className="attention">
-                                                    {" "}
-                                                </span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={customerAddress}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                        <div className="form-group">
-                                            <label>
-                                                Số điện thoại
-                                                <span className="attention">
-                                                    {" "}
-                                                    *{" "}
-                                                </span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={customerPhone}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-                                        <div className="form-group">
-                                            <label>
-                                                Người liên hệ{" "}
-                                                <span className="attention">
-                                                    {" "}
-                                                </span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={customerEmployee}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <div className="form-group">
-                                            <label>
-                                                Ghi chú
-                                                <span className="attention">
-                                                    {" "}
-                                                </span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={note}
-                                            />
-                                        </div>
-                                    </div>
-                                </fieldset>
-                            </div>
-                            <div
-                                className="col-xs-12 col-sm-4 col-md-4 col-lg-4"
-                                style={{ padding: 10, height: "100%" }}
-                            >
-                                <fieldset
-                                    className="scheduler-border"
-                                    style={{ borderRadius: "4px" }}
+                                    <span>Thông tin chung</span>
+                                </a>
+                            </li>
+                            <li key="2">
+                                <a
+                                    className={`${step >= 1 ? "quote-active-tab" : "quote-defaul-tab"} 
+                                    ${enableStepOne ? "" : "disable-onclick-prevent"}`}
+                                    onClick={(e) => this.setCurrentStep(e, 1)}
+                                    style={{ cursor: "pointer" }}
                                 >
-                                    <legend className="scheduler-border">
-                                        Đơn hàng
-                                    </legend>
-                                    <div className="form-group">
-                                        <label>
-                                            Mã đơn
-                                            <span className="attention">
-                                                {" "}
-                                                *{" "}
-                                            </span>
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            value={"QUOTE_3593"}
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Dự kiến giao hàng ngày</label>
-                                        <DatePicker
-                                            id="incident_after"
-                                            // dateFormat={dateFormat}
-                                            // value={startValue}
-                                            onChange={this.handleChangeDate}
-                                            disabled={false}
-                                        />
-                                    </div>
-
-                                    <div className="form-group">
-                                        <label>Hạn chót giao hàng</label>
-                                        <DatePicker
-                                            id="incident_after"
-                                            // dateFormat={dateFormat}
-                                            // value={startValue}
-                                            onChange={this.handleChangeDate}
-                                            disabled={false}
-                                        />
-                                    </div>
-
-                                    <div className="form-group">
-                                        <label>
-                                            Nhân viên bán hàng
-                                            <span className="attention">
-                                                {" "}
-                                                *{" "}
-                                            </span>
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            value={"Phạm Đại Tài"}
-                                            disabled={true}
-                                        />
-                                    </div>
-                                </fieldset>
-                            </div>
-
-                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <fieldset
-                                    className="scheduler-border"
-                                    style={{ padding: 10 }}
+                                    <span>Chọn sản phẩm</span>
+                                </a>
+                            </li>
+                            <li key="3">
+                                <a
+                                    className={`${step >= 2 ? "quote-active-tab" : "quote-defaul-tab"} 
+                                    ${enableStepOne && enableStepTwo ? "" : "disable-onclick-prevent"}`}
+                                    onClick={(e) => this.setCurrentStep(e, 2)}
+                                    style={{ cursor: "pointer" }}
                                 >
-                                    <legend className="scheduler-border">
-                                        Các mặt hàng
-                                    </legend>
-                                    <div
-                                        className="col-xs-12 col-sm-4 col-md-4 col-lg-4"
-                                        style={{ padding: 10, height: "100%" }}
-                                    >
-                                        <div className="form-group">
-                                            <label>
-                                                Mã sản phẩm
-                                                <span className="attention">
-                                                    {" "}
-                                                    *{" "}
-                                                </span>
-                                            </label>
-                                            <SelectBox
-                                                id={`select-good-code-quote`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                value={goodCode}
-                                                items={[
-                                                    {
-                                                        value: "SP_0943",
-                                                        text: "SP_0943",
-                                                    },
-                                                    {
-                                                        value: "SP_0349",
-                                                        text: "SP_0349",
-                                                    },
-                                                    {
-                                                        value: "SP_0344",
-                                                        text: "SP_0344",
-                                                    },
-                                                ]}
-                                                onChange={
-                                                    this.handleGoodCodeChange
-                                                }
-                                                multiple={false}
-                                            />
-                                        </div>
-
-                                        <div className="form-group">
-                                            <label>
-                                                Tên sản phẩm
-                                                <span className="attention">
-                                                    {" "}
-                                                    *{" "}
-                                                </span>
-                                            </label>
-                                            <SelectBox
-                                                id={`select-good-name-quote`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                value={goodName}
-                                                items={[
-                                                    {
-                                                        value: "Thuốc gà rù",
-                                                        text: "Thuốc gà rù",
-                                                    },
-                                                    {
-                                                        value: "Thuốc trị ghẻ",
-                                                        text: "Thuốc trị ghẻ",
-                                                    },
-                                                    {
-                                                        value:
-                                                            "Kháng sinh bê con",
-                                                        text:
-                                                            "Kháng sinh bê con",
-                                                    },
-                                                ]}
-                                                // onChange={this.handleGoodCodeChange}
-                                                multiple={false}
-                                            />
-                                        </div>
-
-                                        <div className="form-group">
-                                            <label>
-                                                Đơn vị tính
-                                                <span className="attention">
-                                                    {" "}
-                                                    *{" "}
-                                                </span>
-                                            </label>
-                                            <SelectBox
-                                                id={`select-good-name-quote`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                value={baseUnit}
-                                                items={[
-                                                    {
-                                                        value: "Gói",
-                                                        text: "Gói",
-                                                    },
-                                                    {
-                                                        value: "Hộp",
-                                                        text: "Hộp",
-                                                    },
-                                                    {
-                                                        value: "Thùng",
-                                                        text: "Thùng",
-                                                    },
-                                                ]}
-                                                // onChange={this.handleGoodCodeChange}
-                                                multiple={false}
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label>
-                                                Giá
-                                                <span className="attention">
-                                                    {" "}
-                                                    *{" "}
-                                                </span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={goodPrice}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div
-                                        className="col-xs-12 col-sm-4 col-md-4 col-lg-4"
-                                        style={{ padding: 10, height: "100%" }}
-                                    >
-                                        <div className="form-group">
-                                            <label>
-                                                Số lượng còn trong kho
-                                                <span className="attention">
-                                                    {" "}
-                                                    *{" "}
-                                                </span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={"30 " + baseUnit}
-                                                disabled={true}
-                                            />
-                                        </div>
-
-                                        <div className="form-group">
-                                            <label>
-                                                Số lượng
-                                                <span className="attention">
-                                                    {" "}
-                                                    *{" "}
-                                                </span>
-                                            </label>
-                                            <input
-                                                type="number"
-                                                className="form-control"
-                                            />
-                                        </div>
-
-                                        <div className="form-group">
-                                            <label>
-                                                Thành tiền
-                                                <span className="attention">
-                                                    {" "}
-                                                    *{" "}
-                                                </span>
-                                            </label>
-                                            <input
-                                                type="number"
-                                                className="form-control"
-                                                value={`2,500,000 vnđ`}
-                                            />
-                                        </div>
-
-                                        <div className="form-group">
-                                            <label>
-                                                Thuế{" "}
-                                                <span className="attention">
-                                                    {" "}
-                                                    *{" "}
-                                                </span>
-                                            </label>
-                                            <SelectBox
-                                                id={`select-good-name-quote`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                value={goodName}
-                                                items={[
-                                                    {
-                                                        value: "Thuế VAT : 10%",
-                                                        text: "Thuế VAT : 10%",
-                                                    },
-                                                ]}
-                                                // onChange={this.handleGoodCodeChange}
-                                                multiple={false}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div
-                                        className="col-xs-12 col-sm-4 col-md-4 col-lg-4"
-                                        style={{ padding: 10, height: "100%" }}
-                                    >
-                                        <div className="form-group">
-                                            <label>
-                                                Khuyến mãi{" "}
-                                                <span className="attention">
-                                                    {" "}
-                                                    *{" "}
-                                                </span>
-                                            </label>
-                                            <SelectBox
-                                                id={`select-good-name-quote`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                value={goodName}
-                                                items={[
-                                                    {
-                                                        value:
-                                                            "Mua 1000 sản phẩm được tặng 10 sản phẩm",
-                                                        text:
-                                                            "Mua 1000 sản phẩm được tặng 10 sản phẩm",
-                                                    },
-                                                ]}
-                                                // onChange={this.handleGoodCodeChange}
-                                                multiple={false}
-                                            />
-                                        </div>
-
-                                        <div className="form-group">
-                                            <label>
-                                                Tổng tiền
-                                                <span className="attention">
-                                                    {" "}
-                                                    *{" "}
-                                                </span>
-                                            </label>
-                                            <input
-                                                type="number"
-                                                className="form-control"
-                                                value={`6,500,000 vnđ`}
-                                                disabled={true}
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label>
-                                                Cam kế chất lượng
-                                                <span className="attention">
-                                                    {" "}
-                                                    *{" "}
-                                                </span>
-                                            </label>
-                                            <SelectBox
-                                                id={`select-good-name-quote`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                value={goodName}
-                                                items={[
-                                                    {
-                                                        value: "Cam kết 1",
-                                                        text: "Cam kết 1",
-                                                    },
-                                                    {
-                                                        value: "Cam kết 2",
-                                                        text: "Cam kết 2",
-                                                    },
-                                                ]}
-                                                // onChange={this.handleGoodCodeChange}
-                                                multiple={false}
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label>
-                                                Ghi chú
-                                                <span className="attention">
-                                                    {" "}
-                                                    *{" "}
-                                                </span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={``}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <div
-                                            className={"pull-right"}
-                                            style={{ padding: 10 }}
-                                        >
-                                            <button
-                                                className="btn btn-success"
-                                                style={{ marginLeft: "10px" }}
-                                                disabled={
-                                                    !this.isGoodsValidated()
-                                                }
-                                                onClick={this.handleAddGood}
-                                            >
-                                                Thêm mới
-                                            </button>
-                                            <button
-                                                className="btn btn-primary"
-                                                style={{ marginLeft: "10px" }}
-                                                onClick={this.handleClearGood}
-                                            >
-                                                Xóa trắng
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    {/* Hiển thị bảng */}
-                                    <table className="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th title={"STT"}>STT</th>
-                                                <th title={"Mã sản phẩm"}>
-                                                    Mã sản phẩm
-                                                </th>
-                                                <th title={"Tên sản phẩm"}>
-                                                    Tên sản phẩm
-                                                </th>
-                                                <th title={"Đơn vị tính"}>
-                                                    Đ/v tính
-                                                </th>
-                                                <th title={"Giá"}>Giá (vnđ)</th>
-                                                <th title={"Số lượng"}>
-                                                    Số lượng
-                                                </th>
-                                                <th title={"Thành tiền"}>
-                                                    Thành tiền
-                                                </th>
-                                                <th title={"Khuyến mãi"}>
-                                                    Khuyến mãi
-                                                </th>
-                                                <th title={"Thuế"}>Thuế</th>
-                                                <th title={"Tổng tiền"}>
-                                                    Tổng tiền
-                                                </th>
-                                                <th
-                                                    title={"Cam kết chất lượng"}
-                                                >
-                                                    Cam kết chất lượng
-                                                </th>
-                                                <th title={"Ghi chú"}>
-                                                    Ghi chú
-                                                </th>
-                                                <th title={"Hành động"}>
-                                                    Hành động
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id={`good-edit-manage-by-stock`}>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>SP_0395</td>
-                                                <td>Thuốc úm gà</td>
-                                                <td>Hộp</td>
-                                                <td>350,000</td>
-                                                <td>10</td>
-                                                <td>3,500,000</td>
-                                                <td>0 vnđ</td>
-                                                <td>350,000 vnđ (10%)</td>
-                                                <td>3,850,000 vnđ</td>
-                                                <td>
-                                                    <div
-                                                        style={{
-                                                            display: "flex",
-                                                        }}
-                                                    >
-                                                        <a
-                                                            style={{
-                                                                cursor:
-                                                                    "pointer",
-                                                            }}
-                                                            data-toggle="modal"
-                                                            data-backdrop="static"
-                                                            href={
-                                                                "#modal-create-sales-order-sla"
-                                                            }
-                                                        >
-                                                            Chi tiết
-                                                            <i className="fa fa-arrow-circle-right"></i>
-                                                        </a>
-                                                    </div>
-                                                </td>
-                                                <td></td>
-                                                <td>
-                                                    <a className="edit text-yellow">
-                                                        <i className="material-icons">
-                                                            edit
-                                                        </i>
-                                                    </a>
-                                                    <a className="edit text-red">
-                                                        <i className="material-icons">
-                                                            delete
-                                                        </i>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td
-                                                    colSpan={7}
-                                                    style={{ fontWeight: 600 }}
-                                                >
-                                                    <center>Tổng</center>
-                                                </td>
-                                                <td style={{ fontWeight: 600 }}>
-                                                    0 (vnđ)
-                                                </td>
-                                                <td style={{ fontWeight: 600 }}>
-                                                    400,000 (vnđ)
-                                                </td>
-                                                <td style={{ fontWeight: 600 }}>
-                                                    4,400,000 (vnđ)
-                                                </td>
-                                                <td colSpan={3}></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </fieldset>
+                                    <span>Chốt đơn</span>
+                                </a>
+                            </li>
+                        </ul>
+                        {foreignCurrency.ratio && foreignCurrency.symbol ? (
+                            <div className="form-group select-currency">
+                                <SelectBox
+                                    id={`select-sales-order-currency-${foreignCurrency.symbol.replace(" ")}`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={currency.type}
+                                    items={[
+                                        { text: "vnđ", value: "standard" },
+                                        { text: `${foreignCurrency.symbol}`, value: "foreign" },
+                                    ]}
+                                    onChange={this.handleChangeCurrency}
+                                    multiple={false}
+                                />
                             </div>
+                        ) : (
+                            ""
+                        )}
+                    </div>
+                    <SlasOfGoodDetail currentSlasOfGood={currentSlasOfGood} />
+                    <DiscountOfGoodDetail currentDiscounts={currentDiscountsOfGood} />
+                    <form id={`form-add-sales-order`}>
+                        <div className="row row-equal-height" style={{ marginTop: 0 }}>
+                            {step === 0 && (
+                                <SalesOrderCreateInfo
+                                    //state
+                                    code={code}
+                                    note={note}
+                                    customer={customer}
+                                    customerName={customerName}
+                                    customerAddress={customerAddress}
+                                    customerPhone={customerPhone}
+                                    customerRepresent={customerRepresent}
+                                    customerTaxNumber={customerTaxNumber}
+                                    customerEmail={customerEmail}
+                                    priority={priority}
+                                    isUseForeignCurrency={isUseForeignCurrency}
+                                    foreignCurrency={foreignCurrency}
+                                    //handle
+                                    handleCustomerChange={this.handleCustomerChange}
+                                    handleCustomerAddressChange={this.handleCustomerAddressChange}
+                                    handleCustomerEmailChange={this.handleCustomerEmailChange}
+                                    handleCustomerPhoneChange={this.handleCustomerPhoneChange}
+                                    handleCustomerRepresentChange={this.handleCustomerRepresentChange}
+                                    handleNoteChange={this.handleNoteChange}
+                                    handleUseForeignCurrencyChange={this.handleUseForeignCurrencyChange}
+                                    handleRatioOfCurrencyChange={this.handleRatioOfCurrencyChange}
+                                    handleSymbolOfForreignCurrencyChange={this.handleSymbolOfForreignCurrencyChange}
+                                    handlePriorityChange={this.handlePriorityChange}
+                                    //Error Status
+                                    customerError={customerError}
+                                    customerEmailError={customerEmailError}
+                                    customerPhoneError={customerPhoneError}
+                                    customerAddressError={customerAddressError}
+                                    priorityError={priorityError}
+                                />
+                            )}
+                            {step === 1 && (
+                                <SalesOrderCreateGood
+                                    listGoods={goods}
+                                    setGoods={this.setGoods}
+                                    isUseForeignCurrency={isUseForeignCurrency}
+                                    foreignCurrency={foreignCurrency}
+                                    standardCurrency={standardCurrency}
+                                    currency={currency}
+                                    setCurrentSlasOfGood={(data) => {
+                                        this.setCurrentSlasOfGood(data);
+                                    }}
+                                    setCurrentDiscountsOfGood={(data) => {
+                                        this.setCurrentDiscountsOfGood(data);
+                                    }}
+                                />
+                            )}
+                            {step === 2 && (
+                                <SalesOrderCreatePayment
+                                    paymentAmount={paymentAmount}
+                                    listGoods={goods}
+                                    customer={customer}
+                                    customerPhone={customerPhone}
+                                    customerAddress={customerAddress}
+                                    customerName={customerName}
+                                    customerRepresent={customerRepresent}
+                                    customerTaxNumber={customerTaxNumber}
+                                    customerEmail={customerEmail}
+                                    priority={priority}
+                                    code={code}
+                                    shippingFee={shippingFee}
+                                    deliveryTime={deliveryTime}
+                                    coin={coin}
+                                    note={note}
+                                    discountsOfOrderValue={discountsOfOrderValue}
+                                    discountsOfOrderValueChecked={discountsOfOrderValueChecked}
+                                    enableFormSubmit={enableFormSubmit}
+                                    handleDiscountsOfOrderValueChange={(data) => this.handleDiscountsOfOrderValueChange(data)}
+                                    setDiscountsOfOrderValueChecked={(checked) => this.setDiscountsOfOrderValueChecked(checked)}
+                                    handleShippingFeeChange={this.handleShippingFeeChange}
+                                    handleDeliveryTimeChange={this.handleDeliveryTimeChange}
+                                    handleCoinChange={this.handleCoinChange}
+                                    setCurrentSlasOfGood={(data) => {
+                                        this.setCurrentSlasOfGood(data);
+                                    }}
+                                    setCurrentDiscountsOfGood={(data) => {
+                                        this.setCurrentDiscountsOfGood(data);
+                                    }}
+                                    setPaymentAmount={(data) => this.setPaymentAmount(data)}
+                                    saveSalesOrder={this.save}
+                                />
+                            )}
                         </div>
                     </form>
                 </DialogModal>
@@ -812,4 +721,14 @@ class SalesOrderCreateForm extends Component {
     }
 }
 
-export default SalesOrderCreateForm;
+function mapStateToProps(state) {
+    const { customers } = state.crm;
+    return { customers };
+}
+
+const mapDispatchToProps = {
+    getCustomers: CrmCustomerActions.getCustomers,
+    createNewSalesOrder: SalesOrderActions.createNewSalesOrder,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(SalesOrderCreateForm));

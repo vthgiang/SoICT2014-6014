@@ -7,8 +7,8 @@ const {
     Component,
     Role,
     Privilege,
-} = require(`${SERVER_MODELS_DIR}`);
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+} = require(`../../../models`);
+const { connect } = require(`../../../helpers/dbHelper`);
 
 exports.getAllSystemComponents = async (query) => {
     let page = query.page;

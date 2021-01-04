@@ -1,5 +1,5 @@
 const BillService = require('./bill.service');
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../../../logs`);
 
 exports.getBillsByType = async (req, res) => {
     try {

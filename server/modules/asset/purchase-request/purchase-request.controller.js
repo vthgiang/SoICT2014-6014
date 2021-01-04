@@ -1,5 +1,5 @@
 const RecommendProcureService = require('./purchase-request.service');
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../../logs`);
 
 /**
  * Lấy danh sách phiếu đề nghị mua sắm thiết bị

@@ -320,6 +320,10 @@ class ModalEditTaskByAccountableEmployee extends Component {
         return msg;
     }
 
+    handleChangeListInfo = async (data) => {
+        await this.setState({ listInfo: data })
+    }
+
     changeActiveEmployees = async (listInactive) => {
         let inactiveEmployees = [];
         for (let i in listInactive) {
@@ -946,6 +950,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
             }
         }
         let data = {
+            listInfo: this.state.listInfo,
+
             name: this.state.taskName,
             description: this.state.taskDescription,
             status: this.state.statusOptions,
@@ -977,8 +983,10 @@ class ModalEditTaskByAccountableEmployee extends Component {
     formatPriority = (data) => {
         const { translate } = this.props;
         if (data === 1) return translate('task.task_management.low');
-        if (data === 2) return translate('task.task_management.normal');
-        if (data === 3) return translate('task.task_management.high');
+        if (data === 2) return translate('task.task_management.average');
+        if (data === 3) return translate('task.task_management.standard');
+        if (data === 4) return translate('task.task_management.high');
+        if (data === 5) return translate('task.task_management.urgent');
     }
 
     formatRole = (data) => {
@@ -1039,8 +1047,10 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
         let priorityArr = [
             { value: 1, text: translate('task.task_management.low') },
-            { value: 2, text: translate('task.task_management.normal') },
-            { value: 3, text: translate('task.task_management.high') }
+            { value: 2, text: translate('task.task_management.average') },
+            { value: 3, text: translate('task.task_management.standard') },
+            { value: 4, text: translate('task.task_management.high') },
+            { value: 5, text: translate('task.task_management.urgent') },
         ];
         let statusArr = [
             { value: "inprocess", text: translate('task.task_management.inprocess') },
@@ -1227,6 +1237,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                 handleSetOfValueChange={this.handleSetOfValueChange}
                                 handleChangeNumberInfo={this.handleChangeNumberInfo}
                                 handleChangeTextInfo={this.handleChangeTextInfo}
+                                handleChangeListInfo={this.handleChangeListInfo}
 
                                 role={role}
                                 perform={perform}

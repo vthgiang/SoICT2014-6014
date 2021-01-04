@@ -1,5 +1,5 @@
 const ModuleConfigurationService = require('./moduleConfiguration.service');
-const Log = require(`${SERVER_LOGS_DIR}`);
+const Log = require(`../../../logs`);
 
 
 // Lấy thông tin cấu hình module quản lý nhân sự

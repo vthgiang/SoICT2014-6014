@@ -1,10 +1,10 @@
 const {
     Example
-} = require(`${SERVER_MODELS_DIR}`);
+} = require('../../models');
 
 const {
     connect
-} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+} = require(`../../helpers/dbHelper`);
 
 // Tạo mới mảng Ví dụ
 exports.createExample = async (data, portal) => {

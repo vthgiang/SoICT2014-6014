@@ -10,6 +10,21 @@ import { GeneralTab, ContactTab, TaxTab, InsurranceTab, DisciplineTab, Experienc
 import { EmployeeManagerActions } from '../redux/actions';
 import FamilyMemberTab from '../../employee-create/components/familyMemberTab';
 
+const initMember = {
+    name: '',
+    codeSocialInsurance: '',
+    bookNumberSocialInsurance: '',
+    gender: 'male',
+    isHeadHousehold: 'no',
+    relationshipWithHeadHousehold: '',
+    cnss: '',
+    birth: '',
+    placeOfBirthCertificate: '',
+    nationality: '',
+    nation: '',
+    numberPassport: '',
+    note: ''
+}
 class EmployeeCreateForm extends Component {
     constructor(props) {
         super(props);
@@ -38,6 +53,19 @@ class EmployeeCreateForm extends Component {
             annualLeaves: [],
             major: [],
             career: [],
+            houseHold: {
+                headHouseHoldName: '',
+                documentType: '',
+                houseHoldNumber: '',
+                city: '',
+                district: '',
+                ward: '',
+                houseHoldAddress: '',
+                phone: '',
+                houseHoldCode: '',
+                familyMembers: []
+            },
+            editMember: initMember
         };
         this.handleChangeCourse = this.handleChangeCourse.bind(this);
     }
@@ -280,7 +308,7 @@ class EmployeeCreateForm extends Component {
     /** Function thêm mới thông tin nhân viên */
     save = async () => {
         let { employee, degrees, certificates, contracts, files, avatar,
-            disciplines, commendations, annualLeaves, courses, major, career } = this.state;
+            disciplines, commendations, annualLeaves, courses, major, career, houseHold } = this.state;
 
         await this.setState({
             employee: {
@@ -294,7 +322,8 @@ class EmployeeCreateForm extends Component {
                 annualLeaves,
                 courses,
                 career,
-                major
+                major,
+                houseHold
             }
         })
 
@@ -321,10 +350,132 @@ class EmployeeCreateForm extends Component {
 
         this.props.addNewEmployee(formData);
     }
+
+    _fm_saveMember = (data) => {
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                familyMembers: [...this.state.houseHold.familyMembers, data]
+            }
+        })
+    }
+
+    _fm_handleHeadHouseHoldName = (e) => {
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                houseHoldName: e.target.value
+            }
+        });
+    }
+
+    _fm_handleDocumentType = (e) => {
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                documentType: e.target.value
+            }
+        });
+    }
+
+    _fm_handleHouseHoldNumber = (e) => {
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                houseHoldNumber: e.target.value
+            }
+        })
+    }
+
+    _fm_handleCity = (e) => {
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                city: e.target.value
+            }
+        })
+    }
+
+    _fm_handleDistrict = (e) => {
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                district: e.target.value
+            }
+        });
+    }
+
+    _fm_handleWard = (e) => {
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                ward: e.target.value
+            }
+        });
+    }
+
+    _fm_handleHouseHoldAddress = (e) => {
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                houseHoldAddress: e.target.value
+            }
+        })
+    }
+
+    _fm_handlePhone = (e) => {
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                phone: e.target.value
+            }
+        });
+    }
+
+    _fm_handleHouseHoldCode = (e) => {
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                houseHoldCode: e.target.value
+            }
+        });
+    }
+
+    _fm_openEditFamilyMemberModal = (index) => {
+        this.setState({
+            editMember: {
+                index,
+                ...this.state.houseHold.familyMembers[index]
+            }
+        });
+        window.$('#modal-edit-member-c').modal({ backdrop: 'static', display: 'show' });
+    }
+
+    _fm_editMember = (index, data) => {
+        let familyMembers = this.state.houseHold.familyMembers;
+        familyMembers[index] = data;
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                familyMembers
+            }
+        })
+    }
+
+    _fm_deleteMember = (index) => {
+        let familyMembers = this.state.houseHold.familyMembers;
+        familyMembers = familyMembers.filter((node, i) => i !== index);
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                familyMembers
+            }
+        })
+    }
+
     render() {
         const { translate, employeesManager } = this.props;
-
-        const { img, employee, degrees, certificates, contracts, courses, commendations, disciplines, annualLeaves, files, major, career } = this.state;
+        const { img, employee, degrees, certificates, contracts, courses, commendations, disciplines, annualLeaves, files, major, career, editMember } = this.state;
 
         return (
             <React.Fragment>
@@ -478,6 +629,22 @@ class EmployeeCreateForm extends Component {
                             {/* Tab thành viên hộ gia đình */}
                             <FamilyMemberTab
                                 id="family_member"
+                                tabEditMember="modal-edit-member-c"
+                                editMember={editMember}
+                                _fm_openEditFamilyMemberModal={this._fm_openEditFamilyMemberModal}
+                                _fm_editMember={this._fm_editMember}
+                                _fm_deleteMember={this._fm_deleteMember}
+                                houseHold={this.state.houseHold}
+                                _fm_handleHeadHouseHoldName={this._fm_handleHeadHouseHoldName}
+                                _fm_handleDocumentType={this._fm_handleDocumentType}
+                                _fm_handleHouseHoldNumber={this._fm_handleHouseHoldNumber}
+                                _fm_handleCity={this._fm_handleCity}
+                                _fm_handleDistrict={this._fm_handleDistrict}
+                                _fm_handleWard={this._fm_handleWard}
+                                _fm_handleHouseHoldAddress={this._fm_handleHouseHoldAddress}
+                                _fm_handlePhone={this._fm_handlePhone}
+                                _fm_handleHouseHoldCode={this._fm_handleHouseHoldCode}
+                                _fm_saveMember={this._fm_saveMember}
                             />
                         </div>
                     </div>

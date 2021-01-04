@@ -386,7 +386,7 @@ class PurchaseRequestEditForm extends Component {
 
                                 <div className="form-group">
                                     <label>{translate('human_resource.profile.attached_files')}</label>
-                                    <UploadFile multiple={true} onChange={this.handleChangeFile} files={files} sendDataAfterDelete={true} />
+                                    < UploadFile multiple={true} onChange={this.handleChangeFile} files={files} sendDataAfterDelete={true} />
                                 </div>
                             </div>
                         </div>

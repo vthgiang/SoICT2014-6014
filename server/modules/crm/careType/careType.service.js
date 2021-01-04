@@ -1,5 +1,5 @@
-const { CareType } = require(`${SERVER_MODELS_DIR}`);
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { CareType } = require('../../../models');
+const { connect } = require(`../../../helpers/dbHelper`);
 
 
 exports.getCareTypes = async (portal, companyId, query) => {

@@ -8,7 +8,7 @@ class DetailOfTaskDialogModal extends Component {
 
     constructor(props) {
         super(props);
-        
+
         this.state = {
 
         }
@@ -31,8 +31,10 @@ class DetailOfTaskDialogModal extends Component {
     formatPriority = (data) => {
         const { translate } = this.props;
         if (data === 1) return translate('task.task_management.low');
-        if (data === 2) return translate('task.task_management.normal');
-        if (data === 3) return translate('task.task_management.high');
+        if (data === 2) return translate('task.task_management.average');
+        if (data === 3) return translate('task.task_management.standard');
+        if (data === 4) return translate('task.task_management.high');
+        if (data === 5) return translate('task.task_management.urgent');
     }
 
     formatStatus = (data) => {
@@ -51,7 +53,7 @@ class DetailOfTaskDialogModal extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-task-detail" 
+                    modalID="modal-task-detail"
                     title="Chi tiết công việc"
                     size="75"
                     hasNote={false}
@@ -73,7 +75,7 @@ class DetailOfTaskDialogModal extends Component {
                         <tbody>
                             {
                                 listTask && listTask.length !== 0 ?
-                                    listTask.map((task, index) => 
+                                    listTask.map((task, index) =>
                                         <tr key={task._id}>
                                             <td>{index + 1}</td>
                                             <td title={task.name}>
@@ -91,7 +93,7 @@ class DetailOfTaskDialogModal extends Component {
                                     </tr>
                             }
                         </tbody>
-                    </table> 
+                    </table>
                 </DialogModal>
             </React.Fragment>
         )
@@ -100,7 +102,7 @@ class DetailOfTaskDialogModal extends Component {
 
 function mapState(state) {
     const { } = state;
-    return { };
+    return {};
 }
 
 const actions = {

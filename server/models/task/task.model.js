@@ -135,7 +135,9 @@ const TaskSchema = new Schema(
             type: Date,
         },
         priority: {
-            // 1: Thấp, 2: Trung Bình, 3: Cao
+            //
+            // 1: Thấp, 2: Trung Bình, 3: Tiêu chuẩn, 4: Cao, 5: Khẩn cấp
+            // Low, Average, Standard, High, Urgent
             type: Number,
         },
         isArchived: {

@@ -8,7 +8,7 @@ import { RoleActions } from '../../../../super-admin/role/redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import DocumentInformation from '../../user/documents/documentInformation';
 import { DocumentActions } from '../../../redux/actions';
-
+import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { getStorage } from "../../../../../config";
 import CreateForm from './createForm';
 import EditForm from './editForm';
@@ -55,6 +55,7 @@ class Table extends Component {
         this.props.getDocumentDomains();
         this.props.getDocumentArchive();
         this.props.getDocumentCategories();
+        this.props.getAllUser();
     }
 
     toggleEditDocument = async (data) => {
@@ -484,6 +485,7 @@ class Table extends Component {
             list = docs.paginate;
         }
         let exportData = list ? this.convertDataToExportData(list) : "";
+        console.log("propppsss", currentRow);
         return (
             <div className="qlcv">
                 <CreateForm />
@@ -499,12 +501,12 @@ class Table extends Component {
                         docs={currentRow}
                     />
                 }
-                {/* {
+                {
                     currentFile &&
                     <FilePreview
                         file={currentFile}
                     />
-                } */}
+                }
                 {
                     currentRow &&
                     <EditForm
@@ -523,7 +525,7 @@ class Table extends Component {
                         documentRelationshipDocuments={currentRow.relationshipDocuments ? currentRow.relationshipDocuments : []}
 
                         documentRoles={currentRow.roles}
-
+                        documentUserCanView={currentRow.userCanView}
                         documentArchivedRecordPlaceInfo={currentRow.archivedRecordPlaceInfo}
                         organizationUnit={currentRow.archivedRecordPlaceOrganizationalUnit ? currentRow.archivedRecordPlaceOrganizationalUnit._id : ""}
                         documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
@@ -683,7 +685,7 @@ class Table extends Component {
                                             <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u>
                                         </a>
                                         {/* <a href="#" onClick={() => this.showFilePreview(doc.versions.length && doc.versions[doc.versions.length - 1].file)}>
-                                            <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u>
+                                            <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file ? "Xem trước" : ""}</u>
                                         </a> */}
                                     </td>
                                     <td>
@@ -739,6 +741,7 @@ const mapDispatchToProps = {
     getDocumentDomains: DocumentActions.getDocumentDomains,
     getDocumentCategories: DocumentActions.getDocumentCategories,
     getDocumentArchive: DocumentActions.getDocumentArchive,
+    getAllUser: UserActions.get,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(Table));

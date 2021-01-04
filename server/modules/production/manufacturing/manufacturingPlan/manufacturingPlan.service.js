@@ -1,11 +1,11 @@
 const moment = require('moment');
 const {
     ManufacturingPlan, OrganizationalUnit, ManufacturingWorks, ManufacturingCommand, ManufacturingOrder, SalesOrder
-} = require(`${SERVER_MODELS_DIR}`);
+} = require(`../../../../models`);
 
 const {
     connect
-} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+} = require(`../../../../helpers/dbHelper`);
 
 const UserService = require('../../../super-admin/user/user.service');
 
@@ -29,7 +29,7 @@ function getArrayTimeFromString(stringDate) {
 function checkProgressManufacturingCommand(arrayCommands) {
     let date = new Date(moment().subtract(1, "days"));
     for (let i = 0; i < arrayCommands.length; i++) {
-        if ((arrayCommands[i].status == 2 && arrayCommands[i].startDate < date)
+        if ((arrayCommands[i].status == 1 || arrayCommands[i].status == 2) && (arrayCommands[i].startDate < date)
             || (arrayCommands[i].status == 3 && arrayCommands[i].endDate < date)
         ) {
             return true;
@@ -43,14 +43,19 @@ function checkProgressManufacturingCommand(arrayCommands) {
 function filterPlansWithProgress(arrayPlans, progress) {
     let date = new Date(moment().subtract(1, "days"));
     if (progress == 3) {// Qúa hạn
-        console.log(arrayPlans);
         arrayPlans = arrayPlans.filter(x => {
-            return (x.status == 2 || x.status == 3) && (x.endDate < date);
+            return (x.status == 1 || x.status == 2 || x.status == 3) && (x.endDate < date);
         });
     }
-    else if (progress == 2) {// Trễ tiến độ khi có 1 command bị quá hạn
-        // Command ở trạng thái đã duyệt status = 2 và startDate < now;
+    else if (progress == 2) {// có now  < enddate
+        // Trễ tiến độ khi status = 1 || status = 2 start date < now
+        // hoặc status = 2 || status = 3 và có 1 command bị quá hạn
+        // Command quá hạn ở trạng thái chờ duyệt hoặc đã duyệt status = 1 || status = 2 và startDate < now;
         // Hoặc command ở trạng thái đang thực hiện status = 3 và endDate < now
+        arrayPlans = arrayPlans.filter(x => date < x.endDate);
+        arrayPlans = arrayPlans.filter(x => {
+            return (x.status == 1 || x.status == 2) && (x.startDate < date)
+        });
         arrayPlans = arrayPlans.filter(x => checkProgressManufacturingCommand(x.manufacturingCommands))
     } else if (progress == 1) {
         // Lấy ra những kế hoạch quá hạn và chậm tiến độ

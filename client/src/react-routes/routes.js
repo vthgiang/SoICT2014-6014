@@ -123,15 +123,12 @@ import GeneralConfiguration from "../modules/crm/generalConfiguration/components
 //orders
 import PurchaseOrder from "../modules/production/order/purchase-order/components";
 import SalesOrder from "../modules/production/order/sales-order/components";
-import ManufacturingOrder from "../modules/production/order/manufacturing-order/components";
-import ManufacturingOrderDashboard from "../modules/production/order/manufacturing-order-dashboard/components";
 import Discount from "../modules/production/order/discount/components";
 import Quote from "../modules/production/order/quote/components";
 import SalesOrderDashboard from "../modules/production/order/sales-order-dashboard/components";
 import Tax from "../modules/production/order/tax/components";
 import ServiceLevelAgreement from "../modules/production/order/service-level-agreement/components";
 import BusinessDepartment from "../modules/production/order/business-department/components";
-import AdminDepartment from "../modules/production/order/admin-department/components";
 
 // plans
 import PlanManagement from "../modules/plan/components";
@@ -1911,7 +1908,7 @@ class Routes extends Component {
                     {/* Orders Management */}
 
                     <PrivateRoute
-                        isLoading={this.props.salesOrder.isLoading}
+                        isLoading={this.props.salesOrders.isLoading}
                         key={"/manage-sales-order"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1928,26 +1925,6 @@ class Routes extends Component {
                         pageName={"manage_sales_order"}
                         layout={Layout}
                         component={SalesOrder}
-                    />
-
-                    <PrivateRoute
-                        isLoading={false}
-                        key={"/manage-manufacturing-order"}
-                        arrPage={[
-                            { link: "/", name: "home", icon: "fa fa-home" },
-                            {
-                                link: "/manage-manufacturing-order",
-                                name: "manage_manufacturing_order",
-                                icon: "fa fa-address-card",
-                            },
-                        ]}
-                        auth={auth}
-                        exact={true}
-                        link={"/manage-manufacturing-order"}
-                        path={"/manage-manufacturing-order"}
-                        pageName={"manage_manufacturing_order"}
-                        layout={Layout}
-                        component={ManufacturingOrder}
                     />
 
                     <PrivateRoute
@@ -2008,26 +1985,6 @@ class Routes extends Component {
                         pageName={"manage_sales_order_dashboard"}
                         layout={Layout}
                         component={SalesOrderDashboard}
-                    />
-
-                    <PrivateRoute
-                        isLoading={false}
-                        key={"/manage-manufacturing-order-dashboard"}
-                        arrPage={[
-                            { link: "/", name: "home", icon: "fa fa-home" },
-                            {
-                                link: "/manage-manufacturing-order-dashboard",
-                                name: "manage_manufacturing_order_dashboard",
-                                icon: "fa fa-address-card",
-                            },
-                        ]}
-                        auth={auth}
-                        exact={true}
-                        link={"/manage-manufacturing-order-dashboard"}
-                        path={"/manage-manufacturing-order-dashboard"}
-                        pageName={"manage_manufacturing_order_dashboard"}
-                        layout={Layout}
-                        component={ManufacturingOrderDashboard}
                     />
 
                     <PrivateRoute
@@ -2108,26 +2065,6 @@ class Routes extends Component {
                         pageName={"manage_business_department"}
                         layout={Layout}
                         component={BusinessDepartment}
-                    />
-
-                    <PrivateRoute
-                        isLoading={this.props.serviceLevelAgreements.isLoading}
-                        key={"/manage-admin-department"}
-                        arrPage={[
-                            { link: "/", name: "home", icon: "fa fa-home" },
-                            {
-                                link: "/manage-admin-department",
-                                name: "manage_admin_department",
-                                icon: "fa fa-address-card",
-                            },
-                        ]}
-                        auth={auth}
-                        exact={true}
-                        link={"/manage-admin-department"}
-                        path={"/manage-admin-department"}
-                        pageName={"manage_admin_department"}
-                        layout={Layout}
-                        component={AdminDepartment}
                     />
 
                     {/* Plans Management */}

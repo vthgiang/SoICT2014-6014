@@ -187,9 +187,11 @@ class TaskTemplate extends Component {
         let priority = Number(value);
         let { translate } = this.props;
         switch (priority) {
-            case 1: return translate('task_template.low');
-            case 2: return translate('task_template.medium');
-            case 3: return translate('task_template.high');
+            case 1: return translate('task.task_management.low');
+            case 2: return translate('task.task_management.average');
+            case 3: return translate('task.task_management.standard');
+            case 4: return translate('task.task_management.high');
+            case 5: return translate('task.task_management.urgent');
             default: return '';
         }
     }

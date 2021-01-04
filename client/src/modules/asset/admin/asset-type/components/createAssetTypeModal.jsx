@@ -6,6 +6,7 @@ import { DialogModal, TreeSelect, ErrorLabel } from '../../../../../common-compo
 
 import { AssetCreateValidator } from '../../../base/create-tab/components/combinedContent';
 import { AssetTypeActions } from '../redux/actions';
+import { generateCode } from "../../../../../helpers/generateCode";
 
 class CreateAssetTypeModal extends Component {
     constructor(props) {
@@ -28,6 +29,24 @@ class CreateAssetTypeModal extends Component {
         } else {
             return null;
         }
+    }
+
+    componentDidMount = () => {
+        // Mỗi khi modal mở, cần sinh lại code
+        window.$(`#modal-create-asset-type`).on('shown.bs.modal', this.regenerateCode);
+    }
+
+    componentWillUnmount = () => {
+        // Unsuscribe event
+        window.$(`#modal-create-asset-type`).unbind('shown.bs.modal', this.regenerateCode)
+    }
+
+    regenerateCode = () => {
+        let code = generateCode("TYP");
+        this.setState((state) => ({
+            ...state,
+            documentCode: code,
+        }));
     }
 
     handleCode = (e) => {
@@ -168,7 +187,7 @@ class CreateAssetTypeModal extends Component {
 
     render() {
         const { translate, assetType } = this.props;
-        const { domainParent, defaultInfo, errorOnNameField, errorOnValue } = this.state;
+        const { documentCode, domainParent, defaultInfo, errorOnNameField, errorOnValue } = this.state;
 
         const { list } = assetType.administration.types;
 
@@ -192,8 +211,8 @@ class CreateAssetTypeModal extends Component {
                     <form id="form-create-asset-type">
                         {/* Mã loại tài sản */}
                         <div className="form-group">
-                            <label>{translate('asset.asset_type.asset_type_code')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" onChange={this.handleCode} />
+                            <label>{translate('asset.asset_type.asset_type_code')}</label>
+                            <input type="text" className="form-control" onChange={this.handleCode} value={documentCode} />
                         </div>
 
                         {/* Tên loại tài sản */}

@@ -1,5 +1,5 @@
 const overviewService = require('./management.service');
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../../../logs`);
 
 
 /** Lấy tất cả tập kpi cá nhân của một nhân viên có trạng thái đã kết thúc */

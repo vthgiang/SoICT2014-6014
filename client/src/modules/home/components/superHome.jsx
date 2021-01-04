@@ -15,22 +15,34 @@ class SuperHome extends Component {
         super(props);
 
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
-        let d = new Date(),
-            month = '' + (d.getMonth() + 2),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-        if (month.length < 2)
-            month = '0' + month;
 
-        if (day.length < 2)
-            day = '0' + day;
+        let d = new Date(),
+            month = d.getMonth() + 1,
+            year = d.getFullYear();
+        let startMonth, endMonth, startYear;
+
+        if (month > 3) {
+            startMonth = month - 3;
+            startYear = year;
+            if (month < 9) {
+                endMonth = '0' + (month + 1);
+            } else {
+                endMonth = month + 1;
+            }
+        } else {
+            startMonth = month - 3 + 12;
+            startYear = year - 1;
+        }
+        if (startMonth < 10)
+            startMonth = '0' + startMonth;
 
         this.INFO_SEARCH = {
             startMonth: [year, month - 3].join('-'),
-            endMonth: [year, month].join('-'),
+            startMonth: [startYear, startMonth].join('-'),
+            endMonth: month === 12 ? [year + 1, '01'].join('-') : [year, endMonth].join('-'),
 
-            startMonthTitle: `0${month - 4}-${year}`,
-            endMonthTitle: [month - 1, year].join('-')
+            startMonthTitle: [startMonth, startYear].join('-'),
+            endMonthTitle: month < 10 ? ['0' + month, year].join('-') : [month, year].join('-'),
         }
 
         this.state = {
@@ -47,11 +59,13 @@ class SuperHome extends Component {
     }
 
     componentDidMount = async () => {
-        await this.props.getResponsibleTaskByUser([], 1, 1000, [], [], [], null, null, null, null, null, false);
-        await this.props.getAccountableTaskByUser([], 1, 1000, [], [], [], null, null, null, null, null, false);
-        await this.props.getConsultedTaskByUser([], 1, 1000, [], [], [], null, null, null, null, null, false);
-        await this.props.getInformedTaskByUser([], 1, 1000, [], [], [], null, null, null, null, null, false);
-        await this.props.getCreatorTaskByUser([], 1, 1000, [], [], [], null, null, null, null, null, false);
+        let { startMonth, endMonth } = this.INFO_SEARCH;
+
+        await this.props.getResponsibleTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
+        await this.props.getAccountableTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
+        await this.props.getConsultedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
+        await this.props.getInformedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
+        await this.props.getCreatorTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
 
         let data = {
             type: "user"
@@ -89,18 +103,12 @@ class SuperHome extends Component {
     handleSelectMonthEnd = (value) => {
         let month, monthtitle;
 
-        if (value.slice(0, 2) < 12) {
-            if (value.slice(0, 2) < 9) {
-                month = value.slice(3, 7) + '-0' + (new Number(value.slice(0, 2)) + 1);
-            } else {
-                month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)) + 1);
-            }
-
-            monthtitle = value.slice(0, 2) + '-' + value.slice(3, 7);
+        if (value.slice(0, 2) < 9) {
+            month = value.slice(3, 7) + '-0' + (new Number(value.slice(0, 2)));
         } else {
-            month = (new Number(value.slice(3, 7)) + 1) + '-' + '01';
-            monthtitle = '12' + '-' + (new Number(value.slice(3, 7)));
+            month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
         }
+        monthtitle = value.slice(0, 2) + '-' + value.slice(3, 7);
 
         this.INFO_SEARCH.endMonth = month;
         this.INFO_SEARCH.endMonthTitle = monthtitle;
@@ -143,17 +151,29 @@ class SuperHome extends Component {
         const { tasks, translate } = this.props;
         const { startMonth, endMonth } = this.state;
 
+        // Config ngày mặc định cho datePiker
         let d = new Date(),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
+            month = d.getMonth() + 1,
             year = d.getFullYear();
+        let startMonthDefault, endMonthDefault, startYear;
 
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-        let defaultEndMonth = [month, year].join('-');
-        let defaultStartMonth = '0' + (month - 3) + '-' + year;
+        if (month > 3) {
+            startMonthDefault = month - 3;
+            startYear = year;
+            if (month < 9) {
+                endMonthDefault = '0' + (month + 1);
+            } else {
+                endMonthDefault = month + 1;
+            }
+        } else {
+            startMonthDefault = month - 3 + 12;
+            startYear = year - 1;
+        }
+        if (startMonthDefault < 10)
+            startMonthDefault = '0' + startMonthDefault;
+        
+        let defaultStartMonth = [startMonthDefault, startYear].join('-');
+        let defaultEndMonth = month < 10 ? ['0' + month, year].join('-') : [month, year].join('-');
 
         let { startMonthTitle, endMonthTitle } = this.INFO_SEARCH;
 

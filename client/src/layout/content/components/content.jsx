@@ -126,7 +126,7 @@ class Content extends Component {
 
 
     handleDataTable = (index) => {
-        let tables = window.$("table");
+        let tables = window.$("table:not(.not-sort)");
 
         for (let i = 0; i < tables.length; ++i) {
             let table = window.$(tables[i]);
