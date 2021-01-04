@@ -448,7 +448,7 @@ class EmployeeCreateForm extends Component {
                 ...this.state.houseHold.familyMembers[index]
             }
         });
-        window.$('#modal-edit-family-members').modal({ backdrop: 'static', display: 'show' });
+        window.$('#modal-edit-member-c').modal({ backdrop: 'static', display: 'show' });
     }
 
     _fm_editMember = (index, data) => {
@@ -629,6 +629,7 @@ class EmployeeCreateForm extends Component {
                             {/* Tab thành viên hộ gia đình */}
                             <FamilyMemberTab
                                 id="family_member"
+                                tabEditMember="modal-edit-member-c"
                                 editMember={editMember}
                                 _fm_openEditFamilyMemberModal={this._fm_openEditFamilyMemberModal}
                                 _fm_editMember={this._fm_editMember}

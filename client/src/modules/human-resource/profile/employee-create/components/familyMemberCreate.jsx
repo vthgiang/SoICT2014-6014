@@ -4,7 +4,8 @@ import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { DatePicker, DialogModal } from '../../../../../common-components';
 import { getTimeFromFormatDate } from '../../../../../helpers/stringMethod';
 
-const FamilyMemberInfo = ({
+const FamilyMemberModal = ({
+    tabId,
     _save,
     translate
 }) => {
@@ -88,7 +89,7 @@ const FamilyMemberInfo = ({
     }
 
     const _openModalAddFamilyMember = () => {
-        window.$('#modal-add-family-members').modal({ backdrop: 'static', display: 'show' }); // hiển thị form thành viên hộ gia đình
+        window.$(`#${tabId}`).modal({ backdrop: 'static', display: 'show' }); // hiển thị form thành viên hộ gia đình
     }
 
     const _addFamilyMember = () => {
@@ -127,7 +128,7 @@ const FamilyMemberInfo = ({
         <React.Fragment>
             <button className="btn btn-success pull-right" style={{ cursor: 'pointer' }} onClick={_openModalAddFamilyMember}>{translate('general.add')}</button>
             <DialogModal
-                modalID="modal-add-family-members"
+                modalID={tabId}
                 formID="form-add-family-members"
                 title={translate('human_resource.profile.house_hold.add')}
                 func={_addFamilyMember} size={100}
@@ -257,4 +258,4 @@ const FamilyMemberInfo = ({
     )
 }
 
-export default connect()(withTranslate(FamilyMemberInfo));
+export default connect()(withTranslate(FamilyMemberModal));

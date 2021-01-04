@@ -27,7 +27,8 @@ export const taskManagementActions = {
     getTasksByUser,
     getTaskInOrganizationUnitByMonth,
     getTaskEvaluations,
-    getTaskByPriorityInOrganizationUnit,
+    getTaskAnalysOfUser,
+    getTaskByPriorityInOrganizationUnit
 };
 
 /**
@@ -629,6 +630,26 @@ function getTaskInOrganizationUnitByMonth(organizationUnitId, startDateAfter, en
                 dispatch({ type: taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_FAILURE, error });
             });
     };
+}
+
+function getTaskAnalysOfUser(userId, type) {
+    return dispatch => {
+        dispatch({ type: taskManagementConstants.GET_TASK_ANALYS_OF_USER_REQUEST });
+        return new Promise((resolve, reject) => {
+            taskManagementService.getTaskAnalysOfUser(userId, type)
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.GET_TASK_ANALYS_OF_USER_SUCCESS,
+                    payload: res.data.content
+                });
+                resolve(res)
+            })
+            .catch(error => {
+                dispatch({ type: taskManagementConstants.GET_TASK_ANALYS_OF_USER_FAILE, error });
+                reject(error);
+            });
+        })
+    }
 }
 
 function getTaskByPriorityInOrganizationUnit(organizationUnitId, date) {
