@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-const { Group } = require(`${SERVER_MODELS_DIR}`);
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { Group } = require('../../../models');
+const { connect } = require(`../../../helpers/dbHelper`);
 
 exports.createGroup = async (portal, companyId, userId, data) => {
     const { code, name, description, promotion } = data;

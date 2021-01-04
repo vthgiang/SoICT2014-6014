@@ -1,5 +1,5 @@
 const CategoryService = require('./category.service');
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../../../logs`);
 
 exports.getCategories = async (req, res) => {
     try {

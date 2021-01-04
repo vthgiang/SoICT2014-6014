@@ -353,6 +353,9 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         return errorMessage === undefined;
     }
 
+    handleChangeListInfo = async (data) => {
+        await this.setState({ listInfo: data })
+    }
 
     isFormValidated = () => {
         let { info, errorInfo } = this.state;
@@ -428,6 +431,8 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         taskId = this.props.id;
 
         let data = {
+            listInfo: this.state.listInfo,
+
             date: this.formatDate(Date.now()),
             name: this.state.taskName,
             description: this.state.taskDescription,
@@ -436,6 +441,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
             // kpi: this.state.kpi ? this.state.kpi : [],
             info: this.state.info,
         }
+        console.log('data', data);
 
         this.props.editTaskByResponsibleEmployees(data, taskId);
 
@@ -458,6 +464,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         let listKpi = [];
         if (KPIPersonalManager && KPIPersonalManager.kpiSets) listKpi = KPIPersonalManager.kpiSets.kpis;
 
+        console.log('data edit', this.state);
         return (
             <div>
                 <React.Fragment>
@@ -524,6 +531,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                                 handleSetOfValueChange={this.handleSetOfValueChange}
                                 handleChangeNumberInfo={this.handleChangeNumberInfo}
                                 handleChangeTextInfo={this.handleChangeTextInfo}
+                                handleChangeListInfo={this.handleChangeListInfo}
 
                                 role={role}
                                 perform={perform}

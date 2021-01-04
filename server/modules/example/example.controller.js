@@ -1,5 +1,5 @@
 const ExampleService = require('./example.service');
-const Log = require(`${SERVER_LOGS_DIR}`);
+const Log = require(`../../logs`);
 
 // Thêm mới một ví dụ
 exports.createExample = async (req, res) => {

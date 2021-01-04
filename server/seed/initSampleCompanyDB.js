@@ -78,41 +78,41 @@ const initSampleCompanyDB = async () => {
      * 1. Tạo kết nối đến csdl của hệ thống và công ty VNIST
      */
     let connectOptions = process.env.DB_AUTHENTICATION === 'true' ?
-    {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true,
-        useFindAndModify: false,
-        user: process.env.DB_USERNAME,
-        pass: process.env.DB_PASSWORD,
-        auth: {
-            authSource: 'admin'
+        {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useCreateIndex: true,
+            useFindAndModify: false,
+            user: process.env.DB_USERNAME,
+            pass: process.env.DB_PASSWORD,
+            auth: {
+                authSource: 'admin'
+            }
+        } : {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useCreateIndex: true,
+            useFindAndModify: false
         }
-    } : {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true,
-        useFindAndModify: false
-    }
     const systemDB = mongoose.createConnection(`mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/${process.env.DB_NAME}`, connectOptions);
 
     let connectVNISTOptions = process.env.DB_AUTHENTICATION === 'true' ?
-    {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true,
-        useFindAndModify: false,
-        user: process.env.DB_USERNAME,
-        pass: process.env.DB_PASSWORD,
-        auth: {
-            authSource: 'admin'
+        {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useCreateIndex: true,
+            useFindAndModify: false,
+            user: process.env.DB_USERNAME,
+            pass: process.env.DB_PASSWORD,
+            auth: {
+                authSource: 'admin'
+            }
+        } : {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useCreateIndex: true,
+            useFindAndModify: false
         }
-    } : {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true,
-        useFindAndModify: false
-    }
     const vnistDB = mongoose.createConnection(`mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || "27017"}/vnist`, connectVNISTOptions);
     await Configuration(systemDB).insertMany([
         {
@@ -3661,21 +3661,21 @@ const initSampleCompanyDB = async () => {
             ],
             numberExpirationDate: 1000,
             description: "Sản phẩm trị cảm cúm",
-            // manufacturingMills: [{
-            //     manufacturingMill: manufacturingMills[0]._id,
-            //     productivity: 100,
-            //     personNumber: 3
-            // }, {
-            //     manufacturingMill: manufacturingMills[1]._id,
-            //     productivity: 100,
-            //     personNumber: 2
-            // }, {
-            //     manufacturingMill: manufacturingMills[2]._id,
-            //     productivity: 50,
-            //     personNumber: 1
-            // }],
-            // pricePerBaseUnit: 100000,
-            // salesPriceVariance: 10000
+            manufacturingMills: [{
+                manufacturingMill: manufacturingMills[3]._id,
+                productivity: 100,
+                personNumber: 3
+            }, {
+                manufacturingMill: manufacturingMills[4]._id,
+                productivity: 100,
+                personNumber: 2
+            }, {
+                manufacturingMill: manufacturingMills[1]._id,
+                productivity: 50,
+                personNumber: 1
+            }],
+            pricePerBaseUnit: 100000,
+            salesPriceVariance: 10000
         },
     ]);
     console.log("Khởi tạo xong danh sách hàng hóa");
@@ -4015,7 +4015,7 @@ const initSampleCompanyDB = async () => {
     console.log("Cập nhật nút con của thông tin lưu trữ kho");
     var listBin = await BinLocation(vnistDB).updateOne({
         _id: listBinLocations[0]._id
-    },{
+    }, {
         code: "T1",
         name: "Tầng 1",
         description: "Dãy nhà dùng cho việc nghiên cứu",
@@ -4402,6 +4402,16 @@ const initSampleCompanyDB = async () => {
     const manufacturingPlansNumber0 = await ManufacturingPlan(vnistDB).findById(manufacturingPlans[0]._id);
     manufacturingPlansNumber0.manufacturingCommands.push(manufacturingCommands[0]._id);
     await manufacturingPlansNumber0.save();
+    const manufacturingPlansNumber2 = await ManufacturingPlan(vnistDB).findById(manufacturingPlans[2]._id);
+    manufacturingPlansNumber2.manufacturingCommands.push(manufacturingCommands[1]._id);
+    await manufacturingPlansNumber2.save();
+    const manufacturingPlansNumber3 = await ManufacturingPlan(vnistDB).findById(manufacturingPlans[3]._id);
+    manufacturingPlansNumber3.manufacturingCommands.push(manufacturingCommands[2]._id);
+    await manufacturingPlansNumber3.save();
+    const manufacturingPlansNumber4 = await ManufacturingPlan(vnistDB).findById(manufacturingPlans[4]._id);
+    manufacturingPlansNumber4.manufacturingCommands.push(manufacturingCommands[3]._id);
+    await manufacturingPlansNumber4.save();
+
 
 
     // ****************** Tạo mẫu dữ liệu mẫu lịch làm việc cho xưởng và công nhân********************
@@ -5308,7 +5318,7 @@ const initSampleCompanyDB = async () => {
 
     var lotUpdate = await Lot(vnistDB).updateOne({
         _id: listLot[0]._id
-    },{
+    }, {
         name: "LOT001",
         good: listProduct[0]._id,
         type: "product",
@@ -5957,7 +5967,7 @@ const initSampleCompanyDB = async () => {
     console.log("Khởi tạo dữ liệu thông tin báo giá");
     var listQuote = await Quote(vnistDB).insertMany([
         {
-            status: 0,
+            status: 1,
             code: "QUOTE_201249330",
             creator: users[1]._id,
             effectiveDate: "2020-12-07T00:00:00.000Z",

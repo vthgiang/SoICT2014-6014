@@ -10,11 +10,11 @@ const {
     EmployeeCourse,
     Notification,
     Timesheet,
-} = require(`${SERVER_MODELS_DIR}`);
+} = require('../../../models');
 
 const {
     connect
-} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+} = require(`../../../helpers/dbHelper`);
 
 const fs = require('fs');
 const mongoose = require("mongoose");
@@ -723,7 +723,7 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
     contracts = this.mergeUrlFileToObject(fileContract, contracts);
     files = this.mergeUrlFileToObject(file, files);
 
-    console.log('mcmcmcmcmcmcm\n\n', major);
+    console.log('mcmcmcmcmcmcm\n\n', data.houseHold.familyMembers);
     let createEmployee = await Employee(connect(DB_CONNECTION, portal)).create({
         avatar: avatar,
         fullName: data.fullName,
@@ -906,7 +906,8 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
         deleteFiles,
         createSocialInsuranceDetails,
         editSocialInsuranceDetails,
-        deleteSocialInsuranceDetails
+        deleteSocialInsuranceDetails,
+        houseHold // dữ liệu về hộ khẩu - thành viên hộ gia đình
     } = data;
     console.log('dataatatatta\n\n\n\n', data.createCareer, data.editCareer, data.deleteCareer);
     let avatar = employee.avatar,
@@ -1047,6 +1048,7 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
     oldEmployee.temporaryResidenceWard = employee.temporaryResidenceWard;
     oldEmployee.contractEndDate = employee.contractEndDate ? employee.contractEndDate : null;
     oldEmployee.contractType = employee.contractType;
+    oldEmployee.houseHold = houseHold;
 
     // Edit  thông tin nhân viên
     oldEmployee.save();
@@ -1110,6 +1112,7 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
         contractEndDate: 1,
         contractType: 1,
         status: 1,
+        houseHold: 1
     });
 }
 

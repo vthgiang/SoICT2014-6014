@@ -1,5 +1,5 @@
 const SalaryService = require('./salary.service');
-const Log = require(`${SERVER_LOGS_DIR}`);
+const Log = require(`../../../logs`);
 
 /** Lấy danh sách các bảng lương */
 exports.searchSalaries = async (req, res) => {

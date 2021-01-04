@@ -13,6 +13,7 @@ import { CalendarOrganizationUnit } from './calendarOrganizationUnit';
 import { withTranslate } from 'react-redux-multilingual';
 import { SelectMulti, DatePicker } from '../../../../common-components/index';
 import Swal from 'sweetalert2';
+import { InprocessOfUnitTask } from './processOfUnitTasks';
 
 class TaskOrganizationUnitDashboard extends Component {
     constructor(props) {
@@ -21,22 +22,33 @@ class TaskOrganizationUnitDashboard extends Component {
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
         let d = new Date(),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
+            month = d.getMonth() + 1,
             year = d.getFullYear();
-        if (month.length < 2)
-            month = '0' + month;
+        let startMonth, endMonth, startYear;
 
-        if (day.length < 2)
-            day = '0' + day;
+        if (month > 3) {
+            startMonth = month - 3;
+            startYear = year;
+            if (month < 9) {
+                endMonth = '0' + (month + 1);
+            } else {
+                endMonth = month + 1;
+            }
+        } else {
+            startMonth = month - 3 + 12;
+            startYear = year - 1;
+        }
+        if (startMonth < 10)
+            startMonth = '0' + startMonth;
 
         this.INFO_SEARCH = {
             idsUnit: [],
             checkUnit: 0,
-            startMonth: [year, month - 3].join('-'),
-            endMonth: [year, month].join('-'),
-            startMonthTitle: `0${month - 3}-${year}`,
-            endMonthTitle: [month, year].join('-')
+            startMonth: [startYear, startMonth].join('-'),
+            endMonth: month === 12 ? [year + 1, '01'].join('-') : [year, endMonth].join('-'),
+
+            startMonthTitle: [startMonth, startYear].join('-'),
+            endMonthTitle: month < 10 ? ['0' + month, year].join('-') : [month, year].join('-'),
         }
 
         this.state = {
@@ -142,12 +154,19 @@ class TaskOrganizationUnitDashboard extends Component {
     handleSelectMonthEnd = async (value) => {
         let month;
         let endMonthTitle;
-        if (value.slice(0, 2) < 12) {
-            month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
-            endMonthTitle = value.slice(0, 2) + '-' + value.slice(3, 7);
+        // if (value.slice(0, 2) < 12) {
+        //     month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
+        //     endMonthTitle = value.slice(0, 2) + '-' + value.slice(3, 7);
+        // } else {
+        //     month = (new Number(value.slice(3, 7))) + '-' + '1';
+        // }
+        if (value.slice(0, 2) < 9) {
+            month = value.slice(3, 7) + '-0' + (new Number(value.slice(0, 2)));
         } else {
-            month = (new Number(value.slice(3, 7))) + '-' + '1';
+            month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
         }
+        endMonthTitle = value.slice(0, 2) + '-' + value.slice(3, 7);
+
         this.INFO_SEARCH.endMonth = month;
         this.INFO_SEARCH.endMonthTitle = endMonthTitle;
 
@@ -185,18 +204,6 @@ class TaskOrganizationUnitDashboard extends Component {
         let childrenOrganizationalUnit = [];
         let currentOrganizationalUnit, currentOrganizationalUnitLoading;
 
-        let d = new Date(),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-        let defaultEndMonth = [month, year].join('-');
-        let defaultStartMonth = '0' + (month - 3) + '-' + year;
-
         if (dashboardEvaluationEmployeeKpiSet) {
             currentOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
             currentOrganizationalUnitLoading = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnitLoading;
@@ -215,6 +222,31 @@ class TaskOrganizationUnitDashboard extends Component {
                 }
             }
         }
+
+        // Config ngày mặc định cho datePiker
+        let d = new Date(),
+            month = d.getMonth() + 1,
+            year = d.getFullYear();
+        let startMonthDefault, endMonthDefault, startYear;
+
+        if (month > 3) {
+            startMonthDefault = month - 3;
+            startYear = year;
+            if (month < 9) {
+                endMonthDefault = '0' + (month + 1);
+            } else {
+                endMonthDefault = month + 1;
+            }
+        } else {
+            startMonthDefault = month - 3 + 12;
+            startYear = year - 1;
+        }
+        if (startMonthDefault < 10)
+            startMonthDefault = '0' + startMonthDefault;
+
+        let defaultStartMonth = [startMonthDefault, startYear].join('-');
+        let defaultEndMonth = month < 10 ? ['0' + month, year].join('-') : [month, year].join('-');
+
         return (
             <React.Fragment>
                 {currentOrganizationalUnit
@@ -288,6 +320,24 @@ class TaskOrganizationUnitDashboard extends Component {
                                                 tasks={tasks.organizationUnitTasks}
                                                 listEmployee={user && user.employees}
                                                 units={idsUnit}
+                                            />
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-xs-12">
+                                <div className="box box-primary">
+                                    <div className="box-header with-border">
+                                        <div className="box-title">{translate('task.task_management.calc_progress')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+                                    </div>
+                                    <div className="box-body qlcv">
+                                        {this.state.callAction && tasks && tasks.organizationUnitTasks &&
+                                            <InprocessOfUnitTask
+                                                tasks={tasks.organizationUnitTasks}
+                                                listEmployee={user && user.employees}
+                                                units={childrenOrganizationalUnit}
                                             />
                                         }
                                     </div>

@@ -9,6 +9,8 @@ import {
 export const MajorActions = {
     getListMajor,
     createMajor,
+    deleteMajor,
+    updateMajor,
 };
 
 /**
@@ -55,6 +57,56 @@ function createMajor(data) {
             .catch(err => {
                 dispatch({
                     type: MajorConstant.CREATE_MAJOR_FAILURE,
+                    error: err
+                });
+            })
+    }
+}
+
+/**
+ * Xóa chuyên ngành
+ * @data : danh sách id xóa
+ */
+function deleteMajor(data) {
+    return dispatch => {
+        dispatch({
+            type: MajorConstant.DELETE_MAJOR_REQUEST
+        });
+        MajorService.deleteMajor(data)
+            .then(res => {
+                dispatch({
+                    type: MajorConstant.DELETE_MAJOR_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: MajorConstant.DELETE_MAJOR_FAILURE,
+                    error: err
+                });
+            })
+    }
+}
+
+/**
+ * cập nhật dữ liệu chuyên ngành
+ * @data : Dữ liệu cập nhật
+ */
+function updateMajor(data) {
+    return dispatch => {
+        dispatch({
+            type: MajorConstant.UPDATE_MAJOR_REQUEST
+        });
+        MajorService.updateMajor(data)
+            .then(res => {
+                dispatch({
+                    type: MajorConstant.UPDATE_MAJOR_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: MajorConstant.UPDATE_MAJOR_FAILURE,
                     error: err
                 });
             })

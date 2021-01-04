@@ -1,5 +1,5 @@
 const CourseService = require('./course.service');
-const Log = require(`${SERVER_LOGS_DIR}`);
+const Log = require(`../../../logs`);
 
 /**
  * Lấy danh sách khoá đào tạo

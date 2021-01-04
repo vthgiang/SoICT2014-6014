@@ -1,5 +1,5 @@
 const DocumentServices = require("./document.service");
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../logs`);
 
 /**
  * Các controller cho phần quản lý tài liệu văn bản
@@ -369,7 +369,7 @@ exports.createDocumentCategory = async (req, res) => {
     }
 };
 
-exports.showDocumentCategory = (req, res) => {};
+exports.showDocumentCategory = (req, res) => { };
 
 exports.editDocumentCategory = async (req, res) => {
     try {
@@ -641,71 +641,72 @@ exports.importDocumentDomain = async (req, res) => {
     }
 };
 exports.getDocumentsThatRoleCanView = async (req, res) => {
-    try {
-        const docs = await DocumentServices.getDocumentsThatRoleCanView(
-            req.portal,
-            req.query,
-            req.user.company._id
-        );
+    // try {
+    const docs = await DocumentServices.getDocumentsThatRoleCanView(
+        req.portal,
+        req.query,
+        req.user._id,
+        req.user.company._id
+    );
 
-        await Logger.info(
-            req.user.email,
-            "get_document_that_role_can_view",
-            req.portal
-        );
-        res.status(200).json({
-            success: true,
-            messages: ["get_document_that_role_can_view_success"],
-            content: docs,
-        });
-    } catch (error) {
-        await Logger.error(
-            req.user.email,
-            "get_document_that_role_can_view",
-            req.portal
-        );
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error)
-                ? error
-                : ["get_document_that_role_can_view_faile"],
-            content: error,
-        });
-    }
+    await Logger.info(
+        req.user.email,
+        "get_document_that_role_can_view",
+        req.portal
+    );
+    res.status(200).json({
+        success: true,
+        messages: ["get_document_that_role_can_view_success"],
+        content: docs,
+    });
+    // } catch (error) {
+    //     await Logger.error(
+    //         req.user.email,
+    //         "get_document_that_role_can_view",
+    //         req.portal
+    //     );
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: Array.isArray(error)
+    //             ? error
+    //             : ["get_document_that_role_can_view_faile"],
+    //         content: error,
+    //     });
+    // }
 };
 
 exports.getDocumentsUserStatistical = async (req, res) => {
-    try {
-        const docs = await DocumentServices.getDocumentsUserStatistical(
-            req.user._id,
-            req.query,
-            req.portal
-        );
+    // try {
+    const docs = await DocumentServices.getDocumentsUserStatistical(
+        req.user._id,
+        req.query,
+        req.portal
+    );
 
-        await Logger.info(
-            req.user.email,
-            "get_document_user_statistical",
-            req.portal
-        );
-        res.status(200).json({
-            success: true,
-            messages: ["get_document_user_statistical_success"],
-            content: docs,
-        });
-    } catch (error) {
-        await Logger.error(
-            req.user.email,
-            "get_document_user_statistical",
-            req.portal
-        );
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error)
-                ? error
-                : ["get_document_user_statistical_faile"],
-            content: error,
-        });
-    }
+    await Logger.info(
+        req.user.email,
+        "get_document_user_statistical",
+        req.portal
+    );
+    res.status(200).json({
+        success: true,
+        messages: ["get_document_user_statistical_success"],
+        content: docs,
+    });
+    // } catch (error) {
+    //     await Logger.error(
+    //         req.user.email,
+    //         "get_document_user_statistical",
+    //         req.portal
+    //     );
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: Array.isArray(error)
+    //             ? error
+    //             : ["get_document_user_statistical_faile"],
+    //         content: error,
+    //     });
+    // }
 };
 /**
  * Kho lưu trữ vật lí

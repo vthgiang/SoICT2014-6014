@@ -1,10 +1,11 @@
 const {
     ManufacturingCommand, ManufacturingPlan, ManufacturingWorks, OrganizationalUnit,
     ManufacturingOrder, SalesOrder, Lot, ManufacturingMill
-} = require(`${SERVER_MODELS_DIR}`);
+} = require(`../../../../models`);
 const {
     connect
-} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+} = require(`../../../../helpers/dbHelper`);
+const ObjectId = require('mongoose').Types.ObjectId;
 
 function getArrayTimeFromString(stringDate) {
     arrayDate = stringDate.split('-');
@@ -71,7 +72,7 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
     // Quyền quản lý nhà máy => xưởng => lệnh tương ứng
     // Trường accountables được phân cho người nên ta phân chia cho người nào thì người đó được quyền xem
     let { currentRole, code, planCode, manufacturingOrderCode, salesOrderCode,
-        lotCode, accountables, fromDate, toDate, status, createdAt, page, limit
+        lotCode, accountables, fromDate, toDate, status, createdAt, page, limit, good, quantity_gt, quantity_lt, manufacturingMills
     } = query;
     if (!currentRole) {
         throw Error("currentRole is not defined")
@@ -240,6 +241,30 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
         }
     }
 
+    //  Xử lý lấy lệnh sản xuất theo mặt hàng
+    if (good) {
+        options["good.good"] = good
+    }
+
+    if (quantity_gt) {
+        options["good.quantity"] = {
+            '$gt': quantity_gt
+        }
+    }
+
+    if (quantity_lt) {
+        options["good.quantity"] = {
+            '$lt': quantity_lt
+        }
+    }
+
+    if (manufacturingMills) {
+        console.log(manufacturingMills);
+        options.manufacturingMill = {
+            $in: manufacturingMills
+        }
+    }
+
     if (!page || !limit) {
         let manufacturingCommands = await ManufacturingCommand(connect(DB_CONNECTION, portal))
             .find(options);
@@ -266,7 +291,10 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
                     select: "code name baseUnit numberExpirationDate"
                 }, {
                     path: "qualityControlStaffs.staff"
-                }]
+                }],
+                sort: {
+                    "updatedAt": "desc"
+                }
             });
         return { manufacturingCommands }
     }
@@ -280,9 +308,6 @@ exports.getManufacturingCommandById = async (id, portal) => {
             path: "manufacturingPlan",
             select: "code",
             populate: [{
-                path: "manufacturingOrder",
-                select: "code"
-            }, {
                 path: "salesOrder",
                 select: "code"
             }, {

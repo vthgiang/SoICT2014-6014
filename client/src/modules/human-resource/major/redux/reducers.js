@@ -32,18 +32,18 @@ export function major(state = initState, action) {
                 isLoading: false,
                 listMajor: action.payload,
             };
-        // case MajorConstant.DELETE_MAJOR_SUCCESS:
-        //     return {
-        //         ...state,
-        //         isLoading: false,
-        //             listDisciplines: state.listDisciplines.filter(discipline => (discipline._id !== action.payload._id))
-        //     };
-        // case MajorConstant.UPDATE_MAJOR_SUCCESS:
-        //     return {
-        //         ...state,
-        //         isLoading: false,
-        //             listDisciplines: state.listDisciplines.map(discipline => (discipline._id === action.payload._id) ? action.payload : discipline)
-        //     };
+        case MajorConstant.DELETE_MAJOR_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                listMajor: action.payload,
+            };
+        case MajorConstant.UPDATE_MAJOR_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                listMajor: action.payload,
+            };
         case MajorConstant.GET_MAJOR_FAILURE:
         case MajorConstant.CREATE_MAJOR_FAILURE:
         case MajorConstant.DELETE_MAJOR_FAILURE:

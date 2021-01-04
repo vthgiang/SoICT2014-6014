@@ -245,7 +245,7 @@ class InformationForm extends Component{
     render(){
         const { translate } = this.props;
         let { taskInformations, information, quillValueDefault } =this.state;
-        const { initialData } = this.props;
+        const { initialData, type } = this.props;
 
         taskInformations = initialData;
 
@@ -268,7 +268,7 @@ class InformationForm extends Component{
                 <div className={`form-group ${this.state.information.errorOnDescription===undefined?"":"has-error"}`} >
                     <label className="control-label" htmlFor="inputDescriptionInfo">{translate('task_template.description')}</label>
                     <QuillEditor
-                        id={'informationsTemplate'}
+                        id={`informationsTemplate${type}`}
                         getTextData={this.handleChangeInfoDesc}
                         quillValueDefault={quillValueDefault}
                     />
@@ -278,7 +278,7 @@ class InformationForm extends Component{
                     {/**Kiểu dữ liệu trường thông tin */}
                     <label className=" control-label">{translate('task_template.datatypes')}</label>
                     <div style={{ width: '100%' }}>
-                        <select onChange={this.handleChangeInfoType} className="form-control" id="seltype" value={information.type} name="type" >
+                        <select disabled={this.props.disabled} onChange={this.handleChangeInfoType} className="form-control" id="seltype" value={information.type} name="type" >
                             <option value={this.INFO_TYPE.TEXT}>{translate('task_template.text')}</option>
                             <option value={this.INFO_TYPE.NUMBER}>{translate('task_template.number')}</option>
                             <option value={this.INFO_TYPE.DATE}>{translate('task_template.date')}</option>

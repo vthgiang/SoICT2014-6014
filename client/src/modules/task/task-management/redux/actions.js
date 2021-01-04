@@ -27,6 +27,8 @@ export const taskManagementActions = {
     getTasksByUser,
     getTaskInOrganizationUnitByMonth,
     getTaskEvaluations,
+    getTaskAnalysOfUser,
+    getTaskByPriorityInOrganizationUnit
 };
 
 /**
@@ -626,6 +628,42 @@ function getTaskInOrganizationUnitByMonth(organizationUnitId, startDateAfter, en
             })
             .catch(error => {
                 dispatch({ type: taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_FAILURE, error });
+            });
+    };
+}
+
+function getTaskAnalysOfUser(userId, type) {
+    return dispatch => {
+        dispatch({ type: taskManagementConstants.GET_TASK_ANALYS_OF_USER_REQUEST });
+        return new Promise((resolve, reject) => {
+            taskManagementService.getTaskAnalysOfUser(userId, type)
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.GET_TASK_ANALYS_OF_USER_SUCCESS,
+                    payload: res.data.content
+                });
+                resolve(res)
+            })
+            .catch(error => {
+                dispatch({ type: taskManagementConstants.GET_TASK_ANALYS_OF_USER_FAILE, error });
+                reject(error);
+            });
+        })
+    }
+}
+
+function getTaskByPriorityInOrganizationUnit(organizationUnitId, date) {
+    return dispatch => {
+        dispatch({ type: taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_PRIORITY_REQUEST });
+        taskManagementService.getTaskByPriorityInOrganizationUnit(organizationUnitId, date)
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_PRIORITY_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_PRIORITY_FAILURE });
             });
     };
 }

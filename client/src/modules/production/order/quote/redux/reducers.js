@@ -13,6 +13,7 @@ var findIndex = (array, id) => {
 const initState = {
     isLoading: false,
     listQuotes: [],
+    quotesToMakeOrder: [],
     totalDocs: 0,
     limit: 0,
     totalPages: 0,
@@ -22,7 +23,6 @@ const initState = {
     hasNextPage: false,
     prevPage: 0,
     nextPage: 0,
-    detailQuote: {},
 }
 
 export function quotes(state = initState, action) {
@@ -33,7 +33,7 @@ export function quotes(state = initState, action) {
         case QuoteConstants.EDIT_QUOTE_REQUEST:
         case QuoteConstants.DELETE_QUOTE_REQUEST:
         case QuoteConstants.APPROVE_QUOTE_REQUEST:
-        
+        case QuoteConstants.GET_QUOTES_TO_MAKE_ORDER_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -44,45 +44,46 @@ export function quotes(state = initState, action) {
         case QuoteConstants.EDIT_QUOTE_FAILURE:
         case QuoteConstants.DELETE_QUOTE_FAILURE:
         case QuoteConstants.APPROVE_QUOTE_FAILURE:
+        case QuoteConstants.GET_QUOTES_TO_MAKE_ORDER_FAILURE:
                 return {
                     ...state,
                     isLoading: false,
                     error: action.error
                 }
-            case QuoteConstants.GET_ALL_QUOTES_SUCCESS:
-                return {
-                    ...state,
-                    isLoading: false,
-                    listQuotes: action.payload.allQuotes.docs,
-                    totalDocs: action.payload.allQuotes.totalDocs,
-                    limit: action.payload.allQuotes.limit,
-                    totalPages: action.payload.allQuotes.totalPages,
-                    page: action.payload.allQuotes.page,
-                    pagingCounter: action.payload.allQuotes.pagingCounter,
-                    hasPrevPage: action.payload.allQuotes.hasPrevPage,
-                    hasNextPage: action.payload.allQuotes.hasNextPage,
-                    prevPage: action.payload.allQuotes.prevPage,
-                    nextPage: action.payload.allQuotes.nextPage
-                }
-            case QuoteConstants.CREATE_QUOTE_SUCCESS:
-                return {
-                    ...state,
-                    listQuotes: [
-                        ...state.listQuotes,
-                        action.payload.quote
-                    ],
-                    isLoading: false
-                }
-            
-            case QuoteConstants.EDIT_QUOTE_SUCCESS:
-                index = findIndex(state.listQuotes, action.payload.quote._id);
-                if (index !== -1) {
-                    state.listQuotes[index] = action.payload.quote
-                }
-                return {
-                    ...state,
-                    isLoading: false
+        case QuoteConstants.GET_ALL_QUOTES_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                listQuotes: action.payload.allQuotes.docs,
+                totalDocs: action.payload.allQuotes.totalDocs,
+                limit: action.payload.allQuotes.limit,
+                totalPages: action.payload.allQuotes.totalPages,
+                page: action.payload.allQuotes.page,
+                pagingCounter: action.payload.allQuotes.pagingCounter,
+                hasPrevPage: action.payload.allQuotes.hasPrevPage,
+                hasNextPage: action.payload.allQuotes.hasNextPage,
+                prevPage: action.payload.allQuotes.prevPage,
+                nextPage: action.payload.allQuotes.nextPage
             }
+        case QuoteConstants.CREATE_QUOTE_SUCCESS:
+            return {
+                ...state,
+                listQuotes: [
+                    ...state.listQuotes,
+                    action.payload.quote
+                ],
+                isLoading: false
+            }
+        
+        case QuoteConstants.EDIT_QUOTE_SUCCESS:
+            index = findIndex(state.listQuotes, action.payload.quote._id);
+            if (index !== -1) {
+                state.listQuotes[index] = action.payload.quote
+            }
+            return {
+                ...state,
+                isLoading: false
+        }
             
         case QuoteConstants.DELETE_QUOTE_SUCCESS:
                 index = findIndex(state.listQuotes, action.payload.quote._id);
@@ -93,8 +94,18 @@ export function quotes(state = initState, action) {
                 return {
                     ...state,
                     isLoading: false
-                }
-            default:
-                return state
+            }
+        
+        case QuoteConstants.GET_QUOTES_TO_MAKE_ORDER_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                quotesToMakeOrder: action.payload.quotes,
+            }
+        
+        default:
+        return state
+        
+    
     }
 }

@@ -1,6 +1,6 @@
-const Models = require(`${SERVER_MODELS_DIR}`);
+const Models = require('../../../models');
 const { AssetType, Asset } = Models;
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { connect } = require(`../../../helpers/dbHelper`);
 const arrayToTree = require('array-to-tree');
 const ObjectId = require('mongoose').Types.ObjectId;
 

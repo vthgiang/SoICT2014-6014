@@ -320,6 +320,10 @@ class ModalEditTaskByAccountableEmployee extends Component {
         return msg;
     }
 
+    handleChangeListInfo = async (data) => {
+        await this.setState({ listInfo: data })
+    }
+
     changeActiveEmployees = async (listInactive) => {
         let inactiveEmployees = [];
         for (let i in listInactive) {
@@ -946,6 +950,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
             }
         }
         let data = {
+            listInfo: this.state.listInfo,
+
             name: this.state.taskName,
             description: this.state.taskDescription,
             status: this.state.statusOptions,
@@ -1231,6 +1237,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                 handleSetOfValueChange={this.handleSetOfValueChange}
                                 handleChangeNumberInfo={this.handleChangeNumberInfo}
                                 handleChangeTextInfo={this.handleChangeTextInfo}
+                                handleChangeListInfo={this.handleChangeListInfo}
 
                                 role={role}
                                 perform={perform}

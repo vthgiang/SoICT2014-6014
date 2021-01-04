@@ -1,7 +1,7 @@
 const TaskManagementService = require('./task.service');
-const NotificationServices = require('../../notification/notification.service');
-const { sendEmail } = require('../../../helpers/emailHelper');
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const NotificationServices = require(`../../notification/notification.service`);
+const { sendEmail } = require(`../../../helpers/emailHelper`);
+const Logger = require(`../../../logs`);
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module quản lý công việc
 
 
@@ -49,6 +49,8 @@ exports.getTasks = async (req, res) => {
     }
     else if (req.query.type === "get_all_task_of_children_organizational_unit") {
         getAllTaskOfChildrenOrganizationalUnit(req, res)
+    } else if (req.query.type === "priority") {
+        getAllTaskByPriorityOfOrganizationalUnit(req, res)
     }
 }
 
@@ -375,7 +377,7 @@ getPaginatedTasks = async (req, res) => {
             aPeriodOfTime: req.query.aPeriodOfTime
         };
 
-        var tasks = await TaskManagementService.getPaginatedTasks(req.portal, task);
+        let tasks = await TaskManagementService.getPaginatedTasks(req.portal, task);
         await Logger.info(req.user.email, ` get task informed by user `, req.portal)
         res.status(200).json({
             success: true,
@@ -502,8 +504,8 @@ exports.createTask = async (req, res) => {
             users: tasks.managersOfOrganizationalUnitThatHasCollaborated
         };
 
-        await NotificationServices.createNotification(req.portal, task.organizationalUnit.company, data);
-        await NotificationServices.createNotification(req.portal, task.organizationalUnit.company, collaboratedData);
+        await NotificationServices.createNotification(req.portal, req.user.company._id, data);
+        await NotificationServices.createNotification(req.portal, req.user.company._id, collaboratedData);
         await sendEmail(email, "Bạn có công việc mới", '', html);
         collaboratedEmail && collaboratedEmail.length !== 0
             && await sendEmail(collaboratedEmail, "Đơn vị bạn được phối hợp thực hiện công việc mới", '', collaboratedHtml);
@@ -779,3 +781,51 @@ getAllTaskOfOrganizationalUnitByMonth = async (req, res) => {
         })
     }
 }
+
+exports.getTaskAnalysOfUser = async(req, res) => {
+    try {
+        let portal = req.portal;
+        let {userId} = req.params;
+        let {type} = req.query;
+        let taskAnalys = await TaskManagementService.getTaskAnalysOfUser(portal, userId, type);
+
+        await Logger.info(req.user.email, 'get_task_analys_of_user_success', req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['get_task_analys_of_user_success'],
+            content: taskAnalys
+        })
+    } catch (error) {
+
+        await Logger.error(req.user.email, 'get_task_analys_of_user_faile', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_task_analys_of_user_faile'],
+            content: error
+        })
+    }
+}
+
+getAllTaskByPriorityOfOrganizationalUnit = async (req, res) => {
+    try {
+        let task = {
+            organizationalUnitId: req.query.organizationUnitId,
+            date: req.query.date,
+        };
+        const data = await TaskManagementService.getAllTaskByPriorityOfOrganizationalUnit(req.portal, task);
+        await Logger.info(req.user.email, 'get_all_task_by_priority_of_organizational_unit', req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['get_all_task_by_priority_of_organizational_unit_success'],
+            content: data
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, 'get_all_task_by_priority_of_organizational_unit', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['get_all_task_by_priority_of_organizational_unit_failure'],
+            content: error
+        })
+    }
+}
+

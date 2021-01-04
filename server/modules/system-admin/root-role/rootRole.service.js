@@ -1,5 +1,5 @@
-const { RootRole } = require(`${SERVER_MODELS_DIR}`);
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { RootRole } = require(`../../../models`);
+const { connect } = require(`../../../helpers/dbHelper`);
 
 exports.getAllRootRoles = async () => {
     

@@ -1,5 +1,5 @@
 const CustomerService = require('./customer.service');
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../../logs`);
 
 /**
  * Lấy thông tin của tất cả khách hàng

@@ -1,249 +1,253 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { DataTableSetting, DialogModal, ButtonModal, SelectBox } from '../../../../../common-components';
+import { DatePicker, DialogModal } from '../../../../../common-components';
+import { getTimeFromFormatDate } from '../../../../../helpers/stringMethod';
 
-const initMember = {
-    name: '',
-    codeSocialInsurance: '',
-    bookNumberSocialInsurance: '',
-    gender: '',
-    isHeadHousehold: '',
-    relationshipWithHeadHousehold: '',
-    cnss: '',
-    birth: '',
-    placeOfBirthCertificate: '',
-    nationality: '',
-    nation: '',
-    numberPassport: '',
-    note: ''
-};
-
-const FamilyMemberModal = ({
-    _save
+const FamilyMemberInfo = ({
+    _save,
+    translate
 }) => {
-    const [currentMember, setCurrentMember] = useState(initMember);
+    const [name, setName] = useState('');
+    const [codeSocialInsurance, setCodeSocialInsurance] = useState('');
+    const [bookNumberSocialInsurance, setBookNumberSocialInsurance] = useState('');
+    const [gender, setGender] = useState('male');
+    const [isHeadHousehold, setIsHeadHousehold] = useState('no');
+    const [relationshipWithHeadHousehold, setRelationshipWithHeadHousehold] = useState('');
+    const [cnss, setCnss] = useState('');
+    const [birth, setBirth] = useState('');
+    const [placeOfBirthCertificate, setPlaceOfBirthCertificate] = useState('');
+    const [nationality, setNationality] = useState('');
+    const [nation, setNation] = useState('');
+    const [numberPassport, setNumberPassport] = useState('');
+    const [note, setNote] = useState('');
 
     const _handleCurName = (e) => {
         let { value } = e.target;
-        setCurrentMember({
-            ...currentMember,
-            name: value
-        })
+        setName(value)
     }
 
     const _handleCurCodeSocialInsurance = (e) => {
         let { value } = e.target;
-        setCurrentMember({
-            ...currentMember,
-            codeSocialInsurance: value
-        })
+        setCodeSocialInsurance(value)
     }
 
     const _handleCurBookNumberSocialInsurance = (e) => {
         let { value } = e.target;
-        setCurrentMember({
-            ...currentMember,
-            bookNumberSocialInsurance: value
-        })
+        setBookNumberSocialInsurance(value)
     }
 
     const _handleCurGender = (e) => {
         let { value } = e.target;
-        setCurrentMember({
-            ...currentMember,
-            gender: value
-        })
+        setGender(value)
     }
 
-    const _handleCurIsHeadHousehold = (value) => {
-        setCurrentMember({
-            ...currentMember,
-            isHeadHousehold: value[0]
-        })
+    const _handleCurIsHeadHousehold = (e) => {
+        let { value } = e.target;
+        setIsHeadHousehold(value);
     }
 
     const _handleCurRelationshipWithHeadHousehold = (e) => {
         let { value } = e.target;
-        setCurrentMember({
-            ...currentMember,
-            relationshipWithHeadHousehold: value
-        })
+        setRelationshipWithHeadHousehold(value)
     }
 
-    const _handleCurBirth = (e) => {
-        let { value } = e.target;
-        setCurrentMember({
-            ...currentMember,
-            birth: value
-        })
+    const _handleCurBirth = (value) => {
+        setBirth(value)
     }
 
     const _handleCurCnss = (e) => {
         let { value } = e.target;
-        setCurrentMember({
-            ...currentMember,
-            cnss: value
-        })
+        setCnss(value)
     }
 
     const _handleCurPlaceOfBirthCertificate = (e) => {
         let { value } = e.target;
-        setCurrentMember({
-            ...currentMember,
-            placeOfBirthCertificate: value
-        })
+        setPlaceOfBirthCertificate(value)
     }
 
     const _handleCurNationality = (e) => {
         let { value } = e.target;
-        setCurrentMember({
-            ...currentMember,
-            nationality: value
-        })
+        setNationality(value)
     }
 
 
     const _handleCurNation = (e) => {
         let { value } = e.target;
-        setCurrentMember({
-            ...currentMember,
-            nation: value
-        })
+        setNation(value)
     }
 
     const _handleCurNumberPassport = (e) => {
         let { value } = e.target;
-        setCurrentMember({
-            ...currentMember,
-            numberPassport: value
-        })
+        setNumberPassport(value)
     }
 
     const _handleCurNote = (e) => {
         let { value } = e.target;
-        setCurrentMember({
-            ...currentMember,
-            note: value
-        })
+        setNote(value)
     }
 
     const _openModalAddFamilyMember = () => {
-        window.$('#modal-add-family-members').modal('show'); // hiển thị form thành viên hộ gia đình
+        window.$('#modal-add-family-members').modal({ backdrop: 'static', display: 'show' }); // hiển thị form thành viên hộ gia đình
     }
 
     const _addFamilyMember = () => {
-        _save(currentMember);
-        setCurrentMember(initMember);
+        const member = {
+            name,
+            codeSocialInsurance,
+            bookNumberSocialInsurance,
+            gender,
+            isHeadHousehold,
+            relationshipWithHeadHousehold,
+            cnss,
+            birth: getTimeFromFormatDate(birth, 'dd-mm-yyyy'),
+            placeOfBirthCertificate,
+            nationality,
+            nation,
+            numberPassport,
+            note
+        }
+        _save(member);
+        setName('')
+        setCodeSocialInsurance('')
+        setBookNumberSocialInsurance('')
+        setGender('male')
+        setIsHeadHousehold('no')
+        setRelationshipWithHeadHousehold('')
+        setCnss('')
+        setBirth('')
+        setPlaceOfBirthCertificate('')
+        setNationality('')
+        setNation('')
+        setNumberPassport('')
+        setNote('')
     }
 
     return (
         <React.Fragment>
-            <button className="btn btn-success pull-right" style={{ cursor: 'pointer' }} onClick={_openModalAddFamilyMember}>Thêm mới</button>
+            <button className="btn btn-success pull-right" style={{ cursor: 'pointer' }} onClick={_openModalAddFamilyMember}>{translate('general.add')}</button>
             <DialogModal
                 modalID="modal-add-family-members"
                 formID="form-add-family-members"
-                title="Thêm thành viên trong hộ gia đình"
-                func={_addFamilyMember} size={75}
+                title={translate('human_resource.profile.house_hold.add')}
+                func={_addFamilyMember} size={100}
             >
                 <form id="form-add-family-members">
                     <div className="row">
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className="form-group">
-                                <label>Họ và tên</label>
-                                <input className="form-control" onChange={_handleCurName} value={currentMember.name} />
+                                <label>{translate('human_resource.profile.house_hold.members.name')}</label>
+                                <input className="form-control" onChange={_handleCurName} value={name} />
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className="form-group">
-                                <label>Mã số BHXH</label>
-                                <input className="form-control" onChange={_handleCurCodeSocialInsurance} value={currentMember.codeSocialInsurance} />
+                                <label>{translate('human_resource.profile.house_hold.members.code_social_insurance')}</label>
+                                <input className="form-control" onChange={_handleCurCodeSocialInsurance} value={codeSocialInsurance} />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <div className="form-group">
+                                <label>{translate('human_resource.profile.house_hold.members.book_nci')}</label>
+                                <input className="form-control" onChange={_handleCurBookNumberSocialInsurance} value={bookNumberSocialInsurance} />
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className="form-group">
-                                <label>Số sổ BHXH</label>
-                                <input className="form-control" onChange={_handleCurBookNumberSocialInsurance} value={currentMember.bookNumberSocialInsurance} />
+                                <label>{translate('human_resource.profile.house_hold.members.is_hh')}</label>
+                                <div>
+                                    <div className="radio-inline">
+                                        <label>
+                                            <input type="radio" value="yes" onChange={_handleCurIsHeadHousehold}
+                                                checked={isHeadHousehold === 'yes' ? true : false} />&nbsp;&nbsp; Có</label>
+                                    </div>
+                                    <div className="radio-inline">
+                                        <label>
+                                            <input type="radio" value="no" onChange={_handleCurIsHeadHousehold}
+                                                checked={isHeadHousehold === 'no' ? true : false} />&nbsp;&nbsp; Không</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <div className="form-group">
+                                <label>{translate('human_resource.profile.house_hold.members.rwhh')}</label>
+                                <input className="form-control" onChange={_handleCurRelationshipWithHeadHousehold} value={relationshipWithHeadHousehold} />
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <div className="form-group ">
+                                <label>{translate('human_resource.profile.house_hold.members.gender')}</label>
+                                <div>
+                                    <div className="radio-inline">
+                                        <label>
+                                            <input type="radio" value="male" onChange={_handleCurGender}
+                                                checked={gender === "male" ? true : false} />&nbsp;&nbsp;{translate('human_resource.profile.male')}</label>
+                                    </div>
+                                    <div className="radio-inline">
+                                        <label>
+                                            <input type="radio" value="female" onChange={_handleCurGender}
+                                                checked={gender === "female" ? true : false} />&nbsp;&nbsp;{translate('human_resource.profile.female')}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className="form-group">
-                                <label>Giới tính</label>
-                                <SelectBox
-                                    id="house-hold-family-gender"
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    items={[
-                                        { text: 'Nam', value: 'male' },
-                                        { text: 'Nữ', value: 'female' }
-                                    ]}
-                                    onChange={_handleCurGender}
-                                    multiple={false}
+                                <label>{translate('human_resource.profile.house_hold.members.birth')}</label>
+                                <DatePicker
+                                    id="edit-member-birthday"
+                                    value={birth}
+                                    onChange={_handleCurBirth}
                                 />
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className="form-group">
-                                <label>Là chủ hộ</label>
-                                <SelectBox
-                                    id="select-head-house-hold-family"
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    items={[
-                                        { text: 'Có', value: true },
-                                        { text: 'Không', value: false }
-                                    ]}
-                                    onChange={_handleCurIsHeadHousehold}
-                                    multiple={false}
-                                />
+                                <label>{translate('human_resource.profile.house_hold.members.cnss')}</label>
+                                <input className="form-control" onChange={_handleCurCnss} value={cnss} />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <div className="form-group">
+                                <label>{translate('human_resource.profile.house_hold.members.pob')}</label>
+                                <input className="form-control" onChange={_handleCurPlaceOfBirthCertificate} value={placeOfBirthCertificate} />
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className="form-group">
-                                <label>Quan hệ với chủ hộ</label>
-                                <input className="form-control" onChange={_handleCurRelationshipWithHeadHousehold} value={currentMember.relationshipWithHeadHousehold} />
+                                <label>{translate('human_resource.profile.house_hold.members.nationality')}</label>
+                                <input className="form-control" onChange={_handleCurNationality} value={nationality} />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <div className="form-group">
+                                <label>{translate('human_resource.profile.house_hold.members.nation')}</label>
+                                <input className="form-control" onChange={_handleCurNation} value={nation} />
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className="form-group">
-                                <label>Ngày sinh</label>
-                                <input className="form-control" onChange={_handleCurBirth} value={currentMember.birth} />
+                                <label>{translate('human_resource.profile.house_hold.members.npp')}</label>
+                                <input className="form-control" onChange={_handleCurNumberPassport} value={numberPassport} />
                             </div>
                         </div>
-                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                            <div className="form-group">
-                                <label>CNSS</label>
-                                <input className="form-control" onChange={_handleCurCnss} value={currentMember.cnss} />
-                            </div>
-                        </div>
-                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                            <div className="form-group">
-                                <label>Nơi cấp giấy khai sinh</label>
-                                <input className="form-control" onChange={_handleCurPlaceOfBirthCertificate} value={currentMember.placeOfBirthCertificate} />
-                            </div>
-                        </div>
-                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                            <div className="form-group">
-                                <label>Quốc tịch</label>
-                                <input className="form-control" onChange={_handleCurNationality} value={currentMember.nationality} />
-                            </div>
-                        </div>
-                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                            <div className="form-group">
-                                <label>Dân tộc</label>
-                                <input className="form-control" onChange={_handleCurNation} value={currentMember.nation} />
-                            </div>
-                        </div>
-                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                            <div className="form-group">
-                                <label>Số CMND/Hộ chiếu</label>
-                                <input className="form-control" onChange={_handleCurNumberPassport} value={currentMember.numberPassport} />
-                            </div>
-                        </div>
+                    </div>
+                    <div className="row">
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <div className="form-group">
-                                <label>Ghi chú</label>
-                                <textarea className="form-control" onChange={_handleCurNote} value={currentMember.note} />
+                                <label>{translate('human_resource.profile.house_hold.members.note')}</label>
+                                <textarea className="form-control" onChange={_handleCurNote} value={note} />
                             </div>
                         </div>
                     </div>
@@ -253,4 +257,4 @@ const FamilyMemberModal = ({
     )
 }
 
-export default connect()(withTranslate(FamilyMemberModal));
+export default connect()(withTranslate(FamilyMemberInfo));

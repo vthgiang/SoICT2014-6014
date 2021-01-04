@@ -1,10 +1,10 @@
 const {
     Field
-} = require(`${SERVER_MODELS_DIR}`);
+} = require('../../../models');
 
 const {
     connect
-} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+} = require(`../../../helpers/dbHelper`);
 
 /**
  * Lấy danh sách lĩnh vực/ngành nghề

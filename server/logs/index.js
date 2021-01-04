@@ -1,7 +1,7 @@
 const { createLogger, format, transports } = require('winston');
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { connect } = require(`../helpers/dbHelper`);
 const { combine, timestamp, label, printf } = format;
-const { Company } = require(`${SERVER_MODELS_DIR}`);
+const { Company } = require('../models');
 
 const myFormat = printf(({ level, message, label, timestamp }) => {
     return `${timestamp} |${label}| ${level} ${message}`;

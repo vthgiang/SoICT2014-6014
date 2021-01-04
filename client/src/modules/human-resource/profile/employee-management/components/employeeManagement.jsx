@@ -80,7 +80,7 @@ class EmployeeManagement extends Component {
 
     // Function bắt sự kiện thêm lương nhân viên bằng tay
     createEmployee = () => {
-        window.$('#modal-create-employee').modal('show');
+        window.$('#modal-create-employee').modal({ backdrop: 'static', display: 'show' });
     }
 
     // Function bắt sự kiện thêm lương nhân viên bằng import file

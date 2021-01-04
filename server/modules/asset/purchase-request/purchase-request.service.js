@@ -1,7 +1,8 @@
-const Models = require(`${SERVER_MODELS_DIR}`);
-const {connect} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
-const {freshObject} = require(`${SERVER_HELPERS_DIR}/functionHelper`);
-const {RecommendProcure, User} = Models;
+const Models = require('../../../models');
+const {connect} = require(`../../../helpers/dbHelper`);
+const {freshObject} = require(`../../../helpers/functionHelper`);
+const { RecommendProcure, User } = Models;
+const { freshArray } = require("../../../helpers/functionHelper");
 
 /**
  * Lấy danh sách phiếu đề nghị mua sắm thiết bị
@@ -184,8 +185,8 @@ exports.updatePurchaseRequest = async (portal, id, data, files) => {
     if (data.oldFiles && filesConvert) {
         filesConvert = [...data.oldFiles, ...filesConvert]
     }
-    console.log('filesConvert', filesConvert);
-    var recommendProcureChange = {
+
+    let recommendProcureChange = {
         recommendNumber: data.recommendNumber,
         dateCreate: data.dateCreate,
         proponent: data.proponent._id, // Người đề nghị
@@ -202,6 +203,7 @@ exports.updatePurchaseRequest = async (portal, id, data, files) => {
         files: filesConvert,
     };
 
+    recommendProcureChange = freshObject(recommendProcureChange)
     // Cập nhật thông tin phiếu đề nghị mua sắm thiết bị vào database
     return await RecommendProcure(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
        id,

@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const WorkPlanController = require("./workPlan.controller");
-const { auth } = require(`${SERVER_MIDDLEWARE_DIR}`);
+const { auth } = require(`../../../middleware`);
 
 
 router.get('/workPlans', auth, WorkPlanController.getAllWorkPlans);

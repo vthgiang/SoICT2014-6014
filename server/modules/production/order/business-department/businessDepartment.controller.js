@@ -1,5 +1,5 @@
 const BusinessDepartmentService = require('./buninessDepartment.service');
-const Log = require(`${SERVER_LOGS_DIR}`);
+const Log = require(`../../../../logs`);
 
 exports.createBusinessDepartment = async (req, res) => {
     try {
