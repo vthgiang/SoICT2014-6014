@@ -566,11 +566,13 @@ class EditTaskTemplate extends Component {
                     <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
                         {/**Độ ưu tiên mẫu công việc này */}
                         <div className="form-group" >
-                            <label className="control-label">{translate('task_template.priority')}</label>
+                            <label className="control-label">{translate('task.task_management.priority')}</label>
                             <select className="form-control" value={editingTemplate.priority} onChange={this.handleChangeTaskPriority}>
-                                <option value={3}>{translate('task_template.high')}</option>
-                                <option value={2}>{translate('task_template.medium')}</option>
-                                <option value={1}>{translate('task_template.low')}</option>
+                                <option value={5}>{translate('task.task_management.urgent')}</option>
+                                <option value={4}>{translate('task.task_management.high')}</option>
+                                <option value={3}>{translate('task.task_management.standard')}</option>
+                                <option value={2}>{translate('task.task_management.average')}</option>
+                                <option value={1}>{translate('task.task_management.low')}</option>
                             </select>
                         </div>
                     </div>

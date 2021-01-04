@@ -1,6 +1,6 @@
 const OrganizationalUnitService = require('./organizationalUnit.service');
-const RoleService = require(`${SERVER_MODULES_DIR}/super-admin/role/role.service`);
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const RoleService = require(`../../super-admin/role/role.service`);
+const Logger = require(`../../../logs`);
 
 /**
  * Chú ý: tất cả các phương thức đều xét trong ngữ cảnh một công ty

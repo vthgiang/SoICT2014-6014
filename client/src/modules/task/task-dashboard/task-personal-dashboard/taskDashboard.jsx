@@ -13,6 +13,7 @@ import { DatePicker } from '../../../../common-components';
 import Swal from 'sweetalert2';
 import { TasksIsNotLinked } from './tasksIsNotLinked';
 import { TaskHasActionNotEvaluated } from './taskHasActionNotEvaluated';
+import { InprocessTask } from './inprocessTask';
 
 class TaskDashboard extends Component {
 
@@ -22,21 +23,32 @@ class TaskDashboard extends Component {
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
         let d = new Date(),
-            month = '' + (d.getMonth() + 2),
-            day = '' + d.getDate(),
+            month = d.getMonth() + 1,
             year = d.getFullYear();
-        if (month.length < 2)
-            month = '0' + month;
+        let startMonth, endMonth, startYear;
 
-        if (day.length < 2)
-            day = '0' + day;
+        if (month > 3) {
+            startMonth = month - 3;
+            startYear = year;
+            if (month < 9) {
+                endMonth = '0' + (month + 1);
+            } else {
+                endMonth = month + 1;
+            }
+        } else {
+            startMonth = month - 3 + 12;
+            startYear = year - 1;
+        }
+        if (startMonth < 10)
+            startMonth = '0' + startMonth;
+
 
         this.INFO_SEARCH = {
-            startMonth: [year, month - 3].join('-'),
-            endMonth: month === '13' ? [year + 1, '01'].join('-') : [year, month].join('-'),
+            startMonth: [startYear, startMonth].join('-'),
+            endMonth: month === 12 ? [year + 1, '01'].join('-') : [year, endMonth].join('-'),
 
-            startMonthTitle: `0${month - 4}-${year}`,
-            endMonthTitle: [month - 1, year].join('-')
+            startMonthTitle: [startMonth, startYear].join('-'),
+            endMonthTitle: month < 10 ? ['0' + month, year].join('-') : [month, year].join('-'),
         }
 
         this.state = {
@@ -57,7 +69,6 @@ class TaskDashboard extends Component {
 
     componentDidMount = async () => {
         const { startMonth, endMonth } = this.state;
-
         await this.props.getResponsibleTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
         await this.props.getAccountableTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
         await this.props.getConsultedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
@@ -99,7 +110,7 @@ class TaskDashboard extends Component {
             });
         } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && nextState.willUpdate) {
             this.setState(state => {
-                
+
                 return {
                     ...state,
                     dataStatus: this.DATA_STATUS.FINISHED,
@@ -253,17 +264,29 @@ class TaskDashboard extends Component {
 
         }
 
+        // Config ngày mặc định cho datePiker
         let d = new Date(),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
+            month = d.getMonth() + 1,
             year = d.getFullYear();
+        let startMonthDefault, endMonthDefault, startYear;
 
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-        let defaultEndMonth = [month, year].join('-');
-        let defaultStartMonth = '0' + (month - 3) + '-' + year;
+        if (month > 3) {
+            startMonthDefault = month - 3;
+            startYear = year;
+            if (month < 9) {
+                endMonthDefault = '0' + (month + 1);
+            } else {
+                endMonthDefault = month + 1;
+            }
+        } else {
+            startMonthDefault = month - 3 + 12;
+            startYear = year - 1;
+        }
+        if (startMonthDefault < 10)
+            startMonthDefault = '0' + startMonthDefault;
+
+        let defaultStartMonth = [startMonthDefault, startYear].join('-');
+        let defaultEndMonth = month < 10 ? ['0' + month, year].join('-') : [month, year].join('-');
 
         let { startMonthTitle, endMonthTitle } = this.INFO_SEARCH;
         return (
@@ -371,7 +394,9 @@ class TaskDashboard extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col-xs-12">
+                </div>
+                <div class="row">
+                    <div className="col-xs-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.detail_status')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
@@ -384,6 +409,20 @@ class TaskDashboard extends Component {
                                         endMonth={endMonth}
                                     />
                                 }
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-xs-6">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">{translate('task.task_management.calc_progress')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+                            </div>
+                            <div className="box-body qlcv">
+                                <InprocessTask
+                                    startMonth={startMonth}
+                                    endMonth={endMonth}
+                                    tasks={tasks}
+                                />
                             </div>
                         </div>
                     </div>

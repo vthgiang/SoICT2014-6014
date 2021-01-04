@@ -6,12 +6,12 @@ const {
     UserRole,
     OrganizationalUnit,
     Document,
-} = require(`${SERVER_MODELS_DIR}`);
+} = require('../../models');
 const arrayToTree = require("array-to-tree");
 const fs = require("fs");
 const ObjectId = require("mongoose").Types.ObjectId;
-const { connect, } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
-const { dateParse } = require(`${SERVER_HELPERS_DIR}/functionHelper`);
+const { connect, } = require(`../../helpers/dbHelper`);
+const { dateParse } = require(`../../helpers/functionHelper`);
 
 /**
  * Lấy danh sách tất cả các tài liệu văn bản

@@ -14,6 +14,9 @@ const BankAccountSchema = new Schema({
         type: String,
         required: true
     },
+    bankAcronym: {
+        type: String,
+    },
     status: {
         type: Boolean,
         required: true,

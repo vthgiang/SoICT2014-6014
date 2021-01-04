@@ -4,11 +4,11 @@ const { getAllEmployeeOfUnitByRole } = require("../../../super-admin/user/user.s
 
 const {
     WorkSchedule, ManufacturingMill, ManufacturingWorks, ManufacturingCommand
-} = require(`${SERVER_MODELS_DIR}`);
+} = require(`../../../../models`);
 
 const {
     connect
-} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+} = require(`../../../../helpers/dbHelper`);
 
 // Hàm lấy ra tổng số ngày trong tháng
 function getAllDayOfMonth(month) {

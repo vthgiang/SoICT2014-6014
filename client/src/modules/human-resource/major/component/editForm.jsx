@@ -78,27 +78,19 @@ class EditForm extends Component {
 
         console.log('state data', this.state);
 
-        // let node = "";
-        // node = list.filter(archive => archive._id === archiveId)[0]
-
-        // // find node child 
-        // let array = [];
-        // if (node) {
-        //     array = this.findChildrenNode(list, node);
-        // }
-
-        // this.props.editDocumentArchive(archiveId, {
-        //     name,
-        //     description,
-        //     parent: archiveParent,
-        //     array: array,
-        // });
+        this.props.updateMajor(this.state);
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.majorId !== prevState.majorId) {
             return {
                 ...prevState,
+                oldData: {
+                    majorId: nextProps.majorId,
+                    name: nextProps.majorName,
+                    code: nextProps.majorCode,
+                    parent: nextProps.majorParent,
+                },
                 majorId: nextProps.majorId,
                 name: nextProps.majorName,
                 code: nextProps.majorCode,
@@ -155,8 +147,7 @@ class EditForm extends Component {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
-    // editDocumentArchive: CareerReduxAction.editDocumentArchive,
-    // getDocumentArchives: CareerReduxAction.getDocumentArchive,
+    updateMajor: MajorActions.updateMajor,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(EditForm));

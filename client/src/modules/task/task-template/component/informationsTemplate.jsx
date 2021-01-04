@@ -278,7 +278,7 @@ class InformationForm extends Component{
                     {/**Kiểu dữ liệu trường thông tin */}
                     <label className=" control-label">{translate('task_template.datatypes')}</label>
                     <div style={{ width: '100%' }}>
-                        <select onChange={this.handleChangeInfoType} className="form-control" id="seltype" value={information.type} name="type" >
+                        <select disabled={this.props.disabled} onChange={this.handleChangeInfoType} className="form-control" id="seltype" value={information.type} name="type" >
                             <option value={this.INFO_TYPE.TEXT}>{translate('task_template.text')}</option>
                             <option value={this.INFO_TYPE.NUMBER}>{translate('task_template.number')}</option>
                             <option value={this.INFO_TYPE.DATE}>{translate('task_template.date')}</option>

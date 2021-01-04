@@ -30,15 +30,16 @@ class Major extends Component {
     checkNode = (e, data) => {
         this.setState({
             majorParent: [...data.selected],
-            deleteNode: [...data.selected, ...data.node.children_d]
+            // deleteNode: [...data.selected, ...data.node.children_d],
+            deleteNode: [...data.selected],
         })
     }
 
     unCheckNode = (e, data) => {
         this.setState({
             majorParent: [...data.selected],
-            deleteNode: [...data.selected, ...data.node.children_d],
-
+            // deleteNode: [...data.selected, ...data.node.children_d],
+            deleteNode: [...data.selected],
         })
     }
     handleAddMajor = (event) => {
@@ -63,17 +64,8 @@ class Major extends Component {
             confirmButtonText: translate('general.yes'),
         }).then(result => {
             console.log('Confirm delete');
-            if (result.value && majorParent.length > 1) {
-                // this.props.deleteDocumentArchive(majorParent, "many");
-                // this.setState({
-                //     deleteNode: []
-                // });
-            } else if (result.value && majorParent.length === 1) {
-                // this.props.deleteDocumentArchive(majorParent, 'single');
-                // this.setState({
-                //     deleteNode: []
-                // });
-            }
+            console.log('state', this.state);
+            this.props.deleteMajor(deleteNode);
         })
     }
 
@@ -193,6 +185,7 @@ const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
     getListMajor: MajorActions.getListMajor,
+    deleteMajor: MajorActions.deleteMajor,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(Major));

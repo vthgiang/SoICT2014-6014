@@ -1,6 +1,6 @@
 const EmployeeKpiSetService = require('./creation.service');
 const KPIPersonalController = require("../../employee/management/management.controller");
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../../../logs`);
 
 // Điều phối đến các hàm thao tác với cơ sở dữ liệu của module quản lý kpi cá nhân
 

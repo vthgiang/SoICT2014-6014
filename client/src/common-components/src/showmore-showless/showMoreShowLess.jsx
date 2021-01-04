@@ -14,7 +14,7 @@ class ShowMoreShowLess extends Component {
             showMore: translate("common_component.showmore_showless.showmore"),
             showLess: translate("common_component.showmore_showless.showless"),
             titleShowMore: translate("common_component.showmore_showless.title_showmore"),
-            titleShowLess: translate("common_component.showmore_showless.title_showless")
+            titleShowLess: translate("common_component.showmore_showless.title_showless"),
         }
 
     }
@@ -28,12 +28,21 @@ class ShowMoreShowLess extends Component {
         }
     }
 
+    componentDidUpdate = () => {
+        const { isText = true } = this.props;
+        if (isText) {
+            this.addReadMoreText();
+        } else {
+            this.addReadMoreComponent();
+        }
+    }
+
     addReadMoreText = () => {
         const { id, characterLimit = 200 } = this.props;
-        const { showMore, showLess, titleShowMore, titleShowLess } = this.state;
 
+        window.$(`#span${id}`).hide();
         //Traverse all selectors with this class and manupulate HTML part to show Read More
-        window.$(`#showmore-showless${id}`).each(function() {
+        window.$(`#showmore-showless${id} > .text`).each(function () {
             if (window.$(this).find(".firstSec").length)
                 return;
 
@@ -41,40 +50,46 @@ class ShowMoreShowLess extends Component {
             if (allstr.length > characterLimit) {
                 let firstSet = allstr.substring(0, characterLimit);
                 let secdHalf = allstr.substring(characterLimit, allstr.length);
-                let strtoadd = firstSet + "<span class='hide-component'>" + secdHalf + `</span><a id='readMore${id}' class='read-more' title=${titleShowMore}>` + " ... " + showMore + `</a><a id='readLess${id}' class='read-less' title=${titleShowLess}>` + " " + showLess + "</a>";
+                // let strtoadd = firstSet + "<span class='hide-component'>" + secdHalf + `</span><a id='readMore${id}' class='read-more' title='${titleShowMore}'>` + " ... " + showMore + `</a><a id='readLess${id}' class='read-less' title=${titleShowLess}>` + " " + showLess + "</a>";
+                let strtoadd = firstSet + "<span class='hide-component'>" + secdHalf + `</span>`;
                 window.$(this).html(strtoadd);
+                window.$(`#span${id}`).show();
             }
 
         });
-
-        this.clickEventShow();
     }
 
     addReadMoreComponent = () => {
-        this.clickEventShow();
-    }
-
-    clickEventShow = () => {
         const { id } = this.props;
 
-        //Show More and Show Less Click Event binding
-        window.$(document).on("click", `#readMore${id}, #readLess${id}`, () => {
-            window.$(`#showmore-showless${id}`).toggleClass("showless-content showmore-content");
-        });
+        if (!window.$(`#showmore-showless${id} > .hide-component`)[0]) {
+            window.$(`#span${id}`).hide();
+        } else {
+            window.$(`#span${id}`).show();
+        }
+    }
+
+    handleShowMore = () => {
+        const { id } = this.props;
+
+        window.$(`#showmore-showless${id}`).toggleClass("showless-content showmore-content");
     }
 
     render() {
-        const { id, value, isText = true } = this.props;
+        const { id, value, isText = true, classShowMoreLess = "", styleShowMoreLess = {} } = this.props;
         const { showMore, showLess, titleShowMore, titleShowLess } = this.state;
 
         return (
             <React.Fragment>
                 {
                     isText
-                        ? <p id={`showmore-showless${id}`} className="add-read-more showless-content">{value}</p>
-                        : <section id={`showmore-showless${id}`}  className="add-read-more showless-content">
+                        ? <span id={`showmore-showless${id}`} className="add-read-more showless-content">
+                            <span className='text'>{value}</span>
+                            <span id={`span${id}`} style={styleShowMoreLess} className={classShowMoreLess}><a id={`readMore${id}`} className='read-more' title={titleShowMore} onClick={this.handleShowMore}> ... {showMore} </a><a id={`readLess${id}`} href={`#showmore-showless${id}`} className='read-less' title={titleShowLess} onClick={this.handleShowMore}> {showLess} </a></span>
+                        </span>
+                        : <section id={`showmore-showless${id}`} className="add-read-more showless-content">
                             {this.props.children}
-                            <span><a id={`readMore${id}`} className='read-more' title={titleShowMore}>{showMore}</a><a id={`readLess${id}`} className='read-less' title={titleShowLess}>{showLess}</a></span>
+                            <span id={`span${id}`} style={styleShowMoreLess} className={classShowMoreLess}><a id={`readMore${id}`} className='read-more' title={titleShowMore} onClick={this.handleShowMore}>{showMore} <i className="fa fa-angle-double-down"></i></a><a id={`readLess${id}`} href={`#showmore-showless${id}`} className='read-less' title={titleShowLess} onClick={this.handleShowMore}>{showLess} <i className="fa fa-angle-double-up"></i></a></span>
                         </section>
                 }
             </React.Fragment>

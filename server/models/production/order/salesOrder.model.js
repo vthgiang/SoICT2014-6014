@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-
 const mongoosePaginate = require('mongoose-paginate-v2')
 
 const SalesOrderSchema = new Schema({
@@ -8,42 +7,21 @@ const SalesOrderSchema = new Schema({
         type: String,
         // required: true
     },
-    status: { //1: Chờ phê duyệt, 2: đã phê duyệt, 3: Chờ lấy hàng, 4: Đang giao hàng, 5: Đã hoàn thành, 6: Hủy đơn
+    status: { //1: Chờ xác nhận (bộ phận Sales Admin và bộ phận kế toán xác nhận)
+        //2: Yêu cầu sản xuất, 
+        //3:Sẵn hàng trong kho, 4: Xuất kho
+        //5: Đang giao hàng , 6: Đã giao hàng, 7: Đã hủy
         type: Number,
-        enum: [1, 2, 3, 4, 5, 6],
-        // required: true
+        enum: [1, 2, 3, 4, 5, 6, 7],
+        // required: true,
+        default: 1
     },
     creator: {
         type: Schema.Types.ObjectId,
         ref: 'User',
         // required: true
     },
-    approvers: [{
-        approver: {
-            type: Schema.Types.ObjectId,
-            ref: 'User',
-            // required: true
-        },
-        approveAt: {
-            type: Date,
-            // required: true
-        }
-    }],
-    priority: { // 1: Thấp, 2: Trung bình, 3: Cao, 4: Đặc biệt
-        type: Number,
-        enum: [1, 2, 3, 4],
-        // required: true
-    },
-    deliveryStartDate: {
-        type: Date
-    },
-    deliveryEndDate: {
-        type: Date
-    },
-    deliveryAt: {
-        type: Date
-    },
-    //CUSTOMER CỦA ANH TUẤN
+    //Khách hàng
     customer: {
         type: Schema.Types.ObjectId,
         ref: 'Customer',
@@ -57,100 +35,239 @@ const SalesOrderSchema = new Schema({
         type: String,
         // required: true
     },
+    customerRepresent: { //người đại diện
+        type: String
+    },
+    customerEmail: {
+        type: String
+    },
+    approvers: [{
+        approver: {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+            // required: true
+        },
+        approverRole: {
+            type: Number,
+            enum: [1, 2] //1. Sales Admin, 2. Kế toán
+        },
+        approveAt: {
+            type: Date,
+            default: new Date()
+        },
+        status: {
+            type: Boolean,
+            default: false
+        }
+    }],
+    priority: { // 1: Thấp, 2: Trung bình, 3: Cao, 4: Đặc biệt
+        type: Number,
+        enum: [1, 2, 3, 4],
+        // required: true
+    },
     goods: [{
         good: {
             type: Schema.Types.ObjectId,
             ref: 'Good',
             // required: true
         },
-        returnRule: [{
-            type: Schema.Types.ObjectId,
-            ref: 'ReturnRule'
-        }],
-        serviceLevelAgreement: [{
-            type: Schema.Types.ObjectId,
-            ref: 'ServiceLevelAgreement'
-        }],
-        price: {
+        pricePerBaseUnit: {
             type: Number,
             // required: true
+        },
+        pricePerBaseUnitOrigin: {
+            type: Number,
+        },
+        salesPriceVariance: {
+            type: Number
         },
         quantity: {
             type: Number,
             // required: true
         },
-        baseUnit: {
-            type: String,
-            // required: true
+        manufacturingWorks: {
+            type: Schema.Types.ObjectId,
+            ref: 'ManufacturingWorks'
         },
-        balanceQuantity: { //Số còn dư trong kho
-            type: Number,
-            // required: true
+        manufacturingPlan: {//Lấy trạng thái từ kế hoạch SX
+            type: Schema.Types.ObjectId,
+            ref: 'ManufacturingPlan'
         },
-        completedQuantity: { // Số đã sản xuất và đã nhập kho
-            type: Number,
-            // required: true
-        },
+        //service level agreement
+        serviceLevelAgreements: [{
+            _id: {
+                type: Schema.Types.ObjectId,
+                ref: 'ServiceLevelAgreement'
+            },
+            title: {
+                type: String
+            },
+            descriptions: [{
+                type: String
+            }]
+        }],
         taxs: [{
-            type: Schema.Types.ObjectId,
-            ref: 'Tax'
+            _id: {
+                type: Schema.Types.ObjectId,
+                ref: 'Tax'
+            },
+            code: {
+                type: String
+            },
+            name: {
+                type: String
+            },
+            description: {
+                type: String
+            },
+            percent: {
+                type: Number
+            }
         }],
-        discounts: [{
-            type: Schema.Types.ObjectId,
-            ref: 'Discount'
-        }],
+        discounts: [
+            {
+                _id: {
+                    type: Schema.Types.ObjectId,
+                    ref: 'Discount'
+                },
+                code: {
+                    type: String
+                },
+                type: {
+                    type: String
+                },
+                formality: {
+                    type: String
+                },
+                name: {
+                    type: String
+                },
+                effectiveDate: {
+                    type: Date
+                },
+                expirationDate: {
+                    type: Date
+                },
+                discountedCash: {
+                    type: Number
+                },
+                discountedPercentage: {
+                    type: Number
+                },
+                loyaltyCoin: {
+                    type: Number
+                },
+                bonusGoods: [{
+                    good: {
+                        type: Schema.Types.ObjectId,
+                        ref: 'Good'
+                    },
+                    expirationDateOfGoodBonus: {
+                        type: Date
+                    },
+                    quantityOfBonusGood: {
+                        type: Number
+                    }
+                }],
+                discountOnGoods: {
+                    good: {
+                        type: Schema.Types.ObjectId,
+                        ref: 'Good'
+                    },
+                    expirationDate: {
+                        type: Date
+                    },
+                    discountedPrice: {
+                        type: Number
+                    }
+                }
+            },
+        ],
         note: {
             type: String,
         },
-
-        // Thêm thuộc tính phục vụ cho bên sản xuất
-        packingRule: {
-            type: Schema.Types.String
+        amount: { //Tổng tiền hàng nguyên bản
+            type: Number
         },
-        conversionRate: {
+        amountAfterDiscount: {// Tổng tiền hàng sau khi áp dụng khuyến mãi
+            type: Number
+        },
+        amountAfterTax: {// Tổng tiền hàng sau khi áp dụng thuế
             type: Number
         }
-
     }],
-    discounts: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Discount'
-    }],
-    totalDiscounts: {
-        money: {
-            type: Number
-        },
-        goods: [{
-            good: {
+    discounts: [
+        {
+            _id: {
                 type: Schema.Types.ObjectId,
-                ref: 'Good',
-                // required: true
+                ref: 'Discount'
             },
-            quantity: {
-                type: Number,
-                // required: true
+            code: {
+                type: String
             },
-            percent: {
-                type: Number,
-                // required: true
+            type: {
+                type: String
             },
-            price: {
-                type: Number,
-                // required: true
-            }
-        }],
-        coin: {
-            type: Number
-        }
-    },
-    amount: {
+            formality: {
+                type: String
+            },
+            name: {
+                type: String
+            },
+            effectiveDate: {
+                type: Date
+            },
+            expirationDate: {
+                type: Date
+            },
+            discountedCash: {
+                type: Number
+            },
+            discountedPercentage: {
+                type: Number
+            },
+            loyaltyCoin: {
+                type: Number
+            },
+            maximumFreeShippingCost: {
+                type: Number
+            },
+            bonusGoods: [{
+                good: {
+                    type: Schema.Types.ObjectId,
+                    ref: 'Good'
+                },
+                expirationDateOfGoodBonus: {
+                    type: Date
+                },
+                quantityOfBonusGood: {
+                    type: Number
+                }
+            }],
+        },
+    ],
+    //Phí giao hàng
+    shippingFee: {
         type: Number
     },
+    //Thời gian giao hàng dự kiến
+    deliveryTime: {
+        type: Date
+    },
+    //Giao hàng lúc
+    deliveryAt: {
+        type: Date
+    },
+    //Số coin trừ vào đơn hàng, lúc thanh toán sẽ check, nếu đủ thì trừ, không thì thôi
+    coin: {
+        type: Number
+    },
+    //Tổng thuế cho toàn đơn
     totalTax: {
         type: Number,
     },
-    paymentAmount: {
-        type: Number
+    paymentAmount: { //Tổng tiền thanh toán cho toàn đơn
+        type: Number,
     },
     note: {
         type: String
@@ -174,21 +291,29 @@ const SalesOrderSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'BankAccount'
         },
-        status: {//1: Chưa xác nhận, 2: Đã xác nhận(Đối với chuyển khoản)/Đã nộp tiền(Đối với tiền mặt)
-            type: Number,
-            enum: [1, 2],
-            // required: true
-        },
-        confirmationPerson: {//Người phê duyệt thanh toán
-            type: Schema.Types.ObjectId,
-        },
         paymentAt: {
             type: Date
         },
-        confirmationAt: {
-            type: Date
+    }],
+    bill: {//Phiếu đề nghị xuất kho
+        type: Schema.Types.ObjectId,
+        ref: 'Bill',
+    },
+    invoice: {// Xuất hóa đơn
+        creator: {
+            type: Schema.Types.ObjectId,
+            ref: 'User'
+        },
+        status: {// Xem đã xuất hóa đơn hay chưa
+            type: Boolean,
+            default: false,
+            require: true
         }
-    }]
+    },
+    quote: { //Được lập từ báo giá nếu có
+        type: Schema.Types.ObjectId,
+        ref: 'Quote',
+    }
 }, {
     timestamps: true,
 })

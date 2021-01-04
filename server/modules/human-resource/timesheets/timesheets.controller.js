@@ -1,6 +1,6 @@
 const TimesheetService = require('./timesheets.service');
 
-const Log = require(`${SERVER_LOGS_DIR}`);
+const Log = require(`../../../logs`);
 
 /** Lấy danh sách thông tin chấm công */
 exports.searchTimesheets = async (req, res) => {

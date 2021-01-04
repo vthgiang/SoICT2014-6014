@@ -1,4 +1,4 @@
-const Log = require(`${SERVER_LOGS_DIR}`);
+const Log = require(`../../../../logs`);
 const WorkScheduleService = require('./workSchedule.service');
 
 exports.createWorkSchedule = async (req, res) => {

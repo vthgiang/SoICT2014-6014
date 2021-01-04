@@ -1,5 +1,5 @@
 const DocumentServices = require("./document.service");
-const Logger = require(`${SERVER_LOGS_DIR}`);
+const Logger = require(`../../logs`);
 
 /**
  * Các controller cho phần quản lý tài liệu văn bản

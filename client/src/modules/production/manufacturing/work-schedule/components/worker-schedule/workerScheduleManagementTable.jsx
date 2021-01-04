@@ -224,7 +224,7 @@ class WorkerScheduleManagementTable extends Component {
                 />
                 <div id="croll-table-worker" className="form-inline">
                     <div className="col-lg-6 col-md-6 col-sm-7 col-xs-8" style={{ padding: 0 }}>
-                        <table id="info-mill-table-worker" className="table table-bordered">
+                        <table id="info-mill-table-worker" className="table table-bordered not-sort">
                             <thead>
                                 <tr>
                                     <th>{translate('manufacturing.work_schedule.employee_name')}</th>
@@ -267,7 +267,7 @@ class WorkerScheduleManagementTable extends Component {
                         </table>
                     </div>
                     <div className="col-lg-6 col-md-6 col-sm-5 col-xs-4" style={{ padding: 0 }}>
-                        <table id="work-schedule-table-worker" className="table table-striped table-bordered table-hover">
+                        <table id="work-schedule-table-worker" className="table table-striped table-bordered table-hover not-sort">
                             <thead>
                                 <tr>
                                     {

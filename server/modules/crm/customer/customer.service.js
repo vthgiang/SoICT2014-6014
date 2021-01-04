@@ -1,5 +1,5 @@
-const { Customer,User } = require(`${SERVER_MODELS_DIR}`);
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const { Customer,User } = require('../../../models');
+const { connect } = require(`../../../helpers/dbHelper`);
 
 exports.getUrl = (destination, filename) => {
     let url = `${destination}/${filename}`;

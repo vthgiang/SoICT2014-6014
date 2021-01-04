@@ -15,6 +15,7 @@ import { getStorage } from '../../../../config';
 import { SelectFollowingTaskModal } from './selectFollowingTaskModal';
 import { withTranslate } from 'react-redux-multilingual';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
+import { ShowMoreShowLess } from '../../../../common-components';
 
 class DetailTaskTab extends Component {
 
@@ -164,8 +165,10 @@ class DetailTaskTab extends Component {
     formatPriority = (data) => {
         const { translate } = this.props;
         if (data === 1) return translate('task.task_management.low');
-        if (data === 2) return translate('task.task_management.normal');
-        if (data === 3) return translate('task.task_management.high');
+        if (data === 2) return translate('task.task_management.average');
+        if (data === 3) return translate('task.task_management.standard');
+        if (data === 4) return translate('task.task_management.high');
+        if (data === 5) return translate('task.task_management.urgent');
     }
 
     formatStatus = (data) => {
@@ -876,6 +879,7 @@ class DetailTaskTab extends Component {
                         {employeeCollaboratedWithUnitSelectBox && employeeCollaboratedWithUnitSelectBox.length !== 0
                             && employeeCollaboratedWithUnitSelectBox.map(item =>
                                 <CollaboratedWithOrganizationalUnits
+                                    key={item.id}
                                     task={task}
                                     employeeSelectBox={item}
                                     unitId={item.id}
@@ -929,10 +933,12 @@ class DetailTaskTab extends Component {
 
                                 {/* Mô tả công việc */}
                                 <div>
-                                    <strong>{translate('task.task_management.detail_description')}:</strong>
-                                    <span>
-                                        {task && task.description}
-                                    </span>
+                                <strong>{translate('task.task_management.detail_description')}:</strong>
+                                    <ShowMoreShowLess
+                                        id={"statistic"}
+                                        characterLimit={210}
+                                        value={task && task.description}
+                                    />
                                     <br />
                                 </div>
                             </div>

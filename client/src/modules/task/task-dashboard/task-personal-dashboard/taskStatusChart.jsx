@@ -60,6 +60,9 @@ class TaskStatusChart extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
+        if (nextProps.TaskOrganizationUnitDashboard !== this.state.TaskOrganizationUnitDashboard) {
+            this.pieChart();
+        }
         if (
             nextProps.callAction !== this.state.callAction
             || nextProps.startMonth !== this.props.startMonth
@@ -100,7 +103,7 @@ class TaskStatusChart extends Component {
         }
 
         if (nextState.role !== this.state.role) {
-            await this.setState(state => {
+            this.setState(state => {
                 return {
                     ...state,
                     role: nextState.role
@@ -123,7 +126,7 @@ class TaskStatusChart extends Component {
                 await this.props.getInformedTaskByUser([], 1, 100, [],  [], [], null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
                 await this.props.getCreatorTaskByUser([], 1, 100, [],  [], [], null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
             }
-            await this.setState(state => {
+            this.setState(state => {
                 return {
                     ...state,
                     dataStatus: this.DATA_STATUS.QUERYING,
@@ -157,7 +160,7 @@ class TaskStatusChart extends Component {
             });
 
             return false;
-        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && nextState.willUpdate) {
+        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE) {
             this.pieChart();
 
             this.setState(state => {
@@ -174,12 +177,13 @@ class TaskStatusChart extends Component {
 
     static getDerivedStateFromProps = (nextProps, prevState) => {
 
-        if (nextProps.callAction !== prevState.callAction || nextProps.startMonth !== prevState.startMonth || nextProps.endMonth !== prevState.endMonth) {
+        if (nextProps.callAction !== prevState.callAction || nextProps.startMonth !== prevState.startMonth || nextProps.endMonth !== prevState.endMonth || nextProps.TaskOrganizationUnitDashboard !== prevState.TaskOrganizationUnitDashboard) {
             return {
                 ...prevState,
                 callAction: nextProps.callAction,
                 startMonth: nextProps.startMonth,
-                endMonth: nextProps.endMonth
+                endMonth: nextProps.endMonth,
+                TaskOrganizationUnitDashboard: nextProps.TaskOrganizationUnitDashboard
             }
         } else {
             return null

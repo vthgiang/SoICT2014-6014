@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const ExampleController = require('./example.controller');
-const { auth } = require(`${SERVER_MIDDLEWARE_DIR}`);
+const { auth } = require(`../../middleware`);
 
 router.get('/', auth, ExampleController.getExamples);
 router.get('/getOnlyExampleName', auth, ExampleController.getOnlyExampleName);

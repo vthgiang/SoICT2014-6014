@@ -2,7 +2,7 @@ const exec = require('child_process').exec;
 const CronJob = require('cron').CronJob;
 const fs = require('fs');
 
-const EmployeeController = require(`${SERVER_MODULES_DIR}/human-resource/profile/profile.controller`);
+const EmployeeController = require(`../human-resource/profile/profile.controller`);
 const TaskManagementService = require('../task/task-management/task.service');
 
 exports.createNotificationForEmployeesHaveBrithdayCurrent = new CronJob('0 0 8 * * *', async function () {

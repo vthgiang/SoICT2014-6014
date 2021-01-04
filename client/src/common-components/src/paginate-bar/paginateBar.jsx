@@ -80,11 +80,12 @@ class PaginateBar extends Component {
                         <div className="row" style={{ paddingRight: '15px' }}>
                             <div className="col-xs-12 col-sm-5 col-md-5 col-lg-5">
                                 {
-                                    display && total &&
-                                    <p className="pagination" style={{ border: '1px solid #dddddd', padding: '6px 12px', borderRadius: '5px' }}>
-                                        <b>{translate('general.show')}</b>
-                                        {`${display}/${total}`}
-                                    </p>
+                                    display && total
+                                        ? <p className="pagination" style={{ border: '1px solid #dddddd', padding: '6px 12px', borderRadius: '5px' }}>
+                                            <b>{translate('general.show')}</b>
+                                            {`${display}/${total}`}
+                                        </p>
+                                        : null
                                 }
                             </div>
                             <div className="col-xs-12 col-sm-7 col-md-7 col-lg-7">

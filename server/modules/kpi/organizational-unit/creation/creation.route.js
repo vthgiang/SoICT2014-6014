@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const KPIUnitController = require("./creation.controller");
-const { auth } = require(`${SERVER_MIDDLEWARE_DIR}`);
+const { auth } = require(`../../../../middleware`);
 
 // Lấy KPI đơn vị hiện tại qua vai trò
 router.get('/organizational-unit-kpi-sets', auth, KPIUnitController.getOrganizationalUnitKpiSet);

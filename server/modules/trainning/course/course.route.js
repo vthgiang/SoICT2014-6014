@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const CourseController = require("./course.controller");
-const { auth } = require(`${SERVER_MIDDLEWARE_DIR}`);
+const { auth } = require(`../../../middleware`);
 
 
 /** Lấy danh sách khoá đào tạo */

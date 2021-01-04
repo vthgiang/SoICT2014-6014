@@ -1,7 +1,7 @@
-const { TaskProcess, ProcessTemplate, Privilege, Role, Task, UserRole, User, OrganizationalUnit } = require(`${SERVER_MODELS_DIR}`);
+const { TaskProcess, ProcessTemplate, Privilege, Role, Task, UserRole, User, OrganizationalUnit } = require(`../../../models`);
 
-const TaskService = require(`${SERVER_MODULES_DIR}/task/task-management/task.service`);
-const { connect } = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+const TaskService = require(`../task-management/task.service`);
+const { connect } = require(`../../../helpers/dbHelper`);
 const nodemailer = require("nodemailer");
 const mongoose = require('mongoose');
 

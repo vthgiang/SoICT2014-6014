@@ -1,12 +1,12 @@
-const UserService = require(`${SERVER_MODULES_DIR}/super-admin/user/user.service`);
+const UserService = require(`../../super-admin/user/user.service`);
 const {
     Employee,
     Salary
-} = require(`${SERVER_MODELS_DIR}`);
+} = require('../../../models');
 
 const {
     connect
-} = require(`${SERVER_HELPERS_DIR}/dbHelper`);
+} = require(`../../../helpers/dbHelper`);
 
 /**
  * Lấy danh sách các bảng lương của nhân viên
