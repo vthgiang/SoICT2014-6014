@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { Loading } from '../../../common-components';
+import moment from 'moment'
 
 class Content extends Component {
     constructor(props) {
@@ -149,7 +150,25 @@ class Content extends Component {
                         return str;
                     }
 
+                    let convertDate = (str) => {
+                        if (moment(str, 'DD-MM-YYYY', true).isValid()) {
+                            str = str.split("-")
+                            str = [str[2], str[1], str[0]].join("-")
+                        }
 
+                        if (moment(str, 'MM-YYYY', true).isValid()) {
+                            str = str.split("-")
+                            str = [str[1], str[0]].join("-")
+                        }
+
+                        if (moment(str, 'HH:mm DD-MM-YYYY', true).isValid()) {
+                            let time = str.split(" ")
+                            let date = time[1].split("-")
+                            date = [date[2], date[1], date[0]].join("-")
+                            str = date + " " + time[0]
+                        }
+                        return str;
+                    }
 
                     let sort = (ascOrder) => {
                         let rows = table.find("tbody>tr");
@@ -176,6 +195,8 @@ class Content extends Component {
                         rows.sort((a, b) => {
                             let keyA = nonAccentVietnamese(window.$(window.$(a).find("td")[j]).text());
                             let keyB = nonAccentVietnamese(window.$(window.$(b).find("td")[j]).text());
+                            keyA = convertDate(keyA);
+                            keyB = convertDate(keyB);
                             if (keyA < keyB) return ascOrder ? -1 : 1;
                             if (keyA > keyB) return ascOrder ? 1 : -1;
                             return 0;
