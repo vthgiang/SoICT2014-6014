@@ -81,7 +81,7 @@ exports.getEmployeeKPISets = async (portal, data) => {
             }
         }
     }
-    
+
     if (startdate && enddate) {
         keySearch = {
             ...keySearch,
@@ -256,7 +256,13 @@ exports.getTasksByKpiId = async (portal, data) => {
     for (let i = 0; i < task.length; i++) {
         let date1 = await task[i].preEvaDate;
         let date2 = await task[i].date;
-        let difference_In_Time = await date2.getTime() - date1.getTime();
+        let difference_In_Time;
+        if (date1) {
+            difference_In_Time = await date2.getTime() - date1.getTime();
+        }
+        else {
+            difference_In_Time = await date2.getTime();
+        }
         let daykpi = await Math.ceil(difference_In_Time / (1000 * 3600 * 24));
 
         if (daykpi > 30)
@@ -340,7 +346,7 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
             autoPointSet = -1;
         }
     };
-    
+
     if (autoPointSet !== -1) {
 
         let updateKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))

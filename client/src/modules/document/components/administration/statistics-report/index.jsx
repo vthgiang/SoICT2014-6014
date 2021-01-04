@@ -27,7 +27,8 @@ class AdministrationStatisticsReport extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-            if (nextProps.documents.administration.categories.list.length && nextProps.documents.administration.data.list.length && nextProps.documents.administration.domains.list.length && nextProps.documents.administration.archives.list.length) {
+            if (nextProps.documents.administration.categories.list.length && nextProps.documents.administration.data.list.length &&
+                nextProps.documents.administration.domains.list.length && nextProps.documents.administration.archives.list.length) {
                 this.setState(state => {
                     return {
                         ...state,
