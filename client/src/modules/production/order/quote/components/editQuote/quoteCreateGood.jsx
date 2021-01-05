@@ -45,6 +45,13 @@ class QuoteCreateGood extends Component {
             await this.getCheckedForGood(nextProps.goods.goodItems);
             return false;
         }
+
+        //Lấy số lượng hàng tồn kho cho các mặt hàng
+        if (nextProps.goods.goodItems.inventoryByGoodId !== nextState.inventory && nextState.good !== "title") {
+            this.setState({
+                inventory: nextProps.goods.goodItems.inventoryByGoodId,
+            });
+        }
         return true;
     };
 
@@ -158,7 +165,6 @@ class QuoteCreateGood extends Component {
                         baseUnit: goodInfo[0].baseUnit,
                         pricePerBaseUnit: goodInfo[0].pricePerBaseUnit,
                         pricePerBaseUnitOrigin: goodInfo[0].pricePerBaseUnit, //giá gốc
-                        inventory: goodInfo[0].quantity,
                         salesPriceVariance: goodInfo[0].salesPriceVariance ? goodInfo[0].salesPriceVariance : 0,
                         pricePerBaseUnitError: undefined,
                         taxs: [],
@@ -467,7 +473,7 @@ class QuoteCreateGood extends Component {
                     note: "",
                     inventory: "",
                     baseUnit: "",
-                    good: "",
+                    good: "title",
                     code: "",
                     goodName: "",
                     step: 0,
@@ -584,7 +590,6 @@ class QuoteCreateGood extends Component {
             pricePerBaseUnitOrigin: item.pricePerBaseUnitOrigin,
             salesPriceVariance: item.salesPriceVariance,
             note: item.note,
-            inventory: goodInfo[0].quantity,
             goodName: item.good.name,
             good: item.good._id,
             baseUnit: item.good.baseUnit,
@@ -621,7 +626,7 @@ class QuoteCreateGood extends Component {
                 note: "",
                 inventory: "",
                 baseUnit: "",
-                good: "",
+                good: "title",
                 code: "",
                 goodName: "",
                 step: 0,
@@ -721,7 +726,7 @@ class QuoteCreateGood extends Component {
                     baseUnit: "",
                     good: "",
                     code: "",
-                    goodName: "",
+                    goodName: "title",
                     step: 0,
                     steps,
                 };

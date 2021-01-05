@@ -4,7 +4,6 @@ import { withTranslate } from "react-redux-multilingual";
 import { GoodActions } from "../../../../common-production/good-management/redux/actions";
 import { DiscountActions } from "../../../discount/redux/actions";
 import { formatCurrency } from "../../../../../../helpers/formatCurrency";
-import ValidationHelper from "../../../../../../helpers/validationHelper";
 import GoodSelected from "./goodCreateSteps/goodSelected";
 import ApplyDiscount from "./goodCreateSteps/applyDiscount";
 import Payment from "./goodCreateSteps/payment";
@@ -41,18 +40,17 @@ class SalesOrderCreateGood extends Component {
         this.props.getAllGoodsByType({ type: "product" });
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.goods.goodItems.inventoryByGoodId !== prevState.inventory) {
-            return {
-                inventory: nextProps.goods.goodItems.inventoryByGoodId,
-            };
-        }
-    }
-
     shouldComponentUpdate = async (nextProps, nextState) => {
         if (this.props.goods.goodItems.goodId !== nextProps.goods.goodItems.goodId) {
             await this.getCheckedForGood(nextProps.goods.goodItems);
             return false;
+        }
+
+        //Lấy số lượng hàng tồn kho cho các mặt hàng
+        if (nextProps.goods.goodItems.inventoryByGoodId !== nextState.inventory && nextState.good !== "title") {
+            this.setState({
+                inventory: nextProps.goods.goodItems.inventoryByGoodId,
+            });
         }
         return true;
     };
@@ -619,7 +617,6 @@ class SalesOrderCreateGood extends Component {
             pricePerBaseUnitOrigin: item.pricePerBaseUnitOrigin,
             salesPriceVariance: item.salesPriceVariance,
             note: item.note,
-            inventory: goodInfo[0].quantity,
             goodName: item.good.name,
             good: item.good._id,
             baseUnit: item.good.baseUnit,
@@ -632,14 +629,14 @@ class SalesOrderCreateGood extends Component {
         this.getCheckedForGood(this.props.goods.goodItems); //gọi để checked trong trường hợp không thay đổi goodId
     };
 
-    handleCancelEditGood = (e) => {
+    handleCancelEditGood = async (e) => {
         e.preventDefault();
         let { steps } = this.state;
         steps = steps.map((step, index) => {
             step.active = !index ? true : false;
             return step;
         });
-        this.setState((state) => {
+        await this.setState((state) => {
             return {
                 ...state,
                 indexEditting: "",

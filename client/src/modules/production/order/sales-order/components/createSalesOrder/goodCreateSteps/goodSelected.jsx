@@ -113,7 +113,7 @@ class GoodSelected extends Component {
                             Số lượng còn trong kho
                             <span className="attention"> * </span>
                         </label>
-                        <input type="text" className="form-control" value={inventory ? inventory + " " + baseUnit : "Hết hàng"} disabled={true} />
+                        <input type="text" className="form-control" value={inventory ? inventory + " " + baseUnit : "0"} disabled={true} />
                     </div>
 
                     <div className={`form-group ${!quantityError ? "" : "has-error"}`}>
