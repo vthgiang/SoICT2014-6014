@@ -4970,7 +4970,7 @@ export default {
                 progress_1: "Đúng tiến độ",
                 progress_2: "Chậm tiến độ",
                 progress_3: "Quá hạn",
-
+                schedule_info: "Xưởng và công nhân",
                 general_info: "Thông tin chung",
                 material_info: "Nguyên vật liệu",
                 command_info: "Lệnh sản xuất",
@@ -5036,6 +5036,7 @@ export default {
                 list_order: "Danh sách đơn hàng",
                 manufacturing_command_info: "Thông tin lệnh sản xuất",
                 history_info: "Lịch sử sản xuất theo mặt hàng",
+                schedule_booking: "Chọn xưởng sản xuất và phân việc công nhân"
 
 
 
