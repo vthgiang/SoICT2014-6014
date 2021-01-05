@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import MillProductivity from '../plan-component/millProductivity';
+import WorkSchedule from '../../../work-schedule/components';
 import HistoryCommandTable from './historyCommandTable';
 
 class MillScheduleBooking extends Component {
@@ -23,9 +23,14 @@ class MillScheduleBooking extends Component {
                 }
                 <div className="row">
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <WorkSchedule />
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{translate('manufacturing.plan.manufacturing_command_info')}</legend>
-                            <table className="table">
+                            <table className="table not-sort">
                                 <thead>
                                     <tr>
                                         <th>{translate('manufacturing.plan.index')}</th>
@@ -35,6 +40,8 @@ class MillScheduleBooking extends Component {
                                         <th>{translate('manufacturing.plan.base_unit')}</th>
                                         <th>{translate('manufacturing.plan.quantity')}</th>
                                         <th>{translate('manufacturing.plan.history_info')}</th>
+                                        <th>{translate('manufacturing.plan.status')}</th>
+                                        <th>{translate('general.action')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -56,6 +63,12 @@ class MillScheduleBooking extends Component {
                                                             <i className="material-icons">visibility</i>
                                                         </a>
                                                     </td>
+                                                    <td></td>
+                                                    <td>
+                                                        <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manufacturing.plan.schedule_booking')}>
+                                                            <i className="material-icons">edit</i>
+                                                        </a>
+                                                    </td>
                                                 </tr>
                                             ))
                                     }
@@ -64,9 +77,30 @@ class MillScheduleBooking extends Component {
                         </fieldset>
                     </div>
                 </div>
-                <div className="row">
+                {/* <div className="row">
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <MillProductivity listGoods={listGoods} />
+                    </div>
+                </div> */}
+                <div className="row">
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">{translate('manufacturing.plan.schedule_booking')}</legend>
+                            <div className="row">
+                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div className={`form-group`}>
+                                        <label>{translate('manufacturing.plan.command_code')}</label>
+                                        <input type="text" disabled={true} className="form-control" />
+                                    </div>
+                                </div>
+                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div className={`form-group`}>
+                                        <label>{translate('manufacturing.plan.command_code')}</label>
+                                        <input type="text" disabled={true} className="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
                     </div>
                 </div>
             </React.Fragment>

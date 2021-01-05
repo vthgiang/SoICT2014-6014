@@ -15,7 +15,7 @@ class MillProductivity extends Component {
         return (
             <fieldset className="scheduler-border">
                 <legend className="scheduler-border">{translate('manufacturing.plan.productivity_mill')}</legend>
-                <table className="table table-bordered">
+                <table className="table table-bordered not-sort">
                     <thead>
                         <tr>
                             <th>{translate('manufacturing.plan.index')}</th>
