@@ -303,6 +303,9 @@ exports.deleteQuote = async (id, portal) => {
 
 //Lấy các báo giá để lập đơn hàng
 exports.getQuotesToMakeOrder = async (portal) => {
-    let quotes = await Quote(connect(DB_CONNECTION, portal)).find({ status: 2 });//Lấy các báo giá đã được duyệt
+    let quotes = await Quote(connect(DB_CONNECTION, portal)).find({ status: 2 })
+    .populate([{
+        path: 'goods.good', select: 'code name baseUnit'
+    }]);
     return {quotes};
 }

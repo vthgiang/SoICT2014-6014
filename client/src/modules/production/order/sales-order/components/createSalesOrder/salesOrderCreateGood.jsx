@@ -459,8 +459,6 @@ class SalesOrderCreateGood extends Component {
                 });
             }
 
-            manufacturingWorks = manufacturingWorks !== "title" ? manufacturingWorks : undefined;
-
             let additionGood = {
                 good: {
                     _id: good,
@@ -479,7 +477,7 @@ class SalesOrderCreateGood extends Component {
                 amountAfterDiscount,
                 amountAfterTax,
                 salesPriceVariance,
-                manufacturingWorks,
+                manufacturingWorks: manufacturingWorks._id !== "title" ? manufacturingWorks : undefined,
             };
 
             listGoods.push(additionGood);
@@ -693,7 +691,7 @@ class SalesOrderCreateGood extends Component {
             let amountAfterTax = this.getAmountAfterApplyTax();
 
             let listTaxs = taxs.map((item) => {
-                let tax = listTaxsByGoodId.find((element) => element._id == item);
+                let tax = listTaxsByGoodId.find((element) => element.code == item);
                 if (tax) {
                     return tax;
                 }
@@ -728,7 +726,7 @@ class SalesOrderCreateGood extends Component {
                 amountAfterDiscount,
                 amountAfterTax,
                 salesPriceVariance,
-                manufacturingWorks,
+                manufacturingWorks: manufacturingWorks._id !== "title" ? manufacturingWorks : undefined,
             };
 
             listGoods[indexEditting] = additionGood;

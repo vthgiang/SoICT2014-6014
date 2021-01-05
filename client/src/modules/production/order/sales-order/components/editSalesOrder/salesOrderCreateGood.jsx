@@ -461,8 +461,6 @@ class SalesOrderCreateGood extends Component {
                 });
             }
 
-            manufacturingWorks = manufacturingWorks !== "title" ? manufacturingWorks : undefined;
-
             let additionGood = {
                 good: {
                     _id: good,
@@ -481,7 +479,7 @@ class SalesOrderCreateGood extends Component {
                 amountAfterDiscount,
                 amountAfterTax,
                 salesPriceVariance,
-                manufacturingWorks,
+                manufacturingWorks: manufacturingWorks._id !== "title" ? manufacturingWorks : undefined,
             };
 
             listGoods.push(additionGood);
@@ -632,7 +630,6 @@ class SalesOrderCreateGood extends Component {
             pricePerBaseUnitOrigin: item.pricePerBaseUnitOrigin,
             salesPriceVariance: item.salesPriceVariance,
             note: item.note,
-            inventory: goodInfo[0].quantity,
             goodName: item.good.name,
             good: item.good._id,
             baseUnit: item.good.baseUnit,
@@ -709,7 +706,7 @@ class SalesOrderCreateGood extends Component {
             let amountAfterTax = this.getAmountAfterApplyTax();
 
             let listTaxs = taxs.map((item) => {
-                let tax = listTaxsByGoodId.find((element) => element._id == item);
+                let tax = listTaxsByGoodId.find((element) => element.code == item);
                 if (tax) {
                     return tax;
                 }
@@ -744,7 +741,7 @@ class SalesOrderCreateGood extends Component {
                 amountAfterDiscount,
                 amountAfterTax,
                 salesPriceVariance,
-                manufacturingWorks,
+                manufacturingWorks: manufacturingWorks._id !== "title" ? manufacturingWorks : undefined,
             };
 
             listGoods[indexEditting] = additionGood;
@@ -1053,7 +1050,7 @@ class SalesOrderCreateGood extends Component {
                                             {item.amountAfterDiscount && item.amountAfterTax
                                                 ? formatCurrency(item.amountAfterTax - item.amountAfterDiscount) + ` (${currency.symbol})`
                                                 : `0 (${currency.symbol})`}
-                                            ({item.taxs.length ? item.taxs[0].percent : "0"}%)
+                                            ({item.taxs.length && item.taxs[0] ? item.taxs[0].percent : "0"}%)
                                         </td>
                                         <td>
                                             {item.amountAfterTax
