@@ -705,12 +705,12 @@ class EditTaskTemplate extends Component {
                     <div className="row">
                         <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
                             {/**Các hoạt động mẫu công việc này */}
-                            <ActionForm initialData={editingTemplate.taskActions} onDataChange={this.handleTaskActionsChange} />
+                            <ActionForm initialData={editingTemplate.taskActions} onDataChange={this.handleTaskActionsChange} type="edit"/>
                         </div>
 
                         <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
                             {/**Các hoạt động mẫu công việc này */}
-                            <InformationForm initialData={editingTemplate.taskInformations} onDataChange={this.handleTaskInformationsChange} />
+                            <InformationForm initialData={editingTemplate.taskInformations} onDataChange={this.handleTaskInformationsChange} type="edit"/>
                         </div>
 
                     </div>

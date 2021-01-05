@@ -379,7 +379,7 @@ class TaskOrganizationUnitDashboard extends Component {
                             <div className="col-xs-12">
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
-                                        <div className="box-title">{translate('task.task_management.dashboard_area_result')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+                                        <div className="box-title">Kết quả trung bình công việc các đơn vị {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                                     </div>
                                     <div className="box-body qlcv">
                                         <AverageResultsOfTaskInOrganizationalUnit
