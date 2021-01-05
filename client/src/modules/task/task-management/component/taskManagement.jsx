@@ -471,6 +471,18 @@ class TaskManagement extends Component {
         }
     }
 
+    getTotalTimeSheet = (ts) => {
+        let total = 0;
+        for (let i = 0; i < ts.length; i++) {
+            let tslog = ts[i];
+            if (typeof (tslog.duration) === 'number') {
+                console.log("số", tslog.duration)
+                total = total + Number(tslog.duration);
+            }
+        }
+        return convertTime(total);
+    }
+
     render() {
         const { tasks, user, translate, taskProject } = this.props;
         const { currentTaskId, currentPage, currentTab, parentTask, startDate, endDate, perPage, status, monthTimeSheetLog } = this.state;
@@ -827,7 +839,7 @@ class TaskManagement extends Component {
                             {
                                 !tasks.isLoading ?
                                     <span style={{ fontWeight: 'bold', fontSize: 24, marginLeft: 50 }}>
-                                        {convertTime(userTimeSheetLogs.reduce((cur, node) => cur + node.duration, 0))}
+                                        {this.getTotalTimeSheet(userTimeSheetLogs)}
                                     </span> : translate('general.loading')
                             }
 
