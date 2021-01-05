@@ -14,4 +14,6 @@ router.delete('/tasks/:taskId', auth, TaskManagementController.deleteTask);
 
 router.get('/analys/user/:userId', auth, TaskManagementController.getTaskAnalysOfUser);
 
+router.get('/time-sheet', auth, TaskManagementController.getUserTimeSheet);
+
 module.exports = router;

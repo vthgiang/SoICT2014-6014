@@ -138,13 +138,15 @@ class TaskAddModal extends Component {
     validateTaskStartDate = (value, willUpdateState = true) => {
         let { translate } = this.props;
         let msg = TaskFormValidator.validateTaskStartDate(value, this.state.newTask.endDate, translate);
-
+        let { newTask } = this.state;
         if (willUpdateState) {
-            this.state.newTask.startDate = value;
-            this.state.newTask.errorOnStartDate = msg;
+            newTask.startDate = value;
+            newTask.errorOnStartDate = msg;
+            if (!msg && newTask.endDate) newTask.errorOnEndDate = msg;
             this.setState(state => {
                 return {
                     ...state,
+                    newTask
                 };
             });
         }
@@ -156,19 +158,17 @@ class TaskAddModal extends Component {
     }
     validateTaskEndDate = (value, willUpdateState = true) => {
         let { translate } = this.props;
-        const { newTask } = this.state;
-
+        let { newTask } = this.state;
         let msg = TaskFormValidator.validateTaskEndDate(newTask.startDate, value, translate);
 
         if (willUpdateState) {
+            newTask.endDate = value;
+            newTask.errorOnEndDate = msg;
+            if (!msg && newTask.startDate) newTask.errorOnStartDate = msg;
             this.setState(state => {
                 return {
                     ...state,
-                    newTask: {
-                        ...state.newTask,
-                        endDate: value,
-                        errorOnEndDate: msg
-                    }
+                    newTask
                 };
             });
         }
@@ -282,16 +282,6 @@ class TaskAddModal extends Component {
             }
         })
     }
-
-    // handleChangeTaskParent = (event) => {
-    //     let value = event.target.value;
-    //     this.state.newTask.parent = value;
-    //     this.setState(state => {
-    //         return {
-    //             ...state,
-    //         };
-    //     });
-    // }
 
     onSearch = async (txt) => {
 

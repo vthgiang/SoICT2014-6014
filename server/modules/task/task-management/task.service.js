@@ -2407,3 +2407,39 @@ exports.getTaskAnalysOfUser = async (portal, userId, type) => {
             return tasks;
     }
 }
+
+/**
+ * 
+ * @param {Lấy lịch sử bấm giờ làm việc của người dùng theo từng tháng trong năm} portal 
+ * @param {*} userId 
+ * @param {*} month 
+ * @param {*} year 
+ */
+exports.getUserTimeSheet = async (portal, userId, month, year) => {
+    console.log("my", month, year)
+    let beginOfMonth = new Date(`${year}-${month}`);
+    let beginOfNextMonth = new Date(year, month);
+    let tasks = await Task(connect(DB_CONNECTION, portal))
+        .find({
+            "timesheetLogs.creator": userId,
+            "timesheetLogs.startedAt": { $gte: beginOfMonth, $lt: beginOfNextMonth },
+            "timesheetLogs.stoppedAt": { $exists: true }
+        });
+    console.log("TASKS", tasks)
+    let timesheetlogs = [];
+    for(let i=0; i<tasks.length; i++){
+        let ts = tasks[i].timesheetLogs;
+        console.log("TASK", ts)
+        if(Array.isArray(ts)){
+            for(let j=0; j<ts.length; j++){
+                let tslogs = ts[j];
+                console.log("TSSSS", tslogs)
+                if(tslogs.creator.toString() === userId.toString()){
+                    timesheetlogs.push(tslogs);
+                }
+            }
+        }
+    }
+
+    return timesheetlogs;
+}

@@ -366,7 +366,7 @@ class EmployeeCreateForm extends Component {
         this.setState({
             houseHold: {
                 ...this.state.houseHold,
-                houseHoldName: e.target.value
+                headHouseHoldName: e.target.value
             }
         });
     }
@@ -444,13 +444,14 @@ class EmployeeCreateForm extends Component {
     }
 
     _fm_openEditFamilyMemberModal = (index) => {
+        console.log("kkkk")
         this.setState({
             editMember: {
                 index,
                 ...this.state.houseHold.familyMembers[index]
             }
         });
-        window.$('#modal-edit-member-c').modal({ backdrop: 'static', display: 'show' });
+        window.$('#form-edit-family-members').slideToggle();
     }
 
     _fm_editMember = (index, data) => {
