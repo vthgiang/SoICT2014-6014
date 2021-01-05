@@ -25,7 +25,15 @@ const FamilyMemberTab = ({
     _fm_editMember
 }) => {
     const [employeeHouseHold, setEmployeeHoldHouse] = useState({
-
+        headHouseHoldName: '',
+        documentType: '',
+        houseHoldNumber: '',
+        city: '',
+        district: '',
+        ward: '',
+        houseHoldAddress: '',
+        phone: '',
+        houseHoldCode: ''
     });
 
     const _showMemberGender = (gender) => {
@@ -116,12 +124,10 @@ const FamilyMemberTab = ({
                     </legend>
 
                     <FamilyMemberCreate
-                        tabId={tabType + "family-member-create"}
                         _save={_fm_saveMember}
                     />
 
                     <FamilyMemberEdit
-                        tabId={tabType + "family-member-edit"}
                         editMember={editMember}
                         _save={_fm_editMember}
                     />
