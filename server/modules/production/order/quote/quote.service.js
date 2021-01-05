@@ -22,9 +22,6 @@ exports.createNewQuote = async (userId, data, portal) => {
         goods: data.goods ? data.goods.map((item) => {
             return {
                 good: item.good,
-                returnRule: item.returnRule ? item.returnRule.map((rr) => {
-                    return rr;
-                }): undefined,
                 pricePerBaseUnit: item.pricePerBaseUnit,
                 pricePerBaseUnitOrigin: item.pricePerBaseUnitOrigin,
                 salesPriceVariance: item.salesPriceVariance,
@@ -196,9 +193,6 @@ exports.editQuote = async (userId, id, data, portal) => {
         let goods = data.goods.map((item) => {
             return {
                 good: item.good,
-                returnRule: item.returnRule ? item.returnRule.map((rr) => {
-                    return rr;
-                }): undefined,
                 pricePerBaseUnit: item.pricePerBaseUnit,
                 pricePerBaseUnitOrigin: item.pricePerBaseUnitOrigin,
                 salesPriceVariance: item.salesPriceVariance,

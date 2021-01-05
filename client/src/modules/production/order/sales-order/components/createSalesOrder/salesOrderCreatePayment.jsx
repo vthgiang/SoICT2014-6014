@@ -286,7 +286,7 @@ class SalesOrderCreatePayment extends Component {
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 shopping-products">
                         <div className="shopping-products-title">Các sản phẩm</div>
                         {/* Hiển thị bảng */}
-                        <table className="table table-bordered">
+                        <table className="table table-bordered not-sort">
                             <thead>
                                 <tr>
                                     <th title={"STT"}>STT</th>

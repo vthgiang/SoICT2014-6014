@@ -2,15 +2,17 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { SalesOrderActions } from "../redux/actions";
-import { generateCode } from "../../../../../helpers/generateCode";
+import { LotActions } from "../../../warehouse/inventory-management/redux/actions";
+import { GoodActions } from "../../../common-production/good-management/redux/actions";
 import { DialogModal, SelectBox, ErrorLabel } from "../../../../../common-components";
-import ValidationHelper from "../../../../../helpers/validationHelper";
+import AddManufacturingWorkForGood from "./createSalesOrderFromQuote/addManufacturingWorkForGood";
 
 class SalesOrderCreateFormFromQuote extends Component {
     constructor(props) {
         super(props);
         this.state = {
             code: "",
+            goods: [],
         };
     }
 
@@ -66,15 +68,30 @@ class SalesOrderCreateFormFromQuote extends Component {
         return msg;
     };
 
-    handleQuoteChange = (value) => {
-        this.setState((state) => {
+    handleQuoteChange = async (value) => {
+        let quoteInfo = {};
+        if (value[0] !== "title") {
+            const { quotesToMakeOrder } = this.props.quotes;
+            quoteInfo = await quotesToMakeOrder.find((element) => element._id === value[0]);
+        }
+
+        await this.setState((state) => {
             return {
                 ...state,
                 quote: value[0],
+                goods: quoteInfo.goods ? quoteInfo.goods : [],
             };
         });
 
-        this.validateQuote(value[0], true);
+        await this.validateQuote(value[0], true);
+
+        if (value[0] !== "title") {
+            let goodIds = [];
+            if (quoteInfo) {
+                goodIds = quoteInfo.goods.map((good) => good.good._id);
+            }
+            await this.props.getInventoryByGoodIds({ array: goodIds });
+        }
     };
 
     validatePriority = (value, willUpdateState = true) => {
@@ -115,9 +132,26 @@ class SalesOrderCreateFormFromQuote extends Component {
         }
     };
 
+    getGoodSubmit = () => {
+        let { goods } = this.state;
+        let goodsSubmit = [];
+
+        if (goods.length) {
+            goodsSubmit = goods.map((good) => {
+                good.good = good.good._id;
+                if (good.manufacturingWorks) {
+                    good.manufacturingWorks = good.manufacturingWorks._id;
+                }
+                return good;
+            });
+        }
+
+        return goodsSubmit;
+    };
+
     save = async () => {
         if (this.isFormValidated()) {
-            let { priority, code, quote } = this.state;
+            let { priority, code, quote, goods } = this.state;
 
             const { quotesToMakeOrder } = this.props.quotes;
             let quoteInfo = quotesToMakeOrder.find((element) => element._id === quote);
@@ -131,7 +165,7 @@ class SalesOrderCreateFormFromQuote extends Component {
                 customerAddress: quoteInfo.customerAddress,
                 customerRepresent: quoteInfo.customerRepresent,
                 customerEmail: quoteInfo.customerEmail,
-                goods: quoteInfo.goods,
+                goods: this.getGoodSubmit(),
                 discounts: quoteInfo.discounts,
                 shippingFee: quoteInfo.shippingFee,
                 deliveryTime: quoteInfo.deliveryTime,
@@ -145,17 +179,116 @@ class SalesOrderCreateFormFromQuote extends Component {
             this.setState((state) => {
                 return {
                     ...state,
-                    priority: "",
+                    priority: "title",
                     code: "",
-                    quote: "",
+                    quote: "title",
+                    goods: [],
+                    currentGood: { good: "" },
+                    currentManufacturingWorks: {
+                        _id: "title",
+                        code: "",
+                        name: "",
+                        description: "",
+                        address: "",
+                    },
                 };
             });
         }
     };
 
+    handleGetManufacturingList = async (goodItem) => {
+        //Lấy danh sách các nhà máy có thể sản xuất sản phẩm
+        await this.props.getManufacturingWorksByProductId(goodItem.good._id);
+
+        let currentManufacturingWorks = goodItem.manufacturingWorks
+            ? goodItem.manufacturingWorks
+            : {
+                  _id: "title",
+                  code: "",
+                  name: "",
+                  description: "",
+                  address: "",
+              };
+
+        await this.setState({
+            currentGood: goodItem,
+            currentManufacturingWorks,
+        });
+
+        window.$(`#modal-create-from-quote-and-add-manufacturing-for-good`).modal("show");
+    };
+
+    handleChangeManufacturingWorksForGood = (value) => {
+        let { goods, currentGood } = this.state;
+        if (value[0] !== "title") {
+            let { listManufacturingWorks } = this.props.goods;
+            let manufacturingWorksInfo = listManufacturingWorks.find((element) => element._id === value[0]);
+
+            //Thêm thông tin nhà máy vào phần tử good của mảng goods
+            let goodsMap = goods.map((good) => {
+                if (good.good._id === currentGood.good._id) {
+                    good.manufacturingWorks = {
+                        _id: manufacturingWorksInfo._id,
+                        code: manufacturingWorksInfo.code,
+                        name: manufacturingWorksInfo.name,
+                        description: manufacturingWorksInfo.description,
+                        address: manufacturingWorksInfo.address,
+                    };
+                }
+                return good;
+            });
+
+            this.setState({
+                goods: goodsMap,
+                currentManufacturingWorks: {
+                    _id: manufacturingWorksInfo._id,
+                    code: manufacturingWorksInfo.code,
+                    name: manufacturingWorksInfo.name,
+                    description: manufacturingWorksInfo.description,
+                    address: manufacturingWorksInfo.address,
+                },
+            });
+        } else {
+            //Loại bỏ thông tin nhà máy vào phần tử good của mảng goods
+            let goodsMap = goods.map((good) => {
+                if (good.good._id === currentGood.good._id) {
+                    good.manufacturingWorks = undefined;
+                }
+                return good;
+            });
+
+            this.setState({
+                goods: goodsMap,
+                currentManufacturingWorks: {
+                    _id: "title",
+                    code: "",
+                    name: "",
+                    description: "",
+                    address: "",
+                },
+            });
+        }
+    };
+
     render() {
-        const { quote, priority, code } = this.state;
+        let { quote, goods, priority, code, currentManufacturingWorks, currentGood } = this.state;
         const { quoteError, priorityError } = this.state;
+
+        const { listInventories } = this.props.lots;
+        if (goods.length && listInventories.length) {
+            //Thêm số lượng tồn kho vào
+            let goodsMap = goods.map((good) => {
+                for (let index = 0; index < listInventories.length; index++) {
+                    if (listInventories[index].good._id === good.good._id) {
+                        good.inventory = listInventories[index].inventory;
+                    }
+                }
+                return good;
+            });
+
+            goods = goodsMap;
+        }
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -170,6 +303,11 @@ class SalesOrderCreateFormFromQuote extends Component {
                     disableSubmit={!this.isFormValidated()}
                     func={this.save}
                 >
+                    <AddManufacturingWorkForGood
+                        currentGood={currentGood}
+                        currentManufacturingWorks={currentManufacturingWorks}
+                        handleChangeManufacturingWorksForGood={this.handleChangeManufacturingWorksForGood}
+                    />
                     <div className="form-group">
                         <label>
                             Mã đơn
@@ -216,6 +354,46 @@ class SalesOrderCreateFormFromQuote extends Component {
                         />
                         <ErrorLabel content={priorityError} />
                     </div>
+                    <fieldset className="scheduler-border">
+                        <legend className="scheduler-border">Thông tin sản phẩm</legend>
+                        <table id={`sales-order-table-create-from-quote`} className="table table-bordered not-sort">
+                            <thead>
+                                <tr>
+                                    <th title={"STT"}>STT</th>
+                                    <th title={"Mã sản phẩm"}>Mã sản phẩm</th>
+                                    <th title={"Tên sản phẩm"}>Tên sản phẩm</th>
+                                    <th title={"Số lượng"}>Số lượng mua</th>
+                                    <th title={"Số lượng tồn kho"}>Số lượng tồn kho</th>
+                                    <th title={"Đơn vị tính"}>Đơn vị tính</th>
+                                    <th title={"Yêu cầu sản xuất"}>Yêu cầu s/x</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {goods.length !== 0 &&
+                                    goods.map((item, index) => {
+                                        return (
+                                            <tr key={index}>
+                                                <td>{index + 1}</td>
+                                                <td>{item.good.code}</td>
+                                                <td>{item.good.name}</td>
+                                                <td>{item.quantity}</td>
+                                                <td>{item.inventory}</td>
+                                                <td>{item.good.baseUnit}</td>
+                                                <td>
+                                                    <a onClick={() => this.handleGetManufacturingList(item)}>
+                                                        {item.manufacturingWorks ? (
+                                                            <span className="text-success">Đang thiết lập</span>
+                                                        ) : (
+                                                            <span>Click để yêu cầu</span>
+                                                        )}
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                            </tbody>
+                        </table>
+                    </fieldset>
                 </DialogModal>
             </React.Fragment>
         );
@@ -223,12 +401,14 @@ class SalesOrderCreateFormFromQuote extends Component {
 }
 
 function mapStateToProps(state) {
-    const { quotes } = state;
-    return { quotes };
+    const { quotes, lots, goods } = state;
+    return { quotes, lots, goods };
 }
 
 const mapDispatchToProps = {
     createNewSalesOrder: SalesOrderActions.createNewSalesOrder,
+    getInventoryByGoodIds: LotActions.getInventoryByGoodIds,
+    getManufacturingWorksByProductId: GoodActions.getManufacturingWorksByProductId,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(SalesOrderCreateFormFromQuote));
