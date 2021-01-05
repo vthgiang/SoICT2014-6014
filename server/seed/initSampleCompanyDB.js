@@ -5967,7 +5967,7 @@ const initSampleCompanyDB = async () => {
     console.log("Khởi tạo dữ liệu thông tin báo giá");
     var listQuote = await Quote(vnistDB).insertMany([
         {
-            status: 0,
+            status: 1,
             code: "QUOTE_201249330",
             creator: users[1]._id,
             effectiveDate: "2020-12-07T00:00:00.000Z",

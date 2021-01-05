@@ -362,7 +362,7 @@ getPaginatedTasksByUser = async (req, res) => {
  */
 getPaginatedTasks = async (req, res) => {
     try {
-        var task = {
+        let task = {
             perPage: req.query.perPage,
             number: req.query.number,
             user: req.query.user,
@@ -377,15 +377,15 @@ getPaginatedTasks = async (req, res) => {
             aPeriodOfTime: req.query.aPeriodOfTime
         };
 
-        var tasks = await TaskManagementService.getPaginatedTasks(req.portal, task);
-        await Logger.info(req.user.email, ` get task informed by user `, req.portal)
+        let tasks = await TaskManagementService.getPaginatedTasks(req.portal, task);
+        await Logger.info(req.user.email, 'get_task_success', req.portal)
         res.status(200).json({
             success: true,
             messages: ['get_task_success'],
             content: tasks
         })
     } catch (error) {
-        await Logger.error(req.user.email, ` get task informed by user  `, req.portal)
+        await Logger.error(req.user.email, 'get_task_fail', req.portal)
         res.status(400).json({
             success: false,
             messages: ['get_task_fail'],
@@ -517,7 +517,7 @@ exports.createTask = async (req, res) => {
             content: task
         });
     } catch (error) {
-        
+
         await Logger.error(req.user.email, 'create_task', req.portal)
         res.status(400).json({
             success: false,
@@ -782,11 +782,11 @@ getAllTaskOfOrganizationalUnitByMonth = async (req, res) => {
     }
 }
 
-exports.getTaskAnalysOfUser = async(req, res) => {
+exports.getTaskAnalysOfUser = async (req, res) => {
     try {
         let portal = req.portal;
-        let {userId} = req.params;
-        let {type} = req.query;
+        let { userId } = req.params;
+        let { type } = req.query;
         let taskAnalys = await TaskManagementService.getTaskAnalysOfUser(portal, userId, type);
 
         await Logger.info(req.user.email, 'get_task_analys_of_user_success', req.portal)
@@ -829,3 +829,25 @@ getAllTaskByPriorityOfOrganizationalUnit = async (req, res) => {
     }
 }
 
+exports.getUserTimeSheet = async(req, res) => {
+    try {
+        let portal = req.portal;
+        let {userId, month, year} = req.query;
+        let timesheetlogs = await TaskManagementService.getUserTimeSheet(portal, userId, month, year);
+
+        await Logger.info(req.user.email, 'get_user_time_sheet_success', req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['get_user_time_sheet_success'],
+            content: timesheetlogs
+        })
+    } catch (error) {
+        console.log('Error', error)
+        await Logger.error(req.user.email, 'get_user_time_sheet_faile', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_user_time_sheet_faile'],
+            content: error
+        })
+    }
+}

@@ -7,18 +7,48 @@ import { DialogModal } from '../../../../../common-components';
 
 import {
     GeneralTab, ContactTab, TaxTab, InsurranceTab, DisciplineTab,
-    ExperienceTab, CertificateTab, ContractTab, SalaryTab, FileTab, CareerMajorTab, 
+    ExperienceTab, CertificateTab, ContractTab, SalaryTab, FileTab, CareerMajorTab,
 } from '../../employee-create/components/combinedContent';
 
 import { EmployeeManagerActions } from '../redux/actions';
 import { EmployeeInfoActions } from '../../employee-info/redux/actions';
+import FamilyMemberTab from '../../employee-create/components/familyMemberTab';
+
+const initMember = {
+    name: '',
+    codeSocialInsurance: '',
+    bookNumberSocialInsurance: '',
+    gender: 'male',
+    isHeadHousehold: 'no',
+    relationshipWithHeadHousehold: '',
+    cnss: '',
+    birth: '',
+    placeOfBirthCertificate: '',
+    nationality: '',
+    nation: '',
+    numberPassport: '',
+    note: ''
+}
 
 class EmployeeEditFrom extends Component {
     constructor(props) {
         super(props);
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, };
         this.state = {
-            dataStatus: this.DATA_STATUS.NOT_AVAILABLE
+            dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
+            houseHold: {
+                headHouseHoldName: '',
+                documentType: '',
+                houseHoldNumber: '',
+                city: '',
+                district: '',
+                ward: '',
+                houseHoldAddress: '',
+                phone: '',
+                houseHoldCode: '',
+                familyMembers: []
+            },
+            editMember: initMember
         };
     }
 
@@ -703,7 +733,6 @@ class EmployeeEditFrom extends Component {
             createFiles: files.filter(x => x._id === undefined),
         });
 
-        console.log('qydsd', this.state);
         let formData = convertJsonObjectToFormData(this.state);
         degrees.forEach(x => {
             formData.append("fileDegree", x.fileUpload);
@@ -811,6 +840,7 @@ class EmployeeEditFrom extends Component {
                 disciplines: [],
                 courses: [],
                 roles: [],
+                houseHold: {}
             })
             return false;
         };
@@ -835,18 +865,142 @@ class EmployeeEditFrom extends Component {
                 courses: nextProps.employeesInfo.courses,
                 roles: nextProps.employeesInfo.roles.map(x => x.roleId.id),
                 organizationalUnits: nextProps.employeesInfo.organizationalUnits.map(x => x._id),
+                houseHold: nextProps.employeesInfo.employees[0].houseHold,
             });
             return true;
         };
         return true;
     }
 
+
+    _fm_saveMember = (data) => {
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                familyMembers: [...this.state.houseHold.familyMembers, data]
+            }
+        })
+    }
+
+    _fm_handleHeadHouseHoldName = (e) => {
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                houseHoldName: e.target.value
+            }
+        });
+    }
+
+    _fm_handleDocumentType = (e) => {
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                documentType: e.target.value
+            }
+        });
+    }
+
+    _fm_handleHouseHoldNumber = (e) => {
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                houseHoldNumber: e.target.value
+            }
+        })
+    }
+
+    _fm_handleCity = (e) => {
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                city: e.target.value
+            }
+        })
+    }
+
+    _fm_handleDistrict = (e) => {
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                district: e.target.value
+            }
+        });
+    }
+
+    _fm_handleWard = (e) => {
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                ward: e.target.value
+            }
+        });
+    }
+
+    _fm_handleHouseHoldAddress = (e) => {
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                houseHoldAddress: e.target.value
+            }
+        })
+    }
+
+    _fm_handlePhone = (e) => {
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                phone: e.target.value
+            }
+        });
+    }
+
+    _fm_handleHouseHoldCode = (e) => {
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                houseHoldCode: e.target.value
+            }
+        });
+    }
+
+    _fm_openEditFamilyMemberModal = (index) => {
+        this.setState({
+            editMember: {
+                index,
+                ...this.state.houseHold.familyMembers[index]
+            }
+        });
+        window.$(`#form-edit-family-members`).slideToggle();
+    }
+
+    _fm_editMember = (index, data) => {
+        let familyMembers = this.state.houseHold.familyMembers;
+        familyMembers[index] = data;
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                familyMembers
+            }
+        })
+    }
+
+    _fm_deleteMember = (index) => {
+        let familyMembers = this.state.houseHold.familyMembers;
+        familyMembers = familyMembers.filter((node, i) => i !== index);
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                familyMembers
+            }
+        })
+    }
+
     render() {
         const { translate, employeesInfo } = this.props;
 
         let { _id, img, employee, degrees, certificates, socialInsuranceDetails, contracts, courses,
-            organizationalUnits, roles, commendations, disciplines, annualLeaves, files, major, career } = this.state;
-            console.log('career', career);
+            organizationalUnits, roles, commendations, disciplines, annualLeaves, files, major, career, houseHold, editMember } = this.state;
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -871,6 +1025,7 @@ class EmployeeEditFrom extends Component {
                                 <li><a title={translate('menu.annual_leave_personal')} data-toggle="tab" href={`#edit_salary${_id}`}>{translate('menu.annual_leave_personal')}</a></li>
                                 <li><a title={translate('human_resource.profile.tab_name.menu_attachments_title')} data-toggle="tab" href={`#edit_attachments${_id}`}>{translate('human_resource.profile.tab_name.menu_attachments')}</a></li>
                                 <li><a title={"Công việc - chuyên ngành tương đương"} data-toggle="tab" href={`#edit_major_career${_id}`}>Công việc - chuyên ngành tương đương</a></li>
+                                <li><a title={"Thành viên hộ gia đình"} data-toggle="tab" href="#edit_family_member">Thành viên hộ gia đình</a></li>
                             </ul>
                             <div className="tab-content">
                                 {/* Tab thông tin chung */
@@ -996,7 +1151,27 @@ class EmployeeEditFrom extends Component {
                                     handleDeleteCareer={this.handleDeleteCareer}
                                     type={"edit"}
                                 />
-                               
+                                {/* Tab thành viên hộ gia đình */}
+                                <FamilyMemberTab
+                                    id="edit_family_member"
+                                    tabEditMember="modal-edit-member-e"
+                                    editMember={editMember}
+                                    _fm_openEditFamilyMemberModal={this._fm_openEditFamilyMemberModal}
+                                    _fm_editMember={this._fm_editMember}
+                                    _fm_deleteMember={this._fm_deleteMember}
+                                    houseHold={houseHold}
+                                    _fm_handleHeadHouseHoldName={this._fm_handleHeadHouseHoldName}
+                                    _fm_handleDocumentType={this._fm_handleDocumentType}
+                                    _fm_handleHouseHoldNumber={this._fm_handleHouseHoldNumber}
+                                    _fm_handleCity={this._fm_handleCity}
+                                    _fm_handleDistrict={this._fm_handleDistrict}
+                                    _fm_handleWard={this._fm_handleWard}
+                                    _fm_handleHouseHoldAddress={this._fm_handleHouseHoldAddress}
+                                    _fm_handlePhone={this._fm_handlePhone}
+                                    _fm_handleHouseHoldCode={this._fm_handleHouseHoldCode}
+                                    _fm_saveMember={this._fm_saveMember}
+                                />
+
                             </div>
                         </div>}
                     {/* </form> */}

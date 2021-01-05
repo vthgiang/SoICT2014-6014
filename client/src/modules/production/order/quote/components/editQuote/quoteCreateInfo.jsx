@@ -64,6 +64,8 @@ class QuoteCreateInfo extends Component {
             handleSymbolOfForreignCurrencyChange,
             handleCustomerEmailChange,
         } = this.props;
+
+        console.log("customer", customer);
         return (
             <React.Fragment>
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -78,7 +80,7 @@ class QuoteCreateInfo extends Component {
                                             <span className="attention"> * </span>
                                         </label>
                                         <SelectBox
-                                            id={`select-quote-customer-edit`}
+                                            id={`select-quote-customer-edit-${customer}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={customer}

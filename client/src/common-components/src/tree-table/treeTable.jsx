@@ -145,7 +145,7 @@ class TreeTable extends Component {
                     queue.push(item.children[k]);
                 }
             }
-            
+
             return false;
         }
 
@@ -210,31 +210,36 @@ class TreeTable extends Component {
         let { titleAction, performtasks } = this.props;
         switch (data) {
             case "edit":
-                return <a href="#abc" onClick={() => this.props.funcEdit(id)} className="edit" data-toggle="modal" title={titleAction.edit}>
+                return <a style={{ cursor: 'pointer' }} onClick={() => this.props.funcEdit(id)} className="edit" data-toggle="modal" title={titleAction.edit}>
                     <i className="material-icons"></i>
                 </a>
             case "view":
-                return <a href="#abc" onClick={() => this.props.funcView(id)} data-toggle="modal" title={titleAction.view}>
+                return <a style={{ cursor: 'pointer' }} onClick={() => this.props.funcView(id)} data-toggle="modal" title={titleAction.view}>
                     <i className="material-icons">view_list</i>
                 </a>
             case "delete":
-                return <a href="#abc" onClick={() => this.props.funcDelete(id)} className="delete" title={titleAction.delete}>
+                return <a style={{ cursor: 'pointer' }} onClick={() => this.props.funcDelete(id)} className="delete" title={titleAction.delete}>
                     <i className="material-icons"></i>
                 </a>
             case "add":
-                return <a href="#abc" onClick={() => this.props.funcAdd(id)} className="add_circle" data-toggle="modal" title={titleAction.add}>
+                return <a style={{ cursor: 'pointer' }} onClick={() => this.props.funcAdd(id)} className="add_circle" data-toggle="modal" title={titleAction.add}>
                     <i className="material-icons">add_circle</i>
                 </a>
             case "store":
-                return <a href="#abc" onClick={() => this.props.funcStore(id)} className="all_inbox" title={titleAction.store}>
+                return <a style={{ cursor: 'pointer' }} onClick={() => this.props.funcStore(id)} className="all_inbox" title={titleAction.store}>
                     <i className="material-icons">all_inbox</i>
                 </a>
             case "restore":
-                return <a href="#abc" onClick={() => this.props.funcStore(id)} className="all_inbox" title={titleAction.restore}>
+                return <a style={{ cursor: 'pointer' }} onClick={() => this.props.funcStore(id)} className="all_inbox" title={titleAction.restore}>
                     <i className="material-icons">restore_page</i>
                 </a>
             case "startTimer":
-                return <a href="#abc" onClick={() => !performtasks.currentTimer && this.props.funcStartTimer(id)} className="timer" title={titleAction.startTimer} disabled={performtasks.currentTimer}>
+                return <a
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => !performtasks.currentTimer && this.props.funcStartTimer(id)}
+                    className={`timer ${performtasks.currentTimer ? performtasks.currentTimer._id === id ? 'text-orange' : 'text-gray' : 'text-black'}`}
+                    title={titleAction.startTimer}
+                >
                     <i className="material-icons">timer</i>
                 </a>
             default:
@@ -254,7 +259,7 @@ class TreeTable extends Component {
                     </tr>
                 </thead>
                 <tbody id="taskTable" className="task-table">
-                    {   this.dataTreetable(column, data).length > 0 ?
+                    {this.dataTreetable(column, data).length > 0 ?
                         this.dataTreetable(column, data).map((rows, index) => (
                             <tr key={index} data-id={rows._id} data-parent={rows.parent} data-level={rows.level}>
                                 {
@@ -286,7 +291,7 @@ class TreeTable extends Component {
                                 }
                             </tr>
                         )) :
-                        <tr><td colSpan={ column.length + 1 }><center>{translate('task_template.no_data')}</center></td></tr>
+                        <tr><td colSpan={column.length + 1}><center>{translate('task_template.no_data')}</center></td></tr>
                     }
                 </tbody>
             </table >

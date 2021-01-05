@@ -41,6 +41,14 @@ class SalesOrderCreateGood extends Component {
         this.props.getAllGoodsByType({ type: "product" });
     }
 
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.goods.goodItems.inventoryByGoodId !== prevState.inventory) {
+            return {
+                inventory: nextProps.goods.goodItems.inventoryByGoodId,
+            };
+        }
+    }
+
     shouldComponentUpdate = async (nextProps, nextState) => {
         if (this.props.goods.goodItems.goodId !== nextProps.goods.goodItems.goodId) {
             await this.getCheckedForGood(nextProps.goods.goodItems);
@@ -156,9 +164,8 @@ class SalesOrderCreateGood extends Component {
                         code: goodInfo[0].code,
                         goodName: goodInfo[0].name,
                         baseUnit: goodInfo[0].baseUnit,
-                        pricePerBaseUnit: goodInfo[0].pricePerBaseUnit,
+                        pricePerBaseUnit: goodInfo[0].pricePerBaseUnit ? goodInfo[0].pricePerBaseUnit : "",
                         pricePerBaseUnitOrigin: goodInfo[0].pricePerBaseUnit, //giá gốc
-                        inventory: goodInfo[0].quantity,
                         salesPriceVariance: goodInfo[0].salesPriceVariance ? goodInfo[0].salesPriceVariance : 0,
                         pricePerBaseUnitError: undefined,
                         taxs: [],
@@ -196,6 +203,39 @@ class SalesOrderCreateGood extends Component {
         }
 
         this.validateGood(value, true);
+    };
+
+    handleManufacturingWorkChange = (value) => {
+        let { listManufacturingWorks } = this.props.goods.goodItems;
+        let manufacturingWorksInfo = listManufacturingWorks.find((element) => element._id === value[0]);
+
+        if (value[0] !== "title") {
+            this.setState((state) => {
+                return {
+                    ...state,
+                    manufacturingWorks: {
+                        _id: manufacturingWorksInfo._id,
+                        code: manufacturingWorksInfo.code,
+                        name: manufacturingWorksInfo.name,
+                        description: manufacturingWorksInfo.description,
+                        address: manufacturingWorksInfo.address,
+                    },
+                };
+            });
+        } else {
+            this.setState((state) => {
+                return {
+                    ...state,
+                    manufacturingWorks: {
+                        _id: "title",
+                        code: "",
+                        name: "",
+                        description: "",
+                        address: "",
+                    },
+                };
+            });
+        }
     };
 
     hasDiscountsOnGoodChecker = () => {
@@ -394,6 +434,7 @@ class SalesOrderCreateGood extends Component {
                 note,
                 steps,
                 salesPriceVariance,
+                manufacturingWorks,
             } = this.state;
 
             let { listGoods } = this.props;
@@ -420,6 +461,8 @@ class SalesOrderCreateGood extends Component {
                 });
             }
 
+            manufacturingWorks = manufacturingWorks !== "title" ? manufacturingWorks : undefined;
+
             let additionGood = {
                 good: {
                     _id: good,
@@ -438,6 +481,7 @@ class SalesOrderCreateGood extends Component {
                 amountAfterDiscount,
                 amountAfterTax,
                 salesPriceVariance,
+                manufacturingWorks,
             };
 
             listGoods.push(additionGood);
@@ -462,9 +506,10 @@ class SalesOrderCreateGood extends Component {
                     note: "",
                     inventory: "",
                     baseUnit: "",
-                    good: "",
+                    good: "title",
                     code: "",
                     goodName: "",
+                    manufacturingWorks: { _id: "title" },
                     step: 0,
                     steps,
                 };
@@ -581,6 +626,7 @@ class SalesOrderCreateGood extends Component {
             code: item.good.code,
             discountsOfGood: item.discountsOfGood,
             slasOfGood: slasForEdit,
+            manufacturingWorks: item.manufacturingWorks,
         });
 
         this.getCheckedForGood(this.props.goods.goodItems); //gọi để checked trong trường hợp không thay đổi goodId
@@ -611,9 +657,10 @@ class SalesOrderCreateGood extends Component {
                 note: "",
                 inventory: "",
                 baseUnit: "",
-                good: "",
+                good: "title",
                 code: "",
                 goodName: "",
+                manufacturingWorks: { _id: "title" },
                 step: 0,
                 steps,
             };
@@ -639,6 +686,7 @@ class SalesOrderCreateGood extends Component {
                 steps,
                 salesPriceVariance,
                 indexEditting,
+                manufacturingWorks,
             } = this.state;
 
             let { listGoods } = this.props;
@@ -683,6 +731,7 @@ class SalesOrderCreateGood extends Component {
                 amountAfterDiscount,
                 amountAfterTax,
                 salesPriceVariance,
+                manufacturingWorks,
             };
 
             listGoods[indexEditting] = additionGood;
@@ -709,9 +758,10 @@ class SalesOrderCreateGood extends Component {
                     note: "",
                     inventory: "",
                     baseUnit: "",
-                    good: "",
+                    good: "title",
                     code: "",
                     goodName: "",
+                    manufacturingWorks: { _id: "title" },
                     step: 0,
                     steps,
                 };
@@ -737,11 +787,12 @@ class SalesOrderCreateGood extends Component {
             steps,
             step,
             editGood,
+            manufacturingWorks,
         } = this.state;
 
         let { goodError, pricePerBaseUnitError, quantityError } = this.state;
 
-        const { setCurrentSlasOfGood, setCurrentDiscountsOfGood } = this.props;
+        const { setCurrentSlasOfGood, setCurrentDiscountsOfGood, setCurrentManufacturingWorksOfGoods } = this.props;
         let { listGoods } = this.props;
 
         const { isUseForeignCurrency, foreignCurrency, standardCurrency, currency } = this.props;
@@ -751,6 +802,7 @@ class SalesOrderCreateGood extends Component {
         let amountAfterApplyTax = this.getAmountAfterApplyTax();
 
         let isGoodValidate = this.isValidateGoodSelected();
+
         return (
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <fieldset className="scheduler-border" style={{ padding: 10 }}>
@@ -787,9 +839,11 @@ class SalesOrderCreateGood extends Component {
                                         baseUnit={baseUnit}
                                         inventory={inventory}
                                         quantity={quantity}
+                                        manufacturingWorks={manufacturingWorks}
                                         handleGoodChange={this.handleGoodChange}
                                         handlePriceChange={this.handlePriceChange}
                                         handleQuantityChange={this.handleQuantityChange}
+                                        handleManufacturingWorkChange={this.handleManufacturingWorkChange}
                                         //log error
                                         pricePerBaseUnitError={pricePerBaseUnitError}
                                         goodError={goodError}
@@ -932,14 +986,15 @@ class SalesOrderCreateGood extends Component {
                                 <th title={"Mã sản phẩm"}>Mã sản phẩm</th>
                                 <th title={"Tên sản phẩm"}>Tên sản phẩm</th>
                                 <th title={"Đơn vị tính"}>Đ/v tính</th>
-                                <th title={"Giá niêm yết"}>Giá niêm yết (vnđ)</th>
-                                <th title={"giá tính tiền"}>giá tính tiền (vnđ)</th>
+                                <th title={"Giá niêm yết"}>Giá niêm yết</th>
+                                <th title={"giá tính tiền"}>giá tính tiền</th>
                                 <th title={"Số lượng"}>Số lượng</th>
                                 <th title={"Khuyến mãi"}>Khuyến mãi</th>
                                 <th title={"Thành tiền"}>Thành tiền</th>
                                 <th title={"Thuế"}>Thuế</th>
                                 <th title={"Tổng tiền"}>Tổng tiền</th>
                                 <th>Cam kết chất lượng</th>
+                                <th title={"Yêu cầu sản xuất"}>Yêu cầu s/x</th>
                                 <th title={"Ghi chú"}>Ghi chú</th>
                                 <th title={"Hành động"}>Hành động</th>
                             </tr>
@@ -1012,6 +1067,29 @@ class SalesOrderCreateGood extends Component {
                                                 </a>
                                             </div>
                                         </td>
+                                        <td>
+                                            {item.manufacturingWorks ? (
+                                                <div
+                                                    style={{
+                                                        display: "flex",
+                                                    }}
+                                                >
+                                                    <a
+                                                        style={{
+                                                            cursor: "pointer",
+                                                        }}
+                                                        data-toggle="modal"
+                                                        data-backdrop="static"
+                                                        href={"#modal-create-sales-order-manufacturing-works-of-good-detail"}
+                                                        onClick={() => setCurrentManufacturingWorksOfGoods(item.manufacturingWorks)}
+                                                    >
+                                                        Đang thiết lập &ensp;
+                                                    </a>
+                                                </div>
+                                            ) : (
+                                                ""
+                                            )}
+                                        </td>
                                         <td>{item.note}</td>
                                         <td>
                                             <a className="edit text-yellow">
@@ -1060,7 +1138,7 @@ class SalesOrderCreateGood extends Component {
                                             }, 0)
                                         ) + ` (${currency.symbol})`}
                                     </td>
-                                    <td colSpan={3}></td>
+                                    <td colSpan={4}></td>
                                 </tr>
                             )}
                         </tbody>

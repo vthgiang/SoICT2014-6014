@@ -4,7 +4,7 @@ import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { DatePicker, DialogModal } from '../../../../../common-components';
 import { getTimeFromFormatDate } from '../../../../../helpers/stringMethod';
 
-const FamilyMemberModal = ({
+const FamilyMemberInfo = ({
     _save,
     translate
 }) => {
@@ -257,4 +257,4 @@ const FamilyMemberModal = ({
     )
 }
 
-export default connect()(withTranslate(FamilyMemberModal));
+export default connect()(withTranslate(FamilyMemberInfo));

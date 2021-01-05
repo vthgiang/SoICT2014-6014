@@ -707,7 +707,8 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
         fileContract = fileInfor.fileContract,
         fileMajor = fileInfor.fileMajor,
         fileCareer = fileInfor.fileCareer,
-        file = fileInfor.file;
+        file = fileInfor.file,
+        healthInsuranceAttachment = fileInfor.healthInsuranceAttachment;
     let {
         degrees,
         certificates,
@@ -724,6 +725,18 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
     files = this.mergeUrlFileToObject(file, files);
 
     console.log('mcmcmcmcmcmcm\n\n', data.houseHold.familyMembers);
+    // file đính kèm bảo hiểm y tế
+    if (healthInsuranceAttachment) {
+        healthInsuranceAttachment = healthInsuranceAttachment.map(obj => {
+            let url = `${obj.destination}/${obj.filename}`;
+            let urlConvert = url.substr(1, url.length);
+            return {
+                fileName: obj.originalname,
+                url: urlConvert,
+            }
+        })
+    }
+
     let createEmployee = await Employee(connect(DB_CONNECTION, portal)).create({
         avatar: avatar,
         fullName: data.fullName,
@@ -752,6 +765,7 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
         healthInsuranceEndDate: data.healthInsuranceEndDate,
         socialInsuranceNumber: data.socialInsuranceNumber,
         socialInsuranceDetails: data.socialInsuranceDetails,
+        healthInsuranceAttachment: healthInsuranceAttachment,
         nationality: data.nationality,
         religion: data.religion,
         maritalStatus: data.maritalStatus,
@@ -906,7 +920,8 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
         deleteFiles,
         createSocialInsuranceDetails,
         editSocialInsuranceDetails,
-        deleteSocialInsuranceDetails
+        deleteSocialInsuranceDetails,
+        houseHold // dữ liệu về hộ khẩu - thành viên hộ gia đình
     } = data;
     console.log('dataatatatta\n\n\n\n', data.createCareer, data.editCareer, data.deleteCareer);
     let avatar = employee.avatar,
@@ -1047,6 +1062,7 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
     oldEmployee.temporaryResidenceWard = employee.temporaryResidenceWard;
     oldEmployee.contractEndDate = employee.contractEndDate ? employee.contractEndDate : null;
     oldEmployee.contractType = employee.contractType;
+    oldEmployee.houseHold = houseHold;
 
     // Edit  thông tin nhân viên
     oldEmployee.save();
@@ -1110,6 +1126,7 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
         contractEndDate: 1,
         contractType: 1,
         status: 1,
+        houseHold: 1
     });
 }
 

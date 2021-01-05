@@ -77,6 +77,9 @@ class EditForm extends Component {
     handleRoles = (value) => {
         this.setState({ documentRoles: value });
     }
+    handleUserCanView = (value) => {
+        this.setState({ documentUserCanView: value });
+    }
 
 
     handleArchivedRecordPlaceOrganizationalUnit = (value) => {
@@ -292,12 +295,14 @@ class EditForm extends Component {
             documentRelationshipDescription,
             relatedDocuments,
             documentRoles,
+            documentUserCanView,
             documentArchivedRecordPlaceOrganizationalUnit,
         } = this.state;
-        const { role, documents, department } = this.props;
+        const { role, documents, department, user } = this.props;
         const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
         const { list } = documents.administration.domains;
         const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
+        const userList = user.list.map(user => { return { value: user._id, text: `${user.name} - ${user.email}` } });
         const relationshipDocs = documents.administration.data.list
         const archives = documents.administration.archives.list;
         let title = "";
@@ -409,6 +414,17 @@ class EditForm extends Component {
                 description += nameRole[0].text + " ";
             }
         }
+        if (documentUserCanView !== this.props.documentUserCanView) {
+            if (!title.includes("Chỉnh sửa phân quyền người xem")) {
+                title += "Chỉnh sửa phân quyền người xem. "
+            }
+            description += "Các phân quyền người xem mới: "
+            for (let i = 0; i < documentUserCanView.length; i++) {
+                formData.append('roles[]', documentUserCanView[i]);
+                let nameRole = userList.filter(item => item.value === documentUserCanView[i])
+                description += nameRole[0].text + " ";
+            }
+        }
         if (documentArchivedRecordPlaceOrganizationalUnit !== this.props.documentArchivedRecordPlaceOrganizationalUnit) {
             if (!title.includes("Chỉnh sửa đơn vị quản lí")) {
                 title += "Chỉnh sửa đơn vị quản lí"
@@ -486,6 +502,7 @@ class EditForm extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
+        console.log('aaaaaaaa', nextProps)
         if (nextProps.documentId !== prevState.documentId) {
             return {
                 ...prevState,
@@ -505,6 +522,7 @@ class EditForm extends Component {
                 relatedDocuments: nextProps.documentRelationshipDocuments.map(item => item.id),
 
                 documentRoles: nextProps.documentRoles,
+                documentUserCanView: nextProps.documentUserCanView,
 
                 documentArchivedRecordPlaceInfo: nextProps.documentArchivedRecordPlaceInfo,
                 documentArchivedRecordPlaceOrganizationalUnit: nextProps.documentArchivedRecordPlaceOrganizationalUnit,
@@ -605,11 +623,11 @@ class EditForm extends Component {
             documentId, documentName, documentDescription, documentCategory, documentDomains,
             documentIssuingBody, documentOfficialNumber, documentSigner, documentVersions,
             documentRelationshipDescription, relatedDocuments,
-            documentRoles, documentArchives,
+            documentRoles, documentArchives, documentUserCanView,
             documentArchivedRecordPlaceOrganizationalUnit, currentVersion, errorOfficialNumber
         } = this.state;
         const { errorName } = this.state;
-        const { translate, role, documents, department, documentRelationshipDocuments } = this.props;
+        const { translate, role, documents, department, documentRelationshipDocuments, user } = this.props;
         const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
         const { list } = documents.administration.domains;
         const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
@@ -626,7 +644,7 @@ class EditForm extends Component {
                 relationshipDocs.push({ value: doc._id, text: doc.name })
             }
         });
-
+        console.log('bbbbbbbbb', documentUserCanView)
         const archives = documents.administration.archives.list;
         let path = documentArchives ? this.findPath(archives, documentArchives) : "";
         return (
@@ -852,6 +870,20 @@ class EditForm extends Component {
                                                     items={roleList}
                                                     value={documentRoles}
                                                     onChange={this.handleRoles}
+                                                    multiple={true}
+                                                />
+                                            </div>
+                                            <div>
+                                                <label>{translate('manage_role.users')}</label>
+                                                <SelectBox
+                                                    id={`select-edit-document-user-can-view`}
+                                                    className="form-control select2"
+                                                    style={{ width: "100%" }}
+                                                    items={
+                                                        user.list.map(user => { return { value: user ? user._id : null, text: user ? `${user.name} - ${user.email}` : "" } })
+                                                    }
+                                                    onChange={this.handleUserCanView}
+                                                    value={documentUserCanView}
                                                     multiple={true}
                                                 />
                                             </div>

@@ -56,6 +56,7 @@ class QuoteEditForm extends Component {
         if (nextProps.quoteEdit._id !== prevState.quoteId) {
             return {
                 ...prevState,
+                step: 0,
                 quoteId: nextProps.quoteEdit._id,
                 code: nextProps.quoteEdit.code,
                 effectiveDate: nextProps.quoteEdit.effectiveDate ? formatDate(nextProps.quoteEdit.effectiveDate) : "",
@@ -67,7 +68,7 @@ class QuoteEditForm extends Component {
                 customerRepresent: nextProps.quoteEdit.customerRepresent,
                 customerAddress: nextProps.quoteEdit.customerAddress,
                 customerEmail: nextProps.quoteEdit.customerEmail,
-                deliveryTime: nextProps.quoteEdit.deliveryTime ? formatDate(nextProps.quoteEdit.effectiveDate) : "",
+                deliveryTime: nextProps.quoteEdit.deliveryTime ? formatDate(nextProps.quoteEdit.deliveryTime) : "",
                 discountsOfOrderValue: nextProps.quoteEdit.discounts,
                 discountsOfOrderValueChecked: Object.assign({}),
                 note: nextProps.quoteEdit.note,

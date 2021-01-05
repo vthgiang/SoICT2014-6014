@@ -64,7 +64,7 @@ exports.getActiveTimesheetLog = async (req, res) => {
         await Logger.error(req.user.email, `get timer status`, req.portal)
         res.status(400).json({
             success: false,
-            messages: ['get_timer_status_fail'],
+            messages: Array.isArray(error) ? error : ['get_timer_status_fail'],
             content: error
         })
     }
@@ -85,7 +85,7 @@ exports.startTimesheetLog = async (req, res) => {
         await Logger.error(req.user.email, ` start timer `, req.portal)
         res.status(400).json({
             success: false,
-            messages: ['start_timer_fail'],
+            messages: Array.isArray(error) ? error : ['start_timer_fail'],
             content: error
         })
     }

@@ -1,17 +1,23 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
+//Actions
 import { SalesOrderActions } from "../redux/actions";
 import { DiscountActions } from "../../discount/redux/actions";
 import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
 import { DepartmentActions } from "../../../../super-admin/organizational-unit/redux/actions";
 import { RoleActions } from "../../../../super-admin/role/redux/actions";
+import { QuoteActions } from "../../quote/redux/actions";
+//Helper Function
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import { formatDate } from "../../../../../helpers/formatDate";
+import { generateCode } from "../../../../../helpers/generateCode";
+//Components Import
 import { PaginateBar, DataTableSetting, SelectMulti, SelectBox, DeleteNotification } from "../../../../../common-components";
-// import QuoteDetailForm from "./quoteDetailForm";
+import SalesOrderDetailForm from "./salesOrderDetailForm";
 import SalesOrderCreateForm from "./salesOrderCreateForm";
-// import QuoteEditForm from "./quoteEditForm";
+import SalesOrderCreateFormFromQuote from "./salesOrderCreateFormFromQuote";
+import SalesOrderEditForm from "./salesOrderEditForm";
 
 class SalesOrderTable extends Component {
     constructor(props) {
@@ -21,7 +27,7 @@ class SalesOrderTable extends Component {
             limit: 5,
             code: "",
             status: null,
-            quoteDetail: {},
+            salesOrderDetail: {},
         };
     }
 
@@ -32,6 +38,13 @@ class SalesOrderTable extends Component {
         this.props.getCustomers();
         this.props.getAllDepartments();
         this.props.getAllRoles();
+        this.props.getQuotesToMakeOrder();
+    };
+
+    handleClickCreateCode = () => {
+        this.setState((state) => {
+            return { ...state, code: generateCode("SALES_ORDER_") };
+        });
     };
 
     setPage = async (page) => {
@@ -98,29 +111,32 @@ class SalesOrderTable extends Component {
         this.setState((state) => {
             return {
                 ...state,
-                quoteDetail: data,
+                salesOrderDetail: data,
             };
         });
-        window.$("#modal-detail-quote").modal("show");
+        window.$("#modal-detail-sales-order").modal("show");
     };
 
     handleCreate = () => {
         window.$("#modal-add-sales-order").modal("show");
     };
 
-    handleEditQuote = async (quoteEdit) => {
-        console.log("quoteEdit", quoteEdit);
+    handleEditSalesOrder = async (salesOrderEdit) => {
         await this.setState((state) => {
             return {
                 ...state,
-                quoteEdit,
+                salesOrderEdit,
             };
         });
-        window.$("#modal-edit-quote").modal("show");
+        window.$("#modal-edit-sales-order").modal("show");
     };
 
-    deleteQuote = async (id) => {
-        this.props.deleteQuote(id);
+    createDirectly = () => {
+        window.$("#modal-add-sales-order").modal("show");
+    };
+
+    createFromQuote = () => {
+        window.$("#modal-add-sales-order-from-quote").modal("show");
     };
 
     // checkHasComponent = (name) => {
@@ -134,7 +150,7 @@ class SalesOrderTable extends Component {
     // }
 
     render() {
-        let { limit, quoteDetail, quoteEdit } = this.state;
+        let { limit, salesOrderDetail, salesOrderEdit, code } = this.state;
         const { translate, salesOrders } = this.props;
         const { totalPages, page } = salesOrders;
 
@@ -143,9 +159,11 @@ class SalesOrderTable extends Component {
             listSalesOrders = salesOrders.listSalesOrders;
         }
 
-        console.log("listSalesOrders", listSalesOrders);
-
         const dataStatus = [
+            {
+                className: "text-primary",
+                text: "no status",
+            },
             {
                 className: "text-primary",
                 text: "Chờ phê duyệt",
@@ -164,17 +182,68 @@ class SalesOrderTable extends Component {
             },
         ];
 
-        const { department, role, auth } = this.props;
+        const dataPriority = [
+            {
+                className: "text-primary",
+                text: "default",
+            },
+            {
+                className: "text-muted",
+                text: "Thấp",
+            },
+            {
+                className: "text-primary",
+                text: "Trung bình",
+            },
+            {
+                className: "text-success",
+                text: "Cao",
+            },
+            {
+                className: "text-danger",
+                text: "Đặc biệt",
+            },
+        ];
 
-        console.log("auth", auth);
+        const { department, role, auth } = this.props;
 
         return (
             <React.Fragment>
                 <div className="nav-tabs-custom">
                     <div className="box-body qlcv">
-                        <SalesOrderCreateForm />
-                        {/* <QuoteDetailForm quoteDetail={quoteDetail} />
-                        {quoteEdit && <QuoteEditForm quoteEdit={quoteEdit} />} */}
+                        <div className="form-inline">
+                            {/*Chọn cách thêm đơn hàng*/}
+                            {/* Button dropdown thêm mới đơn bán hàng */}
+                            <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
+                                <button
+                                    type="button"
+                                    className="btn btn-success dropdown-toggle pull-right"
+                                    data-toggle="dropdown"
+                                    aria-expanded="true"
+                                    title={"Đơn hàng mới"}
+                                    onClick={this.handleClickCreateCode}
+                                >
+                                    Thêm đơn hàng
+                                </button>
+                                <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
+                                    <li>
+                                        <a style={{ cursor: "pointer" }} title={`Tạo từ báo giá`} onClick={this.createFromQuote}>
+                                            Thêm từ báo giá
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a style={{ cursor: "pointer" }} title={`Tạo trực tiếp`} onClick={this.createDirectly}>
+                                            Thêm trực tiếp
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <SalesOrderCreateForm code={code} />
+                        <SalesOrderCreateFormFromQuote code={code} />
+                        <SalesOrderDetailForm salesOrderDetail={salesOrderDetail} />
+                        {salesOrderEdit && <SalesOrderEditForm salesOrderEdit={salesOrderEdit} />}
                         <div className="form-inline">
                             <div className="form-group">
                                 <label className="form-control-static">Mã đơn</label>
@@ -190,7 +259,7 @@ class SalesOrderTable extends Component {
                             <div className="form-group">
                                 <label className="form-control-static">Khách hàng</label>
                                 <SelectMulti
-                                    id={`selectMulti-filter-customer-quote`}
+                                    id={`selectMulti-filter-customer-sales-order`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={
@@ -212,7 +281,7 @@ class SalesOrderTable extends Component {
                                 <label className="form-control-static">Trạng thái đơn</label>
 
                                 <SelectMulti
-                                    id={`selectMulti-filter-status-quote`}
+                                    id={`selectMulti-filter-status-sales-order`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={[
@@ -259,7 +328,7 @@ class SalesOrderTable extends Component {
                                 </button>
                             </div>
                         </div>
-                        <table id={`quote-table`} className="table table-striped table-bordered table-hover" style={{ marginTop: 20 }}>
+                        <table id={`sales-order-table`} className="table table-striped table-bordered table-hover" style={{ marginTop: 20 }}>
                             <thead>
                                 <tr>
                                     <th>STT</th>
@@ -307,7 +376,7 @@ class SalesOrderTable extends Component {
                                             <td>{item.customer ? item.customer.name : ""}</td>
                                             <td>{item.paymentAmount ? formatCurrency(item.paymentAmount) : "---"}</td>
                                             <td className={dataStatus[item.status].className}>{dataStatus[item.status].text}</td>
-                                            <td>{item.priority}</td>
+                                            <td className={dataPriority[item.priority].className}>{dataPriority[item.priority].text}</td>
                                             <td>{item.deliveryTime ? formatDate(item.deliveryTime) : "---"}</td>
                                             {item.status === -1 ? (
                                                 <td>
@@ -325,21 +394,13 @@ class SalesOrderTable extends Component {
                                                         <i className="material-icons">view_list</i>
                                                     </a>
                                                     <a
-                                                        onClick={() => this.handleEditQuote(item)}
+                                                        onClick={() => this.handleEditSalesOrder(item)}
                                                         className="edit text-yellow"
                                                         style={{ width: "5px" }}
                                                         title="Sửa đơn"
                                                     >
                                                         <i className="material-icons">edit</i>
                                                     </a>
-                                                    <DeleteNotification
-                                                        content={"Bạn có chắc chắn muốn xóa báo giá này"}
-                                                        data={{
-                                                            id: item._id,
-                                                            info: item.code,
-                                                        }}
-                                                        func={() => this.deleteQuote(item._id)}
-                                                    />
                                                 </td>
                                             )}
                                         </tr>
@@ -373,6 +434,7 @@ const mapDispatchToProps = {
     getCustomers: CrmCustomerActions.getCustomers,
     getAllDepartments: DepartmentActions.get,
     getAllRoles: RoleActions.get,
+    getQuotesToMakeOrder: QuoteActions.getQuotesToMakeOrder,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(SalesOrderTable));

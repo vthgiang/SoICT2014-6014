@@ -21,7 +21,9 @@ export const taskManagementService = {
     getPaginateTasksByUser,
     getPaginateTasks,
     getPaginatedTasksByOrganizationalUnit,
+    getTaskAnalysOfUser,
     getTaskByPriorityInOrganizationUnit,
+    getTimeSheetOfUser,
 };
 
 /**
@@ -449,6 +451,14 @@ function getTaskInOrganizationUnitByMonth(organizationUnitId, startDateAfter, en
     }, false, true, 'task.task_management');
 }
 
+function getTaskAnalysOfUser(userId, type){
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/task/analys/user/${userId}`,
+        method: 'GET',
+        params: { type }
+    }, false, true, 'task.task_management');
+}
+
 function getTaskByPriorityInOrganizationUnit(organizationUnitId, date) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/tasks`,
@@ -458,5 +468,13 @@ function getTaskByPriorityInOrganizationUnit(organizationUnitId, date) {
             organizationUnitId: organizationUnitId,
             date: date,
         }
+    }, false, true, 'task.task_management');
+}
+
+function getTimeSheetOfUser(userId, month, year) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/task/time-sheet`,
+        method: 'GET',
+        params: { userId, month, year }
     }, false, true, 'task.task_management');
 }

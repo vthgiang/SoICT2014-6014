@@ -95,6 +95,7 @@ class QuoteManageTable extends Component {
     };
 
     handleShowDetailInfo = (data) => {
+        console.log("DATA", data);
         this.setState((state) => {
             return {
                 ...state,
@@ -144,6 +145,10 @@ class QuoteManageTable extends Component {
         }
 
         const dataStatus = [
+            {
+                className: "text-primary",
+                text: "no status",
+            },
             {
                 className: "text-primary",
                 text: "Chờ phê duyệt",

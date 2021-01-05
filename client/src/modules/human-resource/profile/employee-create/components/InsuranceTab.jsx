@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DatePicker, ErrorLabel, ExportExcel } from '../../../../../common-components';
+import { DatePicker, ErrorLabel, ExportExcel, UploadFile } from '../../../../../common-components';
 
 import { toast } from 'react-toastify';
 import ServerResponseAlert from '../../../../alert/components/serverResponseAlert';
@@ -219,6 +219,19 @@ class InsurranceTab extends Component {
         }
     }
 
+
+    handleChangeFile = (file) => {
+        const healthInsuranceAttachment = file.map(x => ({
+            url: x.urlFile,
+            fileUpload: x.fileUpload
+        }))
+
+        this.setState({
+            healthInsuranceAttachment,
+        });
+        this.props.handleChange("healthInsuranceAttachment", healthInsuranceAttachment);
+    }
+
     /**
      * Function bắt sự kiện xoá quá trình đóng BHXH
      * @param {*} index : Số thứ tự quá trình đóng BHXH cần xoá
@@ -384,6 +397,11 @@ class InsurranceTab extends Component {
                                     onChange={this.handleEndDateBHYTChange}
                                 />
                                 <ErrorLabel content={errorOnHealthInsuranceEndDate} />
+                            </div>
+                            {/* Tập tin đính kèm */}
+                            <div className="form-group col-md-4">
+                                <label>{translate('human_resource.profile.attached_files')}</label>
+                                <UploadFile multiple={true} onChange={this.handleChangeFile} />
                             </div>
                         </div>
                     </fieldset>

@@ -153,10 +153,10 @@ class SalesOrderCreateInfo extends Component {
                     </div>
                     <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4" style={{ padding: 10, height: "100%" }}>
                         <fieldset className="scheduler-border" style={{ height: "100%" }}>
-                            <legend className="scheduler-border">Báo giá</legend>
+                            <legend className="scheduler-border">Đơn bán hàng</legend>
                             <div className="form-group">
                                 <label>
-                                    Mã báo giá
+                                    Mã đơn
                                     <span className="attention"> * </span>
                                 </label>
                                 <input type="text" className="form-control" value={code} disabled={true} />

@@ -3360,6 +3360,7 @@ export default {
                 edit_task_information_failure: "Chỉnh sửa thông tin thất bại",
                 edit_document_task_comment_failure:
                     "Chỉnh sửa tài liệu thất bại",
+                time_overlapping: 'Thời điểm bắt đầu không hợp lệ. (Tồn tại một công việc tắt bấm giờ tự động trong khoảng thời gian này)',
 
                 // error label
                 err_require: "Trường này phải có giá trị",

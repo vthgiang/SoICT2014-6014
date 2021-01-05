@@ -81,7 +81,7 @@ exports.getEmployeeKPISets = async (portal, data) => {
             }
         }
     }
-    
+
     if (startdate && enddate) {
         keySearch = {
             ...keySearch,
@@ -262,13 +262,13 @@ exports.getTasksByKpiId = async (portal, data) => {
             difference_In_Time = date2.getTime() - date1.getTime();
             daykpi = Math.ceil(difference_In_Time / (1000 * 3600 * 24));
         }
-        
+
         if (daykpi && daykpi > 30) {
             daykpi = 30;
         } else if (!daykpi) {
             daykpi = 0;
         }
-           
+
         task[i].taskImportanceLevelCal = Math.round(3 * (task[i].priority / 3) + 3 * (task[i].results.contribution / 100) + 4 * (daykpi / 30));
 
         if (task[i].results.taskImportanceLevel === -1 || task[i].results.taskImportanceLevel === null)
@@ -313,7 +313,7 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
         let difference_In_Time = date2.getTime() - date1.getTime();
         let daykpi = Math.ceil(difference_In_Time / (1000 * 3600 * 24));
         if (daykpi > 30) daykpi = 30;
-        element.taskImportanceLevelCal = Math.round(3 * (element.priority / 3) + 3 * (element.results.contribution / 100) + 4 * (daykpi / 30));
+        element.taskImportanceLevelCal = Math.round(3 * (element.priority / 5) + 3 * (element.results.contribution / 100) + 4 * (daykpi / 30));
         if (element.results.taskImportanceLevel === -1 || element.results.taskImportanceLevel === null)
             element.results.taskImportanceLevel = element.taskImportanceLevelCal;
         element.daykpi = daykpi;
@@ -348,7 +348,7 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
             autoPointSet = -1;
         }
     };
-    
+
     if (autoPointSet !== -1) {
 
         let updateKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))

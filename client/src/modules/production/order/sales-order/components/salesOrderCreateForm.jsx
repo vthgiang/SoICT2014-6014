@@ -12,6 +12,7 @@ import SalesOrderCreateInfo from "./createSalesOrder/salesOrderCreateInfo";
 import SalesOrderCreatePayment from "./createSalesOrder/salesOrderCreatePayment";
 import SlasOfGoodDetail from "./createSalesOrder/viewDetailOnCreate/slasOfGoodDetail";
 import DiscountOfGoodDetail from "./createSalesOrder/viewDetailOnCreate/discountOfGoodDetail";
+import ManufacturingWorksOfGoodDetail from "./createSalesOrder/viewDetailOnCreate/manufacturingWorksOfGoodDetail";
 class SalesOrderCreateForm extends Component {
     constructor(props) {
         super(props);
@@ -51,15 +52,17 @@ class SalesOrderCreateForm extends Component {
         };
     }
 
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.code !== prevState.code) {
+            return {
+                code: nextProps.code,
+            };
+        }
+    }
+
     componentDidMount() {
         this.props.getCustomers();
     }
-
-    handleClickCreateCode = () => {
-        this.setState((state) => {
-            return { ...state, code: generateCode("SALES_ORDER_") };
-        });
-    };
 
     validateCustomer = (value, willUpdateState = true) => {
         let msg = undefined;
@@ -80,7 +83,7 @@ class SalesOrderCreateForm extends Component {
     };
 
     handleCustomerChange = (value) => {
-        if (value[0] !== "title") {
+        if (value[0] !== "") {
             let customerInfo = this.props.customers.list.filter((item) => item._id === value[0]);
             if (customerInfo.length) {
                 this.setState({
@@ -340,6 +343,15 @@ class SalesOrderCreateForm extends Component {
         });
     };
 
+    setCurrentManufacturingWorksOfGoods = (data) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                currentManufacturingWorksOfGood: data,
+            };
+        });
+    };
+
     handleCoinChange = (coin) => {
         this.setState((state) => {
             return {
@@ -444,6 +456,7 @@ class SalesOrderCreateForm extends Component {
                 amount: item.amount,
                 amountAfterDiscount: item.amountAfterDiscount,
                 amountAfterTax: item.amountAfterTax,
+                manufacturingWorks: item.manufacturingWorks ? item.manufacturingWorks._id : undefined,
             };
         });
         return goodMap;
@@ -451,19 +464,14 @@ class SalesOrderCreateForm extends Component {
 
     save = async (e) => {
         e.preventDefault();
-        console.log("this.isValidateForm()", this.isValidateForm());
         if (this.isValidateForm()) {
             let {
                 customer,
-                // customerName,
                 customerAddress,
                 customerPhone,
                 customerRepresent,
-                // customerTaxNumber,
                 customerEmail,
                 code,
-                effectiveDate,
-                expirationDate,
                 shippingFee,
                 deliveryTime,
                 coin,
@@ -475,8 +483,6 @@ class SalesOrderCreateForm extends Component {
 
             let data = {
                 code,
-                effectiveDate: effectiveDate ? new Date(formatToTimeZoneDate(effectiveDate)) : undefined,
-                expirationDate: expirationDate ? new Date(formatToTimeZoneDate(expirationDate)) : undefined,
                 customer,
                 customerPhone,
                 customerAddress,
@@ -494,35 +500,31 @@ class SalesOrderCreateForm extends Component {
 
             await this.props.createNewSalesOrder(data);
 
-            console.log("data", data);
+            this.setState((state) => {
+                return {
+                    ...state,
+                    customer: "",
+                    customerName: "",
+                    customerAddress: "",
+                    customerPhone: "",
+                    customerRepresent: "",
+                    customerTaxNumber: "",
+                    customerEmail: "",
+                    priority: "",
+                    code: "",
+                    shippingFee: "",
+                    deliveryTime: "",
+                    coin: "",
+                    goods: [],
+                    discountsOfOrderValue: [],
+                    paymentAmount: "",
+                    note: "",
+                    paymentAmount: "",
+                    step: 0,
+                };
+            });
 
-            // this.setState((state) => {
-            //     return {
-            //         ...state,
-            //         customer: "",
-            //         customerName: "",
-            //         customerAddress: "",
-            //         customerPhone: "",
-            //         customerRepresent: "",
-            //         customerTaxNumbe: "",
-            //         customerEmail: "",
-            //         priority: "",
-            //         code: "",
-            //         effectiveDate: "",
-            //         expirationDate: "",
-            //         shippingFee: "",
-            //         deliveryTime: "",
-            //         coin: "",
-            //         goods: [],
-            //         discountsOfOrderValue: [],
-            //         paymentAmount: "",
-            //         note: "",
-            //         paymentAmount: "",
-            //         step: 0,
-            //     };
-            // });
-
-            // window.$(`#modal-add-sales-order`).modal("hide");
+            window.$(`#modal-add-sales-order`).modal("hide");
         }
     };
 
@@ -551,6 +553,7 @@ class SalesOrderCreateForm extends Component {
             discountsOfOrderValueChecked,
             currentSlasOfGood,
             currentDiscountsOfGood,
+            currentManufacturingWorksOfGood,
             paymentAmount,
         } = this.state;
 
@@ -562,12 +565,12 @@ class SalesOrderCreateForm extends Component {
 
         return (
             <React.Fragment>
-                <ButtonModal
+                {/* <ButtonModal
                     onButtonCallBack={this.handleClickCreateCode}
                     modalID={`modal-add-sales-order`}
                     button_name={"Đơn hàng mới"}
                     title={"Đơn hàng mới"}
-                />
+                /> */}
                 <DialogModal
                     modalID={`modal-add-sales-order`}
                     isLoading={false}
@@ -634,6 +637,7 @@ class SalesOrderCreateForm extends Component {
                     </div>
                     <SlasOfGoodDetail currentSlasOfGood={currentSlasOfGood} />
                     <DiscountOfGoodDetail currentDiscounts={currentDiscountsOfGood} />
+                    <ManufacturingWorksOfGoodDetail currentManufacturingWorksOfGood={currentManufacturingWorksOfGood} />
                     <form id={`form-add-sales-order`}>
                         <div className="row row-equal-height" style={{ marginTop: 0 }}>
                             {step === 0 && (
@@ -684,6 +688,9 @@ class SalesOrderCreateForm extends Component {
                                     setCurrentDiscountsOfGood={(data) => {
                                         this.setCurrentDiscountsOfGood(data);
                                     }}
+                                    setCurrentManufacturingWorksOfGoods={(data) => {
+                                        this.setCurrentManufacturingWorksOfGoods(data);
+                                    }}
                                 />
                             )}
                             {step === 2 && (
@@ -697,6 +704,7 @@ class SalesOrderCreateForm extends Component {
                                     customerRepresent={customerRepresent}
                                     customerTaxNumber={customerTaxNumber}
                                     customerEmail={customerEmail}
+                                    priority={priority}
                                     code={code}
                                     shippingFee={shippingFee}
                                     deliveryTime={deliveryTime}
@@ -715,6 +723,9 @@ class SalesOrderCreateForm extends Component {
                                     }}
                                     setCurrentDiscountsOfGood={(data) => {
                                         this.setCurrentDiscountsOfGood(data);
+                                    }}
+                                    setCurrentManufacturingWorksOfGoods={(data) => {
+                                        this.setCurrentManufacturingWorksOfGoods(data);
                                     }}
                                     setPaymentAmount={(data) => this.setPaymentAmount(data)}
                                     saveSalesOrder={this.save}

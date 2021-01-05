@@ -271,10 +271,10 @@ exports.getTasksCreatedByUser = async (portal, id) => {
  * @task dữ liệu trong params
  */
 exports.getPaginatedTasks = async (portal, task) => {
-    var { perPage, number, role, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime } = task;
-    var taskList;
-    var perPage = Number(perPage);
-    var page = Number(number);
+    let { perPage, number, role, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime } = task;
+    let taskList;
+    perPage = Number(perPage);
+    let page = Number(number);
     let roleArr = [];
     if (role) {
         for (let i in role) {
@@ -325,28 +325,27 @@ exports.getPaginatedTasks = async (portal, task) => {
         };
     }
 
-    if (special) {
-        for (var i = 0; i < special.length; i++) {
-            if (special[i] === "Lưu trong kho") {
-                keySearch = {
-                    ...keySearch,
-                    isArchived: true
-                };
-            }
-            else {
-                let now = new Date();
-                let currentYear = now.getFullYear();
-                let currentMonth = now.getMonth();
-                let endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
-                let endOfLastMonth = new Date(currentYear, currentMonth);
+    if (Array.isArray(special)) {
+        let checkStore = special.some(node => node === 'stored');
+        if(checkStore) {
+            keySearch = {
+                ...keySearch,
+                isArchived: true
+            };
+        }
+        let checkCurrentMonth = special.some(node => node === 'currentMonth');
+        if(checkCurrentMonth){
+            let now = new Date();
+            let currentYear = now.getFullYear();
+            let currentMonth = now.getMonth()+1;
+            let start = new Date(`${currentYear}-${currentMonth}`); //ngày cuối cùng của tháng trước
+            let end = new Date(currentYear, currentMonth); // ngày cuối cùng của tháng hiện tại
 
-                keySearchSpecial = {
-                    $or: [
-                        { 'endDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
-                        { 'startDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
-                        { $and: [{ 'endDate': { $gte: endOfCurrentMonth } }, { 'startDate': { $lte: endOfLastMonth } }] }
-                    ]
-                }
+            keySearchSpecial = {
+                $or: [
+                    { 'endDate': { $lte: end, $gt: start } },
+                    { 'startDate': { $lte: end, $gt: start } }
+                ]
             }
         }
     }
@@ -372,84 +371,63 @@ exports.getPaginatedTasks = async (portal, task) => {
     } else {
 
         if (startDate) {
-            let startTime = startDate.split("-");
-            let start = new Date(startTime[1], startTime[0] - 1, 1);
-            // let end = new Date(startTime[1], startTime[0], 1);
-
-            keySearch = {
-                ...keySearch,
-                startDate: {
-                    $gt: start,
-                    // $lt: end
+            let checkDate = Date.parse(endDate);
+            if (checkDate) {
+                keySearch = {
+                    ...keySearch,
+                    startDate: {
+                        $gt: new Date(startDate)
+                    }
+                }
+            } else {
+                let startTime = startDate.split("-");
+                let start = new Date(startTime[1], startTime[0] - 1, 1);
+                keySearch = {
+                    ...keySearch,
+                    startDate: {
+                        $gt: start
+                    }
                 }
             }
         }
         if (endDate) {
-            let endTime = endDate.split("-");
-            // let start = new Date(endTime[1], endTime[0] - 1, 1);
-            let end = new Date(endTime[1], endTime[0], 1);
-
-            keySearch = {
-                ...keySearch,
-                endDate: {
-                    // $gte: start,
-                    $lte: end
+            let checkDate = Date.parse(endDate);
+            if (checkDate) {
+                keySearch = {
+                    ...keySearch,
+                    endDate: {
+                        $lte: new Date(endDate)
+                    }
+                }
+            } else {
+                let endTime = endDate.split("-");
+                let end = new Date(endTime[1], endTime[0], 1);
+                keySearch = {
+                    ...keySearch,
+                    endDate: {
+                        $lte: end
+                    }
                 }
             }
         }
 
     }
 
-    // if (startDateAfter) {
-    //     let startTimeAfter = startDateAfter.split("-");
-    //     let start;
-
-
-    //     if (startTimeAfter[0] > 12) start = new Date(startTimeAfter[0], startTimeAfter[1] - 1, 1);
-    //     else start = new Date(startTimeAfter[1], startTimeAfter[0] - 1, 1);
-
-    //     keySearch = {
-    //         ...keySearch,
-    //         endDate: {
-    //             $gte: start
-    //         }
-    //     }
-    // }
-
-    // if (endDateBefore) {
-    //     let endTimeBefore = endDateBefore.split("-");
-    //     let end;
-    //     if (endTimeBefore[0] > 12) end = new Date(endTimeBefore[0], endTimeBefore[1], 1);
-    //     else end = new Date(endTimeBefore[1], endTimeBefore[0], 1);
-
-    //     keySearch = {
-    //         ...keySearch,
-    //         startDate: {
-    //             $lt: end
-    //         }
-    //     }
-    // }
-
-    taskList = await Task(connect(DB_CONNECTION, portal)).find({
+    let optionQuery = {
         $and: [
             keySearch,
             keySearchSpecial,
             keySearchPeriod
         ]
-    }).sort({ 'createdAt': 'asc' })
+    }
+    taskList = await Task(connect(DB_CONNECTION, portal)).find(optionQuery).sort({ 'createdAt': 'asc' })
         .skip(perPage * (page - 1)).limit(perPage).populate([
             { path: "organizationalUnit creator parent responsibleEmployees" },
             { path: "timesheetLogs.creator", select: "name" },
         ]);
 
-    var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
-        $and: [
-            keySearch,
-            keySearchSpecial,
-            keySearchPeriod
-        ]
-    });
-    var totalPages = Math.ceil(totalCount / perPage);
+    let totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments(optionQuery);
+    let totalPages = Math.ceil(totalCount / perPage);
 
     return {
         "tasks": taskList,
@@ -505,7 +483,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
 
     if (special) {
         for (let i = 0; i < special.length; i++) {
-            if (special[i] === "Lưu trong kho") {
+            if (special[i] === "stored") {
                 keySearch = {
                     ...keySearch,
                     isArchived: true
@@ -678,7 +656,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
 
     if (special) {
         for (let i = 0; i < special.length; i++) {
-            if (special[i] === "Lưu trong kho") {
+            if (special[i] === "stored") {
                 keySearch = {
                     ...keySearch,
                     isArchived: true
@@ -848,7 +826,7 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
 
     if (special) {
         for (let i = 0; i < special.length; i++) {
-            if (special[i] === "Lưu trong kho") {
+            if (special[i] === "stored") {
                 keySearch = {
                     ...keySearch,
                     isArchived: true
@@ -1018,7 +996,7 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
 
     if (special) {
         for (let i = 0; i < special.length; i++) {
-            if (special[i] === "Lưu trong kho") {
+            if (special[i] === "stored") {
                 keySearch = {
                     ...keySearch,
                     isArchived: true
@@ -1161,7 +1139,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
 
     if (special) {
         for (let i = 0; i < special.length; i++) {
-            if (special[i] === "Lưu trong kho") {
+            if (special[i] === "stored") {
                 keySearch = {
                     ...keySearch,
                     isArchived: true
@@ -1364,7 +1342,7 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
 
     if (special) {
         for (let i = 0; i < special.length; i++) {
-            if (special[i] === "Lưu trong kho") {
+            if (special[i] === "stored") {
                 keySearch = {
                     ...keySearch,
                     isArchived: true
@@ -1549,6 +1527,32 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (portal, task) => {
     };
 }
 
+exports.getPercentExpire = (nowDate, startDate, endDate) => {
+    let start = new Date(startDate);
+    let end = new Date(endDate);
+    // lấy khoảng thời gian làm việc
+    let workingTime = Math.round((end - start) / 1000 / 60 / 60 / 24);
+    // tính phần trăm phải làm trong ngày
+    let percentOneDay = 100 / workingTime;
+    // Tính số ngày quá hạn
+    let deadline2 = Math.round((nowDate - end) / 1000 / 60 / 60 / 24);
+    // tính phần trăm chậm tiến độ. số ngày quá hạn nhân với phần trăm phải làm trong 1 ngày
+    return percentOneDay * deadline2;
+}
+
+exports.getPercent = (nowDate, startDate, endDate) => {
+    let start = new Date(startDate);
+    let end = new Date(endDate);
+
+    // lấy khoảng thời gian làm việc
+    let workingTime = Math.round((end - start) / 1000 / 60 / 60 / 24);
+    // lấy khoản thời gian làm việc tính đến ngày hiện tại
+    // tính phần trăm phải làm trong 1 ngày
+    let percentOneDay = 100 / workingTime;
+    // % tiến độ tối thiểu phải làm được trong time hiện tại
+    let workingTimeNow = Math.round((nowDate - start) / 1000 / 60 / 60 / 24);
+    return workingTimeNow * percentOneDay;
+}
 
 exports.getAllTaskByPriorityOfOrganizationalUnit = async (portal, task) => {
     const { organizationalUnitId, date } = task;
@@ -1564,35 +1568,53 @@ exports.getAllTaskByPriorityOfOrganizationalUnit = async (portal, task) => {
             }
         };
     }
-    const data = await Task(connect(DB_CONNECTION, portal)).find({ ...keySearch, endDate: { $gte: new Date(date) } })
+    const data = await Task(connect(DB_CONNECTION, portal)).find({ ...keySearch, endDate: { $gte: new Date(date) } }) // lấy những việc còn thời hạn
         .populate({ path: "organizationalUnit creator parent responsibleEmployees" }).lean();
 
-    let taskUrgent = [], taskNeedToDo = [], deadline;
+    let taskUrgent = [], taskNeedToDo = [];
     const nowDate = new Date();
 
+    // Lấy công việc khẩn cấp
     data.forEach((obj, index) => {
-        let endDate = new Date(obj.endDate);
-        deadline = Math.round((endDate - nowDate) / 1000 / 60 / 60 / 24);
-        if (deadline < 3) {
-            if (obj.priority === 3 && obj.progress < 50) {
-                taskUrgent = [...taskUrgent, obj]
-            }
-            if (obj.priority === 4 && obj.progress < 30) {
-                taskUrgent = [...taskUrgent, obj]
-            }
-            if (obj.priority === 5 && obj.progress < 20) {
-                taskUrgent = [...taskUrgent, obj]
-            }
-
-            if (obj.priority === 5 && obj.progress >= 20) {
-                taskNeedToDo = [...taskNeedToDo, obj];
-            }
-            if (obj.priority === 4 && obj.progress >= 70) {
-                taskNeedToDo = [...taskNeedToDo, obj];
-            }
+        let minimumWorkingTime = this.getPercent(nowDate, obj.startDate, obj.endDate);
+        let percentDifference = minimumWorkingTime - obj.progress;
+        if (obj.priority === 1 && obj.progress < minimumWorkingTime && percentDifference >= 50) {
+            taskUrgent = [...taskUrgent, obj]
+        }
+        if (obj.priority === 2 && obj.progress < minimumWorkingTime && percentDifference >= 40) {
+            taskUrgent = [...taskUrgent, obj]
+        }
+        if (obj.priority === 3 && obj.progress < minimumWorkingTime && percentDifference >= 30) {
+            taskUrgent = [...taskUrgent, obj]
+        }
+        if (obj.priority === 4 && obj.progress < minimumWorkingTime && percentDifference >= 20) {
+            taskUrgent = [...taskUrgent, obj];
+        }
+        if (obj.priority === 5 && obj.progress < minimumWorkingTime && percentDifference >= 10) {
+            taskUrgent = [...taskUrgent, obj];
         }
     })
 
+    // lấy công việc cần làm
+    data.forEach(obj => {
+        let minimumWorkingTime = this.getPercent(nowDate, obj.startDate, obj.endDate);
+        let percentDifference = minimumWorkingTime - obj.progress;
+        if (obj.priority === 5 && obj.progress < minimumWorkingTime && 0 < percentDifference && percentDifference < 10) {
+            taskNeedToDo = [...taskNeedToDo, obj];
+        }
+        if (obj.priority === 4 && obj.progress < minimumWorkingTime && 10 < percentDifference && percentDifference < 20) {
+            taskNeedToDo = [...taskNeedToDo, obj];
+        }
+        if (obj.priority === 3 && obj.progress < minimumWorkingTime && 20 < percentDifference && percentDifference < 30) {
+            taskNeedToDo = [...taskNeedToDo, obj];
+        }
+        if (obj.priority === 2 && obj.progress < minimumWorkingTime && 30 < percentDifference && percentDifference < 40) {
+            taskNeedToDo = [...taskNeedToDo, obj];
+        }
+        if (obj.priority === 1 && obj.progress < minimumWorkingTime && 40 < percentDifference && percentDifference < 50) {
+            taskNeedToDo = [...taskNeedToDo, obj];
+        }
+    })
 
     if (date) {
         keySearch = {
@@ -1602,10 +1624,40 @@ exports.getAllTaskByPriorityOfOrganizationalUnit = async (portal, task) => {
             }
         }
     }
-
+    // lấy việc quá hạn
     const tasksExpire = await Task(connect(DB_CONNECTION, portal)).find(keySearch)
-        .populate({ path: "organizationalUnit creator parent responsibleEmployees" });
-    taskUrgent = [...taskUrgent, ...tasksExpire];
+        .populate({ path: "organizationalUnit creator parent responsibleEmployees" }).lean();
+    let tasksExpireUrgent = [];
+
+    // Quá hạn (cv cấp 1, 2, 3, 4, 5 :25 %, 20%, 15%,10%, 5% số ngày đã quá )
+    tasksExpire.forEach(obj => {
+        let delay = this.getPercentExpire(nowDate, obj.startDate, obj.endDate);
+        if (obj.priority === 1 && delay > 25) {
+            tasksExpireUrgent = [...tasksExpireUrgent, obj];
+        } else if (obj.priority === 2 && delay > 20) {
+            tasksExpireUrgent = [...tasksExpireUrgent, obj];
+        } else if (obj.priority === 3 && delay > 15) {
+            tasksExpireUrgent = [...tasksExpireUrgent, obj];
+        } else if (obj.priority === 4 && delay > 10) {
+            tasksExpireUrgent = [...tasksExpireUrgent, obj];
+        } else if (obj.priority === 5 && delay > 5) {
+            tasksExpireUrgent = [...tasksExpireUrgent, obj];
+        } else {
+            taskNeedToDo = [...taskNeedToDo, obj];
+        }
+    })
+    /* Quá hạn:quá deanline
+    (cv cấp 1, 2, 3, 4, 5 :25 %, 20%, 15%,10%, 5% số ngày đã quá )
+    hoặc
+    cv Ưu tiên 1, 2 , 3, 4, 5 chậm tiến độ quá >=50, >=40,  >=30%, 4: >=20%, 5: >=10%
+    */
+    taskUrgent = [...taskUrgent, ...tasksExpireUrgent];
+
+    /*quá hạn ko có ở khẩn cấp 
+    hoặc
+    chậm tiến độ của mức 5 , 4, 3, 2, 1: 5- 0<x<10, 4: 10 <= x <20, 3: 20<x<30, 2: 30<x<40 ,1: 40<x<50: */
+    console.log('taskUrgent', taskUrgent.map(x => x.name));
+    console.log('taskNeedToDo', taskNeedToDo.map(x => x.name));
 
     return {
         "urgent": taskUrgent,
@@ -2317,4 +2369,40 @@ exports.getTaskAnalysOfUser = async (portal, userId, type) => {
         default:
             return tasks;
     }
+}
+
+/**
+ * 
+ * @param {Lấy lịch sử bấm giờ làm việc của người dùng theo từng tháng trong năm} portal 
+ * @param {*} userId 
+ * @param {*} month 
+ * @param {*} year 
+ */
+exports.getUserTimeSheet = async (portal, userId, month, year) => {
+    console.log("my", month, year)
+    let beginOfMonth = new Date(`${year}-${month}`);
+    let beginOfNextMonth = new Date(year, month);
+    let tasks = await Task(connect(DB_CONNECTION, portal))
+        .find({
+            "timesheetLogs.creator": userId,
+            "timesheetLogs.startedAt": { $gte: beginOfMonth, $lt: beginOfNextMonth },
+            "timesheetLogs.stoppedAt": { $exists: true }
+        });
+    console.log("TASKS", tasks)
+    let timesheetlogs = [];
+    for(let i=0; i<tasks.length; i++){
+        let ts = tasks[i].timesheetLogs;
+        console.log("TASK", ts)
+        if(Array.isArray(ts)){
+            for(let j=0; j<ts.length; j++){
+                let tslogs = ts[j];
+                console.log("TSSSS", tslogs)
+                if(tslogs.creator.toString() === userId.toString()){
+                    timesheetlogs.push(tslogs);
+                }
+            }
+        }
+    }
+
+    return timesheetlogs;
 }
