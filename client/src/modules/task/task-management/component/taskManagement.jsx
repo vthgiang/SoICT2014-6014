@@ -475,8 +475,7 @@ class TaskManagement extends Component {
         let total = 0;
         for (let i = 0; i < ts.length; i++) {
             let tslog = ts[i];
-            if (typeof (tslog.duration) === 'number') {
-                console.log("số", tslog.duration)
+            if (typeof (tslog.duration) === 'number' && tslog.acceptLog) {
                 total = total + Number(tslog.duration);
             }
         }
