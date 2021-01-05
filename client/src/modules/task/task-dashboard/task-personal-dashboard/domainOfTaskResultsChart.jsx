@@ -85,7 +85,7 @@ class DomainOfTaskResultsChart extends Component {
 
         if (nextProps.units !== this.props.units || nextProps.callAction !== this.state.callAction || nextProps.startMonth !== this.state.startMonth || nextProps.endMonth !== this.state.endMonth) {
             if (this.props.TaskOrganizationUnitDashboard) {
-                await this.setState(state => {
+                this.setState(state => {
                     return {
                         ...state,
                         startMonth: nextProps.startMonth,
@@ -94,20 +94,20 @@ class DomainOfTaskResultsChart extends Component {
                     }
                 })
                 if (this.props.units) {
-                    if (this.props.units.length)
-                        await this.props.getTaskInOrganizationUnitByMonth(this.props.units, nextProps.startMonth, nextProps.endMonth);
+                    // if (this.props.units.length)
+                        // await this.props.getTaskInOrganizationUnitByMonth(this.props.units, nextProps.startMonth, nextProps.endMonth);
                 }
             }
             else {
-                await this.props.getResponsibleTaskByUser([], 1, 100, [], [], [], null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
-                await this.props.getAccountableTaskByUser([], 1, 100, [], [], [], null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
-                await this.props.getConsultedTaskByUser([], 1, 100, [], [], [], null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
-                await this.props.getInformedTaskByUser([], 1, 100, [], [], [], null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
-                await this.props.getCreatorTaskByUser([], 1, 100, [], [], [], null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
+                // await this.props.getResponsibleTaskByUser([], 1, 100, [], [], [], null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
+                // await this.props.getAccountableTaskByUser([], 1, 100, [], [], [], null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
+                // await this.props.getConsultedTaskByUser([], 1, 100, [], [], [], null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
+                // await this.props.getInformedTaskByUser([], 1, 100, [], [], [], null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
+                // await this.props.getCreatorTaskByUser([], 1, 100, [], [], [], null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
             }
             // this.domainChart();
 
-            await this.setState(state => {
+            this.setState(state => {
                 return {
                     ...state,
                     dataStatus: this.DATA_STATUS.QUERYING,
@@ -119,7 +119,7 @@ class DomainOfTaskResultsChart extends Component {
         }
 
         if (nextState.role !== this.state.role || nextState.typePoint !== this.state.typePoint) {
-            await this.setState(state => {
+            this.setState(state => {
                 return {
                     ...state,
                     role: nextState.role,
@@ -133,15 +133,15 @@ class DomainOfTaskResultsChart extends Component {
         if (nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
             if (this.props.TaskOrganizationUnitDashboard) { // neu component duoc goi tu task organization unit
                 if (this.props.units) {
-                    await this.props.getTaskInOrganizationUnitByMonth(this.props.units, this.state.startMonth, this.state.endMonth);
+                    // await this.props.getTaskInOrganizationUnitByMonth(this.props.units, this.state.startMonth, this.state.endMonth);
                 }
             }
             else {
-                await this.props.getResponsibleTaskByUser([], 1, 100, [], [], [], null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
-                await this.props.getAccountableTaskByUser([], 1, 100, [], [], [], null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
-                await this.props.getConsultedTaskByUser([], 1, 100, [], [], [], null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
-                await this.props.getInformedTaskByUser([], 1, 100, [], [], [], null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
-                await this.props.getCreatorTaskByUser([], 1, 100, [], [], [], null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
+                // await this.props.getResponsibleTaskByUser([], 1, 100, [], [], [], null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
+                // await this.props.getAccountableTaskByUser([], 1, 100, [], [], [], null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
+                // await this.props.getConsultedTaskByUser([], 1, 100, [], [], [], null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
+                // await this.props.getInformedTaskByUser([], 1, 100, [], [], [], null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
+                // await this.props.getCreatorTaskByUser([], 1, 100, [], [], [], null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
             }
             await this.setState(state => {
                 return {
@@ -224,13 +224,33 @@ class DomainOfTaskResultsChart extends Component {
             }
         })
     }
+    
+    // Lọc công việc trùng lặp
+    filterDuplicateTask = (listTask) => {
+        let idArray = listTask.map(item => item && item._id);
+        idArray = idArray.map((item, index, array) => {
+            if (array.indexOf(item) === index) {
+                return index;
+            } else {
+                return false
+            }
+        })
+        idArray = idArray.filter(item => listTask[item]);
+        let listTaskNotDuplicate = idArray.map(item => {
+            return listTask[item]
+        })
+
+        return listTaskNotDuplicate;
+    }
+
     // Hàm lọc các công việc theo từng tháng
     filterTasksByMonth = (currentMonth, nextMonth) => {
-        const { tasks } = this.props;
+        const { tasks, TaskOrganizationUnitDashboard, units } = this.props;
+        const { role, userId, typePoint } = this.state;
 
         let results = [], maxResult, minResult;
         let listTask = [], listTaskByRole = [];
-        if (this.props.TaskOrganizationUnitDashboard) {
+        if (TaskOrganizationUnitDashboard) {
             listTask = tasks.organizationUnitTasks;
         }
         else if (tasks.responsibleTasks && tasks.accountableTasks && tasks.consultedTasks && tasks.informedTasks && tasks.creatorTasks) {
@@ -240,15 +260,17 @@ class DomainOfTaskResultsChart extends Component {
             listTaskByRole[this.ROLE.INFORMED] = tasks.informedTasks;
             listTaskByRole[this.ROLE.CREATOR] = tasks.creatorTasks;
 
-            if (this.state.role.length !== 0) {
-                this.state.role.map(role => {
+            if (role.length !== 0) {
+                role.map(role => {
                     listTask = listTask.concat(listTaskByRole[role]);
                 })
             }
+
+            listTask = this.filterDuplicateTask(listTask);
         };
 
         if (listTask) {
-            listTask = this.props.TaskOrganizationUnitDashboard ? listTask.tasks : listTask; // neu la listTask cua organizationUnit
+            listTask = TaskOrganizationUnitDashboard ? listTask.tasks : listTask; // neu la listTask cua organizationUnit
             listTask.map(task => {
                 task.evaluations.filter(evaluation => {
                     let date = new Date(nextMonth)
@@ -269,12 +291,12 @@ class DomainOfTaskResultsChart extends Component {
                     return 0;
                 }).map(evaluation => {
                     evaluation.results.filter(result => {
-                        if (this.props.units || (result.employee === this.state.userId)) {
+                        if (units || (result.employee === userId)) {
                             return 1;
                         }
                         return 0;
                     }).map(result => {
-                        switch (this.state.typePoint) {
+                        switch (typePoint) {
                             case this.TYPEPOINT.AUTOMAIC_POINT:
                                 results.push(result.automaticPoint);
                             case this.TYPEPOINT.EMPLOYEE_POINT:

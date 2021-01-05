@@ -41,7 +41,6 @@ class TaskOrganizationUnitDashboard extends Component {
         } else {
             endMonth = month;
         }
-            console.log("55555", endMonth)
         this.INFO_SEARCH = {
             idsUnit: [],
             checkUnit: 0,
@@ -84,16 +83,14 @@ class TaskOrganizationUnitDashboard extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-
         let data, organizationUnit = "organizationUnit";
-
+        
         if (!this.state.idsUnit.length && this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit
             || (nextState.checkUnit !== this.state.checkUnit
                 || nextState.startMonth !== this.state.startMonth
                 || nextState.endMonth !== this.state.endMonth)) {
             let idsUnit = !this.state.idsUnit.length ? [this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id] : nextState.idsUnit;
-            console.log("******",idsUnit)
-            await this.setState((state) => {
+            this.setState((state) => {
                 return {
                     ...state,
                     startMonth: nextState.startMonth,
