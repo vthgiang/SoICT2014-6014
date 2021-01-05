@@ -4,6 +4,9 @@ const {
     OrganizationalUnit
 } = require(`../../../../models`);
 
+const { getAllEmployeeOfUnitByRole } = require("../../../super-admin/user/user.service");
+
+
 const {
     connect
 } = require(`../../../../helpers/dbHelper`);
@@ -244,4 +247,42 @@ exports.editManufacturingWorks = async (id, data, portal) => {
         }]);
 
     return { manufacturingWorks }
+}
+
+exports.getUserByWorksManageRole = async (currentRole, portal) => {
+    // Xử  lý các quyền trước để tìm ra các kế hoạch trong các nhà máy được phân quyền
+    let role = [currentRole];
+    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'managers': { $in: role } });
+    let organizationalUnitId = departments.map(department => department._id);
+    let listManufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        organizationalUnit: {
+            $in: organizationalUnitId
+        }
+    });
+    // Lấy ra các nhà máy mà currentRole cũng quản lý
+    let listWorksByManageRole = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        manageRoles: {
+            $in: role
+        }
+    })
+    listManufacturingWorks = [...listManufacturingWorks, ...listWorksByManageRole];
+
+    let listWorksId = listManufacturingWorks.map(x => x._id);
+
+    let manufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal))
+        .find({
+            _id: {
+                $in: listWorksId
+            }
+        })
+        .populate([{
+            path: "organizationalUnit",
+        }]);
+    let employees = [];
+    for (let i = 0; i < manufacturingWorks.length; i++) {
+        let emplyeeArray = await getAllEmployeeOfUnitByRole(portal, manufacturingWorks[i].organizationalUnit.employees);
+        employees = [...employees, ...emplyeeArray]
+    }
+    return { employees };
+
 }

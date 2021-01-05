@@ -202,8 +202,9 @@ class HistoryCommandTable extends Component {
                                     <tr>
                                         <th>{translate('manufacturing.command.index')}</th>
                                         <th>{translate('manufacturing.command.code')}</th>
-                                        <th>{translate('manufacturing.command.plan_code')}</th>
+                                        {/* <th>{translate('manufacturing.command.plan_code')}</th> */}
                                         <th>{translate('manufacturing.command.good_name')}</th>
+                                        <th>{translate('manufacturing.command.good_base_unit')}</th>
                                         <th>{translate('manufacturing.command.quantity')}</th>
                                         <th>{translate('manufacturing.command.accountables')}</th>
                                         <th>{translate('manufacturing.command.mill')}</th>
@@ -216,8 +217,9 @@ class HistoryCommandTable extends Component {
                                                 columnArr={[
                                                     translate('manufacturing.command.index'),
                                                     translate('manufacturing.command.code'),
-                                                    translate('manufacturing.command.plan_code'),
+                                                    // translate('manufacturing.command.plan_code'),
                                                     translate('manufacturing.command.good_name'),
+                                                    translate('manufacturing.command.good_base_unit'),
                                                     translate('manufacturing.command.quantity'),
                                                     translate('manufacturing.command.accountables'),
                                                     translate('manufacturing.command.mill'),
@@ -238,8 +240,9 @@ class HistoryCommandTable extends Component {
                                             <tr key={index}>
                                                 <td>{index + 1}</td>
                                                 <td>{command.code}</td>
-                                                <td>{command.manufacturingPlan !== undefined && command.manufacturingPlan.code}</td>
+                                                {/* <td>{command.manufacturingPlan !== undefined && command.manufacturingPlan.code}</td> */}
                                                 <td>{command.good && command.good.good.name}</td>
+                                                <td>{command.good && command.good.good.baseUnit}</td>
                                                 <td>{command.good && command.good.quantity}</td>
                                                 <td>{command.accountables && command.accountables.map((acc, index) => {
                                                     if (command.accountables.length === index + 1)

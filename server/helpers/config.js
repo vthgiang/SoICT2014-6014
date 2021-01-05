@@ -155,9 +155,9 @@ const COMPONENTS = [{
         ROOT_ROLES.ADMIN.name
     ],
     links: [
-        '/manage-manufacturing-plan',
+        '/manage-work-schedule',
     ],
-},{
+}, {
     name: 'create-stock-button',
     description: 'Button thêm mới kho',
     roles: [

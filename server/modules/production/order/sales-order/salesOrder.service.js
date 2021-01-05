@@ -139,7 +139,7 @@ exports.createNewSalesOrder = async (userId, data, portal) => {
     }, {
         path: 'goods.good', select: 'code name baseUnit'
     }, {
-        path: 'goods.manufacturingWorks', select: 'code name'
+        path: 'goods.manufacturingWorks', select: 'code name address description'
     }, , {
         path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
     }, {
@@ -192,7 +192,7 @@ exports.getAllSalesOrders = async (query, portal) => {
                     path: 'manufacturingMills.manufacturingMill'
                 }]
             }, {
-                path: 'goods.manufacturingWorks', select: 'code name'
+                path: 'goods.manufacturingWorks', select: 'code name address description'
             }, , {
                 path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
             }, {
@@ -217,7 +217,7 @@ exports.getAllSalesOrders = async (query, portal) => {
                     path: 'manufacturingMills.manufacturingMill'
                 }]
             }, {
-                path: 'goods.manufacturingWorks', select: 'code name'
+                path: 'goods.manufacturingWorks', select: 'code name address description'
             }, , {
                 path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
             }, {
@@ -311,7 +311,7 @@ exports.editSalesOrder = async (userId, id, data, portal) => {
         }, {
             path: 'goods.good', select: 'code name baseUnit'
         }, {
-            path: 'goods.manufacturingWorks', select: 'code name'
+            path: 'goods.manufacturingWorks', select: 'code name address description'
         }, , {
             path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
         }, {

@@ -20,7 +20,8 @@ class ManufacturingMillScheduleManagentTable extends Component {
             page: 1,
             month: currentMonthYear,
             allDaysOfMonth: allDaysOfMonth,
-            code: ''
+            code: '',
+            currentRole: localStorage.getItem('currentRole')
         }
     }
 
@@ -30,10 +31,11 @@ class ManufacturingMillScheduleManagentTable extends Component {
             limit: limit,
             page: page,
             object: "manufacturingMill",
-            month: formatToTimeZoneDate(month)
+            month: formatToTimeZoneDate(month),
+            currentRole: this.state.currentRole
         }
         this.props.getAllWorkSchedules(data);
-        this.props.getAllManufacturingMills({ status: 1 });
+        this.props.getAllManufacturingMills({ status: 1, currentRole: this.state.currentRole });
         this.props.setCurrentMonth(month);
     }
 
@@ -66,7 +68,8 @@ class ManufacturingMillScheduleManagentTable extends Component {
             limit: limit,
             page: page,
             object: "manufacturingMill",
-            month: formatToTimeZoneDate(month)
+            month: formatToTimeZoneDate(month),
+            currentRole: this.state.currentRole
         }
         this.props.getAllWorkSchedules(data)
     }
@@ -81,7 +84,8 @@ class ManufacturingMillScheduleManagentTable extends Component {
             limit: limit,
             page: page,
             object: "manufacturingMill",
-            month: formatToTimeZoneDate(month)
+            month: formatToTimeZoneDate(month),
+            currentRole: this.state.currentRole
         }
         this.props.getAllWorkSchedules(data);
     }
@@ -107,7 +111,8 @@ class ManufacturingMillScheduleManagentTable extends Component {
             limit: limit,
             page: page,
             object: "manufacturingMill",
-            month: formatToTimeZoneDate(month)
+            month: formatToTimeZoneDate(month),
+            currentRole: this.state.currentRole
         }
         this.props.getAllWorkSchedules(data)
         this.props.setCurrentMonth(month);
@@ -243,33 +248,33 @@ class ManufacturingMillScheduleManagentTable extends Component {
                             <tbody>
                                 {
                                     listWorkSchedules.length !== 0 && listWorkSchedules.map((schedule, index1) =>
-                                    (
-                                        schedule.turns.map((turn, index2) => (
-                                            <tr key={index2}>
-                                                {
-                                                    turn.map((command, index3) => {
-                                                        if (command !== null)
-                                                            return (
-                                                                <td key={index3} className="tooltip-checkbox">
-                                                                    {/* <input type="checkbox" disabled={true} style={{ backgroundColor: translate(`manufacturing.work_schedule.${command.status}.color`) }}>
+                                        (
+                                            schedule.turns.map((turn, index2) => (
+                                                <tr key={index2}>
+                                                    {
+                                                        turn.map((command, index3) => {
+                                                            if (command !== null)
+                                                                return (
+                                                                    <td key={index3} className="tooltip-checkbox">
+                                                                        {/* <input type="checkbox" disabled={true} style={{ backgroundColor: translate(`manufacturing.work_schedule.${command.status}.color`) }}>
                                                                         </input> */}
-                                                                    <span className="icon" title={translate(`manufacturing.work_schedule.${command.status}.content`)} style={{ backgroundColor: translate(`manufacturing.work_schedule.${command.status}.color`) }}></span>
-                                                                    <span className="tooltiptext"><a style={{ color: "white" }} onClick={() => this.handleShowDetailManufacturingCommand(command)}>{command.code}</a></span>
+                                                                        <span className="icon" title={translate(`manufacturing.work_schedule.${command.status}.content`)} style={{ backgroundColor: translate(`manufacturing.work_schedule.${command.status}.color`) }}></span>
+                                                                        <span className="tooltiptext"><a style={{ color: "white" }} onClick={() => this.handleShowDetailManufacturingCommand(command)}>{command.code}</a></span>
+                                                                    </td>
+                                                                )
+
+                                                            return (
+                                                                <td key={index3}>
+                                                                    {/* <input type="checkbox" disabled={true} /> */}
+                                                                    <span className="icon" style={{ backgroundColor: "white" }}></span>
                                                                 </td>
-                                                            )
+                                                            );
+                                                        })
+                                                    }
+                                                </tr>
 
-                                                        return (
-                                                            <td key={index3}>
-                                                                {/* <input type="checkbox" disabled={true} /> */}
-                                                                <span className="icon" style={{ backgroundColor: "white" }}></span>
-                                                            </td>
-                                                        );
-                                                    })
-                                                }
-                                            </tr>
-
-                                        ))
-                                    )
+                                            ))
+                                        )
                                     )
                                 }
                             </tbody>

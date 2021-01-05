@@ -13,7 +13,7 @@ class GoodSelected extends Component {
         let options = [];
         let { listGoodsByType } = this.props.goods;
         if (listGoodsByType) {
-            options = [{ value: "", text: "---Chọn mặt hàng---" }];
+            options = [{ value: "title", text: "---Chọn mặt hàng---" }];
 
             let mapOptions = listGoodsByType.map((item) => {
                 return {
@@ -29,9 +29,9 @@ class GoodSelected extends Component {
 
     getManufacturingWorksOptions = () => {
         let options = [];
-        let { listManufacturingWorks } = this.props.goods;
+        let { listManufacturingWorks } = this.props.goods.goodItems;
         if (listManufacturingWorks) {
-            options = [{ value: "title", text: "---Chọn nhà máy---" }];
+            options = [{ value: "title", text: "---Chọn nhà máy để yêu cầu---" }];
 
             let mapOptions = listManufacturingWorks.map((item) => {
                 return {
@@ -59,7 +59,7 @@ class GoodSelected extends Component {
                             <span className="attention"> * </span>
                         </label>
                         <SelectBox
-                            id={`select-good-code-sales-order`}
+                            id={`select-good-code-sales-order-create`}
                             className="form-control select2"
                             style={{ width: "100%" }}
                             value={good}
@@ -85,6 +85,19 @@ class GoodSelected extends Component {
                         </label>
                         <input type="text" className="form-control" value={baseUnit} disabled="true" />
                     </div>
+
+                    <div className={`form-group`}>
+                        <label>Yêu cầu sản xuất</label>
+                        <SelectBox
+                            id={`select-manufacturing-works-code-sales-order-create`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            value={manufacturingWorks ? manufacturingWorks._id : "title"}
+                            items={this.getManufacturingWorksOptions()}
+                            onChange={handleManufacturingWorkChange}
+                            multiple={false}
+                        />
+                    </div>
                 </div>
                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 10, height: "100%" }}>
                     <div className={`form-group ${!pricePerBaseUnitError ? "" : "has-error"}`}>
@@ -100,12 +113,7 @@ class GoodSelected extends Component {
                             Số lượng còn trong kho
                             <span className="attention"> * </span>
                         </label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            value={inventory ? (inventory > 0 ? inventory + " " + baseUnit : "Hết hàng") : ""}
-                            disabled={true}
-                        />
+                        <input type="text" className="form-control" value={inventory ? inventory + " " + baseUnit : "0"} disabled={true} />
                     </div>
 
                     <div className={`form-group ${!quantityError ? "" : "has-error"}`}>
@@ -115,20 +123,6 @@ class GoodSelected extends Component {
                         </label>
                         <input type="number" className="form-control" value={quantity} onChange={handleQuantityChange} />
                         <ErrorLabel content={quantityError} />
-                    </div>
-                </div>
-                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: "0px 10px", height: "100%" }}>
-                    <div className={`form-group`}>
-                        <label>Yêu cầu sản xuất</label>
-                        <SelectBox
-                            id={`select-manufacturing-works-code-sales-order`}
-                            className="form-control select2"
-                            style={{ width: "100%" }}
-                            value={manufacturingWorks}
-                            items={this.getManufacturingWorksOptions()}
-                            onChange={handleManufacturingWorkChange}
-                            multiple={false}
-                        />
                     </div>
                 </div>
             </React.Fragment>

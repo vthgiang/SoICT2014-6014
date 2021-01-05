@@ -31,7 +31,9 @@ const initState = {
     goodItems: {
         listTaxsByGoodId: [],
         listSlasByGoodId: [],
-        listDiscountsByGoodId: []
+        listDiscountsByGoodId: [],
+        listManufacturingWorks: [],
+        inventoryByGoodId: 0
     },
     listGoodsByRole: [],
     listManufacturingWorks: []

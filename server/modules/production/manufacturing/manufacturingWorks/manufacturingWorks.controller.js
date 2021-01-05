@@ -1,5 +1,6 @@
 const ManufacturingWorksService = require('./manufacturingWorks.service');
 const Log = require(`../../../../logs`);
+const { truncateSync } = require('fs');
 
 exports.createManufacturingWorks = async (req, res) => {
     try {
@@ -111,5 +112,27 @@ exports.editManufacturingWorks = async (req, res) => {
             messages: ["edit_failed"],
             content: error.message
         });
+    }
+}
+
+exports.getUserByWorksManageRole = async (req, res) => {
+    try {
+        console.log(" vao vao vao")
+        let { currentRole } = req.query;
+        let employees = await ManufacturingWorksService.getUserByWorksManageRole(currentRole, req.portal);
+        await Log.info(req.user.email, "GET_USER_BY_WORKS_MANAGE_ROLE", req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["get_users_successfully"],
+            content: employees
+        })
+
+    } catch (error) {
+        await Log.error(req.user.email, "GET_USER_BY_WORKS_MANAGE_ROLE", req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["get_users_failed"],
+            content: error.message
+        })
     }
 }
