@@ -325,7 +325,7 @@ exports.getPaginatedTasks = async (portal, task) => {
         };
     }
 
-    if (special) {
+    if (Array.isArray(special)) {
         let checkStore = special.some(node => node === 'stored');
         if(checkStore) {
             keySearch = {
@@ -337,14 +337,14 @@ exports.getPaginatedTasks = async (portal, task) => {
         if(checkCurrentMonth){
             let now = new Date();
             let currentYear = now.getFullYear();
-            let currentMonth = now.getMonth() + 1;
-            let start = new Date(`${currentYear}-${currentMonth}`); //ngày đầu tiên của tháng hiện tại
-            let end = new Date(currentYear, currentMonth); // ngày đầu tiên của tháng sau ( sau tháng hiện tại)
+            let currentMonth = now.getMonth()+1;
+            let start = new Date(`${currentYear}-${currentMonth}`); //ngày cuối cùng của tháng trước
+            let end = new Date(currentYear, currentMonth); // ngày cuối cùng của tháng hiện tại
 
             keySearchSpecial = {
                 $or: [
-                    { 'endDate': { $lte: start } },
-                    { 'startDate': { $gte: end } }
+                    { 'endDate': { $lte: end, $gt: start } },
+                    { 'startDate': { $lte: end, $gt: start } }
                 ]
             }
         }
@@ -413,56 +413,21 @@ exports.getPaginatedTasks = async (portal, task) => {
 
     }
 
-    // if (startDateAfter) {
-    //     let startTimeAfter = startDateAfter.split("-");
-    //     let start;
-
-
-    //     if (startTimeAfter[0] > 12) start = new Date(startTimeAfter[0], startTimeAfter[1] - 1, 1);
-    //     else start = new Date(startTimeAfter[1], startTimeAfter[0] - 1, 1);
-
-    //     keySearch = {
-    //         ...keySearch,
-    //         endDate: {
-    //             $gte: start
-    //         }
-    //     }
-    // }
-
-    // if (endDateBefore) {
-    //     let endTimeBefore = endDateBefore.split("-");
-    //     let end;
-    //     if (endTimeBefore[0] > 12) end = new Date(endTimeBefore[0], endTimeBefore[1], 1);
-    //     else end = new Date(endTimeBefore[1], endTimeBefore[0], 1);
-
-    //     keySearch = {
-    //         ...keySearch,
-    //         startDate: {
-    //             $lt: end
-    //         }
-    //     }
-    // }
-
-    taskList = await Task(connect(DB_CONNECTION, portal)).find({
+    let optionQuery = {
         $and: [
             keySearch,
             keySearchSpecial,
             keySearchPeriod
         ]
-    }).sort({ 'createdAt': 'asc' })
+    }
+    taskList = await Task(connect(DB_CONNECTION, portal)).find(optionQuery).sort({ 'createdAt': 'asc' })
         .skip(perPage * (page - 1)).limit(perPage).populate([
             { path: "organizationalUnit creator parent responsibleEmployees" },
             { path: "timesheetLogs.creator", select: "name" },
         ]);
 
-    var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
-        $and: [
-            keySearch,
-            keySearchSpecial,
-            keySearchPeriod
-        ]
-    });
-    var totalPages = Math.ceil(totalCount / perPage);
+    let totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments(optionQuery);
+    let totalPages = Math.ceil(totalCount / perPage);
 
     return {
         "tasks": taskList,
