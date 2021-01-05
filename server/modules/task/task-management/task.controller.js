@@ -275,6 +275,7 @@ getPaginatedTasksCreatedByUser = async (req, res) => {
             content: creatorTasks
         })
     } catch (error) {
+        console.log(error)
 
         await Logger.error(req.user.email, 'paginated_tasks_created_by_user', req.portal)
         res.status(400).json({
@@ -517,7 +518,6 @@ exports.createTask = async (req, res) => {
             content: task
         });
     } catch (error) {
-
         await Logger.error(req.user.email, 'create_task', req.portal)
         res.status(400).json({
             success: false,
@@ -759,12 +759,12 @@ getAllTaskOfChildrenOrganizationalUnit = async (req, res) => {
 /** Lấy tất cả task của organizationalUnit trong một khoảng thời gian */
 getAllTaskOfOrganizationalUnitByMonth = async (req, res) => {
     try {
-        var task = {
+        let task = {
             organizationalUnitId: req.query.organizationUnitId,
-            startDateAfter: req.query.startDateAfter,
-            endDateBefore: req.query.endDateBefore,
+            startMonth: req.query.startDateAfter,
+            endMonth: req.query.endDateBefore,
         };
-        var responsibleTasks = await TaskManagementService.getAllTaskOfOrganizationalUnitByMonth(req.portal, task);
+        let responsibleTasks = await TaskManagementService.getAllTaskOfOrganizationalUnitByMonth(req.portal, task);
 
         await Logger.info(req.user.email, 'get_all_task_of_organizational_unit_by_month', req.portal)
         res.status(200).json({
