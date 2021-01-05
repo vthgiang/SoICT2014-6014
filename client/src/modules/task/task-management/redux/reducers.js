@@ -1,6 +1,8 @@
 import { taskManagementConstants } from "./constants";
 
-export function tasks(state = {}, action) {
+export function tasks(state = {
+    userTimeSheetLogs: []
+}, action) {
     switch (action.type) {
         case taskManagementConstants.GETALL_TASK_REQUEST:
             return {
@@ -541,6 +543,26 @@ export function tasks(state = {}, action) {
                 },
                 isLoading: false,
             }
+
+        case taskManagementConstants.GET_TIME_SHEET_OF_USER_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            };
+
+        case taskManagementConstants.GET_TIME_SHEET_OF_USER_FAILE:
+            return {
+                ...state,
+                isLoading: false
+            };
+
+        case taskManagementConstants.GET_TIME_SHEET_OF_USER_SUCCESS:
+            return {
+                ...state,
+                userTimeSheetLogs: action.payload,
+                isLoading: false
+            };
+
         default:
             return state
     }

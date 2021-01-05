@@ -307,6 +307,7 @@ exports.links = [
             { path: '/task/tasks/:taskId/sub-tasks', method: 'GET' },
             { path: '/task/task-evaluations', method: 'GET' },
             { path: '/task/analys/user/:userId', method: 'GET' },
+            { path: '/task/time-sheet', method: 'GET' },
 
             // Perform-task
             { path: '/performtask/tasks/:taskId', method: 'GET' },

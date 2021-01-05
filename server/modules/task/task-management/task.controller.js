@@ -829,3 +829,25 @@ getAllTaskByPriorityOfOrganizationalUnit = async (req, res) => {
     }
 }
 
+exports.getUserTimeSheet = async(req, res) => {
+    try {
+        let portal = req.portal;
+        let {userId, month, year} = req.query;
+        let timesheetlogs = await TaskManagementService.getUserTimeSheet(portal, userId, month, year);
+
+        await Logger.info(req.user.email, 'get_user_time_sheet_success', req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['get_user_time_sheet_success'],
+            content: timesheetlogs
+        })
+    } catch (error) {
+        console.log('Error', error)
+        await Logger.error(req.user.email, 'get_user_time_sheet_faile', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_user_time_sheet_faile'],
+            content: error
+        })
+    }
+}

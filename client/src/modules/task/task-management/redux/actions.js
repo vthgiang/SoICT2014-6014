@@ -28,7 +28,8 @@ export const taskManagementActions = {
     getTaskInOrganizationUnitByMonth,
     getTaskEvaluations,
     getTaskAnalysOfUser,
-    getTaskByPriorityInOrganizationUnit
+    getTaskByPriorityInOrganizationUnit,
+    getTimeSheetOfUser,
 };
 
 /**
@@ -664,6 +665,22 @@ function getTaskByPriorityInOrganizationUnit(organizationUnitId, date) {
             })
             .catch(error => {
                 dispatch({ type: taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_PRIORITY_FAILURE });
+            });
+    };
+}
+
+function getTimeSheetOfUser(userId, month, year) {
+    return dispatch => {
+        dispatch({ type: taskManagementConstants.GET_TIME_SHEET_OF_USER_REQUEST });
+        taskManagementService.getTimeSheetOfUser(userId, month, year)
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.GET_TIME_SHEET_OF_USER_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: taskManagementConstants.GET_TIME_SHEET_OF_USER_FAILE });
             });
     };
 }
