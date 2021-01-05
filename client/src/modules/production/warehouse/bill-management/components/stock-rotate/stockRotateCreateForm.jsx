@@ -31,7 +31,8 @@ class StockRotateCreateForm extends Component {
             qualityControlStaffs: [],
             accountables: [],
             responsibles: [],
-            approver: []
+            approver: [],
+            type: '8'
         }
     }
 

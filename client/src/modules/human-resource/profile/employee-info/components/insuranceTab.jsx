@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { ExportExcel } from '../../../../../common-components'
-
+import { AuthActions } from '../../../../auth/redux/actions'
 class InsurranceTab extends Component {
     constructor(props) {
         super(props);
@@ -46,10 +46,16 @@ class InsurranceTab extends Component {
                 healthInsuranceStartDate: nextProps.employee ? nextProps.employee.healthInsuranceStartDate : '',
                 healthInsuranceEndDate: nextProps.employee ? nextProps.employee.healthInsuranceEndDate : '',
                 socialInsuranceNumber: nextProps.employee ? nextProps.employee.socialInsuranceNumber : '',
+                healthInsuranceAttachment: nextProps.employee ? nextProps.employee.healthInsuranceAttachment : '',
             }
         } else {
             return null;
         }
+    }
+
+    requestDownloadFile = (e, path, fileName) => {
+        e.preventDefault();
+        this.props.downloadFile(`.${path}`, fileName);
     }
 
     /**
@@ -96,7 +102,7 @@ class InsurranceTab extends Component {
     render() {
         const { translate } = this.props;
 
-        const { id, healthInsuranceNumber, healthInsuranceStartDate, healthInsuranceEndDate, socialInsuranceNumber, socialInsuranceDetails } = this.state;
+        const { id, healthInsuranceNumber, healthInsuranceStartDate, healthInsuranceEndDate, socialInsuranceNumber, socialInsuranceDetails, healthInsuranceAttachment } = this.state;
 
         let exportData = this.convertDataToExportData(socialInsuranceDetails);
 
@@ -121,6 +127,15 @@ class InsurranceTab extends Component {
                             <div className="form-group col-md-4" >
                                 <strong>{translate('human_resource.profile.end_date_certificate')}&emsp; </strong>
                                 {this.formatDate(healthInsuranceEndDate)}
+                            </div>
+                            {/* file đính kèm */}
+                            <div className="form-group col-md-6" >
+                                <strong>{translate('human_resource.profile.attached_files')}&emsp; </strong>
+                                {
+                                    healthInsuranceAttachment && healthInsuranceAttachment.map((obj, index) => (
+                                        <li key={index}><a href="" title="Tải xuống" onClick={(e) => this.requestDownloadFile(e, obj.url, obj.fileName)}>{obj.fileName}</a></li>
+                                    ))
+                                }
                             </div>
                         </div>
                     </fieldset>
@@ -166,5 +181,9 @@ class InsurranceTab extends Component {
     }
 };
 
-const tabInsurrance = connect(null, null)(withTranslate(InsurranceTab));
+const actions = {
+    downloadFile: AuthActions.downloadFile,
+}
+
+const tabInsurrance = connect(null, actions)(withTranslate(InsurranceTab));
 export { tabInsurrance as InsurranceTab };

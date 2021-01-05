@@ -6,6 +6,7 @@ import QuantityLotGoodIssue from './quantityLotGoodIssue';
 import { generateCode } from '../../../../../../helpers/generateCode';
 import { LotActions } from '../../../inventory-management/redux/actions';
 import { BillActions } from '../../redux/actions';
+import { GoodActions } from '../../../../common-production/good-management/redux/actions';
 
 class GoodIssueCreateForm extends Component {
     constructor(props) {
@@ -39,7 +40,7 @@ class GoodIssueCreateForm extends Component {
         let { translate } = this.props;
         let goodArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_good') }];
 
-        this.props.goods.listALLGoods.map(item => {
+        this.props.goods.listGoods.map(item => {
             goodArr.push({
                 value: item._id,
                 text: item.code + " -- " + item.name,
@@ -133,8 +134,13 @@ class GoodIssueCreateForm extends Component {
         return typeArr;
     }
 
-    handleTypeChange = (value) => {
+    handleTypeChange = async (value) => {
         let type = value[0];
+        if(type === '3') {
+            await this.props.getGoodsByType({ type: 'material' });
+        } else if(type === '4') {
+            await this.props.getGoodsByType({ type: 'product' });
+        }
         this.validateType(type, true);
     }
 
@@ -854,6 +860,7 @@ const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
     getLotsByGood: LotActions.getLotsByGood,
-    createBill: BillActions.createBill
+    createBill: BillActions.createBill,
+    getGoodsByType: GoodActions.getGoodsByType
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(GoodIssueCreateForm));

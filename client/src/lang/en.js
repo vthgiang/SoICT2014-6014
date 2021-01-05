@@ -3078,6 +3078,8 @@ export default {
                     "Edit information unsuccessfully",
                 edit_document_task_comment_failure:
                     "Edit document unsuccessfully",
+                time_overlapping: 'Start time invalid. Overlapping time with different time sheet log',
+
 
                 // error label
                 err_require: "Field is required",

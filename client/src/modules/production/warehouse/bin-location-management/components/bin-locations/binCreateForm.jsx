@@ -468,7 +468,7 @@ class BinCreateForm extends Component {
                                     multiple={false}
                                 />
                             </div>
-                            <div className={`form-group ${!errorDepartment ? "" : "has-error"}`}>
+                            {/* <div className={`form-group ${!errorDepartment ? "" : "has-error"}`}>
                                 <label>{translate('manage_warehouse.bin_location_management.department')}<span className="attention"> * </span></label>
                                 <SelectBox
                                     id={`select-department-bin-create`}
@@ -480,7 +480,7 @@ class BinCreateForm extends Component {
                                     multiple={false}
                                 />
                                 <ErrorLabel content = { errorDepartment }/>
-                            </div>
+                            </div> */}
                             <div className={`form-group`}>
                                 <label>{translate('manage_warehouse.bin_location_management.unit')}<span className="attention"> * </span></label>
                                 <input type="text" className="form-control" onChange={this.handleUnitChange} />
@@ -500,7 +500,7 @@ class BinCreateForm extends Component {
                                 <label>{translate('manage_warehouse.bin_location_management.contained')}</label>
                                 <input type="number" className="form-control" disabled value= {binContained} onChange={this.handleContainedTotalChange} />
                             </div>
-                            <div className={`form-group`}>
+                            {/* <div className={`form-group`}>
                                 <label>{translate('manage_warehouse.bin_location_management.management_location')}<span className="attention"> * </span></label>
                                 <SelectBox
                                     id={`select-management-location-stock-create`}
@@ -511,7 +511,7 @@ class BinCreateForm extends Component {
                                     onChange={this.handleManagementLocationtChange}    
                                     multiple={true}
                                 />
-                            </div>
+                            </div> */}
                             <div className={`form-group`}>
                                 <label>{translate('manage_warehouse.bin_location_management.parent')}</label>
                                 <TreeSelect data={list} value={[binParentCreate]} handleChange={this.handleParent} mode="radioSelect" />
