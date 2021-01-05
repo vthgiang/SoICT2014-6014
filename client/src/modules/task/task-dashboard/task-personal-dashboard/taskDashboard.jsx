@@ -6,6 +6,7 @@ import { taskManagementActions } from '../../task-management/redux/actions';
 import { TaskStatusChart } from './taskStatusChart';
 import { DomainOfTaskResultsChart } from './domainOfTaskResultsChart';
 import { CalendarEmployee } from './calendarEmployee';
+import { AverageResultsOfTask } from './averageResultsOfTask';
 
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -193,13 +194,19 @@ class TaskDashboard extends Component {
                 confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm'),
             })
         } else {
-            await this.setState(state => {
+            this.setState(state => {
                 return {
                     ...state,
                     startMonth: this.INFO_SEARCH.startMonth,
                     endMonth: this.INFO_SEARCH.endMonth
                 }
             })
+
+            await this.props.getResponsibleTaskByUser([], 1, 1000, [], [], [], null, this.INFO_SEARCH.startMonth, this.INFO_SEARCH.endMonth, null, null, true);
+            await this.props.getAccountableTaskByUser([], 1, 1000, [], [], [], null, this.INFO_SEARCH.startMonth, this.INFO_SEARCH.endMonth, null, null, true);
+            await this.props.getConsultedTaskByUser([], 1, 1000, [], [], [], null, this.INFO_SEARCH.startMonth, this.INFO_SEARCH.endMonth, null, null, true);
+            await this.props.getInformedTaskByUser([], 1, 1000, [], [], [], null, this.INFO_SEARCH.startMonth, this.INFO_SEARCH.endMonth, null, null, true);
+            await this.props.getCreatorTaskByUser([], 1, 1000, [], [], [], null, this.INFO_SEARCH.startMonth, this.INFO_SEARCH.endMonth, null, null, true);
         }
     }
 
@@ -389,6 +396,7 @@ class TaskDashboard extends Component {
                     </div>
                 </div>
                 <div className="row">
+                    {/* Biểu đồ miền kết quả công việc */}
                     <div className="col-xs-12">
                         <div className="box box-primary">
                             <div className="box-header with-border">
@@ -405,8 +413,23 @@ class TaskDashboard extends Component {
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
+
+                    {/* Biểu đồ kết quả trung bình công việc */}
+                    <div className="col-xs-12">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">{translate('task.task_management.detail_average_results')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+                            </div>
+                            <div className="box-body qlcv">
+                                <AverageResultsOfTask
+                                    startMonth={startMonth}
+                                    endMonth={endMonth}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Biểu đồ trạng thái công việc */}
                     <div className="col-xs-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
