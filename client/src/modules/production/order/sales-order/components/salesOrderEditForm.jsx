@@ -11,6 +11,7 @@ import SalesOrderCreateInfo from "./editSalesOrder/salesOrderCreateInfo";
 import SalesOrderCreatePayment from "./editSalesOrder/salesOrderCreatePayment";
 import SlasOfGoodDetail from "./editSalesOrder/viewDetailOnCreate/slasOfGoodDetail";
 import DiscountOfGoodDetail from "./editSalesOrder/viewDetailOnCreate/discountOfGoodDetail";
+import ManufacturingWorksOfGoodDetail from "./editSalesOrder/viewDetailOnCreate/manufacturingWorksOfGoodDetail";
 class SalesOrderEditForm extends Component {
     constructor(props) {
         super(props);
@@ -54,6 +55,7 @@ class SalesOrderEditForm extends Component {
         if (nextProps.salesOrderEdit._id !== prevState.salesOrderId) {
             return {
                 ...prevState,
+                step: 0,
                 salesOrderId: nextProps.salesOrderEdit._id,
                 code: nextProps.salesOrderEdit.code,
                 customer: nextProps.salesOrderEdit.customer._id,
@@ -82,6 +84,7 @@ class SalesOrderEditForm extends Component {
                               quantity: item.quantity,
                               slasOfGood: item.serviceLevelAgreements,
                               taxs: item.taxs,
+                              manufacturingWorks: item.manufacturingWorks,
                               note: item.note,
                               amount: item.amount,
                               amountAfterDiscount: item.amountAfterDiscount,
@@ -474,6 +477,15 @@ class SalesOrderEditForm extends Component {
         });
     };
 
+    setCurrentManufacturingWorksOfGoods = (data) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                currentManufacturingWorksOfGood: data,
+            };
+        });
+    };
+
     handleCoinChange = (coin) => {
         this.setState((state) => {
             return {
@@ -582,6 +594,7 @@ class SalesOrderEditForm extends Component {
                 amount: item.amount,
                 amountAfterDiscount: item.amountAfterDiscount,
                 amountAfterTax: item.amountAfterTax,
+                manufacturingWorks: item.manufacturingWorks ? item.manufacturingWorks._id : undefined,
             };
         });
         return goodMap;
@@ -662,6 +675,7 @@ class SalesOrderEditForm extends Component {
             discountsOfOrderValueChecked,
             currentSlasOfGood,
             currentDiscountsOfGood,
+            currentManufacturingWorksOfGood,
             paymentAmount,
         } = this.state;
 
@@ -735,6 +749,7 @@ class SalesOrderEditForm extends Component {
                     </div>
                     <SlasOfGoodDetail currentSlasOfGood={currentSlasOfGood} />
                     <DiscountOfGoodDetail currentDiscounts={currentDiscountsOfGood} />
+                    <ManufacturingWorksOfGoodDetail currentManufacturingWorksOfGood={currentManufacturingWorksOfGood} />
                     <form id={`form-add-sales-order`}>
                         <div className="row row-equal-height" style={{ marginTop: 0 }}>
                             {step === 0 && (
@@ -785,6 +800,9 @@ class SalesOrderEditForm extends Component {
                                     setCurrentDiscountsOfGood={(data) => {
                                         this.setCurrentDiscountsOfGood(data);
                                     }}
+                                    setCurrentManufacturingWorksOfGoods={(data) => {
+                                        this.setCurrentManufacturingWorksOfGoods(data);
+                                    }}
                                 />
                             )}
                             {step === 2 && (
@@ -817,6 +835,9 @@ class SalesOrderEditForm extends Component {
                                     }}
                                     setCurrentDiscountsOfGood={(data) => {
                                         this.setCurrentDiscountsOfGood(data);
+                                    }}
+                                    setCurrentManufacturingWorksOfGoods={(data) => {
+                                        this.setCurrentManufacturingWorksOfGoods(data);
                                     }}
                                     setPaymentAmount={(data) => this.setPaymentAmount(data)}
                                     saveSalesOrder={this.save}

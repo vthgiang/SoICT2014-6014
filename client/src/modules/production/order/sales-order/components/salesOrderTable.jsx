@@ -159,8 +159,6 @@ class SalesOrderTable extends Component {
             listSalesOrders = salesOrders.listSalesOrders;
         }
 
-        console.log("listSalesOrders", listSalesOrders);
-
         const dataStatus = [
             {
                 className: "text-primary",
@@ -208,8 +206,6 @@ class SalesOrderTable extends Component {
         ];
 
         const { department, role, auth } = this.props;
-
-        console.log("auth", auth);
 
         return (
             <React.Fragment>

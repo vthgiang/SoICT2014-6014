@@ -27,10 +27,28 @@ class GoodSelected extends Component {
         return options;
     };
 
+    getManufacturingWorksOptions = () => {
+        let options = [];
+        let { listManufacturingWorks } = this.props.goods.goodItems;
+        if (listManufacturingWorks) {
+            options = [{ value: "title", text: "---Chọn nhà máy để yêu cầu---" }];
+
+            let mapOptions = listManufacturingWorks.map((item) => {
+                return {
+                    value: item._id,
+                    text: item.code + " - " + item.name,
+                };
+            });
+
+            options = options.concat(mapOptions);
+        }
+        return options;
+    };
+
     render() {
-        let { good, goodName, pricePerBaseUnit, baseUnit, inventory, quantity } = this.props;
+        let { good, goodName, pricePerBaseUnit, baseUnit, inventory, quantity, manufacturingWorks } = this.props;
         let { pricePerBaseUnitError, goodError, quantityError } = this.props;
-        const { handleGoodChange, handlePriceChange, handleQuantityChange } = this.props;
+        const { handleGoodChange, handlePriceChange, handleQuantityChange, handleManufacturingWorkChange } = this.props;
 
         return (
             <React.Fragment>
@@ -41,7 +59,7 @@ class GoodSelected extends Component {
                             <span className="attention"> * </span>
                         </label>
                         <SelectBox
-                            id={`select-good-edit-sales-order`}
+                            id={`select-good-edit-sales-order-edit`}
                             className="form-control select2"
                             style={{ width: "100%" }}
                             value={good}
@@ -66,6 +84,19 @@ class GoodSelected extends Component {
                             <span className="attention"> * </span>
                         </label>
                         <input type="text" className="form-control" value={baseUnit} disabled="true" />
+                    </div>
+
+                    <div className={`form-group`}>
+                        <label>Yêu cầu sản xuất</label>
+                        <SelectBox
+                            id={`select-manufacturing-works-code-sales-order-edit`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            value={manufacturingWorks ? manufacturingWorks._id : "title"}
+                            items={this.getManufacturingWorksOptions()}
+                            onChange={handleManufacturingWorkChange}
+                            multiple={false}
+                        />
                     </div>
                 </div>
                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 10, height: "100%" }}>

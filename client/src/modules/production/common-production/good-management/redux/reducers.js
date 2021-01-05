@@ -31,7 +31,9 @@ const initState = {
     goodItems: {
         listTaxsByGoodId: [],
         listSlasByGoodId: [],
-        listDiscountsByGoodId: []
+        listDiscountsByGoodId: [],
+        listManufacturingWorks: [],
+        inventoryByGoodId: 0
     },
     listGoodsByRole: [],
     listManufacturingWorks: []
@@ -92,7 +94,6 @@ export function goods(state = initState, action) {
             };
 
         case GoodConstants.GET_GOOD_BY_TYPE_SUCCESS:
-            console.log("GOOD", action.payload);
             return {
                 ...state,
                 listGoods: action.payload,

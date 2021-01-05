@@ -56,6 +56,7 @@ class QuoteEditForm extends Component {
         if (nextProps.quoteEdit._id !== prevState.quoteId) {
             return {
                 ...prevState,
+                step: 0,
                 quoteId: nextProps.quoteEdit._id,
                 code: nextProps.quoteEdit.code,
                 effectiveDate: nextProps.quoteEdit.effectiveDate ? formatDate(nextProps.quoteEdit.effectiveDate) : "",

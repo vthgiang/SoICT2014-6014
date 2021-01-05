@@ -190,6 +190,7 @@ class SalesOrderCreatePayment extends Component {
             handleDeliveryTimeChange,
             setCurrentSlasOfGood,
             setCurrentDiscountsOfGood,
+            setCurrentManufacturingWorksOfGoods,
             handleCoinChange,
             saveSalesOrder,
         } = this.props;
@@ -305,6 +306,7 @@ class SalesOrderCreatePayment extends Component {
                                     <th title={"Thuế"}>Thuế</th>
                                     <th title={"Tổng tiền"}>Tổng tiền</th>
                                     <th>Cam kết chất lượng</th>
+                                    <th title={"Yêu cầu sản xuất"}>Yêu cầu s/x</th>
                                     <th title={"Ghi chú"}>Ghi chú</th>
                                 </tr>
                             </thead>
@@ -365,6 +367,29 @@ class SalesOrderCreatePayment extends Component {
                                                         <i className="fa fa-arrow-circle-right"></i>
                                                     </a>
                                                 </div>
+                                            </td>
+                                            <td>
+                                                {item.manufacturingWorks ? (
+                                                    <div
+                                                        style={{
+                                                            display: "flex",
+                                                        }}
+                                                    >
+                                                        <a
+                                                            style={{
+                                                                cursor: "pointer",
+                                                            }}
+                                                            data-toggle="modal"
+                                                            data-backdrop="static"
+                                                            href={"#modal-edit-sales-order-manufacturing-works-of-good-detail"}
+                                                            onClick={() => setCurrentManufacturingWorksOfGoods(item.manufacturingWorks)}
+                                                        >
+                                                            Đang thiết lập &ensp;
+                                                        </a>
+                                                    </div>
+                                                ) : (
+                                                    ""
+                                                )}
                                             </td>
                                             <td>{item.note}</td>
                                         </tr>
