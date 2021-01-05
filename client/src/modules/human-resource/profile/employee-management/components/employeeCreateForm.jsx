@@ -347,7 +347,9 @@ class EmployeeCreateForm extends Component {
             formData.append("file", x.fileUpload);
         })
         formData.append("fileAvatar", avatar);
-
+        employee.healthInsuranceAttachment.forEach(x => {
+            formData.append('healthInsuranceAttachment', x.fileUpload)
+        })
         this.props.addNewEmployee(formData);
     }
 

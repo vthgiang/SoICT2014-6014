@@ -156,7 +156,8 @@ exports.createEmployee = async (req, res) => {
             fileContract = req.files ? req.files.fileContract : undefined,
             fileMajor = req.files ? req.files.fileMajor : undefined,
             fileCareer = req.files ? req.files.fileCareer : undefined,
-            file = req.files ? req.files.file : undefined;
+            file = req.files ? req.files.file : undefined,
+            healthInsuranceAttachment = req.files ? req.files.healthInsuranceAttachment : undefined;
         let fileInfor = {
             fileDegree,
             fileCertificate,
@@ -164,7 +165,8 @@ exports.createEmployee = async (req, res) => {
             fileMajor,
             fileCareer,
             file,
-            avatar
+            avatar,
+            healthInsuranceAttachment,
         };
 
         // Kiểm tra dữ liệu truyền vào

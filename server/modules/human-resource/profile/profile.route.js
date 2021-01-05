@@ -27,6 +27,10 @@ const data = [{
     {
         name: 'file',
         path: '/human-resource/files'
+    },
+    {
+        name: 'healthInsuranceAttachment',
+        path: '/human-resource/healthInsuranceAttachment'
     }
 ]
 
