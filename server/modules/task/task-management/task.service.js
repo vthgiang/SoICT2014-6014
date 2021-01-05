@@ -271,11 +271,10 @@ exports.getTasksCreatedByUser = async (portal, id) => {
  * @task dữ liệu trong params
  */
 exports.getPaginatedTasks = async (portal, task) => {
-    console.log("tasks", task)
-    var { perPage, number, role, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime } = task;
-    var taskList;
-    var perPage = Number(perPage);
-    var page = Number(number);
+    let { perPage, number, role, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime } = task;
+    let taskList;
+    perPage = Number(perPage);
+    let page = Number(number);
     let roleArr = [];
     if (role) {
         for (let i in role) {
@@ -327,27 +326,26 @@ exports.getPaginatedTasks = async (portal, task) => {
     }
 
     if (special) {
-        for (var i = 0; i < special.length; i++) {
-            if (special[i] === "Lưu trong kho") {
-                keySearch = {
-                    ...keySearch,
-                    isArchived: true
-                };
-            }
-            else {
-                let now = new Date();
-                let currentYear = now.getFullYear();
-                let currentMonth = now.getMonth();
-                let endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
-                let endOfLastMonth = new Date(currentYear, currentMonth);
+        let checkStore = special.some(node => node === 'stored');
+        if(checkStore) {
+            keySearch = {
+                ...keySearch,
+                isArchived: true
+            };
+        }
+        let checkCurrentMonth = special.some(node => node === 'currentMonth');
+        if(checkCurrentMonth){
+            let now = new Date();
+            let currentYear = now.getFullYear();
+            let currentMonth = now.getMonth() + 1;
+            let start = new Date(`${currentYear}-${currentMonth}`); //ngày đầu tiên của tháng hiện tại
+            let end = new Date(currentYear, currentMonth); // ngày đầu tiên của tháng sau ( sau tháng hiện tại)
 
-                keySearchSpecial = {
-                    $or: [
-                        { 'endDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
-                        { 'startDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
-                        { $and: [{ 'endDate': { $gte: endOfCurrentMonth } }, { 'startDate': { $lte: endOfLastMonth } }] }
-                    ]
-                }
+            keySearchSpecial = {
+                $or: [
+                    { 'endDate': { $lte: start } },
+                    { 'startDate': { $gte: end } }
+                ]
             }
         }
     }
@@ -520,7 +518,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
 
     if (special) {
         for (let i = 0; i < special.length; i++) {
-            if (special[i] === "Lưu trong kho") {
+            if (special[i] === "stored") {
                 keySearch = {
                     ...keySearch,
                     isArchived: true
@@ -693,7 +691,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
 
     if (special) {
         for (let i = 0; i < special.length; i++) {
-            if (special[i] === "Lưu trong kho") {
+            if (special[i] === "stored") {
                 keySearch = {
                     ...keySearch,
                     isArchived: true
@@ -863,7 +861,7 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
 
     if (special) {
         for (let i = 0; i < special.length; i++) {
-            if (special[i] === "Lưu trong kho") {
+            if (special[i] === "stored") {
                 keySearch = {
                     ...keySearch,
                     isArchived: true
@@ -1033,7 +1031,7 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
 
     if (special) {
         for (let i = 0; i < special.length; i++) {
-            if (special[i] === "Lưu trong kho") {
+            if (special[i] === "stored") {
                 keySearch = {
                     ...keySearch,
                     isArchived: true
@@ -1176,7 +1174,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
 
     if (special) {
         for (let i = 0; i < special.length; i++) {
-            if (special[i] === "Lưu trong kho") {
+            if (special[i] === "stored") {
                 keySearch = {
                     ...keySearch,
                     isArchived: true
@@ -1379,7 +1377,7 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
 
     if (special) {
         for (let i = 0; i < special.length; i++) {
-            if (special[i] === "Lưu trong kho") {
+            if (special[i] === "stored") {
                 keySearch = {
                     ...keySearch,
                     isArchived: true

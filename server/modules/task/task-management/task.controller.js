@@ -362,7 +362,7 @@ getPaginatedTasksByUser = async (req, res) => {
  */
 getPaginatedTasks = async (req, res) => {
     try {
-        var task = {
+        let task = {
             perPage: req.query.perPage,
             number: req.query.number,
             user: req.query.user,
@@ -378,14 +378,14 @@ getPaginatedTasks = async (req, res) => {
         };
 
         let tasks = await TaskManagementService.getPaginatedTasks(req.portal, task);
-        await Logger.info(req.user.email, ` get task informed by user `, req.portal)
+        await Logger.info(req.user.email, 'get_task_success', req.portal)
         res.status(200).json({
             success: true,
             messages: ['get_task_success'],
             content: tasks
         })
     } catch (error) {
-        await Logger.error(req.user.email, ` get task informed by user  `, req.portal)
+        await Logger.error(req.user.email, 'get_task_fail', req.portal)
         res.status(400).json({
             success: false,
             messages: ['get_task_fail'],

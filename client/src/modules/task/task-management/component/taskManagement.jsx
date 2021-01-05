@@ -697,8 +697,8 @@ class TaskManagement extends Component {
                                     translate('task.task_management.current_month')
                                 ]}
                                     items={[
-                                        { value: "Lưu trong kho", text: translate('task.task_management.stored') },
-                                        { value: "Tháng hiện tại", text: translate('task.task_management.current_month') }
+                                        { value: "stored", text: translate('task.task_management.stored') },
+                                        { value: "currentMonth", text: translate('task.task_management.current_month') }
                                     ]}
                                     onChange={this.handleSelectSpecial}
                                     options={{ nonSelectedText: translate('task.task_management.select_special'), allSelectedText: translate('task.task_management.select_all_special') }}>
