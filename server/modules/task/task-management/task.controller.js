@@ -517,7 +517,7 @@ exports.createTask = async (req, res) => {
             content: task
         });
     } catch (error) {
-        
+
         await Logger.error(req.user.email, 'create_task', req.portal)
         res.status(400).json({
             success: false,
@@ -782,11 +782,11 @@ getAllTaskOfOrganizationalUnitByMonth = async (req, res) => {
     }
 }
 
-exports.getTaskAnalysOfUser = async(req, res) => {
+exports.getTaskAnalysOfUser = async (req, res) => {
     try {
         let portal = req.portal;
-        let {userId} = req.params;
-        let {type} = req.query;
+        let { userId } = req.params;
+        let { type } = req.query;
         let taskAnalys = await TaskManagementService.getTaskAnalysOfUser(portal, userId, type);
 
         await Logger.info(req.user.email, 'get_task_analys_of_user_success', req.portal)

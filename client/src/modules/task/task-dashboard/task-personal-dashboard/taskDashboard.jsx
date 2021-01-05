@@ -14,7 +14,7 @@ import Swal from 'sweetalert2';
 import { TasksIsNotLinked } from './tasksIsNotLinked';
 import { TaskHasActionNotEvaluated } from './taskHasActionNotEvaluated';
 import { InprocessTask } from './inprocessTask';
-
+import { WeightTaskChart } from './weightTaskChart';
 class TaskDashboard extends Component {
 
     constructor(props) {
@@ -46,6 +46,14 @@ class TaskDashboard extends Component {
         this.INFO_SEARCH = {
             startMonth: [startYear, startMonth].join('-'),
             endMonth: month === 12 ? [year + 1, '01'].join('-') : [year, endMonth].join('-'),
+
+            startMonthTitle: [startMonth, startYear].join('-'),
+            endMonthTitle: month < 10 ? ['0' + month, year].join('-') : [month, year].join('-'),
+        }
+
+        this.SEARCH_FOR_WEIGHT_TASK = {
+            taskStartMonth: [startYear, startMonth].join('-'),
+            taskEndMonth: month === 12 ? [year + 1, '01'].join('-') : [year, endMonth].join('-'),
 
             startMonthTitle: [startMonth, startYear].join('-'),
             endMonthTitle: month < 10 ? ['0' + month, year].join('-') : [month, year].join('-'),
@@ -170,6 +178,8 @@ class TaskDashboard extends Component {
         this.INFO_SEARCH.endMonthTitle = monthtitle;
     }
 
+
+
     handleSearchData = async () => {
         let startMonth = new Date(this.INFO_SEARCH.startMonth);
         let endMonth = new Date(this.INFO_SEARCH.endMonth);
@@ -200,7 +210,7 @@ class TaskDashboard extends Component {
         let amountResponsibleTask = 0, amountTaskCreated = 0, amountAccountableTasks = 0, amountConsultedTasks = 0;
         let numTask = [];
         let totalTasks = 0;
-
+        console.log('taskkkkkkkkkkk', tasks);
         // Tinh so luong tat ca cac task 
         if (tasks && tasks.responsibleTasks) {
             let task = tasks.responsibleTasks;
@@ -490,6 +500,25 @@ class TaskDashboard extends Component {
                     <TaskHasActionNotEvaluated />
 
                 </div>
+                {/* <div className="row"> */}
+                <div className="col-xs-12">
+                    <div className="box box-primary">
+                        <div className="box-header with-border">
+                            <div className="box-title">Dashboard tải công việc</div>
+                        </div>
+
+                        <div className="box-body qlcv">
+                            {callAction &&
+                                <WeightTaskChart
+                                    callAction={!willUpdate}
+                                    startMonth={startMonth}
+                                    endMonth={endMonth}
+                                />
+                            }
+                        </div>
+                    </div>
+                </div>
+                {/* </div> */}
 
             </React.Fragment>
         );

@@ -374,7 +374,7 @@ exports.getPaginatedTasks = async (portal, task) => {
 
         if (startDate) {
             let checkDate = Date.parse(endDate);
-            if(checkDate) {
+            if (checkDate) {
                 keySearch = {
                     ...keySearch,
                     startDate: {
@@ -394,7 +394,7 @@ exports.getPaginatedTasks = async (portal, task) => {
         }
         if (endDate) {
             let checkDate = Date.parse(endDate);
-            if(checkDate) {
+            if (checkDate) {
                 keySearch = {
                     ...keySearch,
                     endDate: {
@@ -1564,13 +1564,13 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (portal, task) => {
     };
 }
 
-exports.getPercentExpire = (nowDate, startDate, endDate)=>{
+exports.getPercentExpire = (nowDate, startDate, endDate) => {
     let start = new Date(startDate);
     let end = new Date(endDate);
     // lấy khoảng thời gian làm việc
-    let workingTime = Math.round((end - start) / 1000 / 60 / 60 / 24); 
+    let workingTime = Math.round((end - start) / 1000 / 60 / 60 / 24);
     // tính phần trăm phải làm trong ngày
-    let percentOneDay = 100 / workingTime; 
+    let percentOneDay = 100 / workingTime;
     // Tính số ngày quá hạn
     let deadline2 = Math.round((nowDate - end) / 1000 / 60 / 60 / 24);
     // tính phần trăm chậm tiến độ. số ngày quá hạn nhân với phần trăm phải làm trong 1 ngày
@@ -1582,12 +1582,12 @@ exports.getPercent = (nowDate, startDate, endDate) => {
     let end = new Date(endDate);
 
     // lấy khoảng thời gian làm việc
-    let workingTime = Math.round((end - start) / 1000 / 60 / 60 / 24); 
+    let workingTime = Math.round((end - start) / 1000 / 60 / 60 / 24);
     // lấy khoản thời gian làm việc tính đến ngày hiện tại
     // tính phần trăm phải làm trong 1 ngày
     let percentOneDay = 100 / workingTime;
     // % tiến độ tối thiểu phải làm được trong time hiện tại
-    let workingTimeNow = Math.round((nowDate - start) / 1000 / 60 / 60 / 24); 
+    let workingTimeNow = Math.round((nowDate - start) / 1000 / 60 / 60 / 24);
     return workingTimeNow * percentOneDay;
 }
 
@@ -1616,19 +1616,19 @@ exports.getAllTaskByPriorityOfOrganizationalUnit = async (portal, task) => {
         let minimumWorkingTime = this.getPercent(nowDate, obj.startDate, obj.endDate);
         let percentDifference = minimumWorkingTime - obj.progress;
         if (obj.priority === 1 && obj.progress < minimumWorkingTime && percentDifference >= 50) {
-                taskUrgent = [...taskUrgent, obj]
+            taskUrgent = [...taskUrgent, obj]
         }
         if (obj.priority === 2 && obj.progress < minimumWorkingTime && percentDifference >= 40) {
-                taskUrgent = [...taskUrgent, obj]
+            taskUrgent = [...taskUrgent, obj]
         }
         if (obj.priority === 3 && obj.progress < minimumWorkingTime && percentDifference >= 30) {
-                taskUrgent = [...taskUrgent, obj]
+            taskUrgent = [...taskUrgent, obj]
         }
         if (obj.priority === 4 && obj.progress < minimumWorkingTime && percentDifference >= 20) {
-                taskUrgent = [...taskUrgent, obj];
+            taskUrgent = [...taskUrgent, obj];
         }
         if (obj.priority === 5 && obj.progress < minimumWorkingTime && percentDifference >= 10) {
-                taskUrgent = [...taskUrgent, obj];
+            taskUrgent = [...taskUrgent, obj];
         }
     })
 
@@ -1662,10 +1662,10 @@ exports.getAllTaskByPriorityOfOrganizationalUnit = async (portal, task) => {
         }
     }
     // lấy việc quá hạn
-    const tasksExpire = await Task(connect(DB_CONNECTION, portal)).find(keySearch) 
+    const tasksExpire = await Task(connect(DB_CONNECTION, portal)).find(keySearch)
         .populate({ path: "organizationalUnit creator parent responsibleEmployees" }).lean();
     let tasksExpireUrgent = [];
-    
+
     // Quá hạn (cv cấp 1, 2, 3, 4, 5 :25 %, 20%, 15%,10%, 5% số ngày đã quá )
     tasksExpire.forEach(obj => {
         let delay = this.getPercentExpire(nowDate, obj.startDate, obj.endDate);
@@ -1693,8 +1693,8 @@ exports.getAllTaskByPriorityOfOrganizationalUnit = async (portal, task) => {
     /*quá hạn ko có ở khẩn cấp 
     hoặc
     chậm tiến độ của mức 5 , 4, 3, 2, 1: 5- 0<x<10, 4: 10 <= x <20, 3: 20<x<30, 2: 30<x<40 ,1: 40<x<50: */
-    console.log('taskUrgent', taskUrgent.map(x=>x.name));
-    console.log('taskNeedToDo', taskNeedToDo.map(x=>x.name));
+    console.log('taskUrgent', taskUrgent.map(x => x.name));
+    console.log('taskNeedToDo', taskNeedToDo.map(x => x.name));
 
     return {
         "urgent": taskUrgent,

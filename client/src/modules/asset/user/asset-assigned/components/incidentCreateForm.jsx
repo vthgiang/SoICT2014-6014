@@ -7,6 +7,8 @@ import ValidationHelper from '../../../../../helpers/validationHelper';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { AssetManagerActions } from '../../../admin/asset-information/redux/actions';
 import { IncidentActions } from '../redux/actions';
+import { generateCode } from "../../../../../helpers/generateCode";
+
 class IncidentCreateForm extends Component {
     constructor(props) {
         super(props);
@@ -134,11 +136,10 @@ class IncidentCreateForm extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        const { incidentCode, type, dateOfIncident, description } = this.state;
+        const { type, dateOfIncident, description } = this.state;
         const { translate } = this.props;
 
-        if (!ValidationHelper.validateName(translate, incidentCode).status
-            || !ValidationHelper.validateEmpty(translate, type).status
+        if (!ValidationHelper.validateEmpty(translate, type).status
             || !ValidationHelper.validateEmpty(translate, dateOfIncident).status
             || !ValidationHelper.validateEmpty(translate, description).status)
             return false;
@@ -196,6 +197,25 @@ class IncidentCreateForm extends Component {
         }
     }
 
+    regenerateCode = () => {
+        let code = generateCode("IC");
+        this.setState((state) => ({
+            ...state,
+            incidentCode: code,
+        }));
+    }
+
+    componentDidMount = () => {
+        // Mỗi khi modal mở, cần sinh lại code
+        window.$(`#modal-create-assetcrash`).on('shown.bs.modal', this.regenerateCode);
+    }
+
+    componentWillUnmount = () => {
+        // Unsuscribe event
+        window.$(`#modal-create-assetcrash`).unbind('shown.bs.modal', this.regenerateCode)
+    }
+
+
     render() {
         const { _id } = this.props;
         const { translate, assetsManager, user, auth } = this.props;
@@ -218,10 +238,9 @@ class IncidentCreateForm extends Component {
 
                         <div className="col-md-12">
                             {/* Mã sự cố */}
-                            <div className={`form-group ${!errorOnIncidentCode ? "" : "has-error"}`}>
-                                <label>{translate('asset.general_information.incident_code')}<span className="text-red">*</span></label>
+                            <div className={`form-group`}>
+                                <label>{translate('asset.general_information.incident_code')}</label>
                                 <input type="text" className="form-control" name="incidentCode" value={incidentCode ? incidentCode : ""} onChange={this.handleIncidentCodeChange} autoComplete="off" placeholder={translate('asset.general_information.incident_code')} />
-                                <ErrorLabel content={errorOnIncidentCode} />
                             </div>
 
                             {/* Phân loại */}
