@@ -31,18 +31,17 @@ class TaskDashboard extends Component {
         if (month > 3) {
             startMonth = month - 3;
             startYear = year;
-            if (month < 9) {
-                endMonth = '0' + (month + 1);
-            } else {
-                endMonth = month + 1;
-            }
         } else {
             startMonth = month - 3 + 12;
             startYear = year - 1;
         }
         if (startMonth < 10)
             startMonth = '0' + startMonth;
-
+        if (month < 9) {
+            endMonth = '0' + month;
+        } else {
+            endMonth = month;
+        }
 
         this.INFO_SEARCH = {
             startMonth: [startYear, startMonth].join('-'),

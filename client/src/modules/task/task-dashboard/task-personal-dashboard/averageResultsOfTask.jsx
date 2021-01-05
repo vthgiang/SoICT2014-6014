@@ -337,6 +337,13 @@ function AverageResultsOfTask(props) {
                     }
                 }
             },
+            tooltip: {
+                format: {
+                    value: function (value, ratio, id) {
+                        return value.toFixed(2);
+                    }
+                }
+            }
         })
     }
 
@@ -346,7 +353,7 @@ function AverageResultsOfTask(props) {
                 <div className="form-group">
                     <label>{translate('task.task_management.role')}</label>
                     <SelectMulti
-                        id="multiSelectAverage"
+                        id="multiSelectAverageRole"
                         items={ROLE_SELECTBOX}
                         onChange={handleSelectRole}
                         options={{ allSelectedText: translate('task.task_management.select_all_status') }}
