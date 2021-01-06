@@ -284,11 +284,13 @@ class UseRequest extends Component {
                                             <td>{x.asset ? x.asset.code : ''}</td>
                                             <td>{x.asset ? x.asset.assetName : ''}</td>
                                             <td>{x.asset ? this.formatDateTime(x.dateStartUse, x.asset.typeRegisterForUse) : ''}</td>
-                                            <td>{x.asset ? this.formatDateTime(x.dateEndUse, x.asset.typeRegisterForUse) : ''}</td>
+                                            <td>{x.asset && x.dateEndUse ? this.formatDateTime(x.dateEndUse, x.asset.typeRegisterForUse) : ''}</td>
                                             <td>{x.approver ? x.approver.email : ''}</td>
                                             <td>{this.formatStatus(x.status)}</td>
                                             <td style={{ textAlign: "center" }}>
-                                                <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_usage_info')}><i className="material-icons">edit</i></a>
+                                                {x.status == 'disapproved' &&
+                                                    <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_usage_info')}><i className="material-icons">edit</i></a>
+                                                }
                                                 <DeleteNotification
                                                     content={translate('asset.asset_info.delete_usage_info')}
                                                     data={{
