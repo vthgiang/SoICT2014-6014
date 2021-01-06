@@ -344,7 +344,8 @@ exports.getPaginatedTasks = async (portal, task) => {
             keySearchSpecial = {
                 $or: [
                     { 'endDate': { $lte: end, $gt: start } },
-                    { 'startDate': { $lte: end, $gt: start } }
+                    { 'startDate': { $lte: end, $gt: start } },
+                    { 'startDate': { $lte: start }, 'endDate': { $gte: end } }
                 ]
             }
         }
@@ -1239,6 +1240,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
     //         }
     //     }
     // }
+
     informedTasks = await Task(connect(DB_CONNECTION, portal)).find({
         $and: [
             keySearch,
