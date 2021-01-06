@@ -358,7 +358,7 @@ class QuoteCreateGood extends Component {
         let amountAfterApplyTax = this.getAmountAfterApplyDiscount();
         const { taxs } = this.state;
         let listTaxs = taxs.map((item) => {
-            let tax = listTaxsByGoodId.find((element) => element._id == item);
+            let tax = listTaxsByGoodId.find((element) => element.code == item);
             if (tax) {
                 return tax;
             }
@@ -408,7 +408,7 @@ class QuoteCreateGood extends Component {
             let amountAfterTax = this.getAmountAfterApplyTax();
 
             let listTaxs = taxs.map((item) => {
-                let tax = listTaxsByGoodId.find((element) => element._id == item);
+                let tax = listTaxsByGoodId.find((element) => element.code == item);
                 if (tax) {
                     return tax;
                 }
@@ -572,7 +572,7 @@ class QuoteCreateGood extends Component {
         await this.setState({
             editGood: true,
             indexEditting: index,
-            taxs: item.taxs.map((tax) => tax._id),
+            taxs: item.taxs.map((tax) => tax.code),
             quantity: item.quantity,
             pricePerBaseUnit: item.pricePerBaseUnit,
             pricePerBaseUnitError: undefined,
@@ -653,7 +653,7 @@ class QuoteCreateGood extends Component {
             let amountAfterTax = this.getAmountAfterApplyTax();
 
             let listTaxs = taxs.map((item) => {
-                let tax = listTaxsByGoodId.find((element) => element._id == item);
+                let tax = listTaxsByGoodId.find((element) => element.code == item);
                 if (tax) {
                     return tax;
                 }
@@ -930,7 +930,7 @@ class QuoteCreateGood extends Component {
                     </div>
 
                     {/* Hiển thị bảng */}
-                    <table className="table table-bordered">
+                    <table className="table table-bordered not-sort">
                         <thead>
                             <tr>
                                 <th title={"STT"}>STT</th>
@@ -990,7 +990,7 @@ class QuoteCreateGood extends Component {
                                             {item.amountAfterDiscount && item.amountAfterTax
                                                 ? formatCurrency(item.amountAfterTax - item.amountAfterDiscount) + ` (${currency.symbol})`
                                                 : `0 (${currency.symbol})`}
-                                            ({item.taxs.length ? item.taxs[0].percent : "0"}%)
+                                            ({item.taxs.length && item.taxs[0] ? item.taxs[0].percent : "0"}%)
                                         </td>
                                         <td>
                                             {item.amountAfterTax

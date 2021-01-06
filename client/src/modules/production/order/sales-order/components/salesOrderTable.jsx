@@ -38,7 +38,6 @@ class SalesOrderTable extends Component {
         this.props.getCustomers();
         this.props.getAllDepartments();
         this.props.getAllRoles();
-        this.props.getQuotesToMakeOrder();
     };
 
     handleClickCreateCode = () => {
@@ -136,6 +135,8 @@ class SalesOrderTable extends Component {
     };
 
     createFromQuote = () => {
+        this.props.getQuotesToMakeOrder();
+
         window.$("#modal-add-sales-order-from-quote").modal("show");
     };
 

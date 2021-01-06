@@ -16,7 +16,7 @@ class Payment extends Component {
         if (listTaxsByGoodId && listTaxsByGoodId.length) {
             options = listTaxsByGoodId.map((item) => {
                 return {
-                    value: item._id,
+                    value: item.code,
                     text: item.name + " -- " + item.percent + " (%)",
                 };
             });
