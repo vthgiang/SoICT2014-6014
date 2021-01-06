@@ -2,8 +2,7 @@ import React, { Component } from "react";
 import { ButtonModal, DialogModal } from "../../../../../../common-components";
 import CommandCreateForm from "./commandCreateForm";
 import PlanInfoForm from "./generalPlanInfoForm";
-import MillScheduleBooking from "./millScheduleBooking";
-import WorkerBooking from "./workerBooking";
+import ScheduleBooking from "./scheduleBooking";
 import "./planCreate.css";
 import { connect } from "react-redux";
 import withTranslate from "react-redux-multilingual/lib/withTranslate";
@@ -31,15 +30,10 @@ class NewPlanCreateForm extends Component {
                     disabled: true,
                 },
                 {
-                    label: this.props.translate("manufacturing.plan.turn_info"),
+                    label: this.props.translate("manufacturing.plan.schedule_info"),
                     active: false,
                     disabled: true,
-                },
-                {
-                    label: this.props.translate("manufacturing.plan.worker_info"),
-                    active: false,
-                    disabled: true,
-                },
+                }
             ],
 
             code: "",
@@ -421,14 +415,10 @@ class NewPlanCreateForm extends Component {
                             }
                             {
                                 step === 2 &&
-                                <MillScheduleBooking
+                                <ScheduleBooking
                                     listGoods={goods}
                                     manufacturingCommands={manufacturingCommands}
                                 />
-                            }
-                            {
-                                step === 3 &&
-                                <WorkerBooking />
                             }
                         </div>
                         <div style={{ textAlign: "center" }}>{`${step + 1} / ${steps.length}`}</div>

@@ -4,7 +4,6 @@ import { withTranslate } from "react-redux-multilingual";
 import { GoodActions } from "../../../../common-production/good-management/redux/actions";
 import { DiscountActions } from "../../../discount/redux/actions";
 import { formatCurrency } from "../../../../../../helpers/formatCurrency";
-import ValidationHelper from "../../../../../../helpers/validationHelper";
 import GoodSelected from "./goodCreateSteps/goodSelected";
 import ApplyDiscount from "./goodCreateSteps/applyDiscount";
 import Payment from "./goodCreateSteps/payment";
@@ -45,6 +44,13 @@ class QuoteCreateGood extends Component {
         if (this.props.goods.goodItems.goodId !== nextProps.goods.goodItems.goodId) {
             await this.getCheckedForGood(nextProps.goods.goodItems);
             return false;
+        }
+
+        //Lấy số lượng hàng tồn kho cho các mặt hàng
+        if (nextProps.goods.goodItems.inventoryByGoodId !== nextState.inventory && nextState.good !== "title") {
+            this.setState({
+                inventory: nextProps.goods.goodItems.inventoryByGoodId,
+            });
         }
         return true;
     };
@@ -159,7 +165,6 @@ class QuoteCreateGood extends Component {
                         baseUnit: goodInfo[0].baseUnit,
                         pricePerBaseUnit: goodInfo[0].pricePerBaseUnit,
                         pricePerBaseUnitOrigin: goodInfo[0].pricePerBaseUnit, //giá gốc
-                        inventory: goodInfo[0].quantity,
                         salesPriceVariance: goodInfo[0].salesPriceVariance ? goodInfo[0].salesPriceVariance : 0,
                         pricePerBaseUnitError: undefined,
                         taxs: [],
@@ -355,7 +360,7 @@ class QuoteCreateGood extends Component {
         const { taxs } = this.state;
         let listTaxs = [];
         taxs.forEach((item) => {
-            let tax = listTaxsByGoodId.find((element) => element._id == item);
+            let tax = listTaxsByGoodId.find((element) => element.code == item);
             if (tax) {
                 listTaxs.push(Object.assign({}, tax));
             }
@@ -404,8 +409,10 @@ class QuoteCreateGood extends Component {
             let amountAfterDiscount = this.getAmountAfterApplyDiscount();
             let amountAfterTax = this.getAmountAfterApplyTax();
 
+            console.log("TAXS", taxs);
+
             let listTaxs = taxs.map((item) => {
-                let tax = listTaxsByGoodId.find((element) => element._id == item);
+                let tax = listTaxsByGoodId.find((element) => element.code == item);
                 if (tax) {
                     return tax;
                 }
@@ -442,6 +449,8 @@ class QuoteCreateGood extends Component {
                 salesPriceVariance,
             };
 
+            console.log("additionGood", additionGood);
+
             listGoods.push(additionGood);
             steps = steps.map((step, index) => {
                 step.active = !index ? true : false;
@@ -464,7 +473,7 @@ class QuoteCreateGood extends Component {
                     note: "",
                     inventory: "",
                     baseUnit: "",
-                    good: "",
+                    good: "title",
                     code: "",
                     goodName: "",
                     step: 0,
@@ -475,11 +484,8 @@ class QuoteCreateGood extends Component {
     };
 
     deleteGood = (goodId) => {
-        console.log("goodId", goodId);
         let { listGoods } = this.props;
-        console.log("listGoods", listGoods);
         let goodsFilter = listGoods.filter((item) => item.good._id !== goodId);
-        console.log("goodsFilter", goodsFilter);
         this.props.setGoods(goodsFilter);
     };
 
@@ -556,14 +562,6 @@ class QuoteCreateGood extends Component {
             }
         }
 
-        // let slasForEdit = {};
-
-        // if (slasOfGood && slasOfGood.length) {
-        //     slasOfGood.forEach((element) => {
-        //         slasForEdit[element._id] = element.descriptions;
-        //     });
-        // }
-
         this.setState({
             discountsOfGoodChecked,
             slasOfGoodChecked,
@@ -585,14 +583,13 @@ class QuoteCreateGood extends Component {
         await this.setState({
             editGood: true,
             indexEditting: index,
-            taxs: item.taxs.map((tax) => tax._id),
+            taxs: item.taxs.map((tax) => tax.code),
             quantity: item.quantity,
             pricePerBaseUnit: item.pricePerBaseUnit,
             pricePerBaseUnitError: undefined,
             pricePerBaseUnitOrigin: item.pricePerBaseUnitOrigin,
             salesPriceVariance: item.salesPriceVariance,
             note: item.note,
-            inventory: goodInfo[0].quantity,
             goodName: item.good.name,
             good: item.good._id,
             baseUnit: item.good.baseUnit,
@@ -629,7 +626,7 @@ class QuoteCreateGood extends Component {
                 note: "",
                 inventory: "",
                 baseUnit: "",
-                good: "",
+                good: "title",
                 code: "",
                 goodName: "",
                 step: 0,
@@ -666,7 +663,7 @@ class QuoteCreateGood extends Component {
             let amountAfterTax = this.getAmountAfterApplyTax();
 
             let listTaxs = taxs.map((item) => {
-                let tax = listTaxsByGoodId.find((element) => element._id == item);
+                let tax = listTaxsByGoodId.find((element) => element.code == item);
                 if (tax) {
                     return tax;
                 }
@@ -729,7 +726,7 @@ class QuoteCreateGood extends Component {
                     baseUnit: "",
                     good: "",
                     code: "",
-                    goodName: "",
+                    goodName: "title",
                     step: 0,
                     steps,
                 };
@@ -944,7 +941,7 @@ class QuoteCreateGood extends Component {
                     </div>
 
                     {/* Hiển thị bảng */}
-                    <table className="table table-bordered">
+                    <table className="table table-bordered not-sort">
                         <thead>
                             <tr>
                                 <th title={"STT"}>STT</th>

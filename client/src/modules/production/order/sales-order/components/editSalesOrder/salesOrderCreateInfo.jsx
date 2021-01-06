@@ -76,7 +76,7 @@ class SalesOrderCreateInfo extends Component {
                                             <span className="attention"> * </span>
                                         </label>
                                         <SelectBox
-                                            id={`select-sales-order-customer-edit`}
+                                            id={`select-sales-order-customer-edit-${customer}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={customer}
@@ -167,7 +167,7 @@ class SalesOrderCreateInfo extends Component {
                                     <span className="attention"> * </span>
                                 </label>
                                 <SelectBox
-                                    id={`select-edit-sales-order-priority`}
+                                    id={`select-edit-sales-order-priority-${priority}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={priority}

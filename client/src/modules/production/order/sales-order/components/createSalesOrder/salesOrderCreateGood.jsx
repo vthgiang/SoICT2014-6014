@@ -4,7 +4,6 @@ import { withTranslate } from "react-redux-multilingual";
 import { GoodActions } from "../../../../common-production/good-management/redux/actions";
 import { DiscountActions } from "../../../discount/redux/actions";
 import { formatCurrency } from "../../../../../../helpers/formatCurrency";
-import ValidationHelper from "../../../../../../helpers/validationHelper";
 import GoodSelected from "./goodCreateSteps/goodSelected";
 import ApplyDiscount from "./goodCreateSteps/applyDiscount";
 import Payment from "./goodCreateSteps/payment";
@@ -45,6 +44,13 @@ class SalesOrderCreateGood extends Component {
         if (this.props.goods.goodItems.goodId !== nextProps.goods.goodItems.goodId) {
             await this.getCheckedForGood(nextProps.goods.goodItems);
             return false;
+        }
+
+        //Lấy số lượng hàng tồn kho cho các mặt hàng
+        if (nextProps.goods.goodItems.inventoryByGoodId !== nextState.inventory && nextState.good !== "title") {
+            this.setState({
+                inventory: nextProps.goods.goodItems.inventoryByGoodId,
+            });
         }
         return true;
     };
@@ -156,9 +162,8 @@ class SalesOrderCreateGood extends Component {
                         code: goodInfo[0].code,
                         goodName: goodInfo[0].name,
                         baseUnit: goodInfo[0].baseUnit,
-                        pricePerBaseUnit: goodInfo[0].pricePerBaseUnit,
+                        pricePerBaseUnit: goodInfo[0].pricePerBaseUnit ? goodInfo[0].pricePerBaseUnit : "",
                         pricePerBaseUnitOrigin: goodInfo[0].pricePerBaseUnit, //giá gốc
-                        inventory: goodInfo[0].quantity,
                         salesPriceVariance: goodInfo[0].salesPriceVariance ? goodInfo[0].salesPriceVariance : 0,
                         pricePerBaseUnitError: undefined,
                         taxs: [],
@@ -172,7 +177,6 @@ class SalesOrderCreateGood extends Component {
             }
 
             await this.props.getItemsForGood(value[0]);
-            await this.props.getManufacturingWorksByProductId(value[0]);
         } else {
             this.setState((state) => {
                 return {
@@ -200,18 +204,33 @@ class SalesOrderCreateGood extends Component {
     };
 
     handleManufacturingWorkChange = (value) => {
+        let { listManufacturingWorks } = this.props.goods.goodItems;
+        let manufacturingWorksInfo = listManufacturingWorks.find((element) => element._id === value[0]);
+
         if (value[0] !== "title") {
             this.setState((state) => {
                 return {
                     ...state,
-                    manufacturingWorks: value[0],
+                    manufacturingWorks: {
+                        _id: manufacturingWorksInfo._id,
+                        code: manufacturingWorksInfo.code,
+                        name: manufacturingWorksInfo.name,
+                        description: manufacturingWorksInfo.description,
+                        address: manufacturingWorksInfo.address,
+                    },
                 };
             });
         } else {
             this.setState((state) => {
                 return {
                     ...state,
-                    manufacturingWorks: "",
+                    manufacturingWorks: {
+                        _id: "title",
+                        code: "",
+                        name: "",
+                        description: "",
+                        address: "",
+                    },
                 };
             });
         }
@@ -372,7 +391,7 @@ class SalesOrderCreateGood extends Component {
         let amountAfterApplyTax = this.getAmountAfterApplyDiscount();
         const { taxs } = this.state;
         let listTaxs = taxs.map((item) => {
-            let tax = listTaxsByGoodId.find((element) => element._id == item);
+            let tax = listTaxsByGoodId.find((element) => element.code == item);
             if (tax) {
                 return tax;
             }
@@ -423,7 +442,7 @@ class SalesOrderCreateGood extends Component {
             let amountAfterTax = this.getAmountAfterApplyTax();
 
             let listTaxs = taxs.map((item) => {
-                let tax = listTaxsByGoodId.find((element) => element._id == item);
+                let tax = listTaxsByGoodId.find((element) => element.code == item);
                 if (tax) {
                     return tax;
                 }
@@ -458,7 +477,7 @@ class SalesOrderCreateGood extends Component {
                 amountAfterDiscount,
                 amountAfterTax,
                 salesPriceVariance,
-                manufacturingWorks,
+                manufacturingWorks: manufacturingWorks._id !== "title" ? manufacturingWorks : undefined,
             };
 
             listGoods.push(additionGood);
@@ -483,10 +502,10 @@ class SalesOrderCreateGood extends Component {
                     note: "",
                     inventory: "",
                     baseUnit: "",
-                    good: "",
+                    good: "title",
                     code: "",
                     goodName: "",
-                    manufacturingWorks: "",
+                    manufacturingWorks: { _id: "title" },
                     step: 0,
                     steps,
                 };
@@ -589,14 +608,13 @@ class SalesOrderCreateGood extends Component {
         await this.setState({
             editGood: true,
             indexEditting: index,
-            taxs: item.taxs.map((tax) => tax._id),
+            taxs: item.taxs.map((tax) => tax.code),
             quantity: item.quantity,
             pricePerBaseUnit: item.pricePerBaseUnit,
             pricePerBaseUnitError: undefined,
             pricePerBaseUnitOrigin: item.pricePerBaseUnitOrigin,
             salesPriceVariance: item.salesPriceVariance,
             note: item.note,
-            inventory: goodInfo[0].quantity,
             goodName: item.good.name,
             good: item.good._id,
             baseUnit: item.good.baseUnit,
@@ -609,14 +627,14 @@ class SalesOrderCreateGood extends Component {
         this.getCheckedForGood(this.props.goods.goodItems); //gọi để checked trong trường hợp không thay đổi goodId
     };
 
-    handleCancelEditGood = (e) => {
+    handleCancelEditGood = async (e) => {
         e.preventDefault();
         let { steps } = this.state;
         steps = steps.map((step, index) => {
             step.active = !index ? true : false;
             return step;
         });
-        this.setState((state) => {
+        await this.setState((state) => {
             return {
                 ...state,
                 indexEditting: "",
@@ -634,10 +652,10 @@ class SalesOrderCreateGood extends Component {
                 note: "",
                 inventory: "",
                 baseUnit: "",
-                good: "",
+                good: "title",
                 code: "",
                 goodName: "",
-                manufacturingWorks: "",
+                manufacturingWorks: { _id: "title" },
                 step: 0,
                 steps,
             };
@@ -673,7 +691,7 @@ class SalesOrderCreateGood extends Component {
             let amountAfterTax = this.getAmountAfterApplyTax();
 
             let listTaxs = taxs.map((item) => {
-                let tax = listTaxsByGoodId.find((element) => element._id == item);
+                let tax = listTaxsByGoodId.find((element) => element.code == item);
                 if (tax) {
                     return tax;
                 }
@@ -708,7 +726,7 @@ class SalesOrderCreateGood extends Component {
                 amountAfterDiscount,
                 amountAfterTax,
                 salesPriceVariance,
-                manufacturingWorks,
+                manufacturingWorks: manufacturingWorks._id !== "title" ? manufacturingWorks : undefined,
             };
 
             listGoods[indexEditting] = additionGood;
@@ -735,10 +753,10 @@ class SalesOrderCreateGood extends Component {
                     note: "",
                     inventory: "",
                     baseUnit: "",
-                    good: "",
+                    good: "title",
                     code: "",
                     goodName: "",
-                    manufacturingWorks: "",
+                    manufacturingWorks: { _id: "title" },
                     step: 0,
                     steps,
                 };
@@ -769,7 +787,7 @@ class SalesOrderCreateGood extends Component {
 
         let { goodError, pricePerBaseUnitError, quantityError } = this.state;
 
-        const { setCurrentSlasOfGood, setCurrentDiscountsOfGood } = this.props;
+        const { setCurrentSlasOfGood, setCurrentDiscountsOfGood, setCurrentManufacturingWorksOfGoods } = this.props;
         let { listGoods } = this.props;
 
         const { isUseForeignCurrency, foreignCurrency, standardCurrency, currency } = this.props;
@@ -780,7 +798,6 @@ class SalesOrderCreateGood extends Component {
 
         let isGoodValidate = this.isValidateGoodSelected();
 
-        console.log("GOODS", this.props.goods);
         return (
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <fieldset className="scheduler-border" style={{ padding: 10 }}>
@@ -957,21 +974,22 @@ class SalesOrderCreateGood extends Component {
                     </div>
 
                     {/* Hiển thị bảng */}
-                    <table className="table table-bordered">
+                    <table className="table table-bordered not-sort">
                         <thead>
                             <tr>
                                 <th title={"STT"}>STT</th>
                                 <th title={"Mã sản phẩm"}>Mã sản phẩm</th>
                                 <th title={"Tên sản phẩm"}>Tên sản phẩm</th>
                                 <th title={"Đơn vị tính"}>Đ/v tính</th>
-                                <th title={"Giá niêm yết"}>Giá niêm yết (vnđ)</th>
-                                <th title={"giá tính tiền"}>giá tính tiền (vnđ)</th>
+                                <th title={"Giá niêm yết"}>Giá niêm yết</th>
+                                <th title={"giá tính tiền"}>giá tính tiền</th>
                                 <th title={"Số lượng"}>Số lượng</th>
                                 <th title={"Khuyến mãi"}>Khuyến mãi</th>
                                 <th title={"Thành tiền"}>Thành tiền</th>
                                 <th title={"Thuế"}>Thuế</th>
                                 <th title={"Tổng tiền"}>Tổng tiền</th>
                                 <th>Cam kết chất lượng</th>
+                                <th title={"Yêu cầu sản xuất"}>Yêu cầu s/x</th>
                                 <th title={"Ghi chú"}>Ghi chú</th>
                                 <th title={"Hành động"}>Hành động</th>
                             </tr>
@@ -1017,7 +1035,7 @@ class SalesOrderCreateGood extends Component {
                                             {item.amountAfterDiscount && item.amountAfterTax
                                                 ? formatCurrency(item.amountAfterTax - item.amountAfterDiscount) + ` (${currency.symbol})`
                                                 : `0 (${currency.symbol})`}
-                                            ({item.taxs.length ? item.taxs[0].percent : "0"}%)
+                                            ({item.taxs.length && item.taxs[0] ? item.taxs[0].percent : "0"}%)
                                         </td>
                                         <td>
                                             {item.amountAfterTax
@@ -1043,6 +1061,29 @@ class SalesOrderCreateGood extends Component {
                                                     <i className="fa fa-arrow-circle-right"></i>
                                                 </a>
                                             </div>
+                                        </td>
+                                        <td>
+                                            {item.manufacturingWorks ? (
+                                                <div
+                                                    style={{
+                                                        display: "flex",
+                                                    }}
+                                                >
+                                                    <a
+                                                        style={{
+                                                            cursor: "pointer",
+                                                        }}
+                                                        data-toggle="modal"
+                                                        data-backdrop="static"
+                                                        href={"#modal-create-sales-order-manufacturing-works-of-good-detail"}
+                                                        onClick={() => setCurrentManufacturingWorksOfGoods(item.manufacturingWorks)}
+                                                    >
+                                                        Đang thiết lập &ensp;
+                                                    </a>
+                                                </div>
+                                            ) : (
+                                                ""
+                                            )}
                                         </td>
                                         <td>{item.note}</td>
                                         <td>
@@ -1092,7 +1133,7 @@ class SalesOrderCreateGood extends Component {
                                             }, 0)
                                         ) + ` (${currency.symbol})`}
                                     </td>
-                                    <td colSpan={3}></td>
+                                    <td colSpan={4}></td>
                                 </tr>
                             )}
                         </tbody>
@@ -1111,7 +1152,6 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
     getAllGoodsByType: GoodActions.getAllGoodsByType,
     getItemsForGood: GoodActions.getItemsForGood,
-    getManufacturingWorksByProductId: GoodActions.getManufacturingWorksByProductId,
     getDiscountForOrderValue: DiscountActions.getDiscountForOrderValue,
 };
 

@@ -38,7 +38,6 @@ class SalesOrderTable extends Component {
         this.props.getCustomers();
         this.props.getAllDepartments();
         this.props.getAllRoles();
-        this.props.getQuotesToMakeOrder();
     };
 
     handleClickCreateCode = () => {
@@ -136,6 +135,8 @@ class SalesOrderTable extends Component {
     };
 
     createFromQuote = () => {
+        this.props.getQuotesToMakeOrder();
+
         window.$("#modal-add-sales-order-from-quote").modal("show");
     };
 
@@ -158,8 +159,6 @@ class SalesOrderTable extends Component {
         if (salesOrders.isLoading === false) {
             listSalesOrders = salesOrders.listSalesOrders;
         }
-
-        console.log("listSalesOrders", listSalesOrders);
 
         const dataStatus = [
             {
@@ -208,8 +207,6 @@ class SalesOrderTable extends Component {
         ];
 
         const { department, role, auth } = this.props;
-
-        console.log("auth", auth);
 
         return (
             <React.Fragment>

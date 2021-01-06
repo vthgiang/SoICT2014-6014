@@ -63,10 +63,6 @@ const QuoteSchema = Schema({
             ref: 'Good',
             required: true
         },
-        returnRule: [{
-            type: Schema.Types.ObjectId,
-            ref: 'returnRule'
-        }],
         pricePerBaseUnit: {
             type: Number,
             required: true

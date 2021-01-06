@@ -37,9 +37,6 @@ exports.getAllTaskTemplates = async (portal, query) => {
             noResultsPerPage = Number(query.noResultsPerPage),
             organizationalUnit = query.arrayUnit,
             name = query.name;
-
-        console.log("filter tasktemplate:", id, pageNumber, noResultsPerPage, organizationalUnit, name)
-
         // Danh sách các quyền của user - userRoles
         let dataRoles = await UserRole(connect(DB_CONNECTION, portal))
             .find({ userId: id })
@@ -49,10 +46,16 @@ exports.getAllTaskTemplates = async (portal, query) => {
         userRoles = userRoles.filter((role, index) => role.toString() === userRoles[index].toString());
         let option = !organizationalUnit ?
             {   
-                readByEmployees: { $in: userRoles },
+                $or: [
+                    { readByEmployees: { $in: userRoles } },
+                    { creator: id }
+                ],
                 name: { "$regex": name, "$options": "i" }
             } : {
-                readByEmployees: { $in: userRoles },
+                $or: [
+                    { readByEmployees: { $in: userRoles } },
+                    { creator: id }
+                ],
                 name: { "$regex": name, "$options": "i" },
                 organizationalUnit: { $in: organizationalUnit }
             };
@@ -95,23 +98,6 @@ exports.createTaskTemplate = async (portal, body) => {
     let checkTaskTemplate = await TaskTemplate(connect(DB_CONNECTION, portal)).findOne({ name: body.name });
     if(checkTaskTemplate) throw ['task_template_name_exist'];
 
-    // thêm quyền xem mẫu công việc cho trưởng đơn vị của công việc
-    let units = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findById(body.organizationalUnit);
-    let roleManagers = units.managers;
-    let readByEmployee = body.readByEmployees;
-    for (let i in roleManagers) {
-        let flag = true;
-        for (let x in readByEmployee) {
-            if (JSON.stringify(readByEmployee[x]) === JSON.stringify(roleManagers[i])) {
-                flag = false;
-                break;
-            }
-        }
-        if (flag) {
-            readByEmployee.push(roleManagers[i]);
-        }
-    }
-    readByEmployee = readByEmployee.map(x => String(x));
     for (let i in body.taskActions) {
         if (body.taskActions[i].description) {
             let str = body.taskActions[i].description;
@@ -174,7 +160,7 @@ exports.createTaskTemplate = async (portal, body) => {
         collaboratedWithOrganizationalUnits: body.collaboratedWithOrganizationalUnits,
         name: body.name,
         creator: body.creator, //id của người tạo
-        readByEmployees: readByEmployee, //role của người có quyền xem
+        readByEmployees: Array.isArray(body.readByEmployees) ? body.readByEmployees : [], //role của người có quyền xem
         responsibleEmployees: body.responsibleEmployees,
         accountableEmployees: body.accountableEmployees,
         consultedEmployees: body.consultedEmployees,
@@ -203,16 +189,16 @@ exports.createTaskTemplate = async (portal, body) => {
     // TODO: Xử lý quyển với action
 
     // xu ly quyen nguoi xem
-    var read = readByEmployee;
-    var roleId = [];
-    var role, roleParent;
+    let read = Array.isArray(body.readByEmployees) ? body.readByEmployees : [];
+    let roleId = [];
+    let role, roleParent;
     role = await Role(connect(DB_CONNECTION, portal)).find({ _id: { $in: read } });
     roleParent = role.map(item => item.parents);   // lấy ra các parent của các role
-    var flag;
-    var reads = role.map(item => item._id);     // lấy ra danh sách role có quyền xem ( thứ tự cùng với roleParent)
+    let flag;
+    let reads = role.map(item => item._id);     // lấy ra danh sách role có quyền xem ( thứ tự cùng với roleParent)
     for (let n in reads) {
         flag = 0;
-        var parent = [];
+        let parent = [];
         parent = parent.concat(roleParent[n]);
         for (let i in parent) {
             for (let j in reads) {

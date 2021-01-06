@@ -71,12 +71,12 @@ class CreateSlaForGood extends Component {
                     }}
                     data-toggle="modal"
                     data-backdrop="static"
-                    href={"#modal-add-quote-sla-for-good"}
+                    href={"#modal-edit-quote-sla-for-good"}
                 >
                     Chọn cam kết chất lượng
                 </a>
                 <DialogModal
-                    modalID={`modal-add-quote-sla-for-good`}
+                    modalID={`modal-edit-quote-sla-for-good`}
                     isLoading={false}
                     title={"Chọn cam kết chất lượng"}
                     hasSaveButton={false}

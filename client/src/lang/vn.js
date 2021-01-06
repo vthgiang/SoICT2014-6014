@@ -2988,6 +2988,7 @@ export default {
                 detail_priority: "Độ ưu tiên công việc",
                 detail_status: "Trạng thái công việc",
                 detail_time: "Thời gian thực hiện công việc",
+                detail_average_results: "Kết quả trung bình công việc",
 
                 detail_general_info: "Thông tin chung",
                 detail_description: "Mô tả",
@@ -3003,6 +3004,8 @@ export default {
                 detail_not_auto: "Chưa có điểm tự động",
                 detail_not_emp: "Chưa tự đánh giá",
                 detail_not_acc: "Chưa có điểm phê duyệt",
+                detail_not_coefficient: "Không theo hệ số",
+                detail_coefficient: "Theo hệ số",
 
                 detail_not_eval_on_month: "Chưa đánh giá tháng này",
                 detail_not_eval: "Chưa ai đánh giá công việc tháng này",
@@ -4971,7 +4974,7 @@ export default {
                 progress_1: "Đúng tiến độ",
                 progress_2: "Chậm tiến độ",
                 progress_3: "Quá hạn",
-
+                schedule_info: "Xưởng và công nhân",
                 general_info: "Thông tin chung",
                 material_info: "Nguyên vật liệu",
                 command_info: "Lệnh sản xuất",
@@ -5037,6 +5040,7 @@ export default {
                 list_order: "Danh sách đơn hàng",
                 manufacturing_command_info: "Thông tin lệnh sản xuất",
                 history_info: "Lịch sử sản xuất theo mặt hàng",
+                schedule_booking: "Chọn xưởng sản xuất và phân việc công nhân"
 
 
 

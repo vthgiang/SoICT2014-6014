@@ -325,7 +325,7 @@ exports.getPaginatedTasks = async (portal, task) => {
         };
     }
 
-    if (special) {
+    if (Array.isArray(special)) {
         let checkStore = special.some(node => node === 'stored');
         if(checkStore) {
             keySearch = {
@@ -337,14 +337,14 @@ exports.getPaginatedTasks = async (portal, task) => {
         if(checkCurrentMonth){
             let now = new Date();
             let currentYear = now.getFullYear();
-            let currentMonth = now.getMonth() + 1;
-            let start = new Date(`${currentYear}-${currentMonth}`); //ngày đầu tiên của tháng hiện tại
-            let end = new Date(currentYear, currentMonth); // ngày đầu tiên của tháng sau ( sau tháng hiện tại)
+            let currentMonth = now.getMonth()+1;
+            let start = new Date(`${currentYear}-${currentMonth}`); //ngày cuối cùng của tháng trước
+            let end = new Date(currentYear, currentMonth); // ngày cuối cùng của tháng hiện tại
 
             keySearchSpecial = {
                 $or: [
-                    { 'endDate': { $lte: start } },
-                    { 'startDate': { $gte: end } }
+                    { 'endDate': { $lte: end, $gt: start } },
+                    { 'startDate': { $lte: end, $gt: start } }
                 ]
             }
         }
@@ -361,15 +361,19 @@ exports.getPaginatedTasks = async (portal, task) => {
     };
 
     if (JSON.parse(aPeriodOfTime)) {
-        keySearchPeriod = {
-            $or: [
-                { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
-                { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
-                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
-            ]
+        endDate = new Date(endDate);
+        endDate.setMonth(endDate.getMonth() + 1);
+
+        if (startDate && endDate) {
+            keySearchPeriod = {
+                $or: [
+                    { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                    { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                    { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
+                ]
+            }
         }
     } else {
-
         if (startDate) {
             let checkDate = Date.parse(endDate);
             if (checkDate) {
@@ -413,56 +417,21 @@ exports.getPaginatedTasks = async (portal, task) => {
 
     }
 
-    // if (startDateAfter) {
-    //     let startTimeAfter = startDateAfter.split("-");
-    //     let start;
-
-
-    //     if (startTimeAfter[0] > 12) start = new Date(startTimeAfter[0], startTimeAfter[1] - 1, 1);
-    //     else start = new Date(startTimeAfter[1], startTimeAfter[0] - 1, 1);
-
-    //     keySearch = {
-    //         ...keySearch,
-    //         endDate: {
-    //             $gte: start
-    //         }
-    //     }
-    // }
-
-    // if (endDateBefore) {
-    //     let endTimeBefore = endDateBefore.split("-");
-    //     let end;
-    //     if (endTimeBefore[0] > 12) end = new Date(endTimeBefore[0], endTimeBefore[1], 1);
-    //     else end = new Date(endTimeBefore[1], endTimeBefore[0], 1);
-
-    //     keySearch = {
-    //         ...keySearch,
-    //         startDate: {
-    //             $lt: end
-    //         }
-    //     }
-    // }
-
-    taskList = await Task(connect(DB_CONNECTION, portal)).find({
+    let optionQuery = {
         $and: [
             keySearch,
             keySearchSpecial,
             keySearchPeriod
         ]
-    }).sort({ 'createdAt': 'asc' })
+    }
+    taskList = await Task(connect(DB_CONNECTION, portal)).find(optionQuery).sort({ 'createdAt': 'asc' })
         .skip(perPage * (page - 1)).limit(perPage).populate([
             { path: "organizationalUnit creator parent responsibleEmployees" },
             { path: "timesheetLogs.creator", select: "name" },
         ]);
 
-    var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
-        $and: [
-            keySearch,
-            keySearchSpecial,
-            keySearchPeriod
-        ]
-    });
-    var totalPages = Math.ceil(totalCount / perPage);
+    let totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments(optionQuery);
+    let totalPages = Math.ceil(totalCount / perPage);
 
     return {
         "tasks": taskList,
@@ -553,12 +522,17 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
     };
 
     if (JSON.parse(aPeriodOfTime)) {
-        keySearchPeriod = {
-            $or: [
-                { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
-                { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
-                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
-            ]
+        endDate = new Date(endDate);
+        endDate.setMonth(endDate.getMonth() + 1);
+
+        if (startDate && endDate) {
+            keySearchPeriod = {
+                $or: [
+                    { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                    { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                    { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
+                ]
+            }
         }
     } else {
         if (startDate) {
@@ -726,12 +700,17 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
     };
 
     if (JSON.parse(aPeriodOfTime)) {
-        keySearchPeriod = {
-            $or: [
-                { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
-                { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
-                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
-            ]
+        endDate = new Date(endDate);
+        endDate.setMonth(endDate.getMonth() + 1);
+
+        if (startDate && endDate) {
+            keySearchPeriod = {
+                $or: [
+                    { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                    { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                    { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
+                ]
+            }
         }
     } else {
         if (startDate) {
@@ -896,12 +875,17 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
     };
 
     if (JSON.parse(aPeriodOfTime)) {
-        keySearchPeriod = {
-            $or: [
-                { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
-                { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
-                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
-            ]
+        endDate = new Date(endDate);
+        endDate.setMonth(endDate.getMonth() + 1);
+
+        if (startDate && endDate) {
+            keySearchPeriod = {
+                $or: [
+                    { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                    { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                    { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
+                ]
+            }
         }
     } else {
         if (startDate) {
@@ -1066,12 +1050,17 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
     };
 
     if (JSON.parse(aPeriodOfTime)) {
-        keySearchPeriod = {
-            $or: [
-                { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
-                { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
-                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
-            ]
+        endDate = new Date(endDate);
+        endDate.setMonth(endDate.getMonth() + 1);
+
+        if (startDate && endDate) {
+            keySearchPeriod = {
+                $or: [
+                    { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                    { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                    { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
+                ]
+            }
         }
     } else {
         if (startDate) {
@@ -1209,12 +1198,17 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
     };
 
     if (JSON.parse(aPeriodOfTime)) {
-        keySearchPeriod = {
-            $or: [
-                { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
-                { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
-                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
-            ]
+        endDate = new Date(endDate);
+        endDate.setMonth(endDate.getMonth() + 1);
+
+        if (startDate && endDate) {
+            keySearchPeriod = {
+                $or: [
+                    { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                    { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                    { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
+                ]
+            }
         }
     } else {
         if (startDate) {
@@ -1412,12 +1406,17 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
     };
 
     if (aPeriodOfTime && JSON.parse(aPeriodOfTime)) {
-        keySearchPeriod = {
-            $or: [
-                { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
-                { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
-                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
-            ]
+        endDate = new Date(endDate);
+        endDate.setMonth(endDate.getMonth() + 1);
+
+        if (startDate && endDate) {
+            keySearchPeriod = {
+                $or: [
+                    { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                    { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                    { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
+                ]
+            }
         }
     } else {
         if (startDate) {
@@ -1512,12 +1511,11 @@ exports.getPaginatedTasksByOrganizationalUnit = async (portal, task, type) => {
  * @task dữ liệu từ params
  */
 exports.getAllTaskOfOrganizationalUnitByMonth = async (portal, task) => {
-    var { organizationalUnitId, startDateAfter, endDateBefore } = task;
-    var organizationUnitTasks;
-    var keySearch = {};
+    let { organizationalUnitId, startMonth, endMonth } = task;
+    let organizationUnitTasks;
+    let keySearch = {};
 
     if (organizationalUnitId) {
-        // if (organizationalUnitId !== '[]') {
         keySearch = {
             ...keySearch,
             organizationalUnit: {
@@ -1526,35 +1524,21 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (portal, task) => {
         };
     }
 
-    // if (startDateAfter) {
-    //     let startTimeAfter = startDateAfter.split("-");
-    //     let start;
+    let startDate = new Date(startMonth);
+    let endDate = new Date(endMonth);
+    endDate.setMonth(endDate.getMonth() + 1);
 
+    if (startDate && endDate) {
+        keySearch = {
+            ...keySearch,
+            $or: [
+                { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
+            ]
+        }
+    }
 
-    //     if (startTimeAfter[0] > 12) start = new Date(startTimeAfter[0], startTimeAfter[1] - 1, 1);
-    //     else start = new Date(startTimeAfter[1], startTimeAfter[0] - 1, 1);
-
-    //     keySearch = {
-    //         ...keySearch,
-    //         endDate: {
-    //             $gte: start
-    //         }
-    //     }
-    // }
-
-    // if (endDateBefore) {
-    //     let endTimeBefore = endDateBefore.split("-");
-    //     let end;
-    //     if (endTimeBefore[0] > 12) end = new Date(endTimeBefore[0], endTimeBefore[1], 1);
-    //     else end = new Date(endTimeBefore[1], endTimeBefore[0], 1);
-
-    //     keySearch = {
-    //         ...keySearch,
-    //         startDate: {
-    //             $lt: end
-    //         }
-    //     }
-    // }
     organizationUnitTasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'asc' })
         .populate({ path: "organizationalUnit creator parent responsibleEmployees" });
     return {
@@ -1811,6 +1795,7 @@ exports.createTask = async (portal, task) => {
         var parent = await Task(connect(DB_CONNECTION, portal)).findById(task.parent);
         if (parent) level = parent.level + 1;
     }
+    console.log(task.endDate)
     var startDate, endDate;
     if (Date.parse(task.startDate)) startDate = new Date(task.startDate);
     else {
@@ -1818,6 +1803,7 @@ exports.createTask = async (portal, task) => {
         startDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
     }
 
+    console.log(Date.parse(task.endDate))
     if (Date.parse(task.endDate)) endDate = new Date(task.endDate);
     else {
         var splitter = task.endDate.split("-");

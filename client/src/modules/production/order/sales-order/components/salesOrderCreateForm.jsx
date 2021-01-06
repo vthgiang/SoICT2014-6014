@@ -12,6 +12,7 @@ import SalesOrderCreateInfo from "./createSalesOrder/salesOrderCreateInfo";
 import SalesOrderCreatePayment from "./createSalesOrder/salesOrderCreatePayment";
 import SlasOfGoodDetail from "./createSalesOrder/viewDetailOnCreate/slasOfGoodDetail";
 import DiscountOfGoodDetail from "./createSalesOrder/viewDetailOnCreate/discountOfGoodDetail";
+import ManufacturingWorksOfGoodDetail from "./createSalesOrder/viewDetailOnCreate/manufacturingWorksOfGoodDetail";
 class SalesOrderCreateForm extends Component {
     constructor(props) {
         super(props);
@@ -82,7 +83,7 @@ class SalesOrderCreateForm extends Component {
     };
 
     handleCustomerChange = (value) => {
-        if (value[0] !== "title") {
+        if (value[0] !== "") {
             let customerInfo = this.props.customers.list.filter((item) => item._id === value[0]);
             if (customerInfo.length) {
                 this.setState({
@@ -342,6 +343,15 @@ class SalesOrderCreateForm extends Component {
         });
     };
 
+    setCurrentManufacturingWorksOfGoods = (data) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                currentManufacturingWorksOfGood: data,
+            };
+        });
+    };
+
     handleCoinChange = (coin) => {
         this.setState((state) => {
             return {
@@ -446,7 +456,7 @@ class SalesOrderCreateForm extends Component {
                 amount: item.amount,
                 amountAfterDiscount: item.amountAfterDiscount,
                 amountAfterTax: item.amountAfterTax,
-                manufacturingWorks: item.manufacturingWorks,
+                manufacturingWorks: item.manufacturingWorks ? item.manufacturingWorks._id : undefined,
             };
         });
         return goodMap;
@@ -490,8 +500,6 @@ class SalesOrderCreateForm extends Component {
 
             await this.props.createNewSalesOrder(data);
 
-            console.log("data", data);
-
             this.setState((state) => {
                 return {
                     ...state,
@@ -500,7 +508,7 @@ class SalesOrderCreateForm extends Component {
                     customerAddress: "",
                     customerPhone: "",
                     customerRepresent: "",
-                    customerTaxNumbe: "",
+                    customerTaxNumber: "",
                     customerEmail: "",
                     priority: "",
                     code: "",
@@ -545,6 +553,7 @@ class SalesOrderCreateForm extends Component {
             discountsOfOrderValueChecked,
             currentSlasOfGood,
             currentDiscountsOfGood,
+            currentManufacturingWorksOfGood,
             paymentAmount,
         } = this.state;
 
@@ -628,6 +637,7 @@ class SalesOrderCreateForm extends Component {
                     </div>
                     <SlasOfGoodDetail currentSlasOfGood={currentSlasOfGood} />
                     <DiscountOfGoodDetail currentDiscounts={currentDiscountsOfGood} />
+                    <ManufacturingWorksOfGoodDetail currentManufacturingWorksOfGood={currentManufacturingWorksOfGood} />
                     <form id={`form-add-sales-order`}>
                         <div className="row row-equal-height" style={{ marginTop: 0 }}>
                             {step === 0 && (
@@ -678,6 +688,9 @@ class SalesOrderCreateForm extends Component {
                                     setCurrentDiscountsOfGood={(data) => {
                                         this.setCurrentDiscountsOfGood(data);
                                     }}
+                                    setCurrentManufacturingWorksOfGoods={(data) => {
+                                        this.setCurrentManufacturingWorksOfGoods(data);
+                                    }}
                                 />
                             )}
                             {step === 2 && (
@@ -710,6 +723,9 @@ class SalesOrderCreateForm extends Component {
                                     }}
                                     setCurrentDiscountsOfGood={(data) => {
                                         this.setCurrentDiscountsOfGood(data);
+                                    }}
+                                    setCurrentManufacturingWorksOfGoods={(data) => {
+                                        this.setCurrentManufacturingWorksOfGoods(data);
                                     }}
                                     setPaymentAmount={(data) => this.setPaymentAmount(data)}
                                     saveSalesOrder={this.save}
