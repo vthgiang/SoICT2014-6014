@@ -136,8 +136,8 @@ exports.createTaskAction = async (req, res) => {
             dataType: "createTaskAction",
             value: [taskAction[taskAction.length - 1]]
         }
-
-        const  associatedDataforAccountable = { "organizationalUnits": tasks.organizationalUnit, "title": "Phê duyệt hoạt động", "level": "general", "content": `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động cho công việc <strong>${tasks.name}</strong>, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`, "sender": userCreator.name, "users": [tasks.accountableEmployees],"associatedData":associatedData };
+        const accountableFilter = tasks.accountableEmployees.filter(obj => obj.toString() !== req.user._id.toString());
+        const  associatedDataforAccountable = { "organizationalUnits": tasks.organizationalUnit, "title": "Phê duyệt hoạt động", "level": "general", "content": `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động cho công việc <strong>${tasks.name}</strong>, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`, "sender": userCreator.name, "users": accountableFilter ,"associatedData":associatedData };
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, associatedDataforAccountable,);
        
         // message gửi cho người thực hiện
