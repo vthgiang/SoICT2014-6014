@@ -27,7 +27,9 @@ export const taskManagementActions = {
     getTasksByUser,
     getTaskInOrganizationUnitByMonth,
     getTaskEvaluations,
+    getTaskAnalysOfUser,
     getTaskByPriorityInOrganizationUnit,
+    getTimeSheetOfUser,
 };
 
 /**
@@ -631,6 +633,26 @@ function getTaskInOrganizationUnitByMonth(organizationUnitId, startDateAfter, en
     };
 }
 
+function getTaskAnalysOfUser(userId, type) {
+    return dispatch => {
+        dispatch({ type: taskManagementConstants.GET_TASK_ANALYS_OF_USER_REQUEST });
+        return new Promise((resolve, reject) => {
+            taskManagementService.getTaskAnalysOfUser(userId, type)
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.GET_TASK_ANALYS_OF_USER_SUCCESS,
+                    payload: res.data.content
+                });
+                resolve(res)
+            })
+            .catch(error => {
+                dispatch({ type: taskManagementConstants.GET_TASK_ANALYS_OF_USER_FAILE, error });
+                reject(error);
+            });
+        })
+    }
+}
+
 function getTaskByPriorityInOrganizationUnit(organizationUnitId, date) {
     return dispatch => {
         dispatch({ type: taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_PRIORITY_REQUEST });
@@ -643,6 +665,22 @@ function getTaskByPriorityInOrganizationUnit(organizationUnitId, date) {
             })
             .catch(error => {
                 dispatch({ type: taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_PRIORITY_FAILURE });
+            });
+    };
+}
+
+function getTimeSheetOfUser(userId, month, year) {
+    return dispatch => {
+        dispatch({ type: taskManagementConstants.GET_TIME_SHEET_OF_USER_REQUEST });
+        taskManagementService.getTimeSheetOfUser(userId, month, year)
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.GET_TIME_SHEET_OF_USER_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: taskManagementConstants.GET_TIME_SHEET_OF_USER_FAILE });
             });
     };
 }

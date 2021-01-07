@@ -143,6 +143,7 @@ class BinManagementTable extends Component {
             return {
                 ...node,
                 text: node.name,
+                icon: 'glyphicon glyphicon-home',
                 state: { "open": true},
                 id: node._id,
                 parent: "#"
@@ -153,6 +154,7 @@ class BinManagementTable extends Component {
             return {
                 ...node,
                 text: node.name,
+                icon: node.child.length > 0 ? 'glyphicon glyphicon-book' : 'glyphicon glyphicon-flag',
                 state: { "open": true },
                 id: node._id,
                 parent: node.parent ? node.parent.toString() : (node.stock ? node.stock.toString() : "#")

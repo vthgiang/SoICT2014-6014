@@ -15,18 +15,13 @@ exports.createNewQuote = async (userId, data, portal) => {
         effectiveDate: data.effectiveDate,
         expirationDate: data.expirationDate,
         customer: data.customer,
-        // customerName: data.customerName,
         customerPhone: data.customerPhone,
         customerAddress: data.customerAddress,
         customerRepresent: data.customerRepresent,
-        // customerTaxNumber: data.customerTaxNumber,
         customerEmail: data.customerEmail,
         goods: data.goods ? data.goods.map((item) => {
             return {
                 good: item.good,
-                returnRule: item.returnRule ? item.returnRule.map((rr) => {
-                    return rr;
-                }): undefined,
                 pricePerBaseUnit: item.pricePerBaseUnit,
                 pricePerBaseUnitOrigin: item.pricePerBaseUnitOrigin,
                 salesPriceVariance: item.salesPriceVariance,
@@ -198,9 +193,6 @@ exports.editQuote = async (userId, id, data, portal) => {
         let goods = data.goods.map((item) => {
             return {
                 good: item.good,
-                returnRule: item.returnRule ? item.returnRule.map((rr) => {
-                    return rr;
-                }): undefined,
                 pricePerBaseUnit: item.pricePerBaseUnit,
                 pricePerBaseUnitOrigin: item.pricePerBaseUnitOrigin,
                 salesPriceVariance: item.salesPriceVariance,
@@ -301,4 +293,13 @@ exports.approveQuote = async (approverId, quoteId, data, portal) => {
 exports.deleteQuote = async (id, portal) => {
     let quote = await Quote(connect(DB_CONNECTION, portal)).findOneAndDelete({ _id: id });
     return {quote};
+}
+
+//Lấy các báo giá để lập đơn hàng
+exports.getQuotesToMakeOrder = async (portal) => {
+    let quotes = await Quote(connect(DB_CONNECTION, portal)).find({ status: 2 })
+    .populate([{
+        path: 'goods.good', select: 'code name baseUnit'
+    }]);
+    return {quotes};
 }

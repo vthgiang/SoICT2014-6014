@@ -1099,7 +1099,7 @@ class ActionTab extends Component {
                                                                                     })
                                                                                 }
                                                                             </li>
-                                                                            {item.evaluations.some(checkUserId) &&
+                                                                            {item.evaluations.some(checkUserId) && role !== "responsible" &&
                                                                                 <React.Fragment>
                                                                                     <li>{translate("task.task_perform.re_evaluation")}</li>
                                                                                     <li>

@@ -335,6 +335,24 @@ exports.startTimesheetLog = async (portal, params, body) => {
         startedAt: now,
         creator: body.creator,
     };
+    // Kiểm tra người dùng có đang bấm giờ một công việc nào đó không?
+    let check = await Task(connect(DB_CONNECTION, portal))
+        .findOne({ 
+            "timesheetLogs.creator": timerUpdate.creator,
+            "timesheetLogs.startedAt": { $exists: true },
+            "timesheetLogs.stoppedAt": { $exists: false }
+        });
+    if(check) throw ['task_dif_logging'];
+
+    // Kiểm tra thời điểm bắt đầu bấm giờ có nằm trong khoảng thời gian hẹn tắt bấm giờ tự động không?
+    let autoTSLog = await Task(connect(DB_CONNECTION, portal))
+        .findOne({
+            "timesheetLogs.creator": body.creator,
+            "timesheetLogs.stoppedAt": { $exists: true },
+            "timesheetLogs.stoppedAt": { $gt: timerUpdate.startedAt }
+        });
+    if(autoTSLog) throw ['time_overlapping'];
+
     let timer = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
         params.taskId,
         { $push: { timesheetLogs: timerUpdate } },

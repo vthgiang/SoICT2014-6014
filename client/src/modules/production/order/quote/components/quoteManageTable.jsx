@@ -95,6 +95,7 @@ class QuoteManageTable extends Component {
     };
 
     handleShowDetailInfo = (data) => {
+        console.log("DATA", data);
         this.setState((state) => {
             return {
                 ...state,
@@ -144,6 +145,10 @@ class QuoteManageTable extends Component {
         }
 
         const dataStatus = [
+            {
+                className: "text-primary",
+                text: "no status",
+            },
             {
                 className: "text-primary",
                 text: "Chờ phê duyệt",
@@ -322,22 +327,28 @@ class QuoteManageTable extends Component {
                                                     <a onClick={() => this.handleShowDetailInfo(item)}>
                                                         <i className="material-icons">view_list</i>
                                                     </a>
-                                                    <a
-                                                        onClick={() => this.handleEditQuote(item)}
-                                                        className="edit text-yellow"
-                                                        style={{ width: "5px" }}
-                                                        title="Sửa đơn"
-                                                    >
-                                                        <i className="material-icons">edit</i>
-                                                    </a>
-                                                    <DeleteNotification
-                                                        content={"Bạn có chắc chắn muốn xóa báo giá này"}
-                                                        data={{
-                                                            id: item._id,
-                                                            info: item.code,
-                                                        }}
-                                                        func={() => this.deleteQuote(item._id)}
-                                                    />
+                                                    {item.status !== 3 ? (
+                                                        <React.Fragment>
+                                                            <a
+                                                                onClick={() => this.handleEditQuote(item)}
+                                                                className="edit text-yellow"
+                                                                style={{ width: "5px" }}
+                                                                title="Sửa đơn"
+                                                            >
+                                                                <i className="material-icons">edit</i>
+                                                            </a>
+                                                            <DeleteNotification
+                                                                content={"Bạn có chắc chắn muốn xóa báo giá này"}
+                                                                data={{
+                                                                    id: item._id,
+                                                                    info: item.code,
+                                                                }}
+                                                                func={() => this.deleteQuote(item._id)}
+                                                            />
+                                                        </React.Fragment>
+                                                    ) : (
+                                                        ""
+                                                    )}
                                                 </td>
                                             )}
                                         </tr>

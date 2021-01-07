@@ -2988,6 +2988,7 @@ export default {
                 detail_priority: "Độ ưu tiên công việc",
                 detail_status: "Trạng thái công việc",
                 detail_time: "Thời gian thực hiện công việc",
+                detail_average_results: "Kết quả trung bình công việc",
 
                 detail_general_info: "Thông tin chung",
                 detail_description: "Mô tả",
@@ -3003,6 +3004,8 @@ export default {
                 detail_not_auto: "Chưa có điểm tự động",
                 detail_not_emp: "Chưa tự đánh giá",
                 detail_not_acc: "Chưa có điểm phê duyệt",
+                detail_not_coefficient: "Không theo hệ số",
+                detail_coefficient: "Theo hệ số",
 
                 detail_not_eval_on_month: "Chưa đánh giá tháng này",
                 detail_not_eval: "Chưa ai đánh giá công việc tháng này",
@@ -3360,6 +3363,7 @@ export default {
                 edit_task_information_failure: "Chỉnh sửa thông tin thất bại",
                 edit_document_task_comment_failure:
                     "Chỉnh sửa tài liệu thất bại",
+                time_overlapping: 'Thời điểm bắt đầu không hợp lệ. (Tồn tại một công việc tắt bấm giờ tự động trong khoảng thời gian này)',
 
                 // error label
                 err_require: "Trường này phải có giá trị",
@@ -3507,7 +3511,7 @@ export default {
                 view_task_process_template: "Xem mẫu quy trình công việc",
                 import_task_template_success: "Thêm mẫu công việc thành công",
                 import_task_template_faile: "Thêm mẫu công việc thất bại !",
-                task_template_name_exist:"Tên mẫu công việc đã tồn tại",
+                task_template_name_exist: "Tên mẫu công việc đã tồn tại",
             },
         },
 
@@ -4970,7 +4974,7 @@ export default {
                 progress_1: "Đúng tiến độ",
                 progress_2: "Chậm tiến độ",
                 progress_3: "Quá hạn",
-
+                schedule_info: "Xưởng và công nhân",
                 general_info: "Thông tin chung",
                 material_info: "Nguyên vật liệu",
                 command_info: "Lệnh sản xuất",
@@ -4993,7 +4997,10 @@ export default {
                     },
                     "4": {
                         content: "Đặc biệt"
-                    }
+                    },
+                    detail_sales_order: "Xem chi tiết đơn hàng kinh doanh",
+                    code: "Mã đơn",
+                    priority: "Độ ưu tiên"
                 },
                 add_good_info: "Thêm thông tin các sản phẩm sản xuất",
                 good: "Sản phẩm",
@@ -5029,7 +5036,11 @@ export default {
                 choose_approvers: "Vui lòng chọn người phê duyệt",
                 choose_accountables: "Vui lòng chọn người giám sát",
                 quantity_order: "Số lượng trong đơn",
-                quantity_need_planned: "Số lượng cần lập kế hoạch"
+                quantity_need_planned: "Số lượng cần lập kế hoạch",
+                list_order: "Danh sách đơn hàng",
+                manufacturing_command_info: "Thông tin lệnh sản xuất",
+                history_info: "Lịch sử sản xuất theo mặt hàng",
+                schedule_booking: "Chọn xưởng sản xuất và phân việc công nhân"
 
 
 
@@ -5080,7 +5091,6 @@ export default {
                 start_turn: "Ca bắt đầu",
                 end_turn: "Ca kết thúc",
                 creator: "Người tạo",
-                good_name: "Tên mặt hàng",
                 quantity: "Số lượng",
                 description: "Mô tả",
                 approvers: "Người phê duyệt lệnh sản xuất",
@@ -5126,6 +5136,8 @@ export default {
                 },
                 qc_name: "Tên người kiểm định",
                 qc_email: "email",
+                mills: "Xưởng sản xuất",
+                choose_mills: "Chọn xưởng",
                 qc_status_command: "Trạng thái kiểm định",
                 quality_control_content: "Nội dung kiểm định",
                 rateFinishedProductQuantity: "Tỷ lệ thành phẩm",
@@ -5156,6 +5168,8 @@ export default {
                     },
                 },
                 status_bill: "Trạng thái phiếu xuất",
+                quantity_gt: "Số lượng lớn hơn",
+                quantity_lt: "Số lượng bé hơn"
             },
             lot: {
                 index: "STT",

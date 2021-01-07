@@ -262,7 +262,7 @@ exports.uploadFile = (arrData, type) => {
 // Middleware check quyền thay đổi thông tin tài khoản người dùng
 exports.authCUIP = async (req, res, next) => {
     try {
-        const token = req.header("auth-token"); //JWT nhận từ người dùng
+        const token = req.header("utk"); //JWT nhận từ người dùng
         if (!token) throw ["access_denied"];
         let verified;
         try {

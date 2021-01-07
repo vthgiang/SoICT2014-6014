@@ -49,7 +49,7 @@ class PurchasingRequestDetailForm extends Component {
                                     {currentPurchasingRequest.code}
                                 </div>
                                 <div className="form-group">
-                                    <strong>{translate('manufacturing.purchasing_request.planCode')}:&emsp;</strong>
+                                    <strong>{translate('manufacturing.purchasing_request.command_code')}:&emsp;</strong>
                                     {currentPurchasingRequest.planCode}
                                 </div>
                                 <div className="form-group">

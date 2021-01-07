@@ -6,7 +6,6 @@ exports.createNewSalesOrder = async (req, res) => {
         let data = req.body;
 
         let salesOrder = await SalesOrderServices.createNewSalesOrder(req.user._id, data, req.portal)
-
         await Log.info(req.user.email, "CREATED_NEW_SALES_ORDER", req.portal);
 
 
@@ -17,6 +16,7 @@ exports.createNewSalesOrder = async (req, res) => {
         });
     } catch (error) {
         await Log.error(req.user.email, "CREATED_NEW_SALES_ORDER", req.portal);
+        console.log("ERROR", error.message);
         res.status(400).json({
             success: false,
             messages: ["create_failed"],
@@ -30,6 +30,7 @@ exports.getAllSalesOrders = async (req, res) => {
     try {
         let query = req.query;
         let salesOrders = await SalesOrderServices.getAllSalesOrders(query, req.portal);
+
 
         await Log.info(req.user.email, "GET_ALL_SALES_ORDERS", req.portal);
 
@@ -119,6 +120,30 @@ exports.addManufacturingPlanForGood = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ["add_manufacturing_for_sales_order_failed"],
+            content: error.message
+        });
+    }
+}
+
+exports.getSalesOrdersByManufacturingWorks = async (req, res) => {
+    try {
+        let id = req.params.id;
+
+        let salesOrders = await SalesOrderServices.getSalesOrdersByManufacturingWorks(id, req.portal)
+
+        await Log.info(req.user.email, "GET_SALES_ORDER_BY_MANUFACTURING_WORKS", req.portal);
+
+
+        res.status(201).json({
+            success: true,
+            messages: ["get_sales_order_by_manufacturing_works_successfully"],
+            content: salesOrders
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "GET_SALES_ORDER_BY_MANUFACTURING_WORKS", req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["get_sales_order_by_manufacturing_works_failed"],
             content: error.message
         });
     }

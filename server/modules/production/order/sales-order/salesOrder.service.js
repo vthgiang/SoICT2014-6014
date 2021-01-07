@@ -1,5 +1,5 @@
 const {
-    SalesOrder
+    SalesOrder, Quote
 } = require(`../../../../models`);
 
 const {
@@ -10,14 +10,14 @@ exports.createNewSalesOrder = async (userId, data, portal) => {
     console.log("data", data);
     let newSalesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).create({
         code: data.code,
-        status: data.status,
+        status: data.status ?  data.status : 1, //Nếu k có thì mặc định bằng 1 (chờ phê duyệt)
         creator: userId,
         customer: data.customer,
         customerPhone: data.customerPhone,
         customerAddress: data.customerAddress,
         customerRepresent: data.customerRepresent,
         customerEmail: data.customerEmail,
-        approvers:  data.approvers ? data.approvers.map((approver) => {
+        approvers: data.approvers ? data.approvers.map((approver) => {
             return {
                 approver: approver.approver,
                 approverRole: approver.approverRole,
@@ -25,14 +25,15 @@ exports.createNewSalesOrder = async (userId, data, portal) => {
         }) : undefined,
         priority: data.priority,
         goods: data.goods ? data.goods.map((item) => {
+            console.log("data--work", item.manufacturingWorks);
             return {
                 good: item.good,
                 pricePerBaseUnit: item.pricePerBaseUnit,
                 pricePerBaseUnitOrigin: item.pricePerBaseUnitOrigin,
                 salesPriceVariance: item.salesPriceVariance,
                 quantity: item.quantity,
-                manufacturingWorks: data.manufacturingWorks,
-                manufacturingPlan: data.manufacturingPlan,
+                manufacturingWorks: item.manufacturingWorks,
+                manufacturingPlan: item.manufacturingPlan,
                 serviceLevelAgreements: item.serviceLevelAgreements ? item.serviceLevelAgreements.map((sla) => {
                     return {
                         _id: sla._id,
@@ -40,7 +41,7 @@ exports.createNewSalesOrder = async (userId, data, portal) => {
                         descriptions: sla.descriptions ? sla.descriptions.map(des => des) : undefined
                     };
                 }) : undefined,
-                taxs: item.taxs ? item.taxs.map((tax)=> {
+                taxs: item.taxs ? item.taxs.map((tax) => {
                     return {
                         _id: tax._id,
                         code: tax.code,
@@ -68,12 +69,12 @@ exports.createNewSalesOrder = async (userId, data, portal) => {
                                 quantityOfBonusGood: bonus.quantityOfBonusGood
                             }
                         }) : undefined,
-                        discountOnGoods: dis.discountOnGoods ?  
-                           {
+                        discountOnGoods: dis.discountOnGoods ?
+                            {
                                 good: dis.discountOnGoods.good,
                                 expirationDate: dis.discountOnGoods.expirationDate,
                                 discountedPrice: dis.discountOnGoods.discountedPrice
-                            }: undefined
+                            } : undefined
                     };
                 }) : undefined,
                 note: item.note,
@@ -81,7 +82,7 @@ exports.createNewSalesOrder = async (userId, data, portal) => {
                 amountAfterDiscount: item.amountAfterDiscount,
                 amountAfterTax: item.amountAfterTax
             }
-        }) :  null,
+        }) : null,
         discounts: data.discounts ? data.discounts.map((dis) => {
             return {
                 _id: dis._id,
@@ -119,10 +120,17 @@ exports.createNewSalesOrder = async (userId, data, portal) => {
                 paymentAt: new Date()
             }
         }) : undefined,
-        bill: data.bill
+        bill: data.bill,
+        quote: data.quote
     });
 
-    console.log("new ", newSalesOrder);
+    //Tạo đơn từ báo giá thì lưu các trường sau vào báo giá
+    if (data.quote) {//Nếu được tạo từ báo giá
+        let quote = await Quote(connect(DB_CONNECTION, portal)).findById({ _id: data.quote });
+        quote.status = 3; //Đã chốt đơn
+        quote.salesOrder = newSalesOrder._id;
+        quote.save();
+    }
 
     let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findById({ _id: newSalesOrder._id }).populate([{
         path: 'creator', select: 'name'
@@ -130,23 +138,23 @@ exports.createNewSalesOrder = async (userId, data, portal) => {
         path: 'customer', select: 'name taxNumber'
     }, {
         path: 'goods.good', select: 'code name baseUnit'
-    },{
-        path: 'goods.manufacturingWorks', select: 'code name'
-    },, {
+    }, {
+        path: 'goods.manufacturingWorks', select: 'code name address description'
+    }, , {
         path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
     }, {
         path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
     }, {
         path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
-    },{
+    }, {
         path: 'payments.receiver', select: 'code name'
     }]);;
     return { salesOrder }
 }
 
 exports.getAllSalesOrders = async (query, portal) => {
-    let { page, limit, code, status, customer} = query;
-    let option = {}; 
+    let { page, limit, code, status, customer } = query;
+    let option = {};
     if (code) {
         option.code = new RegExp(code, "i")
     }
@@ -162,10 +170,10 @@ exports.getAllSalesOrders = async (query, portal) => {
             case "expire": option.expirationDate = { $lt: new Date(), $exists: true }; break;
             case "effective":
                 option.expirationDate = { $gte: new Date(), $exists: true }
-                
+
                 break;
             case "all": break;
-            default: 
+            default:
         }
     }
 
@@ -174,23 +182,26 @@ exports.getAllSalesOrders = async (query, portal) => {
 
     if (!page || !limit) {
         let allSalesOrders = await SalesOrder(connect(DB_CONNECTION, portal)).find(option)
-        .populate([{
-            path: 'creator', select: 'name'
-        }, {
-            path: 'customer', select: 'name taxNumber'
-        }, {
-            path: 'goods.good', select: 'code name baseUnit'
-        },{
-            path: 'goods.manufacturingWorks', select: 'code name'
-        },, {
-            path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
-        }, {
-            path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
-        }, {
-            path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
-        },{
-            path: 'payments.receiver', select: 'code name'
-        }]);
+            .populate([{
+                path: 'creator', select: 'name'
+            }, {
+                path: 'customer', select: 'name taxNumber'
+            }, {
+                path: 'goods.good',
+                populate: [{
+                    path: 'manufacturingMills.manufacturingMill'
+                }]
+            }, {
+                path: 'goods.manufacturingWorks', select: 'code name address description'
+            }, , {
+                path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
+            }, {
+                path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
+            }, {
+                path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
+            }, {
+                path: 'payments.receiver', select: 'code name'
+            }]);
         return { allSalesOrders }
     } else {
         let allSalesOrders = await SalesOrder(connect(DB_CONNECTION, portal)).paginate(option, {
@@ -201,19 +212,22 @@ exports.getAllSalesOrders = async (query, portal) => {
             }, {
                 path: 'customer', select: 'name taxNumber'
             }, {
-                path: 'goods.good', select: 'code name baseUnit'
-            },{
-                path: 'goods.manufacturingWorks', select: 'code name'
-            },, {
+                path: 'goods.good',
+                populate: [{
+                    path: 'manufacturingMills.manufacturingMill'
+                }]
+            }, {
+                path: 'goods.manufacturingWorks', select: 'code name address description'
+            }, , {
                 path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
             }, {
                 path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
             }, {
                 path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
-            },{
+            }, {
                 path: 'payments.receiver', select: 'code name'
             }]
-            })
+        })
         return { allSalesOrders }
     }
 }
@@ -226,7 +240,7 @@ exports.editSalesOrder = async (userId, id, data, portal) => {
                 good: item.good,
                 returnRule: item.returnRule ? item.returnRule.map((rr) => {
                     return rr;
-                }): undefined,
+                }) : undefined,
                 pricePerBaseUnit: item.pricePerBaseUnit,
                 pricePerBaseUnitOrigin: item.pricePerBaseUnitOrigin,
                 salesPriceVariance: item.salesPriceVariance,
@@ -240,7 +254,7 @@ exports.editSalesOrder = async (userId, id, data, portal) => {
                         descriptions: sla.descriptions ? sla.descriptions.map(des => des) : undefined
                     };
                 }) : undefined,
-                taxs: item.taxs ? item.taxs.map((tax)=> {
+                taxs: item.taxs ? item.taxs.map((tax) => {
                     return {
                         _id: tax._id,
                         code: tax.code,
@@ -268,12 +282,12 @@ exports.editSalesOrder = async (userId, id, data, portal) => {
                                 quantityOfBonusGood: bonus.quantityOfBonusGood
                             }
                         }) : undefined,
-                        discountOnGoods: dis.discountOnGoods ?  
+                        discountOnGoods: dis.discountOnGoods ?
                             {
                                 good: dis.discountOnGoods.good,
                                 expirationDate: dis.discountOnGoods.expirationDate,
                                 discountedPrice: dis.discountOnGoods.discountedPrice
-                            }: undefined
+                            } : undefined
                     };
                 }) : undefined,
                 note: item.note,
@@ -284,11 +298,11 @@ exports.editSalesOrder = async (userId, id, data, portal) => {
         })
         data = { ...data, goods };
     }
-        
+
     await SalesOrder(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
         $set: data
     }, { new: true });
-    
+
     let salesOrderUpdated = await SalesOrder(connect(DB_CONNECTION, portal)).findById(id)
         .populate([{
             path: 'creator', select: 'name'
@@ -296,21 +310,21 @@ exports.editSalesOrder = async (userId, id, data, portal) => {
             path: 'customer', select: 'name taxNumber'
         }, {
             path: 'goods.good', select: 'code name baseUnit'
-        },{
-            path: 'goods.manufacturingWorks', select: 'code name'
-        },, {
+        }, {
+            path: 'goods.manufacturingWorks', select: 'code name address description'
+        }, , {
             path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
         }, {
             path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
         }, {
             path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
-        },{
+        }, {
             path: 'payments.receiver', select: 'code name'
         }]);
-    
+
     console.log("salesOrderUpdated", salesOrderUpdated);
-    
-    return { quote: salesOrderUpdated }
+
+    return { salesOrder: salesOrderUpdated }
 }
 
 exports.approveSalesOrder = async (salesOrderId, approver, portal) => {
@@ -326,12 +340,17 @@ exports.approveSalesOrder = async (salesOrderId, approver, portal) => {
         approveAt: new Date(),
         status: approver.status
     });
-        
+
     salesOrder.save();
-    
-    return {salesOrder}
+
+    return { salesOrder }
 }
 
+/**
+ * Lên kế hoạch sản xuất cho từng hàng hóa trong đơn
+ * @param {*} salesOrderId id đơn hàng
+ * @param {*} data là 1 array: [{goodId: ObjecId, manufacturingPlanId: ObjectId}] 
+ */
 exports.addManufacturingPlanForGood = async (salesOrderId, data, portal) => {
     //data: [{goodId, manufacturingPlanId}] 
 
@@ -354,5 +373,34 @@ exports.addManufacturingPlanForGood = async (salesOrderId, data, portal) => {
 
     salesOrder.save();
 
-    return {salesOrder}
+    return { salesOrder }
+}
+
+/**
+ * Lấy các đơn hàng cần lập kế hoạch sản xuất theo nhà máy (chỉ lấy những mặt hàng nhà máy có thể sản xuất)
+ * @param {*} manufacturingWorksId id nhà máy
+ */
+exports.getSalesOrdersByManufacturingWorks = async (manufacturingWorksId, portal) => {
+    //Lấy những đơn hàng có trạng thái là "yêu cầu sản xuất"
+    let salesOrdersWithStatus = await SalesOrder(connect(DB_CONNECTION, portal)).find({ status: 2 });
+
+    //Lọc đơn hàng theo nhà máy
+    let salesOrders = [];
+
+    for (let index = 0; index < salesOrdersWithStatus.length; index++) {
+        //Lấy các mặt hàng theo nhà máy mà chưa được lập kế hoạch
+        let goodsForManufacturingPlan = salesOrdersWithStatus[index].goods.filter((good) => {
+            if (good.manufacturingWorks === manufacturingWorksId && !good.manufacturingPlan) {
+                return good
+            }
+        })
+
+        //Thêm vào danh sách các đơn hàng cho nhà máy
+        if (goodsForManufacturingPlan.length) {
+            salesOrdersWithStatus[index].goods = goodsForManufacturingPlan;
+            salesOrders.push(salesOrdersWithStatus[index]);
+        }
+    }
+
+    return { salesOrders }
 }

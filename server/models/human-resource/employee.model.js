@@ -176,6 +176,14 @@ const EmployeeSchema = new Schema({
     healthInsuranceEndDate: {
         type: Date
     },
+    healthInsuranceAttachment: [{
+       fileName: {
+            type: String,
+        },
+        url: {
+            type: String
+        } 
+    }],
     socialInsuranceNumber: { // Bảo hiểm XH
         type: String,
     },

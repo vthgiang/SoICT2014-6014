@@ -9,9 +9,9 @@ const QuoteSchema = Schema({
     },
     status: {
         type: Number,
-        enum: [0, 1, 2, 3], //0. Gửi yêu cầu, 1: Đã duyệt, 2: Đã chốt đơn, 3: Đã hủy
+        enum: [ 1, 2, 3, 4], //1. Gửi yêu cầu, 2: Đã duyệt, 3: Đã chốt đơn, 4: Đã hủy
         required: true,
-        default: 0
+        default: 1
     }, 
     creator: {
         type: Schema.Types.ObjectId,
@@ -43,9 +43,6 @@ const QuoteSchema = Schema({
     customerRepresent: { //người đại diện
         type: String
     },
-    // customerTaxNumber: {
-    //     type: String
-    // },
     customerEmail: {
         type: String
     },
@@ -66,10 +63,6 @@ const QuoteSchema = Schema({
             ref: 'Good',
             required: true
         },
-        returnRule: [{
-            type: Schema.Types.ObjectId,
-            ref: 'returnRule'
-        }],
         pricePerBaseUnit: {
             type: Number,
             required: true
@@ -258,6 +251,10 @@ const QuoteSchema = Schema({
     },
     note: {
         type: String
+    },
+    salesOrder: { //Đơn bán hàng được lập từ báo giá
+        type: Schema.Types.ObjectId,
+        ref: 'SalesOrder',
     }
 }, {
     timestamps: true,

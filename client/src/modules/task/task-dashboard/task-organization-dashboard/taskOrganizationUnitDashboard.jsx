@@ -9,10 +9,12 @@ import { DistributionOfEmployee } from './distributionOfEmployee';
 import { DomainOfTaskResultsChart } from '../task-personal-dashboard/domainOfTaskResultsChart';
 import { TaskStatusChart } from '../task-personal-dashboard/taskStatusChart';
 import { CalendarOrganizationUnit } from './calendarOrganizationUnit';
+import { AverageResultsOfTaskInOrganizationalUnit } from './averageResultsOfTaskInOrganizationalUnit';
 
 import { withTranslate } from 'react-redux-multilingual';
 import { SelectMulti, DatePicker } from '../../../../common-components/index';
 import Swal from 'sweetalert2';
+import { InprocessOfUnitTask } from './processOfUnitTasks';
 
 class TaskOrganizationUnitDashboard extends Component {
     constructor(props) {
@@ -28,18 +30,17 @@ class TaskOrganizationUnitDashboard extends Component {
         if (month > 3) {
             startMonth = month - 3;
             startYear = year;
-            if (month < 9) {
-                endMonth = '0' + (month + 1);
-            } else {
-                endMonth = month + 1;
-            }
         } else {
             startMonth = month - 3 + 12;
             startYear = year - 1;
         }
         if (startMonth < 10)
             startMonth = '0' + startMonth;
-
+        if (month < 9) {
+            endMonth = '0' + month;
+        } else {
+            endMonth = month;
+        }
         this.INFO_SEARCH = {
             idsUnit: [],
             checkUnit: 0,
@@ -70,6 +71,7 @@ class TaskOrganizationUnitDashboard extends Component {
         await this.props.getDepartment();
         await this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
         await this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
+        await this.props.getTaskInOrganizationUnitByMonth(this.state.idsUnit, new Date(this.state.startMonth), new Date(this.state.endMonth));
 
         await this.setState(state => {
             return {
@@ -81,16 +83,14 @@ class TaskOrganizationUnitDashboard extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-
         let data, organizationUnit = "organizationUnit";
-
+        
         if (!this.state.idsUnit.length && this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit
             || (nextState.checkUnit !== this.state.checkUnit
                 || nextState.startMonth !== this.state.startMonth
                 || nextState.endMonth !== this.state.endMonth)) {
             let idsUnit = !this.state.idsUnit.length ? [this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id] : nextState.idsUnit;
-
-            await this.setState((state) => {
+            this.setState((state) => {
                 return {
                     ...state,
                     startMonth: nextState.startMonth,
@@ -144,31 +144,19 @@ class TaskOrganizationUnitDashboard extends Component {
     }
 
     handleSelectMonthStart = async (value) => {
-        let month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
+        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
         let startMonthTitle = value.slice(0, 2) + '-' + value.slice(3, 7);
+
         this.INFO_SEARCH.startMonth = month;
         this.INFO_SEARCH.startMonthTitle = startMonthTitle;
     }
 
     handleSelectMonthEnd = async (value) => {
-        let month;
-        let endMonthTitle;
-        // if (value.slice(0, 2) < 12) {
-        //     month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
-        //     endMonthTitle = value.slice(0, 2) + '-' + value.slice(3, 7);
-        // } else {
-        //     month = (new Number(value.slice(3, 7))) + '-' + '1';
-        // }
-        if (value.slice(0, 2) < 9) {
-            month = value.slice(3, 7) + '-0' + (new Number(value.slice(0, 2)));
-        } else {
-            month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
-        }
-        endMonthTitle = value.slice(0, 2) + '-' + value.slice(3, 7);
+        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        let endMonthTitle = value.slice(0, 2) + '-' + value.slice(3, 7);
 
         this.INFO_SEARCH.endMonth = month;
         this.INFO_SEARCH.endMonthTitle = endMonthTitle;
-
     }
     handleSearchData = async () => {
         let startMonth = new Date(this.INFO_SEARCH.startMonth);
@@ -183,7 +171,7 @@ class TaskOrganizationUnitDashboard extends Component {
                 confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm'),
             })
         } else {
-            await this.setState(state => {
+            this.setState(state => {
                 return {
                     ...state,
                     startMonth: this.INFO_SEARCH.startMonth,
@@ -192,6 +180,8 @@ class TaskOrganizationUnitDashboard extends Component {
                     checkUnit: this.INFO_SEARCH.checkUnit,
                 }
             })
+
+            await this.props.getTaskInOrganizationUnitByMonth(this.state.idsUnit, this.state.startMonth, this.state.endMonth);
         }
     }
     render() {
@@ -221,7 +211,7 @@ class TaskOrganizationUnitDashboard extends Component {
                 }
             }
         }
-        
+
         // Config ngày mặc định cho datePiker
         let d = new Date(),
             month = d.getMonth() + 1,
@@ -242,7 +232,7 @@ class TaskOrganizationUnitDashboard extends Component {
         }
         if (startMonthDefault < 10)
             startMonthDefault = '0' + startMonthDefault;
-        
+
         let defaultStartMonth = [startMonthDefault, startYear].join('-');
         let defaultEndMonth = month < 10 ? ['0' + month, year].join('-') : [month, year].join('-');
 
@@ -326,6 +316,24 @@ class TaskOrganizationUnitDashboard extends Component {
                             </div>
                         </div>
                         <div className="row">
+                            <div className="col-xs-12">
+                                <div className="box box-primary">
+                                    <div className="box-header with-border">
+                                        <div className="box-title">{translate('task.task_management.calc_progress')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+                                    </div>
+                                    <div className="box-body qlcv">
+                                        {this.state.callAction && tasks && tasks.organizationUnitTasks &&
+                                            <InprocessOfUnitTask
+                                                tasks={tasks.organizationUnitTasks}
+                                                listEmployee={user && user.employees}
+                                                units={childrenOrganizationalUnit}
+                                            />
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row">
                             <div className="col-xs-6">
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
@@ -359,6 +367,23 @@ class TaskOrganizationUnitDashboard extends Component {
                                                 units={idsUnit}
                                             />
                                         }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="row">
+                            <div className="col-xs-12">
+                                <div className="box box-primary">
+                                    <div className="box-header with-border">
+                                        <div className="box-title">Kết quả trung bình công việc các đơn vị {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+                                    </div>
+                                    <div className="box-body qlcv">
+                                        <AverageResultsOfTaskInOrganizationalUnit
+                                            units={idsUnit}
+                                            startMonth={startMonth}
+                                            endMonth={endMonth}
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -418,7 +443,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                                 </ul> : "Đang tải dữ liệu"
                                         }
                                     </div>
-
+  
                                 </div>
                             </div>
 

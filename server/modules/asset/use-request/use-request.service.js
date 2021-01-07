@@ -1,12 +1,12 @@
 const Models = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
-const { RecommendDistribute, User } = Models;
+const { RecommendDistribute, User, Asset } = Models;
 const mongoose = require("mongoose");
 /**
  * Lấy danh sách phiếu đề nghị cấp thiết bị
  */
 exports.searchUseRequests = async (portal, company, query) => {
-    const { receiptsCode, createReceiptsDate, reqUseStatus, reqUseEmployee, approver, page, limit, managedBy, assetId } = query;
+    const { receiptsCode, createReceiptsDate, reqUseStatus, reqUseEmployee, approver, page, limit, managedBy, assetId, codeAsset } = query;
     var keySearch = { company: company };
 
     // Bắt sựu kiện mã phiếu tìm kiếm khác ""
@@ -52,6 +52,18 @@ exports.searchUseRequests = async (portal, company, query) => {
     if (assetId) {
         keySearch = { ...keySearch, asset: { $in: assetId } };
     }
+
+    // Thêm key tìm theo mã tài sản vào keySearch
+    if (codeAsset) {
+        let asset = await Asset(connect(DB_CONNECTION, portal)).find({
+            code: { $regex: codeAsset, $options: "i" }
+        }).select('_id');
+        let assetIds = [];
+        asset.map(x => {
+            assetIds.push(x._id)
+        })
+        keySearch = { ...keySearch, asset: { $in: assetIds } };
+    }
     // Thêm key tìm theo ngày lập phiếu vào keySearch
     if (createReceiptsDate) {
         let date = createReceiptsDate.split("-");
@@ -73,7 +85,7 @@ exports.searchUseRequests = async (portal, company, query) => {
         .skip(page ? parseInt(page) : 0)
         .limit(limit ? parseInt(limit) : 0);
     if (managedBy) {
-        let tempListRecommendDistributes = listRecommendDistributes.filter(item => item.asset.managedBy && item.asset.managedBy.toString() === managedBy);
+        let tempListRecommendDistributes = listRecommendDistributes.filter(item => item.asset && item.asset.managedBy && item.asset.managedBy.toString() === managedBy);
         listRecommendDistributes = tempListRecommendDistributes;
     }
 
@@ -101,8 +113,11 @@ exports.createUseRequest = async (portal, company, data) => {
     // if (getUseRequest) throw ['recommendNumber_exists'];
 
     const dateStartUse = new Date(data.dateStartUse);
-    const dateEndUse = new Date(data.dateEndUse);
+    var dateEndUse = undefined;
 
+    if (data.dateEndUse) {
+        dateEndUse = new Date(data.dateEndUse)
+    }
     // check trùng thời gian đăng kí sử dụng cho từng tài sản
     // const checkDayUse = await RecommendDistribute(connect(DB_CONNECTION, portal)).find({asset:mongoose.Types.ObjectId(data.asset) , dateEndUse: { $gt: dateStartUse } })
 

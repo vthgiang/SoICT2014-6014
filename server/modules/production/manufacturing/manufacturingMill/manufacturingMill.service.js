@@ -1,6 +1,7 @@
 const {
     ManufacturingMill,
-    ManufacturingWorks
+    ManufacturingWorks,
+    OrganizationalUnit
 } = require(`../../../../models`);
 
 const {
@@ -37,7 +38,7 @@ exports.createManufacturingMill = async (data, portal) => {
 
 exports.getAllManufacturingMills = async (query, portal) => {
     let option = {};
-    let { name, code, page, limit, status } = query;
+    let { name, code, page, limit, status, currentRole } = query;
     if (name) {
         option.name = new RegExp(name, "i");
     }
@@ -47,6 +48,31 @@ exports.getAllManufacturingMills = async (query, portal) => {
 
     if (status) {
         option.status = status;
+    }
+
+    if (currentRole) {
+        // Xử  lý các quyền trước để tìm ra các kế hoạch trong các nhà máy được phân quyền
+        let role = [currentRole];
+        const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'managers': { $in: role } });
+        let organizationalUnitId = departments.map(department => department._id);
+        let listManufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+            organizationalUnit: {
+                $in: organizationalUnitId
+            }
+        });
+
+        // Lấy ra các nhà máy mà currentRole cũng quản lý
+        let listWorksByManageRole = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+            manageRoles: {
+                $in: role
+            }
+        })
+        listManufacturingWorks = [...listManufacturingWorks, ...listWorksByManageRole];
+
+        let listWorksId = listManufacturingWorks.map(x => x._id);
+        option.manufacturingWorks = {
+            $in: listWorksId
+        }
     }
 
 
