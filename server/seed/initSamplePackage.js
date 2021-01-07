@@ -18,19 +18,19 @@ const initSampleCompanyDB = async () => {
      */
 
     let connectOptions = process.env.DB_AUTHENTICATION === 'true' ?
-    {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true,
-        useFindAndModify: false,
-        user: process.env.DB_USERNAME,
-        pass: process.env.DB_PASSWORD
-    } : {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true,
-        useFindAndModify: false
-    }
+        {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useCreateIndex: true,
+            useFindAndModify: false,
+            user: process.env.DB_USERNAME,
+            pass: process.env.DB_PASSWORD
+        } : {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useCreateIndex: true,
+            useFindAndModify: false
+        }
     const vnistDB = mongoose.createConnection(`mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/vnist`, connectOptions);
     if (!vnistDB) throw ('DB vnist cannot connect');
     console.log("DB vnist connected");
@@ -173,312 +173,437 @@ const initSampleCompanyDB = async () => {
 
     console.log('1. Khởi tạo hoạt động công việc');
     //END
+
+
+    var actionLabel = await CareerAction(vnistDB).insertMany([
+        { // 00
+            name: "Quản trị",
+            code: "quan_tri",
+            package: [],
+            detail: [],
+            isLabel: 1,
+        },
+        { // 01
+            name: "Bảo hành",
+            code: "bao_hanh",
+            package: [],
+            detail: [],
+            isLabel: 1,
+        },
+        { // 02
+            name: "Bao trì",
+            code: "bao_tri",
+            package: [],
+            detail: [],
+            isLabel: 1,
+        },
+
+
+        { // 03
+            name: "Tư vấn",
+            code: "tu_van",
+            package: [],
+            detail: [],
+            isLabel: 1,
+        },
+        { //04
+            name: "Đánh giá",
+            code: "danh_gia",
+            package: [],
+            detail: [],
+            isLabel: 1,
+        },
+        { //05
+            name: "Thẩm định",
+            code: "tham_dinh",
+            package: [],
+            detail: [],
+            isLabel: 1,
+        },
+
+
+        { //06
+            name: "Xây dựng",
+            code: "xay_dung",
+            package: [],
+            detail: [],
+            isLabel: 1,
+        },
+
+
+        { //07
+            name: "Bảo đảm",
+            code: "bao_dam",
+            package: [],
+            detail: [],
+            isLabel: 1,
+        },
+
+        { //08
+            name: "Phân phối",
+            code: "phan_phoi",
+            package: [],
+            detail: [],
+            isLabel: 1,
+        },
+        { //09
+            name: "Cung ứng",
+            code: "cung_ung",
+            package: [],
+            detail: [],
+            isLabel: 1,
+        },
+
+
+        { //10
+            name: "Lập trình",
+            code: "lap_trinh",
+            package: [],
+            detail: [],
+            isLabel: 1,
+        },
+        { // 11
+            name: "Phát triển",
+            code: "phat_trien",
+            package: [],
+            detail: [],
+            isLabel: 1,
+        },
+
+
+        { // 12
+            name: "Thiết kế",
+            code: "thiet_ke",
+            package: [],
+            detail: [],
+            isLabel: 1,
+        },
+        { // 13
+            name: "Phân tích",
+            code: "phan_tich",
+            package: [],
+            detail: [],
+            isLabel: 1,
+        },
+
+        { // 14
+            name: "Kiểm thử",
+            code: "kiem_thu",
+            package: [],
+            detail: [],
+            isLabel: 1,
+        },
+        { // 15
+            name: "Kiểm định",
+            code: "kiem_dinh",
+            package: [],
+            detail: [],
+            isLabel: 1,
+        },
+
+        { //16
+            name: "Kiểm tra",
+            code: "kiem_tra",
+            package: [],
+            detail: [],
+            isLabel: 1,
+        },
+        { // 17
+            name: "Giám sát",
+            code: "giam_sat",
+            package: [],
+            detail: [],
+            isLabel: 1,
+        },
+
+        { // 18
+            name: "Giảng dạy",
+            code: "giang_day",
+            package: [],
+            detail: [],
+            isLabel: 1,
+        },
+        { //19
+            name: "Nghiên cứu",
+            code: "nghien_cuu",
+            package: [],
+            detail: [],
+            isLabel: 1,
+        },
+        { //20
+            name: "Đào tạo",
+            code: "dao_tao",
+            package: [],
+            detail: [],
+            isLabel: 1,
+
+        },
+
+        { // 21
+            name: "Soạn thảo",
+            code: "soan_thao",
+            package: [],
+            detail: [],
+            isLabel: 1,
+        },
+        { // 22
+            name: "Chấm bài",
+            code: "cham_bai",
+            package: [],
+            detail: [],
+            isLabel: 1,
+        },
+        { // 23
+            name: "Quản lý",
+            code: "quan_ly",
+            package: [],
+            detail: [],
+            isLabel: 1,
+
+        },
+
+        { // 24
+            name: "Xử lý",
+            code: "xu_ly",
+            package: [],
+            detail: [],
+            isLabel: 1,
+        },
+        { // 25
+            name: "Hỗ trợ",
+            code: "ho_tro",
+            package: [],
+            detail: [],
+            isLabel: 1,
+        },
+
+
+        { // 26
+            name: "Phối hợp",
+            code: "phoi_hop",
+            package: [],
+            detail: [],
+            isLabel: 1,
+        },
+
+
+        { // 27
+            name: "Vận hành",
+            code: "van_hanh",
+            package: [],
+            detail: [],
+            isLabel: 1,
+        },
+
+
+        { // 28
+            name: "Triển khai",
+            code: "trien_khai",
+            package: [],
+            detail: [],
+            isLabel: 1,
+        },
+
+
+        { // 29
+            name: "Thu thập",
+            code: "thu_thap",
+            package: [],
+            detail: [],
+            isLabel: 1,
+        },
+
+
+        { // 30
+            name: "Báo cáo",
+            code: "bao_cao",
+            package: [],
+            detail: [],
+            isLabel: 1,
+        },
+
+    ])
+
     var careerAction = await CareerAction(vnistDB).insertMany([
-        {
+        { // 00
             name: "Quản trị, bảo hành, bảo trì hoạt động của phần mềm và hệ thống thông tin",
             code: "itpm_01",
             package: ["Quản trị, bảo trì hoạt động của hệ thống thông tin"],
+            label: [
+                actionLabel[0]._id,
+                actionLabel[1]._id,
+                actionLabel[2]._id,
+            ],
             detail: [
-                {
-                    name: "Quản trị",
-                    code: "quan_tri",
-                    type: 1,
-                },
-                {
-                    name: "Bảo hành",
-                    code: "bao_hanh",
-                    type: 1,
-                },
-                {
-                    name: "Bao trì",
-                    code: "bao_tri",
-                    type: 1,
-                },
+                { label: actionLabel[0]._id },
+                { label: actionLabel[1]._id },
+                { label: actionLabel[2]._id },
             ]
         },
-        {
+        { // 01
             name: "Tư vấn, đánh giá, thẩm định chất lượng phần mềm",
             code: "itpm_02",
             package: ["Đánh giá kiểm định chất lượng phần mềm"],
-            detail: [
-                {
-                    name: "Tư vấn",
-                    code: "tu_van",
-                    type: 1,
-                },
-                {
-                    name: "Đánh giá",
-                    code: "danh_gia",
-                    type: 1,
-                },
-                {
-                    name: "thẩm định",
-                    code: "tham_dinh",
-                    type: 1,
-                },
-            ]
+            label: [
+                actionLabel[3]._id,
+                actionLabel[4]._id,
+                actionLabel[5]._id,
+            ],
+            detail: []
         },
-        {
+        { // 02
             name: "Tư vấn, xây dựng dự án phần mềm",
             code: "itpm_03",
             package: ["Thiết kế xây dựng triển khai phần mềm"],
-            detail: [
-                {
-                    name: "Tư vấn",
-                    code: "tu_van",
-                    type: 1,
-                },
-                {
-                    name: "Xây dựng",
-                    code: "xay_dung",
-                    type: 1,
-                }
-            ]
+            label: [
+                actionLabel[3]._id,
+                actionLabel[6]._id,
+            ],
+            detail: []
         },
-        {
+        { // 03
             name: "Bảo đảm an toàn, an ninh cho sản phẩm phần mềm, hệ thống thông tin",
             code: "itpm_04",
             package: ["Quản trị, bảo trì hoạt động của hệ thống thông tin"],
-            detail: [
-                {
-                    name: "Bảo đảm",
-                    code: "bao_dam",
-                    type: 1,
-                }
-            ]
+            label: [
+                actionLabel[7]._id,
+            ],
+            detail: []
         },
-        {
+        { // 04
             name: "Phân phối, cung ứng sản phẩm phần mềm",
             code: "itpm_05",
             package: ["Thiết kế xây dựng triển khai phần mềm"],
-            detail: [
-                {
-                    name: "Phân phối",
-                    code: "phan_phoi",
-                    type: 1,
-                },
-                {
-                    name: "Cung ứng",
-                    code: "cung_ung",
-                    type: 1,
-                },
-                {
-                    name: "Cung cấp",
-                    code: "cung_cap",
-                    type: 1,
-                },
-            ]
+            label: [
+                actionLabel[8]._id,
+                actionLabel[9]._id,
+            ],
+            detail: []
         },
-        {
+        { // 05
             name: "Lập trình phát triển phần mềm",
             code: "itpm_06",
             package: ["Thiết kế xây dựng triển khai phần mềm"],
-            detail: [
-                {
-                    name: "Lập trình",
-                    code: "lap_trinh",
-                    type: 1,
-                },
-                {
-                    name: "Phát triển",
-                    code: "phat_trien",
-                    type: 1,
-                },
-                {
-                    name: "Xây dựng",
-                    code: "xay_dung",
-                    type: 1,
-                }
-            ]
+            label: [
+                actionLabel[10]._id,
+                actionLabel[11]._id,
+                actionLabel[6]._id,
+            ],
+            detail: []
         },
-        {
+        { // 06
             name: "Phân tích, thiết kế phần mềm",
             code: "itpm_07",
             package: ["Thiết kế xây dựng triển khai phần mềm"],
-            detail: [
-                {
-                    name: "Thiết kế",
-                    code: "thiet_ke",
-                    type: 1,
-                },
-                {
-                    name: "Phân tích",
-                    code: "phan_tich",
-                    type: 1,
-                }
-            ]
+            label: [
+                actionLabel[12]._id,
+                actionLabel[13]._id,
+            ],
+            detail: []
         },
-        {
+        { // 07
             name: "Kiểm thử, kiểm định phần mềm",
             code: "itpm_08",
             package: ["Đánh giá kiểm định chất lượng phần mềm"],
-            detail: [
-                {
-                    name: "Kiểm thử",
-                    code: "kiem_thu",
-                    type: 1,
-                },
-                {
-                    name: "Kiểm định",
-                    code: "kiem_dinh",
-                    type: 1,
-                }
-            ]
+            label: [
+                actionLabel[14]._id,
+                actionLabel[15]._id,
+            ],
+            detail: []
         },
-        {
+        { // 08
             name: "kiểm tra, đánh giá, giám sát an toàn thông tin mạng;",
             code: "itpm_09",
             package: ["Kiểm tra đánh giá giám sát hệ thống an toàn thông tin"],
-            detail: [
-                {
-                    name: "Kiểm tra",
-                    code: "kiem_tra",
-                    type: 1,
-                },
-                {
-                    name: "Đánh giá",
-                    code: "danh_gia",
-                    type: 1,
-                },
-                {
-                    name: "Giám sát",
-                    code: "giam_sat",
-                    type: 1,
-                }
-            ]
+            label: [
+                actionLabel[16]._id,
+                actionLabel[4]._id,
+                actionLabel[17]._id,
+            ],
+            detail: []
         },
-        {
+        { // 09
             name: "Giảng dạy học tập",
             code: "itpm_10",
             package: ["Giảng dạy IT"],
-            detail: [
-                {
-                    name: "giang_day",
-                    code: "giang_day",
-                    type: 1,
-                },
-                {
-                    name: "Nghiên cứu",
-                    code: "nghien_cuu",
-                    type: 1,
-                },
-                {
-                    name: "Đào tạo",
-                    code: "dao_tao",
-                    type: 1,
-                }
-            ]
+            label: [
+                actionLabel[18]._id,
+                actionLabel[19]._id,
+                actionLabel[20]._id,
+            ],
+            detail: []
         },
-        {
+        { // 10
             name: "Quản lý, soạn thảo, chấm bài",
             code: "itpm_11",
             package: ["Giảng dạy IT"],
-            detail: [
-                {
-                    name: "Soạn thảo",
-                    code: "soan_thao",
-                    type: 1,
-                },
-                {
-                    name: "Chấm bài",
-                    code: "cham_bai",
-                    type: 1,
-                },
-                {
-                    name: "Quản lý",
-                    code: "quan_ly",
-                    type: 1,
-                }
-            ]
+            label: [
+                actionLabel[21]._id,
+                actionLabel[22]._id,
+                actionLabel[23]._id,
+            ],
+            detail: []
         },
-        {
+        { // 11
             name: "Thực hiện việc xử lý các yêu cầu hỗ trợ CNTT theo quy trình, hướng dẫn",
             code: "itpm_12",
             package: ["Hỗ trợ sử dụng sản phẩm"],
-            detail: [
-                {
-                    name: "Xử lý",
-                    code: "xu_ly",
-                    type: 1,
-                },
-                {
-                    name: "Hỗ trợ",
-                    code: "ho_tro",
-                    type: 1,
-                },
-            ]
+            label: [
+                actionLabel[24]._id,
+                actionLabel[25]._id,
+            ],
+            detail: []
         },
-        {
+        { // 12
             name: "Phối hợp, giám sát và đốc thúc các đơn vị chức năng trong quá trình xử lý các yêu cầu hỗ trợ CNTT đảm bảo các SLA đã được cam kết",
             code: "itpm_13",
             package: ["Hỗ trợ sử dụng sản phẩm"],
-            detail: [
-                {
-                    name: "Phối hợp",
-                    code: "phoi_hop",
-                    type: 1,
-                },
-                {
-                    name: "Giám sát",
-                    code: "giam_sat",
-                    type: 1,
-                },
-            ]
+            label: [
+                actionLabel[26]._id,
+                actionLabel[17]._id,
+            ],
+            detail: []
         },
-        {
+        { // 13
             name: "Vận hành các hệ thống giám sát an ninh mạng.",
             code: "itpm_14",
             package: ["Kiểm tra đánh giá giám sát hệ thống an toàn thông tin"],
-            detail: [
-                {
-                    name: "Vận hành",
-                    code: "van_hanh",
-                    type: 1,
-                },
-            ]
+            label: [
+                actionLabel[27]._id,
+            ],
+            detail: []
         },
-        {
+        { // 14
             name: "Tham gia triển khai các dự án cho Công ty",
             code: "itpm_15",
             package: ["Kiểm tra đánh giá giám sát hệ thống an toàn thông tin"],
-            detail: [
-                {
-                    name: "Triển khai",
-                    code: "trien_khai",
-                    type: 1,
-                },
-            ]
+            label: [
+                actionLabel[28]._id,
+            ],
+            detail: []
         },
-        {
+        { // 15
             name: "Thu thập dữ liệu phục vụ nhu cầu sử dụng thiết kế ứng dụng phần mềm",
             code: "itpm_16",
             package: ["Thiết kế xây dựng triển khai phần mềm"],
-            detail: [
-                {
-                    name: "Thu thập",
-                    code: "thu_thap",
-                    type: 1,
-                },
-            ]
+            label: [
+                actionLabel[29]._id,
+            ],
+            detail: []
         },
-        {
+        { // 16
             name: "Nghiên cứu và áp dụng các công nghệ mới",
             code: "itpm_17",
             package: ["Thiết kế xây dựng triển khai phần mềm"],
-            detail: [
-                {
-                    name: "Nghiên cứu",
-                    code: "nghien_cuu",
-                    type: 1,
-                },
-                {
-                    name: "Báo cáo",
-                    code: "bao_cao",
-                    type: 1,
-                },
-            ]
+            label: [
+                actionLabel[19]._id,
+                actionLabel[30]._id,
+            ],
+            detail: []
         },
     ])
+
+
     /**
      * =======================END CAREER ACTION========================
      * =======================END CAREER ACTION========================

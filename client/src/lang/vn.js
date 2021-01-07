@@ -1732,6 +1732,8 @@ export default {
                 intermediate_degree: "Trung cấp",
                 colleges: "Cao đẳng",
                 university: "Đại học",
+                engineer: "Kỹ sư",
+                bachelor: "Cử nhân",
                 master_degree: "Thạc sỹ",
                 engineer: 'Kỹ sư',
                 bachelor: 'Cử nhân',

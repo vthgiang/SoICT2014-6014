@@ -501,6 +501,9 @@ const TaskSchema = new Schema(
                             type: Schema.Types.ObjectId,
                             ref: "User",
                         },
+                        role: {
+                            type: String // đánh giá với vai trò ntn (phê duyệt, tư vấn, quan sát, thiết)
+                        },
                         createdAt: {
                             type: Date,
                             default: Date.now,
