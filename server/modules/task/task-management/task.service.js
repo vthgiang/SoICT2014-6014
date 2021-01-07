@@ -284,11 +284,6 @@ exports.getPaginatedTasks = async (portal, task) => {
             if (role[i] === "informed") roleArr.push({ informedEmployees: { $in: [user] } });
             if (role[i] === "creator") roleArr.push({ creator: { $in: [user] } });
         }
-    } else {
-        roleArr = [
-            { responsibleEmployees: { $in: [user] } },
-            { accountableEmployees: { $in: [user] } },
-        ];
     }
 
 
