@@ -2028,7 +2028,7 @@ exports.searchEmployeeForPackage = async (portal, params, company) => {
         let groupCondition = {
             employee: "$empId",
         }
-        if (params.positions) {
+        if (params.position) {
             groupCondition = { ...groupCondition, position: "$position" }
         }
         if (params.field) {
@@ -2041,6 +2041,7 @@ exports.searchEmployeeForPackage = async (portal, params, company) => {
             groupCondition = { ...groupCondition, action: "$action" }
         }
 
+        console.log('group', groupCondition);
         keySearch = [
             ...keySearch,
             {

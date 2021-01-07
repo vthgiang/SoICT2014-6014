@@ -225,7 +225,7 @@ exports.createTaskTemplate = async (portal, body) => {
             roleId: roleId[i], //id của người cấp quyền xem
             resourceId: tasktemplate._id,
             resourceType: "TaskTemplate",
-            action: readByEmployee //quyền READ
+            action: read //quyền READ
         });
     }
     tasktemplate = await tasktemplate.populate([
@@ -329,7 +329,7 @@ exports.editTaskTemplate = async (portal, data, id) => {
             roleId: roleId[i], //id của người cấp quyền xem
             resourceId: id,
             resourceType: "TaskTemplate",
-            action: data.readByEmployees //quyền READ
+            action: read //quyền READ
         });
     }
     return taskTemplate;

@@ -64,8 +64,13 @@ class CareerAction extends Component {
             cancelButtonText: translate('general.no'),
             confirmButtonText: translate('general.yes'),
         }).then(result => {
-            console.log('Confirm delete');
-            this.props.deleteCareerAction(deleteNode)
+            if (result.value) {
+                console.log('Confirm delete');
+                this.props.deleteCareerAction(deleteNode)
+                this.setState({
+                    deleteNode: []
+                });
+            }
         })
     }
 
