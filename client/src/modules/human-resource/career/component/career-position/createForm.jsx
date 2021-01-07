@@ -83,7 +83,7 @@ class CreateForm extends Component {
                 >
                     <form id="form-create-career-position">
                         <div className={`form-group ${!nameError ? "" : "has-error"}`}>
-                            <label>Gói thầu<span className="text-red">*</span></label>
+                            <label>Gói thầu</label>
                             <input type="text" className="form-control" onChange={this.handlePackage} />
                             <ErrorLabel content={nameError} />
                         </div>

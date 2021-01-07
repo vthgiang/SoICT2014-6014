@@ -188,11 +188,11 @@ class MajorEditModal extends Component {
                     <form className="form-group" id={`form-edit-major-${id}`}>
                         <div className="form-group">
                             <label>Nhóm ngành</label>
-                            <TreeSelect data={listGroup} value={group?._id} handleChange={this.handleGroup} mode="radioSelect" />
+                            <TreeSelect data={listGroup} value={group?.id} handleChange={this.handleGroup} mode="radioSelect" />
                         </div>
                         <div className="form-group">
                             <label>Chuyên ngành</label>
-                            <TreeSelect data={listSpecialized} value={specialized?._id} handleChange={this.handleSpecialized} mode="radioSelect" />
+                            <TreeSelect data={listSpecialized} value={specialized?.id} handleChange={this.handleSpecialized} mode="radioSelect" />
                         </div>
                         {/* File đính kèm */}
                         <div className="form-group">

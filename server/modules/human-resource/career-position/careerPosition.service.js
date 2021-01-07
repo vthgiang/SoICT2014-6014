@@ -99,7 +99,7 @@ exports.searchCareerAction = async (portal, params) => {
     let listAction = await CareerAction(connect(DB_CONNECTION, portal)).find(keySearch)
         .sort({
             'createdAt': 'desc'
-        }).skip(params.limit * (params.page - 1)).limit(params.limit);
+        }).skip(params.limit * (params.page - 1)).limit(params.limit).populate("label");
     let totalList = await CareerAction(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
 
     return {
@@ -226,12 +226,13 @@ exports.crateNewCareerPosition = async (portal, data) => {
  */
 exports.crateNewCareerAction = async (portal, data) => {
     let action, detail;
-    if (!data.parent) {
+    if (data.parent.length === 0) {
         console.log('is parent ');
         action = await CareerAction(connect(DB_CONNECTION, portal)).create({
             name: data.name,
             code: data.code,
             package: data.package,
+            label: [],
             detail: [],
         })
 
@@ -255,25 +256,32 @@ exports.crateNewCareerAction = async (portal, data) => {
         }
     }
     else {
-        let isDetail = await CareerAction(connect(DB_CONNECTION, portal)).findOne({ _id: data.parent })
-        if (isDetail) {
-            detail = await CareerAction(connect(DB_CONNECTION, portal)).findOneAndUpdate(
-                {
-                    _id: data.parent,
-                },
-                {
-                    $push: {
-                        "detail": {
-                            name: data.name,
-                            code: data.code,
+        let actionLabel = await CareerAction(connect(DB_CONNECTION, portal)).create({
+            name: data.name,
+            code: data.code,
+            isLabel: 1,
+            package: data.package,
+            label: [],
+            detail: [],
+        })
+        for (let i in data.parent) {
+            let isDetail = await CareerAction(connect(DB_CONNECTION, portal)).findOne({ _id: data.parent[i] })
+            if (isDetail) {
+                await CareerAction(connect(DB_CONNECTION, portal)).findOneAndUpdate(
+                    {
+                        _id: data.parent[i],
+                    },
+                    {
+                        $push: {
+                            "label": actionLabel._id,
                         }
                     }
-                }
-            )
+                )
+            }
         }
     }
 
-    return await CareerAction(connect(DB_CONNECTION, portal)).find({})
+    return await CareerAction(connect(DB_CONNECTION, portal)).find({}).populate("label")
 }
 
 
@@ -427,82 +435,93 @@ exports.editCareerPosition = async (portal, data, params) => {
 exports.editCareerAction = async (portal, data, params) => {
     let oldItem = data.oldData;
 
-    if (!data.parent) {
-        await CareerAction(connect(DB_CONNECTION, portal)).updateOne({ _id: params.id },
-            {
-                $set: {
-                    name: data.name,
-                    code: data.code,
-                    package: data.package,
-                },
-            }, { $new: true }
-        )
-    }
-    else {
-        console.log('1');
-        await CareerAction(connect(DB_CONNECTION, portal)).updateOne(
-            {
-                _id: oldItem.parent,
-                "detail._id": params.id,
+    await CareerAction(connect(DB_CONNECTION, portal)).updateOne({ _id: params.id },
+        {
+            $set: {
+                name: data.name,
+                code: data.code,
+                package: data.package,
+                label: data.actionLabel,
             },
-            {
-                $set: {
-                    "detail.$.name": data.name,
-                    "detail.$.code": data.code,
-                }
-            }, { $new: true }
-        )
+        }, { $new: true }
+    )
 
-        console.log('2');
-        let actionItem = await CareerAction(connect(DB_CONNECTION, portal)).findOne(
-            {
-                _id: oldItem.parent,
-                "detail._id": params.id,
-            },
-        );
+    // if (!data.parent) {
+    //     await CareerAction(connect(DB_CONNECTION, portal)).updateOne({ _id: params.id },
+    //         {
+    //             $set: {
+    //                 name: data.name,
+    //                 code: data.code,
+    //                 package: data.package,
+    //             },
+    //         }, { $new: true }
+    //     )
+    // }
+    // else {
+    //     console.log('1');
+    //     await CareerAction(connect(DB_CONNECTION, portal)).updateOne(
+    //         {
+    //             _id: oldItem.parent,
+    //             "detail._id": params.id,
+    //         },
+    //         {
+    //             $set: {
+    //                 "detail.$.name": data.name,
+    //                 "detail.$.code": data.code,
+    //             }
+    //         }, { $new: true }
+    //     )
 
-        console.log('3');
-        let updatedDetail = actionItem.detail.find(e => String(e._id) === String(params.id))
+    //     console.log('2');
+    //     let actionItem = await CareerAction(connect(DB_CONNECTION, portal)).findOne(
+    //         {
+    //             _id: oldItem.parent,
+    //             "detail._id": params.id,
+    //         },
+    //     );
 
-        console.log('4', updatedDetail);
-        if (data.parent !== oldItem.parent) { // thay dổi cha
-            // bỏ đi description ở vị trí cv cũ (parent cũ)
-            console.log('5');
-            await CareerAction(connect(DB_CONNECTION, portal)).update(
-                {
-                    _id: oldItem.parent,
-                    "detail._id": params.id
-                },
-                {
-                    $pull: { detail: { "_id": params.id, } },
-                },
-                { safe: true }
-            )
+    //     console.log('3');
+    //     let updatedDetail = actionItem.detail.find(e => String(e._id) === String(params.id))
 
-            console.log('6');
+    //     console.log('4', updatedDetail);
+    //     if (data.parent !== oldItem.parent) { // thay dổi cha
+    //         // bỏ đi description ở vị trí cv cũ (parent cũ)
+    //         console.log('5');
+    //         await CareerAction(connect(DB_CONNECTION, portal)).update(
+    //             {
+    //                 _id: oldItem.parent,
+    //                 "detail._id": params.id
+    //             },
+    //             {
+    //                 $pull: { detail: { "_id": params.id, } },
+    //             },
+    //             { safe: true }
+    //         )
 
-            // thêm mới vào 1 vị trí cv mới
-            await CareerAction(connect(DB_CONNECTION, portal)).updateOne(
-                {
-                    "_id": data.parent,
-                },
-                {
-                    $push: {
-                        "detail": {
-                            _id: params.id,
-                            name: updatedDetail.name,
-                            code: updatedDetail.code,
-                            type: updatedDetail.type,
-                        }
-                    },
-                }, {new: true}
-            )
-            console.log('7');
+    //         console.log('6');
 
-        }
-    }
+    //         // thêm mới vào 1 vị trí cv mới
+    //         await CareerAction(connect(DB_CONNECTION, portal)).updateOne(
+    //             {
+    //                 "_id": data.parent,
+    //             },
+    //             {
+    //                 $push: {
+    //                     "detail": {
+    //                         _id: params.id,
+    //                         name: updatedDetail.name,
+    //                         code: updatedDetail.code,
+    //                         type: updatedDetail.type,
+    //                     }
+    //                 },
+    //             }, {new: true}
+    //         )
+    //         console.log('7');
 
-    return await CareerAction(connect(DB_CONNECTION, portal)).find({})
+    //     }
+    // }
+
+    return await CareerAction(connect(DB_CONNECTION, portal)).find({}).populate("label")
 }
 
 
@@ -538,13 +557,6 @@ exports.deleteCareerField = async (portal, data) => {
  */
 exports.deleteCareerPosition = async (portal, data) => {
     for (let i in data) {
-        // let fieldItem = await CareerField(connect(DB_CONNECTION, portal)).findOne({ "position._id": data[i] })
-        // let posId;
-        // let tmp = fieldItem.position.find(e => String(e._id) === String(data[i]));
-        // console.log('tmp', tmp);
-        // if (tmp) {
-        //     posId = tmp.position;
-        // }
         await CareerField(connect(DB_CONNECTION, portal)).updateMany(
             {
                 "position.position": data[i],
@@ -577,37 +589,34 @@ exports.deleteCareerPosition = async (portal, data) => {
  * @data : list id xóa
  */
 exports.deleteCareerAction = async (portal, data) => {
+
     for (let i in data) {
-        // let positionItem = await CareerField(connect(DB_CONNECTION, portal)).findOne({ "position._id": data[i] })
-        // let actionId;
-        // let tmp = positionItem.description.find(e => String(e._id) === String(data[i]));
-        // console.log('tmp', tmp);
-        // if (tmp) {
-        //     actionId = tmp.action;
-        // }
+        let id = data[i].split('-')[0];
         await CareerPosition(connect(DB_CONNECTION, portal)).update(
             {
-                "description.action": data[i],
+                "description.action": id,
             },
             {
-                $pull: { description: { "action": data[i], } },
+                $pull: { description: { "action": id, } },
             },
             { multi: true }
         );
-        await CareerAction(connect(DB_CONNECTION, portal)).findOneAndDelete({ _id: data[i] });
+        await CareerAction(connect(DB_CONNECTION, portal)).findOneAndDelete({ _id: id });
     }
 
     for (let i in data) {
+        let id = data[i].split('-')[0];
         await CareerAction(connect(DB_CONNECTION, portal)).update(
             {
-                "detail._id": data[i],
+                label: id
             },
             {
-                $pull: { detail: { "_id": data[i], } },
+                $pull: { label: id },
             },
             { safe: true }
         );
+        await CareerAction(connect(DB_CONNECTION, portal)).findOneAndDelete({ _id: id });
     }
 
-    return await CareerAction(connect(DB_CONNECTION, portal)).find({})
+    return await CareerAction(connect(DB_CONNECTION, portal)).find({}).populate("label")
 }
