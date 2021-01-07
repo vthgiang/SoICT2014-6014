@@ -473,6 +473,10 @@ class SearchEmployeeForPackage extends Component {
             }
         }
 
+        let additionalItems = career.listAction.filter(e => e.isLabel !== 1 && e.label.length === 0).map(x => {return {text: x.name, value: x._id}})
+
+        listSelectAction = [...listSelectAction, ...additionalItems];
+
         const listMajor = major.listMajor;
         let dataTreeMajor = []
         for (let i in listMajor) {
@@ -718,7 +722,7 @@ class SearchEmployeeForPackage extends Component {
                                         <td>{x.fullName}</td>
                                         <td>
                                             {x.career?.length > 0 ? (x.career?.map((e, key) => {
-                                                return <li key={key}> {e?.position?.name} </li>
+                                                return <li key={key}>{new Date(e.startDate).getFullYear()} - {new Date(e.endDate).getFullYear()} : {e?.position?.name}</li>
                                             })) : <p>Chưa có dữ liệu</p>
                                             }
                                         </td>

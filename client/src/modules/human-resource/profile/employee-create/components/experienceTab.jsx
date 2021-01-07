@@ -211,6 +211,8 @@ class ExperienceTab extends Component {
                                 <option value="intermediate_degree">{translate('human_resource.profile.intermediate_degree')}</option>
                                 <option value="colleges">{translate('human_resource.profile.colleges')}</option>
                                 <option value="university">{translate('human_resource.profile.university')}</option>
+                                <option value="bachelor">{translate('human_resource.profile.bachelor')}</option>
+                                <option value="engineer">{translate('human_resource.profile.engineer')}</option>
                                 <option value="master_degree">{translate('human_resource.profile.master_degree')}</option>
                                 <option value="phd">{translate('human_resource.profile.phd')}</option>
                                 <option value="unavailable">{translate('human_resource.profile.unavailable')}</option>
