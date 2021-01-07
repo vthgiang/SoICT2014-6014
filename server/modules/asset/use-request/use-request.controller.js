@@ -1,6 +1,8 @@
 const RecommendDistributeService = require('./use-request.service');
 const Logger = require(`../../../logs`);
 const { read } = require('fs');
+const NotificationServices = require(`../../notification/notification.service`);
+const { sendEmail } = require(`../../../helpers/emailHelper`);
 
 /**
  * Lấy danh sách phiếu đề nghị mua sắm thiết bị
@@ -57,6 +59,23 @@ getUseRequestByAsset = async (req, res) => {
 exports.createUseRequest = async (req, res) => {
     try {
         var newRecommendDistribute = await RecommendDistributeService.createUseRequest(req.portal, req.user.company._id, req.body);
+
+        if (newRecommendDistribute.email) {
+            var email = newRecommendDistribute.email;
+            var html = newRecommendDistribute.html;
+            var noti = {
+                organizationalUnits: [],
+                title: "Đăng ký sử dụng tài sản" + " " + newRecommendDistribute.assetName,
+                level: "general",
+                content: html,
+                sender: newRecommendDistribute.user.name,
+                users: [newRecommendDistribute.manager]
+            };
+
+            await NotificationServices.createNotification(req.portal, req.user.company._id, noti);
+            await sendEmail(email, "Bạn có thông báo mới", '', html);
+        }
+
         await Logger.info(req.user.email, 'CREATE_USE_REQUEST', req.portal);
         res.status(200).json({
             success: true,
