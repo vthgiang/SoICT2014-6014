@@ -2,7 +2,7 @@ const PerformTaskService = require('./taskPerform.service');
 const Logger = require(`../../../logs`);
 const NotificationServices = require(`../../notification/notification.service`);
 const { sendEmail } = require(`../../../helpers/emailHelper`);
-
+const { difference } = require('lodash');
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module thực hiện công việc
 
 /**
@@ -142,9 +142,13 @@ exports.createTaskAction = async (req, res) => {
        
         // message gửi cho người thực hiện
         // Loại người tạo hoặt động khỏi danh sách người nhận thông báo
-        const userReceive = [...tasks.responsibleEmployees].filter(obj => JSON.stringify(obj) !== JSON.stringify(req.user._id));
+        let userReceive = tasks.responsibleEmployees.filter(obj => obj.toString() !== req.user._id.toString());
+        userReceive = userReceive.map(user => user.toString());
+        let accountable = tasks.accountableEmployees.map(acc => acc.toString());
+        // Lọc trong danh sách userReceive có chứa người phê duyệt hay ko.. 1 người có thể có nhiều vai trò(mục đích gửi 1 lần thông báo tới ngươi phê duyệt)
+        userReceive = difference(userReceive, accountable)
         const associatedDataforResponsible = { "organizationalUnits": tasks.organizationalUnit, "title": "Thêm mới hoạt động", "level": "general", "content": `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động cho công việc <strong>${tasks.name}</strong>, chi tiết công việc: <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`, "sender": userCreator.name, "users": userReceive, "associatedData": associatedData };
-               
+
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, associatedDataforResponsible,);
         sendEmail(task.email, "Phê duyệt hoạt động", '', `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`);
         
