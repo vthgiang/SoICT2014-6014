@@ -2,6 +2,33 @@ const Models = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
 const { RecommendDistribute, User, Asset } = Models;
 const mongoose = require("mongoose");
+
+
+/**
+ * Gửi email khi đăng ký sử dụng tài sản
+ * @param {*} portal id công ty
+ * @param {*} assetIncident tài sản gặp sự cố
+ */
+exports.sendEmailToManager = async (portal, asset, userId, type) => {
+    let idManager = asset.managedBy;
+    let manager = await User(connect(DB_CONNECTION, portal)).findById(
+        idManager
+    );
+    let currentUser = await User(connect(DB_CONNECTION, portal)).findById(
+        userId
+    );
+    let email = manager ? [manager.email] : [];
+    let body = `<p>Mô tả : ${currentUser.name} đã ${type} tài sản mã ${asset.code}  </p>`;
+    let html = `<p>Bạn có thông báo mới: ` + body;
+
+    return {
+        asset: asset,
+        manager: idManager,
+        user: currentUser,
+        email: email,
+        html: html,
+    };
+};
 /**
  * Lấy danh sách phiếu đề nghị cấp thiết bị
  */
@@ -143,6 +170,30 @@ exports.createUseRequest = async (portal, company, data) => {
         note: data.note,
         status: data.status,
     });
+
+    let asset = await Asset(connect(DB_CONNECTION, portal)).findById({
+        _id: data.asset,
+    }).populate({ path: 'assetType' });
+
+    if (createRecommendDistribute) {
+        let type = "đăng ký sử dụng";
+
+        var mail = await this.sendEmailToManager(
+            portal,
+            asset,
+            data.proponent,
+            type
+        );
+        return {
+            createRecommendDistribute: createRecommendDistribute,
+            manager: mail.manager,
+            user: mail.user,
+            email: mail.email,
+            html: mail.html,
+            assetName: asset.assetName
+        };
+    }
+
     return createRecommendDistribute;
 }
 
