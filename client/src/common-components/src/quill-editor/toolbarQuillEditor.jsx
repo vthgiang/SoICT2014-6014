@@ -13,11 +13,11 @@ class ToolbarQuillEditor extends Component {
     }
 
     render() {
-        const { id, font, header, typography, fontColor, alignAndList, embeds, table } = this.props;
+        const { id, font, header, typography, fontColor, alignAndList, embeds, table, inputCssClass = "" } = this.props;
 
         return (
             <React.Fragment>
-                <div id={id}>
+                <div id={id} className={`quill-editor-toolbar ${inputCssClass}`}>
                     {/* font */
                         font &&
                             <select className="ql-font">
