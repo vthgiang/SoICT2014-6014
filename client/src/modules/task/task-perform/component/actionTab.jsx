@@ -21,6 +21,7 @@ import { IncomingDataTab } from './incomingDataTab';
 import { OutgoingDataTab } from './outgoingDataTab';
 import parse from 'html-react-parser';
 import { some } from 'lodash'
+import { translate } from 'react-redux-multilingual/lib/utils';
 
 
 class ActionTab extends Component {
@@ -209,7 +210,7 @@ class ActionTab extends Component {
             }
         })
     }
-    setValueRating = async (actionId, taskId, newValue, firstTime) => {
+    setValueRating = async (actionId, taskId, role, newValue, firstTime) => {
         await this.setState(state => {
             return {
                 ...state,
@@ -218,7 +219,8 @@ class ActionTab extends Component {
                     ...state.evaluations,
                     rating: newValue * 2,
                     firstTime: firstTime,
-                    type: "evaluation"
+                    type: "evaluation",
+                    role: role,
                 }
             }
         })
@@ -925,6 +927,24 @@ class ActionTab extends Component {
         return `${hour > 9 ? hour : `0${hour}`}:${minute > 9 ? minute : `0${minute}`}:${second > 9 ? second : `0${second}`}`;
     }
 
+    getRoleNameInTask = (value) => {
+        let { translate } = this.props;
+        switch (value) {
+            case 'responsible':
+                return <span style={{ fontSize: 10 }}>[ {translate('task.task_management.responsible')} ]</span>
+            case 'accountable':
+                return <span style={{ fontSize: 10 }} className="text-green">[ {translate('task.task_management.accountable')} ]</span>
+            case 'consulted':
+                return <span style={{ fontSize: 10 }}>[ {translate('task.task_management.consulted')} ]</span>
+            case 'informed':
+                return <span style={{ fontSize: 10 }}>[ {translate('task.task_management.informed')} ]</span>
+            case 'creator':
+                return <span style={{ fontSize: 10 }}>[ {translate('task.task_management.creator')} ]</span>
+            default:
+                return '';
+        }
+    }
+
     render() {
         let task, informations, statusTask, documents, actionComments, taskComments, logTimer, logs;
         let idUser = getStorage("userId");
@@ -1042,26 +1062,21 @@ class ActionTab extends Component {
                                                                         {item.evaluations && <li><a style={{ cursor: "pointer", pointerEvents: item.evaluations.length > 0 ? "" : "none" }} className="link-black text-sm" onClick={() => { this.handleShowEvaluations(item._id) }}><i className="fa fa-thumbs-o-up margin-r-5"></i>{translate("task.task_perform.evaluation")} ({item.evaluations && item.evaluations.length})</a></li>}
                                                                         {(role === "accountable" || role === "consulted" || role === "creator" || role === "informed") &&
                                                                             <li style={{ display: "inline-table" }} className="list-inline">
-                                                                                {(
-                                                                                    (item.evaluations && item.evaluations.length !== 0 && !item.evaluations.some(checkUserId)) ||
-                                                                                    (!item.evaluations || item.evaluations.length === 0)
-                                                                                ) &&
-                                                                                    <React.Fragment>
-                                                                                        <Rating
-                                                                                            fractions={2}
-                                                                                            emptySymbol="fa fa-star-o fa-2x high"
-                                                                                            fullSymbol="fa fa-star fa-2x high"
-                                                                                            initialRating={0}
-                                                                                            onClick={(value) => {
-                                                                                                this.setValueRating(item._id, task._id, value, 1);
-                                                                                            }}
-                                                                                            onHover={(value) => {
-                                                                                                this.setHover(item._id, value)
-                                                                                            }}
-                                                                                        />
-                                                                                        <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover[item._id]}</div>
-                                                                                    </React.Fragment>
-                                                                                }
+                                                                                <React.Fragment>
+                                                                                    <Rating
+                                                                                        fractions={2}
+                                                                                        emptySymbol="fa fa-star-o fa-2x high"
+                                                                                        fullSymbol="fa fa-star fa-2x high"
+                                                                                        initialRating={0}
+                                                                                        onClick={(value) => {
+                                                                                            this.setValueRating(item._id, task._id, role, value, 1);
+                                                                                        }}
+                                                                                        onHover={(value) => {
+                                                                                            this.setHover(item._id, value)
+                                                                                        }}
+                                                                                    />
+                                                                                    <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover[item._id]}</div>
+                                                                                </React.Fragment>
                                                                             </li>
                                                                         }
 
@@ -1080,44 +1095,20 @@ class ActionTab extends Component {
                                                                     <div style={{ marginBottom: "10px" }}>
                                                                         <ul className="list-inline">
                                                                             <li>
-                                                                                {typeof item.evaluations !== 'undefined' && item.evaluations.length !== 0 &&
+                                                                                {
+                                                                                    Array.isArray(item.evaluations) &&
                                                                                     item.evaluations.map(element => {
-                                                                                        if (task) {
-                                                                                            if (task.accountableEmployees.some(obj => obj._id === element.creator._id)) {
-                                                                                                return <div>
-                                                                                                    <ul className="list-inline">
-                                                                                                        <li><b>{element.creator.name} - {element.rating}/10 </b></li>
-                                                                                                        <li></li>
-                                                                                                    </ul>
-
-                                                                                                </div>
-                                                                                            }
-                                                                                            if (task.accountableEmployees.some(obj => obj._id !== element.creator._id)) {
-                                                                                                return <div> {element.creator.name} - {element.rating}/10 </div>
-                                                                                            }
-                                                                                        }
+                                                                                        console.log("element", element)
+                                                                                        return (
+                                                                                            <p>
+                                                                                                <b> {element.creator.name} </b>
+                                                                                                {this.getRoleNameInTask(element.role)}
+                                                                                                <span className="text-red"> {element.rating}/10 </span>
+                                                                                            </p>
+                                                                                        )
                                                                                     })
                                                                                 }
                                                                             </li>
-                                                                            {item.evaluations.some(checkUserId) &&
-                                                                                <React.Fragment>
-                                                                                    <li>{translate("task.task_perform.re_evaluation")}</li>
-                                                                                    <li>
-                                                                                        <Rating
-                                                                                            fractions={2}
-                                                                                            emptySymbol="fa fa-star-o fa-2x high"
-                                                                                            fullSymbol="fa fa-star fa-2x high"
-                                                                                            initialRating={0}
-                                                                                            onClick={(value) => {
-                                                                                                this.setValueRating(item._id, task._id, value, 0);
-                                                                                            }}
-                                                                                            onHover={(value) => {
-                                                                                                this.setHover(item._id, value)
-                                                                                            }}
-                                                                                        />
-                                                                                        <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover[item._id]}</div> </li>
-                                                                                </React.Fragment>
-                                                                            }
                                                                         </ul>
                                                                     </div>
                                                                 }

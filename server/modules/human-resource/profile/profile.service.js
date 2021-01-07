@@ -707,7 +707,8 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
         fileContract = fileInfor.fileContract,
         fileMajor = fileInfor.fileMajor,
         fileCareer = fileInfor.fileCareer,
-        file = fileInfor.file;
+        file = fileInfor.file,
+        healthInsuranceAttachment = fileInfor.healthInsuranceAttachment;
     let {
         degrees,
         certificates,
@@ -724,6 +725,18 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
     files = this.mergeUrlFileToObject(file, files);
 
     console.log('mcmcmcmcmcmcm\n\n', data.houseHold.familyMembers);
+    // file đính kèm bảo hiểm y tế
+    if (healthInsuranceAttachment) {
+        healthInsuranceAttachment = healthInsuranceAttachment.map(obj => {
+            let url = `${obj.destination}/${obj.filename}`;
+            let urlConvert = url.substr(1, url.length);
+            return {
+                fileName: obj.originalname,
+                url: urlConvert,
+            }
+        })
+    }
+
     let createEmployee = await Employee(connect(DB_CONNECTION, portal)).create({
         avatar: avatar,
         fullName: data.fullName,
@@ -752,6 +765,7 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
         healthInsuranceEndDate: data.healthInsuranceEndDate,
         socialInsuranceNumber: data.socialInsuranceNumber,
         socialInsuranceDetails: data.socialInsuranceDetails,
+        healthInsuranceAttachment: healthInsuranceAttachment,
         nationality: data.nationality,
         religion: data.religion,
         maritalStatus: data.maritalStatus,
@@ -2014,7 +2028,7 @@ exports.searchEmployeeForPackage = async (portal, params, company) => {
         let groupCondition = {
             employee: "$empId",
         }
-        if (params.positions) {
+        if (params.position) {
             groupCondition = { ...groupCondition, position: "$position" }
         }
         if (params.field) {
@@ -2027,6 +2041,7 @@ exports.searchEmployeeForPackage = async (portal, params, company) => {
             groupCondition = { ...groupCondition, action: "$action" }
         }
 
+        console.log('group', groupCondition);
         keySearch = [
             ...keySearch,
             {
@@ -2108,7 +2123,8 @@ exports.searchEmployeeForPackage = async (portal, params, company) => {
     else {
         console.log('không có KN tương đương');
         // phân trang
-        keySearch.push(
+        keySearch = [
+            ...keySearch,
             {
                 $facet: {
                     listEmployee: [{ $sort: { 'createdAt': 1 } },
@@ -2122,12 +2138,15 @@ exports.searchEmployeeForPackage = async (portal, params, company) => {
                     ]
                 }
             }
-        );
-        
+        ];
+
         listData = await Employee(connect(DB_CONNECTION, portal)).aggregate(keySearch)
         
         listEmployees = listData[0].listEmployee;
+        console.log('list employee1', listEmployees.length);
         await Employee(connect(DB_CONNECTION, portal)).populate(listEmployees, { path: "career.field career.position career.action" });
+
+        console.log('list employee2', listEmployees.length);
 
         if(listData[0].totalCount[0]) {
             totalList = listData[0].totalCount[0].count;

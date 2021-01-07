@@ -193,6 +193,7 @@ class SalesOrderCreatePayment extends Component {
             handleDeliveryTimeChange,
             setCurrentSlasOfGood,
             setCurrentDiscountsOfGood,
+            setCurrentManufacturingWorksOfGoods,
             handleCoinChange,
             saveSalesOrder,
         } = this.props;
@@ -285,7 +286,7 @@ class SalesOrderCreatePayment extends Component {
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 shopping-products">
                         <div className="shopping-products-title">Các sản phẩm</div>
                         {/* Hiển thị bảng */}
-                        <table className="table table-bordered">
+                        <table className="table table-bordered not-sort">
                             <thead>
                                 <tr>
                                     <th title={"STT"}>STT</th>
@@ -299,7 +300,8 @@ class SalesOrderCreatePayment extends Component {
                                     <th title={"Thành tiền"}>Thành tiền</th>
                                     <th title={"Thuế"}>Thuế</th>
                                     <th title={"Tổng tiền"}>Tổng tiền</th>
-                                    <th>Cam kết chất lượng</th>
+                                    <th title={"Cam kết chất lượng"}>Cam kết chất lượng</th>
+                                    <th title={"Yêu cầu sản xuất"}>Yêu cầu s/x</th>
                                     <th title={"Ghi chú"}>Ghi chú</th>
                                 </tr>
                             </thead>
@@ -361,6 +363,29 @@ class SalesOrderCreatePayment extends Component {
                                                     </a>
                                                 </div>
                                             </td>
+                                            <td>
+                                                {item.manufacturingWorks ? (
+                                                    <div
+                                                        style={{
+                                                            display: "flex",
+                                                        }}
+                                                    >
+                                                        <a
+                                                            style={{
+                                                                cursor: "pointer",
+                                                            }}
+                                                            data-toggle="modal"
+                                                            data-backdrop="static"
+                                                            href={"#modal-create-sales-order-manufacturing-works-of-good-detail"}
+                                                            onClick={() => setCurrentManufacturingWorksOfGoods(item.manufacturingWorks)}
+                                                        >
+                                                            Đang thiết lập &ensp;
+                                                        </a>
+                                                    </div>
+                                                ) : (
+                                                    ""
+                                                )}
+                                            </td>
                                             <td>{item.note}</td>
                                         </tr>
                                     ))}
@@ -397,7 +422,7 @@ class SalesOrderCreatePayment extends Component {
                                                 }, 0)
                                             ) + " (vnđ)"}
                                         </td>
-                                        <td colSpan={2}></td>
+                                        <td colSpan={3}></td>
                                     </tr>
                                 )}
                             </tbody>

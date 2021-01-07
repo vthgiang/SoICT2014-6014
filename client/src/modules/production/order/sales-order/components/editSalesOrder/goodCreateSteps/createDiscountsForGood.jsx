@@ -216,12 +216,12 @@ class CreateDiscountsForGood extends Component {
                     }}
                     data-toggle="modal"
                     data-backdrop="static"
-                    href={"#modal-add-sales-order-discount-for-good"}
+                    href={"#modal-edit-sales-order-discount-for-good"}
                 >
                     Chọn khuyến mãi
                 </a>
                 <DialogModal
-                    modalID={`modal-add-sales-order-discount-for-good`}
+                    modalID={`modal-edit-sales-order-discount-for-good`}
                     isLoading={false}
                     title={"Chọn khuyến mãi"}
                     hasSaveButton={false}

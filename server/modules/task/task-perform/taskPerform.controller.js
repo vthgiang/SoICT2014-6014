@@ -2,7 +2,7 @@ const PerformTaskService = require('./taskPerform.service');
 const Logger = require(`../../../logs`);
 const NotificationServices = require(`../../notification/notification.service`);
 const { sendEmail } = require(`../../../helpers/emailHelper`);
-
+const { difference } = require('lodash');
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module thực hiện công việc
 
 /**
@@ -64,7 +64,7 @@ exports.getActiveTimesheetLog = async (req, res) => {
         await Logger.error(req.user.email, `get timer status`, req.portal)
         res.status(400).json({
             success: false,
-            messages: ['get_timer_status_fail'],
+            messages: Array.isArray(error) ? error : ['get_timer_status_fail'],
             content: error
         })
     }
@@ -85,7 +85,7 @@ exports.startTimesheetLog = async (req, res) => {
         await Logger.error(req.user.email, ` start timer `, req.portal)
         res.status(400).json({
             success: false,
-            messages: ['start_timer_fail'],
+            messages: Array.isArray(error) ? error : ['start_timer_fail'],
             content: error
         })
     }
@@ -136,15 +136,19 @@ exports.createTaskAction = async (req, res) => {
             dataType: "createTaskAction",
             value: [taskAction[taskAction.length - 1]]
         }
-
-        const  associatedDataforAccountable = { "organizationalUnits": tasks.organizationalUnit, "title": "Phê duyệt hoạt động", "level": "general", "content": `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động cho công việc <strong>${tasks.name}</strong>, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`, "sender": userCreator.name, "users": [tasks.accountableEmployees],"associatedData":associatedData };
+        const accountableFilter = tasks.accountableEmployees.filter(obj => obj.toString() !== req.user._id.toString());
+        const  associatedDataforAccountable = { "organizationalUnits": tasks.organizationalUnit, "title": "Phê duyệt hoạt động", "level": "general", "content": `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động cho công việc <strong>${tasks.name}</strong>, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`, "sender": userCreator.name, "users": accountableFilter ,"associatedData":associatedData };
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, associatedDataforAccountable,);
        
         // message gửi cho người thực hiện
         // Loại người tạo hoặt động khỏi danh sách người nhận thông báo
-        const userReceive = [...tasks.responsibleEmployees].filter(obj => JSON.stringify(obj) !== JSON.stringify(req.user._id));
+        let userReceive = tasks.responsibleEmployees.filter(obj => obj.toString() !== req.user._id.toString());
+        userReceive = userReceive.map(user => user.toString());
+        let accountable = tasks.accountableEmployees.map(acc => acc.toString());
+        // Lọc trong danh sách userReceive có chứa người phê duyệt hay ko.. 1 người có thể có nhiều vai trò(mục đích gửi 1 lần thông báo tới ngươi phê duyệt)
+        userReceive = difference(userReceive, accountable)
         const associatedDataforResponsible = { "organizationalUnits": tasks.organizationalUnit, "title": "Thêm mới hoạt động", "level": "general", "content": `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động cho công việc <strong>${tasks.name}</strong>, chi tiết công việc: <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`, "sender": userCreator.name, "users": userReceive, "associatedData": associatedData };
-               
+
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, associatedDataforResponsible,);
         sendEmail(task.email, "Phê duyệt hoạt động", '', `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`);
         
@@ -493,6 +497,7 @@ evaluationAction = async (req, res) => {
             content: taskAction
         })
     } catch (error) {
+        console.log(error)
         await Logger.error(req.user.email, ` evaluation action  `, req.portal)
         res.status(400).json({
             success: false,

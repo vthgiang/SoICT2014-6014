@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const { getAllEmployeeOfUnitByRole } = require("../../../super-admin/user/user.service");
 
 const {
-    WorkSchedule, ManufacturingMill, ManufacturingWorks, ManufacturingCommand
+    WorkSchedule, ManufacturingMill, ManufacturingWorks, ManufacturingCommand, OrganizationalUnit
 } = require(`../../../../models`);
 
 const {
@@ -19,15 +19,29 @@ function getAllDayOfMonth(month) {
 
 // Hàm lấy ra tất cả các nhân viên trong 1 array nhà máy có vai trò là employee
 
-async function getAllEmployeeOfManufacturingWorks(query = undefined, portal) {
+async function getAllEmployeeOfManufacturingWorks(query = undefined, portal, currentRole = undefined) {
     // tra ve mang id cac employee thoa man
     let employees = [];
     let option = {
         status: 1
     };
+    if (query && query.currentRole) {
+        let listWorksIds = await getListWorksIdsByCurrentRole(query.currentRole, portal);
+        option._id = {
+            $in: listWorksIds
+        }
+    }
     if (query && query.works) {
         option._id = {
             $in: query.works
+        }
+    }
+
+    // currentRole này chỉ để phục vụ việc tạo lịch sản xuất cho tất cả công nhân
+    if (currentRole) {
+        let listWorksIds = await getListWorksIdsByCurrentRole(currentRole, portal);
+        option._id = {
+            $in: listWorksIds
         }
     }
 
@@ -45,7 +59,7 @@ async function getAllEmployeeOfManufacturingWorks(query = undefined, portal) {
         employees = employees.filter(e => e.userId.name.includes(query.name));
     }
 
-    // Nếu query = undefined thì lấy ra hết không chỉ mỗi Id
+    // Nếu currentRole = undefined thì lấy ra hết không chỉ mỗi Id
 
     if (query) {
         employees = employees.map(e => e.userId._id)
@@ -58,6 +72,7 @@ async function getAllEmployeeOfManufacturingWorks(query = undefined, portal) {
 }
 
 
+
 // Function kiểm tra xem _id của đối tượng có năm trong array hay không
 
 function checkIdObjectInArray(array, object) {
@@ -67,6 +82,32 @@ function checkIdObjectInArray(array, object) {
         }
     }
     return false;
+}
+
+// Hàm trả về danh sách các xưởng mà 1 role truyền vào có thể được quyền quản lý
+
+async function getListWorksIdsByCurrentRole(currentRole, portal) {
+    // Xử  lý các quyền trước để tìm ra các kế hoạch trong các nhà máy được phân quyền
+    let role = [currentRole];
+    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'managers': { $in: role } });
+    let organizationalUnitId = departments.map(department => department._id);
+    let listManufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        organizationalUnit: {
+            $in: organizationalUnitId
+        }
+    });
+    // Lấy ra các nhà máy mà currentRole cũng quản lý
+    let listWorksByManageRole = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        manageRoles: {
+            $in: role
+        }
+    })
+    listManufacturingWorks = [...listManufacturingWorks, ...listWorksByManageRole];
+
+    let listWorksId = listManufacturingWorks.map(x => x._id);
+
+    return listWorksId;
+
 }
 
 // Hàm tạo một lịch trong tháng ứng với manufacturingMill hoặc employee
@@ -122,10 +163,19 @@ exports.createWorkSchedule = async (data, portal) => {
                 month: month
             });
             let arrayMillId = manufacturingMillSchedules.map(x => x.manufacturingMill);
+            // lấy ra nhà máy theo currentRole
+            let listWorksIds = [];
+            if (data.currentRole) {
+                listWorksIds = await getListWorksIdsByCurrentRole(data.currentRole, portal);
+            }
+            console.log(listWorksIds);
             // Lấy ra các xưởng đang hoạt động chưa được sếp lịch trong tháng truyền vào
             let manufacturingMills = await ManufacturingMill(connect(DB_CONNECTION, portal)).find({
                 _id: {
                     $nin: arrayMillId
+                },
+                manufacturingWorks: {
+                    $in: listWorksIds
                 },
                 status: 1
             });
@@ -163,7 +213,7 @@ exports.createWorkSchedule = async (data, portal) => {
             });
             let arrayUserId = workerSchedules.map(x => x.user);
             // Lấy ra tất cả các nhân viên của các nhà máy luôn
-            let workers = await getAllEmployeeOfManufacturingWorks(undefined, portal);
+            let workers = await getAllEmployeeOfManufacturingWorks(undefined, portal, data.currentRole);
             // Lấy ra các công nhân của các nhà máy mà chưa được sếp lịch trong tháng
             let arrayUserIdNotHaveSchedule = [];
             for (let i = 0; i < workers.length; i++) {
@@ -233,9 +283,29 @@ exports.getWorkSchedules = async (query, portal) => {
             options.manufacturingMill = query.manufacturingMill
         }
 
+        // Phân loại xưởng sản xuất
         let searchMill = {
             status: 1
         };
+        // xử lý việc phân quyền dữ liệu
+        if (query.currentRole) {
+            let listWorksId = await getListWorksIdsByCurrentRole(query.currentRole, portal);
+            // Lấy ra tất cả các xưởng mà quyền này được xem
+            let listManufacturingMills = await ManufacturingMill(connect(DB_CONNECTION, portal)).find({
+                manufacturingWorks: {
+                    $in: listWorksId
+                }
+            });
+
+            let listMillIds = listManufacturingMills.map(x => x._id);
+
+            searchMill = {
+                _id: {
+                    $in: listMillIds
+                },
+                status: 1
+            }
+        }
 
         if (query.code) {
             searchMill.code = new RegExp(query.code, "i");

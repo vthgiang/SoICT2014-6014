@@ -970,7 +970,7 @@ class EmployeeEditFrom extends Component {
                 ...this.state.houseHold.familyMembers[index]
             }
         });
-        window.$('#modal-edit-member-e').modal({ backdrop: 'static', display: 'show' });
+        window.$(`#form-edit-family-members`).slideToggle();
     }
 
     _fm_editMember = (index, data) => {

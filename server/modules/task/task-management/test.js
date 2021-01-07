@@ -1,34 +1,50 @@
-let splitter = "31-10-2020".split("-");
-let splitter2 = "01-11-2020".split("-");
+let x = "Tư vấn   ";
+let y  = " tư Vấn   ";
+let z = "Tu van ";
 
-let dateOfEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-let dateOfPrevEval = new Date(splitter2[2], splitter2[1] - 1, splitter2[0]);
-
-let month2 = dateOfPrevEval.getDate();
-let month = dateOfEval.getDate();
-
-console.log('month2-1', month2, month);
-
-console.log('month',splitter[1] === "10", typeof( splitter[2] ), dateOfPrevEval, month);
-
-let newMonth = dateOfPrevEval.getMonth() - 1;
-console.log('new month', newMonth);
-if (newMonth < 0) {
-    newMonth += 12;
-    dateOfPrevEval.setYear(dateOfPrevEval.getYear() - 1);
-}
+console.log('x = y ', x.toUpperCase().trim() === y.toUpperCase().trim());
+console.log('x = z ', x.toUpperCase().trim() === z.toUpperCase().trim());
+console.log('x', x);
 
 
+let quang = "Quang-Duyen"
+let duyen = "Duyen"
 
-dateOfPrevEval.setDate(15);
-dateOfPrevEval.setMonth(newMonth);
-console.log('date', dateOfPrevEval);
+console.log('split', quang.split("-"));
+console.log('split  y', duyen.split("-"));
 
-let monthOfPrevEval = dateOfPrevEval.getMonth();
-let yearOfPrevEval = dateOfPrevEval.getFullYear();
 
-console.log('M-Y', monthOfPrevEval, yearOfPrevEval);
-console.log('monthOfPre', monthOfPrevEval );
+// let splitter = "31-10-2020".split("-");
+// let splitter2 = "01-11-2020".split("-");
+
+// let dateOfEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+// let dateOfPrevEval = new Date(splitter2[2], splitter2[1] - 1, splitter2[0]);
+
+// let month2 = dateOfPrevEval.getDate();
+// let month = dateOfEval.getDate();
+
+// console.log('month2-1', month2, month);
+
+// console.log('month',splitter[1] === "10", typeof( splitter[2] ), dateOfPrevEval, month);
+
+// let newMonth = dateOfPrevEval.getMonth() - 1;
+// console.log('new month', newMonth);
+// if (newMonth < 0) {
+//     newMonth += 12;
+//     dateOfPrevEval.setYear(dateOfPrevEval.getYear() - 1);
+// }
+
+
+
+// dateOfPrevEval.setDate(15);
+// dateOfPrevEval.setMonth(newMonth);
+// console.log('date', dateOfPrevEval);
+
+// let monthOfPrevEval = dateOfPrevEval.getMonth();
+// let yearOfPrevEval = dateOfPrevEval.getFullYear();
+
+// console.log('M-Y', monthOfPrevEval, yearOfPrevEval);
+// console.log('monthOfPre', monthOfPrevEval );
 
 // let x = new Date()
 // console.log('x', x);
@@ -116,5 +132,3 @@ console.log('monthOfPre', monthOfPrevEval );
 
 // yo.x = 9;
 // console.log('yo', t);
-
-

@@ -1555,6 +1555,8 @@ export default {
                 intermediate_degree: "Intermediate degree",
                 colleges: "Colleges",
                 university: "University",
+                engineer: "Engineer",
+                bachelor: "Bachelor",
                 master_degree: "Maste degree",
                 engineer: 'Engineer',
                 bachelor: 'Bachelor',
@@ -2726,6 +2728,7 @@ export default {
                 detail_priority: "Priority",
                 detail_status: "Status",
                 detail_time: "Working duration",
+                detail_average_results: "Average results of task",
 
                 detail_general_info: "General infomation",
                 detail_description: "Description",
@@ -2741,6 +2744,8 @@ export default {
                 detail_not_auto: "Unset automatic point",
                 detail_not_emp: "Unset employee point",
                 detail_not_acc: "Unset accountable point",
+                detail_not_coefficient: "Not by coeficient",
+                detail_coefficient: "By coeficient",
 
                 detail_not_eval_on_month: "Not evaluate this month",
                 detail_not_eval: "Nobody evaluate this month",
@@ -3078,6 +3083,8 @@ export default {
                     "Edit information unsuccessfully",
                 edit_document_task_comment_failure:
                     "Edit document unsuccessfully",
+                time_overlapping: 'Start time invalid. Overlapping time with different time sheet log',
+
 
                 // error label
                 err_require: "Field is required",
