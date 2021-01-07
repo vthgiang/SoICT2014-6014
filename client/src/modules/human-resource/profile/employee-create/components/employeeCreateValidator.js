@@ -181,9 +181,9 @@ function validateIssuedByDegree(value, translate) {
 
 function validateYearDegree(value, translate) {
     let msg = undefined;
-    if (value.trim() === "") {
-        msg = "Năm tốt nghiệp không được để trống";
-    }
+    // if (value.trim() === "") {
+    //     msg = "Năm tốt nghiệp không được để trống";
+    // }
     return msg;
 }
 

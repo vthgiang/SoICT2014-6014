@@ -218,7 +218,7 @@ class CareerEditModal extends Component {
         const { field, position, action, endDate, startDate, errorOnName, errorOnUnit, errorOnEndDate, errorOnStartDate } = this.state;
 
         let listAction = [], listPosition = [], listField = [];
-        listAction = career?.listAction.map(elm => { return { ...elm, id: elm._id } });
+        listAction = career?.listAction.filter(e => e.isLabel !== 1).map(elm => { return { ...elm, id: elm._id } });
         listPosition = career?.listPosition.map(elm => { return { ...elm, id: elm._id } });
         listField = career?.listField.map(elm => { return { ...elm, id: elm._id } });
 
@@ -262,7 +262,7 @@ class CareerEditModal extends Component {
                         <div className="row">
                             {/* Ngày cấp */}
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate && "has-error"}`}>
-                                <label>{translate('human_resource.profile.date_issued')}<span className="text-red">*</span></label>
+                                <label>Ngày bắt đầu<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`edit-start-date-${id}`}
                                     deleteValue={false}
@@ -273,7 +273,7 @@ class CareerEditModal extends Component {
                             </div>
                             {/* Ngày hết hạn */}
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate && "has-error"}`}>
-                                <label>{translate('human_resource.profile.end_date_certificate')}</label>
+                                <label>ngày kết thúc</label>
                                 <DatePicker
                                     id={`edit-end-date-${id}`}
                                     deleteValue={true}
