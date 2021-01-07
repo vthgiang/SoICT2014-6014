@@ -195,8 +195,9 @@ exports.crateNewCareerPosition = async (portal, data) => {
             let index = listAction.length;
             let action = await CareerAction(connect(DB_CONNECTION, portal)).create({
                 name: data.name,
-                code: `act_${index + 1}`,
-                position: [],
+                // code: `act_${index + 1}`,
+                code: data.code,
+                package: data.package,
             })
 
             description = await CareerPosition(connect(DB_CONNECTION, portal)).findOneAndUpdate(

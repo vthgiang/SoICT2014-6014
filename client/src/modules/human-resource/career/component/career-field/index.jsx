@@ -66,19 +66,13 @@ class CareerField extends Component {
             cancelButtonText: translate('general.no'),
             confirmButtonText: translate('general.yes'),
         }).then(result => {
-            console.log('Confirm delete');
-            this.props.deleteCareerField(deleteNode);
-            // if (result.value && careerParent.length > 1) {
-            //     // this.props.deleteDocumentArchive(careerParent, "many");
-            //     // this.setState({
-            //     //     deleteNode: []
-            //     // });
-            // } else if (result.value && careerParent.length === 1) {
-            //     // this.props.deleteDocumentArchive(careerParent, 'single');
-            //     // this.setState({
-            //     //     deleteNode: []
-            //     // });
-            // }
+            if (result.value) {
+                console.log('Confirm delete');
+                this.props.deleteCareerField(deleteNode);
+                this.setState({
+                    deleteNode: []
+                });
+            }
         })
     }
 

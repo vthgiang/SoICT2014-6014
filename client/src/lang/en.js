@@ -1555,6 +1555,8 @@ export default {
                 intermediate_degree: "Intermediate degree",
                 colleges: "Colleges",
                 university: "University",
+                engineer: "Engineer",
+                bachelor: "Bachelor",
                 master_degree: "Maste degree",
                 engineer: 'Engineer',
                 bachelor: 'Bachelor',

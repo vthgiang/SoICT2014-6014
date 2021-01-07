@@ -220,9 +220,9 @@ class CareerAddModal extends Component {
                             <label>Lĩnh vực công việc</label>
                             <TreeSelect data={listField} value={field?._id} handleChange={this.handleField} mode="radioSelect" />
                         </div>
-                        <div className="form-group">
+                        {/* <div className="form-group">
                             <label>Gói thầu: </label> {this.state.package ? this.state.package : "Chưa có"}
-                        </div>
+                        </div> */}
                         <div className="form-group">
                             <label>Vị trí công việc</label>
                             <TreeSelect data={listPosition} value={position?._id} handleChange={this.handlePosition} mode="radioSelect" />
