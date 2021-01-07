@@ -493,6 +493,7 @@ evaluationAction = async (req, res) => {
             content: taskAction
         })
     } catch (error) {
+        console.log(error)
         await Logger.error(req.user.email, ` evaluation action  `, req.portal)
         res.status(400).json({
             success: false,
