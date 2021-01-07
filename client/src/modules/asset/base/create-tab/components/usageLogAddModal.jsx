@@ -85,10 +85,9 @@ class UsageLogAddModal extends Component {
     handleEndDateChange = (value) => {
         const { translate } = this.props;
         let { message } = ValidationHelper.validateEmpty(translate, value);
-
         this.setState({
             endDate: value,
-            errorOnEndDate: message,
+            errorOnEndDate: this.props.typeRegisterForUse == 3 ? undefined : message,
         })
     }
 
@@ -118,7 +117,7 @@ class UsageLogAddModal extends Component {
         if ((!ValidationHelper.validateName(translate, usedByUser).status &&
             !ValidationHelper.validateName(translate, usedByOrganizationalUnit).status)
             || !ValidationHelper.validateName(translate, startDate).status
-            || !ValidationHelper.validateName(translate, endDate).status)
+            || (this.props.typeRegisterForUse != 3 && !ValidationHelper.validateName(translate, endDate).status))
             return false;
         return true;
     }
@@ -136,13 +135,18 @@ class UsageLogAddModal extends Component {
             startDate = [partStart[2], partStart[1], partStart[0]].join('-');
         }
 
-        partEnd = this.state.endDate.split('-');
-        if (this.state.stopTime != "") {
-            let date = [partEnd[2], partEnd[1], partEnd[0]].join('-');
-            endDate = [date, this.state.stopTime].join(' ')
+        if (this.state.endDate) {
+            partEnd = this.state.endDate.split('-');
+            if (this.state.stopTime != "") {
+                let date = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+                endDate = [date, this.state.stopTime].join(' ')
+            } else {
+                endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+            }
         } else {
-            endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+            endDate = undefined
         }
+
 
         if (this.state.usedByUser === '') {
             await this.setState({
@@ -243,7 +247,7 @@ class UsageLogAddModal extends Component {
 
                             {/* Thời gian kết thúc sử dụng */}
                             <div className={`form-group ${!errorOnEndDate ? "" : "has-error"}`}>
-                                <label>{translate('asset.general_information.handover_to_date')}<span className="text-red">*</span></label>
+                                <label>{translate('asset.general_information.handover_to_date')}{this.props.typeRegisterForUse != 3 && <span className="text-red">*</span>}</label>
                                 <DatePicker
                                     id={`add-end-date-${id}`}
                                     value={endDate}

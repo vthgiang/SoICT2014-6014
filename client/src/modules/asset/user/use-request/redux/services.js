@@ -20,7 +20,8 @@ function searchRecommendDistributes(data) {
             approver: data.approver,
             page: data.page,
             limit: data.limit,
-            managedBy: data.managedBy
+            managedBy: data.managedBy,
+            codeAsset: data.codeAsset
         },
     }, false, true, 'asset.use_request');
 }
