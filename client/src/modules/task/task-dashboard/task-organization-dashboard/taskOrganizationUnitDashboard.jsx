@@ -9,6 +9,7 @@ import { DistributionOfEmployee } from './distributionOfEmployee';
 import { DomainOfTaskResultsChart } from '../task-personal-dashboard/domainOfTaskResultsChart';
 import { TaskStatusChart } from '../task-personal-dashboard/taskStatusChart';
 import { CalendarOrganizationUnit } from './calendarOrganizationUnit';
+import { WeightTaskOrganizationChart } from './weightTaskOrganizationChart';
 
 import { withTranslate } from 'react-redux-multilingual';
 import { SelectMulti, DatePicker } from '../../../../common-components/index';
@@ -204,6 +205,8 @@ class TaskOrganizationUnitDashboard extends Component {
         let childrenOrganizationalUnit = [];
         let currentOrganizationalUnit, currentOrganizationalUnitLoading;
 
+
+
         if (dashboardEvaluationEmployeeKpiSet) {
             currentOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
             currentOrganizationalUnitLoading = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnitLoading;
@@ -246,7 +249,6 @@ class TaskOrganizationUnitDashboard extends Component {
 
         let defaultStartMonth = [startMonthDefault, startYear].join('-');
         let defaultEndMonth = month < 10 ? ['0' + month, year].join('-') : [month, year].join('-');
-
         return (
             <React.Fragment>
                 {currentOrganizationalUnit
@@ -441,6 +443,27 @@ class TaskOrganizationUnitDashboard extends Component {
                                 </div>
                             </div>
 
+                        </div>
+                        <div className="row">
+                            <div className="col-xs-12">
+                                <div className="box box-primary">
+                                    <div className="box-header with-border">
+                                        <div className="box-title">Dashboard tải công việc của đơn vị {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+                                    </div>
+                                    <div className="box-body qlcv">
+                                        {this.state.callAction && tasks && tasks.organizationUnitTasks &&
+                                            <WeightTaskOrganizationChart
+                                                tasks={tasks.organizationUnitTasks}
+                                                listEmployee={user && user.employees}
+                                                units={childrenOrganizationalUnit}
+                                                startMonth={startMonth}
+                                                endMonth={endMonth}
+                                                idsUnit={this.state.idsUnit}
+                                            />
+                                        }
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </React.Fragment>
                     : currentOrganizationalUnitLoading

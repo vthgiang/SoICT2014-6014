@@ -210,7 +210,6 @@ class TaskDashboard extends Component {
         let amountResponsibleTask = 0, amountTaskCreated = 0, amountAccountableTasks = 0, amountConsultedTasks = 0;
         let numTask = [];
         let totalTasks = 0;
-        console.log('taskkkkkkkkkkk', tasks);
         // Tinh so luong tat ca cac task 
         if (tasks && tasks.responsibleTasks) {
             let task = tasks.responsibleTasks;
