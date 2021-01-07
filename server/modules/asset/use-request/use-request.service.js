@@ -84,9 +84,16 @@ exports.searchUseRequests = async (portal, company, query) => {
         .populate({ path: 'asset proponent approver' }).sort({ 'createdAt': 'desc' })
         .skip(page ? parseInt(page) : 0)
         .limit(limit ? parseInt(limit) : 0);
+
     if (managedBy) {
-        let tempListRecommendDistributes = listRecommendDistributes.filter(item => item.asset && item.asset.managedBy && item.asset.managedBy.toString() === managedBy);
-        listRecommendDistributes = tempListRecommendDistributes;
+        listRecommendDistributes = await RecommendDistribute(connect(DB_CONNECTION, portal)).find(keySearch)
+            .populate({ path: 'asset proponent approver' }).sort({ 'createdAt': 'desc' });
+
+        let tempListRecommendDistributes = listRecommendDistributes.filter(item =>
+            item.asset && item.asset.managedBy && item.asset.managedBy.toString() === managedBy);
+
+        listRecommendDistributes = tempListRecommendDistributes.length && tempListRecommendDistributes.slice(page, page + limit);
+        totalList = listRecommendDistributes.length;
     }
 
     return { totalList, listRecommendDistributes };
