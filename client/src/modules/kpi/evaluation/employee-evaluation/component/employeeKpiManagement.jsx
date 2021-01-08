@@ -22,18 +22,38 @@ class EmployeeKpiManagement extends Component {
         let currentYear = currentDate.getFullYear();
         let currentMonth = currentDate.getMonth();
 
+        let d = new Date(),
+            month = d.getMonth() + 1,
+            year = d.getFullYear();
+        let startMonth, endMonth, startYear;
+
+        if (month > 1) {
+            startMonth = month - 1;
+            startYear = year;
+        } else {
+            startMonth = month - 1 + 12;
+            startYear = year - 1;
+        }
+        if (startMonth < 10)
+            startMonth = '0' + startMonth;
+        if (month < 10) {
+            endMonth = '0' + month;
+        } else {
+            endMonth = month;
+        }
+
         this.state = {
             commenting: false,
             userId: '',
             status: -1,
-            startDate: currentMonth !== 0 ? ((currentMonth <= 9) ? (currentYear + '-0' + currentMonth) : (currentYear + '-' + currentMonth)) : ((currentYear - 1) + '-' + 12),
-            endDate: (currentMonth < 9) ? (currentYear + '-0' + currentMonth + 1) : (currentYear + '-' + (currentMonth + 1)),
+            startDate: [startYear, startMonth].join('-'),
+            endDate: [year, endMonth].join('-'),
             infosearch: {
                 role: localStorage.getItem("currentRole"),
                 user: '',
                 status: -1,
-                startDate: currentMonth !== 0 ? ((currentMonth <= 9) ? (currentYear + '-0' + currentMonth) : (currentYear + '-' + currentMonth)) : ((currentYear - 1) + '-' + 12),
-                endDate: (currentMonth < 9) ? (currentYear + '-0' + currentMonth + 1) : (currentYear + '-' + (currentMonth + 1)),
+                startDate: [startYear, startMonth].join('-'),
+                endDate: [year, endMonth].join('-'),
             },
             showApproveModal: null,
             showEvaluateModal: null,
