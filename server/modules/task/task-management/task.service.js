@@ -2407,22 +2407,24 @@ exports.getTaskAnalysOfUser = async (portal, userId, type) => {
 exports.getUserTimeSheet = async (portal, userId, month, year) => {
     console.log("my", month, year)
     let beginOfMonth = new Date(`${year}-${month}`);
-    let beginOfNextMonth = new Date(year, month);
+    let endOfMonth = new Date(year, month);
+    console.log("aa", beginOfMonth, endOfMonth)
     let tasks = await Task(connect(DB_CONNECTION, portal))
         .find({
             "timesheetLogs.creator": userId,
-            "timesheetLogs.startedAt": { $gte: beginOfMonth, $lt: beginOfNextMonth },
-            "timesheetLogs.stoppedAt": { $exists: true }
+            "timesheetLogs.startedAt": { $exists: true },
+            "timesheetLogs.startedAt": { $gte: beginOfMonth },
+            "timesheetLogs.stoppedAt": { $exists: true },
+            "timesheetLogs.stoppedAt": { $lte: endOfMonth }
         });
     console.log("TASKS", tasks)
+
     let timesheetlogs = [];
     for(let i=0; i<tasks.length; i++){
         let ts = tasks[i].timesheetLogs;
-        console.log("TASK", ts)
         if(Array.isArray(ts)){
             for(let j=0; j<ts.length; j++){
                 let tslogs = ts[j];
-                console.log("TSSSS", tslogs)
                 if(tslogs.creator.toString() === userId.toString()){
                     timesheetlogs.push(tslogs);
                 }

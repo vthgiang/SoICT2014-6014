@@ -490,7 +490,7 @@ exports.stopTimesheetLog = async (portal, params, body) => {
                     },
                 ],
             },
-            { path: "timesheetLogs.creator", select: "name" },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",
