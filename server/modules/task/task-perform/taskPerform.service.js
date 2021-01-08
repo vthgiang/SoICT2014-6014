@@ -389,6 +389,148 @@ exports.startTimesheetLog = async (portal, params, body) => {
 };
 
 /**
+ * Chỉnh sửa lịch sử bấm giờ
+ */
+exports.editTimeSheetLog = async(portal, taskId, timesheetlogId, data) => {
+    await Task(connect(DB_CONNECTION, portal))
+        .updateOne({
+            "_id": taskId,
+            "timesheetLogs._id": timesheetlogId
+        },{
+            $set: {
+                "timesheetLogs.$[i].acceptLog": data.acceptLog
+            },
+        },{
+            arrayFilters: [
+                {
+                    "i._id": timesheetlogId
+                },
+            ],
+        });
+
+    return await Task(connect(DB_CONNECTION, portal))
+    .findById(taskId)
+    .populate([
+        { path: "parent", select: "name" },
+        { path: "taskTemplate", select: "formula" },
+        { path: "organizationalUnit" },
+        { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
+        {
+            path:
+                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+            select: "name email _id active avatar",
+        },
+        {
+            path: "evaluations.results.employee",
+            select: "name email _id active",
+        },
+        {
+            path: "evaluations.results.organizationalUnit",
+            select: "name _id",
+        },
+        { path: "evaluations.results.kpis" },
+        { path: "taskActions.creator", select: "name email avatar" },
+        {
+            path: "taskActions.comments.creator",
+            select: "name email avatar",
+        },
+        { path: "commentsInProcess.creator", select: "name email avatar" },
+        {
+            path: "commentsInProcess.comments.creator",
+            select: "name email avatar",
+        },
+        {
+            path: "taskActions.evaluations.creator",
+            select: "name email avatar ",
+        },
+        { path: "taskComments.creator", select: "name email avatar" },
+        {
+            path: "taskComments.comments.creator",
+            select: "name email avatar",
+        },
+        { path: "documents.creator", select: "name email avatar" },
+        { path: "followingTasks.task" },
+        {
+            path: "preceedingTasks.task",
+            populate: [
+                {
+                    path: "commentsInProcess.creator",
+                    select: "name email avatar",
+                },
+                {
+                    path: "commentsInProcess.comments.creator",
+                    select: "name email avatar",
+                },
+            ],
+        },
+        { path: "timesheetLogs.creator", select: "name avatar _id email" },
+        { path: "hoursSpentOnTask.contributions.employee", select: "name" },
+        {
+            path: "process",
+            populate: {
+                path: "tasks",
+                populate: [
+                    { path: "parent", select: "name" },
+                    { path: "taskTemplate", select: "formula" },
+                    { path: "organizationalUnit" },
+                    {
+                        path:
+                            "collaboratedWithOrganizationalUnits.organizationalUnit",
+                    },
+                    {
+                        path:
+                            "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                        select: "name email _id active avatar",
+                    },
+                    {
+                        path: "evaluations.results.employee",
+                        select: "name email _id active",
+                    },
+                    {
+                        path: "evaluations.results.organizationalUnit",
+                        select: "name _id",
+                    },
+                    { path: "evaluations.results.kpis" },
+                    {
+                        path: "taskActions.creator",
+                        select: "name email avatar",
+                    },
+                    {
+                        path: "taskActions.comments.creator",
+                        select: "name email avatar",
+                    },
+                    {
+                        path: "taskActions.evaluations.creator",
+                        select: "name email avatar ",
+                    },
+                    {
+                        path: "taskComments.creator",
+                        select: "name email avatar",
+                    },
+                    {
+                        path: "taskComments.comments.creator",
+                        select: "name email avatar",
+                    },
+                    {
+                        path: "documents.creator",
+                        select: "name email avatar",
+                    },
+                    { path: "process" },
+                    {
+                        path: "commentsInProcess.creator",
+                        select: "name email avatar",
+                    },
+                    {
+                        path: "commentsInProcess.comments.creator",
+                        select: "name email avatar",
+                    },
+                ],
+            },
+        },
+    ]);
+}
+
+/**
  * Dừng bấm giờ: Lưu thời gian kết thúc và số giờ chạy (endTime và time)
  */
 exports.stopTimesheetLog = async (portal, params, body) => {

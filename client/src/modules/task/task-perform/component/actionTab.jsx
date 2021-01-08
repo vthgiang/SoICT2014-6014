@@ -20,8 +20,6 @@ import { ViewProcess } from '../../task-process/component/task-process-managemen
 import { IncomingDataTab } from './incomingDataTab';
 import { OutgoingDataTab } from './outgoingDataTab';
 import parse from 'html-react-parser';
-import { some } from 'lodash'
-import { translate } from 'react-redux-multilingual/lib/utils';
 
 
 class ActionTab extends Component {
@@ -1756,7 +1754,37 @@ class ActionTab extends Component {
                                             </div>
                                             <div>
                                                 <i className={`${item.autoStopped ? 'text-red fa fa-clock-o' : 'text-green fa fa-hand-pointer-o'}`}> {item.autoStopped ? 'Tự động' : 'Tắt bằng tay'}</i><br />
-                                                <i className={`${item.acceptLog ? 'text-green fa fa-check' : 'text-red fa fa-close'}`}> {item.acceptLog ? 'Được chấp nhận' : 'Không được chấp nhận'}</i>
+                                                {
+                                                    role === "accountable" ?
+                                                        (
+                                                            <React.Fragment>
+                                                                <i className={`${item.acceptLog ? 'text-green fa fa-check' : 'text-red fa fa-close'}`}> {item.acceptLog ? 'Được chấp nhận' : 'Không được chấp nhận'}</i>
+                                                                <a
+                                                                    style={{ cursor: 'pointer', marginLeft: 10, fontWeight: 'bold' }}
+                                                                    className={item.acceptLog ? 'text-red' : 'text-green'}
+                                                                    onClick={
+                                                                        item.acceptLog ?
+                                                                            () => {
+                                                                                console.log("Hủy duyệt bấm giờ");
+                                                                                this.props.editTimeSheetLog(this.state.id, item._id, {
+                                                                                    acceptLog: false
+                                                                                })
+                                                                            } :
+                                                                            () => {
+                                                                                console.log("Chấp nhận bấm giờ")
+                                                                                this.props.editTimeSheetLog(this.state.id, item._id, {
+                                                                                    acceptLog: true
+                                                                                })
+                                                                            }
+                                                                    }
+                                                                >
+                                                                    [ {item.acceptLog ? 'Hủy' : 'Chấp nhận'} ]
+                                                                </a>
+                                                            </React.Fragment>
+                                                        ) : (
+                                                            <i className={`${item.acceptLog ? 'text-green fa fa-check' : 'text-red fa fa-close'}`}> {item.acceptLog ? 'Được chấp nhận' : 'Không được chấp nhận'}</i>
+                                                        )
+                                                }
                                             </div>
                                             <div>
                                                 <i className="fa fa-edit"></i>
@@ -1848,6 +1876,7 @@ const actionCreators = {
     deleteTaskAction: performTaskAction.deleteTaskAction,
     startTimer: performTaskAction.startTimerTask,
     stopTimer: performTaskAction.stopTimerTask,
+    editTimeSheetLog: performTaskAction.editTimeSheetLog,
     getTimesheetLogs: performTaskAction.getTimesheetLogs,
     getStatusTimer: performTaskAction.getTimerStatusTask,
     editTaskComment: performTaskAction.editTaskComment,

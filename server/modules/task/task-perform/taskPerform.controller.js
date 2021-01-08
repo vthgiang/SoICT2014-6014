@@ -112,6 +112,31 @@ exports.stopTimesheetLog = async (req, res) => {
         })
     }
 }
+
+/**
+ * 
+ * Sửa lịch sửa bấm giờ
+ */
+exports.editTimeSheetLog = async (req, res) => {
+    try {
+        let {taskId, timesheetlogId} = req.params;
+        let timer = await PerformTaskService.editTimeSheetLog(req.portal, taskId, timesheetlogId, req.body);
+        await Logger.info(req.user.email, 'edit_time_sheet_log_success', req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['edit_time_sheet_log_success'],
+            content: timer
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, 'edit_time_sheet_log_faile', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['edit_time_sheet_log_fail'],
+            content: error
+        })
+    }
+}
+
 /**
  *  Tạo hoạt động
  */

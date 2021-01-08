@@ -8,6 +8,7 @@ export const performTaskService = {
     getTimerStatusTask,
     startTimerTask,
     stopTimerTask,
+    editTimeSheetLog,
 
     createActionComment,
     deleteActionComment,
@@ -112,6 +113,17 @@ function startTimerTask(taskId, newTimer) {
         method: 'POST',
         data: newTimer,
     }, false, false, 'task.task_perform');
+}
+
+/**
+ * Chỉnh sửa lịch sử bấm giờ
+ */
+function editTimeSheetLog(taskId, timesheetlogId, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/timesheet-logs/${timesheetlogId}`,
+        method: 'PATCH',
+        data
+    }, false, true, 'task.task_perform');
 }
 
 /**
