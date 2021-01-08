@@ -528,7 +528,7 @@ class TaskManagement extends Component {
                 if (dataTemp[0].isArchived === true) {
                     archived = "restore";
                 }
-                if (dataTemp[n].creator._id === userId || dataTemp[n].informedEmployees.indexOf(userId) !== -1) {
+                if (dataTemp[n].creator && dataTemp[n].creator._id === userId || dataTemp[n].informedEmployees.indexOf(userId) !== -1) {
                     let del = null;
                     if (dataTemp[n].creator._id === userId) {
                         del = "delete";

@@ -18,7 +18,7 @@ class QuillEditor extends Component {
     }
   
     componentDidMount = () => {
-        const { id, isText = false, quillValueDefault, fileUrls, toolbar = true, enableEdit = true, imageDropAndPaste = true, placeholder = null } = this.props;
+        const { id, isText = false, quillValueDefault, fileDefault, toolbar = true, enableEdit = true, placeholder = null } = this.props;
         if (!isText) {
             // Khởi tạo Quill Editor trong thẻ có id = id truyền vào
             const quill = window.initializationQuill(`#editor-container${id}`, configQuillEditor(id, toolbar, enableEdit, placeholder));
@@ -28,13 +28,13 @@ class QuillEditor extends Component {
                 if (quill && quill.container && quill.container.firstChild) {
                     quill.container.firstChild.innerHTML = quillValueDefault;
                 } 
-                if (fileUrls) {
+                if (fileDefault) {
                     let imgs = Array.from(
                         quill.container.querySelectorAll('img[src]')
                     );
                     if (imgs && imgs.length !== 0) {
                         imgs = imgs.map((item, index) => {
-                            item.src = fileUrls[index];
+                            item.src = fileDefault[index];
                             return item;
                         })
                     }
@@ -88,7 +88,7 @@ class QuillEditor extends Component {
     }
 
     componentDidUpdate = () => {
-        const { quillValueDefault, fileUrls } = this.props;
+        const { quillValueDefault, fileDefault } = this.props;
         const { quill } = this.state;
 
         // Insert value ban đầu
@@ -97,13 +97,13 @@ class QuillEditor extends Component {
             if (quill && quill.container && quill.container.firstChild) {
                 quill.container.firstChild.innerHTML = quillValueDefault;
             }  
-            if (fileUrls) {
+            if (fileDefault) {
                 let imgs = Array.from(
                     quill.container.querySelectorAll('img[src]')
                 );
                 if (imgs && imgs.length !== 0) {
                     imgs = imgs.map((item, index) => {
-                        item.src = fileUrls[index];
+                        item.src = fileDefault[index];
                         return item;
                     })
                 }

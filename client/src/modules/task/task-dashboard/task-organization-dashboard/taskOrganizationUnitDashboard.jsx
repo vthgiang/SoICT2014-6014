@@ -37,7 +37,7 @@ class TaskOrganizationUnitDashboard extends Component {
         }
         if (startMonth < 10)
             startMonth = '0' + startMonth;
-        if (month < 9) {
+        if (month < 10) {
             endMonth = '0' + month;
         } else {
             endMonth = month;
@@ -46,10 +46,10 @@ class TaskOrganizationUnitDashboard extends Component {
             idsUnit: [],
             checkUnit: 0,
             startMonth: [startYear, startMonth].join('-'),
-            endMonth: month === 12 ? [year + 1, '01'].join('-') : [year, endMonth].join('-'),
+            endMonth: [year, endMonth].join('-'),
 
             startMonthTitle: [startMonth, startYear].join('-'),
-            endMonthTitle: month < 10 ? ['0' + month, year].join('-') : [month, year].join('-'),
+            endMonthTitle: [endMonth, year].join('-'),
         }
 
         this.state = {

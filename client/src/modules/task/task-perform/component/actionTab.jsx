@@ -55,40 +55,47 @@ class ActionTab extends Component {
             newAction: {
                 creator: idUser,
                 description: "",
-                files: []
+                files: [],
+                descriptionDefault: ""
             },
             newActionEdited: {
                 creator: idUser,
                 description: "",
-                files: []
+                files: [],
+                descriptionDefault: ""
             },
             newCommentOfAction: {
                 // creator: idUser,
                 // description: "",
                 // files: [],
-                // taskActionId: null
+                // taskActionId: null,
+                descriptionDefault: ""
             },
             newCommentOfActionEdited: {
                 creator: idUser,
                 description: "",
-                files: []
+                files: [],
+                descriptionDefault: ""
             },
             newTaskComment: {
                 creator: idUser,
                 description: "",
-                files: []
+                files: [],
+                descriptionDefault: ""
             },
             newTaskCommentEdited: {
                 creator: idUser,
                 description: "",
-                files: []
+                files: [],
+                descriptionDefault: ""
             },
             newCommentOfTaskComment: {
             },
             newCommentOfTaskCommentEdited: {
                 creator: idUser,
                 description: "",
-                files: []
+                files: [],
+                descriptionDefault: ""
             },
             showEdit: false,
             timer: {
@@ -150,6 +157,7 @@ class ActionTab extends Component {
             // Trường hợp thêm mới hoạt động
             if (notifications.associatedData.dataType === "createTaskAction") {
                 const res = [...taskActions, notifications.associatedData.value[0]];
+                console.log("noti", notifications.associatedData.value[0])
                 props.refreshDataAfterCreateAction(res)
             }
 
@@ -162,9 +170,10 @@ class ActionTab extends Component {
         }
 
         if (performtasks.task) {
-            state = Object.assign(prevState, { taskActions: performtasks.task.taskActions })
+            console.log("descriptionDefault", prevState.newActionEdited.descriptionDefault)
             return {
-                state
+                ...prevState,
+                taskActions: performtasks.task.taskActions
             }
         }
         else {
@@ -318,7 +327,10 @@ class ActionTab extends Component {
     //Thêm mới hoạt động
     submitAction = async (taskId, index) => {
         let { newAction } = this.state;
+
+        console.log(newAction.descriptionDefault, newAction.description)
         const data = new FormData();
+
         data.append("creator", newAction.creator);
         data.append("description", newAction.description);
         data.append("index", index)
@@ -330,13 +342,14 @@ class ActionTab extends Component {
             this.props.createTaskAction(taskId, data);
         }
         // Reset state cho việc thêm mới action
-        await this.setState(state => {
+        this.setState(state => {
             return {
                 ...state,
                 newAction: {
                     ...state.newAction,
                     description: "",
                     files: [],
+                    descriptionDefault: ''
                 },
             }
         })
@@ -391,7 +404,7 @@ class ActionTab extends Component {
         })
     }
 
-    handleUploadFile = async (taskId, creator) => {
+    handleUploadFile = (taskId, creator) => {
         const data = new FormData();
         let { taskFiles } = this.state;
         taskFiles.files.forEach(x => {
@@ -403,7 +416,7 @@ class ActionTab extends Component {
             this.props.uploadFile(taskId, data);
         }
         // Reset state cho việc thêm mới bình luận
-        await this.setState(state => {
+        this.setState(state => {
             return {
                 ...state,
                 taskFiles: {
@@ -426,21 +439,29 @@ class ActionTab extends Component {
         });
     }
 
-    handleEditActionComment = async (id) => {
-        await this.setState(state => {
+    handleEditActionComment = (actionComent) => {
+        this.setState(state => {
             return {
                 ...state,
-                editComment: id
+                editComment: actionComent._id,
+                newCommentOfActionEdited: {
+                    ...state.newCommentOfActionEdited,
+                    descriptionDefault: actionComent.description
+                }
             }
         })
     }
 
-    handleEditAction = async (id) => {
-
-        await this.setState(state => {
+    handleEditAction = async (item) => {
+        console.log(item)
+        this.setState(state => {
             return {
                 ...state,
-                editAction: id
+                editAction: item._id,
+                newActionEdited: {
+                    ...state.newActionEdited,
+                    descriptionDefault: item.description
+                }
             }
         })
     }
@@ -471,14 +492,15 @@ class ActionTab extends Component {
         if (newActionEdited.description || newActionEdited.files) {
             this.props.editTaskAction(id, data, taskId);
         }
-        await this.setState(state => {
+        this.setState(state => {
             return {
                 ...state,
                 editAction: "",
                 newActionEdited: {
                     ...state.newActionEdited,
                     files: [],
-                    description: ""
+                    description: "",
+                    descriptionDefault: null
                 }
             }
         })
@@ -536,7 +558,8 @@ class ActionTab extends Component {
                 newCommentOfActionEdited: {
                     ...state.newCommentOfActionEdited,
                     description: "",
-                    files: []
+                    files: [],
+                    descriptionDefault: ""
                 },
                 editComment: ""
             }
@@ -1034,7 +1057,7 @@ class ActionTab extends Component {
                                                                                 <i className="fa fa-ellipsis-h"></i>
                                                                             </span>
                                                                             <ul className="dropdown-menu">
-                                                                                <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditAction(item._id)} >{translate("task.task_perform.edit_action")}</a></li>
+                                                                                <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditAction(item)} >{translate("task.task_perform.edit_action")}</a></li>
                                                                                 <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteTaskAction(item._id, task._id)} >{translate("task.task_perform.delete_action")}</a></li>
                                                                             </ul>
                                                                         </React.Fragment>
@@ -1140,16 +1163,16 @@ class ActionTab extends Component {
                                                         <React.Fragment>
                                                             <div>
                                                                 <ContentMaker
+                                                                    idQuill={`edit-action-${item._id}`}
                                                                     inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
                                                                     onFilesChange={this.onEditActionFilesChange}
                                                                     onFilesError={this.onFilesError}
                                                                     files={newActionEdited.files}
-                                                                    defaultValue={item.description}
+                                                                    defaultValue={newActionEdited.descriptionDefault}
                                                                     submitButtonText={translate("task.task_perform.save_edit")}
                                                                     cancelButtonText={translate("task.task_perform.cancel")}
-                                                                    handleEdit={(e) => this.handleEditAction(e)}
-                                                                    onTextChange={(e) => {
-                                                                        let value = e.target.value;
+                                                                    handleEdit={(item) => this.handleEditAction(item)}
+                                                                    onTextChange={(value, imgs) => {
                                                                         this.setState(state => {
                                                                             return { ...state, newActionEdited: { ...state.newActionEdited, description: value } }
                                                                         })
@@ -1182,7 +1205,7 @@ class ActionTab extends Component {
                                                                                 {child.description.split('\n').map((item, idx) => {
                                                                                     return (
                                                                                         <span key={idx}>
-                                                                                            {item}
+                                                                                            {parse(item)}
                                                                                             <br />
                                                                                         </span>
                                                                                     );
@@ -1194,7 +1217,7 @@ class ActionTab extends Component {
                                                                                             <i className="fa fa-ellipsis-h"></i>
                                                                                         </span>
                                                                                         <ul className="dropdown-menu">
-                                                                                            <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditActionComment(child._id)} >{translate("task.task_perform.edit_comment")}</a></li>
+                                                                                            <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditActionComment(child)} >{translate("task.task_perform.edit_comment")}</a></li>
                                                                                             <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteActionComment(task._id, item._id, child._id)} >{translate("task.task_perform.delete_comment")}</a></li>
                                                                                         </ul>
                                                                                     </div>}
@@ -1234,16 +1257,16 @@ class ActionTab extends Component {
                                                                         <React.Fragment>
                                                                             <div>
                                                                                 <ContentMaker
+                                                                                    idQuill={`edit-comment-${child._id}`}
                                                                                     inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                                                     onFilesChange={this.onEditCommentOfActionFilesChange}
                                                                                     onFilesError={this.onFilesError}
                                                                                     files={newCommentOfActionEdited.files}
-                                                                                    defaultValue={child.description}
+                                                                                    defaultValue={newCommentOfActionEdited.descriptionDefault}
                                                                                     submitButtonText={translate("task.task_perform.save_edit")}
                                                                                     cancelButtonText={translate("task.task_perform.cancel")}
                                                                                     handleEdit={(e) => this.handleEditActionComment(e)}
-                                                                                    onTextChange={(e) => {
-                                                                                        let value = e.target.value;
+                                                                                    onTextChange={(value, imgs) => {
                                                                                         this.setState(state => {
                                                                                             return { ...state, newCommentOfActionEdited: { ...state.newCommentOfActionEdited, description: value } }
                                                                                         })
@@ -1272,6 +1295,8 @@ class ActionTab extends Component {
                                                                     src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar"
                                                                 />
                                                                 <ContentMaker
+                                                                    idQuill="add-comment-action"
+                                                                    imageDropAndPasteQuill={false}
                                                                     inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                                     onFilesChange={(files) => this.onCommentFilesChange(files, item._id)}
                                                                     onFilesError={this.onFilesError}
@@ -1279,8 +1304,7 @@ class ActionTab extends Component {
                                                                     text={newCommentOfAction[`${item._id}`]?.description}
                                                                     placeholder={translate("task.task_perform.enter_comment_action")}
                                                                     submitButtonText={translate("task.task_perform.create_comment_action")}
-                                                                    onTextChange={(e) => {
-                                                                        let value = e.target.value;
+                                                                    onTextChange={(value, imgs) => {
                                                                         this.setState(state => {
                                                                             state.newCommentOfAction[`${item._id}`] = {
                                                                                 ...state.newCommentOfAction[`${item._id}`],
@@ -1306,7 +1330,7 @@ class ActionTab extends Component {
                             }
                             {/* Thêm hoạt động cho công việc*/}
                             {showSort ?
-                                <div class="row" style={{ marginTop: 20 }}>
+                                <div className="row" style={{ marginTop: 20 }}>
                                     <div className="col-xs-6">
                                         <button type="button" className={`btn btn-block`} onClick={() => this.cancelSort()}>Hủy</button>
                                     </div>
@@ -1324,17 +1348,17 @@ class ActionTab extends Component {
                                         <React.Fragment>
                                             <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
                                             <ContentMaker
+                                                idQuill="add-action"
                                                 inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
                                                 onFilesChange={this.onActionFilesChange}
                                                 onFilesError={this.onFilesError}
                                                 files={newAction.files}
-                                                text={newAction.description}
+                                                text={newAction.descriptionDefault}
                                                 placeholder={translate("task.task_perform.enter_action")}
                                                 submitButtonText={translate("task.task_perform.create_action")}
-                                                onTextChange={(e) => {
-                                                    let value = e.target.value;
+                                                onTextChange={(value, imgs) => {
                                                     this.setState(state => {
-                                                        return { ...state, newAction: { ...state.newAction, description: value } }
+                                                        return { ...state, newAction: { ...state.newAction, description: value, descriptionDefault: null } }
                                                     })
                                                 }}
                                                 onSubmit={(e) => { this.submitAction(task._id, taskActions.length) }}
@@ -1358,7 +1382,7 @@ class ActionTab extends Component {
                                                         {item.description.split('\n').map((item, idx) => {
                                                             return (
                                                                 <span key={idx}>
-                                                                    {item}
+                                                                    {parse(item)}
                                                                     <br />
                                                                 </span>
                                                             );
@@ -1411,6 +1435,7 @@ class ActionTab extends Component {
                                                 <React.Fragment>
                                                     <div>
                                                         <ContentMaker
+                                                            idQuill={`edit-content-${item._id}`}
                                                             inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
                                                             onFilesChange={this.onEditTaskCommentFilesChange}
                                                             onFilesError={this.onFilesError}
@@ -1419,8 +1444,7 @@ class ActionTab extends Component {
                                                             submitButtonText={translate("task.task_perform.save_edit")}
                                                             cancelButtonText={translate("task.task_perform.cancel")}
                                                             handleEdit={(e) => this.handleEditTaskComment(e)}
-                                                            onTextChange={(e) => {
-                                                                let value = e.target.value;
+                                                            onTextChange={(value, imgs) => {
                                                                 this.setState(state => {
                                                                     return { ...state, newTaskCommentEdited: { ...state.newTaskCommentEdited, description: value } }
                                                                 })
@@ -1453,7 +1477,7 @@ class ActionTab extends Component {
                                                                         {child.description.split('\n').map((item, idx) => {
                                                                             return (
                                                                                 <span key={idx}>
-                                                                                    {item}
+                                                                                    {parse(item)}
                                                                                     <br />
                                                                                 </span>
                                                                             );
@@ -1505,6 +1529,7 @@ class ActionTab extends Component {
                                                                 <React.Fragment>
                                                                     <div>
                                                                         <ContentMaker
+                                                                            idQuill={`edit-child-comment-${child._id}`}
                                                                             inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                                             onFilesChange={this.onEditCommentOfTaskCommentFilesChange}
                                                                             onFilesError={this.onFilesError}
@@ -1513,8 +1538,7 @@ class ActionTab extends Component {
                                                                             submitButtonText={translate("task.task_perform.save_edit")}
                                                                             cancelButtonText={translate("task.task_perform.cancel")}
                                                                             handleEdit={(e) => this.handleEditCommentOfTaskComment(e)}
-                                                                            onTextChange={(e) => {
-                                                                                let value = e.target.value;
+                                                                            onTextChange={(value, imgs) => {
                                                                                 this.setState(state => {
                                                                                     return { ...state, newCommentOfTaskCommentEdited: { ...state.newCommentOfTaskCommentEdited, description: value } }
                                                                                 })
@@ -1541,6 +1565,7 @@ class ActionTab extends Component {
                                                     <div>
                                                         <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
                                                         <ContentMaker
+                                                            idQuill="add-child-comment"
                                                             inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                             onFilesChange={(files) => this.onCommentOfTaskCommentFilesChange(item._id, files)}
                                                             onFilesError={this.onFilesError}
@@ -1548,8 +1573,7 @@ class ActionTab extends Component {
                                                             text={newCommentOfTaskComment[`${item._id}`]?.description}
                                                             placeholder={translate("task.task_perform.enter_comment")}
                                                             submitButtonText={translate("task.task_perform.create_comment")}
-                                                            onTextChange={(e) => {
-                                                                let value = e.target.value;
+                                                            onTextChange={(value, imgs) => {
                                                                 this.setState(state => {
                                                                     state.newCommentOfTaskComment[`${item._id}`] = {
                                                                         ...state.newCommentOfTaskComment[`${item._id}`],
@@ -1571,6 +1595,7 @@ class ActionTab extends Component {
                             {/* Thêm bình luận cho công việc*/}
                             <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="User Image" />
                             <ContentMaker
+                                idQuill="add-comment-task"
                                 inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
                                 onFilesChange={this.onTaskCommentFilesChange}
                                 onFilesError={this.onFilesError}
@@ -1578,8 +1603,7 @@ class ActionTab extends Component {
                                 text={newTaskComment.description}
                                 placeholder={translate("task.task_perform.enter_comment")}
                                 submitButtonText={translate("task.task_perform.create_comment")}
-                                onTextChange={(e) => {
-                                    let value = e.target.value;
+                                onTextChange={(value, imgs) => {
                                     this.setState(state => {
                                         return { ...state, newTaskComment: { ...state.newTaskComment, description: value } }
                                     })
@@ -1654,6 +1678,7 @@ class ActionTab extends Component {
                                                         <div style={{ marginTop: '15px' }}>
                                                             <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
                                                             <ContentMaker
+                                                                idQuill={`edit-file-${item._id}`}
                                                                 inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
                                                                 onFilesChange={this.onEditFileTask}
                                                                 onFilesError={this.onFilesError}
@@ -1662,8 +1687,7 @@ class ActionTab extends Component {
                                                                 submitButtonText={translate("task.task_perform.save_edit")}
                                                                 cancelButtonText={translate("task.task_perform.cancel")}
                                                                 handleEdit={(e) => this.handleEditFileTask(e)}
-                                                                onTextChange={(e) => {
-                                                                    let value = e.target.value;
+                                                                onTextChange={(value, imgs) => {
                                                                     this.setState(state => {
                                                                         return { ...state, fileTaskEdited: { ...state.fileTaskEdited, description: value } }
                                                                     })
@@ -1690,6 +1714,7 @@ class ActionTab extends Component {
                                 <div style={{ marginTop: '15px' }}>
                                     <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
                                     <ContentMaker
+                                        idQuill="upload-file"
                                         inputCssClass="text-input-level1" controlCssClass="tool-level1"
                                         onFilesChange={this.onTaskFilesChange}
                                         onFilesError={this.onFilesError}
@@ -1697,8 +1722,7 @@ class ActionTab extends Component {
                                         text={taskFiles.description}
                                         placeholder={translate("task.task_perform.enter_description")}
                                         submitButtonText={translate("task.task_perform.create_document")}
-                                        onTextChange={(e) => {
-                                            let value = e.target.value;
+                                        onTextChange={(value, imgs) => {
                                             this.setState(state => {
                                                 return { ...state, taskFiles: { ...state.taskFiles, description: value } }
 
