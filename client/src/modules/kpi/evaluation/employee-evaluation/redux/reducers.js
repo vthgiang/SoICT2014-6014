@@ -181,16 +181,18 @@ export function kpimembers(state = {}, action) {
       let updateKpiSet = action.payload.updateKpiSet;
       let kpimembers = state.kpimembers;
 
-      kpimembers.filter(item => {
-        if (updateKpiSet) {
-          return item._id === updateKpiSet._id;
-        }
-        return false;
-      }).forEach(element => {
-        element.automaticPoint = updateKpiSet.automaticPoint;
-        element.employeePoint = updateKpiSet.employeePoint;
-        element.approvedPoint = updateKpiSet.approvedPoint;
-      });
+      if (kpimembers && kpimembers.length !== 0) {
+        kpimembers.filter(item => {
+          if (updateKpiSet) {
+            return item._id === updateKpiSet._id;
+          }
+          return false;
+        }).forEach(element => {
+          element.automaticPoint = updateKpiSet.automaticPoint;
+          element.employeePoint = updateKpiSet.employeePoint;
+          element.approvedPoint = updateKpiSet.approvedPoint;
+        });
+      }
 
       return {
         ...state,
