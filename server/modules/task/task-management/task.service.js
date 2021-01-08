@@ -276,7 +276,7 @@ exports.getPaginatedTasks = async (portal, task) => {
     perPage = Number(perPage);
     let page = Number(number);
     let roleArr = [];
-    if (role) {
+    if (Array.isArray(role) && role.length > 0) {
         for (let i in role) {
             if (role[i] === "responsible") roleArr.push({ responsibleEmployees: { $in: [user] } });
             if (role[i] === "accountable") roleArr.push({ accountableEmployees: { $in: [user] } });
@@ -288,6 +288,9 @@ exports.getPaginatedTasks = async (portal, task) => {
         roleArr = [
             { responsibleEmployees: { $in: [user] } },
             { accountableEmployees: { $in: [user] } },
+            { consultedEmployees: { $in: [user] } },
+            { informedEmployees: { $in: [user] } },
+            { creator: { $in: [user] } },
         ];
     }
 
