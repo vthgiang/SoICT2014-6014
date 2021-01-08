@@ -18,10 +18,10 @@ class QuillEditor extends Component {
     }
   
     componentDidMount = () => {
-        const { id, isText = false, quillValueDefault, fileUrls, toolbar = true, enableEdit = true } = this.props;
+        const { id, isText = false, quillValueDefault, fileUrls, toolbar = true, enableEdit = true, imageDropAndPaste = true, placeholder = null } = this.props;
         if (!isText) {
             // Khởi tạo Quill Editor trong thẻ có id = id truyền vào
-            const quill = window.initializationQuill(`#editor-container${id}`, configQuillEditor(id, toolbar, enableEdit));
+            const quill = window.initializationQuill(`#editor-container${id}`, configQuillEditor(id, toolbar, enableEdit, placeholder));
 
             // Insert value ban đầu
             if (quillValueDefault || quillValueDefault === '') {
@@ -57,8 +57,8 @@ class QuillEditor extends Component {
                             return item;
                         })
                     }
-                    
-                    this.props.getTextData(quill.root.innerHTML, imgs);
+
+                    this.props.getTextData(quill.root.innerHTML, imageSources);
                     if (imgs && imgs.length !== 0) {
                         imgs = imgs.map((item, index) => {
                             item.src = imageSources[index];
@@ -127,8 +127,17 @@ class QuillEditor extends Component {
         let imageFile;
         if (imgs && imgs.length !== 0) {
             imageFile = imgs.map((item) => {
-                const byteCharacters = atob(item.getAttribute("src").split(";"));
-                const byteArrays = [];
+                let block, contentType, realData;
+                // Split the base64 string in data and contentType
+                block = item.split(";");
+                if (block && block.length !== 0) {
+                    contentType = block[0].split(":")[1];
+                    realData = block[1].split(",")[1];
+                }
+                contentType = contentType || '';
+            
+                let byteCharacters = atob(realData);
+                let byteArrays = [];
 
                 for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
                     const slice = byteCharacters.slice(offset, offset + sliceSize);
