@@ -2602,6 +2602,7 @@ export default {
                 recommend_units: "Đơn vị đề nghị",
                 accountable: "Người phê duyệt",
                 note: "Ghi chú",
+                time_created: "Thời gian lập phiếu",
 
                 //Thông điệp trả về từ server
                 get_usage_success: "Lấy thông tin sử dụng thành công",

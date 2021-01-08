@@ -194,7 +194,7 @@ class PurchaseRequestEditForm extends Component {
 
     save = () => {
         if (this.isFormValidated()) {
-            const { recommendFiles } = this.state;
+            let { recommendFiles, oldFiles, files } = this.state;
             let data = this.state;
             if (data.dateCreate) {
                 let dateData = data.dateCreate.split("-");
@@ -203,6 +203,11 @@ class PurchaseRequestEditForm extends Component {
                     dateCreate: new Date(`${dateData[2]}-${dateData[1]}-${dateData[0]}`)
                 }
             }
+            if (!recommendFiles && !oldFiles) {
+                oldFiles = files;
+            }
+            data = { ...data, oldFiles }
+
             let formData = convertJsonObjectToFormData(data);
             if (recommendFiles) {
                 recommendFiles.forEach(obj => {
