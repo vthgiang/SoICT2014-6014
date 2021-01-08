@@ -18,30 +18,30 @@ class QuillEditor extends Component {
     }
   
     componentDidMount = () => {
-        const { id, isText = false, quillValueDefault, fileUrls, toolbar = true, enableEdit = true } = this.props;
+        const { id, isText = false, quillValueDefault, fileDefault, toolbar = true, enableEdit = true, placeholder = null } = this.props;
         if (!isText) {
             // Khởi tạo Quill Editor trong thẻ có id = id truyền vào
-            const quill = window.initializationQuill(`#editor-container${id}`, configQuillEditor(id, toolbar, enableEdit));
+            const quill = window.initializationQuill(`#editor-container${id}`, configQuillEditor(id, toolbar, enableEdit, placeholder));
 
             // Insert value ban đầu
             if (quillValueDefault || quillValueDefault === '') {
                 if (quill && quill.container && quill.container.firstChild) {
                     quill.container.firstChild.innerHTML = quillValueDefault;
                 } 
-                if (fileUrls) {
+                if (fileDefault) {
                     let imgs = Array.from(
                         quill.container.querySelectorAll('img[src]')
                     );
                     if (imgs && imgs.length !== 0) {
                         imgs = imgs.map((item, index) => {
-                            item.src = fileUrls[index];
+                            item.src = fileDefault[index];
                             return item;
                         })
                     }
                 }
             }
 
-            if (enableEdit) {
+            if (enableEdit && !isText) {
                 // Bắt sự kiện text-change
                 quill.on('text-change', () => {
                     let imgs, imageSources = [];
@@ -57,8 +57,8 @@ class QuillEditor extends Component {
                             return item;
                         })
                     }
-                    console.log(quill.root.innerHTML)
-                    this.props.getTextData(quill.root.innerHTML, imgs);
+
+                    this.props.getTextData(quill.root.innerHTML, imageSources);
                     if (imgs && imgs.length !== 0) {
                         imgs = imgs.map((item, index) => {
                             item.src = imageSources[index];
@@ -88,7 +88,7 @@ class QuillEditor extends Component {
     }
 
     componentDidUpdate = () => {
-        const { quillValueDefault, fileUrls } = this.props;
+        const { quillValueDefault, fileDefault } = this.props;
         const { quill } = this.state;
 
         // Insert value ban đầu
@@ -97,13 +97,13 @@ class QuillEditor extends Component {
             if (quill && quill.container && quill.container.firstChild) {
                 quill.container.firstChild.innerHTML = quillValueDefault;
             }  
-            if (fileUrls) {
+            if (fileDefault) {
                 let imgs = Array.from(
                     quill.container.querySelectorAll('img[src]')
                 );
                 if (imgs && imgs.length !== 0) {
                     imgs = imgs.map((item, index) => {
-                        item.src = fileUrls[index];
+                        item.src = fileDefault[index];
                         return item;
                     })
                 }
@@ -123,34 +123,35 @@ class QuillEditor extends Component {
      * @imgs mảng hình ảnh dạng base64
      * @names mảng tên các ảnh tương ứng
      * */ 
-    static convertImageBase64ToFile = (imgs) => {
+    static convertImageBase64ToFile = (imgs, sliceSize=512) => {
         let imageFile;
         if (imgs && imgs.length !== 0) {
             imageFile = imgs.map((item) => {
+                let block, contentType, realData;
                 // Split the base64 string in data and contentType
-                let block = item.getAttribute("src").split(";");
-                let contentType = block[0].split(":")[1];
-                let realData = block[1].split(",")[1];
+                block = item.split(";");
+                if (block && block.length !== 0) {
+                    contentType = block[0].split(":")[1];
+                    realData = block[1].split(",")[1];
+                }
                 contentType = contentType || '';
-                let sliceSize = 512;
             
                 let byteCharacters = atob(realData);
                 let byteArrays = [];
-            
+
                 for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-                    let slice = byteCharacters.slice(offset, offset + sliceSize);
-            
-                    let byteNumbers = new Array(slice.length);
+                    const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+                    const byteNumbers = new Array(slice.length);
                     for (let i = 0; i < slice.length; i++) {
-                        byteNumbers[i] = slice.charCodeAt(i);
+                    byteNumbers[i] = slice.charCodeAt(i);
                     }
-            
-                    let byteArray = new Uint8Array(byteNumbers);
-            
+
+                    const byteArray = new Uint8Array(byteNumbers);
                     byteArrays.push(byteArray);
                 }
-            
-                let blob = new Blob(byteArrays, { type: contentType });
+
+                const blob = new Blob(byteArrays, {type: ""});
                 return new File([blob], "png");
             })
         }
@@ -178,9 +179,10 @@ class QuillEditor extends Component {
                                     alignAndList={alignAndList}
                                     embeds={embeds}
                                     table={table}
+                                    inputCssClass={inputCssClass}
                                 />
                             }
-                            <div id={`editor-container${id}`} style={{ height: height }} className={inputCssClass}/>
+                            <div id={`editor-container${id}`} style={{ height: height }} className={`quill-editor ${inputCssClass}`}/>
                         </React.Fragment>
                         : parse(quillValueDefault)
                 }

@@ -69,6 +69,9 @@ const InprocessOfUnitTask = (props) => {
     }
 
     const barChart = (delayed, intime, notAchived) => {
+        let height = unit.length * 60;
+        let heightOfChart = height > 320 ? height : 320;
+
         const pie = c3.generate({
             bindto: document.getElementById("inprocessOfUnitTask"),
 
@@ -84,6 +87,10 @@ const InprocessOfUnitTask = (props) => {
                     translate('task.task_management.in_time'),
                     translate('task.task_management.not_achieved')]
                 ]
+            },
+
+            size: {
+                height: heightOfChart
             },
 
             color: {

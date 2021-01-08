@@ -175,7 +175,6 @@ exports.deletePurchaseRequest = async (portal, id) => {
  */
 exports.updatePurchaseRequest = async (portal, id, data, files) => {
     let filesConvert = [];
-    console.log('data',data)
     if (files) {
         filesConvert = files.map(obj => ({
             fileName: obj.originalname,

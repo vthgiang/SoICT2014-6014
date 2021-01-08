@@ -9,17 +9,25 @@ const CareerActionSchema = new Schema({
     package: [{
         type: String,
     }],
+
+    isLabel: { // mặc định khong phai nhan
+        type: Number,
+        default: 0,
+    },
     
-    detail: [{
-        name: {
-            type: String,
+    label: [{
+        type: Schema.Types.ObjectId,
+        replies: this,
+    }],
+
+    detail: [{ // detail chỉ có thằng con có vidu: con là vận hành giám sát hệ thống attt thì label là vận hành và giám sát
+        label: {
+            type: Schema.Types.ObjectId,
+            replies: this,
         },
-        code: {
-            type: String,
-        },
-        type: {
+        multi: {
             type: Number,
-            default: 0, // 1 - default, 0 - additional
+            default: 1, // 1 - true, 0 - false
         },
     }]
 }, {

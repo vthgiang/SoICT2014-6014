@@ -11,6 +11,7 @@ import { SelectBox, ErrorLabel } from '../../../../common-components';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { TaskTemplateFormValidator } from './taskTemplateFormValidator';
 import { getStorage } from '../../../../config';
+import ValidationHelper from '../../../../helpers/validationHelper';
 
 class AddTaskTemplate extends Component {
     constructor(props) {
@@ -36,8 +37,6 @@ class AddTaskTemplate extends Component {
             showMore: this.props.isProcess ? false : true,
             currentRole: localStorage.getItem('currentRole'),
         };
-
-        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     componentDidMount() {
@@ -48,88 +47,28 @@ class AddTaskTemplate extends Component {
         this.props.getAllUserInAllUnitsOfCompany(); // => user.usersInUnitsOfCompany
     }
 
-    /**Submit new template in data */
-    handleSubmit = async (event) => {
+    handleTaskTemplateName = (e) => {
+        let { value } = e.target;
+        let { isProcess, translate } = this.props
+        isProcess && this.props.handleChangeName(value);
+        let { message } = ValidationHelper.validateName(translate, value, 1, 255);
         let { newTemplate } = this.state;
-        const { department, user, translate, tasktemplates, isProcess } = this.props;
-
-        let listRoles = [];
-        if (user.roledepartments) {
-            console.log('pppp');
-            let listRole = user.roledepartments;
-            for (let x in listRole.employees)
-                listRoles.push(listRole.employees[x]);
-        }
-        console.log('list role', listRoles);
-        await this.setState(state => {
-            if (state.readByEmployees.length === 0) {
-                state.newTemplate.readByEmployees = listRoles
-            }
-            return {
-                ...state,
-            }
-        });
-
-        this.props.addNewTemplate(newTemplate);
-        window.$("#addTaskTemplate").modal("hide");
+        newTemplate.name = value;
+        newTemplate.errorOnName = message;
+        this.props.onChangeTemplateData(newTemplate);
+        this.setState({ newTemplate });
     }
 
-
-    /**
-     * Xử lý form lớn tasktemplate
-     */
-    isTaskTemplateFormValidated = () => {
-        let result =
-            this.validateTaskTemplateUnit(this.state.newTemplate.organizationalUnit, false) &&
-            this.validateTaskTemplateRead(this.state.newTemplate.readByEmployees, false) &&
-            this.validateTaskTemplateName(this.state.newTemplate.name, false) &&
-            this.validateTaskTemplateDescription(this.state.newTemplate.description, false) &&
-            this.validateTaskTemplateFormula(this.state.newTemplate.formula, false);
-        return result;
-    }
-    handleTaskTemplateName = (event) => {
-        let value = event.target.value;
-        let { isProcess } = this.props
-        isProcess && this.props.handleChangeName(value)
-        this.validateTaskTemplateName(value, true);
-    }
-
-    validateTaskTemplateName = async (value, willUpdateState = true) => {
-        let msg = TaskTemplateFormValidator.validateTaskTemplateName(value);
-
-        if (willUpdateState) {
-            this.state.newTemplate.name = value;
-            this.state.newTemplate.errorOnName = msg;
-            this.setState(state => {
-                return {
-                    ...state,
-                };
-            });
-        }
-        // console.log('stst', this.state.newTemplate);
-        this.props.onChangeTemplateData(this.state.newTemplate);
-        return msg === undefined;
-    }
-
-    handleTaskTemplateDesc = (event) => {
-        let value = event.target.value;
-        this.validateTaskTemplateDescription(value, true);
-    }
-
-    validateTaskTemplateDescription = (value, willUpdateState = true) => {
-        let msg = TaskTemplateFormValidator.validateTaskTemplateDescription(value);
-
-        if (willUpdateState) {
-            this.state.newTemplate.description = value;
-            // this.state.newTemplate.errorOnDescription = msg;
-            this.setState(state => {
-                return {
-                    ...state,
-                };
-            });
-        }
-        this.props.onChangeTemplateData(this.state.newTemplate);
-        return msg === undefined;
+    handleTaskTemplateDesc = (e) => {
+        let { value } = e.target;
+        let { isProcess, translate } = this.props
+        isProcess && this.props.handleChangeName(value);
+        let { message } = ValidationHelper.validateName(translate, value, 1, 255);
+        let { newTemplate } = this.state;
+        newTemplate.description = value;
+        newTemplate.errorDescription = message;
+        this.props.onChangeTemplateData(newTemplate);
+        this.setState({ newTemplate });
     }
 
     handleTaskTemplateFormula = (event) => {
@@ -174,14 +113,12 @@ class AddTaskTemplate extends Component {
         return msg === undefined;
     }
 
-    handleChangeTaskPriority = (event) => {
-        this.state.newTemplate.priority = event.target.value;
-        this.setState(state => {
-            return {
-                ...state,
-            };
-        });
-        this.props.onChangeTemplateData(this.state.newTemplate);
+    handleChangeTaskPriority = (e) => {
+        let { newTemplate } = this.state;
+        let { value } = e.target;
+        newTemplate.priority = value;
+        this.props.onChangeTemplateData(newTemplate);
+        this.setState({ newTemplate });
     }
 
     handleTaskTemplateUnit = (value) => {
@@ -192,8 +129,6 @@ class AddTaskTemplate extends Component {
                 // Khi đổi department, cần lấy lại dữ liệu cho các selectbox (ai được xem, các vai trò)
                 let dept = department.departmentsThatUserIsManager.find(item => item._id === singleValue);
                 if (dept) {
-                    console.log('oooo', dept);
-                    // this.props.getChildrenOfOrganizationalUnits(singleValue);
                     this.props.getRoleSameDepartment(dept.managers);
                 }
             }
@@ -226,102 +161,63 @@ class AddTaskTemplate extends Component {
     }
 
     handleChangeCollaboratedWithOrganizationalUnits = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                newTemplate: { // update lại name,description và reset các selection phía sau
-                    ...this.state.newTemplate,
-                    collaboratedWithOrganizationalUnits: value
-                }
-            };
-        });
-        this.props.onChangeTemplateData(this.state.newTemplate);
+        let { newTemplate } = this.state;
+        newTemplate.collaboratedWithOrganizationalUnits = value;
+        this.props.onChangeTemplateData(newTemplate);
+        this.setState({ newTemplate });
     }
 
     handleTaskTemplateRead = (value) => {
-        this.validateTaskTemplateRead(value, true);
-    }
-
-    validateTaskTemplateRead = (value, willUpdateState = true) => {
-        let msg = TaskTemplateFormValidator.validateTaskTemplateRead(value);
-
-        if (willUpdateState) {
-            let { newTemplate } = this.state;
-            newTemplate.readByEmployees = value;
-            newTemplate.errorOnRead = msg;
-            this.setState({
-                newTemplate
-            });
-        }
-        this.props.onChangeTemplateData(this.state.newTemplate);
-        return msg === undefined;
+        let { newTemplate } = this.state;
+        newTemplate.readByEmployees = value;
+        this.props.onChangeTemplateData(newTemplate);
+        this.setState({ newTemplate });
     }
 
     handleTaskTemplateResponsible = (value) => {
         let { newTemplate } = this.state;
         newTemplate.responsibleEmployees = value;
-        this.setState({
-            newTemplate
-        });
         this.props.isProcess && this.props.handleChangeResponsible(value)
-        this.props.onChangeTemplateData(this.state.newTemplate);
+        this.props.onChangeTemplateData(newTemplate);
+        this.setState({ newTemplate });
     }
 
     handleTaskTemplateAccountable = async (value) => {
         let { newTemplate } = this.state;
         newTemplate.accountableEmployees = value;
-        await this.setState({
-            newTemplate
-        });
         this.props.isProcess && this.props.handleChangeAccountable(value)
-        this.props.onChangeTemplateData(this.state.newTemplate);
+        this.props.onChangeTemplateData(newTemplate);
+        this.setState({ newTemplate });
     }
 
     handleTaskTemplateConsult = (value) => {
         let { newTemplate } = this.state;
         newTemplate.consultedEmployees = value;
-        this.setState({
-            newTemplate
-        });
-        this.props.onChangeTemplateData(this.state.newTemplate);
+        this.props.onChangeTemplateData(newTemplate);
+        this.setState({ newTemplate });
     }
 
     handleTaskTemplateInform = (value) => {
         let { newTemplate } = this.state;
         newTemplate.informedEmployees = value;
+        this.props.onChangeTemplateData(newTemplate);
         this.setState({
             newTemplate
         });
-        this.props.onChangeTemplateData(this.state.newTemplate);
     }
 
     handleTaskActionsChange = (data) => {
         let { newTemplate } = this.state;
-        this.setState(state => {
-            return {
-                ...state,
-                newTemplate: {
-                    ...newTemplate,
-                    taskActions: data
-                },
-            }
-        })
-
-        this.props.onChangeTemplateData(this.state.newTemplate);
+        newTemplate.taskActions = data;
+        this.props.onChangeTemplateData(newTemplate);
+        this.setState({ newTemplate })
     }
 
     handleTaskInformationsChange = (data) => {
         let { newTemplate } = this.state;
-        this.setState(state => {
-            return {
-                ...state,
-                newTemplate: {
-                    ...newTemplate,
-                    taskInformations: data
-                },
-            }
-        })
-        this.props.onChangeTemplateData(this.state.newTemplate);
+        newTemplate.taskInformations = data;
+        this.props.onChangeTemplateData(newTemplate);
+        this.setState({ newTemplate })
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
@@ -456,8 +352,6 @@ class AddTaskTemplate extends Component {
         var allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
         // let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
 
-
-        console.log('\n\n=======ADD=========\n\n');
         return (
             <React.Fragment>
 

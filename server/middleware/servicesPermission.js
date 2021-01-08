@@ -315,6 +315,7 @@ exports.links = [
             { path: '/performtask/task-timesheet-logs', method: 'GET' },
             { path: '/performtask/tasks/:taskId/timesheet-logs/start-timer', method: 'POST' },
             { path: '/performtask/tasks/:taskId/timesheet-logs/stop-timer', method: 'POST' },
+            { path: '/performtask/tasks/:taskId/timesheet-logs/:timesheetlogId', method: 'PATCH' },
             { path: '/performtask/:task', method: 'POST' },
             { path: '/performtask/tasks/:taskId/files', method: 'POST' },
             { path: '/performtask/tasks/:taskId/documents', method: 'PATCH' },

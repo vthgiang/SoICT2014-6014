@@ -8,6 +8,7 @@ export const performTaskAction = {
     getTimerStatusTask,
     startTimerTask,
     stopTimerTask,
+    editTimeSheetLog,
 
     createActionComment,
     editActionComment,
@@ -165,18 +166,40 @@ function getTimerStatusTask(taskId) { //param -- , user
 function startTimerTask(taskId, timer) {
     return dispatch => {
         dispatch({ type: performTaskConstants.START_TIMER_REQUEST });
-        performTaskService.startTimerTask(taskId, timer)
+        return new Promise((resolve, reject) => {
+            performTaskService.startTimerTask(taskId, timer)
             .then(
                 payload => {
                     dispatch({ type: performTaskConstants.START_TIMER_SUCCESS, payload });
-                },
-                error => {
-                    dispatch({ type: performTaskConstants.STOP_TIMER_FAILURE, error });
+                    resolve(payload)
                 }
-            );
+            ).catch(error => {
+                dispatch({ type: performTaskConstants.START_TIMER_FAILURE, error });
+                reject(error)
+            })
+        })
     };
 }
 
+// EditTimeSheetLog
+function editTimeSheetLog(taskId, timesheetlogId, data) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.EDIT_TIME_SHEET_LOG_REQUEST });
+        return new Promise((resolve, reject) => {
+            performTaskService.editTimeSheetLog(taskId, timesheetlogId, data)
+            .then(res => {
+                dispatch({ 
+                    type: performTaskConstants.EDIT_TIME_SHEET_LOG_SUCCESS, 
+                    payload: res.data.content 
+                });
+                resolve(res)
+            }).catch(error => {
+                dispatch({ type: performTaskConstants.EDIT_TIME_SHEET_LOG_FAILE, error });
+                reject(error)
+            })
+        })
+    };
+}
 
 // stop timer task
 function stopTimerTask(taskId, newTimer) {

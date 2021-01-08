@@ -4,7 +4,6 @@ import { DialogModal } from "../../../../../../../common-components";
 class ManufacturingWorksOfGoodDetail extends Component {
     render() {
         const { currentManufacturingWorksOfGood } = this.props;
-        console.log("currentManufacturingWorksOfGood", currentManufacturingWorksOfGood);
         return (
             <DialogModal
                 modalID="modal-edit-sales-order-manufacturing-works-of-good-detail"

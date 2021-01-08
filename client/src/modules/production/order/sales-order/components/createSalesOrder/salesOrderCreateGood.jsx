@@ -4,7 +4,6 @@ import { withTranslate } from "react-redux-multilingual";
 import { GoodActions } from "../../../../common-production/good-management/redux/actions";
 import { DiscountActions } from "../../../discount/redux/actions";
 import { formatCurrency } from "../../../../../../helpers/formatCurrency";
-import ValidationHelper from "../../../../../../helpers/validationHelper";
 import GoodSelected from "./goodCreateSteps/goodSelected";
 import ApplyDiscount from "./goodCreateSteps/applyDiscount";
 import Payment from "./goodCreateSteps/payment";
@@ -41,18 +40,17 @@ class SalesOrderCreateGood extends Component {
         this.props.getAllGoodsByType({ type: "product" });
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.goods.goodItems.inventoryByGoodId !== prevState.inventory) {
-            return {
-                inventory: nextProps.goods.goodItems.inventoryByGoodId,
-            };
-        }
-    }
-
     shouldComponentUpdate = async (nextProps, nextState) => {
         if (this.props.goods.goodItems.goodId !== nextProps.goods.goodItems.goodId) {
             await this.getCheckedForGood(nextProps.goods.goodItems);
             return false;
+        }
+
+        //Lấy số lượng hàng tồn kho cho các mặt hàng
+        if (nextProps.goods.goodItems.inventoryByGoodId !== nextState.inventory && nextState.good !== "title") {
+            this.setState({
+                inventory: nextProps.goods.goodItems.inventoryByGoodId,
+            });
         }
         return true;
     };
@@ -393,7 +391,7 @@ class SalesOrderCreateGood extends Component {
         let amountAfterApplyTax = this.getAmountAfterApplyDiscount();
         const { taxs } = this.state;
         let listTaxs = taxs.map((item) => {
-            let tax = listTaxsByGoodId.find((element) => element._id == item);
+            let tax = listTaxsByGoodId.find((element) => element.code == item);
             if (tax) {
                 return tax;
             }
@@ -444,7 +442,7 @@ class SalesOrderCreateGood extends Component {
             let amountAfterTax = this.getAmountAfterApplyTax();
 
             let listTaxs = taxs.map((item) => {
-                let tax = listTaxsByGoodId.find((element) => element._id == item);
+                let tax = listTaxsByGoodId.find((element) => element.code == item);
                 if (tax) {
                     return tax;
                 }
@@ -460,8 +458,6 @@ class SalesOrderCreateGood extends Component {
                     descriptions: slasOfGood[key],
                 });
             }
-
-            manufacturingWorks = manufacturingWorks !== "title" ? manufacturingWorks : undefined;
 
             let additionGood = {
                 good: {
@@ -481,7 +477,7 @@ class SalesOrderCreateGood extends Component {
                 amountAfterDiscount,
                 amountAfterTax,
                 salesPriceVariance,
-                manufacturingWorks,
+                manufacturingWorks: manufacturingWorks._id !== "title" ? manufacturingWorks : undefined,
             };
 
             listGoods.push(additionGood);
@@ -612,14 +608,13 @@ class SalesOrderCreateGood extends Component {
         await this.setState({
             editGood: true,
             indexEditting: index,
-            taxs: item.taxs.map((tax) => tax._id),
+            taxs: item.taxs.map((tax) => tax.code),
             quantity: item.quantity,
             pricePerBaseUnit: item.pricePerBaseUnit,
             pricePerBaseUnitError: undefined,
             pricePerBaseUnitOrigin: item.pricePerBaseUnitOrigin,
             salesPriceVariance: item.salesPriceVariance,
             note: item.note,
-            inventory: goodInfo[0].quantity,
             goodName: item.good.name,
             good: item.good._id,
             baseUnit: item.good.baseUnit,
@@ -632,14 +627,14 @@ class SalesOrderCreateGood extends Component {
         this.getCheckedForGood(this.props.goods.goodItems); //gọi để checked trong trường hợp không thay đổi goodId
     };
 
-    handleCancelEditGood = (e) => {
+    handleCancelEditGood = async (e) => {
         e.preventDefault();
         let { steps } = this.state;
         steps = steps.map((step, index) => {
             step.active = !index ? true : false;
             return step;
         });
-        this.setState((state) => {
+        await this.setState((state) => {
             return {
                 ...state,
                 indexEditting: "",
@@ -696,7 +691,7 @@ class SalesOrderCreateGood extends Component {
             let amountAfterTax = this.getAmountAfterApplyTax();
 
             let listTaxs = taxs.map((item) => {
-                let tax = listTaxsByGoodId.find((element) => element._id == item);
+                let tax = listTaxsByGoodId.find((element) => element.code == item);
                 if (tax) {
                     return tax;
                 }
@@ -731,7 +726,7 @@ class SalesOrderCreateGood extends Component {
                 amountAfterDiscount,
                 amountAfterTax,
                 salesPriceVariance,
-                manufacturingWorks,
+                manufacturingWorks: manufacturingWorks._id !== "title" ? manufacturingWorks : undefined,
             };
 
             listGoods[indexEditting] = additionGood;
@@ -979,7 +974,7 @@ class SalesOrderCreateGood extends Component {
                     </div>
 
                     {/* Hiển thị bảng */}
-                    <table className="table table-bordered">
+                    <table className="table table-bordered not-sort">
                         <thead>
                             <tr>
                                 <th title={"STT"}>STT</th>
@@ -1040,7 +1035,7 @@ class SalesOrderCreateGood extends Component {
                                             {item.amountAfterDiscount && item.amountAfterTax
                                                 ? formatCurrency(item.amountAfterTax - item.amountAfterDiscount) + ` (${currency.symbol})`
                                                 : `0 (${currency.symbol})`}
-                                            ({item.taxs.length ? item.taxs[0].percent : "0"}%)
+                                            ({item.taxs.length && item.taxs[0] ? item.taxs[0].percent : "0"}%)
                                         </td>
                                         <td>
                                             {item.amountAfterTax

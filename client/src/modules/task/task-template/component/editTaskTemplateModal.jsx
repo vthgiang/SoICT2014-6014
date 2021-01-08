@@ -35,15 +35,14 @@ class ModalEditTaskTemplate extends Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        if(props.taskTemplateId !== state.taskTemplateId){
-            console.log('qydsd', props.taskTemplate);
+        if (props.taskTemplateId !== state.taskTemplateId) {
             return {
                 ...state,
                 taskTemplateId: props.taskTemplateId,
                 taskTemplate: props.taskTemplate,
                 editingTemplate: {
                     _id: props.taskTemplate._id,
-                    organizationalUnit: props.taskTemplate.organizationalUnit,
+                    organizationalUnit: props.taskTemplate.organizationalUnit._id,
                     collaboratedWithOrganizationalUnits: props.taskTemplate.collaboratedWithOrganizationalUnits.map(item => { if (item) return item._id }),
                     name: props.taskTemplate.name,
                     readByEmployees: props.taskTemplate.readByEmployees.map(item => item.id),
@@ -59,7 +58,7 @@ class ModalEditTaskTemplate extends Component {
                 },
                 showActionForm: true,
             }
-        }else return null;
+        } else return null;
     }
 
     handleSubmit = () => {
@@ -78,12 +77,12 @@ class ModalEditTaskTemplate extends Component {
             this.validateTaskTemplateUnit(this.state.editingTemplate.organizationalUnit, false);
         return result;
     }
-    
+
     validateTaskTemplateName = (value, willUpdateState = true) => {
         let msg = TaskTemplateFormValidator.validateTaskTemplateName(value);
 
         if (willUpdateState) {
-            let {editingTemplate} = this.state;
+            let { editingTemplate } = this.state;
             editingTemplate.name = value;
             editingTemplate.errorOnName = msg;
             this.setState({
@@ -97,7 +96,7 @@ class ModalEditTaskTemplate extends Component {
         let msg = TaskTemplateFormValidator.validateTaskTemplateDescription(value);
 
         if (willUpdateState) {
-            let {editingTemplate} = this.state;
+            let { editingTemplate } = this.state;
             editingTemplate.description = value;
             editingTemplate.errorOnDescription = msg;
             this.setState({
@@ -111,7 +110,7 @@ class ModalEditTaskTemplate extends Component {
         let msg = TaskTemplateFormValidator.validateTaskTemplateFormula(value);
 
         if (willUpdateState) {
-            let {editingTemplate} = this.state;
+            let { editingTemplate } = this.state;
             editingTemplate.formula = value;
             editingTemplate.errorOnFormula = msg;
             this.setState({
@@ -120,7 +119,7 @@ class ModalEditTaskTemplate extends Component {
         }
         return msg == undefined;
     }
-   
+
     validateTaskTemplateUnit = (value, willUpdateState = true) => {
         let msg = TaskTemplateFormValidator.validateTaskTemplateUnit(value);
 
@@ -148,7 +147,7 @@ class ModalEditTaskTemplate extends Component {
         let msg = TaskTemplateFormValidator.validateTaskTemplateRead(value);
 
         if (willUpdateState) {
-            let {editingTemplate} = this.state;
+            let { editingTemplate } = this.state;
             editingTemplate.readByEmployees = value;
             editingTemplate.errorOnRead = msg;
             this.setState({
@@ -167,7 +166,6 @@ class ModalEditTaskTemplate extends Component {
     render() {
         const { department, user, translate, tasktemplates } = this.props;
         const { editingTemplate, taskTemplateId } = this.state;
-        console.log("editingTemplate", editingTemplate)
 
         return (
             <DialogModal
@@ -179,10 +177,10 @@ class ModalEditTaskTemplate extends Component {
                 size={100}
             >
                 <React.Fragment>
-                    <EditTaskTemplate 
-                        isTaskTemplate={true} 
-                        taskTemplate={editingTemplate} 
-                        taskTemplateId={taskTemplateId} onChangeTemplateData={this.onChangeTemplateData} 
+                    <EditTaskTemplate
+                        isTaskTemplate={true}
+                        taskTemplate={editingTemplate}
+                        taskTemplateId={taskTemplateId} onChangeTemplateData={this.onChangeTemplateData}
                     />
                 </React.Fragment>
             </DialogModal>

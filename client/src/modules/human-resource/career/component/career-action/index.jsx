@@ -39,10 +39,9 @@ class CareerAction extends Component {
     unCheckNode = (e, data) => {
         this.setState({
             careerParent: [...data.selected],
-            // deleteNode: [...data.selected, ...data.node.children_d],
             deleteNode: [...data.selected],
-
         })
+        console.log('statode', this.state);
     }
     handleAddCareerAction = (event) => {
         event.preventDefault();
@@ -65,19 +64,13 @@ class CareerAction extends Component {
             cancelButtonText: translate('general.no'),
             confirmButtonText: translate('general.yes'),
         }).then(result => {
-            console.log('Confirm delete');
-            this.props.deleteCareerAction(deleteNode)
-            // if (result.value && careerParent.length > 1) {
-            //     // this.props.deleteDocumentArchive(careerParent, "many");
-            //     // this.setState({
-            //     //     deleteNode: []
-            //     // });
-            // } else if (result.value && careerParent.length === 1) {
-            //     // this.props.deleteDocumentArchive(careerParent, 'single');
-            //     // this.setState({
-            //     //     deleteNode: []
-            //     // });
-            // }
+            if (result.value) {
+                console.log('Confirm delete');
+                this.props.deleteCareerAction(deleteNode)
+                this.setState({
+                    deleteNode: []
+                });
+            }
         })
     }
 
@@ -100,7 +93,7 @@ class CareerAction extends Component {
         const { careerParent, currentNode } = this.state;
         const { translate } = this.props;
         const { career } = this.props;
-        const list = career.listAction;
+        const list = career.listAction.filter(e => e.isLabel !== 1);
 
         let dataTree = list.map(elm => {
             return {
@@ -112,10 +105,10 @@ class CareerAction extends Component {
             }
         });
         for (let i in list) {
-            let detail = list[i].detail.map(elm => {
+            let detail = list[i].label.map(elm => {
                 return {
                     ...elm,
-                    id: elm._id,
+                    id: `${elm._id}-${list[i]._id}`,
                     text: elm.name,
                     // state: { "opened": true },
                     parent: list[i]._id.toString(),
@@ -124,7 +117,7 @@ class CareerAction extends Component {
             dataTree = [...dataTree, ...detail];
         }
         let unChooseNode = currentNode ? this.findChildrenNode(list, currentNode) : [];
-        // console.log('dataTree', dataTree);
+
         return (
             <React.Fragment>
                 <div className="box box-body">
@@ -155,11 +148,13 @@ class CareerAction extends Component {
                             {
                                 currentNode &&
                                 <EditForm
-                                    careerId={currentNode.id}
+                                    careerId={currentNode.original._id}
                                     careerName={currentNode.text}
                                     careerCode={currentNode.original.code}
                                     careerParent={(currentNode.parent !== "#") ? currentNode.parent : undefined}
                                     careerPackage={currentNode.original.package ? currentNode.original.package : ""}
+                                    actionLabel={currentNode.original.label.map(e=>e._id)}
+                                    isLabel={currentNode.original.isLabel}
 
                                     listData={list}
                                     unChooseNode={unChooseNode}

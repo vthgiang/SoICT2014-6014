@@ -310,7 +310,14 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
 
         let date1 = element.preEvaDate;
         let date2 = element.date;
-        let difference_In_Time = date2.getTime() - date1.getTime();
+        let difference_In_Time;
+        
+        if (date2 && date1) {
+            difference_In_Time = date2.getTime() - date1.getTime();
+        } else {
+            difference_In_Time = 0;
+        }
+        
         let daykpi = Math.ceil(difference_In_Time / (1000 * 3600 * 24));
         if (daykpi > 30) daykpi = 30;
         element.taskImportanceLevelCal = Math.round(3 * (element.priority / 5) + 3 * (element.results.contribution / 100) + 4 * (daykpi / 30));
@@ -349,9 +356,9 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
         }
     };
 
+    let updateKpiSet
     if (autoPointSet !== -1) {
-
-        let updateKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+        updateKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
             .findByIdAndUpdate(kpiSet._id,
                 {
                     $set: {
@@ -365,8 +372,7 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
 
     }
 
-
-    return { task, result };
+    return { task, result, updateKpiSet };
 
 }
 
