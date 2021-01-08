@@ -405,7 +405,7 @@ exports.stopTimesheetLog = async (portal, params, body) => {
     let contributions = timer.hoursSpentOnTask.contributions;
     let check = true;
     let newContributions = contributions.map((item) => {
-        if (item.employee.toString() === body.employee) {
+        if (item.employee && item.employee.toString() === body.employee) {
             check = false;
             return {
                 employee: body.employee,
