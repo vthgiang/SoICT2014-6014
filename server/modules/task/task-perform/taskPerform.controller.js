@@ -81,7 +81,7 @@ exports.startTimesheetLog = async (req, res) => {
             messages: ['start_timer_success'],
             content: timerStatus
         })
-    } catch (error) {
+    } catch (error) {console.log(error)
         await Logger.error(req.user.email, 'start_timer_faile', req.portal)
         res.status(400).json({
             success: false,
