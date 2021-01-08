@@ -66,20 +66,14 @@ class NotificationCreate extends Component {
     }
 
     handleContent = (data, imgs) => {
-        this.validateContent(data, true);
-    }
-    validateContent = (value, willUpdateState = true) => {
-        let msg = NotificationValidator.validateContent(value)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    notificationContentError: msg,
-                    notificationContent: value,
-                }
-            });
-        }
-        return msg === undefined;
+        const image = QuillEditor.convertImageBase64ToFile(imgs);
+        this.setState(state => {
+            return {
+                ...state,
+                notificationContent: data,
+                notificationContentImage: image,
+            }
+        });
     }
 
     handleLevel = (value) => {
@@ -122,7 +116,7 @@ class NotificationCreate extends Component {
 
     save = () => {
         const { auth } = this.props;
-        const { notificationFiles, notificationTitle, notificationLevel, notificationContent,
+        const { notificationFiles, notificationTitle, notificationLevel, notificationContent, notificationContentImage,
             notificationSender, notificationUsers, notificationOrganizationalUnits
         } = this.state;
         const data = {
@@ -138,8 +132,14 @@ class NotificationCreate extends Component {
 
         formData = convertJsonObjectToFormData(data);
         if (notificationFiles) {
+            console.log('notificationFiles', notificationFiles)
             notificationFiles.forEach(obj => {
                 formData.append('notificationFiles', obj.fileUpload)
+            })
+        }
+        if (notificationContentImage) {
+            notificationContentImage.forEach(obj => {
+                formData.append('notificationContentImage', obj)
             })
         }
         return this.props.create(formData);

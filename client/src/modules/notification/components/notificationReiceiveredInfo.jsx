@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, DateTimeConverter } from '../../../common-components';
 import parse from 'html-react-parser';
 import { AuthActions } from '../../../modules/auth/redux/actions'
-
+import './notification.css'
 class NotificationReiceiverdInfo extends Component {
     constructor(props) {
         super(props);
@@ -13,6 +13,20 @@ class NotificationReiceiverdInfo extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.notificationId !== prevState.notificationId) {
+            let notificationFiles = [];
+            let notificationContentImage = [];
+
+            if (nextProps.notificationFiles && nextProps.notificationFiles.length > 0) {
+                // Lọc ra file đính kèm khi dùng upload file
+                notificationFiles = nextProps.notificationFiles.filter(obj => obj.fileName);
+                // lọc file ảnh khi gửi bằng quilEditor
+                notificationContentImage = nextProps.notificationFiles.filter(obj => !obj.fileName);
+            }
+            if (notificationContentImage && notificationContentImage.length > 0) {
+                notificationContentImage.forEach(x => {
+                    nextProps.downloadFile(`.${x.url}`, `${x.url}`, false);
+                })
+            }
             return {
                 ...prevState,
                 notificationId: nextProps.notificationId,
@@ -21,7 +35,8 @@ class NotificationReiceiverdInfo extends Component {
                 notificationLevel: nextProps.notificationLevel,
                 notificationContent: nextProps.notificationContent,
                 notificationCreatedAt: nextProps.notificationCreatedAt,
-                notificationFiles: nextProps.notificationFiles,
+                notificationFiles,
+                notificationContentImage,
                 notificationAssociatedDataObject: nextProps.notificationAssociatedDataObject,
             }
         } else {
@@ -44,8 +59,8 @@ class NotificationReiceiverdInfo extends Component {
     }
 
     render() {
-        const { notifications, translate } = this.props;
-        const { notificationTitle, notificationSender, notificationCreatedAt, notificationLevel, notificationContent, notificationFiles, notificationAssociatedDataObject } = this.state;
+        const { notifications, translate, auth } = this.props;
+        const { notificationTitle, notificationSender, notificationCreatedAt, notificationLevel, notificationContent, notificationFiles, notificationContentImage, imageConvertToBase64, notificationAssociatedDataObject } = this.state;
         let content = notificationContent;
         let cssTable = " style=\"border: 1px solid black; padding-left: 3px; padding-right: 3px\"";
         while (content.indexOf("<table>") !== -1) {
@@ -64,6 +79,28 @@ class NotificationReiceiverdInfo extends Component {
             str = str.concat(strEnd);
             content = str;
         }
+
+        let base64fileConvert = [];
+        if (notificationContentImage && notificationContentImage.length > 0 && auth.showFiles && auth.showFiles.length > 0) {
+            notificationContentImage.forEach(obj => {
+                auth.showFiles.forEach(obj2 => {
+                    if (obj.url === obj2.fileName) {
+                        base64fileConvert = [...base64fileConvert, obj2.file];
+                    }
+                })
+            })
+        }
+        // thay thế chuỗi base64 của ảnh vào content của quileditor
+        if (content.includes('<img src="')) {
+            const imgRex = /<img.*?src="(.*?)"[^"]+>/g;
+            for (let i = 0; i < base64fileConvert.length; i++) {
+                let img = imgRex.exec(content)
+                content = content.replace(img[1], base64fileConvert[i]);
+            }
+        }
+        console.log('content', content);
+        console.log('parse(content)', parse(content));
+
         return (
             <DialogModal
                 func={this.save} isLoading={notifications.isLoading}
@@ -84,9 +121,9 @@ class NotificationReiceiverdInfo extends Component {
                             <div className="inline"><b> {notificationSender}, <DateTimeConverter dateTime={notificationCreatedAt} /></b></div>
                         </div>
                     </div>
-                    <div style={{ margin: '20px 0px 20px 0px' }}>{parse(content)}</div>
+                    <div className="notification" style={{ margin: '20px 0px 20px 0px' }}>{parse(content)}</div>
                     {
-                        notificationFiles && notificationFiles.length > 0 &&
+                        notificationFiles.length > 0 &&
                         <div>
                             <label>{translate('human_resource.profile.attached_files')}</label>
                             <ul>
@@ -105,8 +142,8 @@ class NotificationReiceiverdInfo extends Component {
 }
 
 function mapState(state) {
-    const { notifications } = state;
-    return { notifications };
+    const { notifications, auth } = state;
+    return { notifications, auth };
 }
 const actions = {
     downloadFile: AuthActions.downloadFile,
