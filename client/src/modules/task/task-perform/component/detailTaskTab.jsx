@@ -16,6 +16,7 @@ import { SelectFollowingTaskModal } from './selectFollowingTaskModal';
 import { withTranslate } from 'react-redux-multilingual';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { ShowMoreShowLess } from '../../../../common-components';
+import Swal from 'sweetalert2';
 
 class DetailTaskTab extends Component {
 
@@ -155,11 +156,35 @@ class DetailTaskTab extends Component {
         });
     }
 
-    startTimer = async (taskId, userId) => {
-        var timer = {
+    startTimer = async (taskId, overrideTSLog = 'no') => {
+        let userId = getStorage("userId");
+        let timer = {
             creator: userId,
+            overrideTSLog
         };
-        this.props.startTimer(taskId, timer);
+        this.props.startTimer(taskId, timer).catch(err => {
+            let warning = Array.isArray(err.response.data.messages) ? err.response.data.messages : [err.response.data.messages];
+            if (warning[0] === 'time_overlapping') {
+                Swal.fire({
+                    title: `Bạn đã hẹn tắt bấm giờ cho công việc [ ${warning[1]} ]`,
+                    html: `<h4 class="text-red">Hủy bỏ bấm giờ làm việc và bấm giờ công việc mới</h4>`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Bấm giờ mới',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let timer = {
+                            creator: userId,
+                            overrideTSLog: 'yes'
+                        };
+                        this.props.startTimer(taskId, timer)
+                    }
+                })
+            }
+        })
     }
 
     formatPriority = (data) => {
@@ -933,7 +958,7 @@ class DetailTaskTab extends Component {
 
                                 {/* Mô tả công việc */}
                                 <div>
-                                <strong>{translate('task.task_management.detail_description')}:</strong>
+                                    <strong>{translate('task.task_management.detail_description')}:</strong>
                                     <ShowMoreShowLess
                                         id={"statistic"}
                                         characterLimit={210}

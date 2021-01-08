@@ -165,15 +165,18 @@ function getTimerStatusTask(taskId) { //param -- , user
 function startTimerTask(taskId, timer) {
     return dispatch => {
         dispatch({ type: performTaskConstants.START_TIMER_REQUEST });
-        performTaskService.startTimerTask(taskId, timer)
+        return new Promise((resolve, reject) => {
+            performTaskService.startTimerTask(taskId, timer)
             .then(
                 payload => {
                     dispatch({ type: performTaskConstants.START_TIMER_SUCCESS, payload });
-                },
-                error => {
-                    dispatch({ type: performTaskConstants.STOP_TIMER_FAILURE, error });
+                    resolve(payload)
                 }
-            );
+            ).catch(error => {
+                dispatch({ type: performTaskConstants.STOP_TIMER_FAILURE, error });
+                reject(error)
+            })
+        })
     };
 }
 

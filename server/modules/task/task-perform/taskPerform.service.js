@@ -345,13 +345,35 @@ exports.startTimesheetLog = async (portal, params, body) => {
     if(check) throw ['task_dif_logging'];
 
     // Kiểm tra thời điểm bắt đầu bấm giờ có nằm trong khoảng thời gian hẹn tắt bấm giờ tự động không?
-    let autoTSLog = await Task(connect(DB_CONNECTION, portal))
-        .findOne({
+    if(body.overrideTSLog === 'yes'){
+        await Task(connect(DB_CONNECTION, portal))
+        .updateOne({
+            "timesheetLogs.creator": body.creator,
+            "timesheetLogs.stoppedAt": { $exists: true },
+            "timesheetLogs.stoppedAt": { $gt: timerUpdate.startedAt }
+        },{
+            $set: {
+                "timesheetLogs.$[i].acceptLog": false
+            },
+        },{
+            arrayFilters: [
+                {
+                    "i.creator": body.creator,
+                    "i.stoppedAt": { $exists: true },
+                    "i.stoppedAt": { $gt: timerUpdate.startedAt }
+                },
+            ],
+        });
+    }else{
+        let checkAutoTSLog = await Task(connect(DB_CONNECTION, portal)).findOne({
             "timesheetLogs.creator": body.creator,
             "timesheetLogs.stoppedAt": { $exists: true },
             "timesheetLogs.stoppedAt": { $gt: timerUpdate.startedAt }
         });
-    if(autoTSLog) throw ['time_overlapping'];
+        if(checkAutoTSLog) throw ['time_overlapping', checkAutoTSLog.name]
+    }
+
+    // if(autoTSLog) throw ['time_overlapping'];
 
     let timer = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
         params.taskId,
