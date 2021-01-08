@@ -177,6 +177,21 @@ export function kpimembers(state = {}, action) {
         editing: true
       };
     case kpiMemberConstants.SET_POINTKPI_SUCCESS:
+      // Cập nhật điểm cho tập kpi
+      let updateKpiSet = action.payload.updateKpiSet;
+      let kpimembers = state.kpimembers;
+
+      kpimembers.filter(item => {
+        if (updateKpiSet) {
+          return item._id === updateKpiSet._id;
+        }
+        return false;
+      }).forEach(element => {
+        element.automaticPoint = updateKpiSet.automaticPoint;
+        element.employeePoint = updateKpiSet.employeePoint;
+        element.approvedPoint = updateKpiSet.approvedPoint;
+      });
+
       return {
         ...state,
         tasks: action.payload.task,
@@ -184,7 +199,8 @@ export function kpimembers(state = {}, action) {
           ...state.currentKPI,
           kpis: state.currentKPI.kpis.map(kpi =>
             (kpi._id === action.payload.result._id) ? action.payload.result : kpi)
-        }
+        },
+        kpimembers: kpimembers
       };
     case kpiMemberConstants.SET_POINTKPI_FAILURE:
       return {

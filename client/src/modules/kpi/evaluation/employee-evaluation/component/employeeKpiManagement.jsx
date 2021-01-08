@@ -616,7 +616,7 @@ class EmployeeKpiManagement extends Component {
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
     convertDataToExportData = (data, unitName) => {
         let fileName = "Bảng theo dõi KPI nhân viên " + (unitName ? unitName : "");
-        if (data) {
+        if (data && data.length !== 0) {
             data = data.map((x, index) => {
 
                 let fullName = x.creator.name;
