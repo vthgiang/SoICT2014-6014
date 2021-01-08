@@ -144,38 +144,19 @@ class TaskDashboard extends Component {
     }
 
     handleSelectMonthStart = (value) => {
-        let month, monthtitle;
-
-        if (value.slice(0, 2) < 10) {
-            month = value.slice(3, 7) + '-0' + (new Number(value.slice(0, 2)));
-        } else {
-            month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
-        }
-
-        monthtitle = value.slice(0, 2) + '-' + value.slice(3, 7)
+        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        let startMonthTitle = value.slice(0, 2) + '-' + value.slice(3, 7);
 
         this.INFO_SEARCH.startMonth = month;
-        this.INFO_SEARCH.startMonthTitle = monthtitle;
+        this.INFO_SEARCH.startMonthTitle = startMonthTitle;
     }
 
     handleSelectMonthEnd = (value) => {
-        let month, monthtitle;
-
-        if (value.slice(0, 2) < 12) {
-            if (value.slice(0, 2) < 9) {
-                month = value.slice(3, 7) + '-0' + (new Number(value.slice(0, 2)) + 1);
-            } else {
-                month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)) + 1);
-            }
-
-            monthtitle = value.slice(0, 2) + '-' + value.slice(3, 7);
-        } else {
-            month = (new Number(value.slice(3, 7)) + 1) + '-' + '01';
-            monthtitle = '12' + '-' + (new Number(value.slice(3, 7)));
-        }
-
+        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        let endMonthTitle = value.slice(0, 2) + '-' + value.slice(3, 7);
+        
         this.INFO_SEARCH.endMonth = month;
-        this.INFO_SEARCH.endMonthTitle = monthtitle;
+        this.INFO_SEARCH.endMonthTitle = endMonthTitle;
     }
 
 
@@ -434,13 +415,10 @@ class TaskDashboard extends Component {
                                 <div className="box-title">{translate('task.task_management.detail_status')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                             </div>
                             <div className="box-body qlcv">
-                                {callAction &&
-                                    <TaskStatusChart
-                                        callAction={!willUpdate}
-                                        startMonth={startMonth}
-                                        endMonth={endMonth}
-                                    />
-                                }
+                                <TaskStatusChart
+                                    startMonth={startMonth}
+                                    endMonth={endMonth}
+                                />
                             </div>
                         </div>
                     </div>
