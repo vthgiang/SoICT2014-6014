@@ -152,12 +152,6 @@ function mapState(state) {
     return { tasks }
 }
 const actions = {
-    getResponsibleTaskByUser: taskManagementActions.getResponsibleTaskByUser,
-    getAccountableTaskByUser: taskManagementActions.getAccountableTaskByUser,
-    getConsultedTaskByUser: taskManagementActions.getConsultedTaskByUser,
-    getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
-    getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
-    getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
 }
 
 const connectedInprocessTask = connect(mapState, actions)(withTranslate(InprocessTask));
