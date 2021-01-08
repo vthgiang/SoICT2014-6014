@@ -166,14 +166,11 @@ class WorkerScheduleCreateForm extends Component {
     render() {
         const { translate, workSchedule } = this.props;
         const { user, month, allDaysOfMonth, numberOfTurns } = this.state;
-        const { employees } = this.props.user;
-        console.log(employees);
         // Tao mang cac ca
         let turns = []
         for (let i = 1; i <= numberOfTurns; i++) {
             turns.push(i)
         }
-        console.log(workSchedule.listWorkSchedules);
         return (
             < React.Fragment >
                 <ButtonModal onButtonCallBack={this.handleClickCreate} modalID="modal-create-worker-work-schedule" button_name={translate('manufacturing.work_schedule.add_work_schedule_button')} title={translate('manufacturing.work_schedule.add_work_schedule')} />

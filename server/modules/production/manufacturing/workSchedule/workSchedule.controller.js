@@ -58,3 +58,25 @@ exports.getWorkSchedules = async (req, res) => {
         })
     }
 }
+
+exports.getWorkSchedulesByMillId = async (req, res) => {
+    try {
+        let id = req.params.id;
+        let workSchedules = await WorkScheduleService.getWorkSchedulesByMillId(id, req.portal);
+
+        await Log.info(req.user.email, "GET_WORK_SCHEDULES_BY_MILL_ID", req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["get_all_work_scheduled_by_mill_id_successfully"],
+            content: workSchedules
+        })
+    } catch (error) {
+        await Log.error(req.user.email, "GET_WORK_SCHEDULES_BY_MILL_ID", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["get_all_work_scheduled_by_mill_id_failed"],
+            content: error.message
+        })
+    }
+}
