@@ -165,7 +165,7 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
                         if (evaluation.results && evaluation.results.length !== 0) {
                             evaluation.results.map(result => {
                                 if (task.organizationalUnit && task.organizationalUnit._id) {
-                                    if (criteria) {
+                                    if (criteria === CRITERIA.COEFFICIENT) {
                                         let totalDay = 0;
                                         let startDate = task.startDate && new Date(task.startDate);
                                         let endDate = task.endDate && new Date(task.endDate);
@@ -227,7 +227,7 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
             units.map(unit => {
                 let average;
 
-                if (criteria) {
+                if (criteria === CRITERIA.COEFFICIENT) {
                     if (dataSumPointAndCoefficient[unit]) {
                         if (typePoint === TYPEPOINT.AUTOMAIC_POINT) {
                             average = averageFunction(dataSumPointAndCoefficient[unit].sumAutomaticPointCoefficient, dataSumPointAndCoefficient[unit].sumCoefficientAutomatic);
