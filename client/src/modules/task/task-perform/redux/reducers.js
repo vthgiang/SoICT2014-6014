@@ -913,6 +913,24 @@ export function performtasks(state = {}, action) {
                 ...state,
                 task: {...state.task, taskActions: action.payload},
             }
+
+        case performTaskConstants.EDIT_TIME_SHEET_LOG_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            }
+
+        case performTaskConstants.EDIT_TIME_SHEET_LOG_FAILE:
+            return {
+                ...state,
+                isLoading: false
+            }
+
+        case performTaskConstants.EDIT_TIME_SHEET_LOG_SUCCESS:
+            return {
+                ...state,
+                logtimer: action.payload.timesheetLogs,
+            }
         
         default:
             return state

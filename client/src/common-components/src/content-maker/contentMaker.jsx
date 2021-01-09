@@ -48,9 +48,9 @@ class ContentMaker extends Component {
         const { translate } = this.props;
         const {
             idQuill, files, onFilesChange, onFilesError, multiple = true, maxFiles = 10, maxFileSize = 10000000, minFileSize = 0, clickable = false,
-            text, onTextChange, placeholder, minRows = 3, maxRows = 20,
+            text, onTextChange, placeholder,
             onSubmit, submitButtonText, disabledSubmit,
-            inputCssClass, controlCssClass, defaultValue, handleEdit, cancelButtonText, styletext, onKeyPress, id
+            inputCssClass, controlCssClass, handleEdit, cancelButtonText
         } = this.props
         return (
             <React.Fragment>
@@ -70,7 +70,6 @@ class ContentMaker extends Component {
                         inputCssClass={inputCssClass}
                         toolbar={false}
                         getTextData={onTextChange}
-                        height={100}
                         quillValueDefault={text}
                         placeholder={placeholder}
                     />

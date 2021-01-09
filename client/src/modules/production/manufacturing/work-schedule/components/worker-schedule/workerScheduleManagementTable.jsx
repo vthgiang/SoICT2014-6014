@@ -212,7 +212,7 @@ class WorkerScheduleManagementTable extends Component {
                             />
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static"></label>
+                            {this.checkHasComponent('select-manufacturing-works') && <label className="form-control-static"></label>}
                             <button type="button" className="btn btn-success" title={translate('manufacturing.work_schedule.search')} onClick={this.handleSubmitSearch}>{translate('manufacturing.work_schedule.search')}</button>
                         </div>
                     </div>

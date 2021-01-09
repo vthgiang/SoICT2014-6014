@@ -11,6 +11,7 @@ router.get('/task-timesheet-logs', auth, PerformTaskController.getActiveTimeshee
 router.post('/tasks/:taskId/timesheet-logs/start-timer', auth, PerformTaskController.startTimesheetLog);
 router.post('/tasks/:taskId/timesheet-logs/stop-timer', auth, PerformTaskController.stopTimesheetLog);
 router.get('/tasks/:taskId/timesheet-logs', auth, PerformTaskController.getTaskTimesheetLogs);
+router.patch('/tasks/:taskId/timesheet-logs/:timesheetlogId', auth, PerformTaskController.editTimeSheetLog);
 
 
 //task log

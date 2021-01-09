@@ -5043,7 +5043,20 @@ export default {
                 list_order: "Danh sách đơn hàng",
                 manufacturing_command_info: "Thông tin lệnh sản xuất",
                 history_info: "Lịch sử sản xuất theo mặt hàng",
-                schedule_booking: "Chọn xưởng sản xuất và phân việc công nhân"
+                schedule_booking: "Chọn xưởng sản xuất và phân việc công nhân",
+                choose_mill: "Chọn xưởng sản xuất",
+                turn_number_suggest: "Số ca đề xuất",
+                worker_number_suggest: "Số công nhân đề xuất",
+                start_date_command: "Ngày bắt đầu",
+                start_turn: "Ca bắt đầu",
+                end_date_command: "Ngày kết thúc",
+                end_turn: "Ca kết thúc",
+                responsible: "Người thực hiện",
+                choose_mill_error: "Vui lòng chọn xưởng sản xuất!",
+                choose_mill_error_on_good: "Xưởng không thể sản xuất mặt hàng này!",
+                month_lower_case: "tháng",
+                month_upper_case: "Tháng",
+                work_schedule: "Lịch sản xuất",
 
 
 

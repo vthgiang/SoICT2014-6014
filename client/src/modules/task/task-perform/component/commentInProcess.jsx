@@ -27,24 +27,29 @@ class CommentInProcess extends Component {
                 creator: idUser,
                 description: '',
                 files: [],
+                descriptionDefault: ''
             },
             newComment: {
-                description: ''
+                description: '',
+                descriptionDefault: ''
             },
             childComment: {
                 creator: idUser,
                 description: '',
                 files: [],
+                descriptionDefault: ''
             },
             newCommentEdited: {
                 creator: idUser,
                 description: "",
-                files: []
+                files: [],
+                descriptionDefault: ''
             },
             newChildCommentEdited: {
                 creator: idUser,
                 description: "",
-                files: []
+                files: [],
+                descriptionDefault: ''
             }
         }
         this.newComment = [];
@@ -102,20 +107,28 @@ class CommentInProcess extends Component {
     }
 
 
-    handleEditComment = async (id) => {
+    handleEditComment = async (comment) => {
         await this.setState(state => {
             return {
                 ...state,
-                editComment: id
+                editComment: comment._id,
+                newCommentEdited: {
+                    ...state.newCommentEdited,
+                    descriptionDefault: comment.description
+                }
             }
         })
     }
 
-    handleEditChildComment = async (id) => {
+    handleEditChildComment = async (childComment) => {
         await this.setState(state => {
             return {
                 ...state,
-                editChildComment: id
+                editChildComment: childComment._id,
+                newChildCommentEdited: {
+                    ...state.newChildCommentEdited,
+                    descriptionDefault: childComment.description
+                }
             }
         })
     }
@@ -174,7 +187,8 @@ class CommentInProcess extends Component {
                 newCommentEdited: {
                     ...state.newCommentEdited,
                     files: [],
-                    description: ""
+                    description: "",
+                    descriptionDefault: null
                 }
             }
         })
@@ -203,7 +217,8 @@ class CommentInProcess extends Component {
                 newChildCommentEdited: {
                     ...state.newChildCommentEdited,
                     description: "",
-                    files: []
+                    files: [],
+                    descriptionDefault: null
                 },
                 editChildComment: ""
             }
@@ -231,6 +246,7 @@ class CommentInProcess extends Component {
                     ...state.comment,
                     description: "",
                     files: [],
+                    descriptionDefault: ''
                 },
             }
         })
@@ -256,6 +272,7 @@ class CommentInProcess extends Component {
                     ...state.childComment,
                     description: "",
                     files: [],
+                    descriptionDefault: ''
                 },
             }
         })
@@ -374,7 +391,7 @@ class CommentInProcess extends Component {
                                                         <i className="fa fa-ellipsis-h"></i>
                                                     </span>
                                                     <ul className="dropdown-menu">
-                                                        <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditComment(item._id)} >{translate('task.task_perform.edit_comment')}</a></li>
+                                                        <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditComment(item)} >{translate('task.task_perform.edit_comment')}</a></li>
                                                         <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteComment(task._id, item._id)} >{translate('task.task_perform.delete_comment')}</a></li>
                                                     </ul>
                                                 </div>}
@@ -417,16 +434,16 @@ class CommentInProcess extends Component {
                                     <React.Fragment>
                                         <div>
                                             <ContentMaker
+                                                idQuill={`edit-comment-process-${item._id}`}
                                                 inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
                                                 onFilesChange={this.onEditCommentFilesChange}
                                                 onFilesError={this.onFilesError}
                                                 files={newCommentEdited.files}
-                                                defaultValue={item.description}
+                                                text={newCommentEdited.descriptionDefault}
                                                 submitButtonText={translate("task.task_perform.save_edit")}
                                                 cancelButtonText={translate("task.task_perform.cancel")}
                                                 handleEdit={(e) => this.handleEditComment(e)}
-                                                onTextChange={(e) => {
-                                                    let value = e.target.value;
+                                                onTextChange={(value, imgs) => {
                                                     this.setState(state => {
                                                         return { ...state, newCommentEdited: { ...state.newCommentEdited, description: value } }
                                                     })
@@ -487,7 +504,7 @@ class CommentInProcess extends Component {
                                                                         <i className="fa fa-ellipsis-h"></i>
                                                                     </span>
                                                                     <ul className="dropdown-menu">
-                                                                        <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditChildComment(child._id)} >Sửa bình luận</a></li>
+                                                                        <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditChildComment(child)} >Sửa bình luận</a></li>
                                                                         <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteChildComment(task._id, item._id, child._id)} >Xóa bình luận</a></li>
                                                                     </ul>
                                                                 </div>}
@@ -528,16 +545,16 @@ class CommentInProcess extends Component {
                                                     <React.Fragment>
                                                         <div>
                                                             <ContentMaker
+                                                                idQuill={`edit-child-comment-process-${child._id}`}
                                                                 inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                                 onFilesChange={this.onEditFileChildComment}
                                                                 onFilesError={this.onFilesError}
                                                                 files={newChildCommentEdited.files}
-                                                                defaultValue={child.description}
+                                                                text={newChildCommentEdited.descriptionDefault}
                                                                 submitButtonText={translate("task.task_perform.save_edit")}
                                                                 cancelButtonText={translate("task.task_perform.cancel")}
                                                                 handleEdit={(e) => this.handleEditChildComment(e)}
-                                                                onTextChange={(e) => {
-                                                                    let value = e.target.value;
+                                                                onTextChange={(value, imgs) => {
                                                                     this.setState(state => {
                                                                         return { ...state, newChildCommentEdited: { ...state.newChildCommentEdited, description: value } }
                                                                     })
@@ -579,17 +596,17 @@ class CommentInProcess extends Component {
                                             <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
                                             
                                             <ContentMaker
+                                                idQuill={`add-child-comment-process`}
                                                 inputCssClass="text-input-level2" controlCssClass="tool-level2"
                                                 onFilesChange={this.onCommentFilesChange}
                                                 onFilesError={this.onFilesError}
                                                 files={childComment.files}
-                                                text={childComment.description}
+                                                text={childComment.descriptionDefault}
                                                 placeholder={translate('task.task_perform.enter_comment')}
                                                 submitButtonText={translate('task.task_perform.create_comment')}
-                                                onTextChange={(e) => {
-                                                    let value = e.target.value;
+                                                onTextChange={(value, imgs) => {
                                                     this.setState(state => {
-                                                        return { ...state, childComment: { ...state.childComment, description: value } }
+                                                        return { ...state, childComment: { ...state.childComment, description: value, descriptionDefault: null } }
                                                     })
                                                 }}
                                                 onSubmit={() => this.submitChildComment(task._id, item._id)}
@@ -604,17 +621,17 @@ class CommentInProcess extends Component {
                 <img className={inputAvatarCssClass} src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="User Image" />
                 
                 <ContentMaker
+                    idQuill={`add-comment-process`}
                     inputCssClass="text-input-level1" controlCssClass="tool-level1"
                     onFilesChange={this.onFilesChange}
                     onFilesError={this.onFilesError}
                     files={this.state.comment.files}
-                    text={this.state.comment.description}
+                    text={this.state.comment.descriptionDefault}
                     placeholder={translate('task.task_perform.enter_comment')}
                     submitButtonText={translate('task.task_perform.create_comment')}
-                    onTextChange={(e) => {
-                        let value = e.target.value;
+                    onTextChange={(value, imgs) => {
                         this.setState(state => {
-                            return { ...state, comment: { ...state.comment, description: value } }
+                            return { ...state, comment: { ...state.comment, description: value, descriptionDefault: null } }
                         })
                     }}
                     onSubmit={(e) => this.submitComment(task._id)}
