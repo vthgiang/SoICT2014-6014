@@ -190,6 +190,7 @@ class NotificationCreate extends Component {
                             <QuillEditor
                                 id={'notificationCreate'}
                                 getTextData={this.handleContent}
+                                table={false}
                             />
                         </div>
 
