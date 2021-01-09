@@ -7,7 +7,7 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 
 import { ModalEditTaskByResponsibleEmployee } from './modalEditTaskByResponsibleEmployee';
 import { ModalEditTaskByAccountableEmployee } from './modalEditTaskByAccountableEmployee';
-import { HoursSpentOfEmployeeChart } from './hourSpentNewVersion';
+import { HoursSpentOfEmployeeChart } from './hourSpentOfEmployeeChart';
 import { CollaboratedWithOrganizationalUnits } from './collaboratedWithOrganizationalUnits';
 
 import { EvaluationModal } from './evaluationModal';
@@ -501,18 +501,19 @@ class DetailTaskTab extends Component {
         results.map(item => {
             item.hoursSpent = 0;
         })
+
         for (let i in timesheetLogs) {
             let log = timesheetLogs[i];
             let startedAt = new Date(log.startedAt);
             let stoppedAt = new Date(log.stoppedAt);
 
-            if (startedAt.getTime() >= new Date(startDate).getTime() && stoppedAt.getTime() <= new Date(endDate).getTime()) {
+            if (startedAt.getTime() >= (new Date(startDate)).getTime() && stoppedAt.getTime() <= (new Date(endDate)).getTime()) {
                 let { creator, duration } = log;
                 let check = true;
                 let newResults = [];
 
                 newResults = results.map(item => {
-                    if (item.employee && creator === item.employee._id) {
+                    if (item.employee && creator._id === item.employee._id) {
 
                         check = false;
                         return {
@@ -696,15 +697,17 @@ class DetailTaskTab extends Component {
             hoursSpentOfEmployeeInTask = {};
             for (let i = 0; i < task.timesheetLogs.length; i++) {
                 let tsheetlog = task.timesheetLogs[i];
-                console.log("tssheetlog:", tsheetlog)
-                if (tsheetlog.stoppedAt) {
+
+                if (tsheetlog && tsheetlog.stoppedAt && tsheetlog.creator) {
                     let times = hoursSpentOfEmployeeInTask[tsheetlog.creator.name] ? hoursSpentOfEmployeeInTask[tsheetlog.creator.name] : 0;
+                    
                     if (tsheetlog.acceptLog) {
                         hoursSpentOfEmployeeInTask[tsheetlog.creator.name] = times + tsheetlog.duration;
                     }
                 }
             }
         }
+
         if (task && task.evaluations && task.evaluations.length !== 0) {
             task.evaluations.map(item => {
                 if (item.results && item.results.length !== 0) {
@@ -714,10 +717,10 @@ class DetailTaskTab extends Component {
                         if (result.employee) {
                             if (!hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name]) {
                                 if (result.hoursSpent) {
-                                    hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] = Number.parseFloat(result.hoursSpent / (1000 * 60 * 60)).toFixed(2);
+                                    hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] = Number.parseFloat(result.hoursSpent);
                                 }
                             } else {
-                                hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] = hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] + result.hoursSpent ? Number.parseFloat(result.hoursSpent / (1000 * 60 * 60)).toFixed(2) : 0;
+                                hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] = hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] + result.hoursSpent ? Number.parseFloat(result.hoursSpent) : 0;
                             }
                         }
                     })
@@ -968,7 +971,6 @@ class DetailTaskTab extends Component {
                                     >
                                         {task && parse(task.description)}
                                     </ShowMoreShowLess>
-                                    <br />
                                 </div>
                             </div>
                         }

@@ -451,7 +451,7 @@ class TaskAddModal extends Component {
 
         if (this.props.parentTask && this.props.parentTask !== "" && this.props.currentTasks) {
             let taskItem = this.props.currentTasks.find(e => e._id === this.props.parentTask);
-            listParentTask.push({ value: taskItem._id, text: taskItem.name })
+            taskItem && listParentTask.push({ value: taskItem._id, text: taskItem.name })
         }
 
         if (tasks.listSearchTasks) {
@@ -521,6 +521,7 @@ class TaskAddModal extends Component {
                                         getTextData={this.handleChangeTaskDescription}
                                         height={80}
                                         placeholder={translate('task.task_management.detail_description')}
+                                        embeds={false}
                                     />
                                     <ErrorLabel content={newTask.errorOnDescription} />
                                 </div>
@@ -735,7 +736,6 @@ const actionCreators = {
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
-    getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID,
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     getPaginateTasksByUser: taskManagementActions.getPaginateTasksByUser,
