@@ -70,7 +70,6 @@ class ContentMaker extends Component {
                         inputCssClass={inputCssClass}
                         toolbar={false}
                         getTextData={onTextChange}
-                        height={100}
                         quillValueDefault={text}
                         placeholder={placeholder}
                     />
