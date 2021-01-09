@@ -1038,7 +1038,6 @@ class ActionTab extends Component {
                             {typeof taskActions !== 'undefined' && taskActions.length !== 0 ?
                                 <ShowMoreShowLess
                                     id={`description${id}`}
-                                    isText={false}
                                     classShowMoreLess='tool-level1'
                                     styleShowMoreLess={{ display: "inline-block", marginBotton: 15 }}
                                 >
