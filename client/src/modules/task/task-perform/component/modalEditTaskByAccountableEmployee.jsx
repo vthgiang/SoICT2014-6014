@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { DialogModal, ErrorLabel, SelectBox, DatePicker, ContentMaker } from '../../../../common-components/';
+import { DialogModal, ErrorLabel, SelectBox, DatePicker } from '../../../../common-components/';
 import { getStorage } from "../../../../config";
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { TaskInformationForm } from './taskInformationForm';
