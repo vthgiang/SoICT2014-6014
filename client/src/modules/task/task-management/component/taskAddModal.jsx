@@ -11,7 +11,7 @@ import { managerKpiActions } from '../../../kpi/employee/management/redux/action
 import { taskTemplateActions } from '../../../task/task-template/redux/actions';
 import { taskManagementActions } from '../redux/actions';
 
-import { DialogModal, DatePicker, SelectBox, ErrorLabel, ToolTip, TreeSelect } from '../../../../common-components';
+import { DialogModal, DatePicker, SelectBox, ErrorLabel, ToolTip, TreeSelect, QuillEditor } from '../../../../common-components';
 import { TaskFormValidator } from './taskFormValidator';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import ModalAddTaskProject from '../../task-project/component/modalAddTaskProject';
@@ -112,8 +112,7 @@ class TaskAddModal extends Component {
         })
     }
 
-    handleChangeTaskDescription = (event) => {
-        let value = event.target.value;
+    handleChangeTaskDescription = (value, imgs) => {
         this.validateTaskDescription(value, true);
     }
     validateTaskDescription = (value, willUpdateState = true) => {
@@ -516,7 +515,13 @@ class TaskAddModal extends Component {
                                 {/* Mô tả công việc */}
                                 <div className={`form-group ${newTask.errorOnDescription === undefined ? "" : "has-error"}`}>
                                     <label className="control-label">{translate('task.task_management.detail_description')}<span className="text-red">*</span></label>
-                                    <textarea style={{ height: 80 }} type="Description" className="form-control" name="Mô tả công việc" placeholder={translate('task.task_management.detail_description')} value={newTask.description} onChange={this.handleChangeTaskDescription} />
+                                    <QuillEditor
+                                        id={"task-add-modal"}
+                                        toolbar={false}
+                                        getTextData={this.handleChangeTaskDescription}
+                                        height={80}
+                                        placeholder={translate('task.task_management.detail_description')}
+                                    />
                                     <ErrorLabel content={newTask.errorOnDescription} />
                                 </div>
 

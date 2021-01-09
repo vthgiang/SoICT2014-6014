@@ -18,6 +18,8 @@ import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { ShowMoreShowLess } from '../../../../common-components';
 import Swal from 'sweetalert2';
 
+import parse from 'html-react-parser';
+
 class DetailTaskTab extends Component {
 
     constructor(props) {
@@ -958,12 +960,14 @@ class DetailTaskTab extends Component {
 
                                 {/* Mô tả công việc */}
                                 <div>
-                                    <strong>{translate('task.task_management.detail_description')}:</strong>
+                                <strong>{translate('task.task_management.detail_description')}:</strong>
                                     <ShowMoreShowLess
-                                        id={"statistic"}
-                                        characterLimit={210}
-                                        value={task && task.description}
-                                    />
+                                        id={"task-description"}
+                                        isHtmlElement={true}
+                                        characterLimit={200}
+                                    >
+                                        {task && parse(task.description)}
+                                    </ShowMoreShowLess>
                                     <br />
                                 </div>
                             </div>
