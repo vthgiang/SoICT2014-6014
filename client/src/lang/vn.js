@@ -4920,6 +4920,10 @@ export default {
                     color: "red",
                     content: "Đã hủy",
                 },
+                6: {
+                    color: "#26f2da",
+                    content: "Mới tạo"
+                },
                 //mill
                 choose_all_mill: "Tất cả các xưởng",
                 manufacturing_mill_schedule_list: "Lịch sản xuất của xưởng",
@@ -5059,6 +5063,11 @@ export default {
                 month_lower_case: "tháng",
                 month_upper_case: "Tháng",
                 work_schedule: "Lịch sản xuất",
+                next: "Sau",
+                prev: "Trước",
+                choose_start_date: "Không được để trống thời gian",
+                choose_end_date: "Không được để trống thời gian",
+                choose_date_error: "Ngày bắt đầu phải trước hoặc bằng ngày kết thúc"
 
 
 
@@ -5102,6 +5111,10 @@ export default {
                 5: {
                     color: "red",
                     content: "Đã hủy",
+                },
+                6: {
+                    color: "#26f2da",
+                    content: "Mới tạo"
                 },
                 choose_status: "Chọn trạng thái",
                 choose_all: "Chọn tất cả",

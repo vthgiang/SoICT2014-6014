@@ -80,3 +80,24 @@ exports.getWorkSchedulesByMillId = async (req, res) => {
         })
     }
 }
+
+exports.getWorkSchedulesOfManufacturingWork = async (req, res) => {
+    try {
+        let query = req.query;
+        let workSchedules = await WorkScheduleService.getWorkSchedulesOfManufacturingWork(query, "vnist");
+        // await Log.info(req.user.email, "GET_WORK_SCHEDULES_OF_WORK", req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["get_work_schedules_of_work_successfully"],
+            content: workSchedules
+        })
+    } catch (error) {
+        // await Log.error(req.user.email, "GET_WORK_SCHEDULES_OF_WORK", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["get_work_schedules_of_work_failed"],
+            content: error.message
+        })
+    }
+}
