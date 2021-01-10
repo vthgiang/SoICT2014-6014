@@ -815,9 +815,6 @@ exports.links = [
         url: '/manage-sales-order',
         apis: ['@all']
     },{
-        url: '/manage-manufacturing-order',
-        apis: ['@all']
-    },{
         url: '/manage-purchase-order',
         apis: ['@all']
     },{
@@ -825,9 +822,6 @@ exports.links = [
         apis: ['@all']
     },{
         url: '/manage-sales-order-dashboard',
-        apis: ['@all']
-    },{
-        url: '/manage-manufacturing-order-dashboard',
         apis: ['@all']
     },{
         url: '/manage-discount',
@@ -838,7 +832,20 @@ exports.links = [
     },{
         url: '/manage-sla',
         apis: ['@all']
-    },{
+    },
+    {
+        url: '/manage-payment',
+        apis: ['@all']
+    },
+    {
+        url: '/manage-business-department',
+        apis: ['@all']
+    },
+    {
+        url: '/manage-bank-account',
+        apis: ['@all']
+    },
+    {
         url: '/crm/dashboard',
         apis: ['@all']
     },{
