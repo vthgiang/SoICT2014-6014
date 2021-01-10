@@ -33,7 +33,7 @@ class SideBar extends Component {
             <React.Fragment>
                 <aside className="main-sidebar" style={{ minHeight: "100vh" }}>
                     <section className="sidebar">
-                        <div className="user-panel" style={{ borderBottom: '0.2px solid #4B545C' }}>
+                        <div className="user-panel" style={{ borderBottom: "0.2px solid #4B545C" }}>
                             <div className="pull-left image">
                                 <img src={process.env.REACT_APP_SERVER + auth.user.avatar} className="img-circle" alt="User avatar" />
                             </div>
@@ -55,10 +55,10 @@ class SideBar extends Component {
                                         </Link>
                                     </React.Fragment>
                                 ) : (
-                                        <p style={{ fontSize: "10px" }}>
-                                            <i className="fa fa-circle text-success"></i> Online{" "}
-                                        </p>
-                                    )}
+                                    <p style={{ fontSize: "10px" }}>
+                                        <i className="fa fa-circle text-success"></i> Online{" "}
+                                    </p>
+                                )}
                             </div>
                         </div>
                         <ul className="sidebar-menu" data-widget="tree" ref="sideBarMenu">
@@ -406,7 +406,7 @@ class SideBar extends Component {
                                     icon: "fa fa-address-book",
                                     list: [
                                         { name: "menu.dashboard_employee", icon: "fa fa-dashboard", path: "/hr-dashboard-employee" },
-                                        { name: 'menu.employee_capacity', icon: 'fa fa-dashboard', path: '/hr-employee-capacity' },
+                                        { name: "menu.employee_capacity", icon: "fa fa-dashboard", path: "/hr-employee-capacity" },
                                         { name: "menu.manage_unit", icon: "fa fa-sitemap", path: "/hr-manage-department" },
                                         { name: "menu.add_employee", icon: "fa fa-user-plus", path: "/hr-add-employee" },
                                         { name: "menu.list_employee", icon: "fa fa-address-card", path: "/hr-list-employee" },
@@ -544,9 +544,19 @@ class SideBar extends Component {
                                             path: "/manage-sla",
                                         },
                                         {
+                                            name: "menu.manage_payment",
+                                            icon: "fa fa-registered",
+                                            path: "/manage-payment",
+                                        },
+                                        {
                                             name: "menu.manage_business_department",
                                             icon: "fa fa-sitemap",
                                             path: "/manage-business-department",
+                                        },
+                                        {
+                                            name: "menu.manage_bank_account",
+                                            icon: "fa fa-sitemap",
+                                            path: "/manage-bank-account",
                                         },
                                     ],
                                 }}
