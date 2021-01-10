@@ -930,6 +930,12 @@ export function performtasks(state = {}, action) {
             return {
                 ...state,
                 logtimer: action.payload.timesheetLogs,
+                task: action.payload,
+                tasks: Array.isArray(state.tasks) ? state.tasks.map(t => {
+                    if(action.payload && t._id === action.payload._id){
+                        return action.payload
+                    } else return t;
+                }) : state.tasks
             }
         
         default:
