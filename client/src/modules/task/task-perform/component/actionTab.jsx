@@ -285,11 +285,15 @@ class ActionTab extends Component {
             })
         }
     }
-    handleEditCommentOfTaskComment = async (id) => {
+    handleEditCommentOfTaskComment = async (childComment) => {
         await this.setState(state => {
             return {
                 ...state,
-                editCommentOfTaskComment: id
+                editCommentOfTaskComment: childComment._id,
+                newCommentOfTaskCommentEdited: {
+                    ...state.newCommentOfTaskCommentEdited,
+                    descriptionDefault: childComment.description
+                }
             }
         })
     }
@@ -315,6 +319,7 @@ class ActionTab extends Component {
             state.newCommentOfAction[`${actionId}`] = {
                 description: "",
                 files: [],
+                descriptionDefault: ''
             }
             return {
                 ...state,
@@ -374,6 +379,7 @@ class ActionTab extends Component {
                     ...state.newTaskComment,
                     description: "",
                     files: [],
+                    descriptionDefault: ''
                 },
             }
         })
@@ -395,6 +401,7 @@ class ActionTab extends Component {
             state.newCommentOfTaskComment[`${commentId}`] = {
                 description: "",
                 files: [],
+                descriptionDefault: ''
             }
             return {
                 ...state,
@@ -421,6 +428,7 @@ class ActionTab extends Component {
                     ...state.taskFiles,
                     description: "",
                     files: [],
+                    descriptionDefault: ''
                 },
             }
         })
@@ -428,11 +436,14 @@ class ActionTab extends Component {
 
     }
 
-    handleEditFileTask = (fileId) => {
+    handleEditFileTask = (file) => {
         this.setState(state => {
             return {
                 ...state,
-                showEditTaskFile: fileId
+                showEditTaskFile: file._id,
+                fileTaskEdited: {
+                    descriptionDefault: file.description
+                }
             }
         });
     }
@@ -464,11 +475,15 @@ class ActionTab extends Component {
         })
     }
 
-    handleEditTaskComment = async (id) => {
-        await this.setState(state => {
+    handleEditTaskComment = (taskComment) => {
+        this.setState(state => {
             return {
                 ...state,
-                editTaskComment: id
+                editTaskComment: taskComment._id,
+                newTaskCommentEdited: {
+                    ...state.newTaskCommentEdited,
+                    descriptionDefault: taskComment.description
+                }
             }
         })
     }
@@ -526,7 +541,8 @@ class ActionTab extends Component {
                 newTaskCommentEdited: {
                     ...state.newTaskComment,
                     description: "",
-                    files: []
+                    files: [],
+                    descriptionDefault: null
                 },
                 editTaskComment: ""
             }
@@ -548,16 +564,16 @@ class ActionTab extends Component {
         }
         data.append("creator", newCommentOfActionEdited.creator)
         if (newCommentOfActionEdited.description || newCommentOfActionEdited.files) {
-            this.props.editActionComment(taskId, actionId, commentId, data);
+            await this.props.editActionComment(taskId, actionId, commentId, data);
         }
-        await this.setState(state => {
+        this.setState(state => {
             return {
                 ...state,
                 newCommentOfActionEdited: {
                     ...state.newCommentOfActionEdited,
                     description: "",
                     files: [],
-                    descriptionDefault: ""
+                    descriptionDefault: null
                 },
                 editComment: ""
             }
@@ -587,7 +603,8 @@ class ActionTab extends Component {
                 newCommentOfTaskCommentEdited: {
                     ...state.newCommentOfTaskCommentEdited,
                     description: "",
-                    files: []
+                    files: [],
+                    descriptionDefault: null
                 },
                 editCommentOfTaskComment: ""
             }
@@ -617,7 +634,8 @@ class ActionTab extends Component {
                 fileTaskEdited: {
                     ...state.fileTaskEdited,
                     description: "",
-                    files: []
+                    files: [],
+                    descriptionDefault: null
                 },
                 showEditTaskFile: ""
             }
@@ -1020,7 +1038,6 @@ class ActionTab extends Component {
                             {typeof taskActions !== 'undefined' && taskActions.length !== 0 ?
                                 <ShowMoreShowLess
                                     id={`description${id}`}
-                                    isText={false}
                                     classShowMoreLess='tool-level1'
                                     styleShowMoreLess={{ display: "inline-block", marginBotton: 15 }}
                                 >
@@ -1166,7 +1183,7 @@ class ActionTab extends Component {
                                                                     onFilesChange={this.onEditActionFilesChange}
                                                                     onFilesError={this.onFilesError}
                                                                     files={newActionEdited.files}
-                                                                    defaultValue={newActionEdited.descriptionDefault}
+                                                                    text={newActionEdited.descriptionDefault}
                                                                     submitButtonText={translate("task.task_perform.save_edit")}
                                                                     cancelButtonText={translate("task.task_perform.cancel")}
                                                                     handleEdit={(item) => this.handleEditAction(item)}
@@ -1260,7 +1277,7 @@ class ActionTab extends Component {
                                                                                     onFilesChange={this.onEditCommentOfActionFilesChange}
                                                                                     onFilesError={this.onFilesError}
                                                                                     files={newCommentOfActionEdited.files}
-                                                                                    defaultValue={newCommentOfActionEdited.descriptionDefault}
+                                                                                    text={newCommentOfActionEdited.descriptionDefault}
                                                                                     submitButtonText={translate("task.task_perform.save_edit")}
                                                                                     cancelButtonText={translate("task.task_perform.cancel")}
                                                                                     handleEdit={(e) => this.handleEditActionComment(e)}
@@ -1299,7 +1316,7 @@ class ActionTab extends Component {
                                                                     onFilesChange={(files) => this.onCommentFilesChange(files, item._id)}
                                                                     onFilesError={this.onFilesError}
                                                                     files={newCommentOfAction[`${item._id}`]?.files}
-                                                                    text={newCommentOfAction[`${item._id}`]?.description}
+                                                                    text={newCommentOfAction[`${item._id}`]?.descriptionDefault}
                                                                     placeholder={translate("task.task_perform.enter_comment_action")}
                                                                     submitButtonText={translate("task.task_perform.create_comment_action")}
                                                                     onTextChange={(value, imgs) => {
@@ -1308,6 +1325,7 @@ class ActionTab extends Component {
                                                                                 ...state.newCommentOfAction[`${item._id}`],
                                                                                 creator: idUser,
                                                                                 description: value,
+                                                                                descriptionDefault: null
                                                                             }
                                                                             return {
                                                                                 ...state,
@@ -1391,7 +1409,7 @@ class ActionTab extends Component {
                                                                     <i className="fa fa-ellipsis-h"></i>
                                                                 </span>
                                                                 <ul className="dropdown-menu">
-                                                                    <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditTaskComment(item._id)} >{translate("task.task_perform.edit_comment")}</a></li>
+                                                                    <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditTaskComment(item)} >{translate("task.task_perform.edit_comment")}</a></li>
                                                                     <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteTaskComment(item._id, task._id)} >{translate("task.task_perform.delete_comment")}</a></li>
                                                                 </ul>
                                                             </div>}
@@ -1438,7 +1456,7 @@ class ActionTab extends Component {
                                                             onFilesChange={this.onEditTaskCommentFilesChange}
                                                             onFilesError={this.onFilesError}
                                                             files={newTaskCommentEdited.files}
-                                                            defaultValue={item.description}
+                                                            text={newTaskCommentEdited.descriptionDefault}
                                                             submitButtonText={translate("task.task_perform.save_edit")}
                                                             cancelButtonText={translate("task.task_perform.cancel")}
                                                             handleEdit={(e) => this.handleEditTaskComment(e)}
@@ -1487,7 +1505,7 @@ class ActionTab extends Component {
                                                                                     <i className="fa fa-ellipsis-h"></i>
                                                                                 </span>
                                                                                 <ul className="dropdown-menu">
-                                                                                    <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditCommentOfTaskComment(child._id)} >{translate("task.task_perform.edit_comment")}</a></li>
+                                                                                    <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditCommentOfTaskComment(child)} >{translate("task.task_perform.edit_comment")}</a></li>
                                                                                     <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteCommentOfTaskComment(child._id, task._id)} >{translate("task.task_perform.delete_comment")}</a></li>
                                                                                 </ul>
                                                                             </div>}
@@ -1532,7 +1550,7 @@ class ActionTab extends Component {
                                                                             onFilesChange={this.onEditCommentOfTaskCommentFilesChange}
                                                                             onFilesError={this.onFilesError}
                                                                             files={newCommentOfTaskCommentEdited.files}
-                                                                            defaultValue={child.description}
+                                                                            text={newCommentOfTaskCommentEdited.descriptionDefault}
                                                                             submitButtonText={translate("task.task_perform.save_edit")}
                                                                             cancelButtonText={translate("task.task_perform.cancel")}
                                                                             handleEdit={(e) => this.handleEditCommentOfTaskComment(e)}
@@ -1568,7 +1586,7 @@ class ActionTab extends Component {
                                                             onFilesChange={(files) => this.onCommentOfTaskCommentFilesChange(item._id, files)}
                                                             onFilesError={this.onFilesError}
                                                             files={newCommentOfTaskComment[`${item._id}`]?.files}
-                                                            text={newCommentOfTaskComment[`${item._id}`]?.description}
+                                                            text={newCommentOfTaskComment[`${item._id}`]?.descriptionDefault}
                                                             placeholder={translate("task.task_perform.enter_comment")}
                                                             submitButtonText={translate("task.task_perform.create_comment")}
                                                             onTextChange={(value, imgs) => {
@@ -1576,7 +1594,8 @@ class ActionTab extends Component {
                                                                     state.newCommentOfTaskComment[`${item._id}`] = {
                                                                         ...state.newCommentOfTaskComment[`${item._id}`],
                                                                         description: value,
-                                                                        creator: currentUser
+                                                                        creator: currentUser,
+                                                                        descriptionDefault: null
                                                                     }
                                                                     return { ...state }
                                                                 })
@@ -1598,12 +1617,12 @@ class ActionTab extends Component {
                                 onFilesChange={this.onTaskCommentFilesChange}
                                 onFilesError={this.onFilesError}
                                 files={newTaskComment.files}
-                                text={newTaskComment.description}
+                                text={newTaskComment.descriptionDefault}
                                 placeholder={translate("task.task_perform.enter_comment")}
                                 submitButtonText={translate("task.task_perform.create_comment")}
                                 onTextChange={(value, imgs) => {
                                     this.setState(state => {
-                                        return { ...state, newTaskComment: { ...state.newTaskComment, description: value } }
+                                        return { ...state, newTaskComment: { ...state.newTaskComment, description: value, descriptionDefault: null } }
                                     })
 
                                 }}
@@ -1618,7 +1637,7 @@ class ActionTab extends Component {
                                 {documents &&
                                     documents.map((item, index) => {
                                         return (
-                                            <React.Fragment>
+                                            <React.Fragment key={`documents-${item._id}`}>
                                                 {showEditTaskFile !== item._id &&
                                                     <div className="item-box" key={index}>
                                                         {(currentUser === item.creator?._id) &&
@@ -1627,7 +1646,7 @@ class ActionTab extends Component {
                                                                     <i className="fa fa-ellipsis-h"></i>
                                                                 </span>
                                                                 <ul className="dropdown-menu">
-                                                                    <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditFileTask(item._id)} >{translate("task.task_perform.edit")}</a></li>
+                                                                    <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditFileTask(item)} >{translate("task.task_perform.edit")}</a></li>
                                                                     <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteDocument(item._id, task._id)} >{translate("task.task_perform.delete")}</a></li>
                                                                 </ul>
                                                             </div>}
@@ -1636,7 +1655,7 @@ class ActionTab extends Component {
                                                                 <li><strong>{item.creator?.name} </strong></li>
                                                                 <li><span className="text-sm">{<DateTimeConverter dateTime={item.createdAt} />}</span></li>
                                                             </ul>
-                                                            {item.description}
+                                                            {parse(item.description)}
                                                         </div>
                                                         <div>
                                                             {showFile.some(obj => obj === item._id) ?
@@ -1681,7 +1700,7 @@ class ActionTab extends Component {
                                                                 onFilesChange={this.onEditFileTask}
                                                                 onFilesError={this.onFilesError}
                                                                 files={fileTaskEdited.files}
-                                                                defaultValue={item.description}
+                                                                text={fileTaskEdited.descriptionDefault}
                                                                 submitButtonText={translate("task.task_perform.save_edit")}
                                                                 cancelButtonText={translate("task.task_perform.cancel")}
                                                                 handleEdit={(e) => this.handleEditFileTask(e)}
@@ -1717,12 +1736,12 @@ class ActionTab extends Component {
                                         onFilesChange={this.onTaskFilesChange}
                                         onFilesError={this.onFilesError}
                                         files={taskFiles.files}
-                                        text={taskFiles.description}
+                                        text={taskFiles.descriptionDefault}
                                         placeholder={translate("task.task_perform.enter_description")}
                                         submitButtonText={translate("task.task_perform.create_document")}
                                         onTextChange={(value, imgs) => {
                                             this.setState(state => {
-                                                return { ...state, taskFiles: { ...state.taskFiles, description: value } }
+                                                return { ...state, taskFiles: { ...state.taskFiles, description: value, descriptionDefault: null } }
 
                                             })
                                         }}

@@ -477,7 +477,7 @@ class SalesOrderCreateGood extends Component {
                 amountAfterDiscount,
                 amountAfterTax,
                 salesPriceVariance,
-                manufacturingWorks: manufacturingWorks._id !== "title" ? manufacturingWorks : undefined,
+                manufacturingWorks: manufacturingWorks && manufacturingWorks._id !== "title" ? manufacturingWorks : undefined,
             };
 
             listGoods.push(additionGood);

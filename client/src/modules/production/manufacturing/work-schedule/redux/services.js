@@ -3,6 +3,7 @@ import { sendRequest } from "../../../../../helpers/requestHelper"
 export const workScheduleSevices = {
     getAllWorkSchedules,
     createWorkSchedule,
+    getAllWorkSchedulesByMillId,
 }
 
 function getAllWorkSchedules(query) {
@@ -27,6 +28,18 @@ function createWorkSchedule(data) {
             data
         },
         true,
+        true,
+        'manufacturing.work_schedule'
+    )
+}
+
+function getAllWorkSchedulesByMillId(id) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/work-schedule/manufacturingMill/${id}`,
+            method: "GET",
+        },
+        false,
         true,
         'manufacturing.work_schedule'
     )

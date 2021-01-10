@@ -68,7 +68,7 @@ exports.getTaskById = async (portal, id, userId) => {
                     },
                 ],
             },
-            { path: "timesheetLogs.creator", select: "name" },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",
@@ -1387,7 +1387,6 @@ exports.evaluationAction = async (portal, params, body) => {
         { $unwind: "$evaluations" },
         { $replaceRoot: { newRoot: "$evaluations" } },
     ]);
-    console.log('evaluations',evaluations)
     
     //Lấy điểm đánh giá của người phê duyệt trong danh sách các danh sách các đánh giá của hoạt động
     let rating = [];
@@ -1852,6 +1851,7 @@ exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
                     },
                 ],
             },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",
@@ -2309,6 +2309,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
                     },
                 ],
             },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",
@@ -2563,6 +2564,7 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
                     },
                 ],
             },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",
@@ -2811,6 +2813,7 @@ exports.evaluateTaskByConsultedEmployees = async (portal, data, taskId) => {
                     },
                 ],
             },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",
@@ -3159,6 +3162,7 @@ exports.evaluateTaskByResponsibleEmployees = async (portal, data, taskId) => {
                     },
                 ],
             },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",
@@ -3660,6 +3664,7 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
                     },
                 ],
             },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",
@@ -3729,6 +3734,13 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
     return newTask;
 };
 
+/**
+ * Cập nhật kết quả bấm giờ vào kết quả đánh giá của nhân viên
+ * Chỉ tính những bấm giờ nằm trong thời gian đánh giá của tháng
+ * @param {*} portal 
+ * @param {*} data 
+ * @param {*} taskId 
+ */
 exports.editHoursSpentInEvaluate = async (portal, data, taskId) => {
     let { evaluateId, timesheetLogs } = data;
     let task = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
@@ -3749,9 +3761,10 @@ exports.editHoursSpentInEvaluate = async (portal, data, taskId) => {
 
         if (results) {
             for (let j = 0; j < results.length; j++) {
+                
                 if (
                     results[j].employee &&
-                    results[j].employee.toString() === employee.id.toString()
+                    results[j].employee.toString() === employee.toString()
                 ) {
                     check = false;
                     results[j]["hoursSpent"] = hoursSpent;
@@ -3835,6 +3848,7 @@ exports.editHoursSpentInEvaluate = async (portal, data, taskId) => {
                     },
                 ],
             },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",
@@ -3971,6 +3985,7 @@ exports.deleteEvaluation = async (portal, params) => {
                     },
                 ],
             },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",
@@ -4396,6 +4411,7 @@ exports.editActivateOfTask = async (portal, taskID, body) => {
                     },
                 ],
             },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",
@@ -4722,6 +4738,7 @@ exports.createComment = async (portal, params, body, files) => {
                     },
                 ],
             },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",
@@ -4863,6 +4880,7 @@ exports.editComment = async (portal, params, body, files) => {
                     },
                 ],
             },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",
@@ -5046,6 +5064,7 @@ exports.createChildComment = async (portal, params, body, files) => {
                     },
                 ],
             },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",
@@ -5213,6 +5232,7 @@ exports.editChildComment = async (portal, params, body, files) => {
                     },
                 ],
             },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",

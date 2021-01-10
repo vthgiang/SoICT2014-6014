@@ -1,12 +1,29 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
+import { DatePicker, ErrorLabel, SelectBox } from '../../../../../../common-components';
+import { millActions } from '../../../manufacturing-mill/redux/actions';
+import WorkScheduleComponent from '../plan-component/workScheduleComponent';
 import WorkSchedule from '../../../work-schedule/components';
+import MillProductivity from '../plan-component/millProductivity';
 import HistoryCommandTable from './historyCommandTable';
 
 class MillScheduleBooking extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.EMPTY_COMMAND = {
+            manufacturingMill: "",
+            startDate: "",
+            endDate: "",
+            startTurn: "",
+            endTurn: "",
+            responsibles: ""
+        }
+        this.state = {
+            booking: false,
+            command: Object.assign({}, this.EMPTY_COMMAND),
+            manufacturingCommands: this.props.manufacturingCommands
+        }
     }
     handleShowCommandHistory = async (goodId) => {
         await this.setState({
@@ -14,8 +31,103 @@ class MillScheduleBooking extends Component {
         })
         window.$('#history-command-table').modal('show');
     }
+    handleBookingCommand = (command, index) => {
+        this.setState((state) => ({
+            ...state,
+            command: Object.assign(this.EMPTY_COMMAND, command),
+            booking: true,
+            indexBooking: index
+        }));
+    }
+
+    getManufacturingMillsArray = () => {
+        const { translate, manufacturingMill } = this.props;
+        let manufacturingMillArr = [{
+            value: "",
+            text: translate('manufacturing.plan.choose_mill')
+        }];
+        const { listMills } = manufacturingMill;
+        if (listMills) {
+            listMills.map(x => {
+                manufacturingMillArr.push({
+                    value: x._id,
+                    text: x.name
+                });
+            });
+        }
+        return manufacturingMillArr;
+    }
+
+    handleManufacturingMillChange = (value) => {
+        const manufacturingMill = value[0];
+        this.validateManufacturingMillChange(manufacturingMill, true);
+    }
+
+    validateManufacturingMillChange = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = this.props;
+        if (value === "") {
+            msg = translate('manufacturing.plan.choose_mill_error')
+        }
+
+        const { command } = this.state;
+        let millCanNotManufacturingGood = true;
+        command.good.manufacturingMills.map(x => {
+            if (x.manufacturingMill._id === value) {
+                millCanNotManufacturingGood = false;
+            }
+        });
+
+        if (millCanNotManufacturingGood) {
+            msg = translate('manufacturing.plan.choose_mill_error_on_good')
+        }
+
+
+        if (willUpdateState) {
+            const { command } = this.state;
+            command.manufacturingMill = value;
+            this.setState({
+                command: { ...command },
+                manufacturingMillError: msg
+            });
+        }
+    }
+    // Tim ra good trong listGoods
+    // Tim ra productivity cua Mill trong good
+    // Chia command.quantity cho productivity lam tron ra ket qua tra ve
+    getTurnNumberSuggest = () => {
+        const { command } = this.state;
+        let turnNumberSuggest = "";
+        command.good.manufacturingMills.map(x => {
+            if (x.manufacturingMill._id === command.manufacturingMill) {
+                turnNumberSuggest = Math.round(command.quantity / x.productivity) ? Math.round(command.quantity / x.productivity) : 1;
+            }
+        });
+        return turnNumberSuggest;
+    }
+
+    getWorkerNumberSuggest = () => {
+        const { command } = this.state;
+        let workerNumberSuggest = "";
+        command.good.manufacturingMills.map(x => {
+            if (x.manufacturingMill._id === command.manufacturingMill) {
+                workerNumberSuggest = x.personNumber;
+            }
+        });
+        return workerNumberSuggest;
+    }
+
+    getManufacturingMillNameById = () => {
+        const { manufacturingMill } = this.props;
+        const { command } = this.state;
+        const { listMills } = manufacturingMill;
+        let mill = listMills.filter(x => x._id === command.manufacturingMill);
+        return mill[0].name;
+    }
+
     render() {
-        const { translate, listGoods, manufacturingCommands } = this.props;
+        const { translate, listGoods } = this.props;
+        const { command, manufacturingCommands, manufacturingMillError } = this.state;
         return (
             <React.Fragment>
                 {
@@ -24,6 +136,11 @@ class MillScheduleBooking extends Component {
                 <div className="row">
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <WorkSchedule />
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <MillProductivity listGoods={listGoods} />
                     </div>
                 </div>
                 <div className="row">
@@ -65,7 +182,9 @@ class MillScheduleBooking extends Component {
                                                     </td>
                                                     <td></td>
                                                     <td>
-                                                        <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manufacturing.plan.schedule_booking')}>
+                                                        <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manufacturing.plan.schedule_booking')}
+                                                            onClick={() => this.handleBookingCommand(command, index)}
+                                                        >
                                                             <i className="material-icons">edit</i>
                                                         </a>
                                                     </td>
@@ -77,37 +196,167 @@ class MillScheduleBooking extends Component {
                         </fieldset>
                     </div>
                 </div>
-                {/* <div className="row">
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <MillProductivity listGoods={listGoods} />
-                    </div>
-                </div> */}
-                <div className="row">
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{translate('manufacturing.plan.schedule_booking')}</legend>
-                            <div className="row">
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className={`form-group`}>
-                                        <label>{translate('manufacturing.plan.command_code')}</label>
-                                        <input type="text" disabled={true} className="form-control" />
+                {
+                    this.state.booking &&
+                    <div className="row">
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <fieldset className="scheduler-border">
+                                <legend className="scheduler-border">{translate('manufacturing.plan.schedule_booking')}</legend>
+                                <div className="row">
+                                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                        <div className={`form-group`}>
+                                            <label>{translate('manufacturing.plan.command_code')}</label>
+                                            <input type="text" disabled={true} value={command.code} className="form-control" />
+                                        </div>
+                                    </div>
+                                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                        <div className={`form-group`}>
+                                            <label>{translate('manufacturing.plan.good_name')}</label>
+                                            <input type="text" disabled={true} value={command.good.name} className="form-control" />
+                                        </div>
+                                    </div>
+                                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                        <div className={`form-group`}>
+                                            <label>{translate('manufacturing.plan.quantity')}</label>
+                                            <input type="text" disabled={true} value={command.quantity} className="form-control" />
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className={`form-group`}>
-                                        <label>{translate('manufacturing.plan.command_code')}</label>
-                                        <input type="text" disabled={true} className="form-control" />
+                                <div className="row">
+                                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                        <div className={`form-group ${!manufacturingMillError ? "" : "has-error"}`}>
+                                            <label>{translate('manufacturing.plan.choose_mill')}<span className="attention"> * </span></label>
+                                            <SelectBox
+                                                id={`select-mill-command-create`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                value={command.manufacturingMill}
+                                                items={this.getManufacturingMillsArray()}
+                                                onChange={this.handleManufacturingMillChange}
+                                                multiple={false}
+                                            />
+                                            <ErrorLabel content={manufacturingMillError} />
+                                        </div>
+                                    </div>
+                                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                        <div className={`form-group`}>
+                                            <label>{translate('manufacturing.plan.turn_number_suggest')}</label>
+                                            <input type="text" value={command.manufacturingMill ? this.getTurnNumberSuggest() : ""} disabled={true} className="form-control" />
+                                        </div>
+                                    </div>
+                                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                        <div className={`form-group`}>
+                                            <label>{translate('manufacturing.plan.worker_number_suggest')}</label>
+                                            <input type="text" disabled={true} value={command.manufacturingMill ? this.getWorkerNumberSuggest() : ""} className="form-control" />
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </fieldset>
+                                <div className="row">
+                                    <div className="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                                        <div className={`form-group`}>
+                                            <label>{translate('manufacturing.plan.start_date_command')}<span className="attention"> * </span></label>
+                                            <DatePicker
+                                                id={`command_start_date`}
+                                                // dateFormat={dateFormat}
+                                                value={""}
+                                                onChange={this.handleStartDateChange}
+                                                disabled={false}
+                                            />
+                                            <ErrorLabel content={""} />
+                                        </div>
+                                    </div>
+                                    <div className="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                                        <div className={`form-group`}>
+                                            <label>{translate('manufacturing.plan.start_turn')}<span className="attention"> * </span></label>
+                                            <SelectBox
+                                                id="select-start-turn-of-command"
+                                                className="form-control select"
+                                                style={{ width: "100%" }}
+                                                items={[{
+                                                    value: 1, text: "ca 1"
+                                                }]}
+                                                disabled={false}
+                                                onChange={this.handleApproversChange}
+                                                value={1}
+                                            />
+                                            <ErrorLabel content={""} />
+                                        </div>
+                                    </div>
+                                    <div className="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                                        <div className={`form-group`}>
+                                            <label>{translate('manufacturing.plan.end_date_command')}<span className="attention"> * </span></label>
+                                            <DatePicker
+                                                id={`command_start_date`}
+                                                // dateFormat={dateFormat}
+                                                value={""}
+                                                onChange={this.handleStartDateChange}
+                                                disabled={false}
+                                            />
+                                            <ErrorLabel content={""} />
+                                        </div>
+                                    </div>
+                                    <div className="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                                        <div className={`form-group`}>
+                                            <label>{translate('manufacturing.plan.end_turn')}<span className="attention"> * </span></label>
+                                            <SelectBox
+                                                id="select-end-turn-of-command"
+                                                className="form-control select"
+                                                style={{ width: "100%" }}
+                                                items={[{
+                                                    value: 1, text: "ca 1"
+                                                }]}
+                                                disabled={false}
+                                                onChange={this.handleApproversChange}
+                                                value={1}
+                                            />
+                                            <ErrorLabel content={""} />
+                                        </div>
+                                        <ErrorLabel content={""} />
+                                    </div>
+                                </div>
+                                {
+                                    command.manufacturingMill && !manufacturingMillError &&
+                                    <WorkScheduleComponent
+                                        manufacturingMillId={command.manufacturingMill}
+                                        manufacturingMillName={this.getManufacturingMillNameById()}
+                                    />
+                                }
+                                <div className="row">
+                                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                        <div className={`form-group`}>
+                                            <label>{translate('manufacturing.plan.responsible')}<span className="attention"> * </span></label>
+                                            <SelectBox
+                                                id="select-responsible-of-command"
+                                                className="form-control select"
+                                                style={{ width: "100%" }}
+                                                items={[{
+                                                    value: 1, text: "ban a"
+                                                }]}
+                                                disabled={false}
+                                                onChange={this.handleApproversChange}
+                                                value={1}
+                                                multiple={true}
+                                            />
+                                            <ErrorLabel content={""} />
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
                     </div>
-                </div>
+                }
             </React.Fragment>
-
-
         );
     }
 }
 
-export default withTranslate(MillScheduleBooking);
+function mapStateToProps(state) {
+    const { manufacturingMill } = state;
+    return { manufacturingMill }
+}
+
+const mapDispatchToProps = {
+    getAllManufacturingMills: millActions.getAllManufacturingMills
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(MillScheduleBooking));
