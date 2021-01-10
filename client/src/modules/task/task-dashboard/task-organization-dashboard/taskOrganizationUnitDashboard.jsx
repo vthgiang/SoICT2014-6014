@@ -159,6 +159,7 @@ class TaskOrganizationUnitDashboard extends Component {
         this.INFO_SEARCH.endMonth = month;
         this.INFO_SEARCH.endMonthTitle = endMonthTitle;
     }
+    
     handleSearchData = async () => {
         let startMonth = new Date(this.INFO_SEARCH.startMonth);
         let endMonth = new Date(this.INFO_SEARCH.endMonth);

@@ -7,7 +7,6 @@ const {
 } = require(`../../../../helpers/dbHelper`);
 
 exports.createNewSalesOrder = async (userId, data, portal) => {
-    console.log("data", data);
     let newSalesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).create({
         code: data.code,
         status: data.status ?  data.status : 1, //Nếu k có thì mặc định bằng 1 (chờ phê duyệt)
@@ -25,7 +24,6 @@ exports.createNewSalesOrder = async (userId, data, portal) => {
         }) : undefined,
         priority: data.priority,
         goods: data.goods ? data.goods.map((item) => {
-            console.log("data--work", item.manufacturingWorks);
             return {
                 good: item.good,
                 pricePerBaseUnit: item.pricePerBaseUnit,
@@ -163,18 +161,6 @@ exports.getAllSalesOrders = async (query, portal) => {
     }
     if (customer) {
         option.customer = customer
-    }
-
-    if (query.queryDate) {
-        switch (query.queryDate) {
-            case "expire": option.expirationDate = { $lt: new Date(), $exists: true }; break;
-            case "effective":
-                option.expirationDate = { $gte: new Date(), $exists: true }
-
-                break;
-            case "all": break;
-            default:
-        }
     }
 
     page = Number(page);

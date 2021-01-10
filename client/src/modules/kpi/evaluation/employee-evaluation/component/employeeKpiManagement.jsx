@@ -613,7 +613,7 @@ class EmployeeKpiManagement extends Component {
 
     }
 
-    /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
+    /** Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
     convertDataToExportData = (data, unitName) => {
         let fileName = "Bảng theo dõi KPI nhân viên " + (unitName ? unitName : "");
         if (data && data.length !== 0) {
@@ -765,13 +765,19 @@ class EmployeeKpiManagement extends Component {
                             <div className="form-group">
                                 <button type="button" className="btn btn-success" onClick={() => this.handleSearchData()}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
                             </div>
-                            {exportData && <ExportExcel id="export-employee-kpi-evaluation-management" buttonName="Báo cáo chung" exportData={exportData} style={{ marginRight: 15, marginTop: 5 }} />}
-                            {kpimember &&
-                                <ExportExcel buttonName="Báo cáo tổng hợp" onClick={() => this.handleExportTotalData(kpimember)} />
-                            }
+                            <div className="dropdown pull-right">
+                                <button type="button" className="btn btn-primary dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('menu.add_asset_title')} >Báo cáo</button>
+                                <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
+                                    <li>{exportData && <ExportExcel id="export-employee-kpi-evaluation-management" type='link' buttonName="Báo cáo chung" exportData={exportData} style={{ marginRight: 15, marginTop: 5 }} />}</li>
+                                    <li>{kpimember && <ExportExcel id="export-total-employee-kpi-evaluation-management" type='link' buttonName="Báo cáo tổng hợp" onClick={() => this.handleExportTotalData(kpimember)}/>}</li>
+                                </ul>
+                            </div>
                         </div>
 
-                        <DataTableSetting className="pull-right" tableId="kpiManagement" tableContainerId="tree-table-container" tableWidth="1300px"
+                        <DataTableSetting
+                            tableId="kpiManagement"
+                            tableContainerId="tree-table-container"
+                            tableWidth="1300px"
                             columnArr={[
                                 'STT',
                                 'Thời gian',
@@ -783,7 +789,11 @@ class EmployeeKpiManagement extends Component {
                                 'Đánh giá']}
                             limit={perPage}
                             setLimit={this.setLimit}
-                            hideColumnOption={true} />
+                            hideColumnOption={true}
+                            // style={{ borderRadius: 0 }}
+                            // fontSize={16}
+                            // text="Thiết lập"
+                        />
 
                         <table id="kpiManagement" className="table table-hover table-bordered">
                             <thead>

@@ -165,7 +165,7 @@ class TaskDashboard extends Component {
         let startMonth = new Date(this.INFO_SEARCH.startMonth);
         let endMonth = new Date(this.INFO_SEARCH.endMonth);
 
-        if (startMonth.getTime() >= endMonth.getTime()) {
+        if (startMonth.getTime() > endMonth.getTime()) {
             const { translate } = this.props;
             Swal.fire({
                 title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
