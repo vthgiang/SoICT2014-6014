@@ -544,14 +544,14 @@ class SideBar extends Component {
                                             path: "/manage-sla",
                                         },
                                         {
-                                            name: "menu.manage_payment",
-                                            icon: "fa fa-registered",
-                                            path: "/manage-payment",
-                                        },
-                                        {
                                             name: "menu.manage_business_department",
                                             icon: "fa fa-sitemap",
                                             path: "/manage-business-department",
+                                        },
+                                        {
+                                            name: "menu.manage_payment",
+                                            icon: "fa fa-credit-card",
+                                            path: "/manage-payment",
                                         },
                                         {
                                             name: "menu.manage_bank_account",
