@@ -319,8 +319,6 @@ exports.getWorkSchedules = async (query, portal) => {
             }
         }
 
-
-
         if (!limit || !page) {
 
             let workSchedules = await WorkSchedule(connect(DB_CONNECTION, portal)).find(options)
@@ -419,5 +417,78 @@ exports.getWorkSchedulesByMillId = async (id, portal) => {
     const workSchedules = await WorkSchedule(connect(DB_CONNECTION, portal)).find({
         manufacturingMill: id
     });
+    for (let i = 0; i < workSchedules.length; i++) {
+        for (let j = 0; j < workSchedules[i].turns.length; j++) {
+            for (k = 0; k < workSchedules[i].turns[j].length; k++) {
+                if (workSchedules[i].turns[j][k] != null) {
+                    let manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal)).findById(workSchedules[i].turns[j][k])
+                        .populate([{
+                            path: "good.good",
+                            select: "code name"
+                        }]);
+                    workSchedules[i].turns[j][k] = manufacturingCommand;
+                }
+            }
+        }
+    }
+
+    return { workSchedules }
+}
+
+
+function getStartMonthEndMonthFromString(stringStartDate, stringEndDate) {
+    let arrayStartDate = stringStartDate.split('-');
+    let year = arrayStartDate[2];
+    let month = arrayStartDate[1];
+    let day = arrayStartDate[0];
+    const startDate = new Date(year, month - 1, day);
+    const moment = require('moment');
+
+    // start day of createdAt
+    var startMonth = moment(startDate).startOf('month');
+
+    let arrayEndDate = stringEndDate.split('-');
+    year = arrayEndDate[2];
+    month = arrayEndDate[1];
+    day = arrayEndDate[0];
+    const endDate = new Date(year, month - 1, day);
+    // end day of createdAt
+    var endMonth = moment(endDate).endOf('month');
+
+    return [startMonth, endMonth];
+}
+
+exports.getWorkSchedulesOfManufacturingWork = async (query, portal) => {
+    const { manufacturingMills, startDate, endDate } = query;
+    let options = {};
+    if (startDate && endDate) {
+        let arrayMonth = getStartMonthEndMonthFromString(startDate, endDate);
+        options.month = {
+            '$gte': arrayMonth[0],
+            '$lte': arrayMonth[1]
+        }
+    }
+
+    if (manufacturingMills) {
+        options.manufacturingMill = {
+            $in: manufacturingMills
+        }
+    }
+    let workSchedules = await WorkSchedule(connect(DB_CONNECTION, portal)).find(options);
+    for (let i = 0; i < workSchedules.length; i++) {
+        for (let j = 0; j < workSchedules[i].turns.length; j++) {
+            for (k = 0; k < workSchedules[i].turns[j].length; k++) {
+                if (workSchedules[i].turns[j][k] != null) {
+                    let manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal)).findById(workSchedules[i].turns[j][k])
+                        .populate([{
+                            path: "good.good",
+                            select: "code name"
+                        }]);
+                    workSchedules[i].turns[j][k] = manufacturingCommand;
+                }
+            }
+        }
+    }
+
     return { workSchedules }
 }

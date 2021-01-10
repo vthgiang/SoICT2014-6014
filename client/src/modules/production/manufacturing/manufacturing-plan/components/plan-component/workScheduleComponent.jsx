@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { translate } from 'react-redux-multilingual/lib/utils';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { formatYearMonth } from '../../../../../../helpers/formatDate';
-import { workScheduleActions } from '../../../work-schedule/redux/actions';
+import { formatToTimeZoneDate, formatYearMonth } from '../../../../../../helpers/formatDate';
+import ManufacturingCommandDetailInfo from '../../../manufacturing-command/components/manufacturingCommandDetailInfo';
 import './workSchedule.css';
 
 class WorkScheduleComponent extends Component {
     constructor(props) {
         super(props);
-        let currentDate = Date.now();
+        let currentDate = new Date(formatToTimeZoneDate(this.props.startDate));
         let currentMonthYear = formatYearMonth(currentDate);
         let allDaysOfMonth = this.getAllDaysOfMonth(currentMonthYear);
         this.state = {
@@ -30,48 +29,69 @@ class WorkScheduleComponent extends Component {
         return arrayDayOfMonth;
     }
 
-
-    static getDerivedStateFromProps = (props, state) => {
-        if (props.manufacturingMillId !== state.manufacturingMillId) {
-            props.getAllWorkSchedulesByMillId(props.manufacturingMillId);
-            return {
-                ...state,
-                manufacturingMillId: props.manufacturingMillId
-            }
-        }
-        return null;
+    handleShowDetailManufacturingCommand = async (command) => {
+        await this.setState((state) => ({
+            ...state,
+            commandDetail: command
+        }));
+        window.$('#modal-detail-info-manufacturing-command-4').modal('show');
     }
 
-    getCurrentWorkSchedule = () => {
-        const { month } = this.state;
-        const { workSchedule } = this.props;
-        let currentWorkSchedule = undefined;
-        if (workSchedule.listWorkSchedulesOfMill) {
-            currentWorkSchedule = workSchedule.listWorkSchedulesOfMill.filter(x => formatYearMonth(x.month) === month);
-        }
-        return currentWorkSchedule[0];
+    handleNextMonth = async (e) => {
+        e.preventDefault();
+        let allDaysOfMonth = this.getAllDaysOfMonth("02-2021");
+        await this.setState({
+            month: "02-2021",
+            allDaysOfMonth: allDaysOfMonth
+        });
     }
+
+    handlePreMonth = async (e) => {
+        e.preventDefault();
+        let allDaysOfMonth = this.getAllDaysOfMonth("01-2021");
+        await this.setState({
+            month: "01-2021",
+            allDaysOfMonth: allDaysOfMonth
+        });
+    }
+
 
 
 
     render() {
-        const { workSchedule, manufacturingMillName, translate } = this.props;
+        const { manufacturingMillName, translate, listWorkSchedulesOfMill } = this.props;
         const { allDaysOfMonth, month } = this.state;
-        let listWorkSchedulesOfMill = [];
-        let currentWorkSchedule = undefined;
-        if (workSchedule.listWorkSchedulesOfMill && workSchedule.isLoading === false) {
-            listWorkSchedulesOfMill = workSchedule.listWorkSchedulesOfMill;
-            currentWorkSchedule = listWorkSchedulesOfMill.filter(x => formatYearMonth(x.month) === month)[0];
-        }
-        console.log(listWorkSchedulesOfMill);
-        console.log(currentWorkSchedule);
-
+        const currentWorkSchedule = listWorkSchedulesOfMill ? listWorkSchedulesOfMill.filter(x => formatYearMonth(x.month) === month)[0] : undefined;
+        const arrayStatus = [0, 6, 1, 2, 3, 4, 5];
         return (
             <div className="box box-primary" style={{ border: "1px solid black" }}>
                 <div className="box-header with-border">
+                    {
+                        <ManufacturingCommandDetailInfo idModal={4} commandDetail={this.state.commandDetail} />
+                    }
                     <div className="box-title">{translate('manufacturing.plan.work_schedule')} {manufacturingMillName} {translate('manufacturing.plan.month_lower_case')} {month}</div>
+                    <div className="box-header" style={{ textAlign: "center" }}>
+                        <div className="form-inline">
+                            {
+                                arrayStatus.map((status, index) => (
+                                    <span key={index}>
+                                        <span className="icon" title={translate(`manufacturing.work_schedule.${status}.content`)} style={{ backgroundColor: translate(`manufacturing.work_schedule.${status}.color`), verticalAlign: "middle" }}>
+                                        </span>
+                                        <span style={{ verticalAlign: "middle" }}>
+                                            &emsp;
+                                    {
+                                                translate(`manufacturing.work_schedule.${status}.content`)
+                                            }
+                                    &emsp;&emsp;
+                                </span>
+                                    </span>
+
+                                ))
+                            }
+                        </div>
+                    </div>
                     <div className="box-content" style={{ marginTop: "1rem" }}>
-                        <table className="plan-table-custom plan-table-custom-bordered">
+                        <table className="plan-table-custom plan-table-custom-bordered not-sort">
                             <thead>
                                 <tr>
                                     <th rowSpan={2} style={{ backgroundColor: "#F0F0F0", width: "10%" }}>{translate('manufacturing.work_schedule.work_turns')}</th>
@@ -86,66 +106,55 @@ class WorkScheduleComponent extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>{translate('manufacturing.work_schedule.turn_1')}</td>
-                                    {
-                                        // currentWorkSchedule && currentWorkSchedule.turns[0].map((day, index) => (
-                                        //     <td key={index}>
-                                        //         <div className="plan-checkbox-custom">
-                                        //             <input type="checkbox" onChange={() => this.handleCheckBoxChange()} />
-                                        //         </div>
-                                        //     </td>
-                                        // ))
-                                        currentWorkSchedule && currentWorkSchedule.turns[0].map((command, index) => {
-                                            if (command !== null)
-                                                return (
-                                                    <td key={index}>
-                                                        {/* <input type="checkbox" disabled={true} style={{ backgroundColor: translate(`manufacturing.work_schedule.${command.status}.color`) }}>
-                                                        </input> */}
-                                                        <span className="icon" style={{ backgroundColor: "red" }}></span>
-                                                    </td>
-                                                )
+                                {
+                                    currentWorkSchedule
+                                        ?
+                                        currentWorkSchedule.turns.map((turn, index1) => (
+                                            <tr key={index1}>
+                                                <td>{translate(`manufacturing.work_schedule.turn_${index1 + 1}`)}</td>
+                                                {
+                                                    turn.map((command, index2) => {
+                                                        if (command !== null)
+                                                            return (
+                                                                <td key={index2} className="tooltip-checkbox">
+                                                                    <div className="plan-checkbox-custom">
+                                                                        <input type="checkbox" disabled={true}
+                                                                            title={translate(`manufacturing.work_schedule.${command.status}.content`)} style={{ backgroundColor: translate(`manufacturing.work_schedule.${command.status}.color`) }}
+                                                                        />
+                                                                    </div>
+                                                                    <span className="tooltiptext"><a style={{ color: "white", cursor: "pointer" }} onClick={() => this.handleShowDetailManufacturingCommand(command)}>{command.code}</a></span>
+                                                                </td>
+                                                            )
 
-                                            return (
-                                                <td key={index}>
-                                                    {/* <input type="checkbox" disabled={true} /> */}
-                                                    <span className="icon" style={{ backgroundColor: "white" }}></span>
-                                                </td>
-                                            );
-                                        })
-                                    }
-                                </tr>
-                                <tr>
-                                    <td>{translate('manufacturing.work_schedule.turn_2')}</td>
-                                    {
-                                        allDaysOfMonth.map((day, index) => (
-                                            <td key={index}>
-                                                <div className="plan-checkbox-custom">
-                                                    <input type="checkbox" onChange={() => this.handleCheckBoxChange('shift1s', index)} />
-                                                </div>
-                                            </td>
+                                                        return (
+                                                            <td key={index2}>
+                                                                <div className="plan-checkbox-custom">
+                                                                    <input type="checkbox" onChange={() => this.handleCheckBoxChange()}
+                                                                    />
+                                                                </div>
+                                                            </td>
+                                                        );
+                                                    })
+                                                }
+                                            </tr>
                                         ))
-                                    }
-                                </tr>
-                                <tr>
-                                    <td>{translate('manufacturing.work_schedule.turn_3')}</td>
-                                    {
-                                        allDaysOfMonth.map((day, index) => (
-                                            <td key={index}>
-                                                <div className="plan-checkbox-custom">
-                                                    <input type="checkbox" onChange={() => this.handleCheckBoxChange('shift1s', index)} />
-                                                </div>
+                                        :
+                                        <tr>
+                                            <td colSpan={allDaysOfMonth.length + 1}>
+                                                {translate('general.no_data')}
                                             </td>
-                                        ))
-                                    }
-                                </tr>
+                                        </tr>
+                                }
                             </tbody>
                         </table>
                     </div>
-                    <div className="pull-right" style={{ marginBottom: "10px", marginTop: "10px" }}>
-                        <button className="btn" style={{ marginLeft: "10px", backgroundColor: "#3C8DBC", color: "#FFF" }} onClick={this.handleClearCommand}>{"< Trước"}</button>
-                        <button className="btn" style={{ marginLeft: "10px", backgroundColor: "#3C8DBC", color: "#FFF" }} onClick={this.handleClearCommand}>{"Sau >"}</button>
-                    </div>
+                    {
+                        currentWorkSchedule &&
+                        <div className="pull-right" style={{ marginBottom: "10px", marginTop: "10px" }}>
+                            <button className="btn" style={{ marginLeft: "10px", backgroundColor: "#3C8DBC", color: "#FFF" }} onClick={this.handlePreMonth}>{`< ${translate('manufacturing.plan.prev')}`}</button>
+                            <button className="btn" style={{ marginLeft: "10px", backgroundColor: "#3C8DBC", color: "#FFF" }} onClick={this.handleNextMonth}>{`${translate('manufacturing.plan.next')} >`}</button>
+                        </div>
+                    }
                 </div>
             </div>
 
@@ -153,13 +162,5 @@ class WorkScheduleComponent extends Component {
     }
 }
 
-function mapStateToProps(state) {
-    const { workSchedule } = state;
-    return { workSchedule }
-}
 
-const mapDispatchToProps = {
-    getAllWorkSchedulesByMillId: workScheduleActions.getAllWorkSchedulesByMillId
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(WorkScheduleComponent));
+export default connect(null, null)(withTranslate(WorkScheduleComponent));
