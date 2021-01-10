@@ -2028,7 +2028,7 @@ exports.searchEmployeeForPackage = async (portal, params, company) => {
         let groupCondition = {
             employee: "$empId",
         }
-        if (params.positions) {
+        if (params.position) {
             groupCondition = { ...groupCondition, position: "$position" }
         }
         if (params.field) {
@@ -2041,6 +2041,7 @@ exports.searchEmployeeForPackage = async (portal, params, company) => {
             groupCondition = { ...groupCondition, action: "$action" }
         }
 
+        console.log('group', groupCondition);
         keySearch = [
             ...keySearch,
             {
@@ -2122,7 +2123,8 @@ exports.searchEmployeeForPackage = async (portal, params, company) => {
     else {
         console.log('không có KN tương đương');
         // phân trang
-        keySearch.push(
+        keySearch = [
+            ...keySearch,
             {
                 $facet: {
                     listEmployee: [{ $sort: { 'createdAt': 1 } },
@@ -2136,12 +2138,15 @@ exports.searchEmployeeForPackage = async (portal, params, company) => {
                     ]
                 }
             }
-        );
-        
+        ];
+
         listData = await Employee(connect(DB_CONNECTION, portal)).aggregate(keySearch)
         
         listEmployees = listData[0].listEmployee;
+        console.log('list employee1', listEmployees.length);
         await Employee(connect(DB_CONNECTION, portal)).populate(listEmployees, { path: "career.field career.position career.action" });
+
+        console.log('list employee2', listEmployees.length);
 
         if(listData[0].totalCount[0]) {
             totalList = listData[0].totalCount[0].count;

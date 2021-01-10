@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { ErrorLabel, TreeSelect } from '../../../../../common-components';
+import { ErrorLabel, SelectBox, TreeSelect } from '../../../../../common-components';
 import { CareerReduxAction } from '../../redux/actions';
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
@@ -43,6 +43,10 @@ class EditForm extends Component {
 
     handleParent = (value) => {
         this.setState({ parent: value[0] });
+    };
+
+    handleActionLabel = (value) => {
+        this.setState({ actionLabel: value });
     };
 
     isValidateForm = () => {
@@ -89,12 +93,6 @@ class EditForm extends Component {
 
         console.log('state data', this.state);
         this.props.editCareerAction(this.state);
-        // this.props.editDocumentArchive(archiveId, {
-        //     name,
-        //     description,
-        //     parent: archiveParent,
-        //     array: array,
-        // });
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -107,6 +105,8 @@ class EditForm extends Component {
                     package: nextProps.careerPackage,
                     code: nextProps.careerCode,
                     parent: nextProps.careerParent,
+                    actionLabel: nextProps.actionLabel,
+                    isLabel: nextProps.isLabel,
                 },
                 careerId: nextProps.careerId,
                 name: nextProps.careerName,
@@ -114,6 +114,8 @@ class EditForm extends Component {
                 code: nextProps.careerCode,
                 parent: nextProps.careerParent,
                 showParent: nextProps.careerParent,
+                actionLabel: nextProps.actionLabel,
+                isLabel: nextProps.isLabel,
 
                 nameError: undefined,
                 codeError: undefined
@@ -126,7 +128,7 @@ class EditForm extends Component {
     render() {
         const { translate, documents } = this.props;
         const { listData, unChooseNode } = this.props;
-        const { name, code, parent, showParent, codeError, nameError } = this.state;
+        const { name, code, parent, showParent, codeError, nameError, actionLabel, careerId, isLabel } = this.state;
         const { list } = listData;
         let listCareer = [];
         for (let i in list) {
@@ -135,11 +137,16 @@ class EditForm extends Component {
             }
         }
         const disabled = !this.isValidateForm();
+        const { career } = this.props;
+        const listLabel = career.listAction.filter(e => e.isLabel === 1);
+
+        console.log('statesssss', this.state);
+
         return (
             <div id="edit-career-action">
                 {!showParent &&
                     <div className={`form-group`}>
-                        <label>Gói thầu<span className="text-red">*</span></label>
+                        <label>Gói thầu</label>
                         <input type="text" className="form-control" onChange={this.handlePackage} value={this.state.package} />
                         {/* <ErrorLabel content={nameError} /> */}
                     </div>
@@ -149,15 +156,35 @@ class EditForm extends Component {
                     <input type="text" className="form-control" onChange={this.handleName} value={name} />
                     <ErrorLabel content={nameError} />
                 </div>
-                <div className={`form-group `}>
+                { isLabel === 1 &&
+                <div className={`form-group `}> 
                     <label>Nhãn dán<span className="text-red">*</span></label>
                     <input type="text" className="form-control" onChange={this.handleCode} value={code} />
                     <ErrorLabel content={codeError} />
                 </div>
-                { showParent &&
+                }
+                { showParent && isLabel !== 1 &&
                     <div className="form-group">
                         <label>{translate('document.administration.archives.parent')}</label>
                         <TreeSelect data={listData} value={[parent]} handleChange={this.handleParent} mode="radioSelect" />
+                    </div>
+                }
+                { isLabel !== 1 &&
+                    <div className="form-group">
+                        <label className="form-control-static">Nhóm hoạt động</label>
+                        {/* <TreeSelect data={dataTreeAction} value={action?.id} handleChange={this.handleAction} mode="radioSelect" /> */}
+                        <SelectBox
+                            id={`select-career-action-select-label-${careerId}`}
+                            lassName="form-control select2"
+                            style={{ width: "100%" }}
+                            items={listLabel.map(e => {
+                                return {text: e.name, value: e._id}
+                            })}
+                            options={{ placeholder: "Chọn hoạt động công việc" }}
+                            onChange={this.handleActionLabel}
+                            value={actionLabel}
+                            multiple={true}
+                        />
                     </div>
                 }
                 <div className="form-group">

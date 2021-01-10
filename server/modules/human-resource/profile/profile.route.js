@@ -21,6 +21,14 @@ const data = [{
         path: '/human-resource/certificates'
     },
     {
+        name: 'fileCareer',
+        path: '/human-resource/career'
+    },
+    {
+        name: 'fileMajor',
+        path: '/human-resource/major'
+    },
+    {
         name: 'fileContract',
         path: '/human-resource/contracts'
     },

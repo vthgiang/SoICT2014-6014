@@ -245,6 +245,7 @@ exports.createDocument = async (portal, data, company) => {
     let versions = [];
     if (data.versionName) {
         if (!Array.isArray(data.versionName)) {
+            console.log('rrrrr', data.files, data.scannedFileOfSignedDocument)
             versions = [
                 {
                     versionName: data.versionName,
@@ -252,8 +253,9 @@ exports.createDocument = async (portal, data, company) => {
                     issuingDate: dateParse(data.issuingDate),
                     effectiveDate: dateParse(data.effectiveDate),
                     expiredDate: dateParse(data.expiredDate),
-                    file: data.file,
-                    scannedFileOfSignedDocument: data.scannedFileOfSignedDocument,
+                    file: data.files && Array.isArray(data.files) ? data.files[0] : data.files,
+                    scannedFileOfSignedDocument: data.scannedFileOfSignedDocument && Array.isArray(data.scannedFileOfSignedDocument) ?
+                        data.scannedFileOfSignedDocument[0] : data.scannedFileOfSignedDocument,
                 },
             ];
         } else {

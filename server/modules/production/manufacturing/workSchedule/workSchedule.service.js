@@ -414,3 +414,10 @@ exports.getWorkSchedules = async (query, portal) => {
         }
     }
 }
+
+exports.getWorkSchedulesByMillId = async (id, portal) => {
+    const workSchedules = await WorkSchedule(connect(DB_CONNECTION, portal)).find({
+        manufacturingMill: id
+    });
+    return { workSchedules }
+}

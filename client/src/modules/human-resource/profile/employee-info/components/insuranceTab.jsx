@@ -109,36 +109,6 @@ class InsurranceTab extends Component {
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
-                    {/* Thông tin bảo hiểm y tê */}
-                    <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.bhyt')}</h4></legend>
-                        <div className="row">
-                            {/* Mã bảo hiểm y tế */}
-                            <div className="form-group col-md-4" >
-                                <strong>{translate('human_resource.profile.number_BHYT')}&emsp; </strong>
-                                {healthInsuranceNumber}
-                            </div>
-                            {/* Ngày có hiệu lực */}
-                            <div className="form-group col-md-4" >
-                                <strong>{translate('human_resource.profile.start_date')}&emsp; </strong>
-                                {this.formatDate(healthInsuranceStartDate)}
-                            </div>
-                            {/* Ngày hết hiệu lực */}
-                            <div className="form-group col-md-4" >
-                                <strong>{translate('human_resource.profile.end_date_certificate')}&emsp; </strong>
-                                {this.formatDate(healthInsuranceEndDate)}
-                            </div>
-                            {/* file đính kèm */}
-                            <div className="form-group col-md-6" >
-                                <strong>{translate('human_resource.profile.attached_files')}&emsp; </strong>
-                                {
-                                    healthInsuranceAttachment && healthInsuranceAttachment.map((obj, index) => (
-                                        <li key={index}><a href="" title="Tải xuống" onClick={(e) => this.requestDownloadFile(e, obj.url, obj.fileName)}>{obj.fileName}</a></li>
-                                    ))
-                                }
-                            </div>
-                        </div>
-                    </fieldset>
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.bhxh')}</h4></legend>
                         {/* Mã bảo hiểm xã hội */}
@@ -174,6 +144,36 @@ class InsurranceTab extends Component {
                             </tbody>
                         </table>
                         {(!socialInsuranceDetails || socialInsuranceDetails.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
+                    </fieldset>
+                    {/* Thông tin bảo hiểm y tê */}
+                    <fieldset className="scheduler-border">
+                        <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.bhyt')}</h4></legend>
+                        <div className="row">
+                            {/* Mã bảo hiểm y tế */}
+                            <div className="form-group col-md-4" >
+                                <strong>{translate('human_resource.profile.number_BHYT')}&emsp; </strong>
+                                {healthInsuranceNumber}
+                            </div>
+                            {/* Ngày có hiệu lực */}
+                            <div className="form-group col-md-4" >
+                                <strong>{translate('human_resource.profile.start_date')}&emsp; </strong>
+                                {this.formatDate(healthInsuranceStartDate)}
+                            </div>
+                            {/* Ngày hết hiệu lực */}
+                            <div className="form-group col-md-4" >
+                                <strong>{translate('human_resource.profile.end_date_certificate')}&emsp; </strong>
+                                {this.formatDate(healthInsuranceEndDate)}
+                            </div>
+                            {/* file đính kèm */}
+                            <div className="form-group col-md-6" >
+                                <strong>{translate('human_resource.profile.attached_files')}&emsp; </strong>
+                                {
+                                    healthInsuranceAttachment && healthInsuranceAttachment.map((obj, index) => (
+                                        <li key={index}><a href="" title="Tải xuống" onClick={(e) => this.requestDownloadFile(e, obj.url, obj.fileName)}>{obj.fileName}</a></li>
+                                    ))
+                                }
+                            </div>
+                        </div>
                     </fieldset>
                 </div>
             </div>

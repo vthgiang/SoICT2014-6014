@@ -143,7 +143,7 @@ class UseRequestCreateForm extends Component {
         let { message } = ValidationHelper.validateName(translate, value, 4, 255);
         this.setState({
             dateEndUse: value,
-            errorOnDateEndUse: message
+            errorOnDateEndUse: this.props.typeRegisterForUse == 3 ? undefined : message
         });
     }
 
@@ -157,13 +157,14 @@ class UseRequestCreateForm extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let { recommendNumber, dateCreate, reqContent, dateStartUse } = this.state;
+        let { recommendNumber, dateCreate, reqContent, dateStartUse, dateEndUse } = this.state;
         let { translate } = this.props;
         if (
             // !ValidationHelper.validateEmpty(translate, recommendNumber).status ||
             !ValidationHelper.validateEmpty(translate, dateCreate).status ||
             !ValidationHelper.validateEmpty(translate, reqContent).status ||
-            !ValidationHelper.validateEmpty(translate, dateStartUse).status
+            !ValidationHelper.validateEmpty(translate, dateStartUse).status ||
+            (this.props.typeRegisterForUse != 3 && !ValidationHelper.validateName(translate, dateEndUse).status)
         ) return false;
         return true;
     }
@@ -346,7 +347,7 @@ class UseRequestCreateForm extends Component {
 
                                 {/* Thời gian đăng ký sử dụng đến ngày */}
                                 <div className={`form-group ${errorOnDateEndUse === undefined ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.handover_to_date')}</label>
+                                    <label>{translate('asset.general_information.handover_to_date')}{this.props.typeRegisterForUse != 3 && <span className="text-red">*</span>}</label>
                                     <DatePicker
                                         id="create_end_use"
                                         value={dateEndUse}

@@ -156,7 +156,7 @@ exports.updateAssetInformation = async (req, res) => {
                 var html = data.html;
                 var noti = {
                     organizationalUnits: [],
-                    title: "Cập nhật thông tin sự cố tài sản",
+                    title: "Đăng ký sử dụng tài sản",
                     level: "general",
                     content: html,
                     sender: data.user.name,

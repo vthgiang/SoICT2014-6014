@@ -203,8 +203,9 @@ class TaskManagementOfUnit extends Component {
 
     handleUpdateData = () => {
         let { organizationalUnit, status, priority, special, name, startDate, endDate, perPage, isAssigned } = this.state;
-        this.props.getPaginatedTasksByOrganizationalUnit(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate, isAssigned);
-
+        if (organizationalUnit && organizationalUnit.length !== 0) {
+            this.props.getPaginatedTasksByOrganizationalUnit(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate, isAssigned);
+        }
         this.setState(state => {
             return {
                 ...state,

@@ -2,7 +2,7 @@ const PerformTaskService = require('./taskPerform.service');
 const Logger = require(`../../../logs`);
 const NotificationServices = require(`../../notification/notification.service`);
 const { sendEmail } = require(`../../../helpers/emailHelper`);
-
+const { difference } = require('lodash');
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module thực hiện công việc
 
 /**
@@ -75,14 +75,14 @@ exports.getActiveTimesheetLog = async (req, res) => {
 exports.startTimesheetLog = async (req, res) => {
     try {
         let timerStatus = await PerformTaskService.startTimesheetLog(req.portal, req.params, req.body);
-        await Logger.info(req.user.email, ` start timer `, req.portal)
+        await Logger.info(req.user.email, 'start_timer_success', req.portal)
         res.status(200).json({
             success: true,
             messages: ['start_timer_success'],
             content: timerStatus
         })
-    } catch (error) {
-        await Logger.error(req.user.email, ` start timer `, req.portal)
+    } catch (error) {console.log(error)
+        await Logger.error(req.user.email, 'start_timer_faile', req.portal)
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['start_timer_fail'],
@@ -97,14 +97,14 @@ exports.startTimesheetLog = async (req, res) => {
 exports.stopTimesheetLog = async (req, res) => {
     try {
         let timer = await PerformTaskService.stopTimesheetLog(req.portal, req.params, req.body);
-        await Logger.info(req.user.email, ` stop timer `, req.portal)
+        await Logger.info(req.user.email, 'stop_timer_success', req.portal)
         res.status(200).json({
             success: true,
             messages: ['stop_timer_success'],
             content: timer
         })
     } catch (error) {
-        await Logger.error(req.user.email, ` stop timer `, req.portal)
+        await Logger.error(req.user.email, 'stop_timer_faile', req.portal)
         res.status(400).json({
             success: false,
             messages: ['stop_timer_fail'],
@@ -112,6 +112,31 @@ exports.stopTimesheetLog = async (req, res) => {
         })
     }
 }
+
+/**
+ * 
+ * Sửa lịch sửa bấm giờ
+ */
+exports.editTimeSheetLog = async (req, res) => {
+    try {
+        let {taskId, timesheetlogId} = req.params;
+        let timer = await PerformTaskService.editTimeSheetLog(req.portal, taskId, timesheetlogId, req.body);
+        await Logger.info(req.user.email, 'edit_time_sheet_log_success', req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['edit_time_sheet_log_success'],
+            content: timer
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, 'edit_time_sheet_log_faile', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['edit_time_sheet_log_fail'],
+            content: error
+        })
+    }
+}
+
 /**
  *  Tạo hoạt động
  */
@@ -136,15 +161,19 @@ exports.createTaskAction = async (req, res) => {
             dataType: "createTaskAction",
             value: [taskAction[taskAction.length - 1]]
         }
-
-        const  associatedDataforAccountable = { "organizationalUnits": tasks.organizationalUnit, "title": "Phê duyệt hoạt động", "level": "general", "content": `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động cho công việc <strong>${tasks.name}</strong>, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`, "sender": userCreator.name, "users": [tasks.accountableEmployees],"associatedData":associatedData };
+        const accountableFilter = tasks.accountableEmployees.filter(obj => obj.toString() !== req.user._id.toString());
+        const  associatedDataforAccountable = { "organizationalUnits": tasks.organizationalUnit, "title": "Phê duyệt hoạt động", "level": "general", "content": `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động cho công việc <strong>${tasks.name}</strong>, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`, "sender": userCreator.name, "users": accountableFilter ,"associatedData":associatedData };
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, associatedDataforAccountable,);
        
         // message gửi cho người thực hiện
         // Loại người tạo hoặt động khỏi danh sách người nhận thông báo
-        const userReceive = [...tasks.responsibleEmployees].filter(obj => JSON.stringify(obj) !== JSON.stringify(req.user._id));
+        let userReceive = tasks.responsibleEmployees.filter(obj => obj.toString() !== req.user._id.toString());
+        userReceive = userReceive.map(user => user.toString());
+        let accountable = tasks.accountableEmployees.map(acc => acc.toString());
+        // Lọc trong danh sách userReceive có chứa người phê duyệt hay ko.. 1 người có thể có nhiều vai trò(mục đích gửi 1 lần thông báo tới ngươi phê duyệt)
+        userReceive = difference(userReceive, accountable)
         const associatedDataforResponsible = { "organizationalUnits": tasks.organizationalUnit, "title": "Thêm mới hoạt động", "level": "general", "content": `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động cho công việc <strong>${tasks.name}</strong>, chi tiết công việc: <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`, "sender": userCreator.name, "users": userReceive, "associatedData": associatedData };
-               
+
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, associatedDataforResponsible,);
         sendEmail(task.email, "Phê duyệt hoạt động", '', `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`);
         
@@ -493,6 +522,7 @@ evaluationAction = async (req, res) => {
             content: taskAction
         })
     } catch (error) {
+        console.log(error)
         await Logger.error(req.user.email, ` evaluation action  `, req.portal)
         res.status(400).json({
             success: false,

@@ -348,6 +348,7 @@ class EditCareForm extends Component {
                                 id={'editCare'}
                                 getTextData={this.handleChangeDescription}
                                 quillValueDefault={quillValueDefault}
+                                table={false}
                             />
                             <ErrorLabel content={descriptionError} />
                         </div>
