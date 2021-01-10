@@ -8,6 +8,11 @@ import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
 import { DepartmentActions } from "../../../../super-admin/organizational-unit/redux/actions";
 import { RoleActions } from "../../../../super-admin/role/redux/actions";
 import { QuoteActions } from "../../quote/redux/actions";
+
+import { BillActions } from "../../../warehouse/bill-management/redux/actions";
+import { StockActions } from "../../../warehouse/stock-management/redux/actions";
+import { UserActions } from "../../../../super-admin/user/redux/actions";
+import { GoodActions } from "../../../common-production/good-management/redux/actions";
 //Helper Function
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import { formatDate } from "../../../../../helpers/formatDate";
@@ -18,11 +23,14 @@ import SalesOrderDetailForm from "./salesOrderDetailForm";
 import SalesOrderCreateForm from "./salesOrderCreateForm";
 import SalesOrderCreateFormFromQuote from "./salesOrderCreateFormFromQuote";
 import SalesOrderEditForm from "./salesOrderEditForm";
+import GoodIssueCreateForm from "../../../warehouse/bill-management/components/good-issues/goodIssueCreateForm";
+import BillDetailForm from "../../../warehouse/bill-management/components/genaral/billDetailForm";
 
 class SalesOrderTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            currentRole: localStorage.getItem("currentRole"),
             page: 1,
             limit: 5,
             code: "",
@@ -32,12 +40,19 @@ class SalesOrderTable extends Component {
     }
 
     componentDidMount = () => {
-        const { page, limit } = this.state;
+        const { page, limit, currentRole } = this.state;
         this.props.getAllSalesOrders({ page, limit });
         this.props.getDiscountForOrderValue();
         this.props.getCustomers();
         this.props.getAllDepartments();
         this.props.getAllRoles();
+
+        //Create bill
+        this.props.getBillsByType({ page, limit, managementLocation: currentRole });
+        this.props.getBillsByType({ managementLocation: currentRole });
+        this.props.getAllStocks({ managementLocation: currentRole });
+        this.props.getUser();
+        this.props.getGoodsByType({ type: "product" });
     };
 
     handleClickCreateCode = () => {
@@ -87,21 +102,15 @@ class SalesOrderTable extends Component {
             customer: value,
         });
     };
-    handleQueryDateChange = (value) => {
-        this.setState({
-            queryDate: value[0],
-        });
-    };
 
     handleSubmitSearch = () => {
-        let { limit, page, code, status, customer, queryDate } = this.state;
+        let { limit, page, code, status, customer } = this.state;
         const data = {
             limit,
             page,
             code,
             status,
             customer,
-            queryDate,
         };
         this.props.getAllSalesOrders(data);
     };
@@ -116,6 +125,18 @@ class SalesOrderTable extends Component {
         window.$("#modal-detail-sales-order").modal("show");
     };
 
+    reloadSalesOrderTable = () => {
+        let { limit, page, code, status, customer } = this.state;
+        const data = {
+            limit,
+            page,
+            code,
+            status,
+            customer,
+        };
+        this.props.getAllSalesOrders(data);
+    };
+
     handleCreate = () => {
         window.$("#modal-add-sales-order").modal("show");
     };
@@ -128,6 +149,22 @@ class SalesOrderTable extends Component {
             };
         });
         window.$("#modal-edit-sales-order").modal("show");
+    };
+
+    handleAddBill = async (salesOrderAddBill) => {
+        await this.setState((state) => {
+            return {
+                ...state,
+                salesOrderAddBill,
+                billCode: generateCode("BIIS"),
+            };
+        });
+        window.$("#modal-create-bill-issue").modal("show");
+    };
+
+    handleShowBillDetail = async (billId) => {
+        await this.props.getDetailBill(billId);
+        window.$("#modal-detail-bill").modal("show");
     };
 
     createDirectly = () => {
@@ -151,7 +188,7 @@ class SalesOrderTable extends Component {
     // }
 
     render() {
-        let { limit, salesOrderDetail, salesOrderEdit, code } = this.state;
+        let { limit, salesOrderDetail, salesOrderEdit, code, salesOrderAddBill, billCode } = this.state;
         const { translate, salesOrders } = this.props;
         const { totalPages, page } = salesOrders;
 
@@ -175,7 +212,7 @@ class SalesOrderTable extends Component {
             },
             {
                 className: "text-success",
-                text: "Sẵn hàng trong kho",
+                text: "Yêu cầu xuất kho",
             },
             {
                 className: "text-danger",
@@ -244,6 +281,14 @@ class SalesOrderTable extends Component {
                         <SalesOrderCreateForm code={code} />
                         <SalesOrderCreateFormFromQuote code={code} />
                         <SalesOrderDetailForm salesOrderDetail={salesOrderDetail} />
+                        <GoodIssueCreateForm
+                            salesOrderAddBill={salesOrderAddBill}
+                            createdSource={"salesOrder"}
+                            billCode={billCode}
+                            modalName={`Lập phiếu yêu cầu xuất kho cho đơn hàng: ${salesOrderAddBill ? salesOrderAddBill.code : ""}`}
+                            reloadSalesOrderTable={this.reloadSalesOrderTable}
+                        />
+                        <BillDetailForm />
                         {salesOrderEdit && <SalesOrderEditForm salesOrderEdit={salesOrderEdit} />}
                         <div className="form-inline">
                             <div className="form-group">
@@ -287,39 +332,33 @@ class SalesOrderTable extends Component {
                                     style={{ width: "100%" }}
                                     items={[
                                         {
-                                            value: 0,
+                                            value: 1,
                                             text: "Chờ phê duyệt",
                                         },
                                         {
-                                            value: 1,
-                                            text: "Đã duyệt",
-                                        },
-                                        {
                                             value: 2,
-                                            text: "Đã chốt đơn",
+                                            text: "Yêu cầu sản xuất",
                                         },
                                         {
                                             value: 3,
+                                            text: "Yêu cầu xuất kho",
+                                        },
+                                        {
+                                            value: 4,
+                                            text: "Đang giao hàng",
+                                        },
+                                        {
+                                            value: 5,
+                                            text: "Đã giao hàng",
+                                        },
+                                        {
+                                            value: 6,
                                             text: "Hủy đơn",
                                         },
                                     ]}
                                     multiple="multiple"
                                     options={{ nonSelectedText: "Chọn trạng thái đơn", allSelectedText: "Đã chọn tất cả" }}
                                     onChange={this.handleStatusChange}
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label className="form-control-static">Thời hạn áp dụng</label>
-                                <SelectBox
-                                    id={`select-filter-status-discounts`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    items={[
-                                        { value: "effective", text: "Đang hiệu lực" },
-                                        { value: "expire", text: "Đã quá hạn" },
-                                        { value: "all", text: "Tất cả" },
-                                    ]}
-                                    onChange={this.handleQueryDateChange}
                                 />
                             </div>
 
@@ -402,6 +441,25 @@ class SalesOrderTable extends Component {
                                                     >
                                                         <i className="material-icons">edit</i>
                                                     </a>
+                                                    {!item.bill ? (
+                                                        <a
+                                                            onClick={() => this.handleAddBill(item)}
+                                                            className="add text-success"
+                                                            style={{ width: "5px" }}
+                                                            title="Yêu cầu xuất kho"
+                                                        >
+                                                            <i className="material-icons">add</i>
+                                                        </a>
+                                                    ) : (
+                                                        <a
+                                                            onClick={() => this.handleShowBillDetail(item.bill)}
+                                                            className="add text-success"
+                                                            style={{ width: "5px" }}
+                                                            title="Yêu cầu xuất kho"
+                                                        >
+                                                            <i className="material-icons">remove_red_eye</i>
+                                                        </a>
+                                                    )}
                                                 </td>
                                             )}
                                         </tr>
@@ -436,6 +494,12 @@ const mapDispatchToProps = {
     getAllDepartments: DepartmentActions.get,
     getAllRoles: RoleActions.get,
     getQuotesToMakeOrder: QuoteActions.getQuotesToMakeOrder,
+
+    getBillsByType: BillActions.getBillsByType,
+    getDetailBill: BillActions.getDetailBill,
+    getAllStocks: StockActions.getAllStocks,
+    getUser: UserActions.get,
+    getGoodsByType: GoodActions.getGoodsByType,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(SalesOrderTable));
