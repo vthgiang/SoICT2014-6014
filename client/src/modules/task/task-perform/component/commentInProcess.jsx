@@ -596,7 +596,7 @@ class CommentInProcess extends Component {
                                             <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
                                             
                                             <ContentMaker
-                                                idQuill={`add-child-comment-process`}
+                                                idQuill={`add-child-comment-process-${item._id}`}
                                                 inputCssClass="text-input-level2" controlCssClass="tool-level2"
                                                 onFilesChange={this.onCommentFilesChange}
                                                 onFilesError={this.onFilesError}
