@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import BankAccountManagementTable from "./bankAccountManagementTable";
-class BankAccount extends Component {
+import ReceiptVoucherManagementTable from "./receiptVoucherManagementTable";
+class ReceiptVoucher extends Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -9,11 +9,11 @@ class BankAccount extends Component {
         return (
             <div className="box" style={{ minHeight: "450px" }}>
                 <div className="box-body">
-                    <BankAccountManagementTable />
+                    <ReceiptVoucherManagementTable />
                 </div>
             </div>
         );
     }
 }
 
-export default BankAccount;
+export default ReceiptVoucher;

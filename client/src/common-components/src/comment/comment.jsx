@@ -554,7 +554,7 @@ class Comment extends Component {
                                         <div>
                                             <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
                                             <ContentMaker
-                                                idQuill={`add-child-comment`}
+                                                idQuill={`add-child-comment-${item._id}`}
                                                 inputCssClass="text-input-level2" controlCssClass="tool-level2"
                                                 onFilesChange={(files) => this.onCommentFilesChange(files, item._id)}
                                                 onFilesError={this.onFilesError}

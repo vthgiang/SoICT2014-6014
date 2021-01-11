@@ -521,7 +521,6 @@ class TaskAddModal extends Component {
                                         getTextData={this.handleChangeTaskDescription}
                                         height={80}
                                         placeholder={translate('task.task_management.detail_description')}
-                                        embeds={false}
                                     />
                                     <ErrorLabel content={newTask.errorOnDescription} />
                                 </div>

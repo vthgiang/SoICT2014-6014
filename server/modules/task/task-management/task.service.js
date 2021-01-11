@@ -328,28 +328,28 @@ exports.getPaginatedTasks = async (portal, task) => {
         };
     }
 
-    if (Array.isArray(special)) {
-        let checkStore = special.some(node => node === 'stored');
-        if(checkStore) {
-            keySearch = {
-                ...keySearch,
-                isArchived: true
-            };
-        }
-        let checkCurrentMonth = special.some(node => node === 'currentMonth');
-        if(checkCurrentMonth){
-            let now = new Date();
-            let currentYear = now.getFullYear();
-            let currentMonth = now.getMonth()+1;
-            let start = new Date(`${currentYear}-${currentMonth}`); //ngày cuối cùng của tháng trước
-            let end = new Date(currentYear, currentMonth); // ngày cuối cùng của tháng hiện tại
+    if (special) {
+        for (let i = 0; i < special.length; i++) {
+            if (special[i] === "stored") {
+                keySearch = {
+                    ...keySearch,
+                    isArchived: true
+                };
+            }
+            else {
+                let now = new Date();
+                let currentYear = now.getFullYear();
+                let currentMonth = now.getMonth();
+                let endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
+                let endOfLastMonth = new Date(currentYear, currentMonth);
 
-            keySearchSpecial = {
-                $or: [
-                    { 'endDate': { $lte: end, $gt: start } },
-                    { 'startDate': { $lte: end, $gt: start } },
-                    { 'startDate': { $lte: start }, 'endDate': { $gte: end } }
-                ]
+                keySearchSpecial = {
+                    $or: [
+                        { 'endDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
+                        { 'startDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
+                        { $and: [{ 'endDate': { $gte: endOfCurrentMonth } }, { 'startDate': { $lte: endOfLastMonth } }] }
+                    ]
+                }
             }
         }
     }
@@ -420,7 +420,7 @@ exports.getPaginatedTasks = async (portal, task) => {
         }
 
     }
-
+    console.log(keySearch, keySearchPeriod)
     let optionQuery = {
         $and: [
             keySearch,
@@ -2408,29 +2408,25 @@ exports.getUserTimeSheet = async (portal, userId, month, year) => {
     console.log("my", month, year)
     let beginOfMonth = new Date(`${year}-${month}`);
     let endOfMonth = new Date(year, month);
-    console.log("aa", beginOfMonth, endOfMonth)
-    let tasks = await Task(connect(DB_CONNECTION, portal))
-        .find({
-            "timesheetLogs.creator": userId,
+
+    let tsl = await Task(connect(DB_CONNECTION, portal)).aggregate([
+        { $match: { 
+            "timesheetLogs.creator": mongoose.Types.ObjectId(userId),
             "timesheetLogs.startedAt": { $exists: true },
             "timesheetLogs.startedAt": { $gte: beginOfMonth },
             "timesheetLogs.stoppedAt": { $exists: true },
             "timesheetLogs.stoppedAt": { $lte: endOfMonth }
-        });
-    console.log("TASKS", tasks)
+        } },
+        { $unwind: "$timesheetLogs" },
+        { $replaceRoot: { newRoot: "$timesheetLogs" } },
+        { $match: { 
+            "creator": mongoose.Types.ObjectId(userId),
+            "startedAt": { $exists: true },
+            "startedAt": { $gte: beginOfMonth },
+            "stoppedAt": { $exists: true },
+            "stoppedAt": { $lte: endOfMonth }
+        } },
+    ]);
 
-    let timesheetlogs = [];
-    for(let i=0; i<tasks.length; i++){
-        let ts = tasks[i].timesheetLogs;
-        if(Array.isArray(ts)){
-            for(let j=0; j<ts.length; j++){
-                let tslogs = ts[j];
-                if(tslogs.creator.toString() === userId.toString()){
-                    timesheetlogs.push(tslogs);
-                }
-            }
-        }
-    }
-
-    return timesheetlogs;
+    return tsl;
 }

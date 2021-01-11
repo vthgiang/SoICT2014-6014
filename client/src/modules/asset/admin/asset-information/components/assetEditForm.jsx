@@ -255,7 +255,7 @@ class AssetEditForm extends Component {
         })
         formData.append("fileAvatar", avatar);
 
-        this.props.updateInformationAsset(this.state._id, formData, employeeId, page);
+        this.props.updateInformationAsset(this.state._id, formData);
 
         // Thêm vào thông tin sử dụng
         if (assignedToUser !== this.props.assignedToUser || assignedToOrganizationalUnit !== this.props.assignedToOrganizationalUnit || handoverFromDate !== this.props.handoverFromDate || handoverToDate !== this.props.handoverToDate) {

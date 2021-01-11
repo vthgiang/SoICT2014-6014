@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
-import { DataTableSetting, DatePicker, PaginateBar, SelectMulti, Tree, TreeTable } from '../../../../common-components';
+import { DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti, Tree, TreeTable } from '../../../../common-components';
 import { convertTime, getFormatDateFromTime } from '../../../../helpers/stringMethod';
 import { getStorage } from '../../../../config';
 
@@ -51,7 +51,6 @@ class TaskManagement extends Component {
         this.props.getAllDepartment();
         this.props.getPaginateTasks(this.state.currentTab, [], '1', '20', this.state.status, null, null, null, null, null);
         this.props.getAllTaskProject();
-        this.getUserTimeSheetLogs()
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -483,17 +482,6 @@ class TaskManagement extends Component {
         });
     }
 
-    getUserTimeSheetLogs = () => {
-        let { monthTimeSheetLog } = this.state;
-        if (monthTimeSheetLog) {
-            let d = monthTimeSheetLog.split('-');
-            let month = d[0];
-            let year = d[1];
-            let userId = getStorage('userId');
-            this.props.getTimeSheetOfUser(userId, month, year);
-        }
-    }
-
     getTotalTimeSheet = (ts) => {
         let total = 0;
         for (let i = 0; i < ts.length; i++) {
@@ -514,8 +502,6 @@ class TaskManagement extends Component {
         }
         // kiểm tra vai trò của người dùng
         let userId = getStorage("userId");
-        let { userTimeSheetLogs } = tasks;
-        console.log("USER TIME SHEET LOG", userTimeSheetLogs.userTimeSheetLogs)
 
         if (user) units = user.organizationalUnitsOfUser;
 
@@ -842,32 +828,6 @@ class TaskManagement extends Component {
 
                     </div>
                 </div >
-
-                <div className="box" style={{ padding: 20 }}>
-                    <div className="box-body qlcv">
-                        <h4>THỐNG KÊ BÁM GIỜ THEO THÁNG</h4>
-                        <div className="form-inline">
-                            <div className="form-group">
-                                <label>Tháng</label>
-                                <DatePicker
-                                    id="month-time-sheet-log"
-                                    dateFormat="month-year"
-                                    value={monthTimeSheetLog}
-                                    onChange={this.handleChangeMonthTimeSheetLog}
-                                    disabled={false}
-                                />
-                            </div>
-                            <button className="btn btn-primary" onClick={this.getUserTimeSheetLogs}>Thống kê</button>
-                            {
-                                !tasks.isLoading ?
-                                    <span style={{ fontWeight: 'bold', fontSize: 24, marginLeft: 50 }}>
-                                        {this.getTotalTimeSheet(userTimeSheetLogs)}
-                                    </span> : translate('general.loading')
-                            }
-
-                        </div>
-                    </div>
-                </div>
             </React.Fragment>
         );
     }
@@ -893,7 +853,6 @@ const actionCreators = {
     deleteTaskById: taskManagementActions._delete,
     getAllDepartment: DepartmentActions.get,
     getAllTaskProject: TaskProjectAction.get,
-    getTimeSheetOfUser: taskManagementActions.getTimeSheetOfUser
 };
 const translateTaskManagement = connect(mapState, actionCreators)(withTranslate(TaskManagement));
 export { translateTaskManagement as TaskManagement };

@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { DialogModal, ErrorLabel, SelectBox, DatePicker } from '../../../../common-components/';
+
+import { DialogModal, ErrorLabel, SelectBox, DatePicker, QuillEditor } from '../../../../common-components/';
 import { getStorage } from "../../../../config";
+
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { TaskInformationForm } from './taskInformationForm';
 import { performTaskAction } from '../redux/actions';
+import { taskManagementActions } from '../../task-management/redux/actions';
+
 import { TaskFormValidator } from '../../task-management/component/taskFormValidator';
+import { TaskTemplateFormValidator } from '../../task-template/component/taskTemplateFormValidator';
+
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import Swal from 'sweetalert2'
-import { TaskTemplateFormValidator } from '../../task-template/component/taskTemplateFormValidator';
-import { taskManagementActions } from '../../task-management/redux/actions';
-import TextareaAutosize from 'react-textarea-autosize';
-
 class ModalEditTaskByAccountableEmployee extends Component {
 
     constructor(props) {
@@ -119,6 +121,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             info: info,
             taskName: taskName,
             taskDescription: taskDescription,
+            taskDescriptionDefault: taskDescription,
             organizationalUnit: organizationalUnit,
             collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits,
             statusOptions: statusOptions,
@@ -589,8 +592,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         return errorMessage === undefined;
     }
 
-    handleTaskDescriptionChange = event => {
-        let value = event.target.value;
+    handleTaskDescriptionChange = (value, imgs) => {
         this.validateTaskDescription(value, true);
     }
 
@@ -1009,7 +1011,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         console.log('new edit Task', this.state);
 
         const { user, tasktemplates, department, translate } = this.props;
-        const { task, organizationalUnit, collaboratedWithOrganizationalUnits, errorOnEndDate, errorOnStartDate, errorTaskName, errorTaskDescription, errorOnFormula, taskName, taskDescription, statusOptions, priorityOptions,
+        const { task, organizationalUnit, collaboratedWithOrganizationalUnits, errorOnEndDate, errorOnStartDate, errorTaskName, errorTaskDescription, errorOnFormula, taskName, taskDescription, statusOptions, priorityOptions, taskDescriptionDefault,
             startDate, endDate, formula, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, inactiveEmployees, parent, parentTask
         } = this.state;
 
@@ -1095,18 +1097,13 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                     <div
                                         className={`form-group ${errorTaskDescription === undefined ? "" : "has-error"}`}>
                                         <label>{translate('task.task_management.detail_description')}<span className="text-red">*</span></label>
-                                        {/* <textarea
-                                            rows="4"
-                                            value={taskDescription}
-                                            className="form-control" onChange={this.handleTaskDescriptionChange} /> */}
-
-                                        <TextareaAutosize
-                                            className={"form-control"}
+                                        <QuillEditor
+                                            id={"task-edit-by-accountable"}
+                                            toolbar={false}
+                                            quillValueDefault={taskDescriptionDefault}
+                                            getTextData={this.handleTaskDescriptionChange}
+                                            height={80}
                                             placeholder={"Mô tả công việc"}
-                                            minRows={2}
-                                            maxRows={4}
-                                            value={taskDescription}
-                                            onChange={this.handleTaskDescriptionChange}
                                         />
                                         <ErrorLabel content={errorTaskDescription} />
                                     </div>
