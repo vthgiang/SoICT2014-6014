@@ -48,8 +48,6 @@ class SalesOrderTable extends Component {
         this.props.getAllRoles();
 
         //Create bill
-        this.props.getBillsByType({ page, limit, managementLocation: currentRole });
-        this.props.getBillsByType({ managementLocation: currentRole });
         this.props.getAllStocks({ managementLocation: currentRole });
         this.props.getUser();
         this.props.getGoodsByType({ type: "product" });
@@ -287,6 +285,7 @@ class SalesOrderTable extends Component {
                             billCode={billCode}
                             modalName={`Lập phiếu yêu cầu xuất kho cho đơn hàng: ${salesOrderAddBill ? salesOrderAddBill.code : ""}`}
                             reloadSalesOrderTable={this.reloadSalesOrderTable}
+                            group={"2"}
                         />
                         <BillDetailForm />
                         {salesOrderEdit && <SalesOrderEditForm salesOrderEdit={salesOrderEdit} />}

@@ -23,6 +23,7 @@ export const workSchedule = (state = initialState, action) => {
         case workScheduleConstants.CREATE_WORK_SCHEDULE_REQUEST:
         case workScheduleConstants.GET_ALL_WORK_SCHEDULE_WORKER_REQUEST:
         case workScheduleConstants.GET_ALL_WORK_SCHEDULE_BY_MILL_ID_REQUEST:
+        case workScheduleConstants.GEt_ALL_WORK_SCHEDULE_OF_MANUFACTURING_WORK_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -31,6 +32,7 @@ export const workSchedule = (state = initialState, action) => {
         case workScheduleConstants.CREATE_WORK_SCHEDULE_FAILURE:
         case workScheduleConstants.GET_ALL_WORK_SCHEDULE_WORKER_FAILURE:
         case workScheduleConstants.GET_ALL_WORK_SCHEDULE_BY_MILL_ID_FAILURE:
+        case workScheduleConstants.GEt_ALL_WORK_SCHEDULE_OF_MANUFACTURING_WORK_FAILURE:
             return {
                 ...state,
                 isLoading: false,
@@ -96,6 +98,12 @@ export const workSchedule = (state = initialState, action) => {
                 ...state,
                 isLoading: false,
                 listWorkSchedulesOfMill: action.payload.workSchedules
+            }
+        case workScheduleConstants.GEt_ALL_WORK_SCHEDULE_OF_MANUFACTURING_WORK_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                listWorkSchedulesOfWorks: action.payload.workSchedules
             }
         default:
             return state

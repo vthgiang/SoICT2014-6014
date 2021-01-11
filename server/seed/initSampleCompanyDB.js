@@ -4257,8 +4257,8 @@ const initSampleCompanyDB = async () => {
             code: "LSX202000001",
             manufacturingPlan: manufacturingPlans[0]._id,
             manufacturingMill: manufacturingMills[0]._id,
-            startDate: "2020-11-03",
-            endDate: "2020-11-04",
+            startDate: "2021-01-03",
+            endDate: "2021-01-04",
             startTurn: 1,
             endTurn: 3,
             good: {
@@ -4432,8 +4432,8 @@ const initSampleCompanyDB = async () => {
     const workScheduleData = [
         {
             manufacturingMill: manufacturingMills[0]._id,
-            month: "2020-11",
-            turns: [array30days, array30days, array30days],
+            month: "2021-01",
+            turns: [array31days, array31days, array31days],
         },
         {
             manufacturingMill: manufacturingMills[3]._id,

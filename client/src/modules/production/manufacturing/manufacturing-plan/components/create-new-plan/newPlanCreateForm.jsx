@@ -12,6 +12,7 @@ import { manufacturingPlanActions } from "../../redux/actions";
 import { GoodActions } from "../../../../common-production/good-management/redux/actions";
 import { LotActions } from "../../../../warehouse/inventory-management/redux/actions";
 import { UserActions } from "../../../../../super-admin/user/redux/actions";
+import { compareLtDate, compareLteDate } from "../../../../../../helpers/formatDate";
 
 class NewPlanCreateForm extends Component {
     constructor(props) {
@@ -306,6 +307,7 @@ class NewPlanCreateForm extends Component {
             if (this.state.goods.length === 0
                 || this.state.startDate === ""
                 || this.state.endDate === ""
+                || this.state.startDate && this.state.endDate && !compareLteDate(this.state.startDate, this.state.endDate).status
                 || this.state.approvers === undefined
                 || (this.state.approvers && this.state.approvers.length === 0)) {
                 return false;
@@ -418,6 +420,8 @@ class NewPlanCreateForm extends Component {
                                 <ScheduleBooking
                                     listGoods={goods}
                                     manufacturingCommands={manufacturingCommands}
+                                    startDate={startDate}
+                                    endDate={endDate}
                                 />
                             }
                         </div>

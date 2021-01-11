@@ -7,6 +7,7 @@ export const workScheduleActions = {
     setCurrentMonth,
     getAllWorkSchedulesWorker,
     getAllWorkSchedulesByMillId,
+    getAllWorkSchedulesOfManufacturingWork,
 }
 
 
@@ -93,6 +94,26 @@ function getAllWorkSchedulesByMillId(id) {
             }).catch((error) => {
                 dispatch({
                     type: workScheduleConstants.GET_ALL_WORK_SCHEDULE_BY_MILL_ID_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function getAllWorkSchedulesOfManufacturingWork(query) {
+    return dispatch => {
+        dispatch({
+            type: workScheduleConstants.GEt_ALL_WORK_SCHEDULE_OF_MANUFACTURING_WORK_REQUEST
+        });
+        workScheduleSevices.getAllWorkSchedulesOfManufacturingWork(query)
+            .then((res) => {
+                dispatch({
+                    type: workScheduleConstants.GEt_ALL_WORK_SCHEDULE_OF_MANUFACTURING_WORK_SUCCESS,
+                    payload: res.data.content
+                });
+            }).catch((error) => {
+                dispatch({
+                    type: workScheduleConstants.GEt_ALL_WORK_SCHEDULE_OF_MANUFACTURING_WORK_FAILURE,
                     error
                 });
             });
