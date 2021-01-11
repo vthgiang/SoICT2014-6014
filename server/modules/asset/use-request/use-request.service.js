@@ -212,29 +212,32 @@ exports.deleteUseRequest = async (portal, id) => {
  */
 exports.updateUseRequest = async (portal, id, data) => {
     let dateStartUse, dateEndUse, date, partStart, partEnd;
-    partStart = data.dateStartUse.split('-');
-    partEnd = data.dateEndUse.split('-');
-    if (data.startTime) {
-        date = [partStart[2], partStart[1], partStart[0]].join('-') + ' ' + data.startTime;
-        dateStartUse = new Date(date);
-    } else {
-        if (data.dateStartUse.length > 12) {
-            date = data.dateStartUse
-        } else {
-            date = [partStart[2], partStart[1], partStart[0]].join('-')
 
+    if (data.dateStartUse) {
+        partStart = data.dateStartUse.split('-');
+        if (data.dateStartUse.length > 12) {
+            date = data.dateStartUse;
+        } else {
+            date = [partStart[2], partStart[1], partStart[0]].join('-');
         }
         dateStartUse = new Date(date);
     }
-    if (data.stopTime) {
-        date = [partEnd[2], partEnd[1], partEnd[0]].join('-') + ' ' + data.stopTime;
-        dateEndUse = new Date(date);
-    } else {
+    if (data.dateEndUse) {
+        partEnd = data.dateEndUse.split('-');
         if (data.dateEndUse.length > 12) {
-            date = data.dateEndUse
+            date = data.dateEndUse;
         } else {
-            date = [partEnd[2], partEnd[1], partEnd[0]].join('-')
+            date = [partEnd[2], partEnd[1], partEnd[0]].join('-');
         }
+        dateEndUse = new Date(date);
+    }
+
+    if (data.startTime && data.dateStartUse) {
+        date = [partStart[2], partStart[1], partStart[0]].join('-') + ' ' + data.startTime;
+        dateStartUse = new Date(date);
+    }
+    if (data.stopTime && data.dateEndUse) {
+        date = [partEnd[2], partEnd[1], partEnd[0]].join('-') + ' ' + data.stopTime;
         dateEndUse = new Date(date);
     }
 
