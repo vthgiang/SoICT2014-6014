@@ -12,7 +12,8 @@ export const GoodActions = {
     deleteGood,
     getItemsForGood,
     getGoodByManageWorkRole,
-    getManufacturingWorksByProductId
+    getManufacturingWorksByProductId,
+    getNumberGoods
 }
 
 function getGoodsByType(data = undefined) {
@@ -294,5 +295,26 @@ function getManufacturingWorksByProductId(productId) {
                     error
                 });
             });
+    }
+}
+
+function getNumberGoods() {
+    return dispatch => {
+        dispatch({
+            type: GoodConstants.GET_NUMBER_GOODS_REQUEST
+        })
+        GoodServices.getNumberGoods()
+        .then((res) => {
+            dispatch({
+                type: GoodConstants.GET_NUMBER_GOODS_SUCCESS,
+                payload: res.data.content
+            })
+        })
+        .catch((error) => {
+            dispatch({
+                type: GoodConstants.GET_NUMBER_GOODS_FAILURE,
+                error
+            })
+        })
     }
 }

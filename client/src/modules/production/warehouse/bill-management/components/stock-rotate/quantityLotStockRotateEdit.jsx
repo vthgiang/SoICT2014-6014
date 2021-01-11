@@ -50,11 +50,13 @@ class QuantityLotStockRotateEdit extends Component {
             lots.listLotsByGood.map(item => {
                 let stock = item.stocks.filter(x => x.stock._id === this.props.stock);
                 let quantity = stock[0] ? stock[0].quantity : 0;
-                lotArr.push({ 
-                    value: item._id, 
-                    text: item.code,
-                    quantity: quantity,
-                });
+                if(quantity > 0) {
+                    lotArr.push({ 
+                        value: item._id, 
+                        text: item.code + "--" + quantity,
+                        quantity: quantity,
+                    });
+                }
             })
         }
         return lotArr;

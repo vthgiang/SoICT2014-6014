@@ -14,6 +14,7 @@ const initState = {
     isLoading: false,
     listLots: [],
     lotDetail: "",
+    inventoryDashboard: [],
     listLotsByGood: [],
     listPaginate: [],
     listCreateOrEdit: [],
@@ -50,6 +51,7 @@ export function lots(state = initState, action) {
         case LotConstants.EDIT_MANUFACTURING_LOT_REQUEST:
         case LotConstants.GET_INVENTORY_BY_GOOD_IDS_REQUEST:
         case LotConstants.GET_INVENTORY_BY_GOOD_ID_REQUEST:
+        case LotConstants.GET_INVENTORY_DASHBOARD_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -167,6 +169,12 @@ export function lots(state = initState, action) {
                 ...state,
                 currentInventory: action.payload[0]
             }
+        case LotConstants.GET_INVENTORY_DASHBOARD_SUCCESS:
+            return {
+                ...state,
+                inventoryDashboard: action.payload,
+                isLoading: false
+            }
         case LotConstants.GET_LOT_FAILURE:
         case LotConstants.GET_LOT_PAGINATE_FAILURE:
         case LotConstants.GET_LOT_DETAIL_FAILURE:
@@ -180,6 +188,7 @@ export function lots(state = initState, action) {
         case LotConstants.EDIT_MANUFACTURING_LOT_FAILURE:
         case LotConstants.GET_INVENTORY_BY_GOOD_IDS_FAILURE:
         case LotConstants.GET_INVENTORY_BY_GOOD_ID_FAILURE:
+        case LotConstants.GET_INVENTORY_DASHBOARD_FAILURE:
             return {
                 ...state,
                 isLoading: false

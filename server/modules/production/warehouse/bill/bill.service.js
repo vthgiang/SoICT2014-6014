@@ -909,3 +909,34 @@ exports.createManyProductBills = async (data, portal) => {
     await lot.save();
     return { bills }
 }
+
+exports.getNumberBills = async (query, portal) => {
+    let options = {};
+    if(query.stock) {
+        options.fromStock = query.stock
+    }
+
+    if (query.createdAt) {
+        let date = query.createdAt.split("-");
+        let start = new Date(date[1], date[0] - 1, 1);
+        let end = new Date(date[1], date[0], 1);
+
+        options = {
+            ...options,
+            createdAt: {
+                $gt: start,
+                $lte: end
+            }
+        }
+    }
+
+    const totalBills = await Bill(connect(DB_CONNECTION, portal)).find(options).count();
+    options.group = '1';
+    const totalGoodReceipts = await Bill(connect(DB_CONNECTION, portal)).find(options).count();
+    options.group = '2';
+    const totalGoodIssues = await Bill(connect(DB_CONNECTION, portal)).find(options).count();
+    options.group = '3';
+    const totalGoodReturns = await Bill(connect(DB_CONNECTION, portal)).find(options).count();
+
+    return { totalBills, totalGoodReturns, totalGoodReceipts, totalGoodIssues };
+}
