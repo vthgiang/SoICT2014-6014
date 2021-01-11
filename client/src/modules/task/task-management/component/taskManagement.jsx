@@ -835,6 +835,8 @@ class TaskManagement extends Component {
                         </div>
 
                         <PaginateBar
+                            display={tasks.tasks?.length}
+                            total={tasks.totalCount}
                             pageTotal={tasks.pages}
                             currentPage={currentPage}
                             func={this.handleGetDataPagination}
