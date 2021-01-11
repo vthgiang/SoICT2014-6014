@@ -1,4 +1,4 @@
-const { Bill, Lot, Stock } = require(`../../../../models`);
+const { Bill, Lot, Stock, SalesOrder } = require(`../../../../models`);
 const { connect } = require(`../../../../helpers/dbHelper`);
 
 exports.getBillsByType = async (query, userId, portal) => {
@@ -335,6 +335,13 @@ exports.createBill = async (userId, data, portal) => {
     }
 
     const bill = await Bill(connect(DB_CONNECTION, portal)).create(query);
+
+    if (data.salesOrderId) {
+        let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findById({ _id: data.salesOrderId });
+        salesOrder.bill = bill._id; //Gắn bill vào đơn hàng
+        salesOrder.save();
+    }
+
     return await Bill(connect(DB_CONNECTION, portal))
         .findById(bill._id)
         .populate([

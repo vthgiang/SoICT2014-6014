@@ -212,6 +212,7 @@ class ActionForm extends Component {
                         id={`actionsTemplate${type}`}
                         getTextData={this.handleChangeActionDesc}
                         quillValueDefault={quillValueDefault}
+                        embeds={false}
                     />
                 </div>
 

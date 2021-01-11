@@ -2408,29 +2408,25 @@ exports.getUserTimeSheet = async (portal, userId, month, year) => {
     console.log("my", month, year)
     let beginOfMonth = new Date(`${year}-${month}`);
     let endOfMonth = new Date(year, month);
-    console.log("aa", beginOfMonth, endOfMonth)
-    let tasks = await Task(connect(DB_CONNECTION, portal))
-        .find({
-            "timesheetLogs.creator": userId,
+
+    let tsl = await Task(connect(DB_CONNECTION, portal)).aggregate([
+        { $match: { 
+            "timesheetLogs.creator": mongoose.Types.ObjectId(userId),
             "timesheetLogs.startedAt": { $exists: true },
             "timesheetLogs.startedAt": { $gte: beginOfMonth },
             "timesheetLogs.stoppedAt": { $exists: true },
             "timesheetLogs.stoppedAt": { $lte: endOfMonth }
-        });
-    console.log("TASKS", tasks)
+        } },
+        { $unwind: "$timesheetLogs" },
+        { $replaceRoot: { newRoot: "$timesheetLogs" } },
+        { $match: { 
+            "creator": mongoose.Types.ObjectId(userId),
+            "startedAt": { $exists: true },
+            "startedAt": { $gte: beginOfMonth },
+            "stoppedAt": { $exists: true },
+            "stoppedAt": { $lte: endOfMonth }
+        } },
+    ]);
 
-    let timesheetlogs = [];
-    for(let i=0; i<tasks.length; i++){
-        let ts = tasks[i].timesheetLogs;
-        if(Array.isArray(ts)){
-            for(let j=0; j<ts.length; j++){
-                let tslogs = ts[j];
-                if(tslogs.creator.toString() === userId.toString()){
-                    timesheetlogs.push(tslogs);
-                }
-            }
-        }
-    }
-
-    return timesheetlogs;
+    return tsl;
 }

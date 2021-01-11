@@ -69,7 +69,7 @@ function HoursSpentOfEmployeeChart(props) {
                         return name[0];
                     },
                     value: function (value) {
-                        return value + "h"
+                        return (value  / (60 * 60 * 1000)).toFixed(2) + "h"
                     }
                 }
             },

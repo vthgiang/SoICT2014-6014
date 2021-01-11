@@ -135,7 +135,7 @@ class ManufacturingMillScheduleManagentTable extends Component {
         const { totalPages, page } = workSchedule;
         const { month, allDaysOfMonth, code } = this.state;
 
-        const arrayStatus = [0, 1, 2, 3, 4, 5]
+        const arrayStatus = [0, 6, 1, 2, 3, 4, 5]
         return (
             <React.Fragment>
                 {

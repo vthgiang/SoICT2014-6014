@@ -20,7 +20,7 @@ const InprocessOfUnitTask = (props) => {
         let intime = [translate('task.task_management.in_time')];
         let notAchived = [translate('task.task_management.not_achieved')];
 
-        if (taskList.length) {
+        if (taskList && taskList.length !== 0) {
             let selectedUnit = unit;
             if (selectedUnit.length == 0) selectedUnit = units.map(item => { return item.id });
 
@@ -29,7 +29,7 @@ const InprocessOfUnitTask = (props) => {
                 let currentTime = new Date();
 
                 for (let j in taskList) {
-                    if (taskList[j].organizationalUnit._id === selectedUnit[i]) {
+                    if (taskList[j] && taskList[j].organizationalUnit && taskList[j].organizationalUnit._id === selectedUnit[i]) {
                         let startTime = new Date(taskList[j].startDate);
                         let endTime = new Date(taskList[j].endDate);
 

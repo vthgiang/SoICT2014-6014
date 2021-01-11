@@ -7,6 +7,7 @@ import WorkScheduleComponent from '../plan-component/workScheduleComponent';
 import WorkSchedule from '../../../work-schedule/components';
 import MillProductivity from '../plan-component/millProductivity';
 import HistoryCommandTable from './historyCommandTable';
+import { workScheduleActions } from '../../../work-schedule/redux/actions';
 
 class MillScheduleBooking extends Component {
     constructor(props) {
@@ -25,6 +26,19 @@ class MillScheduleBooking extends Component {
             manufacturingCommands: this.props.manufacturingCommands
         }
     }
+
+    componentDidMount = () => {
+        const { startDate, endDate, manufacturingMill } = this.props;
+        const { listMills } = manufacturingMill;
+        const listMillIds = listMills.map(x => x._id);
+        const data = {
+            startDate: startDate,
+            endDate: endDate,
+            manufacturingMills: listMillIds
+        }
+        this.props.getAllWorkSchedulesOfManufacturingWork(data);
+    }
+
     handleShowCommandHistory = async (goodId) => {
         await this.setState({
             goodId: goodId
@@ -125,9 +139,28 @@ class MillScheduleBooking extends Component {
         return mill[0].name;
     }
 
+    static getDerivedStateFromProps = (props, state) => {
+        if (props.workSchedule.listWorkSchedulesOfWorks && props.workSchedule.isLoading === false) {
+            const { manufacturingMill, workSchedule } = props;
+            const { listMills } = manufacturingMill;
+            const listMillIds = listMills.map(x => x._id);
+            var listSchedulesMap = new Map();
+            listMillIds.map(x => {
+                let workSchedulesOfMill = workSchedule.listWorkSchedulesOfWorks.filter(y => y.manufacturingMill === x);
+                listSchedulesMap.set(x, workSchedulesOfMill);
+            })
+            return {
+                ...state,
+                startDate: props.startDate,
+                endDate: props.endDate,
+                listWorkSchedulesOfWorks: listSchedulesMap
+            }
+        }
+    }
+
     render() {
         const { translate, listGoods } = this.props;
-        const { command, manufacturingCommands, manufacturingMillError } = this.state;
+        const { command, manufacturingCommands, manufacturingMillError, listWorkSchedulesOfWorks } = this.state;
         return (
             <React.Fragment>
                 {
@@ -318,10 +351,13 @@ class MillScheduleBooking extends Component {
                                     command.manufacturingMill && !manufacturingMillError &&
                                     <WorkScheduleComponent
                                         manufacturingMillId={command.manufacturingMill}
+                                        commandCode={command.code}
+                                        listWorkSchedulesOfMill={listWorkSchedulesOfWorks.get(command.manufacturingMill)}
                                         manufacturingMillName={this.getManufacturingMillNameById()}
+                                        startDate={this.props.startDate}
                                     />
                                 }
-                                <div className="row">
+                                {/* <div className="row">
                                     <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                                         <div className={`form-group`}>
                                             <label>{translate('manufacturing.plan.responsible')}<span className="attention"> * </span></label>
@@ -340,7 +376,7 @@ class MillScheduleBooking extends Component {
                                             <ErrorLabel content={""} />
                                         </div>
                                     </div>
-                                </div>
+                                </div> */}
                             </fieldset>
                         </div>
                     </div>
@@ -351,12 +387,12 @@ class MillScheduleBooking extends Component {
 }
 
 function mapStateToProps(state) {
-    const { manufacturingMill } = state;
-    return { manufacturingMill }
+    const { manufacturingMill, workSchedule } = state;
+    return { manufacturingMill, workSchedule }
 }
 
 const mapDispatchToProps = {
-    getAllManufacturingMills: millActions.getAllManufacturingMills
+    getAllWorkSchedulesOfManufacturingWork: workScheduleActions.getAllWorkSchedulesOfManufacturingWork,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(MillScheduleBooking));
