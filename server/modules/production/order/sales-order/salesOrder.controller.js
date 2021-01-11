@@ -148,3 +148,28 @@ exports.getSalesOrdersByManufacturingWorks = async (req, res) => {
         });
     }
 }
+
+//Lấy các đơn hàng chưa thanh toán hết của 1 khách hàng
+exports.getSalesOrdersForPayment = async (req, res) => {
+    try {
+        let customerId = req.query.customerId;
+
+        let salesOrders = await SalesOrderServices.getSalesOrdersForPayment(customerId, req.portal)
+
+        await Log.info(req.user.email, "GET_SALES_ORDERS_FOR_PAYMENT", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["get_sales_orders_for_successfully"],
+            content: salesOrders
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "GET_SALES_ORDERS_FOR_PAYMENT", req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["get_sales_orders_for_failed"],
+            content: error.message
+        });
+    }
+}
+
