@@ -16,6 +16,8 @@ import { TasksIsNotLinked } from './tasksIsNotLinked';
 import { TaskHasActionNotEvaluated } from './taskHasActionNotEvaluated';
 import { InprocessTask } from './inprocessTask';
 import { WeightTaskChart } from './weightTaskChart';
+import { convertTime } from '../../../../helpers/stringMethod';
+import { getStorage } from '../../../../config';
 class TaskDashboard extends Component {
 
     constructor(props) {
@@ -72,7 +74,8 @@ class TaskDashboard extends Component {
 
             willUpdate: false,       // Khi true sẽ cập nhật dữ liệu vào props từ redux
             callAction: false,
-            type: 'status'
+            type: 'status',
+            monthTimeSheetLog: '',
         };
     }
 
@@ -154,7 +157,7 @@ class TaskDashboard extends Component {
     handleSelectMonthEnd = (value) => {
         let month = value.slice(3, 7) + '-' + value.slice(0, 2);
         let endMonthTitle = value.slice(0, 2) + '-' + value.slice(3, 7);
-        
+
         this.INFO_SEARCH.endMonth = month;
         this.INFO_SEARCH.endMonthTitle = endMonthTitle;
     }
@@ -190,9 +193,37 @@ class TaskDashboard extends Component {
         }
     }
 
+    handleChangeMonthTimeSheetLog = (value) => {
+        this.setState({
+            monthTimeSheetLog: value
+        });
+    }
+
+    getUserTimeSheetLogs = () => {
+        let { monthTimeSheetLog } = this.state;
+        if (monthTimeSheetLog) {
+            let d = monthTimeSheetLog.split('-');
+            let month = d[0];
+            let year = d[1];
+            let userId = getStorage('userId');
+            this.props.getTimeSheetOfUser(userId, month, year);
+        }
+    }
+
+    getTotalTimeSheet = (ts) => {
+        let total = 0;
+        for (let i = 0; i < ts.length; i++) {
+            let tslog = ts[i];
+            if (typeof (tslog.duration) === 'number' && tslog.acceptLog) {
+                total = total + Number(tslog.duration);
+            }
+        }
+        return convertTime(total);
+    }
+
     render() {
         const { tasks, translate } = this.props;
-        const { startMonth, endMonth, willUpdate, callAction, taskAnalys } = this.state;
+        const { startMonth, endMonth, willUpdate, callAction, taskAnalys, monthTimeSheetLog } = this.state;
 
         let amountResponsibleTask = 0, amountTaskCreated = 0, amountAccountableTasks = 0, amountConsultedTasks = 0;
         let numTask = [];
@@ -285,6 +316,9 @@ class TaskDashboard extends Component {
         let defaultEndMonth = month < 10 ? ['0' + month, year].join('-') : [month, year].join('-');
 
         let { startMonthTitle, endMonthTitle } = this.INFO_SEARCH;
+        // Thống kê bấm giờ
+        let { userTimeSheetLogs } = tasks;
+        console.log("USER TIME SHEET LOG", userTimeSheetLogs.userTimeSheetLogs)
         return (
             <React.Fragment>
                 <div className="qlcv" style={{ textAlign: "right" }}>
@@ -518,6 +552,54 @@ class TaskDashboard extends Component {
                     </div>
                 </div>
                 {/* </div> */}
+                <div className="row">
+                    <div className="col-md-12">
+                        <div className="box box-solid">
+                            <div className="box-header with-border">
+                                <div className="box-title">
+                                    Thống kê bấm giờ theo tháng
+                                </div>
+                            </div>
+                            <div className="box-body" style={{ marginBottom: 15 }}>
+                                {/* Seach theo thời gian */}
+                                <div className="qlcv">
+                                    <div className="form-inline" >
+                                        <div className="form-group">
+                                            <label style={{ width: "auto" }}>Tháng</label>
+                                            <DatePicker
+                                                id="month-time-sheet-log"
+                                                dateFormat="month-year"
+                                                value={monthTimeSheetLog}
+                                                onChange={this.handleChangeMonthTimeSheetLog}
+                                                disabled={false}
+                                            />
+                                        </div>
+                                        <button className="btn btn-primary" onClick={this.getUserTimeSheetLogs}>Thống kê</button>
+                                    </div>
+                                </div>
+
+                                <div className="box-body" >
+                                    <div className="col-md-12">
+                                        <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
+                                            <p className="pull-left" style={{ fontWeight: 'bold' }}>Kết quả</p >
+                                            {
+                                                !tasks.isLoading ?
+                                                    <p style={{ fontWeight: 'bold', fontSize: 20, marginLeft: 20 }}>
+                                                        {this.getTotalTimeSheet(userTimeSheetLogs)}
+                                                    </p> :
+                                                    <p style={{ fontWeight: 'bold', fontSize: 20, marginLeft: 20 }}>
+                                                        {translate('general.loading')}
+                                                    </p>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
 
             </React.Fragment>
         );
@@ -536,6 +618,7 @@ const actionCreators = {
     getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
     getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
     getTaskByUser: taskManagementActions.getTasksByUser,
+    getTimeSheetOfUser: taskManagementActions.getTimeSheetOfUser,
 };
 
 const connectedTaskDashboard = connect(mapState, actionCreators)(withTranslate(TaskDashboard));
