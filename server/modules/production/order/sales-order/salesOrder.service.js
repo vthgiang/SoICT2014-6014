@@ -382,10 +382,17 @@ exports.getSalesOrdersForPayment = async (customerId, portal) => {
     let salesOrders = [];
     if (salesOrdersForPayment.length) {
         for (let index = 0; index < salesOrdersForPayment.length; index++){
-            let paid = PaymentService.getPaidForSalesOrder(salesOrdersForPayment[index]._id, portal);
+            let paid = await PaymentService.getPaidForSalesOrder(salesOrdersForPayment[index]._id, portal);
+
             if (paid < salesOrdersForPayment[index].paymentAmount) {
-                salesOrdersForPayment[index].paid = paid;
-                salesOrders.push(salesOrdersForPayment[index])//Chỉ trả về các đơn hàng chưa thanh toán
+                //Chỉ trả về các đơn hàng chưa thanh toán
+                salesOrders.push({
+                    _id: salesOrdersForPayment[index]._id,
+                    code: salesOrdersForPayment[index].code,
+                    paymentAmount: salesOrdersForPayment[index].paymentAmount,
+                    customer: salesOrdersForPayment[index].customer,
+                    paid: paid,
+                })
             }
         }
     }

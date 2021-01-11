@@ -21,11 +21,11 @@ const PaymentSchema = new Schema({
         ref: 'User',
         // required: true
     },
-    bankAccountIn: {// Tài khoản nhận tiền
+    bankAccountReceived: {// Tài khoản nhận tiền
         type: Schema.Types.ObjectId,
         ref: 'BankAccount'
     },
-    bankAccountOut: {// Tài khoản chi tiền 
+    bankAccountPaid: {// Tài khoản chi tiền 
         type: Schema.Types.ObjectId,
         ref: 'BankAccount'
     },

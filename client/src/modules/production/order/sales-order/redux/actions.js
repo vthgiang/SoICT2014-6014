@@ -157,7 +157,7 @@ function getSalesOrdersForPayment (customerId) {
             type: SalesOrderConstants.GET_SALES_ORDERS_FOR_PAYMENT_REQUEST
         })
 
-        SalesOrderSevices.getSalesOrdersByManufacturingWorks(customerId)
+        SalesOrderSevices.getSalesOrdersForPayment(customerId)
         .then((res) => {
             dispatch({
                 type: SalesOrderConstants.GET_SALES_ORDERS_FOR_PAYMENT_SUCCESS,

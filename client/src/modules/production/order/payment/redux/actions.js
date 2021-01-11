@@ -1,7 +1,7 @@
 import { PaymentConstants } from './constants';
 import { PaymentServices } from './services';
 
-export const BankAccountActions = {
+export const PaymentActions = {
     createPayment,
     getAllPayments,
     getPaymentDetail,

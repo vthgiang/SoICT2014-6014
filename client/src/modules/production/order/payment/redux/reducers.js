@@ -45,6 +45,7 @@ export function payments(state = initState, action) {
                 error: action.error
             }
         case PaymentConstants.GET_ALL_PAYMENTS_SUCCESS:
+            console.log("action.payload.allPayments", action.payload.allPayments);
             return {
                 ...state,
                 isLoading: false,

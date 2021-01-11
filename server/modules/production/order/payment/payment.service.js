@@ -14,8 +14,8 @@ exports.createPayment = async (userId, data, portal) => {
         paymentType: data.paymentType,
         customer: data.customer,
         curator: userId,
-        bankAccountIn: data.bankAccountIn,
-        bankAccountOut: data.bankAccountOut,
+        bankAccountReceived: data.bankAccountReceived,
+        bankAccountPaid: data.bankAccountPaid,
         salesOrders: data.salesOrders ? data.salesOrders.map((item) => {
             return {
                 salesOrder: item.salesOrder,
@@ -44,6 +44,10 @@ exports.createPayment = async (userId, data, portal) => {
 exports.getAllPayments = async (query, portal) => {
     let { page, limit } = query;
     let option = {};
+
+    if (query.type) {
+        option.type = query.type
+    }
 
     if ( !page || !limit ){
         let allPayments = await Payment(connect(DB_CONNECTION, portal))
@@ -116,7 +120,7 @@ exports.getPaidForSalesOrder = async (orderId, portal) => {
     let paymentsForOrder = await Payment(connect(DB_CONNECTION, portal)).find({ salesOrders: { $elemMatch: { salesOrder: orderId } } });
     let paid = 0;
 
-    for (let index = 0; i < paymentsForOrder.length; index++){
+    for (let index = 0; index < paymentsForOrder.length; index++){
         let { salesOrders } = paymentsForOrder[index];
         let paymentForSalesOrder = salesOrders.find((element) => element.salesOrder === orderId)
         if (paymentForSalesOrder) {

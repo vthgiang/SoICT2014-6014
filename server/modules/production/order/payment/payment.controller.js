@@ -38,6 +38,7 @@ exports.getAllPayments = async ( req, res ) => {
         });
     } catch (error) {
         await Log.error(req.user.email, "GET_ALL_PAYMENTS", req.portal);
+        console.log( error.message);
 
         res.status(400).json({
             success: false,
