@@ -7,7 +7,8 @@ export const SalesOrderActions = {
     editSalesOrder,
     approveSalesOrder,
     addManufacturingPlanForGood,
-    getSalesOrdersByManufacturingWorks
+    getSalesOrdersByManufacturingWorks,
+    getSalesOrdersForPayment
 }
 
 function createNewSalesOrder (data) {
@@ -149,4 +150,27 @@ function getSalesOrdersByManufacturingWorks (id) {
         })
     }
 }
+
+function getSalesOrdersForPayment (customerId) {
+    return (dispatch) => {
+        dispatch({
+            type: SalesOrderConstants.GET_SALES_ORDERS_FOR_PAYMENT_REQUEST
+        })
+
+        SalesOrderSevices.getSalesOrdersByManufacturingWorks(customerId)
+        .then((res) => {
+            dispatch({
+                type: SalesOrderConstants.GET_SALES_ORDERS_FOR_PAYMENT_SUCCESS,
+                payload: res.data.content
+            })
+        })
+        .catch((error) => {
+            dispatch({
+                type: SalesOrderConstants.GET_SALES_ORDERS_FOR_PAYMENT_FAILURE,
+                error
+            })
+        })
+    }
+}
+
 
