@@ -14,8 +14,8 @@ class AnnualLeaveChartAndTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            organizationalUnits: this.props.defaultUnit ? this.props.organizationalUnits : [],
-            organizationalUnitsShow: this.props.defaultUnit ? this.props.organizationalUnits : [],
+            organizationalUnits: this.props.defaultUnit ? this.props.organizationalUnits : null,
+            organizationalUnitsShow: this.props.defaultUnit ? this.props.organizationalUnits : this.props.childOrganizationalUnit.map(x => x.id),
         }
     }
 
@@ -130,7 +130,6 @@ class AnnualLeaveChartAndTable extends Component {
                 x: {
                     type: 'timeseries',
                     tick: {
-                        // format: '%d - %m - %Y',
                         outer: false,
                         rotate: -45,
                         multiline: true,
@@ -226,7 +225,7 @@ class AnnualLeaveChartAndTable extends Component {
         }
 
         const arrdays = this.getDays();
-        let data1 = [], data2 = [];
+        let data1 = arrdays.map(x => 0), data2 = arrdays.map(x => 0);
         if (annualLeave.beforAndAfterOneWeeks.length) {
             data1 = arrdays.map(x => {
                 let count = 0;
@@ -247,9 +246,8 @@ class AnnualLeaveChartAndTable extends Component {
                 })
                 return count
             })
-            this.renderChart({ ratioX: arrdays, nameData1: "Số đơn xin nghỉ", data1, nameData2: "Số đơn được duyệt", data2 });
-
         }
+        this.renderChart({ ratioX: arrdays, nameData1: "Số đơn xin nghỉ", data1, nameData2: "Số đơn được duyệt", data2 });
 
         return (
             <React.Fragment>
@@ -273,6 +271,8 @@ class AnnualLeaveChartAndTable extends Component {
                             </div>
                         </div>
                         <div className="dashboard_box_body">
+                            {!annualLeave.beforAndAfterOneWeeks.length &&
+                                'Không có đơn xin nghỉ phép nào'}
                             <div ref="barChartAndTable"></div>
                         </div>
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 20 }}>
